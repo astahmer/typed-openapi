@@ -1,9 +1,10 @@
-import { openApiSchemaToTs, TsConversionContext } from "../src/openapi-to-ts";
+import { openApiSchemaToTs } from "../src/openapi-schema-to-ts";
 
 import type { SchemaObject, SchemasObject } from "openapi3-ts/oas31";
 import { describe, expect, test } from "vitest";
 import { asComponentSchema } from "../src/utils";
 import { makeSchemaResolver } from "../src/schema-resolver";
+import { TsConversionContext } from "../src/types";
 
 const getSchemaBox = (schema: SchemaObject, meta?: { name: string }) => openApiSchemaToTs({ schema, meta });
 

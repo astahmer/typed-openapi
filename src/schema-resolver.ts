@@ -13,9 +13,7 @@ type RefInfo = {
 
 export const makeSchemaResolver = (doc: OpenAPIObject) => {
   // both used for debugging purpose
-  // eslint-disable-next-line sonarjs/no-unused-collection
   const nameByRef = new Map<string, string>();
-  // eslint-disable-next-line sonarjs/no-unused-collection
   const refByName = new Map<string, string>();
 
   const byRef = new Map<string, RefInfo>();
