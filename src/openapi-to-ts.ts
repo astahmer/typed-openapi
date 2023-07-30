@@ -3,6 +3,7 @@ import type { ReferenceObject, SchemaObject } from "openapi3-ts/oas31";
 import { isReferenceObject } from "./is-reference-object";
 import type { DocumentResolver } from "./schema-resolver";
 import { wrapWithQuotesIfNeeded } from "./utils";
+import { format } from "pastable";
 
 type TsConversionArgs = {
   schema: SchemaObject | ReferenceObject;
@@ -17,12 +18,12 @@ export type TsConversionContext = {
   visitedsRefs?: Record<string, boolean>;
 };
 
-export const getTypescriptFromOpenApi = ({
+export const openApiSchemaToTs = ({
   schema,
   meta: inheritedMeta,
   ctx,
 }: // eslint-disable-next-line sonarjs/cognitive-complexity
-TsConversionArgs): string => {
+TsConversionArgs): AnyBox => {
   const meta = {} as TsConversionArgs["meta"];
   const isInline = !inheritedMeta?.name;
 
@@ -36,7 +37,8 @@ TsConversionArgs): string => {
   }
 
   let canBeWrapped = !isInline;
-  const getTs = (): string => {
+  const t = createFactory().from(schema);
+  const getTs = (): AnyBox => {
     if (isReferenceObject(schema)) {
       if (!ctx?.visitedsRefs || !ctx?.resolver) throw new Error("Context is required for OpenAPI $ref");
 
@@ -53,7 +55,8 @@ TsConversionArgs): string => {
         }
 
         ctx.visitedsRefs[schema.$ref] = true;
-        result = getTypescriptFromOpenApi({ schema: actualSchema, meta, ctx });
+        // TODO ?
+        // result = openApiSchemaToTs({ schema: actualSchema, meta, ctx });
       }
 
       return t.reference(schemaName);
@@ -61,12 +64,10 @@ TsConversionArgs): string => {
 
     if (Array.isArray(schema.type)) {
       if (schema.type.length === 1) {
-        return getTypescriptFromOpenApi({ schema: { ...schema, type: schema.type[0]! }, ctx, meta });
+        return openApiSchemaToTs({ schema: { ...schema, type: schema.type[0]! }, ctx, meta });
       }
 
-      return t.union(
-        schema.type.map((prop) => getTypescriptFromOpenApi({ schema: { ...schema, type: prop }, ctx, meta })),
-      );
+      return t.union(schema.type.map((prop) => openApiSchemaToTs({ schema: { ...schema, type: prop }, ctx, meta })));
     }
 
     if (schema.type === "null") {
@@ -75,28 +76,28 @@ TsConversionArgs): string => {
 
     if (schema.oneOf) {
       if (schema.oneOf.length === 1) {
-        return getTypescriptFromOpenApi({ schema: schema.oneOf[0]!, ctx, meta });
+        return openApiSchemaToTs({ schema: schema.oneOf[0]!, ctx, meta });
       }
 
-      return t.union(schema.oneOf.map((prop) => getTypescriptFromOpenApi({ schema: prop, ctx, meta })));
+      return t.union(schema.oneOf.map((prop) => openApiSchemaToTs({ schema: prop, ctx, meta })));
     }
 
     // anyOf = oneOf but with 1 or more = `T extends oneOf ? T | T[] : never`
     if (schema.anyOf) {
       if (schema.anyOf.length === 1) {
-        return getTypescriptFromOpenApi({ schema: schema.anyOf[0]!, ctx, meta });
+        return openApiSchemaToTs({ schema: schema.anyOf[0]!, ctx, meta });
       }
 
-      const oneOf = t.union(schema.anyOf.map((prop) => getTypescriptFromOpenApi({ schema: prop, ctx, meta })));
+      const oneOf = t.union(schema.anyOf.map((prop) => openApiSchemaToTs({ schema: prop, ctx, meta })));
       return t.union([oneOf, t.array(oneOf)]);
     }
 
     if (schema.allOf) {
       if (schema.allOf.length === 1) {
-        return getTypescriptFromOpenApi({ schema: schema.allOf[0]!, ctx, meta });
+        return openApiSchemaToTs({ schema: schema.allOf[0]!, ctx, meta });
       }
 
-      const types = schema.allOf.map((prop) => getTypescriptFromOpenApi({ schema: prop, ctx, meta }));
+      const types = schema.allOf.map((prop) => openApiSchemaToTs({ schema: prop, ctx, meta }));
       return t.intersection(types);
     }
 
@@ -118,7 +119,8 @@ TsConversionArgs): string => {
 
     if (schemaType === "array") {
       if (schema.items) {
-        let arrayOfType = getTypescriptFromOpenApi({ schema: schema.items, ctx, meta });
+        let arrayOfType = openApiSchemaToTs({ schema: schema.items, ctx, meta });
+        console.log({ arrayOfType });
         if (typeof arrayOfType === "string") {
           if (!ctx) throw new Error("Context is required for circular $ref (recursive schemas)");
           arrayOfType = t.reference(arrayOfType);
@@ -132,7 +134,7 @@ TsConversionArgs): string => {
 
     if (schemaType === "object" || schema.properties || schema.additionalProperties) {
       if (!schema.properties) {
-        return "";
+        return t.unknown();
       }
 
       canBeWrapped = false;
@@ -147,19 +149,19 @@ TsConversionArgs): string => {
         ) {
           additionalPropertiesType = t.any();
         } else if (typeof schema.additionalProperties === "object") {
-          additionalPropertiesType = getTypescriptFromOpenApi({
+          additionalPropertiesType = openApiSchemaToTs({
             schema: schema.additionalProperties,
             ctx,
             meta,
           });
         }
 
-        additionalProperties = t.object({ [t.string()]: additionalPropertiesType! });
+        additionalProperties = t.object({ [t.string().value]: additionalPropertiesType! });
       }
 
       const props = Object.fromEntries(
         Object.entries(schema.properties).map(([prop, propSchema]) => {
-          let propType = getTypescriptFromOpenApi({ schema: propSchema, ctx, meta });
+          let propType = openApiSchemaToTs({ schema: propSchema, ctx, meta });
           if (typeof propType === "string") {
             if (!ctx) throw new Error("Context is required for circular $ref (recursive schemas)");
             // TODO Partial ?
@@ -212,20 +214,20 @@ const wrapTypeIfInline = ({
 }: {
   isInline: boolean;
   name: string | undefined;
-  typeDef: string;
+  typeDef: StringOrBox;
 }) => {
   if (!isInline) {
     if (!name) {
       throw new Error("Name is required to convert a schema to a type reference");
     }
 
-    return t.type(name, typeDef);
+    return box.type(name, typeDef);
   }
 
   return typeDef;
 };
 
-const t = {
+const factory = {
   type: (name: string, def: string) => `type ${name} = ${def}`,
   union: (types: string[]) => types.join(" | "),
   intersection: (types: string[]) => types.join(" & "),
@@ -247,3 +249,156 @@ const t = {
   },
   // indexSignature: (keyType: PrimitiveType, valueType: string) => `[key: ${keyType}]: ${valueType}`,
 };
+
+const unwrap = (param: StringOrBox) => (typeof param === "string" ? param : param.value);
+
+const box: BoxFactory<{}> = {
+  type: (name, def) => ({ type: "type", params: { name, def }, value: factory.type(name, unwrap(def)) }),
+  union: (types) => ({ type: "union", params: { types }, value: factory.union(types.map(unwrap)) }),
+  intersection: (types) => ({
+    type: "intersection",
+    params: { types },
+    value: factory.intersection(types.map(unwrap)),
+  }),
+  array: (type) => ({ type: "array", params: { type }, value: factory.array(unwrap(type)) }),
+  optional: (type) => ({ type: "optional", params: { type }, value: factory.optional(unwrap(type)) }),
+  reference: (name, generics = []) => ({
+    type: "ref",
+    params: { name, generics },
+    value: factory.reference(name, generics.map(unwrap)),
+  }),
+  string: () => ({ type: "keyword", params: { name: "string" }, value: factory.string() }),
+  number: () => ({ type: "keyword", params: { name: "number" }, value: factory.number() }),
+  boolean: () => ({ type: "keyword", params: { name: "boolean" }, value: factory.boolean() }),
+  unknown: () => ({ type: "keyword", params: { name: "unknown" }, value: factory.unknown() }),
+  any: () => ({ type: "keyword", params: { name: "any" }, value: factory.any() }),
+  never: () => ({ type: "keyword", params: { name: "never" }, value: factory.never() }),
+  object: (props) => ({
+    type: "object",
+    params: { props },
+    value: factory.object(format(props, (value, key) => ({ [key]: unwrap(value) }))),
+  }),
+};
+
+type StringOrBox = string | AnyBox;
+
+type BoxFactory<T> = {
+  type: (name: string, def: StringOrBox) => BoxTypeNode<T>;
+  union: (types: Array<StringOrBox>) => BoxUnion<T>;
+  intersection: (types: Array<StringOrBox>) => BoxIntersection<T>;
+  array: (type: StringOrBox) => BoxArray<T>;
+  object: (props: Record<string, StringOrBox>) => BoxObject<T>;
+  optional: (type: StringOrBox) => BoxOptional<T>;
+  reference: (name: string, generics?: Array<StringOrBox>) => BoxRef<T>;
+  string: () => BoxKeyword<T>;
+  number: () => BoxKeyword<T>;
+  boolean: () => BoxKeyword<T>;
+  unknown: () => BoxKeyword<T>;
+  any: () => BoxKeyword<T>;
+  never: () => BoxKeyword<T>;
+};
+
+/**
+ * Simplify a type by merging intersections if possible
+ * @param T - type to simplify
+ */
+export type Simplify<T> = T extends unknown ? { [K in keyof T]: T[K] } : T;
+
+const from = {
+  from: (schema: SchemaObject | ReferenceObject) => Object.assign({ schema }, box) as any as BoxFactory<WithSchema>,
+};
+
+function createProxy() {
+  const identity = Object.assign(from, box);
+  return new Proxy(identity, {
+    get(target, p) {
+      if (!Boolean(p in target)) {
+        return;
+      }
+
+      return new Proxy((identity as any)[p], {
+        apply(target, thisArg, argArray) {
+          const result = target.bind(thisArg)(...argArray);
+          return Object.assign(result, { schema: target.schema });
+        },
+      });
+    },
+  });
+}
+
+// const f = createProxy();
+// console.log(f);
+// // f.any()
+// // f.schema({ type: "string" })
+// console.log({ oui: f.schema({ type: "string" }).array("string") });
+
+const createFactory = () => {
+  return createProxy();
+};
+
+type WithSchema = { schema: SchemaObject };
+
+type BoxDefinition = {
+  type: string;
+  params: unknown;
+  value: string;
+};
+type BoxParams = string | BoxDefinition;
+
+type BoxTypeNode<T = {}> = T & {
+  type: "type";
+  params: { name: string; def: BoxParams };
+  value: string;
+};
+
+type BoxUnion<T = {}> = T & {
+  type: "union";
+  params: {
+    types: Array<BoxParams>;
+  };
+  value: string;
+};
+
+type BoxIntersection<T = {}> = T & {
+  type: "intersection";
+  params: {
+    types: Array<BoxParams>;
+  };
+  value: string;
+};
+
+type BoxArray<T = {}> = T & {
+  type: "array";
+  params: {
+    type: BoxParams;
+  };
+  value: string;
+};
+
+type BoxOptional<T = {}> = T & {
+  type: "optional";
+  params: {
+    type: BoxParams;
+  };
+  value: string;
+};
+
+type BoxRef<T = {}> = T & {
+  type: "ref";
+  params: { name: string; generics: BoxParams[] };
+  value: string;
+};
+
+type BoxKeyword<T = {}> = T & {
+  type: "keyword";
+  params: { name: string };
+  value: PrimitiveType | "unknown" | "any" | "never";
+};
+
+type BoxObject<T = {}> = T & {
+  type: "object";
+  params: { props: Record<string, BoxParams> };
+  value: string;
+};
+
+type AnyBox = BoxTypeNode | BoxUnion | BoxIntersection | BoxArray | BoxOptional | BoxRef | BoxKeyword | BoxObject;

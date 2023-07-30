@@ -1,4 +1,4 @@
-import { getTypescriptFromOpenApi, TsConversionContext } from "../src/openapi-to-ts";
+import { openApiSchemaToTs, TsConversionContext } from "../src/openapi-to-ts";
 
 import type { SchemaObject, SchemasObject } from "openapi3-ts/oas31";
 import { describe, expect, test } from "vitest";
@@ -7,7 +7,7 @@ import { makeSchemaResolver } from "../src/schema-resolver";
 
 const makeSchema = (schema: SchemaObject) => schema;
 const getSchemaAsTsString = (schema: SchemaObject, meta?: { name: string }) =>
-  getTypescriptFromOpenApi({ schema: makeSchema(schema), meta });
+  openApiSchemaToTs({ schema: makeSchema(schema), meta });
 
 test("getSchemaAsTsString", () => {
   expect(getSchemaAsTsString({ type: "null" })).toMatchInlineSnapshot('"null"');
@@ -17,24 +17,20 @@ test("getSchemaAsTsString", () => {
   expect(getSchemaAsTsString({ type: "integer" })).toMatchInlineSnapshot('"number"');
   expect(getSchemaAsTsString({})).toMatchInlineSnapshot('"unknown"');
 
-  expect(getSchemaAsTsString({ type: "null" }, { name: "nullType" })).toMatchInlineSnapshot(
-    '"export type nullType = null;"',
-  );
+  expect(getSchemaAsTsString({ type: "null" }, { name: "nullType" })).toMatchInlineSnapshot('"type nullType = null"');
   expect(getSchemaAsTsString({ type: "boolean" }, { name: "booleanType" })).toMatchInlineSnapshot(
-    '"export type booleanType = boolean;"',
+    '"type booleanType = boolean"',
   );
   expect(getSchemaAsTsString({ type: "string" }, { name: "stringType" })).toMatchInlineSnapshot(
-    '"export type stringType = string;"',
+    '"type stringType = string"',
   );
   expect(getSchemaAsTsString({ type: "number" }, { name: "numberType" })).toMatchInlineSnapshot(
-    '"export type numberType = number;"',
+    '"type numberType = number"',
   );
   expect(getSchemaAsTsString({ type: "integer" }, { name: "integerType" })).toMatchInlineSnapshot(
-    '"export type integerType = number;"',
+    '"type integerType = number"',
   );
-  expect(getSchemaAsTsString({}, { name: "unknownType" })).toMatchInlineSnapshot(
-    '"export type unknownType = unknown;"',
-  );
+  expect(getSchemaAsTsString({}, { name: "unknownType" })).toMatchInlineSnapshot('"type unknownType = unknown"');
 
   expect(getSchemaAsTsString({ type: "array", items: { type: "string" } })).toMatchInlineSnapshot('"Array<string>"');
   expect(getSchemaAsTsString({ type: "object" }, { name: "EmptyObject" })).toMatchInlineSnapshot(
@@ -294,13 +290,9 @@ describe("getSchemaAsTsString with context", () => {
       resolver: makeSchemaResolver({ components: { schemas } } as any),
     };
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
-    expect(getTypescriptFromOpenApi({ schema: schemas["Root"]!, meta: { name: "Root" }, ctx })).toMatchInlineSnapshot(`
-              "export type Root = Partial<{
-                  str: string;
-                  nb: number;
-                  nested: Nested;
-              }>;"
-            `);
+    expect(openApiSchemaToTs({ schema: schemas["Root"]!, meta: { name: "Root" }, ctx })).toMatchInlineSnapshot(
+      '"type Root = Partial<{ str: string, nb: number, nested: Nested }>"',
+    );
   });
 
   test("with multiple nested refs", () => {
@@ -336,14 +328,9 @@ describe("getSchemaAsTsString with context", () => {
       resolver: makeSchemaResolver({ components: { schemas } } as any),
     };
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
-    expect(getTypescriptFromOpenApi({ schema: schemas["Root2"]!, meta: { name: "Root2" }, ctx }))
-      .toMatchInlineSnapshot(`
-              "export type Root2 = Partial<{
-                  str: string;
-                  nb: number;
-                  nested: Nested2;
-              }>;"
-            `);
+    expect(openApiSchemaToTs({ schema: schemas["Root2"]!, meta: { name: "Root2" }, ctx })).toMatchInlineSnapshot(
+      '"type Root2 = Partial<{ str: string, nb: number, nested: Nested2 }>"',
+    );
   });
 
   test("with indirect recursive ref", async () => {
@@ -374,19 +361,14 @@ describe("getSchemaAsTsString with context", () => {
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
 
     expect(
-      getTypescriptFromOpenApi({
+      openApiSchemaToTs({
         schema: schemas["Root3"]!,
         meta: { name: "Root3", $ref: "#/components/schemas/Root3" },
         ctx,
       }),
-    ).toMatchInlineSnapshot(`
-          "export type Root3 = Partial<{
-              str: string;
-              nb: number;
-              nested: Nested3;
-              arrayOfNested: Array<Nested3>;
-          }>;"
-        `);
+    ).toMatchInlineSnapshot(
+      '"type Root3 = Partial<{ str: string, nb: number, nested: Nested3, arrayOfNested: Array<Nested3> }>"',
+    );
   });
 
   test("with direct (self) recursive ref", async () => {
@@ -416,21 +398,15 @@ describe("getSchemaAsTsString with context", () => {
       resolver: makeSchemaResolver({ components: { schemas } } as any),
     };
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
-    const result = getTypescriptFromOpenApi({
+    const result = openApiSchemaToTs({
       schema: schemas["Root4"]!,
       meta: { name: "Root4", $ref: "#/components/schemas/Root4" },
       ctx,
     });
 
-    expect(result).toMatchInlineSnapshot(`
-          "export type Root4 = Partial<{
-              str: string;
-              nb: number;
-              self: Root4;
-              nested: Nested4;
-              arrayOfSelf: Array<Root4>;
-          }>;"
-        `);
+    expect(result).toMatchInlineSnapshot(
+      '"type Root4 = Partial<{ str: string, nb: number, self: Root4, nested: Nested4, arrayOfSelf: Array<Root4> }>"',
+    );
   });
 
   test("same schemas as openApiToZod", () => {
@@ -465,18 +441,13 @@ describe("getSchemaAsTsString with context", () => {
       resolver: makeSchemaResolver({ components: { schemas } } as any),
     };
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
-    const result = getTypescriptFromOpenApi({
+    const result = openApiSchemaToTs({
       schema: schemas["Root"]!,
       meta: { name: "Root", $ref: "#/components/schemas/Root" },
       ctx,
     });
 
-    expect(result).toMatchInlineSnapshot(`
-          "export type Root = Partial<{
-              recursive: User;
-              basic: number;
-          }>;"
-        `);
+    expect(result).toMatchInlineSnapshot('"type Root = Partial<{ recursive: User, basic: number }>"');
   });
 
   test("anyOf with refs", () => {
@@ -514,18 +485,14 @@ describe("getSchemaAsTsString with context", () => {
       resolver: makeSchemaResolver({ components: { schemas } } as any),
     };
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
-    const result = getTypescriptFromOpenApi({
+    const result = openApiSchemaToTs({
       schema: schemas["Root"]!,
       meta: { name: "Root", $ref: "#/components/schemas/Root" },
       ctx,
     });
 
-    expect(result).toMatchInlineSnapshot(`
-        "export type Root = Partial<{
-            user: User | Member;
-            users: Array<(User | Member) | Array<User | Member>>;
-            basic: number;
-        }>;"
-      `);
+    expect(result).toMatchInlineSnapshot(
+      '"type Root = Partial<{ user: User | Member, users: Array<User | Member | Array<User | Member>>, basic: number }>"',
+    );
   });
 });
