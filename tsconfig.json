@@ -1,0 +1,36 @@
+{
+  // https://github.com/tsconfig/bases/blob/141d65201924bae1c70a0a4e18d05f42fbf93a9a/bases/strictest.json
+  "compilerOptions": {
+    "strict": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "verbatimModuleSyntax": false,
+    "checkJs": true,
+
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    //
+    "isolatedModules": true, // https://preconstruct.tools/guides/building-typescript-packages
+    "noEmit": true,
+    //
+    "target": "ESNext",
+    "moduleResolution": "Node",
+    "lib": ["DOM", "ES2021"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", ".changeset", ".github", "dist"],
+  "types": ["node", "vitest/importMeta"],
+  //
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Strictest"
+}
