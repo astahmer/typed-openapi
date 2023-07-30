@@ -5,57 +5,273 @@ import { describe, expect, test } from "vitest";
 import { asComponentSchema } from "../src/utils";
 import { makeSchemaResolver } from "../src/schema-resolver";
 
-const makeSchema = (schema: SchemaObject) => schema;
-const getSchemaAsTsString = (schema: SchemaObject, meta?: { name: string }) =>
-  openApiSchemaToTs({ schema: makeSchema(schema), meta });
+const getSchemaBox = (schema: SchemaObject, meta?: { name: string }) => openApiSchemaToTs({ schema, meta });
 
-test("getSchemaAsTsString", () => {
-  expect(getSchemaAsTsString({ type: "null" })).toMatchInlineSnapshot('"null"');
-  expect(getSchemaAsTsString({ type: "boolean" })).toMatchInlineSnapshot('"boolean"');
-  expect(getSchemaAsTsString({ type: "string" })).toMatchInlineSnapshot('"string"');
-  expect(getSchemaAsTsString({ type: "number" })).toMatchInlineSnapshot('"number"');
-  expect(getSchemaAsTsString({ type: "integer" })).toMatchInlineSnapshot('"number"');
-  expect(getSchemaAsTsString({})).toMatchInlineSnapshot('"unknown"');
+test("getSchemaBox", () => {
+  expect(getSchemaBox({ type: "null" })).toMatchInlineSnapshot(`
+    {
+      "params": {
+        "name": "null",
+      },
+      "schema": {
+        "type": "null",
+      },
+      "type": "ref",
+      "value": "null",
+    }
+  `);
+  expect(getSchemaBox({ type: "boolean" })).toMatchInlineSnapshot(`
+    {
+      "params": {
+        "name": "boolean",
+      },
+      "schema": {
+        "type": "boolean",
+      },
+      "type": "keyword",
+      "value": "boolean",
+    }
+  `);
+  expect(getSchemaBox({ type: "string" })).toMatchInlineSnapshot(`
+    {
+      "params": {
+        "name": "string",
+      },
+      "schema": {
+        "type": "string",
+      },
+      "type": "keyword",
+      "value": "string",
+    }
+  `);
+  expect(getSchemaBox({ type: "number" })).toMatchInlineSnapshot(`
+    {
+      "params": {
+        "name": "number",
+      },
+      "schema": {
+        "type": "number",
+      },
+      "type": "keyword",
+      "value": "number",
+    }
+  `);
+  expect(getSchemaBox({ type: "integer" })).toMatchInlineSnapshot(`
+    {
+      "params": {
+        "name": "number",
+      },
+      "schema": {
+        "type": "integer",
+      },
+      "type": "keyword",
+      "value": "number",
+    }
+  `);
+  expect(getSchemaBox({})).toMatchInlineSnapshot(`
+    {
+      "params": {
+        "name": "unknown",
+      },
+      "schema": {},
+      "type": "keyword",
+      "value": "unknown",
+    }
+  `);
 
-  expect(getSchemaAsTsString({ type: "null" }, { name: "nullType" })).toMatchInlineSnapshot('"type nullType = null"');
-  expect(getSchemaAsTsString({ type: "boolean" }, { name: "booleanType" })).toMatchInlineSnapshot(
-    '"type booleanType = boolean"',
+  expect(getSchemaBox({ type: "null" }, { name: "nullType" })).toMatchInlineSnapshot(`
+    {
+      "params": {
+        "def": {
+          "type": "ref",
+          "value": "null",
+        },
+        "name": "nullType",
+      },
+      "schema": {
+        "type": "null",
+      },
+      "type": "type",
+      "value": "type nullType = null",
+    }
+  `);
+  expect(getSchemaBox({ type: "boolean" }, { name: "booleanType" })).toMatchInlineSnapshot(
+    `
+    {
+      "params": {
+        "def": {
+          "type": "keyword",
+          "value": "boolean",
+        },
+        "name": "booleanType",
+      },
+      "schema": {
+        "type": "boolean",
+      },
+      "type": "type",
+      "value": "type booleanType = boolean",
+    }
+  `,
   );
-  expect(getSchemaAsTsString({ type: "string" }, { name: "stringType" })).toMatchInlineSnapshot(
-    '"type stringType = string"',
+  expect(getSchemaBox({ type: "string" }, { name: "stringType" })).toMatchInlineSnapshot(
+    `
+    {
+      "params": {
+        "def": {
+          "type": "keyword",
+          "value": "string",
+        },
+        "name": "stringType",
+      },
+      "schema": {
+        "type": "string",
+      },
+      "type": "type",
+      "value": "type stringType = string",
+    }
+  `,
   );
-  expect(getSchemaAsTsString({ type: "number" }, { name: "numberType" })).toMatchInlineSnapshot(
-    '"type numberType = number"',
+  expect(getSchemaBox({ type: "number" }, { name: "numberType" })).toMatchInlineSnapshot(
+    `
+    {
+      "params": {
+        "def": {
+          "type": "keyword",
+          "value": "number",
+        },
+        "name": "numberType",
+      },
+      "schema": {
+        "type": "number",
+      },
+      "type": "type",
+      "value": "type numberType = number",
+    }
+  `,
   );
-  expect(getSchemaAsTsString({ type: "integer" }, { name: "integerType" })).toMatchInlineSnapshot(
-    '"type integerType = number"',
+  expect(getSchemaBox({ type: "integer" }, { name: "integerType" })).toMatchInlineSnapshot(
+    `
+    {
+      "params": {
+        "def": {
+          "type": "keyword",
+          "value": "number",
+        },
+        "name": "integerType",
+      },
+      "schema": {
+        "type": "integer",
+      },
+      "type": "type",
+      "value": "type integerType = number",
+    }
+  `,
   );
-  expect(getSchemaAsTsString({}, { name: "unknownType" })).toMatchInlineSnapshot('"type unknownType = unknown"');
+  expect(getSchemaBox({}, { name: "unknownType" })).toMatchInlineSnapshot(`
+    {
+      "params": {
+        "def": {
+          "type": "keyword",
+          "value": "unknown",
+        },
+        "name": "unknownType",
+      },
+      "schema": {},
+      "type": "type",
+      "value": "type unknownType = unknown",
+    }
+  `);
 
-  expect(getSchemaAsTsString({ type: "array", items: { type: "string" } })).toMatchInlineSnapshot('"Array<string>"');
-  expect(getSchemaAsTsString({ type: "object" }, { name: "EmptyObject" })).toMatchInlineSnapshot(
-    '"export type EmptyObject = {};"',
+  expect(getSchemaBox({ type: "array", items: { type: "string" } })).toMatchInlineSnapshot(`
+    {
+      "params": {
+        "type": {
+          "type": "keyword",
+          "value": "string",
+        },
+      },
+      "schema": {
+        "items": {
+          "type": "string",
+        },
+        "type": "array",
+      },
+      "type": "array",
+      "value": "Array<string>",
+    }
+  `);
+  expect(getSchemaBox({ type: "object" }, { name: "EmptyObject" })).toMatchInlineSnapshot(
+    `
+    {
+      "params": {
+        "def": {
+          "type": "keyword",
+          "value": "unknown",
+        },
+        "name": "EmptyObject",
+      },
+      "schema": {
+        "type": "object",
+      },
+      "type": "type",
+      "value": "type EmptyObject = unknown",
+    }
+  `,
   );
-  expect(getSchemaAsTsString({ type: "object", properties: { str: { type: "string" } } }, { name: "BasicObject" }))
+  expect(getSchemaBox({ type: "object", properties: { str: { type: "string" } } }, { name: "BasicObject" }))
     .toMatchInlineSnapshot(`
-          "export type BasicObject = Partial<{
-              str: string;
-          }>;"
-        `);
+      {
+        "params": {
+          "def": {
+            "type": "ref",
+            "value": "Partial<{ str: string }>",
+          },
+          "name": "BasicObject",
+        },
+        "schema": {
+          "properties": {
+            "str": {
+              "type": "string",
+            },
+          },
+          "type": "object",
+        },
+        "type": "type",
+        "value": "type BasicObject = Partial<{ str: string }>",
+      }
+    `);
   expect(
-    getSchemaAsTsString(
+    getSchemaBox(
       { type: "object", properties: { str: { type: "string" }, nb: { type: "number" } } },
       { name: "BasicObject2" },
     ),
   ).toMatchInlineSnapshot(`
-      "export type BasicObject2 = Partial<{
-          str: string;
-          nb: number;
-      }>;"
-    `);
+    {
+      "params": {
+        "def": {
+          "type": "ref",
+          "value": "Partial<{ str: string, nb: number }>",
+        },
+        "name": "BasicObject2",
+      },
+      "schema": {
+        "properties": {
+          "nb": {
+            "type": "number",
+          },
+          "str": {
+            "type": "string",
+          },
+        },
+        "type": "object",
+      },
+      "type": "type",
+      "value": "type BasicObject2 = Partial<{ str: string, nb: number }>",
+    }
+  `);
 
   expect(
-    getSchemaAsTsString(
+    getSchemaBox(
       {
         type: "object",
         properties: { str: { type: "string" }, nb: { type: "number" } },
@@ -64,25 +280,68 @@ test("getSchemaAsTsString", () => {
       { name: "AllPropertiesRequired" },
     ),
   ).toMatchInlineSnapshot(`
-      "export type AllPropertiesRequired = {
-          str: string;
-          nb: number;
-      };"
-    `);
+    {
+      "params": {
+        "def": {
+          "type": "object",
+          "value": "{ str: string, nb: number }",
+        },
+        "name": "AllPropertiesRequired",
+      },
+      "schema": {
+        "properties": {
+          "nb": {
+            "type": "number",
+          },
+          "str": {
+            "type": "string",
+          },
+        },
+        "required": [
+          "str",
+          "nb",
+        ],
+        "type": "object",
+      },
+      "type": "type",
+      "value": "type AllPropertiesRequired = { str: string, nb: number }",
+    }
+  `);
   expect(
-    getSchemaAsTsString(
+    getSchemaBox(
       { type: "object", properties: { str: { type: "string" }, nb: { type: "number" } }, required: ["str"] },
       { name: "SomeOptionalProps" },
     ),
   ).toMatchInlineSnapshot(`
-      "export type SomeOptionalProps = {
-          str: string;
-          nb?: number | undefined;
-      };"
-    `);
+    {
+      "params": {
+        "def": {
+          "type": "object",
+          "value": "{ str: string, nb: number | undefined }",
+        },
+        "name": "SomeOptionalProps",
+      },
+      "schema": {
+        "properties": {
+          "nb": {
+            "type": "number",
+          },
+          "str": {
+            "type": "string",
+          },
+        },
+        "required": [
+          "str",
+        ],
+        "type": "object",
+      },
+      "type": "type",
+      "value": "type SomeOptionalProps = { str: string, nb: number | undefined }",
+    }
+  `);
 
   expect(
-    getSchemaAsTsString(
+    getSchemaBox(
       {
         type: "object",
         properties: {
@@ -99,30 +358,70 @@ test("getSchemaAsTsString", () => {
       { name: "ObjectWithNestedProp" },
     ),
   ).toMatchInlineSnapshot(`
-      "export type ObjectWithNestedProp = Partial<{
-          str: string;
-          nb: number;
-          nested: Partial<{
-              nested_prop: boolean;
-          }>;
-      }>;"
-    `);
+    {
+      "params": {
+        "def": {
+          "type": "ref",
+          "value": "Partial<{ str: string, nb: number, nested: Partial<{ nested_prop: boolean }> }>",
+        },
+        "name": "ObjectWithNestedProp",
+      },
+      "schema": {
+        "properties": {
+          "nb": {
+            "type": "number",
+          },
+          "nested": {
+            "properties": {
+              "nested_prop": {
+                "type": "boolean",
+              },
+            },
+            "type": "object",
+          },
+          "str": {
+            "type": "string",
+          },
+        },
+        "type": "object",
+      },
+      "type": "type",
+      "value": "type ObjectWithNestedProp = Partial<{ str: string, nb: number, nested: Partial<{ nested_prop: boolean }> }>",
+    }
+  `);
 
   expect(
-    getSchemaAsTsString(
+    getSchemaBox(
       { type: "object", properties: { str: { type: "string" } }, additionalProperties: { type: "number" } },
       { name: "ObjectWithAdditionalPropsNb" },
     ),
   ).toMatchInlineSnapshot(`
-      "export type ObjectWithAdditionalPropsNb = Partial<{
-          str: string;
-      } & {
-          [key: string]: number;
-      }>;"
-    `);
+    {
+      "params": {
+        "def": {
+          "type": "ref",
+          "value": "Partial<{ str: string } & { string: number }>",
+        },
+        "name": "ObjectWithAdditionalPropsNb",
+      },
+      "schema": {
+        "additionalProperties": {
+          "type": "number",
+        },
+        "properties": {
+          "str": {
+            "type": "string",
+          },
+        },
+        "type": "object",
+      },
+      "type": "type",
+      "value": "type ObjectWithAdditionalPropsNb = Partial<{ str: string } & { string: number }>",
+    }
+  `);
 
   expect(
-    getSchemaAsTsString(
+    getSchemaBox(
       {
         type: "object",
         properties: { str: { type: "string" } },
@@ -131,17 +430,37 @@ test("getSchemaAsTsString", () => {
       { name: "ObjectWithNestedRecordBoolean" },
     ),
   ).toMatchInlineSnapshot(`
-      "export type ObjectWithNestedRecordBoolean = Partial<{
-          str: string;
-      } & {
-          [key: string]: Partial<{
-              prop: boolean;
-          }>;
-      }>;"
-    `);
+    {
+      "params": {
+        "def": {
+          "type": "ref",
+          "value": "Partial<{ str: string } & { string: Partial<{ prop: boolean }> }>",
+        },
+        "name": "ObjectWithNestedRecordBoolean",
+      },
+      "schema": {
+        "additionalProperties": {
+          "properties": {
+            "prop": {
+              "type": "boolean",
+            },
+          },
+          "type": "object",
+        },
+        "properties": {
+          "str": {
+            "type": "string",
+          },
+        },
+        "type": "object",
+      },
+      "type": "type",
+      "value": "type ObjectWithNestedRecordBoolean = Partial<{ str: string } & { string: Partial<{ prop: boolean }> }>",
+    }
+  `);
 
   expect(
-    getSchemaAsTsString({
+    getSchemaBox({
       type: "array",
       items: {
         type: "object",
@@ -151,13 +470,31 @@ test("getSchemaAsTsString", () => {
       },
     }),
   ).toMatchInlineSnapshot(`
-      "Array<Partial<{
-          str: string;
-      }>>"
-    `);
+    {
+      "params": {
+        "type": {
+          "type": "ref",
+          "value": "Partial<{ str: string }>",
+        },
+      },
+      "schema": {
+        "items": {
+          "properties": {
+            "str": {
+              "type": "string",
+            },
+          },
+          "type": "object",
+        },
+        "type": "array",
+      },
+      "type": "array",
+      "value": "Array<Partial<{ str: string }>>",
+    }
+  `);
 
   expect(
-    getSchemaAsTsString({
+    getSchemaBox({
       type: "array",
       items: {
         type: "array",
@@ -166,10 +503,30 @@ test("getSchemaAsTsString", () => {
         },
       },
     }),
-  ).toMatchInlineSnapshot('"Array<Array<string>>"');
+  ).toMatchInlineSnapshot(`
+    {
+      "params": {
+        "type": {
+          "type": "array",
+          "value": "Array<string>",
+        },
+      },
+      "schema": {
+        "items": {
+          "items": {
+            "type": "string",
+          },
+          "type": "array",
+        },
+        "type": "array",
+      },
+      "type": "array",
+      "value": "Array<Array<string>>",
+    }
+  `);
 
   expect(
-    getSchemaAsTsString(
+    getSchemaBox(
       {
         type: "object",
         properties: {
@@ -179,20 +536,79 @@ test("getSchemaAsTsString", () => {
       { name: "ObjectWithEnum" },
     ),
   ).toMatchInlineSnapshot(`
-      "export type ObjectWithEnum = Partial<{
-          enumprop: "aaa" | "bbb" | "ccc";
-      }>;"
-    `);
+    {
+      "params": {
+        "def": {
+          "type": "ref",
+          "value": "Partial<{ enumprop: aaa | bbb | ccc }>",
+        },
+        "name": "ObjectWithEnum",
+      },
+      "schema": {
+        "properties": {
+          "enumprop": {
+            "enum": [
+              "aaa",
+              "bbb",
+              "ccc",
+            ],
+            "type": "string",
+          },
+        },
+        "type": "object",
+      },
+      "type": "type",
+      "value": "type ObjectWithEnum = Partial<{ enumprop: aaa | bbb | ccc }>",
+    }
+  `);
 
-  expect(getSchemaAsTsString({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
-    '""aaa" | "bbb" | "ccc""',
+  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
+    `
+    {
+      "params": {
+        "types": [
+          "aaa",
+          "bbb",
+          "ccc",
+        ],
+      },
+      "schema": {
+        "enum": [
+          "aaa",
+          "bbb",
+          "ccc",
+        ],
+        "type": "string",
+      },
+      "type": "union",
+      "value": "aaa | bbb | ccc",
+    }
+  `,
   );
-  expect(
-    getSchemaAsTsString({ type: "string", enum: ["aaa", "bbb", "ccc"] }, { name: "StringENum" }),
-  ).toMatchInlineSnapshot('"export type StringENum = "aaa" | "bbb" | "ccc";"');
+  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] }, { name: "StringENum" })).toMatchInlineSnapshot(`
+    {
+      "params": {
+        "def": {
+          "type": "union",
+          "value": "aaa | bbb | ccc",
+        },
+        "name": "StringENum",
+      },
+      "schema": {
+        "enum": [
+          "aaa",
+          "bbb",
+          "ccc",
+        ],
+        "type": "string",
+      },
+      "type": "type",
+      "value": "type StringENum = aaa | bbb | ccc",
+    }
+  `);
 
   expect(
-    getSchemaAsTsString(
+    getSchemaBox(
       {
         type: "object",
         properties: {
@@ -202,33 +618,274 @@ test("getSchemaAsTsString", () => {
       { name: "ObjectWithUnion" },
     ),
   ).toMatchInlineSnapshot(`
-      "export type ObjectWithUnion = Partial<{
-          union: string | number;
-      }>;"
+    {
+      "params": {
+        "def": {
+          "type": "ref",
+          "value": "Partial<{ union: string | number }>",
+        },
+        "name": "ObjectWithUnion",
+      },
+      "schema": {
+        "properties": {
+          "union": {
+            "oneOf": [
+              {
+                "type": "string",
+              },
+              {
+                "type": "number",
+              },
+            ],
+          },
+        },
+        "type": "object",
+      },
+      "type": "type",
+      "value": "type ObjectWithUnion = Partial<{ union: string | number }>",
+    }
+  `);
+  expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
+    `
+    {
+      "params": {
+        "types": [
+          {
+            "params": {
+              "name": "string",
+            },
+            "schema": {
+              "type": "string",
+            },
+            "type": "keyword",
+            "value": "string",
+          },
+          {
+            "params": {
+              "name": "number",
+            },
+            "schema": {
+              "type": "number",
+            },
+            "type": "keyword",
+            "value": "number",
+          },
+        ],
+      },
+      "schema": {
+        "oneOf": [
+          {
+            "type": "string",
+          },
+          {
+            "type": "number",
+          },
+        ],
+      },
+      "type": "union",
+      "value": "string | number",
+    }
+  `,
+  );
+  expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] }, { name: "StringOrNumber" }))
+    .toMatchInlineSnapshot(`
+      {
+        "params": {
+          "def": {
+            "type": "union",
+            "value": "string | number",
+          },
+          "name": "StringOrNumber",
+        },
+        "schema": {
+          "oneOf": [
+            {
+              "type": "string",
+            },
+            {
+              "type": "number",
+            },
+          ],
+        },
+        "type": "type",
+        "value": "type StringOrNumber = string | number",
+      }
     `);
-  expect(getSchemaAsTsString({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    '"string | number"',
-  );
-  expect(
-    getSchemaAsTsString({ oneOf: [{ type: "string" }, { type: "number" }] }, { name: "StringOrNumber" }),
-  ).toMatchInlineSnapshot('"export type StringOrNumber = string | number;"');
 
-  expect(getSchemaAsTsString({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    '"string & number"',
+  expect(getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
+    `
+    {
+      "params": {
+        "types": [
+          {
+            "params": {
+              "name": "string",
+            },
+            "schema": {
+              "type": "string",
+            },
+            "type": "keyword",
+            "value": "string",
+          },
+          {
+            "params": {
+              "name": "number",
+            },
+            "schema": {
+              "type": "number",
+            },
+            "type": "keyword",
+            "value": "number",
+          },
+        ],
+      },
+      "schema": {
+        "allOf": [
+          {
+            "type": "string",
+          },
+          {
+            "type": "number",
+          },
+        ],
+      },
+      "type": "intersection",
+      "value": "string & number",
+    }
+  `,
   );
-  expect(
-    getSchemaAsTsString({ allOf: [{ type: "string" }, { type: "number" }] }, { name: "StringAndNumber" }),
-  ).toMatchInlineSnapshot('"export type StringAndNumber = string & number;"');
+  expect(getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] }, { name: "StringAndNumber" }))
+    .toMatchInlineSnapshot(`
+      {
+        "params": {
+          "def": {
+            "type": "intersection",
+            "value": "string & number",
+          },
+          "name": "StringAndNumber",
+        },
+        "schema": {
+          "allOf": [
+            {
+              "type": "string",
+            },
+            {
+              "type": "number",
+            },
+          ],
+        },
+        "type": "type",
+        "value": "type StringAndNumber = string & number",
+      }
+    `);
 
-  expect(getSchemaAsTsString({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    '"(string | number) | Array<string | number>"',
+  expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
+    `
+    {
+      "params": {
+        "types": [
+          {
+            "params": {
+              "types": [
+                {
+                  "params": {
+                    "name": "string",
+                  },
+                  "schema": {
+                    "type": "string",
+                  },
+                  "type": "keyword",
+                  "value": "string",
+                },
+                {
+                  "params": {
+                    "name": "number",
+                  },
+                  "schema": {
+                    "type": "number",
+                  },
+                  "type": "keyword",
+                  "value": "number",
+                },
+              ],
+            },
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                },
+                {
+                  "type": "number",
+                },
+              ],
+            },
+            "type": "union",
+            "value": "string | number",
+          },
+          {
+            "params": {
+              "type": {
+                "type": "union",
+                "value": "string | number",
+              },
+            },
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                },
+                {
+                  "type": "number",
+                },
+              ],
+            },
+            "type": "array",
+            "value": "Array<string | number>",
+          },
+        ],
+      },
+      "schema": {
+        "anyOf": [
+          {
+            "type": "string",
+          },
+          {
+            "type": "number",
+          },
+        ],
+      },
+      "type": "union",
+      "value": "string | number | Array<string | number>",
+    }
+  `,
   );
-  expect(
-    getSchemaAsTsString({ anyOf: [{ type: "string" }, { type: "number" }] }, { name: "StringAndNumberMaybeMultiple" }),
-  ).toMatchInlineSnapshot('"export type StringAndNumberMaybeMultiple = (string | number) | Array<string | number>;"');
+  expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] }, { name: "StringAndNumberMaybeMultiple" }))
+    .toMatchInlineSnapshot(`
+      {
+        "params": {
+          "def": {
+            "type": "union",
+            "value": "string | number | Array<string | number>",
+          },
+          "name": "StringAndNumberMaybeMultiple",
+        },
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string",
+            },
+            {
+              "type": "number",
+            },
+          ],
+        },
+        "type": "type",
+        "value": "type StringAndNumberMaybeMultiple = string | number | Array<string | number>",
+      }
+    `);
 
   expect(
-    getSchemaAsTsString(
+    getSchemaBox(
       {
         type: "object",
         properties: {
@@ -238,13 +895,36 @@ test("getSchemaAsTsString", () => {
       { name: "ObjectWithArrayUnion" },
     ),
   ).toMatchInlineSnapshot(`
-      "export type ObjectWithArrayUnion = Partial<{
-          unionOrArrayOfUnion: (string | number) | Array<string | number>;
-      }>;"
-    `);
+    {
+      "params": {
+        "def": {
+          "type": "ref",
+          "value": "Partial<{ unionOrArrayOfUnion: string | number | Array<string | number> }>",
+        },
+        "name": "ObjectWithArrayUnion",
+      },
+      "schema": {
+        "properties": {
+          "unionOrArrayOfUnion": {
+            "anyOf": [
+              {
+                "type": "string",
+              },
+              {
+                "type": "number",
+              },
+            ],
+          },
+        },
+        "type": "object",
+      },
+      "type": "type",
+      "value": "type ObjectWithArrayUnion = Partial<{ unionOrArrayOfUnion: string | number | Array<string | number> }>",
+    }
+  `);
 
   expect(
-    getSchemaAsTsString(
+    getSchemaBox(
       {
         type: "object",
         properties: {
@@ -254,18 +934,81 @@ test("getSchemaAsTsString", () => {
       { name: "ObjectWithIntersection" },
     ),
   ).toMatchInlineSnapshot(`
-      "export type ObjectWithIntersection = Partial<{
-          intersection: string & number;
-      }>;"
-    `);
+    {
+      "params": {
+        "def": {
+          "type": "ref",
+          "value": "Partial<{ intersection: string & number }>",
+        },
+        "name": "ObjectWithIntersection",
+      },
+      "schema": {
+        "properties": {
+          "intersection": {
+            "allOf": [
+              {
+                "type": "string",
+              },
+              {
+                "type": "number",
+              },
+            ],
+          },
+        },
+        "type": "object",
+      },
+      "type": "type",
+      "value": "type ObjectWithIntersection = Partial<{ intersection: string & number }>",
+    }
+  `);
 
-  expect(getSchemaAsTsString({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
-    '""aaa" | "bbb" | "ccc""',
+  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
+    `
+    {
+      "params": {
+        "types": [
+          "aaa",
+          "bbb",
+          "ccc",
+        ],
+      },
+      "schema": {
+        "enum": [
+          "aaa",
+          "bbb",
+          "ccc",
+        ],
+        "type": "string",
+      },
+      "type": "union",
+      "value": "aaa | bbb | ccc",
+    }
+  `,
   );
-  expect(getSchemaAsTsString({ type: "number", enum: [1, 2, 3] })).toMatchInlineSnapshot('"1 | 2 | 3"');
+  expect(getSchemaBox({ type: "number", enum: [1, 2, 3] })).toMatchInlineSnapshot(`
+    {
+      "params": {
+        "types": [
+          1,
+          2,
+          3,
+        ],
+      },
+      "schema": {
+        "enum": [
+          1,
+          2,
+          3,
+        ],
+        "type": "number",
+      },
+      "type": "union",
+      "value": " |  | ",
+    }
+  `);
 });
 
-describe("getSchemaAsTsString with context", () => {
+describe("getSchemaBox with context", () => {
   test("with ref", () => {
     const schemas = {
       Root: {
@@ -291,7 +1034,33 @@ describe("getSchemaAsTsString with context", () => {
     };
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
     expect(openApiSchemaToTs({ schema: schemas["Root"]!, meta: { name: "Root" }, ctx })).toMatchInlineSnapshot(
-      '"type Root = Partial<{ str: string, nb: number, nested: Nested }>"',
+      `
+      {
+        "params": {
+          "def": {
+            "type": "ref",
+            "value": "Partial<{ str: string, nb: number, nested: Nested }>",
+          },
+          "name": "Root",
+        },
+        "schema": {
+          "properties": {
+            "nb": {
+              "type": "number",
+            },
+            "nested": {
+              "$ref": "#/components/schemas/Nested",
+            },
+            "str": {
+              "type": "string",
+            },
+          },
+          "type": "object",
+        },
+        "type": "type",
+        "value": "type Root = Partial<{ str: string, nb: number, nested: Nested }>",
+      }
+    `,
     );
   });
 
@@ -329,7 +1098,33 @@ describe("getSchemaAsTsString with context", () => {
     };
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
     expect(openApiSchemaToTs({ schema: schemas["Root2"]!, meta: { name: "Root2" }, ctx })).toMatchInlineSnapshot(
-      '"type Root2 = Partial<{ str: string, nb: number, nested: Nested2 }>"',
+      `
+      {
+        "params": {
+          "def": {
+            "type": "ref",
+            "value": "Partial<{ str: string, nb: number, nested: Nested2 }>",
+          },
+          "name": "Root2",
+        },
+        "schema": {
+          "properties": {
+            "nb": {
+              "type": "number",
+            },
+            "nested": {
+              "$ref": "#/components/schemas/Nested2",
+            },
+            "str": {
+              "type": "string",
+            },
+          },
+          "type": "object",
+        },
+        "type": "type",
+        "value": "type Root2 = Partial<{ str: string, nb: number, nested: Nested2 }>",
+      }
+    `,
     );
   });
 
@@ -367,7 +1162,39 @@ describe("getSchemaAsTsString with context", () => {
         ctx,
       }),
     ).toMatchInlineSnapshot(
-      '"type Root3 = Partial<{ str: string, nb: number, nested: Nested3, arrayOfNested: Array<Nested3> }>"',
+      `
+      {
+        "params": {
+          "def": {
+            "type": "ref",
+            "value": "Partial<{ str: string, nb: number, nested: Nested3, arrayOfNested: Array<Nested3> }>",
+          },
+          "name": "Root3",
+        },
+        "schema": {
+          "properties": {
+            "arrayOfNested": {
+              "items": {
+                "$ref": "#/components/schemas/Nested3",
+              },
+              "type": "array",
+            },
+            "nb": {
+              "type": "number",
+            },
+            "nested": {
+              "$ref": "#/components/schemas/Nested3",
+            },
+            "str": {
+              "type": "string",
+            },
+          },
+          "type": "object",
+        },
+        "type": "type",
+        "value": "type Root3 = Partial<{ str: string, nb: number, nested: Nested3, arrayOfNested: Array<Nested3> }>",
+      }
+    `,
     );
   });
 
@@ -405,7 +1232,42 @@ describe("getSchemaAsTsString with context", () => {
     });
 
     expect(result).toMatchInlineSnapshot(
-      '"type Root4 = Partial<{ str: string, nb: number, self: Root4, nested: Nested4, arrayOfSelf: Array<Root4> }>"',
+      `
+      {
+        "params": {
+          "def": {
+            "type": "ref",
+            "value": "Partial<{ str: string, nb: number, self: Root4, nested: Nested4, arrayOfSelf: Array<Root4> }>",
+          },
+          "name": "Root4",
+        },
+        "schema": {
+          "properties": {
+            "arrayOfSelf": {
+              "items": {
+                "$ref": "#/components/schemas/Root4",
+              },
+              "type": "array",
+            },
+            "nb": {
+              "type": "number",
+            },
+            "nested": {
+              "$ref": "#/components/schemas/Nested4",
+            },
+            "self": {
+              "$ref": "#/components/schemas/Root4",
+            },
+            "str": {
+              "type": "string",
+            },
+          },
+          "type": "object",
+        },
+        "type": "type",
+        "value": "type Root4 = Partial<{ str: string, nb: number, self: Root4, nested: Nested4, arrayOfSelf: Array<Root4> }>",
+      }
+    `,
     );
   });
 
@@ -447,7 +1309,30 @@ describe("getSchemaAsTsString with context", () => {
       ctx,
     });
 
-    expect(result).toMatchInlineSnapshot('"type Root = Partial<{ recursive: User, basic: number }>"');
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "params": {
+          "def": {
+            "type": "ref",
+            "value": "Partial<{ recursive: User, basic: number }>",
+          },
+          "name": "Root",
+        },
+        "schema": {
+          "properties": {
+            "basic": {
+              "type": "number",
+            },
+            "recursive": {
+              "$ref": "#/components/schemas/User",
+            },
+          },
+          "type": "object",
+        },
+        "type": "type",
+        "value": "type Root = Partial<{ recursive: User, basic: number }>",
+      }
+    `);
   });
 
   test("anyOf with refs", () => {
@@ -492,7 +1377,50 @@ describe("getSchemaAsTsString with context", () => {
     });
 
     expect(result).toMatchInlineSnapshot(
-      '"type Root = Partial<{ user: User | Member, users: Array<User | Member | Array<User | Member>>, basic: number }>"',
+      `
+      {
+        "params": {
+          "def": {
+            "type": "ref",
+            "value": "Partial<{ user: User | Member, users: Array<User | Member | Array<User | Member>>, basic: number }>",
+          },
+          "name": "Root",
+        },
+        "schema": {
+          "properties": {
+            "basic": {
+              "type": "number",
+            },
+            "user": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/User",
+                },
+                {
+                  "$ref": "#/components/schemas/Member",
+                },
+              ],
+            },
+            "users": {
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/User",
+                  },
+                  {
+                    "$ref": "#/components/schemas/Member",
+                  },
+                ],
+              },
+              "type": "array",
+            },
+          },
+          "type": "object",
+        },
+        "type": "type",
+        "value": "type Root = Partial<{ user: User | Member, users: Array<User | Member | Array<User | Member>>, basic: number }>",
+      }
+    `,
     );
   });
 });
