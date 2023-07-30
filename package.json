@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.4.2",
+    "openapi3-ts": "^4.1.2",
     "tsup": "^7.1.0",
     "typescript": "^5.1.6",
     "vite-node": "^0.33.0",
