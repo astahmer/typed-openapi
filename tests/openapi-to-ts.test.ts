@@ -4,7 +4,7 @@ import type { SchemaObject, SchemasObject } from "openapi3-ts/oas31";
 import { describe, expect, test } from "vitest";
 import { asComponentSchema } from "../src/utils";
 import { makeSchemaResolver } from "../src/schema-resolver";
-import { TsConversionContext } from "../src/types";
+import { OpenapiSchemaConvertContext } from "../src/types";
 
 const getSchemaBox = (schema: SchemaObject, meta?: { name: string }) => openApiSchemaToTs({ schema, meta });
 
@@ -1028,7 +1028,7 @@ describe("getSchemaBox with context", () => {
       },
     } as SchemasObject;
 
-    const ctx: TsConversionContext = {
+    const ctx: OpenapiSchemaConvertContext = {
       typeByRef: {},
       visitedsRefs: {},
       resolver: makeSchemaResolver({ components: { schemas } } as any),
@@ -1092,7 +1092,7 @@ describe("getSchemaBox with context", () => {
       },
     } as SchemasObject;
 
-    const ctx: TsConversionContext = {
+    const ctx: OpenapiSchemaConvertContext = {
       typeByRef: {},
       visitedsRefs: {},
       resolver: makeSchemaResolver({ components: { schemas } } as any),
@@ -1149,7 +1149,7 @@ describe("getSchemaBox with context", () => {
       },
     } as SchemasObject;
 
-    const ctx: TsConversionContext = {
+    const ctx: OpenapiSchemaConvertContext = {
       typeByRef: {},
       visitedsRefs: {},
       resolver: makeSchemaResolver({ components: { schemas } } as any),
@@ -1220,7 +1220,7 @@ describe("getSchemaBox with context", () => {
       },
     } as SchemasObject;
 
-    const ctx: TsConversionContext = {
+    const ctx: OpenapiSchemaConvertContext = {
       typeByRef: {},
       visitedsRefs: {},
       resolver: makeSchemaResolver({ components: { schemas } } as any),
@@ -1298,7 +1298,7 @@ describe("getSchemaBox with context", () => {
       },
     } as SchemasObject;
 
-    const ctx: TsConversionContext = {
+    const ctx: OpenapiSchemaConvertContext = {
       typeByRef: {},
       visitedsRefs: {},
       resolver: makeSchemaResolver({ components: { schemas } } as any),
@@ -1365,7 +1365,7 @@ describe("getSchemaBox with context", () => {
       },
     } as SchemasObject;
 
-    const ctx: TsConversionContext = {
+    const ctx: OpenapiSchemaConvertContext = {
       typeByRef: {},
       visitedsRefs: {},
       resolver: makeSchemaResolver({ components: { schemas } } as any),

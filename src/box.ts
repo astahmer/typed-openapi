@@ -1,5 +1,5 @@
 import type { SchemaObject, ReferenceObject } from "openapi3-ts/oas31";
-import { format } from "pastable";
+import { format } from "pastable/server";
 import { AnyBox } from "./types";
 
 export class Box<T extends AnyBox = AnyBox> {

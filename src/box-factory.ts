@@ -1,5 +1,5 @@
 import type { SchemaObject, ReferenceObject } from "openapi3-ts/oas31";
-import { format } from "pastable";
+import { format } from "pastable/server";
 import { Box } from "./box";
 import {
   AnyBox,
@@ -11,7 +11,7 @@ import {
   BoxRef,
   BoxTypeNode,
   BoxUnion,
-  TsConversionContext,
+  OpenapiSchemaConvertContext,
 } from "./types";
 
 const unwrap = (param: StringOrBox) => (typeof param === "string" ? param : param.value);
@@ -88,7 +88,7 @@ type BoxFactory<T> = {
   never: () => Box<BoxKeyword<T>>;
 };
 
-export const createFactory = (schema: SchemaObject | ReferenceObject, ctx?: TsConversionContext) => {
+export const createFactory = (schema: SchemaObject | ReferenceObject, ctx?: OpenapiSchemaConvertContext) => {
   return new Proxy(box, {
     get(target, p) {
       if (!Boolean(p in target)) {

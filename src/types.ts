@@ -77,13 +77,13 @@ export type AnyBox =
   | BoxKeyword
   | BoxObject;
 
-export type TsConversionArgs = {
+export type OpenapiSchemaConvertArgs = {
   schema: SchemaObject | ReferenceObject;
-  ctx?: TsConversionContext | undefined;
+  ctx?: OpenapiSchemaConvertContext | undefined;
   meta?: { name?: string; $ref?: string; isInline?: boolean } | undefined;
 };
 
-export type TsConversionContext = {
+export type OpenapiSchemaConvertContext = {
   typeByRef: Record<string, string>;
   resolver: DocumentResolver;
   rootRef?: string;

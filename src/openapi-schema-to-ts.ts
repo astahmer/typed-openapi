@@ -1,11 +1,11 @@
 import { isPrimitiveType } from "./asserts";
 import { createFactory } from "./box-factory";
 import { isReferenceObject } from "./is-reference-object";
-import { AnyBox, TsConversionArgs } from "./types";
+import { AnyBox, OpenapiSchemaConvertArgs } from "./types";
 import { wrapWithQuotesIfNeeded } from "./utils";
 
-export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: TsConversionArgs): AnyBox => {
-  const meta = {} as TsConversionArgs["meta"];
+export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiSchemaConvertArgs): AnyBox => {
+  const meta = {} as OpenapiSchemaConvertArgs["meta"];
   const isInline = !inheritedMeta?.name;
 
   if (ctx?.visitedsRefs && inheritedMeta?.$ref) {
