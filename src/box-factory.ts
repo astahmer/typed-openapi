@@ -1,112 +1,52 @@
-import type { SchemaObject, ReferenceObject } from "openapi3-ts/oas31";
-import { format } from "pastable/server";
+import type { ReferenceObject, SchemaObject } from "openapi3-ts/oas31";
 import { Box } from "./box";
-import {
-  AnyBox,
-  BoxArray,
-  BoxIntersection,
-  BoxKeyword,
-  BoxObject,
-  BoxOptional,
-  BoxRef,
-  BoxTypeNode,
-  BoxUnion,
-  OpenapiSchemaConvertContext,
-} from "./types";
+import { AnyBox, BoxFactory, OpenapiSchemaConvertContext, StringOrBox } from "./types";
 
-const unwrap = (param: StringOrBox) => (typeof param === "string" ? param : param.value);
+export const unwrap = (param: StringOrBox) => (typeof param === "string" ? param : param.value);
+export const createFactory = (f: OpenapiSchemaConvertContext["factory"]) => f;
 
-const factory = {
-  type: (name: string, def: string) => `type ${name} = ${def}`,
-  union: (types: string[]) => types.join(" | "),
-  intersection: (types: string[]) => types.join(" & "),
-  array: (type: string) => `Array<${type}>`,
-  optional: (type: string) => `${type} | undefined`,
-  reference: (name: string, typeArgs?: string[]) => `${name}${typeArgs ? `<${typeArgs.join(", ")}>` : ""}`,
-  string: () => "string" as const,
-  number: () => "number" as const,
-  boolean: () => "boolean" as const,
-  unknown: () => "unknown" as const,
-  any: () => "any" as const,
-  never: () => "never" as const,
-  object: (props: Record<string, string>) => {
-    const propsString = Object.entries(props)
-      .map(([prop, type]) => `${prop}: ${type}`)
-      .join(", ");
+/**
+ * Create a box-factory and automatically add the input schema
+ */
+export const createBoxFactory = (schema: SchemaObject | ReferenceObject, ctx: OpenapiSchemaConvertContext) => {
+  const f = typeof ctx.factory === "function" ? ctx.factory(schema, ctx) : ctx.factory;
+  const callback = <T extends AnyBox>(box: Box<T>) => {
+    box.setSchema(schema);
 
-    return `{ ${propsString} }`;
-  },
-  // indexSignature: (keyType: PrimitiveType, valueType: string) => `[key: ${keyType}]: ${valueType}`,
-};
+    if (f.callback) {
+      box = f.callback(box) as Box<T>;
+    }
 
-const box: BoxFactory<{}> = {
-  type: (name, def) => new Box({ type: "type", params: { name, def }, value: factory.type(name, unwrap(def)) }),
-  union: (types) => new Box({ type: "union", params: { types }, value: factory.union(types.map(unwrap)) }),
-  intersection: (types) =>
-    new Box({
-      type: "intersection",
-      params: { types },
-      value: factory.intersection(types.map(unwrap)),
-    }),
-  array: (type) => new Box({ type: "array", params: { type }, value: factory.array(unwrap(type)) }),
-  optional: (type) => new Box({ type: "optional", params: { type }, value: factory.optional(unwrap(type)) }),
-  reference: (name, generics) =>
-    new Box({
-      type: "ref",
-      params: generics ? { name, generics } : { name },
-      value: factory.reference(name, generics?.map(unwrap)),
-    }),
-  string: () => new Box({ type: "keyword", params: { name: "string" }, value: factory.string() }),
-  number: () => new Box({ type: "keyword", params: { name: "number" }, value: factory.number() }),
-  boolean: () => new Box({ type: "keyword", params: { name: "boolean" }, value: factory.boolean() }),
-  unknown: () => new Box({ type: "keyword", params: { name: "unknown" }, value: factory.unknown() }),
-  any: () => new Box({ type: "keyword", params: { name: "any" }, value: factory.any() }),
-  never: () => new Box({ type: "keyword", params: { name: "never" }, value: factory.never() }),
-  object: (props) =>
-    new Box({
-      type: "object",
-      params: { props },
-      value: factory.object(format(props, unwrap)),
-    }),
-};
+    if (ctx?.onBox) {
+      box = ctx.onBox?.(box) as Box<T>;
+    }
 
-type StringOrBox = string | AnyBox;
+    return box;
+  };
 
-type BoxFactory<T> = {
-  type: (name: string, def: StringOrBox) => Box<BoxTypeNode<T>>;
-  union: (types: Array<StringOrBox>) => Box<BoxUnion<T>>;
-  intersection: (types: Array<StringOrBox>) => Box<BoxIntersection<T>>;
-  array: (type: StringOrBox) => Box<BoxArray<T>>;
-  object: (props: Record<string, StringOrBox>) => Box<BoxObject<T>>;
-  optional: (type: StringOrBox) => Box<BoxOptional<T>>;
-  reference: (name: string, generics?: Array<StringOrBox> | undefined) => Box<BoxRef<T>>;
-  string: () => Box<BoxKeyword<T>>;
-  number: () => Box<BoxKeyword<T>>;
-  boolean: () => Box<BoxKeyword<T>>;
-  unknown: () => Box<BoxKeyword<T>>;
-  any: () => Box<BoxKeyword<T>>;
-  never: () => Box<BoxKeyword<T>>;
-};
+  const box: BoxFactory<{}> = {
+    type: (name, def) => callback(new Box({ type: "type", params: { name, def }, value: f.type(name, def) })),
+    union: (types) => callback(new Box({ type: "union", params: { types }, value: f.union(types) })),
+    intersection: (types) =>
+      callback(new Box({ type: "intersection", params: { types }, value: f.intersection(types) })),
+    array: (type) => callback(new Box({ type: "array", params: { type }, value: f.array(type) })),
+    optional: (type) => callback(new Box({ type: "optional", params: { type }, value: f.optional(type) })),
+    reference: (name, generics) =>
+      callback(
+        new Box({
+          type: "ref",
+          params: generics ? { name, generics } : { name },
+          value: f.reference(name, generics),
+        }),
+      ),
+    string: () => callback(new Box({ type: "keyword", params: { name: "string" }, value: f.string() })),
+    number: () => callback(new Box({ type: "keyword", params: { name: "number" }, value: f.number() })),
+    boolean: () => callback(new Box({ type: "keyword", params: { name: "boolean" }, value: f.boolean() })),
+    unknown: () => callback(new Box({ type: "keyword", params: { name: "unknown" }, value: f.unknown() })),
+    any: () => callback(new Box({ type: "keyword", params: { name: "any" }, value: f.any() })),
+    never: () => callback(new Box({ type: "keyword", params: { name: "never" }, value: f.never() })),
+    object: (props) => callback(new Box({ type: "object", params: { props }, value: f.object(props) })),
+  };
 
-export const createFactory = (schema: SchemaObject | ReferenceObject, ctx?: OpenapiSchemaConvertContext) => {
-  return new Proxy(box, {
-    get(target, p) {
-      if (!Boolean(p in target)) {
-        return;
-      }
-
-      return new Proxy((box as any)[p], {
-        apply(target, thisArg, argArray) {
-          let result = target.bind(thisArg)(...argArray) as Box;
-          result.setSchema(schema);
-
-          if (ctx?.onBox) {
-            result = ctx.onBox(result);
-          }
-
-          return result;
-        },
-      });
-    },
-  });
+  return box;
 };

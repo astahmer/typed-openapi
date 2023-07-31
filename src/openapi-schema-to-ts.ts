@@ -1,5 +1,5 @@
 import { isPrimitiveType } from "./asserts";
-import { createFactory } from "./box-factory";
+import { createBoxFactory } from "./box-factory";
 import { isReferenceObject } from "./is-reference-object";
 import { AnyBox, OpenapiSchemaConvertArgs } from "./types";
 import { wrapWithQuotesIfNeeded } from "./utils";
@@ -8,9 +8,9 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
   const meta = {} as OpenapiSchemaConvertArgs["meta"];
   const isInline = !inheritedMeta?.name;
 
-  if (ctx?.visitedsRefs && inheritedMeta?.$ref) {
+  if (ctx?.visiteds && inheritedMeta?.$ref) {
     ctx.rootRef = inheritedMeta.$ref;
-    ctx.visitedsRefs[inheritedMeta.$ref] = true;
+    ctx.visiteds.add(inheritedMeta.$ref);
   }
 
   if (!schema) {
@@ -18,14 +18,14 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
   }
 
   let canBeWrapped = !isInline;
-  const t = createFactory(schema);
+  const t = createBoxFactory(schema, ctx);
   const getTs = (): AnyBox => {
     if (isReferenceObject(schema)) {
-      if (!ctx?.visitedsRefs || !ctx?.resolver) throw new Error("Context is required for OpenAPI $ref");
+      if (!ctx?.visiteds || !ctx?.resolver) throw new Error("Context is required for OpenAPI $ref");
 
-      let result = ctx.typeByRef[schema.$ref];
+      let result = ctx.resultByRef[schema.$ref];
       const schemaName = ctx.resolver.resolveRef(schema.$ref)?.normalized;
-      if (ctx.visitedsRefs[schema.$ref]) {
+      if (ctx.visiteds.has(schema.$ref)) {
         return t.reference(schemaName);
       }
 
@@ -35,7 +35,7 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
           throw new Error(`Schema ${schema.$ref} not found`);
         }
 
-        ctx.visitedsRefs[schema.$ref] = true;
+        ctx.visiteds.add(schema.$ref);
       }
 
       return t.reference(schemaName);

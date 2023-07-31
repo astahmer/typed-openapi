@@ -58,7 +58,7 @@ export type BoxRef<T = {}> = T & {
 export type BoxKeyword<T = {}> = T & {
   type: "keyword";
   params: { name: string };
-  value: PrimitiveType | "unknown" | "any" | "never";
+  value: string;
 };
 
 export type BoxObject<T = {}> = T & {
@@ -79,14 +79,54 @@ export type AnyBox =
 
 export type OpenapiSchemaConvertArgs = {
   schema: SchemaObject | ReferenceObject;
-  ctx?: OpenapiSchemaConvertContext | undefined;
+  ctx: OpenapiSchemaConvertContext;
   meta?: { name?: string; $ref?: string; isInline?: boolean } | undefined;
 };
 
+export type FactoryCreator = (
+  schema: SchemaObject | ReferenceObject,
+  ctx: OpenapiSchemaConvertContext,
+) => GenericFactory;
 export type OpenapiSchemaConvertContext = {
-  typeByRef: Record<string, string>;
+  factory: FactoryCreator | GenericFactory;
+  resultByRef: Record<string, string>; // TODO Map
   resolver: DocumentResolver;
   rootRef?: string;
-  visitedsRefs?: Record<string, boolean>;
+  visiteds?: Set<string>;
   onBox?: (box: Box<AnyBox>) => Box<AnyBox>;
+};
+
+export type StringOrBox = string | AnyBox;
+
+export type BoxFactory<T> = {
+  type: (name: string, def: StringOrBox) => Box<BoxTypeNode<T>>;
+  union: (types: Array<StringOrBox>) => Box<BoxUnion<T>>;
+  intersection: (types: Array<StringOrBox>) => Box<BoxIntersection<T>>;
+  array: (type: StringOrBox) => Box<BoxArray<T>>;
+  object: (props: Record<string, StringOrBox>) => Box<BoxObject<T>>;
+  optional: (type: StringOrBox) => Box<BoxOptional<T>>;
+  reference: (name: string, generics?: Array<StringOrBox> | undefined) => Box<BoxRef<T>>;
+  string: () => Box<BoxKeyword<T>>;
+  number: () => Box<BoxKeyword<T>>;
+  boolean: () => Box<BoxKeyword<T>>;
+  unknown: () => Box<BoxKeyword<T>>;
+  any: () => Box<BoxKeyword<T>>;
+  never: () => Box<BoxKeyword<T>>;
+};
+
+export type GenericFactory = {
+  callback?: OpenapiSchemaConvertContext["onBox"];
+  type: (name: string, def: StringOrBox) => string;
+  union: (types: Array<StringOrBox>) => string;
+  intersection: (types: Array<StringOrBox>) => string;
+  array: (type: StringOrBox) => string;
+  object: (props: Record<string, StringOrBox>) => string;
+  optional: (type: StringOrBox) => string;
+  reference: (name: string, generics?: Array<StringOrBox> | undefined) => string;
+  string: () => string;
+  number: () => string;
+  boolean: () => string;
+  unknown: () => string;
+  any: () => string;
+  never: () => string;
 };

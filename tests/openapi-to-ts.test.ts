@@ -5,8 +5,17 @@ import { describe, expect, test } from "vitest";
 import { asComponentSchema } from "../src/utils";
 import { makeSchemaResolver } from "../src/schema-resolver";
 import { OpenapiSchemaConvertContext } from "../src/types";
+import { tsFactory } from "../src/ts-factory";
 
-const getSchemaBox = (schema: SchemaObject, meta?: { name: string }) => openApiSchemaToTs({ schema, meta });
+const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
+  factory: tsFactory,
+  resultByRef: {},
+  visiteds: new Set(),
+  resolver: makeSchemaResolver({ components: { schemas } } as any),
+});
+
+const getSchemaBox = (schema: SchemaObject, meta?: { name: string }) =>
+  openApiSchemaToTs({ schema, meta, ctx: makeCtx({ _Test: schema }) });
 
 test("getSchemaBox", () => {
   expect(getSchemaBox({ type: "null" })).toMatchInlineSnapshot(`
@@ -1026,13 +1035,9 @@ describe("getSchemaBox with context", () => {
           nested_prop: { type: "boolean" },
         },
       },
-    } as SchemasObject;
+    } satisfies SchemasObject;
 
-    const ctx: OpenapiSchemaConvertContext = {
-      typeByRef: {},
-      visitedsRefs: {},
-      resolver: makeSchemaResolver({ components: { schemas } } as any),
-    };
+    const ctx = makeCtx(schemas);
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
     expect(openApiSchemaToTs({ schema: schemas["Root"]!, meta: { name: "Root" }, ctx })).toMatchInlineSnapshot(
       `
@@ -1090,13 +1095,9 @@ describe("getSchemaBox with context", () => {
         type: "string",
         enum: ["aaa", "bbb", "ccc"],
       },
-    } as SchemasObject;
+    } satisfies SchemasObject;
 
-    const ctx: OpenapiSchemaConvertContext = {
-      typeByRef: {},
-      visitedsRefs: {},
-      resolver: makeSchemaResolver({ components: { schemas } } as any),
-    };
+    const ctx = makeCtx(schemas);
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
     expect(openApiSchemaToTs({ schema: schemas["Root2"]!, meta: { name: "Root2" }, ctx })).toMatchInlineSnapshot(
       `
@@ -1147,13 +1148,9 @@ describe("getSchemaBox with context", () => {
           backToRoot: { $ref: "#/components/schemas/Root3" },
         },
       },
-    } as SchemasObject;
+    } satisfies SchemasObject;
 
-    const ctx: OpenapiSchemaConvertContext = {
-      typeByRef: {},
-      visitedsRefs: {},
-      resolver: makeSchemaResolver({ components: { schemas } } as any),
-    };
+    const ctx = makeCtx(schemas);
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
 
     expect(
@@ -1218,13 +1215,9 @@ describe("getSchemaBox with context", () => {
           backToRoot: { $ref: "#/components/schemas/Root4" },
         },
       },
-    } as SchemasObject;
+    } satisfies SchemasObject;
 
-    const ctx: OpenapiSchemaConvertContext = {
-      typeByRef: {},
-      visitedsRefs: {},
-      resolver: makeSchemaResolver({ components: { schemas } } as any),
-    };
+    const ctx = makeCtx(schemas);
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
     const result = openApiSchemaToTs({
       schema: schemas["Root4"]!,
@@ -1296,13 +1289,9 @@ describe("getSchemaBox with context", () => {
           basic: { type: "number" },
         },
       },
-    } as SchemasObject;
+    } satisfies SchemasObject;
 
-    const ctx: OpenapiSchemaConvertContext = {
-      typeByRef: {},
-      visitedsRefs: {},
-      resolver: makeSchemaResolver({ components: { schemas } } as any),
-    };
+    const ctx = makeCtx(schemas);
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
     const result = openApiSchemaToTs({
       schema: schemas["Root"]!,
@@ -1363,13 +1352,9 @@ describe("getSchemaBox with context", () => {
           basic: { type: "number" },
         },
       },
-    } as SchemasObject;
+    } satisfies SchemasObject;
 
-    const ctx: OpenapiSchemaConvertContext = {
-      typeByRef: {},
-      visitedsRefs: {},
-      resolver: makeSchemaResolver({ components: { schemas } } as any),
-    };
+    const ctx = makeCtx(schemas);
     Object.keys(schemas).forEach((key) => ctx.resolver.getSchemaByRef(asComponentSchema(key)));
     const result = openApiSchemaToTs({
       schema: schemas["Root"]!,
