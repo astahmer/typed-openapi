@@ -13,12 +13,6 @@ export type WithSchema = {
   schema: SchemaObject | ReferenceObject | undefined;
 };
 
-export type BoxTypeNode = WithSchema & {
-  type: "type";
-  params: { name: string; def: BoxParams };
-  value: string;
-};
-
 export type BoxUnion = WithSchema & {
   type: "union";
   params: {
@@ -76,7 +70,6 @@ export type BoxObject = WithSchema & {
 };
 
 export type AnyBoxDef =
-  | BoxTypeNode
   | BoxUnion
   | BoxIntersection
   | BoxArray
@@ -90,7 +83,7 @@ export type AnyBox = Box<AnyBoxDef>;
 export type OpenapiSchemaConvertArgs = {
   schema: SchemaObject | ReferenceObject;
   ctx: OpenapiSchemaConvertContext;
-  meta?: { name?: string; $ref?: string; isInline?: boolean; isPartial?: boolean } | undefined;
+  meta?: {} | undefined;
 };
 
 export type FactoryCreator = (
@@ -107,7 +100,6 @@ export type OpenapiSchemaConvertContext = {
 export type StringOrBox = string | Box<AnyBoxDef>;
 
 export type BoxFactory = {
-  typeAlias: (name: string, def: StringOrBox) => Box<BoxTypeNode>;
   union: (types: Array<StringOrBox>) => Box<BoxUnion>;
   intersection: (types: Array<StringOrBox>) => Box<BoxIntersection>;
   array: (type: StringOrBox) => Box<BoxArray>;
@@ -125,7 +117,6 @@ export type BoxFactory = {
 
 export type GenericFactory = {
   callback?: OpenapiSchemaConvertContext["onBox"];
-  typeAlias: (name: string, def: StringOrBox) => string;
   union: (types: Array<StringOrBox>) => string;
   intersection: (types: Array<StringOrBox>) => string;
   array: (type: StringOrBox) => string;

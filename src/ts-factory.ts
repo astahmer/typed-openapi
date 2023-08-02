@@ -1,7 +1,6 @@
 import { createFactory, unwrap } from "./box-factory";
 
 export const tsFactory = createFactory({
-  typeAlias: (name, def) => `type ${name} = ${unwrap(def)}`,
   union: (types) => types.map(unwrap).join(" | "),
   intersection: (types) => types.map(unwrap).join(" & "),
   array: (type) => `Array<${unwrap(type)}>`,

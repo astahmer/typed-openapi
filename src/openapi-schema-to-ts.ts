@@ -5,15 +5,13 @@ import { isReferenceObject } from "./is-reference-object";
 import { AnyBoxDef, OpenapiSchemaConvertArgs } from "./types";
 import { wrapWithQuotesIfNeeded } from "./string-utils";
 
-export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiSchemaConvertArgs): Box<AnyBoxDef> => {
+export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: OpenapiSchemaConvertArgs): Box<AnyBoxDef> => {
   const meta = {} as OpenapiSchemaConvertArgs["meta"];
-  const isInline = !inheritedMeta?.name;
 
   if (!schema) {
     throw new Error("Schema is required");
   }
 
-  let canBeWrapped = !isInline;
   const t = createBoxFactory(schema, ctx);
   const getTs = () => {
     if (isReferenceObject(schema)) {
@@ -104,8 +102,6 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
         return t.unknown();
       }
 
-      canBeWrapped = false;
-
       let additionalProperties;
       if (schema.additionalProperties) {
         let additionalPropertiesType;
@@ -126,7 +122,7 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
       }
 
       const hasRequiredArray = schema.required && schema.required.length > 0;
-      const isPartial = meta?.isPartial || !schema.required?.length;
+      const isPartial = !schema.required?.length;
 
       const props = Object.fromEntries(
         Object.entries(schema.properties).map(([prop, propSchema]) => {
@@ -149,18 +145,7 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
         ? t.intersection([t.object(props), additionalProperties])
         : t.object(props);
 
-      if (isInline) {
-        return isPartial ? t.reference("Partial", [objectType]) : objectType;
-      }
-
-      if (!inheritedMeta?.name) {
-        throw new Error("Name is required to convert an object schema to a type reference");
-      }
-
-      const base = t.typeAlias(inheritedMeta.name, objectType);
-      if (!isPartial) return base;
-
-      return t.typeAlias(inheritedMeta.name, t.reference("Partial", [objectType]));
+      return isPartial ? t.reference("Partial", [objectType]) : objectType;
     }
 
     if (!schemaType) return t.unknown();
@@ -168,12 +153,5 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
     throw new Error(`Unsupported schema type: ${schemaType}`);
   };
 
-  const tsResult = getTs();
-  if (!canBeWrapped) return tsResult;
-
-  if (inheritedMeta?.name) {
-    return t.typeAlias(inheritedMeta.name, tsResult);
-  }
-
-  throw new Error("Name is required to convert a schema to a type reference");
+  return getTs();
 };

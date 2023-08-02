@@ -23,8 +23,6 @@ export const createBoxFactory = (schema: SchemaObject | ReferenceObject, ctx: Op
   };
 
   const box: BoxFactory = {
-    typeAlias: (name, def) =>
-      callback(new Box({ schema, type: "type", params: { name, def }, value: f.typeAlias(name, def) })),
     union: (types) => callback(new Box({ schema, type: "union", params: { types }, value: f.union(types) })),
     intersection: (types) =>
       callback(new Box({ schema, type: "intersection", params: { types }, value: f.intersection(types) })),

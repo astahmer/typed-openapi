@@ -8,7 +8,6 @@ import {
   BoxObject,
   BoxOptional,
   BoxRef,
-  BoxTypeNode,
   BoxUnion,
 } from "./types";
 
@@ -41,10 +40,6 @@ export class Box<T extends AnyBoxDef = AnyBoxDef> {
 
   static isBox(box: unknown): box is Box<AnyBoxDef> {
     return box instanceof Box;
-  }
-
-  static isTypeAlias(box: Box<AnyBoxDef>): box is Box<BoxTypeNode> {
-    return box.type === "type";
   }
 
   static isUnion(box: Box<AnyBoxDef>): box is Box<BoxUnion> {
