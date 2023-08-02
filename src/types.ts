@@ -1,7 +1,6 @@
 import type { ReferenceObject, SchemaObject } from "openapi3-ts/oas31";
-import { PrimitiveType } from "./asserts";
 
-import type { DocumentResolver } from "./schema-resolver";
+import type { DocumentResolver } from "./ref-resolver";
 import { Box } from "./box";
 
 export type BoxDefinition = {
@@ -10,14 +9,17 @@ export type BoxDefinition = {
   value: string;
 };
 export type BoxParams = string | BoxDefinition;
+export type WithSchema = {
+  schema: SchemaObject | ReferenceObject | undefined;
+};
 
-export type BoxTypeNode<T = {}> = T & {
+export type BoxTypeNode = WithSchema & {
   type: "type";
   params: { name: string; def: BoxParams };
   value: string;
 };
 
-export type BoxUnion<T = {}> = T & {
+export type BoxUnion = WithSchema & {
   type: "union";
   params: {
     types: Array<BoxParams>;
@@ -25,7 +27,7 @@ export type BoxUnion<T = {}> = T & {
   value: string;
 };
 
-export type BoxIntersection<T = {}> = T & {
+export type BoxIntersection = WithSchema & {
   type: "intersection";
   params: {
     types: Array<BoxParams>;
@@ -33,7 +35,7 @@ export type BoxIntersection<T = {}> = T & {
   value: string;
 };
 
-export type BoxArray<T = {}> = T & {
+export type BoxArray = WithSchema & {
   type: "array";
   params: {
     type: BoxParams;
@@ -41,7 +43,7 @@ export type BoxArray<T = {}> = T & {
   value: string;
 };
 
-export type BoxOptional<T = {}> = T & {
+export type BoxOptional = WithSchema & {
   type: "optional";
   params: {
     type: BoxParams;
@@ -49,38 +51,46 @@ export type BoxOptional<T = {}> = T & {
   value: string;
 };
 
-export type BoxRef<T = {}> = T & {
+export type BoxRef = WithSchema & {
   type: "ref";
   params: { name: string; generics?: BoxParams[] | undefined };
   value: string;
 };
 
-export type BoxKeyword<T = {}> = T & {
+export type BoxLiteral = WithSchema & {
+  type: "literal";
+  params: {};
+  value: string;
+};
+
+export type BoxKeyword = WithSchema & {
   type: "keyword";
   params: { name: string };
   value: string;
 };
 
-export type BoxObject<T = {}> = T & {
+export type BoxObject = WithSchema & {
   type: "object";
   params: { props: Record<string, BoxParams> };
   value: string;
 };
 
-export type AnyBox =
+export type AnyBoxDef =
   | BoxTypeNode
   | BoxUnion
   | BoxIntersection
   | BoxArray
   | BoxOptional
   | BoxRef
+  | BoxLiteral
   | BoxKeyword
   | BoxObject;
+export type AnyBox = Box<AnyBoxDef>;
 
 export type OpenapiSchemaConvertArgs = {
   schema: SchemaObject | ReferenceObject;
   ctx: OpenapiSchemaConvertContext;
-  meta?: { name?: string; $ref?: string; isInline?: boolean } | undefined;
+  meta?: { name?: string; $ref?: string; isInline?: boolean; isPartial?: boolean } | undefined;
 };
 
 export type FactoryCreator = (
@@ -89,40 +99,40 @@ export type FactoryCreator = (
 ) => GenericFactory;
 export type OpenapiSchemaConvertContext = {
   factory: FactoryCreator | GenericFactory;
-  resultByRef: Record<string, string>; // TODO Map
-  resolver: DocumentResolver;
+  refs: DocumentResolver;
   rootRef?: string;
-  visiteds?: Set<string>;
-  onBox?: (box: Box<AnyBox>) => Box<AnyBox>;
+  onBox?: (box: Box<AnyBoxDef>) => Box<AnyBoxDef>;
 };
 
-export type StringOrBox = string | AnyBox;
+export type StringOrBox = string | Box<AnyBoxDef>;
 
-export type BoxFactory<T> = {
-  type: (name: string, def: StringOrBox) => Box<BoxTypeNode<T>>;
-  union: (types: Array<StringOrBox>) => Box<BoxUnion<T>>;
-  intersection: (types: Array<StringOrBox>) => Box<BoxIntersection<T>>;
-  array: (type: StringOrBox) => Box<BoxArray<T>>;
-  object: (props: Record<string, StringOrBox>) => Box<BoxObject<T>>;
-  optional: (type: StringOrBox) => Box<BoxOptional<T>>;
-  reference: (name: string, generics?: Array<StringOrBox> | undefined) => Box<BoxRef<T>>;
-  string: () => Box<BoxKeyword<T>>;
-  number: () => Box<BoxKeyword<T>>;
-  boolean: () => Box<BoxKeyword<T>>;
-  unknown: () => Box<BoxKeyword<T>>;
-  any: () => Box<BoxKeyword<T>>;
-  never: () => Box<BoxKeyword<T>>;
+export type BoxFactory = {
+  typeAlias: (name: string, def: StringOrBox) => Box<BoxTypeNode>;
+  union: (types: Array<StringOrBox>) => Box<BoxUnion>;
+  intersection: (types: Array<StringOrBox>) => Box<BoxIntersection>;
+  array: (type: StringOrBox) => Box<BoxArray>;
+  object: (props: Record<string, StringOrBox>) => Box<BoxObject>;
+  optional: (type: StringOrBox) => Box<BoxOptional>;
+  reference: (name: string, generics?: Array<StringOrBox> | undefined) => Box<BoxRef>;
+  literal: (value: StringOrBox) => Box<BoxLiteral>;
+  string: () => Box<BoxKeyword>;
+  number: () => Box<BoxKeyword>;
+  boolean: () => Box<BoxKeyword>;
+  unknown: () => Box<BoxKeyword>;
+  any: () => Box<BoxKeyword>;
+  never: () => Box<BoxKeyword>;
 };
 
 export type GenericFactory = {
   callback?: OpenapiSchemaConvertContext["onBox"];
-  type: (name: string, def: StringOrBox) => string;
+  typeAlias: (name: string, def: StringOrBox) => string;
   union: (types: Array<StringOrBox>) => string;
   intersection: (types: Array<StringOrBox>) => string;
   array: (type: StringOrBox) => string;
   object: (props: Record<string, StringOrBox>) => string;
   optional: (type: StringOrBox) => string;
   reference: (name: string, generics?: Array<StringOrBox> | undefined) => string;
+  literal: (value: StringOrBox) => string;
   string: () => string;
   number: () => string;
   boolean: () => string;

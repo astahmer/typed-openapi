@@ -1,12 +1,13 @@
 import { createFactory, unwrap } from "./box-factory";
 
 export const tsFactory = createFactory({
-  type: (name, def) => `type ${name} = ${unwrap(def)}`,
+  typeAlias: (name, def) => `type ${name} = ${unwrap(def)}`,
   union: (types) => types.map(unwrap).join(" | "),
   intersection: (types) => types.map(unwrap).join(" & "),
   array: (type) => `Array<${unwrap(type)}>`,
   optional: (type) => `${unwrap(type)} | undefined`,
   reference: (name, typeArgs) => `${name}${typeArgs ? `<${typeArgs.map(unwrap).join(", ")}>` : ""}`,
+  literal: (value) => value.toString(),
   string: () => "string" as const,
   number: () => "number" as const,
   boolean: () => "boolean" as const,

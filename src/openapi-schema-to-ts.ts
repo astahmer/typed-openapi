@@ -1,17 +1,13 @@
 import { isPrimitiveType } from "./asserts";
+import { Box } from "./box";
 import { createBoxFactory } from "./box-factory";
 import { isReferenceObject } from "./is-reference-object";
-import { AnyBox, OpenapiSchemaConvertArgs } from "./types";
-import { wrapWithQuotesIfNeeded } from "./utils";
+import { AnyBoxDef, OpenapiSchemaConvertArgs } from "./types";
+import { wrapWithQuotesIfNeeded } from "./string-utils";
 
-export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiSchemaConvertArgs): AnyBox => {
+export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiSchemaConvertArgs): Box<AnyBoxDef> => {
   const meta = {} as OpenapiSchemaConvertArgs["meta"];
   const isInline = !inheritedMeta?.name;
-
-  if (ctx?.visiteds && inheritedMeta?.$ref) {
-    ctx.rootRef = inheritedMeta.$ref;
-    ctx.visiteds.add(inheritedMeta.$ref);
-  }
 
   if (!schema) {
     throw new Error("Schema is required");
@@ -19,26 +15,11 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
 
   let canBeWrapped = !isInline;
   const t = createBoxFactory(schema, ctx);
-  const getTs = (): AnyBox => {
+  const getTs = () => {
     if (isReferenceObject(schema)) {
-      if (!ctx?.visiteds || !ctx?.resolver) throw new Error("Context is required for OpenAPI $ref");
+      const refInfo = ctx.refs.getName(schema.$ref);
 
-      let result = ctx.resultByRef[schema.$ref];
-      const schemaName = ctx.resolver.resolveRef(schema.$ref)?.normalized;
-      if (ctx.visiteds.has(schema.$ref)) {
-        return t.reference(schemaName);
-      }
-
-      if (!result) {
-        const actualSchema = ctx.resolver.getSchemaByRef(schema.$ref);
-        if (!actualSchema) {
-          throw new Error(`Schema ${schema.$ref} not found`);
-        }
-
-        ctx.visiteds.add(schema.$ref);
-      }
-
-      return t.reference(schemaName);
+      return t.reference(refInfo.normalized);
     }
 
     if (Array.isArray(schema.type)) {
@@ -83,11 +64,20 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
     const schemaType = schema.type ? (schema.type.toLowerCase() as NonNullable<typeof schema.type>) : undefined;
     if (schemaType && isPrimitiveType(schemaType)) {
       if (schema.enum) {
-        if (schemaType !== "string" && schema.enum.some((e) => typeof e === "string")) {
+        if (schema.enum.length === 1) {
+          const value = schema.enum[0];
+          return t.literal(value === null ? "null" : `"${value}"`);
+        }
+
+        if (schemaType === "string") {
+          return t.union(schema.enum.map((value) => t.literal(`"${value}"`)));
+        }
+
+        if (schema.enum.some((e) => typeof e === "string")) {
           return t.never();
         }
 
-        return t.union(schema.enum);
+        return t.union(schema.enum.map((value) => t.literal(value === null ? "null" : value)));
       }
 
       if (schemaType === "string") return t.string();
@@ -100,7 +90,6 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
       if (schema.items) {
         let arrayOfType = openApiSchemaToTs({ schema: schema.items, ctx, meta });
         if (typeof arrayOfType === "string") {
-          if (!ctx) throw new Error("Context is required for circular $ref (recursive schemas)");
           arrayOfType = t.reference(arrayOfType);
         }
 
@@ -117,7 +106,6 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
 
       canBeWrapped = false;
 
-      const isPartial = !schema.required?.length;
       let additionalProperties;
       if (schema.additionalProperties) {
         let additionalPropertiesType;
@@ -137,17 +125,23 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
         additionalProperties = t.object({ [t.string().value]: additionalPropertiesType! });
       }
 
+      const hasRequiredArray = schema.required && schema.required.length > 0;
+      const isPartial = meta?.isPartial || !schema.required?.length;
+
       const props = Object.fromEntries(
         Object.entries(schema.properties).map(([prop, propSchema]) => {
           let propType = openApiSchemaToTs({ schema: propSchema, ctx, meta });
           if (typeof propType === "string") {
-            if (!ctx) throw new Error("Context is required for circular $ref (recursive schemas)");
             // TODO Partial ?
             propType = t.reference(propType);
           }
 
-          const isRequired = Boolean(isPartial ? true : schema.required?.includes(prop));
-          return [`${wrapWithQuotesIfNeeded(prop)}`, isRequired ? propType : t.optional(propType)];
+          const isRequired = Boolean(isPartial ? true : hasRequiredArray ? schema.required?.includes(prop) : false);
+          const isOptional = !isPartial && !isRequired;
+          return [
+            `${wrapWithQuotesIfNeeded(prop)}${isOptional ? "?" : ""}`,
+            isOptional ? t.optional(propType) : propType,
+          ];
         }),
       );
 
@@ -163,10 +157,10 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
         throw new Error("Name is required to convert an object schema to a type reference");
       }
 
-      const base = t.type(inheritedMeta.name, objectType);
+      const base = t.typeAlias(inheritedMeta.name, objectType);
       if (!isPartial) return base;
 
-      return t.type(inheritedMeta.name, t.reference("Partial", [objectType]));
+      return t.typeAlias(inheritedMeta.name, t.reference("Partial", [objectType]));
     }
 
     if (!schemaType) return t.unknown();
@@ -178,7 +172,7 @@ export const openApiSchemaToTs = ({ schema, meta: inheritedMeta, ctx }: OpenapiS
   if (!canBeWrapped) return tsResult;
 
   if (inheritedMeta?.name) {
-    return t.type(inheritedMeta.name, tsResult);
+    return t.typeAlias(inheritedMeta.name, tsResult);
   }
 
   throw new Error("Name is required to convert a schema to a type reference");

@@ -27,7 +27,7 @@
     "moduleResolution": "Node",
     "lib": ["DOM", "ES2021"]
   },
-  "include": ["src"],
+  "include": ["src", "tests"],
   "exclude": ["node_modules", ".changeset", ".github", "dist"],
   "types": ["node", "vitest/importMeta"],
   //
