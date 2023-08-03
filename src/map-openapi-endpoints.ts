@@ -4,7 +4,7 @@ import { capitalize, pick } from "pastable/server";
 import { Box } from "./box";
 import { createBoxFactory } from "./box-factory";
 import { openApiSchemaToTs } from "./openapi-schema-to-ts";
-import { createRefResolver } from "./ref-resolver";
+import { RefResolver, createRefResolver } from "./ref-resolver";
 import { tsFactory } from "./ts-factory";
 import { AnyBox, BoxRef, OpenapiSchemaConvertContext } from "./types";
 import { pathToVariableName } from "./string-utils";
@@ -121,7 +121,7 @@ export const mapOpenApiEndpoints = (openApi: OpenAPIObject) => {
     });
   });
 
-  return { refs, endpointList };
+  return { refs, endpointList } as { refs: RefResolver; endpointList: Endpoint[] };
 };
 
 const allowedParamMediaTypes = [

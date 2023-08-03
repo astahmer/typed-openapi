@@ -5,7 +5,7 @@ import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints";
 
 describe("map-openapi-endpoints", () => {
   test("petstore", async ({ expect }) => {
-    const openApiDoc = (await SwaggerParser.parse("./tests/petstore.yaml")) as OpenAPIObject;
+    const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
     expect(mapOpenApiEndpoints(openApiDoc)).toMatchInlineSnapshot(`
       {
         "endpointList": [

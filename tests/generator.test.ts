@@ -1,14 +1,14 @@
 import { describe, test } from "vitest";
 import SwaggerParser from "@apidevtools/swagger-parser";
-import type { OpenAPIObject, SchemaObject } from "openapi3-ts/oas31";
+import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints";
-import { generateTsRouter } from "../src/generator";
+import { generateFile } from "../src/generator";
 
 describe("generator", () => {
   test("petstore", async ({ expect }) => {
-    const openApiDoc = (await SwaggerParser.parse("./tests/petstore.yaml")) as OpenAPIObject;
-    expect(generateTsRouter(mapOpenApiEndpoints(openApiDoc))).toMatchInlineSnapshot(`
-      "// Schemas
+    const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
+    expect(generateFile(mapOpenApiEndpoints(openApiDoc))).toMatchInlineSnapshot(`
+      "// <Schemas>
       export type Order = Partial<
         {
           id: number;
@@ -45,7 +45,10 @@ describe("generator", () => {
       };
       export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
 
-      // Endpoints
+      // </Schemas>
+
+      // <Endpoints>
+
       export type put_UpdatePet = {
         method: \\"PUT\\";
         path: \\"/pet\\";
@@ -188,6 +191,9 @@ describe("generator", () => {
         response: unknown;
       };
 
+      // </Endpoints>
+
+      // <EndpointByMethod>
       export type EndpointByMethod = {
         put: {
           \\"/pet\\": put_UpdatePet;
@@ -217,12 +223,18 @@ describe("generator", () => {
           \\"/user/{username}\\": delete_DeleteUser;
         };
       };
-      type GetEndpoints = EndpointByMethod[\\"get\\"];
-      type PostEndpoints = EndpointByMethod[\\"post\\"];
-      type PutEndpoints = EndpointByMethod[\\"put\\"];
 
-      type DeleteEndpoints = EndpointByMethod[\\"delete\\"];
+      // </EndpointByMethod>
 
+      // <EndpointByMethod.Shorthands>
+      export type PutEndpoints = EndpointByMethod[\\"put\\"];
+      export type PostEndpoints = EndpointByMethod[\\"post\\"];
+      export type GetEndpoints = EndpointByMethod[\\"get\\"];
+      export type DeleteEndpoints = EndpointByMethod[\\"delete\\"];
+      export type AllEndpoints = EndpointByMethod[keyof EndpointByMethod];
+      // </EndpointByMethod.Shorthands>
+
+      // <ApiClientTypes>
       export type EndpointParameters = {
         body?: unknown;
         query?: Record<string, unknown>;
@@ -257,6 +269,15 @@ describe("generator", () => {
         parameters?: EndpointParameters | undefined,
       ) => Promise<Endpoint[\\"response\\"]>;
 
+      type RequiredKeys<T> = {
+        [P in keyof T]-?: undefined extends T[P] ? never : P;
+      }[keyof T];
+
+      type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
+
+      // </ApiClientTypes>
+
+      // <ApiClient>
       export class ApiClient {
         baseUrl: string = \\"\\";
 
@@ -267,26 +288,58 @@ describe("generator", () => {
           return this;
         }
 
-        get<Path extends keyof GetEndpoints>(path: Path, params?: GetEndpoints[Path][\\"parameters\\"]) {
-          return this.fetcher(\\"get\\", this.baseUrl + path, params);
+        // <ApiClient.put>
+        put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint[\\"parameters\\"]>
+        ): Promise<TEndpoint[\\"response\\"]> {
+          return this.fetcher(\\"put\\", this.baseUrl + path, params[0]);
         }
+        // </ApiClient.put>
 
-        post<Path extends keyof PostEndpoints>(path: Path, params?: PostEndpoints[Path][\\"parameters\\"]) {
-          return this.fetcher(\\"post\\", this.baseUrl + path, params);
+        // <ApiClient.post>
+        post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint[\\"parameters\\"]>
+        ): Promise<TEndpoint[\\"response\\"]> {
+          return this.fetcher(\\"post\\", this.baseUrl + path, params[0]);
         }
+        // </ApiClient.post>
 
-        put<Path extends keyof PutEndpoints>(path: Path, params?: PutEndpoints[Path][\\"parameters\\"]) {
-          return this.fetcher(\\"put\\", this.baseUrl + path, params);
+        // <ApiClient.get>
+        get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint[\\"parameters\\"]>
+        ): Promise<TEndpoint[\\"response\\"]> {
+          return this.fetcher(\\"get\\", this.baseUrl + path, params[0]);
         }
+        // </ApiClient.get>
 
-        delete<Path extends keyof DeleteEndpoints>(path: Path, params?: DeleteEndpoints[Path][\\"parameters\\"]) {
-          return this.fetcher(\\"delete\\", this.baseUrl + path, params);
+        // <ApiClient.delete>
+        delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint[\\"parameters\\"]>
+        ): Promise<TEndpoint[\\"response\\"]> {
+          return this.fetcher(\\"delete\\", this.baseUrl + path, params[0]);
         }
+        // </ApiClient.delete>
       }
 
       export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
         return new ApiClient(fetcher).setBaseUrl(baseUrl ?? \\"\\");
       }
+
+      /**
+       * Example usage:
+       * const api = createApiClient((method, url, params) =>
+       *   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
+       * );
+       * api.get(\\"/users\\").then((users) => console.log(users));
+       * api.post(\\"/users\\", { body: { name: \\"John\\" } }).then((user) => console.log(user));
+       * api.put(\\"/users/:id\\", { path: { id: 1 }, body: { name: \\"John\\" } }).then((user) => console.log(user));
+       */
+
+      // </ApiClient
       "
     `);
   });

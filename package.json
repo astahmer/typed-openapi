@@ -22,6 +22,8 @@
     "@apidevtools/swagger-parser": "^10.1.0",
     "@dprint/formatter": "^0.2.0",
     "@dprint/typescript": "^0.85.1",
+    "@sinclair/typebox-codegen": "^0.8.5",
+    "arktype": "1.0.18-alpha",
     "cac": "^6.7.14",
     "dprint": "^0.40.2",
     "openapi3-ts": "^4.1.2",

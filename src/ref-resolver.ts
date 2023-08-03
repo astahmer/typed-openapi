@@ -92,4 +92,4 @@ export const createRefResolver = (doc: OpenAPIObject, factory: GenericFactory) =
   };
 };
 
-export type DocumentResolver = ReturnType<typeof createRefResolver>;
+export interface RefResolver extends ReturnType<typeof createRefResolver> {}

@@ -1,13 +1,100 @@
-import { groupBy } from "pastable/server";
+import { capitalize, groupBy } from "pastable/server";
 import { Box } from "./box";
 import { prettify } from "./format";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints";
 import { AnyBox, BoxRef } from "./types";
+import * as Codegen from "@sinclair/typebox-codegen";
+import { match } from "ts-pattern";
+import { type } from "arktype";
 
-export const generateTsRouter = ({ refs, endpointList }: ReturnType<typeof mapOpenApiEndpoints>) => {
+type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
+  runtime?: "none" | keyof typeof runtimeValidationGenerator;
+};
+type GeneratorContext = Required<GeneratorOptions>;
+
+export const allowedRuntimes = type("'none' | 'arktype' | 'io-ts' | 'typebox' | 'valibot' | 'yup' | 'zod'");
+
+const runtimeValidationGenerator = {
+  arktype: Codegen.ModelToArkType.Generate,
+  "io-ts": Codegen.ModelToIoTs.Generate,
+  typebox: Codegen.ModelToTypeBox.Generate,
+  valibot: Codegen.ModelToValibot.Generate,
+  yup: Codegen.ModelToYup.Generate,
+  zod: Codegen.ModelToZod.Generate,
+};
+
+const inferByRuntime = {
+  none: (input: string) => input,
+  arktype: (input: string) => `${input}["infer"]`,
+  "io-ts": (input: string) => `t.TypeOf<${input}>`,
+  typebox: (input: string) => `Static<${input}>`,
+  valibot: (input: string) => `v.Output<${input}>`,
+  yup: (input: string) => `y.InferType<${input}>`,
+  zod: (input: string) => `z.infer<${input}>`,
+};
+
+const methods = ["get", "put", "post", "delete", "options", "head", "patch", "trace"] as const;
+const methodsRegex = new RegExp(`(?:${methods.join("|")})_`);
+const endpointExport = new RegExp(`export (?:type|const) (?:${methodsRegex.source})`);
+
+const replacerByRuntime = {
+  yup: (line: string) =>
+    line
+      .replace(/y\.InferType<\s*?typeof (.*?)\s*?>/g, "typeof $1")
+      .replace(new RegExp(`(${endpointExport.source})` + new RegExp(/(.*? )(y\.object)(\()/).source, "g"), "$1$2("),
+  zod: (line: string) =>
+    line
+      .replace(/z\.infer<\s*?typeof (.*?)\s*?>/g, "typeof $1")
+      .replace(new RegExp(`(${endpointExport.source})` + new RegExp(/(.*? )(z\.object)(\()/).source, "g"), "$1$2("),
+};
+
+export const generateFile = (options: GeneratorOptions) => {
+  const ctx = { ...options, runtime: options.runtime ?? "none" } as GeneratorContext;
+
+  const schemaList = generateSchemaList(ctx);
+  const endpointSchemaList = generateEndpointSchemaList(ctx);
+  const apiClient = generateApiClient(ctx);
+
+  const transform =
+    ctx.runtime === "none"
+      ? (file: string) => file
+      : (file: string) => {
+          const model = Codegen.TypeScriptToModel.Generate(file);
+          const transformer = runtimeValidationGenerator[ctx.runtime as Exclude<typeof ctx.runtime, "none">];
+          // tmp fix for typebox, there's currently a "// todo" only with Codegen.ModelToTypeBox.Generate
+          // https://github.com/sinclairzx81/typebox-codegen/blob/44d44d55932371b69f349331b1c8a60f5d760d9e/src/model/model-to-typebox.ts#L31
+          const generated = ctx.runtime === "typebox" ? Codegen.TypeScriptToTypeBox.Generate(file) : transformer(model);
+
+          let converted = "";
+          const match = generated.match(/(const __ENDPOINTS_START__ =)([\s\S]*?)(export type __ENDPOINTS_END__)/);
+          const content = match?.[2];
+
+          if (content && ctx.runtime in replacerByRuntime) {
+            const before = generated.slice(0, generated.indexOf("export type __ENDPOINTS_START"));
+            converted =
+              before +
+              replacerByRuntime[ctx.runtime as keyof typeof replacerByRuntime](
+                content.slice(content.indexOf("export")),
+              );
+          } else {
+            converted = generated;
+          }
+
+          return converted;
+        };
+
+  const file = `
+  ${transform(schemaList + endpointSchemaList)}
+  ${apiClient}
+  `;
+
+  return prettify(file);
+};
+
+const generateSchemaList = ({ refs }: GeneratorContext) => {
   const schemas = refs.schemas;
 
-  let file = "// Schemas\n";
+  let file = "// <Schemas>\n";
   schemas.forEach((schema, ref) => {
     const infos = refs.infos.get(ref);
     if (!infos?.name) return;
@@ -16,8 +103,24 @@ export const generateTsRouter = ({ refs, endpointList }: ReturnType<typeof mapOp
     file += `export type ${infos.normalized} = ${schema.value}\n`;
   });
 
-  file += "\n// Endpoints\n";
-  endpointList.map((endpoint) => {
+  return file + "\n// </Schemas>\n";
+};
+
+const parameterObjectToString = (parameters: Box<BoxRef> | Record<string, AnyBox>) => {
+  if (parameters instanceof Box) return parameters.value;
+
+  let str = "{";
+  for (const [key, box] of Object.entries(parameters)) {
+    str += `${key}: ${box.value},\n`;
+  }
+  return str + "}";
+};
+const generateEndpointSchemaList = (ctx: GeneratorContext) => {
+  let file = `
+  // <Endpoints>
+  ${ctx.runtime === "none" ? "" : "type __ENDPOINTS_START__ = {}"}
+  `;
+  ctx.endpointList.map((endpoint) => {
     const parameters = endpoint.parameters ?? {};
     file += `export type ${endpoint.meta.alias} = {
       method: "${endpoint.method.toUpperCase()}",
@@ -35,41 +138,54 @@ export const generateTsRouter = ({ refs, endpointList }: ReturnType<typeof mapOp
     }\n`;
   });
 
-  file += generateApiClient(endpointList);
-
-  return prettify(file);
+  return (
+    file +
+    `
+  // </Endpoints>
+  ${ctx.runtime === "none" ? "" : "type __ENDPOINTS_END__ = {}"}
+  `
+  );
 };
 
-const parameterObjectToString = (parameters: Box<BoxRef> | Record<string, AnyBox>) => {
-  if (parameters instanceof Box) return parameters.value;
-
-  let str = "{";
-  for (const [key, box] of Object.entries(parameters)) {
-    str += `${key}: ${box.value},\n`;
-  }
-  return str + "}";
-};
-
-const generateApiClient = (endpointList: ReturnType<typeof mapOpenApiEndpoints>["endpointList"]) => {
+const generateEndpointByMethod = (ctx: GeneratorContext) => {
+  const { endpointList } = ctx;
   const byMethods = groupBy(endpointList, "method");
 
-  let content = `\nexport type EndpointByMethod= {
-    ${Object.entries(byMethods)
-      .map(([method, list]) => {
-        return `${method}: {
-          ${list.map((endpoint) => `"${endpoint.path}": ${endpoint.meta.alias}`)}
-        }`;
-      })
+  const endpointByMethod = `
+     // <EndpointByMethod>
+     export ${ctx.runtime === "none" ? "type" : "const"} EndpointByMethod = {
+     ${Object.entries(byMethods)
+       .map(([method, list]) => {
+         return `${method}: {
+           ${list.map((endpoint) => `"${endpoint.path}": ${endpoint.meta.alias}`)}
+         }`;
+       })
+       .join(",\n")}
+     }
+     ${ctx.runtime === "none" ? "" : "export type EndpointByMethod = typeof EndpointByMethod;"}
+     // </EndpointByMethod>
+     `;
+
+  const shorthands = `
+
+    // <EndpointByMethod.Shorthands>
+    ${Object.keys(byMethods)
+      .map((method) => `export type ${capitalize(method)}Endpoints = EndpointByMethod["${method}"]`)
       .join("\n")}
-    }`;
+    ${endpointList.length ? `export type AllEndpoints = EndpointByMethod[keyof EndpointByMethod];` : ""}
+    // </EndpointByMethod.Shorthands>
+    `;
 
-  content += `
-${byMethods.get?.length ? `type GetEndpoints = EndpointByMethod["get"];` : ""}
-${byMethods.post?.length ? `type PostEndpoints = EndpointByMethod["post"];` : ""}
-${byMethods.put?.length ? `type PutEndpoints = EndpointByMethod["put"];` : ""}
-${byMethods.patch?.length ? `type PatchEndpoints = EndpointByMethod["patch"];` : ""}
-${byMethods.delete?.length ? `type DeleteEndpoints = EndpointByMethod["delete"];` : ""}
+  return endpointByMethod + shorthands;
+};
 
+const generateApiClient = (ctx: GeneratorContext) => {
+  const { endpointList } = ctx;
+  const byMethods = groupBy(endpointList, "method");
+  const endpointSchemaList = generateEndpointByMethod(ctx);
+
+  const apiClientTypes = `
+// <ApiClientTypes>
 export type EndpointParameters = {
   body?: unknown;
   query?: Record<string, unknown>;
@@ -100,6 +216,17 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
 
 type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Endpoint["response"]>;
 
+type RequiredKeys<T> = {
+  [P in keyof T]-?: undefined extends T[P] ? never : P;
+}[keyof T];
+
+type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
+
+// </ApiClientTypes>
+`;
+
+  const apiClient = `
+// <ApiClient>
 export class ApiClient {
   baseUrl: string = "";
 
@@ -110,51 +237,49 @@ export class ApiClient {
     return this;
   }
 
-  ${
-    byMethods.get?.length
-      ? `get<Path extends keyof GetEndpoints>(path: Path, params?: GetEndpoints[Path]["parameters"]) {
-    return this.fetcher("get", this.baseUrl + path, params);
-  }`
-      : ""
-  }
+  ${Object.entries(byMethods)
+    .map(([method, endpointByMethod]) => {
+      const capitalizedMethod = capitalize(method);
+      const infer = inferByRuntime[ctx.runtime];
 
-  ${
-    byMethods.post?.length
-      ? `post<Path extends keyof PostEndpoints>(path: Path, params?: PostEndpoints[Path]["parameters"]) {
-    return this.fetcher("post", this.baseUrl + path, params);
-  }`
-      : ""
-  }
-
-  ${
-    byMethods.put?.length
-      ? `put<Path extends keyof PutEndpoints>(path: Path, params?: PutEndpoints[Path]["parameters"]) {
-    return this.fetcher("put", this.baseUrl + path, params);
-  }`
-      : ""
-  }
-
-  ${
-    byMethods.patch?.length
-      ? `patch<Path extends keyof PatchEndpoints>(path: Path, params?: PatchEndpoints[Path]["parameters"]) {
-    return this.fetcher("patch", this.baseUrl + path, params);
-  }`
-      : ""
-  }
-
-  ${
-    byMethods.delete?.length
-      ? `delete<Path extends keyof DeleteEndpoints>(path: Path, params?: DeleteEndpoints[Path]["parameters"]) {
-    return this.fetcher("delete", this.baseUrl + path, params);
-  }`
-      : ""
-  }
+      return endpointByMethod.length
+        ? `// <ApiClient.${method}>
+    ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
+      path: Path,
+      ...params: MaybeOptionalArg<${match(ctx.runtime)
+        .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
+        .with("arktype", "io-ts", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
+        .otherwise(() => `TEndpoint["parameters"]`)}>
+    ): Promise<${match(ctx.runtime)
+      .with("zod", "yup", () => infer(`TEndpoint["response"]`))
+      .with("arktype", "io-ts", "valibot", () => infer(`TEndpoint`) + `["response"]`)
+      .otherwise(() => `TEndpoint["response"]`)}> {
+      return this.fetcher("${method}", this.baseUrl + path, params[0]);
+    }
+    // </ApiClient.${method}>
+    `
+        : "";
+    })
+    .join("\n")}
 }
 
 export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
   return new ApiClient(fetcher).setBaseUrl(baseUrl ?? "");
 }
+
+
+/**
+ * Example usage:
+ * const api = createApiClient((method, url, params) =>
+ *   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
+ * );
+ * api.get("/users").then((users) => console.log(users));
+ * api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
+ * api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+*/
+
+// </ApiClient
 `;
 
-  return content;
+  return endpointSchemaList + apiClientTypes + apiClient;
 };

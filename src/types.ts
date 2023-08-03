@@ -1,6 +1,6 @@
 import type { ReferenceObject, SchemaObject } from "openapi3-ts/oas31";
 
-import type { DocumentResolver } from "./ref-resolver";
+import type { RefResolver } from "./ref-resolver";
 import { Box } from "./box";
 
 export type BoxDefinition = {
@@ -92,7 +92,7 @@ export type FactoryCreator = (
 ) => GenericFactory;
 export type OpenapiSchemaConvertContext = {
   factory: FactoryCreator | GenericFactory;
-  refs: DocumentResolver;
+  refs: RefResolver;
   rootRef?: string;
   onBox?: (box: Box<AnyBoxDef>) => Box<AnyBoxDef>;
 };

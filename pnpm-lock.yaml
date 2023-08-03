@@ -19,6 +19,12 @@ dependencies:
   '@dprint/typescript':
     specifier: ^0.85.1
     version: 0.85.1
+  '@sinclair/typebox-codegen':
+    specifier: ^0.8.5
+    version: 0.8.5
+  arktype:
+    specifier: 1.0.18-alpha
+    version: 1.0.18-alpha
   cac:
     specifier: ^6.7.14
     version: 6.7.14
@@ -605,9 +611,21 @@ packages:
       fastq: 1.15.0
     dev: true
 
+  /@sinclair/typebox-codegen@0.8.5:
+    resolution: {integrity: sha512-VyV0lNYAMMGLcN+AgblMN7Ee5abWgFJAQQXvwGB1nZLe/WL6bmjpxX1/MW3guRPMSTIzqBEQMmNiveK7YI9Odw==}
+    dependencies:
+      '@sinclair/typebox': 0.30.2
+      prettier: 2.8.8
+      typescript: 5.1.6
+    dev: false
+
   /@sinclair/typebox@0.27.8:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
+
+  /@sinclair/typebox@0.30.2:
+    resolution: {integrity: sha512-PNEojrBZGQL+llfGfGn6EZNHUXxyvA3LeySMUxMk+i+GrtuT1nBBP3BPzzgJKW9b7lUMa9KxHVx+CIPEy5bL5w==}
+    dev: false
 
   /@types/chai-subset@1.3.3:
     resolution: {integrity: sha512-frBecisrNGz+F4T6bcc+NLeolfiojh5FxW2klu669+8BARtyQv2C/GkNW6FUodVe4BroGMP/wER/YDGc7rEllw==}
@@ -720,6 +738,11 @@ packages:
     resolution: {integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==}
     dependencies:
       sprintf-js: 1.0.3
+    dev: false
+
+  /arktype@1.0.18-alpha:
+    resolution: {integrity: sha512-7yUOaaeEws1GkDFGvB7IPkurVL5FFcZBbWLNVrqNXWccKbmMz9gozqXfR3pnconHeSbXLEcYUmtGAXTnhRgJrw==}
+    requiresBuild: true
     dev: false
 
   /array-union@2.1.0:
@@ -1387,6 +1410,12 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
+  /prettier@2.8.8:
+    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    dev: false
+
   /pretty-format@29.6.2:
     resolution: {integrity: sha512-1q0oC8eRveTg5nnBEWMXAU2qpv65Gnuf2eCQzSjxpWFkPaPARwqZZDGuNE0zPAZfTCHzIk3A8dIjwlQKKLphyg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -1642,7 +1671,6 @@ packages:
     resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
     engines: {node: '>=14.17'}
     hasBin: true
-    dev: true
 
   /ufo@1.2.0:
     resolution: {integrity: sha512-RsPyTbqORDNDxqAdQPQBpgqhWle1VcTSou/FraClYlHf6TZnQcGslpLcAphNR+sQW4q5lLWLbOsRlh9j24baQg==}
