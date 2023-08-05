@@ -4,18 +4,18 @@ import { capitalize, pick } from "pastable/server";
 import { Box } from "./box";
 import { createBoxFactory } from "./box-factory";
 import { openApiSchemaToTs } from "./openapi-schema-to-ts";
-import { RefResolver, createRefResolver } from "./ref-resolver";
+import { createRefResolver } from "./ref-resolver";
 import { tsFactory } from "./ts-factory";
 import { AnyBox, BoxRef, OpenapiSchemaConvertContext } from "./types";
 import { pathToVariableName } from "./string-utils";
 
-export const mapOpenApiEndpoints = (openApi: OpenAPIObject) => {
+export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
   const factory = tsFactory;
-  const refs = createRefResolver(openApi, factory);
+  const refs = createRefResolver(doc, factory);
   const ctx: OpenapiSchemaConvertContext = { refs, factory };
   const endpointList = [] as Array<Endpoint>;
 
-  Object.entries(openApi.paths ?? {}).forEach(([path, pathItemObj]) => {
+  Object.entries(doc.paths ?? {}).forEach(([path, pathItemObj]) => {
     const pathItem = pick(pathItemObj, ["get", "put", "post", "delete", "options", "head", "patch", "trace"]);
     Object.entries(pathItem).forEach(([method, operation]) => {
       if (operation.deprecated) return;
@@ -121,7 +121,7 @@ export const mapOpenApiEndpoints = (openApi: OpenAPIObject) => {
     });
   });
 
-  return { refs, endpointList } as { refs: RefResolver; endpointList: Endpoint[] };
+  return { doc, refs, endpointList };
 };
 
 const allowedParamMediaTypes = [
