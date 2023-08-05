@@ -13,8 +13,10 @@ export function normalizeString(text: string) {
     .replace(/--+/g, "-"); // Replace multiple - with single -
 }
 
+const onlyWordRegex = /^\w+$/;
 export const wrapWithQuotesIfNeeded = (str: string) => {
-  if (/^\w+$/.test(str)) {
+  if (str[0] === '"' && str[str.length - 1] === '"') return str;
+  if (onlyWordRegex.test(str)) {
     return str;
   }
 

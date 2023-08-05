@@ -6,6 +6,7 @@ import { AnyBox, BoxRef } from "./types";
 import * as Codegen from "@sinclair/typebox-codegen";
 import { match } from "ts-pattern";
 import { type } from "arktype";
+import { wrapWithQuotesIfNeeded } from "./string-utils";
 
 type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
   runtime?: "none" | keyof typeof runtimeValidationGenerator;
@@ -111,7 +112,7 @@ const parameterObjectToString = (parameters: Box<BoxRef> | Record<string, AnyBox
 
   let str = "{";
   for (const [key, box] of Object.entries(parameters)) {
-    str += `${key}: ${box.value},\n`;
+    str += `${wrapWithQuotesIfNeeded(key)}: ${box.value},\n`;
   }
   return str + "}";
 };
@@ -194,7 +195,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | MutationMethod;
+export type Method = "get" | "head" | MutationMethod;
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;

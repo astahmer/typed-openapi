@@ -1,4 +1,5 @@
 import { createFactory, unwrap } from "./box-factory";
+import { wrapWithQuotesIfNeeded } from "./string-utils";
 
 export const tsFactory = createFactory({
   union: (types) => types.map(unwrap).join(" | "),
@@ -15,7 +16,7 @@ export const tsFactory = createFactory({
   never: () => "never" as const,
   object: (props) => {
     const propsString = Object.entries(props)
-      .map(([prop, type]) => `${prop}: ${unwrap(type)}`)
+      .map(([prop, type]) => `${wrapWithQuotesIfNeeded(prop)}: ${unwrap(type)}`)
       .join(", ");
 
     return `{ ${propsString} }`;
