@@ -19,8 +19,8 @@ describe("generator", () => {
           complete: boolean;
         }
       >;
-      export type Customer = Partial<{ id: number; username: string; address: Array<Address> }>;
       export type Address = Partial<{ street: string; city: string; state: string; zip: string }>;
+      export type Customer = Partial<{ id: number; username: string; address: Array<Address> }>;
       export type Category = Partial<{ id: number; name: string }>;
       export type User = Partial<
         {

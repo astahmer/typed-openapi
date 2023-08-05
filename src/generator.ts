@@ -14,6 +14,9 @@ type GeneratorContext = Required<GeneratorOptions>;
 
 export const allowedRuntimes = type("'none' | 'arktype' | 'io-ts' | 'typebox' | 'valibot' | 'yup' | 'zod'");
 
+// TODO validate response schemas in sample fetch ApiClient
+// also, check that we can easily retrieve the response schema from the Fetcher
+
 const runtimeValidationGenerator = {
   arktype: Codegen.ModelToArkType.Generate,
   "io-ts": Codegen.ModelToIoTs.Generate,
@@ -92,11 +95,8 @@ export const generateFile = (options: GeneratorOptions) => {
 };
 
 const generateSchemaList = ({ refs }: GeneratorContext) => {
-  const schemas = refs.schemas;
-
   let file = "// <Schemas>\n";
-  schemas.forEach((schema, ref) => {
-    const infos = refs.infos.get(ref);
+  refs.getOrderedSchemas().forEach(([schema, infos]) => {
     if (!infos?.name) return;
     if (infos.kind !== "schemas") return;
 

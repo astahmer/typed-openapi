@@ -17,15 +17,19 @@ export const Order = t.type({
   complete: t.union([t.undefined, t.boolean]),
 });
 
-export type Customer = t.TypeOf<typeof Customer>;
-export const Customer = t.any; /* unresolved */
-
 export type Address = t.TypeOf<typeof Address>;
 export const Address = t.type({
   street: t.union([t.undefined, t.string]),
   city: t.union([t.undefined, t.string]),
   state: t.union([t.undefined, t.string]),
   zip: t.union([t.undefined, t.string]),
+});
+
+export type Customer = t.TypeOf<typeof Customer>;
+export const Customer = t.type({
+  id: t.union([t.undefined, t.number]),
+  username: t.union([t.undefined, t.string]),
+  address: t.union([t.undefined, t.array(Address)]),
 });
 
 export type Category = t.TypeOf<typeof Category>;

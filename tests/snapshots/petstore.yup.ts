@@ -18,15 +18,19 @@ export const Order = y.object({
   complete: y.boolean().required().optional(),
 });
 
-export type Customer = y.InferType<typeof Customer>;
-export const Customer = y.mixed(); /* unsupported */
-
 export type Address = y.InferType<typeof Address>;
 export const Address = y.object({
   street: y.string().required().optional(),
   city: y.string().required().optional(),
   state: y.string().required().optional(),
   zip: y.string().required().optional(),
+});
+
+export type Customer = y.InferType<typeof Customer>;
+export const Customer = y.object({
+  id: y.number().required().optional(),
+  username: y.string().required().optional(),
+  address: y.array(Address).optional(),
 });
 
 export type Category = y.InferType<typeof Category>;

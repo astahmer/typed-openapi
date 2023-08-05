@@ -12,15 +12,19 @@ export const Order = z.object({
   complete: z.boolean().optional(),
 });
 
-export type Customer = z.infer<typeof Customer>;
-export const Customer = z.any(); /* unsupported */
-
 export type Address = z.infer<typeof Address>;
 export const Address = z.object({
   street: z.string().optional(),
   city: z.string().optional(),
   state: z.string().optional(),
   zip: z.string().optional(),
+});
+
+export type Customer = z.infer<typeof Customer>;
+export const Customer = z.object({
+  id: z.number().optional(),
+  username: z.string().optional(),
+  address: z.array(Address).optional(),
 });
 
 export type Category = z.infer<typeof Category>;

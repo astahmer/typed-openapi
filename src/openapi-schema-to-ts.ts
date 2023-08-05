@@ -15,7 +15,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
   const t = createBoxFactory(schema, ctx);
   const getTs = () => {
     if (isReferenceObject(schema)) {
-      const refInfo = ctx.refs.getName(schema.$ref);
+      const refInfo = ctx.refs.getInfosByRef(schema.$ref);
 
       return t.reference(refInfo.normalized);
     }

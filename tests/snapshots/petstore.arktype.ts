@@ -9,12 +9,16 @@ export const types = scope({
     "status?": "\"placed\" | \"approved\" | \"delivered\"",
     "complete?": "boolean",
   },
-  Customer: "never",
   Address: {
     "street?": "string",
     "city?": "string",
     "state?": "string",
     "zip?": "string",
+  },
+  Customer: {
+    "id?": "number",
+    "username?": "string",
+    "address?": "Address[]",
   },
   Category: {
     "id?": "number",
@@ -226,10 +230,10 @@ export const types = scope({
 
 export type Order = typeof Order.infer;
 export const Order = types.Order;
-export type Customer = typeof Customer.infer;
-export const Customer = types.Customer;
 export type Address = typeof Address.infer;
 export const Address = types.Address;
+export type Customer = typeof Customer.infer;
+export const Customer = types.Customer;
 export type Category = typeof Category.infer;
 export const Category = types.Category;
 export type User = typeof User.infer;

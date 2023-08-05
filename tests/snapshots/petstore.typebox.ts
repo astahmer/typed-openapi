@@ -14,19 +14,19 @@ export const Order = Type.Partial(Type.Object({
   complete: Type.Boolean(),
 }));
 
-export type Customer = Static<typeof Customer>;
-export const Customer = Type.Partial(Type.Object({
-  id: Type.Number(),
-  username: Type.String(),
-  address: Type.Array(Address),
-}));
-
 export type Address = Static<typeof Address>;
 export const Address = Type.Partial(Type.Object({
   street: Type.String(),
   city: Type.String(),
   state: Type.String(),
   zip: Type.String(),
+}));
+
+export type Customer = Static<typeof Customer>;
+export const Customer = Type.Partial(Type.Object({
+  id: Type.Number(),
+  username: Type.String(),
+  address: Type.Array(Address),
 }));
 
 export type Category = Static<typeof Category>;
@@ -403,8 +403,8 @@ export class ApiClient {
   // <ApiClient.put>
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-  ): Promise<TEndpoint["response"]> {
+    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"]>
+  ): Promise<Static<TEndpoint>["response"]> {
     return this.fetcher("put", this.baseUrl + path, params[0]);
   }
   // </ApiClient.put>
@@ -412,8 +412,8 @@ export class ApiClient {
   // <ApiClient.post>
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-  ): Promise<TEndpoint["response"]> {
+    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"]>
+  ): Promise<Static<TEndpoint>["response"]> {
     return this.fetcher("post", this.baseUrl + path, params[0]);
   }
   // </ApiClient.post>
@@ -421,8 +421,8 @@ export class ApiClient {
   // <ApiClient.get>
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-  ): Promise<TEndpoint["response"]> {
+    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"]>
+  ): Promise<Static<TEndpoint>["response"]> {
     return this.fetcher("get", this.baseUrl + path, params[0]);
   }
   // </ApiClient.get>
@@ -430,8 +430,8 @@ export class ApiClient {
   // <ApiClient.delete>
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-  ): Promise<TEndpoint["response"]> {
+    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"]>
+  ): Promise<Static<TEndpoint>["response"]> {
     return this.fetcher("delete", this.baseUrl + path, params[0]);
   }
   // </ApiClient.delete>

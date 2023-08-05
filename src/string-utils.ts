@@ -1,5 +1,7 @@
 import { capitalize, kebabToCamel } from "pastable/server";
 
+export const toSchemasRef = (name: string) => `#/components/schemas/${name}`;
+
 export function normalizeString(text: string) {
   const prefixed = prefixStringStartingWithNumberIfNeeded(text);
   return prefixed

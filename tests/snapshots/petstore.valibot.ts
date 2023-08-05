@@ -16,15 +16,19 @@ export const Order = v.object({
   complete: v.optional(v.boolean()),
 });
 
-export type Customer = v.Output<typeof Customer>;
-export const Customer = v.any(); /* unsupported */
-
 export type Address = v.Output<typeof Address>;
 export const Address = v.object({
   street: v.optional(v.string()),
   city: v.optional(v.string()),
   state: v.optional(v.string()),
   zip: v.optional(v.string()),
+});
+
+export type Customer = v.Output<typeof Customer>;
+export const Customer = v.object({
+  id: v.optional(v.number()),
+  username: v.optional(v.string()),
+  address: v.optional(v.array(Address)),
 });
 
 export type Category = v.Output<typeof Category>;
