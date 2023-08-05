@@ -248,11 +248,11 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<${match(ctx.runtime)
         .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
-        .with("arktype", "io-ts", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
+        .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
         .otherwise(() => `TEndpoint["parameters"]`)}>
     ): Promise<${match(ctx.runtime)
       .with("zod", "yup", () => infer(`TEndpoint["response"]`))
-      .with("arktype", "io-ts", "valibot", () => infer(`TEndpoint`) + `["response"]`)
+      .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["response"]`)
       .otherwise(() => `TEndpoint["response"]`)}> {
       return this.fetcher("${method}", this.baseUrl + path, params[0]);
     }
