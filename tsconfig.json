@@ -21,13 +21,8 @@
     "forceConsistentCasingInFileNames": true,
     //
     "isolatedModules": true, // https://preconstruct.tools/guides/building-typescript-packages
-    "noEmit": true,
-    //
-    "target": "ESNext",
-    "moduleResolution": "Node",
-    "lib": ["DOM", "ES2021"]
+    "noEmit": true
   },
-  "include": ["src", "tests"],
   "exclude": ["node_modules", ".changeset", ".github", "dist"],
   "types": ["node", "vitest/importMeta"],
   //

@@ -5,7 +5,6 @@ import { join } from "pathe";
 import { type } from "arktype";
 
 import { writeFile } from "fs/promises";
-// @ts-expect-error
 import { name, version } from "../package.json";
 import { allowedRuntimes, generateFile } from "./generator";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints";

@@ -1,54 +1,12 @@
 {
   "name": "typed-openapi",
-  "type": "module",
-  "version": "0.1.2",
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "bin": {
-    "typed-openapi": "bin.js"
-  },
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/astahmer/typed-openapi.git"
   },
-  "scripts": {
-    "start": "node ./dist/cli.cjs",
-    "dev": "tsup --watch",
-    "build": "tsup",
-    "test": "vitest",
-    "typecheck": "tsc --noEmit",
-    "release": "changeset publish",
-    "release-dev": "changeset version --snapshot dev && changeset publish --tag dev"
-  },
-  "dependencies": {
-    "@apidevtools/swagger-parser": "^10.1.0",
-    "@changesets/cli": "^2.26.2",
-    "@sinclair/typebox-codegen": "^0.8.5",
-    "arktype": "1.0.18-alpha",
-    "cac": "^6.7.14",
-    "openapi3-ts": "^4.1.2",
-    "pastable": "^2.2.1",
-    "pathe": "^1.1.1",
-    "prettier": "2.8.4",
-    "ts-pattern": "^5.0.4"
-  },
   "devDependencies": {
-    "@types/node": "^20.4.5",
-    "@types/prettier": "2.7.3",
-    "tsup": "^7.1.0",
-    "typescript": "^5.1.6",
-    "vite-node": "^0.33.0",
-    "vitest": "^0.33.0"
-  },
-  "files": [
-    "src",
-    "dist",
-    "cli",
-    "README.md"
-  ],
-  "sideEffects": false,
-  "publishConfig": {
-    "access": "public"
+    "@changesets/cli": "^2.26.2"
   },
   "pnpm": {
     "patchedDependencies": {
