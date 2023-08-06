@@ -1,6 +1,7 @@
 # typed-openapi
 
-Generate a Typescript API client from an OpenAPI spec
+Generate a Typescript API client from an OpenAPI spec See
+[the online playground](https://typed-openapi-astahmer.vercel.app/)
 
 ## Features
 
