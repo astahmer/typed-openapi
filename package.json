@@ -1,7 +1,7 @@
 {
   "name": "typed-openapi",
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "bin": {
@@ -16,7 +16,9 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "release": "changeset publish",
+    "release-dev": "changeset version --snapshot dev && changeset publish --tag dev"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
