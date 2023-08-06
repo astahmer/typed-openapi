@@ -5,6 +5,13 @@
     "type": "git",
     "url": "https://github.com/astahmer/typed-openapi.git"
   },
+  "scripts": {
+    "build": "cd packages/typed-openapi && pnpm build",
+    "build:all": "pnpm -r run build",
+    "release": "changeset publish",
+    "release-dev": "changeset version --snapshot dev && changeset publish --tag dev",
+    "test": "cd packages/typed-openapi && pnpm run test"
+  },
   "devDependencies": {
     "@changesets/cli": "^2.26.2"
   },
