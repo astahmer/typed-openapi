@@ -2502,6 +2502,21 @@ describe("map-openapi-endpoints", () => {
             },
           },
         ],
+        "factory": {
+          "any": [Function],
+          "array": [Function],
+          "boolean": [Function],
+          "intersection": [Function],
+          "literal": [Function],
+          "never": [Function],
+          "number": [Function],
+          "object": [Function],
+          "optional": [Function],
+          "reference": [Function],
+          "string": [Function],
+          "union": [Function],
+          "unknown": [Function],
+        },
         "refs": {
           "directDependencies": Map {
             "#/components/schemas/Order" => Set {},

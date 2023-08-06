@@ -1,12 +1,20 @@
-import { createFromBuffer, GlobalConfiguration } from "@dprint/formatter";
-import * as fs from "fs";
-import { join } from "path";
+import prettier, { type Options } from "prettier";
+import parserTypescript from "prettier/parser-typescript";
 
-const tsPluginPath = join(__dirname, "..", "node_modules", "@dprint", "typescript", "plugin.wasm");
-const buffer = fs.readFileSync(tsPluginPath);
-const formatter = createFromBuffer(buffer);
+/** @see https://github.dev/stephenh/ts-poet/blob/5ea0dbb3c9f1f4b0ee51a54abb2d758102eda4a2/src/Code.ts#L231 */
+function maybePretty(input: string, options?: Options | null): string {
+  try {
+    return prettier.format(input, {
+      parser: "typescript",
+      plugins: [parserTypescript],
+      ...options,
+    });
+  } catch (err) {
+    console.warn("Failed to format code");
+    console.warn(err);
+    return input; // assume it's invalid syntax and ignore
+  }
+}
 
-formatter.setConfig({ lineWidth: 120, indentWidth: 2 }, {});
-
-export const prettify = (code: string, options?: GlobalConfiguration) =>
-  formatter.formatText("code.ts", code, options as any);
+export const prettify = (str: string, options?: Options | null) =>
+  maybePretty(str, { printWidth: 120, trailingComma: "all", ...options });

@@ -95,9 +95,9 @@ export const generateFile = (options: GeneratorOptions) => {
   return prettify(file);
 };
 
-const generateSchemaList = ({ refs }: GeneratorContext) => {
+const generateSchemaList = ({ refs, runtime }: GeneratorContext) => {
   let file = `
-  export namespace Schemas {
+  ${runtime === "none" ? "export namespace Schemas {" : ""}
     // <Schemas>
   `;
   refs.getOrderedSchemas().forEach(([schema, infos]) => {
@@ -111,7 +111,7 @@ const generateSchemaList = ({ refs }: GeneratorContext) => {
     file +
     `
     // </Schemas>
-    }
+    ${runtime === "none" ? "}" : ""}
   `
   );
 };
@@ -127,7 +127,7 @@ const parameterObjectToString = (parameters: Box<BoxRef> | Record<string, AnyBox
 };
 const generateEndpointSchemaList = (ctx: GeneratorContext) => {
   let file = `
-  export namespace Endpoints {
+  ${ctx.runtime === "none" ? "export namespace Endpoints {" : ""}
   // <Endpoints>
   ${ctx.runtime === "none" ? "" : "type __ENDPOINTS_START__ = {}"}
   `;
@@ -146,13 +146,15 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
           : "parameters: never,"
       }
       response: ${
-        endpoint.response.recompute((box) => {
-          if (Box.isReference(box) && !box.params.generics) {
-            box.value = `Schemas.${box.value}`;
-          }
+        ctx.runtime === "none"
+          ? endpoint.response.recompute((box) => {
+              if (Box.isReference(box) && !box.params.generics) {
+                box.value = `Schemas.${box.value}`;
+              }
 
-          return box;
-        }).value
+              return box;
+            }).value
+          : endpoint.response.value
       },
     }\n`;
   });
@@ -161,7 +163,7 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
     file +
     `
   // </Endpoints>
-  }
+  ${ctx.runtime === "none" ? "}" : ""}
   ${ctx.runtime === "none" ? "" : "type __ENDPOINTS_END__ = {}"}
   `
   );
@@ -177,7 +179,9 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
      ${Object.entries(byMethods)
        .map(([method, list]) => {
          return `${method}: {
-           ${list.map((endpoint) => `"${endpoint.path}": Endpoints.${endpoint.meta.alias}`)}
+           ${list.map(
+             (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
+           )}
          }`;
        })
        .join(",\n")}

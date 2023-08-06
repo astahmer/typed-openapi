@@ -6,7 +6,7 @@ export const types = scope({
     "petId?": "number",
     "quantity?": "number",
     "shipDate?": "string",
-    "status?": "\"placed\" | \"approved\" | \"delivered\"",
+    "status?": '"placed" | "approved" | "delivered"',
     "complete?": "boolean",
   },
   Address: {
@@ -44,7 +44,7 @@ export const types = scope({
     "category?": "Category | undefined",
     photoUrls: "string[]",
     "tags?": "Tag[] | undefined",
-    "status?": "\"available\" | \"pending\" | \"sold\" | undefined",
+    "status?": '"available" | "pending" | "sold" | undefined',
   },
   ApiResponse: {
     "code?": "number",
@@ -53,30 +53,30 @@ export const types = scope({
   },
   __ENDPOINTS_START__: {},
   put_UpdatePet: {
-    method: "\"PUT\"",
-    path: "\"/pet\"",
+    method: '"PUT"',
+    path: '"/pet"',
     parameters: "never",
     response: "Pet",
   },
   post_AddPet: {
-    method: "\"POST\"",
-    path: "\"/pet\"",
+    method: '"POST"',
+    path: '"/pet"',
     parameters: "never",
     response: "Pet",
   },
   get_FindPetsByStatus: {
-    method: "\"GET\"",
-    path: "\"/pet/findByStatus\"",
+    method: '"GET"',
+    path: '"/pet/findByStatus"',
     parameters: {
       query: {
-        "status?": "\"available\" | \"pending\" | \"sold\"",
+        "status?": '"available" | "pending" | "sold"',
       },
     },
     response: "Pet[]",
   },
   get_FindPetsByTags: {
-    method: "\"GET\"",
-    path: "\"/pet/findByTags\"",
+    method: '"GET"',
+    path: '"/pet/findByTags"',
     parameters: {
       query: {
         "tags?": "string[]",
@@ -85,8 +85,8 @@ export const types = scope({
     response: "Pet[]",
   },
   get_GetPetById: {
-    method: "\"GET\"",
-    path: "\"/pet/{petId}\"",
+    method: '"GET"',
+    path: '"/pet/{petId}"',
     parameters: {
       path: {
         petId: "number",
@@ -95,8 +95,8 @@ export const types = scope({
     response: "Pet",
   },
   post_UpdatePetWithForm: {
-    method: "\"POST\"",
-    path: "\"/pet/{petId}\"",
+    method: '"POST"',
+    path: '"/pet/{petId}"',
     parameters: {
       query: {
         name: "string",
@@ -109,8 +109,8 @@ export const types = scope({
     response: "unknown",
   },
   delete_DeletePet: {
-    method: "\"DELETE\"",
-    path: "\"/pet/{petId}\"",
+    method: '"DELETE"',
+    path: '"/pet/{petId}"',
     parameters: {
       path: {
         petId: "number",
@@ -122,8 +122,8 @@ export const types = scope({
     response: "unknown",
   },
   post_UploadFile: {
-    method: "\"POST\"",
-    path: "\"/pet/{petId}/uploadImage\"",
+    method: '"POST"',
+    path: '"/pet/{petId}/uploadImage"',
     parameters: {
       query: {
         additionalMetadata: "string",
@@ -135,20 +135,20 @@ export const types = scope({
     response: "ApiResponse",
   },
   get_GetInventory: {
-    method: "\"GET\"",
-    path: "\"/store/inventory\"",
+    method: '"GET"',
+    path: '"/store/inventory"',
     parameters: "never",
     response: "unknown",
   },
   post_PlaceOrder: {
-    method: "\"POST\"",
-    path: "\"/store/order\"",
+    method: '"POST"',
+    path: '"/store/order"',
     parameters: "never",
     response: "Order",
   },
   get_GetOrderById: {
-    method: "\"GET\"",
-    path: "\"/store/order/{orderId}\"",
+    method: '"GET"',
+    path: '"/store/order/{orderId}"',
     parameters: {
       path: {
         orderId: "number",
@@ -157,8 +157,8 @@ export const types = scope({
     response: "Order",
   },
   delete_DeleteOrder: {
-    method: "\"DELETE\"",
-    path: "\"/store/order/{orderId}\"",
+    method: '"DELETE"',
+    path: '"/store/order/{orderId}"',
     parameters: {
       path: {
         orderId: "number",
@@ -167,20 +167,20 @@ export const types = scope({
     response: "unknown",
   },
   post_CreateUser: {
-    method: "\"POST\"",
-    path: "\"/user\"",
+    method: '"POST"',
+    path: '"/user"',
     parameters: "never",
     response: "User",
   },
   post_CreateUsersWithListInput: {
-    method: "\"POST\"",
-    path: "\"/user/createWithList\"",
+    method: '"POST"',
+    path: '"/user/createWithList"',
     parameters: "never",
     response: "unknown",
   },
   get_LoginUser: {
-    method: "\"GET\"",
-    path: "\"/user/login\"",
+    method: '"GET"',
+    path: '"/user/login"',
     parameters: {
       query: {
         "username?": "string",
@@ -190,14 +190,14 @@ export const types = scope({
     response: "string",
   },
   get_LogoutUser: {
-    method: "\"GET\"",
-    path: "\"/user/logout\"",
+    method: '"GET"',
+    path: '"/user/logout"',
     parameters: "never",
     response: "unknown",
   },
   get_GetUserByName: {
-    method: "\"GET\"",
-    path: "\"/user/{username}\"",
+    method: '"GET"',
+    path: '"/user/{username}"',
     parameters: {
       path: {
         username: "string",
@@ -206,8 +206,8 @@ export const types = scope({
     response: "User",
   },
   put_UpdateUser: {
-    method: "\"PUT\"",
-    path: "\"/user/{username}\"",
+    method: '"PUT"',
+    path: '"/user/{username}"',
     parameters: {
       path: {
         username: "string",
@@ -216,8 +216,8 @@ export const types = scope({
     response: "unknown",
   },
   delete_DeleteUser: {
-    method: "\"DELETE\"",
-    path: "\"/user/{username}\"",
+    method: '"DELETE"',
+    path: '"/user/{username}"',
     parameters: {
       path: {
         username: "string",
@@ -337,7 +337,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | MutationMethod;
+export type Method = "get" | "head" | MutationMethod;
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -424,13 +424,13 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
 }
 
 /**
- * Example usage:
- * const api = createApiClient((method, url, params) =>
- *   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
- * );
- * api.get("/users").then((users) => console.log(users));
- * api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
- * api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
- */
+ Example usage:
+ const api = createApiClient((method, url, params) =>
+   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
+ );
+ api.get("/users").then((users) => console.log(users));
+ api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
+ api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+*/
 
 // </ApiClient

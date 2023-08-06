@@ -6,13 +6,7 @@ export const Order = v.object({
   petId: v.optional(v.number()),
   quantity: v.optional(v.number()),
   shipDate: v.optional(v.string()),
-  status: v.optional(
-    v.union([
-      v.literal("placed"),
-      v.literal("approved"),
-      v.literal("delivered"),
-    ]),
-  ),
+  status: v.optional(v.union([v.literal("placed"), v.literal("approved"), v.literal("delivered")])),
   complete: v.optional(v.boolean()),
 });
 
@@ -57,19 +51,12 @@ export const Tag = v.object({
 
 export type Pet = v.Output<typeof Pet>;
 export const Pet = v.object({
-  id: v.optional(v.union([v.number(), v.any(/* unsupported */)])),
+  "id?": v.union([v.number(), v.any(/* unsupported */)]),
   name: v.string(),
-  category: v.optional(v.union([Category, v.any(/* unsupported */)])),
+  "category?": v.union([Category, v.any(/* unsupported */)]),
   photoUrls: v.array(v.string()),
-  tags: v.optional(v.union([v.array(Tag), v.any(/* unsupported */)])),
-  status: v.optional(
-    v.union([
-      v.literal("available"),
-      v.literal("pending"),
-      v.literal("sold"),
-      v.any(), /* unsupported */
-    ]),
-  ),
+  "tags?": v.union([v.array(Tag), v.any(/* unsupported */)]),
+  "status?": v.union([v.literal("available"), v.literal("pending"), v.literal("sold"), v.any(/* unsupported */)]),
 });
 
 export type ApiResponse = v.Output<typeof ApiResponse>;
@@ -104,13 +91,7 @@ export const get_FindPetsByStatus = v.object({
   path: v.literal("/pet/findByStatus"),
   parameters: v.object({
     query: v.object({
-      status: v.optional(
-        v.union([
-          v.literal("available"),
-          v.literal("pending"),
-          v.literal("sold"),
-        ]),
-      ),
+      status: v.optional(v.union([v.literal("available"), v.literal("pending"), v.literal("sold")])),
     }),
   }),
   response: v.array(Pet),
@@ -234,9 +215,7 @@ export const post_CreateUser = v.object({
   response: User,
 });
 
-export type post_CreateUsersWithListInput = v.Output<
-  typeof post_CreateUsersWithListInput
->;
+export type post_CreateUsersWithListInput = v.Output<typeof post_CreateUsersWithListInput>;
 export const post_CreateUsersWithListInput = v.object({
   method: v.literal("POST"),
   path: v.literal("/user/createWithList"),
@@ -354,7 +333,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | MutationMethod;
+export type Method = "get" | "head" | MutationMethod;
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -441,13 +420,13 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
 }
 
 /**
- * Example usage:
- * const api = createApiClient((method, url, params) =>
- *   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
- * );
- * api.get("/users").then((users) => console.log(users));
- * api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
- * api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
- */
+ Example usage:
+ const api = createApiClient((method, url, params) =>
+   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
+ );
+ api.get("/users").then((users) => console.log(users));
+ api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
+ api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+*/
 
 // </ApiClient

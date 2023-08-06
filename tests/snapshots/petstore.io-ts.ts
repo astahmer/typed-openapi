@@ -6,14 +6,7 @@ export const Order = t.type({
   petId: t.union([t.undefined, t.number]),
   quantity: t.union([t.undefined, t.number]),
   shipDate: t.union([t.undefined, t.string]),
-  status: t.union([
-    t.undefined,
-    t.union([
-      t.literal("placed"),
-      t.literal("approved"),
-      t.literal("delivered"),
-    ]),
-  ]),
+  status: t.union([t.undefined, t.union([t.literal("placed"), t.literal("approved"), t.literal("delivered")])]),
   complete: t.union([t.undefined, t.boolean]),
 });
 
@@ -58,20 +51,12 @@ export const Tag = t.type({
 
 export type Pet = t.TypeOf<typeof Pet>;
 export const Pet = t.type({
-  id: t.union([t.undefined, t.union([t.number, t.undefined])]),
+  "id?": t.union([t.number, t.undefined]),
   name: t.string,
-  category: t.union([t.undefined, t.union([Category, t.undefined])]),
+  "category?": t.union([Category, t.undefined]),
   photoUrls: t.array(t.string),
-  tags: t.union([t.undefined, t.union([t.array(Tag), t.undefined])]),
-  status: t.union([
-    t.undefined,
-    t.union([
-      t.literal("available"),
-      t.literal("pending"),
-      t.literal("sold"),
-      t.undefined,
-    ]),
-  ]),
+  "tags?": t.union([t.array(Tag), t.undefined]),
+  "status?": t.union([t.literal("available"), t.literal("pending"), t.literal("sold"), t.undefined]),
 });
 
 export type ApiResponse = t.TypeOf<typeof ApiResponse>;
@@ -106,14 +91,7 @@ export const get_FindPetsByStatus = t.type({
   path: t.literal("/pet/findByStatus"),
   parameters: t.type({
     query: t.type({
-      status: t.union([
-        t.undefined,
-        t.union([
-          t.literal("available"),
-          t.literal("pending"),
-          t.literal("sold"),
-        ]),
-      ]),
+      status: t.union([t.undefined, t.union([t.literal("available"), t.literal("pending"), t.literal("sold")])]),
     }),
   }),
   response: t.array(Pet),
@@ -237,9 +215,7 @@ export const post_CreateUser = t.type({
   response: User,
 });
 
-export type post_CreateUsersWithListInput = t.TypeOf<
-  typeof post_CreateUsersWithListInput
->;
+export type post_CreateUsersWithListInput = t.TypeOf<typeof post_CreateUsersWithListInput>;
 export const post_CreateUsersWithListInput = t.type({
   method: t.literal("POST"),
   path: t.literal("/user/createWithList"),
@@ -357,7 +333,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | MutationMethod;
+export type Method = "get" | "head" | MutationMethod;
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -444,13 +420,13 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
 }
 
 /**
- * Example usage:
- * const api = createApiClient((method, url, params) =>
- *   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
- * );
- * api.get("/users").then((users) => console.log(users));
- * api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
- * api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
- */
+ Example usage:
+ const api = createApiClient((method, url, params) =>
+   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
+ );
+ api.get("/users").then((users) => console.log(users));
+ api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
+ api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+*/
 
 // </ApiClient

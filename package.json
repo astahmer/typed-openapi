@@ -21,19 +21,18 @@
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
     "@changesets/cli": "^2.26.2",
-    "@dprint/formatter": "^0.2.0",
-    "@dprint/typescript": "^0.85.1",
     "@sinclair/typebox-codegen": "^0.8.5",
     "arktype": "1.0.18-alpha",
     "cac": "^6.7.14",
-    "dprint": "^0.40.2",
     "openapi3-ts": "^4.1.2",
     "pastable": "^2.2.1",
     "pathe": "^1.1.1",
+    "prettier": "2.8.4",
     "ts-pattern": "^5.0.4"
   },
   "devDependencies": {
     "@types/node": "^20.4.5",
+    "@types/prettier": "2.7.3",
     "tsup": "^7.1.0",
     "typescript": "^5.1.6",
     "vite-node": "^0.33.0",

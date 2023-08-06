@@ -1,88 +1,84 @@
-import { Static, Type } from "@sinclair/typebox";
+import { Type, Static } from "@sinclair/typebox";
 
 export type Order = Static<typeof Order>;
-export const Order = Type.Partial(Type.Object({
-  id: Type.Number(),
-  petId: Type.Number(),
-  quantity: Type.Number(),
-  shipDate: Type.String(),
-  status: Type.Union([
-    Type.Literal("placed"),
-    Type.Literal("approved"),
-    Type.Literal("delivered"),
-  ]),
-  complete: Type.Boolean(),
-}));
+export const Order = Type.Partial(
+  Type.Object({
+    id: Type.Number(),
+    petId: Type.Number(),
+    quantity: Type.Number(),
+    shipDate: Type.String(),
+    status: Type.Union([Type.Literal("placed"), Type.Literal("approved"), Type.Literal("delivered")]),
+    complete: Type.Boolean(),
+  }),
+);
 
 export type Address = Static<typeof Address>;
-export const Address = Type.Partial(Type.Object({
-  street: Type.String(),
-  city: Type.String(),
-  state: Type.String(),
-  zip: Type.String(),
-}));
+export const Address = Type.Partial(
+  Type.Object({
+    street: Type.String(),
+    city: Type.String(),
+    state: Type.String(),
+    zip: Type.String(),
+  }),
+);
 
 export type Customer = Static<typeof Customer>;
-export const Customer = Type.Partial(Type.Object({
-  id: Type.Number(),
-  username: Type.String(),
-  address: Type.Array(Address),
-}));
+export const Customer = Type.Partial(
+  Type.Object({
+    id: Type.Number(),
+    username: Type.String(),
+    address: Type.Array(Address),
+  }),
+);
 
 export type Category = Static<typeof Category>;
-export const Category = Type.Partial(Type.Object({
-  id: Type.Number(),
-  name: Type.String(),
-}));
+export const Category = Type.Partial(
+  Type.Object({
+    id: Type.Number(),
+    name: Type.String(),
+  }),
+);
 
 export type User = Static<typeof User>;
-export const User = Type.Partial(Type.Object({
-  id: Type.Number(),
-  username: Type.String(),
-  firstName: Type.String(),
-  lastName: Type.String(),
-  email: Type.String(),
-  password: Type.String(),
-  phone: Type.String(),
-  userStatus: Type.Number(),
-}));
+export const User = Type.Partial(
+  Type.Object({
+    id: Type.Number(),
+    username: Type.String(),
+    firstName: Type.String(),
+    lastName: Type.String(),
+    email: Type.String(),
+    password: Type.String(),
+    phone: Type.String(),
+    userStatus: Type.Number(),
+  }),
+);
 
 export type Tag = Static<typeof Tag>;
-export const Tag = Type.Partial(Type.Object({
-  id: Type.Number(),
-  name: Type.String(),
-}));
+export const Tag = Type.Partial(
+  Type.Object({
+    id: Type.Number(),
+    name: Type.String(),
+  }),
+);
 
 export type Pet = Static<typeof Pet>;
 export const Pet = Type.Object({
-  id: Type.Optional(Type.Union([
-    Type.Number(),
-    Type.Undefined(),
-  ])),
+  "id?": Type.Union([Type.Number(), Type.Undefined()]),
   name: Type.String(),
-  category: Type.Optional(Type.Union([
-    Category,
-    Type.Undefined(),
-  ])),
+  "category?": Type.Union([Category, Type.Undefined()]),
   photoUrls: Type.Array(Type.String()),
-  tags: Type.Optional(Type.Union([
-    Type.Array(Tag),
-    Type.Undefined(),
-  ])),
-  status: Type.Optional(Type.Union([
-    Type.Literal("available"),
-    Type.Literal("pending"),
-    Type.Literal("sold"),
-    Type.Undefined(),
-  ])),
+  "tags?": Type.Union([Type.Array(Tag), Type.Undefined()]),
+  "status?": Type.Union([Type.Literal("available"), Type.Literal("pending"), Type.Literal("sold"), Type.Undefined()]),
 });
 
 export type ApiResponse = Static<typeof ApiResponse>;
-export const ApiResponse = Type.Partial(Type.Object({
-  code: Type.Number(),
-  type: Type.String(),
-  message: Type.String(),
-}));
+export const ApiResponse = Type.Partial(
+  Type.Object({
+    code: Type.Number(),
+    type: Type.String(),
+    message: Type.String(),
+  }),
+);
 
 type __ENDPOINTS_START__ = Static<typeof __ENDPOINTS_START__>;
 const __ENDPOINTS_START__ = Type.Object({});
@@ -108,13 +104,11 @@ export const get_FindPetsByStatus = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/pet/findByStatus"),
   parameters: Type.Object({
-    query: Type.Partial(Type.Object({
-      status: Type.Union([
-        Type.Literal("available"),
-        Type.Literal("pending"),
-        Type.Literal("sold"),
-      ]),
-    })),
+    query: Type.Partial(
+      Type.Object({
+        status: Type.Union([Type.Literal("available"), Type.Literal("pending"), Type.Literal("sold")]),
+      }),
+    ),
   }),
   response: Type.Array(Pet),
 });
@@ -124,9 +118,11 @@ export const get_FindPetsByTags = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/pet/findByTags"),
   parameters: Type.Object({
-    query: Type.Partial(Type.Object({
-      tags: Type.Array(Type.String()),
-    })),
+    query: Type.Partial(
+      Type.Object({
+        tags: Type.Array(Type.String()),
+      }),
+    ),
   }),
   response: Type.Array(Pet),
 });
@@ -250,10 +246,12 @@ export const get_LoginUser = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/user/login"),
   parameters: Type.Object({
-    query: Type.Partial(Type.Object({
-      username: Type.String(),
-      password: Type.String(),
-    })),
+    query: Type.Partial(
+      Type.Object({
+        username: Type.String(),
+        password: Type.String(),
+      }),
+    ),
   }),
   response: Type.String(),
 });
@@ -355,7 +353,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | MutationMethod;
+export type Method = "get" | "head" | MutationMethod;
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -442,13 +440,13 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
 }
 
 /**
- * Example usage:
- * const api = createApiClient((method, url, params) =>
- *   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
- * );
- * api.get("/users").then((users) => console.log(users));
- * api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
- * api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
- */
+ Example usage:
+ const api = createApiClient((method, url, params) =>
+   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
+ );
+ api.get("/users").then((users) => console.log(users));
+ api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
+ api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+*/
 
 // </ApiClient

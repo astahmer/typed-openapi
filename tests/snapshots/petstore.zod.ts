@@ -6,9 +6,7 @@ export const Order = z.object({
   petId: z.number().optional(),
   quantity: z.number().optional(),
   shipDate: z.string().optional(),
-  status: z
-    .union([z.literal("placed"), z.literal("approved"), z.literal("delivered")])
-    .optional(),
+  status: z.union([z.literal("placed"), z.literal("approved"), z.literal("delivered")]).optional(),
   complete: z.boolean().optional(),
 });
 
@@ -53,19 +51,12 @@ export const Tag = z.object({
 
 export type Pet = z.infer<typeof Pet>;
 export const Pet = z.object({
-  id: z.union([z.number(), z.undefined()]).optional(),
+  "id?": z.union([z.number(), z.undefined()]),
   name: z.string(),
-  category: z.union([Category, z.undefined()]).optional(),
+  "category?": z.union([Category, z.undefined()]),
   photoUrls: z.array(z.string()),
-  tags: z.union([z.array(Tag), z.undefined()]).optional(),
-  status: z
-    .union([
-      z.literal("available"),
-      z.literal("pending"),
-      z.literal("sold"),
-      z.undefined(),
-    ])
-    .optional(),
+  "tags?": z.union([z.array(Tag), z.undefined()]),
+  "status?": z.union([z.literal("available"), z.literal("pending"), z.literal("sold"), z.undefined()]),
 });
 
 export type ApiResponse = z.infer<typeof ApiResponse>;
@@ -97,13 +88,7 @@ export const get_FindPetsByStatus = {
   path: z.literal("/pet/findByStatus"),
   parameters: z.object({
     query: z.object({
-      status: z
-        .union([
-          z.literal("available"),
-          z.literal("pending"),
-          z.literal("sold"),
-        ])
-        .optional(),
+      status: z.union([z.literal("available"), z.literal("pending"), z.literal("sold")]).optional(),
     }),
   }),
   response: z.array(Pet),
@@ -342,7 +327,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | MutationMethod;
+export type Method = "get" | "head" | MutationMethod;
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -429,13 +414,13 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
 }
 
 /**
- * Example usage:
- * const api = createApiClient((method, url, params) =>
- *   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
- * );
- * api.get("/users").then((users) => console.log(users));
- * api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
- * api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
- */
+ Example usage:
+ const api = createApiClient((method, url, params) =>
+   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
+ );
+ api.get("/users").then((users) => console.log(users));
+ api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
+ api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+*/
 
 // </ApiClient

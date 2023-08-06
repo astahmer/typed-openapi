@@ -104,7 +104,7 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "object",
-      "value": "{ str: string, nb?: number | undefined }",
+      "value": "{ str: string, \\"nb?\\": number | undefined }",
     }
   `);
 
