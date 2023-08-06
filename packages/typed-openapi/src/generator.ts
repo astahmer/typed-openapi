@@ -14,6 +14,7 @@ type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
 type GeneratorContext = Required<GeneratorOptions>;
 
 export const allowedRuntimes = type("'none' | 'arktype' | 'io-ts' | 'typebox' | 'valibot' | 'yup' | 'zod'");
+export type OutputRuntime = typeof allowedRuntimes.infer;
 
 // TODO validate response schemas in sample fetch ApiClient
 // also, check that we can easily retrieve the response schema from the Fetcher
