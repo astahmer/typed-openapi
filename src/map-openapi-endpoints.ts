@@ -9,8 +9,9 @@ import { tsFactory } from "./ts-factory";
 import { AnyBox, BoxRef, OpenapiSchemaConvertContext } from "./types";
 import { pathToVariableName } from "./string-utils";
 
+const factory = tsFactory;
+
 export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
-  const factory = tsFactory;
   const refs = createRefResolver(doc, factory);
   const ctx: OpenapiSchemaConvertContext = { refs, factory };
   const endpointList = [] as Array<Endpoint>;
@@ -121,7 +122,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
     });
   });
 
-  return { doc, refs, endpointList };
+  return { doc, refs, endpointList, factory };
 };
 
 const allowedParamMediaTypes = [

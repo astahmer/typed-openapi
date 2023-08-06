@@ -11,6 +11,7 @@ export type BoxDefinition = {
 export type BoxParams = string | BoxDefinition;
 export type WithSchema = {
   schema: SchemaObject | ReferenceObject | undefined;
+  ctx: OpenapiSchemaConvertContext;
 };
 
 export type BoxUnion = WithSchema & {
@@ -93,7 +94,6 @@ export type FactoryCreator = (
 export type OpenapiSchemaConvertContext = {
   factory: FactoryCreator | GenericFactory;
   refs: RefResolver;
-  rootRef?: string;
   onBox?: (box: Box<AnyBoxDef>) => Box<AnyBoxDef>;
 };
 

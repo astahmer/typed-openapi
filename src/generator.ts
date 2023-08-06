@@ -96,7 +96,10 @@ export const generateFile = (options: GeneratorOptions) => {
 };
 
 const generateSchemaList = ({ refs }: GeneratorContext) => {
-  let file = "// <Schemas>\n";
+  let file = `
+  export namespace Schemas {
+    // <Schemas>
+  `;
   refs.getOrderedSchemas().forEach(([schema, infos]) => {
     if (!infos?.name) return;
     if (infos.kind !== "schemas") return;
@@ -104,7 +107,13 @@ const generateSchemaList = ({ refs }: GeneratorContext) => {
     file += `export type ${infos.normalized} = ${schema.value}\n`;
   });
 
-  return file + "\n// </Schemas>\n";
+  return (
+    file +
+    `
+    // </Schemas>
+    }
+  `
+  );
 };
 
 const parameterObjectToString = (parameters: Box<BoxRef> | Record<string, AnyBox>) => {
@@ -118,6 +127,7 @@ const parameterObjectToString = (parameters: Box<BoxRef> | Record<string, AnyBox
 };
 const generateEndpointSchemaList = (ctx: GeneratorContext) => {
   let file = `
+  export namespace Endpoints {
   // <Endpoints>
   ${ctx.runtime === "none" ? "" : "type __ENDPOINTS_START__ = {}"}
   `;
@@ -135,7 +145,15 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
           }`
           : "parameters: never,"
       }
-      response: ${endpoint.response.value},
+      response: ${
+        endpoint.response.recompute((box) => {
+          if (Box.isReference(box) && !box.params.generics) {
+            box.value = `Schemas.${box.value}`;
+          }
+
+          return box;
+        }).value
+      },
     }\n`;
   });
 
@@ -143,6 +161,7 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
     file +
     `
   // </Endpoints>
+  }
   ${ctx.runtime === "none" ? "" : "type __ENDPOINTS_END__ = {}"}
   `
   );
@@ -158,7 +177,7 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
      ${Object.entries(byMethods)
        .map(([method, list]) => {
          return `${method}: {
-           ${list.map((endpoint) => `"${endpoint.path}": ${endpoint.meta.alias}`)}
+           ${list.map((endpoint) => `"${endpoint.path}": Endpoints.${endpoint.meta.alias}`)}
          }`;
        })
        .join(",\n")}
@@ -270,13 +289,13 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
 
 
 /**
- * Example usage:
- * const api = createApiClient((method, url, params) =>
- *   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
- * );
- * api.get("/users").then((users) => console.log(users));
- * api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
- * api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+ Example usage:
+ const api = createApiClient((method, url, params) =>
+   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
+ );
+ api.get("/users").then((users) => console.log(users));
+ api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
+ api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
 */
 
 // </ApiClient

@@ -1,4 +1,5 @@
-import type { SchemaObject, ReferenceObject } from "openapi3-ts/oas31";
+import { SchemaObject } from "openapi3-ts/oas31";
+import { openApiSchemaToTs } from "./openapi-schema-to-ts";
 import {
   AnyBoxDef,
   BoxArray,
@@ -9,6 +10,7 @@ import {
   BoxOptional,
   BoxRef,
   BoxUnion,
+  OpenapiSchemaConvertContext,
 } from "./types";
 
 // TODO rename SchemaBox
@@ -16,7 +18,8 @@ export class Box<T extends AnyBoxDef = AnyBoxDef> {
   type: T["type"];
   value: T["value"];
   params: T["params"];
-  schema: SchemaObject | ReferenceObject | undefined;
+  schema: T["schema"];
+  ctx: T["ctx"];
 
   constructor(public definition: T) {
     this.definition = definition;
@@ -24,6 +27,7 @@ export class Box<T extends AnyBoxDef = AnyBoxDef> {
     this.value = definition.value;
     this.params = definition.params;
     this.schema = definition.schema;
+    this.ctx = definition.ctx;
   }
 
   toJSON() {
@@ -32,6 +36,10 @@ export class Box<T extends AnyBoxDef = AnyBoxDef> {
 
   toString() {
     return JSON.stringify(this.toJSON(), null, 2);
+  }
+
+  recompute(callback: OpenapiSchemaConvertContext["onBox"]) {
+    return openApiSchemaToTs({ schema: this.schema as SchemaObject, ctx: { ...this.ctx, onBox: callback! } });
   }
 
   static fromJSON(json: string) {
