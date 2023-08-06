@@ -1,15 +1,15 @@
 {
-  "name": "typedapi",
+  "name": "typed-openapi",
   "type": "module",
   "version": "0.1.0",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "bin": {
-    "typedapi": "bin.js"
+    "typed-openapi": "bin.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/astahmer/typedapi.git"
+    "url": "https://github.com/astahmer/typed-openapi.git"
   },
   "scripts": {
     "start": "node ./dist/cli.cjs",
@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
+    "@changesets/cli": "^2.26.2",
     "@dprint/formatter": "^0.2.0",
     "@dprint/typescript": "^0.85.1",
     "@sinclair/typebox-codegen": "^0.8.5",

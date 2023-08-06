@@ -1,0 +1,5 @@
+---
+"typed-openapi": patch
+---
+
+init
