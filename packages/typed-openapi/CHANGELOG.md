@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 0.1.3
+
+### Patch Changes
+
+- 8568d69: Not a CLI anymore ! Exposed functions & types to be used when installed from npm
+
 ## 0.1.2
 
 ### Patch Changes
