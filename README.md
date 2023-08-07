@@ -4,8 +4,7 @@ Generate a Typescript API client from an OpenAPI spec
 
 See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 
-![Screenshot 2023-08-06 at 18 35 28](https://github.com/astahmer/typed-openapi/assets/47224540/d9216d1d-19e3-4a58-8fca-bebd96f96c21)
-
+![Screenshot 2023-08-08 at 00 48 42](https://github.com/astahmer/typed-openapi/assets/47224540/3016fa92-e09a-41f3-a95f-32caa41325da)
 
 
 ## Features
