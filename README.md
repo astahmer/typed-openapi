@@ -1,11 +1,10 @@
 # typed-openapi
 
-Generate a Typescript API client from an OpenAPI spec 
+Generate a Typescript API client from an OpenAPI spec
 
 See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 
 ![Screenshot 2023-08-08 at 00 48 42](https://github.com/astahmer/typed-openapi/assets/47224540/3016fa92-e09a-41f3-a95f-32caa41325da)
-
 
 ## Features
 
@@ -50,6 +49,21 @@ Options: -o, --output <path> Output path for the api client ts file (defaults to
 <name> Runtime to use for validation; defaults to `none`; available: 'none' | 'arktype' | 'io-ts' | 'typebox' |
 'valibot' | 'yup' | 'zod' (default: none) -h, --help Display this message -v, --version Display version number
 ```
+
+## Non-goals
+
+- Caring too much about the runtime validation code. If that works (thanks to
+  [typebox-codegen](https://github.com/sinclairzx81/typebox-codegen)), that's great, otherwise I'm not really interested
+  in fixing it. If you are, feel free to open a PR.
+
+- Supporting all the OpenAPI spec. Regex, dates, files, whatever, that's not the point here.
+  [openapi-zod-client](https://github.com/astahmer/openapi-zod-client) does a great job at that, but it's slow to
+  generate the client and the suggestions in the IDE are not instant. I'm only interested in supporting the subset of
+  the spec that makes the API client typesafe and fast to provide suggetions in the IDE.
+
+- Splitting the generated client into multiple files. Nope. Been there, done that. Let's keep it simple.
+
+Basically, let's focus on having a fast and typesafe API client generation instead.
 
 ## Alternatives
 
