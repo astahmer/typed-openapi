@@ -27,6 +27,13 @@ test("getSchemaBox", () => {
       "value": "boolean",
     }
   `);
+  // @ts-expect-error - nullable is not in the SchemaObject for OpenAPI 3.1, but it is for 3.0
+  expect(getSchemaBox({ type: "boolean", nullable: true })).toMatchInlineSnapshot(`
+    {
+      "type": "union",
+      "value": "boolean | null",
+    }
+  `);
   expect(getSchemaBox({ type: "string" })).toMatchInlineSnapshot(`
     {
       "type": "keyword",

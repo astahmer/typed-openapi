@@ -145,8 +145,8 @@ export const Resources = t.type({
   MemorySwappiness: t.union([t.undefined, t.number]),
   NanoCpus: t.union([t.undefined, t.number]),
   OomKillDisable: t.union([t.undefined, t.boolean]),
-  Init: t.union([t.undefined, t.boolean]),
-  PidsLimit: t.union([t.undefined, t.number]),
+  Init: t.union([t.undefined, t.union([t.boolean, t.null])]),
+  PidsLimit: t.union([t.undefined, t.union([t.number, t.null])]),
   Ulimits: t.union([
     t.undefined,
     t.array(
@@ -207,22 +207,28 @@ export const HealthConfig = t.type({
 });
 
 export type HealthcheckResult = t.TypeOf<typeof HealthcheckResult>;
-export const HealthcheckResult = t.type({
-  Start: t.union([t.undefined, t.string]),
-  End: t.union([t.undefined, t.string]),
-  ExitCode: t.union([t.undefined, t.number]),
-  Output: t.union([t.undefined, t.string]),
-});
+export const HealthcheckResult = t.union([
+  t.type({
+    Start: t.union([t.undefined, t.string]),
+    End: t.union([t.undefined, t.string]),
+    ExitCode: t.union([t.undefined, t.number]),
+    Output: t.union([t.undefined, t.string]),
+  }),
+  t.null,
+]);
 
 export type Health = t.TypeOf<typeof Health>;
-export const Health = t.type({
-  Status: t.union([
-    t.undefined,
-    t.union([t.literal("none"), t.literal("starting"), t.literal("healthy"), t.literal("unhealthy")]),
-  ]),
-  FailingStreak: t.union([t.undefined, t.number]),
-  Log: t.union([t.undefined, t.array(HealthcheckResult)]),
-});
+export const Health = t.union([
+  t.type({
+    Status: t.union([
+      t.undefined,
+      t.union([t.literal("none"), t.literal("starting"), t.literal("healthy"), t.literal("unhealthy")]),
+    ]),
+    FailingStreak: t.union([t.undefined, t.number]),
+    Log: t.union([t.undefined, t.array(HealthcheckResult)]),
+  }),
+  t.null,
+]);
 
 export type PortBinding = t.TypeOf<typeof PortBinding>;
 export const PortBinding = t.type({
@@ -266,7 +272,7 @@ export const HostConfig = t.intersection([
     VolumeDriver: t.union([t.undefined, t.string]),
     VolumesFrom: t.union([t.undefined, t.array(t.string)]),
     Mounts: t.union([t.undefined, t.array(Mount)]),
-    ConsoleSize: t.union([t.undefined, t.array(t.number)]),
+    ConsoleSize: t.union([t.undefined, t.union([t.array(t.number), t.null])]),
     Annotations: t.union([t.undefined, t.unknown]),
     CapAdd: t.union([t.undefined, t.array(t.string)]),
     CapDrop: t.union([t.undefined, t.array(t.string)]),
@@ -306,33 +312,36 @@ export const ContainerConfig = t.type({
   AttachStdin: t.union([t.undefined, t.boolean]),
   AttachStdout: t.union([t.undefined, t.boolean]),
   AttachStderr: t.union([t.undefined, t.boolean]),
-  ExposedPorts: t.union([t.undefined, t.unknown]),
+  ExposedPorts: t.union([t.undefined, t.union([t.unknown, t.null])]),
   Tty: t.union([t.undefined, t.boolean]),
   OpenStdin: t.union([t.undefined, t.boolean]),
   StdinOnce: t.union([t.undefined, t.boolean]),
   Env: t.union([t.undefined, t.array(t.string)]),
   Cmd: t.union([t.undefined, t.array(t.string)]),
   Healthcheck: t.union([t.undefined, HealthConfig]),
-  ArgsEscaped: t.union([t.undefined, t.boolean]),
+  ArgsEscaped: t.union([t.undefined, t.union([t.boolean, t.null])]),
   Image: t.union([t.undefined, t.string]),
   Volumes: t.union([t.undefined, t.unknown]),
   WorkingDir: t.union([t.undefined, t.string]),
   Entrypoint: t.union([t.undefined, t.array(t.string)]),
-  NetworkDisabled: t.union([t.undefined, t.boolean]),
-  MacAddress: t.union([t.undefined, t.string]),
-  OnBuild: t.union([t.undefined, t.array(t.string)]),
+  NetworkDisabled: t.union([t.undefined, t.union([t.boolean, t.null])]),
+  MacAddress: t.union([t.undefined, t.union([t.string, t.null])]),
+  OnBuild: t.union([t.undefined, t.union([t.array(t.string), t.null])]),
   Labels: t.union([t.undefined, t.unknown]),
-  StopSignal: t.union([t.undefined, t.string]),
-  StopTimeout: t.union([t.undefined, t.number]),
-  Shell: t.union([t.undefined, t.array(t.string)]),
+  StopSignal: t.union([t.undefined, t.union([t.string, t.null])]),
+  StopTimeout: t.union([t.undefined, t.union([t.number, t.null])]),
+  Shell: t.union([t.undefined, t.union([t.array(t.string), t.null])]),
 });
 
 export type EndpointIPAMConfig = t.TypeOf<typeof EndpointIPAMConfig>;
-export const EndpointIPAMConfig = t.type({
-  IPv4Address: t.union([t.undefined, t.string]),
-  IPv6Address: t.union([t.undefined, t.string]),
-  LinkLocalIPs: t.union([t.undefined, t.array(t.string)]),
-});
+export const EndpointIPAMConfig = t.union([
+  t.type({
+    IPv4Address: t.union([t.undefined, t.string]),
+    IPv6Address: t.union([t.undefined, t.string]),
+    LinkLocalIPs: t.union([t.undefined, t.array(t.string)]),
+  }),
+  t.null,
+]);
 
 export type EndpointSettings = t.TypeOf<typeof EndpointSettings>;
 export const EndpointSettings = t.type({
@@ -348,7 +357,7 @@ export const EndpointSettings = t.type({
   GlobalIPv6Address: t.union([t.undefined, t.string]),
   GlobalIPv6PrefixLen: t.union([t.undefined, t.number]),
   MacAddress: t.union([t.undefined, t.string]),
-  DriverOpts: t.union([t.undefined, t.unknown]),
+  DriverOpts: t.union([t.undefined, t.union([t.unknown, t.null])]),
 });
 
 export type NetworkingConfig = t.TypeOf<typeof NetworkingConfig>;
@@ -371,8 +380,8 @@ export const NetworkSettings = t.type({
   LinkLocalIPv6PrefixLen: t.union([t.undefined, t.number]),
   Ports: t.union([t.undefined, PortMap]),
   SandboxKey: t.union([t.undefined, t.string]),
-  SecondaryIPAddresses: t.union([t.undefined, t.array(Address)]),
-  SecondaryIPv6Addresses: t.union([t.undefined, t.array(Address)]),
+  SecondaryIPAddresses: t.union([t.undefined, t.union([t.array(Address), t.null])]),
+  SecondaryIPv6Addresses: t.union([t.undefined, t.union([t.array(Address), t.null])]),
   EndpointID: t.union([t.undefined, t.string]),
   Gateway: t.union([t.undefined, t.string]),
   GlobalIPv6Address: t.union([t.undefined, t.string]),
@@ -413,9 +422,9 @@ export const ImageInspect = t.type({
   Author: t.union([t.undefined, t.string]),
   Config: t.union([t.undefined, ContainerConfig]),
   Architecture: t.union([t.undefined, t.string]),
-  Variant: t.union([t.undefined, t.string]),
+  Variant: t.union([t.undefined, t.union([t.string, t.null])]),
   Os: t.union([t.undefined, t.string]),
-  OsVersion: t.union([t.undefined, t.string]),
+  OsVersion: t.union([t.undefined, t.union([t.string, t.null])]),
   Size: t.union([t.undefined, t.number]),
   VirtualSize: t.union([t.undefined, t.number]),
   GraphDriver: t.union([t.undefined, GraphDriverData]),
@@ -429,7 +438,7 @@ export const ImageInspect = t.type({
   Metadata: t.union([
     t.undefined,
     t.type({
-      LastTagTime: t.union([t.undefined, t.string]),
+      LastTagTime: t.union([t.undefined, t.union([t.string, t.null])]),
     }),
   ]),
 });
@@ -565,6 +574,7 @@ export const Volume = t.type({
       Size: t.number,
       RefCount: t.number,
     }),
+    t.null,
     t.undefined,
   ]),
 });
@@ -657,8 +667,8 @@ export const BuildInfo = t.type({
 export type BuildCache = t.TypeOf<typeof BuildCache>;
 export const BuildCache = t.type({
   ID: t.union([t.undefined, t.string]),
-  Parent: t.union([t.undefined, t.string]),
-  Parents: t.union([t.undefined, t.array(t.string)]),
+  Parent: t.union([t.undefined, t.union([t.string, t.null])]),
+  Parents: t.union([t.undefined, t.union([t.array(t.string), t.null])]),
   Type: t.union([
     t.undefined,
     t.union([
@@ -675,7 +685,7 @@ export const BuildCache = t.type({
   Shared: t.union([t.undefined, t.boolean]),
   Size: t.union([t.undefined, t.number]),
   CreatedAt: t.union([t.undefined, t.string]),
-  LastUsedAt: t.union([t.undefined, t.string]),
+  LastUsedAt: t.union([t.undefined, t.union([t.string, t.null])]),
   UsageCount: t.union([t.undefined, t.number]),
 });
 
@@ -871,11 +881,14 @@ export type Reachability = t.TypeOf<typeof Reachability>;
 export const Reachability = t.union([t.literal("unknown"), t.literal("unreachable"), t.literal("reachable")]);
 
 export type ManagerStatus = t.TypeOf<typeof ManagerStatus>;
-export const ManagerStatus = t.type({
-  Leader: t.union([t.undefined, t.boolean]),
-  Reachability: t.union([t.undefined, Reachability]),
-  Addr: t.union([t.undefined, t.string]),
-});
+export const ManagerStatus = t.union([
+  t.type({
+    Leader: t.union([t.undefined, t.boolean]),
+    Reachability: t.union([t.undefined, Reachability]),
+    Addr: t.union([t.undefined, t.string]),
+  }),
+  t.null,
+]);
 
 export type Node = t.TypeOf<typeof Node>;
 export const Node = t.type({
@@ -895,9 +908,12 @@ export const SwarmSpec = t.type({
   Labels: t.union([t.undefined, t.unknown]),
   Orchestration: t.union([
     t.undefined,
-    t.type({
-      TaskHistoryRetentionLimit: t.union([t.undefined, t.number]),
-    }),
+    t.union([
+      t.type({
+        TaskHistoryRetentionLimit: t.union([t.undefined, t.number]),
+      }),
+      t.null,
+    ]),
   ]),
   Raft: t.union([
     t.undefined,
@@ -911,29 +927,35 @@ export const SwarmSpec = t.type({
   ]),
   Dispatcher: t.union([
     t.undefined,
-    t.type({
-      HeartbeatPeriod: t.union([t.undefined, t.number]),
-    }),
+    t.union([
+      t.type({
+        HeartbeatPeriod: t.union([t.undefined, t.number]),
+      }),
+      t.null,
+    ]),
   ]),
   CAConfig: t.union([
     t.undefined,
-    t.type({
-      NodeCertExpiry: t.union([t.undefined, t.number]),
-      ExternalCAs: t.union([
-        t.undefined,
-        t.array(
-          t.type({
-            Protocol: t.union([t.undefined, t.literal("cfssl")]),
-            URL: t.union([t.undefined, t.string]),
-            Options: t.union([t.undefined, t.unknown]),
-            CACert: t.union([t.undefined, t.string]),
-          }),
-        ),
-      ]),
-      SigningCACert: t.union([t.undefined, t.string]),
-      SigningCAKey: t.union([t.undefined, t.string]),
-      ForceRotate: t.union([t.undefined, t.number]),
-    }),
+    t.union([
+      t.type({
+        NodeCertExpiry: t.union([t.undefined, t.number]),
+        ExternalCAs: t.union([
+          t.undefined,
+          t.array(
+            t.type({
+              Protocol: t.union([t.undefined, t.literal("cfssl")]),
+              URL: t.union([t.undefined, t.string]),
+              Options: t.union([t.undefined, t.unknown]),
+              CACert: t.union([t.undefined, t.string]),
+            }),
+          ),
+        ]),
+        SigningCACert: t.union([t.undefined, t.string]),
+        SigningCAKey: t.union([t.undefined, t.string]),
+        ForceRotate: t.union([t.undefined, t.number]),
+      }),
+      t.null,
+    ]),
   ]),
   EncryptionConfig: t.union([
     t.undefined,
@@ -956,18 +978,21 @@ export const SwarmSpec = t.type({
 });
 
 export type ClusterInfo = t.TypeOf<typeof ClusterInfo>;
-export const ClusterInfo = t.type({
-  ID: t.union([t.undefined, t.string]),
-  Version: t.union([t.undefined, ObjectVersion]),
-  CreatedAt: t.union([t.undefined, t.string]),
-  UpdatedAt: t.union([t.undefined, t.string]),
-  Spec: t.union([t.undefined, SwarmSpec]),
-  TLSInfo: t.union([t.undefined, TLSInfo]),
-  RootRotationInProgress: t.union([t.undefined, t.boolean]),
-  DataPathPort: t.union([t.undefined, t.number]),
-  DefaultAddrPool: t.union([t.undefined, t.array(t.string)]),
-  SubnetSize: t.union([t.undefined, t.number]),
-});
+export const ClusterInfo = t.union([
+  t.type({
+    ID: t.union([t.undefined, t.string]),
+    Version: t.union([t.undefined, ObjectVersion]),
+    CreatedAt: t.union([t.undefined, t.string]),
+    UpdatedAt: t.union([t.undefined, t.string]),
+    Spec: t.union([t.undefined, SwarmSpec]),
+    TLSInfo: t.union([t.undefined, TLSInfo]),
+    RootRotationInProgress: t.union([t.undefined, t.boolean]),
+    DataPathPort: t.union([t.undefined, t.number]),
+    DefaultAddrPool: t.union([t.undefined, t.array(t.string)]),
+    SubnetSize: t.union([t.undefined, t.number]),
+  }),
+  t.null,
+]);
 
 export type JoinTokens = t.TypeOf<typeof JoinTokens>;
 export const JoinTokens = t.type({
@@ -1090,7 +1115,7 @@ export const TaskSpec = t.type({
         ),
       ]),
       Isolation: t.union([t.undefined, t.union([t.literal("default"), t.literal("process"), t.literal("hyperv")])]),
-      Init: t.union([t.undefined, t.boolean]),
+      Init: t.union([t.undefined, t.union([t.boolean, t.null])]),
       Sysctls: t.union([t.undefined, t.unknown]),
       CapabilityAdd: t.union([t.undefined, t.array(t.string)]),
       CapabilityDrop: t.union([t.undefined, t.array(t.string)]),
@@ -1414,31 +1439,34 @@ export const Config = t.type({
 });
 
 export type ContainerState = t.TypeOf<typeof ContainerState>;
-export const ContainerState = t.type({
-  Status: t.union([
-    t.undefined,
-    t.union([
-      t.literal("created"),
-      t.literal("running"),
-      t.literal("paused"),
-      t.literal("restarting"),
-      t.literal("removing"),
-      t.literal("exited"),
-      t.literal("dead"),
+export const ContainerState = t.union([
+  t.type({
+    Status: t.union([
+      t.undefined,
+      t.union([
+        t.literal("created"),
+        t.literal("running"),
+        t.literal("paused"),
+        t.literal("restarting"),
+        t.literal("removing"),
+        t.literal("exited"),
+        t.literal("dead"),
+      ]),
     ]),
-  ]),
-  Running: t.union([t.undefined, t.boolean]),
-  Paused: t.union([t.undefined, t.boolean]),
-  Restarting: t.union([t.undefined, t.boolean]),
-  OOMKilled: t.union([t.undefined, t.boolean]),
-  Dead: t.union([t.undefined, t.boolean]),
-  Pid: t.union([t.undefined, t.number]),
-  ExitCode: t.union([t.undefined, t.number]),
-  Error: t.union([t.undefined, t.string]),
-  StartedAt: t.union([t.undefined, t.string]),
-  FinishedAt: t.union([t.undefined, t.string]),
-  Health: t.union([t.undefined, Health]),
-});
+    Running: t.union([t.undefined, t.boolean]),
+    Paused: t.union([t.undefined, t.boolean]),
+    Restarting: t.union([t.undefined, t.boolean]),
+    OOMKilled: t.union([t.undefined, t.boolean]),
+    Dead: t.union([t.undefined, t.boolean]),
+    Pid: t.union([t.undefined, t.number]),
+    ExitCode: t.union([t.undefined, t.number]),
+    Error: t.union([t.undefined, t.string]),
+    StartedAt: t.union([t.undefined, t.string]),
+    FinishedAt: t.union([t.undefined, t.string]),
+    Health: t.union([t.undefined, Health]),
+  }),
+  t.null,
+]);
 
 export type ContainerCreateResponse = t.TypeOf<typeof ContainerCreateResponse>;
 export const ContainerCreateResponse = t.type({
@@ -1471,7 +1499,7 @@ export const SystemVersion = t.type({
       t.type({
         Name: t.string,
         Version: t.string,
-        "Details?": t.union([t.type({}), t.undefined]),
+        "Details?": t.union([t.type({}), t.null, t.undefined]),
       }),
     ),
   ]),
@@ -1496,26 +1524,32 @@ export const PluginsInfo = t.type({
 });
 
 export type IndexInfo = t.TypeOf<typeof IndexInfo>;
-export const IndexInfo = t.type({
-  Name: t.union([t.undefined, t.string]),
-  Mirrors: t.union([t.undefined, t.array(t.string)]),
-  Secure: t.union([t.undefined, t.boolean]),
-  Official: t.union([t.undefined, t.boolean]),
-});
+export const IndexInfo = t.union([
+  t.type({
+    Name: t.union([t.undefined, t.string]),
+    Mirrors: t.union([t.undefined, t.array(t.string)]),
+    Secure: t.union([t.undefined, t.boolean]),
+    Official: t.union([t.undefined, t.boolean]),
+  }),
+  t.null,
+]);
 
 export type RegistryServiceConfig = t.TypeOf<typeof RegistryServiceConfig>;
-export const RegistryServiceConfig = t.type({
-  AllowNondistributableArtifactsCIDRs: t.union([t.undefined, t.array(t.string)]),
-  AllowNondistributableArtifactsHostnames: t.union([t.undefined, t.array(t.string)]),
-  InsecureRegistryCIDRs: t.union([t.undefined, t.array(t.string)]),
-  IndexConfigs: t.union([t.undefined, t.unknown]),
-  Mirrors: t.union([t.undefined, t.array(t.string)]),
-});
+export const RegistryServiceConfig = t.union([
+  t.type({
+    AllowNondistributableArtifactsCIDRs: t.union([t.undefined, t.array(t.string)]),
+    AllowNondistributableArtifactsHostnames: t.union([t.undefined, t.array(t.string)]),
+    InsecureRegistryCIDRs: t.union([t.undefined, t.array(t.string)]),
+    IndexConfigs: t.union([t.undefined, t.unknown]),
+    Mirrors: t.union([t.undefined, t.array(t.string)]),
+  }),
+  t.null,
+]);
 
 export type Runtime = t.TypeOf<typeof Runtime>;
 export const Runtime = t.type({
   path: t.union([t.undefined, t.string]),
-  runtimeArgs: t.union([t.undefined, t.array(t.string)]),
+  runtimeArgs: t.union([t.undefined, t.union([t.array(t.string), t.null])]),
 });
 
 export type LocalNodeState = t.TypeOf<typeof LocalNodeState>;
@@ -1541,9 +1575,9 @@ export const SwarmInfo = t.type({
   LocalNodeState: t.union([t.undefined, LocalNodeState]),
   ControlAvailable: t.union([t.undefined, t.boolean]),
   Error: t.union([t.undefined, t.string]),
-  RemoteManagers: t.union([t.undefined, t.array(PeerNode)]),
-  Nodes: t.union([t.undefined, t.number]),
-  Managers: t.union([t.undefined, t.number]),
+  RemoteManagers: t.union([t.undefined, t.union([t.array(PeerNode), t.null])]),
+  Nodes: t.union([t.undefined, t.union([t.number, t.null])]),
+  Managers: t.union([t.undefined, t.union([t.number, t.null])]),
   Cluster: t.union([t.undefined, ClusterInfo]),
 });
 
@@ -1739,7 +1773,7 @@ export const get_ContainerInspect = t.type({
     MountLabel: t.union([t.undefined, t.string]),
     ProcessLabel: t.union([t.undefined, t.string]),
     AppArmorProfile: t.union([t.undefined, t.string]),
-    ExecIDs: t.union([t.undefined, t.array(t.string)]),
+    ExecIDs: t.union([t.undefined, t.union([t.array(t.string), t.null])]),
     HostConfig: t.union([t.undefined, HostConfig]),
     GraphDriver: t.union([t.undefined, GraphDriverData]),
     SizeRw: t.union([t.undefined, t.number]),

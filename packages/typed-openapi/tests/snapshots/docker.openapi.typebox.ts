@@ -153,8 +153,8 @@ export const Resources = Type.Partial(
     MemorySwappiness: Type.Number(),
     NanoCpus: Type.Number(),
     OomKillDisable: Type.Boolean(),
-    Init: Type.Boolean(),
-    PidsLimit: Type.Number(),
+    Init: Type.Union([Type.Boolean(), Type.Null()]),
+    PidsLimit: Type.Union([Type.Number(), Type.Null()]),
     Ulimits: Type.Array(
       Type.Partial(
         Type.Object({
@@ -221,28 +221,34 @@ export const HealthConfig = Type.Partial(
 );
 
 export type HealthcheckResult = Static<typeof HealthcheckResult>;
-export const HealthcheckResult = Type.Partial(
-  Type.Object({
-    Start: Type.String(),
-    End: Type.String(),
-    ExitCode: Type.Number(),
-    Output: Type.String(),
-  }),
-);
+export const HealthcheckResult = Type.Union([
+  Type.Partial(
+    Type.Object({
+      Start: Type.String(),
+      End: Type.String(),
+      ExitCode: Type.Number(),
+      Output: Type.String(),
+    }),
+  ),
+  Type.Null(),
+]);
 
 export type Health = Static<typeof Health>;
-export const Health = Type.Partial(
-  Type.Object({
-    Status: Type.Union([
-      Type.Literal("none"),
-      Type.Literal("starting"),
-      Type.Literal("healthy"),
-      Type.Literal("unhealthy"),
-    ]),
-    FailingStreak: Type.Number(),
-    Log: Type.Array(HealthcheckResult),
-  }),
-);
+export const Health = Type.Union([
+  Type.Partial(
+    Type.Object({
+      Status: Type.Union([
+        Type.Literal("none"),
+        Type.Literal("starting"),
+        Type.Literal("healthy"),
+        Type.Literal("unhealthy"),
+      ]),
+      FailingStreak: Type.Number(),
+      Log: Type.Array(HealthcheckResult),
+    }),
+  ),
+  Type.Null(),
+]);
 
 export type PortBinding = Static<typeof PortBinding>;
 export const PortBinding = Type.Partial(
@@ -285,7 +291,7 @@ export const HostConfig = Type.Intersect([
       VolumeDriver: Type.String(),
       VolumesFrom: Type.Array(Type.String()),
       Mounts: Type.Array(Mount),
-      ConsoleSize: Type.Array(Type.Number()),
+      ConsoleSize: Type.Union([Type.Array(Type.Number()), Type.Null()]),
       Annotations: Type.Unknown(),
       CapAdd: Type.Array(Type.String()),
       CapDrop: Type.Array(Type.String()),
@@ -327,36 +333,39 @@ export const ContainerConfig = Type.Partial(
     AttachStdin: Type.Boolean(),
     AttachStdout: Type.Boolean(),
     AttachStderr: Type.Boolean(),
-    ExposedPorts: Type.Unknown(),
+    ExposedPorts: Type.Union([Type.Unknown(), Type.Null()]),
     Tty: Type.Boolean(),
     OpenStdin: Type.Boolean(),
     StdinOnce: Type.Boolean(),
     Env: Type.Array(Type.String()),
     Cmd: Type.Array(Type.String()),
     Healthcheck: HealthConfig,
-    ArgsEscaped: Type.Boolean(),
+    ArgsEscaped: Type.Union([Type.Boolean(), Type.Null()]),
     Image: Type.String(),
     Volumes: Type.Unknown(),
     WorkingDir: Type.String(),
     Entrypoint: Type.Array(Type.String()),
-    NetworkDisabled: Type.Boolean(),
-    MacAddress: Type.String(),
-    OnBuild: Type.Array(Type.String()),
+    NetworkDisabled: Type.Union([Type.Boolean(), Type.Null()]),
+    MacAddress: Type.Union([Type.String(), Type.Null()]),
+    OnBuild: Type.Union([Type.Array(Type.String()), Type.Null()]),
     Labels: Type.Unknown(),
-    StopSignal: Type.String(),
-    StopTimeout: Type.Number(),
-    Shell: Type.Array(Type.String()),
+    StopSignal: Type.Union([Type.String(), Type.Null()]),
+    StopTimeout: Type.Union([Type.Number(), Type.Null()]),
+    Shell: Type.Union([Type.Array(Type.String()), Type.Null()]),
   }),
 );
 
 export type EndpointIPAMConfig = Static<typeof EndpointIPAMConfig>;
-export const EndpointIPAMConfig = Type.Partial(
-  Type.Object({
-    IPv4Address: Type.String(),
-    IPv6Address: Type.String(),
-    LinkLocalIPs: Type.Array(Type.String()),
-  }),
-);
+export const EndpointIPAMConfig = Type.Union([
+  Type.Partial(
+    Type.Object({
+      IPv4Address: Type.String(),
+      IPv6Address: Type.String(),
+      LinkLocalIPs: Type.Array(Type.String()),
+    }),
+  ),
+  Type.Null(),
+]);
 
 export type EndpointSettings = Static<typeof EndpointSettings>;
 export const EndpointSettings = Type.Partial(
@@ -373,7 +382,7 @@ export const EndpointSettings = Type.Partial(
     GlobalIPv6Address: Type.String(),
     GlobalIPv6PrefixLen: Type.Number(),
     MacAddress: Type.String(),
-    DriverOpts: Type.Unknown(),
+    DriverOpts: Type.Union([Type.Unknown(), Type.Null()]),
   }),
 );
 
@@ -402,8 +411,8 @@ export const NetworkSettings = Type.Partial(
     LinkLocalIPv6PrefixLen: Type.Number(),
     Ports: PortMap,
     SandboxKey: Type.String(),
-    SecondaryIPAddresses: Type.Array(Address),
-    SecondaryIPv6Addresses: Type.Array(Address),
+    SecondaryIPAddresses: Type.Union([Type.Array(Address), Type.Null()]),
+    SecondaryIPv6Addresses: Type.Union([Type.Array(Address), Type.Null()]),
     EndpointID: Type.String(),
     Gateway: Type.String(),
     GlobalIPv6Address: Type.String(),
@@ -446,9 +455,9 @@ export const ImageInspect = Type.Partial(
     Author: Type.String(),
     Config: ContainerConfig,
     Architecture: Type.String(),
-    Variant: Type.String(),
+    Variant: Type.Union([Type.String(), Type.Null()]),
     Os: Type.String(),
-    OsVersion: Type.String(),
+    OsVersion: Type.Union([Type.String(), Type.Null()]),
     Size: Type.Number(),
     VirtualSize: Type.Number(),
     GraphDriver: GraphDriverData,
@@ -458,7 +467,7 @@ export const ImageInspect = Type.Partial(
     }),
     Metadata: Type.Partial(
       Type.Object({
-        LastTagTime: Type.String(),
+        LastTagTime: Type.Union([Type.String(), Type.Null()]),
       }),
     ),
   }),
@@ -598,6 +607,7 @@ export const Volume = Type.Object({
       Size: Type.Number(),
       RefCount: Type.Number(),
     }),
+    Type.Null(),
     Type.Undefined(),
   ]),
 });
@@ -711,8 +721,8 @@ export type BuildCache = Static<typeof BuildCache>;
 export const BuildCache = Type.Partial(
   Type.Object({
     ID: Type.String(),
-    Parent: Type.String(),
-    Parents: Type.Array(Type.String()),
+    Parent: Type.Union([Type.String(), Type.Null()]),
+    Parents: Type.Union([Type.Array(Type.String()), Type.Null()]),
     Type: Type.Union([
       Type.Literal("internal"),
       Type.Literal("frontend"),
@@ -726,7 +736,7 @@ export const BuildCache = Type.Partial(
     Shared: Type.Boolean(),
     Size: Type.Number(),
     CreatedAt: Type.String(),
-    LastUsedAt: Type.String(),
+    LastUsedAt: Type.Union([Type.String(), Type.Null()]),
     UsageCount: Type.Number(),
   }),
 );
@@ -948,13 +958,16 @@ export const Reachability = Type.Union([
 ]);
 
 export type ManagerStatus = Static<typeof ManagerStatus>;
-export const ManagerStatus = Type.Partial(
-  Type.Object({
-    Leader: Type.Boolean(),
-    Reachability: Reachability,
-    Addr: Type.String(),
-  }),
-);
+export const ManagerStatus = Type.Union([
+  Type.Partial(
+    Type.Object({
+      Leader: Type.Boolean(),
+      Reachability: Reachability,
+      Addr: Type.String(),
+    }),
+  ),
+  Type.Null(),
+]);
 
 export type Node = Static<typeof Node>;
 export const Node = Type.Partial(
@@ -975,11 +988,14 @@ export const SwarmSpec = Type.Partial(
   Type.Object({
     Name: Type.String(),
     Labels: Type.Unknown(),
-    Orchestration: Type.Partial(
-      Type.Object({
-        TaskHistoryRetentionLimit: Type.Number(),
-      }),
-    ),
+    Orchestration: Type.Union([
+      Type.Partial(
+        Type.Object({
+          TaskHistoryRetentionLimit: Type.Number(),
+        }),
+      ),
+      Type.Null(),
+    ]),
     Raft: Type.Partial(
       Type.Object({
         SnapshotInterval: Type.Number(),
@@ -989,29 +1005,35 @@ export const SwarmSpec = Type.Partial(
         HeartbeatTick: Type.Number(),
       }),
     ),
-    Dispatcher: Type.Partial(
-      Type.Object({
-        HeartbeatPeriod: Type.Number(),
-      }),
-    ),
-    CAConfig: Type.Partial(
-      Type.Object({
-        NodeCertExpiry: Type.Number(),
-        ExternalCAs: Type.Array(
-          Type.Partial(
-            Type.Object({
-              Protocol: Type.Literal("cfssl"),
-              URL: Type.String(),
-              Options: Type.Unknown(),
-              CACert: Type.String(),
-            }),
+    Dispatcher: Type.Union([
+      Type.Partial(
+        Type.Object({
+          HeartbeatPeriod: Type.Number(),
+        }),
+      ),
+      Type.Null(),
+    ]),
+    CAConfig: Type.Union([
+      Type.Partial(
+        Type.Object({
+          NodeCertExpiry: Type.Number(),
+          ExternalCAs: Type.Array(
+            Type.Partial(
+              Type.Object({
+                Protocol: Type.Literal("cfssl"),
+                URL: Type.String(),
+                Options: Type.Unknown(),
+                CACert: Type.String(),
+              }),
+            ),
           ),
-        ),
-        SigningCACert: Type.String(),
-        SigningCAKey: Type.String(),
-        ForceRotate: Type.Number(),
-      }),
-    ),
+          SigningCACert: Type.String(),
+          SigningCAKey: Type.String(),
+          ForceRotate: Type.Number(),
+        }),
+      ),
+      Type.Null(),
+    ]),
     EncryptionConfig: Type.Partial(
       Type.Object({
         AutoLockManagers: Type.Boolean(),
@@ -1031,20 +1053,23 @@ export const SwarmSpec = Type.Partial(
 );
 
 export type ClusterInfo = Static<typeof ClusterInfo>;
-export const ClusterInfo = Type.Partial(
-  Type.Object({
-    ID: Type.String(),
-    Version: ObjectVersion,
-    CreatedAt: Type.String(),
-    UpdatedAt: Type.String(),
-    Spec: SwarmSpec,
-    TLSInfo: TLSInfo,
-    RootRotationInProgress: Type.Boolean(),
-    DataPathPort: Type.Number(),
-    DefaultAddrPool: Type.Array(Type.String()),
-    SubnetSize: Type.Number(),
-  }),
-);
+export const ClusterInfo = Type.Union([
+  Type.Partial(
+    Type.Object({
+      ID: Type.String(),
+      Version: ObjectVersion,
+      CreatedAt: Type.String(),
+      UpdatedAt: Type.String(),
+      Spec: SwarmSpec,
+      TLSInfo: TLSInfo,
+      RootRotationInProgress: Type.Boolean(),
+      DataPathPort: Type.Number(),
+      DefaultAddrPool: Type.Array(Type.String()),
+      SubnetSize: Type.Number(),
+    }),
+  ),
+  Type.Null(),
+]);
 
 export type JoinTokens = Static<typeof JoinTokens>;
 export const JoinTokens = Type.Partial(
@@ -1164,7 +1189,7 @@ export const TaskSpec = Type.Partial(
           ),
         ),
         Isolation: Type.Union([Type.Literal("default"), Type.Literal("process"), Type.Literal("hyperv")]),
-        Init: Type.Boolean(),
+        Init: Type.Union([Type.Boolean(), Type.Null()]),
         Sysctls: Type.Unknown(),
         CapabilityAdd: Type.Array(Type.String()),
         CapabilityDrop: Type.Array(Type.String()),
@@ -1488,30 +1513,33 @@ export const Config = Type.Partial(
 );
 
 export type ContainerState = Static<typeof ContainerState>;
-export const ContainerState = Type.Partial(
-  Type.Object({
-    Status: Type.Union([
-      Type.Literal("created"),
-      Type.Literal("running"),
-      Type.Literal("paused"),
-      Type.Literal("restarting"),
-      Type.Literal("removing"),
-      Type.Literal("exited"),
-      Type.Literal("dead"),
-    ]),
-    Running: Type.Boolean(),
-    Paused: Type.Boolean(),
-    Restarting: Type.Boolean(),
-    OOMKilled: Type.Boolean(),
-    Dead: Type.Boolean(),
-    Pid: Type.Number(),
-    ExitCode: Type.Number(),
-    Error: Type.String(),
-    StartedAt: Type.String(),
-    FinishedAt: Type.String(),
-    Health: Health,
-  }),
-);
+export const ContainerState = Type.Union([
+  Type.Partial(
+    Type.Object({
+      Status: Type.Union([
+        Type.Literal("created"),
+        Type.Literal("running"),
+        Type.Literal("paused"),
+        Type.Literal("restarting"),
+        Type.Literal("removing"),
+        Type.Literal("exited"),
+        Type.Literal("dead"),
+      ]),
+      Running: Type.Boolean(),
+      Paused: Type.Boolean(),
+      Restarting: Type.Boolean(),
+      OOMKilled: Type.Boolean(),
+      Dead: Type.Boolean(),
+      Pid: Type.Number(),
+      ExitCode: Type.Number(),
+      Error: Type.String(),
+      StartedAt: Type.String(),
+      FinishedAt: Type.String(),
+      Health: Health,
+    }),
+  ),
+  Type.Null(),
+]);
 
 export type ContainerCreateResponse = Static<typeof ContainerCreateResponse>;
 export const ContainerCreateResponse = Type.Object({
@@ -1542,7 +1570,7 @@ export const SystemVersion = Type.Partial(
       Type.Object({
         Name: Type.String(),
         Version: Type.String(),
-        "Details?": Type.Union([Type.Partial(Type.Object({})), Type.Undefined()]),
+        "Details?": Type.Union([Type.Partial(Type.Object({})), Type.Null(), Type.Undefined()]),
       }),
     ),
     Version: Type.String(),
@@ -1569,31 +1597,37 @@ export const PluginsInfo = Type.Partial(
 );
 
 export type IndexInfo = Static<typeof IndexInfo>;
-export const IndexInfo = Type.Partial(
-  Type.Object({
-    Name: Type.String(),
-    Mirrors: Type.Array(Type.String()),
-    Secure: Type.Boolean(),
-    Official: Type.Boolean(),
-  }),
-);
+export const IndexInfo = Type.Union([
+  Type.Partial(
+    Type.Object({
+      Name: Type.String(),
+      Mirrors: Type.Array(Type.String()),
+      Secure: Type.Boolean(),
+      Official: Type.Boolean(),
+    }),
+  ),
+  Type.Null(),
+]);
 
 export type RegistryServiceConfig = Static<typeof RegistryServiceConfig>;
-export const RegistryServiceConfig = Type.Partial(
-  Type.Object({
-    AllowNondistributableArtifactsCIDRs: Type.Array(Type.String()),
-    AllowNondistributableArtifactsHostnames: Type.Array(Type.String()),
-    InsecureRegistryCIDRs: Type.Array(Type.String()),
-    IndexConfigs: Type.Unknown(),
-    Mirrors: Type.Array(Type.String()),
-  }),
-);
+export const RegistryServiceConfig = Type.Union([
+  Type.Partial(
+    Type.Object({
+      AllowNondistributableArtifactsCIDRs: Type.Array(Type.String()),
+      AllowNondistributableArtifactsHostnames: Type.Array(Type.String()),
+      InsecureRegistryCIDRs: Type.Array(Type.String()),
+      IndexConfigs: Type.Unknown(),
+      Mirrors: Type.Array(Type.String()),
+    }),
+  ),
+  Type.Null(),
+]);
 
 export type Runtime = Static<typeof Runtime>;
 export const Runtime = Type.Partial(
   Type.Object({
     path: Type.String(),
-    runtimeArgs: Type.Array(Type.String()),
+    runtimeArgs: Type.Union([Type.Array(Type.String()), Type.Null()]),
   }),
 );
 
@@ -1623,9 +1657,9 @@ export const SwarmInfo = Type.Partial(
     LocalNodeState: LocalNodeState,
     ControlAvailable: Type.Boolean(),
     Error: Type.String(),
-    RemoteManagers: Type.Array(PeerNode),
-    Nodes: Type.Number(),
-    Managers: Type.Number(),
+    RemoteManagers: Type.Union([Type.Array(PeerNode), Type.Null()]),
+    Nodes: Type.Union([Type.Number(), Type.Null()]),
+    Managers: Type.Union([Type.Number(), Type.Null()]),
     Cluster: ClusterInfo,
   }),
 );
@@ -1835,7 +1869,7 @@ export const get_ContainerInspect = Type.Object({
       MountLabel: Type.String(),
       ProcessLabel: Type.String(),
       AppArmorProfile: Type.String(),
-      ExecIDs: Type.Array(Type.String()),
+      ExecIDs: Type.Union([Type.Array(Type.String()), Type.Null()]),
       HostConfig: HostConfig,
       GraphDriver: GraphDriverData,
       SizeRw: Type.Number(),

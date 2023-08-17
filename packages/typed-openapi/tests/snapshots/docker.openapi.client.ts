@@ -72,8 +72,8 @@ export namespace Schemas {
     MemorySwappiness: number;
     NanoCpus: number;
     OomKillDisable: boolean;
-    Init: boolean;
-    PidsLimit: number;
+    Init: boolean | null;
+    PidsLimit: number | null;
     Ulimits: Array<Partial<{ Name: string; Soft: number; Hard: number }>>;
     CpuCount: number;
     CpuPercent: number;
@@ -95,12 +95,12 @@ export namespace Schemas {
     Retries: number;
     StartPeriod: number;
   }>;
-  export type HealthcheckResult = Partial<{ Start: string; End: string; ExitCode: number; Output: string }>;
+  export type HealthcheckResult = Partial<{ Start: string; End: string; ExitCode: number; Output: string }> | null;
   export type Health = Partial<{
     Status: "none" | "starting" | "healthy" | "unhealthy";
     FailingStreak: number;
     Log: Array<HealthcheckResult>;
-  }>;
+  }> | null;
   export type PortBinding = Partial<{ HostIp: string; HostPort: string }>;
   export type PortMap = unknown;
   export type HostConfig = Resources &
@@ -118,7 +118,7 @@ export namespace Schemas {
       VolumeDriver: string;
       VolumesFrom: Array<string>;
       Mounts: Array<Mount>;
-      ConsoleSize: Array<number>;
+      ConsoleSize: Array<number> | null;
       Annotations: unknown;
       CapAdd: Array<string>;
       CapDrop: Array<string>;
@@ -155,27 +155,31 @@ export namespace Schemas {
     AttachStdin: boolean;
     AttachStdout: boolean;
     AttachStderr: boolean;
-    ExposedPorts: unknown;
+    ExposedPorts: unknown | null;
     Tty: boolean;
     OpenStdin: boolean;
     StdinOnce: boolean;
     Env: Array<string>;
     Cmd: Array<string>;
     Healthcheck: HealthConfig;
-    ArgsEscaped: boolean;
+    ArgsEscaped: boolean | null;
     Image: string;
     Volumes: unknown;
     WorkingDir: string;
     Entrypoint: Array<string>;
-    NetworkDisabled: boolean;
-    MacAddress: string;
-    OnBuild: Array<string>;
+    NetworkDisabled: boolean | null;
+    MacAddress: string | null;
+    OnBuild: Array<string> | null;
     Labels: unknown;
-    StopSignal: string;
-    StopTimeout: number;
-    Shell: Array<string>;
+    StopSignal: string | null;
+    StopTimeout: number | null;
+    Shell: Array<string> | null;
   }>;
-  export type EndpointIPAMConfig = Partial<{ IPv4Address: string; IPv6Address: string; LinkLocalIPs: Array<string> }>;
+  export type EndpointIPAMConfig = Partial<{
+    IPv4Address: string;
+    IPv6Address: string;
+    LinkLocalIPs: Array<string>;
+  }> | null;
   export type EndpointSettings = Partial<{
     IPAMConfig: EndpointIPAMConfig;
     Links: Array<string>;
@@ -189,7 +193,7 @@ export namespace Schemas {
     GlobalIPv6Address: string;
     GlobalIPv6PrefixLen: number;
     MacAddress: string;
-    DriverOpts: unknown;
+    DriverOpts: unknown | null;
   }>;
   export type NetworkingConfig = Partial<{ EndpointsConfig: unknown }>;
   export type Address = Partial<{ Addr: string; PrefixLen: number }>;
@@ -201,8 +205,8 @@ export namespace Schemas {
     LinkLocalIPv6PrefixLen: number;
     Ports: PortMap;
     SandboxKey: string;
-    SecondaryIPAddresses: Array<Address>;
-    SecondaryIPv6Addresses: Array<Address>;
+    SecondaryIPAddresses: Array<Address> | null;
+    SecondaryIPv6Addresses: Array<Address> | null;
     EndpointID: string;
     Gateway: string;
     GlobalIPv6Address: string;
@@ -229,14 +233,14 @@ export namespace Schemas {
     Author: string;
     Config: ContainerConfig;
     Architecture: string;
-    Variant: string;
+    Variant: string | null;
     Os: string;
-    OsVersion: string;
+    OsVersion: string | null;
     Size: number;
     VirtualSize: number;
     GraphDriver: GraphDriverData;
     RootFS: { Type: string; "Layers?": Array<string> | undefined };
-    Metadata: Partial<{ LastTagTime: string }>;
+    Metadata: Partial<{ LastTagTime: string | null }>;
   }>;
   export type ImageSummary = {
     Id: string;
@@ -302,7 +306,7 @@ export namespace Schemas {
     Scope: "local" | "global";
     "ClusterVolume?": ClusterVolume | undefined;
     Options: unknown;
-    "UsageData?": { Size: number; RefCount: number } | undefined;
+    "UsageData?": { Size: number; RefCount: number } | null | undefined;
   };
   export type VolumeCreateOptions = Partial<{
     Name: string;
@@ -351,15 +355,15 @@ export namespace Schemas {
   }>;
   export type BuildCache = Partial<{
     ID: string;
-    Parent: string;
-    Parents: Array<string>;
+    Parent: string | null;
+    Parents: Array<string> | null;
     Type: "internal" | "frontend" | "source.local" | "source.git.checkout" | "exec.cachemount" | "regular";
     Description: string;
     InUse: boolean;
     Shared: boolean;
     Size: number;
     CreatedAt: string;
-    LastUsedAt: string;
+    LastUsedAt: string | null;
     UsageCount: number;
   }>;
   export type CreateImageInfo = Partial<{
@@ -443,7 +447,7 @@ export namespace Schemas {
   export type NodeState = "unknown" | "down" | "ready" | "disconnected";
   export type NodeStatus = Partial<{ State: NodeState; Message: string; Addr: string }>;
   export type Reachability = "unknown" | "unreachable" | "reachable";
-  export type ManagerStatus = Partial<{ Leader: boolean; Reachability: Reachability; Addr: string }>;
+  export type ManagerStatus = Partial<{ Leader: boolean; Reachability: Reachability; Addr: string }> | null;
   export type Node = Partial<{
     ID: string;
     Version: ObjectVersion;
@@ -457,7 +461,7 @@ export namespace Schemas {
   export type SwarmSpec = Partial<{
     Name: string;
     Labels: unknown;
-    Orchestration: Partial<{ TaskHistoryRetentionLimit: number }>;
+    Orchestration: Partial<{ TaskHistoryRetentionLimit: number }> | null;
     Raft: Partial<{
       SnapshotInterval: number;
       KeepOldSnapshots: number;
@@ -465,14 +469,14 @@ export namespace Schemas {
       ElectionTick: number;
       HeartbeatTick: number;
     }>;
-    Dispatcher: Partial<{ HeartbeatPeriod: number }>;
+    Dispatcher: Partial<{ HeartbeatPeriod: number }> | null;
     CAConfig: Partial<{
       NodeCertExpiry: number;
       ExternalCAs: Array<Partial<{ Protocol: "cfssl"; URL: string; Options: unknown; CACert: string }>>;
       SigningCACert: string;
       SigningCAKey: string;
       ForceRotate: number;
-    }>;
+    }> | null;
     EncryptionConfig: Partial<{ AutoLockManagers: boolean }>;
     TaskDefaults: Partial<{ LogDriver: Partial<{ Name: string; Options: unknown }> }>;
   }>;
@@ -487,7 +491,7 @@ export namespace Schemas {
     DataPathPort: number;
     DefaultAddrPool: Array<string>;
     SubnetSize: number;
-  }>;
+  }> | null;
   export type JoinTokens = Partial<{ Worker: string; Manager: string }>;
   export type Swarm = ClusterInfo & Partial<{ JoinTokens: JoinTokens }>;
   export type NetworkAttachmentConfig = Partial<{ Target: string; Aliases: Array<string>; DriverOpts: unknown }>;
@@ -532,7 +536,7 @@ export namespace Schemas {
         }>
       >;
       Isolation: "default" | "process" | "hyperv";
-      Init: boolean;
+      Init: boolean | null;
       Sysctls: unknown;
       CapabilityAdd: Array<string>;
       CapabilityDrop: Array<string>;
@@ -701,13 +705,13 @@ export namespace Schemas {
     StartedAt: string;
     FinishedAt: string;
     Health: Health;
-  }>;
+  }> | null;
   export type ContainerCreateResponse = { Id: string; Warnings: Array<string> };
   export type ContainerWaitExitError = Partial<{ Message: string }>;
   export type ContainerWaitResponse = { StatusCode: number; "Error?": ContainerWaitExitError | undefined };
   export type SystemVersion = Partial<{
     Platform: { Name: string };
-    Components: Array<{ Name: string; Version: string; "Details?": Partial<{}> | undefined }>;
+    Components: Array<{ Name: string; Version: string; "Details?": Partial<{}> | null | undefined }>;
     Version: string;
     ApiVersion: string;
     MinAPIVersion: string;
@@ -725,15 +729,15 @@ export namespace Schemas {
     Authorization: Array<string>;
     Log: Array<string>;
   }>;
-  export type IndexInfo = Partial<{ Name: string; Mirrors: Array<string>; Secure: boolean; Official: boolean }>;
+  export type IndexInfo = Partial<{ Name: string; Mirrors: Array<string>; Secure: boolean; Official: boolean }> | null;
   export type RegistryServiceConfig = Partial<{
     AllowNondistributableArtifactsCIDRs: Array<string>;
     AllowNondistributableArtifactsHostnames: Array<string>;
     InsecureRegistryCIDRs: Array<string>;
     IndexConfigs: unknown;
     Mirrors: Array<string>;
-  }>;
-  export type Runtime = Partial<{ path: string; runtimeArgs: Array<string> }>;
+  }> | null;
+  export type Runtime = Partial<{ path: string; runtimeArgs: Array<string> | null }>;
   export type LocalNodeState = "" | "inactive" | "pending" | "active" | "error" | "locked";
   export type PeerNode = Partial<{ NodeID: string; Addr: string }>;
   export type SwarmInfo = Partial<{
@@ -742,9 +746,9 @@ export namespace Schemas {
     LocalNodeState: LocalNodeState;
     ControlAvailable: boolean;
     Error: string;
-    RemoteManagers: Array<PeerNode>;
-    Nodes: number;
-    Managers: number;
+    RemoteManagers: Array<PeerNode> | null;
+    Nodes: number | null;
+    Managers: number | null;
     Cluster: ClusterInfo;
   }>;
   export type Commit = Partial<{ ID: string; Expected: string }>;
@@ -887,7 +891,7 @@ export namespace Endpoints {
       MountLabel: string;
       ProcessLabel: string;
       AppArmorProfile: string;
-      ExecIDs: Array<string>;
+      ExecIDs: Array<string> | Schemas.null;
       HostConfig: Schemas.HostConfig;
       GraphDriver: Schemas.GraphDriverData;
       SizeRw: number;

@@ -169,8 +169,16 @@ export const Resources = y.object({
   MemorySwappiness: y.number().required().optional(),
   NanoCpus: y.number().required().optional(),
   OomKillDisable: y.boolean().required().optional(),
-  Init: y.boolean().required().optional(),
-  PidsLimit: y.number().required().optional(),
+  Init: y
+    .mixed()
+    .oneOf([y.boolean().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
+  PidsLimit: y
+    .mixed()
+    .oneOf([y.number().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
   Ulimits: y
     .array(
       y.object({
@@ -228,28 +236,40 @@ export const HealthConfig = y.object({
 });
 
 export type HealthcheckResult = y.InferType<typeof HealthcheckResult>;
-export const HealthcheckResult = y.object({
-  Start: y.string().required().optional(),
-  End: y.string().required().optional(),
-  ExitCode: y.number().required().optional(),
-  Output: y.string().required().optional(),
-});
+export const HealthcheckResult = y
+  .mixed()
+  .oneOf([
+    y.object({
+      Start: y.string().required().optional(),
+      End: y.string().required().optional(),
+      ExitCode: y.number().required().optional(),
+      Output: y.string().required().optional(),
+    }),
+    y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+  ])
+  .required();
 
 export type Health = y.InferType<typeof Health>;
-export const Health = y.object({
-  Status: y
-    .mixed()
-    .oneOf([
-      y.mixed((value): value is "none" => value === "none").required(),
-      y.mixed((value): value is "starting" => value === "starting").required(),
-      y.mixed((value): value is "healthy" => value === "healthy").required(),
-      y.mixed((value): value is "unhealthy" => value === "unhealthy").required(),
-    ])
-    .required()
-    .optional(),
-  FailingStreak: y.number().required().optional(),
-  Log: y.array(HealthcheckResult).optional(),
-});
+export const Health = y
+  .mixed()
+  .oneOf([
+    y.object({
+      Status: y
+        .mixed()
+        .oneOf([
+          y.mixed((value): value is "none" => value === "none").required(),
+          y.mixed((value): value is "starting" => value === "starting").required(),
+          y.mixed((value): value is "healthy" => value === "healthy").required(),
+          y.mixed((value): value is "unhealthy" => value === "unhealthy").required(),
+        ])
+        .required()
+        .optional(),
+      FailingStreak: y.number().required().optional(),
+      Log: y.array(HealthcheckResult).optional(),
+    }),
+    y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+  ])
+  .required();
 
 export type PortBinding = y.InferType<typeof PortBinding>;
 export const PortBinding = y.object({
@@ -293,8 +313,16 @@ export const HostConfig = y.object({
   MemorySwappiness: y.number().required().optional(),
   NanoCpus: y.number().required().optional(),
   OomKillDisable: y.boolean().required().optional(),
-  Init: y.boolean().required().optional(),
-  PidsLimit: y.number().required().optional(),
+  Init: y
+    .mixed()
+    .oneOf([y.boolean().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
+  PidsLimit: y
+    .mixed()
+    .oneOf([y.number().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
   Ulimits: y
     .array(
       y.object({
@@ -337,7 +365,14 @@ export const HostConfig = y.object({
   VolumeDriver: y.string().required().optional(),
   VolumesFrom: y.array(y.string().required()).optional(),
   Mounts: y.array(Mount).optional(),
-  ConsoleSize: y.array(y.number().required()).optional(),
+  ConsoleSize: y
+    .mixed()
+    .oneOf([
+      y.array(y.number().required()),
+      y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+    ])
+    .required()
+    .optional(),
   Annotations: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
   CapAdd: y.array(y.string().required()).optional(),
   CapDrop: y.array(y.string().required()).optional(),
@@ -391,33 +426,80 @@ export const ContainerConfig = y.object({
   AttachStdin: y.boolean().required().optional(),
   AttachStdout: y.boolean().required().optional(),
   AttachStderr: y.boolean().required().optional(),
-  ExposedPorts: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  ExposedPorts: y
+    .mixed()
+    .oneOf([
+      y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+      y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+    ])
+    .required()
+    .optional(),
   Tty: y.boolean().required().optional(),
   OpenStdin: y.boolean().required().optional(),
   StdinOnce: y.boolean().required().optional(),
   Env: y.array(y.string().required()).optional(),
   Cmd: y.array(y.string().required()).optional(),
   Healthcheck: HealthConfig.optional(),
-  ArgsEscaped: y.boolean().required().optional(),
+  ArgsEscaped: y
+    .mixed()
+    .oneOf([y.boolean().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
   Image: y.string().required().optional(),
   Volumes: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
   WorkingDir: y.string().required().optional(),
   Entrypoint: y.array(y.string().required()).optional(),
-  NetworkDisabled: y.boolean().required().optional(),
-  MacAddress: y.string().required().optional(),
-  OnBuild: y.array(y.string().required()).optional(),
+  NetworkDisabled: y
+    .mixed()
+    .oneOf([y.boolean().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
+  MacAddress: y
+    .mixed()
+    .oneOf([y.string().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
+  OnBuild: y
+    .mixed()
+    .oneOf([
+      y.array(y.string().required()),
+      y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+    ])
+    .required()
+    .optional(),
   Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
-  StopSignal: y.string().required().optional(),
-  StopTimeout: y.number().required().optional(),
-  Shell: y.array(y.string().required()).optional(),
+  StopSignal: y
+    .mixed()
+    .oneOf([y.string().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
+  StopTimeout: y
+    .mixed()
+    .oneOf([y.number().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
+  Shell: y
+    .mixed()
+    .oneOf([
+      y.array(y.string().required()),
+      y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+    ])
+    .required()
+    .optional(),
 });
 
 export type EndpointIPAMConfig = y.InferType<typeof EndpointIPAMConfig>;
-export const EndpointIPAMConfig = y.object({
-  IPv4Address: y.string().required().optional(),
-  IPv6Address: y.string().required().optional(),
-  LinkLocalIPs: y.array(y.string().required()).optional(),
-});
+export const EndpointIPAMConfig = y
+  .mixed()
+  .oneOf([
+    y.object({
+      IPv4Address: y.string().required().optional(),
+      IPv6Address: y.string().required().optional(),
+      LinkLocalIPs: y.array(y.string().required()).optional(),
+    }),
+    y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+  ])
+  .required();
 
 export type EndpointSettings = y.InferType<typeof EndpointSettings>;
 export const EndpointSettings = y.object({
@@ -433,7 +515,14 @@ export const EndpointSettings = y.object({
   GlobalIPv6Address: y.string().required().optional(),
   GlobalIPv6PrefixLen: y.number().required().optional(),
   MacAddress: y.string().required().optional(),
-  DriverOpts: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  DriverOpts: y
+    .mixed()
+    .oneOf([
+      y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+      y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+    ])
+    .required()
+    .optional(),
 });
 
 export type NetworkingConfig = y.InferType<typeof NetworkingConfig>;
@@ -456,8 +545,16 @@ export const NetworkSettings = y.object({
   LinkLocalIPv6PrefixLen: y.number().required().optional(),
   Ports: PortMap.optional(),
   SandboxKey: y.string().required().optional(),
-  SecondaryIPAddresses: y.array(Address).optional(),
-  SecondaryIPv6Addresses: y.array(Address).optional(),
+  SecondaryIPAddresses: y
+    .mixed()
+    .oneOf([y.array(Address), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
+  SecondaryIPv6Addresses: y
+    .mixed()
+    .oneOf([y.array(Address), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
   EndpointID: y.string().required().optional(),
   Gateway: y.string().required().optional(),
   GlobalIPv6Address: y.string().required().optional(),
@@ -505,9 +602,17 @@ export const ImageInspect = y.object({
   Author: y.string().required().optional(),
   Config: ContainerConfig.optional(),
   Architecture: y.string().required().optional(),
-  Variant: y.string().required().optional(),
+  Variant: y
+    .mixed()
+    .oneOf([y.string().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
   Os: y.string().required().optional(),
-  OsVersion: y.string().required().optional(),
+  OsVersion: y
+    .mixed()
+    .oneOf([y.string().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
   Size: y.number().required().optional(),
   VirtualSize: y.number().required().optional(),
   GraphDriver: GraphDriverData.optional(),
@@ -525,7 +630,14 @@ export const ImageInspect = y.object({
     .optional(),
   Metadata: y
     .object({
-      LastTagTime: y.string().required().optional(),
+      LastTagTime: y
+        .mixed()
+        .oneOf([
+          y.string().required(),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
     })
     .optional(),
 });
@@ -702,6 +814,7 @@ export const Volume = y.object({
         Size: y.number().required(),
         RefCount: y.number().required(),
       }),
+      y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
       y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
     ])
     .required(),
@@ -795,8 +908,19 @@ export const BuildInfo = y.object({
 export type BuildCache = y.InferType<typeof BuildCache>;
 export const BuildCache = y.object({
   ID: y.string().required().optional(),
-  Parent: y.string().required().optional(),
-  Parents: y.array(y.string().required()).optional(),
+  Parent: y
+    .mixed()
+    .oneOf([y.string().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
+  Parents: y
+    .mixed()
+    .oneOf([
+      y.array(y.string().required()),
+      y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+    ])
+    .required()
+    .optional(),
   Type: y
     .mixed()
     .oneOf([
@@ -814,7 +938,11 @@ export const BuildCache = y.object({
   Shared: y.boolean().required().optional(),
   Size: y.number().required().optional(),
   CreatedAt: y.string().required().optional(),
-  LastUsedAt: y.string().required().optional(),
+  LastUsedAt: y
+    .mixed()
+    .oneOf([y.string().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
   UsageCount: y.number().required().optional(),
 });
 
@@ -1056,11 +1184,17 @@ export const Reachability = y
   .required();
 
 export type ManagerStatus = y.InferType<typeof ManagerStatus>;
-export const ManagerStatus = y.object({
-  Leader: y.boolean().required().optional(),
-  Reachability: Reachability.optional(),
-  Addr: y.string().required().optional(),
-});
+export const ManagerStatus = y
+  .mixed()
+  .oneOf([
+    y.object({
+      Leader: y.boolean().required().optional(),
+      Reachability: Reachability.optional(),
+      Addr: y.string().required().optional(),
+    }),
+    y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+  ])
+  .required();
 
 export type Node = y.InferType<typeof Node>;
 export const Node = y.object({
@@ -1079,9 +1213,14 @@ export const SwarmSpec = y.object({
   Name: y.string().required().optional(),
   Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
   Orchestration: y
-    .object({
-      TaskHistoryRetentionLimit: y.number().required().optional(),
-    })
+    .mixed()
+    .oneOf([
+      y.object({
+        TaskHistoryRetentionLimit: y.number().required().optional(),
+      }),
+      y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+    ])
+    .required()
     .optional(),
   Raft: y
     .object({
@@ -1093,30 +1232,40 @@ export const SwarmSpec = y.object({
     })
     .optional(),
   Dispatcher: y
-    .object({
-      HeartbeatPeriod: y.number().required().optional(),
-    })
+    .mixed()
+    .oneOf([
+      y.object({
+        HeartbeatPeriod: y.number().required().optional(),
+      }),
+      y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+    ])
+    .required()
     .optional(),
   CAConfig: y
-    .object({
-      NodeCertExpiry: y.number().required().optional(),
-      ExternalCAs: y
-        .array(
-          y.object({
-            Protocol: y
-              .mixed((value): value is "cfssl" => value === "cfssl")
-              .required()
-              .optional(),
-            URL: y.string().required().optional(),
-            Options: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
-            CACert: y.string().required().optional(),
-          }),
-        )
-        .optional(),
-      SigningCACert: y.string().required().optional(),
-      SigningCAKey: y.string().required().optional(),
-      ForceRotate: y.number().required().optional(),
-    })
+    .mixed()
+    .oneOf([
+      y.object({
+        NodeCertExpiry: y.number().required().optional(),
+        ExternalCAs: y
+          .array(
+            y.object({
+              Protocol: y
+                .mixed((value): value is "cfssl" => value === "cfssl")
+                .required()
+                .optional(),
+              URL: y.string().required().optional(),
+              Options: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+              CACert: y.string().required().optional(),
+            }),
+          )
+          .optional(),
+        SigningCACert: y.string().required().optional(),
+        SigningCAKey: y.string().required().optional(),
+        ForceRotate: y.number().required().optional(),
+      }),
+      y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+    ])
+    .required()
     .optional(),
   EncryptionConfig: y
     .object({
@@ -1136,18 +1285,24 @@ export const SwarmSpec = y.object({
 });
 
 export type ClusterInfo = y.InferType<typeof ClusterInfo>;
-export const ClusterInfo = y.object({
-  ID: y.string().required().optional(),
-  Version: ObjectVersion.optional(),
-  CreatedAt: y.string().required().optional(),
-  UpdatedAt: y.string().required().optional(),
-  Spec: SwarmSpec.optional(),
-  TLSInfo: TLSInfo.optional(),
-  RootRotationInProgress: y.boolean().required().optional(),
-  DataPathPort: y.number().required().optional(),
-  DefaultAddrPool: y.array(y.string().required()).optional(),
-  SubnetSize: y.number().required().optional(),
-});
+export const ClusterInfo = y
+  .mixed()
+  .oneOf([
+    y.object({
+      ID: y.string().required().optional(),
+      Version: ObjectVersion.optional(),
+      CreatedAt: y.string().required().optional(),
+      UpdatedAt: y.string().required().optional(),
+      Spec: SwarmSpec.optional(),
+      TLSInfo: TLSInfo.optional(),
+      RootRotationInProgress: y.boolean().required().optional(),
+      DataPathPort: y.number().required().optional(),
+      DefaultAddrPool: y.array(y.string().required()).optional(),
+      SubnetSize: y.number().required().optional(),
+    }),
+    y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+  ])
+  .required();
 
 export type JoinTokens = y.InferType<typeof JoinTokens>;
 export const JoinTokens = y.object({
@@ -1156,19 +1311,7 @@ export const JoinTokens = y.object({
 });
 
 export type Swarm = y.InferType<typeof Swarm>;
-export const Swarm = y.object({
-  ID: y.string().required().optional(),
-  Version: ObjectVersion.optional(),
-  CreatedAt: y.string().required().optional(),
-  UpdatedAt: y.string().required().optional(),
-  Spec: SwarmSpec.optional(),
-  TLSInfo: TLSInfo.optional(),
-  RootRotationInProgress: y.boolean().required().optional(),
-  DataPathPort: y.number().required().optional(),
-  DefaultAddrPool: y.array(y.string().required()).optional(),
-  SubnetSize: y.number().required().optional(),
-  JoinTokens: JoinTokens.optional(),
-});
+export const Swarm = y.mixed(/* unsupported */);
 
 export type NetworkAttachmentConfig = y.InferType<typeof NetworkAttachmentConfig>;
 export const NetworkAttachmentConfig = y.object({
@@ -1275,7 +1418,14 @@ export const TaskSpec = y.object({
         ])
         .required()
         .optional(),
-      Init: y.boolean().required().optional(),
+      Init: y
+        .mixed()
+        .oneOf([
+          y.boolean().required(),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
       Sysctls: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
       CapabilityAdd: y.array(y.string().required()).optional(),
       CapabilityDrop: y.array(y.string().required()).optional(),
@@ -1650,32 +1800,38 @@ export const Config = y.object({
 });
 
 export type ContainerState = y.InferType<typeof ContainerState>;
-export const ContainerState = y.object({
-  Status: y
-    .mixed()
-    .oneOf([
-      y.mixed((value): value is "created" => value === "created").required(),
-      y.mixed((value): value is "running" => value === "running").required(),
-      y.mixed((value): value is "paused" => value === "paused").required(),
-      y.mixed((value): value is "restarting" => value === "restarting").required(),
-      y.mixed((value): value is "removing" => value === "removing").required(),
-      y.mixed((value): value is "exited" => value === "exited").required(),
-      y.mixed((value): value is "dead" => value === "dead").required(),
-    ])
-    .required()
-    .optional(),
-  Running: y.boolean().required().optional(),
-  Paused: y.boolean().required().optional(),
-  Restarting: y.boolean().required().optional(),
-  OOMKilled: y.boolean().required().optional(),
-  Dead: y.boolean().required().optional(),
-  Pid: y.number().required().optional(),
-  ExitCode: y.number().required().optional(),
-  Error: y.string().required().optional(),
-  StartedAt: y.string().required().optional(),
-  FinishedAt: y.string().required().optional(),
-  Health: Health.optional(),
-});
+export const ContainerState = y
+  .mixed()
+  .oneOf([
+    y.object({
+      Status: y
+        .mixed()
+        .oneOf([
+          y.mixed((value): value is "created" => value === "created").required(),
+          y.mixed((value): value is "running" => value === "running").required(),
+          y.mixed((value): value is "paused" => value === "paused").required(),
+          y.mixed((value): value is "restarting" => value === "restarting").required(),
+          y.mixed((value): value is "removing" => value === "removing").required(),
+          y.mixed((value): value is "exited" => value === "exited").required(),
+          y.mixed((value): value is "dead" => value === "dead").required(),
+        ])
+        .required()
+        .optional(),
+      Running: y.boolean().required().optional(),
+      Paused: y.boolean().required().optional(),
+      Restarting: y.boolean().required().optional(),
+      OOMKilled: y.boolean().required().optional(),
+      Dead: y.boolean().required().optional(),
+      Pid: y.number().required().optional(),
+      ExitCode: y.number().required().optional(),
+      Error: y.string().required().optional(),
+      StartedAt: y.string().required().optional(),
+      FinishedAt: y.string().required().optional(),
+      Health: Health.optional(),
+    }),
+    y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+  ])
+  .required();
 
 export type ContainerCreateResponse = y.InferType<typeof ContainerCreateResponse>;
 export const ContainerCreateResponse = y.object({
@@ -1711,7 +1867,11 @@ export const SystemVersion = y.object({
         Version: y.string().required(),
         "Details?": y
           .mixed()
-          .oneOf([y.object({}), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
+          .oneOf([
+            y.object({}),
+            y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+            y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+          ])
           .required(),
       }),
     )
@@ -1737,26 +1897,45 @@ export const PluginsInfo = y.object({
 });
 
 export type IndexInfo = y.InferType<typeof IndexInfo>;
-export const IndexInfo = y.object({
-  Name: y.string().required().optional(),
-  Mirrors: y.array(y.string().required()).optional(),
-  Secure: y.boolean().required().optional(),
-  Official: y.boolean().required().optional(),
-});
+export const IndexInfo = y
+  .mixed()
+  .oneOf([
+    y.object({
+      Name: y.string().required().optional(),
+      Mirrors: y.array(y.string().required()).optional(),
+      Secure: y.boolean().required().optional(),
+      Official: y.boolean().required().optional(),
+    }),
+    y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+  ])
+  .required();
 
 export type RegistryServiceConfig = y.InferType<typeof RegistryServiceConfig>;
-export const RegistryServiceConfig = y.object({
-  AllowNondistributableArtifactsCIDRs: y.array(y.string().required()).optional(),
-  AllowNondistributableArtifactsHostnames: y.array(y.string().required()).optional(),
-  InsecureRegistryCIDRs: y.array(y.string().required()).optional(),
-  IndexConfigs: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
-  Mirrors: y.array(y.string().required()).optional(),
-});
+export const RegistryServiceConfig = y
+  .mixed()
+  .oneOf([
+    y.object({
+      AllowNondistributableArtifactsCIDRs: y.array(y.string().required()).optional(),
+      AllowNondistributableArtifactsHostnames: y.array(y.string().required()).optional(),
+      InsecureRegistryCIDRs: y.array(y.string().required()).optional(),
+      IndexConfigs: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      Mirrors: y.array(y.string().required()).optional(),
+    }),
+    y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+  ])
+  .required();
 
 export type Runtime = y.InferType<typeof Runtime>;
 export const Runtime = y.object({
   path: y.string().required().optional(),
-  runtimeArgs: y.array(y.string().required()).optional(),
+  runtimeArgs: y
+    .mixed()
+    .oneOf([
+      y.array(y.string().required()),
+      y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+    ])
+    .required()
+    .optional(),
 });
 
 export type LocalNodeState = y.InferType<typeof LocalNodeState>;
@@ -1785,9 +1964,21 @@ export const SwarmInfo = y.object({
   LocalNodeState: LocalNodeState.optional(),
   ControlAvailable: y.boolean().required().optional(),
   Error: y.string().required().optional(),
-  RemoteManagers: y.array(PeerNode).optional(),
-  Nodes: y.number().required().optional(),
-  Managers: y.number().required().optional(),
+  RemoteManagers: y
+    .mixed()
+    .oneOf([y.array(PeerNode), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
+  Nodes: y
+    .mixed()
+    .oneOf([y.number().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
+  Managers: y
+    .mixed()
+    .oneOf([y.number().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+    .required()
+    .optional(),
   Cluster: ClusterInfo.optional(),
 });
 
@@ -2010,7 +2201,14 @@ export const get_ContainerInspect = {
     MountLabel: y.string().required().optional(),
     ProcessLabel: y.string().required().optional(),
     AppArmorProfile: y.string().required().optional(),
-    ExecIDs: y.array(y.string().required()).optional(),
+    ExecIDs: y
+      .mixed()
+      .oneOf([
+        y.array(y.string().required()),
+        y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+      ])
+      .required()
+      .optional(),
     HostConfig: HostConfig.optional(),
     GraphDriver: GraphDriverData.optional(),
     SizeRw: y.number().required().optional(),
