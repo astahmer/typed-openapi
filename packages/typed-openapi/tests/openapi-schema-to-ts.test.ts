@@ -111,7 +111,7 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "object",
-      "value": "{ str: string, \\"nb?\\": number | undefined }",
+      "value": "{ str: string, "nb?": number | undefined }",
     }
   `);
 
@@ -206,7 +206,7 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "ref",
-      "value": "Partial<{ enumprop: \\"aaa\\" | \\"bbb\\" | \\"ccc\\" }>",
+      "value": "Partial<{ enumprop: "aaa" | "bbb" | "ccc" }>",
     }
   `);
 
@@ -214,7 +214,7 @@ test("getSchemaBox", () => {
     `
     {
       "type": "union",
-      "value": "\\"aaa\\" | \\"bbb\\" | \\"ccc\\"",
+      "value": ""aaa" | "bbb" | "ccc"",
     }
   `,
   );
@@ -223,7 +223,7 @@ test("getSchemaBox", () => {
   expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`
     {
       "type": "union",
-      "value": "\\"aaa\\" | \\"bbb\\" | \\"ccc\\"",
+      "value": ""aaa" | "bbb" | "ccc"",
     }
   `);
 
@@ -326,7 +326,7 @@ test("getSchemaBox", () => {
     `
     {
       "type": "union",
-      "value": "\\"aaa\\" | \\"bbb\\" | \\"ccc\\"",
+      "value": ""aaa" | "bbb" | "ccc"",
     }
   `,
   );
