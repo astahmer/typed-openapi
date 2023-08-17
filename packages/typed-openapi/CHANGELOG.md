@@ -1,5 +1,62 @@
 # typed-openapi
 
+## 0.1.4
+
+### Patch Changes
+
+- ae34ed1: support OpenAPI v3.0 schema.nullable
+
+  ```json
+  {
+    "type": "object",
+    "properties": {
+      "id": { "type": "integer" },
+      "parent_id": {
+        "type": "integer",
+        "nullable": true
+      },
+      "children": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/TestClass"
+        }
+      }
+    },
+    "required": ["id", "parent_id"]
+  }
+  ```
+
+  output:
+
+  ```diff
+  export type TestClass = {
+      id: number;
+  -    parent_id: number;
+  +    parent_id: number | null;
+      children?: Array<TestClass> | undefined
+  };
+  ```
+
+- 088f3e4: Fix optional types
+
+  ```json
+  {
+    "type": "object",
+    "properties": { "str": { "type": "string" }, "nb": { "type": "number" } },
+    "required": ["str"]
+  }
+  ```
+
+  output:
+
+  ```diff
+  export type _Test = {
+      str: string;
+  -    "nb?": number | undefined
+  +    nb?: number | undefined
+  };
+  ```
+
 ## 0.1.3
 
 ### Patch Changes
