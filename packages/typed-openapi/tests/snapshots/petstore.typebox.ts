@@ -63,12 +63,14 @@ export const Tag = Type.Partial(
 
 export type Pet = Static<typeof Pet>;
 export const Pet = Type.Object({
-  "id?": Type.Union([Type.Number(), Type.Undefined()]),
+  id: Type.Optional(Type.Union([Type.Number(), Type.Undefined()])),
   name: Type.String(),
-  "category?": Type.Union([Category, Type.Undefined()]),
+  category: Type.Optional(Type.Union([Category, Type.Undefined()])),
   photoUrls: Type.Array(Type.String()),
-  "tags?": Type.Union([Type.Array(Tag), Type.Undefined()]),
-  "status?": Type.Union([Type.Literal("available"), Type.Literal("pending"), Type.Literal("sold"), Type.Undefined()]),
+  tags: Type.Optional(Type.Union([Type.Array(Tag), Type.Undefined()])),
+  status: Type.Optional(
+    Type.Union([Type.Literal("available"), Type.Literal("pending"), Type.Literal("sold"), Type.Undefined()]),
+  ),
 });
 
 export type ApiResponse = Static<typeof ApiResponse>;

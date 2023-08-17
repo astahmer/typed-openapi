@@ -2,9 +2,9 @@ import z from "zod";
 
 export type Port = z.infer<typeof Port>;
 export const Port = z.object({
-  "IP?": z.union([z.string(), z.undefined()]),
+  IP: z.union([z.string(), z.undefined()]).optional(),
   PrivatePort: z.number(),
-  "PublicPort?": z.union([z.number(), z.undefined()]),
+  PublicPort: z.union([z.number(), z.undefined()]).optional(),
   Type: z.union([z.literal("tcp"), z.literal("udp"), z.literal("sctp")]),
 });
 
@@ -410,7 +410,7 @@ export const ImageInspect = z.object({
   RootFS: z
     .object({
       Type: z.string(),
-      "Layers?": z.union([z.array(z.string()), z.undefined()]),
+      Layers: z.union([z.array(z.string()), z.undefined()]).optional(),
     })
     .optional(),
   Metadata: z
@@ -429,7 +429,7 @@ export const ImageSummary = z.object({
   Created: z.number(),
   Size: z.number(),
   SharedSize: z.number(),
-  "VirtualSize?": z.union([z.number(), z.undefined()]),
+  VirtualSize: z.union([z.number(), z.undefined()]).optional(),
   Labels: z.unknown(),
   Containers: z.number(),
 });
@@ -530,20 +530,22 @@ export const Volume = z.object({
   Name: z.string(),
   Driver: z.string(),
   Mountpoint: z.string(),
-  "CreatedAt?": z.union([z.string(), z.undefined()]),
-  "Status?": z.union([z.unknown(), z.undefined()]),
+  CreatedAt: z.union([z.string(), z.undefined()]).optional(),
+  Status: z.union([z.unknown(), z.undefined()]).optional(),
   Labels: z.unknown(),
   Scope: z.union([z.literal("local"), z.literal("global")]),
-  "ClusterVolume?": z.union([ClusterVolume, z.undefined()]),
+  ClusterVolume: z.union([ClusterVolume, z.undefined()]).optional(),
   Options: z.unknown(),
-  "UsageData?": z.union([
-    z.object({
-      Size: z.number(),
-      RefCount: z.number(),
-    }),
-    z.null(),
-    z.undefined(),
-  ]),
+  UsageData: z
+    .union([
+      z.object({
+        Size: z.number(),
+        RefCount: z.number(),
+      }),
+      z.null(),
+      z.undefined(),
+    ])
+    .optional(),
 });
 
 export type VolumeCreateOptions = z.infer<typeof VolumeCreateOptions>;
@@ -726,7 +728,7 @@ export const PluginPrivilege = z.object({
 
 export type Plugin = z.infer<typeof Plugin>;
 export const Plugin = z.object({
-  "Id?": z.union([z.string(), z.undefined()]),
+  Id: z.union([z.string(), z.undefined()]).optional(),
   Name: z.string(),
   Enabled: z.boolean(),
   Settings: z.object({
@@ -735,25 +737,27 @@ export const Plugin = z.object({
     Args: z.array(z.string()),
     Devices: z.array(PluginDevice),
   }),
-  "PluginReference?": z.union([z.string(), z.undefined()]),
+  PluginReference: z.union([z.string(), z.undefined()]).optional(),
   Config: z.object({
-    "DockerVersion?": z.union([z.string(), z.undefined()]),
+    DockerVersion: z.union([z.string(), z.undefined()]).optional(),
     Description: z.string(),
     Documentation: z.string(),
     Interface: z.object({
       Types: z.array(PluginInterfaceType),
       Socket: z.string(),
-      "ProtocolScheme?": z.union([z.literal(""), z.literal("moby.plugins.http/v1"), z.undefined()]),
+      ProtocolScheme: z.union([z.literal(""), z.literal("moby.plugins.http/v1"), z.undefined()]).optional(),
     }),
     Entrypoint: z.array(z.string()),
     WorkDir: z.string(),
-    "User?": z.union([
-      z.object({
-        UID: z.number().optional(),
-        GID: z.number().optional(),
-      }),
-      z.undefined(),
-    ]),
+    User: z
+      .union([
+        z.object({
+          UID: z.number().optional(),
+          GID: z.number().optional(),
+        }),
+        z.undefined(),
+      ])
+      .optional(),
     Network: z.object({
       Type: z.string(),
     }),
@@ -773,13 +777,15 @@ export const Plugin = z.object({
       Settable: z.array(z.string()),
       Value: z.array(z.string()),
     }),
-    "rootfs?": z.union([
-      z.object({
-        type: z.string().optional(),
-        diff_ids: z.array(z.string()).optional(),
-      }),
-      z.undefined(),
-    ]),
+    rootfs: z
+      .union([
+        z.object({
+          type: z.string().optional(),
+          diff_ids: z.array(z.string()).optional(),
+        }),
+        z.undefined(),
+      ])
+      .optional(),
   }),
 });
 
@@ -1322,7 +1328,7 @@ export const ContainerSummary = z.object({
 export type Driver = z.infer<typeof Driver>;
 export const Driver = z.object({
   Name: z.string(),
-  "Options?": z.union([z.unknown(), z.undefined()]),
+  Options: z.union([z.unknown(), z.undefined()]).optional(),
 });
 
 export type SecretSpec = z.infer<typeof SecretSpec>;
@@ -1403,7 +1409,7 @@ export const ContainerWaitExitError = z.object({
 export type ContainerWaitResponse = z.infer<typeof ContainerWaitResponse>;
 export const ContainerWaitResponse = z.object({
   StatusCode: z.number(),
-  "Error?": z.union([ContainerWaitExitError, z.undefined()]),
+  Error: z.union([ContainerWaitExitError, z.undefined()]).optional(),
 });
 
 export type SystemVersion = z.infer<typeof SystemVersion>;
@@ -1418,7 +1424,7 @@ export const SystemVersion = z.object({
       z.object({
         Name: z.string(),
         Version: z.string(),
-        "Details?": z.union([z.object({}), z.null(), z.undefined()]),
+        Details: z.union([z.object({}), z.null(), z.undefined()]).optional(),
       }),
     )
     .optional(),

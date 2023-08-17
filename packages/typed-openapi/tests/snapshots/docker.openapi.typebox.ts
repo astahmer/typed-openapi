@@ -2,9 +2,9 @@ import { Type, Static } from "@sinclair/typebox";
 
 export type Port = Static<typeof Port>;
 export const Port = Type.Object({
-  "IP?": Type.Union([Type.String(), Type.Undefined()]),
+  IP: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
   PrivatePort: Type.Number(),
-  "PublicPort?": Type.Union([Type.Number(), Type.Undefined()]),
+  PublicPort: Type.Optional(Type.Union([Type.Number(), Type.Undefined()])),
   Type: Type.Union([Type.Literal("tcp"), Type.Literal("udp"), Type.Literal("sctp")]),
 });
 
@@ -463,7 +463,7 @@ export const ImageInspect = Type.Partial(
     GraphDriver: GraphDriverData,
     RootFS: Type.Object({
       Type: Type.String(),
-      "Layers?": Type.Union([Type.Array(Type.String()), Type.Undefined()]),
+      Layers: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Undefined()])),
     }),
     Metadata: Type.Partial(
       Type.Object({
@@ -482,7 +482,7 @@ export const ImageSummary = Type.Object({
   Created: Type.Number(),
   Size: Type.Number(),
   SharedSize: Type.Number(),
-  "VirtualSize?": Type.Union([Type.Number(), Type.Undefined()]),
+  VirtualSize: Type.Optional(Type.Union([Type.Number(), Type.Undefined()])),
   Labels: Type.Unknown(),
   Containers: Type.Number(),
 });
@@ -596,20 +596,22 @@ export const Volume = Type.Object({
   Name: Type.String(),
   Driver: Type.String(),
   Mountpoint: Type.String(),
-  "CreatedAt?": Type.Union([Type.String(), Type.Undefined()]),
-  "Status?": Type.Union([Type.Unknown(), Type.Undefined()]),
+  CreatedAt: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
+  Status: Type.Optional(Type.Union([Type.Unknown(), Type.Undefined()])),
   Labels: Type.Unknown(),
   Scope: Type.Union([Type.Literal("local"), Type.Literal("global")]),
-  "ClusterVolume?": Type.Union([ClusterVolume, Type.Undefined()]),
+  ClusterVolume: Type.Optional(Type.Union([ClusterVolume, Type.Undefined()])),
   Options: Type.Unknown(),
-  "UsageData?": Type.Union([
-    Type.Object({
-      Size: Type.Number(),
-      RefCount: Type.Number(),
-    }),
-    Type.Null(),
-    Type.Undefined(),
-  ]),
+  UsageData: Type.Optional(
+    Type.Union([
+      Type.Object({
+        Size: Type.Number(),
+        RefCount: Type.Number(),
+      }),
+      Type.Null(),
+      Type.Undefined(),
+    ]),
+  ),
 });
 
 export type VolumeCreateOptions = Static<typeof VolumeCreateOptions>;
@@ -818,7 +820,7 @@ export const PluginPrivilege = Type.Partial(
 
 export type Plugin = Static<typeof Plugin>;
 export const Plugin = Type.Object({
-  "Id?": Type.Union([Type.String(), Type.Undefined()]),
+  Id: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
   Name: Type.String(),
   Enabled: Type.Boolean(),
   Settings: Type.Object({
@@ -827,27 +829,31 @@ export const Plugin = Type.Object({
     Args: Type.Array(Type.String()),
     Devices: Type.Array(PluginDevice),
   }),
-  "PluginReference?": Type.Union([Type.String(), Type.Undefined()]),
+  PluginReference: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
   Config: Type.Object({
-    "DockerVersion?": Type.Union([Type.String(), Type.Undefined()]),
+    DockerVersion: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
     Description: Type.String(),
     Documentation: Type.String(),
     Interface: Type.Object({
       Types: Type.Array(PluginInterfaceType),
       Socket: Type.String(),
-      "ProtocolScheme?": Type.Union([Type.Literal(""), Type.Literal("moby.plugins.http/v1"), Type.Undefined()]),
+      ProtocolScheme: Type.Optional(
+        Type.Union([Type.Literal(""), Type.Literal("moby.plugins.http/v1"), Type.Undefined()]),
+      ),
     }),
     Entrypoint: Type.Array(Type.String()),
     WorkDir: Type.String(),
-    "User?": Type.Union([
-      Type.Partial(
-        Type.Object({
-          UID: Type.Number(),
-          GID: Type.Number(),
-        }),
-      ),
-      Type.Undefined(),
-    ]),
+    User: Type.Optional(
+      Type.Union([
+        Type.Partial(
+          Type.Object({
+            UID: Type.Number(),
+            GID: Type.Number(),
+          }),
+        ),
+        Type.Undefined(),
+      ]),
+    ),
     Network: Type.Object({
       Type: Type.String(),
     }),
@@ -867,15 +873,17 @@ export const Plugin = Type.Object({
       Settable: Type.Array(Type.String()),
       Value: Type.Array(Type.String()),
     }),
-    "rootfs?": Type.Union([
-      Type.Partial(
-        Type.Object({
-          type: Type.String(),
-          diff_ids: Type.Array(Type.String()),
-        }),
-      ),
-      Type.Undefined(),
-    ]),
+    rootfs: Type.Optional(
+      Type.Union([
+        Type.Partial(
+          Type.Object({
+            type: Type.String(),
+            diff_ids: Type.Array(Type.String()),
+          }),
+        ),
+        Type.Undefined(),
+      ]),
+    ),
   }),
 });
 
@@ -1466,7 +1474,7 @@ export const ContainerSummary = Type.Partial(
 export type Driver = Static<typeof Driver>;
 export const Driver = Type.Object({
   Name: Type.String(),
-  "Options?": Type.Union([Type.Unknown(), Type.Undefined()]),
+  Options: Type.Optional(Type.Union([Type.Unknown(), Type.Undefined()])),
 });
 
 export type SecretSpec = Static<typeof SecretSpec>;
@@ -1557,7 +1565,7 @@ export const ContainerWaitExitError = Type.Partial(
 export type ContainerWaitResponse = Static<typeof ContainerWaitResponse>;
 export const ContainerWaitResponse = Type.Object({
   StatusCode: Type.Number(),
-  "Error?": Type.Union([ContainerWaitExitError, Type.Undefined()]),
+  Error: Type.Optional(Type.Union([ContainerWaitExitError, Type.Undefined()])),
 });
 
 export type SystemVersion = Static<typeof SystemVersion>;
@@ -1570,7 +1578,7 @@ export const SystemVersion = Type.Partial(
       Type.Object({
         Name: Type.String(),
         Version: Type.String(),
-        "Details?": Type.Union([Type.Partial(Type.Object({})), Type.Null(), Type.Undefined()]),
+        Details: Type.Optional(Type.Union([Type.Partial(Type.Object({})), Type.Null(), Type.Undefined()])),
       }),
     ),
     Version: Type.String(),

@@ -51,12 +51,12 @@ export const Tag = z.object({
 
 export type Pet = z.infer<typeof Pet>;
 export const Pet = z.object({
-  "id?": z.union([z.number(), z.undefined()]),
+  id: z.union([z.number(), z.undefined()]).optional(),
   name: z.string(),
-  "category?": z.union([Category, z.undefined()]),
+  category: z.union([Category, z.undefined()]).optional(),
   photoUrls: z.array(z.string()),
-  "tags?": z.union([z.array(Tag), z.undefined()]),
-  "status?": z.union([z.literal("available"), z.literal("pending"), z.literal("sold"), z.undefined()]),
+  tags: z.union([z.array(Tag), z.undefined()]).optional(),
+  status: z.union([z.literal("available"), z.literal("pending"), z.literal("sold"), z.undefined()]).optional(),
 });
 
 export type ApiResponse = z.infer<typeof ApiResponse>;

@@ -1,9 +1,9 @@
 export namespace Schemas {
   // <Schemas>
   export type Port = {
-    "IP?": string | undefined;
+    IP?: string | undefined;
     PrivatePort: number;
-    "PublicPort?": number | undefined;
+    PublicPort?: number | undefined;
     Type: "tcp" | "udp" | "sctp";
   };
   export type MountPoint = Partial<{
@@ -239,7 +239,7 @@ export namespace Schemas {
     Size: number;
     VirtualSize: number;
     GraphDriver: GraphDriverData;
-    RootFS: { Type: string; "Layers?": Array<string> | undefined };
+    RootFS: { Type: string; Layers?: Array<string> | undefined };
     Metadata: Partial<{ LastTagTime: string | null }>;
   }>;
   export type ImageSummary = {
@@ -250,7 +250,7 @@ export namespace Schemas {
     Created: number;
     Size: number;
     SharedSize: number;
-    "VirtualSize?": number | undefined;
+    VirtualSize?: number | undefined;
     Labels: unknown;
     Containers: number;
   };
@@ -300,13 +300,13 @@ export namespace Schemas {
     Name: string;
     Driver: string;
     Mountpoint: string;
-    "CreatedAt?": string | undefined;
-    "Status?": unknown | undefined;
+    CreatedAt?: string | undefined;
+    Status?: unknown | undefined;
     Labels: unknown;
     Scope: "local" | "global";
-    "ClusterVolume?": ClusterVolume | undefined;
+    ClusterVolume?: ClusterVolume | undefined;
     Options: unknown;
-    "UsageData?": { Size: number; RefCount: number } | null | undefined;
+    UsageData?: { Size: number; RefCount: number } | null | undefined;
   };
   export type VolumeCreateOptions = Partial<{
     Name: string;
@@ -396,23 +396,23 @@ export namespace Schemas {
   export type PluginInterfaceType = { Prefix: string; Capability: string; Version: string };
   export type PluginPrivilege = Partial<{ Name: string; Description: string; Value: Array<string> }>;
   export type Plugin = {
-    "Id?": string | undefined;
+    Id?: string | undefined;
     Name: string;
     Enabled: boolean;
     Settings: { Mounts: Array<PluginMount>; Env: Array<string>; Args: Array<string>; Devices: Array<PluginDevice> };
-    "PluginReference?": string | undefined;
+    PluginReference?: string | undefined;
     Config: {
-      "DockerVersion?": string | undefined;
+      DockerVersion?: string | undefined;
       Description: string;
       Documentation: string;
       Interface: {
         Types: Array<PluginInterfaceType>;
         Socket: string;
-        "ProtocolScheme?": "" | "moby.plugins.http/v1" | undefined;
+        ProtocolScheme?: "" | "moby.plugins.http/v1" | undefined;
       };
       Entrypoint: Array<string>;
       WorkDir: string;
-      "User?": Partial<{ UID: number; GID: number }> | undefined;
+      User?: Partial<{ UID: number; GID: number }> | undefined;
       Network: { Type: string };
       Linux: { Capabilities: Array<string>; AllowAllDevices: boolean; Devices: Array<PluginDevice> };
       PropagatedMount: string;
@@ -421,7 +421,7 @@ export namespace Schemas {
       Mounts: Array<PluginMount>;
       Env: Array<PluginEnv>;
       Args: { Name: string; Description: string; Settable: Array<string>; Value: Array<string> };
-      "rootfs?": Partial<{ type: string; diff_ids: Array<string> }> | undefined;
+      rootfs?: Partial<{ type: string; diff_ids: Array<string> }> | undefined;
     };
   };
   export type NodeSpec = Partial<{
@@ -675,7 +675,7 @@ export namespace Schemas {
     NetworkSettings: Partial<{ Networks: unknown }>;
     Mounts: Array<MountPoint>;
   }>;
-  export type Driver = { Name: string; "Options?": unknown | undefined };
+  export type Driver = { Name: string; Options?: unknown | undefined };
   export type SecretSpec = Partial<{ Name: string; Labels: unknown; Data: string; Driver: Driver; Templating: Driver }>;
   export type Secret = Partial<{
     ID: string;
@@ -708,10 +708,10 @@ export namespace Schemas {
   }> | null;
   export type ContainerCreateResponse = { Id: string; Warnings: Array<string> };
   export type ContainerWaitExitError = Partial<{ Message: string }>;
-  export type ContainerWaitResponse = { StatusCode: number; "Error?": ContainerWaitExitError | undefined };
+  export type ContainerWaitResponse = { StatusCode: number; Error?: ContainerWaitExitError | undefined };
   export type SystemVersion = Partial<{
     Platform: { Name: string };
-    Components: Array<{ Name: string; Version: string; "Details?": Partial<{}> | null | undefined }>;
+    Components: Array<{ Name: string; Version: string; Details?: Partial<{}> | null | undefined }>;
     Version: string;
     ApiVersion: string;
     MinAPIVersion: string;

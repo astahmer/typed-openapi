@@ -1,3 +1,4 @@
+import { Box } from "./box";
 import { createFactory, unwrap } from "./box-factory";
 import { wrapWithQuotesIfNeeded } from "./string-utils";
 
@@ -16,7 +17,12 @@ export const tsFactory = createFactory({
   never: () => "never" as const,
   object: (props) => {
     const propsString = Object.entries(props)
-      .map(([prop, type]) => `${wrapWithQuotesIfNeeded(prop)}: ${unwrap(type)}`)
+      .map(
+        ([prop, type]) =>
+          `${wrapWithQuotesIfNeeded(prop)}${typeof type !== "string" && Box.isOptional(type) ? "?" : ""}: ${unwrap(
+            type,
+          )}`,
+      )
       .join(", ");
 
     return `{ ${propsString} }`;

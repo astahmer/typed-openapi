@@ -23,12 +23,12 @@ export namespace Schemas {
   }>;
   export type Tag = Partial<{ id: number; name: string }>;
   export type Pet = {
-    "id?": number | undefined;
+    id?: number | undefined;
     name: string;
-    "category?": Category | undefined;
+    category?: Category | undefined;
     photoUrls: Array<string>;
-    "tags?": Array<Tag> | undefined;
-    "status?": "available" | "pending" | "sold" | undefined;
+    tags?: Array<Tag> | undefined;
+    status?: "available" | "pending" | "sold" | undefined;
   };
   export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
 

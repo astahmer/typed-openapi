@@ -59,21 +59,24 @@ export const Tag = y.object({
 
 export type Pet = y.InferType<typeof Pet>;
 export const Pet = y.object({
-  "id?": y
+  id: y
     .mixed()
     .oneOf([y.number().required(), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required(),
+    .required()
+    .optional(),
   name: y.string().required(),
-  "category?": y
+  category: y
     .mixed()
     .oneOf([Category, y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required(),
+    .required()
+    .optional(),
   photoUrls: y.array(y.string().required()),
-  "tags?": y
+  tags: y
     .mixed()
     .oneOf([y.array(Tag), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required(),
-  "status?": y
+    .required()
+    .optional(),
+  status: y
     .mixed()
     .oneOf([
       y.mixed((value): value is "available" => value === "available").required(),
@@ -81,7 +84,8 @@ export const Pet = y.object({
       y.mixed((value): value is "sold" => value === "sold").required(),
       y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
     ])
-    .required(),
+    .required()
+    .optional(),
 });
 
 export type ApiResponse = y.InferType<typeof ApiResponse>;

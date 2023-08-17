@@ -135,10 +135,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
 
           const isRequired = Boolean(isPartial ? true : hasRequiredArray ? schema.required?.includes(prop) : false);
           const isOptional = !isPartial && !isRequired;
-          return [
-            `${wrapWithQuotesIfNeeded(prop)}${isOptional ? "?" : ""}`,
-            isOptional ? t.optional(propType) : propType,
-          ];
+          return [`${wrapWithQuotesIfNeeded(prop)}`, isOptional ? t.optional(propType) : propType];
         }),
       );
 

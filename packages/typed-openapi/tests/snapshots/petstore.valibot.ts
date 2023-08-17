@@ -51,12 +51,14 @@ export const Tag = v.object({
 
 export type Pet = v.Output<typeof Pet>;
 export const Pet = v.object({
-  "id?": v.union([v.number(), v.any(/* unsupported */)]),
+  id: v.optional(v.union([v.number(), v.any(/* unsupported */)])),
   name: v.string(),
-  "category?": v.union([Category, v.any(/* unsupported */)]),
+  category: v.optional(v.union([Category, v.any(/* unsupported */)])),
   photoUrls: v.array(v.string()),
-  "tags?": v.union([v.array(Tag), v.any(/* unsupported */)]),
-  "status?": v.union([v.literal("available"), v.literal("pending"), v.literal("sold"), v.any(/* unsupported */)]),
+  tags: v.optional(v.union([v.array(Tag), v.any(/* unsupported */)])),
+  status: v.optional(
+    v.union([v.literal("available"), v.literal("pending"), v.literal("sold"), v.any(/* unsupported */)]),
+  ),
 });
 
 export type ApiResponse = v.Output<typeof ApiResponse>;

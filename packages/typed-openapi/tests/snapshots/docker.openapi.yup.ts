@@ -2,15 +2,17 @@ import y from "yup";
 
 export type Port = y.InferType<typeof Port>;
 export const Port = y.object({
-  "IP?": y
+  IP: y
     .mixed()
     .oneOf([y.string().required(), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required(),
+    .required()
+    .optional(),
   PrivatePort: y.number().required(),
-  "PublicPort?": y
+  PublicPort: y
     .mixed()
     .oneOf([y.number().required(), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required(),
+    .required()
+    .optional(),
   Type: y
     .mixed()
     .oneOf([
@@ -619,13 +621,14 @@ export const ImageInspect = y.object({
   RootFS: y
     .object({
       Type: y.string().required(),
-      "Layers?": y
+      Layers: y
         .mixed()
         .oneOf([
           y.array(y.string().required()),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
-        .required(),
+        .required()
+        .optional(),
     })
     .optional(),
   Metadata: y
@@ -651,10 +654,11 @@ export const ImageSummary = y.object({
   Created: y.number().required(),
   Size: y.number().required(),
   SharedSize: y.number().required(),
-  "VirtualSize?": y
+  VirtualSize: y
     .mixed()
     .oneOf([y.number().required(), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required(),
+    .required()
+    .optional(),
   Labels: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   Containers: y.number().required(),
 });
@@ -783,17 +787,19 @@ export const Volume = y.object({
   Name: y.string().required(),
   Driver: y.string().required(),
   Mountpoint: y.string().required(),
-  "CreatedAt?": y
+  CreatedAt: y
     .mixed()
     .oneOf([y.string().required(), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required(),
-  "Status?": y
+    .required()
+    .optional(),
+  Status: y
     .mixed()
     .oneOf([
       y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
       y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
     ])
-    .required(),
+    .required()
+    .optional(),
   Labels: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   Scope: y
     .mixed()
@@ -802,12 +808,13 @@ export const Volume = y.object({
       y.mixed((value): value is "global" => value === "global").required(),
     ])
     .required(),
-  "ClusterVolume?": y
+  ClusterVolume: y
     .mixed()
     .oneOf([ClusterVolume, y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required(),
+    .required()
+    .optional(),
   Options: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  "UsageData?": y
+  UsageData: y
     .mixed()
     .oneOf([
       y.object({
@@ -817,7 +824,8 @@ export const Volume = y.object({
       y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
       y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
     ])
-    .required(),
+    .required()
+    .optional(),
 });
 
 export type VolumeCreateOptions = y.InferType<typeof VolumeCreateOptions>;
@@ -1017,10 +1025,11 @@ export const PluginPrivilege = y.object({
 
 export type Plugin = y.InferType<typeof Plugin>;
 export const Plugin = y.object({
-  "Id?": y
+  Id: y
     .mixed()
     .oneOf([y.string().required(), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required(),
+    .required()
+    .optional(),
   Name: y.string().required(),
   Enabled: y.boolean().required(),
   Settings: y.object({
@@ -1029,32 +1038,35 @@ export const Plugin = y.object({
     Args: y.array(y.string().required()),
     Devices: y.array(PluginDevice),
   }),
-  "PluginReference?": y
+  PluginReference: y
     .mixed()
     .oneOf([y.string().required(), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required(),
+    .required()
+    .optional(),
   Config: y.object({
-    "DockerVersion?": y
+    DockerVersion: y
       .mixed()
       .oneOf([y.string().required(), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-      .required(),
+      .required()
+      .optional(),
     Description: y.string().required(),
     Documentation: y.string().required(),
     Interface: y.object({
       Types: y.array(PluginInterfaceType),
       Socket: y.string().required(),
-      "ProtocolScheme?": y
+      ProtocolScheme: y
         .mixed()
         .oneOf([
           y.mixed((value): value is "" => value === "").required(),
           y.mixed((value): value is "moby.plugins.http/v1" => value === "moby.plugins.http/v1").required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
-        .required(),
+        .required()
+        .optional(),
     }),
     Entrypoint: y.array(y.string().required()),
     WorkDir: y.string().required(),
-    "User?": y
+    User: y
       .mixed()
       .oneOf([
         y.object({
@@ -1063,7 +1075,8 @@ export const Plugin = y.object({
         }),
         y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
       ])
-      .required(),
+      .required()
+      .optional(),
     Network: y.object({
       Type: y.string().required(),
     }),
@@ -1083,7 +1096,7 @@ export const Plugin = y.object({
       Settable: y.array(y.string().required()),
       Value: y.array(y.string().required()),
     }),
-    "rootfs?": y
+    rootfs: y
       .mixed()
       .oneOf([
         y.object({
@@ -1092,7 +1105,8 @@ export const Plugin = y.object({
         }),
         y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
       ])
-      .required(),
+      .required()
+      .optional(),
   }),
 });
 
@@ -1755,13 +1769,14 @@ export const ContainerSummary = y.object({
 export type Driver = y.InferType<typeof Driver>;
 export const Driver = y.object({
   Name: y.string().required(),
-  "Options?": y
+  Options: y
     .mixed()
     .oneOf([
       y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
       y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
     ])
-    .required(),
+    .required()
+    .optional(),
 });
 
 export type SecretSpec = y.InferType<typeof SecretSpec>;
@@ -1847,10 +1862,11 @@ export const ContainerWaitExitError = y.object({
 export type ContainerWaitResponse = y.InferType<typeof ContainerWaitResponse>;
 export const ContainerWaitResponse = y.object({
   StatusCode: y.number().required(),
-  "Error?": y
+  Error: y
     .mixed()
     .oneOf([ContainerWaitExitError, y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required(),
+    .required()
+    .optional(),
 });
 
 export type SystemVersion = y.InferType<typeof SystemVersion>;
@@ -1865,14 +1881,15 @@ export const SystemVersion = y.object({
       y.object({
         Name: y.string().required(),
         Version: y.string().required(),
-        "Details?": y
+        Details: y
           .mixed()
           .oneOf([
             y.object({}),
             y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
             y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
           ])
-          .required(),
+          .required()
+          .optional(),
       }),
     )
     .optional(),

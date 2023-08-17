@@ -51,12 +51,15 @@ export const Tag = t.type({
 
 export type Pet = t.TypeOf<typeof Pet>;
 export const Pet = t.type({
-  "id?": t.union([t.number, t.undefined]),
+  id: t.union([t.undefined, t.union([t.number, t.undefined])]),
   name: t.string,
-  "category?": t.union([Category, t.undefined]),
+  category: t.union([t.undefined, t.union([Category, t.undefined])]),
   photoUrls: t.array(t.string),
-  "tags?": t.union([t.array(Tag), t.undefined]),
-  "status?": t.union([t.literal("available"), t.literal("pending"), t.literal("sold"), t.undefined]),
+  tags: t.union([t.undefined, t.union([t.array(Tag), t.undefined])]),
+  status: t.union([
+    t.undefined,
+    t.union([t.literal("available"), t.literal("pending"), t.literal("sold"), t.undefined]),
+  ]),
 });
 
 export type ApiResponse = t.TypeOf<typeof ApiResponse>;

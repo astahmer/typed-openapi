@@ -2,9 +2,9 @@ import v from "valibot";
 
 export type Port = v.Output<typeof Port>;
 export const Port = v.object({
-  "IP?": v.union([v.string(), v.any(/* unsupported */)]),
+  IP: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
   PrivatePort: v.number(),
-  "PublicPort?": v.union([v.number(), v.any(/* unsupported */)]),
+  PublicPort: v.optional(v.union([v.number(), v.any(/* unsupported */)])),
   Type: v.union([v.literal("tcp"), v.literal("udp"), v.literal("sctp")]),
 });
 
@@ -416,7 +416,7 @@ export const ImageInspect = v.object({
   RootFS: v.optional(
     v.object({
       Type: v.string(),
-      "Layers?": v.union([v.array(v.string()), v.any(/* unsupported */)]),
+      Layers: v.optional(v.union([v.array(v.string()), v.any(/* unsupported */)])),
     }),
   ),
   Metadata: v.optional(
@@ -435,7 +435,7 @@ export const ImageSummary = v.object({
   Created: v.number(),
   Size: v.number(),
   SharedSize: v.number(),
-  "VirtualSize?": v.union([v.number(), v.any(/* unsupported */)]),
+  VirtualSize: v.optional(v.union([v.number(), v.any(/* unsupported */)])),
   Labels: v.unknown(),
   Containers: v.number(),
 });
@@ -538,20 +538,22 @@ export const Volume = v.object({
   Name: v.string(),
   Driver: v.string(),
   Mountpoint: v.string(),
-  "CreatedAt?": v.union([v.string(), v.any(/* unsupported */)]),
-  "Status?": v.union([v.unknown(), v.any(/* unsupported */)]),
+  CreatedAt: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
+  Status: v.optional(v.union([v.unknown(), v.any(/* unsupported */)])),
   Labels: v.unknown(),
   Scope: v.union([v.literal("local"), v.literal("global")]),
-  "ClusterVolume?": v.union([ClusterVolume, v.any(/* unsupported */)]),
+  ClusterVolume: v.optional(v.union([ClusterVolume, v.any(/* unsupported */)])),
   Options: v.unknown(),
-  "UsageData?": v.union([
-    v.object({
-      Size: v.number(),
-      RefCount: v.number(),
-    }),
-    v.any(/* unsupported */),
-    v.any(/* unsupported */),
-  ]),
+  UsageData: v.optional(
+    v.union([
+      v.object({
+        Size: v.number(),
+        RefCount: v.number(),
+      }),
+      v.any(/* unsupported */),
+      v.any(/* unsupported */),
+    ]),
+  ),
 });
 
 export type VolumeCreateOptions = v.Output<typeof VolumeCreateOptions>;
@@ -734,7 +736,7 @@ export const PluginPrivilege = v.object({
 
 export type Plugin = v.Output<typeof Plugin>;
 export const Plugin = v.object({
-  "Id?": v.union([v.string(), v.any(/* unsupported */)]),
+  Id: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
   Name: v.string(),
   Enabled: v.boolean(),
   Settings: v.object({
@@ -743,25 +745,27 @@ export const Plugin = v.object({
     Args: v.array(v.string()),
     Devices: v.array(PluginDevice),
   }),
-  "PluginReference?": v.union([v.string(), v.any(/* unsupported */)]),
+  PluginReference: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
   Config: v.object({
-    "DockerVersion?": v.union([v.string(), v.any(/* unsupported */)]),
+    DockerVersion: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
     Description: v.string(),
     Documentation: v.string(),
     Interface: v.object({
       Types: v.array(PluginInterfaceType),
       Socket: v.string(),
-      "ProtocolScheme?": v.union([v.literal(""), v.literal("moby.plugins.http/v1"), v.any(/* unsupported */)]),
+      ProtocolScheme: v.optional(v.union([v.literal(""), v.literal("moby.plugins.http/v1"), v.any(/* unsupported */)])),
     }),
     Entrypoint: v.array(v.string()),
     WorkDir: v.string(),
-    "User?": v.union([
-      v.object({
-        UID: v.optional(v.number()),
-        GID: v.optional(v.number()),
-      }),
-      v.any(/* unsupported */),
-    ]),
+    User: v.optional(
+      v.union([
+        v.object({
+          UID: v.optional(v.number()),
+          GID: v.optional(v.number()),
+        }),
+        v.any(/* unsupported */),
+      ]),
+    ),
     Network: v.object({
       Type: v.string(),
     }),
@@ -781,13 +785,15 @@ export const Plugin = v.object({
       Settable: v.array(v.string()),
       Value: v.array(v.string()),
     }),
-    "rootfs?": v.union([
-      v.object({
-        type: v.optional(v.string()),
-        diff_ids: v.optional(v.array(v.string())),
-      }),
-      v.any(/* unsupported */),
-    ]),
+    rootfs: v.optional(
+      v.union([
+        v.object({
+          type: v.optional(v.string()),
+          diff_ids: v.optional(v.array(v.string())),
+        }),
+        v.any(/* unsupported */),
+      ]),
+    ),
   }),
 });
 
@@ -1330,7 +1336,7 @@ export const ContainerSummary = v.object({
 export type Driver = v.Output<typeof Driver>;
 export const Driver = v.object({
   Name: v.string(),
-  "Options?": v.union([v.unknown(), v.any(/* unsupported */)]),
+  Options: v.optional(v.union([v.unknown(), v.any(/* unsupported */)])),
 });
 
 export type SecretSpec = v.Output<typeof SecretSpec>;
@@ -1411,7 +1417,7 @@ export const ContainerWaitExitError = v.object({
 export type ContainerWaitResponse = v.Output<typeof ContainerWaitResponse>;
 export const ContainerWaitResponse = v.object({
   StatusCode: v.number(),
-  "Error?": v.union([ContainerWaitExitError, v.any(/* unsupported */)]),
+  Error: v.optional(v.union([ContainerWaitExitError, v.any(/* unsupported */)])),
 });
 
 export type SystemVersion = v.Output<typeof SystemVersion>;
@@ -1426,7 +1432,7 @@ export const SystemVersion = v.object({
       v.object({
         Name: v.string(),
         Version: v.string(),
-        "Details?": v.union([v.object({}), v.any(/* unsupported */), v.any(/* unsupported */)]),
+        Details: v.optional(v.union([v.object({}), v.any(/* unsupported */), v.any(/* unsupported */)])),
       }),
     ),
   ),

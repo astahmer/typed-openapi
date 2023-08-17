@@ -2,9 +2,9 @@ import t from "io-ts";
 
 export type Port = t.TypeOf<typeof Port>;
 export const Port = t.type({
-  "IP?": t.union([t.string, t.undefined]),
+  IP: t.union([t.undefined, t.union([t.string, t.undefined])]),
   PrivatePort: t.number,
-  "PublicPort?": t.union([t.number, t.undefined]),
+  PublicPort: t.union([t.undefined, t.union([t.number, t.undefined])]),
   Type: t.union([t.literal("tcp"), t.literal("udp"), t.literal("sctp")]),
 });
 
@@ -432,7 +432,7 @@ export const ImageInspect = t.type({
     t.undefined,
     t.type({
       Type: t.string,
-      "Layers?": t.union([t.array(t.string), t.undefined]),
+      Layers: t.union([t.undefined, t.union([t.array(t.string), t.undefined])]),
     }),
   ]),
   Metadata: t.union([
@@ -452,7 +452,7 @@ export const ImageSummary = t.type({
   Created: t.number,
   Size: t.number,
   SharedSize: t.number,
-  "VirtualSize?": t.union([t.number, t.undefined]),
+  VirtualSize: t.union([t.undefined, t.union([t.number, t.undefined])]),
   Labels: t.unknown,
   Containers: t.number,
 });
@@ -563,19 +563,22 @@ export const Volume = t.type({
   Name: t.string,
   Driver: t.string,
   Mountpoint: t.string,
-  "CreatedAt?": t.union([t.string, t.undefined]),
-  "Status?": t.union([t.unknown, t.undefined]),
+  CreatedAt: t.union([t.undefined, t.union([t.string, t.undefined])]),
+  Status: t.union([t.undefined, t.union([t.unknown, t.undefined])]),
   Labels: t.unknown,
   Scope: t.union([t.literal("local"), t.literal("global")]),
-  "ClusterVolume?": t.union([ClusterVolume, t.undefined]),
+  ClusterVolume: t.union([t.undefined, t.union([ClusterVolume, t.undefined])]),
   Options: t.unknown,
-  "UsageData?": t.union([
-    t.type({
-      Size: t.number,
-      RefCount: t.number,
-    }),
-    t.null,
+  UsageData: t.union([
     t.undefined,
+    t.union([
+      t.type({
+        Size: t.number,
+        RefCount: t.number,
+      }),
+      t.null,
+      t.undefined,
+    ]),
   ]),
 });
 
@@ -760,7 +763,7 @@ export const PluginPrivilege = t.type({
 
 export type Plugin = t.TypeOf<typeof Plugin>;
 export const Plugin = t.type({
-  "Id?": t.union([t.string, t.undefined]),
+  Id: t.union([t.undefined, t.union([t.string, t.undefined])]),
   Name: t.string,
   Enabled: t.boolean,
   Settings: t.type({
@@ -769,24 +772,27 @@ export const Plugin = t.type({
     Args: t.array(t.string),
     Devices: t.array(PluginDevice),
   }),
-  "PluginReference?": t.union([t.string, t.undefined]),
+  PluginReference: t.union([t.undefined, t.union([t.string, t.undefined])]),
   Config: t.type({
-    "DockerVersion?": t.union([t.string, t.undefined]),
+    DockerVersion: t.union([t.undefined, t.union([t.string, t.undefined])]),
     Description: t.string,
     Documentation: t.string,
     Interface: t.type({
       Types: t.array(PluginInterfaceType),
       Socket: t.string,
-      "ProtocolScheme?": t.union([t.literal(""), t.literal("moby.plugins.http/v1"), t.undefined]),
+      ProtocolScheme: t.union([t.undefined, t.union([t.literal(""), t.literal("moby.plugins.http/v1"), t.undefined])]),
     }),
     Entrypoint: t.array(t.string),
     WorkDir: t.string,
-    "User?": t.union([
-      t.type({
-        UID: t.union([t.undefined, t.number]),
-        GID: t.union([t.undefined, t.number]),
-      }),
+    User: t.union([
       t.undefined,
+      t.union([
+        t.type({
+          UID: t.union([t.undefined, t.number]),
+          GID: t.union([t.undefined, t.number]),
+        }),
+        t.undefined,
+      ]),
     ]),
     Network: t.type({
       Type: t.string,
@@ -807,12 +813,15 @@ export const Plugin = t.type({
       Settable: t.array(t.string),
       Value: t.array(t.string),
     }),
-    "rootfs?": t.union([
-      t.type({
-        type: t.union([t.undefined, t.string]),
-        diff_ids: t.union([t.undefined, t.array(t.string)]),
-      }),
+    rootfs: t.union([
       t.undefined,
+      t.union([
+        t.type({
+          type: t.union([t.undefined, t.string]),
+          diff_ids: t.union([t.undefined, t.array(t.string)]),
+        }),
+        t.undefined,
+      ]),
     ]),
   }),
 });
@@ -1400,7 +1409,7 @@ export const ContainerSummary = t.type({
 export type Driver = t.TypeOf<typeof Driver>;
 export const Driver = t.type({
   Name: t.string,
-  "Options?": t.union([t.unknown, t.undefined]),
+  Options: t.union([t.undefined, t.union([t.unknown, t.undefined])]),
 });
 
 export type SecretSpec = t.TypeOf<typeof SecretSpec>;
@@ -1482,7 +1491,7 @@ export const ContainerWaitExitError = t.type({
 export type ContainerWaitResponse = t.TypeOf<typeof ContainerWaitResponse>;
 export const ContainerWaitResponse = t.type({
   StatusCode: t.number,
-  "Error?": t.union([ContainerWaitExitError, t.undefined]),
+  Error: t.union([t.undefined, t.union([ContainerWaitExitError, t.undefined])]),
 });
 
 export type SystemVersion = t.TypeOf<typeof SystemVersion>;
@@ -1499,7 +1508,7 @@ export const SystemVersion = t.type({
       t.type({
         Name: t.string,
         Version: t.string,
-        "Details?": t.union([t.type({}), t.null, t.undefined]),
+        Details: t.union([t.undefined, t.union([t.type({}), t.null, t.undefined])]),
       }),
     ),
   ]),
