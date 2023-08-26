@@ -10,6 +10,7 @@ import { GithubIcon } from "../components/github-icon";
 import { IconButton } from "../components/icon-button";
 import { SelectRuntime } from "../components/select-demo";
 import { OutputRuntime } from "typed-openapi";
+import { TwitterIcon } from "../components/twitter-icon";
 
 export const Home = () => {
   return (
@@ -39,6 +40,14 @@ export const Home = () => {
                   <styled.a target="blank" href="https://github.com/astahmer/typed-openapi">
                     <IconButton title="Github">
                       <GithubIcon />
+                    </IconButton>
+                  </styled.a>
+                  <styled.a target="blank" href="https://twitter.com/astahmer_dev">
+                    <IconButton
+                      title="Twitter"
+                      css={{ color: { base: "colorPalette.500", _dark: "colorPalette.200" } }}
+                    >
+                      <TwitterIcon />
                     </IconButton>
                   </styled.a>
                   <ColorModeSwitch />
