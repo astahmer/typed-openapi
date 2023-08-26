@@ -8,8 +8,10 @@ import { parse } from "yaml";
 
 // @ts-expect-error
 import { default as petstoreYaml } from "./petstore.yaml?raw";
+import { UrlSaver } from "./url-saver";
 
-const initialInputList = { "petstore.yaml": petstoreYaml };
+const urlSaver = new UrlSaver();
+const initialInputList = { "petstore.yaml": urlSaver.getValue("input") ?? petstoreYaml };
 const initialOutputList = { "petstore.client.ts": "" };
 
 type PlaygroundContext = {
@@ -122,7 +124,10 @@ export const playgroundMachine = createMachine(
         }
         return { ...ctx, inputList };
       }),
-      updateInput: choose([{ actions: ["updateSelectedInput", "updateOutput"] }]),
+      updateUrl(context, event, meta) {
+        urlSaver.setValue("input", context.inputList[context.selectedInput]);
+      },
+      updateInput: choose([{ actions: ["updateSelectedInput", "updateUrl", "updateOutput"] }]),
       updateRuntime: assign({ runtime: (_, event) => event.runtime }),
       updateOutput: assign((ctx, event) => {
         const now = new Date();

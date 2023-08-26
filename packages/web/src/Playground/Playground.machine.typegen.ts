@@ -20,6 +20,7 @@ export interface Typegen0 {
     updateOutput: "Editor Loaded" | "Select input tab" | "Update input" | "Update runtime";
     updateRuntime: "Update runtime";
     updateSelectedInput: "Editor Loaded" | "Select input tab" | "Update input";
+    updateUrl: "Editor Loaded" | "Select input tab" | "Update input";
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {
