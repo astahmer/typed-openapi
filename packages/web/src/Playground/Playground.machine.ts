@@ -11,7 +11,7 @@ import { default as petstoreYaml } from "./petstore.yaml?raw";
 import { UrlSaver } from "./url-saver";
 
 const urlSaver = new UrlSaver();
-const initialInputList = { "petstore.yaml": urlSaver.getValue("input") ?? petstoreYaml };
+const initialInputList = { "petstore.yaml": urlSaver.getValue("input") || petstoreYaml };
 const initialOutputList = { "petstore.client.ts": "" };
 
 type PlaygroundContext = {

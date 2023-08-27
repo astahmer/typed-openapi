@@ -50,6 +50,13 @@ export const Home = () => {
                       <TwitterIcon />
                     </IconButton>
                   </styled.a>
+                  <styled.a
+                    target="blank"
+                    href="https://openapi-zod-client.vercel.app/"
+                    css={{ color: { base: "colorPalette.500", _dark: "colorPalette.200" } }}
+                  >
+                    openapi-zod-client
+                  </styled.a>
                   <ColorModeSwitch />
                 </HStack>
               </Flex>
