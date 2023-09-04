@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 0.1.5
+
+### Patch Changes
+
+- 7f0ecd4: fix: query/path/headers parameters are all marked as required if one of them is required
+
 ## 0.1.4
 
 ### Patch Changes
