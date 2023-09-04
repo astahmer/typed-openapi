@@ -130,8 +130,8 @@ export const post_UpdatePetWithForm = t.type({
   path: t.literal("/pet/{petId}"),
   parameters: t.type({
     query: t.type({
-      name: t.string,
-      status: t.string,
+      name: t.union([t.undefined, t.string]),
+      status: t.union([t.undefined, t.string]),
     }),
     path: t.type({
       petId: t.number,
@@ -149,7 +149,7 @@ export const delete_DeletePet = t.type({
       petId: t.number,
     }),
     header: t.type({
-      api_key: t.string,
+      api_key: t.union([t.undefined, t.string]),
     }),
   }),
   response: t.unknown,
@@ -161,7 +161,7 @@ export const post_UploadFile = t.type({
   path: t.literal("/pet/{petId}/uploadImage"),
   parameters: t.type({
     query: t.type({
-      additionalMetadata: t.string,
+      additionalMetadata: t.union([t.undefined, t.string]),
     }),
     path: t.type({
       petId: t.number,

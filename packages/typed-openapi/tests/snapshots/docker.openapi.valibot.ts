@@ -1680,7 +1680,7 @@ export const get_ContainerInspect = v.object({
   path: v.literal("/containers/{id}/json"),
   parameters: v.object({
     query: v.object({
-      size: v.boolean(),
+      size: v.optional(v.boolean()),
     }),
     path: v.object({
       id: v.string(),
@@ -1721,7 +1721,7 @@ export const get_ContainerTop = v.object({
   path: v.literal("/containers/{id}/top"),
   parameters: v.object({
     query: v.object({
-      ps_args: v.string(),
+      ps_args: v.optional(v.string()),
     }),
     path: v.object({
       id: v.string(),
@@ -1739,13 +1739,13 @@ export const get_ContainerLogs = v.object({
   path: v.literal("/containers/{id}/logs"),
   parameters: v.object({
     query: v.object({
-      follow: v.boolean(),
-      stdout: v.boolean(),
-      stderr: v.boolean(),
-      since: v.number(),
-      until: v.number(),
-      timestamps: v.boolean(),
-      tail: v.string(),
+      follow: v.optional(v.boolean()),
+      stdout: v.optional(v.boolean()),
+      stderr: v.optional(v.boolean()),
+      since: v.optional(v.number()),
+      until: v.optional(v.number()),
+      timestamps: v.optional(v.boolean()),
+      tail: v.optional(v.string()),
     }),
     path: v.object({
       id: v.string(),
@@ -1784,8 +1784,8 @@ export const get_ContainerStats = v.object({
   path: v.literal("/containers/{id}/stats"),
   parameters: v.object({
     query: v.object({
-      stream: v.boolean(),
-      "one-shot": v.boolean(),
+      stream: v.optional(v.boolean()),
+      "one-shot": v.optional(v.boolean()),
     }),
     path: v.object({
       id: v.string(),
@@ -1800,8 +1800,8 @@ export const post_ContainerResize = v.object({
   path: v.literal("/containers/{id}/resize"),
   parameters: v.object({
     query: v.object({
-      h: v.number(),
-      w: v.number(),
+      h: v.optional(v.number()),
+      w: v.optional(v.number()),
     }),
     path: v.object({
       id: v.string(),
@@ -1816,7 +1816,7 @@ export const post_ContainerStart = v.object({
   path: v.literal("/containers/{id}/start"),
   parameters: v.object({
     query: v.object({
-      detachKeys: v.string(),
+      detachKeys: v.optional(v.string()),
     }),
     path: v.object({
       id: v.string(),
@@ -1831,8 +1831,8 @@ export const post_ContainerStop = v.object({
   path: v.literal("/containers/{id}/stop"),
   parameters: v.object({
     query: v.object({
-      signal: v.string(),
-      t: v.number(),
+      signal: v.optional(v.string()),
+      t: v.optional(v.number()),
     }),
     path: v.object({
       id: v.string(),
@@ -1847,8 +1847,8 @@ export const post_ContainerRestart = v.object({
   path: v.literal("/containers/{id}/restart"),
   parameters: v.object({
     query: v.object({
-      signal: v.string(),
-      t: v.number(),
+      signal: v.optional(v.string()),
+      t: v.optional(v.number()),
     }),
     path: v.object({
       id: v.string(),
@@ -1863,7 +1863,7 @@ export const post_ContainerKill = v.object({
   path: v.literal("/containers/{id}/kill"),
   parameters: v.object({
     query: v.object({
-      signal: v.string(),
+      signal: v.optional(v.string()),
     }),
     path: v.object({
       id: v.string(),
@@ -1931,12 +1931,12 @@ export const post_ContainerAttach = v.object({
   path: v.literal("/containers/{id}/attach"),
   parameters: v.object({
     query: v.object({
-      detachKeys: v.string(),
-      logs: v.boolean(),
-      stream: v.boolean(),
-      stdin: v.boolean(),
-      stdout: v.boolean(),
-      stderr: v.boolean(),
+      detachKeys: v.optional(v.string()),
+      logs: v.optional(v.boolean()),
+      stream: v.optional(v.boolean()),
+      stdin: v.optional(v.boolean()),
+      stdout: v.optional(v.boolean()),
+      stderr: v.optional(v.boolean()),
     }),
     path: v.object({
       id: v.string(),
@@ -1951,12 +1951,12 @@ export const get_ContainerAttachWebsocket = v.object({
   path: v.literal("/containers/{id}/attach/ws"),
   parameters: v.object({
     query: v.object({
-      detachKeys: v.string(),
-      logs: v.boolean(),
-      stream: v.boolean(),
-      stdin: v.boolean(),
-      stdout: v.boolean(),
-      stderr: v.boolean(),
+      detachKeys: v.optional(v.string()),
+      logs: v.optional(v.boolean()),
+      stream: v.optional(v.boolean()),
+      stdin: v.optional(v.boolean()),
+      stdout: v.optional(v.boolean()),
+      stderr: v.optional(v.boolean()),
     }),
     path: v.object({
       id: v.string(),
@@ -1971,7 +1971,7 @@ export const post_ContainerWait = v.object({
   path: v.literal("/containers/{id}/wait"),
   parameters: v.object({
     query: v.object({
-      condition: v.union([v.literal("not-running"), v.literal("next-exit"), v.literal("removed")]),
+      condition: v.optional(v.union([v.literal("not-running"), v.literal("next-exit"), v.literal("removed")])),
     }),
     path: v.object({
       id: v.string(),
@@ -1986,9 +1986,9 @@ export const delete_ContainerDelete = v.object({
   path: v.literal("/containers/{id}"),
   parameters: v.object({
     query: v.object({
-      v: v.boolean(),
-      force: v.boolean(),
-      link: v.boolean(),
+      v: v.optional(v.boolean()),
+      force: v.optional(v.boolean()),
+      link: v.optional(v.boolean()),
     }),
     path: v.object({
       id: v.string(),
@@ -2106,8 +2106,8 @@ export const post_ImageBuild = v.object({
       outputs: v.optional(v.string()),
     }),
     header: v.object({
-      "Content-type": v.literal("application/x-tar"),
-      "X-Registry-Config": v.string(),
+      "Content-type": v.optional(v.literal("application/x-tar")),
+      "X-Registry-Config": v.optional(v.string()),
     }),
   }),
   response: v.unknown(),
@@ -2145,7 +2145,7 @@ export const post_ImageCreate = v.object({
       platform: v.optional(v.string()),
     }),
     header: v.object({
-      "X-Registry-Auth": v.string(),
+      "X-Registry-Auth": v.optional(v.string()),
     }),
   }),
   response: v.unknown(),
@@ -2190,7 +2190,7 @@ export const post_ImagePush = v.object({
   path: v.literal("/images/{name}/push"),
   parameters: v.object({
     query: v.object({
-      tag: v.string(),
+      tag: v.optional(v.string()),
     }),
     path: v.object({
       name: v.string(),
@@ -2208,8 +2208,8 @@ export const post_ImageTag = v.object({
   path: v.literal("/images/{name}/tag"),
   parameters: v.object({
     query: v.object({
-      repo: v.string(),
-      tag: v.string(),
+      repo: v.optional(v.string()),
+      tag: v.optional(v.string()),
     }),
     path: v.object({
       name: v.string(),
@@ -2224,8 +2224,8 @@ export const delete_ImageDelete = v.object({
   path: v.literal("/images/{name}"),
   parameters: v.object({
     query: v.object({
-      force: v.boolean(),
-      noprune: v.boolean(),
+      force: v.optional(v.boolean()),
+      noprune: v.optional(v.boolean()),
     }),
     path: v.object({
       name: v.string(),
@@ -2429,8 +2429,8 @@ export const post_ExecResize = v.object({
   path: v.literal("/exec/{id}/resize"),
   parameters: v.object({
     query: v.object({
-      h: v.number(),
-      w: v.number(),
+      h: v.optional(v.number()),
+      w: v.optional(v.number()),
     }),
     path: v.object({
       id: v.string(),
@@ -2516,7 +2516,7 @@ export const delete_VolumeDelete = v.object({
   path: v.literal("/volumes/{name}"),
   parameters: v.object({
     query: v.object({
-      force: v.boolean(),
+      force: v.optional(v.boolean()),
     }),
     path: v.object({
       name: v.string(),
@@ -2558,8 +2558,8 @@ export const get_NetworkInspect = v.object({
   path: v.literal("/networks/{id}"),
   parameters: v.object({
     query: v.object({
-      verbose: v.boolean(),
-      scope: v.string(),
+      verbose: v.optional(v.boolean()),
+      scope: v.optional(v.string()),
     }),
     path: v.object({
       id: v.string(),
@@ -2663,7 +2663,7 @@ export const post_PluginPull = v.object({
       name: v.string(),
     }),
     header: v.object({
-      "X-Registry-Auth": v.string(),
+      "X-Registry-Auth": v.optional(v.string()),
     }),
   }),
   response: v.unknown(),
@@ -2687,7 +2687,7 @@ export const delete_PluginDelete = v.object({
   path: v.literal("/plugins/{name}"),
   parameters: v.object({
     query: v.object({
-      force: v.boolean(),
+      force: v.optional(v.boolean()),
     }),
     path: v.object({
       name: v.string(),
@@ -2702,7 +2702,7 @@ export const post_PluginEnable = v.object({
   path: v.literal("/plugins/{name}/enable"),
   parameters: v.object({
     query: v.object({
-      timeout: v.number(),
+      timeout: v.optional(v.number()),
     }),
     path: v.object({
       name: v.string(),
@@ -2717,7 +2717,7 @@ export const post_PluginDisable = v.object({
   path: v.literal("/plugins/{name}/disable"),
   parameters: v.object({
     query: v.object({
-      force: v.boolean(),
+      force: v.optional(v.boolean()),
     }),
     path: v.object({
       name: v.string(),
@@ -2738,7 +2738,7 @@ export const post_PluginUpgrade = v.object({
       name: v.string(),
     }),
     header: v.object({
-      "X-Registry-Auth": v.string(),
+      "X-Registry-Auth": v.optional(v.string()),
     }),
   }),
   response: v.unknown(),
@@ -2810,7 +2810,7 @@ export const delete_NodeDelete = v.object({
   path: v.literal("/nodes/{id}"),
   parameters: v.object({
     query: v.object({
-      force: v.boolean(),
+      force: v.optional(v.boolean()),
     }),
     path: v.object({
       id: v.string(),
@@ -2922,7 +2922,7 @@ export const post_ServiceCreate = v.object({
   path: v.literal("/services/create"),
   parameters: v.object({
     header: v.object({
-      "X-Registry-Auth": v.string(),
+      "X-Registry-Auth": v.optional(v.string()),
     }),
   }),
   response: v.object({
@@ -2937,7 +2937,7 @@ export const get_ServiceInspect = v.object({
   path: v.literal("/services/{id}"),
   parameters: v.object({
     query: v.object({
-      insertDefaults: v.boolean(),
+      insertDefaults: v.optional(v.boolean()),
     }),
     path: v.object({
       id: v.string(),
@@ -2972,7 +2972,7 @@ export const post_ServiceUpdate = v.object({
       id: v.string(),
     }),
     header: v.object({
-      "X-Registry-Auth": v.string(),
+      "X-Registry-Auth": v.optional(v.string()),
     }),
   }),
   response: ServiceUpdateResponse,
@@ -2984,13 +2984,13 @@ export const get_ServiceLogs = v.object({
   path: v.literal("/services/{id}/logs"),
   parameters: v.object({
     query: v.object({
-      details: v.boolean(),
-      follow: v.boolean(),
-      stdout: v.boolean(),
-      stderr: v.boolean(),
-      since: v.number(),
-      timestamps: v.boolean(),
-      tail: v.string(),
+      details: v.optional(v.boolean()),
+      follow: v.optional(v.boolean()),
+      stdout: v.optional(v.boolean()),
+      stderr: v.optional(v.boolean()),
+      since: v.optional(v.number()),
+      timestamps: v.optional(v.boolean()),
+      tail: v.optional(v.string()),
     }),
     path: v.object({
       id: v.string(),
@@ -3029,13 +3029,13 @@ export const get_TaskLogs = v.object({
   path: v.literal("/tasks/{id}/logs"),
   parameters: v.object({
     query: v.object({
-      details: v.boolean(),
-      follow: v.boolean(),
-      stdout: v.boolean(),
-      stderr: v.boolean(),
-      since: v.number(),
-      timestamps: v.boolean(),
-      tail: v.string(),
+      details: v.optional(v.boolean()),
+      follow: v.optional(v.boolean()),
+      stdout: v.optional(v.boolean()),
+      stderr: v.optional(v.boolean()),
+      since: v.optional(v.number()),
+      timestamps: v.optional(v.boolean()),
+      tail: v.optional(v.string()),
     }),
     path: v.object({
       id: v.string(),

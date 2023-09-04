@@ -124,8 +124,8 @@ export const post_UpdatePetWithForm = {
   path: z.literal("/pet/{petId}"),
   parameters: z.object({
     query: z.object({
-      name: z.string(),
-      status: z.string(),
+      name: z.string().optional(),
+      status: z.string().optional(),
     }),
     path: z.object({
       petId: z.number(),
@@ -143,7 +143,7 @@ export const delete_DeletePet = {
       petId: z.number(),
     }),
     header: z.object({
-      api_key: z.string(),
+      api_key: z.string().optional(),
     }),
   }),
   response: z.unknown(),
@@ -155,7 +155,7 @@ export const post_UploadFile = {
   path: z.literal("/pet/{petId}/uploadImage"),
   parameters: z.object({
     query: z.object({
-      additionalMetadata: z.string(),
+      additionalMetadata: z.string().optional(),
     }),
     path: z.object({
       petId: z.number(),

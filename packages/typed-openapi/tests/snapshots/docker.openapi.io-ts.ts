@@ -1758,7 +1758,7 @@ export const get_ContainerInspect = t.type({
   path: t.literal("/containers/{id}/json"),
   parameters: t.type({
     query: t.type({
-      size: t.boolean,
+      size: t.union([t.undefined, t.boolean]),
     }),
     path: t.type({
       id: t.string,
@@ -1799,7 +1799,7 @@ export const get_ContainerTop = t.type({
   path: t.literal("/containers/{id}/top"),
   parameters: t.type({
     query: t.type({
-      ps_args: t.string,
+      ps_args: t.union([t.undefined, t.string]),
     }),
     path: t.type({
       id: t.string,
@@ -1817,13 +1817,13 @@ export const get_ContainerLogs = t.type({
   path: t.literal("/containers/{id}/logs"),
   parameters: t.type({
     query: t.type({
-      follow: t.boolean,
-      stdout: t.boolean,
-      stderr: t.boolean,
-      since: t.number,
-      until: t.number,
-      timestamps: t.boolean,
-      tail: t.string,
+      follow: t.union([t.undefined, t.boolean]),
+      stdout: t.union([t.undefined, t.boolean]),
+      stderr: t.union([t.undefined, t.boolean]),
+      since: t.union([t.undefined, t.number]),
+      until: t.union([t.undefined, t.number]),
+      timestamps: t.union([t.undefined, t.boolean]),
+      tail: t.union([t.undefined, t.string]),
     }),
     path: t.type({
       id: t.string,
@@ -1862,8 +1862,8 @@ export const get_ContainerStats = t.type({
   path: t.literal("/containers/{id}/stats"),
   parameters: t.type({
     query: t.type({
-      stream: t.boolean,
-      "one-shot": t.boolean,
+      stream: t.union([t.undefined, t.boolean]),
+      "one-shot": t.union([t.undefined, t.boolean]),
     }),
     path: t.type({
       id: t.string,
@@ -1878,8 +1878,8 @@ export const post_ContainerResize = t.type({
   path: t.literal("/containers/{id}/resize"),
   parameters: t.type({
     query: t.type({
-      h: t.number,
-      w: t.number,
+      h: t.union([t.undefined, t.number]),
+      w: t.union([t.undefined, t.number]),
     }),
     path: t.type({
       id: t.string,
@@ -1894,7 +1894,7 @@ export const post_ContainerStart = t.type({
   path: t.literal("/containers/{id}/start"),
   parameters: t.type({
     query: t.type({
-      detachKeys: t.string,
+      detachKeys: t.union([t.undefined, t.string]),
     }),
     path: t.type({
       id: t.string,
@@ -1909,8 +1909,8 @@ export const post_ContainerStop = t.type({
   path: t.literal("/containers/{id}/stop"),
   parameters: t.type({
     query: t.type({
-      signal: t.string,
-      t: t.number,
+      signal: t.union([t.undefined, t.string]),
+      t: t.union([t.undefined, t.number]),
     }),
     path: t.type({
       id: t.string,
@@ -1925,8 +1925,8 @@ export const post_ContainerRestart = t.type({
   path: t.literal("/containers/{id}/restart"),
   parameters: t.type({
     query: t.type({
-      signal: t.string,
-      t: t.number,
+      signal: t.union([t.undefined, t.string]),
+      t: t.union([t.undefined, t.number]),
     }),
     path: t.type({
       id: t.string,
@@ -1941,7 +1941,7 @@ export const post_ContainerKill = t.type({
   path: t.literal("/containers/{id}/kill"),
   parameters: t.type({
     query: t.type({
-      signal: t.string,
+      signal: t.union([t.undefined, t.string]),
     }),
     path: t.type({
       id: t.string,
@@ -2009,12 +2009,12 @@ export const post_ContainerAttach = t.type({
   path: t.literal("/containers/{id}/attach"),
   parameters: t.type({
     query: t.type({
-      detachKeys: t.string,
-      logs: t.boolean,
-      stream: t.boolean,
-      stdin: t.boolean,
-      stdout: t.boolean,
-      stderr: t.boolean,
+      detachKeys: t.union([t.undefined, t.string]),
+      logs: t.union([t.undefined, t.boolean]),
+      stream: t.union([t.undefined, t.boolean]),
+      stdin: t.union([t.undefined, t.boolean]),
+      stdout: t.union([t.undefined, t.boolean]),
+      stderr: t.union([t.undefined, t.boolean]),
     }),
     path: t.type({
       id: t.string,
@@ -2029,12 +2029,12 @@ export const get_ContainerAttachWebsocket = t.type({
   path: t.literal("/containers/{id}/attach/ws"),
   parameters: t.type({
     query: t.type({
-      detachKeys: t.string,
-      logs: t.boolean,
-      stream: t.boolean,
-      stdin: t.boolean,
-      stdout: t.boolean,
-      stderr: t.boolean,
+      detachKeys: t.union([t.undefined, t.string]),
+      logs: t.union([t.undefined, t.boolean]),
+      stream: t.union([t.undefined, t.boolean]),
+      stdin: t.union([t.undefined, t.boolean]),
+      stdout: t.union([t.undefined, t.boolean]),
+      stderr: t.union([t.undefined, t.boolean]),
     }),
     path: t.type({
       id: t.string,
@@ -2049,7 +2049,10 @@ export const post_ContainerWait = t.type({
   path: t.literal("/containers/{id}/wait"),
   parameters: t.type({
     query: t.type({
-      condition: t.union([t.literal("not-running"), t.literal("next-exit"), t.literal("removed")]),
+      condition: t.union([
+        t.undefined,
+        t.union([t.literal("not-running"), t.literal("next-exit"), t.literal("removed")]),
+      ]),
     }),
     path: t.type({
       id: t.string,
@@ -2064,9 +2067,9 @@ export const delete_ContainerDelete = t.type({
   path: t.literal("/containers/{id}"),
   parameters: t.type({
     query: t.type({
-      v: t.boolean,
-      force: t.boolean,
-      link: t.boolean,
+      v: t.union([t.undefined, t.boolean]),
+      force: t.union([t.undefined, t.boolean]),
+      link: t.union([t.undefined, t.boolean]),
     }),
     path: t.type({
       id: t.string,
@@ -2184,8 +2187,8 @@ export const post_ImageBuild = t.type({
       outputs: t.union([t.undefined, t.string]),
     }),
     header: t.type({
-      "Content-type": t.literal("application/x-tar"),
-      "X-Registry-Config": t.string,
+      "Content-type": t.union([t.undefined, t.literal("application/x-tar")]),
+      "X-Registry-Config": t.union([t.undefined, t.string]),
     }),
   }),
   response: t.unknown,
@@ -2223,7 +2226,7 @@ export const post_ImageCreate = t.type({
       platform: t.union([t.undefined, t.string]),
     }),
     header: t.type({
-      "X-Registry-Auth": t.string,
+      "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
   }),
   response: t.unknown,
@@ -2268,7 +2271,7 @@ export const post_ImagePush = t.type({
   path: t.literal("/images/{name}/push"),
   parameters: t.type({
     query: t.type({
-      tag: t.string,
+      tag: t.union([t.undefined, t.string]),
     }),
     path: t.type({
       name: t.string,
@@ -2286,8 +2289,8 @@ export const post_ImageTag = t.type({
   path: t.literal("/images/{name}/tag"),
   parameters: t.type({
     query: t.type({
-      repo: t.string,
-      tag: t.string,
+      repo: t.union([t.undefined, t.string]),
+      tag: t.union([t.undefined, t.string]),
     }),
     path: t.type({
       name: t.string,
@@ -2302,8 +2305,8 @@ export const delete_ImageDelete = t.type({
   path: t.literal("/images/{name}"),
   parameters: t.type({
     query: t.type({
-      force: t.boolean,
-      noprune: t.boolean,
+      force: t.union([t.undefined, t.boolean]),
+      noprune: t.union([t.undefined, t.boolean]),
     }),
     path: t.type({
       name: t.string,
@@ -2508,8 +2511,8 @@ export const post_ExecResize = t.type({
   path: t.literal("/exec/{id}/resize"),
   parameters: t.type({
     query: t.type({
-      h: t.number,
-      w: t.number,
+      h: t.union([t.undefined, t.number]),
+      w: t.union([t.undefined, t.number]),
     }),
     path: t.type({
       id: t.string,
@@ -2595,7 +2598,7 @@ export const delete_VolumeDelete = t.type({
   path: t.literal("/volumes/{name}"),
   parameters: t.type({
     query: t.type({
-      force: t.boolean,
+      force: t.union([t.undefined, t.boolean]),
     }),
     path: t.type({
       name: t.string,
@@ -2637,8 +2640,8 @@ export const get_NetworkInspect = t.type({
   path: t.literal("/networks/{id}"),
   parameters: t.type({
     query: t.type({
-      verbose: t.boolean,
-      scope: t.string,
+      verbose: t.union([t.undefined, t.boolean]),
+      scope: t.union([t.undefined, t.string]),
     }),
     path: t.type({
       id: t.string,
@@ -2742,7 +2745,7 @@ export const post_PluginPull = t.type({
       name: t.string,
     }),
     header: t.type({
-      "X-Registry-Auth": t.string,
+      "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
   }),
   response: t.unknown,
@@ -2766,7 +2769,7 @@ export const delete_PluginDelete = t.type({
   path: t.literal("/plugins/{name}"),
   parameters: t.type({
     query: t.type({
-      force: t.boolean,
+      force: t.union([t.undefined, t.boolean]),
     }),
     path: t.type({
       name: t.string,
@@ -2781,7 +2784,7 @@ export const post_PluginEnable = t.type({
   path: t.literal("/plugins/{name}/enable"),
   parameters: t.type({
     query: t.type({
-      timeout: t.number,
+      timeout: t.union([t.undefined, t.number]),
     }),
     path: t.type({
       name: t.string,
@@ -2796,7 +2799,7 @@ export const post_PluginDisable = t.type({
   path: t.literal("/plugins/{name}/disable"),
   parameters: t.type({
     query: t.type({
-      force: t.boolean,
+      force: t.union([t.undefined, t.boolean]),
     }),
     path: t.type({
       name: t.string,
@@ -2817,7 +2820,7 @@ export const post_PluginUpgrade = t.type({
       name: t.string,
     }),
     header: t.type({
-      "X-Registry-Auth": t.string,
+      "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
   }),
   response: t.unknown,
@@ -2889,7 +2892,7 @@ export const delete_NodeDelete = t.type({
   path: t.literal("/nodes/{id}"),
   parameters: t.type({
     query: t.type({
-      force: t.boolean,
+      force: t.union([t.undefined, t.boolean]),
     }),
     path: t.type({
       id: t.string,
@@ -3001,7 +3004,7 @@ export const post_ServiceCreate = t.type({
   path: t.literal("/services/create"),
   parameters: t.type({
     header: t.type({
-      "X-Registry-Auth": t.string,
+      "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
   }),
   response: t.type({
@@ -3016,7 +3019,7 @@ export const get_ServiceInspect = t.type({
   path: t.literal("/services/{id}"),
   parameters: t.type({
     query: t.type({
-      insertDefaults: t.boolean,
+      insertDefaults: t.union([t.undefined, t.boolean]),
     }),
     path: t.type({
       id: t.string,
@@ -3051,7 +3054,7 @@ export const post_ServiceUpdate = t.type({
       id: t.string,
     }),
     header: t.type({
-      "X-Registry-Auth": t.string,
+      "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
   }),
   response: ServiceUpdateResponse,
@@ -3063,13 +3066,13 @@ export const get_ServiceLogs = t.type({
   path: t.literal("/services/{id}/logs"),
   parameters: t.type({
     query: t.type({
-      details: t.boolean,
-      follow: t.boolean,
-      stdout: t.boolean,
-      stderr: t.boolean,
-      since: t.number,
-      timestamps: t.boolean,
-      tail: t.string,
+      details: t.union([t.undefined, t.boolean]),
+      follow: t.union([t.undefined, t.boolean]),
+      stdout: t.union([t.undefined, t.boolean]),
+      stderr: t.union([t.undefined, t.boolean]),
+      since: t.union([t.undefined, t.number]),
+      timestamps: t.union([t.undefined, t.boolean]),
+      tail: t.union([t.undefined, t.string]),
     }),
     path: t.type({
       id: t.string,
@@ -3108,13 +3111,13 @@ export const get_TaskLogs = t.type({
   path: t.literal("/tasks/{id}/logs"),
   parameters: t.type({
     query: t.type({
-      details: t.boolean,
-      follow: t.boolean,
-      stdout: t.boolean,
-      stderr: t.boolean,
-      since: t.number,
-      timestamps: t.boolean,
-      tail: t.string,
+      details: t.union([t.undefined, t.boolean]),
+      follow: t.union([t.undefined, t.boolean]),
+      stdout: t.union([t.undefined, t.boolean]),
+      stderr: t.union([t.undefined, t.boolean]),
+      since: t.union([t.undefined, t.number]),
+      timestamps: t.union([t.undefined, t.boolean]),
+      tail: t.union([t.undefined, t.string]),
     }),
     path: t.type({
       id: t.string,
