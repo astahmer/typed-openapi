@@ -39,14 +39,22 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
         (acc, paramOrRef) => {
           const param = refs.unwrap(paramOrRef);
           const schema = openApiSchemaToTs({ schema: refs.unwrap(param.schema ?? {}), ctx });
-          lists.query.push(param);
 
           if (param.required) endpoint.meta.areParametersRequired = true;
           endpoint.meta.hasParameters = true;
 
-          if (param.in === "query") acc.query[param.name] = schema;
-          if (param.in === "path") acc.path[param.name] = schema;
-          if (param.in === "header") acc.header[param.name] = schema;
+          if (param.in === "query") {
+            lists.query.push(param);
+            acc.query[param.name] = schema;
+          }
+          if (param.in === "path") {
+            lists.path.push(param);
+            acc.path[param.name] = schema;
+          }
+          if (param.in === "header") {
+            lists.header.push(param);
+            acc.header[param.name] = schema;
+          }
 
           return acc;
         },
