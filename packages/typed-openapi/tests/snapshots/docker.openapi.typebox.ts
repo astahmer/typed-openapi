@@ -1851,9 +1851,11 @@ export const get_ContainerInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/json"),
   parameters: Type.Object({
-    query: Type.Object({
-      size: Type.Boolean(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        size: Type.Boolean(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -1894,9 +1896,11 @@ export const get_ContainerTop = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/top"),
   parameters: Type.Object({
-    query: Type.Object({
-      ps_args: Type.String(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        ps_args: Type.String(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -1914,15 +1918,17 @@ export const get_ContainerLogs = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/logs"),
   parameters: Type.Object({
-    query: Type.Object({
-      follow: Type.Boolean(),
-      stdout: Type.Boolean(),
-      stderr: Type.Boolean(),
-      since: Type.Number(),
-      until: Type.Number(),
-      timestamps: Type.Boolean(),
-      tail: Type.String(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        follow: Type.Boolean(),
+        stdout: Type.Boolean(),
+        stderr: Type.Boolean(),
+        since: Type.Number(),
+        until: Type.Number(),
+        timestamps: Type.Boolean(),
+        tail: Type.String(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -1959,10 +1965,12 @@ export const get_ContainerStats = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/stats"),
   parameters: Type.Object({
-    query: Type.Object({
-      stream: Type.Boolean(),
-      "one-shot": Type.Boolean(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        stream: Type.Boolean(),
+        "one-shot": Type.Boolean(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -1975,10 +1983,12 @@ export const post_ContainerResize = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/resize"),
   parameters: Type.Object({
-    query: Type.Object({
-      h: Type.Number(),
-      w: Type.Number(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        h: Type.Number(),
+        w: Type.Number(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -1991,9 +2001,11 @@ export const post_ContainerStart = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/start"),
   parameters: Type.Object({
-    query: Type.Object({
-      detachKeys: Type.String(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        detachKeys: Type.String(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -2006,10 +2018,12 @@ export const post_ContainerStop = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/stop"),
   parameters: Type.Object({
-    query: Type.Object({
-      signal: Type.String(),
-      t: Type.Number(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        signal: Type.String(),
+        t: Type.Number(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -2022,10 +2036,12 @@ export const post_ContainerRestart = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/restart"),
   parameters: Type.Object({
-    query: Type.Object({
-      signal: Type.String(),
-      t: Type.Number(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        signal: Type.String(),
+        t: Type.Number(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -2038,9 +2054,11 @@ export const post_ContainerKill = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/kill"),
   parameters: Type.Object({
-    query: Type.Object({
-      signal: Type.String(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        signal: Type.String(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -2108,14 +2126,16 @@ export const post_ContainerAttach = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/attach"),
   parameters: Type.Object({
-    query: Type.Object({
-      detachKeys: Type.String(),
-      logs: Type.Boolean(),
-      stream: Type.Boolean(),
-      stdin: Type.Boolean(),
-      stdout: Type.Boolean(),
-      stderr: Type.Boolean(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        detachKeys: Type.String(),
+        logs: Type.Boolean(),
+        stream: Type.Boolean(),
+        stdin: Type.Boolean(),
+        stdout: Type.Boolean(),
+        stderr: Type.Boolean(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -2128,14 +2148,16 @@ export const get_ContainerAttachWebsocket = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/attach/ws"),
   parameters: Type.Object({
-    query: Type.Object({
-      detachKeys: Type.String(),
-      logs: Type.Boolean(),
-      stream: Type.Boolean(),
-      stdin: Type.Boolean(),
-      stdout: Type.Boolean(),
-      stderr: Type.Boolean(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        detachKeys: Type.String(),
+        logs: Type.Boolean(),
+        stream: Type.Boolean(),
+        stdin: Type.Boolean(),
+        stdout: Type.Boolean(),
+        stderr: Type.Boolean(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -2148,9 +2170,11 @@ export const post_ContainerWait = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/wait"),
   parameters: Type.Object({
-    query: Type.Object({
-      condition: Type.Union([Type.Literal("not-running"), Type.Literal("next-exit"), Type.Literal("removed")]),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        condition: Type.Union([Type.Literal("not-running"), Type.Literal("next-exit"), Type.Literal("removed")]),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -2163,11 +2187,13 @@ export const delete_ContainerDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/containers/{id}"),
   parameters: Type.Object({
-    query: Type.Object({
-      v: Type.Boolean(),
-      force: Type.Boolean(),
-      link: Type.Boolean(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        v: Type.Boolean(),
+        force: Type.Boolean(),
+        link: Type.Boolean(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -2291,10 +2317,12 @@ export const post_ImageBuild = Type.Object({
         outputs: Type.String(),
       }),
     ),
-    header: Type.Object({
-      "Content-type": Type.Literal("application/x-tar"),
-      "X-Registry-Config": Type.String(),
-    }),
+    header: Type.Partial(
+      Type.Object({
+        "Content-type": Type.Literal("application/x-tar"),
+        "X-Registry-Config": Type.String(),
+      }),
+    ),
   }),
   response: Type.Unknown(),
 });
@@ -2336,9 +2364,11 @@ export const post_ImageCreate = Type.Object({
         platform: Type.String(),
       }),
     ),
-    header: Type.Object({
-      "X-Registry-Auth": Type.String(),
-    }),
+    header: Type.Partial(
+      Type.Object({
+        "X-Registry-Auth": Type.String(),
+      }),
+    ),
   }),
   response: Type.Unknown(),
 });
@@ -2381,9 +2411,11 @@ export const post_ImagePush = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/images/{name}/push"),
   parameters: Type.Object({
-    query: Type.Object({
-      tag: Type.String(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        tag: Type.String(),
+      }),
+    ),
     path: Type.Object({
       name: Type.String(),
     }),
@@ -2399,10 +2431,12 @@ export const post_ImageTag = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/images/{name}/tag"),
   parameters: Type.Object({
-    query: Type.Object({
-      repo: Type.String(),
-      tag: Type.String(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        repo: Type.String(),
+        tag: Type.String(),
+      }),
+    ),
     path: Type.Object({
       name: Type.String(),
     }),
@@ -2415,10 +2449,12 @@ export const delete_ImageDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/images/{name}"),
   parameters: Type.Object({
-    query: Type.Object({
-      force: Type.Boolean(),
-      noprune: Type.Boolean(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        force: Type.Boolean(),
+        noprune: Type.Boolean(),
+      }),
+    ),
     path: Type.Object({
       name: Type.String(),
     }),
@@ -2643,10 +2679,12 @@ export const post_ExecResize = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/exec/{id}/resize"),
   parameters: Type.Object({
-    query: Type.Object({
-      h: Type.Number(),
-      w: Type.Number(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        h: Type.Number(),
+        w: Type.Number(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -2734,9 +2772,11 @@ export const delete_VolumeDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/volumes/{name}"),
   parameters: Type.Object({
-    query: Type.Object({
-      force: Type.Boolean(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        force: Type.Boolean(),
+      }),
+    ),
     path: Type.Object({
       name: Type.String(),
     }),
@@ -2782,10 +2822,12 @@ export const get_NetworkInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/networks/{id}"),
   parameters: Type.Object({
-    query: Type.Object({
-      verbose: Type.Boolean(),
-      scope: Type.String(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        verbose: Type.Boolean(),
+        scope: Type.String(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -2895,9 +2937,11 @@ export const post_PluginPull = Type.Object({
       remote: Type.String(),
       name: Type.String(),
     }),
-    header: Type.Object({
-      "X-Registry-Auth": Type.String(),
-    }),
+    header: Type.Partial(
+      Type.Object({
+        "X-Registry-Auth": Type.String(),
+      }),
+    ),
   }),
   response: Type.Unknown(),
 });
@@ -2919,9 +2963,11 @@ export const delete_PluginDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/plugins/{name}"),
   parameters: Type.Object({
-    query: Type.Object({
-      force: Type.Boolean(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        force: Type.Boolean(),
+      }),
+    ),
     path: Type.Object({
       name: Type.String(),
     }),
@@ -2934,9 +2980,11 @@ export const post_PluginEnable = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/plugins/{name}/enable"),
   parameters: Type.Object({
-    query: Type.Object({
-      timeout: Type.Number(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        timeout: Type.Number(),
+      }),
+    ),
     path: Type.Object({
       name: Type.String(),
     }),
@@ -2949,9 +2997,11 @@ export const post_PluginDisable = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/plugins/{name}/disable"),
   parameters: Type.Object({
-    query: Type.Object({
-      force: Type.Boolean(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        force: Type.Boolean(),
+      }),
+    ),
     path: Type.Object({
       name: Type.String(),
     }),
@@ -2970,9 +3020,11 @@ export const post_PluginUpgrade = Type.Object({
     path: Type.Object({
       name: Type.String(),
     }),
-    header: Type.Object({
-      "X-Registry-Auth": Type.String(),
-    }),
+    header: Type.Partial(
+      Type.Object({
+        "X-Registry-Auth": Type.String(),
+      }),
+    ),
   }),
   response: Type.Unknown(),
 });
@@ -3044,9 +3096,11 @@ export const delete_NodeDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/nodes/{id}"),
   parameters: Type.Object({
-    query: Type.Object({
-      force: Type.Boolean(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        force: Type.Boolean(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -3162,9 +3216,11 @@ export const post_ServiceCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/services/create"),
   parameters: Type.Object({
-    header: Type.Object({
-      "X-Registry-Auth": Type.String(),
-    }),
+    header: Type.Partial(
+      Type.Object({
+        "X-Registry-Auth": Type.String(),
+      }),
+    ),
   }),
   response: Type.Partial(
     Type.Object({
@@ -3179,9 +3235,11 @@ export const get_ServiceInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/services/{id}"),
   parameters: Type.Object({
-    query: Type.Object({
-      insertDefaults: Type.Boolean(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        insertDefaults: Type.Boolean(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -3214,9 +3272,11 @@ export const post_ServiceUpdate = Type.Object({
     path: Type.Object({
       id: Type.String(),
     }),
-    header: Type.Object({
-      "X-Registry-Auth": Type.String(),
-    }),
+    header: Type.Partial(
+      Type.Object({
+        "X-Registry-Auth": Type.String(),
+      }),
+    ),
   }),
   response: ServiceUpdateResponse,
 });
@@ -3226,15 +3286,17 @@ export const get_ServiceLogs = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/services/{id}/logs"),
   parameters: Type.Object({
-    query: Type.Object({
-      details: Type.Boolean(),
-      follow: Type.Boolean(),
-      stdout: Type.Boolean(),
-      stderr: Type.Boolean(),
-      since: Type.Number(),
-      timestamps: Type.Boolean(),
-      tail: Type.String(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        details: Type.Boolean(),
+        follow: Type.Boolean(),
+        stdout: Type.Boolean(),
+        stderr: Type.Boolean(),
+        since: Type.Number(),
+        timestamps: Type.Boolean(),
+        tail: Type.String(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),
@@ -3273,15 +3335,17 @@ export const get_TaskLogs = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/tasks/{id}/logs"),
   parameters: Type.Object({
-    query: Type.Object({
-      details: Type.Boolean(),
-      follow: Type.Boolean(),
-      stdout: Type.Boolean(),
-      stderr: Type.Boolean(),
-      since: Type.Number(),
-      timestamps: Type.Boolean(),
-      tail: Type.String(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        details: Type.Boolean(),
+        follow: Type.Boolean(),
+        stdout: Type.Boolean(),
+        stderr: Type.Boolean(),
+        since: Type.Number(),
+        timestamps: Type.Boolean(),
+        tail: Type.String(),
+      }),
+    ),
     path: Type.Object({
       id: Type.String(),
     }),

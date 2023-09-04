@@ -146,10 +146,12 @@ export const post_UpdatePetWithForm = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/pet/{petId}"),
   parameters: Type.Object({
-    query: Type.Object({
-      name: Type.String(),
-      status: Type.String(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        name: Type.String(),
+        status: Type.String(),
+      }),
+    ),
     path: Type.Object({
       petId: Type.Number(),
     }),
@@ -165,9 +167,11 @@ export const delete_DeletePet = Type.Object({
     path: Type.Object({
       petId: Type.Number(),
     }),
-    header: Type.Object({
-      api_key: Type.String(),
-    }),
+    header: Type.Partial(
+      Type.Object({
+        api_key: Type.String(),
+      }),
+    ),
   }),
   response: Type.Unknown(),
 });
@@ -177,9 +181,11 @@ export const post_UploadFile = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/pet/{petId}/uploadImage"),
   parameters: Type.Object({
-    query: Type.Object({
-      additionalMetadata: Type.String(),
-    }),
+    query: Type.Partial(
+      Type.Object({
+        additionalMetadata: Type.String(),
+      }),
+    ),
     path: Type.Object({
       petId: Type.Number(),
     }),

@@ -129,8 +129,8 @@ export const post_UpdatePetWithForm = v.object({
   path: v.literal("/pet/{petId}"),
   parameters: v.object({
     query: v.object({
-      name: v.string(),
-      status: v.string(),
+      name: v.optional(v.string()),
+      status: v.optional(v.string()),
     }),
     path: v.object({
       petId: v.number(),
@@ -148,7 +148,7 @@ export const delete_DeletePet = v.object({
       petId: v.number(),
     }),
     header: v.object({
-      api_key: v.string(),
+      api_key: v.optional(v.string()),
     }),
   }),
   response: v.unknown(),
@@ -160,7 +160,7 @@ export const post_UploadFile = v.object({
   path: v.literal("/pet/{petId}/uploadImage"),
   parameters: v.object({
     query: v.object({
-      additionalMetadata: v.string(),
+      additionalMetadata: v.optional(v.string()),
     }),
     path: v.object({
       petId: v.number(),

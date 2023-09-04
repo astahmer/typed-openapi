@@ -99,8 +99,8 @@ export const types = scope({
     path: '"/pet/{petId}"',
     parameters: {
       query: {
-        name: "string",
-        status: "string",
+        "name?": "string",
+        "status?": "string",
       },
       path: {
         petId: "number",
@@ -116,7 +116,7 @@ export const types = scope({
         petId: "number",
       },
       header: {
-        api_key: "string",
+        "api_key?": "string",
       },
     },
     response: "unknown",
@@ -126,7 +126,7 @@ export const types = scope({
     path: '"/pet/{petId}/uploadImage"',
     parameters: {
       query: {
-        additionalMetadata: "string",
+        "additionalMetadata?": "string",
       },
       path: {
         petId: "number",

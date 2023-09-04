@@ -78,7 +78,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/pet/{petId}";
     parameters: {
-      query: { name: string; status: string };
+      query: Partial<{ name: string; status: string }>;
       path: { petId: number };
     };
     response: unknown;
@@ -88,7 +88,7 @@ export namespace Endpoints {
     path: "/pet/{petId}";
     parameters: {
       path: { petId: number };
-      header: { api_key: string };
+      header: Partial<{ api_key: string }>;
     };
     response: unknown;
   };
@@ -96,7 +96,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/pet/{petId}/uploadImage";
     parameters: {
-      query: { additionalMetadata: string };
+      query: Partial<{ additionalMetadata: string }>;
       path: { petId: number };
     };
     response: Schemas.ApiResponse;

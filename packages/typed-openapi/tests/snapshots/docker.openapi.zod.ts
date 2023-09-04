@@ -1669,7 +1669,7 @@ export const get_ContainerInspect = {
   path: z.literal("/containers/{id}/json"),
   parameters: z.object({
     query: z.object({
-      size: z.boolean(),
+      size: z.boolean().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -1710,7 +1710,7 @@ export const get_ContainerTop = {
   path: z.literal("/containers/{id}/top"),
   parameters: z.object({
     query: z.object({
-      ps_args: z.string(),
+      ps_args: z.string().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -1728,13 +1728,13 @@ export const get_ContainerLogs = {
   path: z.literal("/containers/{id}/logs"),
   parameters: z.object({
     query: z.object({
-      follow: z.boolean(),
-      stdout: z.boolean(),
-      stderr: z.boolean(),
-      since: z.number(),
-      until: z.number(),
-      timestamps: z.boolean(),
-      tail: z.string(),
+      follow: z.boolean().optional(),
+      stdout: z.boolean().optional(),
+      stderr: z.boolean().optional(),
+      since: z.number().optional(),
+      until: z.number().optional(),
+      timestamps: z.boolean().optional(),
+      tail: z.string().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -1773,8 +1773,8 @@ export const get_ContainerStats = {
   path: z.literal("/containers/{id}/stats"),
   parameters: z.object({
     query: z.object({
-      stream: z.boolean(),
-      "one-shot": z.boolean(),
+      stream: z.boolean().optional(),
+      "one-shot": z.boolean().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -1789,8 +1789,8 @@ export const post_ContainerResize = {
   path: z.literal("/containers/{id}/resize"),
   parameters: z.object({
     query: z.object({
-      h: z.number(),
-      w: z.number(),
+      h: z.number().optional(),
+      w: z.number().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -1805,7 +1805,7 @@ export const post_ContainerStart = {
   path: z.literal("/containers/{id}/start"),
   parameters: z.object({
     query: z.object({
-      detachKeys: z.string(),
+      detachKeys: z.string().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -1820,8 +1820,8 @@ export const post_ContainerStop = {
   path: z.literal("/containers/{id}/stop"),
   parameters: z.object({
     query: z.object({
-      signal: z.string(),
-      t: z.number(),
+      signal: z.string().optional(),
+      t: z.number().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -1836,8 +1836,8 @@ export const post_ContainerRestart = {
   path: z.literal("/containers/{id}/restart"),
   parameters: z.object({
     query: z.object({
-      signal: z.string(),
-      t: z.number(),
+      signal: z.string().optional(),
+      t: z.number().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -1852,7 +1852,7 @@ export const post_ContainerKill = {
   path: z.literal("/containers/{id}/kill"),
   parameters: z.object({
     query: z.object({
-      signal: z.string(),
+      signal: z.string().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -1920,12 +1920,12 @@ export const post_ContainerAttach = {
   path: z.literal("/containers/{id}/attach"),
   parameters: z.object({
     query: z.object({
-      detachKeys: z.string(),
-      logs: z.boolean(),
-      stream: z.boolean(),
-      stdin: z.boolean(),
-      stdout: z.boolean(),
-      stderr: z.boolean(),
+      detachKeys: z.string().optional(),
+      logs: z.boolean().optional(),
+      stream: z.boolean().optional(),
+      stdin: z.boolean().optional(),
+      stdout: z.boolean().optional(),
+      stderr: z.boolean().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -1940,12 +1940,12 @@ export const get_ContainerAttachWebsocket = {
   path: z.literal("/containers/{id}/attach/ws"),
   parameters: z.object({
     query: z.object({
-      detachKeys: z.string(),
-      logs: z.boolean(),
-      stream: z.boolean(),
-      stdin: z.boolean(),
-      stdout: z.boolean(),
-      stderr: z.boolean(),
+      detachKeys: z.string().optional(),
+      logs: z.boolean().optional(),
+      stream: z.boolean().optional(),
+      stdin: z.boolean().optional(),
+      stdout: z.boolean().optional(),
+      stderr: z.boolean().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -1960,7 +1960,7 @@ export const post_ContainerWait = {
   path: z.literal("/containers/{id}/wait"),
   parameters: z.object({
     query: z.object({
-      condition: z.union([z.literal("not-running"), z.literal("next-exit"), z.literal("removed")]),
+      condition: z.union([z.literal("not-running"), z.literal("next-exit"), z.literal("removed")]).optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -1975,9 +1975,9 @@ export const delete_ContainerDelete = {
   path: z.literal("/containers/{id}"),
   parameters: z.object({
     query: z.object({
-      v: z.boolean(),
-      force: z.boolean(),
-      link: z.boolean(),
+      v: z.boolean().optional(),
+      force: z.boolean().optional(),
+      link: z.boolean().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -2095,8 +2095,8 @@ export const post_ImageBuild = {
       outputs: z.string().optional(),
     }),
     header: z.object({
-      "Content-type": z.literal("application/x-tar"),
-      "X-Registry-Config": z.string(),
+      "Content-type": z.literal("application/x-tar").optional(),
+      "X-Registry-Config": z.string().optional(),
     }),
   }),
   response: z.unknown(),
@@ -2134,7 +2134,7 @@ export const post_ImageCreate = {
       platform: z.string().optional(),
     }),
     header: z.object({
-      "X-Registry-Auth": z.string(),
+      "X-Registry-Auth": z.string().optional(),
     }),
   }),
   response: z.unknown(),
@@ -2179,7 +2179,7 @@ export const post_ImagePush = {
   path: z.literal("/images/{name}/push"),
   parameters: z.object({
     query: z.object({
-      tag: z.string(),
+      tag: z.string().optional(),
     }),
     path: z.object({
       name: z.string(),
@@ -2197,8 +2197,8 @@ export const post_ImageTag = {
   path: z.literal("/images/{name}/tag"),
   parameters: z.object({
     query: z.object({
-      repo: z.string(),
-      tag: z.string(),
+      repo: z.string().optional(),
+      tag: z.string().optional(),
     }),
     path: z.object({
       name: z.string(),
@@ -2213,8 +2213,8 @@ export const delete_ImageDelete = {
   path: z.literal("/images/{name}"),
   parameters: z.object({
     query: z.object({
-      force: z.boolean(),
-      noprune: z.boolean(),
+      force: z.boolean().optional(),
+      noprune: z.boolean().optional(),
     }),
     path: z.object({
       name: z.string(),
@@ -2418,8 +2418,8 @@ export const post_ExecResize = {
   path: z.literal("/exec/{id}/resize"),
   parameters: z.object({
     query: z.object({
-      h: z.number(),
-      w: z.number(),
+      h: z.number().optional(),
+      w: z.number().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -2505,7 +2505,7 @@ export const delete_VolumeDelete = {
   path: z.literal("/volumes/{name}"),
   parameters: z.object({
     query: z.object({
-      force: z.boolean(),
+      force: z.boolean().optional(),
     }),
     path: z.object({
       name: z.string(),
@@ -2547,8 +2547,8 @@ export const get_NetworkInspect = {
   path: z.literal("/networks/{id}"),
   parameters: z.object({
     query: z.object({
-      verbose: z.boolean(),
-      scope: z.string(),
+      verbose: z.boolean().optional(),
+      scope: z.string().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -2652,7 +2652,7 @@ export const post_PluginPull = {
       name: z.string(),
     }),
     header: z.object({
-      "X-Registry-Auth": z.string(),
+      "X-Registry-Auth": z.string().optional(),
     }),
   }),
   response: z.unknown(),
@@ -2676,7 +2676,7 @@ export const delete_PluginDelete = {
   path: z.literal("/plugins/{name}"),
   parameters: z.object({
     query: z.object({
-      force: z.boolean(),
+      force: z.boolean().optional(),
     }),
     path: z.object({
       name: z.string(),
@@ -2691,7 +2691,7 @@ export const post_PluginEnable = {
   path: z.literal("/plugins/{name}/enable"),
   parameters: z.object({
     query: z.object({
-      timeout: z.number(),
+      timeout: z.number().optional(),
     }),
     path: z.object({
       name: z.string(),
@@ -2706,7 +2706,7 @@ export const post_PluginDisable = {
   path: z.literal("/plugins/{name}/disable"),
   parameters: z.object({
     query: z.object({
-      force: z.boolean(),
+      force: z.boolean().optional(),
     }),
     path: z.object({
       name: z.string(),
@@ -2727,7 +2727,7 @@ export const post_PluginUpgrade = {
       name: z.string(),
     }),
     header: z.object({
-      "X-Registry-Auth": z.string(),
+      "X-Registry-Auth": z.string().optional(),
     }),
   }),
   response: z.unknown(),
@@ -2799,7 +2799,7 @@ export const delete_NodeDelete = {
   path: z.literal("/nodes/{id}"),
   parameters: z.object({
     query: z.object({
-      force: z.boolean(),
+      force: z.boolean().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -2911,7 +2911,7 @@ export const post_ServiceCreate = {
   path: z.literal("/services/create"),
   parameters: z.object({
     header: z.object({
-      "X-Registry-Auth": z.string(),
+      "X-Registry-Auth": z.string().optional(),
     }),
   }),
   response: z.object({
@@ -2926,7 +2926,7 @@ export const get_ServiceInspect = {
   path: z.literal("/services/{id}"),
   parameters: z.object({
     query: z.object({
-      insertDefaults: z.boolean(),
+      insertDefaults: z.boolean().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -2961,7 +2961,7 @@ export const post_ServiceUpdate = {
       id: z.string(),
     }),
     header: z.object({
-      "X-Registry-Auth": z.string(),
+      "X-Registry-Auth": z.string().optional(),
     }),
   }),
   response: ServiceUpdateResponse,
@@ -2973,13 +2973,13 @@ export const get_ServiceLogs = {
   path: z.literal("/services/{id}/logs"),
   parameters: z.object({
     query: z.object({
-      details: z.boolean(),
-      follow: z.boolean(),
-      stdout: z.boolean(),
-      stderr: z.boolean(),
-      since: z.number(),
-      timestamps: z.boolean(),
-      tail: z.string(),
+      details: z.boolean().optional(),
+      follow: z.boolean().optional(),
+      stdout: z.boolean().optional(),
+      stderr: z.boolean().optional(),
+      since: z.number().optional(),
+      timestamps: z.boolean().optional(),
+      tail: z.string().optional(),
     }),
     path: z.object({
       id: z.string(),
@@ -3018,13 +3018,13 @@ export const get_TaskLogs = {
   path: z.literal("/tasks/{id}/logs"),
   parameters: z.object({
     query: z.object({
-      details: z.boolean(),
-      follow: z.boolean(),
-      stdout: z.boolean(),
-      stderr: z.boolean(),
-      since: z.number(),
-      timestamps: z.boolean(),
-      tail: z.string(),
+      details: z.boolean().optional(),
+      follow: z.boolean().optional(),
+      stdout: z.boolean().optional(),
+      stderr: z.boolean().optional(),
+      since: z.number().optional(),
+      timestamps: z.boolean().optional(),
+      tail: z.string().optional(),
     }),
     path: z.object({
       id: z.string(),

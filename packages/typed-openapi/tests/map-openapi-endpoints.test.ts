@@ -1695,14 +1695,8 @@ describe("map-openapi-endpoints", () => {
                 },
               },
               "query": {
-                "name": {
-                  "type": "keyword",
-                  "value": "string",
-                },
-                "status": {
-                  "type": "keyword",
-                  "value": "string",
-                },
+                "type": "ref",
+                "value": "Partial<{ name: string, status: string }>",
               },
             },
             "path": "/pet/{petId}",
@@ -1762,10 +1756,8 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "header": {
-                "api_key": {
-                  "type": "keyword",
-                  "value": "string",
-                },
+                "type": "ref",
+                "value": "Partial<{ api_key: string }>",
               },
               "path": {
                 "petId": {
@@ -1858,10 +1850,8 @@ describe("map-openapi-endpoints", () => {
                 },
               },
               "query": {
-                "additionalMetadata": {
-                  "type": "keyword",
-                  "value": "string",
-                },
+                "type": "ref",
+                "value": "Partial<{ additionalMetadata: string }>",
               },
             },
             "path": "/pet/{petId}/uploadImage",

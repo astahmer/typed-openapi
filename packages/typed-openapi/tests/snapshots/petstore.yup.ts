@@ -161,8 +161,8 @@ export const post_UpdatePetWithForm = {
   path: y.mixed((value): value is "/pet/{petId}" => value === "/pet/{petId}").required(),
   parameters: y.object({
     query: y.object({
-      name: y.string().required(),
-      status: y.string().required(),
+      name: y.string().required().optional(),
+      status: y.string().required().optional(),
     }),
     path: y.object({
       petId: y.number().required(),
@@ -180,7 +180,7 @@ export const delete_DeletePet = {
       petId: y.number().required(),
     }),
     header: y.object({
-      api_key: y.string().required(),
+      api_key: y.string().required().optional(),
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -192,7 +192,7 @@ export const post_UploadFile = {
   path: y.mixed((value): value is "/pet/{petId}/uploadImage" => value === "/pet/{petId}/uploadImage").required(),
   parameters: y.object({
     query: y.object({
-      additionalMetadata: y.string().required(),
+      additionalMetadata: y.string().required().optional(),
     }),
     path: y.object({
       petId: y.number().required(),

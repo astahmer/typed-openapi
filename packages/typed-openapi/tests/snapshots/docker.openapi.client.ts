@@ -870,7 +870,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/json";
     parameters: {
-      query: { size: boolean };
+      query: Partial<{ size: boolean }>;
       path: { id: string };
     };
     response: Partial<{
@@ -905,7 +905,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/top";
     parameters: {
-      query: { ps_args: string };
+      query: Partial<{ ps_args: string }>;
       path: { id: string };
     };
     response: Partial<{ Titles: Array<string>; Processes: Array<Array<string>> }>;
@@ -914,7 +914,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/logs";
     parameters: {
-      query: {
+      query: Partial<{
         follow: boolean;
         stdout: boolean;
         stderr: boolean;
@@ -922,7 +922,7 @@ export namespace Endpoints {
         until: number;
         timestamps: boolean;
         tail: string;
-      };
+      }>;
       path: { id: string };
     };
     response: unknown;
@@ -947,7 +947,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/stats";
     parameters: {
-      query: { stream: boolean; "one-shot": boolean };
+      query: Partial<{ stream: boolean; "one-shot": boolean }>;
       path: { id: string };
     };
     response: unknown;
@@ -956,7 +956,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/resize";
     parameters: {
-      query: { h: number; w: number };
+      query: Partial<{ h: number; w: number }>;
       path: { id: string };
     };
     response: unknown;
@@ -965,7 +965,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/start";
     parameters: {
-      query: { detachKeys: string };
+      query: Partial<{ detachKeys: string }>;
       path: { id: string };
     };
     response: unknown;
@@ -974,7 +974,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/stop";
     parameters: {
-      query: { signal: string; t: number };
+      query: Partial<{ signal: string; t: number }>;
       path: { id: string };
     };
     response: unknown;
@@ -983,7 +983,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/restart";
     parameters: {
-      query: { signal: string; t: number };
+      query: Partial<{ signal: string; t: number }>;
       path: { id: string };
     };
     response: unknown;
@@ -992,7 +992,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/kill";
     parameters: {
-      query: { signal: string };
+      query: Partial<{ signal: string }>;
       path: { id: string };
     };
     response: unknown;
@@ -1034,7 +1034,14 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/attach";
     parameters: {
-      query: { detachKeys: string; logs: boolean; stream: boolean; stdin: boolean; stdout: boolean; stderr: boolean };
+      query: Partial<{
+        detachKeys: string;
+        logs: boolean;
+        stream: boolean;
+        stdin: boolean;
+        stdout: boolean;
+        stderr: boolean;
+      }>;
       path: { id: string };
     };
     response: unknown;
@@ -1043,7 +1050,14 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/attach/ws";
     parameters: {
-      query: { detachKeys: string; logs: boolean; stream: boolean; stdin: boolean; stdout: boolean; stderr: boolean };
+      query: Partial<{
+        detachKeys: string;
+        logs: boolean;
+        stream: boolean;
+        stdin: boolean;
+        stdout: boolean;
+        stderr: boolean;
+      }>;
       path: { id: string };
     };
     response: unknown;
@@ -1052,7 +1066,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/wait";
     parameters: {
-      query: { condition: "not-running" | "next-exit" | "removed" };
+      query: Partial<{ condition: "not-running" | "next-exit" | "removed" }>;
       path: { id: string };
     };
     response: Schemas.ContainerWaitResponse;
@@ -1061,7 +1075,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/containers/{id}";
     parameters: {
-      query: { v: boolean; force: boolean; link: boolean };
+      query: Partial<{ v: boolean; force: boolean; link: boolean }>;
       path: { id: string };
     };
     response: unknown;
@@ -1140,7 +1154,7 @@ export namespace Endpoints {
         outputs: string;
       }>;
 
-      header: { "Content-type": "application/x-tar"; "X-Registry-Config": string };
+      header: Partial<{ "Content-type": "application/x-tar"; "X-Registry-Config": string }>;
     };
     response: unknown;
   };
@@ -1166,7 +1180,7 @@ export namespace Endpoints {
         platform: string;
       }>;
 
-      header: { "X-Registry-Auth": string };
+      header: Partial<{ "X-Registry-Auth": string }>;
     };
     response: unknown;
   };
@@ -1197,7 +1211,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/images/{name}/push";
     parameters: {
-      query: { tag: string };
+      query: Partial<{ tag: string }>;
       path: { name: string };
       header: { "X-Registry-Auth": string };
     };
@@ -1207,7 +1221,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/images/{name}/tag";
     parameters: {
-      query: { repo: string; tag: string };
+      query: Partial<{ repo: string; tag: string }>;
       path: { name: string };
     };
     response: unknown;
@@ -1216,7 +1230,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/images/{name}";
     parameters: {
-      query: { force: boolean; noprune: boolean };
+      query: Partial<{ force: boolean; noprune: boolean }>;
       path: { name: string };
     };
     response: Array<Schemas.ImageDeleteResponseItem>;
@@ -1351,7 +1365,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/exec/{id}/resize";
     parameters: {
-      query: { h: number; w: number };
+      query: Partial<{ h: number; w: number }>;
       path: { id: string };
     };
     response: unknown;
@@ -1411,7 +1425,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/volumes/{name}";
     parameters: {
-      query: { force: boolean };
+      query: Partial<{ force: boolean }>;
       path: { name: string };
     };
     response: unknown;
@@ -1436,7 +1450,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/networks/{id}";
     parameters: {
-      query: { verbose: boolean; scope: string };
+      query: Partial<{ verbose: boolean; scope: string }>;
       path: { id: string };
     };
     response: Schemas.Network;
@@ -1501,7 +1515,7 @@ export namespace Endpoints {
     parameters: {
       query: { remote: string; name: string };
 
-      header: { "X-Registry-Auth": string };
+      header: Partial<{ "X-Registry-Auth": string }>;
     };
     response: unknown;
   };
@@ -1517,7 +1531,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/plugins/{name}";
     parameters: {
-      query: { force: boolean };
+      query: Partial<{ force: boolean }>;
       path: { name: string };
     };
     response: Schemas.Plugin;
@@ -1526,7 +1540,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/plugins/{name}/enable";
     parameters: {
-      query: { timeout: number };
+      query: Partial<{ timeout: number }>;
       path: { name: string };
     };
     response: unknown;
@@ -1535,7 +1549,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/plugins/{name}/disable";
     parameters: {
-      query: { force: boolean };
+      query: Partial<{ force: boolean }>;
       path: { name: string };
     };
     response: unknown;
@@ -1546,7 +1560,7 @@ export namespace Endpoints {
     parameters: {
       query: { remote: string };
       path: { name: string };
-      header: { "X-Registry-Auth": string };
+      header: Partial<{ "X-Registry-Auth": string }>;
     };
     response: unknown;
   };
@@ -1594,7 +1608,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/nodes/{id}";
     parameters: {
-      query: { force: boolean };
+      query: Partial<{ force: boolean }>;
       path: { id: string };
     };
     response: unknown;
@@ -1671,7 +1685,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/services/create";
     parameters: {
-      header: { "X-Registry-Auth": string };
+      header: Partial<{ "X-Registry-Auth": string }>;
     };
     response: Partial<{ ID: string; Warning: string }>;
   };
@@ -1679,7 +1693,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/services/{id}";
     parameters: {
-      query: { insertDefaults: boolean };
+      query: Partial<{ insertDefaults: boolean }>;
       path: { id: string };
     };
     response: Schemas.Service;
@@ -1698,7 +1712,7 @@ export namespace Endpoints {
     parameters: {
       query: { version: number; registryAuthFrom: "spec" | "previous-spec"; rollback: string };
       path: { id: string };
-      header: { "X-Registry-Auth": string };
+      header: Partial<{ "X-Registry-Auth": string }>;
     };
     response: Schemas.ServiceUpdateResponse;
   };
@@ -1706,7 +1720,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/services/{id}/logs";
     parameters: {
-      query: {
+      query: Partial<{
         details: boolean;
         follow: boolean;
         stdout: boolean;
@@ -1714,7 +1728,7 @@ export namespace Endpoints {
         since: number;
         timestamps: boolean;
         tail: string;
-      };
+      }>;
       path: { id: string };
     };
     response: unknown;
@@ -1739,7 +1753,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/tasks/{id}/logs";
     parameters: {
-      query: {
+      query: Partial<{
         details: boolean;
         follow: boolean;
         stdout: boolean;
@@ -1747,7 +1761,7 @@ export namespace Endpoints {
         since: number;
         timestamps: boolean;
         tail: string;
-      };
+      }>;
       path: { id: string };
     };
     response: unknown;

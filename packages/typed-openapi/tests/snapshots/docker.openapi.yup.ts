@@ -2194,7 +2194,7 @@ export const get_ContainerInspect = {
   path: y.mixed((value): value is "/containers/{id}/json" => value === "/containers/{id}/json").required(),
   parameters: y.object({
     query: y.object({
-      size: y.boolean().required(),
+      size: y.boolean().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2242,7 +2242,7 @@ export const get_ContainerTop = {
   path: y.mixed((value): value is "/containers/{id}/top" => value === "/containers/{id}/top").required(),
   parameters: y.object({
     query: y.object({
-      ps_args: y.string().required(),
+      ps_args: y.string().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2260,13 +2260,13 @@ export const get_ContainerLogs = {
   path: y.mixed((value): value is "/containers/{id}/logs" => value === "/containers/{id}/logs").required(),
   parameters: y.object({
     query: y.object({
-      follow: y.boolean().required(),
-      stdout: y.boolean().required(),
-      stderr: y.boolean().required(),
-      since: y.number().required(),
-      until: y.number().required(),
-      timestamps: y.boolean().required(),
-      tail: y.string().required(),
+      follow: y.boolean().required().optional(),
+      stdout: y.boolean().required().optional(),
+      stderr: y.boolean().required().optional(),
+      since: y.number().required().optional(),
+      until: y.number().required().optional(),
+      timestamps: y.boolean().required().optional(),
+      tail: y.string().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2305,8 +2305,8 @@ export const get_ContainerStats = {
   path: y.mixed((value): value is "/containers/{id}/stats" => value === "/containers/{id}/stats").required(),
   parameters: y.object({
     query: y.object({
-      stream: y.boolean().required(),
-      "one-shot": y.boolean().required(),
+      stream: y.boolean().required().optional(),
+      "one-shot": y.boolean().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2321,8 +2321,8 @@ export const post_ContainerResize = {
   path: y.mixed((value): value is "/containers/{id}/resize" => value === "/containers/{id}/resize").required(),
   parameters: y.object({
     query: y.object({
-      h: y.number().required(),
-      w: y.number().required(),
+      h: y.number().required().optional(),
+      w: y.number().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2337,7 +2337,7 @@ export const post_ContainerStart = {
   path: y.mixed((value): value is "/containers/{id}/start" => value === "/containers/{id}/start").required(),
   parameters: y.object({
     query: y.object({
-      detachKeys: y.string().required(),
+      detachKeys: y.string().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2352,8 +2352,8 @@ export const post_ContainerStop = {
   path: y.mixed((value): value is "/containers/{id}/stop" => value === "/containers/{id}/stop").required(),
   parameters: y.object({
     query: y.object({
-      signal: y.string().required(),
-      t: y.number().required(),
+      signal: y.string().required().optional(),
+      t: y.number().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2368,8 +2368,8 @@ export const post_ContainerRestart = {
   path: y.mixed((value): value is "/containers/{id}/restart" => value === "/containers/{id}/restart").required(),
   parameters: y.object({
     query: y.object({
-      signal: y.string().required(),
-      t: y.number().required(),
+      signal: y.string().required().optional(),
+      t: y.number().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2384,7 +2384,7 @@ export const post_ContainerKill = {
   path: y.mixed((value): value is "/containers/{id}/kill" => value === "/containers/{id}/kill").required(),
   parameters: y.object({
     query: y.object({
-      signal: y.string().required(),
+      signal: y.string().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2452,12 +2452,12 @@ export const post_ContainerAttach = {
   path: y.mixed((value): value is "/containers/{id}/attach" => value === "/containers/{id}/attach").required(),
   parameters: y.object({
     query: y.object({
-      detachKeys: y.string().required(),
-      logs: y.boolean().required(),
-      stream: y.boolean().required(),
-      stdin: y.boolean().required(),
-      stdout: y.boolean().required(),
-      stderr: y.boolean().required(),
+      detachKeys: y.string().required().optional(),
+      logs: y.boolean().required().optional(),
+      stream: y.boolean().required().optional(),
+      stdin: y.boolean().required().optional(),
+      stdout: y.boolean().required().optional(),
+      stderr: y.boolean().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2472,12 +2472,12 @@ export const get_ContainerAttachWebsocket = {
   path: y.mixed((value): value is "/containers/{id}/attach/ws" => value === "/containers/{id}/attach/ws").required(),
   parameters: y.object({
     query: y.object({
-      detachKeys: y.string().required(),
-      logs: y.boolean().required(),
-      stream: y.boolean().required(),
-      stdin: y.boolean().required(),
-      stdout: y.boolean().required(),
-      stderr: y.boolean().required(),
+      detachKeys: y.string().required().optional(),
+      logs: y.boolean().required().optional(),
+      stream: y.boolean().required().optional(),
+      stdin: y.boolean().required().optional(),
+      stdout: y.boolean().required().optional(),
+      stderr: y.boolean().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2499,7 +2499,8 @@ export const post_ContainerWait = {
           y.mixed((value): value is "next-exit" => value === "next-exit").required(),
           y.mixed((value): value is "removed" => value === "removed").required(),
         ])
-        .required(),
+        .required()
+        .optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2514,9 +2515,9 @@ export const delete_ContainerDelete = {
   path: y.mixed((value): value is "/containers/{id}" => value === "/containers/{id}").required(),
   parameters: y.object({
     query: y.object({
-      v: y.boolean().required(),
-      force: y.boolean().required(),
-      link: y.boolean().required(),
+      v: y.boolean().required().optional(),
+      force: y.boolean().required().optional(),
+      link: y.boolean().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2634,8 +2635,11 @@ export const post_ImageBuild = {
       outputs: y.string().required().optional(),
     }),
     header: y.object({
-      "Content-type": y.mixed((value): value is "application/x-tar" => value === "application/x-tar").required(),
-      "X-Registry-Config": y.string().required(),
+      "Content-type": y
+        .mixed((value): value is "application/x-tar" => value === "application/x-tar")
+        .required()
+        .optional(),
+      "X-Registry-Config": y.string().required().optional(),
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -2673,7 +2677,7 @@ export const post_ImageCreate = {
       platform: y.string().required().optional(),
     }),
     header: y.object({
-      "X-Registry-Auth": y.string().required(),
+      "X-Registry-Auth": y.string().required().optional(),
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -2718,7 +2722,7 @@ export const post_ImagePush = {
   path: y.mixed((value): value is "/images/{name}/push" => value === "/images/{name}/push").required(),
   parameters: y.object({
     query: y.object({
-      tag: y.string().required(),
+      tag: y.string().required().optional(),
     }),
     path: y.object({
       name: y.string().required(),
@@ -2736,8 +2740,8 @@ export const post_ImageTag = {
   path: y.mixed((value): value is "/images/{name}/tag" => value === "/images/{name}/tag").required(),
   parameters: y.object({
     query: y.object({
-      repo: y.string().required(),
-      tag: y.string().required(),
+      repo: y.string().required().optional(),
+      tag: y.string().required().optional(),
     }),
     path: y.object({
       name: y.string().required(),
@@ -2752,8 +2756,8 @@ export const delete_ImageDelete = {
   path: y.mixed((value): value is "/images/{name}" => value === "/images/{name}").required(),
   parameters: y.object({
     query: y.object({
-      force: y.boolean().required(),
-      noprune: y.boolean().required(),
+      force: y.boolean().required().optional(),
+      noprune: y.boolean().required().optional(),
     }),
     path: y.object({
       name: y.string().required(),
@@ -2967,8 +2971,8 @@ export const post_ExecResize = {
   path: y.mixed((value): value is "/exec/{id}/resize" => value === "/exec/{id}/resize").required(),
   parameters: y.object({
     query: y.object({
-      h: y.number().required(),
-      w: y.number().required(),
+      h: y.number().required().optional(),
+      w: y.number().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -3054,7 +3058,7 @@ export const delete_VolumeDelete = {
   path: y.mixed((value): value is "/volumes/{name}" => value === "/volumes/{name}").required(),
   parameters: y.object({
     query: y.object({
-      force: y.boolean().required(),
+      force: y.boolean().required().optional(),
     }),
     path: y.object({
       name: y.string().required(),
@@ -3096,8 +3100,8 @@ export const get_NetworkInspect = {
   path: y.mixed((value): value is "/networks/{id}" => value === "/networks/{id}").required(),
   parameters: y.object({
     query: y.object({
-      verbose: y.boolean().required(),
-      scope: y.string().required(),
+      verbose: y.boolean().required().optional(),
+      scope: y.string().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -3201,7 +3205,7 @@ export const post_PluginPull = {
       name: y.string().required(),
     }),
     header: y.object({
-      "X-Registry-Auth": y.string().required(),
+      "X-Registry-Auth": y.string().required().optional(),
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -3225,7 +3229,7 @@ export const delete_PluginDelete = {
   path: y.mixed((value): value is "/plugins/{name}" => value === "/plugins/{name}").required(),
   parameters: y.object({
     query: y.object({
-      force: y.boolean().required(),
+      force: y.boolean().required().optional(),
     }),
     path: y.object({
       name: y.string().required(),
@@ -3240,7 +3244,7 @@ export const post_PluginEnable = {
   path: y.mixed((value): value is "/plugins/{name}/enable" => value === "/plugins/{name}/enable").required(),
   parameters: y.object({
     query: y.object({
-      timeout: y.number().required(),
+      timeout: y.number().required().optional(),
     }),
     path: y.object({
       name: y.string().required(),
@@ -3255,7 +3259,7 @@ export const post_PluginDisable = {
   path: y.mixed((value): value is "/plugins/{name}/disable" => value === "/plugins/{name}/disable").required(),
   parameters: y.object({
     query: y.object({
-      force: y.boolean().required(),
+      force: y.boolean().required().optional(),
     }),
     path: y.object({
       name: y.string().required(),
@@ -3276,7 +3280,7 @@ export const post_PluginUpgrade = {
       name: y.string().required(),
     }),
     header: y.object({
-      "X-Registry-Auth": y.string().required(),
+      "X-Registry-Auth": y.string().required().optional(),
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -3348,7 +3352,7 @@ export const delete_NodeDelete = {
   path: y.mixed((value): value is "/nodes/{id}" => value === "/nodes/{id}").required(),
   parameters: y.object({
     query: y.object({
-      force: y.boolean().required(),
+      force: y.boolean().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -3460,7 +3464,7 @@ export const post_ServiceCreate = {
   path: y.mixed((value): value is "/services/create" => value === "/services/create").required(),
   parameters: y.object({
     header: y.object({
-      "X-Registry-Auth": y.string().required(),
+      "X-Registry-Auth": y.string().required().optional(),
     }),
   }),
   response: y.object({
@@ -3475,7 +3479,7 @@ export const get_ServiceInspect = {
   path: y.mixed((value): value is "/services/{id}" => value === "/services/{id}").required(),
   parameters: y.object({
     query: y.object({
-      insertDefaults: y.boolean().required(),
+      insertDefaults: y.boolean().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -3516,7 +3520,7 @@ export const post_ServiceUpdate = {
       id: y.string().required(),
     }),
     header: y.object({
-      "X-Registry-Auth": y.string().required(),
+      "X-Registry-Auth": y.string().required().optional(),
     }),
   }),
   response: ServiceUpdateResponse,
@@ -3528,13 +3532,13 @@ export const get_ServiceLogs = {
   path: y.mixed((value): value is "/services/{id}/logs" => value === "/services/{id}/logs").required(),
   parameters: y.object({
     query: y.object({
-      details: y.boolean().required(),
-      follow: y.boolean().required(),
-      stdout: y.boolean().required(),
-      stderr: y.boolean().required(),
-      since: y.number().required(),
-      timestamps: y.boolean().required(),
-      tail: y.string().required(),
+      details: y.boolean().required().optional(),
+      follow: y.boolean().required().optional(),
+      stdout: y.boolean().required().optional(),
+      stderr: y.boolean().required().optional(),
+      since: y.number().required().optional(),
+      timestamps: y.boolean().required().optional(),
+      tail: y.string().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -3573,13 +3577,13 @@ export const get_TaskLogs = {
   path: y.mixed((value): value is "/tasks/{id}/logs" => value === "/tasks/{id}/logs").required(),
   parameters: y.object({
     query: y.object({
-      details: y.boolean().required(),
-      follow: y.boolean().required(),
-      stdout: y.boolean().required(),
-      stderr: y.boolean().required(),
-      since: y.number().required(),
-      timestamps: y.boolean().required(),
-      tail: y.string().required(),
+      details: y.boolean().required().optional(),
+      follow: y.boolean().required().optional(),
+      stdout: y.boolean().required().optional(),
+      stderr: y.boolean().required().optional(),
+      since: y.number().required().optional(),
+      timestamps: y.boolean().required().optional(),
+      tail: y.string().required().optional(),
     }),
     path: y.object({
       id: y.string().required(),
