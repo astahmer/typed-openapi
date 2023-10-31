@@ -89,7 +89,9 @@ export type put_UpdatePet = Static<typeof put_UpdatePet>;
 export const put_UpdatePet = Type.Object({
   method: Type.Literal("PUT"),
   path: Type.Literal("/pet"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: Pet,
+  }),
   response: Pet,
 });
 
@@ -97,7 +99,9 @@ export type post_AddPet = Static<typeof post_AddPet>;
 export const post_AddPet = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/pet"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: Pet,
+  }),
   response: Pet,
 });
 
@@ -189,6 +193,7 @@ export const post_UploadFile = Type.Object({
     path: Type.Object({
       petId: Type.Number(),
     }),
+    body: Type.String(),
   }),
   response: ApiResponse,
 });
@@ -205,7 +210,9 @@ export type post_PlaceOrder = Static<typeof post_PlaceOrder>;
 export const post_PlaceOrder = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/store/order"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: Order,
+  }),
   response: Order,
 });
 
@@ -237,7 +244,9 @@ export type post_CreateUser = Static<typeof post_CreateUser>;
 export const post_CreateUser = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/user"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: User,
+  }),
   response: User,
 });
 
@@ -245,7 +254,9 @@ export type post_CreateUsersWithListInput = Static<typeof post_CreateUsersWithLi
 export const post_CreateUsersWithListInput = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/user/createWithList"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: Type.Array(User),
+  }),
   response: Type.Unknown(),
 });
 
@@ -292,6 +303,7 @@ export const put_UpdateUser = Type.Object({
     path: Type.Object({
       username: Type.String(),
     }),
+    body: User,
   }),
   response: Type.Unknown(),
 });

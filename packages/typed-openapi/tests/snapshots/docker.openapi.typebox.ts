@@ -1842,6 +1842,15 @@ export const post_ContainerCreate = Type.Object({
         platform: Type.String(),
       }),
     ),
+    body: Type.Intersect([
+      ContainerConfig,
+      Type.Partial(
+        Type.Object({
+          HostConfig: HostConfig,
+          NetworkingConfig: NetworkingConfig,
+        }),
+      ),
+    ]),
   }),
   response: ContainerCreateResponse,
 });
@@ -2074,6 +2083,14 @@ export const post_ContainerUpdate = Type.Object({
     path: Type.Object({
       id: Type.String(),
     }),
+    body: Type.Intersect([
+      Resources,
+      Type.Partial(
+        Type.Object({
+          RestartPolicy: RestartPolicy,
+        }),
+      ),
+    ]),
   }),
   response: Type.Partial(
     Type.Object({
@@ -2229,6 +2246,7 @@ export const put_PutContainerArchive = Type.Object({
     path: Type.Object({
       id: Type.String(),
     }),
+    body: Type.String(),
   }),
   response: Type.Unknown(),
 });
@@ -2323,6 +2341,7 @@ export const post_ImageBuild = Type.Object({
         "X-Registry-Config": Type.String(),
       }),
     ),
+    body: Type.String(),
   }),
   response: Type.Unknown(),
 });
@@ -2369,6 +2388,7 @@ export const post_ImageCreate = Type.Object({
         "X-Registry-Auth": Type.String(),
       }),
     ),
+    body: Type.String(),
   }),
   response: Type.Unknown(),
 });
@@ -2509,7 +2529,9 @@ export type post_SystemAuth = Static<typeof post_SystemAuth>;
 export const post_SystemAuth = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/auth"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: AuthConfig,
+  }),
   response: Type.Unknown(),
 });
 
@@ -2561,6 +2583,7 @@ export const post_ImageCommit = Type.Object({
         changes: Type.String(),
       }),
     ),
+    body: ContainerConfig,
   }),
   response: IdResponse,
 });
@@ -2658,6 +2681,21 @@ export const post_ContainerExec = Type.Object({
     path: Type.Object({
       id: Type.String(),
     }),
+    body: Type.Partial(
+      Type.Object({
+        AttachStdin: Type.Boolean(),
+        AttachStdout: Type.Boolean(),
+        AttachStderr: Type.Boolean(),
+        ConsoleSize: Type.Union([Type.Array(Type.Number()), Type.Null()]),
+        DetachKeys: Type.String(),
+        Tty: Type.Boolean(),
+        Env: Type.Array(Type.String()),
+        Cmd: Type.Array(Type.String()),
+        Privileged: Type.Boolean(),
+        User: Type.String(),
+        WorkingDir: Type.String(),
+      }),
+    ),
   }),
   response: IdResponse,
 });
@@ -2670,6 +2708,13 @@ export const post_ExecStart = Type.Object({
     path: Type.Object({
       id: Type.String(),
     }),
+    body: Type.Partial(
+      Type.Object({
+        Detach: Type.Boolean(),
+        Tty: Type.Boolean(),
+        ConsoleSize: Type.Union([Type.Array(Type.Number()), Type.Null()]),
+      }),
+    ),
   }),
   response: Type.Unknown(),
 });
@@ -2736,7 +2781,9 @@ export type post_VolumeCreate = Static<typeof post_VolumeCreate>;
 export const post_VolumeCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/volumes/create"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: VolumeCreateOptions,
+  }),
   response: Volume,
 });
 
@@ -2763,6 +2810,11 @@ export const put_VolumeUpdate = Type.Object({
     path: Type.Object({
       name: Type.String(),
     }),
+    body: Type.Partial(
+      Type.Object({
+        Spec: ClusterVolumeSpec,
+      }),
+    ),
   }),
   response: Type.Unknown(),
 });
@@ -2851,7 +2903,20 @@ export type post_NetworkCreate = Static<typeof post_NetworkCreate>;
 export const post_NetworkCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/networks/create"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: Type.Object({
+      Name: Type.String(),
+      CheckDuplicate: Type.Optional(Type.Union([Type.Boolean(), Type.Undefined()])),
+      Driver: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
+      Internal: Type.Optional(Type.Union([Type.Boolean(), Type.Undefined()])),
+      Attachable: Type.Optional(Type.Union([Type.Boolean(), Type.Undefined()])),
+      Ingress: Type.Optional(Type.Union([Type.Boolean(), Type.Undefined()])),
+      IPAM: Type.Optional(Type.Union([IPAM, Type.Undefined()])),
+      EnableIPv6: Type.Optional(Type.Union([Type.Boolean(), Type.Undefined()])),
+      Options: Type.Optional(Type.Union([Type.Unknown(), Type.Undefined()])),
+      Labels: Type.Optional(Type.Union([Type.Unknown(), Type.Undefined()])),
+    }),
+  }),
   response: Type.Partial(
     Type.Object({
       Id: Type.String(),
@@ -2868,6 +2933,12 @@ export const post_NetworkConnect = Type.Object({
     path: Type.Object({
       id: Type.String(),
     }),
+    body: Type.Partial(
+      Type.Object({
+        Container: Type.String(),
+        EndpointConfig: EndpointSettings,
+      }),
+    ),
   }),
   response: Type.Unknown(),
 });
@@ -2880,6 +2951,12 @@ export const post_NetworkDisconnect = Type.Object({
     path: Type.Object({
       id: Type.String(),
     }),
+    body: Type.Partial(
+      Type.Object({
+        Container: Type.String(),
+        Force: Type.Boolean(),
+      }),
+    ),
   }),
   response: Type.Unknown(),
 });
@@ -2942,6 +3019,7 @@ export const post_PluginPull = Type.Object({
         "X-Registry-Auth": Type.String(),
       }),
     ),
+    body: Type.Array(PluginPrivilege),
   }),
   response: Type.Unknown(),
 });
@@ -3025,6 +3103,7 @@ export const post_PluginUpgrade = Type.Object({
         "X-Registry-Auth": Type.String(),
       }),
     ),
+    body: Type.Array(PluginPrivilege),
   }),
   response: Type.Unknown(),
 });
@@ -3061,6 +3140,7 @@ export const post_PluginSet = Type.Object({
     path: Type.Object({
       name: Type.String(),
     }),
+    body: Type.Array(Type.String()),
   }),
   response: Type.Unknown(),
 });
@@ -3119,6 +3199,7 @@ export const post_NodeUpdate = Type.Object({
     path: Type.Object({
       id: Type.String(),
     }),
+    body: NodeSpec,
   }),
   response: Type.Unknown(),
 });
@@ -3135,7 +3216,20 @@ export type post_SwarmInit = Static<typeof post_SwarmInit>;
 export const post_SwarmInit = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/swarm/init"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: Type.Partial(
+      Type.Object({
+        ListenAddr: Type.String(),
+        AdvertiseAddr: Type.String(),
+        DataPathAddr: Type.String(),
+        DataPathPort: Type.Number(),
+        DefaultAddrPool: Type.Array(Type.String()),
+        ForceNewCluster: Type.Boolean(),
+        SubnetSize: Type.Number(),
+        Spec: SwarmSpec,
+      }),
+    ),
+  }),
   response: Type.String(),
 });
 
@@ -3143,7 +3237,17 @@ export type post_SwarmJoin = Static<typeof post_SwarmJoin>;
 export const post_SwarmJoin = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/swarm/join"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: Type.Partial(
+      Type.Object({
+        ListenAddr: Type.String(),
+        AdvertiseAddr: Type.String(),
+        DataPathAddr: Type.String(),
+        RemoteAddrs: Type.Array(Type.String()),
+        JoinToken: Type.String(),
+      }),
+    ),
+  }),
   response: Type.Unknown(),
 });
 
@@ -3172,6 +3276,7 @@ export const post_SwarmUpdate = Type.Object({
       rotateManagerToken: Type.Boolean(),
       rotateManagerUnlockKey: Type.Boolean(),
     }),
+    body: SwarmSpec,
   }),
   response: Type.Unknown(),
 });
@@ -3192,7 +3297,13 @@ export type post_SwarmUnlock = Static<typeof post_SwarmUnlock>;
 export const post_SwarmUnlock = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/swarm/unlock"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: Type.Partial(
+      Type.Object({
+        UnlockKey: Type.String(),
+      }),
+    ),
+  }),
   response: Type.Unknown(),
 });
 
@@ -3221,6 +3332,7 @@ export const post_ServiceCreate = Type.Object({
         "X-Registry-Auth": Type.String(),
       }),
     ),
+    body: Type.Intersect([ServiceSpec, Type.Unknown()]),
   }),
   response: Type.Partial(
     Type.Object({
@@ -3277,6 +3389,7 @@ export const post_ServiceUpdate = Type.Object({
         "X-Registry-Auth": Type.String(),
       }),
     ),
+    body: Type.Intersect([ServiceSpec, Type.Unknown()]),
   }),
   response: ServiceUpdateResponse,
 });
@@ -3371,7 +3484,9 @@ export type post_SecretCreate = Static<typeof post_SecretCreate>;
 export const post_SecretCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/secrets/create"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: Type.Intersect([SecretSpec, Type.Unknown()]),
+  }),
   response: IdResponse,
 });
 
@@ -3410,6 +3525,7 @@ export const post_SecretUpdate = Type.Object({
     path: Type.Object({
       id: Type.String(),
     }),
+    body: SecretSpec,
   }),
   response: Type.Unknown(),
 });
@@ -3432,7 +3548,9 @@ export type post_ConfigCreate = Static<typeof post_ConfigCreate>;
 export const post_ConfigCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/configs/create"),
-  parameters: Type.Never(),
+  parameters: Type.Object({
+    body: Type.Intersect([ConfigSpec, Type.Unknown()]),
+  }),
   response: IdResponse,
 });
 
@@ -3471,6 +3589,7 @@ export const post_ConfigUpdate = Type.Object({
     path: Type.Object({
       id: Type.String(),
     }),
+    body: ConfigSpec,
   }),
   response: Type.Unknown(),
 });

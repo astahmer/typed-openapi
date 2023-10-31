@@ -1659,6 +1659,13 @@ export const post_ContainerCreate = {
       name: z.string().optional(),
       platform: z.string().optional(),
     }),
+    body: z.intersection(
+      ContainerConfig,
+      z.object({
+        HostConfig: HostConfig.optional(),
+        NetworkingConfig: NetworkingConfig.optional(),
+      }),
+    ),
   }),
   response: ContainerCreateResponse,
 };
@@ -1869,6 +1876,12 @@ export const post_ContainerUpdate = {
     path: z.object({
       id: z.string(),
     }),
+    body: z.intersection(
+      Resources,
+      z.object({
+        RestartPolicy: RestartPolicy.optional(),
+      }),
+    ),
   }),
   response: z.object({
     Warnings: z.array(z.string()).optional(),
@@ -2014,6 +2027,7 @@ export const put_PutContainerArchive = {
     path: z.object({
       id: z.string(),
     }),
+    body: z.string(),
   }),
   response: z.unknown(),
 };
@@ -2098,6 +2112,7 @@ export const post_ImageBuild = {
       "Content-type": z.literal("application/x-tar").optional(),
       "X-Registry-Config": z.string().optional(),
     }),
+    body: z.string(),
   }),
   response: z.unknown(),
 };
@@ -2136,6 +2151,7 @@ export const post_ImageCreate = {
     header: z.object({
       "X-Registry-Auth": z.string().optional(),
     }),
+    body: z.string(),
   }),
   response: z.unknown(),
 };
@@ -2264,7 +2280,9 @@ export type post_SystemAuth = typeof post_SystemAuth;
 export const post_SystemAuth = {
   method: z.literal("POST"),
   path: z.literal("/auth"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: AuthConfig,
+  }),
   response: z.unknown(),
 };
 
@@ -2314,6 +2332,7 @@ export const post_ImageCommit = {
       pause: z.boolean().optional(),
       changes: z.string().optional(),
     }),
+    body: ContainerConfig,
   }),
   response: IdResponse,
 };
@@ -2396,6 +2415,19 @@ export const post_ContainerExec = {
     path: z.object({
       id: z.string(),
     }),
+    body: z.object({
+      AttachStdin: z.boolean().optional(),
+      AttachStdout: z.boolean().optional(),
+      AttachStderr: z.boolean().optional(),
+      ConsoleSize: z.union([z.array(z.number()), z.null()]).optional(),
+      DetachKeys: z.string().optional(),
+      Tty: z.boolean().optional(),
+      Env: z.array(z.string()).optional(),
+      Cmd: z.array(z.string()).optional(),
+      Privileged: z.boolean().optional(),
+      User: z.string().optional(),
+      WorkingDir: z.string().optional(),
+    }),
   }),
   response: IdResponse,
 };
@@ -2407,6 +2439,11 @@ export const post_ExecStart = {
   parameters: z.object({
     path: z.object({
       id: z.string(),
+    }),
+    body: z.object({
+      Detach: z.boolean().optional(),
+      Tty: z.boolean().optional(),
+      ConsoleSize: z.union([z.array(z.number()), z.null()]).optional(),
     }),
   }),
   response: z.unknown(),
@@ -2468,7 +2505,9 @@ export type post_VolumeCreate = typeof post_VolumeCreate;
 export const post_VolumeCreate = {
   method: z.literal("POST"),
   path: z.literal("/volumes/create"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: VolumeCreateOptions,
+  }),
   response: Volume,
 };
 
@@ -2494,6 +2533,9 @@ export const put_VolumeUpdate = {
     }),
     path: z.object({
       name: z.string(),
+    }),
+    body: z.object({
+      Spec: ClusterVolumeSpec.optional(),
     }),
   }),
   response: z.unknown(),
@@ -2573,7 +2615,20 @@ export type post_NetworkCreate = typeof post_NetworkCreate;
 export const post_NetworkCreate = {
   method: z.literal("POST"),
   path: z.literal("/networks/create"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: z.object({
+      Name: z.string(),
+      CheckDuplicate: z.union([z.boolean(), z.undefined()]).optional(),
+      Driver: z.union([z.string(), z.undefined()]).optional(),
+      Internal: z.union([z.boolean(), z.undefined()]).optional(),
+      Attachable: z.union([z.boolean(), z.undefined()]).optional(),
+      Ingress: z.union([z.boolean(), z.undefined()]).optional(),
+      IPAM: z.union([IPAM, z.undefined()]).optional(),
+      EnableIPv6: z.union([z.boolean(), z.undefined()]).optional(),
+      Options: z.union([z.unknown(), z.undefined()]).optional(),
+      Labels: z.union([z.unknown(), z.undefined()]).optional(),
+    }),
+  }),
   response: z.object({
     Id: z.string().optional(),
     Warning: z.string().optional(),
@@ -2588,6 +2643,10 @@ export const post_NetworkConnect = {
     path: z.object({
       id: z.string(),
     }),
+    body: z.object({
+      Container: z.string().optional(),
+      EndpointConfig: EndpointSettings.optional(),
+    }),
   }),
   response: z.unknown(),
 };
@@ -2599,6 +2658,10 @@ export const post_NetworkDisconnect = {
   parameters: z.object({
     path: z.object({
       id: z.string(),
+    }),
+    body: z.object({
+      Container: z.string().optional(),
+      Force: z.boolean().optional(),
     }),
   }),
   response: z.unknown(),
@@ -2654,6 +2717,7 @@ export const post_PluginPull = {
     header: z.object({
       "X-Registry-Auth": z.string().optional(),
     }),
+    body: z.array(PluginPrivilege),
   }),
   response: z.unknown(),
 };
@@ -2729,6 +2793,7 @@ export const post_PluginUpgrade = {
     header: z.object({
       "X-Registry-Auth": z.string().optional(),
     }),
+    body: z.array(PluginPrivilege),
   }),
   response: z.unknown(),
 };
@@ -2765,6 +2830,7 @@ export const post_PluginSet = {
     path: z.object({
       name: z.string(),
     }),
+    body: z.array(z.string()),
   }),
   response: z.unknown(),
 };
@@ -2819,6 +2885,7 @@ export const post_NodeUpdate = {
     path: z.object({
       id: z.string(),
     }),
+    body: NodeSpec,
   }),
   response: z.unknown(),
 };
@@ -2835,7 +2902,18 @@ export type post_SwarmInit = typeof post_SwarmInit;
 export const post_SwarmInit = {
   method: z.literal("POST"),
   path: z.literal("/swarm/init"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: z.object({
+      ListenAddr: z.string().optional(),
+      AdvertiseAddr: z.string().optional(),
+      DataPathAddr: z.string().optional(),
+      DataPathPort: z.number().optional(),
+      DefaultAddrPool: z.array(z.string()).optional(),
+      ForceNewCluster: z.boolean().optional(),
+      SubnetSize: z.number().optional(),
+      Spec: SwarmSpec.optional(),
+    }),
+  }),
   response: z.string(),
 };
 
@@ -2843,7 +2921,15 @@ export type post_SwarmJoin = typeof post_SwarmJoin;
 export const post_SwarmJoin = {
   method: z.literal("POST"),
   path: z.literal("/swarm/join"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: z.object({
+      ListenAddr: z.string().optional(),
+      AdvertiseAddr: z.string().optional(),
+      DataPathAddr: z.string().optional(),
+      RemoteAddrs: z.array(z.string()).optional(),
+      JoinToken: z.string().optional(),
+    }),
+  }),
   response: z.unknown(),
 };
 
@@ -2870,6 +2956,7 @@ export const post_SwarmUpdate = {
       rotateManagerToken: z.boolean(),
       rotateManagerUnlockKey: z.boolean(),
     }),
+    body: SwarmSpec,
   }),
   response: z.unknown(),
 };
@@ -2888,7 +2975,11 @@ export type post_SwarmUnlock = typeof post_SwarmUnlock;
 export const post_SwarmUnlock = {
   method: z.literal("POST"),
   path: z.literal("/swarm/unlock"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: z.object({
+      UnlockKey: z.string().optional(),
+    }),
+  }),
   response: z.unknown(),
 };
 
@@ -2913,6 +3004,7 @@ export const post_ServiceCreate = {
     header: z.object({
       "X-Registry-Auth": z.string().optional(),
     }),
+    body: z.intersection(ServiceSpec, z.unknown()),
   }),
   response: z.object({
     ID: z.string().optional(),
@@ -2963,6 +3055,7 @@ export const post_ServiceUpdate = {
     header: z.object({
       "X-Registry-Auth": z.string().optional(),
     }),
+    body: z.intersection(ServiceSpec, z.unknown()),
   }),
   response: ServiceUpdateResponse,
 };
@@ -3049,7 +3142,9 @@ export type post_SecretCreate = typeof post_SecretCreate;
 export const post_SecretCreate = {
   method: z.literal("POST"),
   path: z.literal("/secrets/create"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: z.intersection(SecretSpec, z.unknown()),
+  }),
   response: IdResponse,
 };
 
@@ -3088,6 +3183,7 @@ export const post_SecretUpdate = {
     path: z.object({
       id: z.string(),
     }),
+    body: SecretSpec,
   }),
   response: z.unknown(),
 };
@@ -3108,7 +3204,9 @@ export type post_ConfigCreate = typeof post_ConfigCreate;
 export const post_ConfigCreate = {
   method: z.literal("POST"),
   path: z.literal("/configs/create"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: z.intersection(ConfigSpec, z.unknown()),
+  }),
   response: IdResponse,
 };
 
@@ -3147,6 +3245,7 @@ export const post_ConfigUpdate = {
     path: z.object({
       id: z.string(),
     }),
+    body: ConfigSpec,
   }),
   response: z.unknown(),
 };

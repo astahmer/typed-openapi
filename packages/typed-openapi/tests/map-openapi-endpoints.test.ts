@@ -1247,7 +1247,7 @@ describe("map-openapi-endpoints", () => {
             "meta": {
               "alias": "put_UpdatePet",
               "areParametersRequired": false,
-              "hasParameters": false,
+              "hasParameters": true,
             },
             "method": "put",
             "operation": {
@@ -1329,7 +1329,7 @@ describe("map-openapi-endpoints", () => {
             "meta": {
               "alias": "post_AddPet",
               "areParametersRequired": false,
-              "hasParameters": false,
+              "hasParameters": true,
             },
             "method": "post",
             "operation": {
@@ -1907,7 +1907,7 @@ describe("map-openapi-endpoints", () => {
             "meta": {
               "alias": "post_PlaceOrder",
               "areParametersRequired": false,
-              "hasParameters": false,
+              "hasParameters": true,
             },
             "method": "post",
             "operation": {
@@ -2081,7 +2081,7 @@ describe("map-openapi-endpoints", () => {
             "meta": {
               "alias": "post_CreateUser",
               "areParametersRequired": false,
-              "hasParameters": false,
+              "hasParameters": true,
             },
             "method": "post",
             "operation": {
@@ -2145,7 +2145,7 @@ describe("map-openapi-endpoints", () => {
             "meta": {
               "alias": "post_CreateUsersWithListInput",
               "areParametersRequired": false,
-              "hasParameters": false,
+              "hasParameters": true,
             },
             "method": "post",
             "operation": {

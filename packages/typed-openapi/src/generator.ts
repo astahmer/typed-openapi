@@ -143,6 +143,7 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
             ${parameters.query ? `query:  ${parameterObjectToString(parameters.query)},` : ""}
         ${parameters.path ? `path:  ${parameterObjectToString(parameters.path)},` : ""}
         ${parameters.header ? `header:  ${parameterObjectToString(parameters.header)},` : ""}
+        ${parameters.body ? `body:  ${parameterObjectToString(parameters.body)},` : ""}
           }`
           : "parameters: never,"
       }

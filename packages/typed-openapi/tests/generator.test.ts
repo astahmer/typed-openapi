@@ -51,13 +51,17 @@ describe("generator", () => {
         export type put_UpdatePet = {
           method: "PUT";
           path: "/pet";
-          parameters: never;
+          parameters: {
+            body: Pet;
+          };
           response: Schemas.Pet;
         };
         export type post_AddPet = {
           method: "POST";
           path: "/pet";
-          parameters: never;
+          parameters: {
+            body: Pet;
+          };
           response: Schemas.Pet;
         };
         export type get_FindPetsByStatus = {
@@ -108,6 +112,8 @@ describe("generator", () => {
           parameters: {
             query: Partial<{ additionalMetadata: string }>;
             path: { petId: number };
+
+            body: string;
           };
           response: Schemas.ApiResponse;
         };
@@ -120,7 +126,9 @@ describe("generator", () => {
         export type post_PlaceOrder = {
           method: "POST";
           path: "/store/order";
-          parameters: never;
+          parameters: {
+            body: Order;
+          };
           response: Schemas.Order;
         };
         export type get_GetOrderById = {
@@ -142,13 +150,17 @@ describe("generator", () => {
         export type post_CreateUser = {
           method: "POST";
           path: "/user";
-          parameters: never;
+          parameters: {
+            body: User;
+          };
           response: Schemas.User;
         };
         export type post_CreateUsersWithListInput = {
           method: "POST";
           path: "/user/createWithList";
-          parameters: never;
+          parameters: {
+            body: Array<User>;
+          };
           response: unknown;
         };
         export type get_LoginUser = {
@@ -178,6 +190,8 @@ describe("generator", () => {
           path: "/user/{username}";
           parameters: {
             path: { username: string };
+
+            body: User;
           };
           response: unknown;
         };
