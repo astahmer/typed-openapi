@@ -55,13 +55,17 @@ export const types = scope({
   put_UpdatePet: {
     method: '"PUT"',
     path: '"/pet"',
-    parameters: "never",
+    parameters: {
+      body: "Pet",
+    },
     response: "Pet",
   },
   post_AddPet: {
     method: '"POST"',
     path: '"/pet"',
-    parameters: "never",
+    parameters: {
+      body: "Pet",
+    },
     response: "Pet",
   },
   get_FindPetsByStatus: {
@@ -131,6 +135,7 @@ export const types = scope({
       path: {
         petId: "number",
       },
+      body: "string",
     },
     response: "ApiResponse",
   },
@@ -143,7 +148,9 @@ export const types = scope({
   post_PlaceOrder: {
     method: '"POST"',
     path: '"/store/order"',
-    parameters: "never",
+    parameters: {
+      body: "Order",
+    },
     response: "Order",
   },
   get_GetOrderById: {
@@ -169,13 +176,17 @@ export const types = scope({
   post_CreateUser: {
     method: '"POST"',
     path: '"/user"',
-    parameters: "never",
+    parameters: {
+      body: "User",
+    },
     response: "User",
   },
   post_CreateUsersWithListInput: {
     method: '"POST"',
     path: '"/user/createWithList"',
-    parameters: "never",
+    parameters: {
+      body: "User[]",
+    },
     response: "unknown",
   },
   get_LoginUser: {
@@ -212,6 +223,7 @@ export const types = scope({
       path: {
         username: "string",
       },
+      body: "User",
     },
     response: "unknown",
   },

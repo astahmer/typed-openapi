@@ -72,6 +72,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
 
       // Body
       if (operation.requestBody) {
+        endpoint.meta.hasParameters = true;
         const requestBody = refs.unwrap(operation.requestBody ?? {});
         const content = requestBody.content;
         const matchingMediaType = Object.keys(content).find(isAllowedParamMediaTypes);
@@ -154,7 +155,7 @@ type MutationMethod = "post" | "put" | "patch" | "delete";
 type Method = "get" | "head" | "options" | MutationMethod;
 
 export type EndpointParameters = {
-  body?: Box;
+  body?: Box<BoxRef>;
   query?: Box<BoxRef> | Record<string, AnyBox>;
   header?: Box<BoxRef> | Record<string, AnyBox>;
   path?: Box<BoxRef> | Record<string, AnyBox>;

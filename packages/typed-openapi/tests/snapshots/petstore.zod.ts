@@ -70,7 +70,9 @@ export type put_UpdatePet = typeof put_UpdatePet;
 export const put_UpdatePet = {
   method: z.literal("PUT"),
   path: z.literal("/pet"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: Pet,
+  }),
   response: Pet,
 };
 
@@ -78,7 +80,9 @@ export type post_AddPet = typeof post_AddPet;
 export const post_AddPet = {
   method: z.literal("POST"),
   path: z.literal("/pet"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: Pet,
+  }),
   response: Pet,
 };
 
@@ -160,6 +164,7 @@ export const post_UploadFile = {
     path: z.object({
       petId: z.number(),
     }),
+    body: z.string(),
   }),
   response: ApiResponse,
 };
@@ -176,7 +181,9 @@ export type post_PlaceOrder = typeof post_PlaceOrder;
 export const post_PlaceOrder = {
   method: z.literal("POST"),
   path: z.literal("/store/order"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: Order,
+  }),
   response: Order,
 };
 
@@ -208,7 +215,9 @@ export type post_CreateUser = typeof post_CreateUser;
 export const post_CreateUser = {
   method: z.literal("POST"),
   path: z.literal("/user"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: User,
+  }),
   response: User,
 };
 
@@ -216,7 +225,9 @@ export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput
 export const post_CreateUsersWithListInput = {
   method: z.literal("POST"),
   path: z.literal("/user/createWithList"),
-  parameters: z.never(),
+  parameters: z.object({
+    body: z.array(User),
+  }),
   response: z.unknown(),
 };
 
@@ -261,6 +272,7 @@ export const put_UpdateUser = {
     path: z.object({
       username: z.string(),
     }),
+    body: User,
   }),
   response: z.unknown(),
 };

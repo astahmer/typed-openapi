@@ -99,7 +99,9 @@ export type put_UpdatePet = typeof put_UpdatePet;
 export const put_UpdatePet = {
   method: y.mixed((value): value is "PUT" => value === "PUT").required(),
   path: y.mixed((value): value is "/pet" => value === "/pet").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: Pet,
+  }),
   response: Pet,
 };
 
@@ -107,7 +109,9 @@ export type post_AddPet = typeof post_AddPet;
 export const post_AddPet = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/pet" => value === "/pet").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: Pet,
+  }),
   response: Pet,
 };
 
@@ -197,6 +201,7 @@ export const post_UploadFile = {
     path: y.object({
       petId: y.number().required(),
     }),
+    body: y.string().required(),
   }),
   response: ApiResponse,
 };
@@ -213,7 +218,9 @@ export type post_PlaceOrder = typeof post_PlaceOrder;
 export const post_PlaceOrder = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/store/order" => value === "/store/order").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: Order,
+  }),
   response: Order,
 };
 
@@ -245,7 +252,9 @@ export type post_CreateUser = typeof post_CreateUser;
 export const post_CreateUser = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/user" => value === "/user").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: User,
+  }),
   response: User,
 };
 
@@ -253,7 +262,9 @@ export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput
 export const post_CreateUsersWithListInput = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/user/createWithList" => value === "/user/createWithList").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: y.array(User),
+  }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
 
@@ -298,6 +309,7 @@ export const put_UpdateUser = {
     path: y.object({
       username: y.string().required(),
     }),
+    body: User,
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };

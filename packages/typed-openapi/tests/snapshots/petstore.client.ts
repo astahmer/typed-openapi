@@ -41,13 +41,17 @@ export namespace Endpoints {
   export type put_UpdatePet = {
     method: "PUT";
     path: "/pet";
-    parameters: never;
+    parameters: {
+      body: Pet;
+    };
     response: Schemas.Pet;
   };
   export type post_AddPet = {
     method: "POST";
     path: "/pet";
-    parameters: never;
+    parameters: {
+      body: Pet;
+    };
     response: Schemas.Pet;
   };
   export type get_FindPetsByStatus = {
@@ -98,6 +102,8 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ additionalMetadata: string }>;
       path: { petId: number };
+
+      body: string;
     };
     response: Schemas.ApiResponse;
   };
@@ -110,7 +116,9 @@ export namespace Endpoints {
   export type post_PlaceOrder = {
     method: "POST";
     path: "/store/order";
-    parameters: never;
+    parameters: {
+      body: Order;
+    };
     response: Schemas.Order;
   };
   export type get_GetOrderById = {
@@ -132,13 +140,17 @@ export namespace Endpoints {
   export type post_CreateUser = {
     method: "POST";
     path: "/user";
-    parameters: never;
+    parameters: {
+      body: User;
+    };
     response: Schemas.User;
   };
   export type post_CreateUsersWithListInput = {
     method: "POST";
     path: "/user/createWithList";
-    parameters: never;
+    parameters: {
+      body: Array<User>;
+    };
     response: unknown;
   };
   export type get_LoginUser = {
@@ -168,6 +180,8 @@ export namespace Endpoints {
     path: "/user/{username}";
     parameters: {
       path: { username: string };
+
+      body: User;
     };
     response: unknown;
   };

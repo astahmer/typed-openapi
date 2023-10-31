@@ -2184,6 +2184,91 @@ export const post_ContainerCreate = {
       name: y.string().required().optional(),
       platform: y.string().required().optional(),
     }),
+    body: y.object({
+      Hostname: y.string().required().optional(),
+      Domainname: y.string().required().optional(),
+      User: y.string().required().optional(),
+      AttachStdin: y.boolean().required().optional(),
+      AttachStdout: y.boolean().required().optional(),
+      AttachStderr: y.boolean().required().optional(),
+      ExposedPorts: y
+        .mixed()
+        .oneOf([
+          y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
+      Tty: y.boolean().required().optional(),
+      OpenStdin: y.boolean().required().optional(),
+      StdinOnce: y.boolean().required().optional(),
+      Env: y.array(y.string().required()).optional(),
+      Cmd: y.array(y.string().required()).optional(),
+      Healthcheck: HealthConfig.optional(),
+      ArgsEscaped: y
+        .mixed()
+        .oneOf([
+          y.boolean().required(),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
+      Image: y.string().required().optional(),
+      Volumes: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      WorkingDir: y.string().required().optional(),
+      Entrypoint: y.array(y.string().required()).optional(),
+      NetworkDisabled: y
+        .mixed()
+        .oneOf([
+          y.boolean().required(),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
+      MacAddress: y
+        .mixed()
+        .oneOf([
+          y.string().required(),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
+      OnBuild: y
+        .mixed()
+        .oneOf([
+          y.array(y.string().required()),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
+      Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      StopSignal: y
+        .mixed()
+        .oneOf([
+          y.string().required(),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
+      StopTimeout: y
+        .mixed()
+        .oneOf([
+          y.number().required(),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
+      Shell: y
+        .mixed()
+        .oneOf([
+          y.array(y.string().required()),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
+      HostConfig: HostConfig.optional(),
+      NetworkingConfig: NetworkingConfig.optional(),
+    }),
   }),
   response: ContainerCreateResponse,
 };
@@ -2401,6 +2486,69 @@ export const post_ContainerUpdate = {
     path: y.object({
       id: y.string().required(),
     }),
+    body: y.object({
+      CpuShares: y.number().required().optional(),
+      Memory: y.number().required().optional(),
+      CgroupParent: y.string().required().optional(),
+      BlkioWeight: y.number().required().optional(),
+      BlkioWeightDevice: y
+        .array(
+          y.object({
+            Path: y.string().required().optional(),
+            Weight: y.number().required().optional(),
+          }),
+        )
+        .optional(),
+      BlkioDeviceReadBps: y.array(ThrottleDevice).optional(),
+      BlkioDeviceWriteBps: y.array(ThrottleDevice).optional(),
+      BlkioDeviceReadIOps: y.array(ThrottleDevice).optional(),
+      BlkioDeviceWriteIOps: y.array(ThrottleDevice).optional(),
+      CpuPeriod: y.number().required().optional(),
+      CpuQuota: y.number().required().optional(),
+      CpuRealtimePeriod: y.number().required().optional(),
+      CpuRealtimeRuntime: y.number().required().optional(),
+      CpusetCpus: y.string().required().optional(),
+      CpusetMems: y.string().required().optional(),
+      Devices: y.array(DeviceMapping).optional(),
+      DeviceCgroupRules: y.array(y.string().required()).optional(),
+      DeviceRequests: y.array(DeviceRequest).optional(),
+      KernelMemoryTCP: y.number().required().optional(),
+      MemoryReservation: y.number().required().optional(),
+      MemorySwap: y.number().required().optional(),
+      MemorySwappiness: y.number().required().optional(),
+      NanoCpus: y.number().required().optional(),
+      OomKillDisable: y.boolean().required().optional(),
+      Init: y
+        .mixed()
+        .oneOf([
+          y.boolean().required(),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
+      PidsLimit: y
+        .mixed()
+        .oneOf([
+          y.number().required(),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
+      Ulimits: y
+        .array(
+          y.object({
+            Name: y.string().required().optional(),
+            Soft: y.number().required().optional(),
+            Hard: y.number().required().optional(),
+          }),
+        )
+        .optional(),
+      CpuCount: y.number().required().optional(),
+      CpuPercent: y.number().required().optional(),
+      IOMaximumIOps: y.number().required().optional(),
+      IOMaximumBandwidth: y.number().required().optional(),
+      RestartPolicy: RestartPolicy.optional(),
+    }),
   }),
   response: y.object({
     Warnings: y.array(y.string().required()).optional(),
@@ -2554,6 +2702,7 @@ export const put_PutContainerArchive = {
     path: y.object({
       id: y.string().required(),
     }),
+    body: y.string().required(),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -2641,6 +2790,7 @@ export const post_ImageBuild = {
         .optional(),
       "X-Registry-Config": y.string().required().optional(),
     }),
+    body: y.string().required(),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -2679,6 +2829,7 @@ export const post_ImageCreate = {
     header: y.object({
       "X-Registry-Auth": y.string().required().optional(),
     }),
+    body: y.string().required(),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -2807,7 +2958,9 @@ export type post_SystemAuth = typeof post_SystemAuth;
 export const post_SystemAuth = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/auth" => value === "/auth").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: AuthConfig,
+  }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
 
@@ -2857,6 +3010,7 @@ export const post_ImageCommit = {
       pause: y.boolean().required().optional(),
       changes: y.string().required().optional(),
     }),
+    body: ContainerConfig,
   }),
   response: IdResponse,
 };
@@ -2949,6 +3103,26 @@ export const post_ContainerExec = {
     path: y.object({
       id: y.string().required(),
     }),
+    body: y.object({
+      AttachStdin: y.boolean().required().optional(),
+      AttachStdout: y.boolean().required().optional(),
+      AttachStderr: y.boolean().required().optional(),
+      ConsoleSize: y
+        .mixed()
+        .oneOf([
+          y.array(y.number().required()),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
+      DetachKeys: y.string().required().optional(),
+      Tty: y.boolean().required().optional(),
+      Env: y.array(y.string().required()).optional(),
+      Cmd: y.array(y.string().required()).optional(),
+      Privileged: y.boolean().required().optional(),
+      User: y.string().required().optional(),
+      WorkingDir: y.string().required().optional(),
+    }),
   }),
   response: IdResponse,
 };
@@ -2960,6 +3134,18 @@ export const post_ExecStart = {
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
+    }),
+    body: y.object({
+      Detach: y.boolean().required().optional(),
+      Tty: y.boolean().required().optional(),
+      ConsoleSize: y
+        .mixed()
+        .oneOf([
+          y.array(y.number().required()),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -3021,7 +3207,9 @@ export type post_VolumeCreate = typeof post_VolumeCreate;
 export const post_VolumeCreate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/volumes/create" => value === "/volumes/create").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: VolumeCreateOptions,
+  }),
   response: Volume,
 };
 
@@ -3047,6 +3235,9 @@ export const put_VolumeUpdate = {
     }),
     path: y.object({
       name: y.string().required(),
+    }),
+    body: y.object({
+      Spec: ClusterVolumeSpec.optional(),
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -3126,7 +3317,80 @@ export type post_NetworkCreate = typeof post_NetworkCreate;
 export const post_NetworkCreate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/networks/create" => value === "/networks/create").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: y.object({
+      Name: y.string().required(),
+      CheckDuplicate: y
+        .mixed()
+        .oneOf([
+          y.boolean().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required()
+        .optional(),
+      Driver: y
+        .mixed()
+        .oneOf([
+          y.string().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required()
+        .optional(),
+      Internal: y
+        .mixed()
+        .oneOf([
+          y.boolean().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required()
+        .optional(),
+      Attachable: y
+        .mixed()
+        .oneOf([
+          y.boolean().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required()
+        .optional(),
+      Ingress: y
+        .mixed()
+        .oneOf([
+          y.boolean().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required()
+        .optional(),
+      IPAM: y
+        .mixed()
+        .oneOf([IPAM, y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
+        .required()
+        .optional(),
+      EnableIPv6: y
+        .mixed()
+        .oneOf([
+          y.boolean().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required()
+        .optional(),
+      Options: y
+        .mixed()
+        .oneOf([
+          y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required()
+        .optional(),
+      Labels: y
+        .mixed()
+        .oneOf([
+          y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required()
+        .optional(),
+    }),
+  }),
   response: y.object({
     Id: y.string().required().optional(),
     Warning: y.string().required().optional(),
@@ -3141,6 +3405,10 @@ export const post_NetworkConnect = {
     path: y.object({
       id: y.string().required(),
     }),
+    body: y.object({
+      Container: y.string().required().optional(),
+      EndpointConfig: EndpointSettings.optional(),
+    }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -3152,6 +3420,10 @@ export const post_NetworkDisconnect = {
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
+    }),
+    body: y.object({
+      Container: y.string().required().optional(),
+      Force: y.boolean().required().optional(),
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -3207,6 +3479,7 @@ export const post_PluginPull = {
     header: y.object({
       "X-Registry-Auth": y.string().required().optional(),
     }),
+    body: y.array(PluginPrivilege),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -3282,6 +3555,7 @@ export const post_PluginUpgrade = {
     header: y.object({
       "X-Registry-Auth": y.string().required().optional(),
     }),
+    body: y.array(PluginPrivilege),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -3318,6 +3592,7 @@ export const post_PluginSet = {
     path: y.object({
       name: y.string().required(),
     }),
+    body: y.array(y.string().required()),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -3372,6 +3647,7 @@ export const post_NodeUpdate = {
     path: y.object({
       id: y.string().required(),
     }),
+    body: NodeSpec,
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -3388,7 +3664,18 @@ export type post_SwarmInit = typeof post_SwarmInit;
 export const post_SwarmInit = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/swarm/init" => value === "/swarm/init").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: y.object({
+      ListenAddr: y.string().required().optional(),
+      AdvertiseAddr: y.string().required().optional(),
+      DataPathAddr: y.string().required().optional(),
+      DataPathPort: y.number().required().optional(),
+      DefaultAddrPool: y.array(y.string().required()).optional(),
+      ForceNewCluster: y.boolean().required().optional(),
+      SubnetSize: y.number().required().optional(),
+      Spec: SwarmSpec.optional(),
+    }),
+  }),
   response: y.string().required(),
 };
 
@@ -3396,7 +3683,15 @@ export type post_SwarmJoin = typeof post_SwarmJoin;
 export const post_SwarmJoin = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/swarm/join" => value === "/swarm/join").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: y.object({
+      ListenAddr: y.string().required().optional(),
+      AdvertiseAddr: y.string().required().optional(),
+      DataPathAddr: y.string().required().optional(),
+      RemoteAddrs: y.array(y.string().required()).optional(),
+      JoinToken: y.string().required().optional(),
+    }),
+  }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
 
@@ -3423,6 +3718,7 @@ export const post_SwarmUpdate = {
       rotateManagerToken: y.boolean().required(),
       rotateManagerUnlockKey: y.boolean().required(),
     }),
+    body: SwarmSpec,
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -3441,7 +3737,11 @@ export type post_SwarmUnlock = typeof post_SwarmUnlock;
 export const post_SwarmUnlock = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/swarm/unlock" => value === "/swarm/unlock").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: y.object({
+      UnlockKey: y.string().required().optional(),
+    }),
+  }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
 
@@ -3466,6 +3766,7 @@ export const post_ServiceCreate = {
     header: y.object({
       "X-Registry-Auth": y.string().required().optional(),
     }),
+    body: y.mixed(/* unsupported */),
   }),
   response: y.object({
     ID: y.string().required().optional(),
@@ -3522,6 +3823,7 @@ export const post_ServiceUpdate = {
     header: y.object({
       "X-Registry-Auth": y.string().required().optional(),
     }),
+    body: y.mixed(/* unsupported */),
   }),
   response: ServiceUpdateResponse,
 };
@@ -3608,7 +3910,9 @@ export type post_SecretCreate = typeof post_SecretCreate;
 export const post_SecretCreate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/secrets/create" => value === "/secrets/create").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: y.mixed(/* unsupported */),
+  }),
   response: IdResponse,
 };
 
@@ -3647,6 +3951,7 @@ export const post_SecretUpdate = {
     path: y.object({
       id: y.string().required(),
     }),
+    body: SecretSpec,
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -3667,7 +3972,9 @@ export type post_ConfigCreate = typeof post_ConfigCreate;
 export const post_ConfigCreate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/configs/create" => value === "/configs/create").required(),
-  parameters: y.mixed((value): value is never => false).required(),
+  parameters: y.object({
+    body: y.mixed(/* unsupported */),
+  }),
   response: IdResponse,
 };
 
@@ -3706,6 +4013,7 @@ export const post_ConfigUpdate = {
     path: y.object({
       id: y.string().required(),
     }),
+    body: ConfigSpec,
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };

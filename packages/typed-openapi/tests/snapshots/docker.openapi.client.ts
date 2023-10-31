@@ -863,6 +863,8 @@ export namespace Endpoints {
     path: "/containers/create";
     parameters: {
       query: Partial<{ name: string; platform: string }>;
+
+      body: ContainerConfig & Partial<{ HostConfig: HostConfig; NetworkingConfig: NetworkingConfig }>;
     };
     response: Schemas.ContainerCreateResponse;
   };
@@ -1002,6 +1004,8 @@ export namespace Endpoints {
     path: "/containers/{id}/update";
     parameters: {
       path: { id: string };
+
+      body: Resources & Partial<{ RestartPolicy: RestartPolicy }>;
     };
     response: Partial<{ Warnings: Array<string> }>;
   };
@@ -1095,6 +1099,8 @@ export namespace Endpoints {
     parameters: {
       query: { path: string; noOverwriteDirNonDir: string; copyUIDGID: string };
       path: { id: string };
+
+      body: string;
     };
     response: unknown;
   };
@@ -1155,6 +1161,7 @@ export namespace Endpoints {
       }>;
 
       header: Partial<{ "Content-type": "application/x-tar"; "X-Registry-Config": string }>;
+      body: string;
     };
     response: unknown;
   };
@@ -1181,6 +1188,7 @@ export namespace Endpoints {
       }>;
 
       header: Partial<{ "X-Registry-Auth": string }>;
+      body: string;
     };
     response: unknown;
   };
@@ -1256,7 +1264,9 @@ export namespace Endpoints {
   export type post_SystemAuth = {
     method: "POST";
     path: "/auth";
-    parameters: never;
+    parameters: {
+      body: AuthConfig;
+    };
     response: unknown;
   };
   export type get_SystemInfo = {
@@ -1296,6 +1306,8 @@ export namespace Endpoints {
         pause: boolean;
         changes: string;
       }>;
+
+      body: ContainerConfig;
     };
     response: Schemas.IdResponse;
   };
@@ -1350,6 +1362,20 @@ export namespace Endpoints {
     path: "/containers/{id}/exec";
     parameters: {
       path: { id: string };
+
+      body: Partial<{
+        AttachStdin: boolean;
+        AttachStdout: boolean;
+        AttachStderr: boolean;
+        ConsoleSize: Array<number> | null;
+        DetachKeys: string;
+        Tty: boolean;
+        Env: Array<string>;
+        Cmd: Array<string>;
+        Privileged: boolean;
+        User: string;
+        WorkingDir: string;
+      }>;
     };
     response: Schemas.IdResponse;
   };
@@ -1358,6 +1384,8 @@ export namespace Endpoints {
     path: "/exec/{id}/start";
     parameters: {
       path: { id: string };
+
+      body: Partial<{ Detach: boolean; Tty: boolean; ConsoleSize: Array<number> | null }>;
     };
     response: unknown;
   };
@@ -1401,7 +1429,9 @@ export namespace Endpoints {
   export type post_VolumeCreate = {
     method: "POST";
     path: "/volumes/create";
-    parameters: never;
+    parameters: {
+      body: VolumeCreateOptions;
+    };
     response: Schemas.Volume;
   };
   export type get_VolumeInspect = {
@@ -1418,6 +1448,8 @@ export namespace Endpoints {
     parameters: {
       query: { version: number };
       path: { name: string };
+
+      body: Partial<{ Spec: ClusterVolumeSpec }>;
     };
     response: unknown;
   };
@@ -1466,7 +1498,20 @@ export namespace Endpoints {
   export type post_NetworkCreate = {
     method: "POST";
     path: "/networks/create";
-    parameters: never;
+    parameters: {
+      body: {
+        Name: string;
+        CheckDuplicate?: boolean | undefined;
+        Driver?: string | undefined;
+        Internal?: boolean | undefined;
+        Attachable?: boolean | undefined;
+        Ingress?: boolean | undefined;
+        IPAM?: IPAM | undefined;
+        EnableIPv6?: boolean | undefined;
+        Options?: unknown | undefined;
+        Labels?: unknown | undefined;
+      };
+    };
     response: Partial<{ Id: string; Warning: string }>;
   };
   export type post_NetworkConnect = {
@@ -1474,6 +1519,8 @@ export namespace Endpoints {
     path: "/networks/{id}/connect";
     parameters: {
       path: { id: string };
+
+      body: Partial<{ Container: string; EndpointConfig: EndpointSettings }>;
     };
     response: unknown;
   };
@@ -1482,6 +1529,8 @@ export namespace Endpoints {
     path: "/networks/{id}/disconnect";
     parameters: {
       path: { id: string };
+
+      body: Partial<{ Container: string; Force: boolean }>;
     };
     response: unknown;
   };
@@ -1516,6 +1565,7 @@ export namespace Endpoints {
       query: { remote: string; name: string };
 
       header: Partial<{ "X-Registry-Auth": string }>;
+      body: Array<PluginPrivilege>;
     };
     response: unknown;
   };
@@ -1561,6 +1611,7 @@ export namespace Endpoints {
       query: { remote: string };
       path: { name: string };
       header: Partial<{ "X-Registry-Auth": string }>;
+      body: Array<PluginPrivilege>;
     };
     response: unknown;
   };
@@ -1585,6 +1636,8 @@ export namespace Endpoints {
     path: "/plugins/{name}/set";
     parameters: {
       path: { name: string };
+
+      body: Array<string>;
     };
     response: unknown;
   };
@@ -1619,6 +1672,8 @@ export namespace Endpoints {
     parameters: {
       query: { version: number };
       path: { id: string };
+
+      body: NodeSpec;
     };
     response: unknown;
   };
@@ -1631,13 +1686,32 @@ export namespace Endpoints {
   export type post_SwarmInit = {
     method: "POST";
     path: "/swarm/init";
-    parameters: never;
+    parameters: {
+      body: Partial<{
+        ListenAddr: string;
+        AdvertiseAddr: string;
+        DataPathAddr: string;
+        DataPathPort: number;
+        DefaultAddrPool: Array<string>;
+        ForceNewCluster: boolean;
+        SubnetSize: number;
+        Spec: SwarmSpec;
+      }>;
+    };
     response: string;
   };
   export type post_SwarmJoin = {
     method: "POST";
     path: "/swarm/join";
-    parameters: never;
+    parameters: {
+      body: Partial<{
+        ListenAddr: string;
+        AdvertiseAddr: string;
+        DataPathAddr: string;
+        RemoteAddrs: Array<string>;
+        JoinToken: string;
+      }>;
+    };
     response: unknown;
   };
   export type post_SwarmLeave = {
@@ -1658,6 +1732,8 @@ export namespace Endpoints {
         rotateManagerToken: boolean;
         rotateManagerUnlockKey: boolean;
       };
+
+      body: SwarmSpec;
     };
     response: unknown;
   };
@@ -1670,7 +1746,9 @@ export namespace Endpoints {
   export type post_SwarmUnlock = {
     method: "POST";
     path: "/swarm/unlock";
-    parameters: never;
+    parameters: {
+      body: Partial<{ UnlockKey: string }>;
+    };
     response: unknown;
   };
   export type get_ServiceList = {
@@ -1686,6 +1764,7 @@ export namespace Endpoints {
     path: "/services/create";
     parameters: {
       header: Partial<{ "X-Registry-Auth": string }>;
+      body: ServiceSpec & unknown;
     };
     response: Partial<{ ID: string; Warning: string }>;
   };
@@ -1713,6 +1792,7 @@ export namespace Endpoints {
       query: { version: number; registryAuthFrom: "spec" | "previous-spec"; rollback: string };
       path: { id: string };
       header: Partial<{ "X-Registry-Auth": string }>;
+      body: ServiceSpec & unknown;
     };
     response: Schemas.ServiceUpdateResponse;
   };
@@ -1777,7 +1857,9 @@ export namespace Endpoints {
   export type post_SecretCreate = {
     method: "POST";
     path: "/secrets/create";
-    parameters: never;
+    parameters: {
+      body: SecretSpec & unknown;
+    };
     response: Schemas.IdResponse;
   };
   export type get_SecretInspect = {
@@ -1802,6 +1884,8 @@ export namespace Endpoints {
     parameters: {
       query: { version: number };
       path: { id: string };
+
+      body: SecretSpec;
     };
     response: unknown;
   };
@@ -1816,7 +1900,9 @@ export namespace Endpoints {
   export type post_ConfigCreate = {
     method: "POST";
     path: "/configs/create";
-    parameters: never;
+    parameters: {
+      body: ConfigSpec & unknown;
+    };
     response: Schemas.IdResponse;
   };
   export type get_ConfigInspect = {
@@ -1841,6 +1927,8 @@ export namespace Endpoints {
     parameters: {
       query: { version: number };
       path: { id: string };
+
+      body: ConfigSpec;
     };
     response: unknown;
   };

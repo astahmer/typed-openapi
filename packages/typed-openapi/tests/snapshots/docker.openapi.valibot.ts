@@ -1670,6 +1670,13 @@ export const post_ContainerCreate = v.object({
       name: v.optional(v.string()),
       platform: v.optional(v.string()),
     }),
+    body: v.merge([
+      ContainerConfig,
+      v.object({
+        HostConfig: v.optional(HostConfig),
+        NetworkingConfig: v.optional(NetworkingConfig),
+      }),
+    ]),
   }),
   response: ContainerCreateResponse,
 });
@@ -1880,6 +1887,12 @@ export const post_ContainerUpdate = v.object({
     path: v.object({
       id: v.string(),
     }),
+    body: v.merge([
+      Resources,
+      v.object({
+        RestartPolicy: v.optional(RestartPolicy),
+      }),
+    ]),
   }),
   response: v.object({
     Warnings: v.optional(v.array(v.string())),
@@ -2025,6 +2038,7 @@ export const put_PutContainerArchive = v.object({
     path: v.object({
       id: v.string(),
     }),
+    body: v.string(),
   }),
   response: v.unknown(),
 });
@@ -2109,6 +2123,7 @@ export const post_ImageBuild = v.object({
       "Content-type": v.optional(v.literal("application/x-tar")),
       "X-Registry-Config": v.optional(v.string()),
     }),
+    body: v.string(),
   }),
   response: v.unknown(),
 });
@@ -2147,6 +2162,7 @@ export const post_ImageCreate = v.object({
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
     }),
+    body: v.string(),
   }),
   response: v.unknown(),
 });
@@ -2275,7 +2291,9 @@ export type post_SystemAuth = v.Output<typeof post_SystemAuth>;
 export const post_SystemAuth = v.object({
   method: v.literal("POST"),
   path: v.literal("/auth"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: AuthConfig,
+  }),
   response: v.unknown(),
 });
 
@@ -2325,6 +2343,7 @@ export const post_ImageCommit = v.object({
       pause: v.optional(v.boolean()),
       changes: v.optional(v.string()),
     }),
+    body: ContainerConfig,
   }),
   response: IdResponse,
 });
@@ -2407,6 +2426,19 @@ export const post_ContainerExec = v.object({
     path: v.object({
       id: v.string(),
     }),
+    body: v.object({
+      AttachStdin: v.optional(v.boolean()),
+      AttachStdout: v.optional(v.boolean()),
+      AttachStderr: v.optional(v.boolean()),
+      ConsoleSize: v.optional(v.union([v.array(v.number()), v.any(/* unsupported */)])),
+      DetachKeys: v.optional(v.string()),
+      Tty: v.optional(v.boolean()),
+      Env: v.optional(v.array(v.string())),
+      Cmd: v.optional(v.array(v.string())),
+      Privileged: v.optional(v.boolean()),
+      User: v.optional(v.string()),
+      WorkingDir: v.optional(v.string()),
+    }),
   }),
   response: IdResponse,
 });
@@ -2418,6 +2450,11 @@ export const post_ExecStart = v.object({
   parameters: v.object({
     path: v.object({
       id: v.string(),
+    }),
+    body: v.object({
+      Detach: v.optional(v.boolean()),
+      Tty: v.optional(v.boolean()),
+      ConsoleSize: v.optional(v.union([v.array(v.number()), v.any(/* unsupported */)])),
     }),
   }),
   response: v.unknown(),
@@ -2479,7 +2516,9 @@ export type post_VolumeCreate = v.Output<typeof post_VolumeCreate>;
 export const post_VolumeCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/volumes/create"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: VolumeCreateOptions,
+  }),
   response: Volume,
 });
 
@@ -2505,6 +2544,9 @@ export const put_VolumeUpdate = v.object({
     }),
     path: v.object({
       name: v.string(),
+    }),
+    body: v.object({
+      Spec: v.optional(ClusterVolumeSpec),
     }),
   }),
   response: v.unknown(),
@@ -2584,7 +2626,20 @@ export type post_NetworkCreate = v.Output<typeof post_NetworkCreate>;
 export const post_NetworkCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/networks/create"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: v.object({
+      Name: v.string(),
+      CheckDuplicate: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
+      Driver: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
+      Internal: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
+      Attachable: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
+      Ingress: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
+      IPAM: v.optional(v.union([IPAM, v.any(/* unsupported */)])),
+      EnableIPv6: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
+      Options: v.optional(v.union([v.unknown(), v.any(/* unsupported */)])),
+      Labels: v.optional(v.union([v.unknown(), v.any(/* unsupported */)])),
+    }),
+  }),
   response: v.object({
     Id: v.optional(v.string()),
     Warning: v.optional(v.string()),
@@ -2599,6 +2654,10 @@ export const post_NetworkConnect = v.object({
     path: v.object({
       id: v.string(),
     }),
+    body: v.object({
+      Container: v.optional(v.string()),
+      EndpointConfig: v.optional(EndpointSettings),
+    }),
   }),
   response: v.unknown(),
 });
@@ -2610,6 +2669,10 @@ export const post_NetworkDisconnect = v.object({
   parameters: v.object({
     path: v.object({
       id: v.string(),
+    }),
+    body: v.object({
+      Container: v.optional(v.string()),
+      Force: v.optional(v.boolean()),
     }),
   }),
   response: v.unknown(),
@@ -2665,6 +2728,7 @@ export const post_PluginPull = v.object({
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
     }),
+    body: v.array(PluginPrivilege),
   }),
   response: v.unknown(),
 });
@@ -2740,6 +2804,7 @@ export const post_PluginUpgrade = v.object({
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
     }),
+    body: v.array(PluginPrivilege),
   }),
   response: v.unknown(),
 });
@@ -2776,6 +2841,7 @@ export const post_PluginSet = v.object({
     path: v.object({
       name: v.string(),
     }),
+    body: v.array(v.string()),
   }),
   response: v.unknown(),
 });
@@ -2830,6 +2896,7 @@ export const post_NodeUpdate = v.object({
     path: v.object({
       id: v.string(),
     }),
+    body: NodeSpec,
   }),
   response: v.unknown(),
 });
@@ -2846,7 +2913,18 @@ export type post_SwarmInit = v.Output<typeof post_SwarmInit>;
 export const post_SwarmInit = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/init"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: v.object({
+      ListenAddr: v.optional(v.string()),
+      AdvertiseAddr: v.optional(v.string()),
+      DataPathAddr: v.optional(v.string()),
+      DataPathPort: v.optional(v.number()),
+      DefaultAddrPool: v.optional(v.array(v.string())),
+      ForceNewCluster: v.optional(v.boolean()),
+      SubnetSize: v.optional(v.number()),
+      Spec: v.optional(SwarmSpec),
+    }),
+  }),
   response: v.string(),
 });
 
@@ -2854,7 +2932,15 @@ export type post_SwarmJoin = v.Output<typeof post_SwarmJoin>;
 export const post_SwarmJoin = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/join"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: v.object({
+      ListenAddr: v.optional(v.string()),
+      AdvertiseAddr: v.optional(v.string()),
+      DataPathAddr: v.optional(v.string()),
+      RemoteAddrs: v.optional(v.array(v.string())),
+      JoinToken: v.optional(v.string()),
+    }),
+  }),
   response: v.unknown(),
 });
 
@@ -2881,6 +2967,7 @@ export const post_SwarmUpdate = v.object({
       rotateManagerToken: v.boolean(),
       rotateManagerUnlockKey: v.boolean(),
     }),
+    body: SwarmSpec,
   }),
   response: v.unknown(),
 });
@@ -2899,7 +2986,11 @@ export type post_SwarmUnlock = v.Output<typeof post_SwarmUnlock>;
 export const post_SwarmUnlock = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/unlock"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: v.object({
+      UnlockKey: v.optional(v.string()),
+    }),
+  }),
   response: v.unknown(),
 });
 
@@ -2924,6 +3015,7 @@ export const post_ServiceCreate = v.object({
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
     }),
+    body: v.merge([ServiceSpec, v.unknown()]),
   }),
   response: v.object({
     ID: v.optional(v.string()),
@@ -2974,6 +3066,7 @@ export const post_ServiceUpdate = v.object({
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
     }),
+    body: v.merge([ServiceSpec, v.unknown()]),
   }),
   response: ServiceUpdateResponse,
 });
@@ -3060,7 +3153,9 @@ export type post_SecretCreate = v.Output<typeof post_SecretCreate>;
 export const post_SecretCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/secrets/create"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: v.merge([SecretSpec, v.unknown()]),
+  }),
   response: IdResponse,
 });
 
@@ -3099,6 +3194,7 @@ export const post_SecretUpdate = v.object({
     path: v.object({
       id: v.string(),
     }),
+    body: SecretSpec,
   }),
   response: v.unknown(),
 });
@@ -3119,7 +3215,9 @@ export type post_ConfigCreate = v.Output<typeof post_ConfigCreate>;
 export const post_ConfigCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/configs/create"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: v.merge([ConfigSpec, v.unknown()]),
+  }),
   response: IdResponse,
 });
 
@@ -3158,6 +3256,7 @@ export const post_ConfigUpdate = v.object({
     path: v.object({
       id: v.string(),
     }),
+    body: ConfigSpec,
   }),
   response: v.unknown(),
 });

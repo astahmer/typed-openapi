@@ -1748,6 +1748,13 @@ export const post_ContainerCreate = t.type({
       name: t.union([t.undefined, t.string]),
       platform: t.union([t.undefined, t.string]),
     }),
+    body: t.intersection([
+      ContainerConfig,
+      t.type({
+        HostConfig: t.union([t.undefined, HostConfig]),
+        NetworkingConfig: t.union([t.undefined, NetworkingConfig]),
+      }),
+    ]),
   }),
   response: ContainerCreateResponse,
 });
@@ -1958,6 +1965,12 @@ export const post_ContainerUpdate = t.type({
     path: t.type({
       id: t.string,
     }),
+    body: t.intersection([
+      Resources,
+      t.type({
+        RestartPolicy: t.union([t.undefined, RestartPolicy]),
+      }),
+    ]),
   }),
   response: t.type({
     Warnings: t.union([t.undefined, t.array(t.string)]),
@@ -2106,6 +2119,7 @@ export const put_PutContainerArchive = t.type({
     path: t.type({
       id: t.string,
     }),
+    body: t.string,
   }),
   response: t.unknown,
 });
@@ -2190,6 +2204,7 @@ export const post_ImageBuild = t.type({
       "Content-type": t.union([t.undefined, t.literal("application/x-tar")]),
       "X-Registry-Config": t.union([t.undefined, t.string]),
     }),
+    body: t.string,
   }),
   response: t.unknown,
 });
@@ -2228,6 +2243,7 @@ export const post_ImageCreate = t.type({
     header: t.type({
       "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
+    body: t.string,
   }),
   response: t.unknown,
 });
@@ -2356,7 +2372,9 @@ export type post_SystemAuth = t.TypeOf<typeof post_SystemAuth>;
 export const post_SystemAuth = t.type({
   method: t.literal("POST"),
   path: t.literal("/auth"),
-  parameters: t.never,
+  parameters: t.type({
+    body: AuthConfig,
+  }),
   response: t.unknown,
 });
 
@@ -2406,6 +2424,7 @@ export const post_ImageCommit = t.type({
       pause: t.union([t.undefined, t.boolean]),
       changes: t.union([t.undefined, t.string]),
     }),
+    body: ContainerConfig,
   }),
   response: IdResponse,
 });
@@ -2489,6 +2508,19 @@ export const post_ContainerExec = t.type({
     path: t.type({
       id: t.string,
     }),
+    body: t.type({
+      AttachStdin: t.union([t.undefined, t.boolean]),
+      AttachStdout: t.union([t.undefined, t.boolean]),
+      AttachStderr: t.union([t.undefined, t.boolean]),
+      ConsoleSize: t.union([t.undefined, t.union([t.array(t.number), t.null])]),
+      DetachKeys: t.union([t.undefined, t.string]),
+      Tty: t.union([t.undefined, t.boolean]),
+      Env: t.union([t.undefined, t.array(t.string)]),
+      Cmd: t.union([t.undefined, t.array(t.string)]),
+      Privileged: t.union([t.undefined, t.boolean]),
+      User: t.union([t.undefined, t.string]),
+      WorkingDir: t.union([t.undefined, t.string]),
+    }),
   }),
   response: IdResponse,
 });
@@ -2500,6 +2532,11 @@ export const post_ExecStart = t.type({
   parameters: t.type({
     path: t.type({
       id: t.string,
+    }),
+    body: t.type({
+      Detach: t.union([t.undefined, t.boolean]),
+      Tty: t.union([t.undefined, t.boolean]),
+      ConsoleSize: t.union([t.undefined, t.union([t.array(t.number), t.null])]),
     }),
   }),
   response: t.unknown,
@@ -2561,7 +2598,9 @@ export type post_VolumeCreate = t.TypeOf<typeof post_VolumeCreate>;
 export const post_VolumeCreate = t.type({
   method: t.literal("POST"),
   path: t.literal("/volumes/create"),
-  parameters: t.never,
+  parameters: t.type({
+    body: VolumeCreateOptions,
+  }),
   response: Volume,
 });
 
@@ -2587,6 +2626,9 @@ export const put_VolumeUpdate = t.type({
     }),
     path: t.type({
       name: t.string,
+    }),
+    body: t.type({
+      Spec: t.union([t.undefined, ClusterVolumeSpec]),
     }),
   }),
   response: t.unknown,
@@ -2666,7 +2708,20 @@ export type post_NetworkCreate = t.TypeOf<typeof post_NetworkCreate>;
 export const post_NetworkCreate = t.type({
   method: t.literal("POST"),
   path: t.literal("/networks/create"),
-  parameters: t.never,
+  parameters: t.type({
+    body: t.type({
+      Name: t.string,
+      CheckDuplicate: t.union([t.undefined, t.union([t.boolean, t.undefined])]),
+      Driver: t.union([t.undefined, t.union([t.string, t.undefined])]),
+      Internal: t.union([t.undefined, t.union([t.boolean, t.undefined])]),
+      Attachable: t.union([t.undefined, t.union([t.boolean, t.undefined])]),
+      Ingress: t.union([t.undefined, t.union([t.boolean, t.undefined])]),
+      IPAM: t.union([t.undefined, t.union([IPAM, t.undefined])]),
+      EnableIPv6: t.union([t.undefined, t.union([t.boolean, t.undefined])]),
+      Options: t.union([t.undefined, t.union([t.unknown, t.undefined])]),
+      Labels: t.union([t.undefined, t.union([t.unknown, t.undefined])]),
+    }),
+  }),
   response: t.type({
     Id: t.union([t.undefined, t.string]),
     Warning: t.union([t.undefined, t.string]),
@@ -2681,6 +2736,10 @@ export const post_NetworkConnect = t.type({
     path: t.type({
       id: t.string,
     }),
+    body: t.type({
+      Container: t.union([t.undefined, t.string]),
+      EndpointConfig: t.union([t.undefined, EndpointSettings]),
+    }),
   }),
   response: t.unknown,
 });
@@ -2692,6 +2751,10 @@ export const post_NetworkDisconnect = t.type({
   parameters: t.type({
     path: t.type({
       id: t.string,
+    }),
+    body: t.type({
+      Container: t.union([t.undefined, t.string]),
+      Force: t.union([t.undefined, t.boolean]),
     }),
   }),
   response: t.unknown,
@@ -2747,6 +2810,7 @@ export const post_PluginPull = t.type({
     header: t.type({
       "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
+    body: t.array(PluginPrivilege),
   }),
   response: t.unknown,
 });
@@ -2822,6 +2886,7 @@ export const post_PluginUpgrade = t.type({
     header: t.type({
       "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
+    body: t.array(PluginPrivilege),
   }),
   response: t.unknown,
 });
@@ -2858,6 +2923,7 @@ export const post_PluginSet = t.type({
     path: t.type({
       name: t.string,
     }),
+    body: t.array(t.string),
   }),
   response: t.unknown,
 });
@@ -2912,6 +2978,7 @@ export const post_NodeUpdate = t.type({
     path: t.type({
       id: t.string,
     }),
+    body: NodeSpec,
   }),
   response: t.unknown,
 });
@@ -2928,7 +2995,18 @@ export type post_SwarmInit = t.TypeOf<typeof post_SwarmInit>;
 export const post_SwarmInit = t.type({
   method: t.literal("POST"),
   path: t.literal("/swarm/init"),
-  parameters: t.never,
+  parameters: t.type({
+    body: t.type({
+      ListenAddr: t.union([t.undefined, t.string]),
+      AdvertiseAddr: t.union([t.undefined, t.string]),
+      DataPathAddr: t.union([t.undefined, t.string]),
+      DataPathPort: t.union([t.undefined, t.number]),
+      DefaultAddrPool: t.union([t.undefined, t.array(t.string)]),
+      ForceNewCluster: t.union([t.undefined, t.boolean]),
+      SubnetSize: t.union([t.undefined, t.number]),
+      Spec: t.union([t.undefined, SwarmSpec]),
+    }),
+  }),
   response: t.string,
 });
 
@@ -2936,7 +3014,15 @@ export type post_SwarmJoin = t.TypeOf<typeof post_SwarmJoin>;
 export const post_SwarmJoin = t.type({
   method: t.literal("POST"),
   path: t.literal("/swarm/join"),
-  parameters: t.never,
+  parameters: t.type({
+    body: t.type({
+      ListenAddr: t.union([t.undefined, t.string]),
+      AdvertiseAddr: t.union([t.undefined, t.string]),
+      DataPathAddr: t.union([t.undefined, t.string]),
+      RemoteAddrs: t.union([t.undefined, t.array(t.string)]),
+      JoinToken: t.union([t.undefined, t.string]),
+    }),
+  }),
   response: t.unknown,
 });
 
@@ -2963,6 +3049,7 @@ export const post_SwarmUpdate = t.type({
       rotateManagerToken: t.boolean,
       rotateManagerUnlockKey: t.boolean,
     }),
+    body: SwarmSpec,
   }),
   response: t.unknown,
 });
@@ -2981,7 +3068,11 @@ export type post_SwarmUnlock = t.TypeOf<typeof post_SwarmUnlock>;
 export const post_SwarmUnlock = t.type({
   method: t.literal("POST"),
   path: t.literal("/swarm/unlock"),
-  parameters: t.never,
+  parameters: t.type({
+    body: t.type({
+      UnlockKey: t.union([t.undefined, t.string]),
+    }),
+  }),
   response: t.unknown,
 });
 
@@ -3006,6 +3097,7 @@ export const post_ServiceCreate = t.type({
     header: t.type({
       "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
+    body: t.intersection([ServiceSpec, t.unknown]),
   }),
   response: t.type({
     ID: t.union([t.undefined, t.string]),
@@ -3056,6 +3148,7 @@ export const post_ServiceUpdate = t.type({
     header: t.type({
       "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
+    body: t.intersection([ServiceSpec, t.unknown]),
   }),
   response: ServiceUpdateResponse,
 });
@@ -3142,7 +3235,9 @@ export type post_SecretCreate = t.TypeOf<typeof post_SecretCreate>;
 export const post_SecretCreate = t.type({
   method: t.literal("POST"),
   path: t.literal("/secrets/create"),
-  parameters: t.never,
+  parameters: t.type({
+    body: t.intersection([SecretSpec, t.unknown]),
+  }),
   response: IdResponse,
 });
 
@@ -3181,6 +3276,7 @@ export const post_SecretUpdate = t.type({
     path: t.type({
       id: t.string,
     }),
+    body: SecretSpec,
   }),
   response: t.unknown,
 });
@@ -3201,7 +3297,9 @@ export type post_ConfigCreate = t.TypeOf<typeof post_ConfigCreate>;
 export const post_ConfigCreate = t.type({
   method: t.literal("POST"),
   path: t.literal("/configs/create"),
-  parameters: t.never,
+  parameters: t.type({
+    body: t.intersection([ConfigSpec, t.unknown]),
+  }),
   response: IdResponse,
 });
 
@@ -3240,6 +3338,7 @@ export const post_ConfigUpdate = t.type({
     path: t.type({
       id: t.string,
     }),
+    body: ConfigSpec,
   }),
   response: t.unknown,
 });

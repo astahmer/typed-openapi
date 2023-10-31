@@ -75,7 +75,9 @@ export type put_UpdatePet = v.Output<typeof put_UpdatePet>;
 export const put_UpdatePet = v.object({
   method: v.literal("PUT"),
   path: v.literal("/pet"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: Pet,
+  }),
   response: Pet,
 });
 
@@ -83,7 +85,9 @@ export type post_AddPet = v.Output<typeof post_AddPet>;
 export const post_AddPet = v.object({
   method: v.literal("POST"),
   path: v.literal("/pet"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: Pet,
+  }),
   response: Pet,
 });
 
@@ -165,6 +169,7 @@ export const post_UploadFile = v.object({
     path: v.object({
       petId: v.number(),
     }),
+    body: v.string(),
   }),
   response: ApiResponse,
 });
@@ -181,7 +186,9 @@ export type post_PlaceOrder = v.Output<typeof post_PlaceOrder>;
 export const post_PlaceOrder = v.object({
   method: v.literal("POST"),
   path: v.literal("/store/order"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: Order,
+  }),
   response: Order,
 });
 
@@ -213,7 +220,9 @@ export type post_CreateUser = v.Output<typeof post_CreateUser>;
 export const post_CreateUser = v.object({
   method: v.literal("POST"),
   path: v.literal("/user"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: User,
+  }),
   response: User,
 });
 
@@ -221,7 +230,9 @@ export type post_CreateUsersWithListInput = v.Output<typeof post_CreateUsersWith
 export const post_CreateUsersWithListInput = v.object({
   method: v.literal("POST"),
   path: v.literal("/user/createWithList"),
-  parameters: v.never(),
+  parameters: v.object({
+    body: v.array(User),
+  }),
   response: v.unknown(),
 });
 
@@ -266,6 +277,7 @@ export const put_UpdateUser = v.object({
     path: v.object({
       username: v.string(),
     }),
+    body: User,
   }),
   response: v.unknown(),
 });

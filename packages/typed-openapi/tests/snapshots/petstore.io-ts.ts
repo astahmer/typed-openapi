@@ -76,7 +76,9 @@ export type put_UpdatePet = t.TypeOf<typeof put_UpdatePet>;
 export const put_UpdatePet = t.type({
   method: t.literal("PUT"),
   path: t.literal("/pet"),
-  parameters: t.never,
+  parameters: t.type({
+    body: Pet,
+  }),
   response: Pet,
 });
 
@@ -84,7 +86,9 @@ export type post_AddPet = t.TypeOf<typeof post_AddPet>;
 export const post_AddPet = t.type({
   method: t.literal("POST"),
   path: t.literal("/pet"),
-  parameters: t.never,
+  parameters: t.type({
+    body: Pet,
+  }),
   response: Pet,
 });
 
@@ -166,6 +170,7 @@ export const post_UploadFile = t.type({
     path: t.type({
       petId: t.number,
     }),
+    body: t.string,
   }),
   response: ApiResponse,
 });
@@ -182,7 +187,9 @@ export type post_PlaceOrder = t.TypeOf<typeof post_PlaceOrder>;
 export const post_PlaceOrder = t.type({
   method: t.literal("POST"),
   path: t.literal("/store/order"),
-  parameters: t.never,
+  parameters: t.type({
+    body: Order,
+  }),
   response: Order,
 });
 
@@ -214,7 +221,9 @@ export type post_CreateUser = t.TypeOf<typeof post_CreateUser>;
 export const post_CreateUser = t.type({
   method: t.literal("POST"),
   path: t.literal("/user"),
-  parameters: t.never,
+  parameters: t.type({
+    body: User,
+  }),
   response: User,
 });
 
@@ -222,7 +231,9 @@ export type post_CreateUsersWithListInput = t.TypeOf<typeof post_CreateUsersWith
 export const post_CreateUsersWithListInput = t.type({
   method: t.literal("POST"),
   path: t.literal("/user/createWithList"),
-  parameters: t.never,
+  parameters: t.type({
+    body: t.array(User),
+  }),
   response: t.unknown,
 });
 
@@ -267,6 +278,7 @@ export const put_UpdateUser = t.type({
     path: t.type({
       username: t.string,
     }),
+    body: User,
   }),
   response: t.unknown,
 });
