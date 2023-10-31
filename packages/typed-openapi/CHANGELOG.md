@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 0.2.0
+
+### Minor Changes
+
+- 91a850a: Fixed parameter.body on post endpoints - #8.
+
 ## 0.1.5
 
 ### Patch Changes
