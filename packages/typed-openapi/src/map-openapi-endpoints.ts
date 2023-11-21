@@ -103,17 +103,16 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
         endpoint.parameters = Object.keys(params).length ? (params as any as EndpointParameters) : undefined;
       }
 
-      let responseObject;
-      // Match the default response or first 2xx-3xx response found
-      if (operation.responses.default) {
+      // Match the first 2xx-3xx response found, or fallback to default one otherwise
+      let responseObject: ResponseObject | undefined;
+      Object.entries(operation.responses).map(([status, responseOrRef]) => {
+        const statusCode = Number(status);
+        if (statusCode >= 200 && statusCode < 300) {
+          responseObject = refs.unwrap<ResponseObject>(responseOrRef);
+        }
+      });
+      if (!responseObject && operation.responses.default) {
         responseObject = refs.unwrap(operation.responses.default);
-      } else {
-        Object.entries(operation.responses).map(([status, responseOrRef]) => {
-          const statusCode = Number(status);
-          if (statusCode >= 200 && statusCode < 300) {
-            responseObject = refs.unwrap<ResponseObject>(responseOrRef);
-          }
-        });
       }
 
       const content = responseObject?.content;

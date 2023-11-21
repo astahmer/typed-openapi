@@ -265,7 +265,7 @@ export const post_CreateUsersWithListInput = {
   parameters: y.object({
     body: y.array(User),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  response: User,
 };
 
 export type get_LoginUser = typeof get_LoginUser;

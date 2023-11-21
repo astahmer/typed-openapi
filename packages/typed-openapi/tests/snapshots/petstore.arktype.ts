@@ -187,7 +187,7 @@ export const types = scope({
     parameters: {
       body: "User[]",
     },
-    response: "unknown",
+    response: "User",
   },
   get_LoginUser: {
     method: '"GET"',

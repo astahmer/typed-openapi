@@ -234,7 +234,7 @@ export const post_CreateUsersWithListInput = t.type({
   parameters: t.type({
     body: t.array(User),
   }),
-  response: t.unknown,
+  response: User,
 });
 
 export type get_LoginUser = t.TypeOf<typeof get_LoginUser>;

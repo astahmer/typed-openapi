@@ -257,7 +257,7 @@ export const post_CreateUsersWithListInput = Type.Object({
   parameters: Type.Object({
     body: Type.Array(User),
   }),
-  response: Type.Unknown(),
+  response: User,
 });
 
 export type get_LoginUser = Static<typeof get_LoginUser>;

@@ -233,7 +233,7 @@ export const post_CreateUsersWithListInput = v.object({
   parameters: v.object({
     body: v.array(User),
   }),
-  response: v.unknown(),
+  response: User,
 });
 
 export type get_LoginUser = v.Output<typeof get_LoginUser>;
