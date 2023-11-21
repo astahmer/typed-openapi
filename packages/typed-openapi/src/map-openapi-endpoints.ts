@@ -35,7 +35,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
 
       // Build a list of parameters by type + fill an object with all of them
       const lists = { query: [] as ParameterObject[], path: [] as ParameterObject[], header: [] as ParameterObject[] };
-      const paramObjects = (operation.parameters ?? []).reduce(
+      const paramObjects = [...(pathItemObj.parameters ?? []), ...(operation.parameters ?? [])].reduce(
         (acc, paramOrRef) => {
           const param = refs.unwrap(paramOrRef);
           const schema = openApiSchemaToTs({ schema: refs.unwrap(param.schema ?? {}), ctx });
