@@ -2196,8 +2196,8 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user/createWithList",
             "response": {
-              "type": "keyword",
-              "value": "unknown",
+              "type": "ref",
+              "value": "User",
             },
           },
           {

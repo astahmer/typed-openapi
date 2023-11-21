@@ -228,7 +228,7 @@ export const post_CreateUsersWithListInput = {
   parameters: z.object({
     body: z.array(User),
   }),
-  response: z.unknown(),
+  response: User,
 };
 
 export type get_LoginUser = typeof get_LoginUser;

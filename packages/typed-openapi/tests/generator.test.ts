@@ -161,7 +161,7 @@ describe("generator", () => {
           parameters: {
             body: Array<User>;
           };
-          response: unknown;
+          response: Schemas.User;
         };
         export type get_LoginUser = {
           method: "GET";
