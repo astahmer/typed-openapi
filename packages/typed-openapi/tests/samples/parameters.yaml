@@ -1,0 +1,27 @@
+# https://swagger.io/docs/specification/describing-parameters/#common-for-path
+openapi: 3.0.3
+info:
+  title: Spec with both path-level and operation-level parameters
+paths:
+  /users/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: The user ID.
+    # GET/users/{id}?metadata=true
+    get:
+      summary: Gets a user by ID
+      # Note we only define the query parameter, because the {id} is defined at the path level.
+      parameters:
+        - in: query
+          name: metadata
+          schema:
+            type: boolean
+          required: false
+          description: If true, the endpoint returns only the user metadata.
+      responses:
+        '200':
+          description: OK
