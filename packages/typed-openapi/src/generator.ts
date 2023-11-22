@@ -2,7 +2,7 @@ import { capitalize, groupBy } from "pastable/server";
 import { Box } from "./box";
 import { prettify } from "./format";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints";
-import { AnyBox, AnyBoxDef, BoxRef } from "./types";
+import { AnyBox, AnyBoxDef } from "./types";
 import * as Codegen from "@sinclair/typebox-codegen";
 import { match } from "ts-pattern";
 import { type } from "arktype";
