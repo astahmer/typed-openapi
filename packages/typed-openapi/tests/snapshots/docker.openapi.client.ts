@@ -864,7 +864,8 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ name: string; platform: string }>;
 
-      body: ContainerConfig & Partial<{ HostConfig: HostConfig; NetworkingConfig: NetworkingConfig }>;
+      body: Schemas.ContainerConfig &
+        Partial<{ HostConfig: Schemas.HostConfig; NetworkingConfig: Schemas.NetworkingConfig }>;
     };
     response: Schemas.ContainerCreateResponse;
   };
@@ -1005,7 +1006,7 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
 
-      body: Resources & Partial<{ RestartPolicy: RestartPolicy }>;
+      body: Schemas.Resources & Partial<{ RestartPolicy: Schemas.RestartPolicy }>;
     };
     response: Partial<{ Warnings: Array<string> }>;
   };
@@ -1265,7 +1266,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/auth";
     parameters: {
-      body: AuthConfig;
+      body: Schemas.AuthConfig;
     };
     response: unknown;
   };
@@ -1307,7 +1308,7 @@ export namespace Endpoints {
         changes: string;
       }>;
 
-      body: ContainerConfig;
+      body: Schemas.ContainerConfig;
     };
     response: Schemas.IdResponse;
   };
@@ -1367,7 +1368,7 @@ export namespace Endpoints {
         AttachStdin: boolean;
         AttachStdout: boolean;
         AttachStderr: boolean;
-        ConsoleSize: Array<number> | null;
+        ConsoleSize: Array<number> | Schemas.null;
         DetachKeys: string;
         Tty: boolean;
         Env: Array<string>;
@@ -1385,7 +1386,7 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
 
-      body: Partial<{ Detach: boolean; Tty: boolean; ConsoleSize: Array<number> | null }>;
+      body: Partial<{ Detach: boolean; Tty: boolean; ConsoleSize: Array<number> | Schemas.null }>;
     };
     response: unknown;
   };
@@ -1430,7 +1431,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/volumes/create";
     parameters: {
-      body: VolumeCreateOptions;
+      body: Schemas.VolumeCreateOptions;
     };
     response: Schemas.Volume;
   };
@@ -1449,7 +1450,7 @@ export namespace Endpoints {
       query: { version: number };
       path: { name: string };
 
-      body: Partial<{ Spec: ClusterVolumeSpec }>;
+      body: Partial<{ Spec: Schemas.ClusterVolumeSpec }>;
     };
     response: unknown;
   };
@@ -1506,7 +1507,7 @@ export namespace Endpoints {
         Internal?: boolean | undefined;
         Attachable?: boolean | undefined;
         Ingress?: boolean | undefined;
-        IPAM?: IPAM | undefined;
+        IPAM?: Schemas.IPAM | undefined;
         EnableIPv6?: boolean | undefined;
         Options?: unknown | undefined;
         Labels?: unknown | undefined;
@@ -1520,7 +1521,7 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
 
-      body: Partial<{ Container: string; EndpointConfig: EndpointSettings }>;
+      body: Partial<{ Container: string; EndpointConfig: Schemas.EndpointSettings }>;
     };
     response: unknown;
   };
@@ -1565,7 +1566,7 @@ export namespace Endpoints {
       query: { remote: string; name: string };
 
       header: Partial<{ "X-Registry-Auth": string }>;
-      body: Array<PluginPrivilege>;
+      body: Array<Schemas.PluginPrivilege>;
     };
     response: unknown;
   };
@@ -1611,7 +1612,7 @@ export namespace Endpoints {
       query: { remote: string };
       path: { name: string };
       header: Partial<{ "X-Registry-Auth": string }>;
-      body: Array<PluginPrivilege>;
+      body: Array<Schemas.PluginPrivilege>;
     };
     response: unknown;
   };
@@ -1673,7 +1674,7 @@ export namespace Endpoints {
       query: { version: number };
       path: { id: string };
 
-      body: NodeSpec;
+      body: Schemas.NodeSpec;
     };
     response: unknown;
   };
@@ -1695,7 +1696,7 @@ export namespace Endpoints {
         DefaultAddrPool: Array<string>;
         ForceNewCluster: boolean;
         SubnetSize: number;
-        Spec: SwarmSpec;
+        Spec: Schemas.SwarmSpec;
       }>;
     };
     response: string;
@@ -1733,7 +1734,7 @@ export namespace Endpoints {
         rotateManagerUnlockKey: boolean;
       };
 
-      body: SwarmSpec;
+      body: Schemas.SwarmSpec;
     };
     response: unknown;
   };
@@ -1764,7 +1765,7 @@ export namespace Endpoints {
     path: "/services/create";
     parameters: {
       header: Partial<{ "X-Registry-Auth": string }>;
-      body: ServiceSpec & unknown;
+      body: Schemas.ServiceSpec & unknown;
     };
     response: Partial<{ ID: string; Warning: string }>;
   };
@@ -1792,7 +1793,7 @@ export namespace Endpoints {
       query: { version: number; registryAuthFrom: "spec" | "previous-spec"; rollback: string };
       path: { id: string };
       header: Partial<{ "X-Registry-Auth": string }>;
-      body: ServiceSpec & unknown;
+      body: Schemas.ServiceSpec & unknown;
     };
     response: Schemas.ServiceUpdateResponse;
   };
@@ -1858,7 +1859,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/secrets/create";
     parameters: {
-      body: SecretSpec & unknown;
+      body: Schemas.SecretSpec & unknown;
     };
     response: Schemas.IdResponse;
   };
@@ -1885,7 +1886,7 @@ export namespace Endpoints {
       query: { version: number };
       path: { id: string };
 
-      body: SecretSpec;
+      body: Schemas.SecretSpec;
     };
     response: unknown;
   };
@@ -1901,7 +1902,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/configs/create";
     parameters: {
-      body: ConfigSpec & unknown;
+      body: Schemas.ConfigSpec & unknown;
     };
     response: Schemas.IdResponse;
   };
@@ -1928,7 +1929,7 @@ export namespace Endpoints {
       query: { version: number };
       path: { id: string };
 
-      body: ConfigSpec;
+      body: Schemas.ConfigSpec;
     };
     response: unknown;
   };
