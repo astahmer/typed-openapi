@@ -2612,4 +2612,56 @@ describe("map-openapi-endpoints", () => {
       }
     `);
   });
+
+  test("path and operation parameters", async ({ expect }) => {
+    const openApiDoc = (await SwaggerParser.parse("./tests/samples/parameters.yaml")) as OpenAPIObject;
+    expect(mapOpenApiEndpoints(openApiDoc).endpointList).toMatchInlineSnapshot(`
+      [
+        {
+          "meta": {
+            "alias": "get_UsersId",
+            "areParametersRequired": true,
+            "hasParameters": true,
+          },
+          "method": "get",
+          "operation": {
+            "parameters": [
+              {
+                "description": "If true, the endpoint returns only the user metadata.",
+                "in": "query",
+                "name": "metadata",
+                "required": false,
+                "schema": {
+                  "type": "boolean",
+                },
+              },
+            ],
+            "responses": {
+              "200": {
+                "description": "OK",
+              },
+            },
+            "summary": "Gets a user by ID",
+          },
+          "parameters": {
+            "path": {
+              "id": {
+                "type": "keyword",
+                "value": "number",
+              },
+            },
+            "query": {
+              "type": "ref",
+              "value": "Partial<{ metadata: boolean }>",
+            },
+          },
+          "path": "/users/{id}",
+          "response": {
+            "type": "keyword",
+            "value": "unknown",
+          },
+        },
+      ]
+    `);
+  });
 });
