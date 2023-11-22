@@ -52,7 +52,7 @@ describe("generator", () => {
           method: "PUT";
           path: "/pet";
           parameters: {
-            body: Pet;
+            body: Schemas.Pet;
           };
           response: Schemas.Pet;
         };
@@ -60,7 +60,7 @@ describe("generator", () => {
           method: "POST";
           path: "/pet";
           parameters: {
-            body: Pet;
+            body: Schemas.Pet;
           };
           response: Schemas.Pet;
         };
@@ -127,7 +127,7 @@ describe("generator", () => {
           method: "POST";
           path: "/store/order";
           parameters: {
-            body: Order;
+            body: Schemas.Order;
           };
           response: Schemas.Order;
         };
@@ -151,7 +151,7 @@ describe("generator", () => {
           method: "POST";
           path: "/user";
           parameters: {
-            body: User;
+            body: Schemas.User;
           };
           response: Schemas.User;
         };
@@ -159,7 +159,7 @@ describe("generator", () => {
           method: "POST";
           path: "/user/createWithList";
           parameters: {
-            body: Array<User>;
+            body: Array<Schemas.User>;
           };
           response: unknown;
         };
@@ -191,7 +191,7 @@ describe("generator", () => {
           parameters: {
             path: { username: string };
 
-            body: User;
+            body: Schemas.User;
           };
           response: unknown;
         };

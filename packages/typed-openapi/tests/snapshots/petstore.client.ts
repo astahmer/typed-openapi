@@ -42,7 +42,7 @@ export namespace Endpoints {
     method: "PUT";
     path: "/pet";
     parameters: {
-      body: Pet;
+      body: Schemas.Pet;
     };
     response: Schemas.Pet;
   };
@@ -50,7 +50,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/pet";
     parameters: {
-      body: Pet;
+      body: Schemas.Pet;
     };
     response: Schemas.Pet;
   };
@@ -117,7 +117,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/store/order";
     parameters: {
-      body: Order;
+      body: Schemas.Order;
     };
     response: Schemas.Order;
   };
@@ -141,7 +141,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/user";
     parameters: {
-      body: User;
+      body: Schemas.User;
     };
     response: Schemas.User;
   };
@@ -149,7 +149,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/user/createWithList";
     parameters: {
-      body: Array<User>;
+      body: Array<Schemas.User>;
     };
     response: unknown;
   };
@@ -181,7 +181,7 @@ export namespace Endpoints {
     parameters: {
       path: { username: string };
 
-      body: User;
+      body: Schemas.User;
     };
     response: unknown;
   };

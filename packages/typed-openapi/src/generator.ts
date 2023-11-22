@@ -2,7 +2,7 @@ import { capitalize, groupBy } from "pastable/server";
 import { Box } from "./box";
 import { prettify } from "./format";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints";
-import { AnyBox, BoxRef } from "./types";
+import { AnyBox, AnyBoxDef, BoxRef } from "./types";
 import * as Codegen from "@sinclair/typebox-codegen";
 import { match } from "ts-pattern";
 import { type } from "arktype";
@@ -117,7 +117,7 @@ const generateSchemaList = ({ refs, runtime }: GeneratorContext) => {
   );
 };
 
-const parameterObjectToString = (parameters: Box<BoxRef> | Record<string, AnyBox>) => {
+const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, AnyBox>) => {
   if (parameters instanceof Box) return parameters.value;
 
   let str = "{";
@@ -143,7 +143,20 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
             ${parameters.query ? `query:  ${parameterObjectToString(parameters.query)},` : ""}
         ${parameters.path ? `path:  ${parameterObjectToString(parameters.path)},` : ""}
         ${parameters.header ? `header:  ${parameterObjectToString(parameters.header)},` : ""}
-        ${parameters.body ? `body:  ${parameterObjectToString(parameters.body)},` : ""}
+        ${
+          parameters.body
+            ? `body:  ${parameterObjectToString(
+                ctx.runtime === "none"
+                  ? parameters.body.recompute((box) => {
+                      if (Box.isReference(box) && !box.params.generics) {
+                        box.value = `Schemas.${box.value}`;
+                      }
+                      return box;
+                    })
+                  : parameters.body,
+              )},`
+            : ""
+        }
           }`
           : "parameters: never,"
       }
