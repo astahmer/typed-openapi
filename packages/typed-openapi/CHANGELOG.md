@@ -1,5 +1,16 @@
 # typed-openapi
 
+## 0.3.0
+
+### Minor Changes
+
+- b9b4772: Fix default response behavior (only use "default" as a fallback)
+- 23f3dc3: Support path parameters
+
+### Patch Changes
+
+- bb937d4: fix: refer Schema namespace in generated body type
+
 ## 0.2.0
 
 ### Minor Changes
