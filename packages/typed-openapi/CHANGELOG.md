@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 0.4.0
+
+### Minor Changes
+
+- ffcdaa7: zod-runtime: add typecast in ApiClient methods to match the desired type
+
 ## 0.3.0
 
 ### Minor Changes
