@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 0.4.1
+
+### Patch Changes
+
+- 4fac0aa: Fix typecast in zod-based ApiClient methods
+
 ## 0.4.0
 
 ### Minor Changes
