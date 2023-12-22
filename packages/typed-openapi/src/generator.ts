@@ -293,7 +293,8 @@ export class ApiClient {
       .with("zod", "yup", () => infer(`TEndpoint["response"]`))
       .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["response"]`)
       .otherwise(() => `TEndpoint["response"]`)}> {
-      return this.fetcher("${method}", this.baseUrl + path, params[0]);
+      return this.fetcher("${method}", this.baseUrl + path, params[0])${match(ctx.runtime)
+          .with("zod", () => `as Promise<TEndpoint["response"]> `).otherwise(() => ``)};
     }
     // </ApiClient.${method}>
     `
