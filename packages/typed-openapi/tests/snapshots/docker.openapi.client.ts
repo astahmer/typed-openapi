@@ -1098,7 +1098,7 @@ export namespace Endpoints {
     method: "PUT";
     path: "/containers/{id}/archive";
     parameters: {
-      query: { path: string; noOverwriteDirNonDir: string; copyUIDGID: string };
+      query: { path: string; noOverwriteDirNonDir: string | undefined; copyUIDGID: string | undefined };
       path: { id: string };
 
       body: string;
@@ -1248,7 +1248,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/images/search";
     parameters: {
-      query: { term: string; limit: number; filters: string };
+      query: { term: string; limit: number | undefined; filters: string | undefined };
     };
     response: Array<
       Partial<{ description: string; is_official: boolean; is_automated: boolean; name: string; star_count: number }>
@@ -1563,7 +1563,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/plugins/pull";
     parameters: {
-      query: { remote: string; name: string };
+      query: { remote: string; name: string | undefined };
 
       header: Partial<{ "X-Registry-Auth": string }>;
       body: Array<Schemas.PluginPrivilege>;
@@ -1729,9 +1729,9 @@ export namespace Endpoints {
     parameters: {
       query: {
         version: number;
-        rotateWorkerToken: boolean;
-        rotateManagerToken: boolean;
-        rotateManagerUnlockKey: boolean;
+        rotateWorkerToken: boolean | undefined;
+        rotateManagerToken: boolean | undefined;
+        rotateManagerUnlockKey: boolean | undefined;
       };
 
       body: Schemas.SwarmSpec;
@@ -1790,7 +1790,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/services/{id}/update";
     parameters: {
-      query: { version: number; registryAuthFrom: "spec" | "previous-spec"; rollback: string };
+      query: { version: number; registryAuthFrom: "spec" | "previous-spec" | undefined; rollback: string | undefined };
       path: { id: string };
       header: Partial<{ "X-Registry-Auth": string }>;
       body: Schemas.ServiceSpec & unknown;

@@ -2032,8 +2032,8 @@ export const put_PutContainerArchive = v.object({
   parameters: v.object({
     query: v.object({
       path: v.string(),
-      noOverwriteDirNonDir: v.string(),
-      copyUIDGID: v.string(),
+      noOverwriteDirNonDir: v.union([v.string(), v.any(/* unsupported */)]),
+      copyUIDGID: v.union([v.string(), v.any(/* unsupported */)]),
     }),
     path: v.object({
       id: v.string(),
@@ -2257,8 +2257,8 @@ export const get_ImageSearch = v.object({
   parameters: v.object({
     query: v.object({
       term: v.string(),
-      limit: v.number(),
-      filters: v.string(),
+      limit: v.union([v.number(), v.any(/* unsupported */)]),
+      filters: v.union([v.string(), v.any(/* unsupported */)]),
     }),
   }),
   response: v.array(
@@ -2723,7 +2723,7 @@ export const post_PluginPull = v.object({
   parameters: v.object({
     query: v.object({
       remote: v.string(),
-      name: v.string(),
+      name: v.union([v.string(), v.any(/* unsupported */)]),
     }),
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
@@ -2963,9 +2963,9 @@ export const post_SwarmUpdate = v.object({
   parameters: v.object({
     query: v.object({
       version: v.number(),
-      rotateWorkerToken: v.boolean(),
-      rotateManagerToken: v.boolean(),
-      rotateManagerUnlockKey: v.boolean(),
+      rotateWorkerToken: v.union([v.boolean(), v.any(/* unsupported */)]),
+      rotateManagerToken: v.union([v.boolean(), v.any(/* unsupported */)]),
+      rotateManagerUnlockKey: v.union([v.boolean(), v.any(/* unsupported */)]),
     }),
     body: SwarmSpec,
   }),
@@ -3057,8 +3057,8 @@ export const post_ServiceUpdate = v.object({
   parameters: v.object({
     query: v.object({
       version: v.number(),
-      registryAuthFrom: v.union([v.literal("spec"), v.literal("previous-spec")]),
-      rollback: v.string(),
+      registryAuthFrom: v.union([v.literal("spec"), v.literal("previous-spec"), v.any(/* unsupported */)]),
+      rollback: v.union([v.string(), v.any(/* unsupported */)]),
     }),
     path: v.object({
       id: v.string(),

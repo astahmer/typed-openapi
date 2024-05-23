@@ -2696,8 +2696,20 @@ export const put_PutContainerArchive = {
   parameters: y.object({
     query: y.object({
       path: y.string().required(),
-      noOverwriteDirNonDir: y.string().required(),
-      copyUIDGID: y.string().required(),
+      noOverwriteDirNonDir: y
+        .mixed()
+        .oneOf([
+          y.string().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required(),
+      copyUIDGID: y
+        .mixed()
+        .oneOf([
+          y.string().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2924,8 +2936,20 @@ export const get_ImageSearch = {
   parameters: y.object({
     query: y.object({
       term: y.string().required(),
-      limit: y.number().required(),
-      filters: y.string().required(),
+      limit: y
+        .mixed()
+        .oneOf([
+          y.number().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required(),
+      filters: y
+        .mixed()
+        .oneOf([
+          y.string().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required(),
     }),
   }),
   response: y.array(
@@ -3474,7 +3498,13 @@ export const post_PluginPull = {
   parameters: y.object({
     query: y.object({
       remote: y.string().required(),
-      name: y.string().required(),
+      name: y
+        .mixed()
+        .oneOf([
+          y.string().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required(),
     }),
     header: y.object({
       "X-Registry-Auth": y.string().required().optional(),
@@ -3714,9 +3744,27 @@ export const post_SwarmUpdate = {
   parameters: y.object({
     query: y.object({
       version: y.number().required(),
-      rotateWorkerToken: y.boolean().required(),
-      rotateManagerToken: y.boolean().required(),
-      rotateManagerUnlockKey: y.boolean().required(),
+      rotateWorkerToken: y
+        .mixed()
+        .oneOf([
+          y.boolean().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required(),
+      rotateManagerToken: y
+        .mixed()
+        .oneOf([
+          y.boolean().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required(),
+      rotateManagerUnlockKey: y
+        .mixed()
+        .oneOf([
+          y.boolean().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required(),
     }),
     body: SwarmSpec,
   }),
@@ -3813,9 +3861,16 @@ export const post_ServiceUpdate = {
         .oneOf([
           y.mixed((value): value is "spec" => value === "spec").required(),
           y.mixed((value): value is "previous-spec" => value === "previous-spec").required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
         .required(),
-      rollback: y.string().required(),
+      rollback: y
+        .mixed()
+        .oneOf([
+          y.string().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required(),
     }),
     path: y.object({
       id: y.string().required(),

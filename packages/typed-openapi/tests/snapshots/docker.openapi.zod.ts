@@ -2021,8 +2021,8 @@ export const put_PutContainerArchive = {
   parameters: z.object({
     query: z.object({
       path: z.string(),
-      noOverwriteDirNonDir: z.string(),
-      copyUIDGID: z.string(),
+      noOverwriteDirNonDir: z.union([z.string(), z.undefined()]),
+      copyUIDGID: z.union([z.string(), z.undefined()]),
     }),
     path: z.object({
       id: z.string(),
@@ -2246,8 +2246,8 @@ export const get_ImageSearch = {
   parameters: z.object({
     query: z.object({
       term: z.string(),
-      limit: z.number(),
-      filters: z.string(),
+      limit: z.union([z.number(), z.undefined()]),
+      filters: z.union([z.string(), z.undefined()]),
     }),
   }),
   response: z.array(
@@ -2712,7 +2712,7 @@ export const post_PluginPull = {
   parameters: z.object({
     query: z.object({
       remote: z.string(),
-      name: z.string(),
+      name: z.union([z.string(), z.undefined()]),
     }),
     header: z.object({
       "X-Registry-Auth": z.string().optional(),
@@ -2952,9 +2952,9 @@ export const post_SwarmUpdate = {
   parameters: z.object({
     query: z.object({
       version: z.number(),
-      rotateWorkerToken: z.boolean(),
-      rotateManagerToken: z.boolean(),
-      rotateManagerUnlockKey: z.boolean(),
+      rotateWorkerToken: z.union([z.boolean(), z.undefined()]),
+      rotateManagerToken: z.union([z.boolean(), z.undefined()]),
+      rotateManagerUnlockKey: z.union([z.boolean(), z.undefined()]),
     }),
     body: SwarmSpec,
   }),
@@ -3046,8 +3046,8 @@ export const post_ServiceUpdate = {
   parameters: z.object({
     query: z.object({
       version: z.number(),
-      registryAuthFrom: z.union([z.literal("spec"), z.literal("previous-spec")]),
-      rollback: z.string(),
+      registryAuthFrom: z.union([z.literal("spec"), z.literal("previous-spec"), z.undefined()]),
+      rollback: z.union([z.string(), z.undefined()]),
     }),
     path: z.object({
       id: z.string(),
