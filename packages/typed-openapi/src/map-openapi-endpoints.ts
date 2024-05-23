@@ -85,25 +85,23 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
         }
       }
 
-      // Make parameters optional if none of them are required
+      // Make parameters optional if all or some of them are not required
       if (params) {
         const t = createBoxFactory({}, ctx);
+        const filtered_params = ["query", "path", "header"] as Array<keyof Pick<typeof params, "query" | "path" | "header">>;
 
-        let k: keyof typeof params;
-        for (k in params) {
-          if (k !== "body") {
-            if (params[k] && lists[k].length) {
-              if (lists[k].every((param) => !param.required)) {
-                params[k] = t.reference("Partial", [t.object(params[k]!)]) as any;
-              } else {
-                for (const p of lists[k]) {
-                  if (!p.required) {
-                    params[k]![p.name] = t.optional(params[k]![p.name] as any);
-                  }
+        for (const k of filtered_params) {
+          if (params[k] && lists[k].length) {
+            if (lists[k].every((param) => !param.required)) {
+              params[k] = t.reference("Partial", [t.object(params[k]!)]) as any;
+            } else {
+              for (const p of lists[k]) {
+                if (!p.required) {
+                  params[k]![p.name] = t.optional(params[k]![p.name] as any);
                 }
               }
-            }  
-          }
+            }
+          }  
         }
 
         // No need to pass empty objects, it's confusing
