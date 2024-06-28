@@ -1,14 +1,14 @@
 import * as v from "valibot";
 
-export type Port = v.Output<typeof Port>;
+export type Port = v.InferOutput<typeof Port>;
 export const Port = v.object({
-  IP: v.optional(v.union([v.string(), v.undefinedType()])),
+  IP: v.optional(v.union([v.string(), v.undefined_()])),
   PrivatePort: v.number(),
-  PublicPort: v.optional(v.union([v.number(), v.undefinedType()])),
+  PublicPort: v.optional(v.union([v.number(), v.undefined_()])),
   Type: v.union([v.literal("tcp"), v.literal("udp"), v.literal("sctp")]),
 });
 
-export type MountPoint = v.Output<typeof MountPoint>;
+export type MountPoint = v.InferOutput<typeof MountPoint>;
 export const MountPoint = v.object({
   Type: v.optional(
     v.union([v.literal("bind"), v.literal("volume"), v.literal("tmpfs"), v.literal("npipe"), v.literal("cluster")]),
@@ -22,14 +22,14 @@ export const MountPoint = v.object({
   Propagation: v.optional(v.string()),
 });
 
-export type DeviceMapping = v.Output<typeof DeviceMapping>;
+export type DeviceMapping = v.InferOutput<typeof DeviceMapping>;
 export const DeviceMapping = v.object({
   PathOnHost: v.optional(v.string()),
   PathInContainer: v.optional(v.string()),
   CgroupPermissions: v.optional(v.string()),
 });
 
-export type DeviceRequest = v.Output<typeof DeviceRequest>;
+export type DeviceRequest = v.InferOutput<typeof DeviceRequest>;
 export const DeviceRequest = v.object({
   Driver: v.optional(v.string()),
   Count: v.optional(v.number()),
@@ -38,13 +38,13 @@ export const DeviceRequest = v.object({
   Options: v.optional(v.unknown()),
 });
 
-export type ThrottleDevice = v.Output<typeof ThrottleDevice>;
+export type ThrottleDevice = v.InferOutput<typeof ThrottleDevice>;
 export const ThrottleDevice = v.object({
   Path: v.optional(v.string()),
   Rate: v.optional(v.number()),
 });
 
-export type Mount = v.Output<typeof Mount>;
+export type Mount = v.InferOutput<typeof Mount>;
 export const Mount = v.object({
   Target: v.optional(v.string()),
   Source: v.optional(v.string()),
@@ -89,7 +89,7 @@ export const Mount = v.object({
   ),
 });
 
-export type RestartPolicy = v.Output<typeof RestartPolicy>;
+export type RestartPolicy = v.InferOutput<typeof RestartPolicy>;
 export const RestartPolicy = v.object({
   Name: v.optional(
     v.union([
@@ -103,7 +103,7 @@ export const RestartPolicy = v.object({
   MaximumRetryCount: v.optional(v.number()),
 });
 
-export type Resources = v.Output<typeof Resources>;
+export type Resources = v.InferOutput<typeof Resources>;
 export const Resources = v.object({
   CpuShares: v.optional(v.number()),
   Memory: v.optional(v.number()),
@@ -153,14 +153,14 @@ export const Resources = v.object({
   IOMaximumBandwidth: v.optional(v.number()),
 });
 
-export type Limit = v.Output<typeof Limit>;
+export type Limit = v.InferOutput<typeof Limit>;
 export const Limit = v.object({
   NanoCPUs: v.optional(v.number()),
   MemoryBytes: v.optional(v.number()),
   Pids: v.optional(v.number()),
 });
 
-export type GenericResources = v.Output<typeof GenericResources>;
+export type GenericResources = v.InferOutput<typeof GenericResources>;
 export const GenericResources = v.array(
   v.object({
     NamedResourceSpec: v.optional(
@@ -178,14 +178,14 @@ export const GenericResources = v.array(
   }),
 );
 
-export type ResourceObject = v.Output<typeof ResourceObject>;
+export type ResourceObject = v.InferOutput<typeof ResourceObject>;
 export const ResourceObject = v.object({
   NanoCPUs: v.optional(v.number()),
   MemoryBytes: v.optional(v.number()),
   GenericResources: v.optional(GenericResources),
 });
 
-export type HealthConfig = v.Output<typeof HealthConfig>;
+export type HealthConfig = v.InferOutput<typeof HealthConfig>;
 export const HealthConfig = v.object({
   Test: v.optional(v.array(v.string())),
   Interval: v.optional(v.number()),
@@ -194,7 +194,7 @@ export const HealthConfig = v.object({
   StartPeriod: v.optional(v.number()),
 });
 
-export type HealthcheckResult = v.Output<typeof HealthcheckResult>;
+export type HealthcheckResult = v.InferOutput<typeof HealthcheckResult>;
 export const HealthcheckResult = v.union([
   v.object({
     Start: v.optional(v.string()),
@@ -205,7 +205,7 @@ export const HealthcheckResult = v.union([
   v.null_(),
 ]);
 
-export type Health = v.Output<typeof Health>;
+export type Health = v.InferOutput<typeof Health>;
 export const Health = v.union([
   v.object({
     Status: v.optional(
@@ -217,16 +217,16 @@ export const Health = v.union([
   v.null_(),
 ]);
 
-export type PortBinding = v.Output<typeof PortBinding>;
+export type PortBinding = v.InferOutput<typeof PortBinding>;
 export const PortBinding = v.object({
   HostIp: v.optional(v.string()),
   HostPort: v.optional(v.string()),
 });
 
-export type PortMap = v.Output<typeof PortMap>;
+export type PortMap = v.InferOutput<typeof PortMap>;
 export const PortMap = v.unknown();
 
-export type HostConfig = v.Output<typeof HostConfig>;
+export type HostConfig = v.InferOutput<typeof HostConfig>;
 export const HostConfig = v.intersect([
   Resources,
   v.object({
@@ -289,7 +289,7 @@ export const HostConfig = v.intersect([
   }),
 ]);
 
-export type ContainerConfig = v.Output<typeof ContainerConfig>;
+export type ContainerConfig = v.InferOutput<typeof ContainerConfig>;
 export const ContainerConfig = v.object({
   Hostname: v.optional(v.string()),
   Domainname: v.optional(v.string()),
@@ -318,7 +318,7 @@ export const ContainerConfig = v.object({
   Shell: v.optional(v.union([v.array(v.string()), v.null_()])),
 });
 
-export type EndpointIPAMConfig = v.Output<typeof EndpointIPAMConfig>;
+export type EndpointIPAMConfig = v.InferOutput<typeof EndpointIPAMConfig>;
 export const EndpointIPAMConfig = v.union([
   v.object({
     IPv4Address: v.optional(v.string()),
@@ -328,7 +328,7 @@ export const EndpointIPAMConfig = v.union([
   v.null_(),
 ]);
 
-export type EndpointSettings = v.Output<typeof EndpointSettings>;
+export type EndpointSettings = v.InferOutput<typeof EndpointSettings>;
 export const EndpointSettings = v.object({
   IPAMConfig: v.optional(EndpointIPAMConfig),
   Links: v.optional(v.array(v.string())),
@@ -345,18 +345,18 @@ export const EndpointSettings = v.object({
   DriverOpts: v.optional(v.union([v.unknown(), v.null_()])),
 });
 
-export type NetworkingConfig = v.Output<typeof NetworkingConfig>;
+export type NetworkingConfig = v.InferOutput<typeof NetworkingConfig>;
 export const NetworkingConfig = v.object({
   EndpointsConfig: v.optional(v.unknown()),
 });
 
-export type Address = v.Output<typeof Address>;
+export type Address = v.InferOutput<typeof Address>;
 export const Address = v.object({
   Addr: v.optional(v.string()),
   PrefixLen: v.optional(v.number()),
 });
 
-export type NetworkSettings = v.Output<typeof NetworkSettings>;
+export type NetworkSettings = v.InferOutput<typeof NetworkSettings>;
 export const NetworkSettings = v.object({
   Bridge: v.optional(v.string()),
   SandboxID: v.optional(v.string()),
@@ -378,22 +378,22 @@ export const NetworkSettings = v.object({
   Networks: v.optional(v.unknown()),
 });
 
-export type GraphDriverData = v.Output<typeof GraphDriverData>;
+export type GraphDriverData = v.InferOutput<typeof GraphDriverData>;
 export const GraphDriverData = v.object({
   Name: v.string(),
   Data: v.unknown(),
 });
 
-export type ChangeType = v.Output<typeof ChangeType>;
+export type ChangeType = v.InferOutput<typeof ChangeType>;
 export const ChangeType = v.union([v.literal(0), v.literal(1), v.literal(2)]);
 
-export type FilesystemChange = v.Output<typeof FilesystemChange>;
+export type FilesystemChange = v.InferOutput<typeof FilesystemChange>;
 export const FilesystemChange = v.object({
   Path: v.string(),
   Kind: ChangeType,
 });
 
-export type ImageInspect = v.Output<typeof ImageInspect>;
+export type ImageInspect = v.InferOutput<typeof ImageInspect>;
 export const ImageInspect = v.object({
   Id: v.optional(v.string()),
   RepoTags: v.optional(v.array(v.string())),
@@ -416,7 +416,7 @@ export const ImageInspect = v.object({
   RootFS: v.optional(
     v.object({
       Type: v.string(),
-      Layers: v.optional(v.union([v.array(v.string()), v.undefinedType()])),
+      Layers: v.optional(v.union([v.array(v.string()), v.undefined_()])),
     }),
   ),
   Metadata: v.optional(
@@ -426,7 +426,7 @@ export const ImageInspect = v.object({
   ),
 });
 
-export type ImageSummary = v.Output<typeof ImageSummary>;
+export type ImageSummary = v.InferOutput<typeof ImageSummary>;
 export const ImageSummary = v.object({
   Id: v.string(),
   ParentId: v.string(),
@@ -435,12 +435,12 @@ export const ImageSummary = v.object({
   Created: v.number(),
   Size: v.number(),
   SharedSize: v.number(),
-  VirtualSize: v.optional(v.union([v.number(), v.undefinedType()])),
+  VirtualSize: v.optional(v.union([v.number(), v.undefined_()])),
   Labels: v.unknown(),
   Containers: v.number(),
 });
 
-export type AuthConfig = v.Output<typeof AuthConfig>;
+export type AuthConfig = v.InferOutput<typeof AuthConfig>;
 export const AuthConfig = v.object({
   username: v.optional(v.string()),
   password: v.optional(v.string()),
@@ -448,7 +448,7 @@ export const AuthConfig = v.object({
   serveraddress: v.optional(v.string()),
 });
 
-export type ProcessConfig = v.Output<typeof ProcessConfig>;
+export type ProcessConfig = v.InferOutput<typeof ProcessConfig>;
 export const ProcessConfig = v.object({
   privileged: v.optional(v.boolean()),
   user: v.optional(v.string()),
@@ -457,15 +457,15 @@ export const ProcessConfig = v.object({
   arguments: v.optional(v.array(v.string())),
 });
 
-export type ObjectVersion = v.Output<typeof ObjectVersion>;
+export type ObjectVersion = v.InferOutput<typeof ObjectVersion>;
 export const ObjectVersion = v.object({
   Index: v.optional(v.number()),
 });
 
-export type Topology = v.Output<typeof Topology>;
+export type Topology = v.InferOutput<typeof Topology>;
 export const Topology = v.unknown();
 
-export type ClusterVolumeSpec = v.Output<typeof ClusterVolumeSpec>;
+export type ClusterVolumeSpec = v.InferOutput<typeof ClusterVolumeSpec>;
 export const ClusterVolumeSpec = v.object({
   Group: v.optional(v.string()),
   AccessMode: v.optional(
@@ -500,7 +500,7 @@ export const ClusterVolumeSpec = v.object({
   ),
 });
 
-export type ClusterVolume = v.Output<typeof ClusterVolume>;
+export type ClusterVolume = v.InferOutput<typeof ClusterVolume>;
 export const ClusterVolume = v.object({
   ID: v.optional(v.string()),
   Version: v.optional(ObjectVersion),
@@ -533,16 +533,16 @@ export const ClusterVolume = v.object({
   ),
 });
 
-export type Volume = v.Output<typeof Volume>;
+export type Volume = v.InferOutput<typeof Volume>;
 export const Volume = v.object({
   Name: v.string(),
   Driver: v.string(),
   Mountpoint: v.string(),
-  CreatedAt: v.optional(v.union([v.string(), v.undefinedType()])),
-  Status: v.optional(v.union([v.unknown(), v.undefinedType()])),
+  CreatedAt: v.optional(v.union([v.string(), v.undefined_()])),
+  Status: v.optional(v.union([v.unknown(), v.undefined_()])),
   Labels: v.unknown(),
   Scope: v.union([v.literal("local"), v.literal("global")]),
-  ClusterVolume: v.optional(v.union([ClusterVolume, v.undefinedType()])),
+  ClusterVolume: v.optional(v.union([ClusterVolume, v.undefined_()])),
   Options: v.unknown(),
   UsageData: v.optional(
     v.union([
@@ -551,12 +551,12 @@ export const Volume = v.object({
         RefCount: v.number(),
       }),
       v.null_(),
-      v.undefinedType(),
+      v.undefined_(),
     ]),
   ),
 });
 
-export type VolumeCreateOptions = v.Output<typeof VolumeCreateOptions>;
+export type VolumeCreateOptions = v.InferOutput<typeof VolumeCreateOptions>;
 export const VolumeCreateOptions = v.object({
   Name: v.optional(v.string()),
   Driver: v.optional(v.string()),
@@ -565,13 +565,13 @@ export const VolumeCreateOptions = v.object({
   ClusterVolumeSpec: v.optional(ClusterVolumeSpec),
 });
 
-export type VolumeListResponse = v.Output<typeof VolumeListResponse>;
+export type VolumeListResponse = v.InferOutput<typeof VolumeListResponse>;
 export const VolumeListResponse = v.object({
   Volumes: v.optional(v.array(Volume)),
   Warnings: v.optional(v.array(v.string())),
 });
 
-export type IPAMConfig = v.Output<typeof IPAMConfig>;
+export type IPAMConfig = v.InferOutput<typeof IPAMConfig>;
 export const IPAMConfig = v.object({
   Subnet: v.optional(v.string()),
   IPRange: v.optional(v.string()),
@@ -579,14 +579,14 @@ export const IPAMConfig = v.object({
   AuxiliaryAddresses: v.optional(v.unknown()),
 });
 
-export type IPAM = v.Output<typeof IPAM>;
+export type IPAM = v.InferOutput<typeof IPAM>;
 export const IPAM = v.object({
   Driver: v.optional(v.string()),
   Config: v.optional(v.array(IPAMConfig)),
   Options: v.optional(v.unknown()),
 });
 
-export type NetworkContainer = v.Output<typeof NetworkContainer>;
+export type NetworkContainer = v.InferOutput<typeof NetworkContainer>;
 export const NetworkContainer = v.object({
   Name: v.optional(v.string()),
   EndpointID: v.optional(v.string()),
@@ -595,7 +595,7 @@ export const NetworkContainer = v.object({
   IPv6Address: v.optional(v.string()),
 });
 
-export type Network = v.Output<typeof Network>;
+export type Network = v.InferOutput<typeof Network>;
 export const Network = v.object({
   Name: v.optional(v.string()),
   Id: v.optional(v.string()),
@@ -612,24 +612,24 @@ export const Network = v.object({
   Labels: v.optional(v.unknown()),
 });
 
-export type ErrorDetail = v.Output<typeof ErrorDetail>;
+export type ErrorDetail = v.InferOutput<typeof ErrorDetail>;
 export const ErrorDetail = v.object({
   code: v.optional(v.number()),
   message: v.optional(v.string()),
 });
 
-export type ProgressDetail = v.Output<typeof ProgressDetail>;
+export type ProgressDetail = v.InferOutput<typeof ProgressDetail>;
 export const ProgressDetail = v.object({
   current: v.optional(v.number()),
   total: v.optional(v.number()),
 });
 
-export type ImageID = v.Output<typeof ImageID>;
+export type ImageID = v.InferOutput<typeof ImageID>;
 export const ImageID = v.object({
   ID: v.optional(v.string()),
 });
 
-export type BuildInfo = v.Output<typeof BuildInfo>;
+export type BuildInfo = v.InferOutput<typeof BuildInfo>;
 export const BuildInfo = v.object({
   id: v.optional(v.string()),
   stream: v.optional(v.string()),
@@ -641,7 +641,7 @@ export const BuildInfo = v.object({
   aux: v.optional(ImageID),
 });
 
-export type BuildCache = v.Output<typeof BuildCache>;
+export type BuildCache = v.InferOutput<typeof BuildCache>;
 export const BuildCache = v.object({
   ID: v.optional(v.string()),
   Parent: v.optional(v.union([v.string(), v.null_()])),
@@ -665,7 +665,7 @@ export const BuildCache = v.object({
   UsageCount: v.optional(v.number()),
 });
 
-export type CreateImageInfo = v.Output<typeof CreateImageInfo>;
+export type CreateImageInfo = v.InferOutput<typeof CreateImageInfo>;
 export const CreateImageInfo = v.object({
   id: v.optional(v.string()),
   error: v.optional(v.string()),
@@ -675,7 +675,7 @@ export const CreateImageInfo = v.object({
   progressDetail: v.optional(ProgressDetail),
 });
 
-export type PushImageInfo = v.Output<typeof PushImageInfo>;
+export type PushImageInfo = v.InferOutput<typeof PushImageInfo>;
 export const PushImageInfo = v.object({
   error: v.optional(v.string()),
   status: v.optional(v.string()),
@@ -683,17 +683,17 @@ export const PushImageInfo = v.object({
   progressDetail: v.optional(ProgressDetail),
 });
 
-export type ErrorResponse = v.Output<typeof ErrorResponse>;
+export type ErrorResponse = v.InferOutput<typeof ErrorResponse>;
 export const ErrorResponse = v.object({
   message: v.string(),
 });
 
-export type IdResponse = v.Output<typeof IdResponse>;
+export type IdResponse = v.InferOutput<typeof IdResponse>;
 export const IdResponse = v.object({
   Id: v.string(),
 });
 
-export type PluginMount = v.Output<typeof PluginMount>;
+export type PluginMount = v.InferOutput<typeof PluginMount>;
 export const PluginMount = v.object({
   Name: v.string(),
   Description: v.string(),
@@ -704,7 +704,7 @@ export const PluginMount = v.object({
   Options: v.array(v.string()),
 });
 
-export type PluginDevice = v.Output<typeof PluginDevice>;
+export type PluginDevice = v.InferOutput<typeof PluginDevice>;
 export const PluginDevice = v.object({
   Name: v.string(),
   Description: v.string(),
@@ -712,7 +712,7 @@ export const PluginDevice = v.object({
   Path: v.string(),
 });
 
-export type PluginEnv = v.Output<typeof PluginEnv>;
+export type PluginEnv = v.InferOutput<typeof PluginEnv>;
 export const PluginEnv = v.object({
   Name: v.string(),
   Description: v.string(),
@@ -720,23 +720,23 @@ export const PluginEnv = v.object({
   Value: v.string(),
 });
 
-export type PluginInterfaceType = v.Output<typeof PluginInterfaceType>;
+export type PluginInterfaceType = v.InferOutput<typeof PluginInterfaceType>;
 export const PluginInterfaceType = v.object({
   Prefix: v.string(),
   Capability: v.string(),
   Version: v.string(),
 });
 
-export type PluginPrivilege = v.Output<typeof PluginPrivilege>;
+export type PluginPrivilege = v.InferOutput<typeof PluginPrivilege>;
 export const PluginPrivilege = v.object({
   Name: v.optional(v.string()),
   Description: v.optional(v.string()),
   Value: v.optional(v.array(v.string())),
 });
 
-export type Plugin = v.Output<typeof Plugin>;
+export type Plugin = v.InferOutput<typeof Plugin>;
 export const Plugin = v.object({
-  Id: v.optional(v.union([v.string(), v.undefinedType()])),
+  Id: v.optional(v.union([v.string(), v.undefined_()])),
   Name: v.string(),
   Enabled: v.boolean(),
   Settings: v.object({
@@ -745,15 +745,15 @@ export const Plugin = v.object({
     Args: v.array(v.string()),
     Devices: v.array(PluginDevice),
   }),
-  PluginReference: v.optional(v.union([v.string(), v.undefinedType()])),
+  PluginReference: v.optional(v.union([v.string(), v.undefined_()])),
   Config: v.object({
-    DockerVersion: v.optional(v.union([v.string(), v.undefinedType()])),
+    DockerVersion: v.optional(v.union([v.string(), v.undefined_()])),
     Description: v.string(),
     Documentation: v.string(),
     Interface: v.object({
       Types: v.array(PluginInterfaceType),
       Socket: v.string(),
-      ProtocolScheme: v.optional(v.union([v.literal(""), v.literal("moby.plugins.http/v1"), v.undefinedType()])),
+      ProtocolScheme: v.optional(v.union([v.literal(""), v.literal("moby.plugins.http/v1"), v.undefined_()])),
     }),
     Entrypoint: v.array(v.string()),
     WorkDir: v.string(),
@@ -763,7 +763,7 @@ export const Plugin = v.object({
           UID: v.optional(v.number()),
           GID: v.optional(v.number()),
         }),
-        v.undefinedType(),
+        v.undefined_(),
       ]),
     ),
     Network: v.object({
@@ -791,13 +791,13 @@ export const Plugin = v.object({
           type: v.optional(v.string()),
           diff_ids: v.optional(v.array(v.string())),
         }),
-        v.undefinedType(),
+        v.undefined_(),
       ]),
     ),
   }),
 });
 
-export type NodeSpec = v.Output<typeof NodeSpec>;
+export type NodeSpec = v.InferOutput<typeof NodeSpec>;
 export const NodeSpec = v.object({
   Name: v.optional(v.string()),
   Labels: v.optional(v.unknown()),
@@ -805,13 +805,13 @@ export const NodeSpec = v.object({
   Availability: v.optional(v.union([v.literal("active"), v.literal("pause"), v.literal("drain")])),
 });
 
-export type Platform = v.Output<typeof Platform>;
+export type Platform = v.InferOutput<typeof Platform>;
 export const Platform = v.object({
   Architecture: v.optional(v.string()),
   OS: v.optional(v.string()),
 });
 
-export type EngineDescription = v.Output<typeof EngineDescription>;
+export type EngineDescription = v.InferOutput<typeof EngineDescription>;
 export const EngineDescription = v.object({
   EngineVersion: v.optional(v.string()),
   Labels: v.optional(v.unknown()),
@@ -825,14 +825,14 @@ export const EngineDescription = v.object({
   ),
 });
 
-export type TLSInfo = v.Output<typeof TLSInfo>;
+export type TLSInfo = v.InferOutput<typeof TLSInfo>;
 export const TLSInfo = v.object({
   TrustRoot: v.optional(v.string()),
   CertIssuerSubject: v.optional(v.string()),
   CertIssuerPublicKey: v.optional(v.string()),
 });
 
-export type NodeDescription = v.Output<typeof NodeDescription>;
+export type NodeDescription = v.InferOutput<typeof NodeDescription>;
 export const NodeDescription = v.object({
   Hostname: v.optional(v.string()),
   Platform: v.optional(Platform),
@@ -841,7 +841,7 @@ export const NodeDescription = v.object({
   TLSInfo: v.optional(TLSInfo),
 });
 
-export type NodeState = v.Output<typeof NodeState>;
+export type NodeState = v.InferOutput<typeof NodeState>;
 export const NodeState = v.union([
   v.literal("unknown"),
   v.literal("down"),
@@ -849,17 +849,17 @@ export const NodeState = v.union([
   v.literal("disconnected"),
 ]);
 
-export type NodeStatus = v.Output<typeof NodeStatus>;
+export type NodeStatus = v.InferOutput<typeof NodeStatus>;
 export const NodeStatus = v.object({
   State: v.optional(NodeState),
   Message: v.optional(v.string()),
   Addr: v.optional(v.string()),
 });
 
-export type Reachability = v.Output<typeof Reachability>;
+export type Reachability = v.InferOutput<typeof Reachability>;
 export const Reachability = v.union([v.literal("unknown"), v.literal("unreachable"), v.literal("reachable")]);
 
-export type ManagerStatus = v.Output<typeof ManagerStatus>;
+export type ManagerStatus = v.InferOutput<typeof ManagerStatus>;
 export const ManagerStatus = v.union([
   v.object({
     Leader: v.optional(v.boolean()),
@@ -869,7 +869,7 @@ export const ManagerStatus = v.union([
   v.null_(),
 ]);
 
-export type Node = v.Output<typeof Node>;
+export type Node = v.InferOutput<typeof Node>;
 export const Node = v.object({
   ID: v.optional(v.string()),
   Version: v.optional(ObjectVersion),
@@ -881,7 +881,7 @@ export const Node = v.object({
   ManagerStatus: v.optional(ManagerStatus),
 });
 
-export type SwarmSpec = v.Output<typeof SwarmSpec>;
+export type SwarmSpec = v.InferOutput<typeof SwarmSpec>;
 export const SwarmSpec = v.object({
   Name: v.optional(v.string()),
   Labels: v.optional(v.unknown()),
@@ -948,7 +948,7 @@ export const SwarmSpec = v.object({
   ),
 });
 
-export type ClusterInfo = v.Output<typeof ClusterInfo>;
+export type ClusterInfo = v.InferOutput<typeof ClusterInfo>;
 export const ClusterInfo = v.union([
   v.object({
     ID: v.optional(v.string()),
@@ -965,13 +965,13 @@ export const ClusterInfo = v.union([
   v.null_(),
 ]);
 
-export type JoinTokens = v.Output<typeof JoinTokens>;
+export type JoinTokens = v.InferOutput<typeof JoinTokens>;
 export const JoinTokens = v.object({
   Worker: v.optional(v.string()),
   Manager: v.optional(v.string()),
 });
 
-export type Swarm = v.Output<typeof Swarm>;
+export type Swarm = v.InferOutput<typeof Swarm>;
 export const Swarm = v.intersect([
   ClusterInfo,
   v.object({
@@ -979,14 +979,14 @@ export const Swarm = v.intersect([
   }),
 ]);
 
-export type NetworkAttachmentConfig = v.Output<typeof NetworkAttachmentConfig>;
+export type NetworkAttachmentConfig = v.InferOutput<typeof NetworkAttachmentConfig>;
 export const NetworkAttachmentConfig = v.object({
   Target: v.optional(v.string()),
   Aliases: v.optional(v.array(v.string())),
   DriverOpts: v.optional(v.unknown()),
 });
 
-export type TaskSpec = v.Output<typeof TaskSpec>;
+export type TaskSpec = v.InferOutput<typeof TaskSpec>;
 export const TaskSpec = v.object({
   PluginSpec: v.optional(
     v.object({
@@ -1139,7 +1139,7 @@ export const TaskSpec = v.object({
   ),
 });
 
-export type TaskState = v.Output<typeof TaskState>;
+export type TaskState = v.InferOutput<typeof TaskState>;
 export const TaskState = v.union([
   v.literal("new"),
   v.literal("allocated"),
@@ -1158,7 +1158,7 @@ export const TaskState = v.union([
   v.literal("orphaned"),
 ]);
 
-export type Task = v.Output<typeof Task>;
+export type Task = v.InferOutput<typeof Task>;
 export const Task = v.object({
   ID: v.optional(v.string()),
   Version: v.optional(ObjectVersion),
@@ -1190,7 +1190,7 @@ export const Task = v.object({
   JobIteration: v.optional(ObjectVersion),
 });
 
-export type EndpointPortConfig = v.Output<typeof EndpointPortConfig>;
+export type EndpointPortConfig = v.InferOutput<typeof EndpointPortConfig>;
 export const EndpointPortConfig = v.object({
   Name: v.optional(v.string()),
   Protocol: v.optional(v.union([v.literal("tcp"), v.literal("udp"), v.literal("sctp")])),
@@ -1199,13 +1199,13 @@ export const EndpointPortConfig = v.object({
   PublishMode: v.optional(v.union([v.literal("ingress"), v.literal("host")])),
 });
 
-export type EndpointSpec = v.Output<typeof EndpointSpec>;
+export type EndpointSpec = v.InferOutput<typeof EndpointSpec>;
 export const EndpointSpec = v.object({
   Mode: v.optional(v.union([v.literal("vip"), v.literal("dnsrr")])),
   Ports: v.optional(v.array(EndpointPortConfig)),
 });
 
-export type ServiceSpec = v.Output<typeof ServiceSpec>;
+export type ServiceSpec = v.InferOutput<typeof ServiceSpec>;
 export const ServiceSpec = v.object({
   Name: v.optional(v.string()),
   Labels: v.optional(v.unknown()),
@@ -1251,7 +1251,7 @@ export const ServiceSpec = v.object({
   EndpointSpec: v.optional(EndpointSpec),
 });
 
-export type Service = v.Output<typeof Service>;
+export type Service = v.InferOutput<typeof Service>;
 export const Service = v.object({
   ID: v.optional(v.string()),
   Version: v.optional(ObjectVersion),
@@ -1295,18 +1295,18 @@ export const Service = v.object({
   ),
 });
 
-export type ImageDeleteResponseItem = v.Output<typeof ImageDeleteResponseItem>;
+export type ImageDeleteResponseItem = v.InferOutput<typeof ImageDeleteResponseItem>;
 export const ImageDeleteResponseItem = v.object({
   Untagged: v.optional(v.string()),
   Deleted: v.optional(v.string()),
 });
 
-export type ServiceUpdateResponse = v.Output<typeof ServiceUpdateResponse>;
+export type ServiceUpdateResponse = v.InferOutput<typeof ServiceUpdateResponse>;
 export const ServiceUpdateResponse = v.object({
   Warnings: v.optional(v.array(v.string())),
 });
 
-export type ContainerSummary = v.Output<typeof ContainerSummary>;
+export type ContainerSummary = v.InferOutput<typeof ContainerSummary>;
 export const ContainerSummary = v.object({
   Id: v.optional(v.string()),
   Names: v.optional(v.array(v.string())),
@@ -1333,13 +1333,13 @@ export const ContainerSummary = v.object({
   Mounts: v.optional(v.array(MountPoint)),
 });
 
-export type Driver = v.Output<typeof Driver>;
+export type Driver = v.InferOutput<typeof Driver>;
 export const Driver = v.object({
   Name: v.string(),
-  Options: v.optional(v.union([v.unknown(), v.undefinedType()])),
+  Options: v.optional(v.union([v.unknown(), v.undefined_()])),
 });
 
-export type SecretSpec = v.Output<typeof SecretSpec>;
+export type SecretSpec = v.InferOutput<typeof SecretSpec>;
 export const SecretSpec = v.object({
   Name: v.optional(v.string()),
   Labels: v.optional(v.unknown()),
@@ -1348,7 +1348,7 @@ export const SecretSpec = v.object({
   Templating: v.optional(Driver),
 });
 
-export type Secret = v.Output<typeof Secret>;
+export type Secret = v.InferOutput<typeof Secret>;
 export const Secret = v.object({
   ID: v.optional(v.string()),
   Version: v.optional(ObjectVersion),
@@ -1357,7 +1357,7 @@ export const Secret = v.object({
   Spec: v.optional(SecretSpec),
 });
 
-export type ConfigSpec = v.Output<typeof ConfigSpec>;
+export type ConfigSpec = v.InferOutput<typeof ConfigSpec>;
 export const ConfigSpec = v.object({
   Name: v.optional(v.string()),
   Labels: v.optional(v.unknown()),
@@ -1365,7 +1365,7 @@ export const ConfigSpec = v.object({
   Templating: v.optional(Driver),
 });
 
-export type Config = v.Output<typeof Config>;
+export type Config = v.InferOutput<typeof Config>;
 export const Config = v.object({
   ID: v.optional(v.string()),
   Version: v.optional(ObjectVersion),
@@ -1374,7 +1374,7 @@ export const Config = v.object({
   Spec: v.optional(ConfigSpec),
 });
 
-export type ContainerState = v.Output<typeof ContainerState>;
+export type ContainerState = v.InferOutput<typeof ContainerState>;
 export const ContainerState = v.union([
   v.object({
     Status: v.optional(
@@ -1403,24 +1403,24 @@ export const ContainerState = v.union([
   v.null_(),
 ]);
 
-export type ContainerCreateResponse = v.Output<typeof ContainerCreateResponse>;
+export type ContainerCreateResponse = v.InferOutput<typeof ContainerCreateResponse>;
 export const ContainerCreateResponse = v.object({
   Id: v.string(),
   Warnings: v.array(v.string()),
 });
 
-export type ContainerWaitExitError = v.Output<typeof ContainerWaitExitError>;
+export type ContainerWaitExitError = v.InferOutput<typeof ContainerWaitExitError>;
 export const ContainerWaitExitError = v.object({
   Message: v.optional(v.string()),
 });
 
-export type ContainerWaitResponse = v.Output<typeof ContainerWaitResponse>;
+export type ContainerWaitResponse = v.InferOutput<typeof ContainerWaitResponse>;
 export const ContainerWaitResponse = v.object({
   StatusCode: v.number(),
-  Error: v.optional(v.union([ContainerWaitExitError, v.undefinedType()])),
+  Error: v.optional(v.union([ContainerWaitExitError, v.undefined_()])),
 });
 
-export type SystemVersion = v.Output<typeof SystemVersion>;
+export type SystemVersion = v.InferOutput<typeof SystemVersion>;
 export const SystemVersion = v.object({
   Platform: v.optional(
     v.object({
@@ -1432,7 +1432,7 @@ export const SystemVersion = v.object({
       v.object({
         Name: v.string(),
         Version: v.string(),
-        Details: v.optional(v.union([v.object({}), v.null_(), v.undefinedType()])),
+        Details: v.optional(v.union([v.object({}), v.null_(), v.undefined_()])),
       }),
     ),
   ),
@@ -1448,7 +1448,7 @@ export const SystemVersion = v.object({
   BuildTime: v.optional(v.string()),
 });
 
-export type PluginsInfo = v.Output<typeof PluginsInfo>;
+export type PluginsInfo = v.InferOutput<typeof PluginsInfo>;
 export const PluginsInfo = v.object({
   Volume: v.optional(v.array(v.string())),
   Network: v.optional(v.array(v.string())),
@@ -1456,7 +1456,7 @@ export const PluginsInfo = v.object({
   Log: v.optional(v.array(v.string())),
 });
 
-export type IndexInfo = v.Output<typeof IndexInfo>;
+export type IndexInfo = v.InferOutput<typeof IndexInfo>;
 export const IndexInfo = v.union([
   v.object({
     Name: v.optional(v.string()),
@@ -1467,7 +1467,7 @@ export const IndexInfo = v.union([
   v.null_(),
 ]);
 
-export type RegistryServiceConfig = v.Output<typeof RegistryServiceConfig>;
+export type RegistryServiceConfig = v.InferOutput<typeof RegistryServiceConfig>;
 export const RegistryServiceConfig = v.union([
   v.object({
     AllowNondistributableArtifactsCIDRs: v.optional(v.array(v.string())),
@@ -1479,13 +1479,13 @@ export const RegistryServiceConfig = v.union([
   v.null_(),
 ]);
 
-export type Runtime = v.Output<typeof Runtime>;
+export type Runtime = v.InferOutput<typeof Runtime>;
 export const Runtime = v.object({
   path: v.optional(v.string()),
   runtimeArgs: v.optional(v.union([v.array(v.string()), v.null_()])),
 });
 
-export type LocalNodeState = v.Output<typeof LocalNodeState>;
+export type LocalNodeState = v.InferOutput<typeof LocalNodeState>;
 export const LocalNodeState = v.union([
   v.literal(""),
   v.literal("inactive"),
@@ -1495,13 +1495,13 @@ export const LocalNodeState = v.union([
   v.literal("locked"),
 ]);
 
-export type PeerNode = v.Output<typeof PeerNode>;
+export type PeerNode = v.InferOutput<typeof PeerNode>;
 export const PeerNode = v.object({
   NodeID: v.optional(v.string()),
   Addr: v.optional(v.string()),
 });
 
-export type SwarmInfo = v.Output<typeof SwarmInfo>;
+export type SwarmInfo = v.InferOutput<typeof SwarmInfo>;
 export const SwarmInfo = v.object({
   NodeID: v.optional(v.string()),
   NodeAddr: v.optional(v.string()),
@@ -1514,13 +1514,13 @@ export const SwarmInfo = v.object({
   Cluster: v.optional(ClusterInfo),
 });
 
-export type Commit = v.Output<typeof Commit>;
+export type Commit = v.InferOutput<typeof Commit>;
 export const Commit = v.object({
   ID: v.optional(v.string()),
   Expected: v.optional(v.string()),
 });
 
-export type SystemInfo = v.Output<typeof SystemInfo>;
+export type SystemInfo = v.InferOutput<typeof SystemInfo>;
 export const SystemInfo = v.object({
   ID: v.optional(v.string()),
   Containers: v.optional(v.number()),
@@ -1591,13 +1591,13 @@ export const SystemInfo = v.object({
   Warnings: v.optional(v.array(v.string())),
 });
 
-export type EventActor = v.Output<typeof EventActor>;
+export type EventActor = v.InferOutput<typeof EventActor>;
 export const EventActor = v.object({
   ID: v.optional(v.string()),
   Attributes: v.optional(v.unknown()),
 });
 
-export type EventMessage = v.Output<typeof EventMessage>;
+export type EventMessage = v.InferOutput<typeof EventMessage>;
 export const EventMessage = v.object({
   Type: v.optional(
     v.union([
@@ -1621,14 +1621,14 @@ export const EventMessage = v.object({
   timeNano: v.optional(v.number()),
 });
 
-export type OCIDescriptor = v.Output<typeof OCIDescriptor>;
+export type OCIDescriptor = v.InferOutput<typeof OCIDescriptor>;
 export const OCIDescriptor = v.object({
   mediaType: v.optional(v.string()),
   digest: v.optional(v.string()),
   size: v.optional(v.number()),
 });
 
-export type OCIPlatform = v.Output<typeof OCIPlatform>;
+export type OCIPlatform = v.InferOutput<typeof OCIPlatform>;
 export const OCIPlatform = v.object({
   architecture: v.optional(v.string()),
   os: v.optional(v.string()),
@@ -1637,16 +1637,16 @@ export const OCIPlatform = v.object({
   variant: v.optional(v.string()),
 });
 
-export type DistributionInspect = v.Output<typeof DistributionInspect>;
+export type DistributionInspect = v.InferOutput<typeof DistributionInspect>;
 export const DistributionInspect = v.object({
   Descriptor: OCIDescriptor,
   Platforms: v.array(OCIPlatform),
 });
 
-export type __ENDPOINTS_START__ = v.Output<typeof __ENDPOINTS_START__>;
+export type __ENDPOINTS_START__ = v.InferOutput<typeof __ENDPOINTS_START__>;
 export const __ENDPOINTS_START__ = v.object({});
 
-export type get_ContainerList = v.Output<typeof get_ContainerList>;
+export type get_ContainerList = v.InferOutput<typeof get_ContainerList>;
 export const get_ContainerList = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/json"),
@@ -1661,7 +1661,7 @@ export const get_ContainerList = v.object({
   response: v.array(ContainerSummary),
 });
 
-export type post_ContainerCreate = v.Output<typeof post_ContainerCreate>;
+export type post_ContainerCreate = v.InferOutput<typeof post_ContainerCreate>;
 export const post_ContainerCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/create"),
@@ -1681,7 +1681,7 @@ export const post_ContainerCreate = v.object({
   response: ContainerCreateResponse,
 });
 
-export type get_ContainerInspect = v.Output<typeof get_ContainerInspect>;
+export type get_ContainerInspect = v.InferOutput<typeof get_ContainerInspect>;
 export const get_ContainerInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/json"),
@@ -1722,7 +1722,7 @@ export const get_ContainerInspect = v.object({
   }),
 });
 
-export type get_ContainerTop = v.Output<typeof get_ContainerTop>;
+export type get_ContainerTop = v.InferOutput<typeof get_ContainerTop>;
 export const get_ContainerTop = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/top"),
@@ -1740,7 +1740,7 @@ export const get_ContainerTop = v.object({
   }),
 });
 
-export type get_ContainerLogs = v.Output<typeof get_ContainerLogs>;
+export type get_ContainerLogs = v.InferOutput<typeof get_ContainerLogs>;
 export const get_ContainerLogs = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/logs"),
@@ -1761,7 +1761,7 @@ export const get_ContainerLogs = v.object({
   response: v.unknown(),
 });
 
-export type get_ContainerChanges = v.Output<typeof get_ContainerChanges>;
+export type get_ContainerChanges = v.InferOutput<typeof get_ContainerChanges>;
 export const get_ContainerChanges = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/changes"),
@@ -1773,7 +1773,7 @@ export const get_ContainerChanges = v.object({
   response: v.array(FilesystemChange),
 });
 
-export type get_ContainerExport = v.Output<typeof get_ContainerExport>;
+export type get_ContainerExport = v.InferOutput<typeof get_ContainerExport>;
 export const get_ContainerExport = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/export"),
@@ -1785,7 +1785,7 @@ export const get_ContainerExport = v.object({
   response: v.unknown(),
 });
 
-export type get_ContainerStats = v.Output<typeof get_ContainerStats>;
+export type get_ContainerStats = v.InferOutput<typeof get_ContainerStats>;
 export const get_ContainerStats = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/stats"),
@@ -1801,7 +1801,7 @@ export const get_ContainerStats = v.object({
   response: v.unknown(),
 });
 
-export type post_ContainerResize = v.Output<typeof post_ContainerResize>;
+export type post_ContainerResize = v.InferOutput<typeof post_ContainerResize>;
 export const post_ContainerResize = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/resize"),
@@ -1817,7 +1817,7 @@ export const post_ContainerResize = v.object({
   response: v.unknown(),
 });
 
-export type post_ContainerStart = v.Output<typeof post_ContainerStart>;
+export type post_ContainerStart = v.InferOutput<typeof post_ContainerStart>;
 export const post_ContainerStart = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/start"),
@@ -1832,7 +1832,7 @@ export const post_ContainerStart = v.object({
   response: v.unknown(),
 });
 
-export type post_ContainerStop = v.Output<typeof post_ContainerStop>;
+export type post_ContainerStop = v.InferOutput<typeof post_ContainerStop>;
 export const post_ContainerStop = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/stop"),
@@ -1848,7 +1848,7 @@ export const post_ContainerStop = v.object({
   response: v.unknown(),
 });
 
-export type post_ContainerRestart = v.Output<typeof post_ContainerRestart>;
+export type post_ContainerRestart = v.InferOutput<typeof post_ContainerRestart>;
 export const post_ContainerRestart = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/restart"),
@@ -1864,7 +1864,7 @@ export const post_ContainerRestart = v.object({
   response: v.unknown(),
 });
 
-export type post_ContainerKill = v.Output<typeof post_ContainerKill>;
+export type post_ContainerKill = v.InferOutput<typeof post_ContainerKill>;
 export const post_ContainerKill = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/kill"),
@@ -1879,7 +1879,7 @@ export const post_ContainerKill = v.object({
   response: v.unknown(),
 });
 
-export type post_ContainerUpdate = v.Output<typeof post_ContainerUpdate>;
+export type post_ContainerUpdate = v.InferOutput<typeof post_ContainerUpdate>;
 export const post_ContainerUpdate = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/update"),
@@ -1899,7 +1899,7 @@ export const post_ContainerUpdate = v.object({
   }),
 });
 
-export type post_ContainerRename = v.Output<typeof post_ContainerRename>;
+export type post_ContainerRename = v.InferOutput<typeof post_ContainerRename>;
 export const post_ContainerRename = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/rename"),
@@ -1914,7 +1914,7 @@ export const post_ContainerRename = v.object({
   response: v.unknown(),
 });
 
-export type post_ContainerPause = v.Output<typeof post_ContainerPause>;
+export type post_ContainerPause = v.InferOutput<typeof post_ContainerPause>;
 export const post_ContainerPause = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/pause"),
@@ -1926,7 +1926,7 @@ export const post_ContainerPause = v.object({
   response: v.unknown(),
 });
 
-export type post_ContainerUnpause = v.Output<typeof post_ContainerUnpause>;
+export type post_ContainerUnpause = v.InferOutput<typeof post_ContainerUnpause>;
 export const post_ContainerUnpause = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/unpause"),
@@ -1938,7 +1938,7 @@ export const post_ContainerUnpause = v.object({
   response: v.unknown(),
 });
 
-export type post_ContainerAttach = v.Output<typeof post_ContainerAttach>;
+export type post_ContainerAttach = v.InferOutput<typeof post_ContainerAttach>;
 export const post_ContainerAttach = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/attach"),
@@ -1958,7 +1958,7 @@ export const post_ContainerAttach = v.object({
   response: v.unknown(),
 });
 
-export type get_ContainerAttachWebsocket = v.Output<typeof get_ContainerAttachWebsocket>;
+export type get_ContainerAttachWebsocket = v.InferOutput<typeof get_ContainerAttachWebsocket>;
 export const get_ContainerAttachWebsocket = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/attach/ws"),
@@ -1978,7 +1978,7 @@ export const get_ContainerAttachWebsocket = v.object({
   response: v.unknown(),
 });
 
-export type post_ContainerWait = v.Output<typeof post_ContainerWait>;
+export type post_ContainerWait = v.InferOutput<typeof post_ContainerWait>;
 export const post_ContainerWait = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/wait"),
@@ -1993,7 +1993,7 @@ export const post_ContainerWait = v.object({
   response: ContainerWaitResponse,
 });
 
-export type delete_ContainerDelete = v.Output<typeof delete_ContainerDelete>;
+export type delete_ContainerDelete = v.InferOutput<typeof delete_ContainerDelete>;
 export const delete_ContainerDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/containers/{id}"),
@@ -2010,7 +2010,7 @@ export const delete_ContainerDelete = v.object({
   response: v.unknown(),
 });
 
-export type get_ContainerArchive = v.Output<typeof get_ContainerArchive>;
+export type get_ContainerArchive = v.InferOutput<typeof get_ContainerArchive>;
 export const get_ContainerArchive = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/archive"),
@@ -2025,15 +2025,15 @@ export const get_ContainerArchive = v.object({
   response: v.unknown(),
 });
 
-export type put_PutContainerArchive = v.Output<typeof put_PutContainerArchive>;
+export type put_PutContainerArchive = v.InferOutput<typeof put_PutContainerArchive>;
 export const put_PutContainerArchive = v.object({
   method: v.literal("PUT"),
   path: v.literal("/containers/{id}/archive"),
   parameters: v.object({
     query: v.object({
       path: v.string(),
-      noOverwriteDirNonDir: v.union([v.string(), v.undefinedType()]),
-      copyUIDGID: v.union([v.string(), v.undefinedType()]),
+      noOverwriteDirNonDir: v.union([v.string(), v.undefined_()]),
+      copyUIDGID: v.union([v.string(), v.undefined_()]),
     }),
     path: v.object({
       id: v.string(),
@@ -2043,7 +2043,7 @@ export const put_PutContainerArchive = v.object({
   response: v.unknown(),
 });
 
-export type head_ContainerArchiveInfo = v.Output<typeof head_ContainerArchiveInfo>;
+export type head_ContainerArchiveInfo = v.InferOutput<typeof head_ContainerArchiveInfo>;
 export const head_ContainerArchiveInfo = v.object({
   method: v.literal("HEAD"),
   path: v.literal("/containers/{id}/archive"),
@@ -2058,7 +2058,7 @@ export const head_ContainerArchiveInfo = v.object({
   response: v.unknown(),
 });
 
-export type post_ContainerPrune = v.Output<typeof post_ContainerPrune>;
+export type post_ContainerPrune = v.InferOutput<typeof post_ContainerPrune>;
 export const post_ContainerPrune = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/prune"),
@@ -2073,7 +2073,7 @@ export const post_ContainerPrune = v.object({
   }),
 });
 
-export type get_ImageList = v.Output<typeof get_ImageList>;
+export type get_ImageList = v.InferOutput<typeof get_ImageList>;
 export const get_ImageList = v.object({
   method: v.literal("GET"),
   path: v.literal("/images/json"),
@@ -2088,7 +2088,7 @@ export const get_ImageList = v.object({
   response: v.array(ImageSummary),
 });
 
-export type post_ImageBuild = v.Output<typeof post_ImageBuild>;
+export type post_ImageBuild = v.InferOutput<typeof post_ImageBuild>;
 export const post_ImageBuild = v.object({
   method: v.literal("POST"),
   path: v.literal("/build"),
@@ -2128,7 +2128,7 @@ export const post_ImageBuild = v.object({
   response: v.unknown(),
 });
 
-export type post_BuildPrune = v.Output<typeof post_BuildPrune>;
+export type post_BuildPrune = v.InferOutput<typeof post_BuildPrune>;
 export const post_BuildPrune = v.object({
   method: v.literal("POST"),
   path: v.literal("/build/prune"),
@@ -2145,7 +2145,7 @@ export const post_BuildPrune = v.object({
   }),
 });
 
-export type post_ImageCreate = v.Output<typeof post_ImageCreate>;
+export type post_ImageCreate = v.InferOutput<typeof post_ImageCreate>;
 export const post_ImageCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/images/create"),
@@ -2167,7 +2167,7 @@ export const post_ImageCreate = v.object({
   response: v.unknown(),
 });
 
-export type get_ImageInspect = v.Output<typeof get_ImageInspect>;
+export type get_ImageInspect = v.InferOutput<typeof get_ImageInspect>;
 export const get_ImageInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/images/{name}/json"),
@@ -2179,7 +2179,7 @@ export const get_ImageInspect = v.object({
   response: ImageInspect,
 });
 
-export type get_ImageHistory = v.Output<typeof get_ImageHistory>;
+export type get_ImageHistory = v.InferOutput<typeof get_ImageHistory>;
 export const get_ImageHistory = v.object({
   method: v.literal("GET"),
   path: v.literal("/images/{name}/history"),
@@ -2200,7 +2200,7 @@ export const get_ImageHistory = v.object({
   ),
 });
 
-export type post_ImagePush = v.Output<typeof post_ImagePush>;
+export type post_ImagePush = v.InferOutput<typeof post_ImagePush>;
 export const post_ImagePush = v.object({
   method: v.literal("POST"),
   path: v.literal("/images/{name}/push"),
@@ -2218,7 +2218,7 @@ export const post_ImagePush = v.object({
   response: v.unknown(),
 });
 
-export type post_ImageTag = v.Output<typeof post_ImageTag>;
+export type post_ImageTag = v.InferOutput<typeof post_ImageTag>;
 export const post_ImageTag = v.object({
   method: v.literal("POST"),
   path: v.literal("/images/{name}/tag"),
@@ -2234,7 +2234,7 @@ export const post_ImageTag = v.object({
   response: v.unknown(),
 });
 
-export type delete_ImageDelete = v.Output<typeof delete_ImageDelete>;
+export type delete_ImageDelete = v.InferOutput<typeof delete_ImageDelete>;
 export const delete_ImageDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/images/{name}"),
@@ -2250,15 +2250,15 @@ export const delete_ImageDelete = v.object({
   response: v.array(ImageDeleteResponseItem),
 });
 
-export type get_ImageSearch = v.Output<typeof get_ImageSearch>;
+export type get_ImageSearch = v.InferOutput<typeof get_ImageSearch>;
 export const get_ImageSearch = v.object({
   method: v.literal("GET"),
   path: v.literal("/images/search"),
   parameters: v.object({
     query: v.object({
       term: v.string(),
-      limit: v.union([v.number(), v.undefinedType()]),
-      filters: v.union([v.string(), v.undefinedType()]),
+      limit: v.union([v.number(), v.undefined_()]),
+      filters: v.union([v.string(), v.undefined_()]),
     }),
   }),
   response: v.array(
@@ -2272,7 +2272,7 @@ export const get_ImageSearch = v.object({
   ),
 });
 
-export type post_ImagePrune = v.Output<typeof post_ImagePrune>;
+export type post_ImagePrune = v.InferOutput<typeof post_ImagePrune>;
 export const post_ImagePrune = v.object({
   method: v.literal("POST"),
   path: v.literal("/images/prune"),
@@ -2287,7 +2287,7 @@ export const post_ImagePrune = v.object({
   }),
 });
 
-export type post_SystemAuth = v.Output<typeof post_SystemAuth>;
+export type post_SystemAuth = v.InferOutput<typeof post_SystemAuth>;
 export const post_SystemAuth = v.object({
   method: v.literal("POST"),
   path: v.literal("/auth"),
@@ -2297,7 +2297,7 @@ export const post_SystemAuth = v.object({
   response: v.unknown(),
 });
 
-export type get_SystemInfo = v.Output<typeof get_SystemInfo>;
+export type get_SystemInfo = v.InferOutput<typeof get_SystemInfo>;
 export const get_SystemInfo = v.object({
   method: v.literal("GET"),
   path: v.literal("/info"),
@@ -2305,7 +2305,7 @@ export const get_SystemInfo = v.object({
   response: SystemInfo,
 });
 
-export type get_SystemVersion = v.Output<typeof get_SystemVersion>;
+export type get_SystemVersion = v.InferOutput<typeof get_SystemVersion>;
 export const get_SystemVersion = v.object({
   method: v.literal("GET"),
   path: v.literal("/version"),
@@ -2313,7 +2313,7 @@ export const get_SystemVersion = v.object({
   response: SystemVersion,
 });
 
-export type get_SystemPing = v.Output<typeof get_SystemPing>;
+export type get_SystemPing = v.InferOutput<typeof get_SystemPing>;
 export const get_SystemPing = v.object({
   method: v.literal("GET"),
   path: v.literal("/_ping"),
@@ -2321,7 +2321,7 @@ export const get_SystemPing = v.object({
   response: v.unknown(),
 });
 
-export type head_SystemPingHead = v.Output<typeof head_SystemPingHead>;
+export type head_SystemPingHead = v.InferOutput<typeof head_SystemPingHead>;
 export const head_SystemPingHead = v.object({
   method: v.literal("HEAD"),
   path: v.literal("/_ping"),
@@ -2329,7 +2329,7 @@ export const head_SystemPingHead = v.object({
   response: v.unknown(),
 });
 
-export type post_ImageCommit = v.Output<typeof post_ImageCommit>;
+export type post_ImageCommit = v.InferOutput<typeof post_ImageCommit>;
 export const post_ImageCommit = v.object({
   method: v.literal("POST"),
   path: v.literal("/commit"),
@@ -2348,7 +2348,7 @@ export const post_ImageCommit = v.object({
   response: IdResponse,
 });
 
-export type get_SystemEvents = v.Output<typeof get_SystemEvents>;
+export type get_SystemEvents = v.InferOutput<typeof get_SystemEvents>;
 export const get_SystemEvents = v.object({
   method: v.literal("GET"),
   path: v.literal("/events"),
@@ -2362,7 +2362,7 @@ export const get_SystemEvents = v.object({
   response: EventMessage,
 });
 
-export type get_SystemDataUsage = v.Output<typeof get_SystemDataUsage>;
+export type get_SystemDataUsage = v.InferOutput<typeof get_SystemDataUsage>;
 export const get_SystemDataUsage = v.object({
   method: v.literal("GET"),
   path: v.literal("/system/df"),
@@ -2382,7 +2382,7 @@ export const get_SystemDataUsage = v.object({
   }),
 });
 
-export type get_ImageGet = v.Output<typeof get_ImageGet>;
+export type get_ImageGet = v.InferOutput<typeof get_ImageGet>;
 export const get_ImageGet = v.object({
   method: v.literal("GET"),
   path: v.literal("/images/{name}/get"),
@@ -2394,7 +2394,7 @@ export const get_ImageGet = v.object({
   response: v.unknown(),
 });
 
-export type get_ImageGetAll = v.Output<typeof get_ImageGetAll>;
+export type get_ImageGetAll = v.InferOutput<typeof get_ImageGetAll>;
 export const get_ImageGetAll = v.object({
   method: v.literal("GET"),
   path: v.literal("/images/get"),
@@ -2406,7 +2406,7 @@ export const get_ImageGetAll = v.object({
   response: v.unknown(),
 });
 
-export type post_ImageLoad = v.Output<typeof post_ImageLoad>;
+export type post_ImageLoad = v.InferOutput<typeof post_ImageLoad>;
 export const post_ImageLoad = v.object({
   method: v.literal("POST"),
   path: v.literal("/images/load"),
@@ -2418,7 +2418,7 @@ export const post_ImageLoad = v.object({
   response: v.unknown(),
 });
 
-export type post_ContainerExec = v.Output<typeof post_ContainerExec>;
+export type post_ContainerExec = v.InferOutput<typeof post_ContainerExec>;
 export const post_ContainerExec = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/exec"),
@@ -2443,7 +2443,7 @@ export const post_ContainerExec = v.object({
   response: IdResponse,
 });
 
-export type post_ExecStart = v.Output<typeof post_ExecStart>;
+export type post_ExecStart = v.InferOutput<typeof post_ExecStart>;
 export const post_ExecStart = v.object({
   method: v.literal("POST"),
   path: v.literal("/exec/{id}/start"),
@@ -2460,7 +2460,7 @@ export const post_ExecStart = v.object({
   response: v.unknown(),
 });
 
-export type post_ExecResize = v.Output<typeof post_ExecResize>;
+export type post_ExecResize = v.InferOutput<typeof post_ExecResize>;
 export const post_ExecResize = v.object({
   method: v.literal("POST"),
   path: v.literal("/exec/{id}/resize"),
@@ -2476,7 +2476,7 @@ export const post_ExecResize = v.object({
   response: v.unknown(),
 });
 
-export type get_ExecInspect = v.Output<typeof get_ExecInspect>;
+export type get_ExecInspect = v.InferOutput<typeof get_ExecInspect>;
 export const get_ExecInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/exec/{id}/json"),
@@ -2500,7 +2500,7 @@ export const get_ExecInspect = v.object({
   }),
 });
 
-export type get_VolumeList = v.Output<typeof get_VolumeList>;
+export type get_VolumeList = v.InferOutput<typeof get_VolumeList>;
 export const get_VolumeList = v.object({
   method: v.literal("GET"),
   path: v.literal("/volumes"),
@@ -2512,7 +2512,7 @@ export const get_VolumeList = v.object({
   response: VolumeListResponse,
 });
 
-export type post_VolumeCreate = v.Output<typeof post_VolumeCreate>;
+export type post_VolumeCreate = v.InferOutput<typeof post_VolumeCreate>;
 export const post_VolumeCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/volumes/create"),
@@ -2522,7 +2522,7 @@ export const post_VolumeCreate = v.object({
   response: Volume,
 });
 
-export type get_VolumeInspect = v.Output<typeof get_VolumeInspect>;
+export type get_VolumeInspect = v.InferOutput<typeof get_VolumeInspect>;
 export const get_VolumeInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/volumes/{name}"),
@@ -2534,7 +2534,7 @@ export const get_VolumeInspect = v.object({
   response: Volume,
 });
 
-export type put_VolumeUpdate = v.Output<typeof put_VolumeUpdate>;
+export type put_VolumeUpdate = v.InferOutput<typeof put_VolumeUpdate>;
 export const put_VolumeUpdate = v.object({
   method: v.literal("PUT"),
   path: v.literal("/volumes/{name}"),
@@ -2552,7 +2552,7 @@ export const put_VolumeUpdate = v.object({
   response: v.unknown(),
 });
 
-export type delete_VolumeDelete = v.Output<typeof delete_VolumeDelete>;
+export type delete_VolumeDelete = v.InferOutput<typeof delete_VolumeDelete>;
 export const delete_VolumeDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/volumes/{name}"),
@@ -2567,7 +2567,7 @@ export const delete_VolumeDelete = v.object({
   response: v.unknown(),
 });
 
-export type post_VolumePrune = v.Output<typeof post_VolumePrune>;
+export type post_VolumePrune = v.InferOutput<typeof post_VolumePrune>;
 export const post_VolumePrune = v.object({
   method: v.literal("POST"),
   path: v.literal("/volumes/prune"),
@@ -2582,7 +2582,7 @@ export const post_VolumePrune = v.object({
   }),
 });
 
-export type get_NetworkList = v.Output<typeof get_NetworkList>;
+export type get_NetworkList = v.InferOutput<typeof get_NetworkList>;
 export const get_NetworkList = v.object({
   method: v.literal("GET"),
   path: v.literal("/networks"),
@@ -2594,7 +2594,7 @@ export const get_NetworkList = v.object({
   response: v.array(Network),
 });
 
-export type get_NetworkInspect = v.Output<typeof get_NetworkInspect>;
+export type get_NetworkInspect = v.InferOutput<typeof get_NetworkInspect>;
 export const get_NetworkInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/networks/{id}"),
@@ -2610,7 +2610,7 @@ export const get_NetworkInspect = v.object({
   response: Network,
 });
 
-export type delete_NetworkDelete = v.Output<typeof delete_NetworkDelete>;
+export type delete_NetworkDelete = v.InferOutput<typeof delete_NetworkDelete>;
 export const delete_NetworkDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/networks/{id}"),
@@ -2622,22 +2622,22 @@ export const delete_NetworkDelete = v.object({
   response: v.unknown(),
 });
 
-export type post_NetworkCreate = v.Output<typeof post_NetworkCreate>;
+export type post_NetworkCreate = v.InferOutput<typeof post_NetworkCreate>;
 export const post_NetworkCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/networks/create"),
   parameters: v.object({
     body: v.object({
       Name: v.string(),
-      CheckDuplicate: v.optional(v.union([v.boolean(), v.undefinedType()])),
-      Driver: v.optional(v.union([v.string(), v.undefinedType()])),
-      Internal: v.optional(v.union([v.boolean(), v.undefinedType()])),
-      Attachable: v.optional(v.union([v.boolean(), v.undefinedType()])),
-      Ingress: v.optional(v.union([v.boolean(), v.undefinedType()])),
-      IPAM: v.optional(v.union([IPAM, v.undefinedType()])),
-      EnableIPv6: v.optional(v.union([v.boolean(), v.undefinedType()])),
-      Options: v.optional(v.union([v.unknown(), v.undefinedType()])),
-      Labels: v.optional(v.union([v.unknown(), v.undefinedType()])),
+      CheckDuplicate: v.optional(v.union([v.boolean(), v.undefined_()])),
+      Driver: v.optional(v.union([v.string(), v.undefined_()])),
+      Internal: v.optional(v.union([v.boolean(), v.undefined_()])),
+      Attachable: v.optional(v.union([v.boolean(), v.undefined_()])),
+      Ingress: v.optional(v.union([v.boolean(), v.undefined_()])),
+      IPAM: v.optional(v.union([IPAM, v.undefined_()])),
+      EnableIPv6: v.optional(v.union([v.boolean(), v.undefined_()])),
+      Options: v.optional(v.union([v.unknown(), v.undefined_()])),
+      Labels: v.optional(v.union([v.unknown(), v.undefined_()])),
     }),
   }),
   response: v.object({
@@ -2646,7 +2646,7 @@ export const post_NetworkCreate = v.object({
   }),
 });
 
-export type post_NetworkConnect = v.Output<typeof post_NetworkConnect>;
+export type post_NetworkConnect = v.InferOutput<typeof post_NetworkConnect>;
 export const post_NetworkConnect = v.object({
   method: v.literal("POST"),
   path: v.literal("/networks/{id}/connect"),
@@ -2662,7 +2662,7 @@ export const post_NetworkConnect = v.object({
   response: v.unknown(),
 });
 
-export type post_NetworkDisconnect = v.Output<typeof post_NetworkDisconnect>;
+export type post_NetworkDisconnect = v.InferOutput<typeof post_NetworkDisconnect>;
 export const post_NetworkDisconnect = v.object({
   method: v.literal("POST"),
   path: v.literal("/networks/{id}/disconnect"),
@@ -2678,7 +2678,7 @@ export const post_NetworkDisconnect = v.object({
   response: v.unknown(),
 });
 
-export type post_NetworkPrune = v.Output<typeof post_NetworkPrune>;
+export type post_NetworkPrune = v.InferOutput<typeof post_NetworkPrune>;
 export const post_NetworkPrune = v.object({
   method: v.literal("POST"),
   path: v.literal("/networks/prune"),
@@ -2692,7 +2692,7 @@ export const post_NetworkPrune = v.object({
   }),
 });
 
-export type get_PluginList = v.Output<typeof get_PluginList>;
+export type get_PluginList = v.InferOutput<typeof get_PluginList>;
 export const get_PluginList = v.object({
   method: v.literal("GET"),
   path: v.literal("/plugins"),
@@ -2704,7 +2704,7 @@ export const get_PluginList = v.object({
   response: v.array(Plugin),
 });
 
-export type get_GetPluginPrivileges = v.Output<typeof get_GetPluginPrivileges>;
+export type get_GetPluginPrivileges = v.InferOutput<typeof get_GetPluginPrivileges>;
 export const get_GetPluginPrivileges = v.object({
   method: v.literal("GET"),
   path: v.literal("/plugins/privileges"),
@@ -2716,14 +2716,14 @@ export const get_GetPluginPrivileges = v.object({
   response: v.array(PluginPrivilege),
 });
 
-export type post_PluginPull = v.Output<typeof post_PluginPull>;
+export type post_PluginPull = v.InferOutput<typeof post_PluginPull>;
 export const post_PluginPull = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/pull"),
   parameters: v.object({
     query: v.object({
       remote: v.string(),
-      name: v.union([v.string(), v.undefinedType()]),
+      name: v.union([v.string(), v.undefined_()]),
     }),
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
@@ -2733,7 +2733,7 @@ export const post_PluginPull = v.object({
   response: v.unknown(),
 });
 
-export type get_PluginInspect = v.Output<typeof get_PluginInspect>;
+export type get_PluginInspect = v.InferOutput<typeof get_PluginInspect>;
 export const get_PluginInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/plugins/{name}/json"),
@@ -2745,7 +2745,7 @@ export const get_PluginInspect = v.object({
   response: Plugin,
 });
 
-export type delete_PluginDelete = v.Output<typeof delete_PluginDelete>;
+export type delete_PluginDelete = v.InferOutput<typeof delete_PluginDelete>;
 export const delete_PluginDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/plugins/{name}"),
@@ -2760,7 +2760,7 @@ export const delete_PluginDelete = v.object({
   response: Plugin,
 });
 
-export type post_PluginEnable = v.Output<typeof post_PluginEnable>;
+export type post_PluginEnable = v.InferOutput<typeof post_PluginEnable>;
 export const post_PluginEnable = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/enable"),
@@ -2775,7 +2775,7 @@ export const post_PluginEnable = v.object({
   response: v.unknown(),
 });
 
-export type post_PluginDisable = v.Output<typeof post_PluginDisable>;
+export type post_PluginDisable = v.InferOutput<typeof post_PluginDisable>;
 export const post_PluginDisable = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/disable"),
@@ -2790,7 +2790,7 @@ export const post_PluginDisable = v.object({
   response: v.unknown(),
 });
 
-export type post_PluginUpgrade = v.Output<typeof post_PluginUpgrade>;
+export type post_PluginUpgrade = v.InferOutput<typeof post_PluginUpgrade>;
 export const post_PluginUpgrade = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/upgrade"),
@@ -2809,7 +2809,7 @@ export const post_PluginUpgrade = v.object({
   response: v.unknown(),
 });
 
-export type post_PluginCreate = v.Output<typeof post_PluginCreate>;
+export type post_PluginCreate = v.InferOutput<typeof post_PluginCreate>;
 export const post_PluginCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/create"),
@@ -2821,7 +2821,7 @@ export const post_PluginCreate = v.object({
   response: v.unknown(),
 });
 
-export type post_PluginPush = v.Output<typeof post_PluginPush>;
+export type post_PluginPush = v.InferOutput<typeof post_PluginPush>;
 export const post_PluginPush = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/push"),
@@ -2833,7 +2833,7 @@ export const post_PluginPush = v.object({
   response: v.unknown(),
 });
 
-export type post_PluginSet = v.Output<typeof post_PluginSet>;
+export type post_PluginSet = v.InferOutput<typeof post_PluginSet>;
 export const post_PluginSet = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/set"),
@@ -2846,7 +2846,7 @@ export const post_PluginSet = v.object({
   response: v.unknown(),
 });
 
-export type get_NodeList = v.Output<typeof get_NodeList>;
+export type get_NodeList = v.InferOutput<typeof get_NodeList>;
 export const get_NodeList = v.object({
   method: v.literal("GET"),
   path: v.literal("/nodes"),
@@ -2858,7 +2858,7 @@ export const get_NodeList = v.object({
   response: v.array(Node),
 });
 
-export type get_NodeInspect = v.Output<typeof get_NodeInspect>;
+export type get_NodeInspect = v.InferOutput<typeof get_NodeInspect>;
 export const get_NodeInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/nodes/{id}"),
@@ -2870,7 +2870,7 @@ export const get_NodeInspect = v.object({
   response: Node,
 });
 
-export type delete_NodeDelete = v.Output<typeof delete_NodeDelete>;
+export type delete_NodeDelete = v.InferOutput<typeof delete_NodeDelete>;
 export const delete_NodeDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/nodes/{id}"),
@@ -2885,7 +2885,7 @@ export const delete_NodeDelete = v.object({
   response: v.unknown(),
 });
 
-export type post_NodeUpdate = v.Output<typeof post_NodeUpdate>;
+export type post_NodeUpdate = v.InferOutput<typeof post_NodeUpdate>;
 export const post_NodeUpdate = v.object({
   method: v.literal("POST"),
   path: v.literal("/nodes/{id}/update"),
@@ -2901,7 +2901,7 @@ export const post_NodeUpdate = v.object({
   response: v.unknown(),
 });
 
-export type get_SwarmInspect = v.Output<typeof get_SwarmInspect>;
+export type get_SwarmInspect = v.InferOutput<typeof get_SwarmInspect>;
 export const get_SwarmInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/swarm"),
@@ -2909,7 +2909,7 @@ export const get_SwarmInspect = v.object({
   response: Swarm,
 });
 
-export type post_SwarmInit = v.Output<typeof post_SwarmInit>;
+export type post_SwarmInit = v.InferOutput<typeof post_SwarmInit>;
 export const post_SwarmInit = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/init"),
@@ -2928,7 +2928,7 @@ export const post_SwarmInit = v.object({
   response: v.string(),
 });
 
-export type post_SwarmJoin = v.Output<typeof post_SwarmJoin>;
+export type post_SwarmJoin = v.InferOutput<typeof post_SwarmJoin>;
 export const post_SwarmJoin = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/join"),
@@ -2944,7 +2944,7 @@ export const post_SwarmJoin = v.object({
   response: v.unknown(),
 });
 
-export type post_SwarmLeave = v.Output<typeof post_SwarmLeave>;
+export type post_SwarmLeave = v.InferOutput<typeof post_SwarmLeave>;
 export const post_SwarmLeave = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/leave"),
@@ -2956,23 +2956,23 @@ export const post_SwarmLeave = v.object({
   response: v.unknown(),
 });
 
-export type post_SwarmUpdate = v.Output<typeof post_SwarmUpdate>;
+export type post_SwarmUpdate = v.InferOutput<typeof post_SwarmUpdate>;
 export const post_SwarmUpdate = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/update"),
   parameters: v.object({
     query: v.object({
       version: v.number(),
-      rotateWorkerToken: v.union([v.boolean(), v.undefinedType()]),
-      rotateManagerToken: v.union([v.boolean(), v.undefinedType()]),
-      rotateManagerUnlockKey: v.union([v.boolean(), v.undefinedType()]),
+      rotateWorkerToken: v.union([v.boolean(), v.undefined_()]),
+      rotateManagerToken: v.union([v.boolean(), v.undefined_()]),
+      rotateManagerUnlockKey: v.union([v.boolean(), v.undefined_()]),
     }),
     body: SwarmSpec,
   }),
   response: v.unknown(),
 });
 
-export type get_SwarmUnlockkey = v.Output<typeof get_SwarmUnlockkey>;
+export type get_SwarmUnlockkey = v.InferOutput<typeof get_SwarmUnlockkey>;
 export const get_SwarmUnlockkey = v.object({
   method: v.literal("GET"),
   path: v.literal("/swarm/unlockkey"),
@@ -2982,7 +2982,7 @@ export const get_SwarmUnlockkey = v.object({
   }),
 });
 
-export type post_SwarmUnlock = v.Output<typeof post_SwarmUnlock>;
+export type post_SwarmUnlock = v.InferOutput<typeof post_SwarmUnlock>;
 export const post_SwarmUnlock = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/unlock"),
@@ -2994,7 +2994,7 @@ export const post_SwarmUnlock = v.object({
   response: v.unknown(),
 });
 
-export type get_ServiceList = v.Output<typeof get_ServiceList>;
+export type get_ServiceList = v.InferOutput<typeof get_ServiceList>;
 export const get_ServiceList = v.object({
   method: v.literal("GET"),
   path: v.literal("/services"),
@@ -3007,7 +3007,7 @@ export const get_ServiceList = v.object({
   response: v.array(Service),
 });
 
-export type post_ServiceCreate = v.Output<typeof post_ServiceCreate>;
+export type post_ServiceCreate = v.InferOutput<typeof post_ServiceCreate>;
 export const post_ServiceCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/services/create"),
@@ -3023,7 +3023,7 @@ export const post_ServiceCreate = v.object({
   }),
 });
 
-export type get_ServiceInspect = v.Output<typeof get_ServiceInspect>;
+export type get_ServiceInspect = v.InferOutput<typeof get_ServiceInspect>;
 export const get_ServiceInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/services/{id}"),
@@ -3038,7 +3038,7 @@ export const get_ServiceInspect = v.object({
   response: Service,
 });
 
-export type delete_ServiceDelete = v.Output<typeof delete_ServiceDelete>;
+export type delete_ServiceDelete = v.InferOutput<typeof delete_ServiceDelete>;
 export const delete_ServiceDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/services/{id}"),
@@ -3050,15 +3050,15 @@ export const delete_ServiceDelete = v.object({
   response: v.unknown(),
 });
 
-export type post_ServiceUpdate = v.Output<typeof post_ServiceUpdate>;
+export type post_ServiceUpdate = v.InferOutput<typeof post_ServiceUpdate>;
 export const post_ServiceUpdate = v.object({
   method: v.literal("POST"),
   path: v.literal("/services/{id}/update"),
   parameters: v.object({
     query: v.object({
       version: v.number(),
-      registryAuthFrom: v.union([v.literal("spec"), v.literal("previous-spec"), v.undefinedType()]),
-      rollback: v.union([v.string(), v.undefinedType()]),
+      registryAuthFrom: v.union([v.literal("spec"), v.literal("previous-spec"), v.undefined_()]),
+      rollback: v.union([v.string(), v.undefined_()]),
     }),
     path: v.object({
       id: v.string(),
@@ -3071,7 +3071,7 @@ export const post_ServiceUpdate = v.object({
   response: ServiceUpdateResponse,
 });
 
-export type get_ServiceLogs = v.Output<typeof get_ServiceLogs>;
+export type get_ServiceLogs = v.InferOutput<typeof get_ServiceLogs>;
 export const get_ServiceLogs = v.object({
   method: v.literal("GET"),
   path: v.literal("/services/{id}/logs"),
@@ -3092,7 +3092,7 @@ export const get_ServiceLogs = v.object({
   response: v.unknown(),
 });
 
-export type get_TaskList = v.Output<typeof get_TaskList>;
+export type get_TaskList = v.InferOutput<typeof get_TaskList>;
 export const get_TaskList = v.object({
   method: v.literal("GET"),
   path: v.literal("/tasks"),
@@ -3104,7 +3104,7 @@ export const get_TaskList = v.object({
   response: v.array(Task),
 });
 
-export type get_TaskInspect = v.Output<typeof get_TaskInspect>;
+export type get_TaskInspect = v.InferOutput<typeof get_TaskInspect>;
 export const get_TaskInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/tasks/{id}"),
@@ -3116,7 +3116,7 @@ export const get_TaskInspect = v.object({
   response: Task,
 });
 
-export type get_TaskLogs = v.Output<typeof get_TaskLogs>;
+export type get_TaskLogs = v.InferOutput<typeof get_TaskLogs>;
 export const get_TaskLogs = v.object({
   method: v.literal("GET"),
   path: v.literal("/tasks/{id}/logs"),
@@ -3137,7 +3137,7 @@ export const get_TaskLogs = v.object({
   response: v.unknown(),
 });
 
-export type get_SecretList = v.Output<typeof get_SecretList>;
+export type get_SecretList = v.InferOutput<typeof get_SecretList>;
 export const get_SecretList = v.object({
   method: v.literal("GET"),
   path: v.literal("/secrets"),
@@ -3149,7 +3149,7 @@ export const get_SecretList = v.object({
   response: v.array(Secret),
 });
 
-export type post_SecretCreate = v.Output<typeof post_SecretCreate>;
+export type post_SecretCreate = v.InferOutput<typeof post_SecretCreate>;
 export const post_SecretCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/secrets/create"),
@@ -3159,7 +3159,7 @@ export const post_SecretCreate = v.object({
   response: IdResponse,
 });
 
-export type get_SecretInspect = v.Output<typeof get_SecretInspect>;
+export type get_SecretInspect = v.InferOutput<typeof get_SecretInspect>;
 export const get_SecretInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/secrets/{id}"),
@@ -3171,7 +3171,7 @@ export const get_SecretInspect = v.object({
   response: Secret,
 });
 
-export type delete_SecretDelete = v.Output<typeof delete_SecretDelete>;
+export type delete_SecretDelete = v.InferOutput<typeof delete_SecretDelete>;
 export const delete_SecretDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/secrets/{id}"),
@@ -3183,7 +3183,7 @@ export const delete_SecretDelete = v.object({
   response: v.unknown(),
 });
 
-export type post_SecretUpdate = v.Output<typeof post_SecretUpdate>;
+export type post_SecretUpdate = v.InferOutput<typeof post_SecretUpdate>;
 export const post_SecretUpdate = v.object({
   method: v.literal("POST"),
   path: v.literal("/secrets/{id}/update"),
@@ -3199,7 +3199,7 @@ export const post_SecretUpdate = v.object({
   response: v.unknown(),
 });
 
-export type get_ConfigList = v.Output<typeof get_ConfigList>;
+export type get_ConfigList = v.InferOutput<typeof get_ConfigList>;
 export const get_ConfigList = v.object({
   method: v.literal("GET"),
   path: v.literal("/configs"),
@@ -3211,7 +3211,7 @@ export const get_ConfigList = v.object({
   response: v.array(Config),
 });
 
-export type post_ConfigCreate = v.Output<typeof post_ConfigCreate>;
+export type post_ConfigCreate = v.InferOutput<typeof post_ConfigCreate>;
 export const post_ConfigCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/configs/create"),
@@ -3221,7 +3221,7 @@ export const post_ConfigCreate = v.object({
   response: IdResponse,
 });
 
-export type get_ConfigInspect = v.Output<typeof get_ConfigInspect>;
+export type get_ConfigInspect = v.InferOutput<typeof get_ConfigInspect>;
 export const get_ConfigInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/configs/{id}"),
@@ -3233,7 +3233,7 @@ export const get_ConfigInspect = v.object({
   response: Config,
 });
 
-export type delete_ConfigDelete = v.Output<typeof delete_ConfigDelete>;
+export type delete_ConfigDelete = v.InferOutput<typeof delete_ConfigDelete>;
 export const delete_ConfigDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/configs/{id}"),
@@ -3245,7 +3245,7 @@ export const delete_ConfigDelete = v.object({
   response: v.unknown(),
 });
 
-export type post_ConfigUpdate = v.Output<typeof post_ConfigUpdate>;
+export type post_ConfigUpdate = v.InferOutput<typeof post_ConfigUpdate>;
 export const post_ConfigUpdate = v.object({
   method: v.literal("POST"),
   path: v.literal("/configs/{id}/update"),
@@ -3261,7 +3261,7 @@ export const post_ConfigUpdate = v.object({
   response: v.unknown(),
 });
 
-export type get_DistributionInspect = v.Output<typeof get_DistributionInspect>;
+export type get_DistributionInspect = v.InferOutput<typeof get_DistributionInspect>;
 export const get_DistributionInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/distribution/{name}/json"),
@@ -3273,7 +3273,7 @@ export const get_DistributionInspect = v.object({
   response: DistributionInspect,
 });
 
-export type post_Session = v.Output<typeof post_Session>;
+export type post_Session = v.InferOutput<typeof post_Session>;
 export const post_Session = v.object({
   method: v.literal("POST"),
   path: v.literal("/session"),
@@ -3281,7 +3281,7 @@ export const post_Session = v.object({
   response: v.unknown(),
 });
 
-export type __ENDPOINTS_END__ = v.Output<typeof __ENDPOINTS_END__>;
+export type __ENDPOINTS_END__ = v.InferOutput<typeof __ENDPOINTS_END__>;
 export const __ENDPOINTS_END__ = v.object({});
 
 // <EndpointByMethod>
@@ -3473,8 +3473,8 @@ export class ApiClient {
   // <ApiClient.get>
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.Output<TEndpoint>["parameters"]>
-  ): Promise<v.Output<TEndpoint>["response"]> {
+    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
+  ): Promise<v.InferOutput<TEndpoint>["response"]> {
     return this.fetcher("get", this.baseUrl + path, params[0]);
   }
   // </ApiClient.get>
@@ -3482,8 +3482,8 @@ export class ApiClient {
   // <ApiClient.post>
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.Output<TEndpoint>["parameters"]>
-  ): Promise<v.Output<TEndpoint>["response"]> {
+    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
+  ): Promise<v.InferOutput<TEndpoint>["response"]> {
     return this.fetcher("post", this.baseUrl + path, params[0]);
   }
   // </ApiClient.post>
@@ -3491,8 +3491,8 @@ export class ApiClient {
   // <ApiClient.delete>
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.Output<TEndpoint>["parameters"]>
-  ): Promise<v.Output<TEndpoint>["response"]> {
+    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
+  ): Promise<v.InferOutput<TEndpoint>["response"]> {
     return this.fetcher("delete", this.baseUrl + path, params[0]);
   }
   // </ApiClient.delete>
@@ -3500,8 +3500,8 @@ export class ApiClient {
   // <ApiClient.put>
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.Output<TEndpoint>["parameters"]>
-  ): Promise<v.Output<TEndpoint>["response"]> {
+    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
+  ): Promise<v.InferOutput<TEndpoint>["response"]> {
     return this.fetcher("put", this.baseUrl + path, params[0]);
   }
   // </ApiClient.put>
@@ -3509,8 +3509,8 @@ export class ApiClient {
   // <ApiClient.head>
   head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.Output<TEndpoint>["parameters"]>
-  ): Promise<v.Output<TEndpoint>["response"]> {
+    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
+  ): Promise<v.InferOutput<TEndpoint>["response"]> {
     return this.fetcher("head", this.baseUrl + path, params[0]);
   }
   // </ApiClient.head>

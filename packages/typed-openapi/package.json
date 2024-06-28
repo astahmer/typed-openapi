@@ -22,7 +22,7 @@
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
     "@changesets/cli": "^2.26.2",
-    "@sinclair/typebox-codegen": "^0.10.2",
+    "@sinclair/typebox-codegen": "^0.10.3",
     "arktype": "1.0.18-alpha",
     "cac": "^6.7.14",
     "openapi3-ts": "^4.1.2",
