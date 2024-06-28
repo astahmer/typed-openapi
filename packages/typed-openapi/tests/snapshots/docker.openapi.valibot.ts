@@ -1,10 +1,10 @@
-import v from "valibot";
+import * as v from "valibot";
 
 export type Port = v.Output<typeof Port>;
 export const Port = v.object({
-  IP: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
+  IP: v.optional(v.union([v.string(), v.undefinedType()])),
   PrivatePort: v.number(),
-  PublicPort: v.optional(v.union([v.number(), v.any(/* unsupported */)])),
+  PublicPort: v.optional(v.union([v.number(), v.undefinedType()])),
   Type: v.union([v.literal("tcp"), v.literal("udp"), v.literal("sctp")]),
 });
 
@@ -136,8 +136,8 @@ export const Resources = v.object({
   MemorySwappiness: v.optional(v.number()),
   NanoCpus: v.optional(v.number()),
   OomKillDisable: v.optional(v.boolean()),
-  Init: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
-  PidsLimit: v.optional(v.union([v.number(), v.any(/* unsupported */)])),
+  Init: v.optional(v.union([v.boolean(), v.null_()])),
+  PidsLimit: v.optional(v.union([v.number(), v.null_()])),
   Ulimits: v.optional(
     v.array(
       v.object({
@@ -202,7 +202,7 @@ export const HealthcheckResult = v.union([
     ExitCode: v.optional(v.number()),
     Output: v.optional(v.string()),
   }),
-  v.any(/* unsupported */),
+  v.null_(),
 ]);
 
 export type Health = v.Output<typeof Health>;
@@ -214,7 +214,7 @@ export const Health = v.union([
     FailingStreak: v.optional(v.number()),
     Log: v.optional(v.array(HealthcheckResult)),
   }),
-  v.any(/* unsupported */),
+  v.null_(),
 ]);
 
 export type PortBinding = v.Output<typeof PortBinding>;
@@ -227,7 +227,7 @@ export type PortMap = v.Output<typeof PortMap>;
 export const PortMap = v.unknown();
 
 export type HostConfig = v.Output<typeof HostConfig>;
-export const HostConfig = v.merge([
+export const HostConfig = v.intersect([
   Resources,
   v.object({
     Binds: v.optional(v.array(v.string())),
@@ -257,7 +257,7 @@ export const HostConfig = v.merge([
     VolumeDriver: v.optional(v.string()),
     VolumesFrom: v.optional(v.array(v.string())),
     Mounts: v.optional(v.array(Mount)),
-    ConsoleSize: v.optional(v.union([v.array(v.number()), v.any(/* unsupported */)])),
+    ConsoleSize: v.optional(v.union([v.array(v.number()), v.null_()])),
     Annotations: v.optional(v.unknown()),
     CapAdd: v.optional(v.array(v.string())),
     CapDrop: v.optional(v.array(v.string())),
@@ -297,25 +297,25 @@ export const ContainerConfig = v.object({
   AttachStdin: v.optional(v.boolean()),
   AttachStdout: v.optional(v.boolean()),
   AttachStderr: v.optional(v.boolean()),
-  ExposedPorts: v.optional(v.union([v.unknown(), v.any(/* unsupported */)])),
+  ExposedPorts: v.optional(v.union([v.unknown(), v.null_()])),
   Tty: v.optional(v.boolean()),
   OpenStdin: v.optional(v.boolean()),
   StdinOnce: v.optional(v.boolean()),
   Env: v.optional(v.array(v.string())),
   Cmd: v.optional(v.array(v.string())),
   Healthcheck: v.optional(HealthConfig),
-  ArgsEscaped: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
+  ArgsEscaped: v.optional(v.union([v.boolean(), v.null_()])),
   Image: v.optional(v.string()),
   Volumes: v.optional(v.unknown()),
   WorkingDir: v.optional(v.string()),
   Entrypoint: v.optional(v.array(v.string())),
-  NetworkDisabled: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
-  MacAddress: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
-  OnBuild: v.optional(v.union([v.array(v.string()), v.any(/* unsupported */)])),
+  NetworkDisabled: v.optional(v.union([v.boolean(), v.null_()])),
+  MacAddress: v.optional(v.union([v.string(), v.null_()])),
+  OnBuild: v.optional(v.union([v.array(v.string()), v.null_()])),
   Labels: v.optional(v.unknown()),
-  StopSignal: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
-  StopTimeout: v.optional(v.union([v.number(), v.any(/* unsupported */)])),
-  Shell: v.optional(v.union([v.array(v.string()), v.any(/* unsupported */)])),
+  StopSignal: v.optional(v.union([v.string(), v.null_()])),
+  StopTimeout: v.optional(v.union([v.number(), v.null_()])),
+  Shell: v.optional(v.union([v.array(v.string()), v.null_()])),
 });
 
 export type EndpointIPAMConfig = v.Output<typeof EndpointIPAMConfig>;
@@ -325,7 +325,7 @@ export const EndpointIPAMConfig = v.union([
     IPv6Address: v.optional(v.string()),
     LinkLocalIPs: v.optional(v.array(v.string())),
   }),
-  v.any(/* unsupported */),
+  v.null_(),
 ]);
 
 export type EndpointSettings = v.Output<typeof EndpointSettings>;
@@ -342,7 +342,7 @@ export const EndpointSettings = v.object({
   GlobalIPv6Address: v.optional(v.string()),
   GlobalIPv6PrefixLen: v.optional(v.number()),
   MacAddress: v.optional(v.string()),
-  DriverOpts: v.optional(v.union([v.unknown(), v.any(/* unsupported */)])),
+  DriverOpts: v.optional(v.union([v.unknown(), v.null_()])),
 });
 
 export type NetworkingConfig = v.Output<typeof NetworkingConfig>;
@@ -365,8 +365,8 @@ export const NetworkSettings = v.object({
   LinkLocalIPv6PrefixLen: v.optional(v.number()),
   Ports: v.optional(PortMap),
   SandboxKey: v.optional(v.string()),
-  SecondaryIPAddresses: v.optional(v.union([v.array(Address), v.any(/* unsupported */)])),
-  SecondaryIPv6Addresses: v.optional(v.union([v.array(Address), v.any(/* unsupported */)])),
+  SecondaryIPAddresses: v.optional(v.union([v.array(Address), v.null_()])),
+  SecondaryIPv6Addresses: v.optional(v.union([v.array(Address), v.null_()])),
   EndpointID: v.optional(v.string()),
   Gateway: v.optional(v.string()),
   GlobalIPv6Address: v.optional(v.string()),
@@ -407,21 +407,21 @@ export const ImageInspect = v.object({
   Author: v.optional(v.string()),
   Config: v.optional(ContainerConfig),
   Architecture: v.optional(v.string()),
-  Variant: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
+  Variant: v.optional(v.union([v.string(), v.null_()])),
   Os: v.optional(v.string()),
-  OsVersion: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
+  OsVersion: v.optional(v.union([v.string(), v.null_()])),
   Size: v.optional(v.number()),
   VirtualSize: v.optional(v.number()),
   GraphDriver: v.optional(GraphDriverData),
   RootFS: v.optional(
     v.object({
       Type: v.string(),
-      Layers: v.optional(v.union([v.array(v.string()), v.any(/* unsupported */)])),
+      Layers: v.optional(v.union([v.array(v.string()), v.undefinedType()])),
     }),
   ),
   Metadata: v.optional(
     v.object({
-      LastTagTime: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
+      LastTagTime: v.optional(v.union([v.string(), v.null_()])),
     }),
   ),
 });
@@ -435,7 +435,7 @@ export const ImageSummary = v.object({
   Created: v.number(),
   Size: v.number(),
   SharedSize: v.number(),
-  VirtualSize: v.optional(v.union([v.number(), v.any(/* unsupported */)])),
+  VirtualSize: v.optional(v.union([v.number(), v.undefinedType()])),
   Labels: v.unknown(),
   Containers: v.number(),
 });
@@ -538,11 +538,11 @@ export const Volume = v.object({
   Name: v.string(),
   Driver: v.string(),
   Mountpoint: v.string(),
-  CreatedAt: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
-  Status: v.optional(v.union([v.unknown(), v.any(/* unsupported */)])),
+  CreatedAt: v.optional(v.union([v.string(), v.undefinedType()])),
+  Status: v.optional(v.union([v.unknown(), v.undefinedType()])),
   Labels: v.unknown(),
   Scope: v.union([v.literal("local"), v.literal("global")]),
-  ClusterVolume: v.optional(v.union([ClusterVolume, v.any(/* unsupported */)])),
+  ClusterVolume: v.optional(v.union([ClusterVolume, v.undefinedType()])),
   Options: v.unknown(),
   UsageData: v.optional(
     v.union([
@@ -550,8 +550,8 @@ export const Volume = v.object({
         Size: v.number(),
         RefCount: v.number(),
       }),
-      v.any(/* unsupported */),
-      v.any(/* unsupported */),
+      v.null_(),
+      v.undefinedType(),
     ]),
   ),
 });
@@ -644,8 +644,8 @@ export const BuildInfo = v.object({
 export type BuildCache = v.Output<typeof BuildCache>;
 export const BuildCache = v.object({
   ID: v.optional(v.string()),
-  Parent: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
-  Parents: v.optional(v.union([v.array(v.string()), v.any(/* unsupported */)])),
+  Parent: v.optional(v.union([v.string(), v.null_()])),
+  Parents: v.optional(v.union([v.array(v.string()), v.null_()])),
   Type: v.optional(
     v.union([
       v.literal("internal"),
@@ -661,7 +661,7 @@ export const BuildCache = v.object({
   Shared: v.optional(v.boolean()),
   Size: v.optional(v.number()),
   CreatedAt: v.optional(v.string()),
-  LastUsedAt: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
+  LastUsedAt: v.optional(v.union([v.string(), v.null_()])),
   UsageCount: v.optional(v.number()),
 });
 
@@ -736,7 +736,7 @@ export const PluginPrivilege = v.object({
 
 export type Plugin = v.Output<typeof Plugin>;
 export const Plugin = v.object({
-  Id: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
+  Id: v.optional(v.union([v.string(), v.undefinedType()])),
   Name: v.string(),
   Enabled: v.boolean(),
   Settings: v.object({
@@ -745,15 +745,15 @@ export const Plugin = v.object({
     Args: v.array(v.string()),
     Devices: v.array(PluginDevice),
   }),
-  PluginReference: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
+  PluginReference: v.optional(v.union([v.string(), v.undefinedType()])),
   Config: v.object({
-    DockerVersion: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
+    DockerVersion: v.optional(v.union([v.string(), v.undefinedType()])),
     Description: v.string(),
     Documentation: v.string(),
     Interface: v.object({
       Types: v.array(PluginInterfaceType),
       Socket: v.string(),
-      ProtocolScheme: v.optional(v.union([v.literal(""), v.literal("moby.plugins.http/v1"), v.any(/* unsupported */)])),
+      ProtocolScheme: v.optional(v.union([v.literal(""), v.literal("moby.plugins.http/v1"), v.undefinedType()])),
     }),
     Entrypoint: v.array(v.string()),
     WorkDir: v.string(),
@@ -763,7 +763,7 @@ export const Plugin = v.object({
           UID: v.optional(v.number()),
           GID: v.optional(v.number()),
         }),
-        v.any(/* unsupported */),
+        v.undefinedType(),
       ]),
     ),
     Network: v.object({
@@ -791,7 +791,7 @@ export const Plugin = v.object({
           type: v.optional(v.string()),
           diff_ids: v.optional(v.array(v.string())),
         }),
-        v.any(/* unsupported */),
+        v.undefinedType(),
       ]),
     ),
   }),
@@ -866,7 +866,7 @@ export const ManagerStatus = v.union([
     Reachability: v.optional(Reachability),
     Addr: v.optional(v.string()),
   }),
-  v.any(/* unsupported */),
+  v.null_(),
 ]);
 
 export type Node = v.Output<typeof Node>;
@@ -890,7 +890,7 @@ export const SwarmSpec = v.object({
       v.object({
         TaskHistoryRetentionLimit: v.optional(v.number()),
       }),
-      v.any(/* unsupported */),
+      v.null_(),
     ]),
   ),
   Raft: v.optional(
@@ -907,7 +907,7 @@ export const SwarmSpec = v.object({
       v.object({
         HeartbeatPeriod: v.optional(v.number()),
       }),
-      v.any(/* unsupported */),
+      v.null_(),
     ]),
   ),
   CAConfig: v.optional(
@@ -928,7 +928,7 @@ export const SwarmSpec = v.object({
         SigningCAKey: v.optional(v.string()),
         ForceRotate: v.optional(v.number()),
       }),
-      v.any(/* unsupported */),
+      v.null_(),
     ]),
   ),
   EncryptionConfig: v.optional(
@@ -962,7 +962,7 @@ export const ClusterInfo = v.union([
     DefaultAddrPool: v.optional(v.array(v.string())),
     SubnetSize: v.optional(v.number()),
   }),
-  v.any(/* unsupported */),
+  v.null_(),
 ]);
 
 export type JoinTokens = v.Output<typeof JoinTokens>;
@@ -972,7 +972,7 @@ export const JoinTokens = v.object({
 });
 
 export type Swarm = v.Output<typeof Swarm>;
-export const Swarm = v.merge([
+export const Swarm = v.intersect([
   ClusterInfo,
   v.object({
     JoinTokens: v.optional(JoinTokens),
@@ -1076,7 +1076,7 @@ export const TaskSpec = v.object({
         ),
       ),
       Isolation: v.optional(v.union([v.literal("default"), v.literal("process"), v.literal("hyperv")])),
-      Init: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
+      Init: v.optional(v.union([v.boolean(), v.null_()])),
       Sysctls: v.optional(v.unknown()),
       CapabilityAdd: v.optional(v.array(v.string())),
       CapabilityDrop: v.optional(v.array(v.string())),
@@ -1336,7 +1336,7 @@ export const ContainerSummary = v.object({
 export type Driver = v.Output<typeof Driver>;
 export const Driver = v.object({
   Name: v.string(),
-  Options: v.optional(v.union([v.unknown(), v.any(/* unsupported */)])),
+  Options: v.optional(v.union([v.unknown(), v.undefinedType()])),
 });
 
 export type SecretSpec = v.Output<typeof SecretSpec>;
@@ -1400,7 +1400,7 @@ export const ContainerState = v.union([
     FinishedAt: v.optional(v.string()),
     Health: v.optional(Health),
   }),
-  v.any(/* unsupported */),
+  v.null_(),
 ]);
 
 export type ContainerCreateResponse = v.Output<typeof ContainerCreateResponse>;
@@ -1417,7 +1417,7 @@ export const ContainerWaitExitError = v.object({
 export type ContainerWaitResponse = v.Output<typeof ContainerWaitResponse>;
 export const ContainerWaitResponse = v.object({
   StatusCode: v.number(),
-  Error: v.optional(v.union([ContainerWaitExitError, v.any(/* unsupported */)])),
+  Error: v.optional(v.union([ContainerWaitExitError, v.undefinedType()])),
 });
 
 export type SystemVersion = v.Output<typeof SystemVersion>;
@@ -1432,7 +1432,7 @@ export const SystemVersion = v.object({
       v.object({
         Name: v.string(),
         Version: v.string(),
-        Details: v.optional(v.union([v.object({}), v.any(/* unsupported */), v.any(/* unsupported */)])),
+        Details: v.optional(v.union([v.object({}), v.null_(), v.undefinedType()])),
       }),
     ),
   ),
@@ -1464,7 +1464,7 @@ export const IndexInfo = v.union([
     Secure: v.optional(v.boolean()),
     Official: v.optional(v.boolean()),
   }),
-  v.any(/* unsupported */),
+  v.null_(),
 ]);
 
 export type RegistryServiceConfig = v.Output<typeof RegistryServiceConfig>;
@@ -1476,13 +1476,13 @@ export const RegistryServiceConfig = v.union([
     IndexConfigs: v.optional(v.unknown()),
     Mirrors: v.optional(v.array(v.string())),
   }),
-  v.any(/* unsupported */),
+  v.null_(),
 ]);
 
 export type Runtime = v.Output<typeof Runtime>;
 export const Runtime = v.object({
   path: v.optional(v.string()),
-  runtimeArgs: v.optional(v.union([v.array(v.string()), v.any(/* unsupported */)])),
+  runtimeArgs: v.optional(v.union([v.array(v.string()), v.null_()])),
 });
 
 export type LocalNodeState = v.Output<typeof LocalNodeState>;
@@ -1508,9 +1508,9 @@ export const SwarmInfo = v.object({
   LocalNodeState: v.optional(LocalNodeState),
   ControlAvailable: v.optional(v.boolean()),
   Error: v.optional(v.string()),
-  RemoteManagers: v.optional(v.union([v.array(PeerNode), v.any(/* unsupported */)])),
-  Nodes: v.optional(v.union([v.number(), v.any(/* unsupported */)])),
-  Managers: v.optional(v.union([v.number(), v.any(/* unsupported */)])),
+  RemoteManagers: v.optional(v.union([v.array(PeerNode), v.null_()])),
+  Nodes: v.optional(v.union([v.number(), v.null_()])),
+  Managers: v.optional(v.union([v.number(), v.null_()])),
   Cluster: v.optional(ClusterInfo),
 });
 
@@ -1670,7 +1670,7 @@ export const post_ContainerCreate = v.object({
       name: v.optional(v.string()),
       platform: v.optional(v.string()),
     }),
-    body: v.merge([
+    body: v.intersect([
       ContainerConfig,
       v.object({
         HostConfig: v.optional(HostConfig),
@@ -1711,7 +1711,7 @@ export const get_ContainerInspect = v.object({
     MountLabel: v.optional(v.string()),
     ProcessLabel: v.optional(v.string()),
     AppArmorProfile: v.optional(v.string()),
-    ExecIDs: v.optional(v.union([v.array(v.string()), v.any(/* unsupported */)])),
+    ExecIDs: v.optional(v.union([v.array(v.string()), v.null_()])),
     HostConfig: v.optional(HostConfig),
     GraphDriver: v.optional(GraphDriverData),
     SizeRw: v.optional(v.number()),
@@ -1887,7 +1887,7 @@ export const post_ContainerUpdate = v.object({
     path: v.object({
       id: v.string(),
     }),
-    body: v.merge([
+    body: v.intersect([
       Resources,
       v.object({
         RestartPolicy: v.optional(RestartPolicy),
@@ -2032,8 +2032,8 @@ export const put_PutContainerArchive = v.object({
   parameters: v.object({
     query: v.object({
       path: v.string(),
-      noOverwriteDirNonDir: v.union([v.string(), v.any(/* unsupported */)]),
-      copyUIDGID: v.union([v.string(), v.any(/* unsupported */)]),
+      noOverwriteDirNonDir: v.union([v.string(), v.undefinedType()]),
+      copyUIDGID: v.union([v.string(), v.undefinedType()]),
     }),
     path: v.object({
       id: v.string(),
@@ -2257,8 +2257,8 @@ export const get_ImageSearch = v.object({
   parameters: v.object({
     query: v.object({
       term: v.string(),
-      limit: v.union([v.number(), v.any(/* unsupported */)]),
-      filters: v.union([v.string(), v.any(/* unsupported */)]),
+      limit: v.union([v.number(), v.undefinedType()]),
+      filters: v.union([v.string(), v.undefinedType()]),
     }),
   }),
   response: v.array(
@@ -2430,7 +2430,7 @@ export const post_ContainerExec = v.object({
       AttachStdin: v.optional(v.boolean()),
       AttachStdout: v.optional(v.boolean()),
       AttachStderr: v.optional(v.boolean()),
-      ConsoleSize: v.optional(v.union([v.array(v.number()), v.any(/* unsupported */)])),
+      ConsoleSize: v.optional(v.union([v.array(v.number()), v.null_()])),
       DetachKeys: v.optional(v.string()),
       Tty: v.optional(v.boolean()),
       Env: v.optional(v.array(v.string())),
@@ -2454,7 +2454,7 @@ export const post_ExecStart = v.object({
     body: v.object({
       Detach: v.optional(v.boolean()),
       Tty: v.optional(v.boolean()),
-      ConsoleSize: v.optional(v.union([v.array(v.number()), v.any(/* unsupported */)])),
+      ConsoleSize: v.optional(v.union([v.array(v.number()), v.null_()])),
     }),
   }),
   response: v.unknown(),
@@ -2629,15 +2629,15 @@ export const post_NetworkCreate = v.object({
   parameters: v.object({
     body: v.object({
       Name: v.string(),
-      CheckDuplicate: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
-      Driver: v.optional(v.union([v.string(), v.any(/* unsupported */)])),
-      Internal: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
-      Attachable: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
-      Ingress: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
-      IPAM: v.optional(v.union([IPAM, v.any(/* unsupported */)])),
-      EnableIPv6: v.optional(v.union([v.boolean(), v.any(/* unsupported */)])),
-      Options: v.optional(v.union([v.unknown(), v.any(/* unsupported */)])),
-      Labels: v.optional(v.union([v.unknown(), v.any(/* unsupported */)])),
+      CheckDuplicate: v.optional(v.union([v.boolean(), v.undefinedType()])),
+      Driver: v.optional(v.union([v.string(), v.undefinedType()])),
+      Internal: v.optional(v.union([v.boolean(), v.undefinedType()])),
+      Attachable: v.optional(v.union([v.boolean(), v.undefinedType()])),
+      Ingress: v.optional(v.union([v.boolean(), v.undefinedType()])),
+      IPAM: v.optional(v.union([IPAM, v.undefinedType()])),
+      EnableIPv6: v.optional(v.union([v.boolean(), v.undefinedType()])),
+      Options: v.optional(v.union([v.unknown(), v.undefinedType()])),
+      Labels: v.optional(v.union([v.unknown(), v.undefinedType()])),
     }),
   }),
   response: v.object({
@@ -2723,7 +2723,7 @@ export const post_PluginPull = v.object({
   parameters: v.object({
     query: v.object({
       remote: v.string(),
-      name: v.union([v.string(), v.any(/* unsupported */)]),
+      name: v.union([v.string(), v.undefinedType()]),
     }),
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
@@ -2963,9 +2963,9 @@ export const post_SwarmUpdate = v.object({
   parameters: v.object({
     query: v.object({
       version: v.number(),
-      rotateWorkerToken: v.union([v.boolean(), v.any(/* unsupported */)]),
-      rotateManagerToken: v.union([v.boolean(), v.any(/* unsupported */)]),
-      rotateManagerUnlockKey: v.union([v.boolean(), v.any(/* unsupported */)]),
+      rotateWorkerToken: v.union([v.boolean(), v.undefinedType()]),
+      rotateManagerToken: v.union([v.boolean(), v.undefinedType()]),
+      rotateManagerUnlockKey: v.union([v.boolean(), v.undefinedType()]),
     }),
     body: SwarmSpec,
   }),
@@ -3015,7 +3015,7 @@ export const post_ServiceCreate = v.object({
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
     }),
-    body: v.merge([ServiceSpec, v.unknown()]),
+    body: v.intersect([ServiceSpec, v.unknown()]),
   }),
   response: v.object({
     ID: v.optional(v.string()),
@@ -3057,8 +3057,8 @@ export const post_ServiceUpdate = v.object({
   parameters: v.object({
     query: v.object({
       version: v.number(),
-      registryAuthFrom: v.union([v.literal("spec"), v.literal("previous-spec"), v.any(/* unsupported */)]),
-      rollback: v.union([v.string(), v.any(/* unsupported */)]),
+      registryAuthFrom: v.union([v.literal("spec"), v.literal("previous-spec"), v.undefinedType()]),
+      rollback: v.union([v.string(), v.undefinedType()]),
     }),
     path: v.object({
       id: v.string(),
@@ -3066,7 +3066,7 @@ export const post_ServiceUpdate = v.object({
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
     }),
-    body: v.merge([ServiceSpec, v.unknown()]),
+    body: v.intersect([ServiceSpec, v.unknown()]),
   }),
   response: ServiceUpdateResponse,
 });
@@ -3154,7 +3154,7 @@ export const post_SecretCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/secrets/create"),
   parameters: v.object({
-    body: v.merge([SecretSpec, v.unknown()]),
+    body: v.intersect([SecretSpec, v.unknown()]),
   }),
   response: IdResponse,
 });
@@ -3216,7 +3216,7 @@ export const post_ConfigCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/configs/create"),
   parameters: v.object({
-    body: v.merge([ConfigSpec, v.unknown()]),
+    body: v.intersect([ConfigSpec, v.unknown()]),
   }),
   response: IdResponse,
 });
