@@ -33,7 +33,7 @@ const inferByRuntime = {
   arktype: (input: string) => `${input}["infer"]`,
   "io-ts": (input: string) => `t.TypeOf<${input}>`,
   typebox: (input: string) => `Static<${input}>`,
-  valibot: (input: string) => `v.Output<${input}>`,
+  valibot: (input: string) => `v.InferOutput<${input}>`,
   yup: (input: string) => `y.InferType<${input}>`,
   zod: (input: string) => `z.infer<${input}>`,
 };
@@ -294,7 +294,8 @@ export class ApiClient {
       .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["response"]`)
       .otherwise(() => `TEndpoint["response"]`)}> {
       return this.fetcher("${method}", this.baseUrl + path, params[0])${match(ctx.runtime)
-          .with("zod", () => `as Promise<${infer(`TEndpoint["response"]`)}>`).otherwise(() => ``)};
+            .with("zod", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
+            .otherwise(() => ``)};
     }
     // </ApiClient.${method}>
     `
