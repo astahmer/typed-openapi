@@ -153,7 +153,7 @@ const isAllowedParamMediaTypes = (
 
 const isResponseMediaType = (mediaType: string) => mediaType === "application/json";
 const getAlias = ({ path, method, operation }: Endpoint) =>
-  method + "_" + capitalize(operation.operationId ?? pathToVariableName(path));
+  (method + "_" + capitalize(operation.operationId ?? pathToVariableName(path))).replace(/-/g, "__");
 
 type MutationMethod = "post" | "put" | "patch" | "delete";
 type Method = "get" | "head" | "options" | MutationMethod;
