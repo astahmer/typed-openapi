@@ -1,5 +1,13 @@
 # typed-openapi
 
+## 0.6.0
+
+### Minor Changes
+
+- c5daa58: Upgraded codegen dependency to provide newer runtime validator output
+
+  This is a BREAKING CHANGE for valibot/yup users
+
 ## 0.5.0
 
 ### Minor Changes
