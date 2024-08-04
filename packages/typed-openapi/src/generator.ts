@@ -33,7 +33,7 @@ const inferByRuntime = {
   arktype: (input: string) => `${input}["infer"]`,
   "io-ts": (input: string) => `t.TypeOf<${input}>`,
   typebox: (input: string) => `Static<${input}>`,
-  valibot: (input: string) => `v.Output<${input}>`,
+  valibot: (input: string) => `v.InferOutput<${input}>`,
   yup: (input: string) => `y.InferType<${input}>`,
   zod: (input: string) => `z.infer<${input}>`,
 };
