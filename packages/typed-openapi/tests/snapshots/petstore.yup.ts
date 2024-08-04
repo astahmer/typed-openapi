@@ -6,15 +6,7 @@ export const Order = y.object({
   petId: y.number().required().optional(),
   quantity: y.number().required().optional(),
   shipDate: y.string().required().optional(),
-  status: y
-    .mixed()
-    .oneOf([
-      y.mixed((value): value is "placed" => value === "placed").required(),
-      y.mixed((value): value is "approved" => value === "approved").required(),
-      y.mixed((value): value is "delivered" => value === "delivered").required(),
-    ])
-    .required()
-    .optional(),
+  status: y.mixed().oneOf(["placed", "approved", "delivered"]).required().optional(),
   complete: y.boolean().required().optional(),
 });
 
@@ -121,15 +113,7 @@ export const get_FindPetsByStatus = {
   path: y.mixed((value): value is "/pet/findByStatus" => value === "/pet/findByStatus").required(),
   parameters: y.object({
     query: y.object({
-      status: y
-        .mixed()
-        .oneOf([
-          y.mixed((value): value is "available" => value === "available").required(),
-          y.mixed((value): value is "pending" => value === "pending").required(),
-          y.mixed((value): value is "sold" => value === "sold").required(),
-        ])
-        .required()
-        .optional(),
+      status: y.mixed().oneOf(["available", "pending", "sold"]).required().optional(),
     }),
   }),
   response: y.array(Pet),
