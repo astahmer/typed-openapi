@@ -3557,7 +3557,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
   ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("get", this.baseUrl + path, params[0]);
+    return this.fetcher("get", this.baseUrl + path, params[0]) as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.get>
 
@@ -3566,7 +3566,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
   ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("post", this.baseUrl + path, params[0]);
+    return this.fetcher("post", this.baseUrl + path, params[0]) as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.post>
 
@@ -3575,7 +3575,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
   ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("delete", this.baseUrl + path, params[0]);
+    return this.fetcher("delete", this.baseUrl + path, params[0]) as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.delete>
 
@@ -3584,7 +3584,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
   ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("put", this.baseUrl + path, params[0]);
+    return this.fetcher("put", this.baseUrl + path, params[0]) as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.put>
 
@@ -3593,7 +3593,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
   ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("head", this.baseUrl + path, params[0]);
+    return this.fetcher("head", this.baseUrl + path, params[0]) as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.head>
 }

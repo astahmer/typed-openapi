@@ -307,7 +307,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ): Promise<TEndpoint["response"]> {
-          return this.fetcher("put", this.baseUrl + path, params[0]);
+          return this.fetcher("put", this.baseUrl + path, params[0]) as Promise<TEndpoint["response"]>;
         }
         // </ApiClient.put>
 
@@ -316,7 +316,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ): Promise<TEndpoint["response"]> {
-          return this.fetcher("post", this.baseUrl + path, params[0]);
+          return this.fetcher("post", this.baseUrl + path, params[0]) as Promise<TEndpoint["response"]>;
         }
         // </ApiClient.post>
 
@@ -325,7 +325,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ): Promise<TEndpoint["response"]> {
-          return this.fetcher("get", this.baseUrl + path, params[0]);
+          return this.fetcher("get", this.baseUrl + path, params[0]) as Promise<TEndpoint["response"]>;
         }
         // </ApiClient.get>
 
@@ -334,7 +334,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ): Promise<TEndpoint["response"]> {
-          return this.fetcher("delete", this.baseUrl + path, params[0]);
+          return this.fetcher("delete", this.baseUrl + path, params[0]) as Promise<TEndpoint["response"]>;
         }
         // </ApiClient.delete>
       }
