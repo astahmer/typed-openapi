@@ -410,7 +410,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
   ): Promise<y.InferType<TEndpoint["response"]>> {
-    return this.fetcher("put", this.baseUrl + path, params[0]);
+    return this.fetcher("put", this.baseUrl + path, params[0]) as Promise<y.InferType<TEndpoint["response"]>>;
   }
   // </ApiClient.put>
 
@@ -419,7 +419,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
   ): Promise<y.InferType<TEndpoint["response"]>> {
-    return this.fetcher("post", this.baseUrl + path, params[0]);
+    return this.fetcher("post", this.baseUrl + path, params[0]) as Promise<y.InferType<TEndpoint["response"]>>;
   }
   // </ApiClient.post>
 
@@ -428,7 +428,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
   ): Promise<y.InferType<TEndpoint["response"]>> {
-    return this.fetcher("get", this.baseUrl + path, params[0]);
+    return this.fetcher("get", this.baseUrl + path, params[0]) as Promise<y.InferType<TEndpoint["response"]>>;
   }
   // </ApiClient.get>
 
@@ -437,7 +437,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
   ): Promise<y.InferType<TEndpoint["response"]>> {
-    return this.fetcher("delete", this.baseUrl + path, params[0]);
+    return this.fetcher("delete", this.baseUrl + path, params[0]) as Promise<y.InferType<TEndpoint["response"]>>;
   }
   // </ApiClient.delete>
 }
