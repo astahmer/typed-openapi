@@ -294,7 +294,9 @@ export class ApiClient {
       .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["response"]`)
       .otherwise(() => `TEndpoint["response"]`)}> {
       return this.fetcher("${method}", this.baseUrl + path, params[0])${match(ctx.runtime)
-          .with("zod", () => `as Promise<${infer(`TEndpoint["response"]`)}>`).otherwise(() => ``)};
+            .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
+            .with("arktype", "io-ts", "typebox", "valibot", () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`)
+            .otherwise(() => `as Promise<TEndpoint["response"]>`)};
     }
     // </ApiClient.${method}>
     `
