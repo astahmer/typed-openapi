@@ -4,7 +4,7 @@ import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints";
 import { allowedRuntimes, generateFile } from "../src/generator";
 
-const samples = ["petstore", "docker.openapi"];
+const samples = ["petstore", "docker.openapi", "long-operation-id"];
 
 samples.forEach((sample) => {
   describe(`generate-rutime-${sample}`, async () => {
