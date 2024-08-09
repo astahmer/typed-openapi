@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 0.8.0
+
+### Minor Changes
+
+- d260cd4: Fix zod and yup runtime generated endpoint schema type errors due to long operationId
+
 ## 0.7.0
 
 ### Minor Changes
