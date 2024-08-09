@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 0.7.0
+
+### Minor Changes
+
+- cf83e52: Add type cast in ApiClient methods to match the desired type
+
 ## 0.6.0
 
 ### Minor Changes
