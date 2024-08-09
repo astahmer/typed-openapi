@@ -46,11 +46,11 @@ const replacerByRuntime = {
   yup: (line: string) =>
     line
       .replace(/y\.InferType<\s*?typeof (.*?)\s*?>/g, "typeof $1")
-      .replace(new RegExp(`(${endpointExport.source})` + new RegExp(/(.*? )(y\.object)(\()/).source, "g"), "$1$2("),
+      .replace(new RegExp(`(${endpointExport.source})` + new RegExp(/([\s\S]*? )(y\.object)(\()/).source, "g"), "$1$2("),
   zod: (line: string) =>
     line
       .replace(/z\.infer<\s*?typeof (.*?)\s*?>/g, "typeof $1")
-      .replace(new RegExp(`(${endpointExport.source})` + new RegExp(/(.*? )(z\.object)(\()/).source, "g"), "$1$2("),
+      .replace(new RegExp(`(${endpointExport.source})` + new RegExp(/([\s\S]*? )(z\.object)(\()/).source, "g"), "$1$2("),
 };
 
 export const generateFile = (options: GeneratorOptions) => {
