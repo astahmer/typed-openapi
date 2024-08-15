@@ -7,6 +7,7 @@ export type get_Get_users = Static<typeof get_Get_users>;
 export const get_Get_users = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/users"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: Type.Array(Type.String()),
 });
@@ -17,6 +18,7 @@ export type post_Very_very_very_very_very_very_very_very_very_very_long = Static
 export const post_Very_very_very_very_very_very_very_very_very_very_long = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/users"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: Type.Partial(
       Type.Object({
@@ -59,6 +61,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -68,6 +72,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

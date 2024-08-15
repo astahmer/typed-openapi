@@ -1882,6 +1882,7 @@ export type get_ContainerList = typeof get_ContainerList;
 export const get_ContainerList = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/containers/json" => value === "/containers/json").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       all: y.boolean().required().optional(),
@@ -1897,6 +1898,7 @@ export type post_ContainerCreate = typeof post_ContainerCreate;
 export const post_ContainerCreate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/create" => value === "/containers/create").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       name: y.string().required().optional(),
@@ -1995,6 +1997,7 @@ export type get_ContainerInspect = typeof get_ContainerInspect;
 export const get_ContainerInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/containers/{id}/json" => value === "/containers/{id}/json").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       size: y.boolean().required().optional(),
@@ -2043,6 +2046,7 @@ export type get_ContainerTop = typeof get_ContainerTop;
 export const get_ContainerTop = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/containers/{id}/top" => value === "/containers/{id}/top").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       ps_args: y.string().required().optional(),
@@ -2061,6 +2065,7 @@ export type get_ContainerLogs = typeof get_ContainerLogs;
 export const get_ContainerLogs = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/containers/{id}/logs" => value === "/containers/{id}/logs").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       follow: y.boolean().required().optional(),
@@ -2082,6 +2087,7 @@ export type get_ContainerChanges = typeof get_ContainerChanges;
 export const get_ContainerChanges = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/containers/{id}/changes" => value === "/containers/{id}/changes").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -2094,6 +2100,7 @@ export type get_ContainerExport = typeof get_ContainerExport;
 export const get_ContainerExport = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/containers/{id}/export" => value === "/containers/{id}/export").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -2106,6 +2113,7 @@ export type get_ContainerStats = typeof get_ContainerStats;
 export const get_ContainerStats = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/containers/{id}/stats" => value === "/containers/{id}/stats").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       stream: y.boolean().required().optional(),
@@ -2122,6 +2130,7 @@ export type post_ContainerResize = typeof post_ContainerResize;
 export const post_ContainerResize = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/{id}/resize" => value === "/containers/{id}/resize").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       h: y.number().required().optional(),
@@ -2138,6 +2147,7 @@ export type post_ContainerStart = typeof post_ContainerStart;
 export const post_ContainerStart = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/{id}/start" => value === "/containers/{id}/start").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       detachKeys: y.string().required().optional(),
@@ -2153,6 +2163,7 @@ export type post_ContainerStop = typeof post_ContainerStop;
 export const post_ContainerStop = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/{id}/stop" => value === "/containers/{id}/stop").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       signal: y.string().required().optional(),
@@ -2169,6 +2180,7 @@ export type post_ContainerRestart = typeof post_ContainerRestart;
 export const post_ContainerRestart = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/{id}/restart" => value === "/containers/{id}/restart").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       signal: y.string().required().optional(),
@@ -2185,6 +2197,7 @@ export type post_ContainerKill = typeof post_ContainerKill;
 export const post_ContainerKill = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/{id}/kill" => value === "/containers/{id}/kill").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       signal: y.string().required().optional(),
@@ -2200,6 +2213,7 @@ export type post_ContainerUpdate = typeof post_ContainerUpdate;
 export const post_ContainerUpdate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/{id}/update" => value === "/containers/{id}/update").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -2277,6 +2291,7 @@ export type post_ContainerRename = typeof post_ContainerRename;
 export const post_ContainerRename = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/{id}/rename" => value === "/containers/{id}/rename").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       name: y.string().required(),
@@ -2292,6 +2307,7 @@ export type post_ContainerPause = typeof post_ContainerPause;
 export const post_ContainerPause = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/{id}/pause" => value === "/containers/{id}/pause").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -2304,6 +2320,7 @@ export type post_ContainerUnpause = typeof post_ContainerUnpause;
 export const post_ContainerUnpause = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/{id}/unpause" => value === "/containers/{id}/unpause").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -2316,6 +2333,7 @@ export type post_ContainerAttach = typeof post_ContainerAttach;
 export const post_ContainerAttach = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/{id}/attach" => value === "/containers/{id}/attach").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       detachKeys: y.string().required().optional(),
@@ -2336,6 +2354,7 @@ export type get_ContainerAttachWebsocket = typeof get_ContainerAttachWebsocket;
 export const get_ContainerAttachWebsocket = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/containers/{id}/attach/ws" => value === "/containers/{id}/attach/ws").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       detachKeys: y.string().required().optional(),
@@ -2356,6 +2375,7 @@ export type post_ContainerWait = typeof post_ContainerWait;
 export const post_ContainerWait = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/{id}/wait" => value === "/containers/{id}/wait").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       condition: y.mixed().oneOf(["not-running", "next-exit", "removed"]).required().optional(),
@@ -2371,6 +2391,7 @@ export type delete_ContainerDelete = typeof delete_ContainerDelete;
 export const delete_ContainerDelete = {
   method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
   path: y.mixed((value): value is "/containers/{id}" => value === "/containers/{id}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       v: y.boolean().required().optional(),
@@ -2388,6 +2409,7 @@ export type get_ContainerArchive = typeof get_ContainerArchive;
 export const get_ContainerArchive = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/containers/{id}/archive" => value === "/containers/{id}/archive").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       path: y.string().required(),
@@ -2403,6 +2425,7 @@ export type put_PutContainerArchive = typeof put_PutContainerArchive;
 export const put_PutContainerArchive = {
   method: y.mixed((value): value is "PUT" => value === "PUT").required(),
   path: y.mixed((value): value is "/containers/{id}/archive" => value === "/containers/{id}/archive").required(),
+  requestFormat: y.mixed((value): value is "binary" => value === "binary").required(),
   parameters: y.object({
     query: y.object({
       path: y.string().required(),
@@ -2433,6 +2456,7 @@ export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
 export const head_ContainerArchiveInfo = {
   method: y.mixed((value): value is "HEAD" => value === "HEAD").required(),
   path: y.mixed((value): value is "/containers/{id}/archive" => value === "/containers/{id}/archive").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       path: y.string().required(),
@@ -2448,6 +2472,7 @@ export type post_ContainerPrune = typeof post_ContainerPrune;
 export const post_ContainerPrune = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/prune" => value === "/containers/prune").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       filters: y.string().required().optional(),
@@ -2463,6 +2488,7 @@ export type get_ImageList = typeof get_ImageList;
 export const get_ImageList = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/images/json" => value === "/images/json").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       all: y.boolean().required().optional(),
@@ -2478,6 +2504,7 @@ export type post_ImageBuild = typeof post_ImageBuild;
 export const post_ImageBuild = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/build" => value === "/build").required(),
+  requestFormat: y.mixed((value): value is "binary" => value === "binary").required(),
   parameters: y.object({
     query: y.object({
       dockerfile: y.string().required().optional(),
@@ -2521,6 +2548,7 @@ export type post_BuildPrune = typeof post_BuildPrune;
 export const post_BuildPrune = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/build/prune" => value === "/build/prune").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       "keep-storage": y.number().required().optional(),
@@ -2538,6 +2566,7 @@ export type post_ImageCreate = typeof post_ImageCreate;
 export const post_ImageCreate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/images/create" => value === "/images/create").required(),
+  requestFormat: y.mixed((value): value is "text" => value === "text").required(),
   parameters: y.object({
     query: y.object({
       fromImage: y.string().required().optional(),
@@ -2560,6 +2589,7 @@ export type get_ImageInspect = typeof get_ImageInspect;
 export const get_ImageInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/images/{name}/json" => value === "/images/{name}/json").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       name: y.string().required(),
@@ -2572,6 +2602,7 @@ export type get_ImageHistory = typeof get_ImageHistory;
 export const get_ImageHistory = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/images/{name}/history" => value === "/images/{name}/history").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       name: y.string().required(),
@@ -2593,6 +2624,7 @@ export type post_ImagePush = typeof post_ImagePush;
 export const post_ImagePush = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/images/{name}/push" => value === "/images/{name}/push").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       tag: y.string().required().optional(),
@@ -2611,6 +2643,7 @@ export type post_ImageTag = typeof post_ImageTag;
 export const post_ImageTag = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/images/{name}/tag" => value === "/images/{name}/tag").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       repo: y.string().required().optional(),
@@ -2627,6 +2660,7 @@ export type delete_ImageDelete = typeof delete_ImageDelete;
 export const delete_ImageDelete = {
   method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
   path: y.mixed((value): value is "/images/{name}" => value === "/images/{name}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       force: y.boolean().required().optional(),
@@ -2643,6 +2677,7 @@ export type get_ImageSearch = typeof get_ImageSearch;
 export const get_ImageSearch = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/images/search" => value === "/images/search").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       term: y.string().required(),
@@ -2677,6 +2712,7 @@ export type post_ImagePrune = typeof post_ImagePrune;
 export const post_ImagePrune = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/images/prune" => value === "/images/prune").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       filters: y.string().required().optional(),
@@ -2692,6 +2728,7 @@ export type post_SystemAuth = typeof post_SystemAuth;
 export const post_SystemAuth = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/auth" => value === "/auth").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: AuthConfig,
   }),
@@ -2702,6 +2739,7 @@ export type get_SystemInfo = typeof get_SystemInfo;
 export const get_SystemInfo = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/info" => value === "/info").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: SystemInfo,
 };
@@ -2710,6 +2748,7 @@ export type get_SystemVersion = typeof get_SystemVersion;
 export const get_SystemVersion = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/version" => value === "/version").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: SystemVersion,
 };
@@ -2718,6 +2757,7 @@ export type get_SystemPing = typeof get_SystemPing;
 export const get_SystemPing = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/_ping" => value === "/_ping").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -2726,6 +2766,7 @@ export type head_SystemPingHead = typeof head_SystemPingHead;
 export const head_SystemPingHead = {
   method: y.mixed((value): value is "HEAD" => value === "HEAD").required(),
   path: y.mixed((value): value is "/_ping" => value === "/_ping").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -2734,6 +2775,7 @@ export type post_ImageCommit = typeof post_ImageCommit;
 export const post_ImageCommit = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/commit" => value === "/commit").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       container: y.string().required().optional(),
@@ -2753,6 +2795,7 @@ export type get_SystemEvents = typeof get_SystemEvents;
 export const get_SystemEvents = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/events" => value === "/events").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       since: y.string().required().optional(),
@@ -2767,6 +2810,7 @@ export type get_SystemDataUsage = typeof get_SystemDataUsage;
 export const get_SystemDataUsage = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/system/df" => value === "/system/df").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       type: y.array(y.mixed().oneOf(["container", "image", "volume", "build-cache"]).required()).optional(),
@@ -2785,6 +2829,7 @@ export type get_ImageGet = typeof get_ImageGet;
 export const get_ImageGet = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/images/{name}/get" => value === "/images/{name}/get").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       name: y.string().required(),
@@ -2797,6 +2842,7 @@ export type get_ImageGetAll = typeof get_ImageGetAll;
 export const get_ImageGetAll = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/images/get" => value === "/images/get").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       names: y.array(y.string().required()).optional(),
@@ -2809,6 +2855,7 @@ export type post_ImageLoad = typeof post_ImageLoad;
 export const post_ImageLoad = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/images/load" => value === "/images/load").required(),
+  requestFormat: y.mixed((value): value is "text" => value === "text").required(),
   parameters: y.object({
     query: y.object({
       quiet: y.boolean().required().optional(),
@@ -2821,6 +2868,7 @@ export type post_ContainerExec = typeof post_ContainerExec;
 export const post_ContainerExec = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/containers/{id}/exec" => value === "/containers/{id}/exec").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -2853,6 +2901,7 @@ export type post_ExecStart = typeof post_ExecStart;
 export const post_ExecStart = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/exec/{id}/start" => value === "/exec/{id}/start").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -2877,6 +2926,7 @@ export type post_ExecResize = typeof post_ExecResize;
 export const post_ExecResize = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/exec/{id}/resize" => value === "/exec/{id}/resize").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       h: y.number().required().optional(),
@@ -2893,6 +2943,7 @@ export type get_ExecInspect = typeof get_ExecInspect;
 export const get_ExecInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/exec/{id}/json" => value === "/exec/{id}/json").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -2917,6 +2968,7 @@ export type get_VolumeList = typeof get_VolumeList;
 export const get_VolumeList = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/volumes" => value === "/volumes").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       filters: y.string().required().optional(),
@@ -2929,6 +2981,7 @@ export type post_VolumeCreate = typeof post_VolumeCreate;
 export const post_VolumeCreate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/volumes/create" => value === "/volumes/create").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: VolumeCreateOptions,
   }),
@@ -2939,6 +2992,7 @@ export type get_VolumeInspect = typeof get_VolumeInspect;
 export const get_VolumeInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/volumes/{name}" => value === "/volumes/{name}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       name: y.string().required(),
@@ -2951,6 +3005,7 @@ export type put_VolumeUpdate = typeof put_VolumeUpdate;
 export const put_VolumeUpdate = {
   method: y.mixed((value): value is "PUT" => value === "PUT").required(),
   path: y.mixed((value): value is "/volumes/{name}" => value === "/volumes/{name}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       version: y.number().required(),
@@ -2969,6 +3024,7 @@ export type delete_VolumeDelete = typeof delete_VolumeDelete;
 export const delete_VolumeDelete = {
   method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
   path: y.mixed((value): value is "/volumes/{name}" => value === "/volumes/{name}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       force: y.boolean().required().optional(),
@@ -2984,6 +3040,7 @@ export type post_VolumePrune = typeof post_VolumePrune;
 export const post_VolumePrune = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/volumes/prune" => value === "/volumes/prune").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       filters: y.string().required().optional(),
@@ -2999,6 +3056,7 @@ export type get_NetworkList = typeof get_NetworkList;
 export const get_NetworkList = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/networks" => value === "/networks").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       filters: y.string().required().optional(),
@@ -3011,6 +3069,7 @@ export type get_NetworkInspect = typeof get_NetworkInspect;
 export const get_NetworkInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/networks/{id}" => value === "/networks/{id}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       verbose: y.boolean().required().optional(),
@@ -3027,6 +3086,7 @@ export type delete_NetworkDelete = typeof delete_NetworkDelete;
 export const delete_NetworkDelete = {
   method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
   path: y.mixed((value): value is "/networks/{id}" => value === "/networks/{id}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -3039,6 +3099,7 @@ export type post_NetworkCreate = typeof post_NetworkCreate;
 export const post_NetworkCreate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/networks/create" => value === "/networks/create").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: y.object({
       Name: y.string().required(),
@@ -3123,6 +3184,7 @@ export type post_NetworkConnect = typeof post_NetworkConnect;
 export const post_NetworkConnect = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/networks/{id}/connect" => value === "/networks/{id}/connect").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -3139,6 +3201,7 @@ export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
 export const post_NetworkDisconnect = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/networks/{id}/disconnect" => value === "/networks/{id}/disconnect").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -3155,6 +3218,7 @@ export type post_NetworkPrune = typeof post_NetworkPrune;
 export const post_NetworkPrune = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/networks/prune" => value === "/networks/prune").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       filters: y.string().required().optional(),
@@ -3169,6 +3233,7 @@ export type get_PluginList = typeof get_PluginList;
 export const get_PluginList = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/plugins" => value === "/plugins").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       filters: y.string().required().optional(),
@@ -3181,6 +3246,7 @@ export type get_GetPluginPrivileges = typeof get_GetPluginPrivileges;
 export const get_GetPluginPrivileges = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/plugins/privileges" => value === "/plugins/privileges").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       remote: y.string().required(),
@@ -3193,6 +3259,7 @@ export type post_PluginPull = typeof post_PluginPull;
 export const post_PluginPull = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/plugins/pull" => value === "/plugins/pull").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       remote: y.string().required(),
@@ -3216,6 +3283,7 @@ export type get_PluginInspect = typeof get_PluginInspect;
 export const get_PluginInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/plugins/{name}/json" => value === "/plugins/{name}/json").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       name: y.string().required(),
@@ -3228,6 +3296,7 @@ export type delete_PluginDelete = typeof delete_PluginDelete;
 export const delete_PluginDelete = {
   method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
   path: y.mixed((value): value is "/plugins/{name}" => value === "/plugins/{name}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       force: y.boolean().required().optional(),
@@ -3243,6 +3312,7 @@ export type post_PluginEnable = typeof post_PluginEnable;
 export const post_PluginEnable = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/plugins/{name}/enable" => value === "/plugins/{name}/enable").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       timeout: y.number().required().optional(),
@@ -3258,6 +3328,7 @@ export type post_PluginDisable = typeof post_PluginDisable;
 export const post_PluginDisable = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/plugins/{name}/disable" => value === "/plugins/{name}/disable").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       force: y.boolean().required().optional(),
@@ -3273,6 +3344,7 @@ export type post_PluginUpgrade = typeof post_PluginUpgrade;
 export const post_PluginUpgrade = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/plugins/{name}/upgrade" => value === "/plugins/{name}/upgrade").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       remote: y.string().required(),
@@ -3292,6 +3364,7 @@ export type post_PluginCreate = typeof post_PluginCreate;
 export const post_PluginCreate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/plugins/create" => value === "/plugins/create").required(),
+  requestFormat: y.mixed((value): value is "text" => value === "text").required(),
   parameters: y.object({
     query: y.object({
       name: y.string().required(),
@@ -3304,6 +3377,7 @@ export type post_PluginPush = typeof post_PluginPush;
 export const post_PluginPush = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/plugins/{name}/push" => value === "/plugins/{name}/push").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       name: y.string().required(),
@@ -3316,6 +3390,7 @@ export type post_PluginSet = typeof post_PluginSet;
 export const post_PluginSet = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/plugins/{name}/set" => value === "/plugins/{name}/set").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       name: y.string().required(),
@@ -3329,6 +3404,7 @@ export type get_NodeList = typeof get_NodeList;
 export const get_NodeList = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/nodes" => value === "/nodes").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       filters: y.string().required().optional(),
@@ -3341,6 +3417,7 @@ export type get_NodeInspect = typeof get_NodeInspect;
 export const get_NodeInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/nodes/{id}" => value === "/nodes/{id}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -3353,6 +3430,7 @@ export type delete_NodeDelete = typeof delete_NodeDelete;
 export const delete_NodeDelete = {
   method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
   path: y.mixed((value): value is "/nodes/{id}" => value === "/nodes/{id}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       force: y.boolean().required().optional(),
@@ -3368,6 +3446,7 @@ export type post_NodeUpdate = typeof post_NodeUpdate;
 export const post_NodeUpdate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/nodes/{id}/update" => value === "/nodes/{id}/update").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       version: y.number().required(),
@@ -3384,6 +3463,7 @@ export type get_SwarmInspect = typeof get_SwarmInspect;
 export const get_SwarmInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/swarm" => value === "/swarm").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: Swarm,
 };
@@ -3392,6 +3472,7 @@ export type post_SwarmInit = typeof post_SwarmInit;
 export const post_SwarmInit = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/swarm/init" => value === "/swarm/init").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: y.object({
       ListenAddr: y.string().required().optional(),
@@ -3411,6 +3492,7 @@ export type post_SwarmJoin = typeof post_SwarmJoin;
 export const post_SwarmJoin = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/swarm/join" => value === "/swarm/join").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: y.object({
       ListenAddr: y.string().required().optional(),
@@ -3427,6 +3509,7 @@ export type post_SwarmLeave = typeof post_SwarmLeave;
 export const post_SwarmLeave = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/swarm/leave" => value === "/swarm/leave").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       force: y.boolean().required().optional(),
@@ -3439,6 +3522,7 @@ export type post_SwarmUpdate = typeof post_SwarmUpdate;
 export const post_SwarmUpdate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/swarm/update" => value === "/swarm/update").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       version: y.number().required(),
@@ -3473,6 +3557,7 @@ export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
 export const get_SwarmUnlockkey = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/swarm/unlockkey" => value === "/swarm/unlockkey").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.object({
     UnlockKey: y.string().required().optional(),
@@ -3483,6 +3568,7 @@ export type post_SwarmUnlock = typeof post_SwarmUnlock;
 export const post_SwarmUnlock = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/swarm/unlock" => value === "/swarm/unlock").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: y.object({
       UnlockKey: y.string().required().optional(),
@@ -3495,6 +3581,7 @@ export type get_ServiceList = typeof get_ServiceList;
 export const get_ServiceList = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/services" => value === "/services").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       filters: y.string().required().optional(),
@@ -3508,6 +3595,7 @@ export type post_ServiceCreate = typeof post_ServiceCreate;
 export const post_ServiceCreate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/services/create" => value === "/services/create").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     header: y.object({
       "X-Registry-Auth": y.string().required().optional(),
@@ -3524,6 +3612,7 @@ export type get_ServiceInspect = typeof get_ServiceInspect;
 export const get_ServiceInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/services/{id}" => value === "/services/{id}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       insertDefaults: y.boolean().required().optional(),
@@ -3539,6 +3628,7 @@ export type delete_ServiceDelete = typeof delete_ServiceDelete;
 export const delete_ServiceDelete = {
   method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
   path: y.mixed((value): value is "/services/{id}" => value === "/services/{id}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -3551,6 +3641,7 @@ export type post_ServiceUpdate = typeof post_ServiceUpdate;
 export const post_ServiceUpdate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/services/{id}/update" => value === "/services/{id}/update").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       version: y.number().required(),
@@ -3585,6 +3676,7 @@ export type get_ServiceLogs = typeof get_ServiceLogs;
 export const get_ServiceLogs = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/services/{id}/logs" => value === "/services/{id}/logs").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       details: y.boolean().required().optional(),
@@ -3606,6 +3698,7 @@ export type get_TaskList = typeof get_TaskList;
 export const get_TaskList = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/tasks" => value === "/tasks").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       filters: y.string().required().optional(),
@@ -3618,6 +3711,7 @@ export type get_TaskInspect = typeof get_TaskInspect;
 export const get_TaskInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/tasks/{id}" => value === "/tasks/{id}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -3630,6 +3724,7 @@ export type get_TaskLogs = typeof get_TaskLogs;
 export const get_TaskLogs = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/tasks/{id}/logs" => value === "/tasks/{id}/logs").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       details: y.boolean().required().optional(),
@@ -3651,6 +3746,7 @@ export type get_SecretList = typeof get_SecretList;
 export const get_SecretList = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/secrets" => value === "/secrets").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       filters: y.string().required().optional(),
@@ -3663,6 +3759,7 @@ export type post_SecretCreate = typeof post_SecretCreate;
 export const post_SecretCreate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/secrets/create" => value === "/secrets/create").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: y.mixed(/* unsupported */),
   }),
@@ -3673,6 +3770,7 @@ export type get_SecretInspect = typeof get_SecretInspect;
 export const get_SecretInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/secrets/{id}" => value === "/secrets/{id}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -3685,6 +3783,7 @@ export type delete_SecretDelete = typeof delete_SecretDelete;
 export const delete_SecretDelete = {
   method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
   path: y.mixed((value): value is "/secrets/{id}" => value === "/secrets/{id}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -3697,6 +3796,7 @@ export type post_SecretUpdate = typeof post_SecretUpdate;
 export const post_SecretUpdate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/secrets/{id}/update" => value === "/secrets/{id}/update").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       version: y.number().required(),
@@ -3713,6 +3813,7 @@ export type get_ConfigList = typeof get_ConfigList;
 export const get_ConfigList = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/configs" => value === "/configs").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       filters: y.string().required().optional(),
@@ -3725,6 +3826,7 @@ export type post_ConfigCreate = typeof post_ConfigCreate;
 export const post_ConfigCreate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/configs/create" => value === "/configs/create").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: y.mixed(/* unsupported */),
   }),
@@ -3735,6 +3837,7 @@ export type get_ConfigInspect = typeof get_ConfigInspect;
 export const get_ConfigInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/configs/{id}" => value === "/configs/{id}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -3747,6 +3850,7 @@ export type delete_ConfigDelete = typeof delete_ConfigDelete;
 export const delete_ConfigDelete = {
   method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
   path: y.mixed((value): value is "/configs/{id}" => value === "/configs/{id}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       id: y.string().required(),
@@ -3759,6 +3863,7 @@ export type post_ConfigUpdate = typeof post_ConfigUpdate;
 export const post_ConfigUpdate = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/configs/{id}/update" => value === "/configs/{id}/update").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       version: y.number().required(),
@@ -3775,6 +3880,7 @@ export type get_DistributionInspect = typeof get_DistributionInspect;
 export const get_DistributionInspect = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/distribution/{name}/json" => value === "/distribution/{name}/json").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       name: y.string().required(),
@@ -3787,6 +3893,7 @@ export type post_Session = typeof post_Session;
 export const post_Session = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/session" => value === "/session").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -3934,6 +4041,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -3943,6 +4052,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

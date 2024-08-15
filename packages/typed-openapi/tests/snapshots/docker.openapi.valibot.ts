@@ -1650,6 +1650,7 @@ export type get_ContainerList = v.InferOutput<typeof get_ContainerList>;
 export const get_ContainerList = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/json"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       all: v.optional(v.boolean()),
@@ -1665,6 +1666,7 @@ export type post_ContainerCreate = v.InferOutput<typeof post_ContainerCreate>;
 export const post_ContainerCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/create"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       name: v.optional(v.string()),
@@ -1685,6 +1687,7 @@ export type get_ContainerInspect = v.InferOutput<typeof get_ContainerInspect>;
 export const get_ContainerInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/json"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       size: v.optional(v.boolean()),
@@ -1726,6 +1729,7 @@ export type get_ContainerTop = v.InferOutput<typeof get_ContainerTop>;
 export const get_ContainerTop = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/top"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       ps_args: v.optional(v.string()),
@@ -1744,6 +1748,7 @@ export type get_ContainerLogs = v.InferOutput<typeof get_ContainerLogs>;
 export const get_ContainerLogs = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/logs"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       follow: v.optional(v.boolean()),
@@ -1765,6 +1770,7 @@ export type get_ContainerChanges = v.InferOutput<typeof get_ContainerChanges>;
 export const get_ContainerChanges = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/changes"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -1777,6 +1783,7 @@ export type get_ContainerExport = v.InferOutput<typeof get_ContainerExport>;
 export const get_ContainerExport = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/export"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -1789,6 +1796,7 @@ export type get_ContainerStats = v.InferOutput<typeof get_ContainerStats>;
 export const get_ContainerStats = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/stats"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       stream: v.optional(v.boolean()),
@@ -1805,6 +1813,7 @@ export type post_ContainerResize = v.InferOutput<typeof post_ContainerResize>;
 export const post_ContainerResize = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/resize"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       h: v.optional(v.number()),
@@ -1821,6 +1830,7 @@ export type post_ContainerStart = v.InferOutput<typeof post_ContainerStart>;
 export const post_ContainerStart = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/start"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       detachKeys: v.optional(v.string()),
@@ -1836,6 +1846,7 @@ export type post_ContainerStop = v.InferOutput<typeof post_ContainerStop>;
 export const post_ContainerStop = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/stop"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       signal: v.optional(v.string()),
@@ -1852,6 +1863,7 @@ export type post_ContainerRestart = v.InferOutput<typeof post_ContainerRestart>;
 export const post_ContainerRestart = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/restart"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       signal: v.optional(v.string()),
@@ -1868,6 +1880,7 @@ export type post_ContainerKill = v.InferOutput<typeof post_ContainerKill>;
 export const post_ContainerKill = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/kill"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       signal: v.optional(v.string()),
@@ -1883,6 +1896,7 @@ export type post_ContainerUpdate = v.InferOutput<typeof post_ContainerUpdate>;
 export const post_ContainerUpdate = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/update"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -1903,6 +1917,7 @@ export type post_ContainerRename = v.InferOutput<typeof post_ContainerRename>;
 export const post_ContainerRename = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/rename"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       name: v.string(),
@@ -1918,6 +1933,7 @@ export type post_ContainerPause = v.InferOutput<typeof post_ContainerPause>;
 export const post_ContainerPause = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/pause"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -1930,6 +1946,7 @@ export type post_ContainerUnpause = v.InferOutput<typeof post_ContainerUnpause>;
 export const post_ContainerUnpause = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/unpause"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -1942,6 +1959,7 @@ export type post_ContainerAttach = v.InferOutput<typeof post_ContainerAttach>;
 export const post_ContainerAttach = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/attach"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       detachKeys: v.optional(v.string()),
@@ -1962,6 +1980,7 @@ export type get_ContainerAttachWebsocket = v.InferOutput<typeof get_ContainerAtt
 export const get_ContainerAttachWebsocket = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/attach/ws"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       detachKeys: v.optional(v.string()),
@@ -1982,6 +2001,7 @@ export type post_ContainerWait = v.InferOutput<typeof post_ContainerWait>;
 export const post_ContainerWait = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/wait"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       condition: v.optional(v.union([v.literal("not-running"), v.literal("next-exit"), v.literal("removed")])),
@@ -1997,6 +2017,7 @@ export type delete_ContainerDelete = v.InferOutput<typeof delete_ContainerDelete
 export const delete_ContainerDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/containers/{id}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       v: v.optional(v.boolean()),
@@ -2014,6 +2035,7 @@ export type get_ContainerArchive = v.InferOutput<typeof get_ContainerArchive>;
 export const get_ContainerArchive = v.object({
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/archive"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       path: v.string(),
@@ -2029,6 +2051,7 @@ export type put_PutContainerArchive = v.InferOutput<typeof put_PutContainerArchi
 export const put_PutContainerArchive = v.object({
   method: v.literal("PUT"),
   path: v.literal("/containers/{id}/archive"),
+  requestFormat: v.literal("binary"),
   parameters: v.object({
     query: v.object({
       path: v.string(),
@@ -2047,6 +2070,7 @@ export type head_ContainerArchiveInfo = v.InferOutput<typeof head_ContainerArchi
 export const head_ContainerArchiveInfo = v.object({
   method: v.literal("HEAD"),
   path: v.literal("/containers/{id}/archive"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       path: v.string(),
@@ -2062,6 +2086,7 @@ export type post_ContainerPrune = v.InferOutput<typeof post_ContainerPrune>;
 export const post_ContainerPrune = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/prune"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       filters: v.optional(v.string()),
@@ -2077,6 +2102,7 @@ export type get_ImageList = v.InferOutput<typeof get_ImageList>;
 export const get_ImageList = v.object({
   method: v.literal("GET"),
   path: v.literal("/images/json"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       all: v.optional(v.boolean()),
@@ -2092,6 +2118,7 @@ export type post_ImageBuild = v.InferOutput<typeof post_ImageBuild>;
 export const post_ImageBuild = v.object({
   method: v.literal("POST"),
   path: v.literal("/build"),
+  requestFormat: v.literal("binary"),
   parameters: v.object({
     query: v.object({
       dockerfile: v.optional(v.string()),
@@ -2132,6 +2159,7 @@ export type post_BuildPrune = v.InferOutput<typeof post_BuildPrune>;
 export const post_BuildPrune = v.object({
   method: v.literal("POST"),
   path: v.literal("/build/prune"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       "keep-storage": v.optional(v.number()),
@@ -2149,6 +2177,7 @@ export type post_ImageCreate = v.InferOutput<typeof post_ImageCreate>;
 export const post_ImageCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/images/create"),
+  requestFormat: v.literal("text"),
   parameters: v.object({
     query: v.object({
       fromImage: v.optional(v.string()),
@@ -2171,6 +2200,7 @@ export type get_ImageInspect = v.InferOutput<typeof get_ImageInspect>;
 export const get_ImageInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/images/{name}/json"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       name: v.string(),
@@ -2183,6 +2213,7 @@ export type get_ImageHistory = v.InferOutput<typeof get_ImageHistory>;
 export const get_ImageHistory = v.object({
   method: v.literal("GET"),
   path: v.literal("/images/{name}/history"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       name: v.string(),
@@ -2204,6 +2235,7 @@ export type post_ImagePush = v.InferOutput<typeof post_ImagePush>;
 export const post_ImagePush = v.object({
   method: v.literal("POST"),
   path: v.literal("/images/{name}/push"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       tag: v.optional(v.string()),
@@ -2222,6 +2254,7 @@ export type post_ImageTag = v.InferOutput<typeof post_ImageTag>;
 export const post_ImageTag = v.object({
   method: v.literal("POST"),
   path: v.literal("/images/{name}/tag"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       repo: v.optional(v.string()),
@@ -2238,6 +2271,7 @@ export type delete_ImageDelete = v.InferOutput<typeof delete_ImageDelete>;
 export const delete_ImageDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/images/{name}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       force: v.optional(v.boolean()),
@@ -2254,6 +2288,7 @@ export type get_ImageSearch = v.InferOutput<typeof get_ImageSearch>;
 export const get_ImageSearch = v.object({
   method: v.literal("GET"),
   path: v.literal("/images/search"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       term: v.string(),
@@ -2276,6 +2311,7 @@ export type post_ImagePrune = v.InferOutput<typeof post_ImagePrune>;
 export const post_ImagePrune = v.object({
   method: v.literal("POST"),
   path: v.literal("/images/prune"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       filters: v.optional(v.string()),
@@ -2291,6 +2327,7 @@ export type post_SystemAuth = v.InferOutput<typeof post_SystemAuth>;
 export const post_SystemAuth = v.object({
   method: v.literal("POST"),
   path: v.literal("/auth"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: AuthConfig,
   }),
@@ -2301,6 +2338,7 @@ export type get_SystemInfo = v.InferOutput<typeof get_SystemInfo>;
 export const get_SystemInfo = v.object({
   method: v.literal("GET"),
   path: v.literal("/info"),
+  requestFormat: v.literal("json"),
   parameters: v.never(),
   response: SystemInfo,
 });
@@ -2309,6 +2347,7 @@ export type get_SystemVersion = v.InferOutput<typeof get_SystemVersion>;
 export const get_SystemVersion = v.object({
   method: v.literal("GET"),
   path: v.literal("/version"),
+  requestFormat: v.literal("json"),
   parameters: v.never(),
   response: SystemVersion,
 });
@@ -2317,6 +2356,7 @@ export type get_SystemPing = v.InferOutput<typeof get_SystemPing>;
 export const get_SystemPing = v.object({
   method: v.literal("GET"),
   path: v.literal("/_ping"),
+  requestFormat: v.literal("json"),
   parameters: v.never(),
   response: v.unknown(),
 });
@@ -2325,6 +2365,7 @@ export type head_SystemPingHead = v.InferOutput<typeof head_SystemPingHead>;
 export const head_SystemPingHead = v.object({
   method: v.literal("HEAD"),
   path: v.literal("/_ping"),
+  requestFormat: v.literal("json"),
   parameters: v.never(),
   response: v.unknown(),
 });
@@ -2333,6 +2374,7 @@ export type post_ImageCommit = v.InferOutput<typeof post_ImageCommit>;
 export const post_ImageCommit = v.object({
   method: v.literal("POST"),
   path: v.literal("/commit"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       container: v.optional(v.string()),
@@ -2352,6 +2394,7 @@ export type get_SystemEvents = v.InferOutput<typeof get_SystemEvents>;
 export const get_SystemEvents = v.object({
   method: v.literal("GET"),
   path: v.literal("/events"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       since: v.optional(v.string()),
@@ -2366,6 +2409,7 @@ export type get_SystemDataUsage = v.InferOutput<typeof get_SystemDataUsage>;
 export const get_SystemDataUsage = v.object({
   method: v.literal("GET"),
   path: v.literal("/system/df"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       type: v.optional(
@@ -2386,6 +2430,7 @@ export type get_ImageGet = v.InferOutput<typeof get_ImageGet>;
 export const get_ImageGet = v.object({
   method: v.literal("GET"),
   path: v.literal("/images/{name}/get"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       name: v.string(),
@@ -2398,6 +2443,7 @@ export type get_ImageGetAll = v.InferOutput<typeof get_ImageGetAll>;
 export const get_ImageGetAll = v.object({
   method: v.literal("GET"),
   path: v.literal("/images/get"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       names: v.optional(v.array(v.string())),
@@ -2410,6 +2456,7 @@ export type post_ImageLoad = v.InferOutput<typeof post_ImageLoad>;
 export const post_ImageLoad = v.object({
   method: v.literal("POST"),
   path: v.literal("/images/load"),
+  requestFormat: v.literal("text"),
   parameters: v.object({
     query: v.object({
       quiet: v.optional(v.boolean()),
@@ -2422,6 +2469,7 @@ export type post_ContainerExec = v.InferOutput<typeof post_ContainerExec>;
 export const post_ContainerExec = v.object({
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/exec"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -2447,6 +2495,7 @@ export type post_ExecStart = v.InferOutput<typeof post_ExecStart>;
 export const post_ExecStart = v.object({
   method: v.literal("POST"),
   path: v.literal("/exec/{id}/start"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -2464,6 +2513,7 @@ export type post_ExecResize = v.InferOutput<typeof post_ExecResize>;
 export const post_ExecResize = v.object({
   method: v.literal("POST"),
   path: v.literal("/exec/{id}/resize"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       h: v.optional(v.number()),
@@ -2480,6 +2530,7 @@ export type get_ExecInspect = v.InferOutput<typeof get_ExecInspect>;
 export const get_ExecInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/exec/{id}/json"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -2504,6 +2555,7 @@ export type get_VolumeList = v.InferOutput<typeof get_VolumeList>;
 export const get_VolumeList = v.object({
   method: v.literal("GET"),
   path: v.literal("/volumes"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       filters: v.optional(v.string()),
@@ -2516,6 +2568,7 @@ export type post_VolumeCreate = v.InferOutput<typeof post_VolumeCreate>;
 export const post_VolumeCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/volumes/create"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: VolumeCreateOptions,
   }),
@@ -2526,6 +2579,7 @@ export type get_VolumeInspect = v.InferOutput<typeof get_VolumeInspect>;
 export const get_VolumeInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/volumes/{name}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       name: v.string(),
@@ -2538,6 +2592,7 @@ export type put_VolumeUpdate = v.InferOutput<typeof put_VolumeUpdate>;
 export const put_VolumeUpdate = v.object({
   method: v.literal("PUT"),
   path: v.literal("/volumes/{name}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       version: v.number(),
@@ -2556,6 +2611,7 @@ export type delete_VolumeDelete = v.InferOutput<typeof delete_VolumeDelete>;
 export const delete_VolumeDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/volumes/{name}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       force: v.optional(v.boolean()),
@@ -2571,6 +2627,7 @@ export type post_VolumePrune = v.InferOutput<typeof post_VolumePrune>;
 export const post_VolumePrune = v.object({
   method: v.literal("POST"),
   path: v.literal("/volumes/prune"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       filters: v.optional(v.string()),
@@ -2586,6 +2643,7 @@ export type get_NetworkList = v.InferOutput<typeof get_NetworkList>;
 export const get_NetworkList = v.object({
   method: v.literal("GET"),
   path: v.literal("/networks"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       filters: v.optional(v.string()),
@@ -2598,6 +2656,7 @@ export type get_NetworkInspect = v.InferOutput<typeof get_NetworkInspect>;
 export const get_NetworkInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/networks/{id}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       verbose: v.optional(v.boolean()),
@@ -2614,6 +2673,7 @@ export type delete_NetworkDelete = v.InferOutput<typeof delete_NetworkDelete>;
 export const delete_NetworkDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/networks/{id}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -2626,6 +2686,7 @@ export type post_NetworkCreate = v.InferOutput<typeof post_NetworkCreate>;
 export const post_NetworkCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/networks/create"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: v.object({
       Name: v.string(),
@@ -2650,6 +2711,7 @@ export type post_NetworkConnect = v.InferOutput<typeof post_NetworkConnect>;
 export const post_NetworkConnect = v.object({
   method: v.literal("POST"),
   path: v.literal("/networks/{id}/connect"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -2666,6 +2728,7 @@ export type post_NetworkDisconnect = v.InferOutput<typeof post_NetworkDisconnect
 export const post_NetworkDisconnect = v.object({
   method: v.literal("POST"),
   path: v.literal("/networks/{id}/disconnect"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -2682,6 +2745,7 @@ export type post_NetworkPrune = v.InferOutput<typeof post_NetworkPrune>;
 export const post_NetworkPrune = v.object({
   method: v.literal("POST"),
   path: v.literal("/networks/prune"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       filters: v.optional(v.string()),
@@ -2696,6 +2760,7 @@ export type get_PluginList = v.InferOutput<typeof get_PluginList>;
 export const get_PluginList = v.object({
   method: v.literal("GET"),
   path: v.literal("/plugins"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       filters: v.optional(v.string()),
@@ -2708,6 +2773,7 @@ export type get_GetPluginPrivileges = v.InferOutput<typeof get_GetPluginPrivileg
 export const get_GetPluginPrivileges = v.object({
   method: v.literal("GET"),
   path: v.literal("/plugins/privileges"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       remote: v.string(),
@@ -2720,6 +2786,7 @@ export type post_PluginPull = v.InferOutput<typeof post_PluginPull>;
 export const post_PluginPull = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/pull"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       remote: v.string(),
@@ -2737,6 +2804,7 @@ export type get_PluginInspect = v.InferOutput<typeof get_PluginInspect>;
 export const get_PluginInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/plugins/{name}/json"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       name: v.string(),
@@ -2749,6 +2817,7 @@ export type delete_PluginDelete = v.InferOutput<typeof delete_PluginDelete>;
 export const delete_PluginDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/plugins/{name}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       force: v.optional(v.boolean()),
@@ -2764,6 +2833,7 @@ export type post_PluginEnable = v.InferOutput<typeof post_PluginEnable>;
 export const post_PluginEnable = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/enable"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       timeout: v.optional(v.number()),
@@ -2779,6 +2849,7 @@ export type post_PluginDisable = v.InferOutput<typeof post_PluginDisable>;
 export const post_PluginDisable = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/disable"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       force: v.optional(v.boolean()),
@@ -2794,6 +2865,7 @@ export type post_PluginUpgrade = v.InferOutput<typeof post_PluginUpgrade>;
 export const post_PluginUpgrade = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/upgrade"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       remote: v.string(),
@@ -2813,6 +2885,7 @@ export type post_PluginCreate = v.InferOutput<typeof post_PluginCreate>;
 export const post_PluginCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/create"),
+  requestFormat: v.literal("text"),
   parameters: v.object({
     query: v.object({
       name: v.string(),
@@ -2825,6 +2898,7 @@ export type post_PluginPush = v.InferOutput<typeof post_PluginPush>;
 export const post_PluginPush = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/push"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       name: v.string(),
@@ -2837,6 +2911,7 @@ export type post_PluginSet = v.InferOutput<typeof post_PluginSet>;
 export const post_PluginSet = v.object({
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/set"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       name: v.string(),
@@ -2850,6 +2925,7 @@ export type get_NodeList = v.InferOutput<typeof get_NodeList>;
 export const get_NodeList = v.object({
   method: v.literal("GET"),
   path: v.literal("/nodes"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       filters: v.optional(v.string()),
@@ -2862,6 +2938,7 @@ export type get_NodeInspect = v.InferOutput<typeof get_NodeInspect>;
 export const get_NodeInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/nodes/{id}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -2874,6 +2951,7 @@ export type delete_NodeDelete = v.InferOutput<typeof delete_NodeDelete>;
 export const delete_NodeDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/nodes/{id}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       force: v.optional(v.boolean()),
@@ -2889,6 +2967,7 @@ export type post_NodeUpdate = v.InferOutput<typeof post_NodeUpdate>;
 export const post_NodeUpdate = v.object({
   method: v.literal("POST"),
   path: v.literal("/nodes/{id}/update"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       version: v.number(),
@@ -2905,6 +2984,7 @@ export type get_SwarmInspect = v.InferOutput<typeof get_SwarmInspect>;
 export const get_SwarmInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/swarm"),
+  requestFormat: v.literal("json"),
   parameters: v.never(),
   response: Swarm,
 });
@@ -2913,6 +2993,7 @@ export type post_SwarmInit = v.InferOutput<typeof post_SwarmInit>;
 export const post_SwarmInit = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/init"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: v.object({
       ListenAddr: v.optional(v.string()),
@@ -2932,6 +3013,7 @@ export type post_SwarmJoin = v.InferOutput<typeof post_SwarmJoin>;
 export const post_SwarmJoin = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/join"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: v.object({
       ListenAddr: v.optional(v.string()),
@@ -2948,6 +3030,7 @@ export type post_SwarmLeave = v.InferOutput<typeof post_SwarmLeave>;
 export const post_SwarmLeave = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/leave"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       force: v.optional(v.boolean()),
@@ -2960,6 +3043,7 @@ export type post_SwarmUpdate = v.InferOutput<typeof post_SwarmUpdate>;
 export const post_SwarmUpdate = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/update"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       version: v.number(),
@@ -2976,6 +3060,7 @@ export type get_SwarmUnlockkey = v.InferOutput<typeof get_SwarmUnlockkey>;
 export const get_SwarmUnlockkey = v.object({
   method: v.literal("GET"),
   path: v.literal("/swarm/unlockkey"),
+  requestFormat: v.literal("json"),
   parameters: v.never(),
   response: v.object({
     UnlockKey: v.optional(v.string()),
@@ -2986,6 +3071,7 @@ export type post_SwarmUnlock = v.InferOutput<typeof post_SwarmUnlock>;
 export const post_SwarmUnlock = v.object({
   method: v.literal("POST"),
   path: v.literal("/swarm/unlock"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: v.object({
       UnlockKey: v.optional(v.string()),
@@ -2998,6 +3084,7 @@ export type get_ServiceList = v.InferOutput<typeof get_ServiceList>;
 export const get_ServiceList = v.object({
   method: v.literal("GET"),
   path: v.literal("/services"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       filters: v.optional(v.string()),
@@ -3011,6 +3098,7 @@ export type post_ServiceCreate = v.InferOutput<typeof post_ServiceCreate>;
 export const post_ServiceCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/services/create"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
@@ -3027,6 +3115,7 @@ export type get_ServiceInspect = v.InferOutput<typeof get_ServiceInspect>;
 export const get_ServiceInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/services/{id}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       insertDefaults: v.optional(v.boolean()),
@@ -3042,6 +3131,7 @@ export type delete_ServiceDelete = v.InferOutput<typeof delete_ServiceDelete>;
 export const delete_ServiceDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/services/{id}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -3054,6 +3144,7 @@ export type post_ServiceUpdate = v.InferOutput<typeof post_ServiceUpdate>;
 export const post_ServiceUpdate = v.object({
   method: v.literal("POST"),
   path: v.literal("/services/{id}/update"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       version: v.number(),
@@ -3075,6 +3166,7 @@ export type get_ServiceLogs = v.InferOutput<typeof get_ServiceLogs>;
 export const get_ServiceLogs = v.object({
   method: v.literal("GET"),
   path: v.literal("/services/{id}/logs"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       details: v.optional(v.boolean()),
@@ -3096,6 +3188,7 @@ export type get_TaskList = v.InferOutput<typeof get_TaskList>;
 export const get_TaskList = v.object({
   method: v.literal("GET"),
   path: v.literal("/tasks"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       filters: v.optional(v.string()),
@@ -3108,6 +3201,7 @@ export type get_TaskInspect = v.InferOutput<typeof get_TaskInspect>;
 export const get_TaskInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/tasks/{id}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -3120,6 +3214,7 @@ export type get_TaskLogs = v.InferOutput<typeof get_TaskLogs>;
 export const get_TaskLogs = v.object({
   method: v.literal("GET"),
   path: v.literal("/tasks/{id}/logs"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       details: v.optional(v.boolean()),
@@ -3141,6 +3236,7 @@ export type get_SecretList = v.InferOutput<typeof get_SecretList>;
 export const get_SecretList = v.object({
   method: v.literal("GET"),
   path: v.literal("/secrets"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       filters: v.optional(v.string()),
@@ -3153,6 +3249,7 @@ export type post_SecretCreate = v.InferOutput<typeof post_SecretCreate>;
 export const post_SecretCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/secrets/create"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: v.intersect([SecretSpec, v.unknown()]),
   }),
@@ -3163,6 +3260,7 @@ export type get_SecretInspect = v.InferOutput<typeof get_SecretInspect>;
 export const get_SecretInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/secrets/{id}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -3175,6 +3273,7 @@ export type delete_SecretDelete = v.InferOutput<typeof delete_SecretDelete>;
 export const delete_SecretDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/secrets/{id}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -3187,6 +3286,7 @@ export type post_SecretUpdate = v.InferOutput<typeof post_SecretUpdate>;
 export const post_SecretUpdate = v.object({
   method: v.literal("POST"),
   path: v.literal("/secrets/{id}/update"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       version: v.number(),
@@ -3203,6 +3303,7 @@ export type get_ConfigList = v.InferOutput<typeof get_ConfigList>;
 export const get_ConfigList = v.object({
   method: v.literal("GET"),
   path: v.literal("/configs"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       filters: v.optional(v.string()),
@@ -3215,6 +3316,7 @@ export type post_ConfigCreate = v.InferOutput<typeof post_ConfigCreate>;
 export const post_ConfigCreate = v.object({
   method: v.literal("POST"),
   path: v.literal("/configs/create"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: v.intersect([ConfigSpec, v.unknown()]),
   }),
@@ -3225,6 +3327,7 @@ export type get_ConfigInspect = v.InferOutput<typeof get_ConfigInspect>;
 export const get_ConfigInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/configs/{id}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -3237,6 +3340,7 @@ export type delete_ConfigDelete = v.InferOutput<typeof delete_ConfigDelete>;
 export const delete_ConfigDelete = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/configs/{id}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       id: v.string(),
@@ -3249,6 +3353,7 @@ export type post_ConfigUpdate = v.InferOutput<typeof post_ConfigUpdate>;
 export const post_ConfigUpdate = v.object({
   method: v.literal("POST"),
   path: v.literal("/configs/{id}/update"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       version: v.number(),
@@ -3265,6 +3370,7 @@ export type get_DistributionInspect = v.InferOutput<typeof get_DistributionInspe
 export const get_DistributionInspect = v.object({
   method: v.literal("GET"),
   path: v.literal("/distribution/{name}/json"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       name: v.string(),
@@ -3277,6 +3383,7 @@ export type post_Session = v.InferOutput<typeof post_Session>;
 export const post_Session = v.object({
   method: v.literal("POST"),
   path: v.literal("/session"),
+  requestFormat: v.literal("json"),
   parameters: v.never(),
   response: v.unknown(),
 });
@@ -3427,6 +3534,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -3436,6 +3545,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

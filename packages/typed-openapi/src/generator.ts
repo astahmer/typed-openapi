@@ -137,6 +137,7 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
     file += `export type ${endpoint.meta.alias} = {
       method: "${endpoint.method.toUpperCase()}",
       path: "${endpoint.path}",
+      requestFormat: "${endpoint.requestFormat}",
       ${
         endpoint.meta.hasParameters
           ? `parameters: {
@@ -235,6 +236,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -244,6 +247,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

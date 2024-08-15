@@ -55,6 +55,7 @@ export const types = scope({
   put_UpdatePet: {
     method: '"PUT"',
     path: '"/pet"',
+    requestFormat: '"json"',
     parameters: {
       body: "Pet",
     },
@@ -63,6 +64,7 @@ export const types = scope({
   post_AddPet: {
     method: '"POST"',
     path: '"/pet"',
+    requestFormat: '"json"',
     parameters: {
       body: "Pet",
     },
@@ -71,6 +73,7 @@ export const types = scope({
   get_FindPetsByStatus: {
     method: '"GET"',
     path: '"/pet/findByStatus"',
+    requestFormat: '"json"',
     parameters: {
       query: {
         "status?": '"available" | "pending" | "sold"',
@@ -81,6 +84,7 @@ export const types = scope({
   get_FindPetsByTags: {
     method: '"GET"',
     path: '"/pet/findByTags"',
+    requestFormat: '"json"',
     parameters: {
       query: {
         "tags?": "string[]",
@@ -91,6 +95,7 @@ export const types = scope({
   get_GetPetById: {
     method: '"GET"',
     path: '"/pet/{petId}"',
+    requestFormat: '"json"',
     parameters: {
       path: {
         petId: "number",
@@ -101,6 +106,7 @@ export const types = scope({
   post_UpdatePetWithForm: {
     method: '"POST"',
     path: '"/pet/{petId}"',
+    requestFormat: '"json"',
     parameters: {
       query: {
         "name?": "string",
@@ -115,6 +121,7 @@ export const types = scope({
   delete_DeletePet: {
     method: '"DELETE"',
     path: '"/pet/{petId}"',
+    requestFormat: '"json"',
     parameters: {
       path: {
         petId: "number",
@@ -128,6 +135,7 @@ export const types = scope({
   post_UploadFile: {
     method: '"POST"',
     path: '"/pet/{petId}/uploadImage"',
+    requestFormat: '"binary"',
     parameters: {
       query: {
         "additionalMetadata?": "string",
@@ -142,12 +150,14 @@ export const types = scope({
   get_GetInventory: {
     method: '"GET"',
     path: '"/store/inventory"',
+    requestFormat: '"json"',
     parameters: "never",
     response: "unknown",
   },
   post_PlaceOrder: {
     method: '"POST"',
     path: '"/store/order"',
+    requestFormat: '"json"',
     parameters: {
       body: "Order",
     },
@@ -156,6 +166,7 @@ export const types = scope({
   get_GetOrderById: {
     method: '"GET"',
     path: '"/store/order/{orderId}"',
+    requestFormat: '"json"',
     parameters: {
       path: {
         orderId: "number",
@@ -166,6 +177,7 @@ export const types = scope({
   delete_DeleteOrder: {
     method: '"DELETE"',
     path: '"/store/order/{orderId}"',
+    requestFormat: '"json"',
     parameters: {
       path: {
         orderId: "number",
@@ -176,6 +188,7 @@ export const types = scope({
   post_CreateUser: {
     method: '"POST"',
     path: '"/user"',
+    requestFormat: '"json"',
     parameters: {
       body: "User",
     },
@@ -184,6 +197,7 @@ export const types = scope({
   post_CreateUsersWithListInput: {
     method: '"POST"',
     path: '"/user/createWithList"',
+    requestFormat: '"json"',
     parameters: {
       body: "User[]",
     },
@@ -192,6 +206,7 @@ export const types = scope({
   get_LoginUser: {
     method: '"GET"',
     path: '"/user/login"',
+    requestFormat: '"json"',
     parameters: {
       query: {
         "username?": "string",
@@ -203,12 +218,14 @@ export const types = scope({
   get_LogoutUser: {
     method: '"GET"',
     path: '"/user/logout"',
+    requestFormat: '"json"',
     parameters: "never",
     response: "unknown",
   },
   get_GetUserByName: {
     method: '"GET"',
     path: '"/user/{username}"',
+    requestFormat: '"json"',
     parameters: {
       path: {
         username: "string",
@@ -219,6 +236,7 @@ export const types = scope({
   put_UpdateUser: {
     method: '"PUT"',
     path: '"/user/{username}"',
+    requestFormat: '"json"',
     parameters: {
       path: {
         username: "string",
@@ -230,6 +248,7 @@ export const types = scope({
   delete_DeleteUser: {
     method: '"DELETE"',
     path: '"/user/{username}"',
+    requestFormat: '"json"',
     parameters: {
       path: {
         username: "string",
@@ -351,6 +370,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -360,6 +381,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

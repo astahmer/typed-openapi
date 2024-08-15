@@ -1818,6 +1818,7 @@ export type get_ContainerList = Static<typeof get_ContainerList>;
 export const get_ContainerList = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/json"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -1835,6 +1836,7 @@ export type post_ContainerCreate = Static<typeof post_ContainerCreate>;
 export const post_ContainerCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/create"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -1859,6 +1861,7 @@ export type get_ContainerInspect = Static<typeof get_ContainerInspect>;
 export const get_ContainerInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/json"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -1904,6 +1907,7 @@ export type get_ContainerTop = Static<typeof get_ContainerTop>;
 export const get_ContainerTop = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/top"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -1926,6 +1930,7 @@ export type get_ContainerLogs = Static<typeof get_ContainerLogs>;
 export const get_ContainerLogs = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/logs"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -1949,6 +1954,7 @@ export type get_ContainerChanges = Static<typeof get_ContainerChanges>;
 export const get_ContainerChanges = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/changes"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -1961,6 +1967,7 @@ export type get_ContainerExport = Static<typeof get_ContainerExport>;
 export const get_ContainerExport = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/export"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -1973,6 +1980,7 @@ export type get_ContainerStats = Static<typeof get_ContainerStats>;
 export const get_ContainerStats = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/stats"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -1991,6 +1999,7 @@ export type post_ContainerResize = Static<typeof post_ContainerResize>;
 export const post_ContainerResize = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/resize"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2009,6 +2018,7 @@ export type post_ContainerStart = Static<typeof post_ContainerStart>;
 export const post_ContainerStart = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/start"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2026,6 +2036,7 @@ export type post_ContainerStop = Static<typeof post_ContainerStop>;
 export const post_ContainerStop = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/stop"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2044,6 +2055,7 @@ export type post_ContainerRestart = Static<typeof post_ContainerRestart>;
 export const post_ContainerRestart = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/restart"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2062,6 +2074,7 @@ export type post_ContainerKill = Static<typeof post_ContainerKill>;
 export const post_ContainerKill = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/kill"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2079,6 +2092,7 @@ export type post_ContainerUpdate = Static<typeof post_ContainerUpdate>;
 export const post_ContainerUpdate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/update"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -2103,6 +2117,7 @@ export type post_ContainerRename = Static<typeof post_ContainerRename>;
 export const post_ContainerRename = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/rename"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       name: Type.String(),
@@ -2118,6 +2133,7 @@ export type post_ContainerPause = Static<typeof post_ContainerPause>;
 export const post_ContainerPause = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/pause"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -2130,6 +2146,7 @@ export type post_ContainerUnpause = Static<typeof post_ContainerUnpause>;
 export const post_ContainerUnpause = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/unpause"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -2142,6 +2159,7 @@ export type post_ContainerAttach = Static<typeof post_ContainerAttach>;
 export const post_ContainerAttach = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/attach"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2164,6 +2182,7 @@ export type get_ContainerAttachWebsocket = Static<typeof get_ContainerAttachWebs
 export const get_ContainerAttachWebsocket = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/attach/ws"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2186,6 +2205,7 @@ export type post_ContainerWait = Static<typeof post_ContainerWait>;
 export const post_ContainerWait = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/wait"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2203,6 +2223,7 @@ export type delete_ContainerDelete = Static<typeof delete_ContainerDelete>;
 export const delete_ContainerDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/containers/{id}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2222,6 +2243,7 @@ export type get_ContainerArchive = Static<typeof get_ContainerArchive>;
 export const get_ContainerArchive = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/containers/{id}/archive"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       path: Type.String(),
@@ -2237,6 +2259,7 @@ export type put_PutContainerArchive = Static<typeof put_PutContainerArchive>;
 export const put_PutContainerArchive = Type.Object({
   method: Type.Literal("PUT"),
   path: Type.Literal("/containers/{id}/archive"),
+  requestFormat: Type.Literal("binary"),
   parameters: Type.Object({
     query: Type.Object({
       path: Type.String(),
@@ -2255,6 +2278,7 @@ export type head_ContainerArchiveInfo = Static<typeof head_ContainerArchiveInfo>
 export const head_ContainerArchiveInfo = Type.Object({
   method: Type.Literal("HEAD"),
   path: Type.Literal("/containers/{id}/archive"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       path: Type.String(),
@@ -2270,6 +2294,7 @@ export type post_ContainerPrune = Static<typeof post_ContainerPrune>;
 export const post_ContainerPrune = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/prune"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2289,6 +2314,7 @@ export type get_ImageList = Static<typeof get_ImageList>;
 export const get_ImageList = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/images/json"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2306,6 +2332,7 @@ export type post_ImageBuild = Static<typeof post_ImageBuild>;
 export const post_ImageBuild = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/build"),
+  requestFormat: Type.Literal("binary"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2350,6 +2377,7 @@ export type post_BuildPrune = Static<typeof post_BuildPrune>;
 export const post_BuildPrune = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/build/prune"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2371,6 +2399,7 @@ export type post_ImageCreate = Static<typeof post_ImageCreate>;
 export const post_ImageCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/images/create"),
+  requestFormat: Type.Literal("text"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2397,6 +2426,7 @@ export type get_ImageInspect = Static<typeof get_ImageInspect>;
 export const get_ImageInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/images/{name}/json"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       name: Type.String(),
@@ -2409,6 +2439,7 @@ export type get_ImageHistory = Static<typeof get_ImageHistory>;
 export const get_ImageHistory = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/images/{name}/history"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       name: Type.String(),
@@ -2430,6 +2461,7 @@ export type post_ImagePush = Static<typeof post_ImagePush>;
 export const post_ImagePush = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/images/{name}/push"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2450,6 +2482,7 @@ export type post_ImageTag = Static<typeof post_ImageTag>;
 export const post_ImageTag = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/images/{name}/tag"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2468,6 +2501,7 @@ export type delete_ImageDelete = Static<typeof delete_ImageDelete>;
 export const delete_ImageDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/images/{name}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2486,6 +2520,7 @@ export type get_ImageSearch = Static<typeof get_ImageSearch>;
 export const get_ImageSearch = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/images/search"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       term: Type.String(),
@@ -2510,6 +2545,7 @@ export type post_ImagePrune = Static<typeof post_ImagePrune>;
 export const post_ImagePrune = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/images/prune"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2529,6 +2565,7 @@ export type post_SystemAuth = Static<typeof post_SystemAuth>;
 export const post_SystemAuth = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/auth"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: AuthConfig,
   }),
@@ -2539,6 +2576,7 @@ export type get_SystemInfo = Static<typeof get_SystemInfo>;
 export const get_SystemInfo = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/info"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: SystemInfo,
 });
@@ -2547,6 +2585,7 @@ export type get_SystemVersion = Static<typeof get_SystemVersion>;
 export const get_SystemVersion = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/version"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: SystemVersion,
 });
@@ -2555,6 +2594,7 @@ export type get_SystemPing = Static<typeof get_SystemPing>;
 export const get_SystemPing = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/_ping"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: Type.Unknown(),
 });
@@ -2563,6 +2603,7 @@ export type head_SystemPingHead = Static<typeof head_SystemPingHead>;
 export const head_SystemPingHead = Type.Object({
   method: Type.Literal("HEAD"),
   path: Type.Literal("/_ping"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: Type.Unknown(),
 });
@@ -2571,6 +2612,7 @@ export type post_ImageCommit = Static<typeof post_ImageCommit>;
 export const post_ImageCommit = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/commit"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2592,6 +2634,7 @@ export type get_SystemEvents = Static<typeof get_SystemEvents>;
 export const get_SystemEvents = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/events"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2608,6 +2651,7 @@ export type get_SystemDataUsage = Static<typeof get_SystemDataUsage>;
 export const get_SystemDataUsage = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/system/df"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2637,6 +2681,7 @@ export type get_ImageGet = Static<typeof get_ImageGet>;
 export const get_ImageGet = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/images/{name}/get"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       name: Type.String(),
@@ -2649,6 +2694,7 @@ export type get_ImageGetAll = Static<typeof get_ImageGetAll>;
 export const get_ImageGetAll = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/images/get"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2663,6 +2709,7 @@ export type post_ImageLoad = Static<typeof post_ImageLoad>;
 export const post_ImageLoad = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/images/load"),
+  requestFormat: Type.Literal("text"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2677,6 +2724,7 @@ export type post_ContainerExec = Static<typeof post_ContainerExec>;
 export const post_ContainerExec = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/containers/{id}/exec"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -2704,6 +2752,7 @@ export type post_ExecStart = Static<typeof post_ExecStart>;
 export const post_ExecStart = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/exec/{id}/start"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -2723,6 +2772,7 @@ export type post_ExecResize = Static<typeof post_ExecResize>;
 export const post_ExecResize = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/exec/{id}/resize"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2741,6 +2791,7 @@ export type get_ExecInspect = Static<typeof get_ExecInspect>;
 export const get_ExecInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/exec/{id}/json"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -2767,6 +2818,7 @@ export type get_VolumeList = Static<typeof get_VolumeList>;
 export const get_VolumeList = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/volumes"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2781,6 +2833,7 @@ export type post_VolumeCreate = Static<typeof post_VolumeCreate>;
 export const post_VolumeCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/volumes/create"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: VolumeCreateOptions,
   }),
@@ -2791,6 +2844,7 @@ export type get_VolumeInspect = Static<typeof get_VolumeInspect>;
 export const get_VolumeInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/volumes/{name}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       name: Type.String(),
@@ -2803,6 +2857,7 @@ export type put_VolumeUpdate = Static<typeof put_VolumeUpdate>;
 export const put_VolumeUpdate = Type.Object({
   method: Type.Literal("PUT"),
   path: Type.Literal("/volumes/{name}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       version: Type.Number(),
@@ -2823,6 +2878,7 @@ export type delete_VolumeDelete = Static<typeof delete_VolumeDelete>;
 export const delete_VolumeDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/volumes/{name}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2840,6 +2896,7 @@ export type post_VolumePrune = Static<typeof post_VolumePrune>;
 export const post_VolumePrune = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/volumes/prune"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2859,6 +2916,7 @@ export type get_NetworkList = Static<typeof get_NetworkList>;
 export const get_NetworkList = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/networks"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2873,6 +2931,7 @@ export type get_NetworkInspect = Static<typeof get_NetworkInspect>;
 export const get_NetworkInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/networks/{id}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2891,6 +2950,7 @@ export type delete_NetworkDelete = Static<typeof delete_NetworkDelete>;
 export const delete_NetworkDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/networks/{id}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -2903,6 +2963,7 @@ export type post_NetworkCreate = Static<typeof post_NetworkCreate>;
 export const post_NetworkCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/networks/create"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: Type.Object({
       Name: Type.String(),
@@ -2929,6 +2990,7 @@ export type post_NetworkConnect = Static<typeof post_NetworkConnect>;
 export const post_NetworkConnect = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/networks/{id}/connect"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -2947,6 +3009,7 @@ export type post_NetworkDisconnect = Static<typeof post_NetworkDisconnect>;
 export const post_NetworkDisconnect = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/networks/{id}/disconnect"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -2965,6 +3028,7 @@ export type post_NetworkPrune = Static<typeof post_NetworkPrune>;
 export const post_NetworkPrune = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/networks/prune"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2983,6 +3047,7 @@ export type get_PluginList = Static<typeof get_PluginList>;
 export const get_PluginList = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/plugins"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -2997,6 +3062,7 @@ export type get_GetPluginPrivileges = Static<typeof get_GetPluginPrivileges>;
 export const get_GetPluginPrivileges = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/plugins/privileges"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       remote: Type.String(),
@@ -3009,6 +3075,7 @@ export type post_PluginPull = Static<typeof post_PluginPull>;
 export const post_PluginPull = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/plugins/pull"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       remote: Type.String(),
@@ -3028,6 +3095,7 @@ export type get_PluginInspect = Static<typeof get_PluginInspect>;
 export const get_PluginInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/plugins/{name}/json"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       name: Type.String(),
@@ -3040,6 +3108,7 @@ export type delete_PluginDelete = Static<typeof delete_PluginDelete>;
 export const delete_PluginDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/plugins/{name}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3057,6 +3126,7 @@ export type post_PluginEnable = Static<typeof post_PluginEnable>;
 export const post_PluginEnable = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/plugins/{name}/enable"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3074,6 +3144,7 @@ export type post_PluginDisable = Static<typeof post_PluginDisable>;
 export const post_PluginDisable = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/plugins/{name}/disable"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3091,6 +3162,7 @@ export type post_PluginUpgrade = Static<typeof post_PluginUpgrade>;
 export const post_PluginUpgrade = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/plugins/{name}/upgrade"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       remote: Type.String(),
@@ -3112,6 +3184,7 @@ export type post_PluginCreate = Static<typeof post_PluginCreate>;
 export const post_PluginCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/plugins/create"),
+  requestFormat: Type.Literal("text"),
   parameters: Type.Object({
     query: Type.Object({
       name: Type.String(),
@@ -3124,6 +3197,7 @@ export type post_PluginPush = Static<typeof post_PluginPush>;
 export const post_PluginPush = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/plugins/{name}/push"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       name: Type.String(),
@@ -3136,6 +3210,7 @@ export type post_PluginSet = Static<typeof post_PluginSet>;
 export const post_PluginSet = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/plugins/{name}/set"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       name: Type.String(),
@@ -3149,6 +3224,7 @@ export type get_NodeList = Static<typeof get_NodeList>;
 export const get_NodeList = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/nodes"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3163,6 +3239,7 @@ export type get_NodeInspect = Static<typeof get_NodeInspect>;
 export const get_NodeInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/nodes/{id}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -3175,6 +3252,7 @@ export type delete_NodeDelete = Static<typeof delete_NodeDelete>;
 export const delete_NodeDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/nodes/{id}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3192,6 +3270,7 @@ export type post_NodeUpdate = Static<typeof post_NodeUpdate>;
 export const post_NodeUpdate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/nodes/{id}/update"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       version: Type.Number(),
@@ -3208,6 +3287,7 @@ export type get_SwarmInspect = Static<typeof get_SwarmInspect>;
 export const get_SwarmInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/swarm"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: Swarm,
 });
@@ -3216,6 +3296,7 @@ export type post_SwarmInit = Static<typeof post_SwarmInit>;
 export const post_SwarmInit = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/swarm/init"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: Type.Partial(
       Type.Object({
@@ -3237,6 +3318,7 @@ export type post_SwarmJoin = Static<typeof post_SwarmJoin>;
 export const post_SwarmJoin = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/swarm/join"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: Type.Partial(
       Type.Object({
@@ -3255,6 +3337,7 @@ export type post_SwarmLeave = Static<typeof post_SwarmLeave>;
 export const post_SwarmLeave = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/swarm/leave"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3269,6 +3352,7 @@ export type post_SwarmUpdate = Static<typeof post_SwarmUpdate>;
 export const post_SwarmUpdate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/swarm/update"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       version: Type.Number(),
@@ -3285,6 +3369,7 @@ export type get_SwarmUnlockkey = Static<typeof get_SwarmUnlockkey>;
 export const get_SwarmUnlockkey = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/swarm/unlockkey"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: Type.Partial(
     Type.Object({
@@ -3297,6 +3382,7 @@ export type post_SwarmUnlock = Static<typeof post_SwarmUnlock>;
 export const post_SwarmUnlock = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/swarm/unlock"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: Type.Partial(
       Type.Object({
@@ -3311,6 +3397,7 @@ export type get_ServiceList = Static<typeof get_ServiceList>;
 export const get_ServiceList = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/services"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3326,6 +3413,7 @@ export type post_ServiceCreate = Static<typeof post_ServiceCreate>;
 export const post_ServiceCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/services/create"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     header: Type.Partial(
       Type.Object({
@@ -3346,6 +3434,7 @@ export type get_ServiceInspect = Static<typeof get_ServiceInspect>;
 export const get_ServiceInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/services/{id}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3363,6 +3452,7 @@ export type delete_ServiceDelete = Static<typeof delete_ServiceDelete>;
 export const delete_ServiceDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/services/{id}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -3375,6 +3465,7 @@ export type post_ServiceUpdate = Static<typeof post_ServiceUpdate>;
 export const post_ServiceUpdate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/services/{id}/update"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       version: Type.Number(),
@@ -3398,6 +3489,7 @@ export type get_ServiceLogs = Static<typeof get_ServiceLogs>;
 export const get_ServiceLogs = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/services/{id}/logs"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3421,6 +3513,7 @@ export type get_TaskList = Static<typeof get_TaskList>;
 export const get_TaskList = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/tasks"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3435,6 +3528,7 @@ export type get_TaskInspect = Static<typeof get_TaskInspect>;
 export const get_TaskInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/tasks/{id}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -3447,6 +3541,7 @@ export type get_TaskLogs = Static<typeof get_TaskLogs>;
 export const get_TaskLogs = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/tasks/{id}/logs"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3470,6 +3565,7 @@ export type get_SecretList = Static<typeof get_SecretList>;
 export const get_SecretList = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/secrets"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3484,6 +3580,7 @@ export type post_SecretCreate = Static<typeof post_SecretCreate>;
 export const post_SecretCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/secrets/create"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: Type.Intersect([SecretSpec, Type.Unknown()]),
   }),
@@ -3494,6 +3591,7 @@ export type get_SecretInspect = Static<typeof get_SecretInspect>;
 export const get_SecretInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/secrets/{id}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -3506,6 +3604,7 @@ export type delete_SecretDelete = Static<typeof delete_SecretDelete>;
 export const delete_SecretDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/secrets/{id}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -3518,6 +3617,7 @@ export type post_SecretUpdate = Static<typeof post_SecretUpdate>;
 export const post_SecretUpdate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/secrets/{id}/update"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       version: Type.Number(),
@@ -3534,6 +3634,7 @@ export type get_ConfigList = Static<typeof get_ConfigList>;
 export const get_ConfigList = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/configs"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -3548,6 +3649,7 @@ export type post_ConfigCreate = Static<typeof post_ConfigCreate>;
 export const post_ConfigCreate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/configs/create"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: Type.Intersect([ConfigSpec, Type.Unknown()]),
   }),
@@ -3558,6 +3660,7 @@ export type get_ConfigInspect = Static<typeof get_ConfigInspect>;
 export const get_ConfigInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/configs/{id}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -3570,6 +3673,7 @@ export type delete_ConfigDelete = Static<typeof delete_ConfigDelete>;
 export const delete_ConfigDelete = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/configs/{id}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       id: Type.String(),
@@ -3582,6 +3686,7 @@ export type post_ConfigUpdate = Static<typeof post_ConfigUpdate>;
 export const post_ConfigUpdate = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/configs/{id}/update"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Object({
       version: Type.Number(),
@@ -3598,6 +3703,7 @@ export type get_DistributionInspect = Static<typeof get_DistributionInspect>;
 export const get_DistributionInspect = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/distribution/{name}/json"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       name: Type.String(),
@@ -3610,6 +3716,7 @@ export type post_Session = Static<typeof post_Session>;
 export const post_Session = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/session"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: Type.Unknown(),
 });
@@ -3760,6 +3867,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -3769,6 +3878,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

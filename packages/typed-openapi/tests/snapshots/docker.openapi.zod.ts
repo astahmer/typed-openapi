@@ -1639,6 +1639,7 @@ export type get_ContainerList = typeof get_ContainerList;
 export const get_ContainerList = {
   method: z.literal("GET"),
   path: z.literal("/containers/json"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       all: z.boolean().optional(),
@@ -1654,6 +1655,7 @@ export type post_ContainerCreate = typeof post_ContainerCreate;
 export const post_ContainerCreate = {
   method: z.literal("POST"),
   path: z.literal("/containers/create"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       name: z.string().optional(),
@@ -1674,6 +1676,7 @@ export type get_ContainerInspect = typeof get_ContainerInspect;
 export const get_ContainerInspect = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/json"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       size: z.boolean().optional(),
@@ -1715,6 +1718,7 @@ export type get_ContainerTop = typeof get_ContainerTop;
 export const get_ContainerTop = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/top"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       ps_args: z.string().optional(),
@@ -1733,6 +1737,7 @@ export type get_ContainerLogs = typeof get_ContainerLogs;
 export const get_ContainerLogs = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/logs"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       follow: z.boolean().optional(),
@@ -1754,6 +1759,7 @@ export type get_ContainerChanges = typeof get_ContainerChanges;
 export const get_ContainerChanges = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/changes"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -1766,6 +1772,7 @@ export type get_ContainerExport = typeof get_ContainerExport;
 export const get_ContainerExport = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/export"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -1778,6 +1785,7 @@ export type get_ContainerStats = typeof get_ContainerStats;
 export const get_ContainerStats = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/stats"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       stream: z.boolean().optional(),
@@ -1794,6 +1802,7 @@ export type post_ContainerResize = typeof post_ContainerResize;
 export const post_ContainerResize = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/resize"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       h: z.number().optional(),
@@ -1810,6 +1819,7 @@ export type post_ContainerStart = typeof post_ContainerStart;
 export const post_ContainerStart = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/start"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       detachKeys: z.string().optional(),
@@ -1825,6 +1835,7 @@ export type post_ContainerStop = typeof post_ContainerStop;
 export const post_ContainerStop = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/stop"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       signal: z.string().optional(),
@@ -1841,6 +1852,7 @@ export type post_ContainerRestart = typeof post_ContainerRestart;
 export const post_ContainerRestart = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/restart"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       signal: z.string().optional(),
@@ -1857,6 +1869,7 @@ export type post_ContainerKill = typeof post_ContainerKill;
 export const post_ContainerKill = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/kill"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       signal: z.string().optional(),
@@ -1872,6 +1885,7 @@ export type post_ContainerUpdate = typeof post_ContainerUpdate;
 export const post_ContainerUpdate = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/update"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -1892,6 +1906,7 @@ export type post_ContainerRename = typeof post_ContainerRename;
 export const post_ContainerRename = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/rename"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       name: z.string(),
@@ -1907,6 +1922,7 @@ export type post_ContainerPause = typeof post_ContainerPause;
 export const post_ContainerPause = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/pause"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -1919,6 +1935,7 @@ export type post_ContainerUnpause = typeof post_ContainerUnpause;
 export const post_ContainerUnpause = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/unpause"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -1931,6 +1948,7 @@ export type post_ContainerAttach = typeof post_ContainerAttach;
 export const post_ContainerAttach = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/attach"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       detachKeys: z.string().optional(),
@@ -1951,6 +1969,7 @@ export type get_ContainerAttachWebsocket = typeof get_ContainerAttachWebsocket;
 export const get_ContainerAttachWebsocket = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/attach/ws"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       detachKeys: z.string().optional(),
@@ -1971,6 +1990,7 @@ export type post_ContainerWait = typeof post_ContainerWait;
 export const post_ContainerWait = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/wait"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       condition: z.union([z.literal("not-running"), z.literal("next-exit"), z.literal("removed")]).optional(),
@@ -1986,6 +2006,7 @@ export type delete_ContainerDelete = typeof delete_ContainerDelete;
 export const delete_ContainerDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/containers/{id}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       v: z.boolean().optional(),
@@ -2003,6 +2024,7 @@ export type get_ContainerArchive = typeof get_ContainerArchive;
 export const get_ContainerArchive = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/archive"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       path: z.string(),
@@ -2018,6 +2040,7 @@ export type put_PutContainerArchive = typeof put_PutContainerArchive;
 export const put_PutContainerArchive = {
   method: z.literal("PUT"),
   path: z.literal("/containers/{id}/archive"),
+  requestFormat: z.literal("binary"),
   parameters: z.object({
     query: z.object({
       path: z.string(),
@@ -2036,6 +2059,7 @@ export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
 export const head_ContainerArchiveInfo = {
   method: z.literal("HEAD"),
   path: z.literal("/containers/{id}/archive"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       path: z.string(),
@@ -2051,6 +2075,7 @@ export type post_ContainerPrune = typeof post_ContainerPrune;
 export const post_ContainerPrune = {
   method: z.literal("POST"),
   path: z.literal("/containers/prune"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       filters: z.string().optional(),
@@ -2066,6 +2091,7 @@ export type get_ImageList = typeof get_ImageList;
 export const get_ImageList = {
   method: z.literal("GET"),
   path: z.literal("/images/json"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       all: z.boolean().optional(),
@@ -2081,6 +2107,7 @@ export type post_ImageBuild = typeof post_ImageBuild;
 export const post_ImageBuild = {
   method: z.literal("POST"),
   path: z.literal("/build"),
+  requestFormat: z.literal("binary"),
   parameters: z.object({
     query: z.object({
       dockerfile: z.string().optional(),
@@ -2121,6 +2148,7 @@ export type post_BuildPrune = typeof post_BuildPrune;
 export const post_BuildPrune = {
   method: z.literal("POST"),
   path: z.literal("/build/prune"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       "keep-storage": z.number().optional(),
@@ -2138,6 +2166,7 @@ export type post_ImageCreate = typeof post_ImageCreate;
 export const post_ImageCreate = {
   method: z.literal("POST"),
   path: z.literal("/images/create"),
+  requestFormat: z.literal("text"),
   parameters: z.object({
     query: z.object({
       fromImage: z.string().optional(),
@@ -2160,6 +2189,7 @@ export type get_ImageInspect = typeof get_ImageInspect;
 export const get_ImageInspect = {
   method: z.literal("GET"),
   path: z.literal("/images/{name}/json"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       name: z.string(),
@@ -2172,6 +2202,7 @@ export type get_ImageHistory = typeof get_ImageHistory;
 export const get_ImageHistory = {
   method: z.literal("GET"),
   path: z.literal("/images/{name}/history"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       name: z.string(),
@@ -2193,6 +2224,7 @@ export type post_ImagePush = typeof post_ImagePush;
 export const post_ImagePush = {
   method: z.literal("POST"),
   path: z.literal("/images/{name}/push"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       tag: z.string().optional(),
@@ -2211,6 +2243,7 @@ export type post_ImageTag = typeof post_ImageTag;
 export const post_ImageTag = {
   method: z.literal("POST"),
   path: z.literal("/images/{name}/tag"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       repo: z.string().optional(),
@@ -2227,6 +2260,7 @@ export type delete_ImageDelete = typeof delete_ImageDelete;
 export const delete_ImageDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/images/{name}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       force: z.boolean().optional(),
@@ -2243,6 +2277,7 @@ export type get_ImageSearch = typeof get_ImageSearch;
 export const get_ImageSearch = {
   method: z.literal("GET"),
   path: z.literal("/images/search"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       term: z.string(),
@@ -2265,6 +2300,7 @@ export type post_ImagePrune = typeof post_ImagePrune;
 export const post_ImagePrune = {
   method: z.literal("POST"),
   path: z.literal("/images/prune"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       filters: z.string().optional(),
@@ -2280,6 +2316,7 @@ export type post_SystemAuth = typeof post_SystemAuth;
 export const post_SystemAuth = {
   method: z.literal("POST"),
   path: z.literal("/auth"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: AuthConfig,
   }),
@@ -2290,6 +2327,7 @@ export type get_SystemInfo = typeof get_SystemInfo;
 export const get_SystemInfo = {
   method: z.literal("GET"),
   path: z.literal("/info"),
+  requestFormat: z.literal("json"),
   parameters: z.never(),
   response: SystemInfo,
 };
@@ -2298,6 +2336,7 @@ export type get_SystemVersion = typeof get_SystemVersion;
 export const get_SystemVersion = {
   method: z.literal("GET"),
   path: z.literal("/version"),
+  requestFormat: z.literal("json"),
   parameters: z.never(),
   response: SystemVersion,
 };
@@ -2306,6 +2345,7 @@ export type get_SystemPing = typeof get_SystemPing;
 export const get_SystemPing = {
   method: z.literal("GET"),
   path: z.literal("/_ping"),
+  requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.unknown(),
 };
@@ -2314,6 +2354,7 @@ export type head_SystemPingHead = typeof head_SystemPingHead;
 export const head_SystemPingHead = {
   method: z.literal("HEAD"),
   path: z.literal("/_ping"),
+  requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.unknown(),
 };
@@ -2322,6 +2363,7 @@ export type post_ImageCommit = typeof post_ImageCommit;
 export const post_ImageCommit = {
   method: z.literal("POST"),
   path: z.literal("/commit"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       container: z.string().optional(),
@@ -2341,6 +2383,7 @@ export type get_SystemEvents = typeof get_SystemEvents;
 export const get_SystemEvents = {
   method: z.literal("GET"),
   path: z.literal("/events"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       since: z.string().optional(),
@@ -2355,6 +2398,7 @@ export type get_SystemDataUsage = typeof get_SystemDataUsage;
 export const get_SystemDataUsage = {
   method: z.literal("GET"),
   path: z.literal("/system/df"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       type: z
@@ -2375,6 +2419,7 @@ export type get_ImageGet = typeof get_ImageGet;
 export const get_ImageGet = {
   method: z.literal("GET"),
   path: z.literal("/images/{name}/get"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       name: z.string(),
@@ -2387,6 +2432,7 @@ export type get_ImageGetAll = typeof get_ImageGetAll;
 export const get_ImageGetAll = {
   method: z.literal("GET"),
   path: z.literal("/images/get"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       names: z.array(z.string()).optional(),
@@ -2399,6 +2445,7 @@ export type post_ImageLoad = typeof post_ImageLoad;
 export const post_ImageLoad = {
   method: z.literal("POST"),
   path: z.literal("/images/load"),
+  requestFormat: z.literal("text"),
   parameters: z.object({
     query: z.object({
       quiet: z.boolean().optional(),
@@ -2411,6 +2458,7 @@ export type post_ContainerExec = typeof post_ContainerExec;
 export const post_ContainerExec = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/exec"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -2436,6 +2484,7 @@ export type post_ExecStart = typeof post_ExecStart;
 export const post_ExecStart = {
   method: z.literal("POST"),
   path: z.literal("/exec/{id}/start"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -2453,6 +2502,7 @@ export type post_ExecResize = typeof post_ExecResize;
 export const post_ExecResize = {
   method: z.literal("POST"),
   path: z.literal("/exec/{id}/resize"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       h: z.number().optional(),
@@ -2469,6 +2519,7 @@ export type get_ExecInspect = typeof get_ExecInspect;
 export const get_ExecInspect = {
   method: z.literal("GET"),
   path: z.literal("/exec/{id}/json"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -2493,6 +2544,7 @@ export type get_VolumeList = typeof get_VolumeList;
 export const get_VolumeList = {
   method: z.literal("GET"),
   path: z.literal("/volumes"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       filters: z.string().optional(),
@@ -2505,6 +2557,7 @@ export type post_VolumeCreate = typeof post_VolumeCreate;
 export const post_VolumeCreate = {
   method: z.literal("POST"),
   path: z.literal("/volumes/create"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: VolumeCreateOptions,
   }),
@@ -2515,6 +2568,7 @@ export type get_VolumeInspect = typeof get_VolumeInspect;
 export const get_VolumeInspect = {
   method: z.literal("GET"),
   path: z.literal("/volumes/{name}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       name: z.string(),
@@ -2527,6 +2581,7 @@ export type put_VolumeUpdate = typeof put_VolumeUpdate;
 export const put_VolumeUpdate = {
   method: z.literal("PUT"),
   path: z.literal("/volumes/{name}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       version: z.number(),
@@ -2545,6 +2600,7 @@ export type delete_VolumeDelete = typeof delete_VolumeDelete;
 export const delete_VolumeDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/volumes/{name}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       force: z.boolean().optional(),
@@ -2560,6 +2616,7 @@ export type post_VolumePrune = typeof post_VolumePrune;
 export const post_VolumePrune = {
   method: z.literal("POST"),
   path: z.literal("/volumes/prune"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       filters: z.string().optional(),
@@ -2575,6 +2632,7 @@ export type get_NetworkList = typeof get_NetworkList;
 export const get_NetworkList = {
   method: z.literal("GET"),
   path: z.literal("/networks"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       filters: z.string().optional(),
@@ -2587,6 +2645,7 @@ export type get_NetworkInspect = typeof get_NetworkInspect;
 export const get_NetworkInspect = {
   method: z.literal("GET"),
   path: z.literal("/networks/{id}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       verbose: z.boolean().optional(),
@@ -2603,6 +2662,7 @@ export type delete_NetworkDelete = typeof delete_NetworkDelete;
 export const delete_NetworkDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/networks/{id}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -2615,6 +2675,7 @@ export type post_NetworkCreate = typeof post_NetworkCreate;
 export const post_NetworkCreate = {
   method: z.literal("POST"),
   path: z.literal("/networks/create"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: z.object({
       Name: z.string(),
@@ -2639,6 +2700,7 @@ export type post_NetworkConnect = typeof post_NetworkConnect;
 export const post_NetworkConnect = {
   method: z.literal("POST"),
   path: z.literal("/networks/{id}/connect"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -2655,6 +2717,7 @@ export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
 export const post_NetworkDisconnect = {
   method: z.literal("POST"),
   path: z.literal("/networks/{id}/disconnect"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -2671,6 +2734,7 @@ export type post_NetworkPrune = typeof post_NetworkPrune;
 export const post_NetworkPrune = {
   method: z.literal("POST"),
   path: z.literal("/networks/prune"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       filters: z.string().optional(),
@@ -2685,6 +2749,7 @@ export type get_PluginList = typeof get_PluginList;
 export const get_PluginList = {
   method: z.literal("GET"),
   path: z.literal("/plugins"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       filters: z.string().optional(),
@@ -2697,6 +2762,7 @@ export type get_GetPluginPrivileges = typeof get_GetPluginPrivileges;
 export const get_GetPluginPrivileges = {
   method: z.literal("GET"),
   path: z.literal("/plugins/privileges"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       remote: z.string(),
@@ -2709,6 +2775,7 @@ export type post_PluginPull = typeof post_PluginPull;
 export const post_PluginPull = {
   method: z.literal("POST"),
   path: z.literal("/plugins/pull"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       remote: z.string(),
@@ -2726,6 +2793,7 @@ export type get_PluginInspect = typeof get_PluginInspect;
 export const get_PluginInspect = {
   method: z.literal("GET"),
   path: z.literal("/plugins/{name}/json"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       name: z.string(),
@@ -2738,6 +2806,7 @@ export type delete_PluginDelete = typeof delete_PluginDelete;
 export const delete_PluginDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/plugins/{name}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       force: z.boolean().optional(),
@@ -2753,6 +2822,7 @@ export type post_PluginEnable = typeof post_PluginEnable;
 export const post_PluginEnable = {
   method: z.literal("POST"),
   path: z.literal("/plugins/{name}/enable"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       timeout: z.number().optional(),
@@ -2768,6 +2838,7 @@ export type post_PluginDisable = typeof post_PluginDisable;
 export const post_PluginDisable = {
   method: z.literal("POST"),
   path: z.literal("/plugins/{name}/disable"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       force: z.boolean().optional(),
@@ -2783,6 +2854,7 @@ export type post_PluginUpgrade = typeof post_PluginUpgrade;
 export const post_PluginUpgrade = {
   method: z.literal("POST"),
   path: z.literal("/plugins/{name}/upgrade"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       remote: z.string(),
@@ -2802,6 +2874,7 @@ export type post_PluginCreate = typeof post_PluginCreate;
 export const post_PluginCreate = {
   method: z.literal("POST"),
   path: z.literal("/plugins/create"),
+  requestFormat: z.literal("text"),
   parameters: z.object({
     query: z.object({
       name: z.string(),
@@ -2814,6 +2887,7 @@ export type post_PluginPush = typeof post_PluginPush;
 export const post_PluginPush = {
   method: z.literal("POST"),
   path: z.literal("/plugins/{name}/push"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       name: z.string(),
@@ -2826,6 +2900,7 @@ export type post_PluginSet = typeof post_PluginSet;
 export const post_PluginSet = {
   method: z.literal("POST"),
   path: z.literal("/plugins/{name}/set"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       name: z.string(),
@@ -2839,6 +2914,7 @@ export type get_NodeList = typeof get_NodeList;
 export const get_NodeList = {
   method: z.literal("GET"),
   path: z.literal("/nodes"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       filters: z.string().optional(),
@@ -2851,6 +2927,7 @@ export type get_NodeInspect = typeof get_NodeInspect;
 export const get_NodeInspect = {
   method: z.literal("GET"),
   path: z.literal("/nodes/{id}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -2863,6 +2940,7 @@ export type delete_NodeDelete = typeof delete_NodeDelete;
 export const delete_NodeDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/nodes/{id}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       force: z.boolean().optional(),
@@ -2878,6 +2956,7 @@ export type post_NodeUpdate = typeof post_NodeUpdate;
 export const post_NodeUpdate = {
   method: z.literal("POST"),
   path: z.literal("/nodes/{id}/update"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       version: z.number(),
@@ -2894,6 +2973,7 @@ export type get_SwarmInspect = typeof get_SwarmInspect;
 export const get_SwarmInspect = {
   method: z.literal("GET"),
   path: z.literal("/swarm"),
+  requestFormat: z.literal("json"),
   parameters: z.never(),
   response: Swarm,
 };
@@ -2902,6 +2982,7 @@ export type post_SwarmInit = typeof post_SwarmInit;
 export const post_SwarmInit = {
   method: z.literal("POST"),
   path: z.literal("/swarm/init"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: z.object({
       ListenAddr: z.string().optional(),
@@ -2921,6 +3002,7 @@ export type post_SwarmJoin = typeof post_SwarmJoin;
 export const post_SwarmJoin = {
   method: z.literal("POST"),
   path: z.literal("/swarm/join"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: z.object({
       ListenAddr: z.string().optional(),
@@ -2937,6 +3019,7 @@ export type post_SwarmLeave = typeof post_SwarmLeave;
 export const post_SwarmLeave = {
   method: z.literal("POST"),
   path: z.literal("/swarm/leave"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       force: z.boolean().optional(),
@@ -2949,6 +3032,7 @@ export type post_SwarmUpdate = typeof post_SwarmUpdate;
 export const post_SwarmUpdate = {
   method: z.literal("POST"),
   path: z.literal("/swarm/update"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       version: z.number(),
@@ -2965,6 +3049,7 @@ export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
 export const get_SwarmUnlockkey = {
   method: z.literal("GET"),
   path: z.literal("/swarm/unlockkey"),
+  requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.object({
     UnlockKey: z.string().optional(),
@@ -2975,6 +3060,7 @@ export type post_SwarmUnlock = typeof post_SwarmUnlock;
 export const post_SwarmUnlock = {
   method: z.literal("POST"),
   path: z.literal("/swarm/unlock"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: z.object({
       UnlockKey: z.string().optional(),
@@ -2987,6 +3073,7 @@ export type get_ServiceList = typeof get_ServiceList;
 export const get_ServiceList = {
   method: z.literal("GET"),
   path: z.literal("/services"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       filters: z.string().optional(),
@@ -3000,6 +3087,7 @@ export type post_ServiceCreate = typeof post_ServiceCreate;
 export const post_ServiceCreate = {
   method: z.literal("POST"),
   path: z.literal("/services/create"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     header: z.object({
       "X-Registry-Auth": z.string().optional(),
@@ -3016,6 +3104,7 @@ export type get_ServiceInspect = typeof get_ServiceInspect;
 export const get_ServiceInspect = {
   method: z.literal("GET"),
   path: z.literal("/services/{id}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       insertDefaults: z.boolean().optional(),
@@ -3031,6 +3120,7 @@ export type delete_ServiceDelete = typeof delete_ServiceDelete;
 export const delete_ServiceDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/services/{id}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -3043,6 +3133,7 @@ export type post_ServiceUpdate = typeof post_ServiceUpdate;
 export const post_ServiceUpdate = {
   method: z.literal("POST"),
   path: z.literal("/services/{id}/update"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       version: z.number(),
@@ -3064,6 +3155,7 @@ export type get_ServiceLogs = typeof get_ServiceLogs;
 export const get_ServiceLogs = {
   method: z.literal("GET"),
   path: z.literal("/services/{id}/logs"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       details: z.boolean().optional(),
@@ -3085,6 +3177,7 @@ export type get_TaskList = typeof get_TaskList;
 export const get_TaskList = {
   method: z.literal("GET"),
   path: z.literal("/tasks"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       filters: z.string().optional(),
@@ -3097,6 +3190,7 @@ export type get_TaskInspect = typeof get_TaskInspect;
 export const get_TaskInspect = {
   method: z.literal("GET"),
   path: z.literal("/tasks/{id}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -3109,6 +3203,7 @@ export type get_TaskLogs = typeof get_TaskLogs;
 export const get_TaskLogs = {
   method: z.literal("GET"),
   path: z.literal("/tasks/{id}/logs"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       details: z.boolean().optional(),
@@ -3130,6 +3225,7 @@ export type get_SecretList = typeof get_SecretList;
 export const get_SecretList = {
   method: z.literal("GET"),
   path: z.literal("/secrets"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       filters: z.string().optional(),
@@ -3142,6 +3238,7 @@ export type post_SecretCreate = typeof post_SecretCreate;
 export const post_SecretCreate = {
   method: z.literal("POST"),
   path: z.literal("/secrets/create"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: z.intersection(SecretSpec, z.unknown()),
   }),
@@ -3152,6 +3249,7 @@ export type get_SecretInspect = typeof get_SecretInspect;
 export const get_SecretInspect = {
   method: z.literal("GET"),
   path: z.literal("/secrets/{id}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -3164,6 +3262,7 @@ export type delete_SecretDelete = typeof delete_SecretDelete;
 export const delete_SecretDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/secrets/{id}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -3176,6 +3275,7 @@ export type post_SecretUpdate = typeof post_SecretUpdate;
 export const post_SecretUpdate = {
   method: z.literal("POST"),
   path: z.literal("/secrets/{id}/update"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       version: z.number(),
@@ -3192,6 +3292,7 @@ export type get_ConfigList = typeof get_ConfigList;
 export const get_ConfigList = {
   method: z.literal("GET"),
   path: z.literal("/configs"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       filters: z.string().optional(),
@@ -3204,6 +3305,7 @@ export type post_ConfigCreate = typeof post_ConfigCreate;
 export const post_ConfigCreate = {
   method: z.literal("POST"),
   path: z.literal("/configs/create"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: z.intersection(ConfigSpec, z.unknown()),
   }),
@@ -3214,6 +3316,7 @@ export type get_ConfigInspect = typeof get_ConfigInspect;
 export const get_ConfigInspect = {
   method: z.literal("GET"),
   path: z.literal("/configs/{id}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -3226,6 +3329,7 @@ export type delete_ConfigDelete = typeof delete_ConfigDelete;
 export const delete_ConfigDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/configs/{id}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       id: z.string(),
@@ -3238,6 +3342,7 @@ export type post_ConfigUpdate = typeof post_ConfigUpdate;
 export const post_ConfigUpdate = {
   method: z.literal("POST"),
   path: z.literal("/configs/{id}/update"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       version: z.number(),
@@ -3254,6 +3359,7 @@ export type get_DistributionInspect = typeof get_DistributionInspect;
 export const get_DistributionInspect = {
   method: z.literal("GET"),
   path: z.literal("/distribution/{name}/json"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       name: z.string(),
@@ -3266,6 +3372,7 @@ export type post_Session = typeof post_Session;
 export const post_Session = {
   method: z.literal("POST"),
   path: z.literal("/session"),
+  requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.unknown(),
 };
@@ -3413,6 +3520,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -3422,6 +3531,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

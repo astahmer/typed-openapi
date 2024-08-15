@@ -853,6 +853,7 @@ export namespace Endpoints {
   export type get_ContainerList = {
     method: "GET";
     path: "/containers/json";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ all: boolean; limit: number; size: boolean; filters: string }>;
     };
@@ -861,6 +862,7 @@ export namespace Endpoints {
   export type post_ContainerCreate = {
     method: "POST";
     path: "/containers/create";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ name: string; platform: string }>;
 
@@ -872,6 +874,7 @@ export namespace Endpoints {
   export type get_ContainerInspect = {
     method: "GET";
     path: "/containers/{id}/json";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ size: boolean }>;
       path: { id: string };
@@ -907,6 +910,7 @@ export namespace Endpoints {
   export type get_ContainerTop = {
     method: "GET";
     path: "/containers/{id}/top";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ ps_args: string }>;
       path: { id: string };
@@ -916,6 +920,7 @@ export namespace Endpoints {
   export type get_ContainerLogs = {
     method: "GET";
     path: "/containers/{id}/logs";
+    requestFormat: "json";
     parameters: {
       query: Partial<{
         follow: boolean;
@@ -933,6 +938,7 @@ export namespace Endpoints {
   export type get_ContainerChanges = {
     method: "GET";
     path: "/containers/{id}/changes";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -941,6 +947,7 @@ export namespace Endpoints {
   export type get_ContainerExport = {
     method: "GET";
     path: "/containers/{id}/export";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -949,6 +956,7 @@ export namespace Endpoints {
   export type get_ContainerStats = {
     method: "GET";
     path: "/containers/{id}/stats";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ stream: boolean; "one-shot": boolean }>;
       path: { id: string };
@@ -958,6 +966,7 @@ export namespace Endpoints {
   export type post_ContainerResize = {
     method: "POST";
     path: "/containers/{id}/resize";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ h: number; w: number }>;
       path: { id: string };
@@ -967,6 +976,7 @@ export namespace Endpoints {
   export type post_ContainerStart = {
     method: "POST";
     path: "/containers/{id}/start";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ detachKeys: string }>;
       path: { id: string };
@@ -976,6 +986,7 @@ export namespace Endpoints {
   export type post_ContainerStop = {
     method: "POST";
     path: "/containers/{id}/stop";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ signal: string; t: number }>;
       path: { id: string };
@@ -985,6 +996,7 @@ export namespace Endpoints {
   export type post_ContainerRestart = {
     method: "POST";
     path: "/containers/{id}/restart";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ signal: string; t: number }>;
       path: { id: string };
@@ -994,6 +1006,7 @@ export namespace Endpoints {
   export type post_ContainerKill = {
     method: "POST";
     path: "/containers/{id}/kill";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ signal: string }>;
       path: { id: string };
@@ -1003,6 +1016,7 @@ export namespace Endpoints {
   export type post_ContainerUpdate = {
     method: "POST";
     path: "/containers/{id}/update";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
 
@@ -1013,6 +1027,7 @@ export namespace Endpoints {
   export type post_ContainerRename = {
     method: "POST";
     path: "/containers/{id}/rename";
+    requestFormat: "json";
     parameters: {
       query: { name: string };
       path: { id: string };
@@ -1022,6 +1037,7 @@ export namespace Endpoints {
   export type post_ContainerPause = {
     method: "POST";
     path: "/containers/{id}/pause";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1030,6 +1046,7 @@ export namespace Endpoints {
   export type post_ContainerUnpause = {
     method: "POST";
     path: "/containers/{id}/unpause";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1038,6 +1055,7 @@ export namespace Endpoints {
   export type post_ContainerAttach = {
     method: "POST";
     path: "/containers/{id}/attach";
+    requestFormat: "json";
     parameters: {
       query: Partial<{
         detachKeys: string;
@@ -1054,6 +1072,7 @@ export namespace Endpoints {
   export type get_ContainerAttachWebsocket = {
     method: "GET";
     path: "/containers/{id}/attach/ws";
+    requestFormat: "json";
     parameters: {
       query: Partial<{
         detachKeys: string;
@@ -1070,6 +1089,7 @@ export namespace Endpoints {
   export type post_ContainerWait = {
     method: "POST";
     path: "/containers/{id}/wait";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ condition: "not-running" | "next-exit" | "removed" }>;
       path: { id: string };
@@ -1079,6 +1099,7 @@ export namespace Endpoints {
   export type delete_ContainerDelete = {
     method: "DELETE";
     path: "/containers/{id}";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ v: boolean; force: boolean; link: boolean }>;
       path: { id: string };
@@ -1088,6 +1109,7 @@ export namespace Endpoints {
   export type get_ContainerArchive = {
     method: "GET";
     path: "/containers/{id}/archive";
+    requestFormat: "json";
     parameters: {
       query: { path: string };
       path: { id: string };
@@ -1097,6 +1119,7 @@ export namespace Endpoints {
   export type put_PutContainerArchive = {
     method: "PUT";
     path: "/containers/{id}/archive";
+    requestFormat: "binary";
     parameters: {
       query: { path: string; noOverwriteDirNonDir: string | undefined; copyUIDGID: string | undefined };
       path: { id: string };
@@ -1108,6 +1131,7 @@ export namespace Endpoints {
   export type head_ContainerArchiveInfo = {
     method: "HEAD";
     path: "/containers/{id}/archive";
+    requestFormat: "json";
     parameters: {
       query: { path: string };
       path: { id: string };
@@ -1117,6 +1141,7 @@ export namespace Endpoints {
   export type post_ContainerPrune = {
     method: "POST";
     path: "/containers/prune";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ filters: string }>;
     };
@@ -1125,6 +1150,7 @@ export namespace Endpoints {
   export type get_ImageList = {
     method: "GET";
     path: "/images/json";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ all: boolean; filters: string; "shared-size": boolean; digests: boolean }>;
     };
@@ -1133,6 +1159,7 @@ export namespace Endpoints {
   export type post_ImageBuild = {
     method: "POST";
     path: "/build";
+    requestFormat: "binary";
     parameters: {
       query: Partial<{
         dockerfile: string;
@@ -1169,6 +1196,7 @@ export namespace Endpoints {
   export type post_BuildPrune = {
     method: "POST";
     path: "/build/prune";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ "keep-storage": number; all: boolean; filters: string }>;
     };
@@ -1177,6 +1205,7 @@ export namespace Endpoints {
   export type post_ImageCreate = {
     method: "POST";
     path: "/images/create";
+    requestFormat: "text";
     parameters: {
       query: Partial<{
         fromImage: string;
@@ -1196,6 +1225,7 @@ export namespace Endpoints {
   export type get_ImageInspect = {
     method: "GET";
     path: "/images/{name}/json";
+    requestFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1204,6 +1234,7 @@ export namespace Endpoints {
   export type get_ImageHistory = {
     method: "GET";
     path: "/images/{name}/history";
+    requestFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1219,6 +1250,7 @@ export namespace Endpoints {
   export type post_ImagePush = {
     method: "POST";
     path: "/images/{name}/push";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ tag: string }>;
       path: { name: string };
@@ -1229,6 +1261,7 @@ export namespace Endpoints {
   export type post_ImageTag = {
     method: "POST";
     path: "/images/{name}/tag";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ repo: string; tag: string }>;
       path: { name: string };
@@ -1238,6 +1271,7 @@ export namespace Endpoints {
   export type delete_ImageDelete = {
     method: "DELETE";
     path: "/images/{name}";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ force: boolean; noprune: boolean }>;
       path: { name: string };
@@ -1247,6 +1281,7 @@ export namespace Endpoints {
   export type get_ImageSearch = {
     method: "GET";
     path: "/images/search";
+    requestFormat: "json";
     parameters: {
       query: { term: string; limit: number | undefined; filters: string | undefined };
     };
@@ -1257,6 +1292,7 @@ export namespace Endpoints {
   export type post_ImagePrune = {
     method: "POST";
     path: "/images/prune";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ filters: string }>;
     };
@@ -1265,6 +1301,7 @@ export namespace Endpoints {
   export type post_SystemAuth = {
     method: "POST";
     path: "/auth";
+    requestFormat: "json";
     parameters: {
       body: Schemas.AuthConfig;
     };
@@ -1273,30 +1310,35 @@ export namespace Endpoints {
   export type get_SystemInfo = {
     method: "GET";
     path: "/info";
+    requestFormat: "json";
     parameters: never;
     response: Schemas.SystemInfo;
   };
   export type get_SystemVersion = {
     method: "GET";
     path: "/version";
+    requestFormat: "json";
     parameters: never;
     response: Schemas.SystemVersion;
   };
   export type get_SystemPing = {
     method: "GET";
     path: "/_ping";
+    requestFormat: "json";
     parameters: never;
     response: unknown;
   };
   export type head_SystemPingHead = {
     method: "HEAD";
     path: "/_ping";
+    requestFormat: "json";
     parameters: never;
     response: unknown;
   };
   export type post_ImageCommit = {
     method: "POST";
     path: "/commit";
+    requestFormat: "json";
     parameters: {
       query: Partial<{
         container: string;
@@ -1315,6 +1357,7 @@ export namespace Endpoints {
   export type get_SystemEvents = {
     method: "GET";
     path: "/events";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ since: string; until: string; filters: string }>;
     };
@@ -1323,6 +1366,7 @@ export namespace Endpoints {
   export type get_SystemDataUsage = {
     method: "GET";
     path: "/system/df";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ type: Array<"container" | "image" | "volume" | "build-cache"> }>;
     };
@@ -1337,6 +1381,7 @@ export namespace Endpoints {
   export type get_ImageGet = {
     method: "GET";
     path: "/images/{name}/get";
+    requestFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1345,6 +1390,7 @@ export namespace Endpoints {
   export type get_ImageGetAll = {
     method: "GET";
     path: "/images/get";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ names: Array<string> }>;
     };
@@ -1353,6 +1399,7 @@ export namespace Endpoints {
   export type post_ImageLoad = {
     method: "POST";
     path: "/images/load";
+    requestFormat: "text";
     parameters: {
       query: Partial<{ quiet: boolean }>;
     };
@@ -1361,6 +1408,7 @@ export namespace Endpoints {
   export type post_ContainerExec = {
     method: "POST";
     path: "/containers/{id}/exec";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
 
@@ -1383,6 +1431,7 @@ export namespace Endpoints {
   export type post_ExecStart = {
     method: "POST";
     path: "/exec/{id}/start";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
 
@@ -1393,6 +1442,7 @@ export namespace Endpoints {
   export type post_ExecResize = {
     method: "POST";
     path: "/exec/{id}/resize";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ h: number; w: number }>;
       path: { id: string };
@@ -1402,6 +1452,7 @@ export namespace Endpoints {
   export type get_ExecInspect = {
     method: "GET";
     path: "/exec/{id}/json";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1422,6 +1473,7 @@ export namespace Endpoints {
   export type get_VolumeList = {
     method: "GET";
     path: "/volumes";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ filters: string }>;
     };
@@ -1430,6 +1482,7 @@ export namespace Endpoints {
   export type post_VolumeCreate = {
     method: "POST";
     path: "/volumes/create";
+    requestFormat: "json";
     parameters: {
       body: Schemas.VolumeCreateOptions;
     };
@@ -1438,6 +1491,7 @@ export namespace Endpoints {
   export type get_VolumeInspect = {
     method: "GET";
     path: "/volumes/{name}";
+    requestFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1446,6 +1500,7 @@ export namespace Endpoints {
   export type put_VolumeUpdate = {
     method: "PUT";
     path: "/volumes/{name}";
+    requestFormat: "json";
     parameters: {
       query: { version: number };
       path: { name: string };
@@ -1457,6 +1512,7 @@ export namespace Endpoints {
   export type delete_VolumeDelete = {
     method: "DELETE";
     path: "/volumes/{name}";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ force: boolean }>;
       path: { name: string };
@@ -1466,6 +1522,7 @@ export namespace Endpoints {
   export type post_VolumePrune = {
     method: "POST";
     path: "/volumes/prune";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ filters: string }>;
     };
@@ -1474,6 +1531,7 @@ export namespace Endpoints {
   export type get_NetworkList = {
     method: "GET";
     path: "/networks";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ filters: string }>;
     };
@@ -1482,6 +1540,7 @@ export namespace Endpoints {
   export type get_NetworkInspect = {
     method: "GET";
     path: "/networks/{id}";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ verbose: boolean; scope: string }>;
       path: { id: string };
@@ -1491,6 +1550,7 @@ export namespace Endpoints {
   export type delete_NetworkDelete = {
     method: "DELETE";
     path: "/networks/{id}";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1499,6 +1559,7 @@ export namespace Endpoints {
   export type post_NetworkCreate = {
     method: "POST";
     path: "/networks/create";
+    requestFormat: "json";
     parameters: {
       body: {
         Name: string;
@@ -1518,6 +1579,7 @@ export namespace Endpoints {
   export type post_NetworkConnect = {
     method: "POST";
     path: "/networks/{id}/connect";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
 
@@ -1528,6 +1590,7 @@ export namespace Endpoints {
   export type post_NetworkDisconnect = {
     method: "POST";
     path: "/networks/{id}/disconnect";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
 
@@ -1538,6 +1601,7 @@ export namespace Endpoints {
   export type post_NetworkPrune = {
     method: "POST";
     path: "/networks/prune";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ filters: string }>;
     };
@@ -1546,6 +1610,7 @@ export namespace Endpoints {
   export type get_PluginList = {
     method: "GET";
     path: "/plugins";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ filters: string }>;
     };
@@ -1554,6 +1619,7 @@ export namespace Endpoints {
   export type get_GetPluginPrivileges = {
     method: "GET";
     path: "/plugins/privileges";
+    requestFormat: "json";
     parameters: {
       query: { remote: string };
     };
@@ -1562,6 +1628,7 @@ export namespace Endpoints {
   export type post_PluginPull = {
     method: "POST";
     path: "/plugins/pull";
+    requestFormat: "json";
     parameters: {
       query: { remote: string; name: string | undefined };
 
@@ -1573,6 +1640,7 @@ export namespace Endpoints {
   export type get_PluginInspect = {
     method: "GET";
     path: "/plugins/{name}/json";
+    requestFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1581,6 +1649,7 @@ export namespace Endpoints {
   export type delete_PluginDelete = {
     method: "DELETE";
     path: "/plugins/{name}";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ force: boolean }>;
       path: { name: string };
@@ -1590,6 +1659,7 @@ export namespace Endpoints {
   export type post_PluginEnable = {
     method: "POST";
     path: "/plugins/{name}/enable";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ timeout: number }>;
       path: { name: string };
@@ -1599,6 +1669,7 @@ export namespace Endpoints {
   export type post_PluginDisable = {
     method: "POST";
     path: "/plugins/{name}/disable";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ force: boolean }>;
       path: { name: string };
@@ -1608,6 +1679,7 @@ export namespace Endpoints {
   export type post_PluginUpgrade = {
     method: "POST";
     path: "/plugins/{name}/upgrade";
+    requestFormat: "json";
     parameters: {
       query: { remote: string };
       path: { name: string };
@@ -1619,6 +1691,7 @@ export namespace Endpoints {
   export type post_PluginCreate = {
     method: "POST";
     path: "/plugins/create";
+    requestFormat: "text";
     parameters: {
       query: { name: string };
     };
@@ -1627,6 +1700,7 @@ export namespace Endpoints {
   export type post_PluginPush = {
     method: "POST";
     path: "/plugins/{name}/push";
+    requestFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1635,6 +1709,7 @@ export namespace Endpoints {
   export type post_PluginSet = {
     method: "POST";
     path: "/plugins/{name}/set";
+    requestFormat: "json";
     parameters: {
       path: { name: string };
 
@@ -1645,6 +1720,7 @@ export namespace Endpoints {
   export type get_NodeList = {
     method: "GET";
     path: "/nodes";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ filters: string }>;
     };
@@ -1653,6 +1729,7 @@ export namespace Endpoints {
   export type get_NodeInspect = {
     method: "GET";
     path: "/nodes/{id}";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1661,6 +1738,7 @@ export namespace Endpoints {
   export type delete_NodeDelete = {
     method: "DELETE";
     path: "/nodes/{id}";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ force: boolean }>;
       path: { id: string };
@@ -1670,6 +1748,7 @@ export namespace Endpoints {
   export type post_NodeUpdate = {
     method: "POST";
     path: "/nodes/{id}/update";
+    requestFormat: "json";
     parameters: {
       query: { version: number };
       path: { id: string };
@@ -1681,12 +1760,14 @@ export namespace Endpoints {
   export type get_SwarmInspect = {
     method: "GET";
     path: "/swarm";
+    requestFormat: "json";
     parameters: never;
     response: Schemas.Swarm;
   };
   export type post_SwarmInit = {
     method: "POST";
     path: "/swarm/init";
+    requestFormat: "json";
     parameters: {
       body: Partial<{
         ListenAddr: string;
@@ -1704,6 +1785,7 @@ export namespace Endpoints {
   export type post_SwarmJoin = {
     method: "POST";
     path: "/swarm/join";
+    requestFormat: "json";
     parameters: {
       body: Partial<{
         ListenAddr: string;
@@ -1718,6 +1800,7 @@ export namespace Endpoints {
   export type post_SwarmLeave = {
     method: "POST";
     path: "/swarm/leave";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ force: boolean }>;
     };
@@ -1726,6 +1809,7 @@ export namespace Endpoints {
   export type post_SwarmUpdate = {
     method: "POST";
     path: "/swarm/update";
+    requestFormat: "json";
     parameters: {
       query: {
         version: number;
@@ -1741,12 +1825,14 @@ export namespace Endpoints {
   export type get_SwarmUnlockkey = {
     method: "GET";
     path: "/swarm/unlockkey";
+    requestFormat: "json";
     parameters: never;
     response: Partial<{ UnlockKey: string }>;
   };
   export type post_SwarmUnlock = {
     method: "POST";
     path: "/swarm/unlock";
+    requestFormat: "json";
     parameters: {
       body: Partial<{ UnlockKey: string }>;
     };
@@ -1755,6 +1841,7 @@ export namespace Endpoints {
   export type get_ServiceList = {
     method: "GET";
     path: "/services";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ filters: string; status: boolean }>;
     };
@@ -1763,6 +1850,7 @@ export namespace Endpoints {
   export type post_ServiceCreate = {
     method: "POST";
     path: "/services/create";
+    requestFormat: "json";
     parameters: {
       header: Partial<{ "X-Registry-Auth": string }>;
       body: Schemas.ServiceSpec & unknown;
@@ -1772,6 +1860,7 @@ export namespace Endpoints {
   export type get_ServiceInspect = {
     method: "GET";
     path: "/services/{id}";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ insertDefaults: boolean }>;
       path: { id: string };
@@ -1781,6 +1870,7 @@ export namespace Endpoints {
   export type delete_ServiceDelete = {
     method: "DELETE";
     path: "/services/{id}";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1789,6 +1879,7 @@ export namespace Endpoints {
   export type post_ServiceUpdate = {
     method: "POST";
     path: "/services/{id}/update";
+    requestFormat: "json";
     parameters: {
       query: { version: number; registryAuthFrom: "spec" | "previous-spec" | undefined; rollback: string | undefined };
       path: { id: string };
@@ -1800,6 +1891,7 @@ export namespace Endpoints {
   export type get_ServiceLogs = {
     method: "GET";
     path: "/services/{id}/logs";
+    requestFormat: "json";
     parameters: {
       query: Partial<{
         details: boolean;
@@ -1817,6 +1909,7 @@ export namespace Endpoints {
   export type get_TaskList = {
     method: "GET";
     path: "/tasks";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ filters: string }>;
     };
@@ -1825,6 +1918,7 @@ export namespace Endpoints {
   export type get_TaskInspect = {
     method: "GET";
     path: "/tasks/{id}";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1833,6 +1927,7 @@ export namespace Endpoints {
   export type get_TaskLogs = {
     method: "GET";
     path: "/tasks/{id}/logs";
+    requestFormat: "json";
     parameters: {
       query: Partial<{
         details: boolean;
@@ -1850,6 +1945,7 @@ export namespace Endpoints {
   export type get_SecretList = {
     method: "GET";
     path: "/secrets";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ filters: string }>;
     };
@@ -1858,6 +1954,7 @@ export namespace Endpoints {
   export type post_SecretCreate = {
     method: "POST";
     path: "/secrets/create";
+    requestFormat: "json";
     parameters: {
       body: Schemas.SecretSpec & unknown;
     };
@@ -1866,6 +1963,7 @@ export namespace Endpoints {
   export type get_SecretInspect = {
     method: "GET";
     path: "/secrets/{id}";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1874,6 +1972,7 @@ export namespace Endpoints {
   export type delete_SecretDelete = {
     method: "DELETE";
     path: "/secrets/{id}";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1882,6 +1981,7 @@ export namespace Endpoints {
   export type post_SecretUpdate = {
     method: "POST";
     path: "/secrets/{id}/update";
+    requestFormat: "json";
     parameters: {
       query: { version: number };
       path: { id: string };
@@ -1893,6 +1993,7 @@ export namespace Endpoints {
   export type get_ConfigList = {
     method: "GET";
     path: "/configs";
+    requestFormat: "json";
     parameters: {
       query: Partial<{ filters: string }>;
     };
@@ -1901,6 +2002,7 @@ export namespace Endpoints {
   export type post_ConfigCreate = {
     method: "POST";
     path: "/configs/create";
+    requestFormat: "json";
     parameters: {
       body: Schemas.ConfigSpec & unknown;
     };
@@ -1909,6 +2011,7 @@ export namespace Endpoints {
   export type get_ConfigInspect = {
     method: "GET";
     path: "/configs/{id}";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1917,6 +2020,7 @@ export namespace Endpoints {
   export type delete_ConfigDelete = {
     method: "DELETE";
     path: "/configs/{id}";
+    requestFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1925,6 +2029,7 @@ export namespace Endpoints {
   export type post_ConfigUpdate = {
     method: "POST";
     path: "/configs/{id}/update";
+    requestFormat: "json";
     parameters: {
       query: { version: number };
       path: { id: string };
@@ -1936,6 +2041,7 @@ export namespace Endpoints {
   export type get_DistributionInspect = {
     method: "GET";
     path: "/distribution/{name}/json";
+    requestFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1944,6 +2050,7 @@ export namespace Endpoints {
   export type post_Session = {
     method: "POST";
     path: "/session";
+    requestFormat: "json";
     parameters: never;
     response: unknown;
   };
@@ -2094,6 +2201,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -2103,6 +2212,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

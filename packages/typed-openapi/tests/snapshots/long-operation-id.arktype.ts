@@ -5,12 +5,14 @@ export const types = scope({
   get_Get_users: {
     method: '"GET"',
     path: '"/users"',
+    requestFormat: '"json"',
     parameters: "never",
     response: "string[]",
   },
   post_Very_very_very_very_very_very_very_very_very_very_long: {
     method: '"POST"',
     path: '"/users"',
+    requestFormat: '"json"',
     parameters: {
       body: {
         "username?": "string",
@@ -61,6 +63,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -70,6 +74,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
