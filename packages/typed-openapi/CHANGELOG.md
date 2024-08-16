@@ -1,5 +1,17 @@
 # typed-openapi
 
+## 0.9.0
+
+### Minor Changes
+
+- b122616: Add requestFormat property to endpoint schema.
+
+  - json
+  - form-data
+  - form-url
+  - binary
+  - text
+
 ## 0.8.0
 
 ### Minor Changes
