@@ -7,6 +7,7 @@ export type get_Get_users = v.InferOutput<typeof get_Get_users>;
 export const get_Get_users = v.object({
   method: v.literal("GET"),
   path: v.literal("/users"),
+  requestFormat: v.literal("json"),
   parameters: v.never(),
   response: v.array(v.string()),
 });
@@ -17,6 +18,7 @@ export type post_Very_very_very_very_very_very_very_very_very_very_long = v.Infe
 export const post_Very_very_very_very_very_very_very_very_very_very_long = v.object({
   method: v.literal("POST"),
   path: v.literal("/users"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: v.object({
       username: v.optional(v.string()),
@@ -57,6 +59,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -66,6 +70,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

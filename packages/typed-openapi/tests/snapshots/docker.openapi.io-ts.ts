@@ -1728,6 +1728,7 @@ export type get_ContainerList = t.TypeOf<typeof get_ContainerList>;
 export const get_ContainerList = t.type({
   method: t.literal("GET"),
   path: t.literal("/containers/json"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       all: t.union([t.undefined, t.boolean]),
@@ -1743,6 +1744,7 @@ export type post_ContainerCreate = t.TypeOf<typeof post_ContainerCreate>;
 export const post_ContainerCreate = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/create"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       name: t.union([t.undefined, t.string]),
@@ -1763,6 +1765,7 @@ export type get_ContainerInspect = t.TypeOf<typeof get_ContainerInspect>;
 export const get_ContainerInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/containers/{id}/json"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       size: t.union([t.undefined, t.boolean]),
@@ -1804,6 +1807,7 @@ export type get_ContainerTop = t.TypeOf<typeof get_ContainerTop>;
 export const get_ContainerTop = t.type({
   method: t.literal("GET"),
   path: t.literal("/containers/{id}/top"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       ps_args: t.union([t.undefined, t.string]),
@@ -1822,6 +1826,7 @@ export type get_ContainerLogs = t.TypeOf<typeof get_ContainerLogs>;
 export const get_ContainerLogs = t.type({
   method: t.literal("GET"),
   path: t.literal("/containers/{id}/logs"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       follow: t.union([t.undefined, t.boolean]),
@@ -1843,6 +1848,7 @@ export type get_ContainerChanges = t.TypeOf<typeof get_ContainerChanges>;
 export const get_ContainerChanges = t.type({
   method: t.literal("GET"),
   path: t.literal("/containers/{id}/changes"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -1855,6 +1861,7 @@ export type get_ContainerExport = t.TypeOf<typeof get_ContainerExport>;
 export const get_ContainerExport = t.type({
   method: t.literal("GET"),
   path: t.literal("/containers/{id}/export"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -1867,6 +1874,7 @@ export type get_ContainerStats = t.TypeOf<typeof get_ContainerStats>;
 export const get_ContainerStats = t.type({
   method: t.literal("GET"),
   path: t.literal("/containers/{id}/stats"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       stream: t.union([t.undefined, t.boolean]),
@@ -1883,6 +1891,7 @@ export type post_ContainerResize = t.TypeOf<typeof post_ContainerResize>;
 export const post_ContainerResize = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/{id}/resize"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       h: t.union([t.undefined, t.number]),
@@ -1899,6 +1908,7 @@ export type post_ContainerStart = t.TypeOf<typeof post_ContainerStart>;
 export const post_ContainerStart = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/{id}/start"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       detachKeys: t.union([t.undefined, t.string]),
@@ -1914,6 +1924,7 @@ export type post_ContainerStop = t.TypeOf<typeof post_ContainerStop>;
 export const post_ContainerStop = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/{id}/stop"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       signal: t.union([t.undefined, t.string]),
@@ -1930,6 +1941,7 @@ export type post_ContainerRestart = t.TypeOf<typeof post_ContainerRestart>;
 export const post_ContainerRestart = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/{id}/restart"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       signal: t.union([t.undefined, t.string]),
@@ -1946,6 +1958,7 @@ export type post_ContainerKill = t.TypeOf<typeof post_ContainerKill>;
 export const post_ContainerKill = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/{id}/kill"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       signal: t.union([t.undefined, t.string]),
@@ -1961,6 +1974,7 @@ export type post_ContainerUpdate = t.TypeOf<typeof post_ContainerUpdate>;
 export const post_ContainerUpdate = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/{id}/update"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -1981,6 +1995,7 @@ export type post_ContainerRename = t.TypeOf<typeof post_ContainerRename>;
 export const post_ContainerRename = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/{id}/rename"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       name: t.string,
@@ -1996,6 +2011,7 @@ export type post_ContainerPause = t.TypeOf<typeof post_ContainerPause>;
 export const post_ContainerPause = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/{id}/pause"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -2008,6 +2024,7 @@ export type post_ContainerUnpause = t.TypeOf<typeof post_ContainerUnpause>;
 export const post_ContainerUnpause = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/{id}/unpause"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -2020,6 +2037,7 @@ export type post_ContainerAttach = t.TypeOf<typeof post_ContainerAttach>;
 export const post_ContainerAttach = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/{id}/attach"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       detachKeys: t.union([t.undefined, t.string]),
@@ -2040,6 +2058,7 @@ export type get_ContainerAttachWebsocket = t.TypeOf<typeof get_ContainerAttachWe
 export const get_ContainerAttachWebsocket = t.type({
   method: t.literal("GET"),
   path: t.literal("/containers/{id}/attach/ws"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       detachKeys: t.union([t.undefined, t.string]),
@@ -2060,6 +2079,7 @@ export type post_ContainerWait = t.TypeOf<typeof post_ContainerWait>;
 export const post_ContainerWait = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/{id}/wait"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       condition: t.union([
@@ -2078,6 +2098,7 @@ export type delete_ContainerDelete = t.TypeOf<typeof delete_ContainerDelete>;
 export const delete_ContainerDelete = t.type({
   method: t.literal("DELETE"),
   path: t.literal("/containers/{id}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       v: t.union([t.undefined, t.boolean]),
@@ -2095,6 +2116,7 @@ export type get_ContainerArchive = t.TypeOf<typeof get_ContainerArchive>;
 export const get_ContainerArchive = t.type({
   method: t.literal("GET"),
   path: t.literal("/containers/{id}/archive"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       path: t.string,
@@ -2110,6 +2132,7 @@ export type put_PutContainerArchive = t.TypeOf<typeof put_PutContainerArchive>;
 export const put_PutContainerArchive = t.type({
   method: t.literal("PUT"),
   path: t.literal("/containers/{id}/archive"),
+  requestFormat: t.literal("binary"),
   parameters: t.type({
     query: t.type({
       path: t.string,
@@ -2128,6 +2151,7 @@ export type head_ContainerArchiveInfo = t.TypeOf<typeof head_ContainerArchiveInf
 export const head_ContainerArchiveInfo = t.type({
   method: t.literal("HEAD"),
   path: t.literal("/containers/{id}/archive"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       path: t.string,
@@ -2143,6 +2167,7 @@ export type post_ContainerPrune = t.TypeOf<typeof post_ContainerPrune>;
 export const post_ContainerPrune = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/prune"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
@@ -2158,6 +2183,7 @@ export type get_ImageList = t.TypeOf<typeof get_ImageList>;
 export const get_ImageList = t.type({
   method: t.literal("GET"),
   path: t.literal("/images/json"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       all: t.union([t.undefined, t.boolean]),
@@ -2173,6 +2199,7 @@ export type post_ImageBuild = t.TypeOf<typeof post_ImageBuild>;
 export const post_ImageBuild = t.type({
   method: t.literal("POST"),
   path: t.literal("/build"),
+  requestFormat: t.literal("binary"),
   parameters: t.type({
     query: t.type({
       dockerfile: t.union([t.undefined, t.string]),
@@ -2213,6 +2240,7 @@ export type post_BuildPrune = t.TypeOf<typeof post_BuildPrune>;
 export const post_BuildPrune = t.type({
   method: t.literal("POST"),
   path: t.literal("/build/prune"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       "keep-storage": t.union([t.undefined, t.number]),
@@ -2230,6 +2258,7 @@ export type post_ImageCreate = t.TypeOf<typeof post_ImageCreate>;
 export const post_ImageCreate = t.type({
   method: t.literal("POST"),
   path: t.literal("/images/create"),
+  requestFormat: t.literal("text"),
   parameters: t.type({
     query: t.type({
       fromImage: t.union([t.undefined, t.string]),
@@ -2252,6 +2281,7 @@ export type get_ImageInspect = t.TypeOf<typeof get_ImageInspect>;
 export const get_ImageInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/images/{name}/json"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       name: t.string,
@@ -2264,6 +2294,7 @@ export type get_ImageHistory = t.TypeOf<typeof get_ImageHistory>;
 export const get_ImageHistory = t.type({
   method: t.literal("GET"),
   path: t.literal("/images/{name}/history"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       name: t.string,
@@ -2285,6 +2316,7 @@ export type post_ImagePush = t.TypeOf<typeof post_ImagePush>;
 export const post_ImagePush = t.type({
   method: t.literal("POST"),
   path: t.literal("/images/{name}/push"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       tag: t.union([t.undefined, t.string]),
@@ -2303,6 +2335,7 @@ export type post_ImageTag = t.TypeOf<typeof post_ImageTag>;
 export const post_ImageTag = t.type({
   method: t.literal("POST"),
   path: t.literal("/images/{name}/tag"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       repo: t.union([t.undefined, t.string]),
@@ -2319,6 +2352,7 @@ export type delete_ImageDelete = t.TypeOf<typeof delete_ImageDelete>;
 export const delete_ImageDelete = t.type({
   method: t.literal("DELETE"),
   path: t.literal("/images/{name}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       force: t.union([t.undefined, t.boolean]),
@@ -2335,6 +2369,7 @@ export type get_ImageSearch = t.TypeOf<typeof get_ImageSearch>;
 export const get_ImageSearch = t.type({
   method: t.literal("GET"),
   path: t.literal("/images/search"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       term: t.string,
@@ -2357,6 +2392,7 @@ export type post_ImagePrune = t.TypeOf<typeof post_ImagePrune>;
 export const post_ImagePrune = t.type({
   method: t.literal("POST"),
   path: t.literal("/images/prune"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
@@ -2372,6 +2408,7 @@ export type post_SystemAuth = t.TypeOf<typeof post_SystemAuth>;
 export const post_SystemAuth = t.type({
   method: t.literal("POST"),
   path: t.literal("/auth"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: AuthConfig,
   }),
@@ -2382,6 +2419,7 @@ export type get_SystemInfo = t.TypeOf<typeof get_SystemInfo>;
 export const get_SystemInfo = t.type({
   method: t.literal("GET"),
   path: t.literal("/info"),
+  requestFormat: t.literal("json"),
   parameters: t.never,
   response: SystemInfo,
 });
@@ -2390,6 +2428,7 @@ export type get_SystemVersion = t.TypeOf<typeof get_SystemVersion>;
 export const get_SystemVersion = t.type({
   method: t.literal("GET"),
   path: t.literal("/version"),
+  requestFormat: t.literal("json"),
   parameters: t.never,
   response: SystemVersion,
 });
@@ -2398,6 +2437,7 @@ export type get_SystemPing = t.TypeOf<typeof get_SystemPing>;
 export const get_SystemPing = t.type({
   method: t.literal("GET"),
   path: t.literal("/_ping"),
+  requestFormat: t.literal("json"),
   parameters: t.never,
   response: t.unknown,
 });
@@ -2406,6 +2446,7 @@ export type head_SystemPingHead = t.TypeOf<typeof head_SystemPingHead>;
 export const head_SystemPingHead = t.type({
   method: t.literal("HEAD"),
   path: t.literal("/_ping"),
+  requestFormat: t.literal("json"),
   parameters: t.never,
   response: t.unknown,
 });
@@ -2414,6 +2455,7 @@ export type post_ImageCommit = t.TypeOf<typeof post_ImageCommit>;
 export const post_ImageCommit = t.type({
   method: t.literal("POST"),
   path: t.literal("/commit"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       container: t.union([t.undefined, t.string]),
@@ -2433,6 +2475,7 @@ export type get_SystemEvents = t.TypeOf<typeof get_SystemEvents>;
 export const get_SystemEvents = t.type({
   method: t.literal("GET"),
   path: t.literal("/events"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       since: t.union([t.undefined, t.string]),
@@ -2447,6 +2490,7 @@ export type get_SystemDataUsage = t.TypeOf<typeof get_SystemDataUsage>;
 export const get_SystemDataUsage = t.type({
   method: t.literal("GET"),
   path: t.literal("/system/df"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       type: t.union([
@@ -2468,6 +2512,7 @@ export type get_ImageGet = t.TypeOf<typeof get_ImageGet>;
 export const get_ImageGet = t.type({
   method: t.literal("GET"),
   path: t.literal("/images/{name}/get"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       name: t.string,
@@ -2480,6 +2525,7 @@ export type get_ImageGetAll = t.TypeOf<typeof get_ImageGetAll>;
 export const get_ImageGetAll = t.type({
   method: t.literal("GET"),
   path: t.literal("/images/get"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       names: t.union([t.undefined, t.array(t.string)]),
@@ -2492,6 +2538,7 @@ export type post_ImageLoad = t.TypeOf<typeof post_ImageLoad>;
 export const post_ImageLoad = t.type({
   method: t.literal("POST"),
   path: t.literal("/images/load"),
+  requestFormat: t.literal("text"),
   parameters: t.type({
     query: t.type({
       quiet: t.union([t.undefined, t.boolean]),
@@ -2504,6 +2551,7 @@ export type post_ContainerExec = t.TypeOf<typeof post_ContainerExec>;
 export const post_ContainerExec = t.type({
   method: t.literal("POST"),
   path: t.literal("/containers/{id}/exec"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -2529,6 +2577,7 @@ export type post_ExecStart = t.TypeOf<typeof post_ExecStart>;
 export const post_ExecStart = t.type({
   method: t.literal("POST"),
   path: t.literal("/exec/{id}/start"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -2546,6 +2595,7 @@ export type post_ExecResize = t.TypeOf<typeof post_ExecResize>;
 export const post_ExecResize = t.type({
   method: t.literal("POST"),
   path: t.literal("/exec/{id}/resize"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       h: t.union([t.undefined, t.number]),
@@ -2562,6 +2612,7 @@ export type get_ExecInspect = t.TypeOf<typeof get_ExecInspect>;
 export const get_ExecInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/exec/{id}/json"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -2586,6 +2637,7 @@ export type get_VolumeList = t.TypeOf<typeof get_VolumeList>;
 export const get_VolumeList = t.type({
   method: t.literal("GET"),
   path: t.literal("/volumes"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
@@ -2598,6 +2650,7 @@ export type post_VolumeCreate = t.TypeOf<typeof post_VolumeCreate>;
 export const post_VolumeCreate = t.type({
   method: t.literal("POST"),
   path: t.literal("/volumes/create"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: VolumeCreateOptions,
   }),
@@ -2608,6 +2661,7 @@ export type get_VolumeInspect = t.TypeOf<typeof get_VolumeInspect>;
 export const get_VolumeInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/volumes/{name}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       name: t.string,
@@ -2620,6 +2674,7 @@ export type put_VolumeUpdate = t.TypeOf<typeof put_VolumeUpdate>;
 export const put_VolumeUpdate = t.type({
   method: t.literal("PUT"),
   path: t.literal("/volumes/{name}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       version: t.number,
@@ -2638,6 +2693,7 @@ export type delete_VolumeDelete = t.TypeOf<typeof delete_VolumeDelete>;
 export const delete_VolumeDelete = t.type({
   method: t.literal("DELETE"),
   path: t.literal("/volumes/{name}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       force: t.union([t.undefined, t.boolean]),
@@ -2653,6 +2709,7 @@ export type post_VolumePrune = t.TypeOf<typeof post_VolumePrune>;
 export const post_VolumePrune = t.type({
   method: t.literal("POST"),
   path: t.literal("/volumes/prune"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
@@ -2668,6 +2725,7 @@ export type get_NetworkList = t.TypeOf<typeof get_NetworkList>;
 export const get_NetworkList = t.type({
   method: t.literal("GET"),
   path: t.literal("/networks"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
@@ -2680,6 +2738,7 @@ export type get_NetworkInspect = t.TypeOf<typeof get_NetworkInspect>;
 export const get_NetworkInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/networks/{id}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       verbose: t.union([t.undefined, t.boolean]),
@@ -2696,6 +2755,7 @@ export type delete_NetworkDelete = t.TypeOf<typeof delete_NetworkDelete>;
 export const delete_NetworkDelete = t.type({
   method: t.literal("DELETE"),
   path: t.literal("/networks/{id}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -2708,6 +2768,7 @@ export type post_NetworkCreate = t.TypeOf<typeof post_NetworkCreate>;
 export const post_NetworkCreate = t.type({
   method: t.literal("POST"),
   path: t.literal("/networks/create"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: t.type({
       Name: t.string,
@@ -2732,6 +2793,7 @@ export type post_NetworkConnect = t.TypeOf<typeof post_NetworkConnect>;
 export const post_NetworkConnect = t.type({
   method: t.literal("POST"),
   path: t.literal("/networks/{id}/connect"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -2748,6 +2810,7 @@ export type post_NetworkDisconnect = t.TypeOf<typeof post_NetworkDisconnect>;
 export const post_NetworkDisconnect = t.type({
   method: t.literal("POST"),
   path: t.literal("/networks/{id}/disconnect"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -2764,6 +2827,7 @@ export type post_NetworkPrune = t.TypeOf<typeof post_NetworkPrune>;
 export const post_NetworkPrune = t.type({
   method: t.literal("POST"),
   path: t.literal("/networks/prune"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
@@ -2778,6 +2842,7 @@ export type get_PluginList = t.TypeOf<typeof get_PluginList>;
 export const get_PluginList = t.type({
   method: t.literal("GET"),
   path: t.literal("/plugins"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
@@ -2790,6 +2855,7 @@ export type get_GetPluginPrivileges = t.TypeOf<typeof get_GetPluginPrivileges>;
 export const get_GetPluginPrivileges = t.type({
   method: t.literal("GET"),
   path: t.literal("/plugins/privileges"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       remote: t.string,
@@ -2802,6 +2868,7 @@ export type post_PluginPull = t.TypeOf<typeof post_PluginPull>;
 export const post_PluginPull = t.type({
   method: t.literal("POST"),
   path: t.literal("/plugins/pull"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       remote: t.string,
@@ -2819,6 +2886,7 @@ export type get_PluginInspect = t.TypeOf<typeof get_PluginInspect>;
 export const get_PluginInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/plugins/{name}/json"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       name: t.string,
@@ -2831,6 +2899,7 @@ export type delete_PluginDelete = t.TypeOf<typeof delete_PluginDelete>;
 export const delete_PluginDelete = t.type({
   method: t.literal("DELETE"),
   path: t.literal("/plugins/{name}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       force: t.union([t.undefined, t.boolean]),
@@ -2846,6 +2915,7 @@ export type post_PluginEnable = t.TypeOf<typeof post_PluginEnable>;
 export const post_PluginEnable = t.type({
   method: t.literal("POST"),
   path: t.literal("/plugins/{name}/enable"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       timeout: t.union([t.undefined, t.number]),
@@ -2861,6 +2931,7 @@ export type post_PluginDisable = t.TypeOf<typeof post_PluginDisable>;
 export const post_PluginDisable = t.type({
   method: t.literal("POST"),
   path: t.literal("/plugins/{name}/disable"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       force: t.union([t.undefined, t.boolean]),
@@ -2876,6 +2947,7 @@ export type post_PluginUpgrade = t.TypeOf<typeof post_PluginUpgrade>;
 export const post_PluginUpgrade = t.type({
   method: t.literal("POST"),
   path: t.literal("/plugins/{name}/upgrade"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       remote: t.string,
@@ -2895,6 +2967,7 @@ export type post_PluginCreate = t.TypeOf<typeof post_PluginCreate>;
 export const post_PluginCreate = t.type({
   method: t.literal("POST"),
   path: t.literal("/plugins/create"),
+  requestFormat: t.literal("text"),
   parameters: t.type({
     query: t.type({
       name: t.string,
@@ -2907,6 +2980,7 @@ export type post_PluginPush = t.TypeOf<typeof post_PluginPush>;
 export const post_PluginPush = t.type({
   method: t.literal("POST"),
   path: t.literal("/plugins/{name}/push"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       name: t.string,
@@ -2919,6 +2993,7 @@ export type post_PluginSet = t.TypeOf<typeof post_PluginSet>;
 export const post_PluginSet = t.type({
   method: t.literal("POST"),
   path: t.literal("/plugins/{name}/set"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       name: t.string,
@@ -2932,6 +3007,7 @@ export type get_NodeList = t.TypeOf<typeof get_NodeList>;
 export const get_NodeList = t.type({
   method: t.literal("GET"),
   path: t.literal("/nodes"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
@@ -2944,6 +3020,7 @@ export type get_NodeInspect = t.TypeOf<typeof get_NodeInspect>;
 export const get_NodeInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/nodes/{id}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -2956,6 +3033,7 @@ export type delete_NodeDelete = t.TypeOf<typeof delete_NodeDelete>;
 export const delete_NodeDelete = t.type({
   method: t.literal("DELETE"),
   path: t.literal("/nodes/{id}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       force: t.union([t.undefined, t.boolean]),
@@ -2971,6 +3049,7 @@ export type post_NodeUpdate = t.TypeOf<typeof post_NodeUpdate>;
 export const post_NodeUpdate = t.type({
   method: t.literal("POST"),
   path: t.literal("/nodes/{id}/update"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       version: t.number,
@@ -2987,6 +3066,7 @@ export type get_SwarmInspect = t.TypeOf<typeof get_SwarmInspect>;
 export const get_SwarmInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/swarm"),
+  requestFormat: t.literal("json"),
   parameters: t.never,
   response: Swarm,
 });
@@ -2995,6 +3075,7 @@ export type post_SwarmInit = t.TypeOf<typeof post_SwarmInit>;
 export const post_SwarmInit = t.type({
   method: t.literal("POST"),
   path: t.literal("/swarm/init"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: t.type({
       ListenAddr: t.union([t.undefined, t.string]),
@@ -3014,6 +3095,7 @@ export type post_SwarmJoin = t.TypeOf<typeof post_SwarmJoin>;
 export const post_SwarmJoin = t.type({
   method: t.literal("POST"),
   path: t.literal("/swarm/join"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: t.type({
       ListenAddr: t.union([t.undefined, t.string]),
@@ -3030,6 +3112,7 @@ export type post_SwarmLeave = t.TypeOf<typeof post_SwarmLeave>;
 export const post_SwarmLeave = t.type({
   method: t.literal("POST"),
   path: t.literal("/swarm/leave"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       force: t.union([t.undefined, t.boolean]),
@@ -3042,6 +3125,7 @@ export type post_SwarmUpdate = t.TypeOf<typeof post_SwarmUpdate>;
 export const post_SwarmUpdate = t.type({
   method: t.literal("POST"),
   path: t.literal("/swarm/update"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       version: t.number,
@@ -3058,6 +3142,7 @@ export type get_SwarmUnlockkey = t.TypeOf<typeof get_SwarmUnlockkey>;
 export const get_SwarmUnlockkey = t.type({
   method: t.literal("GET"),
   path: t.literal("/swarm/unlockkey"),
+  requestFormat: t.literal("json"),
   parameters: t.never,
   response: t.type({
     UnlockKey: t.union([t.undefined, t.string]),
@@ -3068,6 +3153,7 @@ export type post_SwarmUnlock = t.TypeOf<typeof post_SwarmUnlock>;
 export const post_SwarmUnlock = t.type({
   method: t.literal("POST"),
   path: t.literal("/swarm/unlock"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: t.type({
       UnlockKey: t.union([t.undefined, t.string]),
@@ -3080,6 +3166,7 @@ export type get_ServiceList = t.TypeOf<typeof get_ServiceList>;
 export const get_ServiceList = t.type({
   method: t.literal("GET"),
   path: t.literal("/services"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
@@ -3093,6 +3180,7 @@ export type post_ServiceCreate = t.TypeOf<typeof post_ServiceCreate>;
 export const post_ServiceCreate = t.type({
   method: t.literal("POST"),
   path: t.literal("/services/create"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     header: t.type({
       "X-Registry-Auth": t.union([t.undefined, t.string]),
@@ -3109,6 +3197,7 @@ export type get_ServiceInspect = t.TypeOf<typeof get_ServiceInspect>;
 export const get_ServiceInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/services/{id}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       insertDefaults: t.union([t.undefined, t.boolean]),
@@ -3124,6 +3213,7 @@ export type delete_ServiceDelete = t.TypeOf<typeof delete_ServiceDelete>;
 export const delete_ServiceDelete = t.type({
   method: t.literal("DELETE"),
   path: t.literal("/services/{id}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -3136,6 +3226,7 @@ export type post_ServiceUpdate = t.TypeOf<typeof post_ServiceUpdate>;
 export const post_ServiceUpdate = t.type({
   method: t.literal("POST"),
   path: t.literal("/services/{id}/update"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       version: t.number,
@@ -3157,6 +3248,7 @@ export type get_ServiceLogs = t.TypeOf<typeof get_ServiceLogs>;
 export const get_ServiceLogs = t.type({
   method: t.literal("GET"),
   path: t.literal("/services/{id}/logs"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       details: t.union([t.undefined, t.boolean]),
@@ -3178,6 +3270,7 @@ export type get_TaskList = t.TypeOf<typeof get_TaskList>;
 export const get_TaskList = t.type({
   method: t.literal("GET"),
   path: t.literal("/tasks"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
@@ -3190,6 +3283,7 @@ export type get_TaskInspect = t.TypeOf<typeof get_TaskInspect>;
 export const get_TaskInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/tasks/{id}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -3202,6 +3296,7 @@ export type get_TaskLogs = t.TypeOf<typeof get_TaskLogs>;
 export const get_TaskLogs = t.type({
   method: t.literal("GET"),
   path: t.literal("/tasks/{id}/logs"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       details: t.union([t.undefined, t.boolean]),
@@ -3223,6 +3318,7 @@ export type get_SecretList = t.TypeOf<typeof get_SecretList>;
 export const get_SecretList = t.type({
   method: t.literal("GET"),
   path: t.literal("/secrets"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
@@ -3235,6 +3331,7 @@ export type post_SecretCreate = t.TypeOf<typeof post_SecretCreate>;
 export const post_SecretCreate = t.type({
   method: t.literal("POST"),
   path: t.literal("/secrets/create"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: t.intersection([SecretSpec, t.unknown]),
   }),
@@ -3245,6 +3342,7 @@ export type get_SecretInspect = t.TypeOf<typeof get_SecretInspect>;
 export const get_SecretInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/secrets/{id}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -3257,6 +3355,7 @@ export type delete_SecretDelete = t.TypeOf<typeof delete_SecretDelete>;
 export const delete_SecretDelete = t.type({
   method: t.literal("DELETE"),
   path: t.literal("/secrets/{id}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -3269,6 +3368,7 @@ export type post_SecretUpdate = t.TypeOf<typeof post_SecretUpdate>;
 export const post_SecretUpdate = t.type({
   method: t.literal("POST"),
   path: t.literal("/secrets/{id}/update"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       version: t.number,
@@ -3285,6 +3385,7 @@ export type get_ConfigList = t.TypeOf<typeof get_ConfigList>;
 export const get_ConfigList = t.type({
   method: t.literal("GET"),
   path: t.literal("/configs"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
@@ -3297,6 +3398,7 @@ export type post_ConfigCreate = t.TypeOf<typeof post_ConfigCreate>;
 export const post_ConfigCreate = t.type({
   method: t.literal("POST"),
   path: t.literal("/configs/create"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: t.intersection([ConfigSpec, t.unknown]),
   }),
@@ -3307,6 +3409,7 @@ export type get_ConfigInspect = t.TypeOf<typeof get_ConfigInspect>;
 export const get_ConfigInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/configs/{id}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -3319,6 +3422,7 @@ export type delete_ConfigDelete = t.TypeOf<typeof delete_ConfigDelete>;
 export const delete_ConfigDelete = t.type({
   method: t.literal("DELETE"),
   path: t.literal("/configs/{id}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       id: t.string,
@@ -3331,6 +3435,7 @@ export type post_ConfigUpdate = t.TypeOf<typeof post_ConfigUpdate>;
 export const post_ConfigUpdate = t.type({
   method: t.literal("POST"),
   path: t.literal("/configs/{id}/update"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       version: t.number,
@@ -3347,6 +3452,7 @@ export type get_DistributionInspect = t.TypeOf<typeof get_DistributionInspect>;
 export const get_DistributionInspect = t.type({
   method: t.literal("GET"),
   path: t.literal("/distribution/{name}/json"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       name: t.string,
@@ -3359,6 +3465,7 @@ export type post_Session = t.TypeOf<typeof post_Session>;
 export const post_Session = t.type({
   method: t.literal("POST"),
   path: t.literal("/session"),
+  requestFormat: t.literal("json"),
   parameters: t.never,
   response: t.unknown,
 });
@@ -3509,6 +3616,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -3518,6 +3627,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

@@ -73,6 +73,7 @@ export type put_UpdatePet = v.InferOutput<typeof put_UpdatePet>;
 export const put_UpdatePet = v.object({
   method: v.literal("PUT"),
   path: v.literal("/pet"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: Pet,
   }),
@@ -83,6 +84,7 @@ export type post_AddPet = v.InferOutput<typeof post_AddPet>;
 export const post_AddPet = v.object({
   method: v.literal("POST"),
   path: v.literal("/pet"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: Pet,
   }),
@@ -93,6 +95,7 @@ export type get_FindPetsByStatus = v.InferOutput<typeof get_FindPetsByStatus>;
 export const get_FindPetsByStatus = v.object({
   method: v.literal("GET"),
   path: v.literal("/pet/findByStatus"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       status: v.optional(v.union([v.literal("available"), v.literal("pending"), v.literal("sold")])),
@@ -105,6 +108,7 @@ export type get_FindPetsByTags = v.InferOutput<typeof get_FindPetsByTags>;
 export const get_FindPetsByTags = v.object({
   method: v.literal("GET"),
   path: v.literal("/pet/findByTags"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       tags: v.optional(v.array(v.string())),
@@ -117,6 +121,7 @@ export type get_GetPetById = v.InferOutput<typeof get_GetPetById>;
 export const get_GetPetById = v.object({
   method: v.literal("GET"),
   path: v.literal("/pet/{petId}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       petId: v.number(),
@@ -129,6 +134,7 @@ export type post_UpdatePetWithForm = v.InferOutput<typeof post_UpdatePetWithForm
 export const post_UpdatePetWithForm = v.object({
   method: v.literal("POST"),
   path: v.literal("/pet/{petId}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       name: v.optional(v.string()),
@@ -145,6 +151,7 @@ export type delete_DeletePet = v.InferOutput<typeof delete_DeletePet>;
 export const delete_DeletePet = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/pet/{petId}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       petId: v.number(),
@@ -160,6 +167,7 @@ export type post_UploadFile = v.InferOutput<typeof post_UploadFile>;
 export const post_UploadFile = v.object({
   method: v.literal("POST"),
   path: v.literal("/pet/{petId}/uploadImage"),
+  requestFormat: v.literal("binary"),
   parameters: v.object({
     query: v.object({
       additionalMetadata: v.optional(v.string()),
@@ -176,6 +184,7 @@ export type get_GetInventory = v.InferOutput<typeof get_GetInventory>;
 export const get_GetInventory = v.object({
   method: v.literal("GET"),
   path: v.literal("/store/inventory"),
+  requestFormat: v.literal("json"),
   parameters: v.never(),
   response: v.unknown(),
 });
@@ -184,6 +193,7 @@ export type post_PlaceOrder = v.InferOutput<typeof post_PlaceOrder>;
 export const post_PlaceOrder = v.object({
   method: v.literal("POST"),
   path: v.literal("/store/order"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: Order,
   }),
@@ -194,6 +204,7 @@ export type get_GetOrderById = v.InferOutput<typeof get_GetOrderById>;
 export const get_GetOrderById = v.object({
   method: v.literal("GET"),
   path: v.literal("/store/order/{orderId}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       orderId: v.number(),
@@ -206,6 +217,7 @@ export type delete_DeleteOrder = v.InferOutput<typeof delete_DeleteOrder>;
 export const delete_DeleteOrder = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/store/order/{orderId}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       orderId: v.number(),
@@ -218,6 +230,7 @@ export type post_CreateUser = v.InferOutput<typeof post_CreateUser>;
 export const post_CreateUser = v.object({
   method: v.literal("POST"),
   path: v.literal("/user"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: User,
   }),
@@ -228,6 +241,7 @@ export type post_CreateUsersWithListInput = v.InferOutput<typeof post_CreateUser
 export const post_CreateUsersWithListInput = v.object({
   method: v.literal("POST"),
   path: v.literal("/user/createWithList"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     body: v.array(User),
   }),
@@ -238,6 +252,7 @@ export type get_LoginUser = v.InferOutput<typeof get_LoginUser>;
 export const get_LoginUser = v.object({
   method: v.literal("GET"),
   path: v.literal("/user/login"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     query: v.object({
       username: v.optional(v.string()),
@@ -251,6 +266,7 @@ export type get_LogoutUser = v.InferOutput<typeof get_LogoutUser>;
 export const get_LogoutUser = v.object({
   method: v.literal("GET"),
   path: v.literal("/user/logout"),
+  requestFormat: v.literal("json"),
   parameters: v.never(),
   response: v.unknown(),
 });
@@ -259,6 +275,7 @@ export type get_GetUserByName = v.InferOutput<typeof get_GetUserByName>;
 export const get_GetUserByName = v.object({
   method: v.literal("GET"),
   path: v.literal("/user/{username}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       username: v.string(),
@@ -271,6 +288,7 @@ export type put_UpdateUser = v.InferOutput<typeof put_UpdateUser>;
 export const put_UpdateUser = v.object({
   method: v.literal("PUT"),
   path: v.literal("/user/{username}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       username: v.string(),
@@ -284,6 +302,7 @@ export type delete_DeleteUser = v.InferOutput<typeof delete_DeleteUser>;
 export const delete_DeleteUser = v.object({
   method: v.literal("DELETE"),
   path: v.literal("/user/{username}"),
+  requestFormat: v.literal("json"),
   parameters: v.object({
     path: v.object({
       username: v.string(),
@@ -347,6 +366,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -356,6 +377,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

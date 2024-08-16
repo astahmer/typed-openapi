@@ -76,6 +76,7 @@ export type put_UpdatePet = t.TypeOf<typeof put_UpdatePet>;
 export const put_UpdatePet = t.type({
   method: t.literal("PUT"),
   path: t.literal("/pet"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: Pet,
   }),
@@ -86,6 +87,7 @@ export type post_AddPet = t.TypeOf<typeof post_AddPet>;
 export const post_AddPet = t.type({
   method: t.literal("POST"),
   path: t.literal("/pet"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: Pet,
   }),
@@ -96,6 +98,7 @@ export type get_FindPetsByStatus = t.TypeOf<typeof get_FindPetsByStatus>;
 export const get_FindPetsByStatus = t.type({
   method: t.literal("GET"),
   path: t.literal("/pet/findByStatus"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       status: t.union([t.undefined, t.union([t.literal("available"), t.literal("pending"), t.literal("sold")])]),
@@ -108,6 +111,7 @@ export type get_FindPetsByTags = t.TypeOf<typeof get_FindPetsByTags>;
 export const get_FindPetsByTags = t.type({
   method: t.literal("GET"),
   path: t.literal("/pet/findByTags"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       tags: t.union([t.undefined, t.array(t.string)]),
@@ -120,6 +124,7 @@ export type get_GetPetById = t.TypeOf<typeof get_GetPetById>;
 export const get_GetPetById = t.type({
   method: t.literal("GET"),
   path: t.literal("/pet/{petId}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       petId: t.number,
@@ -132,6 +137,7 @@ export type post_UpdatePetWithForm = t.TypeOf<typeof post_UpdatePetWithForm>;
 export const post_UpdatePetWithForm = t.type({
   method: t.literal("POST"),
   path: t.literal("/pet/{petId}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       name: t.union([t.undefined, t.string]),
@@ -148,6 +154,7 @@ export type delete_DeletePet = t.TypeOf<typeof delete_DeletePet>;
 export const delete_DeletePet = t.type({
   method: t.literal("DELETE"),
   path: t.literal("/pet/{petId}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       petId: t.number,
@@ -163,6 +170,7 @@ export type post_UploadFile = t.TypeOf<typeof post_UploadFile>;
 export const post_UploadFile = t.type({
   method: t.literal("POST"),
   path: t.literal("/pet/{petId}/uploadImage"),
+  requestFormat: t.literal("binary"),
   parameters: t.type({
     query: t.type({
       additionalMetadata: t.union([t.undefined, t.string]),
@@ -179,6 +187,7 @@ export type get_GetInventory = t.TypeOf<typeof get_GetInventory>;
 export const get_GetInventory = t.type({
   method: t.literal("GET"),
   path: t.literal("/store/inventory"),
+  requestFormat: t.literal("json"),
   parameters: t.never,
   response: t.unknown,
 });
@@ -187,6 +196,7 @@ export type post_PlaceOrder = t.TypeOf<typeof post_PlaceOrder>;
 export const post_PlaceOrder = t.type({
   method: t.literal("POST"),
   path: t.literal("/store/order"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: Order,
   }),
@@ -197,6 +207,7 @@ export type get_GetOrderById = t.TypeOf<typeof get_GetOrderById>;
 export const get_GetOrderById = t.type({
   method: t.literal("GET"),
   path: t.literal("/store/order/{orderId}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       orderId: t.number,
@@ -209,6 +220,7 @@ export type delete_DeleteOrder = t.TypeOf<typeof delete_DeleteOrder>;
 export const delete_DeleteOrder = t.type({
   method: t.literal("DELETE"),
   path: t.literal("/store/order/{orderId}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       orderId: t.number,
@@ -221,6 +233,7 @@ export type post_CreateUser = t.TypeOf<typeof post_CreateUser>;
 export const post_CreateUser = t.type({
   method: t.literal("POST"),
   path: t.literal("/user"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: User,
   }),
@@ -231,6 +244,7 @@ export type post_CreateUsersWithListInput = t.TypeOf<typeof post_CreateUsersWith
 export const post_CreateUsersWithListInput = t.type({
   method: t.literal("POST"),
   path: t.literal("/user/createWithList"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: t.array(User),
   }),
@@ -241,6 +255,7 @@ export type get_LoginUser = t.TypeOf<typeof get_LoginUser>;
 export const get_LoginUser = t.type({
   method: t.literal("GET"),
   path: t.literal("/user/login"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     query: t.type({
       username: t.union([t.undefined, t.string]),
@@ -254,6 +269,7 @@ export type get_LogoutUser = t.TypeOf<typeof get_LogoutUser>;
 export const get_LogoutUser = t.type({
   method: t.literal("GET"),
   path: t.literal("/user/logout"),
+  requestFormat: t.literal("json"),
   parameters: t.never,
   response: t.unknown,
 });
@@ -262,6 +278,7 @@ export type get_GetUserByName = t.TypeOf<typeof get_GetUserByName>;
 export const get_GetUserByName = t.type({
   method: t.literal("GET"),
   path: t.literal("/user/{username}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       username: t.string,
@@ -274,6 +291,7 @@ export type put_UpdateUser = t.TypeOf<typeof put_UpdateUser>;
 export const put_UpdateUser = t.type({
   method: t.literal("PUT"),
   path: t.literal("/user/{username}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       username: t.string,
@@ -287,6 +305,7 @@ export type delete_DeleteUser = t.TypeOf<typeof delete_DeleteUser>;
 export const delete_DeleteUser = t.type({
   method: t.literal("DELETE"),
   path: t.literal("/user/{username}"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     path: t.type({
       username: t.string,
@@ -350,6 +369,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -359,6 +380,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

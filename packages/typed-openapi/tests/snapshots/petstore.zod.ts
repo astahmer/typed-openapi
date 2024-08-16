@@ -70,6 +70,7 @@ export type put_UpdatePet = typeof put_UpdatePet;
 export const put_UpdatePet = {
   method: z.literal("PUT"),
   path: z.literal("/pet"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: Pet,
   }),
@@ -80,6 +81,7 @@ export type post_AddPet = typeof post_AddPet;
 export const post_AddPet = {
   method: z.literal("POST"),
   path: z.literal("/pet"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: Pet,
   }),
@@ -90,6 +92,7 @@ export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
 export const get_FindPetsByStatus = {
   method: z.literal("GET"),
   path: z.literal("/pet/findByStatus"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       status: z.union([z.literal("available"), z.literal("pending"), z.literal("sold")]).optional(),
@@ -102,6 +105,7 @@ export type get_FindPetsByTags = typeof get_FindPetsByTags;
 export const get_FindPetsByTags = {
   method: z.literal("GET"),
   path: z.literal("/pet/findByTags"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       tags: z.array(z.string()).optional(),
@@ -114,6 +118,7 @@ export type get_GetPetById = typeof get_GetPetById;
 export const get_GetPetById = {
   method: z.literal("GET"),
   path: z.literal("/pet/{petId}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       petId: z.number(),
@@ -126,6 +131,7 @@ export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
 export const post_UpdatePetWithForm = {
   method: z.literal("POST"),
   path: z.literal("/pet/{petId}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       name: z.string().optional(),
@@ -142,6 +148,7 @@ export type delete_DeletePet = typeof delete_DeletePet;
 export const delete_DeletePet = {
   method: z.literal("DELETE"),
   path: z.literal("/pet/{petId}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       petId: z.number(),
@@ -157,6 +164,7 @@ export type post_UploadFile = typeof post_UploadFile;
 export const post_UploadFile = {
   method: z.literal("POST"),
   path: z.literal("/pet/{petId}/uploadImage"),
+  requestFormat: z.literal("binary"),
   parameters: z.object({
     query: z.object({
       additionalMetadata: z.string().optional(),
@@ -173,6 +181,7 @@ export type get_GetInventory = typeof get_GetInventory;
 export const get_GetInventory = {
   method: z.literal("GET"),
   path: z.literal("/store/inventory"),
+  requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.unknown(),
 };
@@ -181,6 +190,7 @@ export type post_PlaceOrder = typeof post_PlaceOrder;
 export const post_PlaceOrder = {
   method: z.literal("POST"),
   path: z.literal("/store/order"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: Order,
   }),
@@ -191,6 +201,7 @@ export type get_GetOrderById = typeof get_GetOrderById;
 export const get_GetOrderById = {
   method: z.literal("GET"),
   path: z.literal("/store/order/{orderId}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       orderId: z.number(),
@@ -203,6 +214,7 @@ export type delete_DeleteOrder = typeof delete_DeleteOrder;
 export const delete_DeleteOrder = {
   method: z.literal("DELETE"),
   path: z.literal("/store/order/{orderId}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       orderId: z.number(),
@@ -215,6 +227,7 @@ export type post_CreateUser = typeof post_CreateUser;
 export const post_CreateUser = {
   method: z.literal("POST"),
   path: z.literal("/user"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: User,
   }),
@@ -225,6 +238,7 @@ export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput
 export const post_CreateUsersWithListInput = {
   method: z.literal("POST"),
   path: z.literal("/user/createWithList"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: z.array(User),
   }),
@@ -235,6 +249,7 @@ export type get_LoginUser = typeof get_LoginUser;
 export const get_LoginUser = {
   method: z.literal("GET"),
   path: z.literal("/user/login"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     query: z.object({
       username: z.string().optional(),
@@ -248,6 +263,7 @@ export type get_LogoutUser = typeof get_LogoutUser;
 export const get_LogoutUser = {
   method: z.literal("GET"),
   path: z.literal("/user/logout"),
+  requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.unknown(),
 };
@@ -256,6 +272,7 @@ export type get_GetUserByName = typeof get_GetUserByName;
 export const get_GetUserByName = {
   method: z.literal("GET"),
   path: z.literal("/user/{username}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       username: z.string(),
@@ -268,6 +285,7 @@ export type put_UpdateUser = typeof put_UpdateUser;
 export const put_UpdateUser = {
   method: z.literal("PUT"),
   path: z.literal("/user/{username}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       username: z.string(),
@@ -281,6 +299,7 @@ export type delete_DeleteUser = typeof delete_DeleteUser;
 export const delete_DeleteUser = {
   method: z.literal("DELETE"),
   path: z.literal("/user/{username}"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     path: z.object({
       username: z.string(),
@@ -341,6 +360,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -350,6 +371,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

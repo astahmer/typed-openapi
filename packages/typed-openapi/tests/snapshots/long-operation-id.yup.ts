@@ -4,6 +4,7 @@ export type get_Get_users = typeof get_Get_users;
 export const get_Get_users = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/users" => value === "/users").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.array(y.string().required()),
 };
@@ -13,6 +14,7 @@ export type post_Very_very_very_very_very_very_very_very_very_very_long =
 export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/users" => value === "/users").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: y.object({
       username: y.string().required().optional(),
@@ -50,6 +52,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -59,6 +63,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

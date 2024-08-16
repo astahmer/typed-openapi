@@ -91,6 +91,7 @@ export type put_UpdatePet = typeof put_UpdatePet;
 export const put_UpdatePet = {
   method: y.mixed((value): value is "PUT" => value === "PUT").required(),
   path: y.mixed((value): value is "/pet" => value === "/pet").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: Pet,
   }),
@@ -101,6 +102,7 @@ export type post_AddPet = typeof post_AddPet;
 export const post_AddPet = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/pet" => value === "/pet").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: Pet,
   }),
@@ -111,6 +113,7 @@ export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
 export const get_FindPetsByStatus = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/pet/findByStatus" => value === "/pet/findByStatus").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       status: y.mixed().oneOf(["available", "pending", "sold"]).required().optional(),
@@ -123,6 +126,7 @@ export type get_FindPetsByTags = typeof get_FindPetsByTags;
 export const get_FindPetsByTags = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/pet/findByTags" => value === "/pet/findByTags").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       tags: y.array(y.string().required()).optional(),
@@ -135,6 +139,7 @@ export type get_GetPetById = typeof get_GetPetById;
 export const get_GetPetById = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/pet/{petId}" => value === "/pet/{petId}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       petId: y.number().required(),
@@ -147,6 +152,7 @@ export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
 export const post_UpdatePetWithForm = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/pet/{petId}" => value === "/pet/{petId}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       name: y.string().required().optional(),
@@ -163,6 +169,7 @@ export type delete_DeletePet = typeof delete_DeletePet;
 export const delete_DeletePet = {
   method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
   path: y.mixed((value): value is "/pet/{petId}" => value === "/pet/{petId}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       petId: y.number().required(),
@@ -178,6 +185,7 @@ export type post_UploadFile = typeof post_UploadFile;
 export const post_UploadFile = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/pet/{petId}/uploadImage" => value === "/pet/{petId}/uploadImage").required(),
+  requestFormat: y.mixed((value): value is "binary" => value === "binary").required(),
   parameters: y.object({
     query: y.object({
       additionalMetadata: y.string().required().optional(),
@@ -194,6 +202,7 @@ export type get_GetInventory = typeof get_GetInventory;
 export const get_GetInventory = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/store/inventory" => value === "/store/inventory").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -202,6 +211,7 @@ export type post_PlaceOrder = typeof post_PlaceOrder;
 export const post_PlaceOrder = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/store/order" => value === "/store/order").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: Order,
   }),
@@ -212,6 +222,7 @@ export type get_GetOrderById = typeof get_GetOrderById;
 export const get_GetOrderById = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/store/order/{orderId}" => value === "/store/order/{orderId}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       orderId: y.number().required(),
@@ -224,6 +235,7 @@ export type delete_DeleteOrder = typeof delete_DeleteOrder;
 export const delete_DeleteOrder = {
   method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
   path: y.mixed((value): value is "/store/order/{orderId}" => value === "/store/order/{orderId}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       orderId: y.number().required(),
@@ -236,6 +248,7 @@ export type post_CreateUser = typeof post_CreateUser;
 export const post_CreateUser = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/user" => value === "/user").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: User,
   }),
@@ -246,6 +259,7 @@ export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput
 export const post_CreateUsersWithListInput = {
   method: y.mixed((value): value is "POST" => value === "POST").required(),
   path: y.mixed((value): value is "/user/createWithList" => value === "/user/createWithList").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: y.array(User),
   }),
@@ -256,6 +270,7 @@ export type get_LoginUser = typeof get_LoginUser;
 export const get_LoginUser = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/user/login" => value === "/user/login").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     query: y.object({
       username: y.string().required().optional(),
@@ -269,6 +284,7 @@ export type get_LogoutUser = typeof get_LogoutUser;
 export const get_LogoutUser = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/user/logout" => value === "/user/logout").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
 };
@@ -277,6 +293,7 @@ export type get_GetUserByName = typeof get_GetUserByName;
 export const get_GetUserByName = {
   method: y.mixed((value): value is "GET" => value === "GET").required(),
   path: y.mixed((value): value is "/user/{username}" => value === "/user/{username}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       username: y.string().required(),
@@ -289,6 +306,7 @@ export type put_UpdateUser = typeof put_UpdateUser;
 export const put_UpdateUser = {
   method: y.mixed((value): value is "PUT" => value === "PUT").required(),
   path: y.mixed((value): value is "/user/{username}" => value === "/user/{username}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       username: y.string().required(),
@@ -302,6 +320,7 @@ export type delete_DeleteUser = typeof delete_DeleteUser;
 export const delete_DeleteUser = {
   method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
   path: y.mixed((value): value is "/user/{username}" => value === "/user/{username}").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     path: y.object({
       username: y.string().required(),
@@ -362,6 +381,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -371,6 +392,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

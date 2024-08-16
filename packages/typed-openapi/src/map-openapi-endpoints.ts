@@ -8,6 +8,7 @@ import { createRefResolver } from "./ref-resolver";
 import { tsFactory } from "./ts-factory";
 import { AnyBox, BoxRef, OpenapiSchemaConvertContext } from "./types";
 import { pathToVariableName } from "./string-utils";
+import { match, P } from "ts-pattern";
 
 const factory = tsFactory;
 
@@ -25,6 +26,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
         operation,
         method: method as Method,
         path,
+        requestFormat: "json",
         response: openApiSchemaToTs({ schema: {}, ctx }),
         meta: {
           alias: getAlias({ path, method, operation } as Endpoint),
@@ -83,12 +85,21 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
             ctx,
           });
         }
+
+        endpoint.requestFormat = match(matchingMediaType)
+          .with("application/octet-stream", () => "binary" as const)
+          .with("multipart/form-data", () => "form-data" as const)
+          .with("application/x-www-form-urlencoded", () => "form-url" as const)
+          .with(P.string.includes("json"), () => "json" as const)
+          .otherwise(() => "text" as const);
       }
 
       // Make parameters optional if all or some of them are not required
       if (params) {
         const t = createBoxFactory({}, ctx);
-        const filtered_params = ["query", "path", "header"] as Array<keyof Pick<typeof params, "query" | "path" | "header">>;
+        const filtered_params = ["query", "path", "header"] as Array<
+          keyof Pick<typeof params, "query" | "path" | "header">
+        >;
 
         for (const k of filtered_params) {
           if (params[k] && lists[k].length) {
@@ -165,6 +176,8 @@ export type EndpointParameters = {
   path?: Box<BoxRef> | Record<string, AnyBox>;
 };
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: AnyBox;
@@ -175,6 +188,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   parameters?: TConfig["parameters"];
+  requestFormat: RequestFormat;
   meta: {
     alias: string;
     hasParameters: boolean;

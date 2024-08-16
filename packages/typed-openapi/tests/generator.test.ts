@@ -51,6 +51,7 @@ describe("generator", () => {
         export type put_UpdatePet = {
           method: "PUT";
           path: "/pet";
+          requestFormat: "json";
           parameters: {
             body: Schemas.Pet;
           };
@@ -59,6 +60,7 @@ describe("generator", () => {
         export type post_AddPet = {
           method: "POST";
           path: "/pet";
+          requestFormat: "json";
           parameters: {
             body: Schemas.Pet;
           };
@@ -67,6 +69,7 @@ describe("generator", () => {
         export type get_FindPetsByStatus = {
           method: "GET";
           path: "/pet/findByStatus";
+          requestFormat: "json";
           parameters: {
             query: Partial<{ status: "available" | "pending" | "sold" }>;
           };
@@ -75,6 +78,7 @@ describe("generator", () => {
         export type get_FindPetsByTags = {
           method: "GET";
           path: "/pet/findByTags";
+          requestFormat: "json";
           parameters: {
             query: Partial<{ tags: Array<string> }>;
           };
@@ -83,6 +87,7 @@ describe("generator", () => {
         export type get_GetPetById = {
           method: "GET";
           path: "/pet/{petId}";
+          requestFormat: "json";
           parameters: {
             path: { petId: number };
           };
@@ -91,6 +96,7 @@ describe("generator", () => {
         export type post_UpdatePetWithForm = {
           method: "POST";
           path: "/pet/{petId}";
+          requestFormat: "json";
           parameters: {
             query: Partial<{ name: string; status: string }>;
             path: { petId: number };
@@ -100,6 +106,7 @@ describe("generator", () => {
         export type delete_DeletePet = {
           method: "DELETE";
           path: "/pet/{petId}";
+          requestFormat: "json";
           parameters: {
             path: { petId: number };
             header: Partial<{ api_key: string }>;
@@ -109,6 +116,7 @@ describe("generator", () => {
         export type post_UploadFile = {
           method: "POST";
           path: "/pet/{petId}/uploadImage";
+          requestFormat: "binary";
           parameters: {
             query: Partial<{ additionalMetadata: string }>;
             path: { petId: number };
@@ -120,12 +128,14 @@ describe("generator", () => {
         export type get_GetInventory = {
           method: "GET";
           path: "/store/inventory";
+          requestFormat: "json";
           parameters: never;
           response: unknown;
         };
         export type post_PlaceOrder = {
           method: "POST";
           path: "/store/order";
+          requestFormat: "json";
           parameters: {
             body: Schemas.Order;
           };
@@ -134,6 +144,7 @@ describe("generator", () => {
         export type get_GetOrderById = {
           method: "GET";
           path: "/store/order/{orderId}";
+          requestFormat: "json";
           parameters: {
             path: { orderId: number };
           };
@@ -142,6 +153,7 @@ describe("generator", () => {
         export type delete_DeleteOrder = {
           method: "DELETE";
           path: "/store/order/{orderId}";
+          requestFormat: "json";
           parameters: {
             path: { orderId: number };
           };
@@ -150,6 +162,7 @@ describe("generator", () => {
         export type post_CreateUser = {
           method: "POST";
           path: "/user";
+          requestFormat: "json";
           parameters: {
             body: Schemas.User;
           };
@@ -158,6 +171,7 @@ describe("generator", () => {
         export type post_CreateUsersWithListInput = {
           method: "POST";
           path: "/user/createWithList";
+          requestFormat: "json";
           parameters: {
             body: Array<Schemas.User>;
           };
@@ -166,6 +180,7 @@ describe("generator", () => {
         export type get_LoginUser = {
           method: "GET";
           path: "/user/login";
+          requestFormat: "json";
           parameters: {
             query: Partial<{ username: string; password: string }>;
           };
@@ -174,12 +189,14 @@ describe("generator", () => {
         export type get_LogoutUser = {
           method: "GET";
           path: "/user/logout";
+          requestFormat: "json";
           parameters: never;
           response: unknown;
         };
         export type get_GetUserByName = {
           method: "GET";
           path: "/user/{username}";
+          requestFormat: "json";
           parameters: {
             path: { username: string };
           };
@@ -188,6 +205,7 @@ describe("generator", () => {
         export type put_UpdateUser = {
           method: "PUT";
           path: "/user/{username}";
+          requestFormat: "json";
           parameters: {
             path: { username: string };
 
@@ -198,6 +216,7 @@ describe("generator", () => {
         export type delete_DeleteUser = {
           method: "DELETE";
           path: "/user/{username}";
+          requestFormat: "json";
           parameters: {
             path: { username: string };
           };
@@ -259,6 +278,8 @@ describe("generator", () => {
       export type MutationMethod = "post" | "put" | "patch" | "delete";
       export type Method = "get" | "head" | MutationMethod;
 
+      type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
         response: unknown;
@@ -268,6 +289,7 @@ describe("generator", () => {
         operationId: string;
         method: Method;
         path: string;
+        requestFormat: RequestFormat;
         parameters?: TConfig["parameters"];
         meta: {
           alias: string;

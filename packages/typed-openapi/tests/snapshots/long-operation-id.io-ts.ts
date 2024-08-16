@@ -7,6 +7,7 @@ export type get_Get_users = t.TypeOf<typeof get_Get_users>;
 export const get_Get_users = t.type({
   method: t.literal("GET"),
   path: t.literal("/users"),
+  requestFormat: t.literal("json"),
   parameters: t.never,
   response: t.array(t.string),
 });
@@ -17,6 +18,7 @@ export type post_Very_very_very_very_very_very_very_very_very_very_long = t.Type
 export const post_Very_very_very_very_very_very_very_very_very_very_long = t.type({
   method: t.literal("POST"),
   path: t.literal("/users"),
+  requestFormat: t.literal("json"),
   parameters: t.type({
     body: t.type({
       username: t.union([t.undefined, t.string]),
@@ -57,6 +59,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -66,6 +70,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

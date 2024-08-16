@@ -89,6 +89,7 @@ export type put_UpdatePet = Static<typeof put_UpdatePet>;
 export const put_UpdatePet = Type.Object({
   method: Type.Literal("PUT"),
   path: Type.Literal("/pet"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: Pet,
   }),
@@ -99,6 +100,7 @@ export type post_AddPet = Static<typeof post_AddPet>;
 export const post_AddPet = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/pet"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: Pet,
   }),
@@ -109,6 +111,7 @@ export type get_FindPetsByStatus = Static<typeof get_FindPetsByStatus>;
 export const get_FindPetsByStatus = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/pet/findByStatus"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -123,6 +126,7 @@ export type get_FindPetsByTags = Static<typeof get_FindPetsByTags>;
 export const get_FindPetsByTags = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/pet/findByTags"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -137,6 +141,7 @@ export type get_GetPetById = Static<typeof get_GetPetById>;
 export const get_GetPetById = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/pet/{petId}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       petId: Type.Number(),
@@ -149,6 +154,7 @@ export type post_UpdatePetWithForm = Static<typeof post_UpdatePetWithForm>;
 export const post_UpdatePetWithForm = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/pet/{petId}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -167,6 +173,7 @@ export type delete_DeletePet = Static<typeof delete_DeletePet>;
 export const delete_DeletePet = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/pet/{petId}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       petId: Type.Number(),
@@ -184,6 +191,7 @@ export type post_UploadFile = Static<typeof post_UploadFile>;
 export const post_UploadFile = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/pet/{petId}/uploadImage"),
+  requestFormat: Type.Literal("binary"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -202,6 +210,7 @@ export type get_GetInventory = Static<typeof get_GetInventory>;
 export const get_GetInventory = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/store/inventory"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: Type.Unknown(),
 });
@@ -210,6 +219,7 @@ export type post_PlaceOrder = Static<typeof post_PlaceOrder>;
 export const post_PlaceOrder = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/store/order"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: Order,
   }),
@@ -220,6 +230,7 @@ export type get_GetOrderById = Static<typeof get_GetOrderById>;
 export const get_GetOrderById = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/store/order/{orderId}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       orderId: Type.Number(),
@@ -232,6 +243,7 @@ export type delete_DeleteOrder = Static<typeof delete_DeleteOrder>;
 export const delete_DeleteOrder = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/store/order/{orderId}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       orderId: Type.Number(),
@@ -244,6 +256,7 @@ export type post_CreateUser = Static<typeof post_CreateUser>;
 export const post_CreateUser = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/user"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: User,
   }),
@@ -254,6 +267,7 @@ export type post_CreateUsersWithListInput = Static<typeof post_CreateUsersWithLi
 export const post_CreateUsersWithListInput = Type.Object({
   method: Type.Literal("POST"),
   path: Type.Literal("/user/createWithList"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     body: Type.Array(User),
   }),
@@ -264,6 +278,7 @@ export type get_LoginUser = Static<typeof get_LoginUser>;
 export const get_LoginUser = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/user/login"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     query: Type.Partial(
       Type.Object({
@@ -279,6 +294,7 @@ export type get_LogoutUser = Static<typeof get_LogoutUser>;
 export const get_LogoutUser = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/user/logout"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: Type.Unknown(),
 });
@@ -287,6 +303,7 @@ export type get_GetUserByName = Static<typeof get_GetUserByName>;
 export const get_GetUserByName = Type.Object({
   method: Type.Literal("GET"),
   path: Type.Literal("/user/{username}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       username: Type.String(),
@@ -299,6 +316,7 @@ export type put_UpdateUser = Static<typeof put_UpdateUser>;
 export const put_UpdateUser = Type.Object({
   method: Type.Literal("PUT"),
   path: Type.Literal("/user/{username}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       username: Type.String(),
@@ -312,6 +330,7 @@ export type delete_DeleteUser = Static<typeof delete_DeleteUser>;
 export const delete_DeleteUser = Type.Object({
   method: Type.Literal("DELETE"),
   path: Type.Literal("/user/{username}"),
+  requestFormat: Type.Literal("json"),
   parameters: Type.Object({
     path: Type.Object({
       username: Type.String(),
@@ -375,6 +394,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -384,6 +405,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;

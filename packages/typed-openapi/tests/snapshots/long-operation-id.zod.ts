@@ -4,6 +4,7 @@ export type get_Get_users = typeof get_Get_users;
 export const get_Get_users = {
   method: z.literal("GET"),
   path: z.literal("/users"),
+  requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.array(z.string()),
 };
@@ -13,6 +14,7 @@ export type post_Very_very_very_very_very_very_very_very_very_very_long =
 export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   method: z.literal("POST"),
   path: z.literal("/users"),
+  requestFormat: z.literal("json"),
   parameters: z.object({
     body: z.object({
       username: z.string().optional(),
@@ -50,6 +52,8 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | MutationMethod;
 
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
@@ -59,6 +63,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   operationId: string;
   method: Method;
   path: string;
+  requestFormat: RequestFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
