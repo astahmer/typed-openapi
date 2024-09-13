@@ -5,6 +5,7 @@
     "type": "git",
     "url": "https://github.com/astahmer/typed-openapi.git"
   },
+  "license": "MIT",
   "scripts": {
     "build": "cd packages/typed-openapi && pnpm build",
     "build:all": "pnpm -r run build",
