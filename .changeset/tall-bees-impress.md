@@ -1,5 +1,5 @@
 ---
-"typed-openapi": minor
+"typed-openapi": patch
 ---
 
 Add options to `Method` type in `generateApiClient` function as fix for

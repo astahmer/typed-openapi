@@ -61,7 +61,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | "head" | MutationMethod;
+export type Method = "get" | "head" | "options" | MutationMethod;
 
 type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
