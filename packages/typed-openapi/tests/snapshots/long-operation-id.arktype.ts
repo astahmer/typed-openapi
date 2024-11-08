@@ -21,7 +21,7 @@ export const types = scope({
     response: "unknown",
   },
   __ENDPOINTS_END__: {},
-}).compile();
+}).export();
 
 export type __ENDPOINTS_START__ = typeof __ENDPOINTS_START__.infer;
 export const __ENDPOINTS_START__ = types.__ENDPOINTS_START__;

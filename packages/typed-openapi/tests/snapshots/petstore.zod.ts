@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 
 export type Order = z.infer<typeof Order>;
 export const Order = z.object({

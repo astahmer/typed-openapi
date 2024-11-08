@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 
 export type Port = z.infer<typeof Port>;
 export const Port = z.object({

@@ -257,7 +257,7 @@ export const types = scope({
     response: "unknown",
   },
   __ENDPOINTS_END__: {},
-}).compile();
+}).export();
 
 export type Order = typeof Order.infer;
 export const Order = types.Order;

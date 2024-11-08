@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 
 export type get_Get_users = typeof get_Get_users;
 export const get_Get_users = {
