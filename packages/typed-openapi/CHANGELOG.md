@@ -1,5 +1,16 @@
 # typed-openapi
 
+## 0.10.0
+
+### Minor Changes
+
+- be0ba5f: Bump @sinclair/typebox-codegen version
+
+### Patch Changes
+
+- 739e5b5: Add options to `Method` type in `generateApiClient` function as fix for
+  [#55](https://github.com/astahmer/typed-openapi/issues/55)
+
 ## 0.9.0
 
 ### Minor Changes
