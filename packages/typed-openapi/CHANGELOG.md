@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 0.10.1
+
+### Patch Changes
+
+- dd91027: Move changesets to devDeps
+
 ## 0.10.0
 
 ### Minor Changes
