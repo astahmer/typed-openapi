@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
-    "@changesets/cli": "^2.26.2",
     "@sinclair/typebox-codegen": "^0.10.5",
     "arktype": "1.0.18-alpha",
     "cac": "^6.7.14",
@@ -32,6 +31,7 @@
     "ts-pattern": "^5.0.4"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.2",
     "@types/node": "^20.4.5",
     "@types/prettier": "2.7.3",
     "tsup": "^7.1.0",
