@@ -1,4 +1,3 @@
-import { SchemaObject } from "openapi3-ts/oas31";
 import { openApiSchemaToTs } from "./openapi-schema-to-ts";
 import {
   AnyBoxDef,
@@ -11,6 +10,7 @@ import {
   BoxRef,
   BoxUnion,
   OpenapiSchemaConvertContext,
+  type LibSchemaObject,
 } from "./types";
 
 // TODO rename SchemaBox
@@ -39,7 +39,7 @@ export class Box<T extends AnyBoxDef = AnyBoxDef> {
   }
 
   recompute(callback: OpenapiSchemaConvertContext["onBox"]) {
-    return openApiSchemaToTs({ schema: this.schema as SchemaObject, ctx: { ...this.ctx, onBox: callback! } });
+    return openApiSchemaToTs({ schema: this.schema as LibSchemaObject, ctx: { ...this.ctx, onBox: callback! } });
   }
 
   static fromJSON(json: string) {

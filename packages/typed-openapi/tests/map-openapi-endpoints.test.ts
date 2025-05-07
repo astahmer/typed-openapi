@@ -2684,4 +2684,221 @@ describe("map-openapi-endpoints", () => {
       ]
     `);
   });
+
+  test("nullable string", async ({ expect }) => {
+    expect(mapOpenApiEndpoints({
+      "openapi": "3.0.0",
+      "info": {
+        "version": "1.0.0",
+        "title": "Demo API"
+      },
+      "components": {
+        "schemas": {
+          "SerializedUserSession": {
+            "type": "object",
+            "properties": {
+              "accessToken": {
+                "type": "string"
+              },
+              "accessTokenExpirationDate": {
+                "type": "number"
+              },
+              "me": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "firstName": {
+                    "type": "string",
+                    // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
+                    "nullable": true
+                  },
+                  "lastName": {
+                    "type": "string",
+                    // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
+                    "nullable": true
+                  },
+                  "profilePictureURL": {
+                    "type": "string",
+                    // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
+                    "nullable": true
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "email"
+                ]
+              },
+              "refreshToken": {
+                "type": "string"
+              },
+              "refreshTokenExpirationDate": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "accessToken",
+              "accessTokenExpirationDate",
+              "me",
+              "refreshToken",
+              "refreshTokenExpirationDate"
+            ]
+          },
+        },
+      },
+      "paths": {
+        "/authentication/refresh": {
+          "post": {
+            "summary": "Refresh authentication tokens",
+            "tags": [
+              "Authentication"
+            ],
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "accessToken": {
+                        "type": "string",
+                        "pattern": "^\\w+ [A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
+                      },
+                      "refreshToken": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    },
+                    "required": [
+                      "accessToken",
+                      "refreshToken"
+                    ]
+                  }
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Refresh the access and refresh tokens",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/SerializedUserSession"
+                    }
+                  }
+                }
+              },
+              "401": {
+                "description": "Unauthorized",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "500": {
+                "description": "Internal server error",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }).endpointList).toMatchInlineSnapshot(`
+      [
+        {
+          "meta": {
+            "alias": "post_Authenticationrefresh",
+            "areParametersRequired": false,
+            "hasParameters": true,
+          },
+          "method": "post",
+          "operation": {
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "properties": {
+                      "accessToken": {
+                        "pattern": "^\\w+ [A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$",
+                        "type": "string",
+                      },
+                      "refreshToken": {
+                        "format": "uuid",
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "accessToken",
+                      "refreshToken",
+                    ],
+                    "type": "object",
+                  },
+                },
+              },
+            },
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/SerializedUserSession",
+                    },
+                  },
+                },
+                "description": "Refresh the access and refresh tokens",
+              },
+              "401": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "string",
+                    },
+                  },
+                },
+                "description": "Unauthorized",
+              },
+              "500": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "string",
+                    },
+                  },
+                },
+                "description": "Internal server error",
+              },
+            },
+            "summary": "Refresh authentication tokens",
+            "tags": [
+              "Authentication",
+            ],
+          },
+          "parameters": {
+            "body": {
+              "type": "object",
+              "value": "{ accessToken: string, refreshToken: string }",
+            },
+          },
+          "path": "/authentication/refresh",
+          "requestFormat": "json",
+          "response": {
+            "type": "ref",
+            "value": "SerializedUserSession",
+          },
+        },
+      ]
+    `);
+  });
 });

@@ -1,9 +1,9 @@
 import { openApiSchemaToTs } from "../src/openapi-schema-to-ts";
 
-import type { SchemaObject, SchemasObject } from "openapi3-ts/oas31";
+import type { SchemasObject } from "openapi3-ts/oas31";
 import { describe, expect, test } from "vitest";
 import { createRefResolver } from "../src/ref-resolver";
-import { OpenapiSchemaConvertContext } from "../src/types";
+import { OpenapiSchemaConvertContext, type LibSchemaObject } from "../src/types";
 import { tsFactory } from "../src/ts-factory";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints";
 import { generateFile } from "../src/generator";
@@ -15,7 +15,7 @@ const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
 });
 const makeDoc = (schemas: SchemasObject) => ({ components: { schemas } } as any);
 
-const getSchemaBox = (schema: SchemaObject) => {
+const getSchemaBox = (schema: LibSchemaObject) => {
   const output = generateFile(mapOpenApiEndpoints(makeDoc({ _Test: schema })));
   const start = output.indexOf("// <Schemas>");
   const end = output.indexOf("// </Schemas>");
@@ -25,7 +25,6 @@ const getSchemaBox = (schema: SchemaObject) => {
 test("getSchemaBox", () => {
   expect(getSchemaBox({ type: "null" })).toMatchInlineSnapshot('"export type _Test = null;"');
   expect(getSchemaBox({ type: "boolean" })).toMatchInlineSnapshot('"export type _Test = boolean;"');
-  // @ts-expect-error - nullable is not in the SchemaObject for OpenAPI 3.1, but it is for 3.0
   expect(getSchemaBox({ type: "boolean", nullable: true })).toMatchInlineSnapshot('"export type _Test = boolean | null;"');
   expect(getSchemaBox({ type: "string" })).toMatchInlineSnapshot('"export type _Test = string;"');
   expect(getSchemaBox({ type: "number" })).toMatchInlineSnapshot('"export type _Test = number;"');

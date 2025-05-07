@@ -1,11 +1,11 @@
-import type { OpenAPIObject, ReferenceObject, SchemaObject } from "openapi3-ts/oas31";
+import type { OpenAPIObject, ReferenceObject } from "openapi3-ts/oas31";
 import { get } from "pastable/server";
 
 import { Box } from "./box";
 import { isReferenceObject } from "./is-reference-object";
 import { openApiSchemaToTs } from "./openapi-schema-to-ts";
 import { normalizeString } from "./string-utils";
-import { AnyBoxDef, GenericFactory } from "./types";
+import { AnyBoxDef, GenericFactory, type LibSchemaObject } from "./types";
 import { topologicalSort } from "./topological-sort";
 
 const autocorrectRef = (ref: string) => (ref[1] === "/" ? ref : "#/" + ref.slice(1));
@@ -36,7 +36,7 @@ export const createRefResolver = (doc: OpenAPIObject, factory: GenericFactory) =
 
   const boxByRef = new Map<string, Box<AnyBoxDef>>();
 
-  const getSchemaByRef = <T = SchemaObject>(ref: string) => {
+  const getSchemaByRef = <T = LibSchemaObject>(ref: string) => {
     // #components -> #/components
     const correctRef = autocorrectRef(ref);
     const split = correctRef.split("/");
@@ -119,10 +119,10 @@ export const createRefResolver = (doc: OpenAPIObject, factory: GenericFactory) =
   };
 };
 
-export interface RefResolver extends ReturnType<typeof createRefResolver> {}
+export interface RefResolver extends ReturnType<typeof createRefResolver> { }
 
-const setSchemaDependencies = (schema: SchemaObject, deps: Set<string>) => {
-  const visit = (schema: SchemaObject | ReferenceObject): void => {
+const setSchemaDependencies = (schema: LibSchemaObject, deps: Set<string>) => {
+  const visit = (schema: LibSchemaObject | ReferenceObject): void => {
     if (!schema) return;
 
     if (isReferenceObject(schema)) {

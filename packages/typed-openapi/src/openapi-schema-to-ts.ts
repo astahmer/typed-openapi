@@ -2,9 +2,8 @@ import { isPrimitiveType } from "./asserts";
 import { Box } from "./box";
 import { createBoxFactory } from "./box-factory";
 import { isReferenceObject } from "./is-reference-object";
-import { AnyBoxDef, OpenapiSchemaConvertArgs } from "./types";
+import { AnyBoxDef, OpenapiSchemaConvertArgs, type LibSchemaObject } from "./types";
 import { wrapWithQuotesIfNeeded } from "./string-utils";
-import type { SchemaObject } from "openapi3-ts/oas30";
 
 export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: OpenapiSchemaConvertArgs): Box<AnyBoxDef> => {
   const meta = {} as OpenapiSchemaConvertArgs["meta"];
@@ -13,7 +12,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
     throw new Error("Schema is required");
   }
 
-  const t = createBoxFactory(schema, ctx);
+  const t = createBoxFactory(schema as LibSchemaObject, ctx);
   const getTs = () => {
     if (isReferenceObject(schema)) {
       const refInfo = ctx.refs.getInfosByRef(schema.$ref);
@@ -154,7 +153,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
   let output = getTs();
   if (!isReferenceObject(schema)) {
     // OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
-    if ((schema as any as SchemaObject).nullable) {
+    if ((schema as LibSchemaObject).nullable) {
       output = t.union([output, t.reference("null")]);
     }
   }

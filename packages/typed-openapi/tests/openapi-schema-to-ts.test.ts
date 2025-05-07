@@ -1,9 +1,9 @@
 import { openApiSchemaToTs } from "../src/openapi-schema-to-ts";
 
-import type { SchemaObject, SchemasObject } from "openapi3-ts/oas31";
+import type { SchemasObject } from "openapi3-ts/oas31";
 import { describe, expect, test } from "vitest";
 import { createRefResolver } from "../src/ref-resolver";
-import { OpenapiSchemaConvertContext } from "../src/types";
+import { OpenapiSchemaConvertContext, type LibSchemaObject } from "../src/types";
 import { tsFactory } from "../src/ts-factory";
 
 const factory = tsFactory;
@@ -12,7 +12,7 @@ const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
   refs: createRefResolver({ components: { schemas } } as any, factory),
 });
 
-const getSchemaBox = (schema: SchemaObject) => openApiSchemaToTs({ schema, ctx: makeCtx({ _Test: schema }) });
+const getSchemaBox = (schema: LibSchemaObject) => openApiSchemaToTs({ schema, ctx: makeCtx({ _Test: schema }) });
 
 test("getSchemaBox", () => {
   expect(getSchemaBox({ type: "null" })).toMatchInlineSnapshot(`
@@ -27,7 +27,6 @@ test("getSchemaBox", () => {
       "value": "boolean",
     }
   `);
-  // @ts-expect-error - nullable is not in the SchemaObject for OpenAPI 3.1, but it is for 3.0
   expect(getSchemaBox({ type: "boolean", nullable: true })).toMatchInlineSnapshot(`
     {
       "type": "union",
@@ -58,11 +57,24 @@ test("getSchemaBox", () => {
       "value": "unknown",
     }
   `);
+  expect(getSchemaBox({ type: "string", nullable: true })).toMatchInlineSnapshot(`
+    {
+      "type": "union",
+      "value": "string | null",
+    }
+  `);
 
   expect(getSchemaBox({ type: "array", items: { type: "string" } })).toMatchInlineSnapshot(`
     {
       "type": "array",
       "value": "Array<string>",
+    }
+  `);
+
+  expect(getSchemaBox({ type: "array", items: { type: "string", nullable: true } })).toMatchInlineSnapshot(`
+    {
+      "type": "array",
+      "value": "Array<string | null>",
     }
   `);
   expect(getSchemaBox({ type: "object" })).toMatchInlineSnapshot(
@@ -79,13 +91,20 @@ test("getSchemaBox", () => {
         "value": "Partial<{ str: string }>",
       }
     `);
-  expect(getSchemaBox({ type: "object", properties: { str: { type: "string" }, nb: { type: "number" } } }))
-    .toMatchInlineSnapshot(`
-    {
-      "type": "ref",
-      "value": "Partial<{ str: string, nb: number }>",
+  expect(getSchemaBox({
+    type: "object", properties: {
+      str: { type: "string" }, nb: { type: "number" }, nullable: {
+        type: "string",
+        nullable: true
+      }
     }
-  `);
+  }))
+    .toMatchInlineSnapshot(`
+      {
+        "type": "ref",
+        "value": "Partial<{ str: string, nb: number, nullable: string | null }>",
+      }
+    `);
 
   // AllPropertiesRequired
   expect(
@@ -168,13 +187,14 @@ test("getSchemaBox", () => {
         type: "object",
         properties: {
           str: { type: "string" },
+          nullable: { type: "string", nullable: true },
         },
       },
     }),
   ).toMatchInlineSnapshot(`
     {
       "type": "array",
-      "value": "Array<Partial<{ str: string }>>",
+      "value": "Array<Partial<{ str: string, nullable: string | null }>>",
     }
   `);
 
@@ -334,6 +354,50 @@ test("getSchemaBox", () => {
     {
       "type": "union",
       "value": "1 | 2 | 3",
+    }
+  `);
+
+  expect(getSchemaBox({
+    "type": "object",
+    "properties": {
+      "members": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "firstName": {
+              "type": "string",
+              "nullable": true
+            },
+            "lastName": {
+              "type": "string",
+              "nullable": true
+            },
+            "email": {
+              "type": "string"
+            },
+            "profilePictureURL": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "required": [
+            "id",
+            "email"
+          ]
+        }
+      }
+    },
+    "required": [
+      "members"
+    ]
+  })).toMatchInlineSnapshot(`
+    {
+      "type": "object",
+      "value": "{ members: Array<{ id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, email: string, profilePictureURL?: string | null | undefined }> }",
     }
   `);
 });
@@ -546,6 +610,30 @@ describe("getSchemaBox with context", () => {
       {
         "type": "ref",
         "value": "Partial<{ user: User | Member, users: Array<User | Member | Array<User | Member>>, basic: number }>",
+      }
+    `,
+    );
+  });
+
+  test("nullable string", () => {
+    const schemas = {
+      Member: {
+        type: "object",
+        properties: {
+          // @ts-expect-error
+          name: { type: "string", nullable: true },
+        },
+      },
+    } satisfies SchemasObject;
+
+    const ctx = makeCtx(schemas);
+    const result = openApiSchemaToTs({ schema: schemas.Member, ctx });
+
+    expect(result).toMatchInlineSnapshot(
+      `
+      {
+        "type": "ref",
+        "value": "Partial<{ name: string | null }>",
       }
     `,
     );
