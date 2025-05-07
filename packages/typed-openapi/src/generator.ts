@@ -164,7 +164,7 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
       response: ${
         ctx.runtime === "none"
           ? endpoint.response.recompute((box) => {
-              if (Box.isReference(box) && !box.params.generics) {
+              if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
                 box.value = `Schemas.${box.value}`;
               }
 
