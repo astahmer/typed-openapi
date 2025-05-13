@@ -47,7 +47,6 @@ export type EndpointByMethod = typeof EndpointByMethod;
 // <EndpointByMethod.Shorthands>
 export type GetEndpoints = EndpointByMethod["get"];
 export type PostEndpoints = EndpointByMethod["post"];
-export type AllEndpoints = EndpointByMethod[keyof EndpointByMethod];
 // </EndpointByMethod.Shorthands>
 
 // <ApiClientTypes>
@@ -146,7 +145,8 @@ export class ApiClient {
     path: TPath,
     ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"]>
   ): Promise<
-    Response & {
+    Omit<Response, "json"> & {
+      /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
       json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
     }
   > {

@@ -265,7 +265,6 @@ describe("generator", () => {
       export type PostEndpoints = EndpointByMethod["post"];
       export type GetEndpoints = EndpointByMethod["get"];
       export type DeleteEndpoints = EndpointByMethod["delete"];
-      export type AllEndpoints = EndpointByMethod[keyof EndpointByMethod];
       // </EndpointByMethod.Shorthands>
 
       // <ApiClientTypes>
@@ -386,7 +385,8 @@ describe("generator", () => {
           path: TPath,
           ...params: MaybeOptionalArg<TEndpoint extends { parameters: infer Params } ? Params : never>
         ): Promise<
-          Response & {
+          Omit<Response, "json"> & {
+            /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
             json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
           }
         > {
@@ -727,7 +727,6 @@ describe("generator", () => {
 
       // <EndpointByMethod.Shorthands>
       export type GetEndpoints = EndpointByMethod["get"];
-      export type AllEndpoints = EndpointByMethod[keyof EndpointByMethod];
       // </EndpointByMethod.Shorthands>
 
       // <ApiClientTypes>
@@ -815,7 +814,8 @@ describe("generator", () => {
           path: TPath,
           ...params: MaybeOptionalArg<TEndpoint extends { parameters: infer Params } ? Params : never>
         ): Promise<
-          Response & {
+          Omit<Response, "json"> & {
+            /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
             json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
           }
         > {

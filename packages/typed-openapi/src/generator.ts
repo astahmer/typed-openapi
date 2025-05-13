@@ -208,7 +208,6 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
     ${Object.keys(byMethods)
       .map((method) => `export type ${capitalize(method)}Endpoints = EndpointByMethod["${method}"]`)
       .join("\n")}
-    ${endpointList.length ? `export type AllEndpoints = EndpointByMethod[keyof EndpointByMethod];` : ""}
     // </EndpointByMethod.Shorthands>
     `;
 
