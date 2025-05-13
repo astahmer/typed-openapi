@@ -2,10 +2,21 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
-    "moduleResolution": "Node",
-    "lib": ["DOM", "ES2021"],
-    "resolveJsonModule": true
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "lib": [
+      "DOM",
+      "ES2021"
+    ],
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true
   },
-  "include": ["src", "tests"],
-  "exclude": ["node_modules", "samples"]
+  "include": [
+    "src",
+    "tests"
+  ],
+  "exclude": [
+    "node_modules",
+    "samples"
+  ]
 }

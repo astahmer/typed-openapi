@@ -44,7 +44,7 @@ export const DeviceRequest = Type.Partial(
     Count: Type.Number(),
     DeviceIDs: Type.Array(Type.String()),
     Capabilities: Type.Array(Type.Array(Type.String())),
-    Options: Type.Unknown(),
+    Options: Type.Record(Type.String(), Type.String()),
   }),
 );
 
@@ -87,11 +87,11 @@ export const Mount = Type.Partial(
     VolumeOptions: Type.Partial(
       Type.Object({
         NoCopy: Type.Boolean(),
-        Labels: Type.Unknown(),
+        Labels: Type.Record(Type.String(), Type.String()),
         DriverConfig: Type.Partial(
           Type.Object({
             Name: Type.String(),
-            Options: Type.Unknown(),
+            Options: Type.Record(Type.String(), Type.String()),
           }),
         ),
       }),
@@ -259,7 +259,7 @@ export const PortBinding = Type.Partial(
 );
 
 export type PortMap = Static<typeof PortMap>;
-export const PortMap = Type.Unknown();
+export const PortMap = Type.Record(Type.String(), Type.Union([Type.Array(PortBinding), Type.Null()]));
 
 export type HostConfig = Static<typeof HostConfig>;
 export const HostConfig = Type.Intersect([
@@ -281,7 +281,7 @@ export const HostConfig = Type.Intersect([
             Type.Literal("etwlogs"),
             Type.Literal("none"),
           ]),
-          Config: Type.Unknown(),
+          Config: Type.Record(Type.String(), Type.String()),
         }),
       ),
       NetworkMode: Type.String(),
@@ -292,7 +292,7 @@ export const HostConfig = Type.Intersect([
       VolumesFrom: Type.Array(Type.String()),
       Mounts: Type.Array(Mount),
       ConsoleSize: Type.Union([Type.Array(Type.Number()), Type.Null()]),
-      Annotations: Type.Unknown(),
+      Annotations: Type.Record(Type.String(), Type.String()),
       CapAdd: Type.Array(Type.String()),
       CapDrop: Type.Array(Type.String()),
       CgroupnsMode: Type.Union([Type.Literal("private"), Type.Literal("host")]),
@@ -310,12 +310,12 @@ export const HostConfig = Type.Intersect([
       PublishAllPorts: Type.Boolean(),
       ReadonlyRootfs: Type.Boolean(),
       SecurityOpt: Type.Array(Type.String()),
-      StorageOpt: Type.Unknown(),
-      Tmpfs: Type.Unknown(),
+      StorageOpt: Type.Record(Type.String(), Type.String()),
+      Tmpfs: Type.Record(Type.String(), Type.String()),
       UTSMode: Type.String(),
       UsernsMode: Type.String(),
       ShmSize: Type.Number(),
-      Sysctls: Type.Unknown(),
+      Sysctls: Type.Record(Type.String(), Type.String()),
       Runtime: Type.String(),
       Isolation: Type.Union([Type.Literal("default"), Type.Literal("process"), Type.Literal("hyperv")]),
       MaskedPaths: Type.Array(Type.String()),
@@ -333,7 +333,7 @@ export const ContainerConfig = Type.Partial(
     AttachStdin: Type.Boolean(),
     AttachStdout: Type.Boolean(),
     AttachStderr: Type.Boolean(),
-    ExposedPorts: Type.Union([Type.Unknown(), Type.Null()]),
+    ExposedPorts: Type.Union([Type.Record(Type.String(), Type.Partial(Type.Object({}))), Type.Null()]),
     Tty: Type.Boolean(),
     OpenStdin: Type.Boolean(),
     StdinOnce: Type.Boolean(),
@@ -342,13 +342,13 @@ export const ContainerConfig = Type.Partial(
     Healthcheck: HealthConfig,
     ArgsEscaped: Type.Union([Type.Boolean(), Type.Null()]),
     Image: Type.String(),
-    Volumes: Type.Unknown(),
+    Volumes: Type.Record(Type.String(), Type.Partial(Type.Object({}))),
     WorkingDir: Type.String(),
     Entrypoint: Type.Array(Type.String()),
     NetworkDisabled: Type.Union([Type.Boolean(), Type.Null()]),
     MacAddress: Type.Union([Type.String(), Type.Null()]),
     OnBuild: Type.Union([Type.Array(Type.String()), Type.Null()]),
-    Labels: Type.Unknown(),
+    Labels: Type.Record(Type.String(), Type.String()),
     StopSignal: Type.Union([Type.String(), Type.Null()]),
     StopTimeout: Type.Union([Type.Number(), Type.Null()]),
     Shell: Type.Union([Type.Array(Type.String()), Type.Null()]),
@@ -382,14 +382,14 @@ export const EndpointSettings = Type.Partial(
     GlobalIPv6Address: Type.String(),
     GlobalIPv6PrefixLen: Type.Number(),
     MacAddress: Type.String(),
-    DriverOpts: Type.Union([Type.Unknown(), Type.Null()]),
+    DriverOpts: Type.Union([Type.Record(Type.String(), Type.String()), Type.Null()]),
   }),
 );
 
 export type NetworkingConfig = Static<typeof NetworkingConfig>;
 export const NetworkingConfig = Type.Partial(
   Type.Object({
-    EndpointsConfig: Type.Unknown(),
+    EndpointsConfig: Type.Record(Type.String(), Type.Unknown()),
   }),
 );
 
@@ -421,14 +421,14 @@ export const NetworkSettings = Type.Partial(
     IPPrefixLen: Type.Number(),
     IPv6Gateway: Type.String(),
     MacAddress: Type.String(),
-    Networks: Type.Unknown(),
+    Networks: Type.Record(Type.String(), Type.Unknown()),
   }),
 );
 
 export type GraphDriverData = Static<typeof GraphDriverData>;
 export const GraphDriverData = Type.Object({
   Name: Type.String(),
-  Data: Type.Unknown(),
+  Data: Type.Record(Type.String(), Type.String()),
 });
 
 export type ChangeType = Static<typeof ChangeType>;
@@ -483,7 +483,7 @@ export const ImageSummary = Type.Object({
   Size: Type.Number(),
   SharedSize: Type.Number(),
   VirtualSize: Type.Optional(Type.Union([Type.Number(), Type.Undefined()])),
-  Labels: Type.Unknown(),
+  Labels: Type.Record(Type.String(), Type.String()),
   Containers: Type.Number(),
 });
 
@@ -516,7 +516,7 @@ export const ObjectVersion = Type.Partial(
 );
 
 export type Topology = Static<typeof Topology>;
-export const Topology = Type.Unknown();
+export const Topology = Type.Record(Type.String(), Type.String());
 
 export type ClusterVolumeSpec = Static<typeof ClusterVolumeSpec>;
 export const ClusterVolumeSpec = Type.Partial(
@@ -569,7 +569,7 @@ export const ClusterVolume = Type.Partial(
     Info: Type.Partial(
       Type.Object({
         CapacityBytes: Type.Number(),
-        VolumeContext: Type.Unknown(),
+        VolumeContext: Type.Record(Type.String(), Type.String()),
         VolumeID: Type.String(),
         AccessibleTopology: Type.Array(Topology),
       }),
@@ -584,7 +584,7 @@ export const ClusterVolume = Type.Partial(
             Type.Literal("pending-node-unpublish"),
             Type.Literal("pending-controller-unpublish"),
           ]),
-          PublishContext: Type.Unknown(),
+          PublishContext: Type.Record(Type.String(), Type.String()),
         }),
       ),
     ),
@@ -597,11 +597,11 @@ export const Volume = Type.Object({
   Driver: Type.String(),
   Mountpoint: Type.String(),
   CreatedAt: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
-  Status: Type.Optional(Type.Union([Type.Unknown(), Type.Undefined()])),
-  Labels: Type.Unknown(),
+  Status: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Partial(Type.Object({}))), Type.Undefined()])),
+  Labels: Type.Record(Type.String(), Type.String()),
   Scope: Type.Union([Type.Literal("local"), Type.Literal("global")]),
   ClusterVolume: Type.Optional(Type.Union([ClusterVolume, Type.Undefined()])),
-  Options: Type.Unknown(),
+  Options: Type.Record(Type.String(), Type.String()),
   UsageData: Type.Optional(
     Type.Union([
       Type.Object({
@@ -619,8 +619,8 @@ export const VolumeCreateOptions = Type.Partial(
   Type.Object({
     Name: Type.String(),
     Driver: Type.String(),
-    DriverOpts: Type.Unknown(),
-    Labels: Type.Unknown(),
+    DriverOpts: Type.Record(Type.String(), Type.String()),
+    Labels: Type.Record(Type.String(), Type.String()),
     ClusterVolumeSpec: ClusterVolumeSpec,
   }),
 );
@@ -639,7 +639,7 @@ export const IPAMConfig = Type.Partial(
     Subnet: Type.String(),
     IPRange: Type.String(),
     Gateway: Type.String(),
-    AuxiliaryAddresses: Type.Unknown(),
+    AuxiliaryAddresses: Type.Record(Type.String(), Type.String()),
   }),
 );
 
@@ -648,7 +648,7 @@ export const IPAM = Type.Partial(
   Type.Object({
     Driver: Type.String(),
     Config: Type.Array(IPAMConfig),
-    Options: Type.Unknown(),
+    Options: Type.Record(Type.String(), Type.String()),
   }),
 );
 
@@ -676,9 +676,9 @@ export const Network = Type.Partial(
     Internal: Type.Boolean(),
     Attachable: Type.Boolean(),
     Ingress: Type.Boolean(),
-    Containers: Type.Unknown(),
-    Options: Type.Unknown(),
-    Labels: Type.Unknown(),
+    Containers: Type.Record(Type.String(), Type.Unknown()),
+    Options: Type.Record(Type.String(), Type.String()),
+    Labels: Type.Record(Type.String(), Type.String()),
   }),
 );
 
@@ -891,7 +891,7 @@ export type NodeSpec = Static<typeof NodeSpec>;
 export const NodeSpec = Type.Partial(
   Type.Object({
     Name: Type.String(),
-    Labels: Type.Unknown(),
+    Labels: Type.Record(Type.String(), Type.String()),
     Role: Type.Union([Type.Literal("worker"), Type.Literal("manager")]),
     Availability: Type.Union([Type.Literal("active"), Type.Literal("pause"), Type.Literal("drain")]),
   }),
@@ -909,7 +909,7 @@ export type EngineDescription = Static<typeof EngineDescription>;
 export const EngineDescription = Type.Partial(
   Type.Object({
     EngineVersion: Type.String(),
-    Labels: Type.Unknown(),
+    Labels: Type.Record(Type.String(), Type.String()),
     Plugins: Type.Array(
       Type.Partial(
         Type.Object({
@@ -995,7 +995,7 @@ export type SwarmSpec = Static<typeof SwarmSpec>;
 export const SwarmSpec = Type.Partial(
   Type.Object({
     Name: Type.String(),
-    Labels: Type.Unknown(),
+    Labels: Type.Record(Type.String(), Type.String()),
     Orchestration: Type.Union([
       Type.Partial(
         Type.Object({
@@ -1030,7 +1030,7 @@ export const SwarmSpec = Type.Partial(
               Type.Object({
                 Protocol: Type.Literal("cfssl"),
                 URL: Type.String(),
-                Options: Type.Unknown(),
+                Options: Type.Record(Type.String(), Type.String()),
                 CACert: Type.String(),
               }),
             ),
@@ -1052,7 +1052,7 @@ export const SwarmSpec = Type.Partial(
         LogDriver: Type.Partial(
           Type.Object({
             Name: Type.String(),
-            Options: Type.Unknown(),
+            Options: Type.Record(Type.String(), Type.String()),
           }),
         ),
       }),
@@ -1102,7 +1102,7 @@ export const NetworkAttachmentConfig = Type.Partial(
   Type.Object({
     Target: Type.String(),
     Aliases: Type.Array(Type.String()),
-    DriverOpts: Type.Unknown(),
+    DriverOpts: Type.Record(Type.String(), Type.String()),
   }),
 );
 
@@ -1120,7 +1120,7 @@ export const TaskSpec = Type.Partial(
     ContainerSpec: Type.Partial(
       Type.Object({
         Image: Type.String(),
-        Labels: Type.Unknown(),
+        Labels: Type.Record(Type.String(), Type.String()),
         Command: Type.Array(Type.String()),
         Args: Type.Array(Type.String()),
         Hostname: Type.String(),
@@ -1198,7 +1198,7 @@ export const TaskSpec = Type.Partial(
         ),
         Isolation: Type.Union([Type.Literal("default"), Type.Literal("process"), Type.Literal("hyperv")]),
         Init: Type.Union([Type.Boolean(), Type.Null()]),
-        Sysctls: Type.Unknown(),
+        Sysctls: Type.Record(Type.String(), Type.String()),
         CapabilityAdd: Type.Array(Type.String()),
         CapabilityDrop: Type.Array(Type.String()),
         Ulimits: Type.Array(
@@ -1255,7 +1255,7 @@ export const TaskSpec = Type.Partial(
     LogDriver: Type.Partial(
       Type.Object({
         Name: Type.String(),
-        Options: Type.Unknown(),
+        Options: Type.Record(Type.String(), Type.String()),
       }),
     ),
   }),
@@ -1288,7 +1288,7 @@ export const Task = Type.Partial(
     CreatedAt: Type.String(),
     UpdatedAt: Type.String(),
     Name: Type.String(),
-    Labels: Type.Unknown(),
+    Labels: Type.Record(Type.String(), Type.String()),
     Spec: TaskSpec,
     ServiceID: Type.String(),
     Slot: Type.Number(),
@@ -1337,7 +1337,7 @@ export type ServiceSpec = Static<typeof ServiceSpec>;
 export const ServiceSpec = Type.Partial(
   Type.Object({
     Name: Type.String(),
-    Labels: Type.Unknown(),
+    Labels: Type.Record(Type.String(), Type.String()),
     TaskTemplate: TaskSpec,
     Mode: Type.Partial(
       Type.Object({
@@ -1454,7 +1454,7 @@ export const ContainerSummary = Type.Partial(
     Ports: Type.Array(Port),
     SizeRw: Type.Number(),
     SizeRootFs: Type.Number(),
-    Labels: Type.Unknown(),
+    Labels: Type.Record(Type.String(), Type.String()),
     State: Type.String(),
     Status: Type.String(),
     HostConfig: Type.Partial(
@@ -1464,7 +1464,7 @@ export const ContainerSummary = Type.Partial(
     ),
     NetworkSettings: Type.Partial(
       Type.Object({
-        Networks: Type.Unknown(),
+        Networks: Type.Record(Type.String(), Type.Unknown()),
       }),
     ),
     Mounts: Type.Array(MountPoint),
@@ -1474,14 +1474,14 @@ export const ContainerSummary = Type.Partial(
 export type Driver = Static<typeof Driver>;
 export const Driver = Type.Object({
   Name: Type.String(),
-  Options: Type.Optional(Type.Union([Type.Unknown(), Type.Undefined()])),
+  Options: Type.Optional(Type.Union([Type.Record(Type.String(), Type.String()), Type.Undefined()])),
 });
 
 export type SecretSpec = Static<typeof SecretSpec>;
 export const SecretSpec = Type.Partial(
   Type.Object({
     Name: Type.String(),
-    Labels: Type.Unknown(),
+    Labels: Type.Record(Type.String(), Type.String()),
     Data: Type.String(),
     Driver: Driver,
     Templating: Driver,
@@ -1503,7 +1503,7 @@ export type ConfigSpec = Static<typeof ConfigSpec>;
 export const ConfigSpec = Type.Partial(
   Type.Object({
     Name: Type.String(),
-    Labels: Type.Unknown(),
+    Labels: Type.Record(Type.String(), Type.String()),
     Data: Type.String(),
     Templating: Driver,
   }),
@@ -1624,7 +1624,7 @@ export const RegistryServiceConfig = Type.Union([
       AllowNondistributableArtifactsCIDRs: Type.Array(Type.String()),
       AllowNondistributableArtifactsHostnames: Type.Array(Type.String()),
       InsecureRegistryCIDRs: Type.Array(Type.String()),
-      IndexConfigs: Type.Unknown(),
+      IndexConfigs: Type.Record(Type.String(), Type.Unknown()),
       Mirrors: Type.Array(Type.String()),
     }),
   ),
@@ -1730,7 +1730,7 @@ export const SystemInfo = Type.Partial(
     Labels: Type.Array(Type.String()),
     ExperimentalBuild: Type.Boolean(),
     ServerVersion: Type.String(),
-    Runtimes: Type.Unknown(),
+    Runtimes: Type.Record(Type.String(), Type.Unknown()),
     DefaultRuntime: Type.String(),
     Swarm: SwarmInfo,
     LiveRestoreEnabled: Type.Boolean(),
@@ -1757,7 +1757,7 @@ export type EventActor = Static<typeof EventActor>;
 export const EventActor = Type.Partial(
   Type.Object({
     ID: Type.String(),
-    Attributes: Type.Unknown(),
+    Attributes: Type.Record(Type.String(), Type.String()),
   }),
 );
 
@@ -1992,7 +1992,7 @@ export const get_ContainerStats = Type.Object({
       id: Type.String(),
     }),
   }),
-  response: Type.Unknown(),
+  response: Type.Record(Type.String(), Type.Unknown()),
 });
 
 export type post_ContainerResize = Static<typeof post_ContainerResize>;
@@ -2974,8 +2974,8 @@ export const post_NetworkCreate = Type.Object({
       Ingress: Type.Optional(Type.Union([Type.Boolean(), Type.Undefined()])),
       IPAM: Type.Optional(Type.Union([IPAM, Type.Undefined()])),
       EnableIPv6: Type.Optional(Type.Union([Type.Boolean(), Type.Undefined()])),
-      Options: Type.Optional(Type.Union([Type.Unknown(), Type.Undefined()])),
-      Labels: Type.Optional(Type.Union([Type.Unknown(), Type.Undefined()])),
+      Options: Type.Optional(Type.Union([Type.Record(Type.String(), Type.String()), Type.Undefined()])),
+      Labels: Type.Optional(Type.Union([Type.Record(Type.String(), Type.String()), Type.Undefined()])),
     }),
   }),
   response: Type.Partial(
@@ -3420,7 +3420,7 @@ export const post_ServiceCreate = Type.Object({
         "X-Registry-Auth": Type.String(),
       }),
     ),
-    body: Type.Intersect([ServiceSpec, Type.Unknown()]),
+    body: Type.Intersect([ServiceSpec, Type.Record(Type.String(), Type.Unknown())]),
   }),
   response: Type.Partial(
     Type.Object({
@@ -3480,7 +3480,7 @@ export const post_ServiceUpdate = Type.Object({
         "X-Registry-Auth": Type.String(),
       }),
     ),
-    body: Type.Intersect([ServiceSpec, Type.Unknown()]),
+    body: Type.Intersect([ServiceSpec, Type.Record(Type.String(), Type.Unknown())]),
   }),
   response: ServiceUpdateResponse,
 });
@@ -3582,7 +3582,7 @@ export const post_SecretCreate = Type.Object({
   path: Type.Literal("/secrets/create"),
   requestFormat: Type.Literal("json"),
   parameters: Type.Object({
-    body: Type.Intersect([SecretSpec, Type.Unknown()]),
+    body: Type.Intersect([SecretSpec, Type.Record(Type.String(), Type.Unknown())]),
   }),
   response: IdResponse,
 });
@@ -3651,7 +3651,7 @@ export const post_ConfigCreate = Type.Object({
   path: Type.Literal("/configs/create"),
   requestFormat: Type.Literal("json"),
   parameters: Type.Object({
-    body: Type.Intersect([ConfigSpec, Type.Unknown()]),
+    body: Type.Intersect([ConfigSpec, Type.Record(Type.String(), Type.Unknown())]),
   }),
   response: IdResponse,
 });

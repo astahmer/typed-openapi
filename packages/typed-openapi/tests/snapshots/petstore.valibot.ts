@@ -51,12 +51,12 @@ export const Tag = v.object({
 
 export type Pet = v.InferOutput<typeof Pet>;
 export const Pet = v.object({
-  id: v.optional(v.union([v.number(), v.undefined_()])),
+  id: v.optional(v.union([v.number(), v.undefined()])),
   name: v.string(),
-  category: v.optional(v.union([Category, v.undefined_()])),
+  category: v.optional(v.union([Category, v.undefined()])),
   photoUrls: v.array(v.string()),
-  tags: v.optional(v.union([v.array(Tag), v.undefined_()])),
-  status: v.optional(v.union([v.literal("available"), v.literal("pending"), v.literal("sold"), v.undefined_()])),
+  tags: v.optional(v.union([v.array(Tag), v.undefined()])),
+  status: v.optional(v.union([v.literal("available"), v.literal("pending"), v.literal("sold"), v.undefined()])),
 });
 
 export type ApiResponse = v.InferOutput<typeof ApiResponse>;
@@ -186,7 +186,7 @@ export const get_GetInventory = v.object({
   path: v.literal("/store/inventory"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  response: v.unknown(),
+  response: v.record(v.string(), v.number()),
 });
 
 export type post_PlaceOrder = v.InferOutput<typeof post_PlaceOrder>;

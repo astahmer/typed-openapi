@@ -41,7 +41,7 @@ export const DeviceRequest = y.object({
   Count: y.number().required().optional(),
   DeviceIDs: y.array(y.string().required()).optional(),
   Capabilities: y.array(y.array(y.string().required())).optional(),
-  Options: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Options: y.mixed(/* unsupported */).optional(),
 });
 
 export type ThrottleDevice = y.InferType<typeof ThrottleDevice>;
@@ -71,11 +71,11 @@ export const Mount = y.object({
   VolumeOptions: y
     .object({
       NoCopy: y.boolean().required().optional(),
-      Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      Labels: y.mixed(/* unsupported */).optional(),
       DriverConfig: y
         .object({
           Name: y.string().required().optional(),
-          Options: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+          Options: y.mixed(/* unsupported */).optional(),
         })
         .optional(),
     })
@@ -227,7 +227,7 @@ export const PortBinding = y.object({
 });
 
 export type PortMap = y.InferType<typeof PortMap>;
-export const PortMap = y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>;
+export const PortMap = y.mixed(/* unsupported */);
 
 export type HostConfig = y.InferType<typeof HostConfig>;
 export const HostConfig = y.object({
@@ -294,7 +294,7 @@ export const HostConfig = y.object({
         .oneOf(["json-file", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "none"])
         .required()
         .optional(),
-      Config: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      Config: y.mixed(/* unsupported */).optional(),
     })
     .optional(),
   NetworkMode: y.string().required().optional(),
@@ -312,7 +312,7 @@ export const HostConfig = y.object({
     ])
     .required()
     .optional(),
-  Annotations: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Annotations: y.mixed(/* unsupported */).optional(),
   CapAdd: y.array(y.string().required()).optional(),
   CapDrop: y.array(y.string().required()).optional(),
   CgroupnsMode: y.mixed().oneOf(["private", "host"]).required().optional(),
@@ -330,12 +330,12 @@ export const HostConfig = y.object({
   PublishAllPorts: y.boolean().required().optional(),
   ReadonlyRootfs: y.boolean().required().optional(),
   SecurityOpt: y.array(y.string().required()).optional(),
-  StorageOpt: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
-  Tmpfs: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  StorageOpt: y.mixed(/* unsupported */).optional(),
+  Tmpfs: y.mixed(/* unsupported */).optional(),
   UTSMode: y.string().required().optional(),
   UsernsMode: y.string().required().optional(),
   ShmSize: y.number().required().optional(),
-  Sysctls: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Sysctls: y.mixed(/* unsupported */).optional(),
   Runtime: y.string().required().optional(),
   Isolation: y.mixed().oneOf(["default", "process", "hyperv"]).required().optional(),
   MaskedPaths: y.array(y.string().required()).optional(),
@@ -353,7 +353,7 @@ export const ContainerConfig = y.object({
   ExposedPorts: y
     .mixed()
     .oneOf([
-      y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+      y.mixed(/* unsupported */),
       y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
     ])
     .required()
@@ -370,7 +370,7 @@ export const ContainerConfig = y.object({
     .required()
     .optional(),
   Image: y.string().required().optional(),
-  Volumes: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Volumes: y.mixed(/* unsupported */).optional(),
   WorkingDir: y.string().required().optional(),
   Entrypoint: y.array(y.string().required()).optional(),
   NetworkDisabled: y
@@ -391,7 +391,7 @@ export const ContainerConfig = y.object({
     ])
     .required()
     .optional(),
-  Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Labels: y.mixed(/* unsupported */).optional(),
   StopSignal: y
     .mixed()
     .oneOf([y.string().required(), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
@@ -442,7 +442,7 @@ export const EndpointSettings = y.object({
   DriverOpts: y
     .mixed()
     .oneOf([
-      y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+      y.mixed(/* unsupported */),
       y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
     ])
     .required()
@@ -451,7 +451,7 @@ export const EndpointSettings = y.object({
 
 export type NetworkingConfig = y.InferType<typeof NetworkingConfig>;
 export const NetworkingConfig = y.object({
-  EndpointsConfig: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  EndpointsConfig: y.mixed(/* unsupported */).optional(),
 });
 
 export type Address = y.InferType<typeof Address>;
@@ -487,13 +487,13 @@ export const NetworkSettings = y.object({
   IPPrefixLen: y.number().required().optional(),
   IPv6Gateway: y.string().required().optional(),
   MacAddress: y.string().required().optional(),
-  Networks: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Networks: y.mixed(/* unsupported */).optional(),
 });
 
 export type GraphDriverData = y.InferType<typeof GraphDriverData>;
 export const GraphDriverData = y.object({
   Name: y.string().required(),
-  Data: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  Data: y.mixed(/* unsupported */),
 });
 
 export type ChangeType = y.InferType<typeof ChangeType>;
@@ -574,7 +574,7 @@ export const ImageSummary = y.object({
     .oneOf([y.number().required(), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
     .required()
     .optional(),
-  Labels: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  Labels: y.mixed(/* unsupported */),
   Containers: y.number().required(),
 });
 
@@ -601,7 +601,7 @@ export const ObjectVersion = y.object({
 });
 
 export type Topology = y.InferType<typeof Topology>;
-export const Topology = y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>;
+export const Topology = y.mixed(/* unsupported */);
 
 export type ClusterVolumeSpec = y.InferType<typeof ClusterVolumeSpec>;
 export const ClusterVolumeSpec = y.object({
@@ -646,7 +646,7 @@ export const ClusterVolume = y.object({
   Info: y
     .object({
       CapacityBytes: y.number().required().optional(),
-      VolumeContext: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      VolumeContext: y.mixed(/* unsupported */).optional(),
       VolumeID: y.string().required().optional(),
       AccessibleTopology: y.array(Topology).optional(),
     })
@@ -660,7 +660,7 @@ export const ClusterVolume = y.object({
           .oneOf(["pending-publish", "published", "pending-node-unpublish", "pending-controller-unpublish"])
           .required()
           .optional(),
-        PublishContext: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+        PublishContext: y.mixed(/* unsupported */).optional(),
       }),
     )
     .optional(),
@@ -679,19 +679,19 @@ export const Volume = y.object({
   Status: y
     .mixed()
     .oneOf([
-      y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+      y.mixed(/* unsupported */),
       y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
     ])
     .required()
     .optional(),
-  Labels: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  Labels: y.mixed(/* unsupported */),
   Scope: y.mixed().oneOf(["local", "global"]).required(),
   ClusterVolume: y
     .mixed()
     .oneOf([ClusterVolume, y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
     .required()
     .optional(),
-  Options: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  Options: y.mixed(/* unsupported */),
   UsageData: y
     .mixed()
     .oneOf([
@@ -710,8 +710,8 @@ export type VolumeCreateOptions = y.InferType<typeof VolumeCreateOptions>;
 export const VolumeCreateOptions = y.object({
   Name: y.string().required().optional(),
   Driver: y.string().required().optional(),
-  DriverOpts: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
-  Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  DriverOpts: y.mixed(/* unsupported */).optional(),
+  Labels: y.mixed(/* unsupported */).optional(),
   ClusterVolumeSpec: ClusterVolumeSpec.optional(),
 });
 
@@ -726,14 +726,14 @@ export const IPAMConfig = y.object({
   Subnet: y.string().required().optional(),
   IPRange: y.string().required().optional(),
   Gateway: y.string().required().optional(),
-  AuxiliaryAddresses: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  AuxiliaryAddresses: y.mixed(/* unsupported */).optional(),
 });
 
 export type IPAM = y.InferType<typeof IPAM>;
 export const IPAM = y.object({
   Driver: y.string().required().optional(),
   Config: y.array(IPAMConfig).optional(),
-  Options: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Options: y.mixed(/* unsupported */).optional(),
 });
 
 export type NetworkContainer = y.InferType<typeof NetworkContainer>;
@@ -757,9 +757,9 @@ export const Network = y.object({
   Internal: y.boolean().required().optional(),
   Attachable: y.boolean().required().optional(),
   Ingress: y.boolean().required().optional(),
-  Containers: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
-  Options: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
-  Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Containers: y.mixed(/* unsupported */).optional(),
+  Options: y.mixed(/* unsupported */).optional(),
+  Labels: y.mixed(/* unsupported */).optional(),
 });
 
 export type ErrorDetail = y.InferType<typeof ErrorDetail>;
@@ -984,7 +984,7 @@ export const Plugin = y.object({
 export type NodeSpec = y.InferType<typeof NodeSpec>;
 export const NodeSpec = y.object({
   Name: y.string().required().optional(),
-  Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Labels: y.mixed(/* unsupported */).optional(),
   Role: y.mixed().oneOf(["worker", "manager"]).required().optional(),
   Availability: y.mixed().oneOf(["active", "pause", "drain"]).required().optional(),
 });
@@ -998,7 +998,7 @@ export const Platform = y.object({
 export type EngineDescription = y.InferType<typeof EngineDescription>;
 export const EngineDescription = y.object({
   EngineVersion: y.string().required().optional(),
-  Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Labels: y.mixed(/* unsupported */).optional(),
   Plugins: y
     .array(
       y.object({
@@ -1066,7 +1066,7 @@ export const Node = y.object({
 export type SwarmSpec = y.InferType<typeof SwarmSpec>;
 export const SwarmSpec = y.object({
   Name: y.string().required().optional(),
-  Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Labels: y.mixed(/* unsupported */).optional(),
   Orchestration: y
     .mixed()
     .oneOf([
@@ -1109,7 +1109,7 @@ export const SwarmSpec = y.object({
                 .required()
                 .optional(),
               URL: y.string().required().optional(),
-              Options: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+              Options: y.mixed(/* unsupported */).optional(),
               CACert: y.string().required().optional(),
             }),
           )
@@ -1132,7 +1132,7 @@ export const SwarmSpec = y.object({
       LogDriver: y
         .object({
           Name: y.string().required().optional(),
-          Options: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+          Options: y.mixed(/* unsupported */).optional(),
         })
         .optional(),
     })
@@ -1172,7 +1172,7 @@ export type NetworkAttachmentConfig = y.InferType<typeof NetworkAttachmentConfig
 export const NetworkAttachmentConfig = y.object({
   Target: y.string().required().optional(),
   Aliases: y.array(y.string().required()).optional(),
-  DriverOpts: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  DriverOpts: y.mixed(/* unsupported */).optional(),
 });
 
 export type TaskSpec = y.InferType<typeof TaskSpec>;
@@ -1188,7 +1188,7 @@ export const TaskSpec = y.object({
   ContainerSpec: y
     .object({
       Image: y.string().required().optional(),
-      Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      Labels: y.mixed(/* unsupported */).optional(),
       Command: y.array(y.string().required()).optional(),
       Args: y.array(y.string().required()).optional(),
       Hostname: y.string().required().optional(),
@@ -1273,7 +1273,7 @@ export const TaskSpec = y.object({
         ])
         .required()
         .optional(),
-      Sysctls: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      Sysctls: y.mixed(/* unsupported */).optional(),
       CapabilityAdd: y.array(y.string().required()).optional(),
       CapabilityDrop: y.array(y.string().required()).optional(),
       Ulimits: y
@@ -1330,7 +1330,7 @@ export const TaskSpec = y.object({
   LogDriver: y
     .object({
       Name: y.string().required().optional(),
-      Options: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      Options: y.mixed(/* unsupported */).optional(),
     })
     .optional(),
 });
@@ -1364,7 +1364,7 @@ export const Task = y.object({
   CreatedAt: y.string().required().optional(),
   UpdatedAt: y.string().required().optional(),
   Name: y.string().required().optional(),
-  Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Labels: y.mixed(/* unsupported */).optional(),
   Spec: TaskSpec.optional(),
   ServiceID: y.string().required().optional(),
   Slot: y.number().required().optional(),
@@ -1407,7 +1407,7 @@ export const EndpointSpec = y.object({
 export type ServiceSpec = y.InferType<typeof ServiceSpec>;
 export const ServiceSpec = y.object({
   Name: y.string().required().optional(),
-  Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Labels: y.mixed(/* unsupported */).optional(),
   TaskTemplate: TaskSpec.optional(),
   Mode: y
     .object({
@@ -1516,7 +1516,7 @@ export const ContainerSummary = y.object({
   Ports: y.array(Port).optional(),
   SizeRw: y.number().required().optional(),
   SizeRootFs: y.number().required().optional(),
-  Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Labels: y.mixed(/* unsupported */).optional(),
   State: y.string().required().optional(),
   Status: y.string().required().optional(),
   HostConfig: y
@@ -1526,7 +1526,7 @@ export const ContainerSummary = y.object({
     .optional(),
   NetworkSettings: y
     .object({
-      Networks: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      Networks: y.mixed(/* unsupported */).optional(),
     })
     .optional(),
   Mounts: y.array(MountPoint).optional(),
@@ -1538,7 +1538,7 @@ export const Driver = y.object({
   Options: y
     .mixed()
     .oneOf([
-      y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+      y.mixed(/* unsupported */),
       y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
     ])
     .required()
@@ -1548,7 +1548,7 @@ export const Driver = y.object({
 export type SecretSpec = y.InferType<typeof SecretSpec>;
 export const SecretSpec = y.object({
   Name: y.string().required().optional(),
-  Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Labels: y.mixed(/* unsupported */).optional(),
   Data: y.string().required().optional(),
   Driver: Driver.optional(),
   Templating: Driver.optional(),
@@ -1566,7 +1566,7 @@ export const Secret = y.object({
 export type ConfigSpec = y.InferType<typeof ConfigSpec>;
 export const ConfigSpec = y.object({
   Name: y.string().required().optional(),
-  Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Labels: y.mixed(/* unsupported */).optional(),
   Data: y.string().required().optional(),
   Templating: Driver.optional(),
 });
@@ -1693,7 +1693,7 @@ export const RegistryServiceConfig = y
       AllowNondistributableArtifactsCIDRs: y.array(y.string().required()).optional(),
       AllowNondistributableArtifactsHostnames: y.array(y.string().required()).optional(),
       InsecureRegistryCIDRs: y.array(y.string().required()).optional(),
-      IndexConfigs: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      IndexConfigs: y.mixed(/* unsupported */).optional(),
       Mirrors: y.array(y.string().required()).optional(),
     }),
     y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
@@ -1802,7 +1802,7 @@ export const SystemInfo = y.object({
   Labels: y.array(y.string().required()).optional(),
   ExperimentalBuild: y.boolean().required().optional(),
   ServerVersion: y.string().required().optional(),
-  Runtimes: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Runtimes: y.mixed(/* unsupported */).optional(),
   DefaultRuntime: y.string().required().optional(),
   Swarm: SwarmInfo.optional(),
   LiveRestoreEnabled: y.boolean().required().optional(),
@@ -1827,7 +1827,7 @@ export const SystemInfo = y.object({
 export type EventActor = y.InferType<typeof EventActor>;
 export const EventActor = y.object({
   ID: y.string().required().optional(),
-  Attributes: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+  Attributes: y.mixed(/* unsupported */).optional(),
 });
 
 export type EventMessage = y.InferType<typeof EventMessage>;
@@ -1914,7 +1914,7 @@ export const post_ContainerCreate = {
       ExposedPorts: y
         .mixed()
         .oneOf([
-          y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+          y.mixed(/* unsupported */),
           y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
         ])
         .required()
@@ -1934,7 +1934,7 @@ export const post_ContainerCreate = {
         .required()
         .optional(),
       Image: y.string().required().optional(),
-      Volumes: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      Volumes: y.mixed(/* unsupported */).optional(),
       WorkingDir: y.string().required().optional(),
       Entrypoint: y.array(y.string().required()).optional(),
       NetworkDisabled: y
@@ -1961,7 +1961,7 @@ export const post_ContainerCreate = {
         ])
         .required()
         .optional(),
-      Labels: (y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>).optional(),
+      Labels: y.mixed(/* unsupported */).optional(),
       StopSignal: y
         .mixed()
         .oneOf([
@@ -2123,7 +2123,7 @@ export const get_ContainerStats = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  response: y.mixed(/* unsupported */),
 };
 
 export type post_ContainerResize = typeof post_ContainerResize;
@@ -3159,7 +3159,7 @@ export const post_NetworkCreate = {
       Options: y
         .mixed()
         .oneOf([
-          y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+          y.mixed(/* unsupported */),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
         .required()
@@ -3167,7 +3167,7 @@ export const post_NetworkCreate = {
       Labels: y
         .mixed()
         .oneOf([
-          y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+          y.mixed(/* unsupported */),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
         .required()

@@ -24,3 +24,4 @@ pnpm-debug.log*
 styled-system
 styled-system-static
 .vercel
+*.tsbuildinfo

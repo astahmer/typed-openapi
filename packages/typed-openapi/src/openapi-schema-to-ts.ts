@@ -1,10 +1,9 @@
-import { isPrimitiveType } from "./asserts";
-import { Box } from "./box";
-import { createBoxFactory } from "./box-factory";
-import { isReferenceObject } from "./is-reference-object";
-import { AnyBoxDef, OpenapiSchemaConvertArgs } from "./types";
-import { wrapWithQuotesIfNeeded } from "./string-utils";
-import type { SchemaObject } from "openapi3-ts/oas30";
+import { isPrimitiveType } from "./asserts.ts";
+import { Box } from "./box.ts";
+import { createBoxFactory } from "./box-factory.ts";
+import { isReferenceObject } from "./is-reference-object.ts";
+import { AnyBoxDef, OpenapiSchemaConvertArgs, type LibSchemaObject } from "./types.ts";
+import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
 
 export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: OpenapiSchemaConvertArgs): Box<AnyBoxDef> => {
   const meta = {} as OpenapiSchemaConvertArgs["meta"];
@@ -13,7 +12,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
     throw new Error("Schema is required");
   }
 
-  const t = createBoxFactory(schema, ctx);
+  const t = createBoxFactory(schema as LibSchemaObject, ctx);
   const getTs = () => {
     if (isReferenceObject(schema)) {
       const refInfo = ctx.refs.getInfosByRef(schema.$ref);
@@ -30,7 +29,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
     }
 
     if (schema.type === "null") {
-      return t.reference("null");
+      return t.literal("null");
     }
 
     if (schema.oneOf) {
@@ -82,7 +81,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
       if (schemaType === "string") return t.string();
       if (schemaType === "boolean") return t.boolean();
       if (schemaType === "number" || schemaType === "integer") return t.number();
-      if (schemaType === "null") return t.reference("null");
+      if (schemaType === "null") return t.literal("null");
     }
 
     if (schemaType === "array") {
@@ -100,7 +99,12 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
 
     if (schemaType === "object" || schema.properties || schema.additionalProperties) {
       if (!schema.properties) {
-        return t.unknown();
+        if (schema.additionalProperties && !isReferenceObject(schema.additionalProperties) && typeof schema.additionalProperties !== "boolean" && schema.additionalProperties.type) {
+          const valueSchema = openApiSchemaToTs({ schema: schema.additionalProperties, ctx, meta });
+          return t.literal(`Record<string, ${valueSchema.value}>`);
+        }
+
+        return t.literal("Record<string, unknown>");
       }
 
       let additionalProperties;
@@ -154,8 +158,8 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
   let output = getTs();
   if (!isReferenceObject(schema)) {
     // OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
-    if ((schema as any as SchemaObject).nullable) {
-      output = t.union([output, t.reference("null")]);
+    if ((schema as LibSchemaObject).nullable) {
+      output = t.union([output, t.literal("null")]);
     }
   }
 

@@ -35,7 +35,7 @@ export const DeviceRequest = z.object({
   Count: z.number().optional(),
   DeviceIDs: z.array(z.string()).optional(),
   Capabilities: z.array(z.array(z.string())).optional(),
-  Options: z.unknown().optional(),
+  Options: z.record(z.string()).optional(),
 });
 
 export type ThrottleDevice = z.infer<typeof ThrottleDevice>;
@@ -72,11 +72,11 @@ export const Mount = z.object({
   VolumeOptions: z
     .object({
       NoCopy: z.boolean().optional(),
-      Labels: z.unknown().optional(),
+      Labels: z.record(z.string()).optional(),
       DriverConfig: z
         .object({
           Name: z.string().optional(),
-          Options: z.unknown().optional(),
+          Options: z.record(z.string()).optional(),
         })
         .optional(),
     })
@@ -218,7 +218,7 @@ export const PortBinding = z.object({
 });
 
 export type PortMap = z.infer<typeof PortMap>;
-export const PortMap = z.unknown();
+export const PortMap = z.record(z.union([z.array(PortBinding), z.null()]));
 
 export type HostConfig = z.infer<typeof HostConfig>;
 export const HostConfig = z.intersection(
@@ -241,7 +241,7 @@ export const HostConfig = z.intersection(
             z.literal("none"),
           ])
           .optional(),
-        Config: z.unknown().optional(),
+        Config: z.record(z.string()).optional(),
       })
       .optional(),
     NetworkMode: z.string().optional(),
@@ -252,7 +252,7 @@ export const HostConfig = z.intersection(
     VolumesFrom: z.array(z.string()).optional(),
     Mounts: z.array(Mount).optional(),
     ConsoleSize: z.union([z.array(z.number()), z.null()]).optional(),
-    Annotations: z.unknown().optional(),
+    Annotations: z.record(z.string()).optional(),
     CapAdd: z.array(z.string()).optional(),
     CapDrop: z.array(z.string()).optional(),
     CgroupnsMode: z.union([z.literal("private"), z.literal("host")]).optional(),
@@ -270,12 +270,12 @@ export const HostConfig = z.intersection(
     PublishAllPorts: z.boolean().optional(),
     ReadonlyRootfs: z.boolean().optional(),
     SecurityOpt: z.array(z.string()).optional(),
-    StorageOpt: z.unknown().optional(),
-    Tmpfs: z.unknown().optional(),
+    StorageOpt: z.record(z.string()).optional(),
+    Tmpfs: z.record(z.string()).optional(),
     UTSMode: z.string().optional(),
     UsernsMode: z.string().optional(),
     ShmSize: z.number().optional(),
-    Sysctls: z.unknown().optional(),
+    Sysctls: z.record(z.string()).optional(),
     Runtime: z.string().optional(),
     Isolation: z.union([z.literal("default"), z.literal("process"), z.literal("hyperv")]).optional(),
     MaskedPaths: z.array(z.string()).optional(),
@@ -291,7 +291,7 @@ export const ContainerConfig = z.object({
   AttachStdin: z.boolean().optional(),
   AttachStdout: z.boolean().optional(),
   AttachStderr: z.boolean().optional(),
-  ExposedPorts: z.union([z.unknown(), z.null()]).optional(),
+  ExposedPorts: z.union([z.record(z.object({})), z.null()]).optional(),
   Tty: z.boolean().optional(),
   OpenStdin: z.boolean().optional(),
   StdinOnce: z.boolean().optional(),
@@ -300,13 +300,13 @@ export const ContainerConfig = z.object({
   Healthcheck: HealthConfig.optional(),
   ArgsEscaped: z.union([z.boolean(), z.null()]).optional(),
   Image: z.string().optional(),
-  Volumes: z.unknown().optional(),
+  Volumes: z.record(z.object({})).optional(),
   WorkingDir: z.string().optional(),
   Entrypoint: z.array(z.string()).optional(),
   NetworkDisabled: z.union([z.boolean(), z.null()]).optional(),
   MacAddress: z.union([z.string(), z.null()]).optional(),
   OnBuild: z.union([z.array(z.string()), z.null()]).optional(),
-  Labels: z.unknown().optional(),
+  Labels: z.record(z.string()).optional(),
   StopSignal: z.union([z.string(), z.null()]).optional(),
   StopTimeout: z.union([z.number(), z.null()]).optional(),
   Shell: z.union([z.array(z.string()), z.null()]).optional(),
@@ -336,12 +336,12 @@ export const EndpointSettings = z.object({
   GlobalIPv6Address: z.string().optional(),
   GlobalIPv6PrefixLen: z.number().optional(),
   MacAddress: z.string().optional(),
-  DriverOpts: z.union([z.unknown(), z.null()]).optional(),
+  DriverOpts: z.union([z.record(z.string()), z.null()]).optional(),
 });
 
 export type NetworkingConfig = z.infer<typeof NetworkingConfig>;
 export const NetworkingConfig = z.object({
-  EndpointsConfig: z.unknown().optional(),
+  EndpointsConfig: z.record(z.unknown()).optional(),
 });
 
 export type Address = z.infer<typeof Address>;
@@ -369,13 +369,13 @@ export const NetworkSettings = z.object({
   IPPrefixLen: z.number().optional(),
   IPv6Gateway: z.string().optional(),
   MacAddress: z.string().optional(),
-  Networks: z.unknown().optional(),
+  Networks: z.record(z.unknown()).optional(),
 });
 
 export type GraphDriverData = z.infer<typeof GraphDriverData>;
 export const GraphDriverData = z.object({
   Name: z.string(),
-  Data: z.unknown(),
+  Data: z.record(z.string()),
 });
 
 export type ChangeType = z.infer<typeof ChangeType>;
@@ -430,7 +430,7 @@ export const ImageSummary = z.object({
   Size: z.number(),
   SharedSize: z.number(),
   VirtualSize: z.union([z.number(), z.undefined()]).optional(),
-  Labels: z.unknown(),
+  Labels: z.record(z.string()),
   Containers: z.number(),
 });
 
@@ -457,7 +457,7 @@ export const ObjectVersion = z.object({
 });
 
 export type Topology = z.infer<typeof Topology>;
-export const Topology = z.unknown();
+export const Topology = z.record(z.string());
 
 export type ClusterVolumeSpec = z.infer<typeof ClusterVolumeSpec>;
 export const ClusterVolumeSpec = z.object({
@@ -502,7 +502,7 @@ export const ClusterVolume = z.object({
   Info: z
     .object({
       CapacityBytes: z.number().optional(),
-      VolumeContext: z.unknown().optional(),
+      VolumeContext: z.record(z.string()).optional(),
       VolumeID: z.string().optional(),
       AccessibleTopology: z.array(Topology).optional(),
     })
@@ -519,7 +519,7 @@ export const ClusterVolume = z.object({
             z.literal("pending-controller-unpublish"),
           ])
           .optional(),
-        PublishContext: z.unknown().optional(),
+        PublishContext: z.record(z.string()).optional(),
       }),
     )
     .optional(),
@@ -531,11 +531,11 @@ export const Volume = z.object({
   Driver: z.string(),
   Mountpoint: z.string(),
   CreatedAt: z.union([z.string(), z.undefined()]).optional(),
-  Status: z.union([z.unknown(), z.undefined()]).optional(),
-  Labels: z.unknown(),
+  Status: z.union([z.record(z.object({})), z.undefined()]).optional(),
+  Labels: z.record(z.string()),
   Scope: z.union([z.literal("local"), z.literal("global")]),
   ClusterVolume: z.union([ClusterVolume, z.undefined()]).optional(),
-  Options: z.unknown(),
+  Options: z.record(z.string()),
   UsageData: z
     .union([
       z.object({
@@ -552,8 +552,8 @@ export type VolumeCreateOptions = z.infer<typeof VolumeCreateOptions>;
 export const VolumeCreateOptions = z.object({
   Name: z.string().optional(),
   Driver: z.string().optional(),
-  DriverOpts: z.unknown().optional(),
-  Labels: z.unknown().optional(),
+  DriverOpts: z.record(z.string()).optional(),
+  Labels: z.record(z.string()).optional(),
   ClusterVolumeSpec: ClusterVolumeSpec.optional(),
 });
 
@@ -568,14 +568,14 @@ export const IPAMConfig = z.object({
   Subnet: z.string().optional(),
   IPRange: z.string().optional(),
   Gateway: z.string().optional(),
-  AuxiliaryAddresses: z.unknown().optional(),
+  AuxiliaryAddresses: z.record(z.string()).optional(),
 });
 
 export type IPAM = z.infer<typeof IPAM>;
 export const IPAM = z.object({
   Driver: z.string().optional(),
   Config: z.array(IPAMConfig).optional(),
-  Options: z.unknown().optional(),
+  Options: z.record(z.string()).optional(),
 });
 
 export type NetworkContainer = z.infer<typeof NetworkContainer>;
@@ -599,9 +599,9 @@ export const Network = z.object({
   Internal: z.boolean().optional(),
   Attachable: z.boolean().optional(),
   Ingress: z.boolean().optional(),
-  Containers: z.unknown().optional(),
-  Options: z.unknown().optional(),
-  Labels: z.unknown().optional(),
+  Containers: z.record(z.unknown()).optional(),
+  Options: z.record(z.string()).optional(),
+  Labels: z.record(z.string()).optional(),
 });
 
 export type ErrorDetail = z.infer<typeof ErrorDetail>;
@@ -792,7 +792,7 @@ export const Plugin = z.object({
 export type NodeSpec = z.infer<typeof NodeSpec>;
 export const NodeSpec = z.object({
   Name: z.string().optional(),
-  Labels: z.unknown().optional(),
+  Labels: z.record(z.string()).optional(),
   Role: z.union([z.literal("worker"), z.literal("manager")]).optional(),
   Availability: z.union([z.literal("active"), z.literal("pause"), z.literal("drain")]).optional(),
 });
@@ -806,7 +806,7 @@ export const Platform = z.object({
 export type EngineDescription = z.infer<typeof EngineDescription>;
 export const EngineDescription = z.object({
   EngineVersion: z.string().optional(),
-  Labels: z.unknown().optional(),
+  Labels: z.record(z.string()).optional(),
   Plugins: z
     .array(
       z.object({
@@ -876,7 +876,7 @@ export const Node = z.object({
 export type SwarmSpec = z.infer<typeof SwarmSpec>;
 export const SwarmSpec = z.object({
   Name: z.string().optional(),
-  Labels: z.unknown().optional(),
+  Labels: z.record(z.string()).optional(),
   Orchestration: z
     .union([
       z.object({
@@ -911,7 +911,7 @@ export const SwarmSpec = z.object({
             z.object({
               Protocol: z.literal("cfssl").optional(),
               URL: z.string().optional(),
-              Options: z.unknown().optional(),
+              Options: z.record(z.string()).optional(),
               CACert: z.string().optional(),
             }),
           )
@@ -933,7 +933,7 @@ export const SwarmSpec = z.object({
       LogDriver: z
         .object({
           Name: z.string().optional(),
-          Options: z.unknown().optional(),
+          Options: z.record(z.string()).optional(),
         })
         .optional(),
     })
@@ -975,7 +975,7 @@ export type NetworkAttachmentConfig = z.infer<typeof NetworkAttachmentConfig>;
 export const NetworkAttachmentConfig = z.object({
   Target: z.string().optional(),
   Aliases: z.array(z.string()).optional(),
-  DriverOpts: z.unknown().optional(),
+  DriverOpts: z.record(z.string()).optional(),
 });
 
 export type TaskSpec = z.infer<typeof TaskSpec>;
@@ -991,7 +991,7 @@ export const TaskSpec = z.object({
   ContainerSpec: z
     .object({
       Image: z.string().optional(),
-      Labels: z.unknown().optional(),
+      Labels: z.record(z.string()).optional(),
       Command: z.array(z.string()).optional(),
       Args: z.array(z.string()).optional(),
       Hostname: z.string().optional(),
@@ -1069,7 +1069,7 @@ export const TaskSpec = z.object({
         .optional(),
       Isolation: z.union([z.literal("default"), z.literal("process"), z.literal("hyperv")]).optional(),
       Init: z.union([z.boolean(), z.null()]).optional(),
-      Sysctls: z.unknown().optional(),
+      Sysctls: z.record(z.string()).optional(),
       CapabilityAdd: z.array(z.string()).optional(),
       CapabilityDrop: z.array(z.string()).optional(),
       Ulimits: z
@@ -1126,7 +1126,7 @@ export const TaskSpec = z.object({
   LogDriver: z
     .object({
       Name: z.string().optional(),
-      Options: z.unknown().optional(),
+      Options: z.record(z.string()).optional(),
     })
     .optional(),
 });
@@ -1157,7 +1157,7 @@ export const Task = z.object({
   CreatedAt: z.string().optional(),
   UpdatedAt: z.string().optional(),
   Name: z.string().optional(),
-  Labels: z.unknown().optional(),
+  Labels: z.record(z.string()).optional(),
   Spec: TaskSpec.optional(),
   ServiceID: z.string().optional(),
   Slot: z.number().optional(),
@@ -1200,7 +1200,7 @@ export const EndpointSpec = z.object({
 export type ServiceSpec = z.infer<typeof ServiceSpec>;
 export const ServiceSpec = z.object({
   Name: z.string().optional(),
-  Labels: z.unknown().optional(),
+  Labels: z.record(z.string()).optional(),
   TaskTemplate: TaskSpec.optional(),
   Mode: z
     .object({
@@ -1309,7 +1309,7 @@ export const ContainerSummary = z.object({
   Ports: z.array(Port).optional(),
   SizeRw: z.number().optional(),
   SizeRootFs: z.number().optional(),
-  Labels: z.unknown().optional(),
+  Labels: z.record(z.string()).optional(),
   State: z.string().optional(),
   Status: z.string().optional(),
   HostConfig: z
@@ -1319,7 +1319,7 @@ export const ContainerSummary = z.object({
     .optional(),
   NetworkSettings: z
     .object({
-      Networks: z.unknown().optional(),
+      Networks: z.record(z.unknown()).optional(),
     })
     .optional(),
   Mounts: z.array(MountPoint).optional(),
@@ -1328,13 +1328,13 @@ export const ContainerSummary = z.object({
 export type Driver = z.infer<typeof Driver>;
 export const Driver = z.object({
   Name: z.string(),
-  Options: z.union([z.unknown(), z.undefined()]).optional(),
+  Options: z.union([z.record(z.string()), z.undefined()]).optional(),
 });
 
 export type SecretSpec = z.infer<typeof SecretSpec>;
 export const SecretSpec = z.object({
   Name: z.string().optional(),
-  Labels: z.unknown().optional(),
+  Labels: z.record(z.string()).optional(),
   Data: z.string().optional(),
   Driver: Driver.optional(),
   Templating: Driver.optional(),
@@ -1352,7 +1352,7 @@ export const Secret = z.object({
 export type ConfigSpec = z.infer<typeof ConfigSpec>;
 export const ConfigSpec = z.object({
   Name: z.string().optional(),
-  Labels: z.unknown().optional(),
+  Labels: z.record(z.string()).optional(),
   Data: z.string().optional(),
   Templating: Driver.optional(),
 });
@@ -1465,7 +1465,7 @@ export const RegistryServiceConfig = z.union([
     AllowNondistributableArtifactsCIDRs: z.array(z.string()).optional(),
     AllowNondistributableArtifactsHostnames: z.array(z.string()).optional(),
     InsecureRegistryCIDRs: z.array(z.string()).optional(),
-    IndexConfigs: z.unknown().optional(),
+    IndexConfigs: z.record(z.unknown()).optional(),
     Mirrors: z.array(z.string()).optional(),
   }),
   z.null(),
@@ -1561,7 +1561,7 @@ export const SystemInfo = z.object({
   Labels: z.array(z.string()).optional(),
   ExperimentalBuild: z.boolean().optional(),
   ServerVersion: z.string().optional(),
-  Runtimes: z.unknown().optional(),
+  Runtimes: z.record(z.unknown()).optional(),
   DefaultRuntime: z.string().optional(),
   Swarm: SwarmInfo.optional(),
   LiveRestoreEnabled: z.boolean().optional(),
@@ -1586,7 +1586,7 @@ export const SystemInfo = z.object({
 export type EventActor = z.infer<typeof EventActor>;
 export const EventActor = z.object({
   ID: z.string().optional(),
-  Attributes: z.unknown().optional(),
+  Attributes: z.record(z.string()).optional(),
 });
 
 export type EventMessage = z.infer<typeof EventMessage>;
@@ -1795,7 +1795,7 @@ export const get_ContainerStats = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
+  response: z.record(z.unknown()),
 };
 
 export type post_ContainerResize = typeof post_ContainerResize;
@@ -2686,8 +2686,8 @@ export const post_NetworkCreate = {
       Ingress: z.union([z.boolean(), z.undefined()]).optional(),
       IPAM: z.union([IPAM, z.undefined()]).optional(),
       EnableIPv6: z.union([z.boolean(), z.undefined()]).optional(),
-      Options: z.union([z.unknown(), z.undefined()]).optional(),
-      Labels: z.union([z.unknown(), z.undefined()]).optional(),
+      Options: z.union([z.record(z.string()), z.undefined()]).optional(),
+      Labels: z.union([z.record(z.string()), z.undefined()]).optional(),
     }),
   }),
   response: z.object({
@@ -3092,7 +3092,7 @@ export const post_ServiceCreate = {
     header: z.object({
       "X-Registry-Auth": z.string().optional(),
     }),
-    body: z.intersection(ServiceSpec, z.unknown()),
+    body: z.intersection(ServiceSpec, z.record(z.unknown())),
   }),
   response: z.object({
     ID: z.string().optional(),
@@ -3146,7 +3146,7 @@ export const post_ServiceUpdate = {
     header: z.object({
       "X-Registry-Auth": z.string().optional(),
     }),
-    body: z.intersection(ServiceSpec, z.unknown()),
+    body: z.intersection(ServiceSpec, z.record(z.unknown())),
   }),
   response: ServiceUpdateResponse,
 };
@@ -3240,7 +3240,7 @@ export const post_SecretCreate = {
   path: z.literal("/secrets/create"),
   requestFormat: z.literal("json"),
   parameters: z.object({
-    body: z.intersection(SecretSpec, z.unknown()),
+    body: z.intersection(SecretSpec, z.record(z.unknown())),
   }),
   response: IdResponse,
 };
@@ -3307,7 +3307,7 @@ export const post_ConfigCreate = {
   path: z.literal("/configs/create"),
   requestFormat: z.literal("json"),
   parameters: z.object({
-    body: z.intersection(ConfigSpec, z.unknown()),
+    body: z.intersection(ConfigSpec, z.record(z.unknown())),
   }),
   response: IdResponse,
 };

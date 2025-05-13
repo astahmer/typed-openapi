@@ -36,7 +36,7 @@ export const DeviceRequest = t.type({
   Count: t.union([t.undefined, t.number]),
   DeviceIDs: t.union([t.undefined, t.array(t.string)]),
   Capabilities: t.union([t.undefined, t.array(t.array(t.string))]),
-  Options: t.union([t.undefined, t.unknown]),
+  Options: t.union([t.undefined, t.record(t.string, t.string)]),
 });
 
 export type ThrottleDevice = t.TypeOf<typeof ThrottleDevice>;
@@ -77,12 +77,12 @@ export const Mount = t.type({
     t.undefined,
     t.type({
       NoCopy: t.union([t.undefined, t.boolean]),
-      Labels: t.union([t.undefined, t.unknown]),
+      Labels: t.union([t.undefined, t.record(t.string, t.string)]),
       DriverConfig: t.union([
         t.undefined,
         t.type({
           Name: t.union([t.undefined, t.string]),
-          Options: t.union([t.undefined, t.unknown]),
+          Options: t.union([t.undefined, t.record(t.string, t.string)]),
         }),
       ]),
     }),
@@ -237,7 +237,7 @@ export const PortBinding = t.type({
 });
 
 export type PortMap = t.TypeOf<typeof PortMap>;
-export const PortMap = t.unknown;
+export const PortMap = t.record(t.string, t.union([t.array(PortBinding), t.null]));
 
 export type HostConfig = t.TypeOf<typeof HostConfig>;
 export const HostConfig = t.intersection([
@@ -262,7 +262,7 @@ export const HostConfig = t.intersection([
             t.literal("none"),
           ]),
         ]),
-        Config: t.union([t.undefined, t.unknown]),
+        Config: t.union([t.undefined, t.record(t.string, t.string)]),
       }),
     ]),
     NetworkMode: t.union([t.undefined, t.string]),
@@ -273,7 +273,7 @@ export const HostConfig = t.intersection([
     VolumesFrom: t.union([t.undefined, t.array(t.string)]),
     Mounts: t.union([t.undefined, t.array(Mount)]),
     ConsoleSize: t.union([t.undefined, t.union([t.array(t.number), t.null])]),
-    Annotations: t.union([t.undefined, t.unknown]),
+    Annotations: t.union([t.undefined, t.record(t.string, t.string)]),
     CapAdd: t.union([t.undefined, t.array(t.string)]),
     CapDrop: t.union([t.undefined, t.array(t.string)]),
     CgroupnsMode: t.union([t.undefined, t.union([t.literal("private"), t.literal("host")])]),
@@ -291,12 +291,12 @@ export const HostConfig = t.intersection([
     PublishAllPorts: t.union([t.undefined, t.boolean]),
     ReadonlyRootfs: t.union([t.undefined, t.boolean]),
     SecurityOpt: t.union([t.undefined, t.array(t.string)]),
-    StorageOpt: t.union([t.undefined, t.unknown]),
-    Tmpfs: t.union([t.undefined, t.unknown]),
+    StorageOpt: t.union([t.undefined, t.record(t.string, t.string)]),
+    Tmpfs: t.union([t.undefined, t.record(t.string, t.string)]),
     UTSMode: t.union([t.undefined, t.string]),
     UsernsMode: t.union([t.undefined, t.string]),
     ShmSize: t.union([t.undefined, t.number]),
-    Sysctls: t.union([t.undefined, t.unknown]),
+    Sysctls: t.union([t.undefined, t.record(t.string, t.string)]),
     Runtime: t.union([t.undefined, t.string]),
     Isolation: t.union([t.undefined, t.union([t.literal("default"), t.literal("process"), t.literal("hyperv")])]),
     MaskedPaths: t.union([t.undefined, t.array(t.string)]),
@@ -312,7 +312,7 @@ export const ContainerConfig = t.type({
   AttachStdin: t.union([t.undefined, t.boolean]),
   AttachStdout: t.union([t.undefined, t.boolean]),
   AttachStderr: t.union([t.undefined, t.boolean]),
-  ExposedPorts: t.union([t.undefined, t.union([t.unknown, t.null])]),
+  ExposedPorts: t.union([t.undefined, t.union([t.record(t.string, t.type({})), t.null])]),
   Tty: t.union([t.undefined, t.boolean]),
   OpenStdin: t.union([t.undefined, t.boolean]),
   StdinOnce: t.union([t.undefined, t.boolean]),
@@ -321,13 +321,13 @@ export const ContainerConfig = t.type({
   Healthcheck: t.union([t.undefined, HealthConfig]),
   ArgsEscaped: t.union([t.undefined, t.union([t.boolean, t.null])]),
   Image: t.union([t.undefined, t.string]),
-  Volumes: t.union([t.undefined, t.unknown]),
+  Volumes: t.union([t.undefined, t.record(t.string, t.type({}))]),
   WorkingDir: t.union([t.undefined, t.string]),
   Entrypoint: t.union([t.undefined, t.array(t.string)]),
   NetworkDisabled: t.union([t.undefined, t.union([t.boolean, t.null])]),
   MacAddress: t.union([t.undefined, t.union([t.string, t.null])]),
   OnBuild: t.union([t.undefined, t.union([t.array(t.string), t.null])]),
-  Labels: t.union([t.undefined, t.unknown]),
+  Labels: t.union([t.undefined, t.record(t.string, t.string)]),
   StopSignal: t.union([t.undefined, t.union([t.string, t.null])]),
   StopTimeout: t.union([t.undefined, t.union([t.number, t.null])]),
   Shell: t.union([t.undefined, t.union([t.array(t.string), t.null])]),
@@ -357,12 +357,12 @@ export const EndpointSettings = t.type({
   GlobalIPv6Address: t.union([t.undefined, t.string]),
   GlobalIPv6PrefixLen: t.union([t.undefined, t.number]),
   MacAddress: t.union([t.undefined, t.string]),
-  DriverOpts: t.union([t.undefined, t.union([t.unknown, t.null])]),
+  DriverOpts: t.union([t.undefined, t.union([t.record(t.string, t.string), t.null])]),
 });
 
 export type NetworkingConfig = t.TypeOf<typeof NetworkingConfig>;
 export const NetworkingConfig = t.type({
-  EndpointsConfig: t.union([t.undefined, t.unknown]),
+  EndpointsConfig: t.union([t.undefined, t.record(t.string, t.unknown)]),
 });
 
 export type Address = t.TypeOf<typeof Address>;
@@ -390,13 +390,13 @@ export const NetworkSettings = t.type({
   IPPrefixLen: t.union([t.undefined, t.number]),
   IPv6Gateway: t.union([t.undefined, t.string]),
   MacAddress: t.union([t.undefined, t.string]),
-  Networks: t.union([t.undefined, t.unknown]),
+  Networks: t.union([t.undefined, t.record(t.string, t.unknown)]),
 });
 
 export type GraphDriverData = t.TypeOf<typeof GraphDriverData>;
 export const GraphDriverData = t.type({
   Name: t.string,
-  Data: t.unknown,
+  Data: t.record(t.string, t.string),
 });
 
 export type ChangeType = t.TypeOf<typeof ChangeType>;
@@ -453,7 +453,7 @@ export const ImageSummary = t.type({
   Size: t.number,
   SharedSize: t.number,
   VirtualSize: t.union([t.undefined, t.union([t.number, t.undefined])]),
-  Labels: t.unknown,
+  Labels: t.record(t.string, t.string),
   Containers: t.number,
 });
 
@@ -480,7 +480,7 @@ export const ObjectVersion = t.type({
 });
 
 export type Topology = t.TypeOf<typeof Topology>;
-export const Topology = t.unknown;
+export const Topology = t.record(t.string, t.string);
 
 export type ClusterVolumeSpec = t.TypeOf<typeof ClusterVolumeSpec>;
 export const ClusterVolumeSpec = t.type({
@@ -533,7 +533,7 @@ export const ClusterVolume = t.type({
     t.undefined,
     t.type({
       CapacityBytes: t.union([t.undefined, t.number]),
-      VolumeContext: t.union([t.undefined, t.unknown]),
+      VolumeContext: t.union([t.undefined, t.record(t.string, t.string)]),
       VolumeID: t.union([t.undefined, t.string]),
       AccessibleTopology: t.union([t.undefined, t.array(Topology)]),
     }),
@@ -552,7 +552,7 @@ export const ClusterVolume = t.type({
             t.literal("pending-controller-unpublish"),
           ]),
         ]),
-        PublishContext: t.union([t.undefined, t.unknown]),
+        PublishContext: t.union([t.undefined, t.record(t.string, t.string)]),
       }),
     ),
   ]),
@@ -564,11 +564,11 @@ export const Volume = t.type({
   Driver: t.string,
   Mountpoint: t.string,
   CreatedAt: t.union([t.undefined, t.union([t.string, t.undefined])]),
-  Status: t.union([t.undefined, t.union([t.unknown, t.undefined])]),
-  Labels: t.unknown,
+  Status: t.union([t.undefined, t.union([t.record(t.string, t.type({})), t.undefined])]),
+  Labels: t.record(t.string, t.string),
   Scope: t.union([t.literal("local"), t.literal("global")]),
   ClusterVolume: t.union([t.undefined, t.union([ClusterVolume, t.undefined])]),
-  Options: t.unknown,
+  Options: t.record(t.string, t.string),
   UsageData: t.union([
     t.undefined,
     t.union([
@@ -586,8 +586,8 @@ export type VolumeCreateOptions = t.TypeOf<typeof VolumeCreateOptions>;
 export const VolumeCreateOptions = t.type({
   Name: t.union([t.undefined, t.string]),
   Driver: t.union([t.undefined, t.string]),
-  DriverOpts: t.union([t.undefined, t.unknown]),
-  Labels: t.union([t.undefined, t.unknown]),
+  DriverOpts: t.union([t.undefined, t.record(t.string, t.string)]),
+  Labels: t.union([t.undefined, t.record(t.string, t.string)]),
   ClusterVolumeSpec: t.union([t.undefined, ClusterVolumeSpec]),
 });
 
@@ -602,14 +602,14 @@ export const IPAMConfig = t.type({
   Subnet: t.union([t.undefined, t.string]),
   IPRange: t.union([t.undefined, t.string]),
   Gateway: t.union([t.undefined, t.string]),
-  AuxiliaryAddresses: t.union([t.undefined, t.unknown]),
+  AuxiliaryAddresses: t.union([t.undefined, t.record(t.string, t.string)]),
 });
 
 export type IPAM = t.TypeOf<typeof IPAM>;
 export const IPAM = t.type({
   Driver: t.union([t.undefined, t.string]),
   Config: t.union([t.undefined, t.array(IPAMConfig)]),
-  Options: t.union([t.undefined, t.unknown]),
+  Options: t.union([t.undefined, t.record(t.string, t.string)]),
 });
 
 export type NetworkContainer = t.TypeOf<typeof NetworkContainer>;
@@ -633,9 +633,9 @@ export const Network = t.type({
   Internal: t.union([t.undefined, t.boolean]),
   Attachable: t.union([t.undefined, t.boolean]),
   Ingress: t.union([t.undefined, t.boolean]),
-  Containers: t.union([t.undefined, t.unknown]),
-  Options: t.union([t.undefined, t.unknown]),
-  Labels: t.union([t.undefined, t.unknown]),
+  Containers: t.union([t.undefined, t.record(t.string, t.unknown)]),
+  Options: t.union([t.undefined, t.record(t.string, t.string)]),
+  Labels: t.union([t.undefined, t.record(t.string, t.string)]),
 });
 
 export type ErrorDetail = t.TypeOf<typeof ErrorDetail>;
@@ -829,7 +829,7 @@ export const Plugin = t.type({
 export type NodeSpec = t.TypeOf<typeof NodeSpec>;
 export const NodeSpec = t.type({
   Name: t.union([t.undefined, t.string]),
-  Labels: t.union([t.undefined, t.unknown]),
+  Labels: t.union([t.undefined, t.record(t.string, t.string)]),
   Role: t.union([t.undefined, t.union([t.literal("worker"), t.literal("manager")])]),
   Availability: t.union([t.undefined, t.union([t.literal("active"), t.literal("pause"), t.literal("drain")])]),
 });
@@ -843,7 +843,7 @@ export const Platform = t.type({
 export type EngineDescription = t.TypeOf<typeof EngineDescription>;
 export const EngineDescription = t.type({
   EngineVersion: t.union([t.undefined, t.string]),
-  Labels: t.union([t.undefined, t.unknown]),
+  Labels: t.union([t.undefined, t.record(t.string, t.string)]),
   Plugins: t.union([
     t.undefined,
     t.array(
@@ -914,7 +914,7 @@ export const Node = t.type({
 export type SwarmSpec = t.TypeOf<typeof SwarmSpec>;
 export const SwarmSpec = t.type({
   Name: t.union([t.undefined, t.string]),
-  Labels: t.union([t.undefined, t.unknown]),
+  Labels: t.union([t.undefined, t.record(t.string, t.string)]),
   Orchestration: t.union([
     t.undefined,
     t.union([
@@ -954,7 +954,7 @@ export const SwarmSpec = t.type({
             t.type({
               Protocol: t.union([t.undefined, t.literal("cfssl")]),
               URL: t.union([t.undefined, t.string]),
-              Options: t.union([t.undefined, t.unknown]),
+              Options: t.union([t.undefined, t.record(t.string, t.string)]),
               CACert: t.union([t.undefined, t.string]),
             }),
           ),
@@ -979,7 +979,7 @@ export const SwarmSpec = t.type({
         t.undefined,
         t.type({
           Name: t.union([t.undefined, t.string]),
-          Options: t.union([t.undefined, t.unknown]),
+          Options: t.union([t.undefined, t.record(t.string, t.string)]),
         }),
       ]),
     }),
@@ -1021,7 +1021,7 @@ export type NetworkAttachmentConfig = t.TypeOf<typeof NetworkAttachmentConfig>;
 export const NetworkAttachmentConfig = t.type({
   Target: t.union([t.undefined, t.string]),
   Aliases: t.union([t.undefined, t.array(t.string)]),
-  DriverOpts: t.union([t.undefined, t.unknown]),
+  DriverOpts: t.union([t.undefined, t.record(t.string, t.string)]),
 });
 
 export type TaskSpec = t.TypeOf<typeof TaskSpec>;
@@ -1039,7 +1039,7 @@ export const TaskSpec = t.type({
     t.undefined,
     t.type({
       Image: t.union([t.undefined, t.string]),
-      Labels: t.union([t.undefined, t.unknown]),
+      Labels: t.union([t.undefined, t.record(t.string, t.string)]),
       Command: t.union([t.undefined, t.array(t.string)]),
       Args: t.union([t.undefined, t.array(t.string)]),
       Hostname: t.union([t.undefined, t.string]),
@@ -1125,7 +1125,7 @@ export const TaskSpec = t.type({
       ]),
       Isolation: t.union([t.undefined, t.union([t.literal("default"), t.literal("process"), t.literal("hyperv")])]),
       Init: t.union([t.undefined, t.union([t.boolean, t.null])]),
-      Sysctls: t.union([t.undefined, t.unknown]),
+      Sysctls: t.union([t.undefined, t.record(t.string, t.string)]),
       CapabilityAdd: t.union([t.undefined, t.array(t.string)]),
       CapabilityDrop: t.union([t.undefined, t.array(t.string)]),
       Ulimits: t.union([
@@ -1190,7 +1190,7 @@ export const TaskSpec = t.type({
     t.undefined,
     t.type({
       Name: t.union([t.undefined, t.string]),
-      Options: t.union([t.undefined, t.unknown]),
+      Options: t.union([t.undefined, t.record(t.string, t.string)]),
     }),
   ]),
 });
@@ -1221,7 +1221,7 @@ export const Task = t.type({
   CreatedAt: t.union([t.undefined, t.string]),
   UpdatedAt: t.union([t.undefined, t.string]),
   Name: t.union([t.undefined, t.string]),
-  Labels: t.union([t.undefined, t.unknown]),
+  Labels: t.union([t.undefined, t.record(t.string, t.string)]),
   Spec: t.union([t.undefined, TaskSpec]),
   ServiceID: t.union([t.undefined, t.string]),
   Slot: t.union([t.undefined, t.number]),
@@ -1266,7 +1266,7 @@ export const EndpointSpec = t.type({
 export type ServiceSpec = t.TypeOf<typeof ServiceSpec>;
 export const ServiceSpec = t.type({
   Name: t.union([t.undefined, t.string]),
-  Labels: t.union([t.undefined, t.unknown]),
+  Labels: t.union([t.undefined, t.record(t.string, t.string)]),
   TaskTemplate: t.union([t.undefined, TaskSpec]),
   Mode: t.union([
     t.undefined,
@@ -1388,7 +1388,7 @@ export const ContainerSummary = t.type({
   Ports: t.union([t.undefined, t.array(Port)]),
   SizeRw: t.union([t.undefined, t.number]),
   SizeRootFs: t.union([t.undefined, t.number]),
-  Labels: t.union([t.undefined, t.unknown]),
+  Labels: t.union([t.undefined, t.record(t.string, t.string)]),
   State: t.union([t.undefined, t.string]),
   Status: t.union([t.undefined, t.string]),
   HostConfig: t.union([
@@ -1400,7 +1400,7 @@ export const ContainerSummary = t.type({
   NetworkSettings: t.union([
     t.undefined,
     t.type({
-      Networks: t.union([t.undefined, t.unknown]),
+      Networks: t.union([t.undefined, t.record(t.string, t.unknown)]),
     }),
   ]),
   Mounts: t.union([t.undefined, t.array(MountPoint)]),
@@ -1409,13 +1409,13 @@ export const ContainerSummary = t.type({
 export type Driver = t.TypeOf<typeof Driver>;
 export const Driver = t.type({
   Name: t.string,
-  Options: t.union([t.undefined, t.union([t.unknown, t.undefined])]),
+  Options: t.union([t.undefined, t.union([t.record(t.string, t.string), t.undefined])]),
 });
 
 export type SecretSpec = t.TypeOf<typeof SecretSpec>;
 export const SecretSpec = t.type({
   Name: t.union([t.undefined, t.string]),
-  Labels: t.union([t.undefined, t.unknown]),
+  Labels: t.union([t.undefined, t.record(t.string, t.string)]),
   Data: t.union([t.undefined, t.string]),
   Driver: t.union([t.undefined, Driver]),
   Templating: t.union([t.undefined, Driver]),
@@ -1433,7 +1433,7 @@ export const Secret = t.type({
 export type ConfigSpec = t.TypeOf<typeof ConfigSpec>;
 export const ConfigSpec = t.type({
   Name: t.union([t.undefined, t.string]),
-  Labels: t.union([t.undefined, t.unknown]),
+  Labels: t.union([t.undefined, t.record(t.string, t.string)]),
   Data: t.union([t.undefined, t.string]),
   Templating: t.union([t.undefined, Driver]),
 });
@@ -1549,7 +1549,7 @@ export const RegistryServiceConfig = t.union([
     AllowNondistributableArtifactsCIDRs: t.union([t.undefined, t.array(t.string)]),
     AllowNondistributableArtifactsHostnames: t.union([t.undefined, t.array(t.string)]),
     InsecureRegistryCIDRs: t.union([t.undefined, t.array(t.string)]),
-    IndexConfigs: t.union([t.undefined, t.unknown]),
+    IndexConfigs: t.union([t.undefined, t.record(t.string, t.unknown)]),
     Mirrors: t.union([t.undefined, t.array(t.string)]),
   }),
   t.null,
@@ -1645,7 +1645,7 @@ export const SystemInfo = t.type({
   Labels: t.union([t.undefined, t.array(t.string)]),
   ExperimentalBuild: t.union([t.undefined, t.boolean]),
   ServerVersion: t.union([t.undefined, t.string]),
-  Runtimes: t.union([t.undefined, t.unknown]),
+  Runtimes: t.union([t.undefined, t.record(t.string, t.unknown)]),
   DefaultRuntime: t.union([t.undefined, t.string]),
   Swarm: t.union([t.undefined, SwarmInfo]),
   LiveRestoreEnabled: t.union([t.undefined, t.boolean]),
@@ -1671,7 +1671,7 @@ export const SystemInfo = t.type({
 export type EventActor = t.TypeOf<typeof EventActor>;
 export const EventActor = t.type({
   ID: t.union([t.undefined, t.string]),
-  Attributes: t.union([t.undefined, t.unknown]),
+  Attributes: t.union([t.undefined, t.record(t.string, t.string)]),
 });
 
 export type EventMessage = t.TypeOf<typeof EventMessage>;
@@ -1884,7 +1884,7 @@ export const get_ContainerStats = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
+  response: t.record(t.string, t.unknown),
 });
 
 export type post_ContainerResize = t.TypeOf<typeof post_ContainerResize>;
@@ -2779,8 +2779,8 @@ export const post_NetworkCreate = t.type({
       Ingress: t.union([t.undefined, t.union([t.boolean, t.undefined])]),
       IPAM: t.union([t.undefined, t.union([IPAM, t.undefined])]),
       EnableIPv6: t.union([t.undefined, t.union([t.boolean, t.undefined])]),
-      Options: t.union([t.undefined, t.union([t.unknown, t.undefined])]),
-      Labels: t.union([t.undefined, t.union([t.unknown, t.undefined])]),
+      Options: t.union([t.undefined, t.union([t.record(t.string, t.string), t.undefined])]),
+      Labels: t.union([t.undefined, t.union([t.record(t.string, t.string), t.undefined])]),
     }),
   }),
   response: t.type({
@@ -3185,7 +3185,7 @@ export const post_ServiceCreate = t.type({
     header: t.type({
       "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
-    body: t.intersection([ServiceSpec, t.unknown]),
+    body: t.intersection([ServiceSpec, t.record(t.string, t.unknown)]),
   }),
   response: t.type({
     ID: t.union([t.undefined, t.string]),
@@ -3239,7 +3239,7 @@ export const post_ServiceUpdate = t.type({
     header: t.type({
       "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
-    body: t.intersection([ServiceSpec, t.unknown]),
+    body: t.intersection([ServiceSpec, t.record(t.string, t.unknown)]),
   }),
   response: ServiceUpdateResponse,
 });
@@ -3333,7 +3333,7 @@ export const post_SecretCreate = t.type({
   path: t.literal("/secrets/create"),
   requestFormat: t.literal("json"),
   parameters: t.type({
-    body: t.intersection([SecretSpec, t.unknown]),
+    body: t.intersection([SecretSpec, t.record(t.string, t.unknown)]),
   }),
   response: IdResponse,
 });
@@ -3400,7 +3400,7 @@ export const post_ConfigCreate = t.type({
   path: t.literal("/configs/create"),
   requestFormat: t.literal("json"),
   parameters: t.type({
-    body: t.intersection([ConfigSpec, t.unknown]),
+    body: t.intersection([ConfigSpec, t.record(t.string, t.unknown)]),
   }),
   response: IdResponse,
 });

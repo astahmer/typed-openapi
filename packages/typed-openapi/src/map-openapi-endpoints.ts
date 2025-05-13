@@ -1,13 +1,13 @@
 import type { OpenAPIObject, ResponseObject } from "openapi3-ts/oas31";
 import { OperationObject, ParameterObject } from "openapi3-ts/oas31";
 import { capitalize, pick } from "pastable/server";
-import { Box } from "./box";
-import { createBoxFactory } from "./box-factory";
-import { openApiSchemaToTs } from "./openapi-schema-to-ts";
-import { createRefResolver } from "./ref-resolver";
-import { tsFactory } from "./ts-factory";
-import { AnyBox, BoxRef, OpenapiSchemaConvertContext } from "./types";
-import { pathToVariableName } from "./string-utils";
+import { Box } from "./box.ts";
+import { createBoxFactory } from "./box-factory.ts";
+import { openApiSchemaToTs } from "./openapi-schema-to-ts.ts";
+import { createRefResolver } from "./ref-resolver.ts";
+import { tsFactory } from "./ts-factory.ts";
+import { AnyBox, BoxRef, OpenapiSchemaConvertContext } from "./types.ts";
+import { pathToVariableName } from "./string-utils.ts";
 import { match, P } from "ts-pattern";
 
 const factory = tsFactory;
@@ -112,7 +112,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
                 }
               }
             }
-          }  
+          }
         }
 
         // No need to pass empty objects, it's confusing
@@ -121,13 +121,13 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
 
       // Match the first 2xx-3xx response found, or fallback to default one otherwise
       let responseObject: ResponseObject | undefined;
-      Object.entries(operation.responses).map(([status, responseOrRef]) => {
+      Object.entries(operation.responses ?? {}).map(([status, responseOrRef]) => {
         const statusCode = Number(status);
         if (statusCode >= 200 && statusCode < 300) {
           responseObject = refs.unwrap<ResponseObject>(responseOrRef);
         }
       });
-      if (!responseObject && operation.responses.default) {
+      if (!responseObject && operation.responses?.default) {
         responseObject = refs.unwrap(operation.responses.default);
       }
 

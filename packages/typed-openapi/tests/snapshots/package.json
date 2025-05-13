@@ -1,11 +1,11 @@
 {
   "private": true,
   "dependencies": {
-    "@sinclair/typebox": "^0.32.35",
-    "arktype": "2.0.0-beta.2",
-    "io-ts": "^2.2.21",
-    "valibot": "^0.37.0",
-    "yup": "^1.4.0",
-    "zod": "^3.23.8"
+    "@sinclair/typebox": "^0.34.33",
+    "arktype": "2.1.20",
+    "io-ts": "^2.2.22",
+    "valibot": "^1.1.0",
+    "yup": "^1.6.1",
+    "zod": "^3.24.4"
   }
 }

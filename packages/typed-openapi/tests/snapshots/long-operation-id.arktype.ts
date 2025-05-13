@@ -1,26 +1,26 @@
-import { scope } from "arktype";
+import { scope, type } from "arktype";
 
 export const types = scope({
-  __ENDPOINTS_START__: {},
-  get_Get_users: {
+  __ENDPOINTS_START__: type({}),
+  get_Get_users: type({
     method: '"GET"',
     path: '"/users"',
     requestFormat: '"json"',
     parameters: "never",
     response: "string[]",
-  },
-  post_Very_very_very_very_very_very_very_very_very_very_long: {
+  }),
+  post_Very_very_very_very_very_very_very_very_very_very_long: type({
     method: '"POST"',
     path: '"/users"',
     requestFormat: '"json"',
-    parameters: {
-      body: {
+    parameters: type({
+      body: type({
         "username?": "string",
-      },
-    },
+      }),
+    }),
     response: "unknown",
-  },
-  __ENDPOINTS_END__: {},
+  }),
+  __ENDPOINTS_END__: type({}),
 }).export();
 
 export type __ENDPOINTS_START__ = typeof __ENDPOINTS_START__.infer;

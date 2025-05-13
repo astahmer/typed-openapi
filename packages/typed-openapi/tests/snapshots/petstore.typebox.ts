@@ -212,7 +212,7 @@ export const get_GetInventory = Type.Object({
   path: Type.Literal("/store/inventory"),
   requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
-  response: Type.Unknown(),
+  response: Type.Record(Type.String(), Type.Number()),
 });
 
 export type post_PlaceOrder = Static<typeof post_PlaceOrder>;

@@ -1,6 +1,6 @@
-import type { ReferenceObject, SchemaObject } from "openapi3-ts/oas31";
-import { Box } from "./box";
-import { AnyBoxDef, BoxFactory, OpenapiSchemaConvertContext, StringOrBox } from "./types";
+import type { ReferenceObject } from "openapi3-ts/oas31";
+import { Box } from "./box.ts";
+import { AnyBoxDef, BoxFactory, OpenapiSchemaConvertContext, StringOrBox, type LibSchemaObject } from "./types.ts";
 
 export const unwrap = (param: StringOrBox) => (typeof param === "string" ? param : param.value);
 export const createFactory = <T extends OpenapiSchemaConvertContext["factory"]>(f: T) => f;
@@ -8,7 +8,7 @@ export const createFactory = <T extends OpenapiSchemaConvertContext["factory"]>(
 /**
  * Create a box-factory using your schema provider and automatically add the input schema to each box.
  */
-export const createBoxFactory = (schema: SchemaObject | ReferenceObject, ctx: OpenapiSchemaConvertContext) => {
+export const createBoxFactory = (schema: LibSchemaObject | ReferenceObject, ctx: OpenapiSchemaConvertContext) => {
   const f = typeof ctx.factory === "function" ? ctx.factory(schema, ctx) : ctx.factory;
   const callback = <T extends AnyBoxDef>(box: Box<T>) => {
     if (f.callback) {

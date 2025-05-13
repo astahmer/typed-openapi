@@ -20,12 +20,14 @@ declare class ValidationError extends Error {
     value: any;
     path?: string;
     type?: string;
-    errors: string[];
     params?: Params;
+    errors: string[];
     inner: ValidationError[];
     static formatError(message: string | ((params: Params) => string) | unknown, params: Params): any;
     static isError(err: any): err is ValidationError;
-    constructor(errorOrErrors: string | ValidationError | readonly ValidationError[], value?: any, field?: string, type?: string);
+    constructor(errorOrErrors: string | ValidationError | readonly ValidationError[], value?: any, field?: string, type?: string, disableStack?: boolean);
+    static [Symbol.hasInstance](inst: any): boolean;
+    [Symbol.toStringTag]: string;
 }
 
 type PanicCallback = (err: Error) => void;
@@ -35,6 +37,7 @@ type CreateErrorOptions = {
     message?: Message<any>;
     params?: ExtraParams;
     type?: string;
+    disableStackTrace?: boolean;
 };
 type TestContext<TContext = {}> = {
     path: string;
@@ -85,9 +88,13 @@ type SchemaSpec<TDefault> = {
     strip?: boolean;
     strict?: boolean;
     recursive?: boolean;
+    disableStackTrace?: boolean;
     label?: string | undefined;
-    meta?: any;
+    meta?: SchemaMetadata;
 };
+interface CustomSchemaMetadata {
+}
+type SchemaMetadata = keyof CustomSchemaMetadata extends never ? Record<PropertyKey, any> : CustomSchemaMetadata;
 type SchemaOptions<TType, TDefault> = {
     type: string;
     spec?: Partial<SchemaSpec<TDefault>>;
@@ -132,13 +139,13 @@ interface SchemaObjectDescription extends SchemaDescription {
 interface SchemaLazyDescription {
     type: string;
     label?: string;
-    meta: object | undefined;
+    meta?: SchemaMetadata;
 }
 type SchemaFieldDescription = SchemaDescription | SchemaRefDescription | SchemaObjectDescription | SchemaInnerTypeDescription | SchemaLazyDescription;
 interface SchemaDescription {
     type: string;
     label?: string;
-    meta: object | undefined;
+    meta?: SchemaMetadata;
     oneOf: unknown[];
     notOneOf: unknown[];
     default?: unknown;
@@ -171,8 +178,8 @@ declare abstract class Schema<TType = any, TContext = any, TDefault = any, TFlag
     get _type(): string;
     clone(spec?: Partial<SchemaSpec<any>>): this;
     label(label: string): this;
-    meta(): Record<string, unknown> | undefined;
-    meta(obj: Record<string, unknown>): this;
+    meta(): SchemaMetadata | undefined;
+    meta(obj: SchemaMetadata): this;
     withMutation<T>(fn: (schema: this) => T): T;
     concat(schema: this): this;
     concat(schema: AnySchema): AnySchema;
@@ -367,6 +374,10 @@ interface ValidateOptions<TContext = {}> {
      */
     recursive?: boolean;
     /**
+     * When true ValidationError instance won't include stack trace information. Default - false
+     */
+    disableStackTrace?: boolean;
+    /**
      * Any context needed for validating schema conditions (see: when())
      */
     context?: TContext;
@@ -385,12 +396,14 @@ interface MessageParams {
     path: string;
     value: any;
     originalValue: any;
+    originalPath: string;
     label: string;
     type: string;
     spec: SchemaSpec<any> & Record<string, unknown>;
 }
 type Message<Extra extends Record<string, unknown> = any> = string | ((params: Extra & MessageParams) => unknown) | Record<PropertyKey, unknown>;
 type ExtraParams = Record<string, unknown>;
+type AnyMessageParams = MessageParams & ExtraParams;
 interface NestedTestConfig {
     options: InternalOptions<any>;
     parent: any;
@@ -423,7 +436,7 @@ interface MixedSchema<TType extends Maybe<AnyPresentValue> = AnyPresentValue | u
     required(msg?: Message): MixedSchema<NonNullable<TType>, TContext, TDefault, TFlags>;
     notRequired(): MixedSchema<Maybe<TType>, TContext, TDefault, TFlags>;
     nullable(msg?: Message): MixedSchema<TType | null, TContext, TDefault, TFlags>;
-    nonNullable(): MixedSchema<Exclude<TType, null>, TContext, TDefault, TFlags>;
+    nonNullable(msg?: Message): MixedSchema<Exclude<TType, null>, TContext, TDefault, TFlags>;
     strip(enabled: false): MixedSchema<TType, TContext, TDefault, UnsetFlag<TFlags, 's'>>;
     strip(enabled?: true): MixedSchema<TType, TContext, TDefault, SetFlag<TFlags, 's'>>;
 }
@@ -483,6 +496,11 @@ interface StringLocale {
     uuid?: Message<{
         regex: RegExp;
     }>;
+    datetime?: Message;
+    datetime_offset?: Message;
+    datetime_precision?: Message<{
+        precision: number;
+    }>;
     trim?: Message;
     lowercase?: Message;
     uppercase?: Message;
@@ -517,7 +535,12 @@ interface DateLocale {
     }>;
 }
 interface ObjectLocale {
-    noUnknown?: Message;
+    noUnknown?: Message<{
+        unknown: string[];
+    }>;
+    exact?: Message<{
+        properties: string[];
+    }>;
 }
 interface ArrayLocale {
     length?: Message<{
@@ -530,6 +553,9 @@ interface ArrayLocale {
         max: number;
     }>;
 }
+interface TupleLocale {
+    notType?: Message;
+}
 interface BooleanLocale {
     isValue?: Message;
 }
@@ -541,6 +567,7 @@ interface LocaleObject {
     boolean?: BooleanLocale;
     object?: ObjectLocale;
     array?: ArrayLocale;
+    tuple?: TupleLocale;
 }
 declare const _default: LocaleObject;
 
@@ -550,6 +577,16 @@ type MatchOptions = {
         regex: RegExp;
     }>;
     name?: string;
+};
+type DateTimeOptions = {
+    message: Message<{
+        allowOffset?: boolean;
+        precision?: number;
+    }>;
+    /** Allow a time zone offset. False requires UTC 'Z' timezone. (default: false) */
+    allowOffset?: boolean;
+    /** Require a certain sub-second precision on the date. (default: undefined -- any or no sub-second precision) */
+    precision?: number;
 };
 declare function create$6(): StringSchema;
 declare function create$6<T extends string, TContext extends Maybe<AnyObject> = AnyObject>(): StringSchema<T | undefined, TContext>;
@@ -578,6 +615,7 @@ declare class StringSchema<TType extends Maybe<string> = string | undefined, TCo
     uuid(message?: Message<{
         regex: RegExp;
     }>): this;
+    datetime(options?: DateTimeOptions | DateTimeOptions['message']): this;
     ensure(): StringSchema<NonNullable<TType>>;
     trim(message?: Message<any>): this;
     lowercase(message?: Message<any>): this;
@@ -595,8 +633,8 @@ interface StringSchema<TType extends Maybe<string> = string | undefined, TContex
     optional(): StringSchema<TType | undefined, TContext, TDefault, TFlags>;
     required(msg?: Message): StringSchema<NonNullable<TType>, TContext, TDefault, TFlags>;
     notRequired(): StringSchema<Maybe<TType>, TContext, TDefault, TFlags>;
-    nullable(msg?: Message<any>): StringSchema<TType | null, TContext, TDefault, TFlags>;
-    nonNullable(): StringSchema<NotNull<TType>, TContext, TDefault, TFlags>;
+    nullable(msg?: Message): StringSchema<TType | null, TContext, TDefault, TFlags>;
+    nonNullable(msg?: Message): StringSchema<NotNull<TType>, TContext, TDefault, TFlags>;
     strip(enabled: false): StringSchema<TType, TContext, TDefault, UnsetFlag<TFlags, 's'>>;
     strip(enabled?: true): StringSchema<TType, TContext, TDefault, SetFlag<TFlags, 's'>>;
 }
@@ -639,7 +677,7 @@ interface NumberSchema<TType extends Maybe<number> = number | undefined, TContex
     required(msg?: Message): NumberSchema<NonNullable<TType>, TContext, TDefault, TFlags>;
     notRequired(): NumberSchema<Maybe<TType>, TContext, TDefault, TFlags>;
     nullable(msg?: Message): NumberSchema<TType | null, TContext, TDefault, TFlags>;
-    nonNullable(): NumberSchema<NotNull<TType>, TContext, TDefault, TFlags>;
+    nonNullable(msg?: Message): NumberSchema<NotNull<TType>, TContext, TDefault, TFlags>;
     strip(enabled: false): NumberSchema<TType, TContext, TDefault, UnsetFlag<TFlags, 's'>>;
     strip(enabled?: true): NumberSchema<TType, TContext, TDefault, SetFlag<TFlags, 's'>>;
 }
@@ -669,7 +707,7 @@ interface DateSchema<TType extends Maybe<Date>, TContext = AnyObject, TDefault =
     required(msg?: Message): DateSchema<NonNullable<TType>, TContext, TDefault, TFlags>;
     notRequired(): DateSchema<Maybe<TType>, TContext, TDefault, TFlags>;
     nullable(msg?: Message): DateSchema<TType | null, TContext, TDefault, TFlags>;
-    nonNullable(): DateSchema<NotNull<TType>, TContext, TDefault, TFlags>;
+    nonNullable(msg?: Message): DateSchema<NotNull<TType>, TContext, TDefault, TFlags>;
     strip(enabled: false): DateSchema<TType, TContext, TDefault, UnsetFlag<TFlags, 's'>>;
     strip(enabled?: true): DateSchema<TType, TContext, TDefault, SetFlag<TFlags, 's'>>;
 }
@@ -692,7 +730,7 @@ interface ObjectSchema<TIn extends Maybe<AnyObject>, TContext = AnyObject, TDefa
     required(msg?: Message): ObjectSchema<NonNullable<TIn>, TContext, TDefault, TFlags>;
     notRequired(): ObjectSchema<Maybe<TIn>, TContext, TDefault, TFlags>;
     nullable(msg?: Message): ObjectSchema<TIn | null, TContext, TDefault, TFlags>;
-    nonNullable(): ObjectSchema<NotNull<TIn>, TContext, TDefault, TFlags>;
+    nonNullable(msg?: Message): ObjectSchema<NotNull<TIn>, TContext, TDefault, TFlags>;
     strip(enabled: false): ObjectSchema<TIn, TContext, TDefault, UnsetFlag<TFlags, 's'>>;
     strip(enabled?: true): ObjectSchema<TIn, TContext, TDefault, SetFlag<TFlags, 's'>>;
 }
@@ -705,7 +743,7 @@ declare class ObjectSchema<TIn extends Maybe<AnyObject>, TContext = AnyObject, T
     constructor(spec?: Shape<TIn, TContext>);
     protected _cast(_value: any, options?: InternalOptions<TContext>): any;
     protected _validate(_value: any, options: InternalOptions<TContext> | undefined, panic: (err: Error, value: unknown) => void, next: (err: ValidationError[], value: unknown) => void): void;
-    clone(spec?: ObjectSchemaSpec): this;
+    clone(spec?: Partial<ObjectSchemaSpec>): this;
     concat<IIn extends Maybe<AnyObject>, IC, ID, IF extends Flags>(schema: ObjectSchema<IIn, IC, ID, IF>): ObjectSchema<ConcatObjectTypes<TIn, IIn>, TContext & IC, Extract<IF, 'd'> extends never ? TDefault extends AnyObject ? ID extends AnyObject ? _<ConcatObjectTypes<TDefault, ID>> : ID : ID : ID, TFlags | IF>;
     concat(schema: this): this;
     protected _getDefault(options?: ResolveOptions<TContext>): any;
@@ -714,13 +752,20 @@ declare class ObjectSchema<TIn extends Maybe<AnyObject>, TContext = AnyObject, T
     partial(): ObjectSchema<Partial<TIn>, TContext, TDefault, TFlags>;
     deepPartial(): ObjectSchema<PartialDeep<TIn>, TContext, TDefault, TFlags>;
     pick<TKey extends keyof TIn>(keys: readonly TKey[]): ObjectSchema<{ [K in TKey]: TIn[K]; }, TContext, TDefault, TFlags>;
-    omit<TKey extends keyof TIn>(keys: readonly TKey[]): ObjectSchema<Omit<TIn, TKey>, TContext, TDefault, TFlags>;
+    omit<TKey extends keyof TIn>(keys: readonly TKey[]): ObjectSchema<{ [K in Exclude<keyof TIn, TKey>]: TIn[K]; }, TContext, TDefault, TFlags>;
     from(from: string, to: keyof TIn, alias?: boolean): this;
     /** Parse an input JSON string to an object */
     json(): this;
+    /**
+     * Similar to `noUnknown` but only validates that an object is the right shape without stripping the unknown keys
+     */
+    exact(message?: Message): this;
+    stripUnknown(): this;
     noUnknown(message?: Message): this;
     noUnknown(noAllow: boolean, message?: Message): this;
-    unknown(allow?: boolean, message?: Message<any>): this;
+    unknown(allow?: boolean, message?: Message<{
+        unknown: string[];
+    }>): this;
     transformKeys(fn: (key: string) => string): this;
     camelCase(): this;
     snakeCase(): this;
@@ -769,7 +814,7 @@ interface ArraySchema<TIn extends any[] | null | undefined, TContext, TDefault =
     required(msg?: Message): ArraySchema<NonNullable<TIn>, TContext, TDefault, TFlags>;
     notRequired(): ArraySchema<Maybe<TIn>, TContext, TDefault, TFlags>;
     nullable(msg?: Message): ArraySchema<TIn | null, TContext, TDefault, TFlags>;
-    nonNullable(): ArraySchema<NotNull<TIn>, TContext, TDefault, TFlags>;
+    nonNullable(msg?: Message): ArraySchema<NotNull<TIn>, TContext, TDefault, TFlags>;
     strip(enabled: false): ArraySchema<TIn, TContext, TDefault, UnsetFlag<TFlags, 's'>>;
     strip(enabled?: true): ArraySchema<TIn, TContext, TDefault, SetFlag<TFlags, 's'>>;
 }
@@ -794,7 +839,7 @@ interface TupleSchema<TType extends Maybe<AnyTuple> = AnyTuple | undefined, TCon
     required(msg?: Message): TupleSchema<NonNullable<TType>, TContext, TDefault, TFlags>;
     notRequired(): TupleSchema<Maybe<TType>, TContext, TDefault, TFlags>;
     nullable(msg?: Message): TupleSchema<TType | null, TContext, TDefault, TFlags>;
-    nonNullable(): TupleSchema<NotNull<TType>, TContext, TDefault, TFlags>;
+    nonNullable(msg?: Message): TupleSchema<NotNull<TType>, TContext, TDefault, TFlags>;
     strip(enabled: false): TupleSchema<TType, TContext, TDefault, UnsetFlag<TFlags, 's'>>;
     strip(enabled?: true): TupleSchema<TType, TContext, TDefault, SetFlag<TFlags, 's'>>;
 }
@@ -831,7 +876,7 @@ declare class Lazy<T, TContext = AnyObject, TFlags extends Flags = any> implemen
     asNestedTest(config: NestedTestConfig): RunTest;
     validate(value: any, options?: ValidateOptions<TContext>): Promise<T>;
     validateSync(value: any, options?: ValidateOptions<TContext>): T;
-    validateAt(path: string, value: any, options?: ValidateOptions<TContext>): Promise<any>;
+    validateAt(path: string, value: any, options?: ValidateOptions<TContext>): any;
     validateSyncAt(path: string, value: any, options?: ValidateOptions<TContext>): any;
     isValid(value: any, options?: ValidateOptions<TContext>): Promise<boolean>;
     isValidSync(value: any, options?: ValidateOptions<TContext>): boolean;
@@ -854,8 +899,8 @@ declare function printValue(value: any, quoteStrings?: boolean): any;
 declare function setLocale(custom: LocaleObject): void;
 
 declare function addMethod<T extends ISchema<any>>(schemaType: (...arg: any[]) => T, name: string, fn: (this: T, ...args: any[]) => T): void;
-declare function addMethod<T extends new (...args: any) => ISchema<any>>(schemaType: T, name: string, fn: (this: InstanceType<T>, ...args: any[]) => InstanceType<T>): void;
+declare function addMethod<T extends abstract new (...args: any) => ISchema<any>>(schemaType: T, name: string, fn: (this: InstanceType<T>, ...args: any[]) => InstanceType<T>): void;
 type AnyObjectSchema = ObjectSchema<any, any, any, any>;
 type CastOptions = Omit<CastOptions$1, 'path' | 'resolved'>;
 
-export { AnyObject, AnyObjectSchema, AnySchema, ArraySchema, InferType as Asserts, BooleanSchema, CastOptions, CreateErrorOptions, DateSchema, DefaultFromShape, DefaultThunk, Defined, Flags, ISchema, InferType, LocaleObject, MakePartial, Maybe, Message, MixedOptions, MixedSchema, TypeGuard as MixedTypeGuard, NotNull, NumberSchema, ObjectSchema, ObjectShape, Optionals, Schema, SchemaDescription, SchemaFieldDescription, SchemaInnerTypeDescription, SchemaLazyDescription, SchemaObjectDescription, SchemaRefDescription, SetFlag, StringSchema, TestConfig, TestContext, TestFunction, TestOptions, ToggleDefault, TupleSchema, TypeFromShape, UnsetFlag, ValidateOptions, ValidationError, addMethod, create$2 as array, create$7 as bool, create$7 as boolean, create$4 as date, _default as defaultLocale, getIn, isSchema, create as lazy, create$8 as mixed, create$5 as number, create$3 as object, printValue, reach, create$9 as ref, setLocale, create$6 as string, create$1 as tuple };
+export { AnyMessageParams, AnyObject, AnyObjectSchema, AnySchema, ArraySchema, InferType as Asserts, BooleanSchema, CastOptions, CreateErrorOptions, CustomSchemaMetadata, DateSchema, DefaultFromShape, DefaultThunk, Defined, Flags, ISchema, InferType, Lazy, Lazy as LazySchema, LocaleObject, MakePartial, Maybe, Message, MessageParams, MixedOptions, MixedSchema, TypeGuard as MixedTypeGuard, NotNull, NumberSchema, ObjectSchema, ObjectShape, Optionals, Reference, Schema, SchemaDescription, SchemaFieldDescription, SchemaInnerTypeDescription, SchemaLazyDescription, SchemaMetadata, SchemaObjectDescription, SchemaRefDescription, SetFlag, StringSchema, TestConfig, TestContext, TestFunction, TestOptions, ToggleDefault, TupleSchema, TypeFromShape, UnsetFlag, ValidateOptions, ValidationError, addMethod, create$2 as array, create$7 as bool, create$7 as boolean, create$4 as date, _default as defaultLocale, getIn, isSchema, create as lazy, create$8 as mixed, create$5 as number, create$3 as object, printValue, reach, create$9 as ref, setLocale, create$6 as string, create$1 as tuple };
