@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 1.1.2
+
+### Patch Changes
+
+- 4846bc4: fix mutationOptions parameters typings
+
 ## 1.1.1
 
 ### Patch Changes
