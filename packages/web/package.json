@@ -16,7 +16,7 @@
     "@fontsource/inter": "^5.0.5",
     "@monaco-editor/react": "4.5.1",
     "@pandacss/dev": "0.9.0",
-    "@xstate/react": "^3.2.2",
+    "@xstate/react": "3.2.2",
     "lz-string": "^1.5.0",
     "monaco-editor": "0.40.0",
     "pastable": "^2.2.0",
@@ -26,7 +26,7 @@
     "react-resizable-panels": "^0.0.53",
     "ts-patch": "^3.0.2",
     "typed-openapi": "workspace:*",
-    "xstate": "^4.38.1",
+    "xstate": "4.38.1",
     "yaml": "^2.3.1"
   },
   "devDependencies": {
