@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 1.1.1
+
+### Patch Changes
+
+- 73c1ef1: feat: mutationOptions + .mutation (if input is not available before)
+
 ## 1.1.0
 
 ### Minor Changes
