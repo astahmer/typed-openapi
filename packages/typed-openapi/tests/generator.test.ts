@@ -1,13 +1,13 @@
 import { describe, test } from "vitest";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
-import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints";
-import { generateFile } from "../src/generator";
+import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
+import { generateFile } from "../src/generator.ts";
 
 describe("generator", () => {
   test("petstore", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
-    expect(generateFile(mapOpenApiEndpoints(openApiDoc))).toMatchInlineSnapshot(`
+    expect(await generateFile(mapOpenApiEndpoints(openApiDoc))).toMatchInlineSnapshot(`
       "export namespace Schemas {
         // <Schemas>
         export type Order = Partial<{
@@ -381,7 +381,7 @@ describe("generator", () => {
   });
 
   test("nullable string", async ({ expect }) => {
-    expect(generateFile(mapOpenApiEndpoints({
+    expect(await generateFile(mapOpenApiEndpoints({
       "openapi": "3.0.0",
       "info": {
         "version": "1.0.0",

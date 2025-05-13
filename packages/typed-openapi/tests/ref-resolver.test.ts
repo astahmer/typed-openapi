@@ -1,8 +1,8 @@
 import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { describe, test } from "vitest";
-import { createRefResolver } from "../src/ref-resolver";
-import { tsFactory } from "../src/ts-factory";
+import { createRefResolver } from "../src/ref-resolver.ts";
+import { tsFactory } from "../src/ts-factory.ts";
 
 describe("generator", () => {
   test("petstore", async ({ expect }) => {

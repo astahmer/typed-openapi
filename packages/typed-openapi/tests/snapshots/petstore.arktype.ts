@@ -1,30 +1,30 @@
-import { scope } from "arktype";
+import { scope, type } from "arktype";
 
 export const types = scope({
-  Order: {
+  Order: type({
     "id?": "number",
     "petId?": "number",
     "quantity?": "number",
     "shipDate?": "string",
     "status?": '"placed" | "approved" | "delivered"',
     "complete?": "boolean",
-  },
-  Address: {
+  }),
+  Address: type({
     "street?": "string",
     "city?": "string",
     "state?": "string",
     "zip?": "string",
-  },
-  Customer: {
+  }),
+  Customer: type({
     "id?": "number",
     "username?": "string",
     "address?": "Address[]",
-  },
-  Category: {
+  }),
+  Category: type({
     "id?": "number",
     "name?": "string",
-  },
-  User: {
+  }),
+  User: type({
     "id?": "number",
     "username?": "string",
     "firstName?": "string",
@@ -33,230 +33,230 @@ export const types = scope({
     "password?": "string",
     "phone?": "string",
     "userStatus?": "number",
-  },
-  Tag: {
+  }),
+  Tag: type({
     "id?": "number",
     "name?": "string",
-  },
-  Pet: {
+  }),
+  Pet: type({
     "id?": "number | undefined",
     name: "string",
     "category?": "Category | undefined",
     photoUrls: "string[]",
     "tags?": "Tag[] | undefined",
     "status?": '"available" | "pending" | "sold" | undefined',
-  },
-  ApiResponse: {
+  }),
+  ApiResponse: type({
     "code?": "number",
     "type?": "string",
     "message?": "string",
-  },
-  __ENDPOINTS_START__: {},
-  put_UpdatePet: {
+  }),
+  __ENDPOINTS_START__: type({}),
+  put_UpdatePet: type({
     method: '"PUT"',
     path: '"/pet"',
     requestFormat: '"json"',
-    parameters: {
+    parameters: type({
       body: "Pet",
-    },
+    }),
     response: "Pet",
-  },
-  post_AddPet: {
+  }),
+  post_AddPet: type({
     method: '"POST"',
     path: '"/pet"',
     requestFormat: '"json"',
-    parameters: {
+    parameters: type({
       body: "Pet",
-    },
+    }),
     response: "Pet",
-  },
-  get_FindPetsByStatus: {
+  }),
+  get_FindPetsByStatus: type({
     method: '"GET"',
     path: '"/pet/findByStatus"',
     requestFormat: '"json"',
-    parameters: {
-      query: {
+    parameters: type({
+      query: type({
         "status?": '"available" | "pending" | "sold"',
-      },
-    },
+      }),
+    }),
     response: "Pet[]",
-  },
-  get_FindPetsByTags: {
+  }),
+  get_FindPetsByTags: type({
     method: '"GET"',
     path: '"/pet/findByTags"',
     requestFormat: '"json"',
-    parameters: {
-      query: {
+    parameters: type({
+      query: type({
         "tags?": "string[]",
-      },
-    },
+      }),
+    }),
     response: "Pet[]",
-  },
-  get_GetPetById: {
+  }),
+  get_GetPetById: type({
     method: '"GET"',
     path: '"/pet/{petId}"',
     requestFormat: '"json"',
-    parameters: {
-      path: {
+    parameters: type({
+      path: type({
         petId: "number",
-      },
-    },
+      }),
+    }),
     response: "Pet",
-  },
-  post_UpdatePetWithForm: {
+  }),
+  post_UpdatePetWithForm: type({
     method: '"POST"',
     path: '"/pet/{petId}"',
     requestFormat: '"json"',
-    parameters: {
-      query: {
+    parameters: type({
+      query: type({
         "name?": "string",
         "status?": "string",
-      },
-      path: {
+      }),
+      path: type({
         petId: "number",
-      },
-    },
+      }),
+    }),
     response: "unknown",
-  },
-  delete_DeletePet: {
+  }),
+  delete_DeletePet: type({
     method: '"DELETE"',
     path: '"/pet/{petId}"',
     requestFormat: '"json"',
-    parameters: {
-      path: {
+    parameters: type({
+      path: type({
         petId: "number",
-      },
-      header: {
+      }),
+      header: type({
         "api_key?": "string",
-      },
-    },
+      }),
+    }),
     response: "unknown",
-  },
-  post_UploadFile: {
+  }),
+  post_UploadFile: type({
     method: '"POST"',
     path: '"/pet/{petId}/uploadImage"',
     requestFormat: '"binary"',
-    parameters: {
-      query: {
+    parameters: type({
+      query: type({
         "additionalMetadata?": "string",
-      },
-      path: {
+      }),
+      path: type({
         petId: "number",
-      },
+      }),
       body: "string",
-    },
+    }),
     response: "ApiResponse",
-  },
-  get_GetInventory: {
+  }),
+  get_GetInventory: type({
     method: '"GET"',
     path: '"/store/inventory"',
     requestFormat: '"json"',
     parameters: "never",
     response: "never",
-  },
-  post_PlaceOrder: {
+  }),
+  post_PlaceOrder: type({
     method: '"POST"',
     path: '"/store/order"',
     requestFormat: '"json"',
-    parameters: {
+    parameters: type({
       body: "Order",
-    },
+    }),
     response: "Order",
-  },
-  get_GetOrderById: {
+  }),
+  get_GetOrderById: type({
     method: '"GET"',
     path: '"/store/order/{orderId}"',
     requestFormat: '"json"',
-    parameters: {
-      path: {
+    parameters: type({
+      path: type({
         orderId: "number",
-      },
-    },
+      }),
+    }),
     response: "Order",
-  },
-  delete_DeleteOrder: {
+  }),
+  delete_DeleteOrder: type({
     method: '"DELETE"',
     path: '"/store/order/{orderId}"',
     requestFormat: '"json"',
-    parameters: {
-      path: {
+    parameters: type({
+      path: type({
         orderId: "number",
-      },
-    },
+      }),
+    }),
     response: "unknown",
-  },
-  post_CreateUser: {
+  }),
+  post_CreateUser: type({
     method: '"POST"',
     path: '"/user"',
     requestFormat: '"json"',
-    parameters: {
+    parameters: type({
       body: "User",
-    },
+    }),
     response: "User",
-  },
-  post_CreateUsersWithListInput: {
+  }),
+  post_CreateUsersWithListInput: type({
     method: '"POST"',
     path: '"/user/createWithList"',
     requestFormat: '"json"',
-    parameters: {
+    parameters: type({
       body: "User[]",
-    },
+    }),
     response: "User",
-  },
-  get_LoginUser: {
+  }),
+  get_LoginUser: type({
     method: '"GET"',
     path: '"/user/login"',
     requestFormat: '"json"',
-    parameters: {
-      query: {
+    parameters: type({
+      query: type({
         "username?": "string",
         "password?": "string",
-      },
-    },
+      }),
+    }),
     response: "string",
-  },
-  get_LogoutUser: {
+  }),
+  get_LogoutUser: type({
     method: '"GET"',
     path: '"/user/logout"',
     requestFormat: '"json"',
     parameters: "never",
     response: "unknown",
-  },
-  get_GetUserByName: {
+  }),
+  get_GetUserByName: type({
     method: '"GET"',
     path: '"/user/{username}"',
     requestFormat: '"json"',
-    parameters: {
-      path: {
+    parameters: type({
+      path: type({
         username: "string",
-      },
-    },
+      }),
+    }),
     response: "User",
-  },
-  put_UpdateUser: {
+  }),
+  put_UpdateUser: type({
     method: '"PUT"',
     path: '"/user/{username}"',
     requestFormat: '"json"',
-    parameters: {
-      path: {
+    parameters: type({
+      path: type({
         username: "string",
-      },
+      }),
       body: "User",
-    },
+    }),
     response: "unknown",
-  },
-  delete_DeleteUser: {
+  }),
+  delete_DeleteUser: type({
     method: '"DELETE"',
     path: '"/user/{username}"',
     requestFormat: '"json"',
-    parameters: {
-      path: {
+    parameters: type({
+      path: type({
         username: "string",
-      },
-    },
+      }),
+    }),
     response: "unknown",
-  },
-  __ENDPOINTS_END__: {},
+  }),
+  __ENDPOINTS_END__: type({}),
 }).export();
 
 export type Order = typeof Order.infer;

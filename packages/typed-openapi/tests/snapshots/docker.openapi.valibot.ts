@@ -2,9 +2,9 @@ import * as v from "valibot";
 
 export type Port = v.InferOutput<typeof Port>;
 export const Port = v.object({
-  IP: v.optional(v.union([v.string(), v.undefined_()])),
+  IP: v.optional(v.union([v.string(), v.undefined()])),
   PrivatePort: v.number(),
-  PublicPort: v.optional(v.union([v.number(), v.undefined_()])),
+  PublicPort: v.optional(v.union([v.number(), v.undefined()])),
   Type: v.union([v.literal("tcp"), v.literal("udp"), v.literal("sctp")]),
 });
 
@@ -136,8 +136,8 @@ export const Resources = v.object({
   MemorySwappiness: v.optional(v.number()),
   NanoCpus: v.optional(v.number()),
   OomKillDisable: v.optional(v.boolean()),
-  Init: v.optional(v.union([v.boolean(), v.null_()])),
-  PidsLimit: v.optional(v.union([v.number(), v.null_()])),
+  Init: v.optional(v.union([v.boolean(), v.null()])),
+  PidsLimit: v.optional(v.union([v.number(), v.null()])),
   Ulimits: v.optional(
     v.array(
       v.object({
@@ -202,7 +202,7 @@ export const HealthcheckResult = v.union([
     ExitCode: v.optional(v.number()),
     Output: v.optional(v.string()),
   }),
-  v.null_(),
+  v.null(),
 ]);
 
 export type Health = v.InferOutput<typeof Health>;
@@ -214,7 +214,7 @@ export const Health = v.union([
     FailingStreak: v.optional(v.number()),
     Log: v.optional(v.array(HealthcheckResult)),
   }),
-  v.null_(),
+  v.null(),
 ]);
 
 export type PortBinding = v.InferOutput<typeof PortBinding>;
@@ -224,7 +224,7 @@ export const PortBinding = v.object({
 });
 
 export type PortMap = v.InferOutput<typeof PortMap>;
-export const PortMap = v.record(v.string(), v.union([v.array(PortBinding), v.null_()]));
+export const PortMap = v.record(v.string(), v.union([v.array(PortBinding), v.null()]));
 
 export type HostConfig = v.InferOutput<typeof HostConfig>;
 export const HostConfig = v.intersect([
@@ -257,7 +257,7 @@ export const HostConfig = v.intersect([
     VolumeDriver: v.optional(v.string()),
     VolumesFrom: v.optional(v.array(v.string())),
     Mounts: v.optional(v.array(Mount)),
-    ConsoleSize: v.optional(v.union([v.array(v.number()), v.null_()])),
+    ConsoleSize: v.optional(v.union([v.array(v.number()), v.null()])),
     Annotations: v.optional(v.record(v.string(), v.string())),
     CapAdd: v.optional(v.array(v.string())),
     CapDrop: v.optional(v.array(v.string())),
@@ -297,25 +297,25 @@ export const ContainerConfig = v.object({
   AttachStdin: v.optional(v.boolean()),
   AttachStdout: v.optional(v.boolean()),
   AttachStderr: v.optional(v.boolean()),
-  ExposedPorts: v.optional(v.union([v.record(v.string(), v.object({})), v.null_()])),
+  ExposedPorts: v.optional(v.union([v.record(v.string(), v.object({})), v.null()])),
   Tty: v.optional(v.boolean()),
   OpenStdin: v.optional(v.boolean()),
   StdinOnce: v.optional(v.boolean()),
   Env: v.optional(v.array(v.string())),
   Cmd: v.optional(v.array(v.string())),
   Healthcheck: v.optional(HealthConfig),
-  ArgsEscaped: v.optional(v.union([v.boolean(), v.null_()])),
+  ArgsEscaped: v.optional(v.union([v.boolean(), v.null()])),
   Image: v.optional(v.string()),
   Volumes: v.optional(v.record(v.string(), v.object({}))),
   WorkingDir: v.optional(v.string()),
   Entrypoint: v.optional(v.array(v.string())),
-  NetworkDisabled: v.optional(v.union([v.boolean(), v.null_()])),
-  MacAddress: v.optional(v.union([v.string(), v.null_()])),
-  OnBuild: v.optional(v.union([v.array(v.string()), v.null_()])),
+  NetworkDisabled: v.optional(v.union([v.boolean(), v.null()])),
+  MacAddress: v.optional(v.union([v.string(), v.null()])),
+  OnBuild: v.optional(v.union([v.array(v.string()), v.null()])),
   Labels: v.optional(v.record(v.string(), v.string())),
-  StopSignal: v.optional(v.union([v.string(), v.null_()])),
-  StopTimeout: v.optional(v.union([v.number(), v.null_()])),
-  Shell: v.optional(v.union([v.array(v.string()), v.null_()])),
+  StopSignal: v.optional(v.union([v.string(), v.null()])),
+  StopTimeout: v.optional(v.union([v.number(), v.null()])),
+  Shell: v.optional(v.union([v.array(v.string()), v.null()])),
 });
 
 export type EndpointIPAMConfig = v.InferOutput<typeof EndpointIPAMConfig>;
@@ -325,7 +325,7 @@ export const EndpointIPAMConfig = v.union([
     IPv6Address: v.optional(v.string()),
     LinkLocalIPs: v.optional(v.array(v.string())),
   }),
-  v.null_(),
+  v.null(),
 ]);
 
 export type EndpointSettings = v.InferOutput<typeof EndpointSettings>;
@@ -342,7 +342,7 @@ export const EndpointSettings = v.object({
   GlobalIPv6Address: v.optional(v.string()),
   GlobalIPv6PrefixLen: v.optional(v.number()),
   MacAddress: v.optional(v.string()),
-  DriverOpts: v.optional(v.union([v.record(v.string(), v.string()), v.null_()])),
+  DriverOpts: v.optional(v.union([v.record(v.string(), v.string()), v.null()])),
 });
 
 export type NetworkingConfig = v.InferOutput<typeof NetworkingConfig>;
@@ -365,8 +365,8 @@ export const NetworkSettings = v.object({
   LinkLocalIPv6PrefixLen: v.optional(v.number()),
   Ports: v.optional(PortMap),
   SandboxKey: v.optional(v.string()),
-  SecondaryIPAddresses: v.optional(v.union([v.array(Address), v.null_()])),
-  SecondaryIPv6Addresses: v.optional(v.union([v.array(Address), v.null_()])),
+  SecondaryIPAddresses: v.optional(v.union([v.array(Address), v.null()])),
+  SecondaryIPv6Addresses: v.optional(v.union([v.array(Address), v.null()])),
   EndpointID: v.optional(v.string()),
   Gateway: v.optional(v.string()),
   GlobalIPv6Address: v.optional(v.string()),
@@ -407,21 +407,21 @@ export const ImageInspect = v.object({
   Author: v.optional(v.string()),
   Config: v.optional(ContainerConfig),
   Architecture: v.optional(v.string()),
-  Variant: v.optional(v.union([v.string(), v.null_()])),
+  Variant: v.optional(v.union([v.string(), v.null()])),
   Os: v.optional(v.string()),
-  OsVersion: v.optional(v.union([v.string(), v.null_()])),
+  OsVersion: v.optional(v.union([v.string(), v.null()])),
   Size: v.optional(v.number()),
   VirtualSize: v.optional(v.number()),
   GraphDriver: v.optional(GraphDriverData),
   RootFS: v.optional(
     v.object({
       Type: v.string(),
-      Layers: v.optional(v.union([v.array(v.string()), v.undefined_()])),
+      Layers: v.optional(v.union([v.array(v.string()), v.undefined()])),
     }),
   ),
   Metadata: v.optional(
     v.object({
-      LastTagTime: v.optional(v.union([v.string(), v.null_()])),
+      LastTagTime: v.optional(v.union([v.string(), v.null()])),
     }),
   ),
 });
@@ -435,7 +435,7 @@ export const ImageSummary = v.object({
   Created: v.number(),
   Size: v.number(),
   SharedSize: v.number(),
-  VirtualSize: v.optional(v.union([v.number(), v.undefined_()])),
+  VirtualSize: v.optional(v.union([v.number(), v.undefined()])),
   Labels: v.record(v.string(), v.string()),
   Containers: v.number(),
 });
@@ -538,11 +538,11 @@ export const Volume = v.object({
   Name: v.string(),
   Driver: v.string(),
   Mountpoint: v.string(),
-  CreatedAt: v.optional(v.union([v.string(), v.undefined_()])),
-  Status: v.optional(v.union([v.record(v.string(), v.object({})), v.undefined_()])),
+  CreatedAt: v.optional(v.union([v.string(), v.undefined()])),
+  Status: v.optional(v.union([v.record(v.string(), v.object({})), v.undefined()])),
   Labels: v.record(v.string(), v.string()),
   Scope: v.union([v.literal("local"), v.literal("global")]),
-  ClusterVolume: v.optional(v.union([ClusterVolume, v.undefined_()])),
+  ClusterVolume: v.optional(v.union([ClusterVolume, v.undefined()])),
   Options: v.record(v.string(), v.string()),
   UsageData: v.optional(
     v.union([
@@ -550,8 +550,8 @@ export const Volume = v.object({
         Size: v.number(),
         RefCount: v.number(),
       }),
-      v.null_(),
-      v.undefined_(),
+      v.null(),
+      v.undefined(),
     ]),
   ),
 });
@@ -644,8 +644,8 @@ export const BuildInfo = v.object({
 export type BuildCache = v.InferOutput<typeof BuildCache>;
 export const BuildCache = v.object({
   ID: v.optional(v.string()),
-  Parent: v.optional(v.union([v.string(), v.null_()])),
-  Parents: v.optional(v.union([v.array(v.string()), v.null_()])),
+  Parent: v.optional(v.union([v.string(), v.null()])),
+  Parents: v.optional(v.union([v.array(v.string()), v.null()])),
   Type: v.optional(
     v.union([
       v.literal("internal"),
@@ -661,7 +661,7 @@ export const BuildCache = v.object({
   Shared: v.optional(v.boolean()),
   Size: v.optional(v.number()),
   CreatedAt: v.optional(v.string()),
-  LastUsedAt: v.optional(v.union([v.string(), v.null_()])),
+  LastUsedAt: v.optional(v.union([v.string(), v.null()])),
   UsageCount: v.optional(v.number()),
 });
 
@@ -736,7 +736,7 @@ export const PluginPrivilege = v.object({
 
 export type Plugin = v.InferOutput<typeof Plugin>;
 export const Plugin = v.object({
-  Id: v.optional(v.union([v.string(), v.undefined_()])),
+  Id: v.optional(v.union([v.string(), v.undefined()])),
   Name: v.string(),
   Enabled: v.boolean(),
   Settings: v.object({
@@ -745,15 +745,15 @@ export const Plugin = v.object({
     Args: v.array(v.string()),
     Devices: v.array(PluginDevice),
   }),
-  PluginReference: v.optional(v.union([v.string(), v.undefined_()])),
+  PluginReference: v.optional(v.union([v.string(), v.undefined()])),
   Config: v.object({
-    DockerVersion: v.optional(v.union([v.string(), v.undefined_()])),
+    DockerVersion: v.optional(v.union([v.string(), v.undefined()])),
     Description: v.string(),
     Documentation: v.string(),
     Interface: v.object({
       Types: v.array(PluginInterfaceType),
       Socket: v.string(),
-      ProtocolScheme: v.optional(v.union([v.literal(""), v.literal("moby.plugins.http/v1"), v.undefined_()])),
+      ProtocolScheme: v.optional(v.union([v.literal(""), v.literal("moby.plugins.http/v1"), v.undefined()])),
     }),
     Entrypoint: v.array(v.string()),
     WorkDir: v.string(),
@@ -763,7 +763,7 @@ export const Plugin = v.object({
           UID: v.optional(v.number()),
           GID: v.optional(v.number()),
         }),
-        v.undefined_(),
+        v.undefined(),
       ]),
     ),
     Network: v.object({
@@ -791,7 +791,7 @@ export const Plugin = v.object({
           type: v.optional(v.string()),
           diff_ids: v.optional(v.array(v.string())),
         }),
-        v.undefined_(),
+        v.undefined(),
       ]),
     ),
   }),
@@ -866,7 +866,7 @@ export const ManagerStatus = v.union([
     Reachability: v.optional(Reachability),
     Addr: v.optional(v.string()),
   }),
-  v.null_(),
+  v.null(),
 ]);
 
 export type Node = v.InferOutput<typeof Node>;
@@ -890,7 +890,7 @@ export const SwarmSpec = v.object({
       v.object({
         TaskHistoryRetentionLimit: v.optional(v.number()),
       }),
-      v.null_(),
+      v.null(),
     ]),
   ),
   Raft: v.optional(
@@ -907,7 +907,7 @@ export const SwarmSpec = v.object({
       v.object({
         HeartbeatPeriod: v.optional(v.number()),
       }),
-      v.null_(),
+      v.null(),
     ]),
   ),
   CAConfig: v.optional(
@@ -928,7 +928,7 @@ export const SwarmSpec = v.object({
         SigningCAKey: v.optional(v.string()),
         ForceRotate: v.optional(v.number()),
       }),
-      v.null_(),
+      v.null(),
     ]),
   ),
   EncryptionConfig: v.optional(
@@ -962,7 +962,7 @@ export const ClusterInfo = v.union([
     DefaultAddrPool: v.optional(v.array(v.string())),
     SubnetSize: v.optional(v.number()),
   }),
-  v.null_(),
+  v.null(),
 ]);
 
 export type JoinTokens = v.InferOutput<typeof JoinTokens>;
@@ -1076,7 +1076,7 @@ export const TaskSpec = v.object({
         ),
       ),
       Isolation: v.optional(v.union([v.literal("default"), v.literal("process"), v.literal("hyperv")])),
-      Init: v.optional(v.union([v.boolean(), v.null_()])),
+      Init: v.optional(v.union([v.boolean(), v.null()])),
       Sysctls: v.optional(v.record(v.string(), v.string())),
       CapabilityAdd: v.optional(v.array(v.string())),
       CapabilityDrop: v.optional(v.array(v.string())),
@@ -1336,7 +1336,7 @@ export const ContainerSummary = v.object({
 export type Driver = v.InferOutput<typeof Driver>;
 export const Driver = v.object({
   Name: v.string(),
-  Options: v.optional(v.union([v.record(v.string(), v.string()), v.undefined_()])),
+  Options: v.optional(v.union([v.record(v.string(), v.string()), v.undefined()])),
 });
 
 export type SecretSpec = v.InferOutput<typeof SecretSpec>;
@@ -1400,7 +1400,7 @@ export const ContainerState = v.union([
     FinishedAt: v.optional(v.string()),
     Health: v.optional(Health),
   }),
-  v.null_(),
+  v.null(),
 ]);
 
 export type ContainerCreateResponse = v.InferOutput<typeof ContainerCreateResponse>;
@@ -1417,7 +1417,7 @@ export const ContainerWaitExitError = v.object({
 export type ContainerWaitResponse = v.InferOutput<typeof ContainerWaitResponse>;
 export const ContainerWaitResponse = v.object({
   StatusCode: v.number(),
-  Error: v.optional(v.union([ContainerWaitExitError, v.undefined_()])),
+  Error: v.optional(v.union([ContainerWaitExitError, v.undefined()])),
 });
 
 export type SystemVersion = v.InferOutput<typeof SystemVersion>;
@@ -1432,7 +1432,7 @@ export const SystemVersion = v.object({
       v.object({
         Name: v.string(),
         Version: v.string(),
-        Details: v.optional(v.union([v.object({}), v.null_(), v.undefined_()])),
+        Details: v.optional(v.union([v.object({}), v.null(), v.undefined()])),
       }),
     ),
   ),
@@ -1464,7 +1464,7 @@ export const IndexInfo = v.union([
     Secure: v.optional(v.boolean()),
     Official: v.optional(v.boolean()),
   }),
-  v.null_(),
+  v.null(),
 ]);
 
 export type RegistryServiceConfig = v.InferOutput<typeof RegistryServiceConfig>;
@@ -1476,13 +1476,13 @@ export const RegistryServiceConfig = v.union([
     IndexConfigs: v.optional(v.record(v.string(), v.unknown())),
     Mirrors: v.optional(v.array(v.string())),
   }),
-  v.null_(),
+  v.null(),
 ]);
 
 export type Runtime = v.InferOutput<typeof Runtime>;
 export const Runtime = v.object({
   path: v.optional(v.string()),
-  runtimeArgs: v.optional(v.union([v.array(v.string()), v.null_()])),
+  runtimeArgs: v.optional(v.union([v.array(v.string()), v.null()])),
 });
 
 export type LocalNodeState = v.InferOutput<typeof LocalNodeState>;
@@ -1508,9 +1508,9 @@ export const SwarmInfo = v.object({
   LocalNodeState: v.optional(LocalNodeState),
   ControlAvailable: v.optional(v.boolean()),
   Error: v.optional(v.string()),
-  RemoteManagers: v.optional(v.union([v.array(PeerNode), v.null_()])),
-  Nodes: v.optional(v.union([v.number(), v.null_()])),
-  Managers: v.optional(v.union([v.number(), v.null_()])),
+  RemoteManagers: v.optional(v.union([v.array(PeerNode), v.null()])),
+  Nodes: v.optional(v.union([v.number(), v.null()])),
+  Managers: v.optional(v.union([v.number(), v.null()])),
   Cluster: v.optional(ClusterInfo),
 });
 
@@ -1714,7 +1714,7 @@ export const get_ContainerInspect = v.object({
     MountLabel: v.optional(v.string()),
     ProcessLabel: v.optional(v.string()),
     AppArmorProfile: v.optional(v.string()),
-    ExecIDs: v.optional(v.union([v.array(v.string()), v.null_()])),
+    ExecIDs: v.optional(v.union([v.array(v.string()), v.null()])),
     HostConfig: v.optional(HostConfig),
     GraphDriver: v.optional(GraphDriverData),
     SizeRw: v.optional(v.number()),
@@ -2055,8 +2055,8 @@ export const put_PutContainerArchive = v.object({
   parameters: v.object({
     query: v.object({
       path: v.string(),
-      noOverwriteDirNonDir: v.union([v.string(), v.undefined_()]),
-      copyUIDGID: v.union([v.string(), v.undefined_()]),
+      noOverwriteDirNonDir: v.union([v.string(), v.undefined()]),
+      copyUIDGID: v.union([v.string(), v.undefined()]),
     }),
     path: v.object({
       id: v.string(),
@@ -2292,8 +2292,8 @@ export const get_ImageSearch = v.object({
   parameters: v.object({
     query: v.object({
       term: v.string(),
-      limit: v.union([v.number(), v.undefined_()]),
-      filters: v.union([v.string(), v.undefined_()]),
+      limit: v.union([v.number(), v.undefined()]),
+      filters: v.union([v.string(), v.undefined()]),
     }),
   }),
   response: v.array(
@@ -2478,7 +2478,7 @@ export const post_ContainerExec = v.object({
       AttachStdin: v.optional(v.boolean()),
       AttachStdout: v.optional(v.boolean()),
       AttachStderr: v.optional(v.boolean()),
-      ConsoleSize: v.optional(v.union([v.array(v.number()), v.null_()])),
+      ConsoleSize: v.optional(v.union([v.array(v.number()), v.null()])),
       DetachKeys: v.optional(v.string()),
       Tty: v.optional(v.boolean()),
       Env: v.optional(v.array(v.string())),
@@ -2503,7 +2503,7 @@ export const post_ExecStart = v.object({
     body: v.object({
       Detach: v.optional(v.boolean()),
       Tty: v.optional(v.boolean()),
-      ConsoleSize: v.optional(v.union([v.array(v.number()), v.null_()])),
+      ConsoleSize: v.optional(v.union([v.array(v.number()), v.null()])),
     }),
   }),
   response: v.unknown(),
@@ -2690,15 +2690,15 @@ export const post_NetworkCreate = v.object({
   parameters: v.object({
     body: v.object({
       Name: v.string(),
-      CheckDuplicate: v.optional(v.union([v.boolean(), v.undefined_()])),
-      Driver: v.optional(v.union([v.string(), v.undefined_()])),
-      Internal: v.optional(v.union([v.boolean(), v.undefined_()])),
-      Attachable: v.optional(v.union([v.boolean(), v.undefined_()])),
-      Ingress: v.optional(v.union([v.boolean(), v.undefined_()])),
-      IPAM: v.optional(v.union([IPAM, v.undefined_()])),
-      EnableIPv6: v.optional(v.union([v.boolean(), v.undefined_()])),
-      Options: v.optional(v.union([v.record(v.string(), v.string()), v.undefined_()])),
-      Labels: v.optional(v.union([v.record(v.string(), v.string()), v.undefined_()])),
+      CheckDuplicate: v.optional(v.union([v.boolean(), v.undefined()])),
+      Driver: v.optional(v.union([v.string(), v.undefined()])),
+      Internal: v.optional(v.union([v.boolean(), v.undefined()])),
+      Attachable: v.optional(v.union([v.boolean(), v.undefined()])),
+      Ingress: v.optional(v.union([v.boolean(), v.undefined()])),
+      IPAM: v.optional(v.union([IPAM, v.undefined()])),
+      EnableIPv6: v.optional(v.union([v.boolean(), v.undefined()])),
+      Options: v.optional(v.union([v.record(v.string(), v.string()), v.undefined()])),
+      Labels: v.optional(v.union([v.record(v.string(), v.string()), v.undefined()])),
     }),
   }),
   response: v.object({
@@ -2790,7 +2790,7 @@ export const post_PluginPull = v.object({
   parameters: v.object({
     query: v.object({
       remote: v.string(),
-      name: v.union([v.string(), v.undefined_()]),
+      name: v.union([v.string(), v.undefined()]),
     }),
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
@@ -3047,9 +3047,9 @@ export const post_SwarmUpdate = v.object({
   parameters: v.object({
     query: v.object({
       version: v.number(),
-      rotateWorkerToken: v.union([v.boolean(), v.undefined_()]),
-      rotateManagerToken: v.union([v.boolean(), v.undefined_()]),
-      rotateManagerUnlockKey: v.union([v.boolean(), v.undefined_()]),
+      rotateWorkerToken: v.union([v.boolean(), v.undefined()]),
+      rotateManagerToken: v.union([v.boolean(), v.undefined()]),
+      rotateManagerUnlockKey: v.union([v.boolean(), v.undefined()]),
     }),
     body: SwarmSpec,
   }),
@@ -3148,8 +3148,8 @@ export const post_ServiceUpdate = v.object({
   parameters: v.object({
     query: v.object({
       version: v.number(),
-      registryAuthFrom: v.union([v.literal("spec"), v.literal("previous-spec"), v.undefined_()]),
-      rollback: v.union([v.string(), v.undefined_()]),
+      registryAuthFrom: v.union([v.literal("spec"), v.literal("previous-spec"), v.undefined()]),
+      rollback: v.union([v.string(), v.undefined()]),
     }),
     path: v.object({
       id: v.string(),

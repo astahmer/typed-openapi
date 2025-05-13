@@ -1,13 +1,13 @@
 import { describe, test } from "vitest";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
-import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints";
-import { generateTanstackQueryFile } from "../src/tanstack-query.generator";
+import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
+import { generateTanstackQueryFile } from "../src/tanstack-query.generator.ts";
 
 describe("generator", () => {
   test("petstore", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
-    expect(generateTanstackQueryFile({
+    expect(await generateTanstackQueryFile({
       ...mapOpenApiEndpoints(openApiDoc),
       relativeApiClientPath: "./api.client.ts"
     })).toMatchInlineSnapshot(`

@@ -1,7 +1,7 @@
 import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { describe, test } from "vitest";
-import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints";
+import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 
 describe("map-openapi-endpoints", () => {
   test("petstore", async ({ expect }) => {

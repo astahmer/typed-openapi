@@ -1,10 +1,11 @@
-import { openApiSchemaToTs } from "../src/openapi-schema-to-ts";
 
 import type { SchemasObject } from "openapi3-ts/oas31";
 import { describe, expect, test } from "vitest";
-import { createRefResolver } from "../src/ref-resolver";
-import { OpenapiSchemaConvertContext, type LibSchemaObject } from "../src/types";
-import { tsFactory } from "../src/ts-factory";
+
+import { openApiSchemaToTs } from "../src/openapi-schema-to-ts.ts";
+import { createRefResolver } from "../src/ref-resolver.ts";
+import { OpenapiSchemaConvertContext, type LibSchemaObject } from "../src/types.ts";
+import { tsFactory } from "../src/ts-factory.ts";
 
 const factory = tsFactory;
 const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
