@@ -9,7 +9,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
     const endpointMethods = (new Set(ctx.endpointList.map((endpoint) => endpoint.method.toLowerCase())));
 
     const file = `
-  import { queryOptions, QueryClient } from "@tanstack/react-query"
+  import { queryOptions } from "@tanstack/react-query"
   import type { EndpointByMethod, ApiClient } from "${ctx.relativeApiClientPath}"
 
   type EndpointQueryKey<TOptions extends EndpointParameters> = [
