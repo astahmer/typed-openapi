@@ -3,11 +3,12 @@ import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { generateFile } from "../src/generator.ts";
+import { prettify } from "../src/format.ts";
 
 describe("generator", () => {
   test("petstore", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
-    expect(generateFile(mapOpenApiEndpoints(openApiDoc))).toMatchInlineSnapshot(`
+    expect(await prettify(generateFile(mapOpenApiEndpoints(openApiDoc)))).toMatchInlineSnapshot(`
       "export namespace Schemas {
         // <Schemas>
         export type Order = Partial<{
@@ -380,8 +381,8 @@ describe("generator", () => {
     `);
   });
 
-  test("nullable string", ({ expect }) => {
-    expect(generateFile(mapOpenApiEndpoints({
+  test("nullable string", async ({ expect }) => {
+    expect(await prettify(generateFile(mapOpenApiEndpoints({
       "openapi": "3.0.0",
       "info": {
         "version": "1.0.0",
@@ -627,7 +628,7 @@ describe("generator", () => {
           }
         },
       }
-    }))).toMatchInlineSnapshot(`
+    })))).toMatchInlineSnapshot(`
       "export namespace Schemas {
         // <Schemas>
         export type SerializedUserSession = {

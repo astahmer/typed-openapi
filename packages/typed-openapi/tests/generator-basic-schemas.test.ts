@@ -7,6 +7,7 @@ import { OpenapiSchemaConvertContext, type LibSchemaObject } from "../src/types.
 import { tsFactory } from "../src/ts-factory.ts";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { generateFile } from "../src/generator.ts";
+import { prettify } from "../src/format.ts";
 
 const factory = tsFactory;
 const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
@@ -15,51 +16,51 @@ const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
 });
 const makeDoc = (schemas: SchemasObject) => ({ components: { schemas } } as any);
 
-const getSchemaBox = (schema: LibSchemaObject) => {
-  const output = generateFile(mapOpenApiEndpoints(makeDoc({ _Test: schema })));
+const getSchemaBox = async (schema: LibSchemaObject) => {
+  const output = await prettify(generateFile(mapOpenApiEndpoints(makeDoc({ _Test: schema }))));
   const start = output.indexOf("// <Schemas>");
   const end = output.indexOf("// </Schemas>");
   return output.substring(start + "// <Schemas>".length, end).trim();
 };
 
 test("getSchemaBox", async () => {
-  expect(getSchemaBox({ type: "null" })).toMatchInlineSnapshot('"export type _Test = null;"');
-  expect(getSchemaBox({ type: "boolean" })).toMatchInlineSnapshot('"export type _Test = boolean;"');
-  expect(getSchemaBox({ type: "boolean", nullable: true })).toMatchInlineSnapshot('"export type _Test = boolean | null;"');
-  expect(getSchemaBox({ type: "string" })).toMatchInlineSnapshot('"export type _Test = string;"');
-  expect(getSchemaBox({ type: "number" })).toMatchInlineSnapshot('"export type _Test = number;"');
-  expect(getSchemaBox({ type: "integer" })).toMatchInlineSnapshot('"export type _Test = number;"');
-  expect(getSchemaBox({})).toMatchInlineSnapshot('"export type _Test = unknown;"');
+  expect(await getSchemaBox({ type: "null" })).toMatchInlineSnapshot(`"export type _Test = null;"`);
+  expect(await getSchemaBox({ type: "boolean" })).toMatchInlineSnapshot(`"export type _Test = boolean;"`);
+  expect(await getSchemaBox({ type: "boolean", nullable: true })).toMatchInlineSnapshot(`"export type _Test = boolean | null;"`);
+  expect(await getSchemaBox({ type: "string" })).toMatchInlineSnapshot(`"export type _Test = string;"`);
+  expect(await getSchemaBox({ type: "number" })).toMatchInlineSnapshot(`"export type _Test = number;"`);
+  expect(await getSchemaBox({ type: "integer" })).toMatchInlineSnapshot(`"export type _Test = number;"`);
+  expect(await getSchemaBox({})).toMatchInlineSnapshot(`"export type _Test = unknown;"`);
 
-  expect(getSchemaBox({ type: "array", items: { type: "string" } })).toMatchInlineSnapshot('"export type _Test = Array<string>;"');
-  expect(getSchemaBox({ type: "object" })).toMatchInlineSnapshot(
-    '"export type _Test = Record<string, unknown>;"',
+  expect(await getSchemaBox({ type: "array", items: { type: "string" } })).toMatchInlineSnapshot(`"export type _Test = Array<string>;"`);
+  expect(await getSchemaBox({ type: "object" })).toMatchInlineSnapshot(
+    `"export type _Test = Record<string, unknown>;"`,
   );
-  expect(getSchemaBox({ type: "object", properties: { str: { type: "string" } } })).toMatchInlineSnapshot('"export type _Test = Partial<{ str: string }>;"');
-  expect(getSchemaBox({ type: "object", properties: { str: { type: "string" }, nb: { type: "number" } } }))
-    .toMatchInlineSnapshot('"export type _Test = Partial<{ str: string; nb: number }>;"');
+  expect(await getSchemaBox({ type: "object", properties: { str: { type: "string" } } })).toMatchInlineSnapshot(`"export type _Test = Partial<{ str: string }>;"`);
+  expect(await getSchemaBox({ type: "object", properties: { str: { type: "string" }, nb: { type: "number" } } }))
+    .toMatchInlineSnapshot(`"export type _Test = Partial<{ str: string; nb: number }>;"`);
 
   // AllPropertiesRequired
   expect(
-    getSchemaBox({
+    await getSchemaBox({
       type: "object",
       properties: { str: { type: "string" }, nb: { type: "number" } },
       required: ["str", "nb"],
     }),
-  ).toMatchInlineSnapshot('"export type _Test = { str: string; nb: number };"');
+  ).toMatchInlineSnapshot(`"export type _Test = { str: string; nb: number };"`);
 
   // SomeOptionalProps
   expect(
-    getSchemaBox({
+    await getSchemaBox({
       type: "object",
       properties: { str: { type: "string" }, nb: { type: "number" } },
       required: ["str"],
     }),
-  ).toMatchInlineSnapshot('"export type _Test = { str: string; nb?: number | undefined };"');
+  ).toMatchInlineSnapshot(`"export type _Test = { str: string; nb?: number | undefined };"`);
 
   // ObjectWithNestedProp
   expect(
-    getSchemaBox({
+    await getSchemaBox({
       type: "object",
       properties: {
         str: { type: "string" },
@@ -72,24 +73,24 @@ test("getSchemaBox", async () => {
         },
       },
     }),
-  ).toMatchInlineSnapshot('"export type _Test = Partial<{ str: string; nb: number; nested: Partial<{ nested_prop: boolean }> }>;"');
+  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ str: string; nb: number; nested: Partial<{ nested_prop: boolean }> }>;"`);
 
   // ObjectWithAdditionalPropsNb
   expect(
-    getSchemaBox({ type: "object", properties: { str: { type: "string" } }, additionalProperties: { type: "number" } }),
-  ).toMatchInlineSnapshot('"export type _Test = Partial<{ str: string } & { string: number }>;"');
+    await getSchemaBox({ type: "object", properties: { str: { type: "string" } }, additionalProperties: { type: "number" } }),
+  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ str: string } & { string: number }>;"`);
 
   // ObjectWithNestedRecordBoolean
   expect(
-    getSchemaBox({
+    await getSchemaBox({
       type: "object",
       properties: { str: { type: "string" } },
       additionalProperties: { type: "object", properties: { prop: { type: "boolean" } } },
     }),
-  ).toMatchInlineSnapshot('"export type _Test = Partial<{ str: string } & { string: Partial<{ prop: boolean }> }>;"');
+  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ str: string } & { string: Partial<{ prop: boolean }> }>;"`);
 
   expect(
-    getSchemaBox({
+    await getSchemaBox({
       type: "array",
       items: {
         type: "object",
@@ -98,10 +99,10 @@ test("getSchemaBox", async () => {
         },
       },
     }),
-  ).toMatchInlineSnapshot('"export type _Test = Array<Partial<{ str: string }>>;"');
+  ).toMatchInlineSnapshot(`"export type _Test = Array<Partial<{ str: string }>>;"`);
 
   expect(
-    getSchemaBox({
+    await getSchemaBox({
       type: "array",
       items: {
         type: "array",
@@ -110,79 +111,79 @@ test("getSchemaBox", async () => {
         },
       },
     }),
-  ).toMatchInlineSnapshot('"export type _Test = Array<Array<string>>;"');
+  ).toMatchInlineSnapshot(`"export type _Test = Array<Array<string>>;"`);
 
   // ObjectWithEnum
   expect(
-    getSchemaBox({
+    await getSchemaBox({
       type: "object",
       properties: {
         enumprop: { type: "string", enum: ["aaa", "bbb", "ccc"] },
       },
     }),
-  ).toMatchInlineSnapshot('"export type _Test = Partial<{ enumprop: "aaa" | "bbb" | "ccc" }>;"');
+  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ enumprop: "aaa" | "bbb" | "ccc" }>;"`);
 
-  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
-    '"export type _Test = "aaa" | "bbb" | "ccc";"',
+  expect(await getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
+    `"export type _Test = "aaa" | "bbb" | "ccc";"`,
   );
 
   // StringENum
-  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot('"export type _Test = "aaa" | "bbb" | "ccc";"');
+  expect(await getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`"export type _Test = "aaa" | "bbb" | "ccc";"`);
 
   // ObjectWithUnion
   expect(
-    getSchemaBox({
+    await getSchemaBox({
       type: "object",
       properties: {
         union: { oneOf: [{ type: "string" }, { type: "number" }] },
       },
     }),
-  ).toMatchInlineSnapshot('"export type _Test = Partial<{ union: string | number }>;"');
-  expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    '"export type _Test = string | number;"',
+  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ union: string | number }>;"`);
+  expect(await getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
+    `"export type _Test = string | number;"`,
   );
 
   // StringOrNumber
-  expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot('"export type _Test = string | number;"');
+  expect(await getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`"export type _Test = string | number;"`);
 
-  expect(getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    '"export type _Test = string & number;"',
+  expect(await getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
+    `"export type _Test = string & number;"`,
   );
 
   // StringAndNumber
-  expect(getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot('"export type _Test = string & number;"');
+  expect(await getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`"export type _Test = string & number;"`);
 
-  expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    '"export type _Test = string | number | Array<string | number>;"',
+  expect(await getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
+    `"export type _Test = string | number | Array<string | number>;"`,
   );
 
   // StringAndNumberMaybeMultiple
-  expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot('"export type _Test = string | number | Array<string | number>;"');
+  expect(await getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`"export type _Test = string | number | Array<string | number>;"`);
 
   // ObjectWithArrayUnion
   expect(
-    getSchemaBox({
+    await getSchemaBox({
       type: "object",
       properties: {
         unionOrArrayOfUnion: { anyOf: [{ type: "string" }, { type: "number" }] },
       },
     }),
-  ).toMatchInlineSnapshot('"export type _Test = Partial<{ unionOrArrayOfUnion: string | number | Array<string | number> }>;"');
+  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ unionOrArrayOfUnion: string | number | Array<string | number> }>;"`);
 
   // ObjectWithIntersection
   expect(
-    getSchemaBox({
+    await getSchemaBox({
       type: "object",
       properties: {
         intersection: { allOf: [{ type: "string" }, { type: "number" }] },
       },
     }),
-  ).toMatchInlineSnapshot('"export type _Test = Partial<{ intersection: string & number }>;"');
+  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ intersection: string & number }>;"`);
 
-  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
-    '"export type _Test = "aaa" | "bbb" | "ccc";"',
+  expect(await getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
+    `"export type _Test = "aaa" | "bbb" | "ccc";"`,
   );
-  expect(getSchemaBox({ type: "number", enum: [1, 2, 3] })).toMatchInlineSnapshot('"export type _Test = 1 | 2 | 3;"');
+  expect(await getSchemaBox({ type: "number", enum: [1, 2, 3] })).toMatchInlineSnapshot(`"export type _Test = 1 | 2 | 3;"`);
 });
 
 describe("getSchemaBox with context", () => {

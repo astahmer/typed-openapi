@@ -3,6 +3,7 @@ import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { allowedRuntimes, generateFile } from "../src/generator.ts";
+import { prettify } from "../src/format.ts";
 
 const samples = ["petstore", "docker.openapi", "long-operation-id"];
 // @ts-expect-error
@@ -17,10 +18,10 @@ samples.forEach((sample) => {
     runtimes.forEach((runtime: string) => {
       if (runtime === "arktype" && sample === "docker.openapi") return;
 
-      test(`generate ${runtime}`, () => {
-        const tsRouter = generateFile({ ...ctx, runtime: runtime as any });
+      test(`generate ${runtime}`, async () => {
+        const tsRouter = await prettify(generateFile({ ...ctx, runtime: runtime as any }));
         const runtimeName = runtime === "none" ? "client" : runtime;
-        expect(tsRouter).toMatchFileSnapshot(`./snapshots/${sample}.` + runtimeName + ".ts");
+        await expect(tsRouter).toMatchFileSnapshot(`./snapshots/${sample}.` + runtimeName + ".ts");
       });
     });
   });
