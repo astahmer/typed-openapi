@@ -390,11 +390,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   response: TConfig["response"];
 };
 
-export type Fetcher = (
-  method: Method,
-  url: string,
-  parameters?: EndpointParameters | undefined,
-) => Promise<Endpoint["response"]>;
+export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -415,12 +411,22 @@ export class ApiClient {
     return this;
   }
 
+  parseResponse = async <T,>(response: Response): Promise<T> => {
+    const contentType = response.headers.get("content-type");
+    if (contentType?.includes("application/json")) {
+      return response.json();
+    }
+    return response.text() as unknown as T;
+  };
+
   // <ApiClient.put>
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
   ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("put", this.baseUrl + path, params[0]) as Promise<t.TypeOf<TEndpoint>["response"]>;
+    return this.fetcher("put", this.baseUrl + path, params[0]).then((response) =>
+      this.parseResponse(response),
+    ) as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.put>
 
@@ -429,7 +435,9 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
   ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("post", this.baseUrl + path, params[0]) as Promise<t.TypeOf<TEndpoint>["response"]>;
+    return this.fetcher("post", this.baseUrl + path, params[0]).then((response) =>
+      this.parseResponse(response),
+    ) as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.post>
 
@@ -438,7 +446,9 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
   ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("get", this.baseUrl + path, params[0]) as Promise<t.TypeOf<TEndpoint>["response"]>;
+    return this.fetcher("get", this.baseUrl + path, params[0]).then((response) =>
+      this.parseResponse(response),
+    ) as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.get>
 
@@ -447,9 +457,32 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
   ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("delete", this.baseUrl + path, params[0]) as Promise<t.TypeOf<TEndpoint>["response"]>;
+    return this.fetcher("delete", this.baseUrl + path, params[0]).then((response) =>
+      this.parseResponse(response),
+    ) as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.delete>
+
+  // <ApiClient.request>
+  /**
+   * Generic request method with full type-safety for any endpoint
+   */
+  request<
+    TMethod extends keyof EndpointByMethod,
+    TPath extends keyof EndpointByMethod[TMethod],
+    TEndpoint extends EndpointByMethod[TMethod][TPath],
+  >(
+    method: TMethod,
+    path: TPath,
+    ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
+  ): Promise<
+    Response & {
+      json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
+    }
+  > {
+    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters);
+  }
+  // </ApiClient.request>
 }
 
 export function createApiClient(fetcher: Fetcher, baseUrl?: string) {

@@ -253,7 +253,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   response: TConfig["response"];
 };
 
-export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Endpoint["response"]>;
+export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -263,6 +263,7 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // </ApiClientTypes>
 `;
+
 
   const apiClient = `
 // <ApiClient>
@@ -274,6 +275,14 @@ export class ApiClient {
   setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
     return this;
+  }
+
+  parseResponse = async <T>(response: Response): Promise<T> => {
+    const contentType = response.headers.get('content-type');
+    if (contentType?.includes('application/json')) {
+      return response.json();
+    }
+    return response.text() as unknown as T;
   }
 
   ${Object.entries(byMethods)
@@ -293,7 +302,8 @@ export class ApiClient {
             .with("zod", "yup", () => infer(`TEndpoint["response"]`))
             .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["response"]`)
             .otherwise(() => `TEndpoint["response"]`)}> {
-      return this.fetcher("${method}", this.baseUrl + path, params[0])${match(ctx.runtime)
+      return this.fetcher("${method}", this.baseUrl + path, params[0])
+          .then(response => this.parseResponse(response))${match(ctx.runtime)
             .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
             .with("arktype", "io-ts", "typebox", "valibot", () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`)
             .otherwise(() => `as Promise<TEndpoint["response"]>`)};
@@ -303,6 +313,29 @@ export class ApiClient {
           : "";
       })
       .join("\n")}
+
+    // <ApiClient.request>
+    /**
+     * Generic request method with full type-safety for any endpoint
+     */
+    request<
+      TMethod extends keyof EndpointByMethod,
+      TPath extends keyof EndpointByMethod[TMethod],
+      TEndpoint extends EndpointByMethod[TMethod][TPath]
+    >(
+      method: TMethod,
+      path: TPath,
+      ...params: MaybeOptionalArg<${match(ctx.runtime)
+      .with("zod", "yup", () => inferByRuntime[ctx.runtime](`TEndpoint extends { parameters: infer Params } ? Params : never`))
+      .with("arktype", "io-ts", "typebox", "valibot", () => inferByRuntime[ctx.runtime](`TEndpoint`) + `["parameters"]`)
+      .otherwise(() => `TEndpoint extends { parameters: infer Params } ? Params : never`)}>)
+    : Promise<Omit<Response, "json"> & {
+      /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
+      json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
+    }> {
+      return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters);
+    }
+    // </ApiClient.request>
 }
 
 export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
