@@ -11,7 +11,7 @@ describe("generator", () => {
       ...mapOpenApiEndpoints(openApiDoc),
       relativeApiClientPath: "./api.client.ts"
     })).toMatchInlineSnapshot(`
-      "import { queryOptions, QueryClient } from "@tanstack/react-query";
+      "import { queryOptions } from "@tanstack/react-query";
       import type { EndpointByMethod, ApiClient } from "./api.client.ts";
 
       type EndpointQueryKey<TOptions extends EndpointParameters> = [
@@ -79,8 +79,8 @@ describe("generator", () => {
         ) {
           const queryKey = createQueryKey(path, params[0]);
           const query = {
-            endpoint: {} as TEndpoint,
-            res: {} as TEndpoint["response"],
+            /** type-only property if you need easy access to the endpoint params */
+            "~endpoint": {} as TEndpoint,
             queryKey,
             options: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
@@ -107,8 +107,8 @@ describe("generator", () => {
         ) {
           const queryKey = createQueryKey(path, params[0]);
           const query = {
-            endpoint: {} as TEndpoint,
-            res: {} as TEndpoint["response"],
+            /** type-only property if you need easy access to the endpoint params */
+            "~endpoint": {} as TEndpoint,
             queryKey,
             options: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
@@ -135,8 +135,8 @@ describe("generator", () => {
         ) {
           const queryKey = createQueryKey(path, params[0]);
           const query = {
-            endpoint: {} as TEndpoint,
-            res: {} as TEndpoint["response"],
+            /** type-only property if you need easy access to the endpoint params */
+            "~endpoint": {} as TEndpoint,
             queryKey,
             options: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
@@ -163,8 +163,8 @@ describe("generator", () => {
         ) {
           const queryKey = createQueryKey(path, params[0]);
           const query = {
-            endpoint: {} as TEndpoint,
-            res: {} as TEndpoint["response"],
+            /** type-only property if you need easy access to the endpoint params */
+            "~endpoint": {} as TEndpoint,
             queryKey,
             options: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
