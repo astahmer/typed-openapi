@@ -35,8 +35,9 @@ const prefixStringStartingWithNumberIfNeeded = (str: string) => {
 const pathParamWithBracketsRegex = /({\w+})/g;
 const wordPrecededByNonWordCharacter = /[^\w\-]+/g;
 
+
 /** @example turns `/media-objects/{id}` into `MediaObjectsId` */
 export const pathToVariableName = (path: string) =>
-  capitalize(kebabToCamel(path).replaceAll("/", "")) // /media-objects/{id} -> MediaObjects{id}
+  capitalize(kebabToCamel((path)).replaceAll("/", "_")) // /media-objects/{id} -> MediaObjects{id}
     .replace(pathParamWithBracketsRegex, (group) => capitalize(group.slice(1, -1))) // {id} -> Id
     .replace(wordPrecededByNonWordCharacter, "_"); // "/robots.txt" -> "/robots_txt"

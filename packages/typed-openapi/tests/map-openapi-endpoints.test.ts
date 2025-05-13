@@ -2638,7 +2638,7 @@ describe("map-openapi-endpoints", () => {
       [
         {
           "meta": {
-            "alias": "get_UsersId",
+            "alias": "get__users_Id",
             "areParametersRequired": true,
             "hasParameters": true,
           },
@@ -2819,7 +2819,7 @@ describe("map-openapi-endpoints", () => {
       [
         {
           "meta": {
-            "alias": "post_Authenticationrefresh",
+            "alias": "post__authentication_refresh",
             "areParametersRequired": false,
             "hasParameters": true,
           },

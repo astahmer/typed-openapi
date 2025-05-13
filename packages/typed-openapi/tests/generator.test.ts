@@ -684,7 +684,7 @@ describe("generator", () => {
       export namespace Endpoints {
         // <Endpoints>
 
-        export type get_Authorizationorganizations_organizationIdmemberssearch = {
+        export type get__authorization_organizations__organizationId_members_search = {
           method: "GET";
           path: "/authorization/organizations/:organizationId/members/search";
           requestFormat: "json";
@@ -719,7 +719,7 @@ describe("generator", () => {
       // <EndpointByMethod>
       export type EndpointByMethod = {
         get: {
-          "/authorization/organizations/:organizationId/members/search": Endpoints.get_Authorizationorganizations_organizationIdmemberssearch;
+          "/authorization/organizations/:organizationId/members/search": Endpoints.get__authorization_organizations__organizationId_members_search;
         };
       };
 
