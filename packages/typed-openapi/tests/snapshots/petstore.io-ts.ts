@@ -189,7 +189,7 @@ export const get_GetInventory = t.type({
   path: t.literal("/store/inventory"),
   requestFormat: t.literal("json"),
   parameters: t.never,
-  response: t.unknown,
+  response: t.record(t.string, t.number),
 });
 
 export type post_PlaceOrder = t.TypeOf<typeof post_PlaceOrder>;

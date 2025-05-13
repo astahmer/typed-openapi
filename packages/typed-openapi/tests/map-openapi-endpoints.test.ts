@@ -1908,8 +1908,8 @@ describe("map-openapi-endpoints", () => {
             "path": "/store/inventory",
             "requestFormat": "json",
             "response": {
-              "type": "keyword",
-              "value": "unknown",
+              "type": "literal",
+              "value": "Record<string, number>",
             },
           },
           {

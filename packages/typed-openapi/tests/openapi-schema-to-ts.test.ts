@@ -80,8 +80,8 @@ test("getSchemaBox", () => {
   expect(getSchemaBox({ type: "object" })).toMatchInlineSnapshot(
     `
     {
-      "type": "keyword",
-      "value": "unknown",
+      "type": "literal",
+      "value": "Record<string, unknown>",
     }
   `,
   );

@@ -186,7 +186,7 @@ export const get_GetInventory = v.object({
   path: v.literal("/store/inventory"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  response: v.unknown(),
+  response: v.record(v.string(), v.number()),
 });
 
 export type post_PlaceOrder = v.InferOutput<typeof post_PlaceOrder>;

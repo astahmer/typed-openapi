@@ -204,7 +204,7 @@ export const get_GetInventory = {
   path: y.mixed((value): value is "/store/inventory" => value === "/store/inventory").required(),
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  response: y.mixed(/* unsupported */),
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;

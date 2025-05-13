@@ -130,7 +130,7 @@ describe("generator", () => {
           path: "/store/inventory";
           requestFormat: "json";
           parameters: never;
-          response: unknown;
+          response: Record<string, number>;
         };
         export type post_PlaceOrder = {
           method: "POST";

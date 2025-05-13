@@ -99,7 +99,12 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
 
     if (schemaType === "object" || schema.properties || schema.additionalProperties) {
       if (!schema.properties) {
-        return t.unknown();
+        if (schema.additionalProperties && !isReferenceObject(schema.additionalProperties) && typeof schema.additionalProperties !== "boolean" && schema.additionalProperties.type) {
+          const valueSchema = openApiSchemaToTs({ schema: schema.additionalProperties, ctx, meta });
+          return t.literal(`Record<string, ${valueSchema.value}>`);
+        }
+
+        return t.literal("Record<string, unknown>");
       }
 
       let additionalProperties;

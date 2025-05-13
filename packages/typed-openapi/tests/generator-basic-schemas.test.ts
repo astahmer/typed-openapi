@@ -33,7 +33,7 @@ test("getSchemaBox", () => {
 
   expect(getSchemaBox({ type: "array", items: { type: "string" } })).toMatchInlineSnapshot('"export type _Test = Array<string>;"');
   expect(getSchemaBox({ type: "object" })).toMatchInlineSnapshot(
-    '"export type _Test = unknown;"',
+    '"export type _Test = Record<string, unknown>;"',
   );
   expect(getSchemaBox({ type: "object", properties: { str: { type: "string" } } })).toMatchInlineSnapshot('"export type _Test = Partial<{ str: string }>;"');
   expect(getSchemaBox({ type: "object", properties: { str: { type: "string" }, nb: { type: "number" } } }))

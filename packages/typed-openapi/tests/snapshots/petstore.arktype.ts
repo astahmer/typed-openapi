@@ -152,7 +152,7 @@ export const types = scope({
     path: '"/store/inventory"',
     requestFormat: '"json"',
     parameters: "never",
-    response: "unknown",
+    response: "never",
   },
   post_PlaceOrder: {
     method: '"POST"',

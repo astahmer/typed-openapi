@@ -22,7 +22,7 @@ export namespace Schemas {
     Count: number;
     DeviceIDs: Array<string>;
     Capabilities: Array<Array<string>>;
-    Options: unknown;
+    Options: Record<string, string>;
   }>;
   export type ThrottleDevice = Partial<{ Path: string; Rate: number }>;
   export type Mount = Partial<{
@@ -38,8 +38,8 @@ export namespace Schemas {
     }>;
     VolumeOptions: Partial<{
       NoCopy: boolean;
-      Labels: unknown;
-      DriverConfig: Partial<{ Name: string; Options: unknown }>;
+      Labels: Record<string, string>;
+      DriverConfig: Partial<{ Name: string; Options: Record<string, string> }>;
     }>;
     TmpfsOptions: Partial<{ SizeBytes: number; Mode: number }>;
   }>;
@@ -102,14 +102,14 @@ export namespace Schemas {
     Log: Array<HealthcheckResult>;
   }> | null;
   export type PortBinding = Partial<{ HostIp: string; HostPort: string }>;
-  export type PortMap = unknown;
+  export type PortMap = Record<string, Array<PortBinding> | null>;
   export type HostConfig = Resources &
     Partial<{
       Binds: Array<string>;
       ContainerIDFile: string;
       LogConfig: Partial<{
         Type: "json-file" | "syslog" | "journald" | "gelf" | "fluentd" | "awslogs" | "splunk" | "etwlogs" | "none";
-        Config: unknown;
+        Config: Record<string, string>;
       }>;
       NetworkMode: string;
       PortBindings: PortMap;
@@ -119,7 +119,7 @@ export namespace Schemas {
       VolumesFrom: Array<string>;
       Mounts: Array<Mount>;
       ConsoleSize: Array<number> | null;
-      Annotations: unknown;
+      Annotations: Record<string, string>;
       CapAdd: Array<string>;
       CapDrop: Array<string>;
       CgroupnsMode: "private" | "host";
@@ -137,12 +137,12 @@ export namespace Schemas {
       PublishAllPorts: boolean;
       ReadonlyRootfs: boolean;
       SecurityOpt: Array<string>;
-      StorageOpt: unknown;
-      Tmpfs: unknown;
+      StorageOpt: Record<string, string>;
+      Tmpfs: Record<string, string>;
       UTSMode: string;
       UsernsMode: string;
       ShmSize: number;
-      Sysctls: unknown;
+      Sysctls: Record<string, string>;
       Runtime: string;
       Isolation: "default" | "process" | "hyperv";
       MaskedPaths: Array<string>;
@@ -155,7 +155,7 @@ export namespace Schemas {
     AttachStdin: boolean;
     AttachStdout: boolean;
     AttachStderr: boolean;
-    ExposedPorts: unknown | null;
+    ExposedPorts: Record<string, Partial<{}>> | null;
     Tty: boolean;
     OpenStdin: boolean;
     StdinOnce: boolean;
@@ -164,13 +164,13 @@ export namespace Schemas {
     Healthcheck: HealthConfig;
     ArgsEscaped: boolean | null;
     Image: string;
-    Volumes: unknown;
+    Volumes: Record<string, Partial<{}>>;
     WorkingDir: string;
     Entrypoint: Array<string>;
     NetworkDisabled: boolean | null;
     MacAddress: string | null;
     OnBuild: Array<string> | null;
-    Labels: unknown;
+    Labels: Record<string, string>;
     StopSignal: string | null;
     StopTimeout: number | null;
     Shell: Array<string> | null;
@@ -193,9 +193,9 @@ export namespace Schemas {
     GlobalIPv6Address: string;
     GlobalIPv6PrefixLen: number;
     MacAddress: string;
-    DriverOpts: unknown | null;
+    DriverOpts: Record<string, string> | null;
   }>;
-  export type NetworkingConfig = Partial<{ EndpointsConfig: unknown }>;
+  export type NetworkingConfig = Partial<{ EndpointsConfig: Record<string, unknown> }>;
   export type Address = Partial<{ Addr: string; PrefixLen: number }>;
   export type NetworkSettings = Partial<{
     Bridge: string;
@@ -215,9 +215,9 @@ export namespace Schemas {
     IPPrefixLen: number;
     IPv6Gateway: string;
     MacAddress: string;
-    Networks: unknown;
+    Networks: Record<string, unknown>;
   }>;
-  export type GraphDriverData = { Name: string; Data: unknown };
+  export type GraphDriverData = { Name: string; Data: Record<string, string> };
   export type ChangeType = 0 | 1 | 2;
   export type FilesystemChange = { Path: string; Kind: ChangeType };
   export type ImageInspect = Partial<{
@@ -251,7 +251,7 @@ export namespace Schemas {
     Size: number;
     SharedSize: number;
     VirtualSize?: number | undefined;
-    Labels: unknown;
+    Labels: Record<string, string>;
     Containers: number;
   };
   export type AuthConfig = Partial<{ username: string; password: string; email: string; serveraddress: string }>;
@@ -263,7 +263,7 @@ export namespace Schemas {
     arguments: Array<string>;
   }>;
   export type ObjectVersion = Partial<{ Index: number }>;
-  export type Topology = unknown;
+  export type Topology = Record<string, string>;
   export type ClusterVolumeSpec = Partial<{
     Group: string;
     AccessMode: Partial<{
@@ -284,7 +284,7 @@ export namespace Schemas {
     Spec: ClusterVolumeSpec;
     Info: Partial<{
       CapacityBytes: number;
-      VolumeContext: unknown;
+      VolumeContext: Record<string, string>;
       VolumeID: string;
       AccessibleTopology: Array<Topology>;
     }>;
@@ -292,7 +292,7 @@ export namespace Schemas {
       Partial<{
         NodeID: string;
         State: "pending-publish" | "published" | "pending-node-unpublish" | "pending-controller-unpublish";
-        PublishContext: unknown;
+        PublishContext: Record<string, string>;
       }>
     >;
   }>;
@@ -301,23 +301,28 @@ export namespace Schemas {
     Driver: string;
     Mountpoint: string;
     CreatedAt?: string | undefined;
-    Status?: unknown | undefined;
-    Labels: unknown;
+    Status?: Record<string, Partial<{}>> | undefined;
+    Labels: Record<string, string>;
     Scope: "local" | "global";
     ClusterVolume?: ClusterVolume | undefined;
-    Options: unknown;
+    Options: Record<string, string>;
     UsageData?: { Size: number; RefCount: number } | null | undefined;
   };
   export type VolumeCreateOptions = Partial<{
     Name: string;
     Driver: string;
-    DriverOpts: unknown;
-    Labels: unknown;
+    DriverOpts: Record<string, string>;
+    Labels: Record<string, string>;
     ClusterVolumeSpec: ClusterVolumeSpec;
   }>;
   export type VolumeListResponse = Partial<{ Volumes: Array<Volume>; Warnings: Array<string> }>;
-  export type IPAMConfig = Partial<{ Subnet: string; IPRange: string; Gateway: string; AuxiliaryAddresses: unknown }>;
-  export type IPAM = Partial<{ Driver: string; Config: Array<IPAMConfig>; Options: unknown }>;
+  export type IPAMConfig = Partial<{
+    Subnet: string;
+    IPRange: string;
+    Gateway: string;
+    AuxiliaryAddresses: Record<string, string>;
+  }>;
+  export type IPAM = Partial<{ Driver: string; Config: Array<IPAMConfig>; Options: Record<string, string> }>;
   export type NetworkContainer = Partial<{
     Name: string;
     EndpointID: string;
@@ -336,9 +341,9 @@ export namespace Schemas {
     Internal: boolean;
     Attachable: boolean;
     Ingress: boolean;
-    Containers: unknown;
-    Options: unknown;
-    Labels: unknown;
+    Containers: Record<string, unknown>;
+    Options: Record<string, string>;
+    Labels: Record<string, string>;
   }>;
   export type ErrorDetail = Partial<{ code: number; message: string }>;
   export type ProgressDetail = Partial<{ current: number; total: number }>;
@@ -426,14 +431,14 @@ export namespace Schemas {
   };
   export type NodeSpec = Partial<{
     Name: string;
-    Labels: unknown;
+    Labels: Record<string, string>;
     Role: "worker" | "manager";
     Availability: "active" | "pause" | "drain";
   }>;
   export type Platform = Partial<{ Architecture: string; OS: string }>;
   export type EngineDescription = Partial<{
     EngineVersion: string;
-    Labels: unknown;
+    Labels: Record<string, string>;
     Plugins: Array<Partial<{ Type: string; Name: string }>>;
   }>;
   export type TLSInfo = Partial<{ TrustRoot: string; CertIssuerSubject: string; CertIssuerPublicKey: string }>;
@@ -460,7 +465,7 @@ export namespace Schemas {
   }>;
   export type SwarmSpec = Partial<{
     Name: string;
-    Labels: unknown;
+    Labels: Record<string, string>;
     Orchestration: Partial<{ TaskHistoryRetentionLimit: number }> | null;
     Raft: Partial<{
       SnapshotInterval: number;
@@ -472,13 +477,13 @@ export namespace Schemas {
     Dispatcher: Partial<{ HeartbeatPeriod: number }> | null;
     CAConfig: Partial<{
       NodeCertExpiry: number;
-      ExternalCAs: Array<Partial<{ Protocol: "cfssl"; URL: string; Options: unknown; CACert: string }>>;
+      ExternalCAs: Array<Partial<{ Protocol: "cfssl"; URL: string; Options: Record<string, string>; CACert: string }>>;
       SigningCACert: string;
       SigningCAKey: string;
       ForceRotate: number;
     }> | null;
     EncryptionConfig: Partial<{ AutoLockManagers: boolean }>;
-    TaskDefaults: Partial<{ LogDriver: Partial<{ Name: string; Options: unknown }> }>;
+    TaskDefaults: Partial<{ LogDriver: Partial<{ Name: string; Options: Record<string, string> }> }>;
   }>;
   export type ClusterInfo = Partial<{
     ID: string;
@@ -494,12 +499,16 @@ export namespace Schemas {
   }> | null;
   export type JoinTokens = Partial<{ Worker: string; Manager: string }>;
   export type Swarm = ClusterInfo & Partial<{ JoinTokens: JoinTokens }>;
-  export type NetworkAttachmentConfig = Partial<{ Target: string; Aliases: Array<string>; DriverOpts: unknown }>;
+  export type NetworkAttachmentConfig = Partial<{
+    Target: string;
+    Aliases: Array<string>;
+    DriverOpts: Record<string, string>;
+  }>;
   export type TaskSpec = Partial<{
     PluginSpec: Partial<{ Name: string; Remote: string; Disabled: boolean; PluginPrivilege: Array<PluginPrivilege> }>;
     ContainerSpec: Partial<{
       Image: string;
-      Labels: unknown;
+      Labels: Record<string, string>;
       Command: Array<string>;
       Args: Array<string>;
       Hostname: string;
@@ -537,7 +546,7 @@ export namespace Schemas {
       >;
       Isolation: "default" | "process" | "hyperv";
       Init: boolean | null;
-      Sysctls: unknown;
+      Sysctls: Record<string, string>;
       CapabilityAdd: Array<string>;
       CapabilityDrop: Array<string>;
       Ulimits: Array<Partial<{ Name: string; Soft: number; Hard: number }>>;
@@ -559,7 +568,7 @@ export namespace Schemas {
     ForceUpdate: number;
     Runtime: string;
     Networks: Array<NetworkAttachmentConfig>;
-    LogDriver: Partial<{ Name: string; Options: unknown }>;
+    LogDriver: Partial<{ Name: string; Options: Record<string, string> }>;
   }>;
   export type TaskState =
     | "new"
@@ -583,7 +592,7 @@ export namespace Schemas {
     CreatedAt: string;
     UpdatedAt: string;
     Name: string;
-    Labels: unknown;
+    Labels: Record<string, string>;
     Spec: TaskSpec;
     ServiceID: string;
     Slot: number;
@@ -609,7 +618,7 @@ export namespace Schemas {
   export type EndpointSpec = Partial<{ Mode: "vip" | "dnsrr"; Ports: Array<EndpointPortConfig> }>;
   export type ServiceSpec = Partial<{
     Name: string;
-    Labels: unknown;
+    Labels: Record<string, string>;
     TaskTemplate: TaskSpec;
     Mode: Partial<{
       Replicated: Partial<{ Replicas: number }>;
@@ -668,15 +677,21 @@ export namespace Schemas {
     Ports: Array<Port>;
     SizeRw: number;
     SizeRootFs: number;
-    Labels: unknown;
+    Labels: Record<string, string>;
     State: string;
     Status: string;
     HostConfig: Partial<{ NetworkMode: string }>;
-    NetworkSettings: Partial<{ Networks: unknown }>;
+    NetworkSettings: Partial<{ Networks: Record<string, unknown> }>;
     Mounts: Array<MountPoint>;
   }>;
-  export type Driver = { Name: string; Options?: unknown | undefined };
-  export type SecretSpec = Partial<{ Name: string; Labels: unknown; Data: string; Driver: Driver; Templating: Driver }>;
+  export type Driver = { Name: string; Options?: Record<string, string> | undefined };
+  export type SecretSpec = Partial<{
+    Name: string;
+    Labels: Record<string, string>;
+    Data: string;
+    Driver: Driver;
+    Templating: Driver;
+  }>;
   export type Secret = Partial<{
     ID: string;
     Version: ObjectVersion;
@@ -684,7 +699,7 @@ export namespace Schemas {
     UpdatedAt: string;
     Spec: SecretSpec;
   }>;
-  export type ConfigSpec = Partial<{ Name: string; Labels: unknown; Data: string; Templating: Driver }>;
+  export type ConfigSpec = Partial<{ Name: string; Labels: Record<string, string>; Data: string; Templating: Driver }>;
   export type Config = Partial<{
     ID: string;
     Version: ObjectVersion;
@@ -734,7 +749,7 @@ export namespace Schemas {
     AllowNondistributableArtifactsCIDRs: Array<string>;
     AllowNondistributableArtifactsHostnames: Array<string>;
     InsecureRegistryCIDRs: Array<string>;
-    IndexConfigs: unknown;
+    IndexConfigs: Record<string, unknown>;
     Mirrors: Array<string>;
   }> | null;
   export type Runtime = Partial<{ path: string; runtimeArgs: Array<string> | null }>;
@@ -800,7 +815,7 @@ export namespace Schemas {
     Labels: Array<string>;
     ExperimentalBuild: boolean;
     ServerVersion: string;
-    Runtimes: unknown;
+    Runtimes: Record<string, unknown>;
     DefaultRuntime: string;
     Swarm: SwarmInfo;
     LiveRestoreEnabled: boolean;
@@ -814,7 +829,7 @@ export namespace Schemas {
     DefaultAddressPools: Array<Partial<{ Base: string; Size: number }>>;
     Warnings: Array<string>;
   }>;
-  export type EventActor = Partial<{ ID: string; Attributes: unknown }>;
+  export type EventActor = Partial<{ ID: string; Attributes: Record<string, string> }>;
   export type EventMessage = Partial<{
     Type:
       | "builder"
@@ -961,7 +976,7 @@ export namespace Endpoints {
       query: Partial<{ stream: boolean; "one-shot": boolean }>;
       path: { id: string };
     };
-    response: unknown;
+    response: Record<string, unknown>;
   };
   export type post_ContainerResize = {
     method: "POST";
@@ -1570,8 +1585,8 @@ export namespace Endpoints {
         Ingress?: boolean | undefined;
         IPAM?: Schemas.IPAM | undefined;
         EnableIPv6?: boolean | undefined;
-        Options?: unknown | undefined;
-        Labels?: unknown | undefined;
+        Options?: Record<string, string> | undefined;
+        Labels?: Record<string, string> | undefined;
       };
     };
     response: Partial<{ Id: string; Warning: string }>;
@@ -1853,7 +1868,7 @@ export namespace Endpoints {
     requestFormat: "json";
     parameters: {
       header: Partial<{ "X-Registry-Auth": string }>;
-      body: Schemas.ServiceSpec & unknown;
+      body: Schemas.ServiceSpec & Record<string, unknown>;
     };
     response: Partial<{ ID: string; Warning: string }>;
   };
@@ -1884,7 +1899,7 @@ export namespace Endpoints {
       query: { version: number; registryAuthFrom: "spec" | "previous-spec" | undefined; rollback: string | undefined };
       path: { id: string };
       header: Partial<{ "X-Registry-Auth": string }>;
-      body: Schemas.ServiceSpec & unknown;
+      body: Schemas.ServiceSpec & Record<string, unknown>;
     };
     response: Schemas.ServiceUpdateResponse;
   };
@@ -1956,7 +1971,7 @@ export namespace Endpoints {
     path: "/secrets/create";
     requestFormat: "json";
     parameters: {
-      body: Schemas.SecretSpec & unknown;
+      body: Schemas.SecretSpec & Record<string, unknown>;
     };
     response: Schemas.IdResponse;
   };
@@ -2004,7 +2019,7 @@ export namespace Endpoints {
     path: "/configs/create";
     requestFormat: "json";
     parameters: {
-      body: Schemas.ConfigSpec & unknown;
+      body: Schemas.ConfigSpec & Record<string, unknown>;
     };
     response: Schemas.IdResponse;
   };
