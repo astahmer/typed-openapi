@@ -1,12 +1,12 @@
 import type { OpenAPIObject, ReferenceObject } from "openapi3-ts/oas31";
 import { get } from "pastable/server";
 
-import { Box } from "./box";
-import { isReferenceObject } from "./is-reference-object";
-import { openApiSchemaToTs } from "./openapi-schema-to-ts";
-import { normalizeString } from "./string-utils";
-import { AnyBoxDef, GenericFactory, type LibSchemaObject } from "./types";
-import { topologicalSort } from "./topological-sort";
+import { Box } from "./box.ts";
+import { isReferenceObject } from "./is-reference-object.ts";
+import { openApiSchemaToTs } from "./openapi-schema-to-ts.ts";
+import { normalizeString } from "./string-utils.ts";
+import { AnyBoxDef, GenericFactory, type LibSchemaObject } from "./types.ts";
+import { topologicalSort } from "./topological-sort.ts";
 
 const autocorrectRef = (ref: string) => (ref[1] === "/" ? ref : "#/" + ref.slice(1));
 const componentsWithSchemas = ["schemas", "responses", "parameters", "requestBodies", "headers"];

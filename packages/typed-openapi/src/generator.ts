@@ -1,12 +1,12 @@
 import { capitalize, groupBy } from "pastable/server";
-import { Box } from "./box";
-import { prettify } from "./format";
-import { mapOpenApiEndpoints } from "./map-openapi-endpoints";
-import { AnyBox, AnyBoxDef } from "./types";
+import { Box } from "./box.ts";
+import { prettify } from "./format.ts";
+import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
+import { AnyBox, AnyBoxDef } from "./types.ts";
 import * as Codegen from "@sinclair/typebox-codegen";
 import { match } from "ts-pattern";
 import { type } from "arktype";
-import { wrapWithQuotesIfNeeded } from "./string-utils";
+import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
 
 type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
   runtime?: "none" | keyof typeof runtimeValidationGenerator;
@@ -53,7 +53,7 @@ const replacerByRuntime = {
       .replace(new RegExp(`(${endpointExport.source})` + new RegExp(/([\s\S]*? )(z\.object)(\()/).source, "g"), "$1$2("),
 };
 
-export const generateFile = (options: GeneratorOptions) => {
+export const generateFile = async (options: GeneratorOptions) => {
   const ctx = { ...options, runtime: options.runtime ?? "none" } as GeneratorContext;
 
   const schemaList = generateSchemaList(ctx);
@@ -64,29 +64,29 @@ export const generateFile = (options: GeneratorOptions) => {
     ctx.runtime === "none"
       ? (file: string) => file
       : (file: string) => {
-          const model = Codegen.TypeScriptToModel.Generate(file);
-          const transformer = runtimeValidationGenerator[ctx.runtime as Exclude<typeof ctx.runtime, "none">];
-          // tmp fix for typebox, there's currently a "// todo" only with Codegen.ModelToTypeBox.Generate
-          // https://github.com/sinclairzx81/typebox-codegen/blob/44d44d55932371b69f349331b1c8a60f5d760d9e/src/model/model-to-typebox.ts#L31
-          const generated = ctx.runtime === "typebox" ? Codegen.TypeScriptToTypeBox.Generate(file) : transformer(model);
+        const model = Codegen.TypeScriptToModel.Generate(file);
+        const transformer = runtimeValidationGenerator[ctx.runtime as Exclude<typeof ctx.runtime, "none">];
+        // tmp fix for typebox, there's currently a "// todo" only with Codegen.ModelToTypeBox.Generate
+        // https://github.com/sinclairzx81/typebox-codegen/blob/44d44d55932371b69f349331b1c8a60f5d760d9e/src/model/model-to-typebox.ts#L31
+        const generated = ctx.runtime === "typebox" ? Codegen.TypeScriptToTypeBox.Generate(file) : transformer(model);
 
-          let converted = "";
-          const match = generated.match(/(const __ENDPOINTS_START__ =)([\s\S]*?)(export type __ENDPOINTS_END__)/);
-          const content = match?.[2];
+        let converted = "";
+        const match = generated.match(/(const __ENDPOINTS_START__ =)([\s\S]*?)(export type __ENDPOINTS_END__)/);
+        const content = match?.[2];
 
-          if (content && ctx.runtime in replacerByRuntime) {
-            const before = generated.slice(0, generated.indexOf("export type __ENDPOINTS_START"));
-            converted =
-              before +
-              replacerByRuntime[ctx.runtime as keyof typeof replacerByRuntime](
-                content.slice(content.indexOf("export")),
-              );
-          } else {
-            converted = generated;
-          }
+        if (content && ctx.runtime in replacerByRuntime) {
+          const before = generated.slice(0, generated.indexOf("export type __ENDPOINTS_START"));
+          converted =
+            before +
+            replacerByRuntime[ctx.runtime as keyof typeof replacerByRuntime](
+              content.slice(content.indexOf("export")),
+            );
+        } else {
+          converted = generated;
+        }
 
-          return converted;
-        };
+        return converted;
+      };
 
   const file = `
   ${transform(schemaList + endpointSchemaList)}
@@ -138,39 +138,36 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
       method: "${endpoint.method.toUpperCase()}",
       path: "${endpoint.path}",
       requestFormat: "${endpoint.requestFormat}",
-      ${
-        endpoint.meta.hasParameters
-          ? `parameters: {
+      ${endpoint.meta.hasParameters
+        ? `parameters: {
             ${parameters.query ? `query:  ${parameterObjectToString(parameters.query)},` : ""}
         ${parameters.path ? `path:  ${parameterObjectToString(parameters.path)},` : ""}
         ${parameters.header ? `header:  ${parameterObjectToString(parameters.header)},` : ""}
-        ${
-          parameters.body
-            ? `body:  ${parameterObjectToString(
-                ctx.runtime === "none"
-                  ? parameters.body.recompute((box) => {
-                      if (Box.isReference(box) && !box.params.generics) {
-                        box.value = `Schemas.${box.value}`;
-                      }
-                      return box;
-                    })
-                  : parameters.body,
-              )},`
-            : ""
+        ${parameters.body
+          ? `body:  ${parameterObjectToString(
+            ctx.runtime === "none"
+              ? parameters.body.recompute((box) => {
+                if (Box.isReference(box) && !box.params.generics) {
+                  box.value = `Schemas.${box.value}`;
+                }
+                return box;
+              })
+              : parameters.body,
+          )},`
+          : ""
         }
           }`
-          : "parameters: never,"
+        : "parameters: never,"
       }
-      response: ${
-        ctx.runtime === "none"
-          ? endpoint.response.recompute((box) => {
-              if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
-                box.value = `Schemas.${box.value}`;
-              }
+      response: ${ctx.runtime === "none"
+        ? endpoint.response.recompute((box) => {
+          if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
+            box.value = `Schemas.${box.value}`;
+          }
 
-              return box;
-            }).value
-          : endpoint.response.value
+          return box;
+        }).value
+        : endpoint.response.value
       },
     }\n`;
   });
@@ -193,14 +190,14 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
      // <EndpointByMethod>
      export ${ctx.runtime === "none" ? "type" : "const"} EndpointByMethod = {
      ${Object.entries(byMethods)
-       .map(([method, list]) => {
-         return `${method}: {
+      .map(([method, list]) => {
+        return `${method}: {
            ${list.map(
-             (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
-           )}
+          (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
+        )}
          }`;
-       })
-       .join(",\n")}
+      })
+      .join(",\n")}
      }
      ${ctx.runtime === "none" ? "" : "export type EndpointByMethod = typeof EndpointByMethod;"}
      // </EndpointByMethod>
@@ -281,22 +278,22 @@ export class ApiClient {
   }
 
   ${Object.entries(byMethods)
-    .map(([method, endpointByMethod]) => {
-      const capitalizedMethod = capitalize(method);
-      const infer = inferByRuntime[ctx.runtime];
+      .map(([method, endpointByMethod]) => {
+        const capitalizedMethod = capitalize(method);
+        const infer = inferByRuntime[ctx.runtime];
 
-      return endpointByMethod.length
-        ? `// <ApiClient.${method}>
+        return endpointByMethod.length
+          ? `// <ApiClient.${method}>
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
       ...params: MaybeOptionalArg<${match(ctx.runtime)
-        .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
-        .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
-        .otherwise(() => `TEndpoint["parameters"]`)}>
+            .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
+            .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
+            .otherwise(() => `TEndpoint["parameters"]`)}>
     ): Promise<${match(ctx.runtime)
-      .with("zod", "yup", () => infer(`TEndpoint["response"]`))
-      .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["response"]`)
-      .otherwise(() => `TEndpoint["response"]`)}> {
+            .with("zod", "yup", () => infer(`TEndpoint["response"]`))
+            .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["response"]`)
+            .otherwise(() => `TEndpoint["response"]`)}> {
       return this.fetcher("${method}", this.baseUrl + path, params[0])${match(ctx.runtime)
             .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
             .with("arktype", "io-ts", "typebox", "valibot", () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`)
@@ -304,9 +301,9 @@ export class ApiClient {
     }
     // </ApiClient.${method}>
     `
-        : "";
-    })
-    .join("\n")}
+          : "";
+      })
+      .join("\n")}
 }
 
 export function createApiClient(fetcher: Fetcher, baseUrl?: string) {

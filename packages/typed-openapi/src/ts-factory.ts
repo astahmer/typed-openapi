@@ -1,6 +1,6 @@
-import { Box } from "./box";
-import { createFactory, unwrap } from "./box-factory";
-import { wrapWithQuotesIfNeeded } from "./string-utils";
+import { Box } from "./box.ts";
+import { createFactory, unwrap } from "./box-factory.ts";
+import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
 
 export const tsFactory = createFactory({
   union: (types) => types.map(unwrap).join(" | "),

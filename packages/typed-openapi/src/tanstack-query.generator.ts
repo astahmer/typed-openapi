@@ -1,11 +1,11 @@
 import { capitalize } from "pastable/server";
-import { prettify } from "./format";
-import type { mapOpenApiEndpoints } from "./map-openapi-endpoints";
+import { prettify } from "./format.ts";
+import type { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 
 type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints>
 type GeneratorContext = Required<GeneratorOptions>;
 
-export const generateTanstackQueryFile = (ctx: GeneratorContext & { relativeApiClientPath: string }) => {
+export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relativeApiClientPath: string }) => {
     const endpointMethods = (new Set(ctx.endpointList.map((endpoint) => endpoint.method.toLowerCase())));
 
     const file = `

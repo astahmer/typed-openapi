@@ -1,9 +1,9 @@
-import { isPrimitiveType } from "./asserts";
-import { Box } from "./box";
-import { createBoxFactory } from "./box-factory";
-import { isReferenceObject } from "./is-reference-object";
-import { AnyBoxDef, OpenapiSchemaConvertArgs, type LibSchemaObject } from "./types";
-import { wrapWithQuotesIfNeeded } from "./string-utils";
+import { isPrimitiveType } from "./asserts.ts";
+import { Box } from "./box.ts";
+import { createBoxFactory } from "./box-factory.ts";
+import { isReferenceObject } from "./is-reference-object.ts";
+import { AnyBoxDef, OpenapiSchemaConvertArgs, type LibSchemaObject } from "./types.ts";
+import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
 
 export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: OpenapiSchemaConvertArgs): Box<AnyBoxDef> => {
   const meta = {} as OpenapiSchemaConvertArgs["meta"];

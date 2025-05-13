@@ -5,11 +5,12 @@ import { basename, join } from "pathe";
 import { type } from "arktype";
 
 import { writeFile } from "fs/promises";
-import { name, version } from "../package.json";
-import { allowedRuntimes, generateFile } from "./generator";
-import { mapOpenApiEndpoints } from "./map-openapi-endpoints";
-import { generateTanstackQueryFile } from "./tanstack-query.generator";
+import { allowedRuntimes, generateFile } from "./generator.ts";
+import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
+import { generateTanstackQueryFile } from "./tanstack-query.generator.ts";
+import { readFileSync } from "fs";
 
+const { name, version } = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 const cwd = process.cwd();
 const cli = cac(name);
 const now = new Date();
@@ -21,7 +22,7 @@ cli
   .option("-o, --output <path>", "Output path for the api client ts file (defaults to `<input>.<runtime>.ts`)")
   .option(
     "-r, --runtime <name>",
-    `Runtime to use for validation; defaults to \`none\`; available: ${allowedRuntimes.definition}`,
+    `Runtime to use for validation; defaults to \`none\`; available: ${allowedRuntimes.toString()}`,
     { default: "none" },
   )
   .option("--tanstack [name]", "Generate tanstack client, defaults to false, can optionally specify a name for the generated file")
@@ -32,7 +33,7 @@ cli
     const ctx = mapOpenApiEndpoints(openApiDoc);
     console.log(`Found ${ctx.endpointList.length} endpoints`);
 
-    const content = generateFile({ ...ctx, runtime: options.runtime });
+    const content = await generateFile({ ...ctx, runtime: options.runtime });
     const outputPath = join(
       cwd,
       options.output ?? input + `.${options.runtime === "none" ? "client" : options.runtime}.ts`,
@@ -42,7 +43,7 @@ cli
     await writeFile(outputPath, content);
 
     if (options.tanstack) {
-      const tanstackContent = generateTanstackQueryFile({
+      const tanstackContent = await generateTanstackQueryFile({
         ...ctx,
         relativeApiClientPath: './' + basename(outputPath),
       });

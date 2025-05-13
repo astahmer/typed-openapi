@@ -1,4 +1,4 @@
-import { openApiSchemaToTs } from "./openapi-schema-to-ts";
+import { openApiSchemaToTs } from "./openapi-schema-to-ts.ts";
 import {
   AnyBoxDef,
   BoxArray,
@@ -11,7 +11,7 @@ import {
   BoxUnion,
   OpenapiSchemaConvertContext,
   type LibSchemaObject,
-} from "./types";
+} from "./types.ts";
 
 // TODO rename SchemaBox
 export class Box<T extends AnyBoxDef = AnyBoxDef> {

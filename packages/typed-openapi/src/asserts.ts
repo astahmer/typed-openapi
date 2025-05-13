@@ -1,4 +1,4 @@
-import type { LibSchemaObject } from "./types";
+import type { LibSchemaObject } from "./types.ts";
 
 export type SingleType = Exclude<LibSchemaObject["type"], any[] | undefined>;
 export const isPrimitiveType = (type: unknown): type is PrimitiveType => primitiveTypeList.includes(type as any);

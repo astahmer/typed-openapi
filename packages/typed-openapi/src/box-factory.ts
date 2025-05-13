@@ -1,6 +1,6 @@
 import type { ReferenceObject } from "openapi3-ts/oas31";
-import { Box } from "./box";
-import { AnyBoxDef, BoxFactory, OpenapiSchemaConvertContext, StringOrBox, type LibSchemaObject } from "./types";
+import { Box } from "./box.ts";
+import { AnyBoxDef, BoxFactory, OpenapiSchemaConvertContext, StringOrBox, type LibSchemaObject } from "./types.ts";
 
 export const unwrap = (param: StringOrBox) => (typeof param === "string" ? param : param.value);
 export const createFactory = <T extends OpenapiSchemaConvertContext["factory"]>(f: T) => f;
