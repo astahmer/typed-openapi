@@ -1,6 +1,5 @@
 import { capitalize, groupBy } from "pastable/server";
 import { Box } from "./box.ts";
-import { prettify } from "./format.ts";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 import { AnyBox, AnyBoxDef } from "./types.ts";
 import * as Codegen from "@sinclair/typebox-codegen";
@@ -53,7 +52,7 @@ const replacerByRuntime = {
       .replace(new RegExp(`(${endpointExport.source})` + new RegExp(/([\s\S]*? )(z\.object)(\()/).source, "g"), "$1$2("),
 };
 
-export const generateFile = async (options: GeneratorOptions) => {
+export const generateFile = (options: GeneratorOptions) => {
   const ctx = { ...options, runtime: options.runtime ?? "none" } as GeneratorContext;
 
   const schemaList = generateSchemaList(ctx);
@@ -93,7 +92,7 @@ export const generateFile = async (options: GeneratorOptions) => {
   ${apiClient}
   `;
 
-  return prettify(file);
+  return (file);
 };
 
 const generateSchemaList = ({ refs, runtime }: GeneratorContext) => {

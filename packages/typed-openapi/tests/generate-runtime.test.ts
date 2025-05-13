@@ -17,10 +17,10 @@ samples.forEach((sample) => {
     runtimes.forEach((runtime: string) => {
       if (runtime === "arktype" && sample === "docker.openapi") return;
 
-      test(`generate ${runtime}`, async () => {
-        const tsRouter = await generateFile({ ...ctx, runtime: runtime as any });
+      test(`generate ${runtime}`, () => {
+        const tsRouter = generateFile({ ...ctx, runtime: runtime as any });
         const runtimeName = runtime === "none" ? "client" : runtime;
-        await expect(tsRouter).toMatchFileSnapshot(`./snapshots/${sample}.` + runtimeName + ".ts");
+        expect(tsRouter).toMatchFileSnapshot(`./snapshots/${sample}.` + runtimeName + ".ts");
       });
     });
   });

@@ -7,7 +7,7 @@ import { generateFile } from "../src/generator.ts";
 describe("generator", () => {
   test("petstore", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
-    expect(await generateFile(mapOpenApiEndpoints(openApiDoc))).toMatchInlineSnapshot(`
+    expect(generateFile(mapOpenApiEndpoints(openApiDoc))).toMatchInlineSnapshot(`
       "export namespace Schemas {
         // <Schemas>
         export type Order = Partial<{
@@ -380,8 +380,8 @@ describe("generator", () => {
     `);
   });
 
-  test("nullable string", async ({ expect }) => {
-    expect(await generateFile(mapOpenApiEndpoints({
+  test("nullable string", ({ expect }) => {
+    expect(generateFile(mapOpenApiEndpoints({
       "openapi": "3.0.0",
       "info": {
         "version": "1.0.0",

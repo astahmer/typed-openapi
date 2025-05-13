@@ -9,6 +9,7 @@ import { allowedRuntimes, generateFile } from "./generator.ts";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 import { generateTanstackQueryFile } from "./tanstack-query.generator.ts";
 import { readFileSync } from "fs";
+import { prettify } from "./format.ts";
 
 const { name, version } = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 const cwd = process.cwd();
@@ -33,7 +34,7 @@ cli
     const ctx = mapOpenApiEndpoints(openApiDoc);
     console.log(`Found ${ctx.endpointList.length} endpoints`);
 
-    const content = await generateFile({ ...ctx, runtime: options.runtime });
+    const content = await prettify(generateFile({ ...ctx, runtime: options.runtime }));
     const outputPath = join(
       cwd,
       options.output ?? input + `.${options.runtime === "none" ? "client" : options.runtime}.ts`,

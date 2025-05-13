@@ -9,6 +9,8 @@ import { parse } from "yaml";
 // @ts-expect-error
 import { default as petstoreYaml } from "./petstore.yaml?raw";
 import { UrlSaver } from "./url-saver";
+import { fromPromise } from "xstate/lib/behaviors";
+import { prettify } from "./format";
 
 const urlSaver = new UrlSaver();
 const initialInputList = { "petstore.yaml": urlSaver.getValue("input") || petstoreYaml };
@@ -29,11 +31,11 @@ type PlaygroundContext = {
 
 type PlaygroundEvent =
   | {
-      type: "Editor Loaded";
-      editor: editor.IStandaloneCodeEditor;
-      monaco: Monaco;
-      kind: "input" | "output";
-    }
+    type: "Editor Loaded";
+    editor: editor.IStandaloneCodeEditor;
+    monaco: Monaco;
+    kind: "input" | "output";
+  }
   | { type: "Select input tab"; name: string }
   | { type: "Select output tab"; name: string }
   | { type: "Update runtime"; runtime: OutputRuntime }
@@ -144,7 +146,7 @@ export const playgroundMachine = createMachine(
         const context = mapOpenApiEndpoints(openApiDoc);
         console.log(`Found ${context.endpointList.length} endpoints`);
 
-        const content = generateFile({ ...context, runtime: ctx.runtime });
+        const content = prettify(generateFile({ ...context, runtime: ctx.runtime }));
         const outputList = {
           ["petstore.client.ts"]: content,
         };
