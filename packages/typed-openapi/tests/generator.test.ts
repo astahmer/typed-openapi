@@ -691,14 +691,7 @@ describe("generator", () => {
           parameters: {
             query: Partial<{
               searchQuery: string;
-              includeRoles: Array<
-                | "super-admin"
-                | "buyer"
-                | "admin"
-                | "coordinator"
-                | "requestor"
-                | Array<"super-admin" | "buyer" | "admin" | "coordinator" | "requestor">
-              >;
+              includeRoles: Array<"super-admin" | "buyer" | "admin" | "coordinator" | "requestor">;
             }>;
             path: { organizationId: string };
           };

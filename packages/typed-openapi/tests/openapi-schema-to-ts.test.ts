@@ -300,18 +300,18 @@ test("getSchemaBox", () => {
     `
     {
       "type": "union",
-      "value": "string | number | Array<string | number>",
+      "value": "string | number",
     }
   `,
   );
 
   // StringAndNumberMaybeMultiple
   expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`
-      {
-        "type": "union",
-        "value": "string | number | Array<string | number>",
-      }
-    `);
+    {
+      "type": "union",
+      "value": "string | number",
+    }
+  `);
 
   // ObjectWithArrayUnion
   expect(
@@ -324,7 +324,7 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "ref",
-      "value": "Partial<{ unionOrArrayOfUnion: string | number | Array<string | number> }>",
+      "value": "Partial<{ unionOrArrayOfUnion: string | number }>",
     }
   `);
 
@@ -610,7 +610,7 @@ describe("getSchemaBox with context", () => {
       `
       {
         "type": "ref",
-        "value": "Partial<{ user: User | Member, users: Array<User | Member | Array<User | Member>>, basic: number }>",
+        "value": "Partial<{ user: User | Member, users: Array<User | Member>, basic: number }>",
       }
     `,
     );

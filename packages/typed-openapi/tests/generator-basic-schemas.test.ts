@@ -154,11 +154,11 @@ test("getSchemaBox", async () => {
   expect(await getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`"export type _Test = string & number;"`);
 
   expect(await getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    `"export type _Test = string | number | Array<string | number>;"`,
+    `"export type _Test = string | number;"`,
   );
 
   // StringAndNumberMaybeMultiple
-  expect(await getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`"export type _Test = string | number | Array<string | number>;"`);
+  expect(await getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`"export type _Test = string | number;"`);
 
   // ObjectWithArrayUnion
   expect(
@@ -168,7 +168,7 @@ test("getSchemaBox", async () => {
         unionOrArrayOfUnion: { anyOf: [{ type: "string" }, { type: "number" }] },
       },
     }),
-  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ unionOrArrayOfUnion: string | number | Array<string | number> }>;"`);
+  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ unionOrArrayOfUnion: string | number }>;"`);
 
   // ObjectWithIntersection
   expect(
@@ -393,7 +393,7 @@ describe("getSchemaBox with context", () => {
       `
       {
         "type": "ref",
-        "value": "Partial<{ user: User | Member, users: Array<User | Member | Array<User | Member>>, basic: number }>",
+        "value": "Partial<{ user: User | Member, users: Array<User | Member>, basic: number }>",
       }
     `,
     );

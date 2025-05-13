@@ -40,14 +40,15 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
       return t.union(schema.oneOf.map((prop) => openApiSchemaToTs({ schema: prop, ctx, meta })));
     }
 
-    // anyOf = oneOf but with 1 or more = `T extends oneOf ? T | T[] : never`
+    // tl;dr: anyOf = oneOf
+    // oneOf matches exactly one subschema, and anyOf can match one or more subschemas.
+    // https://swagger.io/docs/specification/v3_0/data-models/oneof-anyof-allof-not/
     if (schema.anyOf) {
       if (schema.anyOf.length === 1) {
         return openApiSchemaToTs({ schema: schema.anyOf[0]!, ctx, meta });
       }
 
-      const oneOf = t.union(schema.anyOf.map((prop) => openApiSchemaToTs({ schema: prop, ctx, meta })));
-      return t.union([oneOf, t.array(oneOf)]);
+      return t.union(schema.anyOf.map((prop) => openApiSchemaToTs({ schema: prop, ctx, meta })));
     }
 
     if (schema.allOf) {
