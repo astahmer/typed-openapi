@@ -17,7 +17,7 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
