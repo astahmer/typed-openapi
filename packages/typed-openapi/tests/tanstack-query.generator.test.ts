@@ -1,0 +1,190 @@
+import { describe, test } from "vitest";
+import SwaggerParser from "@apidevtools/swagger-parser";
+import type { OpenAPIObject } from "openapi3-ts/oas31";
+import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints";
+import { generateTanstackQueryFile } from "../src/tanstack-query.generator";
+
+describe("generator", () => {
+  test("petstore", async ({ expect }) => {
+    const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
+    expect(generateTanstackQueryFile({
+      ...mapOpenApiEndpoints(openApiDoc),
+      relativeApiClientPath: "./api.client.ts"
+    })).toMatchInlineSnapshot(`
+      "import { queryOptions, QueryClient } from "@tanstack/react-query";
+      import type { EndpointByMethod, ApiClient } from "./api.client.ts";
+
+      type EndpointQueryKey<TOptions extends EndpointParameters> = [
+        TOptions & {
+          _id: string;
+          _infinite?: boolean;
+        },
+      ];
+
+      const createQueryKey = <TOptions extends EndpointParameters>(
+        id: string,
+        options?: TOptions,
+        infinite?: boolean,
+      ): [EndpointQueryKey<TOptions>[0]] => {
+        const params: EndpointQueryKey<TOptions>[0] = { _id: id } as EndpointQueryKey<TOptions>[0];
+        if (infinite) {
+          params._infinite = infinite;
+        }
+        if (options?.body) {
+          params.body = options.body;
+        }
+        if (options?.header) {
+          params.header = options.header;
+        }
+        if (options?.path) {
+          params.path = options.path;
+        }
+        if (options?.query) {
+          params.query = options.query;
+        }
+        return [params];
+      };
+
+      // <EndpointByMethod.Shorthands>
+      export type PutEndpoints = EndpointByMethod["put"];
+      export type PostEndpoints = EndpointByMethod["post"];
+      export type GetEndpoints = EndpointByMethod["get"];
+      export type DeleteEndpoints = EndpointByMethod["delete"];
+      // </EndpointByMethod.Shorthands>
+
+      // <ApiClientTypes>
+      export type EndpointParameters = {
+        body?: unknown;
+        query?: Record<string, unknown>;
+        header?: Record<string, unknown>;
+        path?: Record<string, unknown>;
+      };
+
+      type RequiredKeys<T> = {
+        [P in keyof T]-?: undefined extends T[P] ? never : P;
+      }[keyof T];
+
+      type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
+
+      // </ApiClientTypes>
+
+      // <ApiClient>
+      export class TanstackQueryApiClient {
+        constructor(public client: ApiClient) {}
+
+        // <ApiClient.put>
+        put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ) {
+          const queryKey = createQueryKey(path, params[0]);
+          const query = {
+            endpoint: {} as TEndpoint,
+            res: {} as TEndpoint["response"],
+            queryKey,
+            options: queryOptions({
+              queryFn: async ({ queryKey, signal }) => {
+                const res = await this.client.put(path, {
+                  ...params,
+                  ...queryKey[0],
+                  signal,
+                  throwOnError: true,
+                });
+                return res as TEndpoint["response"];
+              },
+              queryKey: queryKey,
+            }),
+          };
+
+          return query;
+        }
+        // </ApiClient.get>
+
+        // <ApiClient.post>
+        post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ) {
+          const queryKey = createQueryKey(path, params[0]);
+          const query = {
+            endpoint: {} as TEndpoint,
+            res: {} as TEndpoint["response"],
+            queryKey,
+            options: queryOptions({
+              queryFn: async ({ queryKey, signal }) => {
+                const res = await this.client.post(path, {
+                  ...params,
+                  ...queryKey[0],
+                  signal,
+                  throwOnError: true,
+                });
+                return res as TEndpoint["response"];
+              },
+              queryKey: queryKey,
+            }),
+          };
+
+          return query;
+        }
+        // </ApiClient.get>
+
+        // <ApiClient.get>
+        get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ) {
+          const queryKey = createQueryKey(path, params[0]);
+          const query = {
+            endpoint: {} as TEndpoint,
+            res: {} as TEndpoint["response"],
+            queryKey,
+            options: queryOptions({
+              queryFn: async ({ queryKey, signal }) => {
+                const res = await this.client.get(path, {
+                  ...params,
+                  ...queryKey[0],
+                  signal,
+                  throwOnError: true,
+                });
+                return res as TEndpoint["response"];
+              },
+              queryKey: queryKey,
+            }),
+          };
+
+          return query;
+        }
+        // </ApiClient.get>
+
+        // <ApiClient.delete>
+        delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ) {
+          const queryKey = createQueryKey(path, params[0]);
+          const query = {
+            endpoint: {} as TEndpoint,
+            res: {} as TEndpoint["response"],
+            queryKey,
+            options: queryOptions({
+              queryFn: async ({ queryKey, signal }) => {
+                const res = await this.client.delete(path, {
+                  ...params,
+                  ...queryKey[0],
+                  signal,
+                  throwOnError: true,
+                });
+                return res as TEndpoint["response"];
+              },
+              queryKey: queryKey,
+            }),
+          };
+
+          return query;
+        }
+        // </ApiClient.get>
+      }
+      "
+    `);
+  });
+});

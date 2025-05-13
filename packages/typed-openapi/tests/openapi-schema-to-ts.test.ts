@@ -17,7 +17,7 @@ const getSchemaBox = (schema: LibSchemaObject) => openApiSchemaToTs({ schema, ct
 test("getSchemaBox", () => {
   expect(getSchemaBox({ type: "null" })).toMatchInlineSnapshot(`
     {
-      "type": "ref",
+      "type": "literal",
       "value": "null",
     }
   `);

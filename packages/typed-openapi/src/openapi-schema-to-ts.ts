@@ -29,7 +29,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
     }
 
     if (schema.type === "null") {
-      return t.reference("null");
+      return t.literal("null");
     }
 
     if (schema.oneOf) {
@@ -81,7 +81,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
       if (schemaType === "string") return t.string();
       if (schemaType === "boolean") return t.boolean();
       if (schemaType === "number" || schemaType === "integer") return t.number();
-      if (schemaType === "null") return t.reference("null");
+      if (schemaType === "null") return t.literal("null");
     }
 
     if (schemaType === "array") {
@@ -154,7 +154,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
   if (!isReferenceObject(schema)) {
     // OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
     if ((schema as LibSchemaObject).nullable) {
-      output = t.union([output, t.reference("null")]);
+      output = t.union([output, t.literal("null")]);
     }
   }
 
