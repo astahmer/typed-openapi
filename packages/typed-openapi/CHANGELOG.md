@@ -1,5 +1,27 @@
 # typed-openapi
 
+## 1.1.0
+
+### Minor Changes
+
+- f029e94: Fetcher is now expected to return a Response, so that the api client can have a .request method that returns
+  the raw object
+
+  all methods (get post etc) will be parsed using the overridable "parseResponse" api client fn property
+
+- c1b9dcb: fix: anyOf to ts
+
+  https://github.com/astahmer/typed-openapi/issues/31
+
+### Patch Changes
+
+- d7eda3d: rm AllEndpoints type
+- 2abc8b4: chore: export Fetcher type
+- 6dfbd19: fix: tanstack client output path
+- f66571d: chore: make "endpoint" a type-only property
+- 93bd157: better endpoint alias
+- da6af35: fix: unused QueryClient import
+
 ## 1.0.1
 
 ### Patch Changes
