@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 1.0.1
+
+### Patch Changes
+
+- 4a909eb: Fix CLI & package.json by removing CJS usage
+
 ## 1.0.0
 
 ### Major Changes
