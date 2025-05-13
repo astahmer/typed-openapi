@@ -253,7 +253,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   response: TConfig["response"];
 };
 
-type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Endpoint["response"]>;
+export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Endpoint["response"]>;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;

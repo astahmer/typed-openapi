@@ -300,7 +300,7 @@ describe("generator", () => {
         response: TConfig["response"];
       };
 
-      type Fetcher = (
+      export type Fetcher = (
         method: Method,
         url: string,
         parameters?: EndpointParameters | undefined,
@@ -729,7 +729,7 @@ describe("generator", () => {
         response: TConfig["response"];
       };
 
-      type Fetcher = (
+      export type Fetcher = (
         method: Method,
         url: string,
         parameters?: EndpointParameters | undefined,

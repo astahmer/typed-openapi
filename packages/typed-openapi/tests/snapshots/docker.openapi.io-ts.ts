@@ -3637,7 +3637,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   response: TConfig["response"];
 };
 
-type Fetcher = (
+export type Fetcher = (
   method: Method,
   url: string,
   parameters?: EndpointParameters | undefined,
