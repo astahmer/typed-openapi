@@ -84,18 +84,50 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                             ...params,
                             ...queryKey[0],
                             signal,
-                            throwOnError: true
                         });
                         return res as TEndpoint["response"];
                     },
                     queryKey: queryKey
                 }),
+                mutationOptions: {
+                    mutationKey: queryKey,
+                    mutationFn: async (localOptions) => {
+                        const res = await this.client.${method}(path, {
+                            ...params,
+                            ...queryKey[0],
+                            ...localOptions,
+                        });
+                        return res as TEndpoint["response"];
+                    }
+                }
             };
 
             return query
         }
-        // </ApiClient.get>
+        // </ApiClient.${method}>
         `).join("\n")}
+
+        // <ApiClient.request>
+        /**
+         * Generic mutation method with full type-safety for any endpoint that doesnt require parameters to be passed initially
+         */
+        mutation<
+        TMethod extends keyof EndpointByMethod,
+        TPath extends keyof EndpointByMethod[TMethod],
+        TEndpoint extends EndpointByMethod[TMethod][TPath]
+        >(
+          method: TMethod,
+          path: TPath) {
+            const mutationKey = [{ method, path }] as const;
+            return {
+                mutationKey: mutationKey,
+                mutationOptions: {
+                    mutationKey: mutationKey,
+                    mutationFn: async (params: TEndpoint extends { parameters: infer Parameters} ? Parameters: never) => this.client.request(method, path, params)
+                }
+            }
+        }
+        // </ApiClient.request>
   }
 `;
 
