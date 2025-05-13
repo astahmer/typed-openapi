@@ -91,7 +91,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                 }),
                 mutationOptions: {
                     mutationKey: queryKey,
-                    mutationFn: async (localOptions) => {
+                    mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters} ? Parameters: never) => {
                         const res = await this.client.${method}(path, {
                             ...params,
                             ...queryKey[0],

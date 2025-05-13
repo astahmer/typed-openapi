@@ -95,7 +95,7 @@ describe("generator", () => {
             }),
             mutationOptions: {
               mutationKey: queryKey,
-              mutationFn: async (localOptions) => {
+              mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
                 const res = await this.client.put(path, {
                   ...params,
                   ...queryKey[0],
@@ -133,7 +133,7 @@ describe("generator", () => {
             }),
             mutationOptions: {
               mutationKey: queryKey,
-              mutationFn: async (localOptions) => {
+              mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
                 const res = await this.client.post(path, {
                   ...params,
                   ...queryKey[0],
@@ -171,7 +171,7 @@ describe("generator", () => {
             }),
             mutationOptions: {
               mutationKey: queryKey,
-              mutationFn: async (localOptions) => {
+              mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
                 const res = await this.client.get(path, {
                   ...params,
                   ...queryKey[0],
@@ -209,7 +209,7 @@ describe("generator", () => {
             }),
             mutationOptions: {
               mutationKey: queryKey,
-              mutationFn: async (localOptions) => {
+              mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
                 const res = await this.client.delete(path, {
                   ...params,
                   ...queryKey[0],
