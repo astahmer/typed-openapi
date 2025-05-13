@@ -10,6 +10,7 @@ import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 import { generateTanstackQueryFile } from "./tanstack-query.generator.ts";
 import { readFileSync } from "fs";
 import { prettify } from "./format.ts";
+import { dirname } from "path";
 
 const { name, version } = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 const cwd = process.cwd();
@@ -48,7 +49,7 @@ cli
         ...ctx,
         relativeApiClientPath: './' + basename(outputPath),
       });
-      const tanstackOutputPath = join(cwd, typeof options.tanstack === "string" ? options.tanstack : `tanstack.client.ts`);
+      const tanstackOutputPath = join(dirname(outputPath), typeof options.tanstack === "string" ? options.tanstack : `tanstack.client.ts`);
       console.log("Generating tanstack client...", tanstackOutputPath);
       await writeFile(tanstackOutputPath, tanstackContent);
     }
