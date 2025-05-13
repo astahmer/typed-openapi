@@ -1,5 +1,18 @@
 # typed-openapi
 
+## 1.0.0
+
+### Major Changes
+
+- 8ec5d0b: bump all deps
+
+### Minor Changes
+
+- 8ec5d0b: Add @tanstack/react-query generated client
+- 8ec5d0b: Fix `Schemas.null` references in TS output
+- 8ec5d0b: Better output when using `schema.additionalProperties`, especially when specifying
+  `additionalProperties.type`
+
 ## 0.10.1
 
 ### Patch Changes
