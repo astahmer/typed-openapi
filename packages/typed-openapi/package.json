@@ -2,8 +2,11 @@
   "name": "typed-openapi",
   "type": "module",
   "version": "1.0.0",
-  "main": "dist/index.cjs",
+  "main": "dist/index.js",
   "module": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "bin": {
     "typed-openapi": "bin.js"
   },
@@ -13,7 +16,7 @@
     "directory": "packages/typed-openapi"
   },
   "scripts": {
-    "start": "node ./dist/cli.cjs",
+    "start": "node ./dist/cli.js",
     "dev": "tsup --watch",
     "build": "tsup",
     "test": "vitest",
