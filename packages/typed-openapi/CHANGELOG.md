@@ -1,5 +1,13 @@
 # typed-openapi
 
+## 1.3.0
+
+### Minor Changes
+
+- 91b005f: add parenthesis to handle priority between union/intersection
+
+  this fixes an issue where `(A | B | C) & D` would be ambiguous and could be interpreted as `A | B | (C & D`
+
 ## 1.2.0
 
 ### Minor Changes
