@@ -71,9 +71,7 @@ export const Pet = y.object({
   status: y
     .mixed()
     .oneOf([
-      y.mixed((value): value is "available" => value === "available").required(),
-      y.mixed((value): value is "pending" => value === "pending").required(),
-      y.mixed((value): value is "sold" => value === "sold").required(),
+      y.mixed().oneOf(["available", "pending", "sold"]).required(),
       y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
     ])
     .required()

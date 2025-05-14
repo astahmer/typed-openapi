@@ -56,7 +56,9 @@ export const Pet = z.object({
   category: z.union([Category, z.undefined()]).optional(),
   photoUrls: z.array(z.string()),
   tags: z.union([z.array(Tag), z.undefined()]).optional(),
-  status: z.union([z.literal("available"), z.literal("pending"), z.literal("sold"), z.undefined()]).optional(),
+  status: z
+    .union([z.union([z.literal("available"), z.literal("pending"), z.literal("sold")]), z.undefined()])
+    .optional(),
 });
 
 export type ApiResponse = z.infer<typeof ApiResponse>;

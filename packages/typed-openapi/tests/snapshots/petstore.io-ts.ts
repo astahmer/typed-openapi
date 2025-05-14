@@ -58,7 +58,7 @@ export const Pet = t.type({
   tags: t.union([t.undefined, t.union([t.array(Tag), t.undefined])]),
   status: t.union([
     t.undefined,
-    t.union([t.literal("available"), t.literal("pending"), t.literal("sold"), t.undefined]),
+    t.union([t.union([t.literal("available"), t.literal("pending"), t.literal("sold")]), t.undefined]),
   ]),
 });
 

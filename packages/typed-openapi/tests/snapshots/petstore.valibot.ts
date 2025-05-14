@@ -56,7 +56,9 @@ export const Pet = v.object({
   category: v.optional(v.union([Category, v.undefined()])),
   photoUrls: v.array(v.string()),
   tags: v.optional(v.union([v.array(Tag), v.undefined()])),
-  status: v.optional(v.union([v.literal("available"), v.literal("pending"), v.literal("sold"), v.undefined()])),
+  status: v.optional(
+    v.union([v.union([v.literal("available"), v.literal("pending"), v.literal("sold")]), v.undefined()]),
+  ),
 });
 
 export type ApiResponse = v.InferOutput<typeof ApiResponse>;

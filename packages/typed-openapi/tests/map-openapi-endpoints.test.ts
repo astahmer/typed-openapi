@@ -1473,7 +1473,7 @@ describe("map-openapi-endpoints", () => {
             "parameters": {
               "query": {
                 "type": "ref",
-                "value": "Partial<{ status: "available" | "pending" | "sold" }>",
+                "value": "Partial<{ status: ("available" | "pending" | "sold") }>",
               },
             },
             "path": "/pet/findByStatus",

@@ -695,11 +695,16 @@ export const Volume = y.object({
   UsageData: y
     .mixed()
     .oneOf([
-      y.object({
-        Size: y.number().required(),
-        RefCount: y.number().required(),
-      }),
-      y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+      y
+        .mixed()
+        .oneOf([
+          y.object({
+            Size: y.number().required(),
+            RefCount: y.number().required(),
+          }),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required(),
       y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
     ])
     .required()
@@ -928,8 +933,7 @@ export const Plugin = y.object({
       ProtocolScheme: y
         .mixed()
         .oneOf([
-          y.mixed((value): value is "" => value === "").required(),
-          y.mixed((value): value is "moby.plugins.http/v1" => value === "moby.plugins.http/v1").required(),
+          y.mixed().oneOf(["", "moby.plugins.http/v1"]).required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
         .required()
@@ -1642,8 +1646,10 @@ export const SystemVersion = y.object({
         Details: y
           .mixed()
           .oneOf([
-            y.object({}),
-            y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+            y
+              .mixed()
+              .oneOf([y.object({}), y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>])
+              .required(),
             y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
           ])
           .required()
@@ -3648,8 +3654,7 @@ export const post_ServiceUpdate = {
       registryAuthFrom: y
         .mixed()
         .oneOf([
-          y.mixed((value): value is "spec" => value === "spec").required(),
-          y.mixed((value): value is "previous-spec" => value === "previous-spec").required(),
+          y.mixed().oneOf(["spec", "previous-spec"]).required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
         .required(),

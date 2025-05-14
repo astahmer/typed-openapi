@@ -28,7 +28,7 @@ export namespace Schemas {
     category?: Category | undefined;
     photoUrls: Array<string>;
     tags?: Array<Tag> | undefined;
-    status?: "available" | "pending" | "sold" | undefined;
+    status?: ("available" | "pending" | "sold") | undefined;
   };
   export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
 

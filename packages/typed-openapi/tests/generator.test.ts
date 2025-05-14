@@ -39,7 +39,7 @@ describe("generator", () => {
           category?: Category | undefined;
           photoUrls: Array<string>;
           tags?: Array<Tag> | undefined;
-          status?: "available" | "pending" | "sold" | undefined;
+          status?: ("available" | "pending" | "sold") | undefined;
         };
         export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
 
@@ -669,9 +669,9 @@ describe("generator", () => {
           accessTokenExpirationDate: number;
           me: {
             id: string;
-            firstName?: string | null | undefined;
-            lastName?: string | null | undefined;
-            profilePictureURL?: string | null | undefined;
+            firstName?: (string | null) | undefined;
+            lastName?: (string | null) | undefined;
+            profilePictureURL?: (string | null) | undefined;
             email: string;
           };
           refreshToken: string;
@@ -698,10 +698,10 @@ describe("generator", () => {
           response: {
             members: Array<{
               id: string;
-              firstName?: string | null | undefined;
-              lastName?: string | null | undefined;
+              firstName?: (string | null) | undefined;
+              lastName?: (string | null) | undefined;
               email: string;
-              profilePictureURL?: string | null | undefined;
+              profilePictureURL?: (string | null) | undefined;
             }>;
           };
         };

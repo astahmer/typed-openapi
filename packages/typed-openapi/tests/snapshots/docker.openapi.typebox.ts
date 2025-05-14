@@ -604,11 +604,13 @@ export const Volume = Type.Object({
   Options: Type.Record(Type.String(), Type.String()),
   UsageData: Type.Optional(
     Type.Union([
-      Type.Object({
-        Size: Type.Number(),
-        RefCount: Type.Number(),
-      }),
-      Type.Null(),
+      Type.Union([
+        Type.Object({
+          Size: Type.Number(),
+          RefCount: Type.Number(),
+        }),
+        Type.Null(),
+      ]),
       Type.Undefined(),
     ]),
   ),
@@ -838,7 +840,7 @@ export const Plugin = Type.Object({
       Types: Type.Array(PluginInterfaceType),
       Socket: Type.String(),
       ProtocolScheme: Type.Optional(
-        Type.Union([Type.Literal(""), Type.Literal("moby.plugins.http/v1"), Type.Undefined()]),
+        Type.Union([Type.Union([Type.Literal(""), Type.Literal("moby.plugins.http/v1")]), Type.Undefined()]),
       ),
     }),
     Entrypoint: Type.Array(Type.String()),
@@ -1578,7 +1580,9 @@ export const SystemVersion = Type.Partial(
       Type.Object({
         Name: Type.String(),
         Version: Type.String(),
-        Details: Type.Optional(Type.Union([Type.Partial(Type.Object({})), Type.Null(), Type.Undefined()])),
+        Details: Type.Optional(
+          Type.Union([Type.Union([Type.Partial(Type.Object({})), Type.Null()]), Type.Undefined()]),
+        ),
       }),
     ),
     Version: Type.String(),
@@ -3469,7 +3473,10 @@ export const post_ServiceUpdate = Type.Object({
   parameters: Type.Object({
     query: Type.Object({
       version: Type.Number(),
-      registryAuthFrom: Type.Union([Type.Literal("spec"), Type.Literal("previous-spec"), Type.Undefined()]),
+      registryAuthFrom: Type.Union([
+        Type.Union([Type.Literal("spec"), Type.Literal("previous-spec")]),
+        Type.Undefined(),
+      ]),
       rollback: Type.Union([Type.String(), Type.Undefined()]),
     }),
     path: Type.Object({

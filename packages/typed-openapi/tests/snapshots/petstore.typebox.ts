@@ -69,7 +69,10 @@ export const Pet = Type.Object({
   photoUrls: Type.Array(Type.String()),
   tags: Type.Optional(Type.Union([Type.Array(Tag), Type.Undefined()])),
   status: Type.Optional(
-    Type.Union([Type.Literal("available"), Type.Literal("pending"), Type.Literal("sold"), Type.Undefined()]),
+    Type.Union([
+      Type.Union([Type.Literal("available"), Type.Literal("pending"), Type.Literal("sold")]),
+      Type.Undefined(),
+    ]),
   ),
 });
 

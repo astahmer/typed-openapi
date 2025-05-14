@@ -306,7 +306,7 @@ export namespace Schemas {
     Scope: "local" | "global";
     ClusterVolume?: ClusterVolume | undefined;
     Options: Record<string, string>;
-    UsageData?: { Size: number; RefCount: number } | null | undefined;
+    UsageData?: ({ Size: number; RefCount: number } | null) | undefined;
   };
   export type VolumeCreateOptions = Partial<{
     Name: string;
@@ -413,7 +413,7 @@ export namespace Schemas {
       Interface: {
         Types: Array<PluginInterfaceType>;
         Socket: string;
-        ProtocolScheme?: "" | "moby.plugins.http/v1" | undefined;
+        ProtocolScheme?: ("" | "moby.plugins.http/v1") | undefined;
       };
       Entrypoint: Array<string>;
       WorkDir: string;
@@ -726,7 +726,7 @@ export namespace Schemas {
   export type ContainerWaitResponse = { StatusCode: number; Error?: ContainerWaitExitError | undefined };
   export type SystemVersion = Partial<{
     Platform: { Name: string };
-    Components: Array<{ Name: string; Version: string; Details?: Partial<{}> | null | undefined }>;
+    Components: Array<{ Name: string; Version: string; Details?: (Partial<{}> | null) | undefined }>;
     Version: string;
     ApiVersion: string;
     MinAPIVersion: string;
@@ -1896,7 +1896,11 @@ export namespace Endpoints {
     path: "/services/{id}/update";
     requestFormat: "json";
     parameters: {
-      query: { version: number; registryAuthFrom: "spec" | "previous-spec" | undefined; rollback: string | undefined };
+      query: {
+        version: number;
+        registryAuthFrom: ("spec" | "previous-spec") | undefined;
+        rollback: string | undefined;
+      };
       path: { id: string };
       header: Partial<{ "X-Registry-Auth": string }>;
       body: Schemas.ServiceSpec & Record<string, unknown>;

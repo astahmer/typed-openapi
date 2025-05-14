@@ -546,11 +546,13 @@ export const Volume = v.object({
   Options: v.record(v.string(), v.string()),
   UsageData: v.optional(
     v.union([
-      v.object({
-        Size: v.number(),
-        RefCount: v.number(),
-      }),
-      v.null(),
+      v.union([
+        v.object({
+          Size: v.number(),
+          RefCount: v.number(),
+        }),
+        v.null(),
+      ]),
       v.undefined(),
     ]),
   ),
@@ -753,7 +755,7 @@ export const Plugin = v.object({
     Interface: v.object({
       Types: v.array(PluginInterfaceType),
       Socket: v.string(),
-      ProtocolScheme: v.optional(v.union([v.literal(""), v.literal("moby.plugins.http/v1"), v.undefined()])),
+      ProtocolScheme: v.optional(v.union([v.union([v.literal(""), v.literal("moby.plugins.http/v1")]), v.undefined()])),
     }),
     Entrypoint: v.array(v.string()),
     WorkDir: v.string(),
@@ -1432,7 +1434,7 @@ export const SystemVersion = v.object({
       v.object({
         Name: v.string(),
         Version: v.string(),
-        Details: v.optional(v.union([v.object({}), v.null(), v.undefined()])),
+        Details: v.optional(v.union([v.union([v.object({}), v.null()]), v.undefined()])),
       }),
     ),
   ),
@@ -3148,7 +3150,7 @@ export const post_ServiceUpdate = v.object({
   parameters: v.object({
     query: v.object({
       version: v.number(),
-      registryAuthFrom: v.union([v.literal("spec"), v.literal("previous-spec"), v.undefined()]),
+      registryAuthFrom: v.union([v.union([v.literal("spec"), v.literal("previous-spec")]), v.undefined()]),
       rollback: v.union([v.string(), v.undefined()]),
     }),
     path: v.object({

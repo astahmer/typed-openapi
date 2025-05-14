@@ -538,11 +538,13 @@ export const Volume = z.object({
   Options: z.record(z.string()),
   UsageData: z
     .union([
-      z.object({
-        Size: z.number(),
-        RefCount: z.number(),
-      }),
-      z.null(),
+      z.union([
+        z.object({
+          Size: z.number(),
+          RefCount: z.number(),
+        }),
+        z.null(),
+      ]),
       z.undefined(),
     ])
     .optional(),
@@ -745,7 +747,7 @@ export const Plugin = z.object({
     Interface: z.object({
       Types: z.array(PluginInterfaceType),
       Socket: z.string(),
-      ProtocolScheme: z.union([z.literal(""), z.literal("moby.plugins.http/v1"), z.undefined()]).optional(),
+      ProtocolScheme: z.union([z.union([z.literal(""), z.literal("moby.plugins.http/v1")]), z.undefined()]).optional(),
     }),
     Entrypoint: z.array(z.string()),
     WorkDir: z.string(),
@@ -1424,7 +1426,7 @@ export const SystemVersion = z.object({
       z.object({
         Name: z.string(),
         Version: z.string(),
-        Details: z.union([z.object({}), z.null(), z.undefined()]).optional(),
+        Details: z.union([z.union([z.object({}), z.null()]), z.undefined()]).optional(),
       }),
     )
     .optional(),
@@ -3137,7 +3139,7 @@ export const post_ServiceUpdate = {
   parameters: z.object({
     query: z.object({
       version: z.number(),
-      registryAuthFrom: z.union([z.literal("spec"), z.literal("previous-spec"), z.undefined()]),
+      registryAuthFrom: z.union([z.union([z.literal("spec"), z.literal("previous-spec")]), z.undefined()]),
       rollback: z.union([z.string(), z.undefined()]),
     }),
     path: z.object({

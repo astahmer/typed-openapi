@@ -266,10 +266,11 @@ test("getSchemaBox", async () => {
       ]
     }),
   ).toMatchInlineSnapshot(`
-    "export type _Test =
+    "export type _Test = (
         | { category: "finance"; chift?: { integrationId: number } | undefined }
         | { category: "hris"; kombo?: { integrationId: string } | undefined }
-        | ({ category: "it-and-security" } & { sourceName: string });"
+        | { category: "it-and-security" }
+      ) & { sourceName: string };"
   `);
 
   expect(await getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
@@ -485,7 +486,7 @@ describe("getSchemaBox with context", () => {
       `
       {
         "type": "ref",
-        "value": "Partial<{ user: User | Member, users: Array<User | Member>, basic: number }>",
+        "value": "Partial<{ user: (User | Member), users: Array<(User | Member)>, basic: number }>",
       }
     `,
     );

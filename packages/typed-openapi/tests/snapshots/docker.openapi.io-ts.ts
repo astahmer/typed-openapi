@@ -572,11 +572,13 @@ export const Volume = t.type({
   UsageData: t.union([
     t.undefined,
     t.union([
-      t.type({
-        Size: t.number,
-        RefCount: t.number,
-      }),
-      t.null,
+      t.union([
+        t.type({
+          Size: t.number,
+          RefCount: t.number,
+        }),
+        t.null,
+      ]),
       t.undefined,
     ]),
   ]),
@@ -780,7 +782,10 @@ export const Plugin = t.type({
     Interface: t.type({
       Types: t.array(PluginInterfaceType),
       Socket: t.string,
-      ProtocolScheme: t.union([t.undefined, t.union([t.literal(""), t.literal("moby.plugins.http/v1"), t.undefined])]),
+      ProtocolScheme: t.union([
+        t.undefined,
+        t.union([t.union([t.literal(""), t.literal("moby.plugins.http/v1")]), t.undefined]),
+      ]),
     }),
     Entrypoint: t.array(t.string),
     WorkDir: t.string,
@@ -1508,7 +1513,7 @@ export const SystemVersion = t.type({
       t.type({
         Name: t.string,
         Version: t.string,
-        Details: t.union([t.undefined, t.union([t.type({}), t.null, t.undefined])]),
+        Details: t.union([t.undefined, t.union([t.union([t.type({}), t.null]), t.undefined])]),
       }),
     ),
   ]),
@@ -3230,7 +3235,7 @@ export const post_ServiceUpdate = t.type({
   parameters: t.type({
     query: t.type({
       version: t.number,
-      registryAuthFrom: t.union([t.literal("spec"), t.literal("previous-spec"), t.undefined]),
+      registryAuthFrom: t.union([t.union([t.literal("spec"), t.literal("previous-spec")]), t.undefined]),
       rollback: t.union([t.string, t.undefined]),
     }),
     path: t.type({

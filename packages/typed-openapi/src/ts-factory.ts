@@ -3,8 +3,8 @@ import { createFactory, unwrap } from "./box-factory.ts";
 import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
 
 export const tsFactory = createFactory({
-  union: (types) => types.map(unwrap).join(" | "),
-  intersection: (types) => types.map(unwrap).join(" & "),
+  union: (types) => `(${types.map(unwrap).join(" | ")})`,
+  intersection: (types) => `(${types.map(unwrap).join(" & ")})`,
   array: (type) => `Array<${unwrap(type)}>`,
   optional: (type) => `${unwrap(type)} | undefined`,
   reference: (name, typeArgs) => `${name}${typeArgs ? `<${typeArgs.map(unwrap).join(", ")}>` : ""}`,

@@ -31,7 +31,7 @@ test("getSchemaBox", () => {
   expect(getSchemaBox({ type: "boolean", nullable: true })).toMatchInlineSnapshot(`
     {
       "type": "union",
-      "value": "boolean | null",
+      "value": "(boolean | null)",
     }
   `);
   expect(getSchemaBox({ type: "string" })).toMatchInlineSnapshot(`
@@ -61,7 +61,7 @@ test("getSchemaBox", () => {
   expect(getSchemaBox({ type: "string", nullable: true })).toMatchInlineSnapshot(`
     {
       "type": "union",
-      "value": "string | null",
+      "value": "(string | null)",
     }
   `);
 
@@ -75,7 +75,7 @@ test("getSchemaBox", () => {
   expect(getSchemaBox({ type: "array", items: { type: "string", nullable: true } })).toMatchInlineSnapshot(`
     {
       "type": "array",
-      "value": "Array<string | null>",
+      "value": "Array<(string | null)>",
     }
   `);
   expect(getSchemaBox({ type: "object" })).toMatchInlineSnapshot(
@@ -103,7 +103,7 @@ test("getSchemaBox", () => {
     .toMatchInlineSnapshot(`
       {
         "type": "ref",
-        "value": "Partial<{ str: string, nb: number, nullable: string | null }>",
+        "value": "Partial<{ str: string, nb: number, nullable: (string | null) }>",
       }
     `);
 
@@ -163,7 +163,7 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "ref",
-      "value": "Partial<{ str: string } & { string: number }>",
+      "value": "Partial<({ str: string } & { string: number })>",
     }
   `);
 
@@ -177,7 +177,7 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "ref",
-      "value": "Partial<{ str: string } & { string: Partial<{ prop: boolean }> }>",
+      "value": "Partial<({ str: string } & { string: Partial<{ prop: boolean }> })>",
     }
   `);
 
@@ -195,7 +195,7 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "array",
-      "value": "Array<Partial<{ str: string, nullable: string | null }>>",
+      "value": "Array<Partial<{ str: string, nullable: (string | null) }>>",
     }
   `);
 
@@ -227,7 +227,7 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "ref",
-      "value": "Partial<{ enumprop: "aaa" | "bbb" | "ccc" }>",
+      "value": "Partial<{ enumprop: ("aaa" | "bbb" | "ccc") }>",
     }
   `);
 
@@ -235,7 +235,7 @@ test("getSchemaBox", () => {
     `
     {
       "type": "union",
-      "value": ""aaa" | "bbb" | "ccc"",
+      "value": "("aaa" | "bbb" | "ccc")",
     }
   `,
   );
@@ -244,7 +244,7 @@ test("getSchemaBox", () => {
   expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`
     {
       "type": "union",
-      "value": ""aaa" | "bbb" | "ccc"",
+      "value": "("aaa" | "bbb" | "ccc")",
     }
   `);
 
@@ -259,48 +259,48 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "ref",
-      "value": "Partial<{ union: string | number }>",
+      "value": "Partial<{ union: (string | number) }>",
     }
   `);
   expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
     `
     {
       "type": "union",
-      "value": "string | number",
+      "value": "(string | number)",
     }
   `,
   );
 
   // StringOrNumber
   expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`
-      {
-        "type": "union",
-        "value": "string | number",
-      }
-    `);
+    {
+      "type": "union",
+      "value": "(string | number)",
+    }
+  `);
 
   expect(getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
     `
     {
       "type": "intersection",
-      "value": "string & number",
+      "value": "(string & number)",
     }
   `,
   );
 
   // StringAndNumber
   expect(getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`
-      {
-        "type": "intersection",
-        "value": "string & number",
-      }
-    `);
+    {
+      "type": "intersection",
+      "value": "(string & number)",
+    }
+  `);
 
   expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
     `
     {
       "type": "union",
-      "value": "string | number",
+      "value": "(string | number)",
     }
   `,
   );
@@ -309,7 +309,7 @@ test("getSchemaBox", () => {
   expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`
     {
       "type": "union",
-      "value": "string | number",
+      "value": "(string | number)",
     }
   `);
 
@@ -324,7 +324,7 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "ref",
-      "value": "Partial<{ unionOrArrayOfUnion: string | number }>",
+      "value": "Partial<{ unionOrArrayOfUnion: (string | number) }>",
     }
   `);
 
@@ -339,7 +339,7 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "ref",
-      "value": "Partial<{ intersection: string & number }>",
+      "value": "Partial<{ intersection: (string & number) }>",
     }
   `);
 
@@ -347,14 +347,14 @@ test("getSchemaBox", () => {
     `
     {
       "type": "union",
-      "value": ""aaa" | "bbb" | "ccc"",
+      "value": "("aaa" | "bbb" | "ccc")",
     }
   `,
   );
   expect(getSchemaBox({ type: "number", enum: [1, 2, 3] })).toMatchInlineSnapshot(`
     {
       "type": "union",
-      "value": "1 | 2 | 3",
+      "value": "(1 | 2 | 3)",
     }
   `);
 
@@ -398,7 +398,7 @@ test("getSchemaBox", () => {
   })).toMatchInlineSnapshot(`
     {
       "type": "object",
-      "value": "{ members: Array<{ id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, email: string, profilePictureURL?: string | null | undefined }> }",
+      "value": "{ members: Array<{ id: string, firstName?: (string | null) | undefined, lastName?: (string | null) | undefined, email: string, profilePictureURL?: (string | null) | undefined }> }",
     }
   `);
 });
@@ -610,7 +610,7 @@ describe("getSchemaBox with context", () => {
       `
       {
         "type": "ref",
-        "value": "Partial<{ user: User | Member, users: Array<User | Member>, basic: number }>",
+        "value": "Partial<{ user: (User | Member), users: Array<(User | Member)>, basic: number }>",
       }
     `,
     );
@@ -634,7 +634,7 @@ describe("getSchemaBox with context", () => {
       `
       {
         "type": "ref",
-        "value": "Partial<{ name: string | null }>",
+        "value": "Partial<{ name: (string | null) }>",
       }
     `,
     );
