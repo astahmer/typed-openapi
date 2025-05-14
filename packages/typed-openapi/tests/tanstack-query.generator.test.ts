@@ -82,7 +82,7 @@ describe("generator", () => {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             queryKey,
-            options: queryOptions({
+            queryOptions: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
                 const res = await this.client.put(path, {
                   ...params,
@@ -120,7 +120,7 @@ describe("generator", () => {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             queryKey,
-            options: queryOptions({
+            queryOptions: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
                 const res = await this.client.post(path, {
                   ...params,
@@ -158,7 +158,7 @@ describe("generator", () => {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             queryKey,
-            options: queryOptions({
+            queryOptions: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
                 const res = await this.client.get(path, {
                   ...params,
@@ -196,7 +196,7 @@ describe("generator", () => {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             queryKey,
-            options: queryOptions({
+            queryOptions: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
                 const res = await this.client.delete(path, {
                   ...params,

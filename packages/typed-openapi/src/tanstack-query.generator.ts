@@ -78,7 +78,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                 /** type-only property if you need easy access to the endpoint params */
                 "~endpoint": {} as TEndpoint,
                 queryKey,
-                options: queryOptions({
+                queryOptions: queryOptions({
                     queryFn: async ({ queryKey, signal, }) => {
                         const res = await this.client.${method}(path, {
                             ...params,
