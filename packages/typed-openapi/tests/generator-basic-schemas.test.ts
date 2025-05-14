@@ -180,6 +180,98 @@ test("getSchemaBox", async () => {
     }),
   ).toMatchInlineSnapshot(`"export type _Test = Partial<{ intersection: string & number }>;"`);
 
+  // Direct allOf with discriminated union: (A|B|C) & D
+  expect(
+    await getSchemaBox({
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "enum": [
+                    "finance"
+                  ]
+                },
+                "chift": {
+                  "type": "object",
+                  "properties": {
+                    "integrationId": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "integrationId"
+                  ]
+                }
+              },
+              "required": [
+                "category"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "enum": [
+                    "hris"
+                  ]
+                },
+                "kombo": {
+                  "type": "object",
+                  "properties": {
+                    "integrationId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "integrationId"
+                  ]
+                }
+              },
+              "required": [
+                "category"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "enum": [
+                    "it-and-security"
+                  ]
+                }
+              },
+              "required": [
+                "category"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sourceName": {
+              "type": "string"
+            },
+          },
+          "required": [
+            "sourceName",
+          ]
+        }
+      ]
+    }),
+  ).toMatchInlineSnapshot(`
+    "export type _Test =
+        | { category: "finance"; chift?: { integrationId: number } | undefined }
+        | { category: "hris"; kombo?: { integrationId: string } | undefined }
+        | ({ category: "it-and-security" } & { sourceName: string });"
+  `);
+
   expect(await getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
     `"export type _Test = "aaa" | "bbb" | "ccc";"`,
   );
