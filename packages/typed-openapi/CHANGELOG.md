@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 1.2.0
+
+### Minor Changes
+
+- ed15081: Rename .options to .queryOptions
+
 ## 1.1.2
 
 ### Patch Changes
