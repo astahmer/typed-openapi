@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 1.3.1
+
+### Patch Changes
+
+- 86a384f: add mutation selectFn + endpoint type-only property in .mutation
+
 ## 1.3.0
 
 ### Minor Changes
