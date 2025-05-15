@@ -112,20 +112,28 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
          * Generic mutation method with full type-safety for any endpoint that doesnt require parameters to be passed initially
          */
         mutation<
-        TMethod extends keyof EndpointByMethod,
-        TPath extends keyof EndpointByMethod[TMethod],
-        TEndpoint extends EndpointByMethod[TMethod][TPath]
-        >(
-          method: TMethod,
-          path: TPath) {
+            TMethod extends keyof EndpointByMethod,
+            TPath extends keyof EndpointByMethod[TMethod],
+            TEndpoint extends EndpointByMethod[TMethod][TPath],
+            TSelection,
+        >(method: TMethod, path: TPath, selectFn?: (res: Omit<Response, "json"> & {
+            /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
+            json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
+        }) => TSelection) {
             const mutationKey = [{ method, path }] as const;
             return {
+            /** type-only property if you need easy access to the endpoint params */
+            "~endpoint": {} as TEndpoint,
+            mutationKey: mutationKey,
+            mutationOptions: {
                 mutationKey: mutationKey,
-                mutationOptions: {
-                    mutationKey: mutationKey,
-                    mutationFn: async (params: TEndpoint extends { parameters: infer Parameters} ? Parameters: never) => this.client.request(method, path, params)
-                }
-            }
+                mutationFn: async (params: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
+                const response = await this.client.request(method, path, params);
+                const res = selectFn ? selectFn(response) : response
+                return res as unknown extends TSelection ? typeof response : Awaited<TSelection>
+                },
+            },
+            };
         }
         // </ApiClient.request>
   }
