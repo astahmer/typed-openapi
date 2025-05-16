@@ -4,7 +4,7 @@ import type { SchemaObject as SchemaObject3 } from "openapi3-ts/oas30";
 import type { RefResolver } from "./ref-resolver.ts";
 import { Box } from "./box.ts";
 
-export type LibSchemaObject = SchemaObject & SchemaObject3
+export type LibSchemaObject = SchemaObject & SchemaObject3;
 
 export type BoxDefinition = {
   type: string;

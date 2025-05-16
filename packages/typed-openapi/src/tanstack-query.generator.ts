@@ -2,13 +2,13 @@ import { capitalize } from "pastable/server";
 import { prettify } from "./format.ts";
 import type { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 
-type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints>
+type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints>;
 type GeneratorContext = Required<GeneratorOptions>;
 
 export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relativeApiClientPath: string }) => {
-    const endpointMethods = (new Set(ctx.endpointList.map((endpoint) => endpoint.method.toLowerCase())));
+  const endpointMethods = new Set(ctx.endpointList.map((endpoint) => endpoint.method.toLowerCase()));
 
-    const file = `
+  const file = `
   import { queryOptions } from "@tanstack/react-query"
   import type { EndpointByMethod, ApiClient } from "${ctx.relativeApiClientPath}"
 
@@ -44,7 +44,9 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   };
 
   // <EndpointByMethod.Shorthands>
-  ${Array.from(endpointMethods).map((method) => `export type ${capitalize(method)}Endpoints = EndpointByMethod["${method}"];`).join("\n")}
+  ${Array.from(endpointMethods)
+    .map((method) => `export type ${capitalize(method)}Endpoints = EndpointByMethod["${method}"];`)
+    .join("\n")}
   // </EndpointByMethod.Shorthands>
 
   // <ApiClientTypes>
@@ -67,7 +69,9 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   export class TanstackQueryApiClient {
       constructor(public client: ApiClient) { }
 
-      ${Array.from(endpointMethods).map((method) => `
+      ${Array.from(endpointMethods)
+        .map(
+          (method) => `
         // <ApiClient.${method}>
         ${method}<Path extends keyof ${capitalize(method)}Endpoints, TEndpoint extends ${capitalize(method)}Endpoints[Path]>(
             path: Path,
@@ -105,7 +109,9 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             return query
         }
         // </ApiClient.${method}>
-        `).join("\n")}
+        `,
+        )
+        .join("\n")}
 
         // <ApiClient.request>
         /**
@@ -139,5 +145,5 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   }
 `;
 
-    return prettify(file);
+  return prettify(file);
 };

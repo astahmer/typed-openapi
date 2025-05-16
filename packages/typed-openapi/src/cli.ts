@@ -15,11 +15,14 @@ cli
     `Runtime to use for validation; defaults to \`none\`; available: ${allowedRuntimes.toString()}`,
     { default: "none" },
   )
-  .option("--tanstack [name]", "Generate tanstack client, defaults to false, can optionally specify a name for the generated file")
   .option(
     "--schemas-only",
     "Only generate schemas, skipping client generation (defaults to false)",
-    { default : false },
+    { default: false },
+  )
+  .option(
+    "--tanstack [name]",
+    "Generate tanstack client, defaults to false, can optionally specify a name for the generated file",
   )
   .action(async (input, _options) => {
     return generateClientFiles(input, _options);

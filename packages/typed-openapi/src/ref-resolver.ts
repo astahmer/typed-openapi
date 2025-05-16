@@ -119,7 +119,7 @@ export const createRefResolver = (doc: OpenAPIObject, factory: GenericFactory) =
   };
 };
 
-export interface RefResolver extends ReturnType<typeof createRefResolver> { }
+export interface RefResolver extends ReturnType<typeof createRefResolver> {}
 
 const setSchemaDependencies = (schema: LibSchemaObject, deps: Set<string>) => {
   const visit = (schema: LibSchemaObject | ReferenceObject): void => {

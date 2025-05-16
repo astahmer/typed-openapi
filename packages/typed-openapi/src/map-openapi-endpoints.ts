@@ -64,13 +64,16 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
       );
 
       // Filter out empty objects
-      const params = Object.entries(paramObjects).reduce((acc, [key, value]) => {
-        if (Object.keys(value).length) {
-          // @ts-expect-error
-          acc[key] = value;
-        }
-        return acc;
-      }, {} as { query?: Record<string, Box>; path?: Record<string, Box>; header?: Record<string, Box>; body?: Box });
+      const params = Object.entries(paramObjects).reduce(
+        (acc, [key, value]) => {
+          if (Object.keys(value).length) {
+            // @ts-expect-error
+            acc[key] = value;
+          }
+          return acc;
+        },
+        {} as { query?: Record<string, Box>; path?: Record<string, Box>; header?: Record<string, Box>; body?: Box },
+      );
 
       // Body
       if (operation.requestBody) {
