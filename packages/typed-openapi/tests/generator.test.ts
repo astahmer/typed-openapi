@@ -414,6 +414,49 @@ describe("generator", () => {
     `);
   });
 
+  test("petstore schema only", async ({ expect }) => {
+    const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
+    expect(await prettify(generateFile({...mapOpenApiEndpoints(openApiDoc), schemasOnly: true}))).toMatchInlineSnapshot(`
+      "export namespace Schemas {
+        // <Schemas>
+        export type Order = Partial<{
+          id: number;
+          petId: number;
+          quantity: number;
+          shipDate: string;
+          status: "placed" | "approved" | "delivered";
+          complete: boolean;
+        }>;
+        export type Address = Partial<{ street: string; city: string; state: string; zip: string }>;
+        export type Customer = Partial<{ id: number; username: string; address: Array<Address> }>;
+        export type Category = Partial<{ id: number; name: string }>;
+        export type User = Partial<{
+          id: number;
+          username: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          password: string;
+          phone: string;
+          userStatus: number;
+        }>;
+        export type Tag = Partial<{ id: number; name: string }>;
+        export type Pet = {
+          id?: number | undefined;
+          name: string;
+          category?: Category | undefined;
+          photoUrls: Array<string>;
+          tags?: Array<Tag> | undefined;
+          status?: ("available" | "pending" | "sold") | undefined;
+        };
+        export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
+
+        // </Schemas>
+      }
+      "
+    `);
+  });
+
   test("nullable string", async ({ expect }) => {
     expect(await prettify(generateFile(mapOpenApiEndpoints({
       "openapi": "3.0.0",

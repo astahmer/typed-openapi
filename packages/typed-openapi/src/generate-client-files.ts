@@ -12,35 +12,40 @@ const cwd = process.cwd();
 const now = new Date();
 
 export const optionsSchema = type({
-    "output?": "string",
-    runtime: allowedRuntimes,
-    tanstack: "boolean | string"
+  "output?": "string",
+  runtime: allowedRuntimes,
+  tanstack: "boolean | string",
+  schemasOnly: "boolean",
 });
 
 export async function generateClientFiles(input: string, options: typeof optionsSchema.infer) {
-    const openApiDoc = (await SwaggerParser.bundle(input)) as OpenAPIObject;
+  const openApiDoc = (await SwaggerParser.bundle(input)) as OpenAPIObject;
 
-    const ctx = mapOpenApiEndpoints(openApiDoc);
-    console.log(`Found ${ctx.endpointList.length} endpoints`);
+  const ctx = mapOpenApiEndpoints(openApiDoc);
+  console.log(`Found ${ctx.endpointList.length} endpoints`);
 
-    const content = await prettify(generateFile({ ...ctx, runtime: options.runtime }));
-    const outputPath = join(
-        cwd,
-        options.output ?? input + `.${options.runtime === "none" ? "client" : options.runtime}.ts`,
-    );
+  const content = await prettify(generateFile({
+    ...ctx,
+    runtime: options.runtime,
+    schemasOnly: options.schemasOnly,
+  }));
+  const outputPath = join(
+    cwd,
+    options.output ?? input + `.${options.runtime === "none" ? "client" : options.runtime}.ts`,
+  );
 
-    console.log("Generating client...", outputPath);
-    await writeFile(outputPath, content);
+  console.log("Generating client...", outputPath);
+  await writeFile(outputPath, content);
 
-    if (options.tanstack) {
-        const tanstackContent = await generateTanstackQueryFile({
-            ...ctx,
-            relativeApiClientPath: './' + basename(outputPath),
-        });
-        const tanstackOutputPath = join(dirname(outputPath), typeof options.tanstack === "string" ? options.tanstack : `tanstack.client.ts`);
-        console.log("Generating tanstack client...", tanstackOutputPath);
-        await writeFile(tanstackOutputPath, tanstackContent);
-    }
+  if (options.tanstack) {
+    const tanstackContent = await generateTanstackQueryFile({
+      ...ctx,
+      relativeApiClientPath: './' + basename(outputPath),
+    });
+    const tanstackOutputPath = join(dirname(outputPath), typeof options.tanstack === "string" ? options.tanstack : `tanstack.client.ts`);
+    console.log("Generating tanstack client...", tanstackOutputPath);
+    await writeFile(tanstackOutputPath, tanstackContent);
+  }
 
-    console.log(`Done in ${new Date().getTime() - now.getTime()}ms !`);
+  console.log(`Done in ${new Date().getTime() - now.getTime()}ms !`);
 }

@@ -9,6 +9,7 @@ import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
 
 type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
   runtime?: "none" | keyof typeof runtimeValidationGenerator;
+  schemasOnly?: boolean;
 };
 type GeneratorContext = Required<GeneratorOptions>;
 
@@ -56,8 +57,8 @@ export const generateFile = (options: GeneratorOptions) => {
   const ctx = { ...options, runtime: options.runtime ?? "none" } as GeneratorContext;
 
   const schemaList = generateSchemaList(ctx);
-  const endpointSchemaList = generateEndpointSchemaList(ctx);
-  const apiClient = generateApiClient(ctx);
+  const endpointSchemaList = options.schemasOnly ? "" : generateEndpointSchemaList(ctx);
+  const apiClient = options.schemasOnly ? "" : generateApiClient(ctx);
 
   const transform =
     ctx.runtime === "none"
