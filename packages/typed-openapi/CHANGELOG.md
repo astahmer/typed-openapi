@@ -1,5 +1,13 @@
 # typed-openapi
 
+## 1.4.0
+
+### Minor Changes
+
+- dad912c: feat: add build-and-test github workflow
+- 0440b2b: add `?:` to get optional parameters instead of having to set those to undefined
+- a718a33: Add CLI option `--schemas-only` to allow generation of only the schema without endpoints and api client
+
 ## 1.3.2
 
 ### Patch Changes
