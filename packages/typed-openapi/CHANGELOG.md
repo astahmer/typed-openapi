@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 1.3.2
+
+### Patch Changes
+
+- ceb15f6: Export generateClientFiles fn (same used as in the CLI)
+
 ## 1.3.1
 
 ### Patch Changes
