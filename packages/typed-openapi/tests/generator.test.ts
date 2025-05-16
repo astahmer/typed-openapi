@@ -523,69 +523,6 @@ describe("generator", () => {
         },
       },
       "paths": {
-        // "/authentication/refresh": {
-        //   "post": {
-        //     "summary": "Refresh authentication tokens",
-        //     "tags": [
-        //       "Authentication"
-        //     ],
-        //     "requestBody": {
-        //       "content": {
-        //         "application/json": {
-        //           "schema": {
-        //             "type": "object",
-        //             "properties": {
-        //               "accessToken": {
-        //                 "type": "string",
-        //                 "pattern": "^\\w+ [A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
-        //               },
-        //               "refreshToken": {
-        //                 "type": "string",
-        //                 "format": "uuid"
-        //               }
-        //             },
-        //             "required": [
-        //               "accessToken",
-        //               "refreshToken"
-        //             ]
-        //           }
-        //         }
-        //       }
-        //     },
-        //     "responses": {
-        //       "200": {
-        //         "description": "Refresh the access and refresh tokens",
-        //         "content": {
-        //           "application/json": {
-        //             "schema": {
-        //               "$ref": "#/components/schemas/SerializedUserSession"
-        //             }
-        //           }
-        //         }
-        //       },
-        //       "401": {
-        //         "description": "Unauthorized",
-        //         "content": {
-        //           "application/json": {
-        //             "schema": {
-        //               "type": "string"
-        //             }
-        //           }
-        //         }
-        //       },
-        //       "500": {
-        //         "description": "Internal server error",
-        //         "content": {
-        //           "application/json": {
-        //             "schema": {
-        //               "type": "string"
-        //             }
-        //           }
-        //         }
-        //       }
-        //     }
-        //   }
-        // },
         "/authorization/organizations/:organizationId/members/search": {
           "get": {
             "summary": "Search for members in an organization",
@@ -756,6 +693,216 @@ describe("generator", () => {
       export type EndpointByMethod = {
         get: {
           "/authorization/organizations/:organizationId/members/search": Endpoints.get__authorization_organizations__organizationId_members_search;
+        };
+      };
+
+      // </EndpointByMethod>
+
+      // <EndpointByMethod.Shorthands>
+      export type GetEndpoints = EndpointByMethod["get"];
+      // </EndpointByMethod.Shorthands>
+
+      // <ApiClientTypes>
+      export type EndpointParameters = {
+        body?: unknown;
+        query?: Record<string, unknown>;
+        header?: Record<string, unknown>;
+        path?: Record<string, unknown>;
+      };
+
+      export type MutationMethod = "post" | "put" | "patch" | "delete";
+      export type Method = "get" | "head" | "options" | MutationMethod;
+
+      type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
+      export type DefaultEndpoint = {
+        parameters?: EndpointParameters | undefined;
+        response: unknown;
+      };
+
+      export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
+        operationId: string;
+        method: Method;
+        path: string;
+        requestFormat: RequestFormat;
+        parameters?: TConfig["parameters"];
+        meta: {
+          alias: string;
+          hasParameters: boolean;
+          areParametersRequired: boolean;
+        };
+        response: TConfig["response"];
+      };
+
+      export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+      type RequiredKeys<T> = {
+        [P in keyof T]-?: undefined extends T[P] ? never : P;
+      }[keyof T];
+
+      type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
+
+      // </ApiClientTypes>
+
+      // <ApiClient>
+      export class ApiClient {
+        baseUrl: string = "";
+
+        constructor(public fetcher: Fetcher) {}
+
+        setBaseUrl(baseUrl: string) {
+          this.baseUrl = baseUrl;
+          return this;
+        }
+
+        parseResponse = async <T,>(response: Response): Promise<T> => {
+          const contentType = response.headers.get("content-type");
+          if (contentType?.includes("application/json")) {
+            return response.json();
+          }
+          return response.text() as unknown as T;
+        };
+
+        // <ApiClient.get>
+        get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<TEndpoint["response"]> {
+          return this.fetcher("get", this.baseUrl + path, params[0]).then((response) =>
+            this.parseResponse(response),
+          ) as Promise<TEndpoint["response"]>;
+        }
+        // </ApiClient.get>
+
+        // <ApiClient.request>
+        /**
+         * Generic request method with full type-safety for any endpoint
+         */
+        request<
+          TMethod extends keyof EndpointByMethod,
+          TPath extends keyof EndpointByMethod[TMethod],
+          TEndpoint extends EndpointByMethod[TMethod][TPath],
+        >(
+          method: TMethod,
+          path: TPath,
+          ...params: MaybeOptionalArg<TEndpoint extends { parameters: infer Params } ? Params : never>
+        ): Promise<
+          Omit<Response, "json"> & {
+            /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
+            json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
+          }
+        > {
+          return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters);
+        }
+        // </ApiClient.request>
+      }
+
+      export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
+        return new ApiClient(fetcher).setBaseUrl(baseUrl ?? "");
+      }
+
+      /**
+       Example usage:
+       const api = createApiClient((method, url, params) =>
+         fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
+       );
+       api.get("/users").then((users) => console.log(users));
+       api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
+       api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+      */
+
+      // </ApiClient
+      "
+    `);
+  });
+
+  test.only("optional query param", async ({ expect }) => {
+    expect(await prettify(generateFile(mapOpenApiEndpoints({
+      "openapi": "3.0.0",
+      "info": {
+        "version": "1.0.0",
+        "title": "Demo API"
+      },
+      "paths": {
+        "/demo": {
+          "get": {
+            "parameters": [
+              {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "required": true,
+                "name": "organizationId",
+                "in": "query"
+              },
+              {
+                "schema": {
+                  "type": "string"
+                },
+                "required": false,
+                "name": "searchQuery",
+                "in": "query"
+              },
+              {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "required": false,
+                "name": "optionalInPath1",
+                "in": "path"
+              },
+              {
+                "schema": {
+                  "type": "string"
+                },
+                "required": false,
+                "name": "optionalInPath2",
+                "in": "path"
+              },
+            ],
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "string",
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    })))).toMatchInlineSnapshot(`
+      "export namespace Schemas {
+        // <Schemas>
+        // </Schemas>
+      }
+
+      export namespace Endpoints {
+        // <Endpoints>
+
+        export type get__demo = {
+          method: "GET";
+          path: "/demo";
+          requestFormat: "json";
+          parameters: {
+            query: { organizationId: string; searchQuery: string | undefined };
+            path: Partial<{ optionalInPath1: string; optionalInPath2: string }>;
+          };
+          response: string;
+        };
+
+        // </Endpoints>
+      }
+
+      // <EndpointByMethod>
+      export type EndpointByMethod = {
+        get: {
+          "/demo": Endpoints.get__demo;
         };
       };
 
