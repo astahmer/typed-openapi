@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./node": "./dist/node.export.js"
   },
   "bin": {
     "typed-openapi": "bin.js"
