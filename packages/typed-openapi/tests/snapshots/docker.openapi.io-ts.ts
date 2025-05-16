@@ -2141,8 +2141,8 @@ export const put_PutContainerArchive = t.type({
   parameters: t.type({
     query: t.type({
       path: t.string,
-      noOverwriteDirNonDir: t.union([t.string, t.undefined]),
-      copyUIDGID: t.union([t.string, t.undefined]),
+      noOverwriteDirNonDir: t.union([t.undefined, t.union([t.string, t.undefined])]),
+      copyUIDGID: t.union([t.undefined, t.union([t.string, t.undefined])]),
     }),
     path: t.type({
       id: t.string,
@@ -2378,8 +2378,8 @@ export const get_ImageSearch = t.type({
   parameters: t.type({
     query: t.type({
       term: t.string,
-      limit: t.union([t.number, t.undefined]),
-      filters: t.union([t.string, t.undefined]),
+      limit: t.union([t.undefined, t.union([t.number, t.undefined])]),
+      filters: t.union([t.undefined, t.union([t.string, t.undefined])]),
     }),
   }),
   response: t.array(
@@ -2877,7 +2877,7 @@ export const post_PluginPull = t.type({
   parameters: t.type({
     query: t.type({
       remote: t.string,
-      name: t.union([t.string, t.undefined]),
+      name: t.union([t.undefined, t.union([t.string, t.undefined])]),
     }),
     header: t.type({
       "X-Registry-Auth": t.union([t.undefined, t.string]),
@@ -3134,9 +3134,9 @@ export const post_SwarmUpdate = t.type({
   parameters: t.type({
     query: t.type({
       version: t.number,
-      rotateWorkerToken: t.union([t.boolean, t.undefined]),
-      rotateManagerToken: t.union([t.boolean, t.undefined]),
-      rotateManagerUnlockKey: t.union([t.boolean, t.undefined]),
+      rotateWorkerToken: t.union([t.undefined, t.union([t.boolean, t.undefined])]),
+      rotateManagerToken: t.union([t.undefined, t.union([t.boolean, t.undefined])]),
+      rotateManagerUnlockKey: t.union([t.undefined, t.union([t.boolean, t.undefined])]),
     }),
     body: SwarmSpec,
   }),
@@ -3235,8 +3235,11 @@ export const post_ServiceUpdate = t.type({
   parameters: t.type({
     query: t.type({
       version: t.number,
-      registryAuthFrom: t.union([t.union([t.literal("spec"), t.literal("previous-spec")]), t.undefined]),
-      rollback: t.union([t.string, t.undefined]),
+      registryAuthFrom: t.union([
+        t.undefined,
+        t.union([t.union([t.literal("spec"), t.literal("previous-spec")]), t.undefined]),
+      ]),
+      rollback: t.union([t.undefined, t.union([t.string, t.undefined])]),
     }),
     path: t.type({
       id: t.string,

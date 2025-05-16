@@ -2441,14 +2441,16 @@ export const put_PutContainerArchive = {
           y.string().required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
-        .required(),
+        .required()
+        .optional(),
       copyUIDGID: y
         .mixed()
         .oneOf([
           y.string().required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
-        .required(),
+        .required()
+        .optional(),
     }),
     path: y.object({
       id: y.string().required(),
@@ -2693,14 +2695,16 @@ export const get_ImageSearch = {
           y.number().required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
-        .required(),
+        .required()
+        .optional(),
       filters: y
         .mixed()
         .oneOf([
           y.string().required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
-        .required(),
+        .required()
+        .optional(),
     }),
   }),
   response: y.array(
@@ -3275,7 +3279,8 @@ export const post_PluginPull = {
           y.string().required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
-        .required(),
+        .required()
+        .optional(),
     }),
     header: y.object({
       "X-Registry-Auth": y.string().required().optional(),
@@ -3538,21 +3543,24 @@ export const post_SwarmUpdate = {
           y.boolean().required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
-        .required(),
+        .required()
+        .optional(),
       rotateManagerToken: y
         .mixed()
         .oneOf([
           y.boolean().required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
-        .required(),
+        .required()
+        .optional(),
       rotateManagerUnlockKey: y
         .mixed()
         .oneOf([
           y.boolean().required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
-        .required(),
+        .required()
+        .optional(),
     }),
     body: SwarmSpec,
   }),
@@ -3657,14 +3665,16 @@ export const post_ServiceUpdate = {
           y.mixed().oneOf(["spec", "previous-spec"]).required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
-        .required(),
+        .required()
+        .optional(),
       rollback: y
         .mixed()
         .oneOf([
           y.string().required(),
           y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
         ])
-        .required(),
+        .required()
+        .optional(),
     }),
     path: y.object({
       id: y.string().required(),

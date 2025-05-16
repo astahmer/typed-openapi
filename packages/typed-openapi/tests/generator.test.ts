@@ -816,7 +816,7 @@ describe("generator", () => {
     `);
   });
 
-  test.only("optional query param", async ({ expect }) => {
+  test("optional query param", async ({ expect }) => {
     expect(await prettify(generateFile(mapOpenApiEndpoints({
       "openapi": "3.0.0",
       "info": {
@@ -890,7 +890,7 @@ describe("generator", () => {
           path: "/demo";
           requestFormat: "json";
           parameters: {
-            query: { organizationId: string; searchQuery: string | undefined };
+            query: { organizationId: string; searchQuery?: string | undefined };
             path: Partial<{ optionalInPath1: string; optionalInPath2: string }>;
           };
           response: string;

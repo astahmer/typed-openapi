@@ -2267,8 +2267,8 @@ export const put_PutContainerArchive = Type.Object({
   parameters: Type.Object({
     query: Type.Object({
       path: Type.String(),
-      noOverwriteDirNonDir: Type.Union([Type.String(), Type.Undefined()]),
-      copyUIDGID: Type.Union([Type.String(), Type.Undefined()]),
+      noOverwriteDirNonDir: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
+      copyUIDGID: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
     }),
     path: Type.Object({
       id: Type.String(),
@@ -2528,8 +2528,8 @@ export const get_ImageSearch = Type.Object({
   parameters: Type.Object({
     query: Type.Object({
       term: Type.String(),
-      limit: Type.Union([Type.Number(), Type.Undefined()]),
-      filters: Type.Union([Type.String(), Type.Undefined()]),
+      limit: Type.Optional(Type.Union([Type.Number(), Type.Undefined()])),
+      filters: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
     }),
   }),
   response: Type.Array(
@@ -3083,7 +3083,7 @@ export const post_PluginPull = Type.Object({
   parameters: Type.Object({
     query: Type.Object({
       remote: Type.String(),
-      name: Type.Union([Type.String(), Type.Undefined()]),
+      name: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
     }),
     header: Type.Partial(
       Type.Object({
@@ -3360,9 +3360,9 @@ export const post_SwarmUpdate = Type.Object({
   parameters: Type.Object({
     query: Type.Object({
       version: Type.Number(),
-      rotateWorkerToken: Type.Union([Type.Boolean(), Type.Undefined()]),
-      rotateManagerToken: Type.Union([Type.Boolean(), Type.Undefined()]),
-      rotateManagerUnlockKey: Type.Union([Type.Boolean(), Type.Undefined()]),
+      rotateWorkerToken: Type.Optional(Type.Union([Type.Boolean(), Type.Undefined()])),
+      rotateManagerToken: Type.Optional(Type.Union([Type.Boolean(), Type.Undefined()])),
+      rotateManagerUnlockKey: Type.Optional(Type.Union([Type.Boolean(), Type.Undefined()])),
     }),
     body: SwarmSpec,
   }),
@@ -3473,11 +3473,10 @@ export const post_ServiceUpdate = Type.Object({
   parameters: Type.Object({
     query: Type.Object({
       version: Type.Number(),
-      registryAuthFrom: Type.Union([
-        Type.Union([Type.Literal("spec"), Type.Literal("previous-spec")]),
-        Type.Undefined(),
-      ]),
-      rollback: Type.Union([Type.String(), Type.Undefined()]),
+      registryAuthFrom: Type.Optional(
+        Type.Union([Type.Union([Type.Literal("spec"), Type.Literal("previous-spec")]), Type.Undefined()]),
+      ),
+      rollback: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
     }),
     path: Type.Object({
       id: Type.String(),

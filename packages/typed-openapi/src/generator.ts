@@ -122,7 +122,7 @@ const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, Any
 
   let str = "{";
   for (const [key, box] of Object.entries(parameters)) {
-    str += `${wrapWithQuotesIfNeeded(key)}: ${box.value},\n`;
+    str += `${wrapWithQuotesIfNeeded(key)}${box.type === "optional" ? "?" : ""}: ${box.value},\n`;
   }
   return str + "}";
 };

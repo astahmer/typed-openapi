@@ -2057,8 +2057,8 @@ export const put_PutContainerArchive = v.object({
   parameters: v.object({
     query: v.object({
       path: v.string(),
-      noOverwriteDirNonDir: v.union([v.string(), v.undefined()]),
-      copyUIDGID: v.union([v.string(), v.undefined()]),
+      noOverwriteDirNonDir: v.optional(v.union([v.string(), v.undefined()])),
+      copyUIDGID: v.optional(v.union([v.string(), v.undefined()])),
     }),
     path: v.object({
       id: v.string(),
@@ -2294,8 +2294,8 @@ export const get_ImageSearch = v.object({
   parameters: v.object({
     query: v.object({
       term: v.string(),
-      limit: v.union([v.number(), v.undefined()]),
-      filters: v.union([v.string(), v.undefined()]),
+      limit: v.optional(v.union([v.number(), v.undefined()])),
+      filters: v.optional(v.union([v.string(), v.undefined()])),
     }),
   }),
   response: v.array(
@@ -2792,7 +2792,7 @@ export const post_PluginPull = v.object({
   parameters: v.object({
     query: v.object({
       remote: v.string(),
-      name: v.union([v.string(), v.undefined()]),
+      name: v.optional(v.union([v.string(), v.undefined()])),
     }),
     header: v.object({
       "X-Registry-Auth": v.optional(v.string()),
@@ -3049,9 +3049,9 @@ export const post_SwarmUpdate = v.object({
   parameters: v.object({
     query: v.object({
       version: v.number(),
-      rotateWorkerToken: v.union([v.boolean(), v.undefined()]),
-      rotateManagerToken: v.union([v.boolean(), v.undefined()]),
-      rotateManagerUnlockKey: v.union([v.boolean(), v.undefined()]),
+      rotateWorkerToken: v.optional(v.union([v.boolean(), v.undefined()])),
+      rotateManagerToken: v.optional(v.union([v.boolean(), v.undefined()])),
+      rotateManagerUnlockKey: v.optional(v.union([v.boolean(), v.undefined()])),
     }),
     body: SwarmSpec,
   }),
@@ -3150,8 +3150,8 @@ export const post_ServiceUpdate = v.object({
   parameters: v.object({
     query: v.object({
       version: v.number(),
-      registryAuthFrom: v.union([v.union([v.literal("spec"), v.literal("previous-spec")]), v.undefined()]),
-      rollback: v.union([v.string(), v.undefined()]),
+      registryAuthFrom: v.optional(v.union([v.union([v.literal("spec"), v.literal("previous-spec")]), v.undefined()])),
+      rollback: v.optional(v.union([v.string(), v.undefined()])),
     }),
     path: v.object({
       id: v.string(),
