@@ -27,6 +27,7 @@ test("getSchemaBox", async () => {
   expect(await getSchemaBox({ type: "null" })).toMatchInlineSnapshot(`"export type _Test = null;"`);
   expect(await getSchemaBox({ type: "boolean" })).toMatchInlineSnapshot(`"export type _Test = boolean;"`);
   expect(await getSchemaBox({ type: "boolean", nullable: true })).toMatchInlineSnapshot(`"export type _Test = boolean | null;"`);
+  expect(await getSchemaBox({ type: "boolean", enum: [true] })).toMatchInlineSnapshot(`"export type _Test = true;"`);
   expect(await getSchemaBox({ type: "string" })).toMatchInlineSnapshot(`"export type _Test = string;"`);
   expect(await getSchemaBox({ type: "number" })).toMatchInlineSnapshot(`"export type _Test = number;"`);
   expect(await getSchemaBox({ type: "integer" })).toMatchInlineSnapshot(`"export type _Test = number;"`);
