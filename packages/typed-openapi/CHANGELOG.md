@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 1.4.1
+
+### Patch Changes
+
+- f367a04: Treat boolean values as literal in enum
+
 ## 1.4.0
 
 ### Minor Changes
