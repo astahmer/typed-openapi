@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 1.4.2
+
+### Patch Changes
+
+- 9f70b13: Ensure dir is created before generating files
+
 ## 1.4.1
 
 ### Patch Changes
