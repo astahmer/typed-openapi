@@ -2,7 +2,7 @@ import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { basename, join, dirname } from "pathe";
 import { type } from "arktype";
-import { writeFile } from "fs/promises";
+import { mkdir, writeFile } from "fs/promises";
 import { allowedRuntimes, generateFile } from "./generator.ts";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 import { generateTanstackQueryFile } from "./tanstack-query.generator.ts";
@@ -10,6 +10,14 @@ import { prettify } from "./format.ts";
 
 const cwd = process.cwd();
 const now = new Date();
+
+async function ensureDir(dirPath: string): Promise<void> {
+  try {
+    await mkdir(dirPath, { recursive: true });
+  } catch (error) {
+    console.error(`Error ensuring directory: ${(error as Error).message}`);
+  }
+}
 
 export const optionsSchema = type({
   "output?": "string",
@@ -35,6 +43,7 @@ export async function generateClientFiles(input: string, options: typeof options
   );
 
   console.log("Generating client...", outputPath);
+  await ensureDir(dirname(outputPath));
   await writeFile(outputPath, content);
 
   if (options.tanstack) {
@@ -44,6 +53,7 @@ export async function generateClientFiles(input: string, options: typeof options
     });
     const tanstackOutputPath = join(dirname(outputPath), typeof options.tanstack === "string" ? options.tanstack : `tanstack.client.ts`);
     console.log("Generating tanstack client...", tanstackOutputPath);
+    await ensureDir(dirname(tanstackOutputPath));
     await writeFile(tanstackOutputPath, tanstackContent);
   }
 
