@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 1.4.3
+
+### Patch Changes
+
+- fb0fe07: closes: #79 by handling singleton enum of type number
+
 ## 1.4.2
 
 ### Patch Changes
