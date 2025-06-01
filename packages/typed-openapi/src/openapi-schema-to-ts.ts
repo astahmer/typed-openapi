@@ -65,7 +65,17 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
       if (schema.enum) {
         if (schema.enum.length === 1) {
           const value = schema.enum[0];
-          return t.literal(value === null ? "null" : value === true ? "true" : value === false ? "false" : `"${value}"`);
+          if (value === null) {
+            return t.literal("null");
+          } else if (value === true) {
+            return t.literal("true");
+          } else if (value === false) {
+            return t.literal("false");
+          } else if (typeof value === "number") {
+            return t.literal(`${value}`)
+          } else {
+            return t.literal(`"${value}"`);
+          }
         }
 
         if (schemaType === "string") {

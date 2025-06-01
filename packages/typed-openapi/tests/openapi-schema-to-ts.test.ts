@@ -358,6 +358,13 @@ test("getSchemaBox", () => {
     }
   `);
 
+  expect(getSchemaBox({ type: "number", enum: [1] })).toMatchInlineSnapshot(`
+    {
+      "type": "literal",
+      "value": "1",
+    }
+  `);
+
   expect(getSchemaBox({
     "type": "object",
     "properties": {
