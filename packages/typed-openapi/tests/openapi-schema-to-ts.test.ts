@@ -365,6 +365,16 @@ test("getSchemaBox", () => {
     }
   `);
 
+  expect(getSchemaBox({ enum: ["red", "amber", "green", null, 42, true] })).toMatchInlineSnapshot(
+    `
+    {
+      "type": "union",
+      "value": "("red" | "amber" | "green" | null | 42 | true)",
+    }
+  `,
+  );
+
+
   expect(getSchemaBox({
     "type": "object",
     "properties": {

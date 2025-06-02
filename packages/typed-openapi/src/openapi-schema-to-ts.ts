@@ -94,6 +94,18 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
       if (schemaType === "number" || schemaType === "integer") return t.number();
       if (schemaType === "null") return t.literal("null");
     }
+    if (!schemaType && schema.enum) {
+      return t.union(schema.enum.map((value) => {
+        if (typeof value === "string") {
+          return t.literal(`"${value}"`)
+        }
+        if (value === null) {
+          return t.literal("null")
+        }
+        // handle boolean and number literals
+        return t.literal(value)
+      }));
+    }
 
     if (schemaType === "array") {
       if (schema.items) {
