@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 1.4.4
+
+### Patch Changes
+
+- 326124b: closes: #82 by supporting enum without type
+
 ## 1.4.3
 
 ### Patch Changes
