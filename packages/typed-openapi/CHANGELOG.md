@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 1.4.5
+
+### Patch Changes
+
+- 0749aff: closes #85. Adds support for extended types with allOf.
+
 ## 1.4.4
 
 ### Patch Changes
