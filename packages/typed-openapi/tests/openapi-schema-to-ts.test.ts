@@ -1,4 +1,3 @@
-
 import type { SchemasObject } from "openapi3-ts/oas31";
 import { describe, expect, test } from "vitest";
 
@@ -445,6 +444,36 @@ describe("getSchemaBox with context", () => {
       {
         "type": "ref",
         "value": "Partial<{ str: string, nb: number, nested: Nested }>",
+      }
+    `,
+    );
+  });
+
+  test("with ref and allOf", () => {
+    const schemas = {
+      Extends: {
+        allOf: [{$ref: "#/components/schemas/Base"}],
+        type: "object",
+        properties: {
+          str: { type: "string" },
+          nb: { type: "number" },
+        },
+        required: ["str"],
+      },
+      Base: {
+        type: "object",
+        properties: {
+          baseProp: { type: "string" },
+        }
+      },
+    } satisfies SchemasObject;
+
+    const ctx = makeCtx(schemas);
+    expect(openApiSchemaToTs({ schema: schemas["Extends"]!, ctx })).toMatchInlineSnapshot(
+      `
+      {
+        "type": "intersection",
+        "value": "(Base & { str: string, nb?: number | undefined })",
       }
     `,
     );
