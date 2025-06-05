@@ -52,11 +52,11 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
     }
 
     if (schema.allOf) {
-      if (schema.allOf.length === 1) {
-        return openApiSchemaToTs({ schema: schema.allOf[0]!, ctx, meta });
-      }
-
       const types = schema.allOf.map((prop) => openApiSchemaToTs({ schema: prop, ctx, meta }));
+      const {allOf, externalDocs,  example, examples, description, title,  ...rest} = schema
+      if (Object.keys(rest).length > 0) {
+        types.push(openApiSchemaToTs({schema: rest, ctx, meta}))
+      }
       return t.intersection(types);
     }
 
