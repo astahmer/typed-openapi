@@ -2166,6 +2166,9 @@ export const head_ContainerArchiveInfo = t.type({
     }),
   }),
   response: t.unknown,
+  responseHeaders: t.type({
+    "X-Docker-Container-Path-Stat": t.string,
+  }),
 });
 
 export type post_ContainerPrune = t.TypeOf<typeof post_ContainerPrune>;
@@ -2445,6 +2448,21 @@ export const get_SystemPing = t.type({
   requestFormat: t.literal("json"),
   parameters: t.never,
   response: t.unknown,
+  responseHeaders: t.type({
+    Swarm: t.union([
+      t.literal("inactive"),
+      t.literal("pending"),
+      t.literal("error"),
+      t.literal("locked"),
+      t.literal("active/worker"),
+      t.literal("active/manager"),
+    ]),
+    "Docker-Experimental": t.boolean,
+    "Cache-Control": t.string,
+    Pragma: t.string,
+    "API-Version": t.string,
+    "Builder-Version": t.string,
+  }),
 });
 
 export type head_SystemPingHead = t.TypeOf<typeof head_SystemPingHead>;
@@ -2454,6 +2472,21 @@ export const head_SystemPingHead = t.type({
   requestFormat: t.literal("json"),
   parameters: t.never,
   response: t.unknown,
+  responseHeaders: t.type({
+    Swarm: t.union([
+      t.literal("inactive"),
+      t.literal("pending"),
+      t.literal("error"),
+      t.literal("locked"),
+      t.literal("active/worker"),
+      t.literal("active/manager"),
+    ]),
+    "Docker-Experimental": t.boolean,
+    "Cache-Control": t.string,
+    Pragma: t.string,
+    "API-Version": t.string,
+    "Builder-Version": t.string,
+  }),
 });
 
 export type post_ImageCommit = t.TypeOf<typeof post_ImageCommit>;
@@ -3628,6 +3661,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responseHeaders?: Record<string, unknown>;
 };
 
 export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
@@ -3642,6 +3676,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;

@@ -70,29 +70,29 @@ export const generateFile = (options: GeneratorOptions) => {
     ctx.runtime === "none"
       ? (file: string) => file
       : (file: string) => {
-          const model = Codegen.TypeScriptToModel.Generate(file);
-          const transformer = runtimeValidationGenerator[ctx.runtime as Exclude<typeof ctx.runtime, "none">];
-          // tmp fix for typebox, there's currently a "// todo" only with Codegen.ModelToTypeBox.Generate
-          // https://github.com/sinclairzx81/typebox-codegen/blob/44d44d55932371b69f349331b1c8a60f5d760d9e/src/model/model-to-typebox.ts#L31
-          const generated = ctx.runtime === "typebox" ? Codegen.TypeScriptToTypeBox.Generate(file) : transformer(model);
+        const model = Codegen.TypeScriptToModel.Generate(file);
+        const transformer = runtimeValidationGenerator[ctx.runtime as Exclude<typeof ctx.runtime, "none">];
+        // tmp fix for typebox, there's currently a "// todo" only with Codegen.ModelToTypeBox.Generate
+        // https://github.com/sinclairzx81/typebox-codegen/blob/44d44d55932371b69f349331b1c8a60f5d760d9e/src/model/model-to-typebox.ts#L31
+        const generated = ctx.runtime === "typebox" ? Codegen.TypeScriptToTypeBox.Generate(file) : transformer(model);
 
-          let converted = "";
-          const match = generated.match(/(const __ENDPOINTS_START__ =)([\s\S]*?)(export type __ENDPOINTS_END__)/);
-          const content = match?.[2];
+        let converted = "";
+        const match = generated.match(/(const __ENDPOINTS_START__ =)([\s\S]*?)(export type __ENDPOINTS_END__)/);
+        const content = match?.[2];
 
-          if (content && ctx.runtime in replacerByRuntime) {
-            const before = generated.slice(0, generated.indexOf("export type __ENDPOINTS_START"));
-            converted =
-              before +
-              replacerByRuntime[ctx.runtime as keyof typeof replacerByRuntime](
-                content.slice(content.indexOf("export")),
-              );
-          } else {
-            converted = generated;
-          }
+        if (content && ctx.runtime in replacerByRuntime) {
+          const before = generated.slice(0, generated.indexOf("export type __ENDPOINTS_START"));
+          converted =
+            before +
+            replacerByRuntime[ctx.runtime as keyof typeof replacerByRuntime](
+              content.slice(content.indexOf("export")),
+            );
+        } else {
+          converted = generated;
+        }
 
-          return converted;
-        };
+        return converted;
+      };
 
   const file = `
   ${transform(schemaList + endpointSchemaList)}
@@ -132,6 +132,24 @@ const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, Any
   }
   return str + "}";
 };
+
+const responseHeadersObjectToString = (responseHeaders: Record<string, AnyBox>, ctx: GeneratorContext) => {
+  let str = "{";
+  for (const [key, responseHeader] of Object.entries(responseHeaders)) {
+    const value = ctx.runtime === "none"
+        ? responseHeader.recompute((box) => {
+          if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
+            box.value = `Schemas.${box.value}`;
+          }
+
+          return box;
+        }).value
+        : responseHeader.value
+    str += `${wrapWithQuotesIfNeeded(key.toLowerCase())}: ${value},\n`;
+  }
+  return str + "}";
+}
+
 const generateEndpointSchemaList = (ctx: GeneratorContext) => {
   let file = `
   ${ctx.runtime === "none" ? "export namespace Endpoints {" : ""}
@@ -145,39 +163,42 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
       path: "${endpoint.path}",
       requestFormat: "${endpoint.requestFormat}",
       ${
-        endpoint.meta.hasParameters
-          ? `parameters: {
+      endpoint.meta.hasParameters
+        ? `parameters: {
             ${parameters.query ? `query:  ${parameterObjectToString(parameters.query)},` : ""}
         ${parameters.path ? `path:  ${parameterObjectToString(parameters.path)},` : ""}
         ${parameters.header ? `header:  ${parameterObjectToString(parameters.header)},` : ""}
         ${
           parameters.body
             ? `body:  ${parameterObjectToString(
-                ctx.runtime === "none"
-                  ? parameters.body.recompute((box) => {
-                      if (Box.isReference(box) && !box.params.generics) {
-                        box.value = `Schemas.${box.value}`;
-                      }
-                      return box;
-                    })
-                  : parameters.body,
-              )},`
+              ctx.runtime === "none"
+                ? parameters.body.recompute((box) => {
+                  if (Box.isReference(box) && !box.params.generics) {
+                    box.value = `Schemas.${box.value}`;
+                  }
+                  return box;
+                })
+                : parameters.body,
+            )},`
             : ""
         }
           }`
-          : "parameters: never,"
-      }
+        : "parameters: never,"
+    }
       response: ${
-        ctx.runtime === "none"
-          ? endpoint.response.recompute((box) => {
-              if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
-                box.value = `Schemas.${box.value}`;
-              }
+      ctx.runtime === "none"
+        ? endpoint.response.recompute((box) => {
+          if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
+            box.value = `Schemas.${box.value}`;
+          }
 
-              return box;
-            }).value
-          : endpoint.response.value
-      },
+          return box;
+        }).value
+        : endpoint.response.value
+    },
+      ${
+      endpoint.responseHeaders ? `responseHeaders: ${responseHeadersObjectToString(endpoint.responseHeaders, ctx)},` : ""
+    }
     }\n`;
   });
 
@@ -199,14 +220,14 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
      // <EndpointByMethod>
      export ${ctx.runtime === "none" ? "type" : "const"} EndpointByMethod = {
      ${Object.entries(byMethods)
-       .map(([method, list]) => {
-         return `${method}: {
+    .map(([method, list]) => {
+      return `${method}: {
            ${list.map(
-             (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
-           )}
+        (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
+      )}
          }`;
-       })
-       .join(",\n")}
+    })
+    .join(",\n")}
      }
      ${ctx.runtime === "none" ? "" : "export type EndpointByMethod = typeof EndpointByMethod;"}
      // </EndpointByMethod>
@@ -216,8 +237,8 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
 
     // <EndpointByMethod.Shorthands>
     ${Object.keys(byMethods)
-      .map((method) => `export type ${capitalize(method)}Endpoints = EndpointByMethod["${method}"]`)
-      .join("\n")}
+    .map((method) => `export type ${capitalize(method)}Endpoints = EndpointByMethod["${method}"]`)
+    .join("\n")}
     // </EndpointByMethod.Shorthands>
     `;
 
@@ -246,6 +267,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responseHeaders?: Record<string, unknown>;
 };
 
 export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
@@ -260,6 +282,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responseHeaders?: TConfig["responseHeaders"]
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
@@ -303,18 +326,18 @@ export class ApiClient {
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
       ...params: MaybeOptionalArg<${match(ctx.runtime)
-        .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
-        .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
-        .otherwise(() => `TEndpoint["parameters"]`)}>
+          .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
+          .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
+          .otherwise(() => `TEndpoint["parameters"]`)}>
     ): Promise<${match(ctx.runtime)
-      .with("zod", "yup", () => infer(`TEndpoint["response"]`))
-      .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["response"]`)
-      .otherwise(() => `TEndpoint["response"]`)}> {
+          .with("zod", "yup", () => infer(`TEndpoint["response"]`))
+          .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["response"]`)
+          .otherwise(() => `TEndpoint["response"]`)}> {
       return this.fetcher("${method}", this.baseUrl + path, params[0])
           .then(response => this.parseResponse(response))${match(ctx.runtime)
-            .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
-            .with("arktype", "io-ts", "typebox", "valibot", () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`)
-            .otherwise(() => `as Promise<TEndpoint["response"]>`)};
+          .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
+          .with("arktype", "io-ts", "typebox", "valibot", () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`)
+          .otherwise(() => `as Promise<TEndpoint["response"]>`)};
     }
     // </ApiClient.${method}>
     `
@@ -334,17 +357,17 @@ export class ApiClient {
       method: TMethod,
       path: TPath,
       ...params: MaybeOptionalArg<${match(ctx.runtime)
-        .with("zod", "yup", () =>
-          inferByRuntime[ctx.runtime](`TEndpoint extends { parameters: infer Params } ? Params : never`),
-        )
-        .with(
-          "arktype",
-          "io-ts",
-          "typebox",
-          "valibot",
-          () => inferByRuntime[ctx.runtime](`TEndpoint`) + `["parameters"]`,
-        )
-        .otherwise(() => `TEndpoint extends { parameters: infer Params } ? Params : never`)}>)
+    .with("zod", "yup", () =>
+      inferByRuntime[ctx.runtime](`TEndpoint extends { parameters: infer Params } ? Params : never`),
+    )
+    .with(
+      "arktype",
+      "io-ts",
+      "typebox",
+      "valibot",
+      () => inferByRuntime[ctx.runtime](`TEndpoint`) + `["parameters"]`,
+    )
+    .otherwise(() => `TEndpoint extends { parameters: infer Params } ? Params : never`)}>)
     : Promise<Omit<Response, "json"> & {
       /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
       json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;

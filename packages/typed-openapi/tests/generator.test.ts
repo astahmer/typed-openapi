@@ -186,6 +186,7 @@ describe("generator", () => {
             query: Partial<{ username: string; password: string }>;
           };
           response: string;
+          responseHeaders: { "X-Rate-Limit": number; "X-Expires-After": string };
         };
         export type get_LogoutUser = {
           method: "GET";
@@ -283,6 +284,7 @@ describe("generator", () => {
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
         response: unknown;
+        responseHeaders?: Record<string, unknown>;
       };
 
       export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
@@ -297,6 +299,7 @@ describe("generator", () => {
           areParametersRequired: boolean;
         };
         response: TConfig["response"];
+        responseHeaders?: TConfig["responseHeaders"];
       };
 
       export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
@@ -718,6 +721,7 @@ describe("generator", () => {
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
         response: unknown;
+        responseHeaders?: Record<string, unknown>;
       };
 
       export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
@@ -732,6 +736,7 @@ describe("generator", () => {
           areParametersRequired: boolean;
         };
         response: TConfig["response"];
+        responseHeaders?: TConfig["responseHeaders"];
       };
 
       export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
@@ -928,6 +933,7 @@ describe("generator", () => {
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
         response: unknown;
+        responseHeaders?: Record<string, unknown>;
       };
 
       export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
@@ -942,6 +948,7 @@ describe("generator", () => {
           areParametersRequired: boolean;
         };
         response: TConfig["response"];
+        responseHeaders?: TConfig["responseHeaders"];
       };
 
       export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;

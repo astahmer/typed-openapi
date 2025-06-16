@@ -175,6 +175,7 @@ export namespace Endpoints {
       query: Partial<{ username: string; password: string }>;
     };
     response: string;
+    responseHeaders: { "X-Rate-Limit": number; "X-Expires-After": string };
   };
   export type get_LogoutUser = {
     method: "GET";
@@ -272,6 +273,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responseHeaders?: Record<string, unknown>;
 };
 
 export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
@@ -286,6 +288,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;

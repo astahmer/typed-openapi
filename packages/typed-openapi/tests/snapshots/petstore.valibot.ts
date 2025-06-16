@@ -262,6 +262,10 @@ export const get_LoginUser = v.object({
     }),
   }),
   response: v.string(),
+  responseHeaders: v.object({
+    "X-Rate-Limit": v.number(),
+    "X-Expires-After": v.string(),
+  }),
 });
 
 export type get_LogoutUser = v.InferOutput<typeof get_LogoutUser>;
@@ -372,6 +376,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responseHeaders?: Record<string, unknown>;
 };
 
 export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
@@ -386,6 +391,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;

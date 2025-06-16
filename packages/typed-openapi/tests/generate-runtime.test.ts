@@ -10,7 +10,7 @@ const samples = ["petstore", "docker.openapi", "long-operation-id"];
 const runtimes = allowedRuntimes.toJsonSchema().enum;
 
 samples.forEach((sample) => {
-  describe(`generate-rutime-${sample}`, async () => {
+  describe(`generate-runtime-${sample}`, async () => {
     const filePath = `${__dirname}/samples/${sample}.yaml`;
     const openApiDoc = (await SwaggerParser.parse(filePath)) as OpenAPIObject;
     const ctx = mapOpenApiEndpoints(openApiDoc);

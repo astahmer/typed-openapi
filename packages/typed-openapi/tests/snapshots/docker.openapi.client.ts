@@ -1152,6 +1152,7 @@ export namespace Endpoints {
       path: { id: string };
     };
     response: unknown;
+    responseHeaders: { "X-Docker-Container-Path-Stat": string };
   };
   export type post_ContainerPrune = {
     method: "POST";
@@ -1342,6 +1343,14 @@ export namespace Endpoints {
     requestFormat: "json";
     parameters: never;
     response: unknown;
+    responseHeaders: {
+      Swarm: "inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager";
+      "Docker-Experimental": boolean;
+      "Cache-Control": string;
+      Pragma: string;
+      "API-Version": string;
+      "Builder-Version": string;
+    };
   };
   export type head_SystemPingHead = {
     method: "HEAD";
@@ -1349,6 +1358,14 @@ export namespace Endpoints {
     requestFormat: "json";
     parameters: never;
     response: unknown;
+    responseHeaders: {
+      Swarm: "inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager";
+      "Docker-Experimental": boolean;
+      "Cache-Control": string;
+      Pragma: string;
+      "API-Version": string;
+      "Builder-Version": string;
+    };
   };
   export type post_ImageCommit = {
     method: "POST";
@@ -2224,6 +2241,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responseHeaders?: Record<string, unknown>;
 };
 
 export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
@@ -2238,6 +2256,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;

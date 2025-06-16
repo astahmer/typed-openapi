@@ -2297,6 +2297,16 @@ describe("map-openapi-endpoints", () => {
               "type": "keyword",
               "value": "string",
             },
+            "responseHeaders": {
+              "X-Expires-After": {
+                "type": "keyword",
+                "value": "string",
+              },
+              "X-Rate-Limit": {
+                "type": "keyword",
+                "value": "number",
+              },
+            },
           },
           {
             "meta": {
