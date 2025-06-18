@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 1.5.0
+
+### Minor Changes
+
+- 734c5d0: Add response headers in endpoint types
+
 ## 1.4.5
 
 ### Patch Changes
