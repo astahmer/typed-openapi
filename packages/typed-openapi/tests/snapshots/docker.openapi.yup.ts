@@ -2474,6 +2474,9 @@ export const head_ContainerArchiveInfo = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responseHeaders: y.object({
+    "X-Docker-Container-Path-Stat": y.string().required(),
+  }),
 };
 
 export type post_ContainerPrune = typeof post_ContainerPrune;
@@ -2770,6 +2773,14 @@ export const get_SystemPing = {
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responseHeaders: y.object({
+    Swarm: y.mixed().oneOf(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).required(),
+    "Docker-Experimental": y.boolean().required(),
+    "Cache-Control": y.string().required(),
+    Pragma: y.string().required(),
+    "API-Version": y.string().required(),
+    "Builder-Version": y.string().required(),
+  }),
 };
 
 export type head_SystemPingHead = typeof head_SystemPingHead;
@@ -2779,6 +2790,14 @@ export const head_SystemPingHead = {
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responseHeaders: y.object({
+    Swarm: y.mixed().oneOf(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).required(),
+    "Docker-Experimental": y.boolean().required(),
+    "Cache-Control": y.string().required(),
+    Pragma: y.string().required(),
+    "API-Version": y.string().required(),
+    "Builder-Version": y.string().required(),
+  }),
 };
 
 export type post_ImageCommit = typeof post_ImageCommit;
@@ -4060,6 +4079,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responseHeaders?: Record<string, unknown>;
 };
 
 export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
@@ -4074,6 +4094,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;

@@ -259,6 +259,10 @@ export const get_LoginUser = {
     }),
   }),
   response: z.string(),
+  responseHeaders: z.object({
+    "X-Rate-Limit": z.number(),
+    "X-Expires-After": z.string(),
+  }),
 };
 
 export type get_LogoutUser = typeof get_LogoutUser;
@@ -366,6 +370,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responseHeaders?: Record<string, unknown>;
 };
 
 export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
@@ -380,6 +385,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
