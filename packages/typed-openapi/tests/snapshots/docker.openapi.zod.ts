@@ -2072,7 +2072,7 @@ export const head_ContainerArchiveInfo = {
   }),
   response: z.unknown(),
   responseHeaders: z.object({
-    "X-Docker-Container-Path-Stat": z.string(),
+    "x-docker-container-path-stat": z.string(),
   }),
 };
 
@@ -2354,7 +2354,7 @@ export const get_SystemPing = {
   parameters: z.never(),
   response: z.unknown(),
   responseHeaders: z.object({
-    Swarm: z.union([
+    swarm: z.union([
       z.literal("inactive"),
       z.literal("pending"),
       z.literal("error"),
@@ -2362,11 +2362,11 @@ export const get_SystemPing = {
       z.literal("active/worker"),
       z.literal("active/manager"),
     ]),
-    "Docker-Experimental": z.boolean(),
-    "Cache-Control": z.string(),
-    Pragma: z.string(),
-    "API-Version": z.string(),
-    "Builder-Version": z.string(),
+    "docker-experimental": z.boolean(),
+    "cache-control": z.string(),
+    pragma: z.string(),
+    "api-version": z.string(),
+    "builder-version": z.string(),
   }),
 };
 
@@ -2378,7 +2378,7 @@ export const head_SystemPingHead = {
   parameters: z.never(),
   response: z.unknown(),
   responseHeaders: z.object({
-    Swarm: z.union([
+    swarm: z.union([
       z.literal("inactive"),
       z.literal("pending"),
       z.literal("error"),
@@ -2386,11 +2386,11 @@ export const head_SystemPingHead = {
       z.literal("active/worker"),
       z.literal("active/manager"),
     ]),
-    "Docker-Experimental": z.boolean(),
-    "Cache-Control": z.string(),
-    Pragma: z.string(),
-    "API-Version": z.string(),
-    "Builder-Version": z.string(),
+    "docker-experimental": z.boolean(),
+    "cache-control": z.string(),
+    pragma: z.string(),
+    "api-version": z.string(),
+    "builder-version": z.string(),
   }),
 };
 

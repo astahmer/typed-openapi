@@ -2293,7 +2293,7 @@ export const head_ContainerArchiveInfo = Type.Object({
   }),
   response: Type.Unknown(),
   responseHeaders: Type.Object({
-    "X-Docker-Container-Path-Stat": Type.String(),
+    "x-docker-container-path-stat": Type.String(),
   }),
 });
 
@@ -2605,7 +2605,7 @@ export const get_SystemPing = Type.Object({
   parameters: Type.Never(),
   response: Type.Unknown(),
   responseHeaders: Type.Object({
-    Swarm: Type.Union([
+    swarm: Type.Union([
       Type.Literal("inactive"),
       Type.Literal("pending"),
       Type.Literal("error"),
@@ -2613,11 +2613,11 @@ export const get_SystemPing = Type.Object({
       Type.Literal("active/worker"),
       Type.Literal("active/manager"),
     ]),
-    "Docker-Experimental": Type.Boolean(),
-    "Cache-Control": Type.String(),
-    Pragma: Type.String(),
-    "API-Version": Type.String(),
-    "Builder-Version": Type.String(),
+    "docker-experimental": Type.Boolean(),
+    "cache-control": Type.String(),
+    pragma: Type.String(),
+    "api-version": Type.String(),
+    "builder-version": Type.String(),
   }),
 });
 
@@ -2629,7 +2629,7 @@ export const head_SystemPingHead = Type.Object({
   parameters: Type.Never(),
   response: Type.Unknown(),
   responseHeaders: Type.Object({
-    Swarm: Type.Union([
+    swarm: Type.Union([
       Type.Literal("inactive"),
       Type.Literal("pending"),
       Type.Literal("error"),
@@ -2637,11 +2637,11 @@ export const head_SystemPingHead = Type.Object({
       Type.Literal("active/worker"),
       Type.Literal("active/manager"),
     ]),
-    "Docker-Experimental": Type.Boolean(),
-    "Cache-Control": Type.String(),
-    Pragma: Type.String(),
-    "API-Version": Type.String(),
-    "Builder-Version": Type.String(),
+    "docker-experimental": Type.Boolean(),
+    "cache-control": Type.String(),
+    pragma: Type.String(),
+    "api-version": Type.String(),
+    "builder-version": Type.String(),
   }),
 });
 

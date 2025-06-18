@@ -175,7 +175,7 @@ export namespace Endpoints {
       query: Partial<{ username: string; password: string }>;
     };
     response: string;
-    responseHeaders: { "X-Rate-Limit": number; "X-Expires-After": string };
+    responseHeaders: { "x-rate-limit": number; "x-expires-after": string };
   };
   export type get_LogoutUser = {
     method: "GET";

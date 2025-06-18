@@ -1152,7 +1152,7 @@ export namespace Endpoints {
       path: { id: string };
     };
     response: unknown;
-    responseHeaders: { "X-Docker-Container-Path-Stat": string };
+    responseHeaders: { "x-docker-container-path-stat": string };
   };
   export type post_ContainerPrune = {
     method: "POST";
@@ -1344,12 +1344,12 @@ export namespace Endpoints {
     parameters: never;
     response: unknown;
     responseHeaders: {
-      Swarm: "inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager";
-      "Docker-Experimental": boolean;
-      "Cache-Control": string;
-      Pragma: string;
-      "API-Version": string;
-      "Builder-Version": string;
+      swarm: "inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager";
+      "docker-experimental": boolean;
+      "cache-control": string;
+      pragma: string;
+      "api-version": string;
+      "builder-version": string;
     };
   };
   export type head_SystemPingHead = {
@@ -1359,12 +1359,12 @@ export namespace Endpoints {
     parameters: never;
     response: unknown;
     responseHeaders: {
-      Swarm: "inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager";
-      "Docker-Experimental": boolean;
-      "Cache-Control": string;
-      Pragma: string;
-      "API-Version": string;
-      "Builder-Version": string;
+      swarm: "inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager";
+      "docker-experimental": boolean;
+      "cache-control": string;
+      pragma: string;
+      "api-version": string;
+      "builder-version": string;
     };
   };
   export type post_ImageCommit = {

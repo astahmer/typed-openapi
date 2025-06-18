@@ -260,8 +260,8 @@ export const get_LoginUser = {
   }),
   response: z.string(),
   responseHeaders: z.object({
-    "X-Rate-Limit": z.number(),
-    "X-Expires-After": z.string(),
+    "x-rate-limit": z.number(),
+    "x-expires-after": z.string(),
   }),
 };
 

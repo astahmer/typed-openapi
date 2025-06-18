@@ -264,8 +264,8 @@ export const get_LoginUser = t.type({
   }),
   response: t.string,
   responseHeaders: t.type({
-    "X-Rate-Limit": t.number,
-    "X-Expires-After": t.string,
+    "x-rate-limit": t.number,
+    "x-expires-after": t.string,
   }),
 });
 

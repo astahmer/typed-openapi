@@ -2475,7 +2475,7 @@ export const head_ContainerArchiveInfo = {
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responseHeaders: y.object({
-    "X-Docker-Container-Path-Stat": y.string().required(),
+    "x-docker-container-path-stat": y.string().required(),
   }),
 };
 
@@ -2774,12 +2774,12 @@ export const get_SystemPing = {
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responseHeaders: y.object({
-    Swarm: y.mixed().oneOf(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).required(),
-    "Docker-Experimental": y.boolean().required(),
-    "Cache-Control": y.string().required(),
-    Pragma: y.string().required(),
-    "API-Version": y.string().required(),
-    "Builder-Version": y.string().required(),
+    swarm: y.mixed().oneOf(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).required(),
+    "docker-experimental": y.boolean().required(),
+    "cache-control": y.string().required(),
+    pragma: y.string().required(),
+    "api-version": y.string().required(),
+    "builder-version": y.string().required(),
   }),
 };
 
@@ -2791,12 +2791,12 @@ export const head_SystemPingHead = {
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responseHeaders: y.object({
-    Swarm: y.mixed().oneOf(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).required(),
-    "Docker-Experimental": y.boolean().required(),
-    "Cache-Control": y.string().required(),
-    Pragma: y.string().required(),
-    "API-Version": y.string().required(),
-    "Builder-Version": y.string().required(),
+    swarm: y.mixed().oneOf(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).required(),
+    "docker-experimental": y.boolean().required(),
+    "cache-control": y.string().required(),
+    pragma: y.string().required(),
+    "api-version": y.string().required(),
+    "builder-version": y.string().required(),
   }),
 };
 

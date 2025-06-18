@@ -215,8 +215,8 @@ export const types = scope({
     }),
     response: "string",
     responseHeaders: type({
-      "X-Rate-Limit": "number",
-      "X-Expires-After": "string",
+      "x-rate-limit": "number",
+      "x-expires-after": "string",
     }),
   }),
   get_LogoutUser: type({

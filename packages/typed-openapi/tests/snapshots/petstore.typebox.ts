@@ -292,8 +292,8 @@ export const get_LoginUser = Type.Object({
   }),
   response: Type.String(),
   responseHeaders: Type.Object({
-    "X-Rate-Limit": Type.Number(),
-    "X-Expires-After": Type.String(),
+    "x-rate-limit": Type.Number(),
+    "x-expires-after": Type.String(),
   }),
 });
 

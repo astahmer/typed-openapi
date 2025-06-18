@@ -263,8 +263,8 @@ export const get_LoginUser = v.object({
   }),
   response: v.string(),
   responseHeaders: v.object({
-    "X-Rate-Limit": v.number(),
-    "X-Expires-After": v.string(),
+    "x-rate-limit": v.number(),
+    "x-expires-after": v.string(),
   }),
 });
 

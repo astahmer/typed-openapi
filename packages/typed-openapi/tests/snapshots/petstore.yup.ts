@@ -277,8 +277,8 @@ export const get_LoginUser = {
   }),
   response: y.string().required(),
   responseHeaders: y.object({
-    "X-Rate-Limit": y.number().required(),
-    "X-Expires-After": y.string().required(),
+    "x-rate-limit": y.number().required(),
+    "x-expires-after": y.string().required(),
   }),
 };
 
