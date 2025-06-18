@@ -53,9 +53,9 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
 
     if (schema.allOf) {
       const types = schema.allOf.map((prop) => openApiSchemaToTs({ schema: prop, ctx, meta }));
-      const {allOf, externalDocs,  example, examples, description, title,  ...rest} = schema
+      const { allOf, externalDocs, example, examples, description, title, ...rest } = schema;
       if (Object.keys(rest).length > 0) {
-        types.push(openApiSchemaToTs({schema: rest, ctx, meta}))
+        types.push(openApiSchemaToTs({ schema: rest, ctx, meta }));
       }
       return t.intersection(types);
     }
@@ -72,7 +72,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
           } else if (value === false) {
             return t.literal("false");
           } else if (typeof value === "number") {
-            return t.literal(`${value}`)
+            return t.literal(`${value}`);
           } else {
             return t.literal(`"${value}"`);
           }
@@ -95,16 +95,18 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
       if (schemaType === "null") return t.literal("null");
     }
     if (!schemaType && schema.enum) {
-      return t.union(schema.enum.map((value) => {
-        if (typeof value === "string") {
-          return t.literal(`"${value}"`)
-        }
-        if (value === null) {
-          return t.literal("null")
-        }
-        // handle boolean and number literals
-        return t.literal(value)
-      }));
+      return t.union(
+        schema.enum.map((value) => {
+          if (typeof value === "string") {
+            return t.literal(`"${value}"`);
+          }
+          if (value === null) {
+            return t.literal("null");
+          }
+          // handle boolean and number literals
+          return t.literal(value);
+        }),
+      );
     }
 
     if (schemaType === "array") {

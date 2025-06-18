@@ -32,11 +32,13 @@ export async function generateClientFiles(input: string, options: typeof options
   const ctx = mapOpenApiEndpoints(openApiDoc);
   console.log(`Found ${ctx.endpointList.length} endpoints`);
 
-  const content = await prettify(generateFile({
-    ...ctx,
-    runtime: options.runtime,
-    schemasOnly: options.schemasOnly,
-  }));
+  const content = await prettify(
+    generateFile({
+      ...ctx,
+      runtime: options.runtime,
+      schemasOnly: options.schemasOnly,
+    }),
+  );
   const outputPath = join(
     cwd,
     options.output ?? input + `.${options.runtime === "none" ? "client" : options.runtime}.ts`,
@@ -49,9 +51,12 @@ export async function generateClientFiles(input: string, options: typeof options
   if (options.tanstack) {
     const tanstackContent = await generateTanstackQueryFile({
       ...ctx,
-      relativeApiClientPath: './' + basename(outputPath),
+      relativeApiClientPath: "./" + basename(outputPath),
     });
-    const tanstackOutputPath = join(dirname(outputPath), typeof options.tanstack === "string" ? options.tanstack : `tanstack.client.ts`);
+    const tanstackOutputPath = join(
+      dirname(outputPath),
+      typeof options.tanstack === "string" ? options.tanstack : `tanstack.client.ts`,
+    );
     console.log("Generating tanstack client...", tanstackOutputPath);
     await ensureDir(dirname(tanstackOutputPath));
     await writeFile(tanstackOutputPath, tanstackContent);

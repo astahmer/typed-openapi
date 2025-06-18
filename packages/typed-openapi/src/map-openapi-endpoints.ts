@@ -148,11 +148,14 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
       // Map response headers
       const headers = responseObject?.headers;
       if (headers) {
-        endpoint.responseHeaders = Object.entries(headers).reduce((acc, [name, headerOrRef]) => {
-          const header = refs.unwrap(headerOrRef);
-          acc[name] = openApiSchemaToTs({ schema: header.schema ?? {}, ctx });
-          return acc;
-        }, {} as Record<string, Box>);
+        endpoint.responseHeaders = Object.entries(headers).reduce(
+          (acc, [name, headerOrRef]) => {
+            const header = refs.unwrap(headerOrRef);
+            acc[name] = openApiSchemaToTs({ schema: header.schema ?? {}, ctx });
+            return acc;
+          },
+          {} as Record<string, Box>,
+        );
       }
 
       endpointList.push(endpoint);
@@ -194,7 +197,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: AnyBox;
-  responseHeaders?: Record<string, AnyBox>
+  responseHeaders?: Record<string, AnyBox>;
 };
 
 export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
