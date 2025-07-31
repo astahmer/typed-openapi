@@ -131,11 +131,11 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
       // Match the first 2xx-3xx response found, or fallback to default one otherwise
       let responseObject: ResponseObject | undefined;
       const allResponses: Record<string, AnyBox> = {};
-      
+
       Object.entries(operation.responses ?? {}).map(([status, responseOrRef]) => {
         const statusCode = Number(status);
         const responseObj = refs.unwrap<ResponseObject>(responseOrRef);
-        
+
         // Collect all responses for error handling
         const content = responseObj?.content;
         if (content) {
@@ -153,13 +153,13 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
           // If no content defined, use unknown type
           allResponses[status] = openApiSchemaToTs({ schema: {}, ctx });
         }
-        
+
         // Keep the current logic for the main response (first 2xx-3xx)
         if (statusCode >= 200 && statusCode < 300 && !responseObject) {
           responseObject = responseObj;
         }
       });
-      
+
       if (!responseObject && operation.responses?.default) {
         responseObject = refs.unwrap(operation.responses.default);
         // Also add default to all responses if not already covered
@@ -176,7 +176,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
           }
         }
       }
-      
+
       // Set the responses collection
       if (Object.keys(allResponses).length > 0) {
         endpoint.responses = allResponses;

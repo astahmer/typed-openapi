@@ -16,7 +16,7 @@ export type get_GetUserById = {
   response: { id: string; name: string };  // Success response (2xx)
   responses: {
     200: { id: string; name: string };     // Success
-    401: { error: string; code: number };  // Unauthorized  
+    401: { error: string; code: number };  // Unauthorized
     404: { message: string };              // Not Found
     500: { error: string };                // Server Error
   };
@@ -68,11 +68,11 @@ const api = createApiClient(fetch);
 
 async function getUser(id: string) {
   const result = await api.getSafe("/users/{id}", { path: { id } });
-  
+
   if (result.ok) {
     return result.data; // Typed as success response
   }
-  
+
   // Handle specific error cases
   switch (result.status) {
     case 401:
@@ -92,13 +92,13 @@ async function getUser(id: string) {
 ```typescript
 async function handleApiCall<T>(apiCall: () => Promise<T>) {
   const result = await apiCall();
-  
+
   if (result.ok) {
     return { success: true, data: result.data };
   }
-  
-  return { 
-    success: false, 
+
+  return {
+    success: false,
     error: {
       status: result.status,
       message: getErrorMessage(result.error),

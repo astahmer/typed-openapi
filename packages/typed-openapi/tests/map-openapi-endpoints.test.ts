@@ -3117,7 +3117,7 @@ describe("map-openapi-endpoints", () => {
   test("error schemas", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/error-schemas.yaml")) as OpenAPIObject;
     const result = mapOpenApiEndpoints(openApiDoc);
-    
+
     // Find the getUserById endpoint
     const getUserEndpoint = result.endpointList.find(e => e.meta.alias === "get_GetUserById");
     expect(getUserEndpoint).toBeDefined();
@@ -3165,7 +3165,7 @@ describe("map-openapi-endpoints", () => {
     // Verify that error schemas are properly resolved
     const authErrorBox = result.refs.getInfosByRef("#/components/schemas/AuthError");
     expect(authErrorBox?.name).toBe("AuthError");
-    
+
     const validationErrorBox = result.refs.getInfosByRef("#/components/schemas/ValidationError");
     expect(validationErrorBox?.name).toBe("ValidationError");
   });

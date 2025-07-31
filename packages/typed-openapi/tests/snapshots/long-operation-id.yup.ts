@@ -94,7 +94,7 @@ export type ApiResponse<TSuccess, TErrors extends Record<string, unknown> = {}> 
   | {
       [K in keyof TErrors]: {
         ok: false;
-        status: K extends string ? (K extends `${number}` ? number : never) : never;
+        status: K extends `${infer StatusCode extends number}` ? StatusCode : never;
         error: TErrors[K];
       };
     }[keyof TErrors];

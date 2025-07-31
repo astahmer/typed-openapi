@@ -335,7 +335,7 @@ describe("generator", () => {
         | {
             [K in keyof TErrors]: {
               ok: false;
-              status: K extends string ? (K extends \`\${number}\` ? number : never) : never;
+              status: K extends \`\${infer StatusCode extends number}\` ? StatusCode : never;
               error: TErrors[K];
             };
           }[keyof TErrors];
@@ -558,7 +558,7 @@ describe("generator", () => {
        api.get("/users").then((users) => console.log(users));
        api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
        api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
-       
+
        // With error handling
        const result = await api.get("/users/{id}", { withResponse: true }, { path: { id: "123" } });
        if (result.ok) {
@@ -920,7 +920,7 @@ describe("generator", () => {
         | {
             [K in keyof TErrors]: {
               ok: false;
-              status: K extends string ? (K extends \`\${number}\` ? number : never) : never;
+              status: K extends \`\${infer StatusCode extends number}\` ? StatusCode : never;
               error: TErrors[K];
             };
           }[keyof TErrors];
@@ -1032,7 +1032,7 @@ describe("generator", () => {
        api.get("/users").then((users) => console.log(users));
        api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
        api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
-       
+
        // With error handling
        const result = await api.get("/users/{id}", { withResponse: true }, { path: { id: "123" } });
        if (result.ok) {
@@ -1192,7 +1192,7 @@ describe("generator", () => {
         | {
             [K in keyof TErrors]: {
               ok: false;
-              status: K extends string ? (K extends \`\${number}\` ? number : never) : never;
+              status: K extends \`\${infer StatusCode extends number}\` ? StatusCode : never;
               error: TErrors[K];
             };
           }[keyof TErrors];
@@ -1304,7 +1304,7 @@ describe("generator", () => {
        api.get("/users").then((users) => console.log(users));
        api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
        api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
-       
+
        // With error handling
        const result = await api.get("/users/{id}", { withResponse: true }, { path: { id: "123" } });
        if (result.ok) {
@@ -1322,18 +1322,18 @@ describe("generator", () => {
   test("error schemas", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/error-schemas.yaml")) as OpenAPIObject;
     const generated = await prettify(generateFile(mapOpenApiEndpoints(openApiDoc)));
-    
+
     // Verify error schemas are generated
     expect(generated).toContain("export type AuthError");
     expect(generated).toContain("export type NotFoundError");
     expect(generated).toContain("export type ValidationError");
     expect(generated).toContain("export type ForbiddenError");
     expect(generated).toContain("export type ServerError");
-    
+
     // Verify error responses are included in endpoint types
     expect(generated).toContain('responses: { 200: Schemas.User; 401: Schemas.AuthError; 404: Schemas.NotFoundError; 500: Schemas.ServerError }');
     expect(generated).toContain('responses: { 201: Schemas.Post; 400: Schemas.ValidationError; 403: Schemas.ForbiddenError }');
-    
+
     // Verify specific error schema structure
     expect(generated).toContain("error: string");
     expect(generated).toContain("code: number");

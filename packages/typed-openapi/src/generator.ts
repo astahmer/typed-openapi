@@ -318,17 +318,19 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
 
 // Error handling types
-export type ApiResponse<TSuccess, TErrors extends Record<string, unknown> = {}> = {
-  ok: true;
-  status: number;
-  data: TSuccess;
-} | {
-  [K in keyof TErrors]: {
-    ok: false;
-    status: K extends string ? (K extends \`\${number}\` ? number : never) : never;
-    error: TErrors[K];
-  }
-}[keyof TErrors];
+export type ApiResponse<TSuccess, TErrors extends Record<string, unknown> = {}> =
+  | {
+      ok: true;
+      status: number;
+      data: TSuccess;
+    }
+  | {
+      [K in keyof TErrors]: {
+        ok: false;
+        status: K extends \`\${infer StatusCode extends number}\` ? StatusCode : never;
+        error: TErrors[K];
+      };
+    }[keyof TErrors];
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
@@ -384,7 +386,7 @@ export class ApiClient {
       .with("zod", "yup", () => infer(`TEndpoint["response"]`))
       .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["response"]`)
       .otherwise(() => `TEndpoint["response"]`)}>;
-    
+
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
       options: { withResponse: true },
@@ -393,7 +395,7 @@ export class ApiClient {
         .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
         .otherwise(() => `TEndpoint["parameters"]`)}>
     ): Promise<SafeApiResponse<TEndpoint>>;
-    
+
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
       optionsOrParams?: { withResponse?: boolean } | ${match(ctx.runtime)
@@ -404,7 +406,7 @@ export class ApiClient {
     ): Promise<any> {
       const hasWithResponse = optionsOrParams && typeof optionsOrParams === 'object' && 'withResponse' in optionsOrParams;
       const requestParams = hasWithResponse ? params[0] : optionsOrParams;
-      
+
       if (hasWithResponse && optionsOrParams.withResponse) {
         return this.fetcher("${method}", this.baseUrl + path, requestParams)
           .then(async (response) => {
@@ -474,7 +476,7 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
  api.get("/users").then((users) => console.log(users));
  api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
  api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
- 
+
  // With error handling
  const result = await api.get("/users/{id}", { withResponse: true }, { path: { id: "123" } });
  if (result.ok) {
