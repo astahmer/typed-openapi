@@ -379,10 +379,36 @@ describe("generator", () => {
         put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ): Promise<TEndpoint["response"]> {
-          return this.fetcher("put", this.baseUrl + path, params[0]).then((response) =>
-            this.parseResponse(response),
-          ) as Promise<TEndpoint["response"]>;
+        ): Promise<TEndpoint["response"]>;
+
+        put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+          path: Path,
+          options: { withResponse: true },
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<SafeApiResponse<TEndpoint>>;
+
+        put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+          path: Path,
+          optionsOrParams?: { withResponse?: boolean } | TEndpoint["parameters"],
+          ...params: any[]
+        ): Promise<any> {
+          const hasWithResponse = optionsOrParams && typeof optionsOrParams === "object" && "withResponse" in optionsOrParams;
+          const requestParams = hasWithResponse ? params[0] : optionsOrParams;
+
+          if (hasWithResponse && optionsOrParams.withResponse) {
+            return this.fetcher("put", this.baseUrl + path, requestParams).then(async (response) => {
+              const data = await this.parseResponse(response);
+              if (response.ok) {
+                return { ok: true, status: response.status, data };
+              } else {
+                return { ok: false, status: response.status, error: data };
+              }
+            });
+          } else {
+            return this.fetcher("put", this.baseUrl + path, requestParams).then((response) =>
+              this.parseResponse(response),
+            ) as Promise<TEndpoint["response"]>;
+          }
         }
         // </ApiClient.put>
 
@@ -390,10 +416,36 @@ describe("generator", () => {
         post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ): Promise<TEndpoint["response"]> {
-          return this.fetcher("post", this.baseUrl + path, params[0]).then((response) =>
-            this.parseResponse(response),
-          ) as Promise<TEndpoint["response"]>;
+        ): Promise<TEndpoint["response"]>;
+
+        post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+          path: Path,
+          options: { withResponse: true },
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<SafeApiResponse<TEndpoint>>;
+
+        post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+          path: Path,
+          optionsOrParams?: { withResponse?: boolean } | TEndpoint["parameters"],
+          ...params: any[]
+        ): Promise<any> {
+          const hasWithResponse = optionsOrParams && typeof optionsOrParams === "object" && "withResponse" in optionsOrParams;
+          const requestParams = hasWithResponse ? params[0] : optionsOrParams;
+
+          if (hasWithResponse && optionsOrParams.withResponse) {
+            return this.fetcher("post", this.baseUrl + path, requestParams).then(async (response) => {
+              const data = await this.parseResponse(response);
+              if (response.ok) {
+                return { ok: true, status: response.status, data };
+              } else {
+                return { ok: false, status: response.status, error: data };
+              }
+            });
+          } else {
+            return this.fetcher("post", this.baseUrl + path, requestParams).then((response) =>
+              this.parseResponse(response),
+            ) as Promise<TEndpoint["response"]>;
+          }
         }
         // </ApiClient.post>
 
@@ -401,10 +453,36 @@ describe("generator", () => {
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ): Promise<TEndpoint["response"]> {
-          return this.fetcher("get", this.baseUrl + path, params[0]).then((response) =>
-            this.parseResponse(response),
-          ) as Promise<TEndpoint["response"]>;
+        ): Promise<TEndpoint["response"]>;
+
+        get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+          path: Path,
+          options: { withResponse: true },
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<SafeApiResponse<TEndpoint>>;
+
+        get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+          path: Path,
+          optionsOrParams?: { withResponse?: boolean } | TEndpoint["parameters"],
+          ...params: any[]
+        ): Promise<any> {
+          const hasWithResponse = optionsOrParams && typeof optionsOrParams === "object" && "withResponse" in optionsOrParams;
+          const requestParams = hasWithResponse ? params[0] : optionsOrParams;
+
+          if (hasWithResponse && optionsOrParams.withResponse) {
+            return this.fetcher("get", this.baseUrl + path, requestParams).then(async (response) => {
+              const data = await this.parseResponse(response);
+              if (response.ok) {
+                return { ok: true, status: response.status, data };
+              } else {
+                return { ok: false, status: response.status, error: data };
+              }
+            });
+          } else {
+            return this.fetcher("get", this.baseUrl + path, requestParams).then((response) =>
+              this.parseResponse(response),
+            ) as Promise<TEndpoint["response"]>;
+          }
         }
         // </ApiClient.get>
 
@@ -412,76 +490,38 @@ describe("generator", () => {
         delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ): Promise<TEndpoint["response"]> {
-          return this.fetcher("delete", this.baseUrl + path, params[0]).then((response) =>
-            this.parseResponse(response),
-          ) as Promise<TEndpoint["response"]>;
+        ): Promise<TEndpoint["response"]>;
+
+        delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+          path: Path,
+          options: { withResponse: true },
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<SafeApiResponse<TEndpoint>>;
+
+        delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+          path: Path,
+          optionsOrParams?: { withResponse?: boolean } | TEndpoint["parameters"],
+          ...params: any[]
+        ): Promise<any> {
+          const hasWithResponse = optionsOrParams && typeof optionsOrParams === "object" && "withResponse" in optionsOrParams;
+          const requestParams = hasWithResponse ? params[0] : optionsOrParams;
+
+          if (hasWithResponse && optionsOrParams.withResponse) {
+            return this.fetcher("delete", this.baseUrl + path, requestParams).then(async (response) => {
+              const data = await this.parseResponse(response);
+              if (response.ok) {
+                return { ok: true, status: response.status, data };
+              } else {
+                return { ok: false, status: response.status, error: data };
+              }
+            });
+          } else {
+            return this.fetcher("delete", this.baseUrl + path, requestParams).then((response) =>
+              this.parseResponse(response),
+            ) as Promise<TEndpoint["response"]>;
+          }
         }
         // </ApiClient.delete>
-
-        // <ApiClient.putSafe>
-        putSafe<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
-          path: Path,
-          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ): Promise<SafeApiResponse<TEndpoint>> {
-          return this.fetcher("put", this.baseUrl + path, params[0]).then(async (response) => {
-            const data = await this.parseResponse(response);
-            if (response.ok) {
-              return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
-            } else {
-              return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
-            }
-          });
-        }
-        // </ApiClient.putSafe>
-
-        // <ApiClient.postSafe>
-        postSafe<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
-          path: Path,
-          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ): Promise<SafeApiResponse<TEndpoint>> {
-          return this.fetcher("post", this.baseUrl + path, params[0]).then(async (response) => {
-            const data = await this.parseResponse(response);
-            if (response.ok) {
-              return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
-            } else {
-              return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
-            }
-          });
-        }
-        // </ApiClient.postSafe>
-
-        // <ApiClient.getSafe>
-        getSafe<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
-          path: Path,
-          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ): Promise<SafeApiResponse<TEndpoint>> {
-          return this.fetcher("get", this.baseUrl + path, params[0]).then(async (response) => {
-            const data = await this.parseResponse(response);
-            if (response.ok) {
-              return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
-            } else {
-              return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
-            }
-          });
-        }
-        // </ApiClient.getSafe>
-
-        // <ApiClient.deleteSafe>
-        deleteSafe<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
-          path: Path,
-          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ): Promise<SafeApiResponse<TEndpoint>> {
-          return this.fetcher("delete", this.baseUrl + path, params[0]).then(async (response) => {
-            const data = await this.parseResponse(response);
-            if (response.ok) {
-              return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
-            } else {
-              return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
-            }
-          });
-        }
-        // </ApiClient.deleteSafe>
 
         // <ApiClient.request>
         /**
@@ -518,6 +558,14 @@ describe("generator", () => {
        api.get("/users").then((users) => console.log(users));
        api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
        api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+       
+       // With error handling
+       const result = await api.get("/users/{id}", { withResponse: true }, { path: { id: "123" } });
+       if (result.ok) {
+         console.log(result.data);
+       } else {
+         console.error(\`Error \${result.status}:\`, result.error);
+       }
       */
 
       // </ApiClient
@@ -916,28 +964,38 @@ describe("generator", () => {
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ): Promise<TEndpoint["response"]> {
-          return this.fetcher("get", this.baseUrl + path, params[0]).then((response) =>
-            this.parseResponse(response),
-          ) as Promise<TEndpoint["response"]>;
+        ): Promise<TEndpoint["response"]>;
+
+        get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+          path: Path,
+          options: { withResponse: true },
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<SafeApiResponse<TEndpoint>>;
+
+        get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+          path: Path,
+          optionsOrParams?: { withResponse?: boolean } | TEndpoint["parameters"],
+          ...params: any[]
+        ): Promise<any> {
+          const hasWithResponse = optionsOrParams && typeof optionsOrParams === "object" && "withResponse" in optionsOrParams;
+          const requestParams = hasWithResponse ? params[0] : optionsOrParams;
+
+          if (hasWithResponse && optionsOrParams.withResponse) {
+            return this.fetcher("get", this.baseUrl + path, requestParams).then(async (response) => {
+              const data = await this.parseResponse(response);
+              if (response.ok) {
+                return { ok: true, status: response.status, data };
+              } else {
+                return { ok: false, status: response.status, error: data };
+              }
+            });
+          } else {
+            return this.fetcher("get", this.baseUrl + path, requestParams).then((response) =>
+              this.parseResponse(response),
+            ) as Promise<TEndpoint["response"]>;
+          }
         }
         // </ApiClient.get>
-
-        // <ApiClient.getSafe>
-        getSafe<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
-          path: Path,
-          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ): Promise<SafeApiResponse<TEndpoint>> {
-          return this.fetcher("get", this.baseUrl + path, params[0]).then(async (response) => {
-            const data = await this.parseResponse(response);
-            if (response.ok) {
-              return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
-            } else {
-              return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
-            }
-          });
-        }
-        // </ApiClient.getSafe>
 
         // <ApiClient.request>
         /**
@@ -974,6 +1032,14 @@ describe("generator", () => {
        api.get("/users").then((users) => console.log(users));
        api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
        api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+       
+       // With error handling
+       const result = await api.get("/users/{id}", { withResponse: true }, { path: { id: "123" } });
+       if (result.ok) {
+         console.log(result.data);
+       } else {
+         console.error(\`Error \${result.status}:\`, result.error);
+       }
       */
 
       // </ApiClient
@@ -1170,28 +1236,38 @@ describe("generator", () => {
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ): Promise<TEndpoint["response"]> {
-          return this.fetcher("get", this.baseUrl + path, params[0]).then((response) =>
-            this.parseResponse(response),
-          ) as Promise<TEndpoint["response"]>;
+        ): Promise<TEndpoint["response"]>;
+
+        get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+          path: Path,
+          options: { withResponse: true },
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<SafeApiResponse<TEndpoint>>;
+
+        get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+          path: Path,
+          optionsOrParams?: { withResponse?: boolean } | TEndpoint["parameters"],
+          ...params: any[]
+        ): Promise<any> {
+          const hasWithResponse = optionsOrParams && typeof optionsOrParams === "object" && "withResponse" in optionsOrParams;
+          const requestParams = hasWithResponse ? params[0] : optionsOrParams;
+
+          if (hasWithResponse && optionsOrParams.withResponse) {
+            return this.fetcher("get", this.baseUrl + path, requestParams).then(async (response) => {
+              const data = await this.parseResponse(response);
+              if (response.ok) {
+                return { ok: true, status: response.status, data };
+              } else {
+                return { ok: false, status: response.status, error: data };
+              }
+            });
+          } else {
+            return this.fetcher("get", this.baseUrl + path, requestParams).then((response) =>
+              this.parseResponse(response),
+            ) as Promise<TEndpoint["response"]>;
+          }
         }
         // </ApiClient.get>
-
-        // <ApiClient.getSafe>
-        getSafe<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
-          path: Path,
-          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ): Promise<SafeApiResponse<TEndpoint>> {
-          return this.fetcher("get", this.baseUrl + path, params[0]).then(async (response) => {
-            const data = await this.parseResponse(response);
-            if (response.ok) {
-              return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
-            } else {
-              return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
-            }
-          });
-        }
-        // </ApiClient.getSafe>
 
         // <ApiClient.request>
         /**
@@ -1228,10 +1304,41 @@ describe("generator", () => {
        api.get("/users").then((users) => console.log(users));
        api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
        api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+       
+       // With error handling
+       const result = await api.get("/users/{id}", { withResponse: true }, { path: { id: "123" } });
+       if (result.ok) {
+         console.log(result.data);
+       } else {
+         console.error(\`Error \${result.status}:\`, result.error);
+       }
       */
 
       // </ApiClient
       "
     `);
+  });
+
+  test("error schemas", async ({ expect }) => {
+    const openApiDoc = (await SwaggerParser.parse("./tests/samples/error-schemas.yaml")) as OpenAPIObject;
+    const generated = await prettify(generateFile(mapOpenApiEndpoints(openApiDoc)));
+    
+    // Verify error schemas are generated
+    expect(generated).toContain("export type AuthError");
+    expect(generated).toContain("export type NotFoundError");
+    expect(generated).toContain("export type ValidationError");
+    expect(generated).toContain("export type ForbiddenError");
+    expect(generated).toContain("export type ServerError");
+    
+    // Verify error responses are included in endpoint types
+    expect(generated).toContain('responses: { 200: Schemas.User; 401: Schemas.AuthError; 404: Schemas.NotFoundError; 500: Schemas.ServerError }');
+    expect(generated).toContain('responses: { 201: Schemas.Post; 400: Schemas.ValidationError; 403: Schemas.ForbiddenError }');
+    
+    // Verify specific error schema structure
+    expect(generated).toContain("error: string");
+    expect(generated).toContain("code: number");
+    expect(generated).toContain("message: string");
+    expect(generated).toContain("field: string");
+    expect(generated).toContain("reason: string");
   });
 });

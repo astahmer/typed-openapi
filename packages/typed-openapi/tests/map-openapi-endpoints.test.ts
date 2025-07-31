@@ -3113,4 +3113,60 @@ describe("map-openapi-endpoints", () => {
       ]
     `);
   });
+
+  test("error schemas", async ({ expect }) => {
+    const openApiDoc = (await SwaggerParser.parse("./tests/samples/error-schemas.yaml")) as OpenAPIObject;
+    const result = mapOpenApiEndpoints(openApiDoc);
+    
+    // Find the getUserById endpoint
+    const getUserEndpoint = result.endpointList.find(e => e.meta.alias === "get_GetUserById");
+    expect(getUserEndpoint).toBeDefined();
+    expect(getUserEndpoint?.responses).toMatchInlineSnapshot(`
+      {
+        "200": {
+          "type": "ref",
+          "value": "User",
+        },
+        "401": {
+          "type": "ref",
+          "value": "AuthError",
+        },
+        "404": {
+          "type": "ref",
+          "value": "NotFoundError",
+        },
+        "500": {
+          "type": "ref",
+          "value": "ServerError",
+        },
+      }
+    `);
+
+    // Find the createPost endpoint
+    const createPostEndpoint = result.endpointList.find(e => e.meta.alias === "post_CreatePost");
+    expect(createPostEndpoint).toBeDefined();
+    expect(createPostEndpoint?.responses).toMatchInlineSnapshot(`
+      {
+        "201": {
+          "type": "ref",
+          "value": "Post",
+        },
+        "400": {
+          "type": "ref",
+          "value": "ValidationError",
+        },
+        "403": {
+          "type": "ref",
+          "value": "ForbiddenError",
+        },
+      }
+    `);
+
+    // Verify that error schemas are properly resolved
+    const authErrorBox = result.refs.getInfosByRef("#/components/schemas/AuthError");
+    expect(authErrorBox?.name).toBe("AuthError");
+    
+    const validationErrorBox = result.refs.getInfosByRef("#/components/schemas/ValidationError");
+    expect(validationErrorBox?.name).toBe("ValidationError");
+  });
 });

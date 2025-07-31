@@ -383,44 +383,47 @@ export class ApiClient {
     ): Promise<${match(ctx.runtime)
       .with("zod", "yup", () => infer(`TEndpoint["response"]`))
       .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["response"]`)
-      .otherwise(() => `TEndpoint["response"]`)}> {
-      return this.fetcher("${method}", this.baseUrl + path, params[0])
-          .then(response => this.parseResponse(response))${match(ctx.runtime)
-            .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
-            .with("arktype", "io-ts", "typebox", "valibot", () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`)
-            .otherwise(() => `as Promise<TEndpoint["response"]>`)};
-    }
-    // </ApiClient.${method}>
-    `
-        : "";
-    })
-    .join("\n")}
-
-    ${Object.entries(byMethods)
-    .map(([method, endpointByMethod]) => {
-      const capitalizedMethod = capitalize(method);
-      const infer = inferByRuntime[ctx.runtime];
-
-      return endpointByMethod.length
-        ? `// <ApiClient.${method}Safe>
-    ${method}Safe<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
+      .otherwise(() => `TEndpoint["response"]`)}>;
+    
+    ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
+      options: { withResponse: true },
       ...params: MaybeOptionalArg<${match(ctx.runtime)
         .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
         .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
         .otherwise(() => `TEndpoint["parameters"]`)}>
-    ): Promise<SafeApiResponse<TEndpoint>> {
-      return this.fetcher("${method}", this.baseUrl + path, params[0])
-        .then(async (response) => {
-          const data = await this.parseResponse(response);
-          if (response.ok) {
-            return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
-          } else {
-            return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
-          }
-        });
+    ): Promise<SafeApiResponse<TEndpoint>>;
+    
+    ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
+      path: Path,
+      optionsOrParams?: { withResponse?: boolean } | ${match(ctx.runtime)
+        .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
+        .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
+        .otherwise(() => `TEndpoint["parameters"]`)},
+      ...params: any[]
+    ): Promise<any> {
+      const hasWithResponse = optionsOrParams && typeof optionsOrParams === 'object' && 'withResponse' in optionsOrParams;
+      const requestParams = hasWithResponse ? params[0] : optionsOrParams;
+      
+      if (hasWithResponse && optionsOrParams.withResponse) {
+        return this.fetcher("${method}", this.baseUrl + path, requestParams)
+          .then(async (response) => {
+            const data = await this.parseResponse(response);
+            if (response.ok) {
+              return { ok: true, status: response.status, data };
+            } else {
+              return { ok: false, status: response.status, error: data };
+            }
+          });
+      } else {
+        return this.fetcher("${method}", this.baseUrl + path, requestParams)
+            .then(response => this.parseResponse(response))${match(ctx.runtime)
+              .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
+              .with("arktype", "io-ts", "typebox", "valibot", () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`)
+              .otherwise(() => `as Promise<TEndpoint["response"]>`)};
+      }
     }
-    // </ApiClient.${method}Safe>
+    // </ApiClient.${method}>
     `
         : "";
     })
@@ -471,6 +474,14 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
  api.get("/users").then((users) => console.log(users));
  api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
  api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+ 
+ // With error handling
+ const result = await api.get("/users/{id}", { withResponse: true }, { path: { id: "123" } });
+ if (result.ok) {
+   console.log(result.data);
+ } else {
+   console.error(\`Error \${result.status}:\`, result.error);
+ }
 */
 
 // </ApiClient
