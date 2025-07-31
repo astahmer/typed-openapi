@@ -153,6 +153,24 @@ const responseHeadersObjectToString = (responseHeaders: Record<string, AnyBox>, 
   return str + "}";
 };
 
+const generateResponsesObject = (responses: Record<string, AnyBox>, ctx: GeneratorContext) => {
+  let str = "{";
+  for (const [statusCode, responseType] of Object.entries(responses)) {
+    const value =
+      ctx.runtime === "none"
+        ? responseType.recompute((box) => {
+            if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
+              box.value = `Schemas.${box.value}`;
+            }
+
+            return box;
+          }).value
+        : responseType.value;
+    str += `${wrapWithQuotesIfNeeded(statusCode)}: ${value},\n`;
+  }
+  return str + "}";
+};
+
 const generateEndpointSchemaList = (ctx: GeneratorContext) => {
   let file = `
   ${ctx.runtime === "none" ? "export namespace Endpoints {" : ""}
@@ -199,6 +217,11 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
             }).value
           : endpoint.response.value
       },
+      ${
+        endpoint.responses
+          ? `responses: ${generateResponsesObject(endpoint.responses, ctx)},`
+          : ""
+      }
       ${
         endpoint.responseHeaders
           ? `responseHeaders: ${responseHeadersObjectToString(endpoint.responseHeaders, ctx)},`
@@ -272,6 +295,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
 
@@ -287,10 +311,32 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"]
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+// Error handling types
+export type ApiResponse<TSuccess, TErrors extends Record<string, unknown> = {}> = {
+  ok: true;
+  status: number;
+  data: TSuccess;
+} | {
+  [K in keyof TErrors]: {
+    ok: false;
+    status: K extends string ? (K extends \`\${number}\` ? number : never) : never;
+    error: TErrors[K];
+  }
+}[keyof TErrors];
+
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+  ? TResponses extends Record<string, unknown>
+    ? ApiResponse<TSuccess, TResponses>
+    : { ok: true; status: number; data: TSuccess }
+  : TEndpoint extends { response: infer TSuccess }
+    ? { ok: true; status: number; data: TSuccess }
+    : never;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -345,6 +391,36 @@ export class ApiClient {
             .otherwise(() => `as Promise<TEndpoint["response"]>`)};
     }
     // </ApiClient.${method}>
+    `
+        : "";
+    })
+    .join("\n")}
+
+    ${Object.entries(byMethods)
+    .map(([method, endpointByMethod]) => {
+      const capitalizedMethod = capitalize(method);
+      const infer = inferByRuntime[ctx.runtime];
+
+      return endpointByMethod.length
+        ? `// <ApiClient.${method}Safe>
+    ${method}Safe<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
+      path: Path,
+      ...params: MaybeOptionalArg<${match(ctx.runtime)
+        .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
+        .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
+        .otherwise(() => `TEndpoint["parameters"]`)}>
+    ): Promise<SafeApiResponse<TEndpoint>> {
+      return this.fetcher("${method}", this.baseUrl + path, params[0])
+        .then(async (response) => {
+          const data = await this.parseResponse(response);
+          if (response.ok) {
+            return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+          } else {
+            return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+          }
+        });
+    }
+    // </ApiClient.${method}Safe>
     `
         : "";
     })

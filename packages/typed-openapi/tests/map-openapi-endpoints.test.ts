@@ -1325,6 +1325,24 @@ describe("map-openapi-endpoints", () => {
               "type": "ref",
               "value": "Pet",
             },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "Pet",
+              },
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "404": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "405": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -1401,6 +1419,16 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "ref",
               "value": "Pet",
+            },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "Pet",
+              },
+              "405": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -1482,6 +1510,16 @@ describe("map-openapi-endpoints", () => {
               "type": "array",
               "value": "Array<Pet>",
             },
+            "responses": {
+              "200": {
+                "type": "array",
+                "value": "Array<Pet>",
+              },
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -1559,6 +1597,16 @@ describe("map-openapi-endpoints", () => {
               "type": "array",
               "value": "Array<Pet>",
             },
+            "responses": {
+              "200": {
+                "type": "array",
+                "value": "Array<Pet>",
+              },
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -1635,6 +1683,20 @@ describe("map-openapi-endpoints", () => {
               "type": "ref",
               "value": "Pet",
             },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "Pet",
+              },
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "404": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -1710,6 +1772,12 @@ describe("map-openapi-endpoints", () => {
               "type": "keyword",
               "value": "unknown",
             },
+            "responses": {
+              "405": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -1777,6 +1845,12 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "keyword",
               "value": "unknown",
+            },
+            "responses": {
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -1867,6 +1941,12 @@ describe("map-openapi-endpoints", () => {
               "type": "ref",
               "value": "ApiResponse",
             },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "ApiResponse",
+              },
+            },
           },
           {
             "meta": {
@@ -1910,6 +1990,12 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "literal",
               "value": "Record<string, number>",
+            },
+            "responses": {
+              "200": {
+                "type": "literal",
+                "value": "Record<string, number>",
+              },
             },
           },
           {
@@ -1972,6 +2058,16 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "ref",
               "value": "Order",
+            },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "Order",
+              },
+              "405": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -2038,6 +2134,20 @@ describe("map-openapi-endpoints", () => {
               "type": "ref",
               "value": "Order",
             },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "Order",
+              },
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "404": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -2087,6 +2197,16 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "keyword",
               "value": "unknown",
+            },
+            "responses": {
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "404": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -2153,6 +2273,12 @@ describe("map-openapi-endpoints", () => {
               "type": "ref",
               "value": "User",
             },
+            "responses": {
+              "default": {
+                "type": "ref",
+                "value": "User",
+              },
+            },
           },
           {
             "meta": {
@@ -2212,6 +2338,16 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "ref",
               "value": "User",
+            },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "User",
+              },
+              "default": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -2307,6 +2443,16 @@ describe("map-openapi-endpoints", () => {
                 "value": "number",
               },
             },
+            "responses": {
+              "200": {
+                "type": "keyword",
+                "value": "string",
+              },
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -2335,6 +2481,12 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "keyword",
               "value": "unknown",
+            },
+            "responses": {
+              "default": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -2399,6 +2551,20 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "ref",
               "value": "User",
+            },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "User",
+              },
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "404": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -2470,6 +2636,12 @@ describe("map-openapi-endpoints", () => {
               "type": "keyword",
               "value": "unknown",
             },
+            "responses": {
+              "default": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -2518,6 +2690,16 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "keyword",
               "value": "unknown",
+            },
+            "responses": {
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "404": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
         ],
@@ -2689,6 +2871,12 @@ describe("map-openapi-endpoints", () => {
           "response": {
             "type": "keyword",
             "value": "unknown",
+          },
+          "responses": {
+            "200": {
+              "type": "keyword",
+              "value": "unknown",
+            },
           },
         },
       ]
@@ -2906,6 +3094,20 @@ describe("map-openapi-endpoints", () => {
           "response": {
             "type": "ref",
             "value": "SerializedUserSession",
+          },
+          "responses": {
+            "200": {
+              "type": "ref",
+              "value": "SerializedUserSession",
+            },
+            "401": {
+              "type": "keyword",
+              "value": "string",
+            },
+            "500": {
+              "type": "keyword",
+              "value": "string",
+            },
           },
         },
       ]

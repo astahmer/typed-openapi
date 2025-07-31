@@ -57,6 +57,7 @@ describe("generator", () => {
             body: Schemas.Pet;
           };
           response: Schemas.Pet;
+          responses: { 200: Schemas.Pet; 400: unknown; 404: unknown; 405: unknown };
         };
         export type post_AddPet = {
           method: "POST";
@@ -66,6 +67,7 @@ describe("generator", () => {
             body: Schemas.Pet;
           };
           response: Schemas.Pet;
+          responses: { 200: Schemas.Pet; 405: unknown };
         };
         export type get_FindPetsByStatus = {
           method: "GET";
@@ -75,6 +77,7 @@ describe("generator", () => {
             query: Partial<{ status: "available" | "pending" | "sold" }>;
           };
           response: Array<Schemas.Pet>;
+          responses: { 200: Array<Schemas.Pet>; 400: unknown };
         };
         export type get_FindPetsByTags = {
           method: "GET";
@@ -84,6 +87,7 @@ describe("generator", () => {
             query: Partial<{ tags: Array<string> }>;
           };
           response: Array<Schemas.Pet>;
+          responses: { 200: Array<Schemas.Pet>; 400: unknown };
         };
         export type get_GetPetById = {
           method: "GET";
@@ -93,6 +97,7 @@ describe("generator", () => {
             path: { petId: number };
           };
           response: Schemas.Pet;
+          responses: { 200: Schemas.Pet; 400: unknown; 404: unknown };
         };
         export type post_UpdatePetWithForm = {
           method: "POST";
@@ -103,6 +108,7 @@ describe("generator", () => {
             path: { petId: number };
           };
           response: unknown;
+          responses: { 405: unknown };
         };
         export type delete_DeletePet = {
           method: "DELETE";
@@ -113,6 +119,7 @@ describe("generator", () => {
             header: Partial<{ api_key: string }>;
           };
           response: unknown;
+          responses: { 400: unknown };
         };
         export type post_UploadFile = {
           method: "POST";
@@ -125,6 +132,7 @@ describe("generator", () => {
             body: string;
           };
           response: Schemas.ApiResponse;
+          responses: { 200: Schemas.ApiResponse };
         };
         export type get_GetInventory = {
           method: "GET";
@@ -132,6 +140,7 @@ describe("generator", () => {
           requestFormat: "json";
           parameters: never;
           response: Record<string, number>;
+          responses: { 200: Record<string, number> };
         };
         export type post_PlaceOrder = {
           method: "POST";
@@ -141,6 +150,7 @@ describe("generator", () => {
             body: Schemas.Order;
           };
           response: Schemas.Order;
+          responses: { 200: Schemas.Order; 405: unknown };
         };
         export type get_GetOrderById = {
           method: "GET";
@@ -150,6 +160,7 @@ describe("generator", () => {
             path: { orderId: number };
           };
           response: Schemas.Order;
+          responses: { 200: Schemas.Order; 400: unknown; 404: unknown };
         };
         export type delete_DeleteOrder = {
           method: "DELETE";
@@ -159,6 +170,7 @@ describe("generator", () => {
             path: { orderId: number };
           };
           response: unknown;
+          responses: { 400: unknown; 404: unknown };
         };
         export type post_CreateUser = {
           method: "POST";
@@ -168,6 +180,7 @@ describe("generator", () => {
             body: Schemas.User;
           };
           response: Schemas.User;
+          responses: { default: Schemas.User };
         };
         export type post_CreateUsersWithListInput = {
           method: "POST";
@@ -177,6 +190,7 @@ describe("generator", () => {
             body: Array<Schemas.User>;
           };
           response: Schemas.User;
+          responses: { 200: Schemas.User; default: unknown };
         };
         export type get_LoginUser = {
           method: "GET";
@@ -186,6 +200,7 @@ describe("generator", () => {
             query: Partial<{ username: string; password: string }>;
           };
           response: string;
+          responses: { 200: string; 400: unknown };
           responseHeaders: { "x-rate-limit": number; "x-expires-after": string };
         };
         export type get_LogoutUser = {
@@ -194,6 +209,7 @@ describe("generator", () => {
           requestFormat: "json";
           parameters: never;
           response: unknown;
+          responses: { default: unknown };
         };
         export type get_GetUserByName = {
           method: "GET";
@@ -203,6 +219,7 @@ describe("generator", () => {
             path: { username: string };
           };
           response: Schemas.User;
+          responses: { 200: Schemas.User; 400: unknown; 404: unknown };
         };
         export type put_UpdateUser = {
           method: "PUT";
@@ -214,6 +231,7 @@ describe("generator", () => {
             body: Schemas.User;
           };
           response: unknown;
+          responses: { default: unknown };
         };
         export type delete_DeleteUser = {
           method: "DELETE";
@@ -223,6 +241,7 @@ describe("generator", () => {
             path: { username: string };
           };
           response: unknown;
+          responses: { 400: unknown; 404: unknown };
         };
 
         // </Endpoints>
@@ -284,6 +303,7 @@ describe("generator", () => {
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
         response: unknown;
+        responses?: Record<string, unknown>;
         responseHeaders?: Record<string, unknown>;
       };
 
@@ -299,10 +319,34 @@ describe("generator", () => {
           areParametersRequired: boolean;
         };
         response: TConfig["response"];
+        responses?: TConfig["responses"];
         responseHeaders?: TConfig["responseHeaders"];
       };
 
       export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+      // Error handling types
+      export type ApiResponse<TSuccess, TErrors extends Record<string, unknown> = {}> =
+        | {
+            ok: true;
+            status: number;
+            data: TSuccess;
+          }
+        | {
+            [K in keyof TErrors]: {
+              ok: false;
+              status: K extends string ? (K extends \`\${number}\` ? number : never) : never;
+              error: TErrors[K];
+            };
+          }[keyof TErrors];
+
+      export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+        ? TResponses extends Record<string, unknown>
+          ? ApiResponse<TSuccess, TResponses>
+          : { ok: true; status: number; data: TSuccess }
+        : TEndpoint extends { response: infer TSuccess }
+          ? { ok: true; status: number; data: TSuccess }
+          : never;
 
       type RequiredKeys<T> = {
         [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -374,6 +418,70 @@ describe("generator", () => {
           ) as Promise<TEndpoint["response"]>;
         }
         // </ApiClient.delete>
+
+        // <ApiClient.putSafe>
+        putSafe<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<SafeApiResponse<TEndpoint>> {
+          return this.fetcher("put", this.baseUrl + path, params[0]).then(async (response) => {
+            const data = await this.parseResponse(response);
+            if (response.ok) {
+              return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+            } else {
+              return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+            }
+          });
+        }
+        // </ApiClient.putSafe>
+
+        // <ApiClient.postSafe>
+        postSafe<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<SafeApiResponse<TEndpoint>> {
+          return this.fetcher("post", this.baseUrl + path, params[0]).then(async (response) => {
+            const data = await this.parseResponse(response);
+            if (response.ok) {
+              return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+            } else {
+              return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+            }
+          });
+        }
+        // </ApiClient.postSafe>
+
+        // <ApiClient.getSafe>
+        getSafe<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<SafeApiResponse<TEndpoint>> {
+          return this.fetcher("get", this.baseUrl + path, params[0]).then(async (response) => {
+            const data = await this.parseResponse(response);
+            if (response.ok) {
+              return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+            } else {
+              return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+            }
+          });
+        }
+        // </ApiClient.getSafe>
+
+        // <ApiClient.deleteSafe>
+        deleteSafe<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<SafeApiResponse<TEndpoint>> {
+          return this.fetcher("delete", this.baseUrl + path, params[0]).then(async (response) => {
+            const data = await this.parseResponse(response);
+            if (response.ok) {
+              return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+            } else {
+              return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+            }
+          });
+        }
+        // </ApiClient.deleteSafe>
 
         // <ApiClient.request>
         /**
@@ -687,6 +795,17 @@ describe("generator", () => {
               profilePictureURL?: (string | null) | undefined;
             }>;
           };
+          responses: {
+            200: {
+              members: Array<{
+                id: string;
+                firstName?: (string | null) | undefined;
+                lastName?: (string | null) | undefined;
+                email: string;
+                profilePictureURL?: (string | null) | undefined;
+              }>;
+            };
+          };
         };
 
         // </Endpoints>
@@ -721,6 +840,7 @@ describe("generator", () => {
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
         response: unknown;
+        responses?: Record<string, unknown>;
         responseHeaders?: Record<string, unknown>;
       };
 
@@ -736,10 +856,34 @@ describe("generator", () => {
           areParametersRequired: boolean;
         };
         response: TConfig["response"];
+        responses?: TConfig["responses"];
         responseHeaders?: TConfig["responseHeaders"];
       };
 
       export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+      // Error handling types
+      export type ApiResponse<TSuccess, TErrors extends Record<string, unknown> = {}> =
+        | {
+            ok: true;
+            status: number;
+            data: TSuccess;
+          }
+        | {
+            [K in keyof TErrors]: {
+              ok: false;
+              status: K extends string ? (K extends \`\${number}\` ? number : never) : never;
+              error: TErrors[K];
+            };
+          }[keyof TErrors];
+
+      export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+        ? TResponses extends Record<string, unknown>
+          ? ApiResponse<TSuccess, TResponses>
+          : { ok: true; status: number; data: TSuccess }
+        : TEndpoint extends { response: infer TSuccess }
+          ? { ok: true; status: number; data: TSuccess }
+          : never;
 
       type RequiredKeys<T> = {
         [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -778,6 +922,22 @@ describe("generator", () => {
           ) as Promise<TEndpoint["response"]>;
         }
         // </ApiClient.get>
+
+        // <ApiClient.getSafe>
+        getSafe<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<SafeApiResponse<TEndpoint>> {
+          return this.fetcher("get", this.baseUrl + path, params[0]).then(async (response) => {
+            const data = await this.parseResponse(response);
+            if (response.ok) {
+              return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+            } else {
+              return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+            }
+          });
+        }
+        // </ApiClient.getSafe>
 
         // <ApiClient.request>
         /**
@@ -899,6 +1059,7 @@ describe("generator", () => {
             path: Partial<{ optionalInPath1: string; optionalInPath2: string }>;
           };
           response: string;
+          responses: { 200: string };
         };
 
         // </Endpoints>
@@ -933,6 +1094,7 @@ describe("generator", () => {
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
         response: unknown;
+        responses?: Record<string, unknown>;
         responseHeaders?: Record<string, unknown>;
       };
 
@@ -948,10 +1110,34 @@ describe("generator", () => {
           areParametersRequired: boolean;
         };
         response: TConfig["response"];
+        responses?: TConfig["responses"];
         responseHeaders?: TConfig["responseHeaders"];
       };
 
       export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+      // Error handling types
+      export type ApiResponse<TSuccess, TErrors extends Record<string, unknown> = {}> =
+        | {
+            ok: true;
+            status: number;
+            data: TSuccess;
+          }
+        | {
+            [K in keyof TErrors]: {
+              ok: false;
+              status: K extends string ? (K extends \`\${number}\` ? number : never) : never;
+              error: TErrors[K];
+            };
+          }[keyof TErrors];
+
+      export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+        ? TResponses extends Record<string, unknown>
+          ? ApiResponse<TSuccess, TResponses>
+          : { ok: true; status: number; data: TSuccess }
+        : TEndpoint extends { response: infer TSuccess }
+          ? { ok: true; status: number; data: TSuccess }
+          : never;
 
       type RequiredKeys<T> = {
         [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -990,6 +1176,22 @@ describe("generator", () => {
           ) as Promise<TEndpoint["response"]>;
         }
         // </ApiClient.get>
+
+        // <ApiClient.getSafe>
+        getSafe<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+          path: Path,
+          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ): Promise<SafeApiResponse<TEndpoint>> {
+          return this.fetcher("get", this.baseUrl + path, params[0]).then(async (response) => {
+            const data = await this.parseResponse(response);
+            if (response.ok) {
+              return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+            } else {
+              return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+            }
+          });
+        }
+        // </ApiClient.getSafe>
 
         // <ApiClient.request>
         /**

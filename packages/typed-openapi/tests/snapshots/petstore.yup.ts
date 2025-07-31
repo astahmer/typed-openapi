@@ -94,6 +94,12 @@ export const put_UpdatePet = {
     body: Pet,
   }),
   response: Pet,
+  responses: y.object({
+    "200": Pet,
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "405": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type post_AddPet = typeof post_AddPet;
@@ -105,6 +111,10 @@ export const post_AddPet = {
     body: Pet,
   }),
   response: Pet,
+  responses: y.object({
+    "200": Pet,
+    "405": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
@@ -118,6 +128,10 @@ export const get_FindPetsByStatus = {
     }),
   }),
   response: y.array(Pet),
+  responses: y.object({
+    "200": y.array(Pet),
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type get_FindPetsByTags = typeof get_FindPetsByTags;
@@ -131,6 +145,10 @@ export const get_FindPetsByTags = {
     }),
   }),
   response: y.array(Pet),
+  responses: y.object({
+    "200": y.array(Pet),
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type get_GetPetById = typeof get_GetPetById;
@@ -144,6 +162,11 @@ export const get_GetPetById = {
     }),
   }),
   response: Pet,
+  responses: y.object({
+    "200": Pet,
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
@@ -161,6 +184,9 @@ export const post_UpdatePetWithForm = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "405": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type delete_DeletePet = typeof delete_DeletePet;
@@ -177,6 +203,9 @@ export const delete_DeletePet = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type post_UploadFile = typeof post_UploadFile;
@@ -194,6 +223,9 @@ export const post_UploadFile = {
     body: y.string().required(),
   }),
   response: ApiResponse,
+  responses: y.object({
+    "200": ApiResponse,
+  }),
 };
 
 export type get_GetInventory = typeof get_GetInventory;
@@ -203,6 +235,9 @@ export const get_GetInventory = {
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed(/* unsupported */),
+  responses: y.object({
+    "200": y.mixed(/* unsupported */),
+  }),
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;
@@ -214,6 +249,10 @@ export const post_PlaceOrder = {
     body: Order,
   }),
   response: Order,
+  responses: y.object({
+    "200": Order,
+    "405": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type get_GetOrderById = typeof get_GetOrderById;
@@ -227,6 +266,11 @@ export const get_GetOrderById = {
     }),
   }),
   response: Order,
+  responses: y.object({
+    "200": Order,
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type delete_DeleteOrder = typeof delete_DeleteOrder;
@@ -240,6 +284,10 @@ export const delete_DeleteOrder = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type post_CreateUser = typeof post_CreateUser;
@@ -251,6 +299,9 @@ export const post_CreateUser = {
     body: User,
   }),
   response: User,
+  responses: y.object({
+    default: User,
+  }),
 };
 
 export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput;
@@ -262,6 +313,10 @@ export const post_CreateUsersWithListInput = {
     body: y.array(User),
   }),
   response: User,
+  responses: y.object({
+    "200": User,
+    default: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type get_LoginUser = typeof get_LoginUser;
@@ -276,6 +331,10 @@ export const get_LoginUser = {
     }),
   }),
   response: y.string().required(),
+  responses: y.object({
+    "200": y.string().required(),
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
   responseHeaders: y.object({
     "x-rate-limit": y.number().required(),
     "x-expires-after": y.string().required(),
@@ -289,6 +348,9 @@ export const get_LogoutUser = {
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    default: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type get_GetUserByName = typeof get_GetUserByName;
@@ -302,6 +364,11 @@ export const get_GetUserByName = {
     }),
   }),
   response: User,
+  responses: y.object({
+    "200": User,
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type put_UpdateUser = typeof put_UpdateUser;
@@ -316,6 +383,9 @@ export const put_UpdateUser = {
     body: User,
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    default: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type delete_DeleteUser = typeof delete_DeleteUser;
@@ -329,6 +399,10 @@ export const delete_DeleteUser = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 // <EndpointByMethod>
@@ -387,6 +461,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
 
@@ -402,10 +477,34 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+// Error handling types
+export type ApiResponse<TSuccess, TErrors extends Record<string, unknown> = {}> =
+  | {
+      ok: true;
+      status: number;
+      data: TSuccess;
+    }
+  | {
+      [K in keyof TErrors]: {
+        ok: false;
+        status: K extends string ? (K extends `${number}` ? number : never) : never;
+        error: TErrors[K];
+      };
+    }[keyof TErrors];
+
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+  ? TResponses extends Record<string, unknown>
+    ? ApiResponse<TSuccess, TResponses>
+    : { ok: true; status: number; data: TSuccess }
+  : TEndpoint extends { response: infer TSuccess }
+    ? { ok: true; status: number; data: TSuccess }
+    : never;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -477,6 +576,70 @@ export class ApiClient {
     ) as Promise<y.InferType<TEndpoint["response"]>>;
   }
   // </ApiClient.delete>
+
+  // <ApiClient.putSafe>
+  putSafe<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("put", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.putSafe>
+
+  // <ApiClient.postSafe>
+  postSafe<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("post", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.postSafe>
+
+  // <ApiClient.getSafe>
+  getSafe<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("get", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.getSafe>
+
+  // <ApiClient.deleteSafe>
+  deleteSafe<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("delete", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.deleteSafe>
 
   // <ApiClient.request>
   /**

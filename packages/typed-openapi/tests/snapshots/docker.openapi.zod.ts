@@ -1651,6 +1651,11 @@ export const get_ContainerList = {
     }),
   }),
   response: z.array(ContainerSummary),
+  responses: z.object({
+    "200": z.array(ContainerSummary),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerCreate = typeof post_ContainerCreate;
@@ -1672,6 +1677,13 @@ export const post_ContainerCreate = {
     ),
   }),
   response: ContainerCreateResponse,
+  responses: z.object({
+    "201": ContainerCreateResponse,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ContainerInspect = typeof get_ContainerInspect;
@@ -1714,6 +1726,37 @@ export const get_ContainerInspect = {
     Config: ContainerConfig.optional(),
     NetworkSettings: NetworkSettings.optional(),
   }),
+  responses: z.object({
+    "200": z.object({
+      Id: z.string().optional(),
+      Created: z.string().optional(),
+      Path: z.string().optional(),
+      Args: z.array(z.string()).optional(),
+      State: ContainerState.optional(),
+      Image: z.string().optional(),
+      ResolvConfPath: z.string().optional(),
+      HostnamePath: z.string().optional(),
+      HostsPath: z.string().optional(),
+      LogPath: z.string().optional(),
+      Name: z.string().optional(),
+      RestartCount: z.number().optional(),
+      Driver: z.string().optional(),
+      Platform: z.string().optional(),
+      MountLabel: z.string().optional(),
+      ProcessLabel: z.string().optional(),
+      AppArmorProfile: z.string().optional(),
+      ExecIDs: z.union([z.array(z.string()), z.null()]).optional(),
+      HostConfig: HostConfig.optional(),
+      GraphDriver: GraphDriverData.optional(),
+      SizeRw: z.number().optional(),
+      SizeRootFs: z.number().optional(),
+      Mounts: z.array(MountPoint).optional(),
+      Config: ContainerConfig.optional(),
+      NetworkSettings: NetworkSettings.optional(),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ContainerTop = typeof get_ContainerTop;
@@ -1732,6 +1775,14 @@ export const get_ContainerTop = {
   response: z.object({
     Titles: z.array(z.string()).optional(),
     Processes: z.array(z.array(z.string())).optional(),
+  }),
+  responses: z.object({
+    "200": z.object({
+      Titles: z.array(z.string()).optional(),
+      Processes: z.array(z.array(z.string())).optional(),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
   }),
 };
 
@@ -1755,6 +1806,11 @@ export const get_ContainerLogs = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": z.unknown(),
+    "500": z.unknown(),
+  }),
 };
 
 export type get_ContainerChanges = typeof get_ContainerChanges;
@@ -1768,6 +1824,11 @@ export const get_ContainerChanges = {
     }),
   }),
   response: z.array(FilesystemChange),
+  responses: z.object({
+    "200": z.array(FilesystemChange),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ContainerExport = typeof get_ContainerExport;
@@ -1781,6 +1842,11 @@ export const get_ContainerExport = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": z.unknown(),
+    "500": z.unknown(),
+  }),
 };
 
 export type get_ContainerStats = typeof get_ContainerStats;
@@ -1798,6 +1864,11 @@ export const get_ContainerStats = {
     }),
   }),
   response: z.record(z.unknown()),
+  responses: z.object({
+    "200": z.record(z.unknown()),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerResize = typeof post_ContainerResize;
@@ -1815,6 +1886,11 @@ export const post_ContainerResize = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": z.unknown(),
+    "500": z.unknown(),
+  }),
 };
 
 export type post_ContainerStart = typeof post_ContainerStart;
@@ -1831,6 +1907,12 @@ export const post_ContainerStart = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "304": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerStop = typeof post_ContainerStop;
@@ -1848,6 +1930,12 @@ export const post_ContainerStop = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "304": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerRestart = typeof post_ContainerRestart;
@@ -1865,6 +1953,11 @@ export const post_ContainerRestart = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerKill = typeof post_ContainerKill;
@@ -1881,6 +1974,12 @@ export const post_ContainerKill = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerUpdate = typeof post_ContainerUpdate;
@@ -1902,6 +2001,13 @@ export const post_ContainerUpdate = {
   response: z.object({
     Warnings: z.array(z.string()).optional(),
   }),
+  responses: z.object({
+    "200": z.object({
+      Warnings: z.array(z.string()).optional(),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerRename = typeof post_ContainerRename;
@@ -1918,6 +2024,12 @@ export const post_ContainerRename = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerPause = typeof post_ContainerPause;
@@ -1931,6 +2043,11 @@ export const post_ContainerPause = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerUnpause = typeof post_ContainerUnpause;
@@ -1944,6 +2061,11 @@ export const post_ContainerUnpause = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerAttach = typeof post_ContainerAttach;
@@ -1965,6 +2087,13 @@ export const post_ContainerAttach = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "101": z.unknown(),
+    "200": z.unknown(),
+    "400": z.unknown(),
+    "404": z.unknown(),
+    "500": z.unknown(),
+  }),
 };
 
 export type get_ContainerAttachWebsocket = typeof get_ContainerAttachWebsocket;
@@ -1986,6 +2115,13 @@ export const get_ContainerAttachWebsocket = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "101": z.unknown(),
+    "200": z.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerWait = typeof post_ContainerWait;
@@ -2002,6 +2138,12 @@ export const post_ContainerWait = {
     }),
   }),
   response: ContainerWaitResponse,
+  responses: z.object({
+    "200": ContainerWaitResponse,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type delete_ContainerDelete = typeof delete_ContainerDelete;
@@ -2020,6 +2162,13 @@ export const delete_ContainerDelete = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ContainerArchive = typeof get_ContainerArchive;
@@ -2036,6 +2185,12 @@ export const get_ContainerArchive = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "400": z.unknown(),
+    "404": z.unknown(),
+    "500": z.unknown(),
+  }),
 };
 
 export type put_PutContainerArchive = typeof put_PutContainerArchive;
@@ -2055,6 +2210,13 @@ export const put_PutContainerArchive = {
     body: z.string(),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "400": ErrorResponse,
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
@@ -2071,6 +2233,12 @@ export const head_ContainerArchiveInfo = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
   responseHeaders: z.object({
     "x-docker-container-path-stat": z.string(),
   }),
@@ -2090,6 +2258,13 @@ export const post_ContainerPrune = {
     ContainersDeleted: z.array(z.string()).optional(),
     SpaceReclaimed: z.number().optional(),
   }),
+  responses: z.object({
+    "200": z.object({
+      ContainersDeleted: z.array(z.string()).optional(),
+      SpaceReclaimed: z.number().optional(),
+    }),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ImageList = typeof get_ImageList;
@@ -2106,6 +2281,10 @@ export const get_ImageList = {
     }),
   }),
   response: z.array(ImageSummary),
+  responses: z.object({
+    "200": z.array(ImageSummary),
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ImageBuild = typeof post_ImageBuild;
@@ -2147,6 +2326,11 @@ export const post_ImageBuild = {
     body: z.string(),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_BuildPrune = typeof post_BuildPrune;
@@ -2164,6 +2348,13 @@ export const post_BuildPrune = {
   response: z.object({
     CachesDeleted: z.array(z.string()).optional(),
     SpaceReclaimed: z.number().optional(),
+  }),
+  responses: z.object({
+    "200": z.object({
+      CachesDeleted: z.array(z.string()).optional(),
+      SpaceReclaimed: z.number().optional(),
+    }),
+    "500": ErrorResponse,
   }),
 };
 
@@ -2188,6 +2379,11 @@ export const post_ImageCreate = {
     body: z.string(),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ImageInspect = typeof get_ImageInspect;
@@ -2201,6 +2397,11 @@ export const get_ImageInspect = {
     }),
   }),
   response: ImageInspect,
+  responses: z.object({
+    "200": ImageInspect,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ImageHistory = typeof get_ImageHistory;
@@ -2223,6 +2424,20 @@ export const get_ImageHistory = {
       Comment: z.string(),
     }),
   ),
+  responses: z.object({
+    "200": z.array(
+      z.object({
+        Id: z.string(),
+        Created: z.number(),
+        CreatedBy: z.string(),
+        Tags: z.array(z.string()),
+        Size: z.number(),
+        Comment: z.string(),
+      }),
+    ),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ImagePush = typeof post_ImagePush;
@@ -2242,6 +2457,11 @@ export const post_ImagePush = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ImageTag = typeof post_ImageTag;
@@ -2259,6 +2479,13 @@ export const post_ImageTag = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "201": z.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type delete_ImageDelete = typeof delete_ImageDelete;
@@ -2276,6 +2503,12 @@ export const delete_ImageDelete = {
     }),
   }),
   response: z.array(ImageDeleteResponseItem),
+  responses: z.object({
+    "200": z.array(ImageDeleteResponseItem),
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ImageSearch = typeof get_ImageSearch;
@@ -2299,6 +2532,18 @@ export const get_ImageSearch = {
       star_count: z.number().optional(),
     }),
   ),
+  responses: z.object({
+    "200": z.array(
+      z.object({
+        description: z.string().optional(),
+        is_official: z.boolean().optional(),
+        is_automated: z.boolean().optional(),
+        name: z.string().optional(),
+        star_count: z.number().optional(),
+      }),
+    ),
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ImagePrune = typeof post_ImagePrune;
@@ -2315,6 +2560,13 @@ export const post_ImagePrune = {
     ImagesDeleted: z.array(ImageDeleteResponseItem).optional(),
     SpaceReclaimed: z.number().optional(),
   }),
+  responses: z.object({
+    "200": z.object({
+      ImagesDeleted: z.array(ImageDeleteResponseItem).optional(),
+      SpaceReclaimed: z.number().optional(),
+    }),
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_SystemAuth = typeof post_SystemAuth;
@@ -2325,7 +2577,19 @@ export const post_SystemAuth = {
   parameters: z.object({
     body: AuthConfig,
   }),
-  response: z.unknown(),
+  response: z.object({
+    Status: z.string(),
+    IdentityToken: z.union([z.string(), z.undefined()]).optional(),
+  }),
+  responses: z.object({
+    "200": z.object({
+      Status: z.string(),
+      IdentityToken: z.union([z.string(), z.undefined()]).optional(),
+    }),
+    "204": z.unknown(),
+    "401": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_SystemInfo = typeof get_SystemInfo;
@@ -2335,6 +2599,10 @@ export const get_SystemInfo = {
   requestFormat: z.literal("json"),
   parameters: z.never(),
   response: SystemInfo,
+  responses: z.object({
+    "200": SystemInfo,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_SystemVersion = typeof get_SystemVersion;
@@ -2344,6 +2612,10 @@ export const get_SystemVersion = {
   requestFormat: z.literal("json"),
   parameters: z.never(),
   response: SystemVersion,
+  responses: z.object({
+    "200": SystemVersion,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_SystemPing = typeof get_SystemPing;
@@ -2353,6 +2625,10 @@ export const get_SystemPing = {
   requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "500": z.unknown(),
+  }),
   responseHeaders: z.object({
     swarm: z.union([
       z.literal("inactive"),
@@ -2377,6 +2653,10 @@ export const head_SystemPingHead = {
   requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "500": z.unknown(),
+  }),
   responseHeaders: z.object({
     swarm: z.union([
       z.literal("inactive"),
@@ -2412,6 +2692,11 @@ export const post_ImageCommit = {
     body: ContainerConfig,
   }),
   response: IdResponse,
+  responses: z.object({
+    "201": IdResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_SystemEvents = typeof get_SystemEvents;
@@ -2427,6 +2712,11 @@ export const get_SystemEvents = {
     }),
   }),
   response: EventMessage,
+  responses: z.object({
+    "200": EventMessage,
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_SystemDataUsage = typeof get_SystemDataUsage;
@@ -2448,6 +2738,16 @@ export const get_SystemDataUsage = {
     Volumes: z.array(Volume).optional(),
     BuildCache: z.array(BuildCache).optional(),
   }),
+  responses: z.object({
+    "200": z.object({
+      LayersSize: z.number().optional(),
+      Images: z.array(ImageSummary).optional(),
+      Containers: z.array(ContainerSummary).optional(),
+      Volumes: z.array(Volume).optional(),
+      BuildCache: z.array(BuildCache).optional(),
+    }),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -2461,6 +2761,10 @@ export const get_ImageGet = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "500": z.unknown(),
+  }),
 };
 
 export type get_ImageGetAll = typeof get_ImageGetAll;
@@ -2474,6 +2778,10 @@ export const get_ImageGetAll = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "500": z.unknown(),
+  }),
 };
 
 export type post_ImageLoad = typeof post_ImageLoad;
@@ -2487,6 +2795,10 @@ export const post_ImageLoad = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerExec = typeof post_ContainerExec;
@@ -2513,6 +2825,12 @@ export const post_ContainerExec = {
     }),
   }),
   response: IdResponse,
+  responses: z.object({
+    "201": IdResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ExecStart = typeof post_ExecStart;
@@ -2531,6 +2849,11 @@ export const post_ExecStart = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": z.unknown(),
+    "409": z.unknown(),
+  }),
 };
 
 export type post_ExecResize = typeof post_ExecResize;
@@ -2548,6 +2871,12 @@ export const post_ExecResize = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ExecInspect = typeof get_ExecInspect;
@@ -2573,6 +2902,23 @@ export const get_ExecInspect = {
     ContainerID: z.string().optional(),
     Pid: z.number().optional(),
   }),
+  responses: z.object({
+    "200": z.object({
+      CanRemove: z.boolean().optional(),
+      DetachKeys: z.string().optional(),
+      ID: z.string().optional(),
+      Running: z.boolean().optional(),
+      ExitCode: z.number().optional(),
+      ProcessConfig: ProcessConfig.optional(),
+      OpenStdin: z.boolean().optional(),
+      OpenStderr: z.boolean().optional(),
+      OpenStdout: z.boolean().optional(),
+      ContainerID: z.string().optional(),
+      Pid: z.number().optional(),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_VolumeList = typeof get_VolumeList;
@@ -2586,6 +2932,10 @@ export const get_VolumeList = {
     }),
   }),
   response: VolumeListResponse,
+  responses: z.object({
+    "200": VolumeListResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_VolumeCreate = typeof post_VolumeCreate;
@@ -2597,6 +2947,10 @@ export const post_VolumeCreate = {
     body: VolumeCreateOptions,
   }),
   response: Volume,
+  responses: z.object({
+    "201": Volume,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_VolumeInspect = typeof get_VolumeInspect;
@@ -2610,6 +2964,11 @@ export const get_VolumeInspect = {
     }),
   }),
   response: Volume,
+  responses: z.object({
+    "200": Volume,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type put_VolumeUpdate = typeof put_VolumeUpdate;
@@ -2629,6 +2988,13 @@ export const put_VolumeUpdate = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type delete_VolumeDelete = typeof delete_VolumeDelete;
@@ -2645,6 +3011,12 @@ export const delete_VolumeDelete = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_VolumePrune = typeof post_VolumePrune;
@@ -2661,6 +3033,13 @@ export const post_VolumePrune = {
     VolumesDeleted: z.array(z.string()).optional(),
     SpaceReclaimed: z.number().optional(),
   }),
+  responses: z.object({
+    "200": z.object({
+      VolumesDeleted: z.array(z.string()).optional(),
+      SpaceReclaimed: z.number().optional(),
+    }),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_NetworkList = typeof get_NetworkList;
@@ -2674,6 +3053,10 @@ export const get_NetworkList = {
     }),
   }),
   response: z.array(Network),
+  responses: z.object({
+    "200": z.array(Network),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_NetworkInspect = typeof get_NetworkInspect;
@@ -2691,6 +3074,11 @@ export const get_NetworkInspect = {
     }),
   }),
   response: Network,
+  responses: z.object({
+    "200": Network,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type delete_NetworkDelete = typeof delete_NetworkDelete;
@@ -2704,6 +3092,12 @@ export const delete_NetworkDelete = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_NetworkCreate = typeof post_NetworkCreate;
@@ -2729,6 +3123,15 @@ export const post_NetworkCreate = {
     Id: z.string().optional(),
     Warning: z.string().optional(),
   }),
+  responses: z.object({
+    "201": z.object({
+      Id: z.string().optional(),
+      Warning: z.string().optional(),
+    }),
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_NetworkConnect = typeof post_NetworkConnect;
@@ -2746,6 +3149,12 @@ export const post_NetworkConnect = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
@@ -2763,6 +3172,12 @@ export const post_NetworkDisconnect = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_NetworkPrune = typeof post_NetworkPrune;
@@ -2778,6 +3193,12 @@ export const post_NetworkPrune = {
   response: z.object({
     NetworksDeleted: z.array(z.string()).optional(),
   }),
+  responses: z.object({
+    "200": z.object({
+      NetworksDeleted: z.array(z.string()).optional(),
+    }),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_PluginList = typeof get_PluginList;
@@ -2791,6 +3212,10 @@ export const get_PluginList = {
     }),
   }),
   response: z.array(Plugin),
+  responses: z.object({
+    "200": z.array(Plugin),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_GetPluginPrivileges = typeof get_GetPluginPrivileges;
@@ -2804,6 +3229,10 @@ export const get_GetPluginPrivileges = {
     }),
   }),
   response: z.array(PluginPrivilege),
+  responses: z.object({
+    "200": z.array(PluginPrivilege),
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginPull = typeof post_PluginPull;
@@ -2822,6 +3251,10 @@ export const post_PluginPull = {
     body: z.array(PluginPrivilege),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_PluginInspect = typeof get_PluginInspect;
@@ -2835,6 +3268,11 @@ export const get_PluginInspect = {
     }),
   }),
   response: Plugin,
+  responses: z.object({
+    "200": Plugin,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type delete_PluginDelete = typeof delete_PluginDelete;
@@ -2851,6 +3289,11 @@ export const delete_PluginDelete = {
     }),
   }),
   response: Plugin,
+  responses: z.object({
+    "200": Plugin,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginEnable = typeof post_PluginEnable;
@@ -2867,6 +3310,11 @@ export const post_PluginEnable = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginDisable = typeof post_PluginDisable;
@@ -2883,6 +3331,11 @@ export const post_PluginDisable = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginUpgrade = typeof post_PluginUpgrade;
@@ -2903,6 +3356,11 @@ export const post_PluginUpgrade = {
     body: z.array(PluginPrivilege),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginCreate = typeof post_PluginCreate;
@@ -2916,6 +3374,10 @@ export const post_PluginCreate = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginPush = typeof post_PluginPush;
@@ -2929,6 +3391,11 @@ export const post_PluginPush = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginSet = typeof post_PluginSet;
@@ -2943,6 +3410,11 @@ export const post_PluginSet = {
     body: z.array(z.string()),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_NodeList = typeof get_NodeList;
@@ -2956,6 +3428,11 @@ export const get_NodeList = {
     }),
   }),
   response: z.array(Node),
+  responses: z.object({
+    "200": z.array(Node),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_NodeInspect = typeof get_NodeInspect;
@@ -2969,6 +3446,12 @@ export const get_NodeInspect = {
     }),
   }),
   response: Node,
+  responses: z.object({
+    "200": Node,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type delete_NodeDelete = typeof delete_NodeDelete;
@@ -2985,6 +3468,12 @@ export const delete_NodeDelete = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_NodeUpdate = typeof post_NodeUpdate;
@@ -3002,6 +3491,13 @@ export const post_NodeUpdate = {
     body: NodeSpec,
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_SwarmInspect = typeof get_SwarmInspect;
@@ -3011,6 +3507,12 @@ export const get_SwarmInspect = {
   requestFormat: z.literal("json"),
   parameters: z.never(),
   response: Swarm,
+  responses: z.object({
+    "200": Swarm,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_SwarmInit = typeof post_SwarmInit;
@@ -3031,6 +3533,12 @@ export const post_SwarmInit = {
     }),
   }),
   response: z.string(),
+  responses: z.object({
+    "200": z.string(),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_SwarmJoin = typeof post_SwarmJoin;
@@ -3048,6 +3556,12 @@ export const post_SwarmJoin = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_SwarmLeave = typeof post_SwarmLeave;
@@ -3061,6 +3575,11 @@ export const post_SwarmLeave = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_SwarmUpdate = typeof post_SwarmUpdate;
@@ -3078,6 +3597,12 @@ export const post_SwarmUpdate = {
     body: SwarmSpec,
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
@@ -3088,6 +3613,13 @@ export const get_SwarmUnlockkey = {
   parameters: z.never(),
   response: z.object({
     UnlockKey: z.string().optional(),
+  }),
+  responses: z.object({
+    "200": z.object({
+      UnlockKey: z.string().optional(),
+    }),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
   }),
 };
 
@@ -3102,6 +3634,11 @@ export const post_SwarmUnlock = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_ServiceList = typeof get_ServiceList;
@@ -3116,6 +3653,11 @@ export const get_ServiceList = {
     }),
   }),
   response: z.array(Service),
+  responses: z.object({
+    "200": z.array(Service),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_ServiceCreate = typeof post_ServiceCreate;
@@ -3133,6 +3675,17 @@ export const post_ServiceCreate = {
     ID: z.string().optional(),
     Warning: z.string().optional(),
   }),
+  responses: z.object({
+    "201": z.object({
+      ID: z.string().optional(),
+      Warning: z.string().optional(),
+    }),
+    "400": ErrorResponse,
+    "403": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_ServiceInspect = typeof get_ServiceInspect;
@@ -3149,6 +3702,12 @@ export const get_ServiceInspect = {
     }),
   }),
   response: Service,
+  responses: z.object({
+    "200": Service,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type delete_ServiceDelete = typeof delete_ServiceDelete;
@@ -3162,6 +3721,12 @@ export const delete_ServiceDelete = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_ServiceUpdate = typeof post_ServiceUpdate;
@@ -3184,6 +3749,13 @@ export const post_ServiceUpdate = {
     body: z.intersection(ServiceSpec, z.record(z.unknown())),
   }),
   response: ServiceUpdateResponse,
+  responses: z.object({
+    "200": ServiceUpdateResponse,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_ServiceLogs = typeof get_ServiceLogs;
@@ -3206,6 +3778,12 @@ export const get_ServiceLogs = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": z.unknown(),
+    "500": z.unknown(),
+    "503": z.unknown(),
+  }),
 };
 
 export type get_TaskList = typeof get_TaskList;
@@ -3219,6 +3797,11 @@ export const get_TaskList = {
     }),
   }),
   response: z.array(Task),
+  responses: z.object({
+    "200": z.array(Task),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_TaskInspect = typeof get_TaskInspect;
@@ -3232,6 +3815,12 @@ export const get_TaskInspect = {
     }),
   }),
   response: Task,
+  responses: z.object({
+    "200": Task,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_TaskLogs = typeof get_TaskLogs;
@@ -3254,6 +3843,12 @@ export const get_TaskLogs = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "404": z.unknown(),
+    "500": z.unknown(),
+    "503": z.unknown(),
+  }),
 };
 
 export type get_SecretList = typeof get_SecretList;
@@ -3267,6 +3862,11 @@ export const get_SecretList = {
     }),
   }),
   response: z.array(Secret),
+  responses: z.object({
+    "200": z.array(Secret),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_SecretCreate = typeof post_SecretCreate;
@@ -3278,6 +3878,12 @@ export const post_SecretCreate = {
     body: z.intersection(SecretSpec, z.record(z.unknown())),
   }),
   response: IdResponse,
+  responses: z.object({
+    "201": IdResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_SecretInspect = typeof get_SecretInspect;
@@ -3291,6 +3897,12 @@ export const get_SecretInspect = {
     }),
   }),
   response: Secret,
+  responses: z.object({
+    "200": Secret,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type delete_SecretDelete = typeof delete_SecretDelete;
@@ -3304,6 +3916,12 @@ export const delete_SecretDelete = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_SecretUpdate = typeof post_SecretUpdate;
@@ -3321,6 +3939,13 @@ export const post_SecretUpdate = {
     body: SecretSpec,
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_ConfigList = typeof get_ConfigList;
@@ -3334,6 +3959,11 @@ export const get_ConfigList = {
     }),
   }),
   response: z.array(Config),
+  responses: z.object({
+    "200": z.array(Config),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_ConfigCreate = typeof post_ConfigCreate;
@@ -3345,6 +3975,12 @@ export const post_ConfigCreate = {
     body: z.intersection(ConfigSpec, z.record(z.unknown())),
   }),
   response: IdResponse,
+  responses: z.object({
+    "201": IdResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_ConfigInspect = typeof get_ConfigInspect;
@@ -3358,6 +3994,12 @@ export const get_ConfigInspect = {
     }),
   }),
   response: Config,
+  responses: z.object({
+    "200": Config,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type delete_ConfigDelete = typeof delete_ConfigDelete;
@@ -3371,6 +4013,12 @@ export const delete_ConfigDelete = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "204": z.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_ConfigUpdate = typeof post_ConfigUpdate;
@@ -3388,6 +4036,13 @@ export const post_ConfigUpdate = {
     body: ConfigSpec,
   }),
   response: z.unknown(),
+  responses: z.object({
+    "200": z.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_DistributionInspect = typeof get_DistributionInspect;
@@ -3401,6 +4056,11 @@ export const get_DistributionInspect = {
     }),
   }),
   response: DistributionInspect,
+  responses: z.object({
+    "200": DistributionInspect,
+    "401": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_Session = typeof post_Session;
@@ -3410,6 +4070,11 @@ export const post_Session = {
   requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.unknown(),
+  responses: z.object({
+    "101": z.unknown(),
+    "400": z.unknown(),
+    "500": z.unknown(),
+  }),
 };
 
 // <EndpointByMethod>
@@ -3559,6 +4224,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
 
@@ -3574,10 +4240,34 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+// Error handling types
+export type ApiResponse<TSuccess, TErrors extends Record<string, unknown> = {}> =
+  | {
+      ok: true;
+      status: number;
+      data: TSuccess;
+    }
+  | {
+      [K in keyof TErrors]: {
+        ok: false;
+        status: K extends string ? (K extends `${number}` ? number : never) : never;
+        error: TErrors[K];
+      };
+    }[keyof TErrors];
+
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+  ? TResponses extends Record<string, unknown>
+    ? ApiResponse<TSuccess, TResponses>
+    : { ok: true; status: number; data: TSuccess }
+  : TEndpoint extends { response: infer TSuccess }
+    ? { ok: true; status: number; data: TSuccess }
+    : never;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -3660,6 +4350,86 @@ export class ApiClient {
     ) as Promise<z.infer<TEndpoint["response"]>>;
   }
   // </ApiClient.head>
+
+  // <ApiClient.getSafe>
+  getSafe<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("get", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.getSafe>
+
+  // <ApiClient.postSafe>
+  postSafe<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("post", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.postSafe>
+
+  // <ApiClient.deleteSafe>
+  deleteSafe<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("delete", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.deleteSafe>
+
+  // <ApiClient.putSafe>
+  putSafe<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("put", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.putSafe>
+
+  // <ApiClient.headSafe>
+  headSafe<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("head", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.headSafe>
 
   // <ApiClient.request>
   /**

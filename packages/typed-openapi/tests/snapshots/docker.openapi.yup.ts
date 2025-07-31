@@ -1898,6 +1898,11 @@ export const get_ContainerList = {
     }),
   }),
   response: y.array(ContainerSummary),
+  responses: y.object({
+    "200": y.array(ContainerSummary),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerCreate = typeof post_ContainerCreate;
@@ -1997,6 +2002,13 @@ export const post_ContainerCreate = {
     }),
   }),
   response: ContainerCreateResponse,
+  responses: y.object({
+    "201": ContainerCreateResponse,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ContainerInspect = typeof get_ContainerInspect;
@@ -2046,6 +2058,44 @@ export const get_ContainerInspect = {
     Config: ContainerConfig.optional(),
     NetworkSettings: NetworkSettings.optional(),
   }),
+  responses: y.object({
+    "200": y.object({
+      Id: y.string().required().optional(),
+      Created: y.string().required().optional(),
+      Path: y.string().required().optional(),
+      Args: y.array(y.string().required()).optional(),
+      State: ContainerState.optional(),
+      Image: y.string().required().optional(),
+      ResolvConfPath: y.string().required().optional(),
+      HostnamePath: y.string().required().optional(),
+      HostsPath: y.string().required().optional(),
+      LogPath: y.string().required().optional(),
+      Name: y.string().required().optional(),
+      RestartCount: y.number().required().optional(),
+      Driver: y.string().required().optional(),
+      Platform: y.string().required().optional(),
+      MountLabel: y.string().required().optional(),
+      ProcessLabel: y.string().required().optional(),
+      AppArmorProfile: y.string().required().optional(),
+      ExecIDs: y
+        .mixed()
+        .oneOf([
+          y.array(y.string().required()),
+          y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
+        ])
+        .required()
+        .optional(),
+      HostConfig: HostConfig.optional(),
+      GraphDriver: GraphDriverData.optional(),
+      SizeRw: y.number().required().optional(),
+      SizeRootFs: y.number().required().optional(),
+      Mounts: y.array(MountPoint).optional(),
+      Config: ContainerConfig.optional(),
+      NetworkSettings: NetworkSettings.optional(),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ContainerTop = typeof get_ContainerTop;
@@ -2064,6 +2114,14 @@ export const get_ContainerTop = {
   response: y.object({
     Titles: y.array(y.string().required()).optional(),
     Processes: y.array(y.array(y.string().required())).optional(),
+  }),
+  responses: y.object({
+    "200": y.object({
+      Titles: y.array(y.string().required()).optional(),
+      Processes: y.array(y.array(y.string().required())).optional(),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
   }),
 };
 
@@ -2087,6 +2145,11 @@ export const get_ContainerLogs = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type get_ContainerChanges = typeof get_ContainerChanges;
@@ -2100,6 +2163,11 @@ export const get_ContainerChanges = {
     }),
   }),
   response: y.array(FilesystemChange),
+  responses: y.object({
+    "200": y.array(FilesystemChange),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ContainerExport = typeof get_ContainerExport;
@@ -2113,6 +2181,11 @@ export const get_ContainerExport = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type get_ContainerStats = typeof get_ContainerStats;
@@ -2130,6 +2203,11 @@ export const get_ContainerStats = {
     }),
   }),
   response: y.mixed(/* unsupported */),
+  responses: y.object({
+    "200": y.mixed(/* unsupported */),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerResize = typeof post_ContainerResize;
@@ -2147,6 +2225,11 @@ export const post_ContainerResize = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type post_ContainerStart = typeof post_ContainerStart;
@@ -2163,6 +2246,12 @@ export const post_ContainerStart = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "304": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerStop = typeof post_ContainerStop;
@@ -2180,6 +2269,12 @@ export const post_ContainerStop = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "304": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerRestart = typeof post_ContainerRestart;
@@ -2197,6 +2292,11 @@ export const post_ContainerRestart = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerKill = typeof post_ContainerKill;
@@ -2213,6 +2313,12 @@ export const post_ContainerKill = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerUpdate = typeof post_ContainerUpdate;
@@ -2291,6 +2397,13 @@ export const post_ContainerUpdate = {
   response: y.object({
     Warnings: y.array(y.string().required()).optional(),
   }),
+  responses: y.object({
+    "200": y.object({
+      Warnings: y.array(y.string().required()).optional(),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerRename = typeof post_ContainerRename;
@@ -2307,6 +2420,12 @@ export const post_ContainerRename = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerPause = typeof post_ContainerPause;
@@ -2320,6 +2439,11 @@ export const post_ContainerPause = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerUnpause = typeof post_ContainerUnpause;
@@ -2333,6 +2457,11 @@ export const post_ContainerUnpause = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerAttach = typeof post_ContainerAttach;
@@ -2354,6 +2483,13 @@ export const post_ContainerAttach = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "101": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type get_ContainerAttachWebsocket = typeof get_ContainerAttachWebsocket;
@@ -2375,6 +2511,13 @@ export const get_ContainerAttachWebsocket = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "101": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerWait = typeof post_ContainerWait;
@@ -2391,6 +2534,12 @@ export const post_ContainerWait = {
     }),
   }),
   response: ContainerWaitResponse,
+  responses: y.object({
+    "200": ContainerWaitResponse,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type delete_ContainerDelete = typeof delete_ContainerDelete;
@@ -2409,6 +2558,13 @@ export const delete_ContainerDelete = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ContainerArchive = typeof get_ContainerArchive;
@@ -2425,6 +2581,12 @@ export const get_ContainerArchive = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type put_PutContainerArchive = typeof put_PutContainerArchive;
@@ -2458,6 +2620,13 @@ export const put_PutContainerArchive = {
     body: y.string().required(),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
@@ -2474,6 +2643,12 @@ export const head_ContainerArchiveInfo = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
   responseHeaders: y.object({
     "x-docker-container-path-stat": y.string().required(),
   }),
@@ -2493,6 +2668,13 @@ export const post_ContainerPrune = {
     ContainersDeleted: y.array(y.string().required()).optional(),
     SpaceReclaimed: y.number().required().optional(),
   }),
+  responses: y.object({
+    "200": y.object({
+      ContainersDeleted: y.array(y.string().required()).optional(),
+      SpaceReclaimed: y.number().required().optional(),
+    }),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ImageList = typeof get_ImageList;
@@ -2509,6 +2691,10 @@ export const get_ImageList = {
     }),
   }),
   response: y.array(ImageSummary),
+  responses: y.object({
+    "200": y.array(ImageSummary),
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ImageBuild = typeof post_ImageBuild;
@@ -2553,6 +2739,11 @@ export const post_ImageBuild = {
     body: y.string().required(),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_BuildPrune = typeof post_BuildPrune;
@@ -2570,6 +2761,13 @@ export const post_BuildPrune = {
   response: y.object({
     CachesDeleted: y.array(y.string().required()).optional(),
     SpaceReclaimed: y.number().required().optional(),
+  }),
+  responses: y.object({
+    "200": y.object({
+      CachesDeleted: y.array(y.string().required()).optional(),
+      SpaceReclaimed: y.number().required().optional(),
+    }),
+    "500": ErrorResponse,
   }),
 };
 
@@ -2594,6 +2792,11 @@ export const post_ImageCreate = {
     body: y.string().required(),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ImageInspect = typeof get_ImageInspect;
@@ -2607,6 +2810,11 @@ export const get_ImageInspect = {
     }),
   }),
   response: ImageInspect,
+  responses: y.object({
+    "200": ImageInspect,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ImageHistory = typeof get_ImageHistory;
@@ -2629,6 +2837,20 @@ export const get_ImageHistory = {
       Comment: y.string().required(),
     }),
   ),
+  responses: y.object({
+    "200": y.array(
+      y.object({
+        Id: y.string().required(),
+        Created: y.number().required(),
+        CreatedBy: y.string().required(),
+        Tags: y.array(y.string().required()),
+        Size: y.number().required(),
+        Comment: y.string().required(),
+      }),
+    ),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ImagePush = typeof post_ImagePush;
@@ -2648,6 +2870,11 @@ export const post_ImagePush = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ImageTag = typeof post_ImageTag;
@@ -2665,6 +2892,13 @@ export const post_ImageTag = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "201": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type delete_ImageDelete = typeof delete_ImageDelete;
@@ -2682,6 +2916,12 @@ export const delete_ImageDelete = {
     }),
   }),
   response: y.array(ImageDeleteResponseItem),
+  responses: y.object({
+    "200": y.array(ImageDeleteResponseItem),
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ImageSearch = typeof get_ImageSearch;
@@ -2719,6 +2959,18 @@ export const get_ImageSearch = {
       star_count: y.number().required().optional(),
     }),
   ),
+  responses: y.object({
+    "200": y.array(
+      y.object({
+        description: y.string().required().optional(),
+        is_official: y.boolean().required().optional(),
+        is_automated: y.boolean().required().optional(),
+        name: y.string().required().optional(),
+        star_count: y.number().required().optional(),
+      }),
+    ),
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ImagePrune = typeof post_ImagePrune;
@@ -2735,6 +2987,13 @@ export const post_ImagePrune = {
     ImagesDeleted: y.array(ImageDeleteResponseItem).optional(),
     SpaceReclaimed: y.number().required().optional(),
   }),
+  responses: y.object({
+    "200": y.object({
+      ImagesDeleted: y.array(ImageDeleteResponseItem).optional(),
+      SpaceReclaimed: y.number().required().optional(),
+    }),
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_SystemAuth = typeof post_SystemAuth;
@@ -2745,7 +3004,30 @@ export const post_SystemAuth = {
   parameters: y.object({
     body: AuthConfig,
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  response: y.object({
+    Status: y.string().required(),
+    IdentityToken: y
+      .mixed()
+      .oneOf([y.string().required(), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
+      .required()
+      .optional(),
+  }),
+  responses: y.object({
+    "200": y.object({
+      Status: y.string().required(),
+      IdentityToken: y
+        .mixed()
+        .oneOf([
+          y.string().required(),
+          y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
+        ])
+        .required()
+        .optional(),
+    }),
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "401": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_SystemInfo = typeof get_SystemInfo;
@@ -2755,6 +3037,10 @@ export const get_SystemInfo = {
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: SystemInfo,
+  responses: y.object({
+    "200": SystemInfo,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_SystemVersion = typeof get_SystemVersion;
@@ -2764,6 +3050,10 @@ export const get_SystemVersion = {
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: SystemVersion,
+  responses: y.object({
+    "200": SystemVersion,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_SystemPing = typeof get_SystemPing;
@@ -2773,6 +3063,10 @@ export const get_SystemPing = {
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
   responseHeaders: y.object({
     swarm: y.mixed().oneOf(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).required(),
     "docker-experimental": y.boolean().required(),
@@ -2790,6 +3084,10 @@ export const head_SystemPingHead = {
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
   responseHeaders: y.object({
     swarm: y.mixed().oneOf(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).required(),
     "docker-experimental": y.boolean().required(),
@@ -2818,6 +3116,11 @@ export const post_ImageCommit = {
     body: ContainerConfig,
   }),
   response: IdResponse,
+  responses: y.object({
+    "201": IdResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_SystemEvents = typeof get_SystemEvents;
@@ -2833,6 +3136,11 @@ export const get_SystemEvents = {
     }),
   }),
   response: EventMessage,
+  responses: y.object({
+    "200": EventMessage,
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_SystemDataUsage = typeof get_SystemDataUsage;
@@ -2852,6 +3160,16 @@ export const get_SystemDataUsage = {
     Volumes: y.array(Volume).optional(),
     BuildCache: y.array(BuildCache).optional(),
   }),
+  responses: y.object({
+    "200": y.object({
+      LayersSize: y.number().required().optional(),
+      Images: y.array(ImageSummary).optional(),
+      Containers: y.array(ContainerSummary).optional(),
+      Volumes: y.array(Volume).optional(),
+      BuildCache: y.array(BuildCache).optional(),
+    }),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -2865,6 +3183,10 @@ export const get_ImageGet = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type get_ImageGetAll = typeof get_ImageGetAll;
@@ -2878,6 +3200,10 @@ export const get_ImageGetAll = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type post_ImageLoad = typeof post_ImageLoad;
@@ -2891,6 +3217,10 @@ export const post_ImageLoad = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ContainerExec = typeof post_ContainerExec;
@@ -2924,6 +3254,12 @@ export const post_ContainerExec = {
     }),
   }),
   response: IdResponse,
+  responses: y.object({
+    "201": IdResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_ExecStart = typeof post_ExecStart;
@@ -2949,6 +3285,11 @@ export const post_ExecStart = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "409": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type post_ExecResize = typeof post_ExecResize;
@@ -2966,6 +3307,12 @@ export const post_ExecResize = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_ExecInspect = typeof get_ExecInspect;
@@ -2991,6 +3338,23 @@ export const get_ExecInspect = {
     ContainerID: y.string().required().optional(),
     Pid: y.number().required().optional(),
   }),
+  responses: y.object({
+    "200": y.object({
+      CanRemove: y.boolean().required().optional(),
+      DetachKeys: y.string().required().optional(),
+      ID: y.string().required().optional(),
+      Running: y.boolean().required().optional(),
+      ExitCode: y.number().required().optional(),
+      ProcessConfig: ProcessConfig.optional(),
+      OpenStdin: y.boolean().required().optional(),
+      OpenStderr: y.boolean().required().optional(),
+      OpenStdout: y.boolean().required().optional(),
+      ContainerID: y.string().required().optional(),
+      Pid: y.number().required().optional(),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_VolumeList = typeof get_VolumeList;
@@ -3004,6 +3368,10 @@ export const get_VolumeList = {
     }),
   }),
   response: VolumeListResponse,
+  responses: y.object({
+    "200": VolumeListResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_VolumeCreate = typeof post_VolumeCreate;
@@ -3015,6 +3383,10 @@ export const post_VolumeCreate = {
     body: VolumeCreateOptions,
   }),
   response: Volume,
+  responses: y.object({
+    "201": Volume,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_VolumeInspect = typeof get_VolumeInspect;
@@ -3028,6 +3400,11 @@ export const get_VolumeInspect = {
     }),
   }),
   response: Volume,
+  responses: y.object({
+    "200": Volume,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type put_VolumeUpdate = typeof put_VolumeUpdate;
@@ -3047,6 +3424,13 @@ export const put_VolumeUpdate = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type delete_VolumeDelete = typeof delete_VolumeDelete;
@@ -3063,6 +3447,12 @@ export const delete_VolumeDelete = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_VolumePrune = typeof post_VolumePrune;
@@ -3079,6 +3469,13 @@ export const post_VolumePrune = {
     VolumesDeleted: y.array(y.string().required()).optional(),
     SpaceReclaimed: y.number().required().optional(),
   }),
+  responses: y.object({
+    "200": y.object({
+      VolumesDeleted: y.array(y.string().required()).optional(),
+      SpaceReclaimed: y.number().required().optional(),
+    }),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_NetworkList = typeof get_NetworkList;
@@ -3092,6 +3489,10 @@ export const get_NetworkList = {
     }),
   }),
   response: y.array(Network),
+  responses: y.object({
+    "200": y.array(Network),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_NetworkInspect = typeof get_NetworkInspect;
@@ -3109,6 +3510,11 @@ export const get_NetworkInspect = {
     }),
   }),
   response: Network,
+  responses: y.object({
+    "200": Network,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type delete_NetworkDelete = typeof delete_NetworkDelete;
@@ -3122,6 +3528,12 @@ export const delete_NetworkDelete = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_NetworkCreate = typeof post_NetworkCreate;
@@ -3207,6 +3619,15 @@ export const post_NetworkCreate = {
     Id: y.string().required().optional(),
     Warning: y.string().required().optional(),
   }),
+  responses: y.object({
+    "201": y.object({
+      Id: y.string().required().optional(),
+      Warning: y.string().required().optional(),
+    }),
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_NetworkConnect = typeof post_NetworkConnect;
@@ -3224,6 +3645,12 @@ export const post_NetworkConnect = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
@@ -3241,6 +3668,12 @@ export const post_NetworkDisconnect = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_NetworkPrune = typeof post_NetworkPrune;
@@ -3256,6 +3689,12 @@ export const post_NetworkPrune = {
   response: y.object({
     NetworksDeleted: y.array(y.string().required()).optional(),
   }),
+  responses: y.object({
+    "200": y.object({
+      NetworksDeleted: y.array(y.string().required()).optional(),
+    }),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_PluginList = typeof get_PluginList;
@@ -3269,6 +3708,10 @@ export const get_PluginList = {
     }),
   }),
   response: y.array(Plugin),
+  responses: y.object({
+    "200": y.array(Plugin),
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_GetPluginPrivileges = typeof get_GetPluginPrivileges;
@@ -3282,6 +3725,10 @@ export const get_GetPluginPrivileges = {
     }),
   }),
   response: y.array(PluginPrivilege),
+  responses: y.object({
+    "200": y.array(PluginPrivilege),
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginPull = typeof post_PluginPull;
@@ -3307,6 +3754,10 @@ export const post_PluginPull = {
     body: y.array(PluginPrivilege),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_PluginInspect = typeof get_PluginInspect;
@@ -3320,6 +3771,11 @@ export const get_PluginInspect = {
     }),
   }),
   response: Plugin,
+  responses: y.object({
+    "200": Plugin,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type delete_PluginDelete = typeof delete_PluginDelete;
@@ -3336,6 +3792,11 @@ export const delete_PluginDelete = {
     }),
   }),
   response: Plugin,
+  responses: y.object({
+    "200": Plugin,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginEnable = typeof post_PluginEnable;
@@ -3352,6 +3813,11 @@ export const post_PluginEnable = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginDisable = typeof post_PluginDisable;
@@ -3368,6 +3834,11 @@ export const post_PluginDisable = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginUpgrade = typeof post_PluginUpgrade;
@@ -3388,6 +3859,11 @@ export const post_PluginUpgrade = {
     body: y.array(PluginPrivilege),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginCreate = typeof post_PluginCreate;
@@ -3401,6 +3877,10 @@ export const post_PluginCreate = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginPush = typeof post_PluginPush;
@@ -3414,6 +3894,11 @@ export const post_PluginPush = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_PluginSet = typeof post_PluginSet;
@@ -3428,6 +3913,11 @@ export const post_PluginSet = {
     body: y.array(y.string().required()),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type get_NodeList = typeof get_NodeList;
@@ -3441,6 +3931,11 @@ export const get_NodeList = {
     }),
   }),
   response: y.array(Node),
+  responses: y.object({
+    "200": y.array(Node),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_NodeInspect = typeof get_NodeInspect;
@@ -3454,6 +3949,12 @@ export const get_NodeInspect = {
     }),
   }),
   response: Node,
+  responses: y.object({
+    "200": Node,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type delete_NodeDelete = typeof delete_NodeDelete;
@@ -3470,6 +3971,12 @@ export const delete_NodeDelete = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_NodeUpdate = typeof post_NodeUpdate;
@@ -3487,6 +3994,13 @@ export const post_NodeUpdate = {
     body: NodeSpec,
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_SwarmInspect = typeof get_SwarmInspect;
@@ -3496,6 +4010,12 @@ export const get_SwarmInspect = {
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: Swarm,
+  responses: y.object({
+    "200": Swarm,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_SwarmInit = typeof post_SwarmInit;
@@ -3516,6 +4036,12 @@ export const post_SwarmInit = {
     }),
   }),
   response: y.string().required(),
+  responses: y.object({
+    "200": y.string().required(),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_SwarmJoin = typeof post_SwarmJoin;
@@ -3533,6 +4059,12 @@ export const post_SwarmJoin = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_SwarmLeave = typeof post_SwarmLeave;
@@ -3546,6 +4078,11 @@ export const post_SwarmLeave = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_SwarmUpdate = typeof post_SwarmUpdate;
@@ -3584,6 +4121,12 @@ export const post_SwarmUpdate = {
     body: SwarmSpec,
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
@@ -3594,6 +4137,13 @@ export const get_SwarmUnlockkey = {
   parameters: y.mixed((value): value is never => false).required(),
   response: y.object({
     UnlockKey: y.string().required().optional(),
+  }),
+  responses: y.object({
+    "200": y.object({
+      UnlockKey: y.string().required().optional(),
+    }),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
   }),
 };
 
@@ -3608,6 +4158,11 @@ export const post_SwarmUnlock = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_ServiceList = typeof get_ServiceList;
@@ -3622,6 +4177,11 @@ export const get_ServiceList = {
     }),
   }),
   response: y.array(Service),
+  responses: y.object({
+    "200": y.array(Service),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_ServiceCreate = typeof post_ServiceCreate;
@@ -3639,6 +4199,17 @@ export const post_ServiceCreate = {
     ID: y.string().required().optional(),
     Warning: y.string().required().optional(),
   }),
+  responses: y.object({
+    "201": y.object({
+      ID: y.string().required().optional(),
+      Warning: y.string().required().optional(),
+    }),
+    "400": ErrorResponse,
+    "403": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_ServiceInspect = typeof get_ServiceInspect;
@@ -3655,6 +4226,12 @@ export const get_ServiceInspect = {
     }),
   }),
   response: Service,
+  responses: y.object({
+    "200": Service,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type delete_ServiceDelete = typeof delete_ServiceDelete;
@@ -3668,6 +4245,12 @@ export const delete_ServiceDelete = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_ServiceUpdate = typeof post_ServiceUpdate;
@@ -3704,6 +4287,13 @@ export const post_ServiceUpdate = {
     body: y.mixed(/* unsupported */),
   }),
   response: ServiceUpdateResponse,
+  responses: y.object({
+    "200": ServiceUpdateResponse,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_ServiceLogs = typeof get_ServiceLogs;
@@ -3726,6 +4316,12 @@ export const get_ServiceLogs = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "503": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type get_TaskList = typeof get_TaskList;
@@ -3739,6 +4335,11 @@ export const get_TaskList = {
     }),
   }),
   response: y.array(Task),
+  responses: y.object({
+    "200": y.array(Task),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_TaskInspect = typeof get_TaskInspect;
@@ -3752,6 +4353,12 @@ export const get_TaskInspect = {
     }),
   }),
   response: Task,
+  responses: y.object({
+    "200": Task,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_TaskLogs = typeof get_TaskLogs;
@@ -3774,6 +4381,12 @@ export const get_TaskLogs = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "503": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 export type get_SecretList = typeof get_SecretList;
@@ -3787,6 +4400,11 @@ export const get_SecretList = {
     }),
   }),
   response: y.array(Secret),
+  responses: y.object({
+    "200": y.array(Secret),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_SecretCreate = typeof post_SecretCreate;
@@ -3798,6 +4416,12 @@ export const post_SecretCreate = {
     body: y.mixed(/* unsupported */),
   }),
   response: IdResponse,
+  responses: y.object({
+    "201": IdResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_SecretInspect = typeof get_SecretInspect;
@@ -3811,6 +4435,12 @@ export const get_SecretInspect = {
     }),
   }),
   response: Secret,
+  responses: y.object({
+    "200": Secret,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type delete_SecretDelete = typeof delete_SecretDelete;
@@ -3824,6 +4454,12 @@ export const delete_SecretDelete = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_SecretUpdate = typeof post_SecretUpdate;
@@ -3841,6 +4477,13 @@ export const post_SecretUpdate = {
     body: SecretSpec,
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_ConfigList = typeof get_ConfigList;
@@ -3854,6 +4497,11 @@ export const get_ConfigList = {
     }),
   }),
   response: y.array(Config),
+  responses: y.object({
+    "200": y.array(Config),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_ConfigCreate = typeof post_ConfigCreate;
@@ -3865,6 +4513,12 @@ export const post_ConfigCreate = {
     body: y.mixed(/* unsupported */),
   }),
   response: IdResponse,
+  responses: y.object({
+    "201": IdResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_ConfigInspect = typeof get_ConfigInspect;
@@ -3878,6 +4532,12 @@ export const get_ConfigInspect = {
     }),
   }),
   response: Config,
+  responses: y.object({
+    "200": Config,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type delete_ConfigDelete = typeof delete_ConfigDelete;
@@ -3891,6 +4551,12 @@ export const delete_ConfigDelete = {
     }),
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type post_ConfigUpdate = typeof post_ConfigUpdate;
@@ -3908,6 +4574,13 @@ export const post_ConfigUpdate = {
     body: ConfigSpec,
   }),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 };
 
 export type get_DistributionInspect = typeof get_DistributionInspect;
@@ -3921,6 +4594,11 @@ export const get_DistributionInspect = {
     }),
   }),
   response: DistributionInspect,
+  responses: y.object({
+    "200": DistributionInspect,
+    "401": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 };
 
 export type post_Session = typeof post_Session;
@@ -3930,6 +4608,11 @@ export const post_Session = {
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
   response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  responses: y.object({
+    "101": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
 };
 
 // <EndpointByMethod>
@@ -4079,6 +4762,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
 
@@ -4094,10 +4778,34 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+// Error handling types
+export type ApiResponse<TSuccess, TErrors extends Record<string, unknown> = {}> =
+  | {
+      ok: true;
+      status: number;
+      data: TSuccess;
+    }
+  | {
+      [K in keyof TErrors]: {
+        ok: false;
+        status: K extends string ? (K extends `${number}` ? number : never) : never;
+        error: TErrors[K];
+      };
+    }[keyof TErrors];
+
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+  ? TResponses extends Record<string, unknown>
+    ? ApiResponse<TSuccess, TResponses>
+    : { ok: true; status: number; data: TSuccess }
+  : TEndpoint extends { response: infer TSuccess }
+    ? { ok: true; status: number; data: TSuccess }
+    : never;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -4180,6 +4888,86 @@ export class ApiClient {
     ) as Promise<y.InferType<TEndpoint["response"]>>;
   }
   // </ApiClient.head>
+
+  // <ApiClient.getSafe>
+  getSafe<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("get", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.getSafe>
+
+  // <ApiClient.postSafe>
+  postSafe<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("post", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.postSafe>
+
+  // <ApiClient.deleteSafe>
+  deleteSafe<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("delete", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.deleteSafe>
+
+  // <ApiClient.putSafe>
+  putSafe<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("put", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.putSafe>
+
+  // <ApiClient.headSafe>
+  headSafe<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<y.InferType<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("head", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.headSafe>
 
   // <ApiClient.request>
   /**

@@ -130,14 +130,56 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
 
       // Match the first 2xx-3xx response found, or fallback to default one otherwise
       let responseObject: ResponseObject | undefined;
+      const allResponses: Record<string, AnyBox> = {};
+      
       Object.entries(operation.responses ?? {}).map(([status, responseOrRef]) => {
         const statusCode = Number(status);
-        if (statusCode >= 200 && statusCode < 300) {
-          responseObject = refs.unwrap<ResponseObject>(responseOrRef);
+        const responseObj = refs.unwrap<ResponseObject>(responseOrRef);
+        
+        // Collect all responses for error handling
+        const content = responseObj?.content;
+        if (content) {
+          const matchingMediaType = Object.keys(content).find(isResponseMediaType);
+          if (matchingMediaType && content[matchingMediaType]) {
+            allResponses[status] = openApiSchemaToTs({
+              schema: content[matchingMediaType]?.schema ?? {},
+              ctx,
+            });
+          } else {
+            // If no JSON content, use unknown type
+            allResponses[status] = openApiSchemaToTs({ schema: {}, ctx });
+          }
+        } else {
+          // If no content defined, use unknown type
+          allResponses[status] = openApiSchemaToTs({ schema: {}, ctx });
+        }
+        
+        // Keep the current logic for the main response (first 2xx-3xx)
+        if (statusCode >= 200 && statusCode < 300 && !responseObject) {
+          responseObject = responseObj;
         }
       });
+      
       if (!responseObject && operation.responses?.default) {
         responseObject = refs.unwrap(operation.responses.default);
+        // Also add default to all responses if not already covered
+        if (!allResponses["default"]) {
+          const content = responseObject?.content;
+          if (content) {
+            const matchingMediaType = Object.keys(content).find(isResponseMediaType);
+            if (matchingMediaType && content[matchingMediaType]) {
+              allResponses["default"] = openApiSchemaToTs({
+                schema: content[matchingMediaType]?.schema ?? {},
+                ctx,
+              });
+            }
+          }
+        }
+      }
+      
+      // Set the responses collection
+      if (Object.keys(allResponses).length > 0) {
+        endpoint.responses = allResponses;
       }
 
       const content = responseObject?.content;
@@ -206,6 +248,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: AnyBox;
+  responses?: Record<string, AnyBox>;
   responseHeaders?: Record<string, AnyBox>;
 };
 
@@ -221,5 +264,6 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };

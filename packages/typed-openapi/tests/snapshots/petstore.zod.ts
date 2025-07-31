@@ -77,6 +77,12 @@ export const put_UpdatePet = {
     body: Pet,
   }),
   response: Pet,
+  responses: z.object({
+    "200": Pet,
+    "400": z.unknown(),
+    "404": z.unknown(),
+    "405": z.unknown(),
+  }),
 };
 
 export type post_AddPet = typeof post_AddPet;
@@ -88,6 +94,10 @@ export const post_AddPet = {
     body: Pet,
   }),
   response: Pet,
+  responses: z.object({
+    "200": Pet,
+    "405": z.unknown(),
+  }),
 };
 
 export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
@@ -101,6 +111,10 @@ export const get_FindPetsByStatus = {
     }),
   }),
   response: z.array(Pet),
+  responses: z.object({
+    "200": z.array(Pet),
+    "400": z.unknown(),
+  }),
 };
 
 export type get_FindPetsByTags = typeof get_FindPetsByTags;
@@ -114,6 +128,10 @@ export const get_FindPetsByTags = {
     }),
   }),
   response: z.array(Pet),
+  responses: z.object({
+    "200": z.array(Pet),
+    "400": z.unknown(),
+  }),
 };
 
 export type get_GetPetById = typeof get_GetPetById;
@@ -127,6 +145,11 @@ export const get_GetPetById = {
     }),
   }),
   response: Pet,
+  responses: z.object({
+    "200": Pet,
+    "400": z.unknown(),
+    "404": z.unknown(),
+  }),
 };
 
 export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
@@ -144,6 +167,9 @@ export const post_UpdatePetWithForm = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "405": z.unknown(),
+  }),
 };
 
 export type delete_DeletePet = typeof delete_DeletePet;
@@ -160,6 +186,9 @@ export const delete_DeletePet = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "400": z.unknown(),
+  }),
 };
 
 export type post_UploadFile = typeof post_UploadFile;
@@ -177,6 +206,9 @@ export const post_UploadFile = {
     body: z.string(),
   }),
   response: ApiResponse,
+  responses: z.object({
+    "200": ApiResponse,
+  }),
 };
 
 export type get_GetInventory = typeof get_GetInventory;
@@ -186,6 +218,9 @@ export const get_GetInventory = {
   requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.record(z.number()),
+  responses: z.object({
+    "200": z.record(z.number()),
+  }),
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;
@@ -197,6 +232,10 @@ export const post_PlaceOrder = {
     body: Order,
   }),
   response: Order,
+  responses: z.object({
+    "200": Order,
+    "405": z.unknown(),
+  }),
 };
 
 export type get_GetOrderById = typeof get_GetOrderById;
@@ -210,6 +249,11 @@ export const get_GetOrderById = {
     }),
   }),
   response: Order,
+  responses: z.object({
+    "200": Order,
+    "400": z.unknown(),
+    "404": z.unknown(),
+  }),
 };
 
 export type delete_DeleteOrder = typeof delete_DeleteOrder;
@@ -223,6 +267,10 @@ export const delete_DeleteOrder = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "400": z.unknown(),
+    "404": z.unknown(),
+  }),
 };
 
 export type post_CreateUser = typeof post_CreateUser;
@@ -234,6 +282,9 @@ export const post_CreateUser = {
     body: User,
   }),
   response: User,
+  responses: z.object({
+    default: User,
+  }),
 };
 
 export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput;
@@ -245,6 +296,10 @@ export const post_CreateUsersWithListInput = {
     body: z.array(User),
   }),
   response: User,
+  responses: z.object({
+    "200": User,
+    default: z.unknown(),
+  }),
 };
 
 export type get_LoginUser = typeof get_LoginUser;
@@ -259,6 +314,10 @@ export const get_LoginUser = {
     }),
   }),
   response: z.string(),
+  responses: z.object({
+    "200": z.string(),
+    "400": z.unknown(),
+  }),
   responseHeaders: z.object({
     "x-rate-limit": z.number(),
     "x-expires-after": z.string(),
@@ -272,6 +331,9 @@ export const get_LogoutUser = {
   requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.unknown(),
+  responses: z.object({
+    default: z.unknown(),
+  }),
 };
 
 export type get_GetUserByName = typeof get_GetUserByName;
@@ -285,6 +347,11 @@ export const get_GetUserByName = {
     }),
   }),
   response: User,
+  responses: z.object({
+    "200": User,
+    "400": z.unknown(),
+    "404": z.unknown(),
+  }),
 };
 
 export type put_UpdateUser = typeof put_UpdateUser;
@@ -299,6 +366,9 @@ export const put_UpdateUser = {
     body: User,
   }),
   response: z.unknown(),
+  responses: z.object({
+    default: z.unknown(),
+  }),
 };
 
 export type delete_DeleteUser = typeof delete_DeleteUser;
@@ -312,6 +382,10 @@ export const delete_DeleteUser = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "400": z.unknown(),
+    "404": z.unknown(),
+  }),
 };
 
 // <EndpointByMethod>
@@ -370,6 +444,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
 
@@ -385,10 +460,34 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+// Error handling types
+export type ApiResponse<TSuccess, TErrors extends Record<string, unknown> = {}> =
+  | {
+      ok: true;
+      status: number;
+      data: TSuccess;
+    }
+  | {
+      [K in keyof TErrors]: {
+        ok: false;
+        status: K extends string ? (K extends `${number}` ? number : never) : never;
+        error: TErrors[K];
+      };
+    }[keyof TErrors];
+
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+  ? TResponses extends Record<string, unknown>
+    ? ApiResponse<TSuccess, TResponses>
+    : { ok: true; status: number; data: TSuccess }
+  : TEndpoint extends { response: infer TSuccess }
+    ? { ok: true; status: number; data: TSuccess }
+    : never;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -460,6 +559,70 @@ export class ApiClient {
     ) as Promise<z.infer<TEndpoint["response"]>>;
   }
   // </ApiClient.delete>
+
+  // <ApiClient.putSafe>
+  putSafe<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("put", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.putSafe>
+
+  // <ApiClient.postSafe>
+  postSafe<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("post", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.postSafe>
+
+  // <ApiClient.getSafe>
+  getSafe<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("get", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.getSafe>
+
+  // <ApiClient.deleteSafe>
+  deleteSafe<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("delete", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.deleteSafe>
 
   // <ApiClient.request>
   /**

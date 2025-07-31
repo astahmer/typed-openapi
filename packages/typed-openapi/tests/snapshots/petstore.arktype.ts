@@ -60,6 +60,12 @@ export const types = scope({
       body: "Pet",
     }),
     response: "Pet",
+    responses: type({
+      "200": "Pet",
+      "400": "unknown",
+      "404": "unknown",
+      "405": "unknown",
+    }),
   }),
   post_AddPet: type({
     method: '"POST"',
@@ -69,6 +75,10 @@ export const types = scope({
       body: "Pet",
     }),
     response: "Pet",
+    responses: type({
+      "200": "Pet",
+      "405": "unknown",
+    }),
   }),
   get_FindPetsByStatus: type({
     method: '"GET"',
@@ -80,6 +90,10 @@ export const types = scope({
       }),
     }),
     response: "Pet[]",
+    responses: type({
+      "200": "Pet[]",
+      "400": "unknown",
+    }),
   }),
   get_FindPetsByTags: type({
     method: '"GET"',
@@ -91,6 +105,10 @@ export const types = scope({
       }),
     }),
     response: "Pet[]",
+    responses: type({
+      "200": "Pet[]",
+      "400": "unknown",
+    }),
   }),
   get_GetPetById: type({
     method: '"GET"',
@@ -102,6 +120,11 @@ export const types = scope({
       }),
     }),
     response: "Pet",
+    responses: type({
+      "200": "Pet",
+      "400": "unknown",
+      "404": "unknown",
+    }),
   }),
   post_UpdatePetWithForm: type({
     method: '"POST"',
@@ -117,6 +140,9 @@ export const types = scope({
       }),
     }),
     response: "unknown",
+    responses: type({
+      "405": "unknown",
+    }),
   }),
   delete_DeletePet: type({
     method: '"DELETE"',
@@ -131,6 +157,9 @@ export const types = scope({
       }),
     }),
     response: "unknown",
+    responses: type({
+      "400": "unknown",
+    }),
   }),
   post_UploadFile: type({
     method: '"POST"',
@@ -146,6 +175,9 @@ export const types = scope({
       body: "string",
     }),
     response: "ApiResponse",
+    responses: type({
+      "200": "ApiResponse",
+    }),
   }),
   get_GetInventory: type({
     method: '"GET"',
@@ -153,6 +185,9 @@ export const types = scope({
     requestFormat: '"json"',
     parameters: "never",
     response: "never",
+    responses: type({
+      "200": "never",
+    }),
   }),
   post_PlaceOrder: type({
     method: '"POST"',
@@ -162,6 +197,10 @@ export const types = scope({
       body: "Order",
     }),
     response: "Order",
+    responses: type({
+      "200": "Order",
+      "405": "unknown",
+    }),
   }),
   get_GetOrderById: type({
     method: '"GET"',
@@ -173,6 +212,11 @@ export const types = scope({
       }),
     }),
     response: "Order",
+    responses: type({
+      "200": "Order",
+      "400": "unknown",
+      "404": "unknown",
+    }),
   }),
   delete_DeleteOrder: type({
     method: '"DELETE"',
@@ -184,6 +228,10 @@ export const types = scope({
       }),
     }),
     response: "unknown",
+    responses: type({
+      "400": "unknown",
+      "404": "unknown",
+    }),
   }),
   post_CreateUser: type({
     method: '"POST"',
@@ -193,6 +241,9 @@ export const types = scope({
       body: "User",
     }),
     response: "User",
+    responses: type({
+      default: "User",
+    }),
   }),
   post_CreateUsersWithListInput: type({
     method: '"POST"',
@@ -202,6 +253,10 @@ export const types = scope({
       body: "User[]",
     }),
     response: "User",
+    responses: type({
+      "200": "User",
+      default: "unknown",
+    }),
   }),
   get_LoginUser: type({
     method: '"GET"',
@@ -214,6 +269,10 @@ export const types = scope({
       }),
     }),
     response: "string",
+    responses: type({
+      "200": "string",
+      "400": "unknown",
+    }),
     responseHeaders: type({
       "x-rate-limit": "number",
       "x-expires-after": "string",
@@ -225,6 +284,9 @@ export const types = scope({
     requestFormat: '"json"',
     parameters: "never",
     response: "unknown",
+    responses: type({
+      default: "unknown",
+    }),
   }),
   get_GetUserByName: type({
     method: '"GET"',
@@ -236,6 +298,11 @@ export const types = scope({
       }),
     }),
     response: "User",
+    responses: type({
+      "200": "User",
+      "400": "unknown",
+      "404": "unknown",
+    }),
   }),
   put_UpdateUser: type({
     method: '"PUT"',
@@ -248,6 +315,9 @@ export const types = scope({
       body: "User",
     }),
     response: "unknown",
+    responses: type({
+      default: "unknown",
+    }),
   }),
   delete_DeleteUser: type({
     method: '"DELETE"',
@@ -259,6 +329,10 @@ export const types = scope({
       }),
     }),
     response: "unknown",
+    responses: type({
+      "400": "unknown",
+      "404": "unknown",
+    }),
   }),
   __ENDPOINTS_END__: type({}),
 }).export();
@@ -378,6 +452,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
 
@@ -393,10 +468,34 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+// Error handling types
+export type ApiResponse<TSuccess, TErrors extends Record<string, unknown> = {}> =
+  | {
+      ok: true;
+      status: number;
+      data: TSuccess;
+    }
+  | {
+      [K in keyof TErrors]: {
+        ok: false;
+        status: K extends string ? (K extends `${number}` ? number : never) : never;
+        error: TErrors[K];
+      };
+    }[keyof TErrors];
+
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+  ? TResponses extends Record<string, unknown>
+    ? ApiResponse<TSuccess, TResponses>
+    : { ok: true; status: number; data: TSuccess }
+  : TEndpoint extends { response: infer TSuccess }
+    ? { ok: true; status: number; data: TSuccess }
+    : never;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -468,6 +567,70 @@ export class ApiClient {
     ) as Promise<TEndpoint["infer"]["response"]>;
   }
   // </ApiClient.delete>
+
+  // <ApiClient.putSafe>
+  putSafe<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<TEndpoint["infer"]["parameters"]>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("put", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.putSafe>
+
+  // <ApiClient.postSafe>
+  postSafe<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<TEndpoint["infer"]["parameters"]>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("post", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.postSafe>
+
+  // <ApiClient.getSafe>
+  getSafe<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<TEndpoint["infer"]["parameters"]>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("get", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.getSafe>
+
+  // <ApiClient.deleteSafe>
+  deleteSafe<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<TEndpoint["infer"]["parameters"]>
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher("delete", this.baseUrl + path, params[0]).then(async (response) => {
+      const data = await this.parseResponse(response);
+      if (response.ok) {
+        return { ok: true, status: response.status, data } as SafeApiResponse<TEndpoint>;
+      } else {
+        return { ok: false, status: response.status, error: data } as SafeApiResponse<TEndpoint>;
+      }
+    });
+  }
+  // </ApiClient.deleteSafe>
 
   // <ApiClient.request>
   /**
