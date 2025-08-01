@@ -92,7 +92,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
 
 // Status code type for success responses
-export type StatusCode =
+export type SuccessStatusCode =
   | 200
   | 201
   | 202
@@ -127,7 +127,7 @@ export type TypedApiResponse<
   : {
       [K in keyof TAllResponses]: K extends string
         ? K extends `${infer TStatusCode extends number}`
-          ? TStatusCode extends StatusCode
+          ? TStatusCode extends SuccessStatusCode
             ? Omit<Response, "ok" | "status" | "json"> & {
                 ok: true;
                 status: TStatusCode;
@@ -142,7 +142,7 @@ export type TypedApiResponse<
               }
           : never
         : K extends number
-          ? K extends StatusCode
+          ? K extends SuccessStatusCode
             ? Omit<Response, "ok" | "status" | "json"> & {
                 ok: true;
                 status: K;

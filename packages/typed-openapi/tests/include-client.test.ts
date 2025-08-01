@@ -43,7 +43,7 @@ it("should exclude API client when includeClient is false", async () => {
   expect(withoutClient).not.toContain("// <ApiClient>");
   expect(withoutClient).not.toContain("export class ApiClient");
   expect(withoutClient).not.toContain("export type EndpointParameters");
-  expect(withoutClient).not.toContain("export type StatusCode");
+  expect(withoutClient).not.toContain("export type SuccessStatusCode");
   expect(withoutClient).not.toContain("export type TypedApiResponse");
 
   // Should still contain schemas and endpoints
@@ -64,6 +64,6 @@ it("should exclude API client when includeClient is false", async () => {
   expect(withClient).toContain("// <ApiClient>");
   expect(withClient).toContain("export class ApiClient");
   expect(withClient).toContain("export type EndpointParameters");
-  expect(withClient).toContain("export type StatusCode");
+  expect(withClient).toContain("export type SuccessStatusCode");
   expect(withClient).toContain("export type TypedApiResponse");
 });

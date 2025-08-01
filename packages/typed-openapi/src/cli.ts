@@ -20,6 +20,7 @@ cli
     "--success-status-codes <codes>",
     "Comma-separated list of success status codes (defaults to 2xx and 3xx ranges)",
   )
+  .option("--error-status-codes <codes>", "Comma-separated list of error status codes (defaults to 4xx and 5xx ranges)")
   .option(
     "--tanstack [name]",
     "Generate tanstack client, defaults to false, can optionally specify a name for the generated file",

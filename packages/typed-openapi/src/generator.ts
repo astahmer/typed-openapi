@@ -13,11 +13,20 @@ export const DEFAULT_SUCCESS_STATUS_CODES = [
   200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308,
 ] as const;
 
-type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
+// Default error status codes (4xx and 5xx ranges)
+export const DEFAULT_ERROR_STATUS_CODES = [
+  400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 421, 422, 423, 424,
+  425, 426, 428, 429, 431, 451, 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511,
+] as const;
+
+export type ErrorStatusCode = (typeof DEFAULT_ERROR_STATUS_CODES)[number];
+
+export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
   runtime?: "none" | keyof typeof runtimeValidationGenerator;
   schemasOnly?: boolean;
   nameTransform?: NameTransformOptions | undefined;
   successStatusCodes?: readonly number[];
+  errorStatusCodes?: readonly number[];
   includeClient?: boolean;
 };
 type GeneratorContext = Required<GeneratorOptions>;
@@ -73,6 +82,7 @@ export const generateFile = (options: GeneratorOptions) => {
     ...options,
     runtime: options.runtime ?? "none",
     successStatusCodes: options.successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
+    errorStatusCodes: options.errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES,
     includeClient: options.includeClient ?? true,
   } as GeneratorContext;
 
@@ -340,7 +350,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
 
 // Status code type for success responses
-export type StatusCode = ${statusCodeType};
+export type SuccessStatusCode = ${statusCodeType};
 
 // Error handling types
 export type TypedApiResponse<TSuccess, TAllResponses extends Record<string | number, unknown> = {}> =
@@ -354,7 +364,7 @@ export type TypedApiResponse<TSuccess, TAllResponses extends Record<string | num
     : {
         [K in keyof TAllResponses]: K extends string
           ? K extends \`\${infer TStatusCode extends number}\`
-            ? TStatusCode extends StatusCode
+            ? TStatusCode extends SuccessStatusCode
               ? Omit<Response, "ok" | "status" | "json"> & {
                   ok: true;
                   status: TStatusCode;
@@ -369,7 +379,7 @@ export type TypedApiResponse<TSuccess, TAllResponses extends Record<string | num
                 }
             : never
           : K extends number
-            ? K extends StatusCode
+            ? K extends SuccessStatusCode
               ? Omit<Response, "ok" | "status" | "json"> & {
                   ok: true;
                   status: K;

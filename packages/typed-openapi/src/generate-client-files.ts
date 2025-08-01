@@ -3,7 +3,13 @@ import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { basename, join, dirname } from "pathe";
 import { type } from "arktype";
 import { mkdir, writeFile } from "fs/promises";
-import { allowedRuntimes, generateFile } from "./generator.ts";
+import {
+  allowedRuntimes,
+  generateFile,
+  DEFAULT_SUCCESS_STATUS_CODES,
+  DEFAULT_ERROR_STATUS_CODES,
+  type GeneratorOptions,
+} from "./generator.ts";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 import { generateTanstackQueryFile } from "./tanstack-query.generator.ts";
 import { prettify } from "./format.ts";
@@ -27,6 +33,7 @@ export const optionsSchema = type({
   schemasOnly: "boolean",
   "includeClient?": "boolean | 'true' | 'false'",
   "successStatusCodes?": "string",
+  "errorStatusCodes?": "string",
 });
 
 type GenerateClientFilesOptions = typeof optionsSchema.infer & {
@@ -44,20 +51,26 @@ export async function generateClientFiles(input: string, options: GenerateClient
     ? (options.successStatusCodes.split(",").map((code) => parseInt(code.trim(), 10)) as readonly number[])
     : undefined;
 
+  // Parse error status codes if provided
+  const errorStatusCodes = options.errorStatusCodes
+    ? (options.errorStatusCodes.split(",").map((code) => parseInt(code.trim(), 10)) as readonly number[])
+    : undefined;
+
   // Convert string boolean to actual boolean
   const includeClient =
     options.includeClient === "false" ? false : options.includeClient === "true" ? true : options.includeClient;
 
-  const content = await prettify(
-    generateFile({
-      ...ctx,
-      runtime: options.runtime,
-      schemasOnly: options.schemasOnly,
-      nameTransform: options.nameTransform,
-      ...(includeClient !== undefined && { includeClient }),
-      ...(successStatusCodes !== undefined && { successStatusCodes }),
-    }),
-  );
+  const generatorOptions: GeneratorOptions = {
+    ...ctx,
+    runtime: options.runtime,
+    schemasOnly: options.schemasOnly,
+    nameTransform: options.nameTransform,
+    includeClient: includeClient ?? true,
+    successStatusCodes: successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
+    errorStatusCodes: errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES,
+  };
+
+  const content = await prettify(generateFile(generatorOptions));
   const outputPath = join(
     cwd,
     options.output ?? input + `.${options.runtime === "none" ? "client" : options.runtime}.ts`,
@@ -69,7 +82,7 @@ export async function generateClientFiles(input: string, options: GenerateClient
 
   if (options.tanstack) {
     const tanstackContent = await generateTanstackQueryFile({
-      ...ctx,
+      ...generatorOptions,
       relativeApiClientPath: "./" + basename(outputPath),
     });
     const tanstackOutputPath = join(
