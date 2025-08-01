@@ -188,3 +188,15 @@ if (result.ok) {
   }
 }
 ```
+
+## TanStack Query Integration
+
+For React applications using TanStack Query, see:
+- [TANSTACK_QUERY_EXAMPLES.md](./TANSTACK_QUERY_EXAMPLES.md) for usage patterns with `withResponse` and `selectFn`
+- [TANSTACK_QUERY_ERROR_HANDLING.md](./TANSTACK_QUERY_ERROR_HANDLING.md) for type-safe error handling based on OpenAPI error schemas
+
+Key features:
+- Type-safe mutations with `withResponse` option
+- Custom response transformation with `selectFn`
+- Automatic error type inference from OpenAPI specs
+- Full type inference for all scenarios
