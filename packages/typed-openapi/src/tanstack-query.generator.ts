@@ -10,10 +10,10 @@ export const DEFAULT_ERROR_STATUS_CODES = [
 
 export type ErrorStatusCode = (typeof DEFAULT_ERROR_STATUS_CODES)[number];
 
-type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
+type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints>;
+type GeneratorContext = Required<GeneratorOptions> & {
   errorStatusCodes?: readonly number[];
 };
-type GeneratorContext = Required<GeneratorOptions>;
 
 export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relativeApiClientPath: string }) => {
   const endpointMethods = new Set(ctx.endpointList.map((endpoint) => endpoint.method.toLowerCase()));
@@ -150,12 +150,12 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                         [K in keyof TResponses]: K extends string
                             ? K extends \`\${infer TStatusCode extends number}\`
                                 ? TStatusCode extends ErrorStatusCode
-                                    ? { status: TStatusCode; data: TResponses[K] }
+                                    ? Omit<Response, 'status'> & { status: TStatusCode; data: TResponses[K] }
                                     : never
                                 : never
                             : K extends number
                                 ? K extends ErrorStatusCode
-                                    ? { status: K; data: TResponses[K] }
+                                    ? Omit<Response, 'status'> & { status: K; data: TResponses[K] }
                                     : never
                                 : never;
                     }[keyof TResponses]
@@ -183,7 +183,11 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                         // Type assertion is safe because we're handling the method dynamically
                         const response = await (this.client as any)[method](path, { ...params as any, withResponse: true });
                         if (!response.ok) {
-                            const error = { status: response.status, data: response.data } as TError;
+                            // Create a Response-like error object with additional data property
+                            const error = Object.assign(Object.create(Response.prototype), {
+                                ...response,
+                                data: response.data
+                            }) as TError;
                             throw error;
                         }
                         const res = selectFn ? selectFn(response as any) : response;
@@ -191,8 +195,20 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                     }
 
                     // Type assertion is safe because we're handling the method dynamically
-                    const response = await (this.client as any)[method](path, { ...params as any, withResponse: false });
-                    const res = selectFn ? selectFn(response as any) : response;
+                    // Always get the full response for error handling, even when withResponse is false
+                    const response = await (this.client as any)[method](path, { ...params as any, withResponse: true });
+                    if (!response.ok) {
+                        // Create a Response-like error object with additional data property
+                        const error = Object.assign(Object.create(Response.prototype), {
+                            ...response,
+                            data: response.data
+                        }) as TError;
+                        throw error;
+                    }
+
+                    // Return just the data if withResponse is false, otherwise return the full response
+                    const finalResponse = withResponse ? response : response.data;
+                    const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
                     return res as TSelection;
                 }
             } as import("@tanstack/react-query").UseMutationOptions<TSelection, TError, TEndpoint extends { parameters: infer Parameters } ? Parameters : never>,

@@ -10,6 +10,7 @@ Add comprehensive type-safe error handling and configurable status codes
   - Advanced mutation options supporting `withResponse` and `selectFn` parameters
   - Automatic error type inference based on OpenAPI error schemas instead of generic Error type
   - Type-safe error handling with discriminated unions for mutations
+  - Response-like error objects that extend Response with additional `data` property for consistency
 - **Configurable status codes**: Made success and error status codes fully configurable:
   - New `--success-status-codes` and `--error-status-codes` CLI options
   - `GeneratorOptions` now accepts `successStatusCodes` and `errorStatusCodes` arrays

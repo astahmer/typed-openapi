@@ -7,10 +7,12 @@ import { generateTanstackQueryFile } from "../src/tanstack-query.generator.ts";
 describe("generator", () => {
   test("petstore", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
-    expect(await generateTanstackQueryFile({
-      ...mapOpenApiEndpoints(openApiDoc),
-      relativeApiClientPath: "./api.client.ts"
-    })).toMatchInlineSnapshot(`
+    expect(
+      await generateTanstackQueryFile({
+        ...mapOpenApiEndpoints(openApiDoc),
+        relativeApiClientPath: "./api.client.ts",
+      }),
+    ).toMatchInlineSnapshot(`
       "import { queryOptions } from "@tanstack/react-query";
       import type { EndpointByMethod, ApiClient, SafeApiResponse } from "./api.client.ts";
 
@@ -302,12 +304,12 @@ describe("generator", () => {
                   [K in keyof TResponses]: K extends string
                     ? K extends \`\${infer TStatusCode extends number}\`
                       ? TStatusCode extends ErrorStatusCode
-                        ? { status: TStatusCode; data: TResponses[K] }
+                        ? Omit<Response, "status"> & { status: TStatusCode; data: TResponses[K] }
                         : never
                       : never
                     : K extends number
                       ? K extends ErrorStatusCode
-                        ? { status: K; data: TResponses[K] }
+                        ? Omit<Response, "status"> & { status: K; data: TResponses[K] }
                         : never
                       : never;
                 }[keyof TResponses]
@@ -344,7 +346,11 @@ describe("generator", () => {
                   // Type assertion is safe because we're handling the method dynamically
                   const response = await (this.client as any)[method](path, { ...(params as any), withResponse: true });
                   if (!response.ok) {
-                    const error = { status: response.status, data: response.data } as TError;
+                    // Create a Response-like error object with additional data property
+                    const error = Object.assign(Object.create(Response.prototype), {
+                      ...response,
+                      data: response.data,
+                    }) as TError;
                     throw error;
                   }
                   const res = selectFn ? selectFn(response as any) : response;
@@ -352,8 +358,20 @@ describe("generator", () => {
                 }
 
                 // Type assertion is safe because we're handling the method dynamically
-                const response = await (this.client as any)[method](path, { ...(params as any), withResponse: false });
-                const res = selectFn ? selectFn(response as any) : response;
+                // Always get the full response for error handling, even when withResponse is false
+                const response = await (this.client as any)[method](path, { ...(params as any), withResponse: true });
+                if (!response.ok) {
+                  // Create a Response-like error object with additional data property
+                  const error = Object.assign(Object.create(Response.prototype), {
+                    ...response,
+                    data: response.data,
+                  }) as TError;
+                  throw error;
+                }
+
+                // Return just the data if withResponse is false, otherwise return the full response
+                const finalResponse = withResponse ? response : response.data;
+                const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
                 return res as TSelection;
               },
             } as import("@tanstack/react-query").UseMutationOptions<
