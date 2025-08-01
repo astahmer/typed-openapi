@@ -149,6 +149,20 @@ paths:
                   $ref: "#/components/schemas/Pet"
         "400":
           description: Invalid status value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "Invalid status value"
+                required:
+                  - code
+                  - message
       security:
         - petstore_auth:
             - write:pets
@@ -217,8 +231,36 @@ paths:
                 $ref: "#/components/schemas/Pet"
         "400":
           description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "Invalid pet ID"
+                required:
+                  - code
+                  - message
         "404":
           description: Pet not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 404
+                  message:
+                    type: string
+                    example: "Pet not found"
+                required:
+                  - code
+                  - message
       security:
         - api_key: []
         - petstore_auth:

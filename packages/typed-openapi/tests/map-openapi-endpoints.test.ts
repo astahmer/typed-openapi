@@ -495,6 +495,27 @@ describe("map-openapi-endpoints", () => {
                     "description": "successful operation",
                   },
                   "400": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "properties": {
+                            "code": {
+                              "example": 400,
+                              "type": "integer",
+                            },
+                            "message": {
+                              "example": "Invalid status value",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                    },
                     "description": "Invalid status value",
                   },
                 },
@@ -646,9 +667,51 @@ describe("map-openapi-endpoints", () => {
                     "description": "successful operation",
                   },
                   "400": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "properties": {
+                            "code": {
+                              "example": 400,
+                              "type": "integer",
+                            },
+                            "message": {
+                              "example": "Invalid pet ID",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                    },
                     "description": "Invalid ID supplied",
                   },
                   "404": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "properties": {
+                            "code": {
+                              "example": 404,
+                              "type": "integer",
+                            },
+                            "message": {
+                              "example": "Pet not found",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                    },
                     "description": "Pet not found",
                   },
                 },
@@ -1482,6 +1545,27 @@ describe("map-openapi-endpoints", () => {
                   "description": "successful operation",
                 },
                 "400": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "properties": {
+                          "code": {
+                            "example": 400,
+                            "type": "integer",
+                          },
+                          "message": {
+                            "example": "Invalid status value",
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "code",
+                          "message",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
                   "description": "Invalid status value",
                 },
               },
@@ -1516,8 +1600,8 @@ describe("map-openapi-endpoints", () => {
                 "value": "Array<Pet>",
               },
               "400": {
-                "type": "keyword",
-                "value": "unknown",
+                "type": "object",
+                "value": "{ code: number, message: string }",
               },
             },
           },
@@ -1647,9 +1731,51 @@ describe("map-openapi-endpoints", () => {
                   "description": "successful operation",
                 },
                 "400": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "properties": {
+                          "code": {
+                            "example": 400,
+                            "type": "integer",
+                          },
+                          "message": {
+                            "example": "Invalid pet ID",
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "code",
+                          "message",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
                   "description": "Invalid ID supplied",
                 },
                 "404": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "properties": {
+                          "code": {
+                            "example": 404,
+                            "type": "integer",
+                          },
+                          "message": {
+                            "example": "Pet not found",
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "code",
+                          "message",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
                   "description": "Pet not found",
                 },
               },
@@ -1689,12 +1815,12 @@ describe("map-openapi-endpoints", () => {
                 "value": "Pet",
               },
               "400": {
-                "type": "keyword",
-                "value": "unknown",
+                "type": "object",
+                "value": "{ code: number, message: string }",
               },
               "404": {
-                "type": "keyword",
-                "value": "unknown",
+                "type": "object",
+                "value": "{ code: number, message: string }",
               },
             },
           },
