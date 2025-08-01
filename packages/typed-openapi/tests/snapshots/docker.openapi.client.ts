@@ -2583,6 +2583,28 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
 
+// Status code type for success responses
+export type StatusCode =
+  | 200
+  | 201
+  | 202
+  | 203
+  | 204
+  | 205
+  | 206
+  | 207
+  | 208
+  | 226
+  | 300
+  | 301
+  | 302
+  | 303
+  | 304
+  | 305
+  | 306
+  | 307
+  | 308;
+
 // Error handling types
 export type ApiResponse<
   TSuccess,
@@ -2595,59 +2617,21 @@ export type ApiResponse<
     }
   : {
       [K in keyof TAllResponses]: K extends string
-        ? K extends `${infer StatusCode extends number}`
-          ? StatusCode extends
-              | 200
-              | 201
-              | 202
-              | 203
-              | 204
-              | 205
-              | 206
-              | 207
-              | 208
-              | 226
-              | 300
-              | 301
-              | 302
-              | 303
-              | 304
-              | 305
-              | 306
-              | 307
-              | 308
+        ? K extends `${infer TStatusCode extends number}`
+          ? TStatusCode extends StatusCode
             ? {
                 ok: true;
-                status: StatusCode;
+                status: TStatusCode;
                 data: TAllResponses[K];
               }
             : {
                 ok: false;
-                status: StatusCode;
+                status: TStatusCode;
                 error: TAllResponses[K];
               }
           : never
         : K extends number
-          ? K extends
-              | 200
-              | 201
-              | 202
-              | 203
-              | 204
-              | 205
-              | 206
-              | 207
-              | 208
-              | 226
-              | 300
-              | 301
-              | 302
-              | 303
-              | 304
-              | 305
-              | 306
-              | 307
-              | 308
+          ? K extends StatusCode
             ? {
                 ok: true;
                 status: K;

@@ -8,10 +8,17 @@ import { type } from "arktype";
 import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
 import type { NameTransformOptions } from "./types.ts";
 
+// Default success status codes (2xx and 3xx ranges)
+export const DEFAULT_SUCCESS_STATUS_CODES = [
+  200, 201, 202, 203, 204, 205, 206, 207, 208, 226,
+  300, 301, 302, 303, 304, 305, 306, 307, 308
+] as const;
+
 type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
   runtime?: "none" | keyof typeof runtimeValidationGenerator;
   schemasOnly?: boolean;
   nameTransform?: NameTransformOptions | undefined;
+  successStatusCodes?: readonly number[];
 };
 type GeneratorContext = Required<GeneratorOptions>;
 
@@ -62,7 +69,11 @@ const replacerByRuntime = {
 };
 
 export const generateFile = (options: GeneratorOptions) => {
-  const ctx = { ...options, runtime: options.runtime ?? "none" } as GeneratorContext;
+  const ctx = {
+    ...options,
+    runtime: options.runtime ?? "none",
+    successStatusCodes: options.successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES
+  } as GeneratorContext;
 
   const schemaList = generateSchemaList(ctx);
   const endpointSchemaList = options.schemasOnly ? "" : generateEndpointSchemaList(ctx);
@@ -278,6 +289,13 @@ const generateApiClient = (ctx: GeneratorContext) => {
   const byMethods = groupBy(endpointList, "method");
   const endpointSchemaList = generateEndpointByMethod(ctx);
 
+  // Generate the StatusCode type from the configured success status codes
+  const generateStatusCodeType = (statusCodes: readonly number[]) => {
+    return statusCodes.join(" | ");
+  };
+
+  const statusCodeType = generateStatusCodeType(ctx.successStatusCodes);
+
   const apiClientTypes = `
 // <ApiClientTypes>
 export type EndpointParameters = {
@@ -317,8 +335,11 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
 
+// Status code type for success responses
+export type StatusCode = ${statusCodeType};
+
 // Error handling types
-export type ApiResponse<TSuccess, TAllResponses extends Record<string | number, unknown> = {}> = 
+export type ApiResponse<TSuccess, TAllResponses extends Record<string | number, unknown> = {}> =
   (keyof TAllResponses extends never
     ? {
         ok: true;
@@ -327,21 +348,21 @@ export type ApiResponse<TSuccess, TAllResponses extends Record<string | number, 
       }
     : {
         [K in keyof TAllResponses]: K extends string
-          ? K extends \`\${infer StatusCode extends number}\`
-            ? StatusCode extends 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207 | 208 | 226 | 300 | 301 | 302 | 303 | 304 | 305 | 306 | 307 | 308
+          ? K extends \`\${infer TStatusCode extends number}\`
+            ? TStatusCode extends StatusCode
               ? {
                   ok: true;
-                  status: StatusCode;
+                  status: TStatusCode;
                   data: TAllResponses[K];
                 }
               : {
                   ok: false;
-                  status: StatusCode;
+                  status: TStatusCode;
                   error: TAllResponses[K];
                 }
             : never
           : K extends number
-            ? K extends 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207 | 208 | 226 | 300 | 301 | 302 | 303 | 304 | 305 | 306 | 307 | 308
+            ? K extends StatusCode
               ? {
                   ok: true;
                   status: K;
