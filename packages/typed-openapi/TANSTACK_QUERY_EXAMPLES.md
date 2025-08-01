@@ -128,7 +128,10 @@ function UserForm() {
       }
     },
     onError: (error) => {
-      // Type-safe error handling - error has shape { status: number, data: ErrorType }
+      // Type-safe error handling - error is a Response-like object with data property
+      console.log(error instanceof Response); // true
+      console.log(error.ok); // false
+      
       if (error.status === 400) {
         toast.error(`Validation failed: ${error.data.message}`);
       } else if (error.status === 500) {

@@ -207,13 +207,19 @@ await queryClient.fetchQuery(
 
 ## useMutation
 
-The mutation API supports both basic usage and advanced error handling with `withResponse` and custom transformations with `selectFn`:
+The mutation API supports both basic usage and advanced error handling with `withResponse` and custom transformations with `selectFn`. **Note**: All mutation errors are Response-like objects with type-safe error inference based on your OpenAPI error schemas.
 
 ```ts
 // Basic mutation (returns data only)
-const basicMutation = useMutation(
-  tanstackApi.mutation("post", '/authorization/organizations/:organizationId/invitations').mutationOptions
-);
+const basicMutation = useMutation({
+  ...tanstackApi.mutation("post", '/authorization/organizations/:organizationId/invitations').mutationOptions,
+  onError: (error) => {
+    // error is a Response-like object with typed data based on OpenAPI spec
+    console.log(error instanceof Response); // true
+    console.log(error.status); // 400, 401, etc. (properly typed)
+    console.log(error.data); // Typed error response body
+  }
+});
 
 // With error handling using withResponse
 const mutationWithErrorHandling = useMutation(
