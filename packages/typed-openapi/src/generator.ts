@@ -10,8 +10,7 @@ import type { NameTransformOptions } from "./types.ts";
 
 // Default success status codes (2xx and 3xx ranges)
 export const DEFAULT_SUCCESS_STATUS_CODES = [
-  200, 201, 202, 203, 204, 205, 206, 207, 208, 226,
-  300, 301, 302, 303, 304, 305, 306, 307, 308
+  200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308,
 ] as const;
 
 type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
@@ -19,6 +18,7 @@ type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
   schemasOnly?: boolean;
   nameTransform?: NameTransformOptions | undefined;
   successStatusCodes?: readonly number[];
+  includeClient?: boolean;
 };
 type GeneratorContext = Required<GeneratorOptions>;
 
@@ -72,12 +72,14 @@ export const generateFile = (options: GeneratorOptions) => {
   const ctx = {
     ...options,
     runtime: options.runtime ?? "none",
-    successStatusCodes: options.successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES
+    successStatusCodes: options.successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
+    includeClient: options.includeClient ?? true,
   } as GeneratorContext;
 
   const schemaList = generateSchemaList(ctx);
   const endpointSchemaList = options.schemasOnly ? "" : generateEndpointSchemaList(ctx);
-  const apiClient = options.schemasOnly ? "" : generateApiClient(ctx);
+  const endpointByMethod = options.schemasOnly ? "" : generateEndpointByMethod(ctx);
+  const apiClient = options.schemasOnly || !ctx.includeClient ? "" : generateApiClient(ctx);
 
   const transform =
     ctx.runtime === "none"
@@ -109,6 +111,7 @@ export const generateFile = (options: GeneratorOptions) => {
 
   const file = `
   ${transform(schemaList + endpointSchemaList)}
+  ${endpointByMethod}
   ${apiClient}
   `;
 
@@ -228,11 +231,7 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
             }).value
           : endpoint.response.value
       },
-      ${
-        endpoint.responses
-          ? `responses: ${generateResponsesObject(endpoint.responses, ctx)},`
-          : ""
-      }
+      ${endpoint.responses ? `responses: ${generateResponsesObject(endpoint.responses, ctx)},` : ""}
       ${
         endpoint.responseHeaders
           ? `responseHeaders: ${responseHeadersObjectToString(endpoint.responseHeaders, ctx)},`
@@ -261,9 +260,11 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
      ${Object.entries(byMethods)
        .map(([method, list]) => {
          return `${method}: {
-           ${list.map(
-             (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
-           )}
+           ${list
+             .map(
+               (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
+             )
+             .join(",\n")}
          }`;
        })
        .join(",\n")}
@@ -285,9 +286,12 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
 };
 
 const generateApiClient = (ctx: GeneratorContext) => {
+  if (!ctx.includeClient) {
+    return "";
+  }
+
   const { endpointList } = ctx;
   const byMethods = groupBy(endpointList, "method");
-  const endpointSchemaList = generateEndpointByMethod(ctx);
 
   // Generate the StatusCode type from the configured success status codes
   const generateStatusCodeType = (statusCodes: readonly number[]) => {
@@ -339,7 +343,7 @@ export type Fetcher = (method: Method, url: string, parameters?: EndpointParamet
 export type StatusCode = ${statusCodeType};
 
 // Error handling types
-export type ApiResponse<TSuccess, TAllResponses extends Record<string | number, unknown> = {}> =
+export type TypedApiResponse<TSuccess, TAllResponses extends Record<string | number, unknown> = {}> =
   (keyof TAllResponses extends never
     ? {
         ok: true;
@@ -378,7 +382,7 @@ export type ApiResponse<TSuccess, TAllResponses extends Record<string | number, 
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? ApiResponse<TSuccess, TResponses>
+    ? TypedApiResponse<TSuccess, TResponses>
     : { ok: true; status: number; data: TSuccess }
   : TEndpoint extends { response: infer TSuccess }
     ? { ok: true; status: number; data: TSuccess }
@@ -463,7 +467,13 @@ export class ApiClient {
         return this.fetcher("${method}", this.baseUrl + path, requestParams)
             .then(response => this.parseResponse(response))${match(ctx.runtime)
               .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
-              .with("arktype", "io-ts", "typebox", "valibot", () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`)
+              .with(
+                "arktype",
+                "io-ts",
+                "typebox",
+                "valibot",
+                () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`,
+              )
               .otherwise(() => `as Promise<TEndpoint["response"]>`)};
       }
     }
@@ -531,5 +541,5 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
 // </ApiClient
 `;
 
-  return endpointSchemaList + apiClientTypes + apiClient;
+  return apiClientTypes + apiClient;
 };

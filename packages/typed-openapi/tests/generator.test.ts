@@ -348,7 +348,7 @@ describe("generator", () => {
         | 308;
 
       // Error handling types
-      export type ApiResponse<
+      export type TypedApiResponse<
         TSuccess,
         TAllResponses extends Record<string | number, unknown> = {},
       > = keyof TAllResponses extends never
@@ -389,7 +389,7 @@ describe("generator", () => {
 
       export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
         ? TResponses extends Record<string, unknown>
-          ? ApiResponse<TSuccess, TResponses>
+          ? TypedApiResponse<TSuccess, TResponses>
           : { ok: true; status: number; data: TSuccess }
         : TEndpoint extends { response: infer TSuccess }
           ? { ok: true; status: number; data: TSuccess }
@@ -994,7 +994,7 @@ describe("generator", () => {
         | 308;
 
       // Error handling types
-      export type ApiResponse<
+      export type TypedApiResponse<
         TSuccess,
         TAllResponses extends Record<string | number, unknown> = {},
       > = keyof TAllResponses extends never
@@ -1035,7 +1035,7 @@ describe("generator", () => {
 
       export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
         ? TResponses extends Record<string, unknown>
-          ? ApiResponse<TSuccess, TResponses>
+          ? TypedApiResponse<TSuccess, TResponses>
           : { ok: true; status: number; data: TSuccess }
         : TEndpoint extends { response: infer TSuccess }
           ? { ok: true; status: number; data: TSuccess }
@@ -1316,7 +1316,7 @@ describe("generator", () => {
         | 308;
 
       // Error handling types
-      export type ApiResponse<
+      export type TypedApiResponse<
         TSuccess,
         TAllResponses extends Record<string | number, unknown> = {},
       > = keyof TAllResponses extends never
@@ -1357,7 +1357,7 @@ describe("generator", () => {
 
       export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
         ? TResponses extends Record<string, unknown>
-          ? ApiResponse<TSuccess, TResponses>
+          ? TypedApiResponse<TSuccess, TResponses>
           : { ok: true; status: number; data: TSuccess }
         : TEndpoint extends { response: infer TSuccess }
           ? { ok: true; status: number; data: TSuccess }
