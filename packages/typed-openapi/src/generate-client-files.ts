@@ -25,6 +25,8 @@ export const optionsSchema = type({
   runtime: allowedRuntimes,
   tanstack: "boolean | string",
   schemasOnly: "boolean",
+  "includeClient?": "boolean | 'true' | 'false'",
+  "successStatusCodes?": "string",
 });
 
 type GenerateClientFilesOptions = typeof optionsSchema.infer & {
@@ -37,12 +39,23 @@ export async function generateClientFiles(input: string, options: GenerateClient
   const ctx = mapOpenApiEndpoints(openApiDoc, options);
   console.log(`Found ${ctx.endpointList.length} endpoints`);
 
+  // Parse success status codes if provided
+  const successStatusCodes = options.successStatusCodes
+    ? (options.successStatusCodes.split(",").map((code) => parseInt(code.trim(), 10)) as readonly number[])
+    : undefined;
+
+  // Convert string boolean to actual boolean
+  const includeClient =
+    options.includeClient === "false" ? false : options.includeClient === "true" ? true : options.includeClient;
+
   const content = await prettify(
     generateFile({
       ...ctx,
       runtime: options.runtime,
       schemasOnly: options.schemasOnly,
       nameTransform: options.nameTransform,
+      ...(includeClient !== undefined && { includeClient }),
+      ...(successStatusCodes !== undefined && { successStatusCodes }),
     }),
   );
   const outputPath = join(
