@@ -37,17 +37,26 @@ npx typed-openapi -h
 ```
 
 ```sh
-typed-openapi/0.1.3
+typed-openapi/1.5.0
 
-Usage: $ typed-openapi <input>
+Usage:
+  $ typed-openapi <input>
 
-Commands: <input> Generate
+Commands:
+  <input>  Generate
 
-For more info, run any command with the `--help` flag: $ typed-openapi --help
+For more info, run any command with the `--help` flag:
+  $ typed-openapi --help
 
-Options: -o, --output <path> Output path for the api client ts file (defaults to `<input>.<runtime>.ts`) -r, --runtime
-<name> Runtime to use for validation; defaults to `none`; available: 'none' | 'arktype' | 'io-ts' | 'typebox' |
-'valibot' | 'yup' | 'zod' (default: none) -h, --help Display this message -v, --version Display version number
+Options:
+  -o, --output <path>             Output path for the api client ts file (defaults to `<input>.<runtime>.ts`)
+  -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: Type<"arktype" | "io-ts" | "none" | "typebox" | "valibot" | "yup" | "zod"> (default: none)
+  --schemas-only                  Only generate schemas, skipping client generation (defaults to false) (default: false)
+  --include-client                Include API client types and implementation (defaults to true) (default: true)
+  --success-status-codes <codes>  Comma-separated list of success status codes (defaults to 2xx and 3xx ranges)
+  --tanstack [name]               Generate tanstack client, defaults to false, can optionally specify a name for the generated file
+  -h, --help                      Display this message
+  -v, --version                   Display version number
 ```
 
 ## Non-goals
