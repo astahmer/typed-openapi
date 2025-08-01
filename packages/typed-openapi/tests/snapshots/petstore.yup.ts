@@ -519,37 +519,42 @@ export type TypedApiResponse<
   TSuccess,
   TAllResponses extends Record<string | number, unknown> = {},
 > = keyof TAllResponses extends never
-  ? {
+  ? Omit<Response, "ok" | "status" | "json"> & {
       ok: true;
       status: number;
       data: TSuccess;
+      json: () => Promise<TSuccess>;
     }
   : {
       [K in keyof TAllResponses]: K extends string
         ? K extends `${infer TStatusCode extends number}`
           ? TStatusCode extends StatusCode
-            ? {
+            ? Omit<Response, "ok" | "status" | "json"> & {
                 ok: true;
                 status: TStatusCode;
-                data: TAllResponses[K];
+                data: TSuccess;
+                json: () => Promise<TSuccess>;
               }
-            : {
+            : Omit<Response, "ok" | "status" | "json"> & {
                 ok: false;
                 status: TStatusCode;
-                error: TAllResponses[K];
+                data: TAllResponses[K];
+                json: () => Promise<TAllResponses[K]>;
               }
           : never
         : K extends number
           ? K extends StatusCode
-            ? {
+            ? Omit<Response, "ok" | "status" | "json"> & {
                 ok: true;
                 status: K;
-                data: TAllResponses[K];
+                data: TSuccess;
+                json: () => Promise<TSuccess>;
               }
-            : {
+            : Omit<Response, "ok" | "status" | "json"> & {
                 ok: false;
                 status: K;
-                error: TAllResponses[K];
+                data: TAllResponses[K];
+                json: () => Promise<TAllResponses[K]>;
               }
           : never;
     }[keyof TAllResponses];
@@ -557,9 +562,19 @@ export type TypedApiResponse<
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
     ? TypedApiResponse<TSuccess, TResponses>
-    : { ok: true; status: number; data: TSuccess }
+    : Omit<Response, "ok" | "status" | "json"> & {
+        ok: true;
+        status: number;
+        data: TSuccess;
+        json: () => Promise<TSuccess>;
+      }
   : TEndpoint extends { response: infer TSuccess }
-    ? { ok: true; status: number; data: TSuccess }
+    ? Omit<Response, "ok" | "status" | "json"> & {
+        ok: true;
+        status: number;
+        data: TSuccess;
+        json: () => Promise<TSuccess>;
+      }
     : never;
 
 type RequiredKeys<T> = {
@@ -613,12 +628,17 @@ export class ApiClient {
     if (withResponse) {
       return this.fetcher("put", this.baseUrl + path, Object.keys(fetchParams).length ? fetchParams : undefined).then(
         async (response) => {
+          // Parse the response data
           const data = await this.parseResponse(response);
-          if (response.ok) {
-            return { ok: true, status: response.status, data };
-          } else {
-            return { ok: false, status: response.status, error: data };
-          }
+
+          // Override properties while keeping the original Response object
+          const typedResponse = Object.assign(response, {
+            ok: response.ok,
+            status: response.status,
+            data: data,
+            json: () => Promise.resolve(data),
+          });
+          return typedResponse;
         },
       );
     } else {
@@ -653,12 +673,17 @@ export class ApiClient {
     if (withResponse) {
       return this.fetcher("post", this.baseUrl + path, Object.keys(fetchParams).length ? fetchParams : undefined).then(
         async (response) => {
+          // Parse the response data
           const data = await this.parseResponse(response);
-          if (response.ok) {
-            return { ok: true, status: response.status, data };
-          } else {
-            return { ok: false, status: response.status, error: data };
-          }
+
+          // Override properties while keeping the original Response object
+          const typedResponse = Object.assign(response, {
+            ok: response.ok,
+            status: response.status,
+            data: data,
+            json: () => Promise.resolve(data),
+          });
+          return typedResponse;
         },
       );
     } else {
@@ -693,12 +718,17 @@ export class ApiClient {
     if (withResponse) {
       return this.fetcher("get", this.baseUrl + path, Object.keys(fetchParams).length ? fetchParams : undefined).then(
         async (response) => {
+          // Parse the response data
           const data = await this.parseResponse(response);
-          if (response.ok) {
-            return { ok: true, status: response.status, data };
-          } else {
-            return { ok: false, status: response.status, error: data };
-          }
+
+          // Override properties while keeping the original Response object
+          const typedResponse = Object.assign(response, {
+            ok: response.ok,
+            status: response.status,
+            data: data,
+            json: () => Promise.resolve(data),
+          });
+          return typedResponse;
         },
       );
     } else {
@@ -736,12 +766,17 @@ export class ApiClient {
         this.baseUrl + path,
         Object.keys(fetchParams).length ? fetchParams : undefined,
       ).then(async (response) => {
+        // Parse the response data
         const data = await this.parseResponse(response);
-        if (response.ok) {
-          return { ok: true, status: response.status, data };
-        } else {
-          return { ok: false, status: response.status, error: data };
-        }
+
+        // Override properties while keeping the original Response object
+        const typedResponse = Object.assign(response, {
+          ok: response.ok,
+          status: response.status,
+          data: data,
+          json: () => Promise.resolve(data),
+        });
+        return typedResponse;
       });
     } else {
       return this.fetcher("delete", this.baseUrl + path, requestParams).then((response) =>
@@ -790,9 +825,16 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
  // With error handling
  const result = await api.get("/users/{id}", { path: { id: "123" }, withResponse: true });
  if (result.ok) {
-   console.log(result.data);
+   // Access data directly
+   const user = result.data;
+   console.log(user);
+
+   // Or use the json() method for compatibility
+   const userFromJson = await result.json();
+   console.log(userFromJson);
  } else {
-   console.error(`Error ${result.status}:`, result.error);
+   const error = result.data;
+   console.error(`Error ${result.status}:`, error);
  }
 */
 
