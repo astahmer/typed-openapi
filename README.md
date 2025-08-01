@@ -85,10 +85,15 @@ The generated client is headless - you need to provide your own fetcher. Here ar
 
 ### Type-Safe Error Handling
 
-The generated client includes discriminated union types for handling both success and error responses:
+The generated client supports two response modes:
 
 ```typescript
-// With withResponse: true, get full response details
+// Default: Direct data return (simpler, but no error details)
+const user = await api.get("/users/{id}", {
+  path: { id: "123" }
+}); // user is directly typed as User object
+
+// WithResponse: Full response details (for error handling)
 const result = await api.get("/users/{id}", {
   path: { id: "123" },
   withResponse: true
