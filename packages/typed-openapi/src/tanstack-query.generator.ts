@@ -77,18 +77,20 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             path: Path,
             ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ) {
-            const queryKey = createQueryKey(path, params[0]);
+            const queryKey = createQueryKey(path as string, params[0]);
             const query = {
                 /** type-only property if you need easy access to the endpoint params */
                 "~endpoint": {} as TEndpoint,
                 queryKey,
                 queryOptions: queryOptions({
                     queryFn: async ({ queryKey, signal, }) => {
-                        const res = await this.client.${method}(path, {
-                            ...params,
-                            ...queryKey[0],
+                        const requestParams = {
+                            ...(params[0] || {}),
+                            ...(queryKey[0] || {}),
                             signal,
-                        });
+                            withResponse: false as const
+                        };
+                        const res = await this.client.${method}(path, requestParams);
                         return res as TEndpoint["response"];
                     },
                     queryKey: queryKey
@@ -96,11 +98,13 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                 mutationOptions: {
                     mutationKey: queryKey,
                     mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters} ? Parameters: never) => {
-                        const res = await this.client.${method}(path, {
-                            ...params,
-                            ...queryKey[0],
-                            ...localOptions,
-                        });
+                        const requestParams = {
+                            ...(params[0] || {}),
+                            ...(queryKey[0] || {}),
+                            ...(localOptions || {}),
+                            withResponse: false as const
+                        };
+                        const res = await this.client.${method}(path, requestParams);
                         return res as TEndpoint["response"];
                     }
                 }

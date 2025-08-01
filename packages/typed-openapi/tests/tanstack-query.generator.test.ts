@@ -77,18 +77,20 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ) {
-          const queryKey = createQueryKey(path, params[0]);
+          const queryKey = createQueryKey(path as string, params[0]);
           const query = {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             queryKey,
             queryOptions: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
-                const res = await this.client.put(path, {
-                  ...params,
-                  ...queryKey[0],
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
                   signal,
-                });
+                  withResponse: false as const,
+                };
+                const res = await this.client.put(path, requestParams);
                 return res as TEndpoint["response"];
               },
               queryKey: queryKey,
@@ -96,11 +98,13 @@ describe("generator", () => {
             mutationOptions: {
               mutationKey: queryKey,
               mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const res = await this.client.put(path, {
-                  ...params,
-                  ...queryKey[0],
-                  ...localOptions,
-                });
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
+                  ...(localOptions || {}),
+                  withResponse: false as const,
+                };
+                const res = await this.client.put(path, requestParams);
                 return res as TEndpoint["response"];
               },
             },
@@ -115,18 +119,20 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ) {
-          const queryKey = createQueryKey(path, params[0]);
+          const queryKey = createQueryKey(path as string, params[0]);
           const query = {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             queryKey,
             queryOptions: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
-                const res = await this.client.post(path, {
-                  ...params,
-                  ...queryKey[0],
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
                   signal,
-                });
+                  withResponse: false as const,
+                };
+                const res = await this.client.post(path, requestParams);
                 return res as TEndpoint["response"];
               },
               queryKey: queryKey,
@@ -134,11 +140,13 @@ describe("generator", () => {
             mutationOptions: {
               mutationKey: queryKey,
               mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const res = await this.client.post(path, {
-                  ...params,
-                  ...queryKey[0],
-                  ...localOptions,
-                });
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
+                  ...(localOptions || {}),
+                  withResponse: false as const,
+                };
+                const res = await this.client.post(path, requestParams);
                 return res as TEndpoint["response"];
               },
             },
@@ -153,18 +161,20 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ) {
-          const queryKey = createQueryKey(path, params[0]);
+          const queryKey = createQueryKey(path as string, params[0]);
           const query = {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             queryKey,
             queryOptions: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
-                const res = await this.client.get(path, {
-                  ...params,
-                  ...queryKey[0],
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
                   signal,
-                });
+                  withResponse: false as const,
+                };
+                const res = await this.client.get(path, requestParams);
                 return res as TEndpoint["response"];
               },
               queryKey: queryKey,
@@ -172,11 +182,13 @@ describe("generator", () => {
             mutationOptions: {
               mutationKey: queryKey,
               mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const res = await this.client.get(path, {
-                  ...params,
-                  ...queryKey[0],
-                  ...localOptions,
-                });
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
+                  ...(localOptions || {}),
+                  withResponse: false as const,
+                };
+                const res = await this.client.get(path, requestParams);
                 return res as TEndpoint["response"];
               },
             },
@@ -191,18 +203,20 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ) {
-          const queryKey = createQueryKey(path, params[0]);
+          const queryKey = createQueryKey(path as string, params[0]);
           const query = {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             queryKey,
             queryOptions: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
-                const res = await this.client.delete(path, {
-                  ...params,
-                  ...queryKey[0],
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
                   signal,
-                });
+                  withResponse: false as const,
+                };
+                const res = await this.client.delete(path, requestParams);
                 return res as TEndpoint["response"];
               },
               queryKey: queryKey,
@@ -210,11 +224,13 @@ describe("generator", () => {
             mutationOptions: {
               mutationKey: queryKey,
               mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const res = await this.client.delete(path, {
-                  ...params,
-                  ...queryKey[0],
-                  ...localOptions,
-                });
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
+                  ...(localOptions || {}),
+                  withResponse: false as const,
+                };
+                const res = await this.client.delete(path, requestParams);
                 return res as TEndpoint["response"];
               },
             },
