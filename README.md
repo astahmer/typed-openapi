@@ -74,6 +74,166 @@ Options:
 
 Basically, let's focus on having a fast and typesafe API client generation instead.
 
+## Usage Examples
+
+### API Client Setup
+
+The generated client is headless - you need to provide your own fetcher. Here are ready-to-use examples:
+
+- **[Basic API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets)** - Simple, dependency-free wrapper
+- **[Validating API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#validating-api-client-api-client-with-validationts)** - With request/response validation
+
+### Type-Safe Error Handling
+
+The generated client includes discriminated union types for handling both success and error responses:
+
+```typescript
+// With withResponse: true, get full response details
+const result = await api.get("/users/{id}", {
+  path: { id: "123" },
+  withResponse: true
+});
+
+if (result.ok) {
+  // result.data is typed as the success response
+  console.log("User:", result.data.name);
+  // result.status is typed as success status codes (200, 201, etc.)
+} else {
+  // result.error is typed based on documented error responses
+  if (result.status === 404) {
+    console.log("User not found:", result.error.message);
+  } else if (result.status === 401) {
+    console.log("Unauthorized:", result.error.details);
+  }
+}
+```
+
+### Success Response Type-Narrowing
+
+When endpoints have multiple success responses (200, 201, etc.), the type is automatically narrowed based on status:
+
+```typescript
+const result = await api.post("/users", {
+  body: { name: "John" },
+  withResponse: true
+});
+
+if (result.ok) {
+  if (result.status === 201) {
+    // result.data typed as CreateUserResponse (201)
+    console.log("Created user:", result.data.id);
+  } else if (result.status === 200) {
+    // result.data typed as ExistingUserResponse (200)
+    console.log("Existing user:", result.data.email);
+  }
+}
+```
+
+### Generic Request Method
+
+For dynamic endpoint calls or when you need more control:
+
+```typescript
+// Type-safe generic request method
+const response = await api.request("GET", "/users/{id}", {
+  path: { id: "123" },
+  query: { include: ["profile", "settings"] }
+});
+
+const user = await response.json(); // Fully typed based on endpoint
+```
+
+### TanStack Query Integration
+
+Generate TanStack Query wrappers for your endpoints:
+
+```bash
+npx typed-openapi api.yaml --runtime zod --tanstack
+```
+
+## useQuery / fetchQuery / ensureQueryData
+
+```ts
+// Basic query
+const accessiblePagesQuery = useQuery(
+  tanstackApi.get('/authorization/accessible-pages').queryOptions
+);
+
+// Query with query parameters
+const membersQuery = useQuery(
+  tanstackApi.get('/authorization/organizations/:organizationId/members/search', {
+    path: { organizationId: 'org123' },
+    query: { searchQuery: 'john' }
+  }).queryOptions
+);
+
+// With additional query options
+const departmentCostsQuery = useQuery({
+  ...tanstackApi.get('/organizations/:organizationId/department-costs', {
+    path: { organizationId: params.orgId },
+    query: { period: selectedPeriod },
+  }).queryOptions,
+  staleTime: 30 * 1000,
+  // placeholderData: keepPreviousData,
+  // etc
+});
+```
+
+or if you need it in a router `beforeLoad` / `loader`:
+
+```ts
+import { tanstackApi } from '#api';
+
+await queryClient.fetchQuery(
+  tanstackApi.get('/:organizationId/remediation/accounting-lines/metrics', {
+    path: { organizationId: params.orgId },
+  }).queryOptions,
+);
+```
+
+## useMutation
+
+the API slightly differs as you do not need to pass any parameters initially but only when using the `mutate` method:
+
+```ts
+// Basic mutation
+const mutation = useMutation(
+  tanstackApi.mutation("post", '/authorization/organizations/:organizationId/invitations').mutationOptions
+);
+
+// Usage:
+mutation.mutate({
+  body: {
+    emailAddress: 'user@example.com',
+    department: 'engineering',
+    roleName: 'admin'
+  }
+});
+```
+
+## useMutation without the tanstack api
+
+If you need to make a custom mutation you could use the `api` directly:
+
+```ts
+const { mutate: login, isPending } = useMutation({
+  mutationFn: async (type: 'google' | 'microsoft') => {
+    return api.post(`/authentication/${type}`, { body: { redirectUri: search.redirect } });
+  },
+  onSuccess: (data) => {
+    window.location.replace(data.url);
+  },
+  onError: (error, type) => {
+    console.error(error);
+    toast({
+      title: t(`toast.login.${type}.error`),
+      icon: 'warning',
+      variant: 'critical',
+    });
+  },
+});
+```
+
 ## Alternatives
 
 [openapi-zod-client](https://github.com/astahmer/openapi-zod-client), which generates a
