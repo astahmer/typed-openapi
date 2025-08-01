@@ -84,31 +84,82 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
 
 // Error handling types
-export type ApiResponse<TSuccess, TErrors extends Record<string | number, unknown> = {}> =
-  | {
+export type ApiResponse<
+  TSuccess,
+  TAllResponses extends Record<string | number, unknown> = {},
+> = keyof TAllResponses extends never
+  ? {
       ok: true;
       status: number;
       data: TSuccess;
     }
-  | (keyof TErrors extends never
-      ? never
-      : {
-          [K in keyof TErrors]: K extends string
-            ? K extends `${infer StatusCode extends number}`
-              ? {
-                  ok: false;
-                  status: StatusCode;
-                  error: TErrors[K];
-                }
-              : never
-            : K extends number
-              ? {
-                  ok: false;
-                  status: K;
-                  error: TErrors[K];
-                }
-              : never;
-        }[keyof TErrors]);
+  : {
+      [K in keyof TAllResponses]: K extends string
+        ? K extends `${infer StatusCode extends number}`
+          ? StatusCode extends
+              | 200
+              | 201
+              | 202
+              | 203
+              | 204
+              | 205
+              | 206
+              | 207
+              | 208
+              | 226
+              | 300
+              | 301
+              | 302
+              | 303
+              | 304
+              | 305
+              | 306
+              | 307
+              | 308
+            ? {
+                ok: true;
+                status: StatusCode;
+                data: TAllResponses[K];
+              }
+            : {
+                ok: false;
+                status: StatusCode;
+                error: TAllResponses[K];
+              }
+          : never
+        : K extends number
+          ? K extends
+              | 200
+              | 201
+              | 202
+              | 203
+              | 204
+              | 205
+              | 206
+              | 207
+              | 208
+              | 226
+              | 300
+              | 301
+              | 302
+              | 303
+              | 304
+              | 305
+              | 306
+              | 307
+              | 308
+            ? {
+                ok: true;
+                status: K;
+                data: TAllResponses[K];
+              }
+            : {
+                ok: false;
+                status: K;
+                error: TAllResponses[K];
+              }
+          : never;
+    }[keyof TAllResponses];
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
