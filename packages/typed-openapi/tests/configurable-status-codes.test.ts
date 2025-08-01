@@ -23,7 +23,7 @@ it("should use custom success status codes", async () => {
               }
             },
             201: {
-              description: "Created", 
+              description: "Created",
               content: {
                 "application/json": {
                   schema: { type: "object", properties: { id: { type: "string" } } }
@@ -45,23 +45,23 @@ it("should use custom success status codes", async () => {
   };
 
   const endpoints = mapOpenApiEndpoints(openApiDoc);
-  
+
   // Test with default success status codes (should include 200 and 201)
   const defaultGenerated = await prettify(generateFile(endpoints));
   expect(defaultGenerated).toContain("export type StatusCode =");
   expect(defaultGenerated).toContain("| 200");
   expect(defaultGenerated).toContain("| 201");
-  
+
   // Test with custom success status codes (only 200)
   const customGenerated = await prettify(generateFile({
     ...endpoints,
     successStatusCodes: [200] as const
   }));
-  
+
   // Should only contain 200 in the StatusCode type
   expect(customGenerated).toContain("export type StatusCode = 200;");
   expect(customGenerated).not.toContain("| 201");
-  
+
   // The ApiResponse type should use the custom StatusCode
   expect(customGenerated).toContain("TStatusCode extends StatusCode");
 });

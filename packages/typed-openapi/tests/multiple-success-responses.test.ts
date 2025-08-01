@@ -75,7 +75,7 @@ describe("multiple success responses", () => {
                       type: "object",
                       properties: {
                         message: { type: "string" },
-                        errors: { 
+                        errors: {
                           type: "array",
                           items: { type: "string" }
                         }
@@ -96,12 +96,12 @@ describe("multiple success responses", () => {
 
     // Check that the endpoint has proper response types
     expect(generated).toContain("post_CreateOrUpdateUser");
-    
+
     // Check that different success responses have different schemas
     expect(generated).toContain("updated: boolean");
     expect(generated).toContain("created: boolean");
     expect(generated).toContain("Array<string>");
-    
+
     // Verify the SafeApiResponse type is present for error handling
     expect(generated).toContain("SafeApiResponse");
 
