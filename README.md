@@ -10,6 +10,8 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 
 - Headless API client, bring your own fetcher ! (fetch, axios, ky, etc...)
 - Generates a fully typesafe API client with just types by default (instant suggestions)
+- **Type-safe error handling** with discriminated unions and configurable success status codes
+- **TanStack Query integration** with `withResponse` and `selectFn` options for advanced error handling
 - Or you can also generate a client with runtime validation using one of the following runtimes:
   - [zod](https://zod.dev/)
   - [typebox](https://github.com/sinclairzx81/typebox)
@@ -53,8 +55,8 @@ Options:
   -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: Type<"arktype" | "io-ts" | "none" | "typebox" | "valibot" | "yup" | "zod"> (default: none)
   --schemas-only                  Only generate schemas, skipping client generation (defaults to false) (default: false)
   --include-client                Include API client types and implementation (defaults to true) (default: true)
-  --success-status-codes <codes>  Comma-separated list of success status codes (defaults to 2xx and 3xx ranges)
-  --tanstack [name]               Generate tanstack client, defaults to false, can optionally specify a name for the generated file
+  --success-status-codes <codes>  Comma-separated list of success status codes for type-safe error handling (defaults to 2xx and 3xx ranges)
+  --tanstack [name]               Generate tanstack client with withResponse support for error handling, defaults to false, can optionally specify a name for the generated file
   -h, --help                      Display this message
   -v, --version                   Display version number
 ```
@@ -205,22 +207,85 @@ await queryClient.fetchQuery(
 
 ## useMutation
 
-the API slightly differs as you do not need to pass any parameters initially but only when using the `mutate` method:
+The mutation API supports both basic usage and advanced error handling with `withResponse` and custom transformations with `selectFn`:
 
 ```ts
-// Basic mutation
-const mutation = useMutation(
+// Basic mutation (returns data only)
+const basicMutation = useMutation(
   tanstackApi.mutation("post", '/authorization/organizations/:organizationId/invitations').mutationOptions
 );
 
-// Usage:
-mutation.mutate({
+// With error handling using withResponse
+const mutationWithErrorHandling = useMutation(
+  tanstackApi.mutation("post", '/users', {
+    withResponse: true
+  }).mutationOptions
+);
+
+// With custom response transformation
+const customMutation = useMutation(
+  tanstackApi.mutation("post", '/users', {
+    selectFn: (user) => ({ userId: user.id, userName: user.name })
+  }).mutationOptions
+);
+
+// Advanced: withResponse + selectFn for comprehensive error handling
+const advancedMutation = useMutation(
+  tanstackApi.mutation("post", '/users', {
+    withResponse: true,
+    selectFn: (response) => ({
+      success: response.ok,
+      user: response.ok ? response.data : null,
+      error: response.ok ? null : response.data,
+      statusCode: response.status
+    })
+  }).mutationOptions
+);
+```
+
+### Usage Examples:
+
+```ts
+// Basic usage
+basicMutation.mutate({
   body: {
     emailAddress: 'user@example.com',
     department: 'engineering',
     roleName: 'admin'
   }
 });
+
+// With error handling
+mutationWithErrorHandling.mutate(
+  { body: userData },
+  {
+    onSuccess: (response) => {
+      if (response.ok) {
+        toast.success(`User ${response.data.name} created!`);
+      } else {
+        if (response.status === 400) {
+          toast.error(`Validation error: ${response.data.message}`);
+        } else if (response.status === 409) {
+          toast.error('User already exists');
+        }
+      }
+    }
+  }
+);
+
+// Advanced usage with custom transformation
+advancedMutation.mutate(
+  { body: userData },
+  {
+    onSuccess: (result) => {
+      if (result.success) {
+        console.log('Created user:', result.user.name);
+      } else {
+        console.error(`Error ${result.statusCode}:`, result.error);
+      }
+    }
+  }
+);
 ```
 
 ## useMutation without the tanstack api

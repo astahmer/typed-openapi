@@ -10,7 +10,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
 
   const file = `
   import { queryOptions } from "@tanstack/react-query"
-  import type { EndpointByMethod, ApiClient } from "${ctx.relativeApiClientPath}"
+  import type { EndpointByMethod, ApiClient, SafeApiResponse } from "${ctx.relativeApiClientPath}"
 
   type EndpointQueryKey<TOptions extends EndpointParameters> = [
       TOptions & {
@@ -125,11 +125,17 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             TMethod extends keyof EndpointByMethod,
             TPath extends keyof EndpointByMethod[TMethod],
             TEndpoint extends EndpointByMethod[TMethod][TPath],
-            TSelection,
-        >(method: TMethod, path: TPath, selectFn?: (res: Omit<Response, "json"> & {
-            /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
-            json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
-        }) => TSelection) {
+            TWithResponse extends boolean = false,
+            TSelection = TWithResponse extends true
+                ? SafeApiResponse<TEndpoint>
+                : TEndpoint extends { response: infer Res } ? Res : never
+        >(method: TMethod, path: TPath, options?: {
+            withResponse?: TWithResponse;
+            selectFn?: (res: TWithResponse extends true
+                ? SafeApiResponse<TEndpoint>
+                : TEndpoint extends { response: infer Res } ? Res : never
+            ) => TSelection;
+        }) {
             const mutationKey = [{ method, path }] as const;
             return {
             /** type-only property if you need easy access to the endpoint params */
@@ -138,9 +144,20 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             mutationOptions: {
                 mutationKey: mutationKey,
                 mutationFn: async (params: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const response = await this.client.request(method, path, params);
-                const res = selectFn ? selectFn(response) : response
-                return res as unknown extends TSelection ? typeof response : Awaited<TSelection>
+                const withResponse = options?.withResponse ?? false;
+                const selectFn = options?.selectFn;
+
+                if (withResponse) {
+                    // Type assertion is safe because we're handling the method dynamically
+                    const response = await (this.client as any)[method](path, { ...params, withResponse: true });
+                    const res = selectFn ? selectFn(response as any) : response;
+                    return res as TSelection;
+                } else {
+                    // Type assertion is safe because we're handling the method dynamically
+                    const response = await (this.client as any)[method](path, { ...params, withResponse: false });
+                    const res = selectFn ? selectFn(response as any) : response;
+                    return res as TSelection;
+                }
                 },
             },
             };
