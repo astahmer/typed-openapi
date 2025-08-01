@@ -93,27 +93,34 @@ const user = await api.get("/users/{id}", {
   path: { id: "123" }
 }); // user is directly typed as User object
 
-// WithResponse: Full response details (for error handling)
+// WithResponse: Full Response object with typed ok/status and data
 const result = await api.get("/users/{id}", {
   path: { id: "123" },
   withResponse: true
 });
 
+// result is the actual Response object with typed ok/status overrides plus data access
 if (result.ok) {
-  // result.data is typed as the success response
-  console.log("User:", result.data.name);
-  // result.status is typed as success status codes (200, 201, etc.)
+  // Access data directly (already parsed)
+  const user = result.data; // Type: User
+  console.log("User:", user.name);
+
+  // Or use json() method for compatibility
+  const userFromJson = await result.json(); // Same as result.data
+  console.log("User from json():", userFromJson.name);
+
+  console.log("Status:", result.status); // Typed as success status codes
+  console.log("Headers:", result.headers); // Access to all Response properties
 } else {
-  // result.error is typed based on documented error responses
+  // Access error data directly
+  const error = result.data; // Type based on status code
   if (result.status === 404) {
-    console.log("User not found:", result.error.message);
+    console.log("User not found:", error.message);
   } else if (result.status === 401) {
-    console.log("Unauthorized:", result.error.details);
+    console.log("Unauthorized:", error.details);
   }
 }
-```
-
-### Success Response Type-Narrowing
+```### Success Response Type-Narrowing
 
 When endpoints have multiple success responses (200, 201, etc.), the type is automatically narrowed based on status:
 

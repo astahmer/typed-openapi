@@ -151,3 +151,40 @@ if (!response.ok) {
   throw new ApiError(response.status, response.statusText, response);
 }
 ```
+
+## Error Handling with withResponse
+
+For type-safe error handling without exceptions, use the `withResponse: true` option:
+
+```typescript
+// Example with both data access methods
+const result = await api.get("/users/{id}", {
+  path: { id: "123" },
+  withResponse: true
+});
+
+if (result.ok) {
+  // Access data directly (already parsed)
+  const user = result.data; // Type: User
+  console.log("User:", user.name);
+
+  // Or use json() method for compatibility
+  const userFromJson = await result.json(); // Same as result.data
+  console.log("Same user:", userFromJson.name);
+
+  // Access other Response properties
+  console.log("Status:", result.status);
+  console.log("Headers:", result.headers.get("content-type"));
+} else {
+  // Handle errors with proper typing
+  const error = result.data; // Type based on status code
+
+  if (result.status === 404) {
+    console.error("Not found:", error.message);
+  } else if (result.status === 401) {
+    console.error("Unauthorized:", error.details);
+  } else {
+    console.error("Unknown error:", error);
+  }
+}
+```
