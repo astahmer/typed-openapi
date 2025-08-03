@@ -31,3 +31,6 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - name: Release package
+        run: pnpm dlx pkg-pr-new publish
