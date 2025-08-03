@@ -6,6 +6,8 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 
 ![Screenshot 2023-08-08 at 00 48 42](https://github.com/astahmer/typed-openapi/assets/47224540/3016fa92-e09a-41f3-a95f-32caa41325da)
 
+[![pkg.pr.new](https://pkg.pr.new/badge/astahmer/typed-openapi)](https://pkg.pr.new/~/astahmer/typed-openapi)
+
 ## Features
 
 - Headless API client, bring your own fetcher ! (fetch, axios, ky, etc...)

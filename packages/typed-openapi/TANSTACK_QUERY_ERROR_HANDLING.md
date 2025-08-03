@@ -95,7 +95,7 @@ function CreateUserForm() {
       // error is fully typed based on your OpenAPI spec!
       // error is also a Response instance with additional data property
       console.log(error instanceof Response); // true
-      
+
       if (error.status === 400) {
         // error.data is typed as ValidationError
         console.error('Validation failed:', error.data.message);
@@ -144,7 +144,7 @@ function AdvancedCreateUserForm() {
       // error is also a Response instance
       console.log(error.ok); // false
       console.log(error.headers); // Response headers
-      
+
       switch (error.status) {
         case 400:
           toast.error(`Validation: ${error.data.fields.join(', ')}`);
