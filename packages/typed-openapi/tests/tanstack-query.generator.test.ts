@@ -11,7 +11,7 @@ describe("generator", () => {
       ...mapOpenApiEndpoints(openApiDoc),
       relativeApiClientPath: "./api.client.ts"
     })).toMatchInlineSnapshot(`
-      "import { queryOptions } from "@tanstack/react-query";
+      "import { queryOptions, mutationOptions } from "@tanstack/react-query";
       import type { EndpointByMethod, ApiClient } from "./api.client.ts";
 
       type EndpointQueryKey<TOptions extends EndpointParameters> = [
@@ -93,7 +93,7 @@ describe("generator", () => {
               },
               queryKey: queryKey,
             }),
-            mutationOptions: {
+            mutationOptions: mutationOptions({
               mutationKey: queryKey,
               mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
                 const res = await this.client.put(path, {
@@ -103,7 +103,7 @@ describe("generator", () => {
                 });
                 return res as TEndpoint["response"];
               },
-            },
+            }),
           };
 
           return query;
@@ -131,7 +131,7 @@ describe("generator", () => {
               },
               queryKey: queryKey,
             }),
-            mutationOptions: {
+            mutationOptions: mutationOptions({
               mutationKey: queryKey,
               mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
                 const res = await this.client.post(path, {
@@ -141,7 +141,7 @@ describe("generator", () => {
                 });
                 return res as TEndpoint["response"];
               },
-            },
+            }),
           };
 
           return query;
@@ -169,7 +169,7 @@ describe("generator", () => {
               },
               queryKey: queryKey,
             }),
-            mutationOptions: {
+            mutationOptions: mutationOptions({
               mutationKey: queryKey,
               mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
                 const res = await this.client.get(path, {
@@ -179,7 +179,7 @@ describe("generator", () => {
                 });
                 return res as TEndpoint["response"];
               },
-            },
+            }),
           };
 
           return query;
@@ -207,7 +207,7 @@ describe("generator", () => {
               },
               queryKey: queryKey,
             }),
-            mutationOptions: {
+            mutationOptions: mutationOptions({
               mutationKey: queryKey,
               mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
                 const res = await this.client.delete(path, {
@@ -217,7 +217,7 @@ describe("generator", () => {
                 });
                 return res as TEndpoint["response"];
               },
-            },
+            }),
           };
 
           return query;
@@ -248,14 +248,14 @@ describe("generator", () => {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             mutationKey: mutationKey,
-            mutationOptions: {
+            mutationOptions: mutationOptions({
               mutationKey: mutationKey,
               mutationFn: async (params: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
                 const response = await this.client.request(method, path, params);
                 const res = selectFn ? selectFn(response) : response;
                 return res as unknown extends TSelection ? typeof response : Awaited<TSelection>;
               },
-            },
+            }),
           };
         }
         // </ApiClient.request>
