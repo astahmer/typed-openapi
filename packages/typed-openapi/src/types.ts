@@ -1,8 +1,9 @@
-import type { ReferenceObject, SchemaObject } from "openapi3-ts/oas31";
+import type { OperationObject, ReferenceObject, SchemaObject } from "openapi3-ts/oas31";
 import type { SchemaObject as SchemaObject3 } from "openapi3-ts/oas30";
 
 import type { RefResolver } from "./ref-resolver.ts";
 import { Box } from "./box.ts";
+import type { Method } from "./map-openapi-endpoints.ts";
 
 export type LibSchemaObject = SchemaObject & SchemaObject3;
 
@@ -94,10 +95,22 @@ export type FactoryCreator = (
   schema: SchemaObject | ReferenceObject,
   ctx: OpenapiSchemaConvertContext,
 ) => GenericFactory;
+
+export type NameTransformOptions = {
+  transformSchemaName?: (name: string) => string;
+  transformEndpointName?: (endpoint: {
+    alias: string;
+    operation: OperationObject;
+    method: Method;
+    path: string;
+  }) => string;
+};
+
 export type OpenapiSchemaConvertContext = {
   factory: FactoryCreator | GenericFactory;
   refs: RefResolver;
   onBox?: (box: Box<AnyBoxDef>) => Box<AnyBoxDef>;
+  nameTransform?: NameTransformOptions;
 };
 
 export type StringOrBox = string | Box<AnyBoxDef>;

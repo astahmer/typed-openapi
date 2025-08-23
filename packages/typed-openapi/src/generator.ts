@@ -6,10 +6,12 @@ import * as Codegen from "@sinclair/typebox-codegen";
 import { match } from "ts-pattern";
 import { type } from "arktype";
 import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
+import type { NameTransformOptions } from "./types.ts";
 
 type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
   runtime?: "none" | keyof typeof runtimeValidationGenerator;
   schemasOnly?: boolean;
+  nameTransform?: NameTransformOptions | undefined;
 };
 type GeneratorContext = Required<GeneratorOptions>;
 
