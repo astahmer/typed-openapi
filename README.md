@@ -10,7 +10,7 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 
 ## Features
 
-- Headless API client, bring your own fetcher ! (fetch, axios, ky, etc...)
+- Headless API client, [bring your own fetcher](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets) (fetch, axios, ky, etc...) !
 - Generates a fully typesafe API client with just types by default (instant suggestions)
 - **Type-safe error handling** with discriminated unions and configurable success status codes
 - **TanStack Query integration** with `withResponse` and `selectFn` options for advanced error handling
