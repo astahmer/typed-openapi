@@ -22,6 +22,9 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "test": "vitest",
+    "test:runtime": "pnpm run generate:runtime && pnpm run test:runtime:run",
+    "generate:runtime": "node bin.js ./tests/samples/petstore.yaml --output ./tmp/generated-client.ts",
+    "test:runtime:run": "vitest run tests/integration-runtime-msw.test.ts",
     "fmt": "prettier --write src",
     "typecheck": "tsc -b ./tsconfig.build.json"
   },
@@ -40,6 +43,7 @@
     "@changesets/cli": "^2.29.4",
     "@types/node": "^22.15.17",
     "@types/prettier": "3.0.0",
+    "msw": "2.10.5",
     "tsup": "^8.4.0",
     "typescript": "^5.8.3",
     "vitest": "^3.1.3"

@@ -23,5 +23,11 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Run integration test (MSW)
+        run: pnpm test:runtime
+
+      - name: Type check generated client and integration test
+        run: pnpm exec tsc --noEmit tmp/generated-client.ts tests/integration-runtime-msw.test.ts
+
       - name: Test
         run: pnpm test

@@ -25,3 +25,5 @@ styled-system
 styled-system-static
 .vercel
 *.tsbuildinfo
+
+tmp
