@@ -17,13 +17,22 @@ const mockPets = [
   },
 ];
 const server = setupServer(
-  // GET with query
-  http.get("http://localhost/pet/findByStatus", () => {
+  // GET with query (simulate error for status=pending)
+  http.get("http://localhost/pet/findByStatus", ({ request }) => {
+    const url = new URL(request.url);
+    const status = url.searchParams.get("status");
+    if (status === "pending") {
+      return HttpResponse.json({ code: 400, message: "Invalid status" }, { status: 400 });
+    }
     return HttpResponse.json(mockPets);
   }),
-  // GET with path
+  // GET with path (success)
   http.get("http://localhost/pet/42", () => {
     return HttpResponse.json({ id: 42, name: "Spot", photoUrls: [], status: "sold" });
+  }),
+  // GET with path (404 error)
+  http.get("http://localhost/pet/9999", () => {
+    return HttpResponse.json({ code: 404, message: "Pet not found" }, { status: 404 });
   }),
   // POST with body
   http.post("http://localhost/pet", async ({ request }) => {
@@ -59,7 +68,7 @@ describe("minimalist test", () => {
   });
 });
 
-describe("Generated Query Client (runtime)", () => {
+describe("Example API Client", () => {
   beforeAll(() => {
     api.baseUrl = "http://localhost";
   });
@@ -108,6 +117,9 @@ describe("Generated Query Client (runtime)", () => {
     const newPet = { name: "Tiger", photoUrls: [] };
     const res = await api.request("post", "/pet", { body: newPet });
     expect(res.status).toBe(200);
+    expect(res.ok).toBe(true);
+    if (!res.ok) throw new Error("res.ok is false");
+
     const data = await res.json();
     expect(data).toMatchObject(newPet);
     expect(data.id).toBe(99);
@@ -123,6 +135,55 @@ describe("Generated Query Client (runtime)", () => {
     ).rejects.toMatchObject({
       message: expect.stringContaining("403"),
       status: 403,
+    });
+  });
+
+  describe("Type-safe error handling and withResponse", () => {
+    beforeAll(() => {
+      api.baseUrl = "http://localhost";
+    });
+
+    it("should return a discriminated union for success and error (get /pet/{petId} with withResponse)", async () => {
+      // Success
+      const res = await api.get("/pet/{petId}", { path: { petId: 42 }, withResponse: true });
+      expect(res.ok).toBe(true);
+      expect(res.status).toBe(200);
+      expect(res.data).toEqual({ id: 42, name: "Spot", photoUrls: [], status: "sold" });
+      // Error (simulate 404)
+      const errorRes = await api.get("/pet/{petId}", { path: { petId: 9999 }, withResponse: true });
+      expect(errorRes.ok).toBe(false);
+      expect(errorRes.status).toBe(404);
+      expect(errorRes.data).toEqual({ code: 404, message: expect.any(String) });
+    });
+
+    it("should return both data and Response object with withResponse param (post /pet)", async () => {
+      const newPet = { name: "TanStack", photoUrls: [] };
+      const res = await api.post("/pet", { body: newPet, withResponse: true });
+      expect(res.ok).toBe(true);
+      if (!res.ok) throw new Error("res.ok is false");
+
+      expect(res.status).toBe(200);
+      expect(res.data.name).toBe("TanStack");
+      expect(res.data.id).toBe(99);
+      expect(typeof res.headers.get).toBe("function");
+    });
+
+    it("should handle error status codes as error in union (get /pet/findByStatus with error)", async () => {
+      // Simulate error (400) for status=pending
+      const errorRes = await api.get("/pet/findByStatus", { query: { status: "pending" }, withResponse: true });
+      expect(errorRes.ok).toBe(false);
+      expect(errorRes.status).toBe(400);
+      expect(errorRes.data).toEqual({ code: 400, message: expect.any(String) });
+    });
+
+    it("should support configurable status codes (simulate 201)", async () => {
+      // Simulate a 200 response for POST /pet (MSW handler returns 200)
+      const res = await api.post("/pet", { body: { name: "Created", photoUrls: [] }, withResponse: true });
+      expect([200, 201]).toContain(res.status);
+      expect(res.ok).toBe(true);
+      if (!res.ok) throw new Error("res.ok is false");
+
+      expect(res.data.name).toBe("Created");
     });
   });
 });

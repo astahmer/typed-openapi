@@ -353,64 +353,47 @@ export type Fetcher = (method: Method, url: string, parameters?: EndpointParamet
 export type SuccessStatusCode = ${statusCodeType};
 
 // Error handling types
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+  ok: true;
+  status: TStatusCode;
+  data: TSuccess;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TSuccess>;
+}
+
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+  ok: false;
+  status: TStatusCode;
+  data: TData;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TData>;
+}
+
 export type TypedApiResponse<TSuccess, TAllResponses extends Record<string | number, unknown> = {}> =
   (keyof TAllResponses extends never
-    ? Omit<Response, "ok" | "status" | "json"> & {
-        ok: true;
-        status: number;
-        data: TSuccess;
-        json: () => Promise<TSuccess>;
-      }
+    ? SuccessResponse<TSuccess, number>
     : {
         [K in keyof TAllResponses]: K extends string
           ? K extends \`\${infer TStatusCode extends number}\`
             ? TStatusCode extends SuccessStatusCode
-              ? Omit<Response, "ok" | "status" | "json"> & {
-                  ok: true;
-                  status: TStatusCode;
-                  data: TSuccess;
-                  json: () => Promise<TSuccess>;
-                }
-              : Omit<Response, "ok" | "status" | "json"> & {
-                  ok: false;
-                  status: TStatusCode;
-                  data: TAllResponses[K];
-                  json: () => Promise<TAllResponses[K]>;
-                }
+              ? SuccessResponse<TSuccess, TStatusCode>
+              : ErrorResponse<TAllResponses[K], TStatusCode>
             : never
           : K extends number
             ? K extends SuccessStatusCode
-              ? Omit<Response, "ok" | "status" | "json"> & {
-                  ok: true;
-                  status: K;
-                  data: TSuccess;
-                  json: () => Promise<TSuccess>;
-                }
-              : Omit<Response, "ok" | "status" | "json"> & {
-                  ok: false;
-                  status: K;
-                  data: TAllResponses[K];
-                  json: () => Promise<TAllResponses[K]>;
-                }
+              ? SuccessResponse<TSuccess, K>
+              : ErrorResponse<TAllResponses[K], K>
             : never;
       }[keyof TAllResponses]);
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
     ? TypedApiResponse<TSuccess, TResponses>
-    : Omit<Response, "ok" | "status" | "json"> & {
-        ok: true;
-        status: number;
-        data: TSuccess;
-        json: () => Promise<TSuccess>;
-      }
+    : SuccessResponse<TSuccess, number>
   : TEndpoint extends { response: infer TSuccess }
-    ? Omit<Response, "ok" | "status" | "json"> & {
-        ok: true;
-        status: number;
-        data: TSuccess;
-        json: () => Promise<TSuccess>;
-      }
+    ? SuccessResponse<TSuccess, number>
     : never;
 
 type RequiredKeys<T> = {
@@ -475,37 +458,35 @@ export class ApiClient {
       const requestParams = params[0];
       const withResponse = requestParams?.withResponse;
 
-      // Remove withResponse from params before passing to fetcher
       const { withResponse: _, ...fetchParams } = requestParams || {};
 
       if (withResponse) {
-        return this.fetcher("${method}", this.baseUrl + path, Object.keys(fetchParams).length ? fetchParams : undefined)
+        // Don't count withResponse as params
+        return this.fetcher("${method}", this.baseUrl + path, Object.keys(fetchParams).length ? requestParams : undefined)
           .then(async (response) => {
             // Parse the response data
             const data = await this.parseResponse(response);
 
             // Override properties while keeping the original Response object
             const typedResponse = Object.assign(response, {
-              ok: response.ok,
-              status: response.status,
               data: data,
               json: () => Promise.resolve(data)
             });
             return typedResponse;
           });
-      } else {
-        return this.fetcher("${method}", this.baseUrl + path, requestParams)
-            .then(response => this.parseResponse(response))${match(ctx.runtime)
-              .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
-              .with(
-                "arktype",
-                "io-ts",
-                "typebox",
-                "valibot",
-                () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`,
-              )
-              .otherwise(() => `as Promise<TEndpoint["response"]>`)};
       }
+
+      return this.fetcher("${method}", this.baseUrl + path, requestParams)
+          .then(response => this.parseResponse(response))${match(ctx.runtime)
+            .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
+            .with(
+              "arktype",
+              "io-ts",
+              "typebox",
+              "valibot",
+              () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`,
+            )
+            .otherwise(() => `as Promise<TEndpoint["response"]>`)};
     }
     // </ApiClient.${method}>
     `
@@ -536,10 +517,7 @@ export class ApiClient {
           () => inferByRuntime[ctx.runtime](`TEndpoint`) + `["parameters"]`,
         )
         .otherwise(() => `TEndpoint extends { parameters: infer Params } ? Params : never`)}>)
-    : Promise<Omit<Response, "json"> & {
-      /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
-      json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
-    }> {
+    : Promise<SafeApiResponse<TEndpoint>> {
       return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters);
     }
     // </ApiClient.request>
@@ -575,7 +553,7 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
  }
 */
 
-// </ApiClient
+// </ApiClient>
 `;
 
   return apiClientTypes + apiClient;
