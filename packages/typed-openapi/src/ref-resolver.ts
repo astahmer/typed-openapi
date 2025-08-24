@@ -5,8 +5,10 @@ import { Box } from "./box.ts";
 import { isReferenceObject } from "./is-reference-object.ts";
 import { openApiSchemaToTs } from "./openapi-schema-to-ts.ts";
 import { normalizeString } from "./string-utils.ts";
+import { NameTransformOptions } from "./types.ts";
 import { AnyBoxDef, GenericFactory, type LibSchemaObject } from "./types.ts";
 import { topologicalSort } from "./topological-sort.ts";
+import { sanitizeName } from "./sanitize-name.ts";
 
 const autocorrectRef = (ref: string) => (ref[1] === "/" ? ref : "#/" + ref.slice(1));
 const componentsWithSchemas = ["schemas", "responses", "parameters", "requestBodies", "headers"];
@@ -26,7 +28,11 @@ export type RefInfo = {
   kind: "schemas" | "responses" | "parameters" | "requestBodies" | "headers";
 };
 
-export const createRefResolver = (doc: OpenAPIObject, factory: GenericFactory) => {
+export const createRefResolver = (
+  doc: OpenAPIObject,
+  factory: GenericFactory,
+  nameTransform?: NameTransformOptions,
+) => {
   // both used for debugging purpose
   const nameByRef = new Map<string, string>();
   const refByName = new Map<string, string>();
@@ -48,7 +54,11 @@ export const createRefResolver = (doc: OpenAPIObject, factory: GenericFactory) =
 
     // "#/components/schemas/Something.jsonld" -> "Something.jsonld"
     const name = split[split.length - 1]!;
-    const normalized = normalizeString(name);
+    let normalized = normalizeString(name);
+    if (nameTransform?.transformSchemaName) {
+      normalized = nameTransform.transformSchemaName(normalized);
+    }
+    normalized = sanitizeName(normalized, "schema");
 
     nameByRef.set(correctRef, normalized);
     refByName.set(normalized, correctRef);

@@ -8,11 +8,13 @@ import { createRefResolver } from "./ref-resolver.ts";
 import { tsFactory } from "./ts-factory.ts";
 import { AnyBox, BoxRef, OpenapiSchemaConvertContext } from "./types.ts";
 import { pathToVariableName } from "./string-utils.ts";
+import { NameTransformOptions } from "./types.ts";
 import { match, P } from "ts-pattern";
+import { sanitizeName } from "./sanitize-name.ts";
 
 const factory = tsFactory;
 
-export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
+export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransform?: NameTransformOptions }) => {
   const refs = createRefResolver(doc, factory);
   const ctx: OpenapiSchemaConvertContext = { refs, factory };
   const endpointList = [] as Array<Endpoint>;
@@ -22,6 +24,10 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
     Object.entries(pathItem).forEach(([method, operation]) => {
       if (operation.deprecated) return;
 
+      let alias = getAlias({ path, method, operation } as Endpoint);
+      if (options?.nameTransform?.transformEndpointName) {
+        alias = options.nameTransform.transformEndpointName({ alias, path, method: method as Method, operation });
+      }
       const endpoint = {
         operation,
         method: method as Method,
@@ -29,7 +35,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
         requestFormat: "json",
         response: openApiSchemaToTs({ schema: {}, ctx }),
         meta: {
-          alias: getAlias({ path, method, operation } as Endpoint),
+          alias,
           areParametersRequired: false,
           hasParameters: false,
         },
@@ -84,7 +90,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
 
         if (matchingMediaType && content[matchingMediaType]) {
           params.body = openApiSchemaToTs({
-            schema: content[matchingMediaType]?.schema ?? {} ?? {},
+            schema: content[matchingMediaType]?.schema ?? {},
             ctx,
           });
         }
@@ -139,7 +145,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject) => {
         const matchingMediaType = Object.keys(content).find(isResponseMediaType);
         if (matchingMediaType && content[matchingMediaType]) {
           endpoint.response = openApiSchemaToTs({
-            schema: content[matchingMediaType]?.schema ?? {} ?? {},
+            schema: content[matchingMediaType]?.schema ?? {},
             ctx,
           });
         }
@@ -180,10 +186,13 @@ const isAllowedParamMediaTypes = (
 
 const isResponseMediaType = (mediaType: string) => mediaType === "application/json";
 const getAlias = ({ path, method, operation }: Endpoint) =>
-  (method + "_" + capitalize(operation.operationId ?? pathToVariableName(path))).replace(/-/g, "__");
+  sanitizeName(
+    (method + "_" + capitalize(operation.operationId ?? pathToVariableName(path))).replace(/-/g, "__"),
+    "endpoint",
+  );
 
 type MutationMethod = "post" | "put" | "patch" | "delete";
-type Method = "get" | "head" | "options" | MutationMethod;
+export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type EndpointParameters = {
   body?: Box<BoxRef>;

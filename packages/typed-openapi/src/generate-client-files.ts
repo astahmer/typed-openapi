@@ -7,6 +7,7 @@ import { allowedRuntimes, generateFile } from "./generator.ts";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 import { generateTanstackQueryFile } from "./tanstack-query.generator.ts";
 import { prettify } from "./format.ts";
+import type { NameTransformOptions } from "./types.ts";
 
 const cwd = process.cwd();
 const now = new Date();
@@ -26,10 +27,14 @@ export const optionsSchema = type({
   schemasOnly: "boolean",
 });
 
-export async function generateClientFiles(input: string, options: typeof optionsSchema.infer) {
+type GenerateClientFilesOptions = typeof optionsSchema.infer & {
+  nameTransform?: NameTransformOptions;
+};
+
+export async function generateClientFiles(input: string, options: GenerateClientFilesOptions) {
   const openApiDoc = (await SwaggerParser.bundle(input)) as OpenAPIObject;
 
-  const ctx = mapOpenApiEndpoints(openApiDoc);
+  const ctx = mapOpenApiEndpoints(openApiDoc, options);
   console.log(`Found ${ctx.endpointList.length} endpoints`);
 
   const content = await prettify(
@@ -37,6 +42,7 @@ export async function generateClientFiles(input: string, options: typeof options
       ...ctx,
       runtime: options.runtime,
       schemasOnly: options.schemasOnly,
+      nameTransform: options.nameTransform,
     }),
   );
   const outputPath = join(
