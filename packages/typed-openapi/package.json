@@ -22,9 +22,9 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "test": "vitest",
-    "generate:runtime": "node bin.js ./tests/samples/petstore.yaml --output ./tmp/generated-client.ts --tanstack generated-tanstack.ts",
+    "gen:runtime": "node bin.js ./tests/samples/petstore.yaml --output ./tmp/generated-client.ts --tanstack generated-tanstack.ts --default-fetcher",
     "test:runtime:run": "vitest run tests/integration-runtime-msw.test.ts",
-    "test:runtime": "pnpm run generate:runtime && pnpm run test:runtime:run",
+    "test:runtime": "pnpm run gen:runtime && pnpm run test:runtime:run",
     "fmt": "prettier --write src",
     "typecheck": "tsc -b ./tsconfig.build.json"
   },

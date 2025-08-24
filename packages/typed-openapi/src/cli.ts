@@ -23,7 +23,11 @@ cli
   .option("--error-status-codes <codes>", "Comma-separated list of error status codes (defaults to 4xx and 5xx ranges)")
   .option(
     "--tanstack [name]",
-    "Generate tanstack client, defaults to false, can optionally specify a name for the generated file",
+    "Generate tanstack client, defaults to false, can optionally specify a name (will be generated next to the main file) or absolute path for the generated file",
+  )
+  .option(
+    "--default-fetcher [name]",
+    "Generate default fetcher, defaults to false, can optionally specify a name (will be generated next to the main file) or absolute path for the generated file",
   )
   .action(async (input: string, _options: any) => {
     return generateClientFiles(input, _options);

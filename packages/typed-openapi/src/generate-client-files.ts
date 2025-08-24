@@ -1,6 +1,6 @@
 import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
-import { basename, join, dirname } from "pathe";
+import { basename, join, dirname, isAbsolute } from "pathe";
 import { type } from "arktype";
 import { mkdir, writeFile } from "fs/promises";
 import {
@@ -14,6 +14,7 @@ import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 import { generateTanstackQueryFile } from "./tanstack-query.generator.ts";
 import { prettify } from "./format.ts";
 import type { NameTransformOptions } from "./types.ts";
+import { generateDefaultFetcher } from "./default-fetcher.generator.ts";
 
 const cwd = process.cwd();
 const now = new Date();
@@ -30,6 +31,12 @@ export const optionsSchema = type({
   "output?": "string",
   runtime: allowedRuntimes,
   tanstack: "boolean | string",
+  "defaultFetcher?": type({
+    "envApiBaseUrl?": "string",
+    "clientPath?": "string",
+    "fetcherName?": "string",
+    "apiName?": "string",
+  }),
   schemasOnly: "boolean",
   "includeClient?": "boolean | 'true' | 'false'",
   "successStatusCodes?": "string",
@@ -41,6 +48,7 @@ type GenerateClientFilesOptions = typeof optionsSchema.infer & {
 };
 
 export async function generateClientFiles(input: string, options: GenerateClientFilesOptions) {
+  // TODO CLI option to save that file?
   const openApiDoc = (await SwaggerParser.bundle(input)) as OpenAPIObject;
 
   const ctx = mapOpenApiEndpoints(openApiDoc, options);
@@ -85,13 +93,39 @@ export async function generateClientFiles(input: string, options: GenerateClient
       ...generatorOptions,
       relativeApiClientPath: "./" + basename(outputPath),
     });
-    const tanstackOutputPath = join(
-      dirname(outputPath),
-      typeof options.tanstack === "string" ? options.tanstack : `tanstack.client.ts`,
-    );
+    let tanstackOutputPath: string;
+    if (typeof options.tanstack === "string" && isAbsolute(options.tanstack)) {
+      tanstackOutputPath = options.tanstack;
+    } else {
+      tanstackOutputPath = join(
+        dirname(outputPath),
+        typeof options.tanstack === "string" ? options.tanstack : `tanstack.client.ts`,
+      );
+    }
     console.log("Generating tanstack client...", tanstackOutputPath);
     await ensureDir(dirname(tanstackOutputPath));
     await writeFile(tanstackOutputPath, tanstackContent);
+  }
+
+  if (options.defaultFetcher) {
+    const defaultFetcherContent = generateDefaultFetcher({
+      envApiBaseUrl: options.defaultFetcher.envApiBaseUrl,
+      clientPath: options.defaultFetcher.clientPath ?? basename(outputPath),
+      fetcherName: options.defaultFetcher.fetcherName,
+      apiName: options.defaultFetcher.apiName,
+    });
+    let defaultFetcherOutputPath: string;
+    if (typeof options.defaultFetcher === "string" && isAbsolute(options.defaultFetcher)) {
+      defaultFetcherOutputPath = options.defaultFetcher;
+    } else {
+      defaultFetcherOutputPath = join(
+        dirname(outputPath),
+        typeof options.defaultFetcher === "string" ? options.defaultFetcher : `api.client.ts`,
+      );
+    }
+    console.log("Generating default fetcher...", defaultFetcherOutputPath);
+    await ensureDir(dirname(defaultFetcherOutputPath));
+    await writeFile(defaultFetcherOutputPath, defaultFetcherContent);
   }
 
   console.log(`Done in ${new Date().getTime() - now.getTime()}ms !`);
