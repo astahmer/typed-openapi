@@ -49,8 +49,7 @@ it("should use custom success status codes", async () => {
   // Test with default success status codes (should include 200 and 201)
   const defaultGenerated = await prettify(generateFile(endpoints));
   expect(defaultGenerated).toContain("export type SuccessStatusCode =");
-  expect(defaultGenerated).toContain("| 200");
-  expect(defaultGenerated).toContain("| 201");
+  expect(defaultGenerated).toContain("200, 201, 202");
 
   // Test with custom success status codes (only 200)
   const customGenerated = await prettify(
@@ -61,8 +60,8 @@ it("should use custom success status codes", async () => {
   );
 
   // Should only contain 200 in the StatusCode type
-  expect(customGenerated).toContain("export type SuccessStatusCode = 200;");
-  expect(customGenerated).not.toContain("| 201");
+  expect(customGenerated).toContain("const successStatusCodes = [200] as const");
+  expect(customGenerated).not.toContain("const successStatusCodes = [201] as const");
 
   // The ApiResponse type should use the custom StatusCode
   expect(customGenerated).toContain("TStatusCode extends SuccessStatusCode");
