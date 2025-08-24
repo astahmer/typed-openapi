@@ -149,8 +149,19 @@ const generateSchemaList = ({ refs, runtime }: GeneratorContext) => {
   );
 };
 
-const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, AnyBox>) => {
-  if (parameters instanceof Box) return parameters.value;
+const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, AnyBox>, ctx: GeneratorContext) => {
+  if (parameters instanceof Box) {
+    if (ctx.runtime === "none") {
+      return parameters.recompute((box) => {
+        if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
+          box.value = `Schemas.${box.value}`;
+        }
+        return box;
+      }).value;
+    }
+
+    return parameters.value;
+  }
 
   let str = "{";
   for (const [key, box] of Object.entries(parameters)) {
@@ -210,9 +221,9 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
       ${
         endpoint.meta.hasParameters
           ? `parameters: {
-            ${parameters.query ? `query:  ${parameterObjectToString(parameters.query)},` : ""}
-        ${parameters.path ? `path:  ${parameterObjectToString(parameters.path)},` : ""}
-        ${parameters.header ? `header:  ${parameterObjectToString(parameters.header)},` : ""}
+            ${parameters.query ? `query:  ${parameterObjectToString(parameters.query, ctx)},` : ""}
+        ${parameters.path ? `path:  ${parameterObjectToString(parameters.path, ctx)},` : ""}
+        ${parameters.header ? `header:  ${parameterObjectToString(parameters.header, ctx)},` : ""}
         ${
           parameters.body
             ? `body:  ${parameterObjectToString(
@@ -224,6 +235,7 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
                       return box;
                     })
                   : parameters.body,
+                ctx,
               )},`
             : ""
         }
