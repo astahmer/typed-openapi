@@ -7,11 +7,11 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "cd packages/typed-openapi && pnpm build",
+    "build": "pnpm --filter typed-openapi build",
     "build:all": "pnpm -r run build",
     "release": "changeset publish",
     "release-dev": "changeset version --snapshot dev && changeset publish --tag dev",
-    "test": "cd packages/typed-openapi && pnpm run test"
+    "test": "TEST_UNIT=true pnpm --filter typed-openapi test"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.4"
