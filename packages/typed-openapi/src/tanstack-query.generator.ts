@@ -9,7 +9,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   const endpointMethods = new Set(ctx.endpointList.map((endpoint) => endpoint.method.toLowerCase()));
 
   const file = `
-  import { queryOptions } from "@tanstack/react-query"
+  import { queryOptions, mutationOptions } from "@tanstack/react-query"
   import type { EndpointByMethod, ApiClient } from "${ctx.relativeApiClientPath}"
 
   type EndpointQueryKey<TOptions extends EndpointParameters> = [
@@ -93,7 +93,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                     },
                     queryKey: queryKey
                 }),
-                mutationOptions: {
+                mutationOptions: mutationOptions({
                     mutationKey: queryKey,
                     mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters} ? Parameters: never) => {
                         const res = await this.client.${method}(path, {
@@ -103,7 +103,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                         });
                         return res as TEndpoint["response"];
                     }
-                }
+                })
             };
 
             return query
@@ -131,14 +131,14 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             mutationKey: mutationKey,
-            mutationOptions: {
+            mutationOptions: mutationOptions({
                 mutationKey: mutationKey,
                 mutationFn: async (params: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const response = await this.client.request(method, path, params);
-                const res = selectFn ? selectFn(response) : response
-                return res as unknown extends TSelection ? typeof response : Awaited<TSelection>
+                    const response = await this.client.request(method, path, params);
+                    const res = selectFn ? selectFn(response) : response
+                    return res as unknown extends TSelection ? typeof response : Awaited<TSelection>
                 },
-            },
+            }),
             };
         }
         // </ApiClient.request>
