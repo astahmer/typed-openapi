@@ -12,8 +12,9 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 
 - Headless API client, [bring your own fetcher](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets) (fetch, axios, ky, etc...) !
 - Generates a fully typesafe API client with just types by default (instant suggestions)
-- **Type-safe error handling** with discriminated unions and configurable success status codes
-- **TanStack Query integration** with `withResponse` and `selectFn` options for advanced error handling
+- **Type-safe error handling**: with discriminated unions and configurable success/error status codes
+- **withResponse & throwOnStatusError**: Get a union-style response object or throw on configured error status codes, with full type inference
+- **TanStack Query integration**: with `withResponse` and `selectFn` options for advanced success/error handling
 - Or you can also generate a client with runtime validation using one of the following runtimes:
   - [zod](https://zod.dev/)
   - [typebox](https://github.com/sinclairzx81/typebox)
@@ -87,63 +88,30 @@ The generated client is headless - you need to provide your own fetcher. Here ar
 - **[Basic API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets)** - Simple, dependency-free wrapper
 - **[Validating API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#validating-api-client-api-client-with-validationts)** - With request/response validation
 
-### Type-Safe Error Handling
 
-The generated client supports two response modes:
+### Type-Safe Error Handling & Response Modes
 
-```typescript
-// Default: Direct data return (simpler, but no error details)
-const user = await api.get("/users/{id}", {
-  path: { id: "123" }
-}); // user is directly typed as User object
+You can choose between two response styles:
 
-// WithResponse: Full Response object with typed ok/status and data
-const result = await api.get("/users/{id}", {
-  path: { id: "123" },
-  withResponse: true
-});
+- **Direct data return** (default):
+  ```ts
+  const user = await api.get("/users/{id}", { path: { id: "123" } });
+  // Throws TypedResponseError on error status (default)
+  ```
 
-// result is the actual Response object with typed ok/status overrides plus data access
-if (result.ok) {
-  // Access data directly (already parsed)
-  const user = result.data; // Type: User
-  console.log("User:", user.name);
-
-  // Or use json() method for compatibility
-  const userFromJson = await result.json(); // Same as result.data
-  console.log("User from json():", userFromJson.name);
-
-  console.log("Status:", result.status); // Typed as success status codes
-  console.log("Headers:", result.headers); // Access to all Response properties
-} else {
-  // Access error data directly
-  const error = result.data; // Type based on status code
-  if (result.status === 404) {
-    console.log("User not found:", error.message);
-  } else if (result.status === 401) {
-    console.log("Unauthorized:", error.details);
+- **Union-style response** (withResponse):
+  ```ts
+  const result = await api.get("/users/{id}", { path: { id: "123" }, withResponse: true });
+  if (result.ok) {
+    // result.data is typed as User
+  } else {
+    // result.data is typed as your error schema for that status
   }
-}
-```### Success Response Type-Narrowing
+  ```
 
-When endpoints have multiple success responses (200, 201, etc.), the type is automatically narrowed based on status:
+You can also control error throwing with `throwOnStatusError`.
 
-```typescript
-const result = await api.post("/users", {
-  body: { name: "John" },
-  withResponse: true
-});
-
-if (result.ok) {
-  if (result.status === 201) {
-    // result.data typed as CreateUserResponse (201)
-    console.log("Created user:", result.data.id);
-  } else if (result.status === 200) {
-    // result.data typed as ExistingUserResponse (200)
-    console.log("Existing user:", result.data.email);
-  }
-}
-```
+**All errors thrown by the client are instances of `TypedResponseError` and include the parsed error data.**
 
 ### Generic Request Method
 
@@ -159,13 +127,18 @@ const response = await api.request("GET", "/users/{id}", {
 const user = await response.json(); // Fully typed based on endpoint
 ```
 
+
 ### TanStack Query Integration
 
-Generate TanStack Query wrappers for your endpoints:
-
-```bash
-npx typed-openapi api.yaml --runtime zod --tanstack
+Generate TanStack Query wrappers for your endpoints with:
+```sh
+npx typed-openapi api.yaml --tanstack
 ```
+
+You get:
+- Type-safe queries and mutations with full error inference
+- `withResponse` and `selectFn` for advanced error and response handling
+- All mutation errors are Response-like and type-safe, matching your OpenAPI error schemas
 
 ## useQuery / fetchQuery / ensureQueryData
 
@@ -214,6 +187,7 @@ The mutation API supports both basic usage and advanced error handling with `wit
 ```ts
 // Basic mutation (returns data only)
 const basicMutation = useMutation({
+  // Will throws TypedResponseError on error status
   ...tanstackApi.mutation("post", '/authorization/organizations/:organizationId/invitations').mutationOptions,
   onError: (error) => {
     // error is a Response-like object with typed data based on OpenAPI spec
@@ -226,6 +200,7 @@ const basicMutation = useMutation({
 // With error handling using withResponse
 const mutationWithErrorHandling = useMutation(
   tanstackApi.mutation("post", '/users', {
+    // Returns union-style result, never throws
     withResponse: true
   }).mutationOptions
 );
@@ -263,7 +238,9 @@ basicMutation.mutate({
   }
 });
 
+
 // With error handling
+// All errors thrown by mutations are type-safe and Response-like, with parsed error data attached.
 mutationWithErrorHandling.mutate(
   { body: userData },
   {

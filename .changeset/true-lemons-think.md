@@ -1,5 +1,5 @@
 ---
-"typed-openapi": minor
+"typed-openapi": major
 ---
 
 Add comprehensive type-safe error handling and configurable status codes

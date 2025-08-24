@@ -128,16 +128,15 @@ function UserForm() {
       }
     },
     onError: (error) => {
-      // Type-safe error handling - error is a Response-like object with data property
-      console.log(error instanceof Response); // true
-      console.log(error.ok); // false
-
-      if (error.status === 400) {
-        toast.error(`Validation failed: ${error.data.message}`);
-      } else if (error.status === 500) {
-        toast.error('Server error occurred');
-      } else {
-        toast.error('Network error occurred');
+      // Type-safe error handling - error is a TypedResponseError with data property
+      if (error instanceof TypedResponseError) {
+        if (error.status === 400) {
+          toast.error(`Validation failed: ${error.response.data.message}`);
+        } else if (error.status === 500) {
+          toast.error('Server error occurred');
+        } else {
+          toast.error('Network error occurred');
+        }
       }
     }
   });
