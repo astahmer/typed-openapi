@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 2.0.2
+
+### Patch Changes
+
+- f1f0e89: Allow any response type with media type containing application + json
+
 ## 2.0.1
 
 ### Patch Changes
