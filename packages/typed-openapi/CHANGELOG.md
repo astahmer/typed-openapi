@@ -1,5 +1,13 @@
 # typed-openapi
 
+## 1.5.1
+
+### Patch Changes
+
+- 4d21f2e: Allow transforming schema & endpoint names; automatically prevents generating reserved TS/JS keyords names
+
+  Fix https://github.com/astahmer/typed-openapi/issues/90
+
 ## 1.5.0
 
 ### Minor Changes
