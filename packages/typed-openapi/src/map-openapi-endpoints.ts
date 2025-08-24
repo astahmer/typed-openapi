@@ -105,13 +105,20 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
 
       // Make parameters optional if all or some of them are not required
       if (params) {
-        const t = createBoxFactory({}, ctx);
         const filtered_params = ["query", "path", "header"] as Array<
           keyof Pick<typeof params, "query" | "path" | "header">
         >;
 
         for (const k of filtered_params) {
           if (params[k] && lists[k].length) {
+            const properties = Object.entries(params[k]!).reduce(
+              (acc, [key, value]) => {
+                if (value.schema) acc[key] = value.schema;
+                return acc;
+              },
+              {} as Record<string, NonNullable<AnyBox["schema"]>>,
+            );
+            const t = createBoxFactory({ type: "object", properties: properties }, ctx);
             if (lists[k].every((param) => !param.required)) {
               params[k] = t.reference("Partial", [t.object(params[k]!)]) as any;
             } else {

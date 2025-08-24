@@ -51,6 +51,5 @@ describe("issue #51 - Schemas namespace missing for schema refs within parameter
     const file = generateFile(mapOpenApiEndpoints(minimalSpec));
     const output = await prettify(file);
     expect(output).toContain("query: Partial<{ test: Array<Schemas.Test> }>");
-    // This should fail with current code, as it produces Array<Test> instead of Array<Schemas.Test>
   });
 });
