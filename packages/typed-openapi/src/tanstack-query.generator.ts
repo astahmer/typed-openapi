@@ -2,14 +2,6 @@ import { capitalize } from "pastable/server";
 import { prettify } from "./format.ts";
 import type { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 
-// Default error status codes (4xx and 5xx ranges)
-export const DEFAULT_ERROR_STATUS_CODES = [
-  400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 421, 422, 423, 424,
-  425, 426, 428, 429, 431, 451, 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511,
-] as const;
-
-export type ErrorStatusCode = (typeof DEFAULT_ERROR_STATUS_CODES)[number];
-
 type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints>;
 type GeneratorContext = Required<GeneratorOptions> & {
   errorStatusCodes?: readonly number[];
@@ -18,12 +10,10 @@ type GeneratorContext = Required<GeneratorOptions> & {
 export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relativeApiClientPath: string }) => {
   const endpointMethods = new Set(ctx.endpointList.map((endpoint) => endpoint.method.toLowerCase()));
 
-  // Use configured error status codes or default
-  const errorStatusCodes = ctx.errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES;
-
   const file = `
   import { queryOptions } from "@tanstack/react-query"
-  import type { EndpointByMethod, ApiClient, SafeApiResponse } from "${ctx.relativeApiClientPath}"
+  import type { EndpointByMethod, ApiClient, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus } from "${ctx.relativeApiClientPath}"
+  import { errorStatusCodes, TypedResponseError } from "${ctx.relativeApiClientPath}"
 
   type EndpointQueryKey<TOptions extends EndpointParameters> = [
       TOptions & {
@@ -76,8 +66,6 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
 
   type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
 
-  type ErrorStatusCode = ${errorStatusCodes.join(" | ")};
-
   // </ApiClientTypes>
 
   // <ApiClient>
@@ -97,6 +85,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                 /** type-only property if you need easy access to the endpoint params */
                 "~endpoint": {} as TEndpoint,
                 queryKey,
+                queryFn: {} as "You need to pass .queryOptions to the useQuery hook",
                 queryOptions: queryOptions({
                     queryFn: async ({ queryKey, signal, }) => {
                         const requestParams = {
@@ -110,6 +99,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                     },
                     queryKey: queryKey
                 }),
+                mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
                 mutationOptions: {
                     mutationKey: queryKey,
                     mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters} ? Parameters: never) => {
@@ -134,7 +124,8 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
 
         // <ApiClient.request>
         /**
-         * Generic mutation method with full type-safety for any endpoint that doesnt require parameters to be passed initially
+         * Generic mutation method with full type-safety for any endpoint; it doesnt require parameters to be passed initially
+         * but instead will require them to be passed when calling the mutation.mutate() method
          */
         mutation<
             TMethod extends keyof EndpointByMethod,
@@ -142,76 +133,56 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             TEndpoint extends EndpointByMethod[TMethod][TPath],
             TWithResponse extends boolean = false,
             TSelection = TWithResponse extends true
-                ? SafeApiResponse<TEndpoint>
+                ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
                 : TEndpoint extends { response: infer Res } ? Res : never,
             TError = TEndpoint extends { responses: infer TResponses }
                 ? TResponses extends Record<string | number, unknown>
-                    ? {
-                        [K in keyof TResponses]: K extends string
-                            ? K extends \`\${infer TStatusCode extends number}\`
-                                ? TStatusCode extends ErrorStatusCode
-                                    ? Omit<Response, 'status'> & { status: TStatusCode; data: TResponses[K] }
-                                    : never
-                                : never
-                            : K extends number
-                                ? K extends ErrorStatusCode
-                                    ? Omit<Response, 'status'> & { status: K; data: TResponses[K] }
-                                    : never
-                                : never;
-                    }[keyof TResponses]
+                    ? InferResponseByStatus<TEndpoint, ErrorStatusCode>
                     : Error
                 : Error
         >(method: TMethod, path: TPath, options?: {
             withResponse?: TWithResponse;
             selectFn?: (res: TWithResponse extends true
-                ? SafeApiResponse<TEndpoint>
+                ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
                 : TEndpoint extends { response: infer Res } ? Res : never
             ) => TSelection;
+             throwOnStatusError?: boolean
         }) {
             const mutationKey = [{ method, path }] as const;
             return {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             mutationKey: mutationKey,
+            mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
             mutationOptions: {
                 mutationKey: mutationKey,
-                mutationFn: async (params: TEndpoint extends { parameters: infer Parameters } ? Parameters : never): Promise<TSelection> => {
-                    const withResponse = options?.withResponse ?? false;
+                mutationFn: async <TLocalWithResponse extends boolean = TWithResponse, TLocalSelection = TLocalWithResponse extends true
+                    ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
+                    : TEndpoint extends { response: infer Res }
+                        ? Res
+                        : never>
+                (params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
+                    withResponse?: TLocalWithResponse;
+                    throwOnStatusError?: boolean;
+                }): Promise<TLocalSelection> => {
+                    const withResponse = params.withResponse ??options?.withResponse ?? false;
+                    const throwOnStatusError = params.throwOnStatusError ?? options?.throwOnStatusError ?? (withResponse ? false : true);
                     const selectFn = options?.selectFn;
+                    const response = await (this.client as any)[method](path, { ...params as any, withResponse: true, throwOnStatusError: false });
 
-                    if (withResponse) {
-                        // Type assertion is safe because we're handling the method dynamically
-                        const response = await (this.client as any)[method](path, { ...params as any, withResponse: true });
-                        if (!response.ok) {
-                            // Create a Response-like error object with additional data property
-                            const error = Object.assign(Object.create(Response.prototype), {
-                                ...response,
-                                data: response.data
-                            }) as TError;
-                            throw error;
-                        }
-                        const res = selectFn ? selectFn(response as any) : response;
-                        return res as TSelection;
-                    }
-
-                    // Type assertion is safe because we're handling the method dynamically
-                    // Always get the full response for error handling, even when withResponse is false
-                    const response = await (this.client as any)[method](path, { ...params as any, withResponse: true });
-                    if (!response.ok) {
-                        // Create a Response-like error object with additional data property
-                        const error = Object.assign(Object.create(Response.prototype), {
-                            ...response,
-                            data: response.data
-                        }) as TError;
-                        throw error;
+                    if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+                        throw new TypedResponseError(response as never);
                     }
 
                     // Return just the data if withResponse is false, otherwise return the full response
                     const finalResponse = withResponse ? response : response.data;
                     const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
-                    return res as TSelection;
+                    return res as never;
                 }
-            } as import("@tanstack/react-query").UseMutationOptions<TSelection, TError, TEndpoint extends { parameters: infer Parameters } ? Parameters : never>,
+            } satisfies import("@tanstack/react-query").UseMutationOptions<TSelection, TError, (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
+                    withResponse?: boolean;
+                    throwOnStatusError?: boolean;
+                }>,
         }
     }
         // </ApiClient.request>

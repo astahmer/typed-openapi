@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.build.json",
+  "include": [
+    "tmp/*",
+    "tests/integration-runtime-msw.test.ts"
+  ],
+}

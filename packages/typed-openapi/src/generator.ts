@@ -303,13 +303,6 @@ const generateApiClient = (ctx: GeneratorContext) => {
   const { endpointList } = ctx;
   const byMethods = groupBy(endpointList, "method");
 
-  // Generate the StatusCode type from the configured success status codes
-  const generateStatusCodeType = (statusCodes: readonly number[]) => {
-    return statusCodes.join(" | ");
-  };
-
-  const statusCodeType = generateStatusCodeType(ctx.successStatusCodes);
-
   const apiClientTypes = `
 // <ApiClientTypes>
 export type EndpointParameters = {
@@ -349,11 +342,11 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
 
-const successStatusCodes = [${ctx.successStatusCodes.join(",")}];
-type SuccessStatusCode = typeof successStatusCodes[number];
+export const successStatusCodes = [${ctx.successStatusCodes.join(",")}] as const;
+export type SuccessStatusCode = typeof successStatusCodes[number];
 
-const errorStatusCodes = [${ctx.errorStatusCodes.join(",")}];
-type ErrorStatusCode = typeof errorStatusCodes[number];
+export const errorStatusCodes = [${ctx.errorStatusCodes.join(",")}] as const;
+export type ErrorStatusCode = typeof errorStatusCodes[number];
 
 // Error handling types
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
@@ -398,6 +391,8 @@ export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSu
   : TEndpoint extends { response: infer TSuccess }
     ? SuccessResponse<TSuccess, number>
     : never;
+
+export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<SafeApiResponse<TEndpoint>, { status: TStatusCode }>
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -484,7 +479,7 @@ export class ApiClient {
             json: () => Promise.resolve(data)
           }) as SafeApiResponse<TEndpoint>;
 
-          if (throwOnStatusError && errorStatusCodes.includes(response.status)) {
+          if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
             throw new TypedResponseError(typedResponse as never);
           }
 
