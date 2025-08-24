@@ -162,7 +162,7 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "ref",
-      "value": "Partial<({ str: string } & { string: number })>",
+      "value": "Partial<({ str: string } & Record<string, number>)>",
     }
   `);
 
@@ -176,7 +176,7 @@ test("getSchemaBox", () => {
   ).toMatchInlineSnapshot(`
     {
       "type": "ref",
-      "value": "Partial<({ str: string } & { string: Partial<{ prop: boolean }> })>",
+      "value": "Partial<({ str: string } & Record<string, Partial<{ prop: boolean }>>)>",
     }
   `);
 
