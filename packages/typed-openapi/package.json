@@ -6,7 +6,8 @@
   "module": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
-    "./node": "./dist/node.export.js"
+    "./node": "./dist/node.export.js",
+    "./pretty": "./dist/pretty.export.js"
   },
   "bin": {
     "typed-openapi": "bin.js"
