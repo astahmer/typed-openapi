@@ -495,6 +495,27 @@ describe("map-openapi-endpoints", () => {
                     "description": "successful operation",
                   },
                   "400": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "properties": {
+                            "code": {
+                              "example": 400,
+                              "type": "integer",
+                            },
+                            "message": {
+                              "example": "Invalid status value",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                    },
                     "description": "Invalid status value",
                   },
                 },
@@ -646,9 +667,51 @@ describe("map-openapi-endpoints", () => {
                     "description": "successful operation",
                   },
                   "400": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "properties": {
+                            "code": {
+                              "example": 400,
+                              "type": "integer",
+                            },
+                            "message": {
+                              "example": "Invalid pet ID",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                    },
                     "description": "Invalid ID supplied",
                   },
                   "404": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "properties": {
+                            "code": {
+                              "example": 404,
+                              "type": "integer",
+                            },
+                            "message": {
+                              "example": "Pet not found",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                    },
                     "description": "Pet not found",
                   },
                 },
@@ -1325,6 +1388,24 @@ describe("map-openapi-endpoints", () => {
               "type": "ref",
               "value": "Pet",
             },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "Pet",
+              },
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "404": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "405": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -1402,6 +1483,16 @@ describe("map-openapi-endpoints", () => {
               "type": "ref",
               "value": "Pet",
             },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "Pet",
+              },
+              "405": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -1454,6 +1545,27 @@ describe("map-openapi-endpoints", () => {
                   "description": "successful operation",
                 },
                 "400": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "properties": {
+                          "code": {
+                            "example": 400,
+                            "type": "integer",
+                          },
+                          "message": {
+                            "example": "Invalid status value",
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "code",
+                          "message",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
                   "description": "Invalid status value",
                 },
               },
@@ -1481,6 +1593,16 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "array",
               "value": "Array<Pet>",
+            },
+            "responses": {
+              "200": {
+                "type": "array",
+                "value": "Array<Pet>",
+              },
+              "400": {
+                "type": "object",
+                "value": "{ code: number, message: string }",
+              },
             },
           },
           {
@@ -1559,6 +1681,16 @@ describe("map-openapi-endpoints", () => {
               "type": "array",
               "value": "Array<Pet>",
             },
+            "responses": {
+              "200": {
+                "type": "array",
+                "value": "Array<Pet>",
+              },
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -1599,9 +1731,51 @@ describe("map-openapi-endpoints", () => {
                   "description": "successful operation",
                 },
                 "400": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "properties": {
+                          "code": {
+                            "example": 400,
+                            "type": "integer",
+                          },
+                          "message": {
+                            "example": "Invalid pet ID",
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "code",
+                          "message",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
                   "description": "Invalid ID supplied",
                 },
                 "404": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "properties": {
+                          "code": {
+                            "example": 404,
+                            "type": "integer",
+                          },
+                          "message": {
+                            "example": "Pet not found",
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "code",
+                          "message",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
                   "description": "Pet not found",
                 },
               },
@@ -1634,6 +1808,20 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "ref",
               "value": "Pet",
+            },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "Pet",
+              },
+              "400": {
+                "type": "object",
+                "value": "{ code: number, message: string }",
+              },
+              "404": {
+                "type": "object",
+                "value": "{ code: number, message: string }",
+              },
             },
           },
           {
@@ -1710,6 +1898,12 @@ describe("map-openapi-endpoints", () => {
               "type": "keyword",
               "value": "unknown",
             },
+            "responses": {
+              "405": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -1777,6 +1971,12 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "keyword",
               "value": "unknown",
+            },
+            "responses": {
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -1867,6 +2067,12 @@ describe("map-openapi-endpoints", () => {
               "type": "ref",
               "value": "ApiResponse",
             },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "ApiResponse",
+              },
+            },
           },
           {
             "meta": {
@@ -1910,6 +2116,12 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "literal",
               "value": "Record<string, number>",
+            },
+            "responses": {
+              "200": {
+                "type": "literal",
+                "value": "Record<string, number>",
+              },
             },
           },
           {
@@ -1972,6 +2184,16 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "ref",
               "value": "Order",
+            },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "Order",
+              },
+              "405": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -2038,6 +2260,20 @@ describe("map-openapi-endpoints", () => {
               "type": "ref",
               "value": "Order",
             },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "Order",
+              },
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "404": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -2087,6 +2323,16 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "keyword",
               "value": "unknown",
+            },
+            "responses": {
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "404": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -2153,6 +2399,12 @@ describe("map-openapi-endpoints", () => {
               "type": "ref",
               "value": "User",
             },
+            "responses": {
+              "default": {
+                "type": "ref",
+                "value": "User",
+              },
+            },
           },
           {
             "meta": {
@@ -2212,6 +2464,16 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "ref",
               "value": "User",
+            },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "User",
+              },
+              "default": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -2307,6 +2569,16 @@ describe("map-openapi-endpoints", () => {
                 "value": "number",
               },
             },
+            "responses": {
+              "200": {
+                "type": "keyword",
+                "value": "string",
+              },
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -2335,6 +2607,12 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "keyword",
               "value": "unknown",
+            },
+            "responses": {
+              "default": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -2399,6 +2677,20 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "ref",
               "value": "User",
+            },
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "User",
+              },
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "404": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
           {
@@ -2470,6 +2762,12 @@ describe("map-openapi-endpoints", () => {
               "type": "keyword",
               "value": "unknown",
             },
+            "responses": {
+              "default": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
           },
           {
             "meta": {
@@ -2518,6 +2816,16 @@ describe("map-openapi-endpoints", () => {
             "response": {
               "type": "keyword",
               "value": "unknown",
+            },
+            "responses": {
+              "400": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+              "404": {
+                "type": "keyword",
+                "value": "unknown",
+              },
             },
           },
         ],
@@ -2689,6 +2997,12 @@ describe("map-openapi-endpoints", () => {
           "response": {
             "type": "keyword",
             "value": "unknown",
+          },
+          "responses": {
+            "200": {
+              "type": "keyword",
+              "value": "unknown",
+            },
           },
         },
       ]
@@ -2907,8 +3221,78 @@ describe("map-openapi-endpoints", () => {
             "type": "ref",
             "value": "SerializedUserSession",
           },
+          "responses": {
+            "200": {
+              "type": "ref",
+              "value": "SerializedUserSession",
+            },
+            "401": {
+              "type": "keyword",
+              "value": "string",
+            },
+            "500": {
+              "type": "keyword",
+              "value": "string",
+            },
+          },
         },
       ]
     `);
+  });
+
+  test("error schemas", async ({ expect }) => {
+    const openApiDoc = (await SwaggerParser.parse("./tests/samples/error-schemas.yaml")) as OpenAPIObject;
+    const result = mapOpenApiEndpoints(openApiDoc);
+
+    // Find the getUserById endpoint
+    const getUserEndpoint = result.endpointList.find(e => e.meta.alias === "get_GetUserById");
+    expect(getUserEndpoint).toBeDefined();
+    expect(getUserEndpoint?.responses).toMatchInlineSnapshot(`
+      {
+        "200": {
+          "type": "ref",
+          "value": "User",
+        },
+        "401": {
+          "type": "ref",
+          "value": "AuthError",
+        },
+        "404": {
+          "type": "ref",
+          "value": "NotFoundError",
+        },
+        "500": {
+          "type": "ref",
+          "value": "ServerError",
+        },
+      }
+    `);
+
+    // Find the createPost endpoint
+    const createPostEndpoint = result.endpointList.find(e => e.meta.alias === "post_CreatePost");
+    expect(createPostEndpoint).toBeDefined();
+    expect(createPostEndpoint?.responses).toMatchInlineSnapshot(`
+      {
+        "201": {
+          "type": "ref",
+          "value": "Post",
+        },
+        "400": {
+          "type": "ref",
+          "value": "ValidationError",
+        },
+        "403": {
+          "type": "ref",
+          "value": "ForbiddenError",
+        },
+      }
+    `);
+
+    // Verify that error schemas are properly resolved
+    const authErrorBox = result.refs.getInfosByRef("#/components/schemas/AuthError");
+    expect(authErrorBox?.name).toBe("AuthError");
+
+    const validationErrorBox = result.refs.getInfosByRef("#/components/schemas/ValidationError");
+    expect(validationErrorBox?.name).toBe("ValidationError");
   });
 });

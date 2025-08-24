@@ -14,10 +14,21 @@
  * 3. Customize error handling and headers as needed
  */
 
-import { type Fetcher, createApiClient  } from "../tmp/generated-client.ts";
+// TODO: Replace with your generated API client imports
+// import { type EndpointParameters, type Fetcher, createApiClient } from './generated/api';
 
 // Basic configuration
 const API_BASE_URL = process.env["API_BASE_URL"] || "https://api.example.com";
+
+// Generic types for when you haven't imported the generated types yet
+type EndpointParameters = {
+  body?: unknown;
+  query?: Record<string, unknown>;
+  header?: Record<string, unknown>;
+  path?: Record<string, unknown>;
+};
+
+type Fetcher = (method: string, url: string, params?: EndpointParameters) => Promise<Response>;
 
 /**
  * Simple fetcher implementation without external dependencies
@@ -69,6 +80,14 @@ const fetcher: Fetcher = async (method, apiUrl, params) => {
     headers,
   });
 
+  if (!response.ok) {
+    // You can customize error handling here
+    const error = new Error(`HTTP ${response.status}: ${response.statusText}`);
+    (error as any).response = response;
+    (error as any).status = response.status;
+    throw error;
+  }
+
   return response;
 };
 
@@ -82,4 +101,5 @@ function replacePathParams(url: string, params: Record<string, string>): string 
     .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || `:${key}`);
 }
 
-export const api = createApiClient(fetcher, API_BASE_URL);
+// Example of how to create the client once you have the generated code:
+// export const api = createApiClient(fetcher, API_BASE_URL);

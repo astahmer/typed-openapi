@@ -1834,6 +1834,11 @@ export const get_ContainerList = Type.Object({
     ),
   }),
   response: Type.Array(ContainerSummary),
+  responses: Type.Object({
+    200: Type.Array(ContainerSummary),
+    400: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ContainerCreate = Static<typeof post_ContainerCreate>;
@@ -1859,6 +1864,13 @@ export const post_ContainerCreate = Type.Object({
     ]),
   }),
   response: ContainerCreateResponse,
+  responses: Type.Object({
+    201: ContainerCreateResponse,
+    400: ErrorResponse,
+    404: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_ContainerInspect = Static<typeof get_ContainerInspect>;
@@ -1905,6 +1917,39 @@ export const get_ContainerInspect = Type.Object({
       NetworkSettings: NetworkSettings,
     }),
   ),
+  responses: Type.Object({
+    200: Type.Partial(
+      Type.Object({
+        Id: Type.String(),
+        Created: Type.String(),
+        Path: Type.String(),
+        Args: Type.Array(Type.String()),
+        State: ContainerState,
+        Image: Type.String(),
+        ResolvConfPath: Type.String(),
+        HostnamePath: Type.String(),
+        HostsPath: Type.String(),
+        LogPath: Type.String(),
+        Name: Type.String(),
+        RestartCount: Type.Number(),
+        Driver: Type.String(),
+        Platform: Type.String(),
+        MountLabel: Type.String(),
+        ProcessLabel: Type.String(),
+        AppArmorProfile: Type.String(),
+        ExecIDs: Type.Union([Type.Array(Type.String()), Type.Null()]),
+        HostConfig: HostConfig,
+        GraphDriver: GraphDriverData,
+        SizeRw: Type.Number(),
+        SizeRootFs: Type.Number(),
+        Mounts: Type.Array(MountPoint),
+        Config: ContainerConfig,
+        NetworkSettings: NetworkSettings,
+      }),
+    ),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_ContainerTop = Static<typeof get_ContainerTop>;
@@ -1928,6 +1973,16 @@ export const get_ContainerTop = Type.Object({
       Processes: Type.Array(Type.Array(Type.String())),
     }),
   ),
+  responses: Type.Object({
+    200: Type.Partial(
+      Type.Object({
+        Titles: Type.Array(Type.String()),
+        Processes: Type.Array(Type.Array(Type.String())),
+      }),
+    ),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_ContainerLogs = Static<typeof get_ContainerLogs>;
@@ -1952,6 +2007,11 @@ export const get_ContainerLogs = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: Type.Unknown(),
+    500: Type.Unknown(),
+  }),
 });
 
 export type get_ContainerChanges = Static<typeof get_ContainerChanges>;
@@ -1965,6 +2025,11 @@ export const get_ContainerChanges = Type.Object({
     }),
   }),
   response: Type.Array(FilesystemChange),
+  responses: Type.Object({
+    200: Type.Array(FilesystemChange),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_ContainerExport = Static<typeof get_ContainerExport>;
@@ -1978,6 +2043,11 @@ export const get_ContainerExport = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: Type.Unknown(),
+    500: Type.Unknown(),
+  }),
 });
 
 export type get_ContainerStats = Static<typeof get_ContainerStats>;
@@ -1997,6 +2067,11 @@ export const get_ContainerStats = Type.Object({
     }),
   }),
   response: Type.Record(Type.String(), Type.Unknown()),
+  responses: Type.Object({
+    200: Type.Record(Type.String(), Type.Unknown()),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ContainerResize = Static<typeof post_ContainerResize>;
@@ -2016,6 +2091,11 @@ export const post_ContainerResize = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: Type.Unknown(),
+    500: Type.Unknown(),
+  }),
 });
 
 export type post_ContainerStart = Static<typeof post_ContainerStart>;
@@ -2034,6 +2114,12 @@ export const post_ContainerStart = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    304: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ContainerStop = Static<typeof post_ContainerStop>;
@@ -2053,6 +2139,12 @@ export const post_ContainerStop = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    304: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ContainerRestart = Static<typeof post_ContainerRestart>;
@@ -2072,6 +2164,11 @@ export const post_ContainerRestart = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ContainerKill = Static<typeof post_ContainerKill>;
@@ -2090,6 +2187,12 @@ export const post_ContainerKill = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    404: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ContainerUpdate = Static<typeof post_ContainerUpdate>;
@@ -2115,6 +2218,15 @@ export const post_ContainerUpdate = Type.Object({
       Warnings: Type.Array(Type.String()),
     }),
   ),
+  responses: Type.Object({
+    200: Type.Partial(
+      Type.Object({
+        Warnings: Type.Array(Type.String()),
+      }),
+    ),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ContainerRename = Static<typeof post_ContainerRename>;
@@ -2131,6 +2243,12 @@ export const post_ContainerRename = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    404: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ContainerPause = Static<typeof post_ContainerPause>;
@@ -2144,6 +2262,11 @@ export const post_ContainerPause = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ContainerUnpause = Static<typeof post_ContainerUnpause>;
@@ -2157,6 +2280,11 @@ export const post_ContainerUnpause = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ContainerAttach = Static<typeof post_ContainerAttach>;
@@ -2180,6 +2308,13 @@ export const post_ContainerAttach = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    101: Type.Unknown(),
+    200: Type.Unknown(),
+    400: Type.Unknown(),
+    404: Type.Unknown(),
+    500: Type.Unknown(),
+  }),
 });
 
 export type get_ContainerAttachWebsocket = Static<typeof get_ContainerAttachWebsocket>;
@@ -2203,6 +2338,13 @@ export const get_ContainerAttachWebsocket = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    101: Type.Unknown(),
+    200: Type.Unknown(),
+    400: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ContainerWait = Static<typeof post_ContainerWait>;
@@ -2221,6 +2363,12 @@ export const post_ContainerWait = Type.Object({
     }),
   }),
   response: ContainerWaitResponse,
+  responses: Type.Object({
+    200: ContainerWaitResponse,
+    400: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type delete_ContainerDelete = Static<typeof delete_ContainerDelete>;
@@ -2241,6 +2389,13 @@ export const delete_ContainerDelete = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    400: ErrorResponse,
+    404: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_ContainerArchive = Static<typeof get_ContainerArchive>;
@@ -2257,6 +2412,12 @@ export const get_ContainerArchive = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    400: Type.Unknown(),
+    404: Type.Unknown(),
+    500: Type.Unknown(),
+  }),
 });
 
 export type put_PutContainerArchive = Static<typeof put_PutContainerArchive>;
@@ -2276,6 +2437,13 @@ export const put_PutContainerArchive = Type.Object({
     body: Type.String(),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    400: ErrorResponse,
+    403: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type head_ContainerArchiveInfo = Static<typeof head_ContainerArchiveInfo>;
@@ -2292,6 +2460,12 @@ export const head_ContainerArchiveInfo = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    400: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
   responseHeaders: Type.Object({
     "x-docker-container-path-stat": Type.String(),
   }),
@@ -2315,6 +2489,15 @@ export const post_ContainerPrune = Type.Object({
       SpaceReclaimed: Type.Number(),
     }),
   ),
+  responses: Type.Object({
+    200: Type.Partial(
+      Type.Object({
+        ContainersDeleted: Type.Array(Type.String()),
+        SpaceReclaimed: Type.Number(),
+      }),
+    ),
+    500: ErrorResponse,
+  }),
 });
 
 export type get_ImageList = Static<typeof get_ImageList>;
@@ -2333,6 +2516,10 @@ export const get_ImageList = Type.Object({
     ),
   }),
   response: Type.Array(ImageSummary),
+  responses: Type.Object({
+    200: Type.Array(ImageSummary),
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ImageBuild = Static<typeof post_ImageBuild>;
@@ -2378,6 +2565,11 @@ export const post_ImageBuild = Type.Object({
     body: Type.String(),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    400: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_BuildPrune = Static<typeof post_BuildPrune>;
@@ -2400,6 +2592,15 @@ export const post_BuildPrune = Type.Object({
       SpaceReclaimed: Type.Number(),
     }),
   ),
+  responses: Type.Object({
+    200: Type.Partial(
+      Type.Object({
+        CachesDeleted: Type.Array(Type.String()),
+        SpaceReclaimed: Type.Number(),
+      }),
+    ),
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ImageCreate = Static<typeof post_ImageCreate>;
@@ -2427,6 +2628,11 @@ export const post_ImageCreate = Type.Object({
     body: Type.String(),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_ImageInspect = Static<typeof get_ImageInspect>;
@@ -2440,6 +2646,11 @@ export const get_ImageInspect = Type.Object({
     }),
   }),
   response: ImageInspect,
+  responses: Type.Object({
+    200: ImageInspect,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_ImageHistory = Static<typeof get_ImageHistory>;
@@ -2462,6 +2673,20 @@ export const get_ImageHistory = Type.Object({
       Comment: Type.String(),
     }),
   ),
+  responses: Type.Object({
+    200: Type.Array(
+      Type.Object({
+        Id: Type.String(),
+        Created: Type.Number(),
+        CreatedBy: Type.String(),
+        Tags: Type.Array(Type.String()),
+        Size: Type.Number(),
+        Comment: Type.String(),
+      }),
+    ),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ImagePush = Static<typeof post_ImagePush>;
@@ -2483,6 +2708,11 @@ export const post_ImagePush = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ImageTag = Static<typeof post_ImageTag>;
@@ -2502,6 +2732,13 @@ export const post_ImageTag = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    201: Type.Unknown(),
+    400: ErrorResponse,
+    404: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type delete_ImageDelete = Static<typeof delete_ImageDelete>;
@@ -2521,6 +2758,12 @@ export const delete_ImageDelete = Type.Object({
     }),
   }),
   response: Type.Array(ImageDeleteResponseItem),
+  responses: Type.Object({
+    200: Type.Array(ImageDeleteResponseItem),
+    404: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_ImageSearch = Static<typeof get_ImageSearch>;
@@ -2546,6 +2789,20 @@ export const get_ImageSearch = Type.Object({
       }),
     ),
   ),
+  responses: Type.Object({
+    200: Type.Array(
+      Type.Partial(
+        Type.Object({
+          description: Type.String(),
+          is_official: Type.Boolean(),
+          is_automated: Type.Boolean(),
+          name: Type.String(),
+          star_count: Type.Number(),
+        }),
+      ),
+    ),
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ImagePrune = Static<typeof post_ImagePrune>;
@@ -2566,6 +2823,15 @@ export const post_ImagePrune = Type.Object({
       SpaceReclaimed: Type.Number(),
     }),
   ),
+  responses: Type.Object({
+    200: Type.Partial(
+      Type.Object({
+        ImagesDeleted: Type.Array(ImageDeleteResponseItem),
+        SpaceReclaimed: Type.Number(),
+      }),
+    ),
+    500: ErrorResponse,
+  }),
 });
 
 export type post_SystemAuth = Static<typeof post_SystemAuth>;
@@ -2576,7 +2842,19 @@ export const post_SystemAuth = Type.Object({
   parameters: Type.Object({
     body: AuthConfig,
   }),
-  response: Type.Unknown(),
+  response: Type.Object({
+    Status: Type.String(),
+    IdentityToken: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
+  }),
+  responses: Type.Object({
+    200: Type.Object({
+      Status: Type.String(),
+      IdentityToken: Type.Optional(Type.Union([Type.String(), Type.Undefined()])),
+    }),
+    204: Type.Unknown(),
+    401: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_SystemInfo = Static<typeof get_SystemInfo>;
@@ -2586,6 +2864,10 @@ export const get_SystemInfo = Type.Object({
   requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: SystemInfo,
+  responses: Type.Object({
+    200: SystemInfo,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_SystemVersion = Static<typeof get_SystemVersion>;
@@ -2595,6 +2877,10 @@ export const get_SystemVersion = Type.Object({
   requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: SystemVersion,
+  responses: Type.Object({
+    200: SystemVersion,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_SystemPing = Static<typeof get_SystemPing>;
@@ -2604,6 +2890,10 @@ export const get_SystemPing = Type.Object({
   requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    500: Type.Unknown(),
+  }),
   responseHeaders: Type.Object({
     swarm: Type.Union([
       Type.Literal("inactive"),
@@ -2628,6 +2918,10 @@ export const head_SystemPingHead = Type.Object({
   requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    500: Type.Unknown(),
+  }),
   responseHeaders: Type.Object({
     swarm: Type.Union([
       Type.Literal("inactive"),
@@ -2665,6 +2959,11 @@ export const post_ImageCommit = Type.Object({
     body: ContainerConfig,
   }),
   response: IdResponse,
+  responses: Type.Object({
+    201: IdResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_SystemEvents = Static<typeof get_SystemEvents>;
@@ -2682,6 +2981,11 @@ export const get_SystemEvents = Type.Object({
     ),
   }),
   response: EventMessage,
+  responses: Type.Object({
+    200: EventMessage,
+    400: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_SystemDataUsage = Static<typeof get_SystemDataUsage>;
@@ -2712,6 +3016,18 @@ export const get_SystemDataUsage = Type.Object({
       BuildCache: Type.Array(BuildCache),
     }),
   ),
+  responses: Type.Object({
+    200: Type.Partial(
+      Type.Object({
+        LayersSize: Type.Number(),
+        Images: Type.Array(ImageSummary),
+        Containers: Type.Array(ContainerSummary),
+        Volumes: Type.Array(Volume),
+        BuildCache: Type.Array(BuildCache),
+      }),
+    ),
+    500: ErrorResponse,
+  }),
 });
 
 export type get_ImageGet = Static<typeof get_ImageGet>;
@@ -2725,6 +3041,10 @@ export const get_ImageGet = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    500: Type.Unknown(),
+  }),
 });
 
 export type get_ImageGetAll = Static<typeof get_ImageGetAll>;
@@ -2740,6 +3060,10 @@ export const get_ImageGetAll = Type.Object({
     ),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    500: Type.Unknown(),
+  }),
 });
 
 export type post_ImageLoad = Static<typeof post_ImageLoad>;
@@ -2755,6 +3079,10 @@ export const post_ImageLoad = Type.Object({
     ),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ContainerExec = Static<typeof post_ContainerExec>;
@@ -2783,6 +3111,12 @@ export const post_ContainerExec = Type.Object({
     ),
   }),
   response: IdResponse,
+  responses: Type.Object({
+    201: IdResponse,
+    404: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_ExecStart = Static<typeof post_ExecStart>;
@@ -2803,6 +3137,11 @@ export const post_ExecStart = Type.Object({
     ),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: Type.Unknown(),
+    409: Type.Unknown(),
+  }),
 });
 
 export type post_ExecResize = Static<typeof post_ExecResize>;
@@ -2822,6 +3161,12 @@ export const post_ExecResize = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    400: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_ExecInspect = Static<typeof get_ExecInspect>;
@@ -2849,6 +3194,25 @@ export const get_ExecInspect = Type.Object({
       Pid: Type.Number(),
     }),
   ),
+  responses: Type.Object({
+    200: Type.Partial(
+      Type.Object({
+        CanRemove: Type.Boolean(),
+        DetachKeys: Type.String(),
+        ID: Type.String(),
+        Running: Type.Boolean(),
+        ExitCode: Type.Number(),
+        ProcessConfig: ProcessConfig,
+        OpenStdin: Type.Boolean(),
+        OpenStderr: Type.Boolean(),
+        OpenStdout: Type.Boolean(),
+        ContainerID: Type.String(),
+        Pid: Type.Number(),
+      }),
+    ),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_VolumeList = Static<typeof get_VolumeList>;
@@ -2864,6 +3228,10 @@ export const get_VolumeList = Type.Object({
     ),
   }),
   response: VolumeListResponse,
+  responses: Type.Object({
+    200: VolumeListResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_VolumeCreate = Static<typeof post_VolumeCreate>;
@@ -2875,6 +3243,10 @@ export const post_VolumeCreate = Type.Object({
     body: VolumeCreateOptions,
   }),
   response: Volume,
+  responses: Type.Object({
+    201: Volume,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_VolumeInspect = Static<typeof get_VolumeInspect>;
@@ -2888,6 +3260,11 @@ export const get_VolumeInspect = Type.Object({
     }),
   }),
   response: Volume,
+  responses: Type.Object({
+    200: Volume,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type put_VolumeUpdate = Static<typeof put_VolumeUpdate>;
@@ -2909,6 +3286,13 @@ export const put_VolumeUpdate = Type.Object({
     ),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    400: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type delete_VolumeDelete = Static<typeof delete_VolumeDelete>;
@@ -2927,6 +3311,12 @@ export const delete_VolumeDelete = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    404: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_VolumePrune = Static<typeof post_VolumePrune>;
@@ -2947,6 +3337,15 @@ export const post_VolumePrune = Type.Object({
       SpaceReclaimed: Type.Number(),
     }),
   ),
+  responses: Type.Object({
+    200: Type.Partial(
+      Type.Object({
+        VolumesDeleted: Type.Array(Type.String()),
+        SpaceReclaimed: Type.Number(),
+      }),
+    ),
+    500: ErrorResponse,
+  }),
 });
 
 export type get_NetworkList = Static<typeof get_NetworkList>;
@@ -2962,6 +3361,10 @@ export const get_NetworkList = Type.Object({
     ),
   }),
   response: Type.Array(Network),
+  responses: Type.Object({
+    200: Type.Array(Network),
+    500: ErrorResponse,
+  }),
 });
 
 export type get_NetworkInspect = Static<typeof get_NetworkInspect>;
@@ -2981,6 +3384,11 @@ export const get_NetworkInspect = Type.Object({
     }),
   }),
   response: Network,
+  responses: Type.Object({
+    200: Network,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type delete_NetworkDelete = Static<typeof delete_NetworkDelete>;
@@ -2994,6 +3402,12 @@ export const delete_NetworkDelete = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    403: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_NetworkCreate = Static<typeof post_NetworkCreate>;
@@ -3021,6 +3435,17 @@ export const post_NetworkCreate = Type.Object({
       Warning: Type.String(),
     }),
   ),
+  responses: Type.Object({
+    201: Type.Partial(
+      Type.Object({
+        Id: Type.String(),
+        Warning: Type.String(),
+      }),
+    ),
+    403: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_NetworkConnect = Static<typeof post_NetworkConnect>;
@@ -3040,6 +3465,12 @@ export const post_NetworkConnect = Type.Object({
     ),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    403: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_NetworkDisconnect = Static<typeof post_NetworkDisconnect>;
@@ -3059,6 +3490,12 @@ export const post_NetworkDisconnect = Type.Object({
     ),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    403: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_NetworkPrune = Static<typeof post_NetworkPrune>;
@@ -3078,6 +3515,14 @@ export const post_NetworkPrune = Type.Object({
       NetworksDeleted: Type.Array(Type.String()),
     }),
   ),
+  responses: Type.Object({
+    200: Type.Partial(
+      Type.Object({
+        NetworksDeleted: Type.Array(Type.String()),
+      }),
+    ),
+    500: ErrorResponse,
+  }),
 });
 
 export type get_PluginList = Static<typeof get_PluginList>;
@@ -3093,6 +3538,10 @@ export const get_PluginList = Type.Object({
     ),
   }),
   response: Type.Array(Plugin),
+  responses: Type.Object({
+    200: Type.Array(Plugin),
+    500: ErrorResponse,
+  }),
 });
 
 export type get_GetPluginPrivileges = Static<typeof get_GetPluginPrivileges>;
@@ -3106,6 +3555,10 @@ export const get_GetPluginPrivileges = Type.Object({
     }),
   }),
   response: Type.Array(PluginPrivilege),
+  responses: Type.Object({
+    200: Type.Array(PluginPrivilege),
+    500: ErrorResponse,
+  }),
 });
 
 export type post_PluginPull = Static<typeof post_PluginPull>;
@@ -3126,6 +3579,10 @@ export const post_PluginPull = Type.Object({
     body: Type.Array(PluginPrivilege),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    500: ErrorResponse,
+  }),
 });
 
 export type get_PluginInspect = Static<typeof get_PluginInspect>;
@@ -3139,6 +3596,11 @@ export const get_PluginInspect = Type.Object({
     }),
   }),
   response: Plugin,
+  responses: Type.Object({
+    200: Plugin,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type delete_PluginDelete = Static<typeof delete_PluginDelete>;
@@ -3157,6 +3619,11 @@ export const delete_PluginDelete = Type.Object({
     }),
   }),
   response: Plugin,
+  responses: Type.Object({
+    200: Plugin,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_PluginEnable = Static<typeof post_PluginEnable>;
@@ -3175,6 +3642,11 @@ export const post_PluginEnable = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_PluginDisable = Static<typeof post_PluginDisable>;
@@ -3193,6 +3665,11 @@ export const post_PluginDisable = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_PluginUpgrade = Static<typeof post_PluginUpgrade>;
@@ -3215,6 +3692,11 @@ export const post_PluginUpgrade = Type.Object({
     body: Type.Array(PluginPrivilege),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_PluginCreate = Static<typeof post_PluginCreate>;
@@ -3228,6 +3710,10 @@ export const post_PluginCreate = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    500: ErrorResponse,
+  }),
 });
 
 export type post_PluginPush = Static<typeof post_PluginPush>;
@@ -3241,6 +3727,11 @@ export const post_PluginPush = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_PluginSet = Static<typeof post_PluginSet>;
@@ -3255,6 +3746,11 @@ export const post_PluginSet = Type.Object({
     body: Type.Array(Type.String()),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type get_NodeList = Static<typeof get_NodeList>;
@@ -3270,6 +3766,11 @@ export const get_NodeList = Type.Object({
     ),
   }),
   response: Type.Array(Node),
+  responses: Type.Object({
+    200: Type.Array(Node),
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type get_NodeInspect = Static<typeof get_NodeInspect>;
@@ -3283,6 +3784,12 @@ export const get_NodeInspect = Type.Object({
     }),
   }),
   response: Node,
+  responses: Type.Object({
+    200: Node,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type delete_NodeDelete = Static<typeof delete_NodeDelete>;
@@ -3301,6 +3808,12 @@ export const delete_NodeDelete = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type post_NodeUpdate = Static<typeof post_NodeUpdate>;
@@ -3318,6 +3831,13 @@ export const post_NodeUpdate = Type.Object({
     body: NodeSpec,
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    400: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type get_SwarmInspect = Static<typeof get_SwarmInspect>;
@@ -3327,6 +3847,12 @@ export const get_SwarmInspect = Type.Object({
   requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: Swarm,
+  responses: Type.Object({
+    200: Swarm,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type post_SwarmInit = Static<typeof post_SwarmInit>;
@@ -3349,6 +3875,12 @@ export const post_SwarmInit = Type.Object({
     ),
   }),
   response: Type.String(),
+  responses: Type.Object({
+    200: Type.String(),
+    400: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type post_SwarmJoin = Static<typeof post_SwarmJoin>;
@@ -3368,6 +3900,12 @@ export const post_SwarmJoin = Type.Object({
     ),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    400: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type post_SwarmLeave = Static<typeof post_SwarmLeave>;
@@ -3383,6 +3921,11 @@ export const post_SwarmLeave = Type.Object({
     ),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type post_SwarmUpdate = Static<typeof post_SwarmUpdate>;
@@ -3400,6 +3943,12 @@ export const post_SwarmUpdate = Type.Object({
     body: SwarmSpec,
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    400: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type get_SwarmUnlockkey = Static<typeof get_SwarmUnlockkey>;
@@ -3413,6 +3962,15 @@ export const get_SwarmUnlockkey = Type.Object({
       UnlockKey: Type.String(),
     }),
   ),
+  responses: Type.Object({
+    200: Type.Partial(
+      Type.Object({
+        UnlockKey: Type.String(),
+      }),
+    ),
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type post_SwarmUnlock = Static<typeof post_SwarmUnlock>;
@@ -3428,6 +3986,11 @@ export const post_SwarmUnlock = Type.Object({
     ),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type get_ServiceList = Static<typeof get_ServiceList>;
@@ -3444,6 +4007,11 @@ export const get_ServiceList = Type.Object({
     ),
   }),
   response: Type.Array(Service),
+  responses: Type.Object({
+    200: Type.Array(Service),
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type post_ServiceCreate = Static<typeof post_ServiceCreate>;
@@ -3465,6 +4033,19 @@ export const post_ServiceCreate = Type.Object({
       Warning: Type.String(),
     }),
   ),
+  responses: Type.Object({
+    201: Type.Partial(
+      Type.Object({
+        ID: Type.String(),
+        Warning: Type.String(),
+      }),
+    ),
+    400: ErrorResponse,
+    403: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type get_ServiceInspect = Static<typeof get_ServiceInspect>;
@@ -3483,6 +4064,12 @@ export const get_ServiceInspect = Type.Object({
     }),
   }),
   response: Service,
+  responses: Type.Object({
+    200: Service,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type delete_ServiceDelete = Static<typeof delete_ServiceDelete>;
@@ -3496,6 +4083,12 @@ export const delete_ServiceDelete = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type post_ServiceUpdate = Static<typeof post_ServiceUpdate>;
@@ -3522,6 +4115,13 @@ export const post_ServiceUpdate = Type.Object({
     body: Type.Intersect([ServiceSpec, Type.Record(Type.String(), Type.Unknown())]),
   }),
   response: ServiceUpdateResponse,
+  responses: Type.Object({
+    200: ServiceUpdateResponse,
+    400: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type get_ServiceLogs = Static<typeof get_ServiceLogs>;
@@ -3546,6 +4146,12 @@ export const get_ServiceLogs = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: Type.Unknown(),
+    500: Type.Unknown(),
+    503: Type.Unknown(),
+  }),
 });
 
 export type get_TaskList = Static<typeof get_TaskList>;
@@ -3561,6 +4167,11 @@ export const get_TaskList = Type.Object({
     ),
   }),
   response: Type.Array(Task),
+  responses: Type.Object({
+    200: Type.Array(Task),
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type get_TaskInspect = Static<typeof get_TaskInspect>;
@@ -3574,6 +4185,12 @@ export const get_TaskInspect = Type.Object({
     }),
   }),
   response: Task,
+  responses: Type.Object({
+    200: Task,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type get_TaskLogs = Static<typeof get_TaskLogs>;
@@ -3598,6 +4215,12 @@ export const get_TaskLogs = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    404: Type.Unknown(),
+    500: Type.Unknown(),
+    503: Type.Unknown(),
+  }),
 });
 
 export type get_SecretList = Static<typeof get_SecretList>;
@@ -3613,6 +4236,11 @@ export const get_SecretList = Type.Object({
     ),
   }),
   response: Type.Array(Secret),
+  responses: Type.Object({
+    200: Type.Array(Secret),
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type post_SecretCreate = Static<typeof post_SecretCreate>;
@@ -3624,6 +4252,12 @@ export const post_SecretCreate = Type.Object({
     body: Type.Intersect([SecretSpec, Type.Record(Type.String(), Type.Unknown())]),
   }),
   response: IdResponse,
+  responses: Type.Object({
+    201: IdResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type get_SecretInspect = Static<typeof get_SecretInspect>;
@@ -3637,6 +4271,12 @@ export const get_SecretInspect = Type.Object({
     }),
   }),
   response: Secret,
+  responses: Type.Object({
+    200: Secret,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type delete_SecretDelete = Static<typeof delete_SecretDelete>;
@@ -3650,6 +4290,12 @@ export const delete_SecretDelete = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type post_SecretUpdate = Static<typeof post_SecretUpdate>;
@@ -3667,6 +4313,13 @@ export const post_SecretUpdate = Type.Object({
     body: SecretSpec,
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    400: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type get_ConfigList = Static<typeof get_ConfigList>;
@@ -3682,6 +4335,11 @@ export const get_ConfigList = Type.Object({
     ),
   }),
   response: Type.Array(Config),
+  responses: Type.Object({
+    200: Type.Array(Config),
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type post_ConfigCreate = Static<typeof post_ConfigCreate>;
@@ -3693,6 +4351,12 @@ export const post_ConfigCreate = Type.Object({
     body: Type.Intersect([ConfigSpec, Type.Record(Type.String(), Type.Unknown())]),
   }),
   response: IdResponse,
+  responses: Type.Object({
+    201: IdResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type get_ConfigInspect = Static<typeof get_ConfigInspect>;
@@ -3706,6 +4370,12 @@ export const get_ConfigInspect = Type.Object({
     }),
   }),
   response: Config,
+  responses: Type.Object({
+    200: Config,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type delete_ConfigDelete = Static<typeof delete_ConfigDelete>;
@@ -3719,6 +4389,12 @@ export const delete_ConfigDelete = Type.Object({
     }),
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    204: Type.Unknown(),
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type post_ConfigUpdate = Static<typeof post_ConfigUpdate>;
@@ -3736,6 +4412,13 @@ export const post_ConfigUpdate = Type.Object({
     body: ConfigSpec,
   }),
   response: Type.Unknown(),
+  responses: Type.Object({
+    200: Type.Unknown(),
+    400: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  }),
 });
 
 export type get_DistributionInspect = Static<typeof get_DistributionInspect>;
@@ -3749,6 +4432,11 @@ export const get_DistributionInspect = Type.Object({
     }),
   }),
   response: DistributionInspect,
+  responses: Type.Object({
+    200: DistributionInspect,
+    401: ErrorResponse,
+    500: ErrorResponse,
+  }),
 });
 
 export type post_Session = Static<typeof post_Session>;
@@ -3758,6 +4446,11 @@ export const post_Session = Type.Object({
   requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
   response: Type.Unknown(),
+  responses: Type.Object({
+    101: Type.Unknown(),
+    400: Type.Unknown(),
+    500: Type.Unknown(),
+  }),
 });
 
 type __ENDPOINTS_END__ = Static<typeof __ENDPOINTS_END__>;
@@ -3910,6 +4603,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
 
@@ -3925,10 +4619,73 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+export const successStatusCodes = [
+  200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308,
+] as const;
+export type SuccessStatusCode = (typeof successStatusCodes)[number];
+
+export const errorStatusCodes = [
+  400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 421, 422, 423, 424,
+  425, 426, 428, 429, 431, 451, 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511,
+] as const;
+export type ErrorStatusCode = (typeof errorStatusCodes)[number];
+
+// Error handling types
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+  ok: true;
+  status: TStatusCode;
+  data: TSuccess;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TSuccess>;
+}
+
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+  ok: false;
+  status: TStatusCode;
+  data: TData;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TData>;
+}
+
+export type TypedApiResponse<
+  TSuccess,
+  TAllResponses extends Record<string | number, unknown> = {},
+> = keyof TAllResponses extends never
+  ? SuccessResponse<TSuccess, number>
+  : {
+      [K in keyof TAllResponses]: K extends string
+        ? K extends `${infer TStatusCode extends number}`
+          ? TStatusCode extends SuccessStatusCode
+            ? SuccessResponse<TSuccess, TStatusCode>
+            : ErrorResponse<TAllResponses[K], TStatusCode>
+          : never
+        : K extends number
+          ? K extends SuccessStatusCode
+            ? SuccessResponse<TSuccess, K>
+            : ErrorResponse<TAllResponses[K], K>
+          : never;
+    }[keyof TAllResponses];
+
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+  ? TResponses extends Record<string, unknown>
+    ? TypedApiResponse<TSuccess, TResponses>
+    : SuccessResponse<TSuccess, number>
+  : TEndpoint extends { response: infer TSuccess }
+    ? SuccessResponse<TSuccess, number>
+    : never;
+
+export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
+  SafeApiResponse<TEndpoint>,
+  { status: TStatusCode }
+>;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -3938,9 +4695,23 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // </ApiClientTypes>
 
+// <TypedResponseError>
+export class TypedResponseError extends Error {
+  response: ErrorResponse<unknown, ErrorStatusCode>;
+  status: number;
+  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+    super(`HTTP ${response.status}: ${response.statusText}`);
+    this.name = "TypedResponseError";
+    this.response = response;
+    this.status = response.status;
+  }
+}
+// </TypedResponseError>
 // <ApiClient>
 export class ApiClient {
   baseUrl: string = "";
+  successStatusCodes = successStatusCodes;
+  errorStatusCodes = errorStatusCodes;
 
   constructor(public fetcher: Fetcher) {}
 
@@ -3960,55 +4731,215 @@ export class ApiClient {
   // <ApiClient.get>
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"]>
-  ): Promise<Static<TEndpoint>["response"]> {
-    return this.fetcher("get", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<Static<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      Static<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Static<TEndpoint>["response"]>;
+
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }>
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "get",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<Static<TEndpoint>["response"]>;
   }
   // </ApiClient.get>
 
   // <ApiClient.post>
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"]>
-  ): Promise<Static<TEndpoint>["response"]> {
-    return this.fetcher("post", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<Static<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      Static<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Static<TEndpoint>["response"]>;
+
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }>
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "post",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<Static<TEndpoint>["response"]>;
   }
   // </ApiClient.post>
 
   // <ApiClient.delete>
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"]>
-  ): Promise<Static<TEndpoint>["response"]> {
-    return this.fetcher("delete", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<Static<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      Static<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Static<TEndpoint>["response"]>;
+
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }>
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "delete",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<Static<TEndpoint>["response"]>;
   }
   // </ApiClient.delete>
 
   // <ApiClient.put>
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"]>
-  ): Promise<Static<TEndpoint>["response"]> {
-    return this.fetcher("put", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<Static<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      Static<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Static<TEndpoint>["response"]>;
+
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }>
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "put",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<Static<TEndpoint>["response"]>;
   }
   // </ApiClient.put>
 
   // <ApiClient.head>
   head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"]>
-  ): Promise<Static<TEndpoint>["response"]> {
-    return this.fetcher("head", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<Static<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      Static<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Static<TEndpoint>["response"]>;
+
+  head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }>
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "head",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<Static<TEndpoint>["response"]>;
   }
   // </ApiClient.head>
 
@@ -4024,13 +4955,10 @@ export class ApiClient {
     method: TMethod,
     path: TPath,
     ...params: MaybeOptionalArg<Static<TEndpoint>["parameters"]>
-  ): Promise<
-    Omit<Response, "json"> & {
-      /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
-      json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
-    }
-  > {
-    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters);
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters) as Promise<
+      SafeApiResponse<TEndpoint>
+    >;
   }
   // </ApiClient.request>
 }
@@ -4047,6 +4975,21 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
  api.get("/users").then((users) => console.log(users));
  api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
  api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+
+ // With error handling
+ const result = await api.get("/users/{id}", { path: { id: "123" }, withResponse: true });
+ if (result.ok) {
+   // Access data directly
+   const user = result.data;
+   console.log(user);
+
+   // Or use the json() method for compatibility
+   const userFromJson = await result.json();
+   console.log(userFromJson);
+ } else {
+   const error = result.data;
+   console.error(`Error ${result.status}:`, error);
+ }
 */
 
-// </ApiClient
+// </ApiClient>

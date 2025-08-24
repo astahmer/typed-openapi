@@ -1,8 +1,0 @@
-{
-    "name": "Generate and test runtime client with MSW integration",
-    "scripts": {
-        "test:runtime": "pnpm run generate:runtime && pnpm run test:runtime:run",
-        "generate:runtime": "pnpm exec tsx src/generate-client-files.ts tests/samples/petstore.yaml --output tmp/generated-client.ts --runtime none --schemasOnly true",
-        "test:runtime:run": "vitest run tests/integration-runtime-msw.test.ts"
-    }
-}

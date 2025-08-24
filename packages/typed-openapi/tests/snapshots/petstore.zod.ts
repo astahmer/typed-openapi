@@ -77,6 +77,12 @@ export const put_UpdatePet = {
     body: Pet,
   }),
   response: Pet,
+  responses: z.object({
+    "200": Pet,
+    "400": z.unknown(),
+    "404": z.unknown(),
+    "405": z.unknown(),
+  }),
 };
 
 export type post_AddPet = typeof post_AddPet;
@@ -88,6 +94,10 @@ export const post_AddPet = {
     body: Pet,
   }),
   response: Pet,
+  responses: z.object({
+    "200": Pet,
+    "405": z.unknown(),
+  }),
 };
 
 export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
@@ -101,6 +111,13 @@ export const get_FindPetsByStatus = {
     }),
   }),
   response: z.array(Pet),
+  responses: z.object({
+    "200": z.array(Pet),
+    "400": z.object({
+      code: z.number(),
+      message: z.string(),
+    }),
+  }),
 };
 
 export type get_FindPetsByTags = typeof get_FindPetsByTags;
@@ -114,6 +131,10 @@ export const get_FindPetsByTags = {
     }),
   }),
   response: z.array(Pet),
+  responses: z.object({
+    "200": z.array(Pet),
+    "400": z.unknown(),
+  }),
 };
 
 export type get_GetPetById = typeof get_GetPetById;
@@ -127,6 +148,17 @@ export const get_GetPetById = {
     }),
   }),
   response: Pet,
+  responses: z.object({
+    "200": Pet,
+    "400": z.object({
+      code: z.number(),
+      message: z.string(),
+    }),
+    "404": z.object({
+      code: z.number(),
+      message: z.string(),
+    }),
+  }),
 };
 
 export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
@@ -144,6 +176,9 @@ export const post_UpdatePetWithForm = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "405": z.unknown(),
+  }),
 };
 
 export type delete_DeletePet = typeof delete_DeletePet;
@@ -160,6 +195,9 @@ export const delete_DeletePet = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "400": z.unknown(),
+  }),
 };
 
 export type post_UploadFile = typeof post_UploadFile;
@@ -177,6 +215,9 @@ export const post_UploadFile = {
     body: z.string(),
   }),
   response: ApiResponse,
+  responses: z.object({
+    "200": ApiResponse,
+  }),
 };
 
 export type get_GetInventory = typeof get_GetInventory;
@@ -186,6 +227,9 @@ export const get_GetInventory = {
   requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.record(z.number()),
+  responses: z.object({
+    "200": z.record(z.number()),
+  }),
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;
@@ -197,6 +241,10 @@ export const post_PlaceOrder = {
     body: Order,
   }),
   response: Order,
+  responses: z.object({
+    "200": Order,
+    "405": z.unknown(),
+  }),
 };
 
 export type get_GetOrderById = typeof get_GetOrderById;
@@ -210,6 +258,11 @@ export const get_GetOrderById = {
     }),
   }),
   response: Order,
+  responses: z.object({
+    "200": Order,
+    "400": z.unknown(),
+    "404": z.unknown(),
+  }),
 };
 
 export type delete_DeleteOrder = typeof delete_DeleteOrder;
@@ -223,6 +276,10 @@ export const delete_DeleteOrder = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "400": z.unknown(),
+    "404": z.unknown(),
+  }),
 };
 
 export type post_CreateUser = typeof post_CreateUser;
@@ -234,6 +291,9 @@ export const post_CreateUser = {
     body: User,
   }),
   response: User,
+  responses: z.object({
+    default: User,
+  }),
 };
 
 export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput;
@@ -245,6 +305,10 @@ export const post_CreateUsersWithListInput = {
     body: z.array(User),
   }),
   response: User,
+  responses: z.object({
+    "200": User,
+    default: z.unknown(),
+  }),
 };
 
 export type get_LoginUser = typeof get_LoginUser;
@@ -259,6 +323,10 @@ export const get_LoginUser = {
     }),
   }),
   response: z.string(),
+  responses: z.object({
+    "200": z.string(),
+    "400": z.unknown(),
+  }),
   responseHeaders: z.object({
     "x-rate-limit": z.number(),
     "x-expires-after": z.string(),
@@ -272,6 +340,9 @@ export const get_LogoutUser = {
   requestFormat: z.literal("json"),
   parameters: z.never(),
   response: z.unknown(),
+  responses: z.object({
+    default: z.unknown(),
+  }),
 };
 
 export type get_GetUserByName = typeof get_GetUserByName;
@@ -285,6 +356,11 @@ export const get_GetUserByName = {
     }),
   }),
   response: User,
+  responses: z.object({
+    "200": User,
+    "400": z.unknown(),
+    "404": z.unknown(),
+  }),
 };
 
 export type put_UpdateUser = typeof put_UpdateUser;
@@ -299,6 +375,9 @@ export const put_UpdateUser = {
     body: User,
   }),
   response: z.unknown(),
+  responses: z.object({
+    default: z.unknown(),
+  }),
 };
 
 export type delete_DeleteUser = typeof delete_DeleteUser;
@@ -312,6 +391,10 @@ export const delete_DeleteUser = {
     }),
   }),
   response: z.unknown(),
+  responses: z.object({
+    "400": z.unknown(),
+    "404": z.unknown(),
+  }),
 };
 
 // <EndpointByMethod>
@@ -370,6 +453,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
 
@@ -385,10 +469,73 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+export const successStatusCodes = [
+  200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308,
+] as const;
+export type SuccessStatusCode = (typeof successStatusCodes)[number];
+
+export const errorStatusCodes = [
+  400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 421, 422, 423, 424,
+  425, 426, 428, 429, 431, 451, 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511,
+] as const;
+export type ErrorStatusCode = (typeof errorStatusCodes)[number];
+
+// Error handling types
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+  ok: true;
+  status: TStatusCode;
+  data: TSuccess;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TSuccess>;
+}
+
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+  ok: false;
+  status: TStatusCode;
+  data: TData;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TData>;
+}
+
+export type TypedApiResponse<
+  TSuccess,
+  TAllResponses extends Record<string | number, unknown> = {},
+> = keyof TAllResponses extends never
+  ? SuccessResponse<TSuccess, number>
+  : {
+      [K in keyof TAllResponses]: K extends string
+        ? K extends `${infer TStatusCode extends number}`
+          ? TStatusCode extends SuccessStatusCode
+            ? SuccessResponse<TSuccess, TStatusCode>
+            : ErrorResponse<TAllResponses[K], TStatusCode>
+          : never
+        : K extends number
+          ? K extends SuccessStatusCode
+            ? SuccessResponse<TSuccess, K>
+            : ErrorResponse<TAllResponses[K], K>
+          : never;
+    }[keyof TAllResponses];
+
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+  ? TResponses extends Record<string, unknown>
+    ? TypedApiResponse<TSuccess, TResponses>
+    : SuccessResponse<TSuccess, number>
+  : TEndpoint extends { response: infer TSuccess }
+    ? SuccessResponse<TSuccess, number>
+    : never;
+
+export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
+  SafeApiResponse<TEndpoint>,
+  { status: TStatusCode }
+>;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -398,9 +545,23 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // </ApiClientTypes>
 
+// <TypedResponseError>
+export class TypedResponseError extends Error {
+  response: ErrorResponse<unknown, ErrorStatusCode>;
+  status: number;
+  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+    super(`HTTP ${response.status}: ${response.statusText}`);
+    this.name = "TypedResponseError";
+    this.response = response;
+    this.status = response.status;
+  }
+}
+// </TypedResponseError>
 // <ApiClient>
 export class ApiClient {
   baseUrl: string = "";
+  successStatusCodes = successStatusCodes;
+  errorStatusCodes = errorStatusCodes;
 
   constructor(public fetcher: Fetcher) {}
 
@@ -420,44 +581,172 @@ export class ApiClient {
   // <ApiClient.put>
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
-  ): Promise<z.infer<TEndpoint["response"]>> {
-    return this.fetcher("put", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<z.infer<TEndpoint["response"]>>;
+    ...params: MaybeOptionalArg<
+      z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<z.infer<TEndpoint["response"]>>;
+
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]> & { withResponse: true; throwOnStatusError?: boolean }>
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "put",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<z.infer<TEndpoint["response"]>>;
   }
   // </ApiClient.put>
 
   // <ApiClient.post>
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
-  ): Promise<z.infer<TEndpoint["response"]>> {
-    return this.fetcher("post", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<z.infer<TEndpoint["response"]>>;
+    ...params: MaybeOptionalArg<
+      z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<z.infer<TEndpoint["response"]>>;
+
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]> & { withResponse: true; throwOnStatusError?: boolean }>
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "post",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<z.infer<TEndpoint["response"]>>;
   }
   // </ApiClient.post>
 
   // <ApiClient.get>
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
-  ): Promise<z.infer<TEndpoint["response"]>> {
-    return this.fetcher("get", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<z.infer<TEndpoint["response"]>>;
+    ...params: MaybeOptionalArg<
+      z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<z.infer<TEndpoint["response"]>>;
+
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]> & { withResponse: true; throwOnStatusError?: boolean }>
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "get",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<z.infer<TEndpoint["response"]>>;
   }
   // </ApiClient.get>
 
   // <ApiClient.delete>
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]>>
-  ): Promise<z.infer<TEndpoint["response"]>> {
-    return this.fetcher("delete", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<z.infer<TEndpoint["response"]>>;
+    ...params: MaybeOptionalArg<
+      z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<z.infer<TEndpoint["response"]>>;
+
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<z.infer<TEndpoint["parameters"]> & { withResponse: true; throwOnStatusError?: boolean }>
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "delete",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<z.infer<TEndpoint["response"]>>;
   }
   // </ApiClient.delete>
 
@@ -473,13 +762,10 @@ export class ApiClient {
     method: TMethod,
     path: TPath,
     ...params: MaybeOptionalArg<z.infer<TEndpoint extends { parameters: infer Params } ? Params : never>>
-  ): Promise<
-    Omit<Response, "json"> & {
-      /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
-      json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
-    }
-  > {
-    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters);
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters) as Promise<
+      SafeApiResponse<TEndpoint>
+    >;
   }
   // </ApiClient.request>
 }
@@ -496,6 +782,21 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
  api.get("/users").then((users) => console.log(users));
  api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
  api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+
+ // With error handling
+ const result = await api.get("/users/{id}", { path: { id: "123" }, withResponse: true });
+ if (result.ok) {
+   // Access data directly
+   const user = result.data;
+   console.log(user);
+
+   // Or use the json() method for compatibility
+   const userFromJson = await result.json();
+   console.log(userFromJson);
+ } else {
+   const error = result.data;
+   console.error(`Error ${result.status}:`, error);
+ }
 */
 
-// </ApiClient
+// </ApiClient>

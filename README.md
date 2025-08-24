@@ -6,10 +6,15 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 
 ![Screenshot 2023-08-08 at 00 48 42](https://github.com/astahmer/typed-openapi/assets/47224540/3016fa92-e09a-41f3-a95f-32caa41325da)
 
+[![pkg.pr.new](https://pkg.pr.new/badge/astahmer/typed-openapi)](https://pkg.pr.new/~/astahmer/typed-openapi)
+
 ## Features
 
-- Headless API client, bring your own fetcher ! (fetch, axios, ky, etc...)
+- Headless API client, [bring your own fetcher](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets) (fetch, axios, ky, etc...) !
 - Generates a fully typesafe API client with just types by default (instant suggestions)
+- **Type-safe error handling**: with discriminated unions and configurable success/error status codes
+- **withResponse & throwOnStatusError**: Get a union-style response object or throw on configured error status codes, with full type inference
+- **TanStack Query integration**: with `withResponse` and `selectFn` options for advanced success/error handling
 - Or you can also generate a client with runtime validation using one of the following runtimes:
   - [zod](https://zod.dev/)
   - [typebox](https://github.com/sinclairzx81/typebox)
@@ -37,17 +42,26 @@ npx typed-openapi -h
 ```
 
 ```sh
-typed-openapi/0.1.3
+typed-openapi/1.5.0
 
-Usage: $ typed-openapi <input>
+Usage:
+  $ typed-openapi <input>
 
-Commands: <input> Generate
+Commands:
+  <input>  Generate
 
-For more info, run any command with the `--help` flag: $ typed-openapi --help
+For more info, run any command with the `--help` flag:
+  $ typed-openapi --help
 
-Options: -o, --output <path> Output path for the api client ts file (defaults to `<input>.<runtime>.ts`) -r, --runtime
-<name> Runtime to use for validation; defaults to `none`; available: 'none' | 'arktype' | 'io-ts' | 'typebox' |
-'valibot' | 'yup' | 'zod' (default: none) -h, --help Display this message -v, --version Display version number
+Options:
+  -o, --output <path>             Output path for the api client ts file (defaults to `<input>.<runtime>.ts`)
+  -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: Type<"arktype" | "io-ts" | "none" | "typebox" | "valibot" | "yup" | "zod"> (default: none)
+  --schemas-only                  Only generate schemas, skipping client generation (defaults to false) (default: false)
+  --include-client                Include API client types and implementation (defaults to true) (default: true)
+  --success-status-codes <codes>  Comma-separated list of success status codes for type-safe error handling (defaults to 2xx and 3xx ranges)
+  --tanstack [name]               Generate tanstack client with withResponse support for error handling, defaults to false, can optionally specify a name for the generated file
+  -h, --help                      Display this message
+  -v, --version                   Display version number
 ```
 
 ## Non-goals
@@ -64,6 +78,223 @@ Options: -o, --output <path> Output path for the api client ts file (defaults to
 - Splitting the generated client into multiple files. Nope. Been there, done that. Let's keep it simple.
 
 Basically, let's focus on having a fast and typesafe API client generation instead.
+
+## Usage Examples
+
+### API Client Setup
+
+The generated client is headless - you need to provide your own fetcher. Here are ready-to-use examples:
+
+- **[Basic API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets)** - Simple, dependency-free wrapper
+- **[Validating API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#validating-api-client-api-client-with-validationts)** - With request/response validation
+
+
+### Type-Safe Error Handling & Response Modes
+
+You can choose between two response styles:
+
+- **Direct data return** (default):
+  ```ts
+  const user = await api.get("/users/{id}", { path: { id: "123" } });
+  // Throws TypedResponseError on error status (default)
+  ```
+
+- **Union-style response** (withResponse):
+  ```ts
+  const result = await api.get("/users/{id}", { path: { id: "123" }, withResponse: true });
+  if (result.ok) {
+    // result.data is typed as User
+  } else {
+    // result.data is typed as your error schema for that status
+  }
+  ```
+
+You can also control error throwing with `throwOnStatusError`.
+
+**All errors thrown by the client are instances of `TypedResponseError` and include the parsed error data.**
+
+### Generic Request Method
+
+For dynamic endpoint calls or when you need more control:
+
+```typescript
+// Type-safe generic request method
+const response = await api.request("GET", "/users/{id}", {
+  path: { id: "123" },
+  query: { include: ["profile", "settings"] }
+});
+
+const user = await response.json(); // Fully typed based on endpoint
+```
+
+
+### TanStack Query Integration
+
+Generate TanStack Query wrappers for your endpoints with:
+```sh
+npx typed-openapi api.yaml --tanstack
+```
+
+You get:
+- Type-safe queries and mutations with full error inference
+- `withResponse` and `selectFn` for advanced error and response handling
+- All mutation errors are Response-like and type-safe, matching your OpenAPI error schemas
+
+## useQuery / fetchQuery / ensureQueryData
+
+```ts
+// Basic query
+const accessiblePagesQuery = useQuery(
+  tanstackApi.get('/authorization/accessible-pages').queryOptions
+);
+
+// Query with query parameters
+const membersQuery = useQuery(
+  tanstackApi.get('/authorization/organizations/:organizationId/members/search', {
+    path: { organizationId: 'org123' },
+    query: { searchQuery: 'john' }
+  }).queryOptions
+);
+
+// With additional query options
+const departmentCostsQuery = useQuery({
+  ...tanstackApi.get('/organizations/:organizationId/department-costs', {
+    path: { organizationId: params.orgId },
+    query: { period: selectedPeriod },
+  }).queryOptions,
+  staleTime: 30 * 1000,
+  // placeholderData: keepPreviousData,
+  // etc
+});
+```
+
+or if you need it in a router `beforeLoad` / `loader`:
+
+```ts
+import { tanstackApi } from '#api';
+
+await queryClient.fetchQuery(
+  tanstackApi.get('/:organizationId/remediation/accounting-lines/metrics', {
+    path: { organizationId: params.orgId },
+  }).queryOptions,
+);
+```
+
+## useMutation
+
+The mutation API supports both basic usage and advanced error handling with `withResponse` and custom transformations with `selectFn`. **Note**: All mutation errors are Response-like objects with type-safe error inference based on your OpenAPI error schemas.
+
+```ts
+// Basic mutation (returns data only)
+const basicMutation = useMutation({
+  // Will throws TypedResponseError on error status
+  ...tanstackApi.mutation("post", '/authorization/organizations/:organizationId/invitations').mutationOptions,
+  onError: (error) => {
+    // error is a Response-like object with typed data based on OpenAPI spec
+    console.log(error instanceof Response); // true
+    console.log(error.status); // 400, 401, etc. (properly typed)
+    console.log(error.data); // Typed error response body
+  }
+});
+
+// With error handling using withResponse
+const mutationWithErrorHandling = useMutation(
+  tanstackApi.mutation("post", '/users', {
+    // Returns union-style result, never throws
+    withResponse: true
+  }).mutationOptions
+);
+
+// With custom response transformation
+const customMutation = useMutation(
+  tanstackApi.mutation("post", '/users', {
+    selectFn: (user) => ({ userId: user.id, userName: user.name })
+  }).mutationOptions
+);
+
+// Advanced: withResponse + selectFn for comprehensive error handling
+const advancedMutation = useMutation(
+  tanstackApi.mutation("post", '/users', {
+    withResponse: true,
+    selectFn: (response) => ({
+      success: response.ok,
+      user: response.ok ? response.data : null,
+      error: response.ok ? null : response.data,
+      statusCode: response.status
+    })
+  }).mutationOptions
+);
+```
+
+### Usage Examples:
+
+```ts
+// Basic usage
+basicMutation.mutate({
+  body: {
+    emailAddress: 'user@example.com',
+    department: 'engineering',
+    roleName: 'admin'
+  }
+});
+
+
+// With error handling
+// All errors thrown by mutations are type-safe and Response-like, with parsed error data attached.
+mutationWithErrorHandling.mutate(
+  { body: userData },
+  {
+    onSuccess: (response) => {
+      if (response.ok) {
+        toast.success(`User ${response.data.name} created!`);
+      } else {
+        if (response.status === 400) {
+          toast.error(`Validation error: ${response.data.message}`);
+        } else if (response.status === 409) {
+          toast.error('User already exists');
+        }
+      }
+    }
+  }
+);
+
+// Advanced usage with custom transformation
+advancedMutation.mutate(
+  { body: userData },
+  {
+    onSuccess: (result) => {
+      if (result.success) {
+        console.log('Created user:', result.user.name);
+      } else {
+        console.error(`Error ${result.statusCode}:`, result.error);
+      }
+    }
+  }
+);
+```
+
+## useMutation without the tanstack api
+
+If you need to make a custom mutation you could use the `api` directly:
+
+```ts
+const { mutate: login, isPending } = useMutation({
+  mutationFn: async (type: 'google' | 'microsoft') => {
+    return api.post(`/authentication/${type}`, { body: { redirectUri: search.redirect } });
+  },
+  onSuccess: (data) => {
+    window.location.replace(data.url);
+  },
+  onError: (error, type) => {
+    console.error(error);
+    toast({
+      title: t(`toast.login.${type}.error`),
+      icon: 'warning',
+      variant: 'critical',
+    });
+  },
+});
+```
 
 ## Alternatives
 

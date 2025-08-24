@@ -1662,6 +1662,11 @@ export const get_ContainerList = v.object({
     }),
   }),
   response: v.array(ContainerSummary),
+  responses: v.object({
+    "200": v.array(ContainerSummary),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerCreate = v.InferOutput<typeof post_ContainerCreate>;
@@ -1683,6 +1688,13 @@ export const post_ContainerCreate = v.object({
     ]),
   }),
   response: ContainerCreateResponse,
+  responses: v.object({
+    "201": ContainerCreateResponse,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ContainerInspect = v.InferOutput<typeof get_ContainerInspect>;
@@ -1725,6 +1737,37 @@ export const get_ContainerInspect = v.object({
     Config: v.optional(ContainerConfig),
     NetworkSettings: v.optional(NetworkSettings),
   }),
+  responses: v.object({
+    "200": v.object({
+      Id: v.optional(v.string()),
+      Created: v.optional(v.string()),
+      Path: v.optional(v.string()),
+      Args: v.optional(v.array(v.string())),
+      State: v.optional(ContainerState),
+      Image: v.optional(v.string()),
+      ResolvConfPath: v.optional(v.string()),
+      HostnamePath: v.optional(v.string()),
+      HostsPath: v.optional(v.string()),
+      LogPath: v.optional(v.string()),
+      Name: v.optional(v.string()),
+      RestartCount: v.optional(v.number()),
+      Driver: v.optional(v.string()),
+      Platform: v.optional(v.string()),
+      MountLabel: v.optional(v.string()),
+      ProcessLabel: v.optional(v.string()),
+      AppArmorProfile: v.optional(v.string()),
+      ExecIDs: v.optional(v.union([v.array(v.string()), v.null()])),
+      HostConfig: v.optional(HostConfig),
+      GraphDriver: v.optional(GraphDriverData),
+      SizeRw: v.optional(v.number()),
+      SizeRootFs: v.optional(v.number()),
+      Mounts: v.optional(v.array(MountPoint)),
+      Config: v.optional(ContainerConfig),
+      NetworkSettings: v.optional(NetworkSettings),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ContainerTop = v.InferOutput<typeof get_ContainerTop>;
@@ -1743,6 +1786,14 @@ export const get_ContainerTop = v.object({
   response: v.object({
     Titles: v.optional(v.array(v.string())),
     Processes: v.optional(v.array(v.array(v.string()))),
+  }),
+  responses: v.object({
+    "200": v.object({
+      Titles: v.optional(v.array(v.string())),
+      Processes: v.optional(v.array(v.array(v.string()))),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
   }),
 });
 
@@ -1766,6 +1817,11 @@ export const get_ContainerLogs = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": v.unknown(),
+    "500": v.unknown(),
+  }),
 });
 
 export type get_ContainerChanges = v.InferOutput<typeof get_ContainerChanges>;
@@ -1779,6 +1835,11 @@ export const get_ContainerChanges = v.object({
     }),
   }),
   response: v.array(FilesystemChange),
+  responses: v.object({
+    "200": v.array(FilesystemChange),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ContainerExport = v.InferOutput<typeof get_ContainerExport>;
@@ -1792,6 +1853,11 @@ export const get_ContainerExport = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": v.unknown(),
+    "500": v.unknown(),
+  }),
 });
 
 export type get_ContainerStats = v.InferOutput<typeof get_ContainerStats>;
@@ -1809,6 +1875,11 @@ export const get_ContainerStats = v.object({
     }),
   }),
   response: v.record(v.string(), v.unknown()),
+  responses: v.object({
+    "200": v.record(v.string(), v.unknown()),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerResize = v.InferOutput<typeof post_ContainerResize>;
@@ -1826,6 +1897,11 @@ export const post_ContainerResize = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": v.unknown(),
+    "500": v.unknown(),
+  }),
 });
 
 export type post_ContainerStart = v.InferOutput<typeof post_ContainerStart>;
@@ -1842,6 +1918,12 @@ export const post_ContainerStart = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "304": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerStop = v.InferOutput<typeof post_ContainerStop>;
@@ -1859,6 +1941,12 @@ export const post_ContainerStop = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "304": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerRestart = v.InferOutput<typeof post_ContainerRestart>;
@@ -1876,6 +1964,11 @@ export const post_ContainerRestart = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerKill = v.InferOutput<typeof post_ContainerKill>;
@@ -1892,6 +1985,12 @@ export const post_ContainerKill = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerUpdate = v.InferOutput<typeof post_ContainerUpdate>;
@@ -1913,6 +2012,13 @@ export const post_ContainerUpdate = v.object({
   response: v.object({
     Warnings: v.optional(v.array(v.string())),
   }),
+  responses: v.object({
+    "200": v.object({
+      Warnings: v.optional(v.array(v.string())),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerRename = v.InferOutput<typeof post_ContainerRename>;
@@ -1929,6 +2035,12 @@ export const post_ContainerRename = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerPause = v.InferOutput<typeof post_ContainerPause>;
@@ -1942,6 +2054,11 @@ export const post_ContainerPause = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerUnpause = v.InferOutput<typeof post_ContainerUnpause>;
@@ -1955,6 +2072,11 @@ export const post_ContainerUnpause = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerAttach = v.InferOutput<typeof post_ContainerAttach>;
@@ -1976,6 +2098,13 @@ export const post_ContainerAttach = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "101": v.unknown(),
+    "200": v.unknown(),
+    "400": v.unknown(),
+    "404": v.unknown(),
+    "500": v.unknown(),
+  }),
 });
 
 export type get_ContainerAttachWebsocket = v.InferOutput<typeof get_ContainerAttachWebsocket>;
@@ -1997,6 +2126,13 @@ export const get_ContainerAttachWebsocket = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "101": v.unknown(),
+    "200": v.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerWait = v.InferOutput<typeof post_ContainerWait>;
@@ -2013,6 +2149,12 @@ export const post_ContainerWait = v.object({
     }),
   }),
   response: ContainerWaitResponse,
+  responses: v.object({
+    "200": ContainerWaitResponse,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type delete_ContainerDelete = v.InferOutput<typeof delete_ContainerDelete>;
@@ -2031,6 +2173,13 @@ export const delete_ContainerDelete = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ContainerArchive = v.InferOutput<typeof get_ContainerArchive>;
@@ -2047,6 +2196,12 @@ export const get_ContainerArchive = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "400": v.unknown(),
+    "404": v.unknown(),
+    "500": v.unknown(),
+  }),
 });
 
 export type put_PutContainerArchive = v.InferOutput<typeof put_PutContainerArchive>;
@@ -2066,6 +2221,13 @@ export const put_PutContainerArchive = v.object({
     body: v.string(),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "400": ErrorResponse,
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type head_ContainerArchiveInfo = v.InferOutput<typeof head_ContainerArchiveInfo>;
@@ -2082,6 +2244,12 @@ export const head_ContainerArchiveInfo = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
   responseHeaders: v.object({
     "x-docker-container-path-stat": v.string(),
   }),
@@ -2101,6 +2269,13 @@ export const post_ContainerPrune = v.object({
     ContainersDeleted: v.optional(v.array(v.string())),
     SpaceReclaimed: v.optional(v.number()),
   }),
+  responses: v.object({
+    "200": v.object({
+      ContainersDeleted: v.optional(v.array(v.string())),
+      SpaceReclaimed: v.optional(v.number()),
+    }),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ImageList = v.InferOutput<typeof get_ImageList>;
@@ -2117,6 +2292,10 @@ export const get_ImageList = v.object({
     }),
   }),
   response: v.array(ImageSummary),
+  responses: v.object({
+    "200": v.array(ImageSummary),
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ImageBuild = v.InferOutput<typeof post_ImageBuild>;
@@ -2158,6 +2337,11 @@ export const post_ImageBuild = v.object({
     body: v.string(),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_BuildPrune = v.InferOutput<typeof post_BuildPrune>;
@@ -2175,6 +2359,13 @@ export const post_BuildPrune = v.object({
   response: v.object({
     CachesDeleted: v.optional(v.array(v.string())),
     SpaceReclaimed: v.optional(v.number()),
+  }),
+  responses: v.object({
+    "200": v.object({
+      CachesDeleted: v.optional(v.array(v.string())),
+      SpaceReclaimed: v.optional(v.number()),
+    }),
+    "500": ErrorResponse,
   }),
 });
 
@@ -2199,6 +2390,11 @@ export const post_ImageCreate = v.object({
     body: v.string(),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ImageInspect = v.InferOutput<typeof get_ImageInspect>;
@@ -2212,6 +2408,11 @@ export const get_ImageInspect = v.object({
     }),
   }),
   response: ImageInspect,
+  responses: v.object({
+    "200": ImageInspect,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ImageHistory = v.InferOutput<typeof get_ImageHistory>;
@@ -2234,6 +2435,20 @@ export const get_ImageHistory = v.object({
       Comment: v.string(),
     }),
   ),
+  responses: v.object({
+    "200": v.array(
+      v.object({
+        Id: v.string(),
+        Created: v.number(),
+        CreatedBy: v.string(),
+        Tags: v.array(v.string()),
+        Size: v.number(),
+        Comment: v.string(),
+      }),
+    ),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ImagePush = v.InferOutput<typeof post_ImagePush>;
@@ -2253,6 +2468,11 @@ export const post_ImagePush = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ImageTag = v.InferOutput<typeof post_ImageTag>;
@@ -2270,6 +2490,13 @@ export const post_ImageTag = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "201": v.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type delete_ImageDelete = v.InferOutput<typeof delete_ImageDelete>;
@@ -2287,6 +2514,12 @@ export const delete_ImageDelete = v.object({
     }),
   }),
   response: v.array(ImageDeleteResponseItem),
+  responses: v.object({
+    "200": v.array(ImageDeleteResponseItem),
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ImageSearch = v.InferOutput<typeof get_ImageSearch>;
@@ -2310,6 +2543,18 @@ export const get_ImageSearch = v.object({
       star_count: v.optional(v.number()),
     }),
   ),
+  responses: v.object({
+    "200": v.array(
+      v.object({
+        description: v.optional(v.string()),
+        is_official: v.optional(v.boolean()),
+        is_automated: v.optional(v.boolean()),
+        name: v.optional(v.string()),
+        star_count: v.optional(v.number()),
+      }),
+    ),
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ImagePrune = v.InferOutput<typeof post_ImagePrune>;
@@ -2326,6 +2571,13 @@ export const post_ImagePrune = v.object({
     ImagesDeleted: v.optional(v.array(ImageDeleteResponseItem)),
     SpaceReclaimed: v.optional(v.number()),
   }),
+  responses: v.object({
+    "200": v.object({
+      ImagesDeleted: v.optional(v.array(ImageDeleteResponseItem)),
+      SpaceReclaimed: v.optional(v.number()),
+    }),
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_SystemAuth = v.InferOutput<typeof post_SystemAuth>;
@@ -2336,7 +2588,19 @@ export const post_SystemAuth = v.object({
   parameters: v.object({
     body: AuthConfig,
   }),
-  response: v.unknown(),
+  response: v.object({
+    Status: v.string(),
+    IdentityToken: v.optional(v.union([v.string(), v.undefined()])),
+  }),
+  responses: v.object({
+    "200": v.object({
+      Status: v.string(),
+      IdentityToken: v.optional(v.union([v.string(), v.undefined()])),
+    }),
+    "204": v.unknown(),
+    "401": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_SystemInfo = v.InferOutput<typeof get_SystemInfo>;
@@ -2346,6 +2610,10 @@ export const get_SystemInfo = v.object({
   requestFormat: v.literal("json"),
   parameters: v.never(),
   response: SystemInfo,
+  responses: v.object({
+    "200": SystemInfo,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_SystemVersion = v.InferOutput<typeof get_SystemVersion>;
@@ -2355,6 +2623,10 @@ export const get_SystemVersion = v.object({
   requestFormat: v.literal("json"),
   parameters: v.never(),
   response: SystemVersion,
+  responses: v.object({
+    "200": SystemVersion,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_SystemPing = v.InferOutput<typeof get_SystemPing>;
@@ -2364,6 +2636,10 @@ export const get_SystemPing = v.object({
   requestFormat: v.literal("json"),
   parameters: v.never(),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "500": v.unknown(),
+  }),
   responseHeaders: v.object({
     swarm: v.union([
       v.literal("inactive"),
@@ -2388,6 +2664,10 @@ export const head_SystemPingHead = v.object({
   requestFormat: v.literal("json"),
   parameters: v.never(),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "500": v.unknown(),
+  }),
   responseHeaders: v.object({
     swarm: v.union([
       v.literal("inactive"),
@@ -2423,6 +2703,11 @@ export const post_ImageCommit = v.object({
     body: ContainerConfig,
   }),
   response: IdResponse,
+  responses: v.object({
+    "201": IdResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_SystemEvents = v.InferOutput<typeof get_SystemEvents>;
@@ -2438,6 +2723,11 @@ export const get_SystemEvents = v.object({
     }),
   }),
   response: EventMessage,
+  responses: v.object({
+    "200": EventMessage,
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_SystemDataUsage = v.InferOutput<typeof get_SystemDataUsage>;
@@ -2459,6 +2749,16 @@ export const get_SystemDataUsage = v.object({
     Volumes: v.optional(v.array(Volume)),
     BuildCache: v.optional(v.array(BuildCache)),
   }),
+  responses: v.object({
+    "200": v.object({
+      LayersSize: v.optional(v.number()),
+      Images: v.optional(v.array(ImageSummary)),
+      Containers: v.optional(v.array(ContainerSummary)),
+      Volumes: v.optional(v.array(Volume)),
+      BuildCache: v.optional(v.array(BuildCache)),
+    }),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ImageGet = v.InferOutput<typeof get_ImageGet>;
@@ -2472,6 +2772,10 @@ export const get_ImageGet = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "500": v.unknown(),
+  }),
 });
 
 export type get_ImageGetAll = v.InferOutput<typeof get_ImageGetAll>;
@@ -2485,6 +2789,10 @@ export const get_ImageGetAll = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "500": v.unknown(),
+  }),
 });
 
 export type post_ImageLoad = v.InferOutput<typeof post_ImageLoad>;
@@ -2498,6 +2806,10 @@ export const post_ImageLoad = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerExec = v.InferOutput<typeof post_ContainerExec>;
@@ -2524,6 +2836,12 @@ export const post_ContainerExec = v.object({
     }),
   }),
   response: IdResponse,
+  responses: v.object({
+    "201": IdResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ExecStart = v.InferOutput<typeof post_ExecStart>;
@@ -2542,6 +2860,11 @@ export const post_ExecStart = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": v.unknown(),
+    "409": v.unknown(),
+  }),
 });
 
 export type post_ExecResize = v.InferOutput<typeof post_ExecResize>;
@@ -2559,6 +2882,12 @@ export const post_ExecResize = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ExecInspect = v.InferOutput<typeof get_ExecInspect>;
@@ -2584,6 +2913,23 @@ export const get_ExecInspect = v.object({
     ContainerID: v.optional(v.string()),
     Pid: v.optional(v.number()),
   }),
+  responses: v.object({
+    "200": v.object({
+      CanRemove: v.optional(v.boolean()),
+      DetachKeys: v.optional(v.string()),
+      ID: v.optional(v.string()),
+      Running: v.optional(v.boolean()),
+      ExitCode: v.optional(v.number()),
+      ProcessConfig: v.optional(ProcessConfig),
+      OpenStdin: v.optional(v.boolean()),
+      OpenStderr: v.optional(v.boolean()),
+      OpenStdout: v.optional(v.boolean()),
+      ContainerID: v.optional(v.string()),
+      Pid: v.optional(v.number()),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_VolumeList = v.InferOutput<typeof get_VolumeList>;
@@ -2597,6 +2943,10 @@ export const get_VolumeList = v.object({
     }),
   }),
   response: VolumeListResponse,
+  responses: v.object({
+    "200": VolumeListResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_VolumeCreate = v.InferOutput<typeof post_VolumeCreate>;
@@ -2608,6 +2958,10 @@ export const post_VolumeCreate = v.object({
     body: VolumeCreateOptions,
   }),
   response: Volume,
+  responses: v.object({
+    "201": Volume,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_VolumeInspect = v.InferOutput<typeof get_VolumeInspect>;
@@ -2621,6 +2975,11 @@ export const get_VolumeInspect = v.object({
     }),
   }),
   response: Volume,
+  responses: v.object({
+    "200": Volume,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type put_VolumeUpdate = v.InferOutput<typeof put_VolumeUpdate>;
@@ -2640,6 +2999,13 @@ export const put_VolumeUpdate = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type delete_VolumeDelete = v.InferOutput<typeof delete_VolumeDelete>;
@@ -2656,6 +3022,12 @@ export const delete_VolumeDelete = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_VolumePrune = v.InferOutput<typeof post_VolumePrune>;
@@ -2672,6 +3044,13 @@ export const post_VolumePrune = v.object({
     VolumesDeleted: v.optional(v.array(v.string())),
     SpaceReclaimed: v.optional(v.number()),
   }),
+  responses: v.object({
+    "200": v.object({
+      VolumesDeleted: v.optional(v.array(v.string())),
+      SpaceReclaimed: v.optional(v.number()),
+    }),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_NetworkList = v.InferOutput<typeof get_NetworkList>;
@@ -2685,6 +3064,10 @@ export const get_NetworkList = v.object({
     }),
   }),
   response: v.array(Network),
+  responses: v.object({
+    "200": v.array(Network),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_NetworkInspect = v.InferOutput<typeof get_NetworkInspect>;
@@ -2702,6 +3085,11 @@ export const get_NetworkInspect = v.object({
     }),
   }),
   response: Network,
+  responses: v.object({
+    "200": Network,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type delete_NetworkDelete = v.InferOutput<typeof delete_NetworkDelete>;
@@ -2715,6 +3103,12 @@ export const delete_NetworkDelete = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_NetworkCreate = v.InferOutput<typeof post_NetworkCreate>;
@@ -2740,6 +3134,15 @@ export const post_NetworkCreate = v.object({
     Id: v.optional(v.string()),
     Warning: v.optional(v.string()),
   }),
+  responses: v.object({
+    "201": v.object({
+      Id: v.optional(v.string()),
+      Warning: v.optional(v.string()),
+    }),
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_NetworkConnect = v.InferOutput<typeof post_NetworkConnect>;
@@ -2757,6 +3160,12 @@ export const post_NetworkConnect = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_NetworkDisconnect = v.InferOutput<typeof post_NetworkDisconnect>;
@@ -2774,6 +3183,12 @@ export const post_NetworkDisconnect = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_NetworkPrune = v.InferOutput<typeof post_NetworkPrune>;
@@ -2789,6 +3204,12 @@ export const post_NetworkPrune = v.object({
   response: v.object({
     NetworksDeleted: v.optional(v.array(v.string())),
   }),
+  responses: v.object({
+    "200": v.object({
+      NetworksDeleted: v.optional(v.array(v.string())),
+    }),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_PluginList = v.InferOutput<typeof get_PluginList>;
@@ -2802,6 +3223,10 @@ export const get_PluginList = v.object({
     }),
   }),
   response: v.array(Plugin),
+  responses: v.object({
+    "200": v.array(Plugin),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_GetPluginPrivileges = v.InferOutput<typeof get_GetPluginPrivileges>;
@@ -2815,6 +3240,10 @@ export const get_GetPluginPrivileges = v.object({
     }),
   }),
   response: v.array(PluginPrivilege),
+  responses: v.object({
+    "200": v.array(PluginPrivilege),
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginPull = v.InferOutput<typeof post_PluginPull>;
@@ -2833,6 +3262,10 @@ export const post_PluginPull = v.object({
     body: v.array(PluginPrivilege),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_PluginInspect = v.InferOutput<typeof get_PluginInspect>;
@@ -2846,6 +3279,11 @@ export const get_PluginInspect = v.object({
     }),
   }),
   response: Plugin,
+  responses: v.object({
+    "200": Plugin,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type delete_PluginDelete = v.InferOutput<typeof delete_PluginDelete>;
@@ -2862,6 +3300,11 @@ export const delete_PluginDelete = v.object({
     }),
   }),
   response: Plugin,
+  responses: v.object({
+    "200": Plugin,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginEnable = v.InferOutput<typeof post_PluginEnable>;
@@ -2878,6 +3321,11 @@ export const post_PluginEnable = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginDisable = v.InferOutput<typeof post_PluginDisable>;
@@ -2894,6 +3342,11 @@ export const post_PluginDisable = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginUpgrade = v.InferOutput<typeof post_PluginUpgrade>;
@@ -2914,6 +3367,11 @@ export const post_PluginUpgrade = v.object({
     body: v.array(PluginPrivilege),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginCreate = v.InferOutput<typeof post_PluginCreate>;
@@ -2927,6 +3385,10 @@ export const post_PluginCreate = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginPush = v.InferOutput<typeof post_PluginPush>;
@@ -2940,6 +3402,11 @@ export const post_PluginPush = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginSet = v.InferOutput<typeof post_PluginSet>;
@@ -2954,6 +3421,11 @@ export const post_PluginSet = v.object({
     body: v.array(v.string()),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_NodeList = v.InferOutput<typeof get_NodeList>;
@@ -2967,6 +3439,11 @@ export const get_NodeList = v.object({
     }),
   }),
   response: v.array(Node),
+  responses: v.object({
+    "200": v.array(Node),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_NodeInspect = v.InferOutput<typeof get_NodeInspect>;
@@ -2980,6 +3457,12 @@ export const get_NodeInspect = v.object({
     }),
   }),
   response: Node,
+  responses: v.object({
+    "200": Node,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type delete_NodeDelete = v.InferOutput<typeof delete_NodeDelete>;
@@ -2996,6 +3479,12 @@ export const delete_NodeDelete = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_NodeUpdate = v.InferOutput<typeof post_NodeUpdate>;
@@ -3013,6 +3502,13 @@ export const post_NodeUpdate = v.object({
     body: NodeSpec,
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_SwarmInspect = v.InferOutput<typeof get_SwarmInspect>;
@@ -3022,6 +3518,12 @@ export const get_SwarmInspect = v.object({
   requestFormat: v.literal("json"),
   parameters: v.never(),
   response: Swarm,
+  responses: v.object({
+    "200": Swarm,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_SwarmInit = v.InferOutput<typeof post_SwarmInit>;
@@ -3042,6 +3544,12 @@ export const post_SwarmInit = v.object({
     }),
   }),
   response: v.string(),
+  responses: v.object({
+    "200": v.string(),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_SwarmJoin = v.InferOutput<typeof post_SwarmJoin>;
@@ -3059,6 +3567,12 @@ export const post_SwarmJoin = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_SwarmLeave = v.InferOutput<typeof post_SwarmLeave>;
@@ -3072,6 +3586,11 @@ export const post_SwarmLeave = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_SwarmUpdate = v.InferOutput<typeof post_SwarmUpdate>;
@@ -3089,6 +3608,12 @@ export const post_SwarmUpdate = v.object({
     body: SwarmSpec,
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_SwarmUnlockkey = v.InferOutput<typeof get_SwarmUnlockkey>;
@@ -3099,6 +3624,13 @@ export const get_SwarmUnlockkey = v.object({
   parameters: v.never(),
   response: v.object({
     UnlockKey: v.optional(v.string()),
+  }),
+  responses: v.object({
+    "200": v.object({
+      UnlockKey: v.optional(v.string()),
+    }),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
   }),
 });
 
@@ -3113,6 +3645,11 @@ export const post_SwarmUnlock = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_ServiceList = v.InferOutput<typeof get_ServiceList>;
@@ -3127,6 +3664,11 @@ export const get_ServiceList = v.object({
     }),
   }),
   response: v.array(Service),
+  responses: v.object({
+    "200": v.array(Service),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_ServiceCreate = v.InferOutput<typeof post_ServiceCreate>;
@@ -3144,6 +3686,17 @@ export const post_ServiceCreate = v.object({
     ID: v.optional(v.string()),
     Warning: v.optional(v.string()),
   }),
+  responses: v.object({
+    "201": v.object({
+      ID: v.optional(v.string()),
+      Warning: v.optional(v.string()),
+    }),
+    "400": ErrorResponse,
+    "403": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_ServiceInspect = v.InferOutput<typeof get_ServiceInspect>;
@@ -3160,6 +3713,12 @@ export const get_ServiceInspect = v.object({
     }),
   }),
   response: Service,
+  responses: v.object({
+    "200": Service,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type delete_ServiceDelete = v.InferOutput<typeof delete_ServiceDelete>;
@@ -3173,6 +3732,12 @@ export const delete_ServiceDelete = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_ServiceUpdate = v.InferOutput<typeof post_ServiceUpdate>;
@@ -3195,6 +3760,13 @@ export const post_ServiceUpdate = v.object({
     body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]),
   }),
   response: ServiceUpdateResponse,
+  responses: v.object({
+    "200": ServiceUpdateResponse,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_ServiceLogs = v.InferOutput<typeof get_ServiceLogs>;
@@ -3217,6 +3789,12 @@ export const get_ServiceLogs = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": v.unknown(),
+    "500": v.unknown(),
+    "503": v.unknown(),
+  }),
 });
 
 export type get_TaskList = v.InferOutput<typeof get_TaskList>;
@@ -3230,6 +3808,11 @@ export const get_TaskList = v.object({
     }),
   }),
   response: v.array(Task),
+  responses: v.object({
+    "200": v.array(Task),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_TaskInspect = v.InferOutput<typeof get_TaskInspect>;
@@ -3243,6 +3826,12 @@ export const get_TaskInspect = v.object({
     }),
   }),
   response: Task,
+  responses: v.object({
+    "200": Task,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_TaskLogs = v.InferOutput<typeof get_TaskLogs>;
@@ -3265,6 +3854,12 @@ export const get_TaskLogs = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "404": v.unknown(),
+    "500": v.unknown(),
+    "503": v.unknown(),
+  }),
 });
 
 export type get_SecretList = v.InferOutput<typeof get_SecretList>;
@@ -3278,6 +3873,11 @@ export const get_SecretList = v.object({
     }),
   }),
   response: v.array(Secret),
+  responses: v.object({
+    "200": v.array(Secret),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_SecretCreate = v.InferOutput<typeof post_SecretCreate>;
@@ -3289,6 +3889,12 @@ export const post_SecretCreate = v.object({
     body: v.intersect([SecretSpec, v.record(v.string(), v.unknown())]),
   }),
   response: IdResponse,
+  responses: v.object({
+    "201": IdResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_SecretInspect = v.InferOutput<typeof get_SecretInspect>;
@@ -3302,6 +3908,12 @@ export const get_SecretInspect = v.object({
     }),
   }),
   response: Secret,
+  responses: v.object({
+    "200": Secret,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type delete_SecretDelete = v.InferOutput<typeof delete_SecretDelete>;
@@ -3315,6 +3927,12 @@ export const delete_SecretDelete = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_SecretUpdate = v.InferOutput<typeof post_SecretUpdate>;
@@ -3332,6 +3950,13 @@ export const post_SecretUpdate = v.object({
     body: SecretSpec,
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_ConfigList = v.InferOutput<typeof get_ConfigList>;
@@ -3345,6 +3970,11 @@ export const get_ConfigList = v.object({
     }),
   }),
   response: v.array(Config),
+  responses: v.object({
+    "200": v.array(Config),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_ConfigCreate = v.InferOutput<typeof post_ConfigCreate>;
@@ -3356,6 +3986,12 @@ export const post_ConfigCreate = v.object({
     body: v.intersect([ConfigSpec, v.record(v.string(), v.unknown())]),
   }),
   response: IdResponse,
+  responses: v.object({
+    "201": IdResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_ConfigInspect = v.InferOutput<typeof get_ConfigInspect>;
@@ -3369,6 +4005,12 @@ export const get_ConfigInspect = v.object({
     }),
   }),
   response: Config,
+  responses: v.object({
+    "200": Config,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type delete_ConfigDelete = v.InferOutput<typeof delete_ConfigDelete>;
@@ -3382,6 +4024,12 @@ export const delete_ConfigDelete = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "204": v.unknown(),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_ConfigUpdate = v.InferOutput<typeof post_ConfigUpdate>;
@@ -3399,6 +4047,13 @@ export const post_ConfigUpdate = v.object({
     body: ConfigSpec,
   }),
   response: v.unknown(),
+  responses: v.object({
+    "200": v.unknown(),
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_DistributionInspect = v.InferOutput<typeof get_DistributionInspect>;
@@ -3412,6 +4067,11 @@ export const get_DistributionInspect = v.object({
     }),
   }),
   response: DistributionInspect,
+  responses: v.object({
+    "200": DistributionInspect,
+    "401": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_Session = v.InferOutput<typeof post_Session>;
@@ -3421,6 +4081,11 @@ export const post_Session = v.object({
   requestFormat: v.literal("json"),
   parameters: v.never(),
   response: v.unknown(),
+  responses: v.object({
+    "101": v.unknown(),
+    "400": v.unknown(),
+    "500": v.unknown(),
+  }),
 });
 
 export type __ENDPOINTS_END__ = v.InferOutput<typeof __ENDPOINTS_END__>;
@@ -3573,6 +4238,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
 
@@ -3588,10 +4254,73 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+export const successStatusCodes = [
+  200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308,
+] as const;
+export type SuccessStatusCode = (typeof successStatusCodes)[number];
+
+export const errorStatusCodes = [
+  400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 421, 422, 423, 424,
+  425, 426, 428, 429, 431, 451, 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511,
+] as const;
+export type ErrorStatusCode = (typeof errorStatusCodes)[number];
+
+// Error handling types
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+  ok: true;
+  status: TStatusCode;
+  data: TSuccess;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TSuccess>;
+}
+
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+  ok: false;
+  status: TStatusCode;
+  data: TData;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TData>;
+}
+
+export type TypedApiResponse<
+  TSuccess,
+  TAllResponses extends Record<string | number, unknown> = {},
+> = keyof TAllResponses extends never
+  ? SuccessResponse<TSuccess, number>
+  : {
+      [K in keyof TAllResponses]: K extends string
+        ? K extends `${infer TStatusCode extends number}`
+          ? TStatusCode extends SuccessStatusCode
+            ? SuccessResponse<TSuccess, TStatusCode>
+            : ErrorResponse<TAllResponses[K], TStatusCode>
+          : never
+        : K extends number
+          ? K extends SuccessStatusCode
+            ? SuccessResponse<TSuccess, K>
+            : ErrorResponse<TAllResponses[K], K>
+          : never;
+    }[keyof TAllResponses];
+
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+  ? TResponses extends Record<string, unknown>
+    ? TypedApiResponse<TSuccess, TResponses>
+    : SuccessResponse<TSuccess, number>
+  : TEndpoint extends { response: infer TSuccess }
+    ? SuccessResponse<TSuccess, number>
+    : never;
+
+export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
+  SafeApiResponse<TEndpoint>,
+  { status: TStatusCode }
+>;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -3601,9 +4330,23 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // </ApiClientTypes>
 
+// <TypedResponseError>
+export class TypedResponseError extends Error {
+  response: ErrorResponse<unknown, ErrorStatusCode>;
+  status: number;
+  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+    super(`HTTP ${response.status}: ${response.statusText}`);
+    this.name = "TypedResponseError";
+    this.response = response;
+    this.status = response.status;
+  }
+}
+// </TypedResponseError>
 // <ApiClient>
 export class ApiClient {
   baseUrl: string = "";
+  successStatusCodes = successStatusCodes;
+  errorStatusCodes = errorStatusCodes;
 
   constructor(public fetcher: Fetcher) {}
 
@@ -3623,55 +4366,225 @@ export class ApiClient {
   // <ApiClient.get>
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
-  ): Promise<v.InferOutput<TEndpoint>["response"]> {
-    return this.fetcher("get", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<v.InferOutput<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "get",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
   }
   // </ApiClient.get>
 
   // <ApiClient.post>
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
-  ): Promise<v.InferOutput<TEndpoint>["response"]> {
-    return this.fetcher("post", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<v.InferOutput<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "post",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
   }
   // </ApiClient.post>
 
   // <ApiClient.delete>
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
-  ): Promise<v.InferOutput<TEndpoint>["response"]> {
-    return this.fetcher("delete", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<v.InferOutput<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "delete",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
   }
   // </ApiClient.delete>
 
   // <ApiClient.put>
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
-  ): Promise<v.InferOutput<TEndpoint>["response"]> {
-    return this.fetcher("put", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<v.InferOutput<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "put",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
   }
   // </ApiClient.put>
 
   // <ApiClient.head>
   head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
-  ): Promise<v.InferOutput<TEndpoint>["response"]> {
-    return this.fetcher("head", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<v.InferOutput<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+
+  head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "head",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
   }
   // </ApiClient.head>
 
@@ -3687,13 +4600,10 @@ export class ApiClient {
     method: TMethod,
     path: TPath,
     ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
-  ): Promise<
-    Omit<Response, "json"> & {
-      /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
-      json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
-    }
-  > {
-    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters);
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters) as Promise<
+      SafeApiResponse<TEndpoint>
+    >;
   }
   // </ApiClient.request>
 }
@@ -3710,6 +4620,21 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
  api.get("/users").then((users) => console.log(users));
  api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
  api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+
+ // With error handling
+ const result = await api.get("/users/{id}", { path: { id: "123" }, withResponse: true });
+ if (result.ok) {
+   // Access data directly
+   const user = result.data;
+   console.log(user);
+
+   // Or use the json() method for compatibility
+   const userFromJson = await result.json();
+   console.log(userFromJson);
+ } else {
+   const error = result.data;
+   console.error(`Error ${result.status}:`, error);
+ }
 */
 
-// </ApiClient
+// </ApiClient>

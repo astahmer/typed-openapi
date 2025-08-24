@@ -80,6 +80,12 @@ export const put_UpdatePet = v.object({
     body: Pet,
   }),
   response: Pet,
+  responses: v.object({
+    "200": Pet,
+    "400": v.unknown(),
+    "404": v.unknown(),
+    "405": v.unknown(),
+  }),
 });
 
 export type post_AddPet = v.InferOutput<typeof post_AddPet>;
@@ -91,6 +97,10 @@ export const post_AddPet = v.object({
     body: Pet,
   }),
   response: Pet,
+  responses: v.object({
+    "200": Pet,
+    "405": v.unknown(),
+  }),
 });
 
 export type get_FindPetsByStatus = v.InferOutput<typeof get_FindPetsByStatus>;
@@ -104,6 +114,13 @@ export const get_FindPetsByStatus = v.object({
     }),
   }),
   response: v.array(Pet),
+  responses: v.object({
+    "200": v.array(Pet),
+    "400": v.object({
+      code: v.number(),
+      message: v.string(),
+    }),
+  }),
 });
 
 export type get_FindPetsByTags = v.InferOutput<typeof get_FindPetsByTags>;
@@ -117,6 +134,10 @@ export const get_FindPetsByTags = v.object({
     }),
   }),
   response: v.array(Pet),
+  responses: v.object({
+    "200": v.array(Pet),
+    "400": v.unknown(),
+  }),
 });
 
 export type get_GetPetById = v.InferOutput<typeof get_GetPetById>;
@@ -130,6 +151,17 @@ export const get_GetPetById = v.object({
     }),
   }),
   response: Pet,
+  responses: v.object({
+    "200": Pet,
+    "400": v.object({
+      code: v.number(),
+      message: v.string(),
+    }),
+    "404": v.object({
+      code: v.number(),
+      message: v.string(),
+    }),
+  }),
 });
 
 export type post_UpdatePetWithForm = v.InferOutput<typeof post_UpdatePetWithForm>;
@@ -147,6 +179,9 @@ export const post_UpdatePetWithForm = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "405": v.unknown(),
+  }),
 });
 
 export type delete_DeletePet = v.InferOutput<typeof delete_DeletePet>;
@@ -163,6 +198,9 @@ export const delete_DeletePet = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "400": v.unknown(),
+  }),
 });
 
 export type post_UploadFile = v.InferOutput<typeof post_UploadFile>;
@@ -180,6 +218,9 @@ export const post_UploadFile = v.object({
     body: v.string(),
   }),
   response: ApiResponse,
+  responses: v.object({
+    "200": ApiResponse,
+  }),
 });
 
 export type get_GetInventory = v.InferOutput<typeof get_GetInventory>;
@@ -189,6 +230,9 @@ export const get_GetInventory = v.object({
   requestFormat: v.literal("json"),
   parameters: v.never(),
   response: v.record(v.string(), v.number()),
+  responses: v.object({
+    "200": v.record(v.string(), v.number()),
+  }),
 });
 
 export type post_PlaceOrder = v.InferOutput<typeof post_PlaceOrder>;
@@ -200,6 +244,10 @@ export const post_PlaceOrder = v.object({
     body: Order,
   }),
   response: Order,
+  responses: v.object({
+    "200": Order,
+    "405": v.unknown(),
+  }),
 });
 
 export type get_GetOrderById = v.InferOutput<typeof get_GetOrderById>;
@@ -213,6 +261,11 @@ export const get_GetOrderById = v.object({
     }),
   }),
   response: Order,
+  responses: v.object({
+    "200": Order,
+    "400": v.unknown(),
+    "404": v.unknown(),
+  }),
 });
 
 export type delete_DeleteOrder = v.InferOutput<typeof delete_DeleteOrder>;
@@ -226,6 +279,10 @@ export const delete_DeleteOrder = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "400": v.unknown(),
+    "404": v.unknown(),
+  }),
 });
 
 export type post_CreateUser = v.InferOutput<typeof post_CreateUser>;
@@ -237,6 +294,9 @@ export const post_CreateUser = v.object({
     body: User,
   }),
   response: User,
+  responses: v.object({
+    default: User,
+  }),
 });
 
 export type post_CreateUsersWithListInput = v.InferOutput<typeof post_CreateUsersWithListInput>;
@@ -248,6 +308,10 @@ export const post_CreateUsersWithListInput = v.object({
     body: v.array(User),
   }),
   response: User,
+  responses: v.object({
+    "200": User,
+    default: v.unknown(),
+  }),
 });
 
 export type get_LoginUser = v.InferOutput<typeof get_LoginUser>;
@@ -262,6 +326,10 @@ export const get_LoginUser = v.object({
     }),
   }),
   response: v.string(),
+  responses: v.object({
+    "200": v.string(),
+    "400": v.unknown(),
+  }),
   responseHeaders: v.object({
     "x-rate-limit": v.number(),
     "x-expires-after": v.string(),
@@ -275,6 +343,9 @@ export const get_LogoutUser = v.object({
   requestFormat: v.literal("json"),
   parameters: v.never(),
   response: v.unknown(),
+  responses: v.object({
+    default: v.unknown(),
+  }),
 });
 
 export type get_GetUserByName = v.InferOutput<typeof get_GetUserByName>;
@@ -288,6 +359,11 @@ export const get_GetUserByName = v.object({
     }),
   }),
   response: User,
+  responses: v.object({
+    "200": User,
+    "400": v.unknown(),
+    "404": v.unknown(),
+  }),
 });
 
 export type put_UpdateUser = v.InferOutput<typeof put_UpdateUser>;
@@ -302,6 +378,9 @@ export const put_UpdateUser = v.object({
     body: User,
   }),
   response: v.unknown(),
+  responses: v.object({
+    default: v.unknown(),
+  }),
 });
 
 export type delete_DeleteUser = v.InferOutput<typeof delete_DeleteUser>;
@@ -315,6 +394,10 @@ export const delete_DeleteUser = v.object({
     }),
   }),
   response: v.unknown(),
+  responses: v.object({
+    "400": v.unknown(),
+    "404": v.unknown(),
+  }),
 });
 
 export type __ENDPOINTS_END__ = v.InferOutput<typeof __ENDPOINTS_END__>;
@@ -376,6 +459,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
 
@@ -391,10 +475,73 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+export const successStatusCodes = [
+  200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308,
+] as const;
+export type SuccessStatusCode = (typeof successStatusCodes)[number];
+
+export const errorStatusCodes = [
+  400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 421, 422, 423, 424,
+  425, 426, 428, 429, 431, 451, 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511,
+] as const;
+export type ErrorStatusCode = (typeof errorStatusCodes)[number];
+
+// Error handling types
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+  ok: true;
+  status: TStatusCode;
+  data: TSuccess;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TSuccess>;
+}
+
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+  ok: false;
+  status: TStatusCode;
+  data: TData;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TData>;
+}
+
+export type TypedApiResponse<
+  TSuccess,
+  TAllResponses extends Record<string | number, unknown> = {},
+> = keyof TAllResponses extends never
+  ? SuccessResponse<TSuccess, number>
+  : {
+      [K in keyof TAllResponses]: K extends string
+        ? K extends `${infer TStatusCode extends number}`
+          ? TStatusCode extends SuccessStatusCode
+            ? SuccessResponse<TSuccess, TStatusCode>
+            : ErrorResponse<TAllResponses[K], TStatusCode>
+          : never
+        : K extends number
+          ? K extends SuccessStatusCode
+            ? SuccessResponse<TSuccess, K>
+            : ErrorResponse<TAllResponses[K], K>
+          : never;
+    }[keyof TAllResponses];
+
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+  ? TResponses extends Record<string, unknown>
+    ? TypedApiResponse<TSuccess, TResponses>
+    : SuccessResponse<TSuccess, number>
+  : TEndpoint extends { response: infer TSuccess }
+    ? SuccessResponse<TSuccess, number>
+    : never;
+
+export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
+  SafeApiResponse<TEndpoint>,
+  { status: TStatusCode }
+>;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -404,9 +551,23 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // </ApiClientTypes>
 
+// <TypedResponseError>
+export class TypedResponseError extends Error {
+  response: ErrorResponse<unknown, ErrorStatusCode>;
+  status: number;
+  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+    super(`HTTP ${response.status}: ${response.statusText}`);
+    this.name = "TypedResponseError";
+    this.response = response;
+    this.status = response.status;
+  }
+}
+// </TypedResponseError>
 // <ApiClient>
 export class ApiClient {
   baseUrl: string = "";
+  successStatusCodes = successStatusCodes;
+  errorStatusCodes = errorStatusCodes;
 
   constructor(public fetcher: Fetcher) {}
 
@@ -426,44 +587,180 @@ export class ApiClient {
   // <ApiClient.put>
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
-  ): Promise<v.InferOutput<TEndpoint>["response"]> {
-    return this.fetcher("put", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<v.InferOutput<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "put",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
   }
   // </ApiClient.put>
 
   // <ApiClient.post>
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
-  ): Promise<v.InferOutput<TEndpoint>["response"]> {
-    return this.fetcher("post", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<v.InferOutput<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "post",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
   }
   // </ApiClient.post>
 
   // <ApiClient.get>
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
-  ): Promise<v.InferOutput<TEndpoint>["response"]> {
-    return this.fetcher("get", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<v.InferOutput<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "get",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
   }
   // </ApiClient.get>
 
   // <ApiClient.delete>
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
-  ): Promise<v.InferOutput<TEndpoint>["response"]> {
-    return this.fetcher("delete", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<v.InferOutput<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "delete",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
   }
   // </ApiClient.delete>
 
@@ -479,13 +776,10 @@ export class ApiClient {
     method: TMethod,
     path: TPath,
     ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
-  ): Promise<
-    Omit<Response, "json"> & {
-      /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
-      json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
-    }
-  > {
-    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters);
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters) as Promise<
+      SafeApiResponse<TEndpoint>
+    >;
   }
   // </ApiClient.request>
 }
@@ -502,6 +796,21 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
  api.get("/users").then((users) => console.log(users));
  api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
  api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+
+ // With error handling
+ const result = await api.get("/users/{id}", { path: { id: "123" }, withResponse: true });
+ if (result.ok) {
+   // Access data directly
+   const user = result.data;
+   console.log(user);
+
+   // Or use the json() method for compatibility
+   const userFromJson = await result.json();
+   console.log(userFromJson);
+ } else {
+   const error = result.data;
+   console.error(`Error ${result.status}:`, error);
+ }
 */
 
-// </ApiClient
+// </ApiClient>

@@ -7,12 +7,21 @@ import { generateTanstackQueryFile } from "../src/tanstack-query.generator.ts";
 describe("generator", () => {
   test("petstore", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
-    expect(await generateTanstackQueryFile({
-      ...mapOpenApiEndpoints(openApiDoc),
-      relativeApiClientPath: "./api.client.ts"
-    })).toMatchInlineSnapshot(`
+    expect(
+      await generateTanstackQueryFile({
+        ...mapOpenApiEndpoints(openApiDoc),
+        relativeApiClientPath: "./api.client.ts",
+      }),
+    ).toMatchInlineSnapshot(`
       "import { queryOptions } from "@tanstack/react-query";
-      import type { EndpointByMethod, ApiClient } from "./api.client.ts";
+      import type {
+        EndpointByMethod,
+        ApiClient,
+        SuccessStatusCode,
+        ErrorStatusCode,
+        InferResponseByStatus,
+      } from "./api.client.ts";
+      import { errorStatusCodes, TypedResponseError } from "./api.client.ts";
 
       type EndpointQueryKey<TOptions extends EndpointParameters> = [
         TOptions & {
@@ -77,30 +86,36 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ) {
-          const queryKey = createQueryKey(path, params[0]);
+          const queryKey = createQueryKey(path as string, params[0]);
           const query = {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             queryKey,
+            queryFn: {} as "You need to pass .queryOptions to the useQuery hook",
             queryOptions: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
-                const res = await this.client.put(path, {
-                  ...params,
-                  ...queryKey[0],
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
                   signal,
-                });
+                  withResponse: false as const,
+                };
+                const res = await this.client.put(path, requestParams);
                 return res as TEndpoint["response"];
               },
               queryKey: queryKey,
             }),
+            mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
             mutationOptions: {
               mutationKey: queryKey,
               mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const res = await this.client.put(path, {
-                  ...params,
-                  ...queryKey[0],
-                  ...localOptions,
-                });
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
+                  ...(localOptions || {}),
+                  withResponse: false as const,
+                };
+                const res = await this.client.put(path, requestParams);
                 return res as TEndpoint["response"];
               },
             },
@@ -115,30 +130,36 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ) {
-          const queryKey = createQueryKey(path, params[0]);
+          const queryKey = createQueryKey(path as string, params[0]);
           const query = {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             queryKey,
+            queryFn: {} as "You need to pass .queryOptions to the useQuery hook",
             queryOptions: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
-                const res = await this.client.post(path, {
-                  ...params,
-                  ...queryKey[0],
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
                   signal,
-                });
+                  withResponse: false as const,
+                };
+                const res = await this.client.post(path, requestParams);
                 return res as TEndpoint["response"];
               },
               queryKey: queryKey,
             }),
+            mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
             mutationOptions: {
               mutationKey: queryKey,
               mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const res = await this.client.post(path, {
-                  ...params,
-                  ...queryKey[0],
-                  ...localOptions,
-                });
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
+                  ...(localOptions || {}),
+                  withResponse: false as const,
+                };
+                const res = await this.client.post(path, requestParams);
                 return res as TEndpoint["response"];
               },
             },
@@ -153,30 +174,36 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ) {
-          const queryKey = createQueryKey(path, params[0]);
+          const queryKey = createQueryKey(path as string, params[0]);
           const query = {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             queryKey,
+            queryFn: {} as "You need to pass .queryOptions to the useQuery hook",
             queryOptions: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
-                const res = await this.client.get(path, {
-                  ...params,
-                  ...queryKey[0],
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
                   signal,
-                });
+                  withResponse: false as const,
+                };
+                const res = await this.client.get(path, requestParams);
                 return res as TEndpoint["response"];
               },
               queryKey: queryKey,
             }),
+            mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
             mutationOptions: {
               mutationKey: queryKey,
               mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const res = await this.client.get(path, {
-                  ...params,
-                  ...queryKey[0],
-                  ...localOptions,
-                });
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
+                  ...(localOptions || {}),
+                  withResponse: false as const,
+                };
+                const res = await this.client.get(path, requestParams);
                 return res as TEndpoint["response"];
               },
             },
@@ -191,30 +218,36 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ) {
-          const queryKey = createQueryKey(path, params[0]);
+          const queryKey = createQueryKey(path as string, params[0]);
           const query = {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             queryKey,
+            queryFn: {} as "You need to pass .queryOptions to the useQuery hook",
             queryOptions: queryOptions({
               queryFn: async ({ queryKey, signal }) => {
-                const res = await this.client.delete(path, {
-                  ...params,
-                  ...queryKey[0],
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
                   signal,
-                });
+                  withResponse: false as const,
+                };
+                const res = await this.client.delete(path, requestParams);
                 return res as TEndpoint["response"];
               },
               queryKey: queryKey,
             }),
+            mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
             mutationOptions: {
               mutationKey: queryKey,
               mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const res = await this.client.delete(path, {
-                  ...params,
-                  ...queryKey[0],
-                  ...localOptions,
-                });
+                const requestParams = {
+                  ...(params[0] || {}),
+                  ...(queryKey[0] || {}),
+                  ...(localOptions || {}),
+                  withResponse: false as const,
+                };
+                const res = await this.client.delete(path, requestParams);
                 return res as TEndpoint["response"];
               },
             },
@@ -226,36 +259,87 @@ describe("generator", () => {
 
         // <ApiClient.request>
         /**
-         * Generic mutation method with full type-safety for any endpoint that doesnt require parameters to be passed initially
+         * Generic mutation method with full type-safety for any endpoint; it doesnt require parameters to be passed initially
+         * but instead will require them to be passed when calling the mutation.mutate() method
          */
         mutation<
           TMethod extends keyof EndpointByMethod,
           TPath extends keyof EndpointByMethod[TMethod],
           TEndpoint extends EndpointByMethod[TMethod][TPath],
-          TSelection,
+          TWithResponse extends boolean = false,
+          TSelection = TWithResponse extends true
+            ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
+            : TEndpoint extends { response: infer Res }
+              ? Res
+              : never,
+          TError = TEndpoint extends { responses: infer TResponses }
+            ? TResponses extends Record<string | number, unknown>
+              ? InferResponseByStatus<TEndpoint, ErrorStatusCode>
+              : Error
+            : Error,
         >(
           method: TMethod,
           path: TPath,
-          selectFn?: (
-            res: Omit<Response, "json"> & {
-              /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
-              json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
-            },
-          ) => TSelection,
+          options?: {
+            withResponse?: TWithResponse;
+            selectFn?: (
+              res: TWithResponse extends true
+                ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
+                : TEndpoint extends { response: infer Res }
+                  ? Res
+                  : never,
+            ) => TSelection;
+            throwOnStatusError?: boolean;
+          },
         ) {
           const mutationKey = [{ method, path }] as const;
           return {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             mutationKey: mutationKey,
+            mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
             mutationOptions: {
               mutationKey: mutationKey,
-              mutationFn: async (params: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const response = await this.client.request(method, path, params);
-                const res = selectFn ? selectFn(response) : response;
-                return res as unknown extends TSelection ? typeof response : Awaited<TSelection>;
+              mutationFn: async <
+                TLocalWithResponse extends boolean = TWithResponse,
+                TLocalSelection = TLocalWithResponse extends true
+                  ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
+                  : TEndpoint extends { response: infer Res }
+                    ? Res
+                    : never,
+              >(
+                params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
+                  withResponse?: TLocalWithResponse;
+                  throwOnStatusError?: boolean;
+                },
+              ): Promise<TLocalSelection> => {
+                const withResponse = params.withResponse ?? options?.withResponse ?? false;
+                const throwOnStatusError =
+                  params.throwOnStatusError ?? options?.throwOnStatusError ?? (withResponse ? false : true);
+                const selectFn = options?.selectFn;
+                const response = await (this.client as any)[method](path, {
+                  ...(params as any),
+                  withResponse: true,
+                  throwOnStatusError: false,
+                });
+
+                if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+                  throw new TypedResponseError(response as never);
+                }
+
+                // Return just the data if withResponse is false, otherwise return the full response
+                const finalResponse = withResponse ? response : response.data;
+                const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
+                return res as never;
               },
-            },
+            } satisfies import("@tanstack/react-query").UseMutationOptions<
+              TSelection,
+              TError,
+              (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
+                withResponse?: boolean;
+                throwOnStatusError?: boolean;
+              }
+            >,
           };
         }
         // </ApiClient.request>

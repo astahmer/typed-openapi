@@ -1743,6 +1743,11 @@ export const get_ContainerList = t.type({
     }),
   }),
   response: t.array(ContainerSummary),
+  responses: t.type({
+    "200": t.array(ContainerSummary),
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerCreate = t.TypeOf<typeof post_ContainerCreate>;
@@ -1764,6 +1769,13 @@ export const post_ContainerCreate = t.type({
     ]),
   }),
   response: ContainerCreateResponse,
+  responses: t.type({
+    "201": ContainerCreateResponse,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ContainerInspect = t.TypeOf<typeof get_ContainerInspect>;
@@ -1806,6 +1818,37 @@ export const get_ContainerInspect = t.type({
     Config: t.union([t.undefined, ContainerConfig]),
     NetworkSettings: t.union([t.undefined, NetworkSettings]),
   }),
+  responses: t.type({
+    "200": t.type({
+      Id: t.union([t.undefined, t.string]),
+      Created: t.union([t.undefined, t.string]),
+      Path: t.union([t.undefined, t.string]),
+      Args: t.union([t.undefined, t.array(t.string)]),
+      State: t.union([t.undefined, ContainerState]),
+      Image: t.union([t.undefined, t.string]),
+      ResolvConfPath: t.union([t.undefined, t.string]),
+      HostnamePath: t.union([t.undefined, t.string]),
+      HostsPath: t.union([t.undefined, t.string]),
+      LogPath: t.union([t.undefined, t.string]),
+      Name: t.union([t.undefined, t.string]),
+      RestartCount: t.union([t.undefined, t.number]),
+      Driver: t.union([t.undefined, t.string]),
+      Platform: t.union([t.undefined, t.string]),
+      MountLabel: t.union([t.undefined, t.string]),
+      ProcessLabel: t.union([t.undefined, t.string]),
+      AppArmorProfile: t.union([t.undefined, t.string]),
+      ExecIDs: t.union([t.undefined, t.union([t.array(t.string), t.null])]),
+      HostConfig: t.union([t.undefined, HostConfig]),
+      GraphDriver: t.union([t.undefined, GraphDriverData]),
+      SizeRw: t.union([t.undefined, t.number]),
+      SizeRootFs: t.union([t.undefined, t.number]),
+      Mounts: t.union([t.undefined, t.array(MountPoint)]),
+      Config: t.union([t.undefined, ContainerConfig]),
+      NetworkSettings: t.union([t.undefined, NetworkSettings]),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ContainerTop = t.TypeOf<typeof get_ContainerTop>;
@@ -1824,6 +1867,14 @@ export const get_ContainerTop = t.type({
   response: t.type({
     Titles: t.union([t.undefined, t.array(t.string)]),
     Processes: t.union([t.undefined, t.array(t.array(t.string))]),
+  }),
+  responses: t.type({
+    "200": t.type({
+      Titles: t.union([t.undefined, t.array(t.string)]),
+      Processes: t.union([t.undefined, t.array(t.array(t.string))]),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
   }),
 });
 
@@ -1847,6 +1898,11 @@ export const get_ContainerLogs = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": t.unknown,
+    "500": t.unknown,
+  }),
 });
 
 export type get_ContainerChanges = t.TypeOf<typeof get_ContainerChanges>;
@@ -1860,6 +1916,11 @@ export const get_ContainerChanges = t.type({
     }),
   }),
   response: t.array(FilesystemChange),
+  responses: t.type({
+    "200": t.array(FilesystemChange),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ContainerExport = t.TypeOf<typeof get_ContainerExport>;
@@ -1873,6 +1934,11 @@ export const get_ContainerExport = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": t.unknown,
+    "500": t.unknown,
+  }),
 });
 
 export type get_ContainerStats = t.TypeOf<typeof get_ContainerStats>;
@@ -1890,6 +1956,11 @@ export const get_ContainerStats = t.type({
     }),
   }),
   response: t.record(t.string, t.unknown),
+  responses: t.type({
+    "200": t.record(t.string, t.unknown),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerResize = t.TypeOf<typeof post_ContainerResize>;
@@ -1907,6 +1978,11 @@ export const post_ContainerResize = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": t.unknown,
+    "500": t.unknown,
+  }),
 });
 
 export type post_ContainerStart = t.TypeOf<typeof post_ContainerStart>;
@@ -1923,6 +1999,12 @@ export const post_ContainerStart = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "304": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerStop = t.TypeOf<typeof post_ContainerStop>;
@@ -1940,6 +2022,12 @@ export const post_ContainerStop = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "304": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerRestart = t.TypeOf<typeof post_ContainerRestart>;
@@ -1957,6 +2045,11 @@ export const post_ContainerRestart = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerKill = t.TypeOf<typeof post_ContainerKill>;
@@ -1973,6 +2066,12 @@ export const post_ContainerKill = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerUpdate = t.TypeOf<typeof post_ContainerUpdate>;
@@ -1994,6 +2093,13 @@ export const post_ContainerUpdate = t.type({
   response: t.type({
     Warnings: t.union([t.undefined, t.array(t.string)]),
   }),
+  responses: t.type({
+    "200": t.type({
+      Warnings: t.union([t.undefined, t.array(t.string)]),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerRename = t.TypeOf<typeof post_ContainerRename>;
@@ -2010,6 +2116,12 @@ export const post_ContainerRename = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerPause = t.TypeOf<typeof post_ContainerPause>;
@@ -2023,6 +2135,11 @@ export const post_ContainerPause = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerUnpause = t.TypeOf<typeof post_ContainerUnpause>;
@@ -2036,6 +2153,11 @@ export const post_ContainerUnpause = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerAttach = t.TypeOf<typeof post_ContainerAttach>;
@@ -2057,6 +2179,13 @@ export const post_ContainerAttach = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "101": t.unknown,
+    "200": t.unknown,
+    "400": t.unknown,
+    "404": t.unknown,
+    "500": t.unknown,
+  }),
 });
 
 export type get_ContainerAttachWebsocket = t.TypeOf<typeof get_ContainerAttachWebsocket>;
@@ -2078,6 +2207,13 @@ export const get_ContainerAttachWebsocket = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "101": t.unknown,
+    "200": t.unknown,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerWait = t.TypeOf<typeof post_ContainerWait>;
@@ -2097,6 +2233,12 @@ export const post_ContainerWait = t.type({
     }),
   }),
   response: ContainerWaitResponse,
+  responses: t.type({
+    "200": ContainerWaitResponse,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type delete_ContainerDelete = t.TypeOf<typeof delete_ContainerDelete>;
@@ -2115,6 +2257,13 @@ export const delete_ContainerDelete = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ContainerArchive = t.TypeOf<typeof get_ContainerArchive>;
@@ -2131,6 +2280,12 @@ export const get_ContainerArchive = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "400": t.unknown,
+    "404": t.unknown,
+    "500": t.unknown,
+  }),
 });
 
 export type put_PutContainerArchive = t.TypeOf<typeof put_PutContainerArchive>;
@@ -2150,6 +2305,13 @@ export const put_PutContainerArchive = t.type({
     body: t.string,
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "400": ErrorResponse,
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type head_ContainerArchiveInfo = t.TypeOf<typeof head_ContainerArchiveInfo>;
@@ -2166,6 +2328,12 @@ export const head_ContainerArchiveInfo = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
   responseHeaders: t.type({
     "x-docker-container-path-stat": t.string,
   }),
@@ -2185,6 +2353,13 @@ export const post_ContainerPrune = t.type({
     ContainersDeleted: t.union([t.undefined, t.array(t.string)]),
     SpaceReclaimed: t.union([t.undefined, t.number]),
   }),
+  responses: t.type({
+    "200": t.type({
+      ContainersDeleted: t.union([t.undefined, t.array(t.string)]),
+      SpaceReclaimed: t.union([t.undefined, t.number]),
+    }),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ImageList = t.TypeOf<typeof get_ImageList>;
@@ -2201,6 +2376,10 @@ export const get_ImageList = t.type({
     }),
   }),
   response: t.array(ImageSummary),
+  responses: t.type({
+    "200": t.array(ImageSummary),
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ImageBuild = t.TypeOf<typeof post_ImageBuild>;
@@ -2242,6 +2421,11 @@ export const post_ImageBuild = t.type({
     body: t.string,
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_BuildPrune = t.TypeOf<typeof post_BuildPrune>;
@@ -2259,6 +2443,13 @@ export const post_BuildPrune = t.type({
   response: t.type({
     CachesDeleted: t.union([t.undefined, t.array(t.string)]),
     SpaceReclaimed: t.union([t.undefined, t.number]),
+  }),
+  responses: t.type({
+    "200": t.type({
+      CachesDeleted: t.union([t.undefined, t.array(t.string)]),
+      SpaceReclaimed: t.union([t.undefined, t.number]),
+    }),
+    "500": ErrorResponse,
   }),
 });
 
@@ -2283,6 +2474,11 @@ export const post_ImageCreate = t.type({
     body: t.string,
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ImageInspect = t.TypeOf<typeof get_ImageInspect>;
@@ -2296,6 +2492,11 @@ export const get_ImageInspect = t.type({
     }),
   }),
   response: ImageInspect,
+  responses: t.type({
+    "200": ImageInspect,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ImageHistory = t.TypeOf<typeof get_ImageHistory>;
@@ -2318,6 +2519,20 @@ export const get_ImageHistory = t.type({
       Comment: t.string,
     }),
   ),
+  responses: t.type({
+    "200": t.array(
+      t.type({
+        Id: t.string,
+        Created: t.number,
+        CreatedBy: t.string,
+        Tags: t.array(t.string),
+        Size: t.number,
+        Comment: t.string,
+      }),
+    ),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ImagePush = t.TypeOf<typeof post_ImagePush>;
@@ -2337,6 +2552,11 @@ export const post_ImagePush = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ImageTag = t.TypeOf<typeof post_ImageTag>;
@@ -2354,6 +2574,13 @@ export const post_ImageTag = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "201": t.unknown,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type delete_ImageDelete = t.TypeOf<typeof delete_ImageDelete>;
@@ -2371,6 +2598,12 @@ export const delete_ImageDelete = t.type({
     }),
   }),
   response: t.array(ImageDeleteResponseItem),
+  responses: t.type({
+    "200": t.array(ImageDeleteResponseItem),
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ImageSearch = t.TypeOf<typeof get_ImageSearch>;
@@ -2394,6 +2627,18 @@ export const get_ImageSearch = t.type({
       star_count: t.union([t.undefined, t.number]),
     }),
   ),
+  responses: t.type({
+    "200": t.array(
+      t.type({
+        description: t.union([t.undefined, t.string]),
+        is_official: t.union([t.undefined, t.boolean]),
+        is_automated: t.union([t.undefined, t.boolean]),
+        name: t.union([t.undefined, t.string]),
+        star_count: t.union([t.undefined, t.number]),
+      }),
+    ),
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ImagePrune = t.TypeOf<typeof post_ImagePrune>;
@@ -2410,6 +2655,13 @@ export const post_ImagePrune = t.type({
     ImagesDeleted: t.union([t.undefined, t.array(ImageDeleteResponseItem)]),
     SpaceReclaimed: t.union([t.undefined, t.number]),
   }),
+  responses: t.type({
+    "200": t.type({
+      ImagesDeleted: t.union([t.undefined, t.array(ImageDeleteResponseItem)]),
+      SpaceReclaimed: t.union([t.undefined, t.number]),
+    }),
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_SystemAuth = t.TypeOf<typeof post_SystemAuth>;
@@ -2420,7 +2672,19 @@ export const post_SystemAuth = t.type({
   parameters: t.type({
     body: AuthConfig,
   }),
-  response: t.unknown,
+  response: t.type({
+    Status: t.string,
+    IdentityToken: t.union([t.undefined, t.union([t.string, t.undefined])]),
+  }),
+  responses: t.type({
+    "200": t.type({
+      Status: t.string,
+      IdentityToken: t.union([t.undefined, t.union([t.string, t.undefined])]),
+    }),
+    "204": t.unknown,
+    "401": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_SystemInfo = t.TypeOf<typeof get_SystemInfo>;
@@ -2430,6 +2694,10 @@ export const get_SystemInfo = t.type({
   requestFormat: t.literal("json"),
   parameters: t.never,
   response: SystemInfo,
+  responses: t.type({
+    "200": SystemInfo,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_SystemVersion = t.TypeOf<typeof get_SystemVersion>;
@@ -2439,6 +2707,10 @@ export const get_SystemVersion = t.type({
   requestFormat: t.literal("json"),
   parameters: t.never,
   response: SystemVersion,
+  responses: t.type({
+    "200": SystemVersion,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_SystemPing = t.TypeOf<typeof get_SystemPing>;
@@ -2448,6 +2720,10 @@ export const get_SystemPing = t.type({
   requestFormat: t.literal("json"),
   parameters: t.never,
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "500": t.unknown,
+  }),
   responseHeaders: t.type({
     swarm: t.union([
       t.literal("inactive"),
@@ -2472,6 +2748,10 @@ export const head_SystemPingHead = t.type({
   requestFormat: t.literal("json"),
   parameters: t.never,
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "500": t.unknown,
+  }),
   responseHeaders: t.type({
     swarm: t.union([
       t.literal("inactive"),
@@ -2507,6 +2787,11 @@ export const post_ImageCommit = t.type({
     body: ContainerConfig,
   }),
   response: IdResponse,
+  responses: t.type({
+    "201": IdResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_SystemEvents = t.TypeOf<typeof get_SystemEvents>;
@@ -2522,6 +2807,11 @@ export const get_SystemEvents = t.type({
     }),
   }),
   response: EventMessage,
+  responses: t.type({
+    "200": EventMessage,
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_SystemDataUsage = t.TypeOf<typeof get_SystemDataUsage>;
@@ -2544,6 +2834,16 @@ export const get_SystemDataUsage = t.type({
     Volumes: t.union([t.undefined, t.array(Volume)]),
     BuildCache: t.union([t.undefined, t.array(BuildCache)]),
   }),
+  responses: t.type({
+    "200": t.type({
+      LayersSize: t.union([t.undefined, t.number]),
+      Images: t.union([t.undefined, t.array(ImageSummary)]),
+      Containers: t.union([t.undefined, t.array(ContainerSummary)]),
+      Volumes: t.union([t.undefined, t.array(Volume)]),
+      BuildCache: t.union([t.undefined, t.array(BuildCache)]),
+    }),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ImageGet = t.TypeOf<typeof get_ImageGet>;
@@ -2557,6 +2857,10 @@ export const get_ImageGet = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "500": t.unknown,
+  }),
 });
 
 export type get_ImageGetAll = t.TypeOf<typeof get_ImageGetAll>;
@@ -2570,6 +2874,10 @@ export const get_ImageGetAll = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "500": t.unknown,
+  }),
 });
 
 export type post_ImageLoad = t.TypeOf<typeof post_ImageLoad>;
@@ -2583,6 +2891,10 @@ export const post_ImageLoad = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ContainerExec = t.TypeOf<typeof post_ContainerExec>;
@@ -2609,6 +2921,12 @@ export const post_ContainerExec = t.type({
     }),
   }),
   response: IdResponse,
+  responses: t.type({
+    "201": IdResponse,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_ExecStart = t.TypeOf<typeof post_ExecStart>;
@@ -2627,6 +2945,11 @@ export const post_ExecStart = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": t.unknown,
+    "409": t.unknown,
+  }),
 });
 
 export type post_ExecResize = t.TypeOf<typeof post_ExecResize>;
@@ -2644,6 +2967,12 @@ export const post_ExecResize = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_ExecInspect = t.TypeOf<typeof get_ExecInspect>;
@@ -2669,6 +2998,23 @@ export const get_ExecInspect = t.type({
     ContainerID: t.union([t.undefined, t.string]),
     Pid: t.union([t.undefined, t.number]),
   }),
+  responses: t.type({
+    "200": t.type({
+      CanRemove: t.union([t.undefined, t.boolean]),
+      DetachKeys: t.union([t.undefined, t.string]),
+      ID: t.union([t.undefined, t.string]),
+      Running: t.union([t.undefined, t.boolean]),
+      ExitCode: t.union([t.undefined, t.number]),
+      ProcessConfig: t.union([t.undefined, ProcessConfig]),
+      OpenStdin: t.union([t.undefined, t.boolean]),
+      OpenStderr: t.union([t.undefined, t.boolean]),
+      OpenStdout: t.union([t.undefined, t.boolean]),
+      ContainerID: t.union([t.undefined, t.string]),
+      Pid: t.union([t.undefined, t.number]),
+    }),
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_VolumeList = t.TypeOf<typeof get_VolumeList>;
@@ -2682,6 +3028,10 @@ export const get_VolumeList = t.type({
     }),
   }),
   response: VolumeListResponse,
+  responses: t.type({
+    "200": VolumeListResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_VolumeCreate = t.TypeOf<typeof post_VolumeCreate>;
@@ -2693,6 +3043,10 @@ export const post_VolumeCreate = t.type({
     body: VolumeCreateOptions,
   }),
   response: Volume,
+  responses: t.type({
+    "201": Volume,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_VolumeInspect = t.TypeOf<typeof get_VolumeInspect>;
@@ -2706,6 +3060,11 @@ export const get_VolumeInspect = t.type({
     }),
   }),
   response: Volume,
+  responses: t.type({
+    "200": Volume,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type put_VolumeUpdate = t.TypeOf<typeof put_VolumeUpdate>;
@@ -2725,6 +3084,13 @@ export const put_VolumeUpdate = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type delete_VolumeDelete = t.TypeOf<typeof delete_VolumeDelete>;
@@ -2741,6 +3107,12 @@ export const delete_VolumeDelete = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "404": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_VolumePrune = t.TypeOf<typeof post_VolumePrune>;
@@ -2757,6 +3129,13 @@ export const post_VolumePrune = t.type({
     VolumesDeleted: t.union([t.undefined, t.array(t.string)]),
     SpaceReclaimed: t.union([t.undefined, t.number]),
   }),
+  responses: t.type({
+    "200": t.type({
+      VolumesDeleted: t.union([t.undefined, t.array(t.string)]),
+      SpaceReclaimed: t.union([t.undefined, t.number]),
+    }),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_NetworkList = t.TypeOf<typeof get_NetworkList>;
@@ -2770,6 +3149,10 @@ export const get_NetworkList = t.type({
     }),
   }),
   response: t.array(Network),
+  responses: t.type({
+    "200": t.array(Network),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_NetworkInspect = t.TypeOf<typeof get_NetworkInspect>;
@@ -2787,6 +3170,11 @@ export const get_NetworkInspect = t.type({
     }),
   }),
   response: Network,
+  responses: t.type({
+    "200": Network,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type delete_NetworkDelete = t.TypeOf<typeof delete_NetworkDelete>;
@@ -2800,6 +3188,12 @@ export const delete_NetworkDelete = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_NetworkCreate = t.TypeOf<typeof post_NetworkCreate>;
@@ -2825,6 +3219,15 @@ export const post_NetworkCreate = t.type({
     Id: t.union([t.undefined, t.string]),
     Warning: t.union([t.undefined, t.string]),
   }),
+  responses: t.type({
+    "201": t.type({
+      Id: t.union([t.undefined, t.string]),
+      Warning: t.union([t.undefined, t.string]),
+    }),
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_NetworkConnect = t.TypeOf<typeof post_NetworkConnect>;
@@ -2842,6 +3245,12 @@ export const post_NetworkConnect = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_NetworkDisconnect = t.TypeOf<typeof post_NetworkDisconnect>;
@@ -2859,6 +3268,12 @@ export const post_NetworkDisconnect = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "403": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_NetworkPrune = t.TypeOf<typeof post_NetworkPrune>;
@@ -2874,6 +3289,12 @@ export const post_NetworkPrune = t.type({
   response: t.type({
     NetworksDeleted: t.union([t.undefined, t.array(t.string)]),
   }),
+  responses: t.type({
+    "200": t.type({
+      NetworksDeleted: t.union([t.undefined, t.array(t.string)]),
+    }),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_PluginList = t.TypeOf<typeof get_PluginList>;
@@ -2887,6 +3308,10 @@ export const get_PluginList = t.type({
     }),
   }),
   response: t.array(Plugin),
+  responses: t.type({
+    "200": t.array(Plugin),
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_GetPluginPrivileges = t.TypeOf<typeof get_GetPluginPrivileges>;
@@ -2900,6 +3325,10 @@ export const get_GetPluginPrivileges = t.type({
     }),
   }),
   response: t.array(PluginPrivilege),
+  responses: t.type({
+    "200": t.array(PluginPrivilege),
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginPull = t.TypeOf<typeof post_PluginPull>;
@@ -2918,6 +3347,10 @@ export const post_PluginPull = t.type({
     body: t.array(PluginPrivilege),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_PluginInspect = t.TypeOf<typeof get_PluginInspect>;
@@ -2931,6 +3364,11 @@ export const get_PluginInspect = t.type({
     }),
   }),
   response: Plugin,
+  responses: t.type({
+    "200": Plugin,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type delete_PluginDelete = t.TypeOf<typeof delete_PluginDelete>;
@@ -2947,6 +3385,11 @@ export const delete_PluginDelete = t.type({
     }),
   }),
   response: Plugin,
+  responses: t.type({
+    "200": Plugin,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginEnable = t.TypeOf<typeof post_PluginEnable>;
@@ -2963,6 +3406,11 @@ export const post_PluginEnable = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginDisable = t.TypeOf<typeof post_PluginDisable>;
@@ -2979,6 +3427,11 @@ export const post_PluginDisable = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginUpgrade = t.TypeOf<typeof post_PluginUpgrade>;
@@ -2999,6 +3452,11 @@ export const post_PluginUpgrade = t.type({
     body: t.array(PluginPrivilege),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginCreate = t.TypeOf<typeof post_PluginCreate>;
@@ -3012,6 +3470,10 @@ export const post_PluginCreate = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginPush = t.TypeOf<typeof post_PluginPush>;
@@ -3025,6 +3487,11 @@ export const post_PluginPush = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_PluginSet = t.TypeOf<typeof post_PluginSet>;
@@ -3039,6 +3506,11 @@ export const post_PluginSet = t.type({
     body: t.array(t.string),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type get_NodeList = t.TypeOf<typeof get_NodeList>;
@@ -3052,6 +3524,11 @@ export const get_NodeList = t.type({
     }),
   }),
   response: t.array(Node),
+  responses: t.type({
+    "200": t.array(Node),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_NodeInspect = t.TypeOf<typeof get_NodeInspect>;
@@ -3065,6 +3542,12 @@ export const get_NodeInspect = t.type({
     }),
   }),
   response: Node,
+  responses: t.type({
+    "200": Node,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type delete_NodeDelete = t.TypeOf<typeof delete_NodeDelete>;
@@ -3081,6 +3564,12 @@ export const delete_NodeDelete = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_NodeUpdate = t.TypeOf<typeof post_NodeUpdate>;
@@ -3098,6 +3587,13 @@ export const post_NodeUpdate = t.type({
     body: NodeSpec,
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_SwarmInspect = t.TypeOf<typeof get_SwarmInspect>;
@@ -3107,6 +3603,12 @@ export const get_SwarmInspect = t.type({
   requestFormat: t.literal("json"),
   parameters: t.never,
   response: Swarm,
+  responses: t.type({
+    "200": Swarm,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_SwarmInit = t.TypeOf<typeof post_SwarmInit>;
@@ -3127,6 +3629,12 @@ export const post_SwarmInit = t.type({
     }),
   }),
   response: t.string,
+  responses: t.type({
+    "200": t.string,
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_SwarmJoin = t.TypeOf<typeof post_SwarmJoin>;
@@ -3144,6 +3652,12 @@ export const post_SwarmJoin = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_SwarmLeave = t.TypeOf<typeof post_SwarmLeave>;
@@ -3157,6 +3671,11 @@ export const post_SwarmLeave = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_SwarmUpdate = t.TypeOf<typeof post_SwarmUpdate>;
@@ -3174,6 +3693,12 @@ export const post_SwarmUpdate = t.type({
     body: SwarmSpec,
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "400": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_SwarmUnlockkey = t.TypeOf<typeof get_SwarmUnlockkey>;
@@ -3184,6 +3709,13 @@ export const get_SwarmUnlockkey = t.type({
   parameters: t.never,
   response: t.type({
     UnlockKey: t.union([t.undefined, t.string]),
+  }),
+  responses: t.type({
+    "200": t.type({
+      UnlockKey: t.union([t.undefined, t.string]),
+    }),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
   }),
 });
 
@@ -3198,6 +3730,11 @@ export const post_SwarmUnlock = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_ServiceList = t.TypeOf<typeof get_ServiceList>;
@@ -3212,6 +3749,11 @@ export const get_ServiceList = t.type({
     }),
   }),
   response: t.array(Service),
+  responses: t.type({
+    "200": t.array(Service),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_ServiceCreate = t.TypeOf<typeof post_ServiceCreate>;
@@ -3229,6 +3771,17 @@ export const post_ServiceCreate = t.type({
     ID: t.union([t.undefined, t.string]),
     Warning: t.union([t.undefined, t.string]),
   }),
+  responses: t.type({
+    "201": t.type({
+      ID: t.union([t.undefined, t.string]),
+      Warning: t.union([t.undefined, t.string]),
+    }),
+    "400": ErrorResponse,
+    "403": ErrorResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_ServiceInspect = t.TypeOf<typeof get_ServiceInspect>;
@@ -3245,6 +3798,12 @@ export const get_ServiceInspect = t.type({
     }),
   }),
   response: Service,
+  responses: t.type({
+    "200": Service,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type delete_ServiceDelete = t.TypeOf<typeof delete_ServiceDelete>;
@@ -3258,6 +3817,12 @@ export const delete_ServiceDelete = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_ServiceUpdate = t.TypeOf<typeof post_ServiceUpdate>;
@@ -3283,6 +3848,13 @@ export const post_ServiceUpdate = t.type({
     body: t.intersection([ServiceSpec, t.record(t.string, t.unknown)]),
   }),
   response: ServiceUpdateResponse,
+  responses: t.type({
+    "200": ServiceUpdateResponse,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_ServiceLogs = t.TypeOf<typeof get_ServiceLogs>;
@@ -3305,6 +3877,12 @@ export const get_ServiceLogs = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": t.unknown,
+    "500": t.unknown,
+    "503": t.unknown,
+  }),
 });
 
 export type get_TaskList = t.TypeOf<typeof get_TaskList>;
@@ -3318,6 +3896,11 @@ export const get_TaskList = t.type({
     }),
   }),
   response: t.array(Task),
+  responses: t.type({
+    "200": t.array(Task),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_TaskInspect = t.TypeOf<typeof get_TaskInspect>;
@@ -3331,6 +3914,12 @@ export const get_TaskInspect = t.type({
     }),
   }),
   response: Task,
+  responses: t.type({
+    "200": Task,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_TaskLogs = t.TypeOf<typeof get_TaskLogs>;
@@ -3353,6 +3942,12 @@ export const get_TaskLogs = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "404": t.unknown,
+    "500": t.unknown,
+    "503": t.unknown,
+  }),
 });
 
 export type get_SecretList = t.TypeOf<typeof get_SecretList>;
@@ -3366,6 +3961,11 @@ export const get_SecretList = t.type({
     }),
   }),
   response: t.array(Secret),
+  responses: t.type({
+    "200": t.array(Secret),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_SecretCreate = t.TypeOf<typeof post_SecretCreate>;
@@ -3377,6 +3977,12 @@ export const post_SecretCreate = t.type({
     body: t.intersection([SecretSpec, t.record(t.string, t.unknown)]),
   }),
   response: IdResponse,
+  responses: t.type({
+    "201": IdResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_SecretInspect = t.TypeOf<typeof get_SecretInspect>;
@@ -3390,6 +3996,12 @@ export const get_SecretInspect = t.type({
     }),
   }),
   response: Secret,
+  responses: t.type({
+    "200": Secret,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type delete_SecretDelete = t.TypeOf<typeof delete_SecretDelete>;
@@ -3403,6 +4015,12 @@ export const delete_SecretDelete = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_SecretUpdate = t.TypeOf<typeof post_SecretUpdate>;
@@ -3420,6 +4038,13 @@ export const post_SecretUpdate = t.type({
     body: SecretSpec,
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_ConfigList = t.TypeOf<typeof get_ConfigList>;
@@ -3433,6 +4058,11 @@ export const get_ConfigList = t.type({
     }),
   }),
   response: t.array(Config),
+  responses: t.type({
+    "200": t.array(Config),
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_ConfigCreate = t.TypeOf<typeof post_ConfigCreate>;
@@ -3444,6 +4074,12 @@ export const post_ConfigCreate = t.type({
     body: t.intersection([ConfigSpec, t.record(t.string, t.unknown)]),
   }),
   response: IdResponse,
+  responses: t.type({
+    "201": IdResponse,
+    "409": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_ConfigInspect = t.TypeOf<typeof get_ConfigInspect>;
@@ -3457,6 +4093,12 @@ export const get_ConfigInspect = t.type({
     }),
   }),
   response: Config,
+  responses: t.type({
+    "200": Config,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type delete_ConfigDelete = t.TypeOf<typeof delete_ConfigDelete>;
@@ -3470,6 +4112,12 @@ export const delete_ConfigDelete = t.type({
     }),
   }),
   response: t.unknown,
+  responses: t.type({
+    "204": t.unknown,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type post_ConfigUpdate = t.TypeOf<typeof post_ConfigUpdate>;
@@ -3487,6 +4135,13 @@ export const post_ConfigUpdate = t.type({
     body: ConfigSpec,
   }),
   response: t.unknown,
+  responses: t.type({
+    "200": t.unknown,
+    "400": ErrorResponse,
+    "404": ErrorResponse,
+    "500": ErrorResponse,
+    "503": ErrorResponse,
+  }),
 });
 
 export type get_DistributionInspect = t.TypeOf<typeof get_DistributionInspect>;
@@ -3500,6 +4155,11 @@ export const get_DistributionInspect = t.type({
     }),
   }),
   response: DistributionInspect,
+  responses: t.type({
+    "200": DistributionInspect,
+    "401": ErrorResponse,
+    "500": ErrorResponse,
+  }),
 });
 
 export type post_Session = t.TypeOf<typeof post_Session>;
@@ -3509,6 +4169,11 @@ export const post_Session = t.type({
   requestFormat: t.literal("json"),
   parameters: t.never,
   response: t.unknown,
+  responses: t.type({
+    "101": t.unknown,
+    "400": t.unknown,
+    "500": t.unknown,
+  }),
 });
 
 export type __ENDPOINTS_END__ = t.TypeOf<typeof __ENDPOINTS_END__>;
@@ -3661,6 +4326,7 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   response: unknown;
+  responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
 
@@ -3676,10 +4342,73 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     areParametersRequired: boolean;
   };
   response: TConfig["response"];
+  responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
 
 export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+
+export const successStatusCodes = [
+  200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308,
+] as const;
+export type SuccessStatusCode = (typeof successStatusCodes)[number];
+
+export const errorStatusCodes = [
+  400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 421, 422, 423, 424,
+  425, 426, 428, 429, 431, 451, 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511,
+] as const;
+export type ErrorStatusCode = (typeof errorStatusCodes)[number];
+
+// Error handling types
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+  ok: true;
+  status: TStatusCode;
+  data: TSuccess;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TSuccess>;
+}
+
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+  ok: false;
+  status: TStatusCode;
+  data: TData;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TData>;
+}
+
+export type TypedApiResponse<
+  TSuccess,
+  TAllResponses extends Record<string | number, unknown> = {},
+> = keyof TAllResponses extends never
+  ? SuccessResponse<TSuccess, number>
+  : {
+      [K in keyof TAllResponses]: K extends string
+        ? K extends `${infer TStatusCode extends number}`
+          ? TStatusCode extends SuccessStatusCode
+            ? SuccessResponse<TSuccess, TStatusCode>
+            : ErrorResponse<TAllResponses[K], TStatusCode>
+          : never
+        : K extends number
+          ? K extends SuccessStatusCode
+            ? SuccessResponse<TSuccess, K>
+            : ErrorResponse<TAllResponses[K], K>
+          : never;
+    }[keyof TAllResponses];
+
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+  ? TResponses extends Record<string, unknown>
+    ? TypedApiResponse<TSuccess, TResponses>
+    : SuccessResponse<TSuccess, number>
+  : TEndpoint extends { response: infer TSuccess }
+    ? SuccessResponse<TSuccess, number>
+    : never;
+
+export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
+  SafeApiResponse<TEndpoint>,
+  { status: TStatusCode }
+>;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -3689,9 +4418,23 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // </ApiClientTypes>
 
+// <TypedResponseError>
+export class TypedResponseError extends Error {
+  response: ErrorResponse<unknown, ErrorStatusCode>;
+  status: number;
+  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+    super(`HTTP ${response.status}: ${response.statusText}`);
+    this.name = "TypedResponseError";
+    this.response = response;
+    this.status = response.status;
+  }
+}
+// </TypedResponseError>
 // <ApiClient>
 export class ApiClient {
   baseUrl: string = "";
+  successStatusCodes = successStatusCodes;
+  errorStatusCodes = errorStatusCodes;
 
   constructor(public fetcher: Fetcher) {}
 
@@ -3711,55 +4454,225 @@ export class ApiClient {
   // <ApiClient.get>
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
-  ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("get", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<t.TypeOf<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      t.TypeOf<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<t.TypeOf<TEndpoint>["response"]>;
+
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      t.TypeOf<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "get",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.get>
 
   // <ApiClient.post>
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
-  ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("post", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<t.TypeOf<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      t.TypeOf<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<t.TypeOf<TEndpoint>["response"]>;
+
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      t.TypeOf<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "post",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.post>
 
   // <ApiClient.delete>
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
-  ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("delete", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<t.TypeOf<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      t.TypeOf<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<t.TypeOf<TEndpoint>["response"]>;
+
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      t.TypeOf<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "delete",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.delete>
 
   // <ApiClient.put>
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
-  ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("put", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<t.TypeOf<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      t.TypeOf<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<t.TypeOf<TEndpoint>["response"]>;
+
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      t.TypeOf<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "put",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.put>
 
   // <ApiClient.head>
   head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
-  ): Promise<t.TypeOf<TEndpoint>["response"]> {
-    return this.fetcher("head", this.baseUrl + path, params[0]).then((response) =>
-      this.parseResponse(response),
-    ) as Promise<t.TypeOf<TEndpoint>["response"]>;
+    ...params: MaybeOptionalArg<
+      t.TypeOf<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<t.TypeOf<TEndpoint>["response"]>;
+
+  head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      t.TypeOf<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher(
+      "head",
+      this.baseUrl + path,
+      Object.keys(fetchParams).length ? requestParams : undefined,
+    ).then(async (response) => {
+      const data = await this.parseResponse(response);
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedResponseError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    });
+
+    return promise as Promise<t.TypeOf<TEndpoint>["response"]>;
   }
   // </ApiClient.head>
 
@@ -3775,13 +4688,10 @@ export class ApiClient {
     method: TMethod,
     path: TPath,
     ...params: MaybeOptionalArg<t.TypeOf<TEndpoint>["parameters"]>
-  ): Promise<
-    Omit<Response, "json"> & {
-      /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Request/json) */
-      json: () => Promise<TEndpoint extends { response: infer Res } ? Res : never>;
-    }
-  > {
-    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters);
+  ): Promise<SafeApiResponse<TEndpoint>> {
+    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters) as Promise<
+      SafeApiResponse<TEndpoint>
+    >;
   }
   // </ApiClient.request>
 }
@@ -3798,6 +4708,21 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
  api.get("/users").then((users) => console.log(users));
  api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
  api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+
+ // With error handling
+ const result = await api.get("/users/{id}", { path: { id: "123" }, withResponse: true });
+ if (result.ok) {
+   // Access data directly
+   const user = result.data;
+   console.log(user);
+
+   // Or use the json() method for compatibility
+   const userFromJson = await result.json();
+   console.log(userFromJson);
+ } else {
+   const error = result.data;
+   console.error(`Error ${result.status}:`, error);
+ }
 */
 
-// </ApiClient
+// </ApiClient>

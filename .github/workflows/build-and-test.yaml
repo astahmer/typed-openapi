@@ -24,10 +24,13 @@ jobs:
         run: pnpm build
 
       - name: Run integration test (MSW)
-        run: pnpm test:runtime
+        run: pnpm -F typed-openapi test:runtime
 
       - name: Type check generated client and integration test
-        run: pnpm exec tsc --noEmit tmp/generated-client.ts tests/integration-runtime-msw.test.ts
+        run: pnpm --filter typed-openapi exec tsc -b ./tsconfig.ci.json
 
       - name: Test
         run: pnpm test
+
+      - name: Release package
+        run: pnpm dlx pkg-pr-new publish './packages/typed-openapi'

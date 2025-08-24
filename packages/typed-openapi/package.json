@@ -22,9 +22,9 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "test": "vitest",
-    "test:runtime": "pnpm run generate:runtime && pnpm run test:runtime:run",
-    "generate:runtime": "node bin.js ./tests/samples/petstore.yaml --output ./tmp/generated-client.ts",
+    "generate:runtime": "node bin.js ./tests/samples/petstore.yaml --output ./tmp/generated-client.ts --tanstack generated-tanstack.ts",
     "test:runtime:run": "vitest run tests/integration-runtime-msw.test.ts",
+    "test:runtime": "pnpm run generate:runtime && pnpm run test:runtime:run",
     "fmt": "prettier --write src",
     "typecheck": "tsc -b ./tsconfig.build.json"
   },
@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.4",
+    "@tanstack/react-query": "5.85.0",
     "@types/node": "^22.15.17",
     "@types/prettier": "3.0.0",
     "msw": "2.10.5",
