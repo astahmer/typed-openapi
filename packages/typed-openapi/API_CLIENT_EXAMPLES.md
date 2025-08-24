@@ -2,7 +2,7 @@
 
 These are production-ready API client wrappers for your generated typed-openapi code. Copy the one that fits your needs and customize it.
 
-## Basic API Client (`api-client-example.ts`)
+## Basic API Client ([api-client-example.ts](./tests/api-client.example.ts))
 
 A simple, dependency-free client that handles:
 - Path parameter replacement (`{id}` and `:id` formats)
@@ -51,7 +51,7 @@ const result = await api.get('/protected', {
 });
 ```
 
-## Validating API Client (`api-client-with-validation.ts`)
+## Validating API Client ([api-client-with-validation.ts](./tests/api-client-with-validation.example.ts))
 
 Extends the basic client with schema validation for:
 - Request body validation before sending

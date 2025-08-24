@@ -101,8 +101,5 @@ function replacePathParams(url: string, params: Record<string, string>): string 
     .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || `:${key}`);
 }
 
-// TODO: Uncomment and replace with your generated createApiClient
-// export const api = createApiClient(fetcher, API_BASE_URL);
-
 // Example of how to create the client once you have the generated code:
 // export const api = createApiClient(fetcher, API_BASE_URL);
