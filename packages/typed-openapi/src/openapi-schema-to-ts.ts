@@ -153,7 +153,9 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
           });
         }
 
-        additionalProperties = t.object({ [t.string().value]: additionalPropertiesType! });
+        additionalProperties = t.literal(
+          `Record<string, ${additionalPropertiesType ? additionalPropertiesType.value : t.any().value}>`,
+        );
       }
 
       const hasRequiredArray = schema.required && schema.required.length > 0;
