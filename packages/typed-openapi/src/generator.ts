@@ -487,15 +487,9 @@ export class ApiClient {
         });
 
         return promise ${match(ctx.runtime)
-            .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
-            .with(
-              "arktype",
-              "io-ts",
-              "typebox",
-              "valibot",
-              () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`,
-            )
-            .otherwise(() => `as Promise<TEndpoint["response"]>`)}
+          .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
+          .with("arktype", "io-ts", "typebox", "valibot", () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`)
+          .otherwise(() => `as Promise<TEndpoint["response"]>`)}
     }
     // </ApiClient.${method}>
     `

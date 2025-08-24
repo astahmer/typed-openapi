@@ -10,7 +10,7 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 
 ## Features
 
-- Headless API client, [bring your own fetcher](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets) (fetch, axios, ky, etc...) !
+- Headless API client, [bring your own fetcher](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets) (fetch, axios, ky, etc...) ! (You can generate that file with `--default-fetcher`)
 - Generates a fully typesafe API client with just types by default (instant suggestions)
 - **Type-safe error handling**: with discriminated unions and configurable success/error status codes
 - **withResponse & throwOnStatusError**: Get a union-style response object or throw on configured error status codes, with full type inference
@@ -42,7 +42,7 @@ npx typed-openapi -h
 ```
 
 ```sh
-typed-openapi/1.5.0
+typed-openapi/2.0.0
 
 Usage:
   $ typed-openapi <input>
@@ -58,10 +58,13 @@ Options:
   -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: Type<"arktype" | "io-ts" | "none" | "typebox" | "valibot" | "yup" | "zod"> (default: none)
   --schemas-only                  Only generate schemas, skipping client generation (defaults to false) (default: false)
   --include-client                Include API client types and implementation (defaults to true) (default: true)
-  --success-status-codes <codes>  Comma-separated list of success status codes for type-safe error handling (defaults to 2xx and 3xx ranges)
-  --tanstack [name]               Generate tanstack client with withResponse support for error handling, defaults to false, can optionally specify a name for the generated file
+  --success-status-codes <codes>  Comma-separated list of success status codes (defaults to 2xx and 3xx ranges)
+  --error-status-codes <codes>    Comma-separated list of error status codes (defaults to 4xx and 5xx ranges)
+  --tanstack [name]               Generate tanstack client, defaults to false, can optionally specify a name (will be generated next to the main file) or absolute path for the generated file
+  --default-fetcher [name]        Generate default fetcher, defaults to false, can optionally specify a name (will be generated next to the main file) or absolute path for the generated file
   -h, --help                      Display this message
   -v, --version                   Display version number
+
 ```
 
 ## Non-goals
