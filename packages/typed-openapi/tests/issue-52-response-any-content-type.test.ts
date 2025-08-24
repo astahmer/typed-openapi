@@ -46,5 +46,6 @@ describe("issue-52: response of content type '*/*'", () => {
     expect(endpoint).toBeDefined();
     // The bug: endpoint.response is 'unknown' instead of the correct type
     expect(endpoint?.response).not.toMatchObject({ type: "keyword", value: "unknown" });
+    expect(endpoint?.response).toMatchObject({ type: "array", value: "Array<Response>" });
   });
 });

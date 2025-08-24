@@ -226,7 +226,7 @@ const isAllowedParamMediaTypes = (
   allowedParamMediaTypes.includes(mediaType as any) ||
   mediaType.includes("text/");
 
-const isResponseMediaType = (mediaType: string) => mediaType === "application/json";
+const isResponseMediaType = (mediaType: string) => mediaType === "application/json" || mediaType === "*/*";
 const getAlias = ({ path, method, operation }: Endpoint) =>
   sanitizeName(
     (method + "_" + capitalize(operation.operationId ?? pathToVariableName(path))).replace(/-/g, "__"),
