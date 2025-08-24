@@ -5,7 +5,7 @@ import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { api } from "./api-client.example.js";
-import { createApiClient } from "../tmp/generated-client.ts";
+import { createApiClient, TypedResponseError } from "../tmp/generated-client.ts";
 
 // Mock handler for a real endpoint from petstore.yaml
 const mockPets = [
@@ -71,6 +71,11 @@ describe("minimalist test", () => {
 describe("Example API Client", () => {
   beforeAll(() => {
     api.baseUrl = "http://localhost";
+  });
+
+  it("has access to successStatusCodes and errorStatusCodes", async () => {
+    expect(api.successStatusCodes).toEqual([200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308]);
+    expect(api.errorStatusCodes).toEqual([400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 421, 422, 423, 424, 425, 426, 428, 429, 431, 451, 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511]);
   });
 
   it("should fetch /pet/findByStatus and receive mocked pets", async () => {
@@ -169,7 +174,6 @@ describe("Example API Client", () => {
     });
 
     it("should handle error status codes as error in union (get /pet/findByStatus with error)", async () => {
-      // Simulate error (400) for status=pending
       const errorRes = await api.get("/pet/findByStatus", { query: { status: "pending" }, withResponse: true });
       expect(errorRes.ok).toBe(false);
       expect(errorRes.status).toBe(400);
@@ -177,13 +181,54 @@ describe("Example API Client", () => {
     });
 
     it("should support configurable status codes (simulate 201)", async () => {
-      // Simulate a 200 response for POST /pet (MSW handler returns 200)
       const res = await api.post("/pet", { body: { name: "Created", photoUrls: [] }, withResponse: true });
       expect([200, 201]).toContain(res.status);
       expect(res.ok).toBe(true);
       if (!res.ok) throw new Error("res.ok is false");
 
       expect(res.data.name).toBe("Created");
+    });
+
+    it("should throw when throwOnStatusError is true with withResponse", async () => {
+      let err: unknown;
+      try {
+        await api.get("/pet/{petId}", { path: { petId: 9999 }, withResponse: true, throwOnStatusError: true });
+      } catch (e) {
+        err = e;
+      }
+
+      const error = err as TypedResponseError;
+      expect(error).toBeInstanceOf(TypedResponseError);
+      expect(error.message).toContain("404");
+      expect(error.status).toBe(404);
+      expect(error.response.data).toEqual({ code: 404, message: expect.any(String) });
+      expect(error.response).toBeDefined();
+    });
+
+    it("should not throw when throwOnStatusError is false with withResponse", async () => {
+      const res = await api.get("/pet/{petId}", {
+        path: { petId: 9999 },
+        withResponse: true,
+        throwOnStatusError: false,
+      });
+      expect(res.ok).toBe(false);
+      expect(res.status).toBe(404);
+      expect(res.data).toEqual({ code: 404, message: expect.any(String) });
+    });
+
+    it("should throw by default when withResponse is not set and error status", async () => {
+      let err: unknown;
+      try {
+        await api.get("/pet/{petId}", { path: { petId: 9999 } });
+      } catch (e) {
+        err = e as TypedResponseError;
+      }
+      const error = err as TypedResponseError;
+      expect(error).toBeInstanceOf(TypedResponseError);
+      expect(error.message).toContain("404");
+      expect(error.status).toBe(404);
+      expect(error.response.data).toEqual({ code: 404, message: expect.any(String) });
+      expect(error.response).toBeDefined();
     });
   });
 });

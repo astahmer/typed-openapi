@@ -63,20 +63,11 @@ const fetcher: Fetcher = async (method, apiUrl, params) => {
     });
   }
 
-  const withResponse = params && typeof params === 'object' && 'withResponse' in params && params.withResponse;
   const response = await fetch(url, {
     method: method.toUpperCase(),
     ...(body && { body }),
     headers,
   });
-
-  if (!response.ok && !withResponse) {
-    // You can customize error handling here
-    const error = new Error(`HTTP ${response.status}: ${response.statusText}`);
-    (error as any).response = response;
-    (error as any).status = response.status;
-    throw error;
-  }
 
   return response;
 };

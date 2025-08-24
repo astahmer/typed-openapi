@@ -5,7 +5,10 @@
 Add comprehensive type-safe error handling and configurable status codes
 
 - **Type-safe error handling**: Added discriminated unions for API responses with `SafeApiResponse` and `TypedApiResponse` types that distinguish between success and error responses based on HTTP status codes
+- **TypedResponseError class**: Introduced `TypedResponseError` that extends the native Error class to include typed response data for easier error handling
+- Expose `successStatusCodes` and `errorStatusCodes` arrays on the generated API client instance for runtime access
 - **withResponse parameter**: Enhanced API clients to optionally return both the parsed data and the original Response object for advanced use cases
+- **throwOnStatusError option**: Added `throwOnStatusError` option to automatically throw `TypedResponseError` for error status codes, simplifying error handling in async/await patterns, defaulting to `true` (unless `withResponse` is set to true)
 - **TanStack Query integration**: Added complete TanStack Query client generation with:
   - Advanced mutation options supporting `withResponse` and `selectFn` parameters
   - Automatic error type inference based on OpenAPI error schemas instead of generic Error type
