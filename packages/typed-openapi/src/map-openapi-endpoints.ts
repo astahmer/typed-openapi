@@ -176,7 +176,10 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
 
         // Map response headers
         const headers = responseObj?.headers;
-        const t = createBoxFactory({ type: "object", properties: (headers ?? {}) as never }, ctx);
+        const t = createBoxFactory(
+          { type: "object", properties: (headers ?? {}) as never, required: Object.keys(headers ?? {}) },
+          ctx,
+        );
         if (headers) {
           const mappedHeaders = Object.entries(headers).reduce(
             (acc, [name, headerOrRef]) => {
