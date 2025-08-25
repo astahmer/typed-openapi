@@ -462,7 +462,7 @@ export class ApiClient {
         "valibot",
         () => `InferResponseByStatus<${infer(`TEndpoint`)}, SuccessStatusCode>["data"]`,
       )
-      .otherwise(() => `InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]`)}>;
+      .otherwise(() => `Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]`)}>;
 
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
@@ -504,7 +504,7 @@ export class ApiClient {
             "valibot",
             () => `as Promise<InferResponseByStatus<${infer(`TEndpoint`)}, SuccessStatusCode>["data"]>`,
           )
-          .otherwise(() => `as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>`)}
+          .otherwise(() => `as Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>`)}
     }
     // </ApiClient.${method}>
     `

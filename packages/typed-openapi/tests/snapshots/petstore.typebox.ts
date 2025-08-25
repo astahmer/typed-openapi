@@ -132,6 +132,7 @@ export const get_FindPetsByStatus = Type.Object({
   }),
   responses: Type.Object({
     200: Type.Array(Pet),
+    304: Type.Unknown(),
     400: Type.Object({
       code: Type.Number(),
       message: Type.String(),

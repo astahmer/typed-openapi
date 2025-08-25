@@ -110,6 +110,7 @@ export const get_FindPetsByStatus = {
   }),
   responses: z.object({
     "200": z.array(Pet),
+    "304": z.unknown(),
     "400": z.object({
       code: z.number(),
       message: z.string(),

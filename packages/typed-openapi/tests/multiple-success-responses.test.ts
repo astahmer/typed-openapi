@@ -316,7 +316,7 @@ describe("multiple success responses", () => {
         post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+        ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
         post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
           path: Path,
@@ -349,7 +349,7 @@ describe("multiple success responses", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+          return promise as Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
         }
         // </ApiClient.post>
 

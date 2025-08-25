@@ -127,6 +127,7 @@ export const get_FindPetsByStatus = {
   }),
   responses: y.object({
     "200": y.array(Pet),
+    "304": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": y.object({
       code: y.number().required(),
       message: y.string().required(),

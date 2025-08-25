@@ -74,7 +74,7 @@ describe("generator", () => {
           parameters: {
             query: Partial<{ status: "available" | "pending" | "sold" }>;
           };
-          responses: { 200: Array<Schemas.Pet>; 400: { code: number; message: string } };
+          responses: { 200: Array<Schemas.Pet>; 304: unknown; 400: { code: number; message: string } };
         };
         export type get_FindPetsByTags = {
           method: "GET";
@@ -440,7 +440,7 @@ describe("generator", () => {
         put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+        ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
         put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
           path: Path,
@@ -473,7 +473,7 @@ describe("generator", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+          return promise as Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
         }
         // </ApiClient.put>
 
@@ -481,7 +481,7 @@ describe("generator", () => {
         post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+        ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
         post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
           path: Path,
@@ -514,7 +514,7 @@ describe("generator", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+          return promise as Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
         }
         // </ApiClient.post>
 
@@ -522,7 +522,7 @@ describe("generator", () => {
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+        ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
@@ -555,7 +555,7 @@ describe("generator", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+          return promise as Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
         }
         // </ApiClient.get>
 
@@ -563,7 +563,7 @@ describe("generator", () => {
         delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+        ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
         delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
           path: Path,
@@ -596,7 +596,7 @@ describe("generator", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+          return promise as Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
         }
         // </ApiClient.delete>
 
@@ -1116,7 +1116,7 @@ describe("generator", () => {
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+        ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
@@ -1149,7 +1149,7 @@ describe("generator", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+          return promise as Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
         }
         // </ApiClient.get>
 
@@ -1475,7 +1475,7 @@ describe("generator", () => {
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+        ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
@@ -1508,7 +1508,7 @@ describe("generator", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
+          return promise as Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
         }
         // </ApiClient.get>
 

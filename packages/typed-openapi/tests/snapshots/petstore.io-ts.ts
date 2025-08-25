@@ -114,6 +114,7 @@ export const get_FindPetsByStatus = t.type({
   }),
   responses: t.type({
     "200": t.array(Pet),
+    "304": t.unknown,
     "400": t.type({
       code: t.number,
       message: t.string,

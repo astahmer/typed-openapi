@@ -89,6 +89,7 @@ export const types = scope({
     }),
     responses: type({
       "200": "Pet[]",
+      "304": "unknown",
       "400": type({
         code: "number",
         message: "string",

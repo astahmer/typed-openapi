@@ -101,7 +101,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.put(path, requestParams);
-                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
+                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
               },
               queryKey: queryKey,
             }),
@@ -116,7 +116,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.put(path, requestParams);
-                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
+                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
               },
             },
           };
@@ -145,7 +145,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.post(path, requestParams);
-                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
+                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
               },
               queryKey: queryKey,
             }),
@@ -160,7 +160,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.post(path, requestParams);
-                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
+                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
               },
             },
           };
@@ -189,7 +189,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.get(path, requestParams);
-                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
+                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
               },
               queryKey: queryKey,
             }),
@@ -204,7 +204,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.get(path, requestParams);
-                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
+                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
               },
             },
           };
@@ -233,7 +233,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.delete(path, requestParams);
-                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
+                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
               },
               queryKey: queryKey,
             }),
@@ -248,7 +248,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.delete(path, requestParams);
-                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
+                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
               },
             },
           };
@@ -269,9 +269,7 @@ describe("generator", () => {
           TWithResponse extends boolean = false,
           TSelection = TWithResponse extends true
             ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
-            : TEndpoint extends { response: infer Res }
-              ? Res
-              : never,
+            : Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
           TError = TEndpoint extends { responses: infer TResponses }
             ? TResponses extends Record<string | number, unknown>
               ? InferResponseByStatus<TEndpoint, ErrorStatusCode>
@@ -285,9 +283,7 @@ describe("generator", () => {
             selectFn?: (
               res: TWithResponse extends true
                 ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
-                : TEndpoint extends { response: infer Res }
-                  ? Res
-                  : never,
+                : Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
             ) => TSelection;
             throwOnStatusError?: boolean;
           },
@@ -304,9 +300,7 @@ describe("generator", () => {
                 TLocalWithResponse extends boolean = TWithResponse,
                 TLocalSelection = TLocalWithResponse extends true
                   ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
-                  : TEndpoint extends { response: infer Res }
-                    ? Res
-                    : never,
+                  : Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
               >(
                 params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
                   withResponse?: TLocalWithResponse;

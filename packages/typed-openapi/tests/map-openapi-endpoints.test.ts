@@ -494,6 +494,9 @@ describe("map-openapi-endpoints", () => {
                     },
                     "description": "successful operation",
                   },
+                  "304": {
+                    "description": "not modified",
+                  },
                   "400": {
                     "content": {
                       "application/json": {
@@ -1544,6 +1547,9 @@ describe("map-openapi-endpoints", () => {
                   },
                   "description": "successful operation",
                 },
+                "304": {
+                  "description": "not modified",
+                },
                 "400": {
                   "content": {
                     "application/json": {
@@ -1594,6 +1600,10 @@ describe("map-openapi-endpoints", () => {
               "200": {
                 "type": "array",
                 "value": "Array<Pet>",
+              },
+              "304": {
+                "type": "keyword",
+                "value": "unknown",
               },
               "400": {
                 "type": "object",

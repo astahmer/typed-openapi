@@ -113,6 +113,7 @@ export const get_FindPetsByStatus = v.object({
   }),
   responses: v.object({
     "200": v.array(Pet),
+    "304": v.unknown(),
     "400": v.object({
       code: v.number(),
       message: v.string(),

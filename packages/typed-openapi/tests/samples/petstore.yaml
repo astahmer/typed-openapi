@@ -147,6 +147,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Pet"
+        "304":
+          description: not modified
         "400":
           description: Invalid status value
           content:
