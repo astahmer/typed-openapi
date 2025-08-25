@@ -186,7 +186,7 @@ describe("generator", () => {
             query: Partial<{ username: string; password: string }>;
           };
           responses: { 200: string; 400: unknown };
-          responseHeaders: { 200: { "X-Rate-Limit": unknown; "X-Expires-After": unknown }; 400: { "X-Error": unknown } };
+          responseHeaders: { 200: { "X-Rate-Limit": number; "X-Expires-After": string }; 400: { "X-Error": string } };
         };
         export type get_LogoutUser = {
           method: "GET";

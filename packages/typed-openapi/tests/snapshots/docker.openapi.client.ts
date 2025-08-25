@@ -1189,7 +1189,7 @@ export namespace Endpoints {
       path: { id: string };
     };
     responses: { 200: unknown; 400: Schemas.ErrorResponse; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
-    responseHeaders: { 200: { "X-Docker-Container-Path-Stat": unknown } };
+    responseHeaders: { 200: { "X-Docker-Container-Path-Stat": string } };
   };
   export type post_ContainerPrune = {
     method: "POST";
@@ -1411,14 +1411,14 @@ export namespace Endpoints {
     responses: { 200: unknown; 500: unknown };
     responseHeaders: {
       200: {
-        Swarm: unknown;
-        "Docker-Experimental": unknown;
-        "Cache-Control": unknown;
-        Pragma: unknown;
-        "API-Version": unknown;
-        "Builder-Version": unknown;
+        Swarm: "inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager";
+        "Docker-Experimental": boolean;
+        "Cache-Control": string;
+        Pragma: string;
+        "API-Version": string;
+        "Builder-Version": string;
       };
-      500: { "Cache-Control": unknown; Pragma: unknown };
+      500: { "Cache-Control": string; Pragma: string };
     };
   };
   export type head_SystemPingHead = {
@@ -1429,12 +1429,12 @@ export namespace Endpoints {
     responses: { 200: unknown; 500: unknown };
     responseHeaders: {
       200: {
-        Swarm: unknown;
-        "Docker-Experimental": unknown;
-        "Cache-Control": unknown;
-        Pragma: unknown;
-        "API-Version": unknown;
-        "Builder-Version": unknown;
+        Swarm: "inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager";
+        "Docker-Experimental": boolean;
+        "Cache-Control": string;
+        Pragma: string;
+        "API-Version": string;
+        "Builder-Version": string;
       };
     };
   };

@@ -170,20 +170,10 @@ const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, Any
   return str + "}";
 };
 
-const responseHeadersObjectToString = (responseHeaders: Record<string, Box<BoxObject>>, ctx: GeneratorContext) => {
+const responseHeadersObjectToString = (responseHeaders: Record<string, Box<BoxObject>>) => {
   let str = "{";
   for (const [key, responseHeader] of Object.entries(responseHeaders)) {
-    const value =
-      ctx.runtime === "none"
-        ? responseHeader.recompute((box) => {
-            if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
-              box.value = `Schemas.${box.value}`;
-            }
-
-            return box;
-          }).value
-        : responseHeader.value;
-    str += `${wrapWithQuotesIfNeeded(key.toLowerCase())}: ${value},\n`;
+    str += `${wrapWithQuotesIfNeeded(key.toLowerCase())}: ${responseHeader.value},\n`;
   }
   return str + "}";
 };
@@ -245,7 +235,7 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
       ${endpoint.responses ? `responses: ${generateResponsesObject(endpoint.responses, ctx)},` : ""}
       ${
         endpoint.responseHeaders
-          ? `responseHeaders: ${responseHeadersObjectToString(endpoint.responseHeaders, ctx)},`
+          ? `responseHeaders: ${responseHeadersObjectToString(endpoint.responseHeaders)},`
           : ""
       }
     }\n`;
