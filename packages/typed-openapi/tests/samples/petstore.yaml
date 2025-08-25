@@ -554,6 +554,11 @@ paths:
                 type: string
         "400":
           description: Invalid username/password supplied
+          headers:
+            X-Error:
+              description: error code
+              schema:
+                type: string
   /user/logout:
     get:
       tags:

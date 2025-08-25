@@ -1137,6 +1137,14 @@ describe("map-openapi-endpoints", () => {
                   },
                   "400": {
                     "description": "Invalid username/password supplied",
+                    "headers": {
+                      "X-Error": {
+                        "description": "error code",
+                        "schema": {
+                          "type": "string",
+                        },
+                      },
+                    },
                   },
                 },
                 "summary": "Logs user into the system",
@@ -1384,10 +1392,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet",
             "requestFormat": "json",
-            "response": {
-              "type": "ref",
-              "value": "Pet",
-            },
             "responses": {
               "200": {
                 "type": "ref",
@@ -1479,10 +1483,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet",
             "requestFormat": "json",
-            "response": {
-              "type": "ref",
-              "value": "Pet",
-            },
             "responses": {
               "200": {
                 "type": "ref",
@@ -1590,10 +1590,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/findByStatus",
             "requestFormat": "json",
-            "response": {
-              "type": "array",
-              "value": "Array<Pet>",
-            },
             "responses": {
               "200": {
                 "type": "array",
@@ -1677,10 +1673,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/findByTags",
             "requestFormat": "json",
-            "response": {
-              "type": "array",
-              "value": "Array<Pet>",
-            },
             "responses": {
               "200": {
                 "type": "array",
@@ -1805,10 +1797,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/{petId}",
             "requestFormat": "json",
-            "response": {
-              "type": "ref",
-              "value": "Pet",
-            },
             "responses": {
               "200": {
                 "type": "ref",
@@ -1894,10 +1882,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/{petId}",
             "requestFormat": "json",
-            "response": {
-              "type": "keyword",
-              "value": "unknown",
-            },
             "responses": {
               "405": {
                 "type": "keyword",
@@ -1968,10 +1952,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/{petId}",
             "requestFormat": "json",
-            "response": {
-              "type": "keyword",
-              "value": "unknown",
-            },
             "responses": {
               "400": {
                 "type": "keyword",
@@ -2063,10 +2043,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/{petId}/uploadImage",
             "requestFormat": "binary",
-            "response": {
-              "type": "ref",
-              "value": "ApiResponse",
-            },
             "responses": {
               "200": {
                 "type": "ref",
@@ -2113,10 +2089,6 @@ describe("map-openapi-endpoints", () => {
             "parameters": undefined,
             "path": "/store/inventory",
             "requestFormat": "json",
-            "response": {
-              "type": "literal",
-              "value": "Record<string, number>",
-            },
             "responses": {
               "200": {
                 "type": "literal",
@@ -2181,10 +2153,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/store/order",
             "requestFormat": "json",
-            "response": {
-              "type": "ref",
-              "value": "Order",
-            },
             "responses": {
               "200": {
                 "type": "ref",
@@ -2256,10 +2224,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/store/order/{orderId}",
             "requestFormat": "json",
-            "response": {
-              "type": "ref",
-              "value": "Order",
-            },
             "responses": {
               "200": {
                 "type": "ref",
@@ -2320,10 +2284,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/store/order/{orderId}",
             "requestFormat": "json",
-            "response": {
-              "type": "keyword",
-              "value": "unknown",
-            },
             "responses": {
               "400": {
                 "type": "keyword",
@@ -2395,10 +2355,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user",
             "requestFormat": "json",
-            "response": {
-              "type": "ref",
-              "value": "User",
-            },
             "responses": {
               "default": {
                 "type": "ref",
@@ -2461,10 +2417,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user/createWithList",
             "requestFormat": "json",
-            "response": {
-              "type": "ref",
-              "value": "User",
-            },
             "responses": {
               "200": {
                 "type": "ref",
@@ -2540,6 +2492,14 @@ describe("map-openapi-endpoints", () => {
                 },
                 "400": {
                   "description": "Invalid username/password supplied",
+                  "headers": {
+                    "X-Error": {
+                      "description": "error code",
+                      "schema": {
+                        "type": "string",
+                      },
+                    },
+                  },
                 },
               },
               "summary": "Logs user into the system",
@@ -2555,18 +2515,14 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user/login",
             "requestFormat": "json",
-            "response": {
-              "type": "keyword",
-              "value": "string",
-            },
             "responseHeaders": {
-              "X-Expires-After": {
-                "type": "keyword",
-                "value": "string",
+              "200": {
+                "type": "object",
+                "value": "{ "X-Rate-Limit": number, "X-Expires-After": string }",
               },
-              "X-Rate-Limit": {
-                "type": "keyword",
-                "value": "number",
+              "400": {
+                "type": "object",
+                "value": "{ "X-Error": string }",
               },
             },
             "responses": {
@@ -2604,10 +2560,6 @@ describe("map-openapi-endpoints", () => {
             "parameters": undefined,
             "path": "/user/logout",
             "requestFormat": "json",
-            "response": {
-              "type": "keyword",
-              "value": "unknown",
-            },
             "responses": {
               "default": {
                 "type": "keyword",
@@ -2674,10 +2626,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user/{username}",
             "requestFormat": "json",
-            "response": {
-              "type": "ref",
-              "value": "User",
-            },
             "responses": {
               "200": {
                 "type": "ref",
@@ -2758,10 +2706,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user/{username}",
             "requestFormat": "json",
-            "response": {
-              "type": "keyword",
-              "value": "unknown",
-            },
             "responses": {
               "default": {
                 "type": "keyword",
@@ -2813,10 +2757,6 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user/{username}",
             "requestFormat": "json",
-            "response": {
-              "type": "keyword",
-              "value": "unknown",
-            },
             "responses": {
               "400": {
                 "type": "keyword",
@@ -2994,10 +2934,6 @@ describe("map-openapi-endpoints", () => {
           },
           "path": "/users/{id}",
           "requestFormat": "json",
-          "response": {
-            "type": "keyword",
-            "value": "unknown",
-          },
           "responses": {
             "200": {
               "type": "keyword",
@@ -3217,10 +3153,6 @@ describe("map-openapi-endpoints", () => {
           },
           "path": "/authentication/refresh",
           "requestFormat": "json",
-          "response": {
-            "type": "ref",
-            "value": "SerializedUserSession",
-          },
           "responses": {
             "200": {
               "type": "ref",

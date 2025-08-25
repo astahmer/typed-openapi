@@ -11,11 +11,13 @@ const runtimes = allowedRuntimes.toJsonSchema().enum;
 
 samples.forEach((sample) => {
   describe(`generate-runtime-${sample}`, async () => {
+    // if (sample !== "petstore") return;
     const filePath = `${__dirname}/samples/${sample}.yaml`;
     const openApiDoc = (await SwaggerParser.parse(filePath)) as OpenAPIObject;
     const ctx = mapOpenApiEndpoints(openApiDoc);
 
     runtimes.forEach((runtime: string) => {
+      // if (runtime !== "none") return
       if (runtime === "arktype" && sample === "docker.openapi") return;
 
       test(`generate ${runtime}`, async () => {

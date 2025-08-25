@@ -117,14 +117,6 @@ const validatingFetcher: Fetcher = async (method, apiUrl, params) => {
     headers,
   });
 
-  if (!response.ok) {
-    // You can customize error handling here
-    const error = new Error(`HTTP ${response.status}: ${response.statusText}`);
-    (error as any).response = response;
-    (error as any).status = response.status;
-    throw error;
-  }
-
   // TODO: Add response validation here
   if (VALIDATE_RESPONSES) {
     try {

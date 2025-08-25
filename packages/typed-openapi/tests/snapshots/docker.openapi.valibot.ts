@@ -1661,7 +1661,6 @@ export const get_ContainerList = v.object({
       filters: v.optional(v.string()),
     }),
   }),
-  response: v.array(ContainerSummary),
   responses: v.object({
     "200": v.array(ContainerSummary),
     "400": ErrorResponse,
@@ -1687,7 +1686,6 @@ export const post_ContainerCreate = v.object({
       }),
     ]),
   }),
-  response: ContainerCreateResponse,
   responses: v.object({
     "201": ContainerCreateResponse,
     "400": ErrorResponse,
@@ -1709,33 +1707,6 @@ export const get_ContainerInspect = v.object({
     path: v.object({
       id: v.string(),
     }),
-  }),
-  response: v.object({
-    Id: v.optional(v.string()),
-    Created: v.optional(v.string()),
-    Path: v.optional(v.string()),
-    Args: v.optional(v.array(v.string())),
-    State: v.optional(ContainerState),
-    Image: v.optional(v.string()),
-    ResolvConfPath: v.optional(v.string()),
-    HostnamePath: v.optional(v.string()),
-    HostsPath: v.optional(v.string()),
-    LogPath: v.optional(v.string()),
-    Name: v.optional(v.string()),
-    RestartCount: v.optional(v.number()),
-    Driver: v.optional(v.string()),
-    Platform: v.optional(v.string()),
-    MountLabel: v.optional(v.string()),
-    ProcessLabel: v.optional(v.string()),
-    AppArmorProfile: v.optional(v.string()),
-    ExecIDs: v.optional(v.union([v.array(v.string()), v.null()])),
-    HostConfig: v.optional(HostConfig),
-    GraphDriver: v.optional(GraphDriverData),
-    SizeRw: v.optional(v.number()),
-    SizeRootFs: v.optional(v.number()),
-    Mounts: v.optional(v.array(MountPoint)),
-    Config: v.optional(ContainerConfig),
-    NetworkSettings: v.optional(NetworkSettings),
   }),
   responses: v.object({
     "200": v.object({
@@ -1783,10 +1754,6 @@ export const get_ContainerTop = v.object({
       id: v.string(),
     }),
   }),
-  response: v.object({
-    Titles: v.optional(v.array(v.string())),
-    Processes: v.optional(v.array(v.array(v.string()))),
-  }),
   responses: v.object({
     "200": v.object({
       Titles: v.optional(v.array(v.string())),
@@ -1816,7 +1783,6 @@ export const get_ContainerLogs = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": v.unknown(),
@@ -1834,7 +1800,6 @@ export const get_ContainerChanges = v.object({
       id: v.string(),
     }),
   }),
-  response: v.array(FilesystemChange),
   responses: v.object({
     "200": v.array(FilesystemChange),
     "404": ErrorResponse,
@@ -1852,7 +1817,6 @@ export const get_ContainerExport = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": v.unknown(),
@@ -1874,7 +1838,6 @@ export const get_ContainerStats = v.object({
       id: v.string(),
     }),
   }),
-  response: v.record(v.string(), v.unknown()),
   responses: v.object({
     "200": v.record(v.string(), v.unknown()),
     "404": ErrorResponse,
@@ -1896,7 +1859,6 @@ export const post_ContainerResize = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": v.unknown(),
@@ -1917,7 +1879,6 @@ export const post_ContainerStart = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "304": v.unknown(),
@@ -1940,7 +1901,6 @@ export const post_ContainerStop = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "304": v.unknown(),
@@ -1963,7 +1923,6 @@ export const post_ContainerRestart = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "404": ErrorResponse,
@@ -1984,7 +1943,6 @@ export const post_ContainerKill = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "404": ErrorResponse,
@@ -2009,9 +1967,6 @@ export const post_ContainerUpdate = v.object({
       }),
     ]),
   }),
-  response: v.object({
-    Warnings: v.optional(v.array(v.string())),
-  }),
   responses: v.object({
     "200": v.object({
       Warnings: v.optional(v.array(v.string())),
@@ -2034,7 +1989,6 @@ export const post_ContainerRename = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "404": ErrorResponse,
@@ -2053,7 +2007,6 @@ export const post_ContainerPause = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "404": ErrorResponse,
@@ -2071,7 +2024,6 @@ export const post_ContainerUnpause = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "404": ErrorResponse,
@@ -2097,7 +2049,6 @@ export const post_ContainerAttach = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "101": v.unknown(),
     "200": v.unknown(),
@@ -2125,7 +2076,6 @@ export const get_ContainerAttachWebsocket = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "101": v.unknown(),
     "200": v.unknown(),
@@ -2148,7 +2098,6 @@ export const post_ContainerWait = v.object({
       id: v.string(),
     }),
   }),
-  response: ContainerWaitResponse,
   responses: v.object({
     "200": ContainerWaitResponse,
     "400": ErrorResponse,
@@ -2172,7 +2121,6 @@ export const delete_ContainerDelete = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "400": ErrorResponse,
@@ -2195,7 +2143,6 @@ export const get_ContainerArchive = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "400": v.unknown(),
@@ -2220,7 +2167,6 @@ export const put_PutContainerArchive = v.object({
     }),
     body: v.string(),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "400": ErrorResponse,
@@ -2243,7 +2189,6 @@ export const head_ContainerArchiveInfo = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "400": ErrorResponse,
@@ -2251,7 +2196,9 @@ export const head_ContainerArchiveInfo = v.object({
     "500": ErrorResponse,
   }),
   responseHeaders: v.object({
-    "x-docker-container-path-stat": v.string(),
+    "200": v.object({
+      "X-Docker-Container-Path-Stat": v.string(),
+    }),
   }),
 });
 
@@ -2264,10 +2211,6 @@ export const post_ContainerPrune = v.object({
     query: v.object({
       filters: v.optional(v.string()),
     }),
-  }),
-  response: v.object({
-    ContainersDeleted: v.optional(v.array(v.string())),
-    SpaceReclaimed: v.optional(v.number()),
   }),
   responses: v.object({
     "200": v.object({
@@ -2291,7 +2234,6 @@ export const get_ImageList = v.object({
       digests: v.optional(v.boolean()),
     }),
   }),
-  response: v.array(ImageSummary),
   responses: v.object({
     "200": v.array(ImageSummary),
     "500": ErrorResponse,
@@ -2336,7 +2278,6 @@ export const post_ImageBuild = v.object({
     }),
     body: v.string(),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "400": ErrorResponse,
@@ -2355,10 +2296,6 @@ export const post_BuildPrune = v.object({
       all: v.optional(v.boolean()),
       filters: v.optional(v.string()),
     }),
-  }),
-  response: v.object({
-    CachesDeleted: v.optional(v.array(v.string())),
-    SpaceReclaimed: v.optional(v.number()),
   }),
   responses: v.object({
     "200": v.object({
@@ -2389,7 +2326,6 @@ export const post_ImageCreate = v.object({
     }),
     body: v.string(),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": ErrorResponse,
@@ -2407,7 +2343,6 @@ export const get_ImageInspect = v.object({
       name: v.string(),
     }),
   }),
-  response: ImageInspect,
   responses: v.object({
     "200": ImageInspect,
     "404": ErrorResponse,
@@ -2425,16 +2360,6 @@ export const get_ImageHistory = v.object({
       name: v.string(),
     }),
   }),
-  response: v.array(
-    v.object({
-      Id: v.string(),
-      Created: v.number(),
-      CreatedBy: v.string(),
-      Tags: v.array(v.string()),
-      Size: v.number(),
-      Comment: v.string(),
-    }),
-  ),
   responses: v.object({
     "200": v.array(
       v.object({
@@ -2467,7 +2392,6 @@ export const post_ImagePush = v.object({
       "X-Registry-Auth": v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": ErrorResponse,
@@ -2489,7 +2413,6 @@ export const post_ImageTag = v.object({
       name: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "201": v.unknown(),
     "400": ErrorResponse,
@@ -2513,7 +2436,6 @@ export const delete_ImageDelete = v.object({
       name: v.string(),
     }),
   }),
-  response: v.array(ImageDeleteResponseItem),
   responses: v.object({
     "200": v.array(ImageDeleteResponseItem),
     "404": ErrorResponse,
@@ -2534,15 +2456,6 @@ export const get_ImageSearch = v.object({
       filters: v.optional(v.union([v.string(), v.undefined()])),
     }),
   }),
-  response: v.array(
-    v.object({
-      description: v.optional(v.string()),
-      is_official: v.optional(v.boolean()),
-      is_automated: v.optional(v.boolean()),
-      name: v.optional(v.string()),
-      star_count: v.optional(v.number()),
-    }),
-  ),
   responses: v.object({
     "200": v.array(
       v.object({
@@ -2567,10 +2480,6 @@ export const post_ImagePrune = v.object({
       filters: v.optional(v.string()),
     }),
   }),
-  response: v.object({
-    ImagesDeleted: v.optional(v.array(ImageDeleteResponseItem)),
-    SpaceReclaimed: v.optional(v.number()),
-  }),
   responses: v.object({
     "200": v.object({
       ImagesDeleted: v.optional(v.array(ImageDeleteResponseItem)),
@@ -2587,10 +2496,6 @@ export const post_SystemAuth = v.object({
   requestFormat: v.literal("json"),
   parameters: v.object({
     body: AuthConfig,
-  }),
-  response: v.object({
-    Status: v.string(),
-    IdentityToken: v.optional(v.union([v.string(), v.undefined()])),
   }),
   responses: v.object({
     "200": v.object({
@@ -2609,7 +2514,6 @@ export const get_SystemInfo = v.object({
   path: v.literal("/info"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  response: SystemInfo,
   responses: v.object({
     "200": SystemInfo,
     "500": ErrorResponse,
@@ -2622,7 +2526,6 @@ export const get_SystemVersion = v.object({
   path: v.literal("/version"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  response: SystemVersion,
   responses: v.object({
     "200": SystemVersion,
     "500": ErrorResponse,
@@ -2635,25 +2538,30 @@ export const get_SystemPing = v.object({
   path: v.literal("/_ping"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "500": v.unknown(),
   }),
   responseHeaders: v.object({
-    swarm: v.union([
-      v.literal("inactive"),
-      v.literal("pending"),
-      v.literal("error"),
-      v.literal("locked"),
-      v.literal("active/worker"),
-      v.literal("active/manager"),
-    ]),
-    "docker-experimental": v.boolean(),
-    "cache-control": v.string(),
-    pragma: v.string(),
-    "api-version": v.string(),
-    "builder-version": v.string(),
+    "200": v.object({
+      Swarm: v.union([
+        v.literal("inactive"),
+        v.literal("pending"),
+        v.literal("error"),
+        v.literal("locked"),
+        v.literal("active/worker"),
+        v.literal("active/manager"),
+      ]),
+      "Docker-Experimental": v.boolean(),
+      "Cache-Control": v.string(),
+      Pragma: v.string(),
+      "API-Version": v.string(),
+      "Builder-Version": v.string(),
+    }),
+    "500": v.object({
+      "Cache-Control": v.string(),
+      Pragma: v.string(),
+    }),
   }),
 });
 
@@ -2663,25 +2571,26 @@ export const head_SystemPingHead = v.object({
   path: v.literal("/_ping"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "500": v.unknown(),
   }),
   responseHeaders: v.object({
-    swarm: v.union([
-      v.literal("inactive"),
-      v.literal("pending"),
-      v.literal("error"),
-      v.literal("locked"),
-      v.literal("active/worker"),
-      v.literal("active/manager"),
-    ]),
-    "docker-experimental": v.boolean(),
-    "cache-control": v.string(),
-    pragma: v.string(),
-    "api-version": v.string(),
-    "builder-version": v.string(),
+    "200": v.object({
+      Swarm: v.union([
+        v.literal("inactive"),
+        v.literal("pending"),
+        v.literal("error"),
+        v.literal("locked"),
+        v.literal("active/worker"),
+        v.literal("active/manager"),
+      ]),
+      "Docker-Experimental": v.boolean(),
+      "Cache-Control": v.string(),
+      Pragma: v.string(),
+      "API-Version": v.string(),
+      "Builder-Version": v.string(),
+    }),
   }),
 });
 
@@ -2702,7 +2611,6 @@ export const post_ImageCommit = v.object({
     }),
     body: ContainerConfig,
   }),
-  response: IdResponse,
   responses: v.object({
     "201": IdResponse,
     "404": ErrorResponse,
@@ -2722,7 +2630,6 @@ export const get_SystemEvents = v.object({
       filters: v.optional(v.string()),
     }),
   }),
-  response: EventMessage,
   responses: v.object({
     "200": EventMessage,
     "400": ErrorResponse,
@@ -2741,13 +2648,6 @@ export const get_SystemDataUsage = v.object({
         v.array(v.union([v.literal("container"), v.literal("image"), v.literal("volume"), v.literal("build-cache")])),
       ),
     }),
-  }),
-  response: v.object({
-    LayersSize: v.optional(v.number()),
-    Images: v.optional(v.array(ImageSummary)),
-    Containers: v.optional(v.array(ContainerSummary)),
-    Volumes: v.optional(v.array(Volume)),
-    BuildCache: v.optional(v.array(BuildCache)),
   }),
   responses: v.object({
     "200": v.object({
@@ -2771,7 +2671,6 @@ export const get_ImageGet = v.object({
       name: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "500": v.unknown(),
@@ -2788,7 +2687,6 @@ export const get_ImageGetAll = v.object({
       names: v.optional(v.array(v.string())),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "500": v.unknown(),
@@ -2805,7 +2703,6 @@ export const post_ImageLoad = v.object({
       quiet: v.optional(v.boolean()),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "500": ErrorResponse,
@@ -2835,7 +2732,6 @@ export const post_ContainerExec = v.object({
       WorkingDir: v.optional(v.string()),
     }),
   }),
-  response: IdResponse,
   responses: v.object({
     "201": IdResponse,
     "404": ErrorResponse,
@@ -2859,7 +2755,6 @@ export const post_ExecStart = v.object({
       ConsoleSize: v.optional(v.union([v.array(v.number()), v.null()])),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": v.unknown(),
@@ -2881,7 +2776,6 @@ export const post_ExecResize = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "400": ErrorResponse,
@@ -2899,19 +2793,6 @@ export const get_ExecInspect = v.object({
     path: v.object({
       id: v.string(),
     }),
-  }),
-  response: v.object({
-    CanRemove: v.optional(v.boolean()),
-    DetachKeys: v.optional(v.string()),
-    ID: v.optional(v.string()),
-    Running: v.optional(v.boolean()),
-    ExitCode: v.optional(v.number()),
-    ProcessConfig: v.optional(ProcessConfig),
-    OpenStdin: v.optional(v.boolean()),
-    OpenStderr: v.optional(v.boolean()),
-    OpenStdout: v.optional(v.boolean()),
-    ContainerID: v.optional(v.string()),
-    Pid: v.optional(v.number()),
   }),
   responses: v.object({
     "200": v.object({
@@ -2942,7 +2823,6 @@ export const get_VolumeList = v.object({
       filters: v.optional(v.string()),
     }),
   }),
-  response: VolumeListResponse,
   responses: v.object({
     "200": VolumeListResponse,
     "500": ErrorResponse,
@@ -2957,7 +2837,6 @@ export const post_VolumeCreate = v.object({
   parameters: v.object({
     body: VolumeCreateOptions,
   }),
-  response: Volume,
   responses: v.object({
     "201": Volume,
     "500": ErrorResponse,
@@ -2974,7 +2853,6 @@ export const get_VolumeInspect = v.object({
       name: v.string(),
     }),
   }),
-  response: Volume,
   responses: v.object({
     "200": Volume,
     "404": ErrorResponse,
@@ -2998,7 +2876,6 @@ export const put_VolumeUpdate = v.object({
       Spec: v.optional(ClusterVolumeSpec),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "400": ErrorResponse,
@@ -3021,7 +2898,6 @@ export const delete_VolumeDelete = v.object({
       name: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "404": ErrorResponse,
@@ -3039,10 +2915,6 @@ export const post_VolumePrune = v.object({
     query: v.object({
       filters: v.optional(v.string()),
     }),
-  }),
-  response: v.object({
-    VolumesDeleted: v.optional(v.array(v.string())),
-    SpaceReclaimed: v.optional(v.number()),
   }),
   responses: v.object({
     "200": v.object({
@@ -3063,7 +2935,6 @@ export const get_NetworkList = v.object({
       filters: v.optional(v.string()),
     }),
   }),
-  response: v.array(Network),
   responses: v.object({
     "200": v.array(Network),
     "500": ErrorResponse,
@@ -3084,7 +2955,6 @@ export const get_NetworkInspect = v.object({
       id: v.string(),
     }),
   }),
-  response: Network,
   responses: v.object({
     "200": Network,
     "404": ErrorResponse,
@@ -3102,7 +2972,6 @@ export const delete_NetworkDelete = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "403": ErrorResponse,
@@ -3130,10 +2999,6 @@ export const post_NetworkCreate = v.object({
       Labels: v.optional(v.union([v.record(v.string(), v.string()), v.undefined()])),
     }),
   }),
-  response: v.object({
-    Id: v.optional(v.string()),
-    Warning: v.optional(v.string()),
-  }),
   responses: v.object({
     "201": v.object({
       Id: v.optional(v.string()),
@@ -3159,7 +3024,6 @@ export const post_NetworkConnect = v.object({
       EndpointConfig: v.optional(EndpointSettings),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "403": ErrorResponse,
@@ -3182,7 +3046,6 @@ export const post_NetworkDisconnect = v.object({
       Force: v.optional(v.boolean()),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "403": ErrorResponse,
@@ -3200,9 +3063,6 @@ export const post_NetworkPrune = v.object({
     query: v.object({
       filters: v.optional(v.string()),
     }),
-  }),
-  response: v.object({
-    NetworksDeleted: v.optional(v.array(v.string())),
   }),
   responses: v.object({
     "200": v.object({
@@ -3222,7 +3082,6 @@ export const get_PluginList = v.object({
       filters: v.optional(v.string()),
     }),
   }),
-  response: v.array(Plugin),
   responses: v.object({
     "200": v.array(Plugin),
     "500": ErrorResponse,
@@ -3239,7 +3098,6 @@ export const get_GetPluginPrivileges = v.object({
       remote: v.string(),
     }),
   }),
-  response: v.array(PluginPrivilege),
   responses: v.object({
     "200": v.array(PluginPrivilege),
     "500": ErrorResponse,
@@ -3261,7 +3119,6 @@ export const post_PluginPull = v.object({
     }),
     body: v.array(PluginPrivilege),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "500": ErrorResponse,
@@ -3278,7 +3135,6 @@ export const get_PluginInspect = v.object({
       name: v.string(),
     }),
   }),
-  response: Plugin,
   responses: v.object({
     "200": Plugin,
     "404": ErrorResponse,
@@ -3299,7 +3155,6 @@ export const delete_PluginDelete = v.object({
       name: v.string(),
     }),
   }),
-  response: Plugin,
   responses: v.object({
     "200": Plugin,
     "404": ErrorResponse,
@@ -3320,7 +3175,6 @@ export const post_PluginEnable = v.object({
       name: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": ErrorResponse,
@@ -3341,7 +3195,6 @@ export const post_PluginDisable = v.object({
       name: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": ErrorResponse,
@@ -3366,7 +3219,6 @@ export const post_PluginUpgrade = v.object({
     }),
     body: v.array(PluginPrivilege),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "404": ErrorResponse,
@@ -3384,7 +3236,6 @@ export const post_PluginCreate = v.object({
       name: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "500": ErrorResponse,
@@ -3401,7 +3252,6 @@ export const post_PluginPush = v.object({
       name: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": ErrorResponse,
@@ -3420,7 +3270,6 @@ export const post_PluginSet = v.object({
     }),
     body: v.array(v.string()),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "404": ErrorResponse,
@@ -3438,7 +3287,6 @@ export const get_NodeList = v.object({
       filters: v.optional(v.string()),
     }),
   }),
-  response: v.array(Node),
   responses: v.object({
     "200": v.array(Node),
     "500": ErrorResponse,
@@ -3456,7 +3304,6 @@ export const get_NodeInspect = v.object({
       id: v.string(),
     }),
   }),
-  response: Node,
   responses: v.object({
     "200": Node,
     "404": ErrorResponse,
@@ -3478,7 +3325,6 @@ export const delete_NodeDelete = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": ErrorResponse,
@@ -3501,7 +3347,6 @@ export const post_NodeUpdate = v.object({
     }),
     body: NodeSpec,
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "400": ErrorResponse,
@@ -3517,7 +3362,6 @@ export const get_SwarmInspect = v.object({
   path: v.literal("/swarm"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  response: Swarm,
   responses: v.object({
     "200": Swarm,
     "404": ErrorResponse,
@@ -3543,7 +3387,6 @@ export const post_SwarmInit = v.object({
       Spec: v.optional(SwarmSpec),
     }),
   }),
-  response: v.string(),
   responses: v.object({
     "200": v.string(),
     "400": ErrorResponse,
@@ -3566,7 +3409,6 @@ export const post_SwarmJoin = v.object({
       JoinToken: v.optional(v.string()),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "400": ErrorResponse,
@@ -3585,7 +3427,6 @@ export const post_SwarmLeave = v.object({
       force: v.optional(v.boolean()),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "500": ErrorResponse,
@@ -3607,7 +3448,6 @@ export const post_SwarmUpdate = v.object({
     }),
     body: SwarmSpec,
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "400": ErrorResponse,
@@ -3622,9 +3462,6 @@ export const get_SwarmUnlockkey = v.object({
   path: v.literal("/swarm/unlockkey"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  response: v.object({
-    UnlockKey: v.optional(v.string()),
-  }),
   responses: v.object({
     "200": v.object({
       UnlockKey: v.optional(v.string()),
@@ -3644,7 +3481,6 @@ export const post_SwarmUnlock = v.object({
       UnlockKey: v.optional(v.string()),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "500": ErrorResponse,
@@ -3663,7 +3499,6 @@ export const get_ServiceList = v.object({
       status: v.optional(v.boolean()),
     }),
   }),
-  response: v.array(Service),
   responses: v.object({
     "200": v.array(Service),
     "500": ErrorResponse,
@@ -3681,10 +3516,6 @@ export const post_ServiceCreate = v.object({
       "X-Registry-Auth": v.optional(v.string()),
     }),
     body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]),
-  }),
-  response: v.object({
-    ID: v.optional(v.string()),
-    Warning: v.optional(v.string()),
   }),
   responses: v.object({
     "201": v.object({
@@ -3712,7 +3543,6 @@ export const get_ServiceInspect = v.object({
       id: v.string(),
     }),
   }),
-  response: Service,
   responses: v.object({
     "200": Service,
     "404": ErrorResponse,
@@ -3731,7 +3561,6 @@ export const delete_ServiceDelete = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": ErrorResponse,
@@ -3759,7 +3588,6 @@ export const post_ServiceUpdate = v.object({
     }),
     body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]),
   }),
-  response: ServiceUpdateResponse,
   responses: v.object({
     "200": ServiceUpdateResponse,
     "400": ErrorResponse,
@@ -3788,7 +3616,6 @@ export const get_ServiceLogs = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": v.unknown(),
@@ -3807,7 +3634,6 @@ export const get_TaskList = v.object({
       filters: v.optional(v.string()),
     }),
   }),
-  response: v.array(Task),
   responses: v.object({
     "200": v.array(Task),
     "500": ErrorResponse,
@@ -3825,7 +3651,6 @@ export const get_TaskInspect = v.object({
       id: v.string(),
     }),
   }),
-  response: Task,
   responses: v.object({
     "200": Task,
     "404": ErrorResponse,
@@ -3853,7 +3678,6 @@ export const get_TaskLogs = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "404": v.unknown(),
@@ -3872,7 +3696,6 @@ export const get_SecretList = v.object({
       filters: v.optional(v.string()),
     }),
   }),
-  response: v.array(Secret),
   responses: v.object({
     "200": v.array(Secret),
     "500": ErrorResponse,
@@ -3888,7 +3711,6 @@ export const post_SecretCreate = v.object({
   parameters: v.object({
     body: v.intersect([SecretSpec, v.record(v.string(), v.unknown())]),
   }),
-  response: IdResponse,
   responses: v.object({
     "201": IdResponse,
     "409": ErrorResponse,
@@ -3907,7 +3729,6 @@ export const get_SecretInspect = v.object({
       id: v.string(),
     }),
   }),
-  response: Secret,
   responses: v.object({
     "200": Secret,
     "404": ErrorResponse,
@@ -3926,7 +3747,6 @@ export const delete_SecretDelete = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "404": ErrorResponse,
@@ -3949,7 +3769,6 @@ export const post_SecretUpdate = v.object({
     }),
     body: SecretSpec,
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "400": ErrorResponse,
@@ -3969,7 +3788,6 @@ export const get_ConfigList = v.object({
       filters: v.optional(v.string()),
     }),
   }),
-  response: v.array(Config),
   responses: v.object({
     "200": v.array(Config),
     "500": ErrorResponse,
@@ -3985,7 +3803,6 @@ export const post_ConfigCreate = v.object({
   parameters: v.object({
     body: v.intersect([ConfigSpec, v.record(v.string(), v.unknown())]),
   }),
-  response: IdResponse,
   responses: v.object({
     "201": IdResponse,
     "409": ErrorResponse,
@@ -4004,7 +3821,6 @@ export const get_ConfigInspect = v.object({
       id: v.string(),
     }),
   }),
-  response: Config,
   responses: v.object({
     "200": Config,
     "404": ErrorResponse,
@@ -4023,7 +3839,6 @@ export const delete_ConfigDelete = v.object({
       id: v.string(),
     }),
   }),
-  response: v.unknown(),
   responses: v.object({
     "204": v.unknown(),
     "404": ErrorResponse,
@@ -4046,7 +3861,6 @@ export const post_ConfigUpdate = v.object({
     }),
     body: ConfigSpec,
   }),
-  response: v.unknown(),
   responses: v.object({
     "200": v.unknown(),
     "400": ErrorResponse,
@@ -4066,7 +3880,6 @@ export const get_DistributionInspect = v.object({
       name: v.string(),
     }),
   }),
-  response: DistributionInspect,
   responses: v.object({
     "200": DistributionInspect,
     "401": ErrorResponse,
@@ -4080,7 +3893,6 @@ export const post_Session = v.object({
   path: v.literal("/session"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  response: v.unknown(),
   responses: v.object({
     "101": v.unknown(),
     "400": v.unknown(),
@@ -4237,7 +4049,6 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
-  response: unknown;
   responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
@@ -4253,7 +4064,6 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     hasParameters: boolean;
     areParametersRequired: boolean;
   };
-  response: TConfig["response"];
   responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
@@ -4271,51 +4081,80 @@ export const errorStatusCodes = [
 ] as const;
 export type ErrorStatusCode = (typeof errorStatusCodes)[number];
 
-// Error handling types
+// Taken from https://github.com/unjs/fetchdts/blob/ec4eaeab5d287116171fc1efd61f4a1ad34e4609/src/fetch.ts#L3
+export interface TypedHeaders<TypedHeaderValues extends Record<string, string> | unknown>
+  extends Omit<Headers, "append" | "delete" | "get" | "getSetCookie" | "has" | "set" | "forEach"> {
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/append) */
+  append: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(
+    name: Name,
+    value: Lowercase<Name> extends keyof TypedHeaderValues ? TypedHeaderValues[Lowercase<Name>] : string,
+  ) => void;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/delete) */
+  delete: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(name: Name) => void;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/get) */
+  get: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(
+    name: Name,
+  ) => (Lowercase<Name> extends keyof TypedHeaderValues ? TypedHeaderValues[Lowercase<Name>] : string) | null;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/getSetCookie) */
+  getSetCookie: () => string[];
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/has) */
+  has: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(name: Name) => boolean;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/set) */
+  set: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(
+    name: Name,
+    value: Lowercase<Name> extends keyof TypedHeaderValues ? TypedHeaderValues[Lowercase<Name>] : string,
+  ) => void;
+  forEach: (
+    callbackfn: (
+      value: TypedHeaderValues[keyof TypedHeaderValues] | (string & {}),
+      key: Extract<keyof TypedHeaderValues, string> | (string & {}),
+      parent: TypedHeaders<TypedHeaderValues>,
+    ) => void,
+    thisArg?: any,
+  ) => void;
+}
+
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders>
+  extends Omit<Response, "ok" | "status" | "json" | "headers"> {
   ok: true;
   status: TStatusCode;
+  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
   data: TSuccess;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TSuccess>;
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedErrorResponse<TData, TStatusCode, THeaders>
+  extends Omit<Response, "ok" | "status" | "json" | "headers"> {
   ok: false;
   status: TStatusCode;
+  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
   data: TData;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TData>;
 }
 
-export type TypedApiResponse<
-  TSuccess,
-  TAllResponses extends Record<string | number, unknown> = {},
-> = keyof TAllResponses extends never
-  ? SuccessResponse<TSuccess, number>
-  : {
-      [K in keyof TAllResponses]: K extends string
-        ? K extends `${infer TStatusCode extends number}`
-          ? TStatusCode extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, TStatusCode>
-            : ErrorResponse<TAllResponses[K], TStatusCode>
-          : never
-        : K extends number
-          ? K extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, K>
-            : ErrorResponse<TAllResponses[K], K>
-          : never;
-    }[keyof TAllResponses];
+export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}, THeaders = {}> = {
+  [K in keyof TAllResponses]: K extends string
+    ? K extends `${infer TStatusCode extends number}`
+      ? TStatusCode extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+        : TypedErrorResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+      : never
+    : K extends number
+      ? K extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
+        : TypedErrorResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
+      : never;
+}[keyof TAllResponses];
 
-export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TSuccess, TResponses>
-    : SuccessResponse<TSuccess, number>
-  : TEndpoint extends { response: infer TSuccess }
-    ? SuccessResponse<TSuccess, number>
-    : never;
+    ? TypedApiResponse<TResponses, TEndpoint extends { responseHeaders: infer THeaders } ? THeaders : never>
+    : never
+  : never;
 
 export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
   SafeApiResponse<TEndpoint>,
@@ -4332,9 +4171,9 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // <TypedResponseError>
 export class TypedResponseError extends Error {
-  response: ErrorResponse<unknown, ErrorStatusCode>;
+  response: TypedErrorResponse<unknown, ErrorStatusCode, unknown>;
   status: number;
-  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+  constructor(response: TypedErrorResponse<unknown, ErrorStatusCode, unknown>) {
     super(`HTTP ${response.status}: ${response.statusText}`);
     this.name = "TypedResponseError";
     this.response = response;
@@ -4369,7 +4208,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -4404,7 +4243,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.get>
 
@@ -4414,7 +4253,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -4449,7 +4288,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.post>
 
@@ -4459,7 +4298,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -4494,7 +4333,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.delete>
 
@@ -4504,7 +4343,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -4539,7 +4378,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.put>
 
@@ -4549,7 +4388,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<v.InferOutput<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
 
   head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
     path: Path,
@@ -4584,7 +4423,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<v.InferOutput<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.head>
 

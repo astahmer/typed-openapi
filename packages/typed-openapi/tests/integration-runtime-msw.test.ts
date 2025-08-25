@@ -56,6 +56,21 @@ const server = setupServer(
     }
     return HttpResponse.text("forbidden", { status: 403 });
   }),
+  // GET with headers
+  http.get("http://localhost/user/login", () => {
+    return HttpResponse.json(
+      {
+        success: true,
+      },
+      {
+        status: 200,
+        headers: {
+          "X-Rate-Limit": "10",
+          "X-Expires-After": "60",
+        },
+      },
+    );
+  }),
 );
 
 beforeAll(() => server.listen());
@@ -148,6 +163,14 @@ describe("Example API Client", () => {
       message: expect.stringContaining("403"),
       status: 403,
     });
+  });
+
+  it("has typed headers", async () => {
+    const result = await api.get("/user/login", { query: {}, withResponse: true });
+    if (result.status !== 200) throw new Error("result.status is not 200");
+
+    expect(result.headers.get("X-Rate-Limit")).toEqual("10");
+    expect(result.headers.get("X-Expires-After")).toEqual("60");
   });
 
   describe("Type-safe error handling and withResponse", () => {
@@ -324,16 +347,16 @@ describe("Example API Client", () => {
       expect(result).toEqual({ id: 42, name: "Spot", photoUrls: [], status: "sold" });
     });
 
-    it("has working typings", () =>{
-        const mutation = tanstack.mutation("get", "/pet/{petId}")
-        // @ts-expect-error
-        mutationOptions(mutation);
-        mutationOptions(mutation.mutationOptions);
+    it("has working typings", () => {
+      const mutation = tanstack.mutation("get", "/pet/{petId}");
+      // @ts-expect-error
+      mutationOptions(mutation);
+      mutationOptions(mutation.mutationOptions);
 
-        const query = tanstack.get("/pet/{petId}",{path:{petId: 42}})
-        // @ts-expect-error
-        queryOptions(query);
-        queryOptions(query.queryOptions);
-    })
+      const query = tanstack.get("/pet/{petId}", { path: { petId: 42 } });
+      // @ts-expect-error
+      queryOptions(query);
+      queryOptions(query.queryOptions);
+    });
   });
 });

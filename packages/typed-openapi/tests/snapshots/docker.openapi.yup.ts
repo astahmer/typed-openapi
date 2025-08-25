@@ -1897,7 +1897,6 @@ export const get_ContainerList = {
       filters: y.string().required().optional(),
     }),
   }),
-  response: y.array(ContainerSummary),
   responses: y.object({
     "200": y.array(ContainerSummary),
     "400": ErrorResponse,
@@ -2001,7 +2000,6 @@ export const post_ContainerCreate = {
       NetworkingConfig: NetworkingConfig.optional(),
     }),
   }),
-  response: ContainerCreateResponse,
   responses: y.object({
     "201": ContainerCreateResponse,
     "400": ErrorResponse,
@@ -2023,40 +2021,6 @@ export const get_ContainerInspect = {
     path: y.object({
       id: y.string().required(),
     }),
-  }),
-  response: y.object({
-    Id: y.string().required().optional(),
-    Created: y.string().required().optional(),
-    Path: y.string().required().optional(),
-    Args: y.array(y.string().required()).optional(),
-    State: ContainerState.optional(),
-    Image: y.string().required().optional(),
-    ResolvConfPath: y.string().required().optional(),
-    HostnamePath: y.string().required().optional(),
-    HostsPath: y.string().required().optional(),
-    LogPath: y.string().required().optional(),
-    Name: y.string().required().optional(),
-    RestartCount: y.number().required().optional(),
-    Driver: y.string().required().optional(),
-    Platform: y.string().required().optional(),
-    MountLabel: y.string().required().optional(),
-    ProcessLabel: y.string().required().optional(),
-    AppArmorProfile: y.string().required().optional(),
-    ExecIDs: y
-      .mixed()
-      .oneOf([
-        y.array(y.string().required()),
-        y.mixed((value): value is any => value === null).required() as y.MixedSchema<null>,
-      ])
-      .required()
-      .optional(),
-    HostConfig: HostConfig.optional(),
-    GraphDriver: GraphDriverData.optional(),
-    SizeRw: y.number().required().optional(),
-    SizeRootFs: y.number().required().optional(),
-    Mounts: y.array(MountPoint).optional(),
-    Config: ContainerConfig.optional(),
-    NetworkSettings: NetworkSettings.optional(),
   }),
   responses: y.object({
     "200": y.object({
@@ -2111,10 +2075,6 @@ export const get_ContainerTop = {
       id: y.string().required(),
     }),
   }),
-  response: y.object({
-    Titles: y.array(y.string().required()).optional(),
-    Processes: y.array(y.array(y.string().required())).optional(),
-  }),
   responses: y.object({
     "200": y.object({
       Titles: y.array(y.string().required()).optional(),
@@ -2144,7 +2104,6 @@ export const get_ContainerLogs = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -2162,7 +2121,6 @@ export const get_ContainerChanges = {
       id: y.string().required(),
     }),
   }),
-  response: y.array(FilesystemChange),
   responses: y.object({
     "200": y.array(FilesystemChange),
     "404": ErrorResponse,
@@ -2180,7 +2138,6 @@ export const get_ContainerExport = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -2202,7 +2159,6 @@ export const get_ContainerStats = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed(/* unsupported */),
   responses: y.object({
     "200": y.mixed(/* unsupported */),
     "404": ErrorResponse,
@@ -2224,7 +2180,6 @@ export const post_ContainerResize = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -2245,7 +2200,6 @@ export const post_ContainerStart = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "304": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -2268,7 +2222,6 @@ export const post_ContainerStop = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "304": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -2291,7 +2244,6 @@ export const post_ContainerRestart = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -2312,7 +2264,6 @@ export const post_ContainerKill = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -2394,9 +2345,6 @@ export const post_ContainerUpdate = {
       RestartPolicy: RestartPolicy.optional(),
     }),
   }),
-  response: y.object({
-    Warnings: y.array(y.string().required()).optional(),
-  }),
   responses: y.object({
     "200": y.object({
       Warnings: y.array(y.string().required()).optional(),
@@ -2419,7 +2367,6 @@ export const post_ContainerRename = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -2438,7 +2385,6 @@ export const post_ContainerPause = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -2456,7 +2402,6 @@ export const post_ContainerUnpause = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -2482,7 +2427,6 @@ export const post_ContainerAttach = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "101": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -2510,7 +2454,6 @@ export const get_ContainerAttachWebsocket = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "101": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -2533,7 +2476,6 @@ export const post_ContainerWait = {
       id: y.string().required(),
     }),
   }),
-  response: ContainerWaitResponse,
   responses: y.object({
     "200": ContainerWaitResponse,
     "400": ErrorResponse,
@@ -2557,7 +2499,6 @@ export const delete_ContainerDelete = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": ErrorResponse,
@@ -2580,7 +2521,6 @@ export const get_ContainerArchive = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -2619,7 +2559,6 @@ export const put_PutContainerArchive = {
     }),
     body: y.string().required(),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": ErrorResponse,
@@ -2642,7 +2581,6 @@ export const head_ContainerArchiveInfo = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": ErrorResponse,
@@ -2650,7 +2588,9 @@ export const head_ContainerArchiveInfo = {
     "500": ErrorResponse,
   }),
   responseHeaders: y.object({
-    "x-docker-container-path-stat": y.string().required(),
+    "200": y.object({
+      "X-Docker-Container-Path-Stat": y.string().required(),
+    }),
   }),
 };
 
@@ -2663,10 +2603,6 @@ export const post_ContainerPrune = {
     query: y.object({
       filters: y.string().required().optional(),
     }),
-  }),
-  response: y.object({
-    ContainersDeleted: y.array(y.string().required()).optional(),
-    SpaceReclaimed: y.number().required().optional(),
   }),
   responses: y.object({
     "200": y.object({
@@ -2690,7 +2626,6 @@ export const get_ImageList = {
       digests: y.boolean().required().optional(),
     }),
   }),
-  response: y.array(ImageSummary),
   responses: y.object({
     "200": y.array(ImageSummary),
     "500": ErrorResponse,
@@ -2738,7 +2673,6 @@ export const post_ImageBuild = {
     }),
     body: y.string().required(),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": ErrorResponse,
@@ -2757,10 +2691,6 @@ export const post_BuildPrune = {
       all: y.boolean().required().optional(),
       filters: y.string().required().optional(),
     }),
-  }),
-  response: y.object({
-    CachesDeleted: y.array(y.string().required()).optional(),
-    SpaceReclaimed: y.number().required().optional(),
   }),
   responses: y.object({
     "200": y.object({
@@ -2791,7 +2721,6 @@ export const post_ImageCreate = {
     }),
     body: y.string().required(),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -2809,7 +2738,6 @@ export const get_ImageInspect = {
       name: y.string().required(),
     }),
   }),
-  response: ImageInspect,
   responses: y.object({
     "200": ImageInspect,
     "404": ErrorResponse,
@@ -2827,16 +2755,6 @@ export const get_ImageHistory = {
       name: y.string().required(),
     }),
   }),
-  response: y.array(
-    y.object({
-      Id: y.string().required(),
-      Created: y.number().required(),
-      CreatedBy: y.string().required(),
-      Tags: y.array(y.string().required()),
-      Size: y.number().required(),
-      Comment: y.string().required(),
-    }),
-  ),
   responses: y.object({
     "200": y.array(
       y.object({
@@ -2869,7 +2787,6 @@ export const post_ImagePush = {
       "X-Registry-Auth": y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -2891,7 +2808,6 @@ export const post_ImageTag = {
       name: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "201": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": ErrorResponse,
@@ -2915,7 +2831,6 @@ export const delete_ImageDelete = {
       name: y.string().required(),
     }),
   }),
-  response: y.array(ImageDeleteResponseItem),
   responses: y.object({
     "200": y.array(ImageDeleteResponseItem),
     "404": ErrorResponse,
@@ -2950,15 +2865,6 @@ export const get_ImageSearch = {
         .optional(),
     }),
   }),
-  response: y.array(
-    y.object({
-      description: y.string().required().optional(),
-      is_official: y.boolean().required().optional(),
-      is_automated: y.boolean().required().optional(),
-      name: y.string().required().optional(),
-      star_count: y.number().required().optional(),
-    }),
-  ),
   responses: y.object({
     "200": y.array(
       y.object({
@@ -2983,10 +2889,6 @@ export const post_ImagePrune = {
       filters: y.string().required().optional(),
     }),
   }),
-  response: y.object({
-    ImagesDeleted: y.array(ImageDeleteResponseItem).optional(),
-    SpaceReclaimed: y.number().required().optional(),
-  }),
   responses: y.object({
     "200": y.object({
       ImagesDeleted: y.array(ImageDeleteResponseItem).optional(),
@@ -3003,14 +2905,6 @@ export const post_SystemAuth = {
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.object({
     body: AuthConfig,
-  }),
-  response: y.object({
-    Status: y.string().required(),
-    IdentityToken: y
-      .mixed()
-      .oneOf([y.string().required(), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-      .required()
-      .optional(),
   }),
   responses: y.object({
     "200": y.object({
@@ -3036,7 +2930,6 @@ export const get_SystemInfo = {
   path: y.mixed((value): value is "/info" => value === "/info").required(),
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
-  response: SystemInfo,
   responses: y.object({
     "200": SystemInfo,
     "500": ErrorResponse,
@@ -3049,7 +2942,6 @@ export const get_SystemVersion = {
   path: y.mixed((value): value is "/version" => value === "/version").required(),
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
-  response: SystemVersion,
   responses: y.object({
     "200": SystemVersion,
     "500": ErrorResponse,
@@ -3062,18 +2954,23 @@ export const get_SystemPing = {
   path: y.mixed((value): value is "/_ping" => value === "/_ping").required(),
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   }),
   responseHeaders: y.object({
-    swarm: y.mixed().oneOf(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).required(),
-    "docker-experimental": y.boolean().required(),
-    "cache-control": y.string().required(),
-    pragma: y.string().required(),
-    "api-version": y.string().required(),
-    "builder-version": y.string().required(),
+    "200": y.object({
+      Swarm: y.mixed().oneOf(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).required(),
+      "Docker-Experimental": y.boolean().required(),
+      "Cache-Control": y.string().required(),
+      Pragma: y.string().required(),
+      "API-Version": y.string().required(),
+      "Builder-Version": y.string().required(),
+    }),
+    "500": y.object({
+      "Cache-Control": y.string().required(),
+      Pragma: y.string().required(),
+    }),
   }),
 };
 
@@ -3083,18 +2980,19 @@ export const head_SystemPingHead = {
   path: y.mixed((value): value is "/_ping" => value === "/_ping").required(),
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   }),
   responseHeaders: y.object({
-    swarm: y.mixed().oneOf(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).required(),
-    "docker-experimental": y.boolean().required(),
-    "cache-control": y.string().required(),
-    pragma: y.string().required(),
-    "api-version": y.string().required(),
-    "builder-version": y.string().required(),
+    "200": y.object({
+      Swarm: y.mixed().oneOf(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).required(),
+      "Docker-Experimental": y.boolean().required(),
+      "Cache-Control": y.string().required(),
+      Pragma: y.string().required(),
+      "API-Version": y.string().required(),
+      "Builder-Version": y.string().required(),
+    }),
   }),
 };
 
@@ -3115,7 +3013,6 @@ export const post_ImageCommit = {
     }),
     body: ContainerConfig,
   }),
-  response: IdResponse,
   responses: y.object({
     "201": IdResponse,
     "404": ErrorResponse,
@@ -3135,7 +3032,6 @@ export const get_SystemEvents = {
       filters: y.string().required().optional(),
     }),
   }),
-  response: EventMessage,
   responses: y.object({
     "200": EventMessage,
     "400": ErrorResponse,
@@ -3152,13 +3048,6 @@ export const get_SystemDataUsage = {
     query: y.object({
       type: y.array(y.mixed().oneOf(["container", "image", "volume", "build-cache"]).required()).optional(),
     }),
-  }),
-  response: y.object({
-    LayersSize: y.number().required().optional(),
-    Images: y.array(ImageSummary).optional(),
-    Containers: y.array(ContainerSummary).optional(),
-    Volumes: y.array(Volume).optional(),
-    BuildCache: y.array(BuildCache).optional(),
   }),
   responses: y.object({
     "200": y.object({
@@ -3182,7 +3071,6 @@ export const get_ImageGet = {
       name: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -3199,7 +3087,6 @@ export const get_ImageGetAll = {
       names: y.array(y.string().required()).optional(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "500": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -3216,7 +3103,6 @@ export const post_ImageLoad = {
       quiet: y.boolean().required().optional(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "500": ErrorResponse,
@@ -3253,7 +3139,6 @@ export const post_ContainerExec = {
       WorkingDir: y.string().required().optional(),
     }),
   }),
-  response: IdResponse,
   responses: y.object({
     "201": IdResponse,
     "404": ErrorResponse,
@@ -3284,7 +3169,6 @@ export const post_ExecStart = {
         .optional(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -3306,7 +3190,6 @@ export const post_ExecResize = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": ErrorResponse,
@@ -3324,19 +3207,6 @@ export const get_ExecInspect = {
     path: y.object({
       id: y.string().required(),
     }),
-  }),
-  response: y.object({
-    CanRemove: y.boolean().required().optional(),
-    DetachKeys: y.string().required().optional(),
-    ID: y.string().required().optional(),
-    Running: y.boolean().required().optional(),
-    ExitCode: y.number().required().optional(),
-    ProcessConfig: ProcessConfig.optional(),
-    OpenStdin: y.boolean().required().optional(),
-    OpenStderr: y.boolean().required().optional(),
-    OpenStdout: y.boolean().required().optional(),
-    ContainerID: y.string().required().optional(),
-    Pid: y.number().required().optional(),
   }),
   responses: y.object({
     "200": y.object({
@@ -3367,7 +3237,6 @@ export const get_VolumeList = {
       filters: y.string().required().optional(),
     }),
   }),
-  response: VolumeListResponse,
   responses: y.object({
     "200": VolumeListResponse,
     "500": ErrorResponse,
@@ -3382,7 +3251,6 @@ export const post_VolumeCreate = {
   parameters: y.object({
     body: VolumeCreateOptions,
   }),
-  response: Volume,
   responses: y.object({
     "201": Volume,
     "500": ErrorResponse,
@@ -3399,7 +3267,6 @@ export const get_VolumeInspect = {
       name: y.string().required(),
     }),
   }),
-  response: Volume,
   responses: y.object({
     "200": Volume,
     "404": ErrorResponse,
@@ -3423,7 +3290,6 @@ export const put_VolumeUpdate = {
       Spec: ClusterVolumeSpec.optional(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": ErrorResponse,
@@ -3446,7 +3312,6 @@ export const delete_VolumeDelete = {
       name: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -3464,10 +3329,6 @@ export const post_VolumePrune = {
     query: y.object({
       filters: y.string().required().optional(),
     }),
-  }),
-  response: y.object({
-    VolumesDeleted: y.array(y.string().required()).optional(),
-    SpaceReclaimed: y.number().required().optional(),
   }),
   responses: y.object({
     "200": y.object({
@@ -3488,7 +3349,6 @@ export const get_NetworkList = {
       filters: y.string().required().optional(),
     }),
   }),
-  response: y.array(Network),
   responses: y.object({
     "200": y.array(Network),
     "500": ErrorResponse,
@@ -3509,7 +3369,6 @@ export const get_NetworkInspect = {
       id: y.string().required(),
     }),
   }),
-  response: Network,
   responses: y.object({
     "200": Network,
     "404": ErrorResponse,
@@ -3527,7 +3386,6 @@ export const delete_NetworkDelete = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "403": ErrorResponse,
@@ -3615,10 +3473,6 @@ export const post_NetworkCreate = {
         .optional(),
     }),
   }),
-  response: y.object({
-    Id: y.string().required().optional(),
-    Warning: y.string().required().optional(),
-  }),
   responses: y.object({
     "201": y.object({
       Id: y.string().required().optional(),
@@ -3644,7 +3498,6 @@ export const post_NetworkConnect = {
       EndpointConfig: EndpointSettings.optional(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "403": ErrorResponse,
@@ -3667,7 +3520,6 @@ export const post_NetworkDisconnect = {
       Force: y.boolean().required().optional(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "403": ErrorResponse,
@@ -3685,9 +3537,6 @@ export const post_NetworkPrune = {
     query: y.object({
       filters: y.string().required().optional(),
     }),
-  }),
-  response: y.object({
-    NetworksDeleted: y.array(y.string().required()).optional(),
   }),
   responses: y.object({
     "200": y.object({
@@ -3707,7 +3556,6 @@ export const get_PluginList = {
       filters: y.string().required().optional(),
     }),
   }),
-  response: y.array(Plugin),
   responses: y.object({
     "200": y.array(Plugin),
     "500": ErrorResponse,
@@ -3724,7 +3572,6 @@ export const get_GetPluginPrivileges = {
       remote: y.string().required(),
     }),
   }),
-  response: y.array(PluginPrivilege),
   responses: y.object({
     "200": y.array(PluginPrivilege),
     "500": ErrorResponse,
@@ -3753,7 +3600,6 @@ export const post_PluginPull = {
     }),
     body: y.array(PluginPrivilege),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "500": ErrorResponse,
@@ -3770,7 +3616,6 @@ export const get_PluginInspect = {
       name: y.string().required(),
     }),
   }),
-  response: Plugin,
   responses: y.object({
     "200": Plugin,
     "404": ErrorResponse,
@@ -3791,7 +3636,6 @@ export const delete_PluginDelete = {
       name: y.string().required(),
     }),
   }),
-  response: Plugin,
   responses: y.object({
     "200": Plugin,
     "404": ErrorResponse,
@@ -3812,7 +3656,6 @@ export const post_PluginEnable = {
       name: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -3833,7 +3676,6 @@ export const post_PluginDisable = {
       name: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -3858,7 +3700,6 @@ export const post_PluginUpgrade = {
     }),
     body: y.array(PluginPrivilege),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -3876,7 +3717,6 @@ export const post_PluginCreate = {
       name: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "500": ErrorResponse,
@@ -3893,7 +3733,6 @@ export const post_PluginPush = {
       name: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -3912,7 +3751,6 @@ export const post_PluginSet = {
     }),
     body: y.array(y.string().required()),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -3930,7 +3768,6 @@ export const get_NodeList = {
       filters: y.string().required().optional(),
     }),
   }),
-  response: y.array(Node),
   responses: y.object({
     "200": y.array(Node),
     "500": ErrorResponse,
@@ -3948,7 +3785,6 @@ export const get_NodeInspect = {
       id: y.string().required(),
     }),
   }),
-  response: Node,
   responses: y.object({
     "200": Node,
     "404": ErrorResponse,
@@ -3970,7 +3806,6 @@ export const delete_NodeDelete = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -3993,7 +3828,6 @@ export const post_NodeUpdate = {
     }),
     body: NodeSpec,
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": ErrorResponse,
@@ -4009,7 +3843,6 @@ export const get_SwarmInspect = {
   path: y.mixed((value): value is "/swarm" => value === "/swarm").required(),
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
-  response: Swarm,
   responses: y.object({
     "200": Swarm,
     "404": ErrorResponse,
@@ -4035,7 +3868,6 @@ export const post_SwarmInit = {
       Spec: SwarmSpec.optional(),
     }),
   }),
-  response: y.string().required(),
   responses: y.object({
     "200": y.string().required(),
     "400": ErrorResponse,
@@ -4058,7 +3890,6 @@ export const post_SwarmJoin = {
       JoinToken: y.string().required().optional(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": ErrorResponse,
@@ -4077,7 +3908,6 @@ export const post_SwarmLeave = {
       force: y.boolean().required().optional(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "500": ErrorResponse,
@@ -4120,7 +3950,6 @@ export const post_SwarmUpdate = {
     }),
     body: SwarmSpec,
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": ErrorResponse,
@@ -4135,9 +3964,6 @@ export const get_SwarmUnlockkey = {
   path: y.mixed((value): value is "/swarm/unlockkey" => value === "/swarm/unlockkey").required(),
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
-  response: y.object({
-    UnlockKey: y.string().required().optional(),
-  }),
   responses: y.object({
     "200": y.object({
       UnlockKey: y.string().required().optional(),
@@ -4157,7 +3983,6 @@ export const post_SwarmUnlock = {
       UnlockKey: y.string().required().optional(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "500": ErrorResponse,
@@ -4176,7 +4001,6 @@ export const get_ServiceList = {
       status: y.boolean().required().optional(),
     }),
   }),
-  response: y.array(Service),
   responses: y.object({
     "200": y.array(Service),
     "500": ErrorResponse,
@@ -4194,10 +4018,6 @@ export const post_ServiceCreate = {
       "X-Registry-Auth": y.string().required().optional(),
     }),
     body: y.mixed(/* unsupported */),
-  }),
-  response: y.object({
-    ID: y.string().required().optional(),
-    Warning: y.string().required().optional(),
   }),
   responses: y.object({
     "201": y.object({
@@ -4225,7 +4045,6 @@ export const get_ServiceInspect = {
       id: y.string().required(),
     }),
   }),
-  response: Service,
   responses: y.object({
     "200": Service,
     "404": ErrorResponse,
@@ -4244,7 +4063,6 @@ export const delete_ServiceDelete = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -4286,7 +4104,6 @@ export const post_ServiceUpdate = {
     }),
     body: y.mixed(/* unsupported */),
   }),
-  response: ServiceUpdateResponse,
   responses: y.object({
     "200": ServiceUpdateResponse,
     "400": ErrorResponse,
@@ -4315,7 +4132,6 @@ export const get_ServiceLogs = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -4334,7 +4150,6 @@ export const get_TaskList = {
       filters: y.string().required().optional(),
     }),
   }),
-  response: y.array(Task),
   responses: y.object({
     "200": y.array(Task),
     "500": ErrorResponse,
@@ -4352,7 +4167,6 @@ export const get_TaskInspect = {
       id: y.string().required(),
     }),
   }),
-  response: Task,
   responses: y.object({
     "200": Task,
     "404": ErrorResponse,
@@ -4380,7 +4194,6 @@ export const get_TaskLogs = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -4399,7 +4212,6 @@ export const get_SecretList = {
       filters: y.string().required().optional(),
     }),
   }),
-  response: y.array(Secret),
   responses: y.object({
     "200": y.array(Secret),
     "500": ErrorResponse,
@@ -4415,7 +4227,6 @@ export const post_SecretCreate = {
   parameters: y.object({
     body: y.mixed(/* unsupported */),
   }),
-  response: IdResponse,
   responses: y.object({
     "201": IdResponse,
     "409": ErrorResponse,
@@ -4434,7 +4245,6 @@ export const get_SecretInspect = {
       id: y.string().required(),
     }),
   }),
-  response: Secret,
   responses: y.object({
     "200": Secret,
     "404": ErrorResponse,
@@ -4453,7 +4263,6 @@ export const delete_SecretDelete = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -4476,7 +4285,6 @@ export const post_SecretUpdate = {
     }),
     body: SecretSpec,
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": ErrorResponse,
@@ -4496,7 +4304,6 @@ export const get_ConfigList = {
       filters: y.string().required().optional(),
     }),
   }),
-  response: y.array(Config),
   responses: y.object({
     "200": y.array(Config),
     "500": ErrorResponse,
@@ -4512,7 +4319,6 @@ export const post_ConfigCreate = {
   parameters: y.object({
     body: y.mixed(/* unsupported */),
   }),
-  response: IdResponse,
   responses: y.object({
     "201": IdResponse,
     "409": ErrorResponse,
@@ -4531,7 +4337,6 @@ export const get_ConfigInspect = {
       id: y.string().required(),
     }),
   }),
-  response: Config,
   responses: y.object({
     "200": Config,
     "404": ErrorResponse,
@@ -4550,7 +4355,6 @@ export const delete_ConfigDelete = {
       id: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": ErrorResponse,
@@ -4573,7 +4377,6 @@ export const post_ConfigUpdate = {
     }),
     body: ConfigSpec,
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "200": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": ErrorResponse,
@@ -4593,7 +4396,6 @@ export const get_DistributionInspect = {
       name: y.string().required(),
     }),
   }),
-  response: DistributionInspect,
   responses: y.object({
     "200": DistributionInspect,
     "401": ErrorResponse,
@@ -4607,7 +4409,6 @@ export const post_Session = {
   path: y.mixed((value): value is "/session" => value === "/session").required(),
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "101": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -4761,7 +4562,6 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
-  response: unknown;
   responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
@@ -4777,7 +4577,6 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     hasParameters: boolean;
     areParametersRequired: boolean;
   };
-  response: TConfig["response"];
   responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
@@ -4795,51 +4594,80 @@ export const errorStatusCodes = [
 ] as const;
 export type ErrorStatusCode = (typeof errorStatusCodes)[number];
 
-// Error handling types
+// Taken from https://github.com/unjs/fetchdts/blob/ec4eaeab5d287116171fc1efd61f4a1ad34e4609/src/fetch.ts#L3
+export interface TypedHeaders<TypedHeaderValues extends Record<string, string> | unknown>
+  extends Omit<Headers, "append" | "delete" | "get" | "getSetCookie" | "has" | "set" | "forEach"> {
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/append) */
+  append: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(
+    name: Name,
+    value: Lowercase<Name> extends keyof TypedHeaderValues ? TypedHeaderValues[Lowercase<Name>] : string,
+  ) => void;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/delete) */
+  delete: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(name: Name) => void;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/get) */
+  get: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(
+    name: Name,
+  ) => (Lowercase<Name> extends keyof TypedHeaderValues ? TypedHeaderValues[Lowercase<Name>] : string) | null;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/getSetCookie) */
+  getSetCookie: () => string[];
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/has) */
+  has: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(name: Name) => boolean;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/set) */
+  set: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(
+    name: Name,
+    value: Lowercase<Name> extends keyof TypedHeaderValues ? TypedHeaderValues[Lowercase<Name>] : string,
+  ) => void;
+  forEach: (
+    callbackfn: (
+      value: TypedHeaderValues[keyof TypedHeaderValues] | (string & {}),
+      key: Extract<keyof TypedHeaderValues, string> | (string & {}),
+      parent: TypedHeaders<TypedHeaderValues>,
+    ) => void,
+    thisArg?: any,
+  ) => void;
+}
+
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders>
+  extends Omit<Response, "ok" | "status" | "json" | "headers"> {
   ok: true;
   status: TStatusCode;
+  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
   data: TSuccess;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TSuccess>;
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedErrorResponse<TData, TStatusCode, THeaders>
+  extends Omit<Response, "ok" | "status" | "json" | "headers"> {
   ok: false;
   status: TStatusCode;
+  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
   data: TData;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TData>;
 }
 
-export type TypedApiResponse<
-  TSuccess,
-  TAllResponses extends Record<string | number, unknown> = {},
-> = keyof TAllResponses extends never
-  ? SuccessResponse<TSuccess, number>
-  : {
-      [K in keyof TAllResponses]: K extends string
-        ? K extends `${infer TStatusCode extends number}`
-          ? TStatusCode extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, TStatusCode>
-            : ErrorResponse<TAllResponses[K], TStatusCode>
-          : never
-        : K extends number
-          ? K extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, K>
-            : ErrorResponse<TAllResponses[K], K>
-          : never;
-    }[keyof TAllResponses];
+export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}, THeaders = {}> = {
+  [K in keyof TAllResponses]: K extends string
+    ? K extends `${infer TStatusCode extends number}`
+      ? TStatusCode extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+        : TypedErrorResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+      : never
+    : K extends number
+      ? K extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
+        : TypedErrorResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
+      : never;
+}[keyof TAllResponses];
 
-export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TSuccess, TResponses>
-    : SuccessResponse<TSuccess, number>
-  : TEndpoint extends { response: infer TSuccess }
-    ? SuccessResponse<TSuccess, number>
-    : never;
+    ? TypedApiResponse<TResponses, TEndpoint extends { responseHeaders: infer THeaders } ? THeaders : never>
+    : never
+  : never;
 
 export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
   SafeApiResponse<TEndpoint>,
@@ -4856,9 +4684,9 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // <TypedResponseError>
 export class TypedResponseError extends Error {
-  response: ErrorResponse<unknown, ErrorStatusCode>;
+  response: TypedErrorResponse<unknown, ErrorStatusCode, unknown>;
   status: number;
-  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+  constructor(response: TypedErrorResponse<unknown, ErrorStatusCode, unknown>) {
     super(`HTTP ${response.status}: ${response.statusText}`);
     this.name = "TypedResponseError";
     this.response = response;
@@ -4893,7 +4721,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<TEndpoint["response"]>>;
+  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -4928,7 +4756,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<y.InferType<TEndpoint["response"]>>;
+    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.get>
 
@@ -4938,7 +4766,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<TEndpoint["response"]>>;
+  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -4973,7 +4801,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<y.InferType<TEndpoint["response"]>>;
+    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.post>
 
@@ -4983,7 +4811,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<TEndpoint["response"]>>;
+  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -5018,7 +4846,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<y.InferType<TEndpoint["response"]>>;
+    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.delete>
 
@@ -5028,7 +4856,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<TEndpoint["response"]>>;
+  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -5063,7 +4891,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<y.InferType<TEndpoint["response"]>>;
+    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.put>
 
@@ -5073,7 +4901,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<TEndpoint["response"]>>;
+  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
     path: Path,
@@ -5108,7 +4936,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<y.InferType<TEndpoint["response"]>>;
+    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.head>
 
