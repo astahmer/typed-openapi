@@ -76,7 +76,6 @@ export const put_UpdatePet = {
   parameters: z.object({
     body: Pet,
   }),
-  response: Pet,
   responses: z.object({
     "200": Pet,
     "400": z.unknown(),
@@ -93,7 +92,6 @@ export const post_AddPet = {
   parameters: z.object({
     body: Pet,
   }),
-  response: Pet,
   responses: z.object({
     "200": Pet,
     "405": z.unknown(),
@@ -110,7 +108,6 @@ export const get_FindPetsByStatus = {
       status: z.union([z.literal("available"), z.literal("pending"), z.literal("sold")]).optional(),
     }),
   }),
-  response: z.array(Pet),
   responses: z.object({
     "200": z.array(Pet),
     "400": z.object({
@@ -130,7 +127,6 @@ export const get_FindPetsByTags = {
       tags: z.array(z.string()).optional(),
     }),
   }),
-  response: z.array(Pet),
   responses: z.object({
     "200": z.array(Pet),
     "400": z.unknown(),
@@ -147,7 +143,6 @@ export const get_GetPetById = {
       petId: z.number(),
     }),
   }),
-  response: Pet,
   responses: z.object({
     "200": Pet,
     "400": z.object({
@@ -175,7 +170,6 @@ export const post_UpdatePetWithForm = {
       petId: z.number(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "405": z.unknown(),
   }),
@@ -194,7 +188,6 @@ export const delete_DeletePet = {
       api_key: z.string().optional(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "400": z.unknown(),
   }),
@@ -214,7 +207,6 @@ export const post_UploadFile = {
     }),
     body: z.string(),
   }),
-  response: ApiResponse,
   responses: z.object({
     "200": ApiResponse,
   }),
@@ -226,7 +218,6 @@ export const get_GetInventory = {
   path: z.literal("/store/inventory"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  response: z.record(z.number()),
   responses: z.object({
     "200": z.record(z.number()),
   }),
@@ -240,7 +231,6 @@ export const post_PlaceOrder = {
   parameters: z.object({
     body: Order,
   }),
-  response: Order,
   responses: z.object({
     "200": Order,
     "405": z.unknown(),
@@ -257,7 +247,6 @@ export const get_GetOrderById = {
       orderId: z.number(),
     }),
   }),
-  response: Order,
   responses: z.object({
     "200": Order,
     "400": z.unknown(),
@@ -275,7 +264,6 @@ export const delete_DeleteOrder = {
       orderId: z.number(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "400": z.unknown(),
     "404": z.unknown(),
@@ -290,7 +278,6 @@ export const post_CreateUser = {
   parameters: z.object({
     body: User,
   }),
-  response: User,
   responses: z.object({
     default: User,
   }),
@@ -304,7 +291,6 @@ export const post_CreateUsersWithListInput = {
   parameters: z.object({
     body: z.array(User),
   }),
-  response: User,
   responses: z.object({
     "200": User,
     default: z.unknown(),
@@ -322,14 +308,15 @@ export const get_LoginUser = {
       password: z.string().optional(),
     }),
   }),
-  response: z.string(),
   responses: z.object({
     "200": z.string(),
     "400": z.unknown(),
   }),
   responseHeaders: z.object({
-    "x-rate-limit": z.number(),
-    "x-expires-after": z.string(),
+    "200": z.object({
+      "X-Rate-Limit": z.number(),
+      "X-Expires-After": z.string(),
+    }),
   }),
 };
 
@@ -339,7 +326,6 @@ export const get_LogoutUser = {
   path: z.literal("/user/logout"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  response: z.unknown(),
   responses: z.object({
     default: z.unknown(),
   }),
@@ -355,7 +341,6 @@ export const get_GetUserByName = {
       username: z.string(),
     }),
   }),
-  response: User,
   responses: z.object({
     "200": User,
     "400": z.unknown(),
@@ -374,7 +359,6 @@ export const put_UpdateUser = {
     }),
     body: User,
   }),
-  response: z.unknown(),
   responses: z.object({
     default: z.unknown(),
   }),
@@ -390,7 +374,6 @@ export const delete_DeleteUser = {
       username: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "400": z.unknown(),
     "404": z.unknown(),
@@ -452,7 +435,6 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
-  response: unknown;
   responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
@@ -468,7 +450,6 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     hasParameters: boolean;
     areParametersRequired: boolean;
   };
-  response: TConfig["response"];
   responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
@@ -488,7 +469,7 @@ export type ErrorStatusCode = (typeof errorStatusCodes)[number];
 
 // Error handling types
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedSuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: true;
   status: TStatusCode;
   data: TSuccess;
@@ -497,7 +478,7 @@ interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: false;
   status: TStatusCode;
   data: TData;
@@ -505,32 +486,25 @@ interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "statu
   json: () => Promise<TData>;
 }
 
-export type TypedApiResponse<
-  TSuccess,
-  TAllResponses extends Record<string | number, unknown> = {},
-> = keyof TAllResponses extends never
-  ? SuccessResponse<TSuccess, number>
-  : {
-      [K in keyof TAllResponses]: K extends string
-        ? K extends `${infer TStatusCode extends number}`
-          ? TStatusCode extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, TStatusCode>
-            : ErrorResponse<TAllResponses[K], TStatusCode>
-          : never
-        : K extends number
-          ? K extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, K>
-            : ErrorResponse<TAllResponses[K], K>
-          : never;
-    }[keyof TAllResponses];
+export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}> = {
+  [K in keyof TAllResponses]: K extends string
+    ? K extends `${infer TStatusCode extends number}`
+      ? TStatusCode extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], TStatusCode>
+        : TypedErrorResponse<TAllResponses[K], TStatusCode>
+      : never
+    : K extends number
+      ? K extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], K>
+        : TypedErrorResponse<TAllResponses[K], K>
+      : never;
+}[keyof TAllResponses];
 
-export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TSuccess, TResponses>
-    : SuccessResponse<TSuccess, number>
-  : TEndpoint extends { response: infer TSuccess }
-    ? SuccessResponse<TSuccess, number>
-    : never;
+    ? TypedApiResponse<TResponses>
+    : never
+  : never;
 
 export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
   SafeApiResponse<TEndpoint>,
@@ -547,9 +521,9 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // <TypedResponseError>
 export class TypedResponseError extends Error {
-  response: ErrorResponse<unknown, ErrorStatusCode>;
+  response: TypedErrorResponse<unknown, ErrorStatusCode>;
   status: number;
-  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+  constructor(response: TypedErrorResponse<unknown, ErrorStatusCode>) {
     super(`HTTP ${response.status}: ${response.statusText}`);
     this.name = "TypedResponseError";
     this.response = response;
@@ -584,7 +558,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<z.infer<TEndpoint["response"]>>;
+  ): Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -617,7 +591,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<z.infer<TEndpoint["response"]>>;
+    return promise as Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.put>
 
@@ -627,7 +601,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<z.infer<TEndpoint["response"]>>;
+  ): Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -660,7 +634,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<z.infer<TEndpoint["response"]>>;
+    return promise as Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.post>
 
@@ -670,7 +644,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<z.infer<TEndpoint["response"]>>;
+  ): Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -703,7 +677,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<z.infer<TEndpoint["response"]>>;
+    return promise as Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.get>
 
@@ -713,7 +687,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<z.infer<TEndpoint["response"]>>;
+  ): Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -746,7 +720,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<z.infer<TEndpoint["response"]>>;
+    return promise as Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.delete>
 

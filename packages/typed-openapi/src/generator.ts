@@ -6,7 +6,7 @@ import * as Codegen from "@sinclair/typebox-codegen";
 import { match } from "ts-pattern";
 import { type } from "arktype";
 import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
-import type { NameTransformOptions } from "./types.ts";
+import type { BoxObject, NameTransformOptions } from "./types.ts";
 
 // Default success status codes (2xx and 3xx ranges)
 export const DEFAULT_SUCCESS_STATUS_CODES = [
@@ -170,7 +170,7 @@ const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, Any
   return str + "}";
 };
 
-const responseHeadersObjectToString = (responseHeaders: Record<string, AnyBox>, ctx: GeneratorContext) => {
+const responseHeadersObjectToString = (responseHeaders: Record<string, Box<BoxObject>>, ctx: GeneratorContext) => {
   let str = "{";
   for (const [key, responseHeader] of Object.entries(responseHeaders)) {
     const value =
@@ -242,17 +242,6 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
           }`
           : "parameters: never,"
       }
-      response: ${
-        ctx.runtime === "none"
-          ? endpoint.response.recompute((box) => {
-              if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
-                box.value = `Schemas.${box.value}`;
-              }
-
-              return box;
-            }).value
-          : endpoint.response.value
-      },
       ${endpoint.responses ? `responses: ${generateResponsesObject(endpoint.responses, ctx)},` : ""}
       ${
         endpoint.responseHeaders
@@ -331,7 +320,6 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
-  response: unknown;
   responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
@@ -347,7 +335,6 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     hasParameters: boolean;
     areParametersRequired: boolean;
   };
-  response: TConfig["response"];
   responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"]
 };
@@ -362,7 +349,7 @@ export type ErrorStatusCode = typeof errorStatusCodes[number];
 
 // Error handling types
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedSuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: true;
   status: TStatusCode;
   data: TSuccess;
@@ -371,7 +358,7 @@ interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: false;
   status: TStatusCode;
   data: TData;
@@ -379,30 +366,26 @@ interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "statu
   json: () => Promise<TData>;
 }
 
-export type TypedApiResponse<TSuccess, TAllResponses extends Record<string | number, unknown> = {}> =
-  (keyof TAllResponses extends never
-    ? SuccessResponse<TSuccess, number>
-    : {
-        [K in keyof TAllResponses]: K extends string
-          ? K extends \`\${infer TStatusCode extends number}\`
-            ? TStatusCode extends SuccessStatusCode
-              ? SuccessResponse<TSuccess, TStatusCode>
-              : ErrorResponse<TAllResponses[K], TStatusCode>
-            : never
-          : K extends number
-            ? K extends SuccessStatusCode
-              ? SuccessResponse<TSuccess, K>
-              : ErrorResponse<TAllResponses[K], K>
-            : never;
-      }[keyof TAllResponses]);
+export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}> =
+  ({
+    [K in keyof TAllResponses]: K extends string
+      ? K extends \`\${infer TStatusCode extends number}\`
+        ? TStatusCode extends SuccessStatusCode
+          ? TypedSuccessResponse<TAllResponses[K], TStatusCode>
+          : TypedErrorResponse<TAllResponses[K], TStatusCode>
+        : never
+      : K extends number
+        ? K extends SuccessStatusCode
+          ? TypedSuccessResponse<TAllResponses[K], K>
+          : TypedErrorResponse<TAllResponses[K], K>
+        : never;
+  }[keyof TAllResponses]);
 
-export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TSuccess, TResponses>
-    : SuccessResponse<TSuccess, number>
-  : TEndpoint extends { response: infer TSuccess }
-    ? SuccessResponse<TSuccess, number>
-    : never;
+    ? TypedApiResponse<TResponses>
+    : never
+  : never
 
 export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<SafeApiResponse<TEndpoint>, { status: TStatusCode }>
 
@@ -418,9 +401,9 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
   const apiClient = `
 // <TypedResponseError>
 export class TypedResponseError extends Error {
-  response: ErrorResponse<unknown, ErrorStatusCode>;
+  response: TypedErrorResponse<unknown, ErrorStatusCode>;
   status: number;
-  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+  constructor(response: TypedErrorResponse<unknown, ErrorStatusCode>) {
     super(\`HTTP \${response.status}: \${response.statusText}\`);
     this.name = 'TypedResponseError';
     this.response = response;
@@ -463,9 +446,9 @@ export class ApiClient {
         .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
         .otherwise(() => `TEndpoint["parameters"]`)} & { withResponse?: false; throwOnStatusError?: boolean }>
     ): Promise<${match(ctx.runtime)
-      .with("zod", "yup", () => infer(`TEndpoint["response"]`))
-      .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["response"]`)
-      .otherwise(() => `TEndpoint["response"]`)}>;
+      .with("zod", "yup", () => infer(`InferResponseByStatus<TEndpoint, SuccessStatusCode>`))
+      .with("arktype", "io-ts", "typebox", "valibot", () => `InferResponseByStatus<${infer(`TEndpoint`)}, SuccessStatusCode>["data"]`)
+      .otherwise(() => `InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]`)}>;
 
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
@@ -499,9 +482,9 @@ export class ApiClient {
         });
 
         return promise ${match(ctx.runtime)
-          .with("zod", "yup", () => `as Promise<${infer(`TEndpoint["response"]`)}>`)
-          .with("arktype", "io-ts", "typebox", "valibot", () => `as Promise<${infer(`TEndpoint`) + `["response"]`}>`)
-          .otherwise(() => `as Promise<TEndpoint["response"]>`)}
+          .with("zod", "yup", () => `as Promise<${infer(`InferResponseByStatus<TEndpoint, SuccessStatusCode>`)}>`)
+          .with("arktype", "io-ts", "typebox", "valibot", () => `as Promise<InferResponseByStatus<${infer(`TEndpoint`)}, SuccessStatusCode>["data"]>`)
+          .otherwise(() => `as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>`)}
     }
     // </ApiClient.${method}>
     `

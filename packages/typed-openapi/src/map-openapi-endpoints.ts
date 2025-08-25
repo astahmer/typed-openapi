@@ -6,7 +6,7 @@ import { createBoxFactory } from "./box-factory.ts";
 import { openApiSchemaToTs } from "./openapi-schema-to-ts.ts";
 import { createRefResolver } from "./ref-resolver.ts";
 import { tsFactory } from "./ts-factory.ts";
-import { AnyBox, BoxRef, OpenapiSchemaConvertContext } from "./types.ts";
+import { AnyBox, BoxRef, OpenapiSchemaConvertContext, type BoxObject, type LibSchemaObject } from "./types.ts";
 import { pathToVariableName } from "./string-utils.ts";
 import { NameTransformOptions } from "./types.ts";
 import { match, P } from "ts-pattern";
@@ -33,7 +33,6 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
         method: method as Method,
         path,
         requestFormat: "json",
-        response: openApiSchemaToTs({ schema: {}, ctx }),
         meta: {
           alias,
           areParametersRequired: false,
@@ -131,86 +130,78 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
           }
         }
 
-        // No need to pass empty objects, it's confusing
         endpoint.parameters = Object.keys(params).length ? (params as any as EndpointParameters) : undefined;
       }
 
-      // Match the first 2xx-3xx response found, or fallback to default one otherwise
-      let responseObject: ResponseObject | undefined;
       const allResponses: Record<string, AnyBox> = {};
+      const allHeaders: Record<string, Box<BoxObject>> = {};
 
       Object.entries(operation.responses ?? {}).map(([status, responseOrRef]) => {
-        const statusCode = Number(status);
         const responseObj = refs.unwrap<ResponseObject>(responseOrRef);
 
         // Collect all responses for error handling
         const content = responseObj?.content;
-        if (content) {
-          const matchingMediaType = Object.keys(content).find(isResponseMediaType);
-          if (matchingMediaType && content[matchingMediaType]) {
-            allResponses[status] = openApiSchemaToTs({
-              schema: content[matchingMediaType]?.schema ?? {},
-              ctx,
-            });
-          } else {
+        const mediaTypes = Object.keys(content ?? {}).filter(isResponseMediaType);
+        if (content && mediaTypes.length) {
+          mediaTypes.forEach((mediaType) => {
             // If no JSON content, use unknown type
-            allResponses[status] = openApiSchemaToTs({ schema: {}, ctx });
-          }
+            const schema = content[mediaType] ? (content[mediaType].schema ?? {}) : {};
+            const t = createBoxFactory(schema as LibSchemaObject, ctx);
+            const mediaTypeResponse = openApiSchemaToTs({ schema, ctx });
+
+            if (allResponses[status]) {
+              allResponses[status] = t.union([
+                ...(Array.isArray(allResponses[status]) ? allResponses[status] : [allResponses[status]]),
+                mediaTypeResponse,
+              ]);
+            } else {
+              allResponses[status] = mediaTypeResponse;
+            }
+          });
         } else {
           // If no content defined, use unknown type
-          allResponses[status] = openApiSchemaToTs({ schema: {}, ctx });
-        }
+          const schema = {};
+          const unknown = openApiSchemaToTs({ schema: {}, ctx });
+          const t = createBoxFactory(schema as LibSchemaObject, ctx);
 
-        // Keep the current logic for the main response (first 2xx-3xx)
-        if (statusCode >= 200 && statusCode < 300 && !responseObject) {
-          responseObject = responseObj;
-        }
-      });
-
-      if (!responseObject && operation.responses?.default) {
-        responseObject = refs.unwrap(operation.responses.default);
-        // Also add default to all responses if not already covered
-        if (!allResponses["default"]) {
-          const content = responseObject?.content;
-          if (content) {
-            const matchingMediaType = Object.keys(content).find(isResponseMediaType);
-            if (matchingMediaType && content[matchingMediaType]) {
-              allResponses["default"] = openApiSchemaToTs({
-                schema: content[matchingMediaType]?.schema ?? {},
-                ctx,
-              });
-            }
+          if (allResponses[status]) {
+            allResponses[status] = t.union([
+              ...(Array.isArray(allResponses[status]) ? allResponses[status] : [allResponses[status]]),
+              unknown,
+            ]);
+          } else {
+            allResponses[status] = unknown;
           }
         }
-      }
+
+        // Map response headers
+        const headers = responseObj?.headers;
+        const t = createBoxFactory({ type: "object", properties: (headers ?? {}) as never }, ctx);
+        if (headers) {
+          const mappedHeaders = Object.entries(headers).reduce(
+            (acc, [name, headerOrRef]) => {
+              const header = refs.unwrap(headerOrRef);
+              const box = openApiSchemaToTs({ schema: header.schema ?? {}, ctx });
+              acc[name] = box;
+
+              return acc;
+            },
+            {} as Record<string, Box>,
+          );
+
+          if (Object.keys(mappedHeaders).length) {
+            allHeaders[status] = t.object(mappedHeaders);
+          }
+        }
+      });
 
       // Set the responses collection
       if (Object.keys(allResponses).length > 0) {
         endpoint.responses = allResponses;
       }
 
-      const content = responseObject?.content;
-      if (content) {
-        const matchingMediaType = Object.keys(content).find(isResponseMediaType);
-        if (matchingMediaType && content[matchingMediaType]) {
-          endpoint.response = openApiSchemaToTs({
-            schema: content[matchingMediaType]?.schema ?? {},
-            ctx,
-          });
-        }
-      }
-
-      // Map response headers
-      const headers = responseObject?.headers;
-      if (headers) {
-        endpoint.responseHeaders = Object.entries(headers).reduce(
-          (acc, [name, headerOrRef]) => {
-            const header = refs.unwrap(headerOrRef);
-            acc[name] = openApiSchemaToTs({ schema: header.schema ?? {}, ctx });
-            return acc;
-          },
-          {} as Record<string, Box>,
-        );
+      if (Object.keys(allHeaders).length) {
+        endpoint.responseHeaders = allHeaders;
       }
 
       endpointList.push(endpoint);
@@ -233,7 +224,8 @@ const isAllowedParamMediaTypes = (
   allowedParamMediaTypes.includes(mediaType as any) ||
   mediaType.includes("text/");
 
-const isResponseMediaType = (mediaType: string) => mediaType === "*/*" || (mediaType.includes("application/") && mediaType.includes("json"));
+const isResponseMediaType = (mediaType: string) =>
+  mediaType === "*/*" || (mediaType.includes("application/") && mediaType.includes("json"));
 const getAlias = ({ path, method, operation }: Endpoint) =>
   sanitizeName(
     (method + "_" + capitalize(operation.operationId ?? pathToVariableName(path))).replace(/-/g, "__"),
@@ -254,9 +246,8 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
 type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
-  response: AnyBox;
   responses?: Record<string, AnyBox>;
-  responseHeaders?: Record<string, AnyBox>;
+  responseHeaders?: Record<string, Box<BoxObject>>;
 };
 
 export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
@@ -270,7 +261,6 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     hasParameters: boolean;
     areParametersRequired: boolean;
   };
-  response: TConfig["response"];
   responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };

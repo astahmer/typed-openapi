@@ -15,7 +15,7 @@
  */
 
 // TODO: Replace with your generated API client imports
-// import { type EndpointParameters, type Fetcher, createApiClient } from './generated/api';
+// import { type EndpointParameters, type Fetcher, createApiClient } from './openapi.client.ts';
 
 // Basic configuration
 const API_BASE_URL = process.env["API_BASE_URL"] || "https://api.example.com";
@@ -79,14 +79,6 @@ const fetcher: Fetcher = async (method, apiUrl, params) => {
     ...(body && { body }),
     headers,
   });
-
-  if (!response.ok) {
-    // You can customize error handling here
-    const error = new Error(`HTTP ${response.status}: ${response.statusText}`);
-    (error as any).response = response;
-    (error as any).status = response.status;
-    throw error;
-  }
 
   return response;
 };

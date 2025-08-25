@@ -1650,7 +1650,6 @@ export const get_ContainerList = {
       filters: z.string().optional(),
     }),
   }),
-  response: z.array(ContainerSummary),
   responses: z.object({
     "200": z.array(ContainerSummary),
     "400": ErrorResponse,
@@ -1676,7 +1675,6 @@ export const post_ContainerCreate = {
       }),
     ),
   }),
-  response: ContainerCreateResponse,
   responses: z.object({
     "201": ContainerCreateResponse,
     "400": ErrorResponse,
@@ -1698,33 +1696,6 @@ export const get_ContainerInspect = {
     path: z.object({
       id: z.string(),
     }),
-  }),
-  response: z.object({
-    Id: z.string().optional(),
-    Created: z.string().optional(),
-    Path: z.string().optional(),
-    Args: z.array(z.string()).optional(),
-    State: ContainerState.optional(),
-    Image: z.string().optional(),
-    ResolvConfPath: z.string().optional(),
-    HostnamePath: z.string().optional(),
-    HostsPath: z.string().optional(),
-    LogPath: z.string().optional(),
-    Name: z.string().optional(),
-    RestartCount: z.number().optional(),
-    Driver: z.string().optional(),
-    Platform: z.string().optional(),
-    MountLabel: z.string().optional(),
-    ProcessLabel: z.string().optional(),
-    AppArmorProfile: z.string().optional(),
-    ExecIDs: z.union([z.array(z.string()), z.null()]).optional(),
-    HostConfig: HostConfig.optional(),
-    GraphDriver: GraphDriverData.optional(),
-    SizeRw: z.number().optional(),
-    SizeRootFs: z.number().optional(),
-    Mounts: z.array(MountPoint).optional(),
-    Config: ContainerConfig.optional(),
-    NetworkSettings: NetworkSettings.optional(),
   }),
   responses: z.object({
     "200": z.object({
@@ -1772,10 +1743,6 @@ export const get_ContainerTop = {
       id: z.string(),
     }),
   }),
-  response: z.object({
-    Titles: z.array(z.string()).optional(),
-    Processes: z.array(z.array(z.string())).optional(),
-  }),
   responses: z.object({
     "200": z.object({
       Titles: z.array(z.string()).optional(),
@@ -1805,7 +1772,6 @@ export const get_ContainerLogs = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": z.unknown(),
@@ -1823,7 +1789,6 @@ export const get_ContainerChanges = {
       id: z.string(),
     }),
   }),
-  response: z.array(FilesystemChange),
   responses: z.object({
     "200": z.array(FilesystemChange),
     "404": ErrorResponse,
@@ -1841,7 +1806,6 @@ export const get_ContainerExport = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": z.unknown(),
@@ -1863,7 +1827,6 @@ export const get_ContainerStats = {
       id: z.string(),
     }),
   }),
-  response: z.record(z.unknown()),
   responses: z.object({
     "200": z.record(z.unknown()),
     "404": ErrorResponse,
@@ -1885,7 +1848,6 @@ export const post_ContainerResize = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": z.unknown(),
@@ -1906,7 +1868,6 @@ export const post_ContainerStart = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "304": z.unknown(),
@@ -1929,7 +1890,6 @@ export const post_ContainerStop = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "304": z.unknown(),
@@ -1952,7 +1912,6 @@ export const post_ContainerRestart = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "404": ErrorResponse,
@@ -1973,7 +1932,6 @@ export const post_ContainerKill = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "404": ErrorResponse,
@@ -1998,9 +1956,6 @@ export const post_ContainerUpdate = {
       }),
     ),
   }),
-  response: z.object({
-    Warnings: z.array(z.string()).optional(),
-  }),
   responses: z.object({
     "200": z.object({
       Warnings: z.array(z.string()).optional(),
@@ -2023,7 +1978,6 @@ export const post_ContainerRename = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "404": ErrorResponse,
@@ -2042,7 +1996,6 @@ export const post_ContainerPause = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "404": ErrorResponse,
@@ -2060,7 +2013,6 @@ export const post_ContainerUnpause = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "404": ErrorResponse,
@@ -2086,7 +2038,6 @@ export const post_ContainerAttach = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "101": z.unknown(),
     "200": z.unknown(),
@@ -2114,7 +2065,6 @@ export const get_ContainerAttachWebsocket = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "101": z.unknown(),
     "200": z.unknown(),
@@ -2137,7 +2087,6 @@ export const post_ContainerWait = {
       id: z.string(),
     }),
   }),
-  response: ContainerWaitResponse,
   responses: z.object({
     "200": ContainerWaitResponse,
     "400": ErrorResponse,
@@ -2161,7 +2110,6 @@ export const delete_ContainerDelete = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "400": ErrorResponse,
@@ -2184,7 +2132,6 @@ export const get_ContainerArchive = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "400": z.unknown(),
@@ -2209,7 +2156,6 @@ export const put_PutContainerArchive = {
     }),
     body: z.string(),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "400": ErrorResponse,
@@ -2232,7 +2178,6 @@ export const head_ContainerArchiveInfo = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "400": ErrorResponse,
@@ -2240,7 +2185,9 @@ export const head_ContainerArchiveInfo = {
     "500": ErrorResponse,
   }),
   responseHeaders: z.object({
-    "x-docker-container-path-stat": z.string(),
+    "200": z.object({
+      "X-Docker-Container-Path-Stat": z.string(),
+    }),
   }),
 };
 
@@ -2253,10 +2200,6 @@ export const post_ContainerPrune = {
     query: z.object({
       filters: z.string().optional(),
     }),
-  }),
-  response: z.object({
-    ContainersDeleted: z.array(z.string()).optional(),
-    SpaceReclaimed: z.number().optional(),
   }),
   responses: z.object({
     "200": z.object({
@@ -2280,7 +2223,6 @@ export const get_ImageList = {
       digests: z.boolean().optional(),
     }),
   }),
-  response: z.array(ImageSummary),
   responses: z.object({
     "200": z.array(ImageSummary),
     "500": ErrorResponse,
@@ -2325,7 +2267,6 @@ export const post_ImageBuild = {
     }),
     body: z.string(),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "400": ErrorResponse,
@@ -2344,10 +2285,6 @@ export const post_BuildPrune = {
       all: z.boolean().optional(),
       filters: z.string().optional(),
     }),
-  }),
-  response: z.object({
-    CachesDeleted: z.array(z.string()).optional(),
-    SpaceReclaimed: z.number().optional(),
   }),
   responses: z.object({
     "200": z.object({
@@ -2378,7 +2315,6 @@ export const post_ImageCreate = {
     }),
     body: z.string(),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": ErrorResponse,
@@ -2396,7 +2332,6 @@ export const get_ImageInspect = {
       name: z.string(),
     }),
   }),
-  response: ImageInspect,
   responses: z.object({
     "200": ImageInspect,
     "404": ErrorResponse,
@@ -2414,16 +2349,6 @@ export const get_ImageHistory = {
       name: z.string(),
     }),
   }),
-  response: z.array(
-    z.object({
-      Id: z.string(),
-      Created: z.number(),
-      CreatedBy: z.string(),
-      Tags: z.array(z.string()),
-      Size: z.number(),
-      Comment: z.string(),
-    }),
-  ),
   responses: z.object({
     "200": z.array(
       z.object({
@@ -2456,7 +2381,6 @@ export const post_ImagePush = {
       "X-Registry-Auth": z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": ErrorResponse,
@@ -2478,7 +2402,6 @@ export const post_ImageTag = {
       name: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "201": z.unknown(),
     "400": ErrorResponse,
@@ -2502,7 +2425,6 @@ export const delete_ImageDelete = {
       name: z.string(),
     }),
   }),
-  response: z.array(ImageDeleteResponseItem),
   responses: z.object({
     "200": z.array(ImageDeleteResponseItem),
     "404": ErrorResponse,
@@ -2523,15 +2445,6 @@ export const get_ImageSearch = {
       filters: z.union([z.string(), z.undefined()]).optional(),
     }),
   }),
-  response: z.array(
-    z.object({
-      description: z.string().optional(),
-      is_official: z.boolean().optional(),
-      is_automated: z.boolean().optional(),
-      name: z.string().optional(),
-      star_count: z.number().optional(),
-    }),
-  ),
   responses: z.object({
     "200": z.array(
       z.object({
@@ -2556,10 +2469,6 @@ export const post_ImagePrune = {
       filters: z.string().optional(),
     }),
   }),
-  response: z.object({
-    ImagesDeleted: z.array(ImageDeleteResponseItem).optional(),
-    SpaceReclaimed: z.number().optional(),
-  }),
   responses: z.object({
     "200": z.object({
       ImagesDeleted: z.array(ImageDeleteResponseItem).optional(),
@@ -2576,10 +2485,6 @@ export const post_SystemAuth = {
   requestFormat: z.literal("json"),
   parameters: z.object({
     body: AuthConfig,
-  }),
-  response: z.object({
-    Status: z.string(),
-    IdentityToken: z.union([z.string(), z.undefined()]).optional(),
   }),
   responses: z.object({
     "200": z.object({
@@ -2598,7 +2503,6 @@ export const get_SystemInfo = {
   path: z.literal("/info"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  response: SystemInfo,
   responses: z.object({
     "200": SystemInfo,
     "500": ErrorResponse,
@@ -2611,7 +2515,6 @@ export const get_SystemVersion = {
   path: z.literal("/version"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  response: SystemVersion,
   responses: z.object({
     "200": SystemVersion,
     "500": ErrorResponse,
@@ -2624,25 +2527,30 @@ export const get_SystemPing = {
   path: z.literal("/_ping"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "500": z.unknown(),
   }),
   responseHeaders: z.object({
-    swarm: z.union([
-      z.literal("inactive"),
-      z.literal("pending"),
-      z.literal("error"),
-      z.literal("locked"),
-      z.literal("active/worker"),
-      z.literal("active/manager"),
-    ]),
-    "docker-experimental": z.boolean(),
-    "cache-control": z.string(),
-    pragma: z.string(),
-    "api-version": z.string(),
-    "builder-version": z.string(),
+    "200": z.object({
+      Swarm: z.union([
+        z.literal("inactive"),
+        z.literal("pending"),
+        z.literal("error"),
+        z.literal("locked"),
+        z.literal("active/worker"),
+        z.literal("active/manager"),
+      ]),
+      "Docker-Experimental": z.boolean(),
+      "Cache-Control": z.string(),
+      Pragma: z.string(),
+      "API-Version": z.string(),
+      "Builder-Version": z.string(),
+    }),
+    "500": z.object({
+      "Cache-Control": z.string(),
+      Pragma: z.string(),
+    }),
   }),
 };
 
@@ -2652,25 +2560,26 @@ export const head_SystemPingHead = {
   path: z.literal("/_ping"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "500": z.unknown(),
   }),
   responseHeaders: z.object({
-    swarm: z.union([
-      z.literal("inactive"),
-      z.literal("pending"),
-      z.literal("error"),
-      z.literal("locked"),
-      z.literal("active/worker"),
-      z.literal("active/manager"),
-    ]),
-    "docker-experimental": z.boolean(),
-    "cache-control": z.string(),
-    pragma: z.string(),
-    "api-version": z.string(),
-    "builder-version": z.string(),
+    "200": z.object({
+      Swarm: z.union([
+        z.literal("inactive"),
+        z.literal("pending"),
+        z.literal("error"),
+        z.literal("locked"),
+        z.literal("active/worker"),
+        z.literal("active/manager"),
+      ]),
+      "Docker-Experimental": z.boolean(),
+      "Cache-Control": z.string(),
+      Pragma: z.string(),
+      "API-Version": z.string(),
+      "Builder-Version": z.string(),
+    }),
   }),
 };
 
@@ -2691,7 +2600,6 @@ export const post_ImageCommit = {
     }),
     body: ContainerConfig,
   }),
-  response: IdResponse,
   responses: z.object({
     "201": IdResponse,
     "404": ErrorResponse,
@@ -2711,7 +2619,6 @@ export const get_SystemEvents = {
       filters: z.string().optional(),
     }),
   }),
-  response: EventMessage,
   responses: z.object({
     "200": EventMessage,
     "400": ErrorResponse,
@@ -2730,13 +2637,6 @@ export const get_SystemDataUsage = {
         .array(z.union([z.literal("container"), z.literal("image"), z.literal("volume"), z.literal("build-cache")]))
         .optional(),
     }),
-  }),
-  response: z.object({
-    LayersSize: z.number().optional(),
-    Images: z.array(ImageSummary).optional(),
-    Containers: z.array(ContainerSummary).optional(),
-    Volumes: z.array(Volume).optional(),
-    BuildCache: z.array(BuildCache).optional(),
   }),
   responses: z.object({
     "200": z.object({
@@ -2760,7 +2660,6 @@ export const get_ImageGet = {
       name: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "500": z.unknown(),
@@ -2777,7 +2676,6 @@ export const get_ImageGetAll = {
       names: z.array(z.string()).optional(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "500": z.unknown(),
@@ -2794,7 +2692,6 @@ export const post_ImageLoad = {
       quiet: z.boolean().optional(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "500": ErrorResponse,
@@ -2824,7 +2721,6 @@ export const post_ContainerExec = {
       WorkingDir: z.string().optional(),
     }),
   }),
-  response: IdResponse,
   responses: z.object({
     "201": IdResponse,
     "404": ErrorResponse,
@@ -2848,7 +2744,6 @@ export const post_ExecStart = {
       ConsoleSize: z.union([z.array(z.number()), z.null()]).optional(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": z.unknown(),
@@ -2870,7 +2765,6 @@ export const post_ExecResize = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "400": ErrorResponse,
@@ -2888,19 +2782,6 @@ export const get_ExecInspect = {
     path: z.object({
       id: z.string(),
     }),
-  }),
-  response: z.object({
-    CanRemove: z.boolean().optional(),
-    DetachKeys: z.string().optional(),
-    ID: z.string().optional(),
-    Running: z.boolean().optional(),
-    ExitCode: z.number().optional(),
-    ProcessConfig: ProcessConfig.optional(),
-    OpenStdin: z.boolean().optional(),
-    OpenStderr: z.boolean().optional(),
-    OpenStdout: z.boolean().optional(),
-    ContainerID: z.string().optional(),
-    Pid: z.number().optional(),
   }),
   responses: z.object({
     "200": z.object({
@@ -2931,7 +2812,6 @@ export const get_VolumeList = {
       filters: z.string().optional(),
     }),
   }),
-  response: VolumeListResponse,
   responses: z.object({
     "200": VolumeListResponse,
     "500": ErrorResponse,
@@ -2946,7 +2826,6 @@ export const post_VolumeCreate = {
   parameters: z.object({
     body: VolumeCreateOptions,
   }),
-  response: Volume,
   responses: z.object({
     "201": Volume,
     "500": ErrorResponse,
@@ -2963,7 +2842,6 @@ export const get_VolumeInspect = {
       name: z.string(),
     }),
   }),
-  response: Volume,
   responses: z.object({
     "200": Volume,
     "404": ErrorResponse,
@@ -2987,7 +2865,6 @@ export const put_VolumeUpdate = {
       Spec: ClusterVolumeSpec.optional(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "400": ErrorResponse,
@@ -3010,7 +2887,6 @@ export const delete_VolumeDelete = {
       name: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "404": ErrorResponse,
@@ -3028,10 +2904,6 @@ export const post_VolumePrune = {
     query: z.object({
       filters: z.string().optional(),
     }),
-  }),
-  response: z.object({
-    VolumesDeleted: z.array(z.string()).optional(),
-    SpaceReclaimed: z.number().optional(),
   }),
   responses: z.object({
     "200": z.object({
@@ -3052,7 +2924,6 @@ export const get_NetworkList = {
       filters: z.string().optional(),
     }),
   }),
-  response: z.array(Network),
   responses: z.object({
     "200": z.array(Network),
     "500": ErrorResponse,
@@ -3073,7 +2944,6 @@ export const get_NetworkInspect = {
       id: z.string(),
     }),
   }),
-  response: Network,
   responses: z.object({
     "200": Network,
     "404": ErrorResponse,
@@ -3091,7 +2961,6 @@ export const delete_NetworkDelete = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "403": ErrorResponse,
@@ -3119,10 +2988,6 @@ export const post_NetworkCreate = {
       Labels: z.union([z.record(z.string()), z.undefined()]).optional(),
     }),
   }),
-  response: z.object({
-    Id: z.string().optional(),
-    Warning: z.string().optional(),
-  }),
   responses: z.object({
     "201": z.object({
       Id: z.string().optional(),
@@ -3148,7 +3013,6 @@ export const post_NetworkConnect = {
       EndpointConfig: EndpointSettings.optional(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "403": ErrorResponse,
@@ -3171,7 +3035,6 @@ export const post_NetworkDisconnect = {
       Force: z.boolean().optional(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "403": ErrorResponse,
@@ -3189,9 +3052,6 @@ export const post_NetworkPrune = {
     query: z.object({
       filters: z.string().optional(),
     }),
-  }),
-  response: z.object({
-    NetworksDeleted: z.array(z.string()).optional(),
   }),
   responses: z.object({
     "200": z.object({
@@ -3211,7 +3071,6 @@ export const get_PluginList = {
       filters: z.string().optional(),
     }),
   }),
-  response: z.array(Plugin),
   responses: z.object({
     "200": z.array(Plugin),
     "500": ErrorResponse,
@@ -3228,7 +3087,6 @@ export const get_GetPluginPrivileges = {
       remote: z.string(),
     }),
   }),
-  response: z.array(PluginPrivilege),
   responses: z.object({
     "200": z.array(PluginPrivilege),
     "500": ErrorResponse,
@@ -3250,7 +3108,6 @@ export const post_PluginPull = {
     }),
     body: z.array(PluginPrivilege),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "500": ErrorResponse,
@@ -3267,7 +3124,6 @@ export const get_PluginInspect = {
       name: z.string(),
     }),
   }),
-  response: Plugin,
   responses: z.object({
     "200": Plugin,
     "404": ErrorResponse,
@@ -3288,7 +3144,6 @@ export const delete_PluginDelete = {
       name: z.string(),
     }),
   }),
-  response: Plugin,
   responses: z.object({
     "200": Plugin,
     "404": ErrorResponse,
@@ -3309,7 +3164,6 @@ export const post_PluginEnable = {
       name: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": ErrorResponse,
@@ -3330,7 +3184,6 @@ export const post_PluginDisable = {
       name: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": ErrorResponse,
@@ -3355,7 +3208,6 @@ export const post_PluginUpgrade = {
     }),
     body: z.array(PluginPrivilege),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "404": ErrorResponse,
@@ -3373,7 +3225,6 @@ export const post_PluginCreate = {
       name: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "500": ErrorResponse,
@@ -3390,7 +3241,6 @@ export const post_PluginPush = {
       name: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": ErrorResponse,
@@ -3409,7 +3259,6 @@ export const post_PluginSet = {
     }),
     body: z.array(z.string()),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "404": ErrorResponse,
@@ -3427,7 +3276,6 @@ export const get_NodeList = {
       filters: z.string().optional(),
     }),
   }),
-  response: z.array(Node),
   responses: z.object({
     "200": z.array(Node),
     "500": ErrorResponse,
@@ -3445,7 +3293,6 @@ export const get_NodeInspect = {
       id: z.string(),
     }),
   }),
-  response: Node,
   responses: z.object({
     "200": Node,
     "404": ErrorResponse,
@@ -3467,7 +3314,6 @@ export const delete_NodeDelete = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": ErrorResponse,
@@ -3490,7 +3336,6 @@ export const post_NodeUpdate = {
     }),
     body: NodeSpec,
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "400": ErrorResponse,
@@ -3506,7 +3351,6 @@ export const get_SwarmInspect = {
   path: z.literal("/swarm"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  response: Swarm,
   responses: z.object({
     "200": Swarm,
     "404": ErrorResponse,
@@ -3532,7 +3376,6 @@ export const post_SwarmInit = {
       Spec: SwarmSpec.optional(),
     }),
   }),
-  response: z.string(),
   responses: z.object({
     "200": z.string(),
     "400": ErrorResponse,
@@ -3555,7 +3398,6 @@ export const post_SwarmJoin = {
       JoinToken: z.string().optional(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "400": ErrorResponse,
@@ -3574,7 +3416,6 @@ export const post_SwarmLeave = {
       force: z.boolean().optional(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "500": ErrorResponse,
@@ -3596,7 +3437,6 @@ export const post_SwarmUpdate = {
     }),
     body: SwarmSpec,
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "400": ErrorResponse,
@@ -3611,9 +3451,6 @@ export const get_SwarmUnlockkey = {
   path: z.literal("/swarm/unlockkey"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  response: z.object({
-    UnlockKey: z.string().optional(),
-  }),
   responses: z.object({
     "200": z.object({
       UnlockKey: z.string().optional(),
@@ -3633,7 +3470,6 @@ export const post_SwarmUnlock = {
       UnlockKey: z.string().optional(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "500": ErrorResponse,
@@ -3652,7 +3488,6 @@ export const get_ServiceList = {
       status: z.boolean().optional(),
     }),
   }),
-  response: z.array(Service),
   responses: z.object({
     "200": z.array(Service),
     "500": ErrorResponse,
@@ -3670,10 +3505,6 @@ export const post_ServiceCreate = {
       "X-Registry-Auth": z.string().optional(),
     }),
     body: z.intersection(ServiceSpec, z.record(z.unknown())),
-  }),
-  response: z.object({
-    ID: z.string().optional(),
-    Warning: z.string().optional(),
   }),
   responses: z.object({
     "201": z.object({
@@ -3701,7 +3532,6 @@ export const get_ServiceInspect = {
       id: z.string(),
     }),
   }),
-  response: Service,
   responses: z.object({
     "200": Service,
     "404": ErrorResponse,
@@ -3720,7 +3550,6 @@ export const delete_ServiceDelete = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": ErrorResponse,
@@ -3748,7 +3577,6 @@ export const post_ServiceUpdate = {
     }),
     body: z.intersection(ServiceSpec, z.record(z.unknown())),
   }),
-  response: ServiceUpdateResponse,
   responses: z.object({
     "200": ServiceUpdateResponse,
     "400": ErrorResponse,
@@ -3777,7 +3605,6 @@ export const get_ServiceLogs = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": z.unknown(),
@@ -3796,7 +3623,6 @@ export const get_TaskList = {
       filters: z.string().optional(),
     }),
   }),
-  response: z.array(Task),
   responses: z.object({
     "200": z.array(Task),
     "500": ErrorResponse,
@@ -3814,7 +3640,6 @@ export const get_TaskInspect = {
       id: z.string(),
     }),
   }),
-  response: Task,
   responses: z.object({
     "200": Task,
     "404": ErrorResponse,
@@ -3842,7 +3667,6 @@ export const get_TaskLogs = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "404": z.unknown(),
@@ -3861,7 +3685,6 @@ export const get_SecretList = {
       filters: z.string().optional(),
     }),
   }),
-  response: z.array(Secret),
   responses: z.object({
     "200": z.array(Secret),
     "500": ErrorResponse,
@@ -3877,7 +3700,6 @@ export const post_SecretCreate = {
   parameters: z.object({
     body: z.intersection(SecretSpec, z.record(z.unknown())),
   }),
-  response: IdResponse,
   responses: z.object({
     "201": IdResponse,
     "409": ErrorResponse,
@@ -3896,7 +3718,6 @@ export const get_SecretInspect = {
       id: z.string(),
     }),
   }),
-  response: Secret,
   responses: z.object({
     "200": Secret,
     "404": ErrorResponse,
@@ -3915,7 +3736,6 @@ export const delete_SecretDelete = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "404": ErrorResponse,
@@ -3938,7 +3758,6 @@ export const post_SecretUpdate = {
     }),
     body: SecretSpec,
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "400": ErrorResponse,
@@ -3958,7 +3777,6 @@ export const get_ConfigList = {
       filters: z.string().optional(),
     }),
   }),
-  response: z.array(Config),
   responses: z.object({
     "200": z.array(Config),
     "500": ErrorResponse,
@@ -3974,7 +3792,6 @@ export const post_ConfigCreate = {
   parameters: z.object({
     body: z.intersection(ConfigSpec, z.record(z.unknown())),
   }),
-  response: IdResponse,
   responses: z.object({
     "201": IdResponse,
     "409": ErrorResponse,
@@ -3993,7 +3810,6 @@ export const get_ConfigInspect = {
       id: z.string(),
     }),
   }),
-  response: Config,
   responses: z.object({
     "200": Config,
     "404": ErrorResponse,
@@ -4012,7 +3828,6 @@ export const delete_ConfigDelete = {
       id: z.string(),
     }),
   }),
-  response: z.unknown(),
   responses: z.object({
     "204": z.unknown(),
     "404": ErrorResponse,
@@ -4035,7 +3850,6 @@ export const post_ConfigUpdate = {
     }),
     body: ConfigSpec,
   }),
-  response: z.unknown(),
   responses: z.object({
     "200": z.unknown(),
     "400": ErrorResponse,
@@ -4055,7 +3869,6 @@ export const get_DistributionInspect = {
       name: z.string(),
     }),
   }),
-  response: DistributionInspect,
   responses: z.object({
     "200": DistributionInspect,
     "401": ErrorResponse,
@@ -4069,7 +3882,6 @@ export const post_Session = {
   path: z.literal("/session"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  response: z.unknown(),
   responses: z.object({
     "101": z.unknown(),
     "400": z.unknown(),
@@ -4223,7 +4035,6 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
-  response: unknown;
   responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
@@ -4239,7 +4050,6 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     hasParameters: boolean;
     areParametersRequired: boolean;
   };
-  response: TConfig["response"];
   responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
@@ -4259,7 +4069,7 @@ export type ErrorStatusCode = (typeof errorStatusCodes)[number];
 
 // Error handling types
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedSuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: true;
   status: TStatusCode;
   data: TSuccess;
@@ -4268,7 +4078,7 @@ interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: false;
   status: TStatusCode;
   data: TData;
@@ -4276,32 +4086,25 @@ interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "statu
   json: () => Promise<TData>;
 }
 
-export type TypedApiResponse<
-  TSuccess,
-  TAllResponses extends Record<string | number, unknown> = {},
-> = keyof TAllResponses extends never
-  ? SuccessResponse<TSuccess, number>
-  : {
-      [K in keyof TAllResponses]: K extends string
-        ? K extends `${infer TStatusCode extends number}`
-          ? TStatusCode extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, TStatusCode>
-            : ErrorResponse<TAllResponses[K], TStatusCode>
-          : never
-        : K extends number
-          ? K extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, K>
-            : ErrorResponse<TAllResponses[K], K>
-          : never;
-    }[keyof TAllResponses];
+export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}> = {
+  [K in keyof TAllResponses]: K extends string
+    ? K extends `${infer TStatusCode extends number}`
+      ? TStatusCode extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], TStatusCode>
+        : TypedErrorResponse<TAllResponses[K], TStatusCode>
+      : never
+    : K extends number
+      ? K extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], K>
+        : TypedErrorResponse<TAllResponses[K], K>
+      : never;
+}[keyof TAllResponses];
 
-export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TSuccess, TResponses>
-    : SuccessResponse<TSuccess, number>
-  : TEndpoint extends { response: infer TSuccess }
-    ? SuccessResponse<TSuccess, number>
-    : never;
+    ? TypedApiResponse<TResponses>
+    : never
+  : never;
 
 export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
   SafeApiResponse<TEndpoint>,
@@ -4318,9 +4121,9 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // <TypedResponseError>
 export class TypedResponseError extends Error {
-  response: ErrorResponse<unknown, ErrorStatusCode>;
+  response: TypedErrorResponse<unknown, ErrorStatusCode>;
   status: number;
-  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+  constructor(response: TypedErrorResponse<unknown, ErrorStatusCode>) {
     super(`HTTP ${response.status}: ${response.statusText}`);
     this.name = "TypedResponseError";
     this.response = response;
@@ -4355,7 +4158,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<z.infer<TEndpoint["response"]>>;
+  ): Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -4388,7 +4191,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<z.infer<TEndpoint["response"]>>;
+    return promise as Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.get>
 
@@ -4398,7 +4201,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<z.infer<TEndpoint["response"]>>;
+  ): Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -4431,7 +4234,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<z.infer<TEndpoint["response"]>>;
+    return promise as Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.post>
 
@@ -4441,7 +4244,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<z.infer<TEndpoint["response"]>>;
+  ): Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -4474,7 +4277,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<z.infer<TEndpoint["response"]>>;
+    return promise as Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.delete>
 
@@ -4484,7 +4287,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<z.infer<TEndpoint["response"]>>;
+  ): Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -4517,7 +4320,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<z.infer<TEndpoint["response"]>>;
+    return promise as Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.put>
 
@@ -4527,7 +4330,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       z.infer<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<z.infer<TEndpoint["response"]>>;
+  ): Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
     path: Path,
@@ -4560,7 +4363,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<z.infer<TEndpoint["response"]>>;
+    return promise as Promise<z.infer<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.head>
 

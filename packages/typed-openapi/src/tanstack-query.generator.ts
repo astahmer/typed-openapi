@@ -95,7 +95,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                             withResponse: false as const
                         };
                         const res = await this.client.${method}(path, requestParams);
-                        return res as TEndpoint["response"];
+                        return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
                     },
                     queryKey: queryKey
                 }),
@@ -110,7 +110,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                             withResponse: false as const
                         };
                         const res = await this.client.${method}(path, requestParams);
-                        return res as TEndpoint["response"];
+                        return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
                     }
                 }
             };

@@ -1742,7 +1742,6 @@ export const get_ContainerList = t.type({
       filters: t.union([t.undefined, t.string]),
     }),
   }),
-  response: t.array(ContainerSummary),
   responses: t.type({
     "200": t.array(ContainerSummary),
     "400": ErrorResponse,
@@ -1768,7 +1767,6 @@ export const post_ContainerCreate = t.type({
       }),
     ]),
   }),
-  response: ContainerCreateResponse,
   responses: t.type({
     "201": ContainerCreateResponse,
     "400": ErrorResponse,
@@ -1790,33 +1788,6 @@ export const get_ContainerInspect = t.type({
     path: t.type({
       id: t.string,
     }),
-  }),
-  response: t.type({
-    Id: t.union([t.undefined, t.string]),
-    Created: t.union([t.undefined, t.string]),
-    Path: t.union([t.undefined, t.string]),
-    Args: t.union([t.undefined, t.array(t.string)]),
-    State: t.union([t.undefined, ContainerState]),
-    Image: t.union([t.undefined, t.string]),
-    ResolvConfPath: t.union([t.undefined, t.string]),
-    HostnamePath: t.union([t.undefined, t.string]),
-    HostsPath: t.union([t.undefined, t.string]),
-    LogPath: t.union([t.undefined, t.string]),
-    Name: t.union([t.undefined, t.string]),
-    RestartCount: t.union([t.undefined, t.number]),
-    Driver: t.union([t.undefined, t.string]),
-    Platform: t.union([t.undefined, t.string]),
-    MountLabel: t.union([t.undefined, t.string]),
-    ProcessLabel: t.union([t.undefined, t.string]),
-    AppArmorProfile: t.union([t.undefined, t.string]),
-    ExecIDs: t.union([t.undefined, t.union([t.array(t.string), t.null])]),
-    HostConfig: t.union([t.undefined, HostConfig]),
-    GraphDriver: t.union([t.undefined, GraphDriverData]),
-    SizeRw: t.union([t.undefined, t.number]),
-    SizeRootFs: t.union([t.undefined, t.number]),
-    Mounts: t.union([t.undefined, t.array(MountPoint)]),
-    Config: t.union([t.undefined, ContainerConfig]),
-    NetworkSettings: t.union([t.undefined, NetworkSettings]),
   }),
   responses: t.type({
     "200": t.type({
@@ -1864,10 +1835,6 @@ export const get_ContainerTop = t.type({
       id: t.string,
     }),
   }),
-  response: t.type({
-    Titles: t.union([t.undefined, t.array(t.string)]),
-    Processes: t.union([t.undefined, t.array(t.array(t.string))]),
-  }),
   responses: t.type({
     "200": t.type({
       Titles: t.union([t.undefined, t.array(t.string)]),
@@ -1897,7 +1864,6 @@ export const get_ContainerLogs = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": t.unknown,
@@ -1915,7 +1881,6 @@ export const get_ContainerChanges = t.type({
       id: t.string,
     }),
   }),
-  response: t.array(FilesystemChange),
   responses: t.type({
     "200": t.array(FilesystemChange),
     "404": ErrorResponse,
@@ -1933,7 +1898,6 @@ export const get_ContainerExport = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": t.unknown,
@@ -1955,7 +1919,6 @@ export const get_ContainerStats = t.type({
       id: t.string,
     }),
   }),
-  response: t.record(t.string, t.unknown),
   responses: t.type({
     "200": t.record(t.string, t.unknown),
     "404": ErrorResponse,
@@ -1977,7 +1940,6 @@ export const post_ContainerResize = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": t.unknown,
@@ -1998,7 +1960,6 @@ export const post_ContainerStart = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "304": t.unknown,
@@ -2021,7 +1982,6 @@ export const post_ContainerStop = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "304": t.unknown,
@@ -2044,7 +2004,6 @@ export const post_ContainerRestart = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "404": ErrorResponse,
@@ -2065,7 +2024,6 @@ export const post_ContainerKill = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "404": ErrorResponse,
@@ -2090,9 +2048,6 @@ export const post_ContainerUpdate = t.type({
       }),
     ]),
   }),
-  response: t.type({
-    Warnings: t.union([t.undefined, t.array(t.string)]),
-  }),
   responses: t.type({
     "200": t.type({
       Warnings: t.union([t.undefined, t.array(t.string)]),
@@ -2115,7 +2070,6 @@ export const post_ContainerRename = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "404": ErrorResponse,
@@ -2134,7 +2088,6 @@ export const post_ContainerPause = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "404": ErrorResponse,
@@ -2152,7 +2105,6 @@ export const post_ContainerUnpause = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "404": ErrorResponse,
@@ -2178,7 +2130,6 @@ export const post_ContainerAttach = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "101": t.unknown,
     "200": t.unknown,
@@ -2206,7 +2157,6 @@ export const get_ContainerAttachWebsocket = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "101": t.unknown,
     "200": t.unknown,
@@ -2232,7 +2182,6 @@ export const post_ContainerWait = t.type({
       id: t.string,
     }),
   }),
-  response: ContainerWaitResponse,
   responses: t.type({
     "200": ContainerWaitResponse,
     "400": ErrorResponse,
@@ -2256,7 +2205,6 @@ export const delete_ContainerDelete = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "400": ErrorResponse,
@@ -2279,7 +2227,6 @@ export const get_ContainerArchive = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "400": t.unknown,
@@ -2304,7 +2251,6 @@ export const put_PutContainerArchive = t.type({
     }),
     body: t.string,
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "400": ErrorResponse,
@@ -2327,7 +2273,6 @@ export const head_ContainerArchiveInfo = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "400": ErrorResponse,
@@ -2335,7 +2280,9 @@ export const head_ContainerArchiveInfo = t.type({
     "500": ErrorResponse,
   }),
   responseHeaders: t.type({
-    "x-docker-container-path-stat": t.string,
+    "200": t.type({
+      "X-Docker-Container-Path-Stat": t.string,
+    }),
   }),
 });
 
@@ -2348,10 +2295,6 @@ export const post_ContainerPrune = t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
     }),
-  }),
-  response: t.type({
-    ContainersDeleted: t.union([t.undefined, t.array(t.string)]),
-    SpaceReclaimed: t.union([t.undefined, t.number]),
   }),
   responses: t.type({
     "200": t.type({
@@ -2375,7 +2318,6 @@ export const get_ImageList = t.type({
       digests: t.union([t.undefined, t.boolean]),
     }),
   }),
-  response: t.array(ImageSummary),
   responses: t.type({
     "200": t.array(ImageSummary),
     "500": ErrorResponse,
@@ -2420,7 +2362,6 @@ export const post_ImageBuild = t.type({
     }),
     body: t.string,
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "400": ErrorResponse,
@@ -2439,10 +2380,6 @@ export const post_BuildPrune = t.type({
       all: t.union([t.undefined, t.boolean]),
       filters: t.union([t.undefined, t.string]),
     }),
-  }),
-  response: t.type({
-    CachesDeleted: t.union([t.undefined, t.array(t.string)]),
-    SpaceReclaimed: t.union([t.undefined, t.number]),
   }),
   responses: t.type({
     "200": t.type({
@@ -2473,7 +2410,6 @@ export const post_ImageCreate = t.type({
     }),
     body: t.string,
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": ErrorResponse,
@@ -2491,7 +2427,6 @@ export const get_ImageInspect = t.type({
       name: t.string,
     }),
   }),
-  response: ImageInspect,
   responses: t.type({
     "200": ImageInspect,
     "404": ErrorResponse,
@@ -2509,16 +2444,6 @@ export const get_ImageHistory = t.type({
       name: t.string,
     }),
   }),
-  response: t.array(
-    t.type({
-      Id: t.string,
-      Created: t.number,
-      CreatedBy: t.string,
-      Tags: t.array(t.string),
-      Size: t.number,
-      Comment: t.string,
-    }),
-  ),
   responses: t.type({
     "200": t.array(
       t.type({
@@ -2551,7 +2476,6 @@ export const post_ImagePush = t.type({
       "X-Registry-Auth": t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": ErrorResponse,
@@ -2573,7 +2497,6 @@ export const post_ImageTag = t.type({
       name: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "201": t.unknown,
     "400": ErrorResponse,
@@ -2597,7 +2520,6 @@ export const delete_ImageDelete = t.type({
       name: t.string,
     }),
   }),
-  response: t.array(ImageDeleteResponseItem),
   responses: t.type({
     "200": t.array(ImageDeleteResponseItem),
     "404": ErrorResponse,
@@ -2618,15 +2540,6 @@ export const get_ImageSearch = t.type({
       filters: t.union([t.undefined, t.union([t.string, t.undefined])]),
     }),
   }),
-  response: t.array(
-    t.type({
-      description: t.union([t.undefined, t.string]),
-      is_official: t.union([t.undefined, t.boolean]),
-      is_automated: t.union([t.undefined, t.boolean]),
-      name: t.union([t.undefined, t.string]),
-      star_count: t.union([t.undefined, t.number]),
-    }),
-  ),
   responses: t.type({
     "200": t.array(
       t.type({
@@ -2651,10 +2564,6 @@ export const post_ImagePrune = t.type({
       filters: t.union([t.undefined, t.string]),
     }),
   }),
-  response: t.type({
-    ImagesDeleted: t.union([t.undefined, t.array(ImageDeleteResponseItem)]),
-    SpaceReclaimed: t.union([t.undefined, t.number]),
-  }),
   responses: t.type({
     "200": t.type({
       ImagesDeleted: t.union([t.undefined, t.array(ImageDeleteResponseItem)]),
@@ -2671,10 +2580,6 @@ export const post_SystemAuth = t.type({
   requestFormat: t.literal("json"),
   parameters: t.type({
     body: AuthConfig,
-  }),
-  response: t.type({
-    Status: t.string,
-    IdentityToken: t.union([t.undefined, t.union([t.string, t.undefined])]),
   }),
   responses: t.type({
     "200": t.type({
@@ -2693,7 +2598,6 @@ export const get_SystemInfo = t.type({
   path: t.literal("/info"),
   requestFormat: t.literal("json"),
   parameters: t.never,
-  response: SystemInfo,
   responses: t.type({
     "200": SystemInfo,
     "500": ErrorResponse,
@@ -2706,7 +2610,6 @@ export const get_SystemVersion = t.type({
   path: t.literal("/version"),
   requestFormat: t.literal("json"),
   parameters: t.never,
-  response: SystemVersion,
   responses: t.type({
     "200": SystemVersion,
     "500": ErrorResponse,
@@ -2719,25 +2622,30 @@ export const get_SystemPing = t.type({
   path: t.literal("/_ping"),
   requestFormat: t.literal("json"),
   parameters: t.never,
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "500": t.unknown,
   }),
   responseHeaders: t.type({
-    swarm: t.union([
-      t.literal("inactive"),
-      t.literal("pending"),
-      t.literal("error"),
-      t.literal("locked"),
-      t.literal("active/worker"),
-      t.literal("active/manager"),
-    ]),
-    "docker-experimental": t.boolean,
-    "cache-control": t.string,
-    pragma: t.string,
-    "api-version": t.string,
-    "builder-version": t.string,
+    "200": t.type({
+      Swarm: t.union([
+        t.literal("inactive"),
+        t.literal("pending"),
+        t.literal("error"),
+        t.literal("locked"),
+        t.literal("active/worker"),
+        t.literal("active/manager"),
+      ]),
+      "Docker-Experimental": t.boolean,
+      "Cache-Control": t.string,
+      Pragma: t.string,
+      "API-Version": t.string,
+      "Builder-Version": t.string,
+    }),
+    "500": t.type({
+      "Cache-Control": t.string,
+      Pragma: t.string,
+    }),
   }),
 });
 
@@ -2747,25 +2655,26 @@ export const head_SystemPingHead = t.type({
   path: t.literal("/_ping"),
   requestFormat: t.literal("json"),
   parameters: t.never,
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "500": t.unknown,
   }),
   responseHeaders: t.type({
-    swarm: t.union([
-      t.literal("inactive"),
-      t.literal("pending"),
-      t.literal("error"),
-      t.literal("locked"),
-      t.literal("active/worker"),
-      t.literal("active/manager"),
-    ]),
-    "docker-experimental": t.boolean,
-    "cache-control": t.string,
-    pragma: t.string,
-    "api-version": t.string,
-    "builder-version": t.string,
+    "200": t.type({
+      Swarm: t.union([
+        t.literal("inactive"),
+        t.literal("pending"),
+        t.literal("error"),
+        t.literal("locked"),
+        t.literal("active/worker"),
+        t.literal("active/manager"),
+      ]),
+      "Docker-Experimental": t.boolean,
+      "Cache-Control": t.string,
+      Pragma: t.string,
+      "API-Version": t.string,
+      "Builder-Version": t.string,
+    }),
   }),
 });
 
@@ -2786,7 +2695,6 @@ export const post_ImageCommit = t.type({
     }),
     body: ContainerConfig,
   }),
-  response: IdResponse,
   responses: t.type({
     "201": IdResponse,
     "404": ErrorResponse,
@@ -2806,7 +2714,6 @@ export const get_SystemEvents = t.type({
       filters: t.union([t.undefined, t.string]),
     }),
   }),
-  response: EventMessage,
   responses: t.type({
     "200": EventMessage,
     "400": ErrorResponse,
@@ -2826,13 +2733,6 @@ export const get_SystemDataUsage = t.type({
         t.array(t.union([t.literal("container"), t.literal("image"), t.literal("volume"), t.literal("build-cache")])),
       ]),
     }),
-  }),
-  response: t.type({
-    LayersSize: t.union([t.undefined, t.number]),
-    Images: t.union([t.undefined, t.array(ImageSummary)]),
-    Containers: t.union([t.undefined, t.array(ContainerSummary)]),
-    Volumes: t.union([t.undefined, t.array(Volume)]),
-    BuildCache: t.union([t.undefined, t.array(BuildCache)]),
   }),
   responses: t.type({
     "200": t.type({
@@ -2856,7 +2756,6 @@ export const get_ImageGet = t.type({
       name: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "500": t.unknown,
@@ -2873,7 +2772,6 @@ export const get_ImageGetAll = t.type({
       names: t.union([t.undefined, t.array(t.string)]),
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "500": t.unknown,
@@ -2890,7 +2788,6 @@ export const post_ImageLoad = t.type({
       quiet: t.union([t.undefined, t.boolean]),
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "500": ErrorResponse,
@@ -2920,7 +2817,6 @@ export const post_ContainerExec = t.type({
       WorkingDir: t.union([t.undefined, t.string]),
     }),
   }),
-  response: IdResponse,
   responses: t.type({
     "201": IdResponse,
     "404": ErrorResponse,
@@ -2944,7 +2840,6 @@ export const post_ExecStart = t.type({
       ConsoleSize: t.union([t.undefined, t.union([t.array(t.number), t.null])]),
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": t.unknown,
@@ -2966,7 +2861,6 @@ export const post_ExecResize = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "400": ErrorResponse,
@@ -2984,19 +2878,6 @@ export const get_ExecInspect = t.type({
     path: t.type({
       id: t.string,
     }),
-  }),
-  response: t.type({
-    CanRemove: t.union([t.undefined, t.boolean]),
-    DetachKeys: t.union([t.undefined, t.string]),
-    ID: t.union([t.undefined, t.string]),
-    Running: t.union([t.undefined, t.boolean]),
-    ExitCode: t.union([t.undefined, t.number]),
-    ProcessConfig: t.union([t.undefined, ProcessConfig]),
-    OpenStdin: t.union([t.undefined, t.boolean]),
-    OpenStderr: t.union([t.undefined, t.boolean]),
-    OpenStdout: t.union([t.undefined, t.boolean]),
-    ContainerID: t.union([t.undefined, t.string]),
-    Pid: t.union([t.undefined, t.number]),
   }),
   responses: t.type({
     "200": t.type({
@@ -3027,7 +2908,6 @@ export const get_VolumeList = t.type({
       filters: t.union([t.undefined, t.string]),
     }),
   }),
-  response: VolumeListResponse,
   responses: t.type({
     "200": VolumeListResponse,
     "500": ErrorResponse,
@@ -3042,7 +2922,6 @@ export const post_VolumeCreate = t.type({
   parameters: t.type({
     body: VolumeCreateOptions,
   }),
-  response: Volume,
   responses: t.type({
     "201": Volume,
     "500": ErrorResponse,
@@ -3059,7 +2938,6 @@ export const get_VolumeInspect = t.type({
       name: t.string,
     }),
   }),
-  response: Volume,
   responses: t.type({
     "200": Volume,
     "404": ErrorResponse,
@@ -3083,7 +2961,6 @@ export const put_VolumeUpdate = t.type({
       Spec: t.union([t.undefined, ClusterVolumeSpec]),
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "400": ErrorResponse,
@@ -3106,7 +2983,6 @@ export const delete_VolumeDelete = t.type({
       name: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "404": ErrorResponse,
@@ -3124,10 +3000,6 @@ export const post_VolumePrune = t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
     }),
-  }),
-  response: t.type({
-    VolumesDeleted: t.union([t.undefined, t.array(t.string)]),
-    SpaceReclaimed: t.union([t.undefined, t.number]),
   }),
   responses: t.type({
     "200": t.type({
@@ -3148,7 +3020,6 @@ export const get_NetworkList = t.type({
       filters: t.union([t.undefined, t.string]),
     }),
   }),
-  response: t.array(Network),
   responses: t.type({
     "200": t.array(Network),
     "500": ErrorResponse,
@@ -3169,7 +3040,6 @@ export const get_NetworkInspect = t.type({
       id: t.string,
     }),
   }),
-  response: Network,
   responses: t.type({
     "200": Network,
     "404": ErrorResponse,
@@ -3187,7 +3057,6 @@ export const delete_NetworkDelete = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "403": ErrorResponse,
@@ -3215,10 +3084,6 @@ export const post_NetworkCreate = t.type({
       Labels: t.union([t.undefined, t.union([t.record(t.string, t.string), t.undefined])]),
     }),
   }),
-  response: t.type({
-    Id: t.union([t.undefined, t.string]),
-    Warning: t.union([t.undefined, t.string]),
-  }),
   responses: t.type({
     "201": t.type({
       Id: t.union([t.undefined, t.string]),
@@ -3244,7 +3109,6 @@ export const post_NetworkConnect = t.type({
       EndpointConfig: t.union([t.undefined, EndpointSettings]),
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "403": ErrorResponse,
@@ -3267,7 +3131,6 @@ export const post_NetworkDisconnect = t.type({
       Force: t.union([t.undefined, t.boolean]),
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "403": ErrorResponse,
@@ -3285,9 +3148,6 @@ export const post_NetworkPrune = t.type({
     query: t.type({
       filters: t.union([t.undefined, t.string]),
     }),
-  }),
-  response: t.type({
-    NetworksDeleted: t.union([t.undefined, t.array(t.string)]),
   }),
   responses: t.type({
     "200": t.type({
@@ -3307,7 +3167,6 @@ export const get_PluginList = t.type({
       filters: t.union([t.undefined, t.string]),
     }),
   }),
-  response: t.array(Plugin),
   responses: t.type({
     "200": t.array(Plugin),
     "500": ErrorResponse,
@@ -3324,7 +3183,6 @@ export const get_GetPluginPrivileges = t.type({
       remote: t.string,
     }),
   }),
-  response: t.array(PluginPrivilege),
   responses: t.type({
     "200": t.array(PluginPrivilege),
     "500": ErrorResponse,
@@ -3346,7 +3204,6 @@ export const post_PluginPull = t.type({
     }),
     body: t.array(PluginPrivilege),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "500": ErrorResponse,
@@ -3363,7 +3220,6 @@ export const get_PluginInspect = t.type({
       name: t.string,
     }),
   }),
-  response: Plugin,
   responses: t.type({
     "200": Plugin,
     "404": ErrorResponse,
@@ -3384,7 +3240,6 @@ export const delete_PluginDelete = t.type({
       name: t.string,
     }),
   }),
-  response: Plugin,
   responses: t.type({
     "200": Plugin,
     "404": ErrorResponse,
@@ -3405,7 +3260,6 @@ export const post_PluginEnable = t.type({
       name: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": ErrorResponse,
@@ -3426,7 +3280,6 @@ export const post_PluginDisable = t.type({
       name: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": ErrorResponse,
@@ -3451,7 +3304,6 @@ export const post_PluginUpgrade = t.type({
     }),
     body: t.array(PluginPrivilege),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "404": ErrorResponse,
@@ -3469,7 +3321,6 @@ export const post_PluginCreate = t.type({
       name: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "500": ErrorResponse,
@@ -3486,7 +3337,6 @@ export const post_PluginPush = t.type({
       name: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": ErrorResponse,
@@ -3505,7 +3355,6 @@ export const post_PluginSet = t.type({
     }),
     body: t.array(t.string),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "404": ErrorResponse,
@@ -3523,7 +3372,6 @@ export const get_NodeList = t.type({
       filters: t.union([t.undefined, t.string]),
     }),
   }),
-  response: t.array(Node),
   responses: t.type({
     "200": t.array(Node),
     "500": ErrorResponse,
@@ -3541,7 +3389,6 @@ export const get_NodeInspect = t.type({
       id: t.string,
     }),
   }),
-  response: Node,
   responses: t.type({
     "200": Node,
     "404": ErrorResponse,
@@ -3563,7 +3410,6 @@ export const delete_NodeDelete = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": ErrorResponse,
@@ -3586,7 +3432,6 @@ export const post_NodeUpdate = t.type({
     }),
     body: NodeSpec,
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "400": ErrorResponse,
@@ -3602,7 +3447,6 @@ export const get_SwarmInspect = t.type({
   path: t.literal("/swarm"),
   requestFormat: t.literal("json"),
   parameters: t.never,
-  response: Swarm,
   responses: t.type({
     "200": Swarm,
     "404": ErrorResponse,
@@ -3628,7 +3472,6 @@ export const post_SwarmInit = t.type({
       Spec: t.union([t.undefined, SwarmSpec]),
     }),
   }),
-  response: t.string,
   responses: t.type({
     "200": t.string,
     "400": ErrorResponse,
@@ -3651,7 +3494,6 @@ export const post_SwarmJoin = t.type({
       JoinToken: t.union([t.undefined, t.string]),
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "400": ErrorResponse,
@@ -3670,7 +3512,6 @@ export const post_SwarmLeave = t.type({
       force: t.union([t.undefined, t.boolean]),
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "500": ErrorResponse,
@@ -3692,7 +3533,6 @@ export const post_SwarmUpdate = t.type({
     }),
     body: SwarmSpec,
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "400": ErrorResponse,
@@ -3707,9 +3547,6 @@ export const get_SwarmUnlockkey = t.type({
   path: t.literal("/swarm/unlockkey"),
   requestFormat: t.literal("json"),
   parameters: t.never,
-  response: t.type({
-    UnlockKey: t.union([t.undefined, t.string]),
-  }),
   responses: t.type({
     "200": t.type({
       UnlockKey: t.union([t.undefined, t.string]),
@@ -3729,7 +3566,6 @@ export const post_SwarmUnlock = t.type({
       UnlockKey: t.union([t.undefined, t.string]),
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "500": ErrorResponse,
@@ -3748,7 +3584,6 @@ export const get_ServiceList = t.type({
       status: t.union([t.undefined, t.boolean]),
     }),
   }),
-  response: t.array(Service),
   responses: t.type({
     "200": t.array(Service),
     "500": ErrorResponse,
@@ -3766,10 +3601,6 @@ export const post_ServiceCreate = t.type({
       "X-Registry-Auth": t.union([t.undefined, t.string]),
     }),
     body: t.intersection([ServiceSpec, t.record(t.string, t.unknown)]),
-  }),
-  response: t.type({
-    ID: t.union([t.undefined, t.string]),
-    Warning: t.union([t.undefined, t.string]),
   }),
   responses: t.type({
     "201": t.type({
@@ -3797,7 +3628,6 @@ export const get_ServiceInspect = t.type({
       id: t.string,
     }),
   }),
-  response: Service,
   responses: t.type({
     "200": Service,
     "404": ErrorResponse,
@@ -3816,7 +3646,6 @@ export const delete_ServiceDelete = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": ErrorResponse,
@@ -3847,7 +3676,6 @@ export const post_ServiceUpdate = t.type({
     }),
     body: t.intersection([ServiceSpec, t.record(t.string, t.unknown)]),
   }),
-  response: ServiceUpdateResponse,
   responses: t.type({
     "200": ServiceUpdateResponse,
     "400": ErrorResponse,
@@ -3876,7 +3704,6 @@ export const get_ServiceLogs = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": t.unknown,
@@ -3895,7 +3722,6 @@ export const get_TaskList = t.type({
       filters: t.union([t.undefined, t.string]),
     }),
   }),
-  response: t.array(Task),
   responses: t.type({
     "200": t.array(Task),
     "500": ErrorResponse,
@@ -3913,7 +3739,6 @@ export const get_TaskInspect = t.type({
       id: t.string,
     }),
   }),
-  response: Task,
   responses: t.type({
     "200": Task,
     "404": ErrorResponse,
@@ -3941,7 +3766,6 @@ export const get_TaskLogs = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "404": t.unknown,
@@ -3960,7 +3784,6 @@ export const get_SecretList = t.type({
       filters: t.union([t.undefined, t.string]),
     }),
   }),
-  response: t.array(Secret),
   responses: t.type({
     "200": t.array(Secret),
     "500": ErrorResponse,
@@ -3976,7 +3799,6 @@ export const post_SecretCreate = t.type({
   parameters: t.type({
     body: t.intersection([SecretSpec, t.record(t.string, t.unknown)]),
   }),
-  response: IdResponse,
   responses: t.type({
     "201": IdResponse,
     "409": ErrorResponse,
@@ -3995,7 +3817,6 @@ export const get_SecretInspect = t.type({
       id: t.string,
     }),
   }),
-  response: Secret,
   responses: t.type({
     "200": Secret,
     "404": ErrorResponse,
@@ -4014,7 +3835,6 @@ export const delete_SecretDelete = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "404": ErrorResponse,
@@ -4037,7 +3857,6 @@ export const post_SecretUpdate = t.type({
     }),
     body: SecretSpec,
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "400": ErrorResponse,
@@ -4057,7 +3876,6 @@ export const get_ConfigList = t.type({
       filters: t.union([t.undefined, t.string]),
     }),
   }),
-  response: t.array(Config),
   responses: t.type({
     "200": t.array(Config),
     "500": ErrorResponse,
@@ -4073,7 +3891,6 @@ export const post_ConfigCreate = t.type({
   parameters: t.type({
     body: t.intersection([ConfigSpec, t.record(t.string, t.unknown)]),
   }),
-  response: IdResponse,
   responses: t.type({
     "201": IdResponse,
     "409": ErrorResponse,
@@ -4092,7 +3909,6 @@ export const get_ConfigInspect = t.type({
       id: t.string,
     }),
   }),
-  response: Config,
   responses: t.type({
     "200": Config,
     "404": ErrorResponse,
@@ -4111,7 +3927,6 @@ export const delete_ConfigDelete = t.type({
       id: t.string,
     }),
   }),
-  response: t.unknown,
   responses: t.type({
     "204": t.unknown,
     "404": ErrorResponse,
@@ -4134,7 +3949,6 @@ export const post_ConfigUpdate = t.type({
     }),
     body: ConfigSpec,
   }),
-  response: t.unknown,
   responses: t.type({
     "200": t.unknown,
     "400": ErrorResponse,
@@ -4154,7 +3968,6 @@ export const get_DistributionInspect = t.type({
       name: t.string,
     }),
   }),
-  response: DistributionInspect,
   responses: t.type({
     "200": DistributionInspect,
     "401": ErrorResponse,
@@ -4168,7 +3981,6 @@ export const post_Session = t.type({
   path: t.literal("/session"),
   requestFormat: t.literal("json"),
   parameters: t.never,
-  response: t.unknown,
   responses: t.type({
     "101": t.unknown,
     "400": t.unknown,
@@ -4325,7 +4137,6 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
-  response: unknown;
   responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
@@ -4341,7 +4152,6 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     hasParameters: boolean;
     areParametersRequired: boolean;
   };
-  response: TConfig["response"];
   responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
@@ -4361,7 +4171,7 @@ export type ErrorStatusCode = (typeof errorStatusCodes)[number];
 
 // Error handling types
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedSuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: true;
   status: TStatusCode;
   data: TSuccess;
@@ -4370,7 +4180,7 @@ interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: false;
   status: TStatusCode;
   data: TData;
@@ -4378,32 +4188,25 @@ interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "statu
   json: () => Promise<TData>;
 }
 
-export type TypedApiResponse<
-  TSuccess,
-  TAllResponses extends Record<string | number, unknown> = {},
-> = keyof TAllResponses extends never
-  ? SuccessResponse<TSuccess, number>
-  : {
-      [K in keyof TAllResponses]: K extends string
-        ? K extends `${infer TStatusCode extends number}`
-          ? TStatusCode extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, TStatusCode>
-            : ErrorResponse<TAllResponses[K], TStatusCode>
-          : never
-        : K extends number
-          ? K extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, K>
-            : ErrorResponse<TAllResponses[K], K>
-          : never;
-    }[keyof TAllResponses];
+export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}> = {
+  [K in keyof TAllResponses]: K extends string
+    ? K extends `${infer TStatusCode extends number}`
+      ? TStatusCode extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], TStatusCode>
+        : TypedErrorResponse<TAllResponses[K], TStatusCode>
+      : never
+    : K extends number
+      ? K extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], K>
+        : TypedErrorResponse<TAllResponses[K], K>
+      : never;
+}[keyof TAllResponses];
 
-export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TSuccess, TResponses>
-    : SuccessResponse<TSuccess, number>
-  : TEndpoint extends { response: infer TSuccess }
-    ? SuccessResponse<TSuccess, number>
-    : never;
+    ? TypedApiResponse<TResponses>
+    : never
+  : never;
 
 export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
   SafeApiResponse<TEndpoint>,
@@ -4420,9 +4223,9 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // <TypedResponseError>
 export class TypedResponseError extends Error {
-  response: ErrorResponse<unknown, ErrorStatusCode>;
+  response: TypedErrorResponse<unknown, ErrorStatusCode>;
   status: number;
-  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+  constructor(response: TypedErrorResponse<unknown, ErrorStatusCode>) {
     super(`HTTP ${response.status}: ${response.statusText}`);
     this.name = "TypedResponseError";
     this.response = response;
@@ -4457,7 +4260,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       t.TypeOf<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<t.TypeOf<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -4492,7 +4295,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<t.TypeOf<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.get>
 
@@ -4502,7 +4305,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       t.TypeOf<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<t.TypeOf<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -4537,7 +4340,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<t.TypeOf<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.post>
 
@@ -4547,7 +4350,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       t.TypeOf<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<t.TypeOf<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>["data"]>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -4582,7 +4385,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<t.TypeOf<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.delete>
 
@@ -4592,7 +4395,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       t.TypeOf<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<t.TypeOf<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>["data"]>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -4627,7 +4430,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<t.TypeOf<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.put>
 
@@ -4637,7 +4440,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       t.TypeOf<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<t.TypeOf<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>["data"]>;
 
   head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
     path: Path,
@@ -4672,7 +4475,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<t.TypeOf<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.head>
 

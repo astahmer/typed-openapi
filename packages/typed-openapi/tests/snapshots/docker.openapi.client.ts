@@ -872,7 +872,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ all: boolean; limit: number; size: boolean; filters: string }>;
     };
-    response: Array<Schemas.ContainerSummary>;
     responses: { 200: Array<Schemas.ContainerSummary>; 400: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_ContainerCreate = {
@@ -885,7 +884,6 @@ export namespace Endpoints {
       body: Schemas.ContainerConfig &
         Partial<{ HostConfig: Schemas.HostConfig; NetworkingConfig: Schemas.NetworkingConfig }>;
     };
-    response: Schemas.ContainerCreateResponse;
     responses: {
       201: Schemas.ContainerCreateResponse;
       400: Schemas.ErrorResponse;
@@ -902,33 +900,6 @@ export namespace Endpoints {
       query: Partial<{ size: boolean }>;
       path: { id: string };
     };
-    response: Partial<{
-      Id: string;
-      Created: string;
-      Path: string;
-      Args: Array<string>;
-      State: Schemas.ContainerState;
-      Image: string;
-      ResolvConfPath: string;
-      HostnamePath: string;
-      HostsPath: string;
-      LogPath: string;
-      Name: string;
-      RestartCount: number;
-      Driver: string;
-      Platform: string;
-      MountLabel: string;
-      ProcessLabel: string;
-      AppArmorProfile: string;
-      ExecIDs: Array<string> | null;
-      HostConfig: Schemas.HostConfig;
-      GraphDriver: Schemas.GraphDriverData;
-      SizeRw: number;
-      SizeRootFs: number;
-      Mounts: Array<Schemas.MountPoint>;
-      Config: Schemas.ContainerConfig;
-      NetworkSettings: Schemas.NetworkSettings;
-    }>;
     responses: {
       200: Partial<{
         Id: string;
@@ -969,7 +940,6 @@ export namespace Endpoints {
       query: Partial<{ ps_args: string }>;
       path: { id: string };
     };
-    response: Partial<{ Titles: Array<string>; Processes: Array<Array<string>> }>;
     responses: {
       200: Partial<{ Titles: Array<string>; Processes: Array<Array<string>> }>;
       404: Schemas.ErrorResponse;
@@ -992,7 +962,6 @@ export namespace Endpoints {
       }>;
       path: { id: string };
     };
-    response: unknown;
     responses: { 200: unknown; 404: unknown; 500: unknown };
   };
   export type get_ContainerChanges = {
@@ -1002,7 +971,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: Array<Schemas.FilesystemChange>;
     responses: { 200: Array<Schemas.FilesystemChange>; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type get_ContainerExport = {
@@ -1012,7 +980,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: unknown;
     responses: { 200: unknown; 404: unknown; 500: unknown };
   };
   export type get_ContainerStats = {
@@ -1023,7 +990,6 @@ export namespace Endpoints {
       query: Partial<{ stream: boolean; "one-shot": boolean }>;
       path: { id: string };
     };
-    response: Record<string, unknown>;
     responses: { 200: Record<string, unknown>; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_ContainerResize = {
@@ -1034,7 +1000,6 @@ export namespace Endpoints {
       query: Partial<{ h: number; w: number }>;
       path: { id: string };
     };
-    response: unknown;
     responses: { 200: unknown; 404: unknown; 500: unknown };
   };
   export type post_ContainerStart = {
@@ -1045,7 +1010,6 @@ export namespace Endpoints {
       query: Partial<{ detachKeys: string }>;
       path: { id: string };
     };
-    response: unknown;
     responses: { 204: unknown; 304: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_ContainerStop = {
@@ -1056,7 +1020,6 @@ export namespace Endpoints {
       query: Partial<{ signal: string; t: number }>;
       path: { id: string };
     };
-    response: unknown;
     responses: { 204: unknown; 304: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_ContainerRestart = {
@@ -1067,7 +1030,6 @@ export namespace Endpoints {
       query: Partial<{ signal: string; t: number }>;
       path: { id: string };
     };
-    response: unknown;
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_ContainerKill = {
@@ -1078,7 +1040,6 @@ export namespace Endpoints {
       query: Partial<{ signal: string }>;
       path: { id: string };
     };
-    response: unknown;
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 409: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_ContainerUpdate = {
@@ -1090,7 +1051,6 @@ export namespace Endpoints {
 
       body: Schemas.Resources & Partial<{ RestartPolicy: Schemas.RestartPolicy }>;
     };
-    response: Partial<{ Warnings: Array<string> }>;
     responses: { 200: Partial<{ Warnings: Array<string> }>; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_ContainerRename = {
@@ -1101,7 +1061,6 @@ export namespace Endpoints {
       query: { name: string };
       path: { id: string };
     };
-    response: unknown;
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 409: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_ContainerPause = {
@@ -1111,7 +1070,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: unknown;
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_ContainerUnpause = {
@@ -1121,7 +1079,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: unknown;
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_ContainerAttach = {
@@ -1139,7 +1096,6 @@ export namespace Endpoints {
       }>;
       path: { id: string };
     };
-    response: unknown;
     responses: { 101: unknown; 200: unknown; 400: unknown; 404: unknown; 500: unknown };
   };
   export type get_ContainerAttachWebsocket = {
@@ -1157,7 +1113,6 @@ export namespace Endpoints {
       }>;
       path: { id: string };
     };
-    response: unknown;
     responses: {
       101: unknown;
       200: unknown;
@@ -1174,7 +1129,6 @@ export namespace Endpoints {
       query: Partial<{ condition: "not-running" | "next-exit" | "removed" }>;
       path: { id: string };
     };
-    response: Schemas.ContainerWaitResponse;
     responses: {
       200: Schemas.ContainerWaitResponse;
       400: Schemas.ErrorResponse;
@@ -1190,7 +1144,6 @@ export namespace Endpoints {
       query: Partial<{ v: boolean; force: boolean; link: boolean }>;
       path: { id: string };
     };
-    response: unknown;
     responses: {
       204: unknown;
       400: Schemas.ErrorResponse;
@@ -1207,7 +1160,6 @@ export namespace Endpoints {
       query: { path: string };
       path: { id: string };
     };
-    response: unknown;
     responses: { 200: unknown; 400: unknown; 404: unknown; 500: unknown };
   };
   export type put_PutContainerArchive = {
@@ -1220,7 +1172,6 @@ export namespace Endpoints {
 
       body: string;
     };
-    response: unknown;
     responses: {
       200: unknown;
       400: Schemas.ErrorResponse;
@@ -1237,9 +1188,8 @@ export namespace Endpoints {
       query: { path: string };
       path: { id: string };
     };
-    response: unknown;
     responses: { 200: unknown; 400: Schemas.ErrorResponse; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
-    responseHeaders: { "x-docker-container-path-stat": string };
+    responseHeaders: { 200: Partial<{ "X-Docker-Container-Path-Stat": unknown }> };
   };
   export type post_ContainerPrune = {
     method: "POST";
@@ -1248,7 +1198,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ filters: string }>;
     };
-    response: Partial<{ ContainersDeleted: Array<string>; SpaceReclaimed: number }>;
     responses: {
       200: Partial<{ ContainersDeleted: Array<string>; SpaceReclaimed: number }>;
       500: Schemas.ErrorResponse;
@@ -1261,7 +1210,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ all: boolean; filters: string; "shared-size": boolean; digests: boolean }>;
     };
-    response: Array<Schemas.ImageSummary>;
     responses: { 200: Array<Schemas.ImageSummary>; 500: Schemas.ErrorResponse };
   };
   export type post_ImageBuild = {
@@ -1299,7 +1247,6 @@ export namespace Endpoints {
       header: Partial<{ "Content-type": "application/x-tar"; "X-Registry-Config": string }>;
       body: string;
     };
-    response: unknown;
     responses: { 200: unknown; 400: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_BuildPrune = {
@@ -1309,7 +1256,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ "keep-storage": number; all: boolean; filters: string }>;
     };
-    response: Partial<{ CachesDeleted: Array<string>; SpaceReclaimed: number }>;
     responses: { 200: Partial<{ CachesDeleted: Array<string>; SpaceReclaimed: number }>; 500: Schemas.ErrorResponse };
   };
   export type post_ImageCreate = {
@@ -1330,7 +1276,6 @@ export namespace Endpoints {
       header: Partial<{ "X-Registry-Auth": string }>;
       body: string;
     };
-    response: unknown;
     responses: { 200: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type get_ImageInspect = {
@@ -1340,7 +1285,6 @@ export namespace Endpoints {
     parameters: {
       path: { name: string };
     };
-    response: Schemas.ImageInspect;
     responses: { 200: Schemas.ImageInspect; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type get_ImageHistory = {
@@ -1350,14 +1294,6 @@ export namespace Endpoints {
     parameters: {
       path: { name: string };
     };
-    response: Array<{
-      Id: string;
-      Created: number;
-      CreatedBy: string;
-      Tags: Array<string>;
-      Size: number;
-      Comment: string;
-    }>;
     responses: {
       200: Array<{
         Id: string;
@@ -1380,7 +1316,6 @@ export namespace Endpoints {
       path: { name: string };
       header: { "X-Registry-Auth": string };
     };
-    response: unknown;
     responses: { 200: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_ImageTag = {
@@ -1391,7 +1326,6 @@ export namespace Endpoints {
       query: Partial<{ repo: string; tag: string }>;
       path: { name: string };
     };
-    response: unknown;
     responses: {
       201: unknown;
       400: Schemas.ErrorResponse;
@@ -1408,7 +1342,6 @@ export namespace Endpoints {
       query: Partial<{ force: boolean; noprune: boolean }>;
       path: { name: string };
     };
-    response: Array<Schemas.ImageDeleteResponseItem>;
     responses: {
       200: Array<Schemas.ImageDeleteResponseItem>;
       404: Schemas.ErrorResponse;
@@ -1423,9 +1356,6 @@ export namespace Endpoints {
     parameters: {
       query: { term: string; limit?: number | undefined; filters?: string | undefined };
     };
-    response: Array<
-      Partial<{ description: string; is_official: boolean; is_automated: boolean; name: string; star_count: number }>
-    >;
     responses: {
       200: Array<
         Partial<{ description: string; is_official: boolean; is_automated: boolean; name: string; star_count: number }>
@@ -1440,7 +1370,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ filters: string }>;
     };
-    response: Partial<{ ImagesDeleted: Array<Schemas.ImageDeleteResponseItem>; SpaceReclaimed: number }>;
     responses: {
       200: Partial<{ ImagesDeleted: Array<Schemas.ImageDeleteResponseItem>; SpaceReclaimed: number }>;
       500: Schemas.ErrorResponse;
@@ -1453,7 +1382,6 @@ export namespace Endpoints {
     parameters: {
       body: Schemas.AuthConfig;
     };
-    response: { Status: string; IdentityToken?: string | undefined };
     responses: {
       200: { Status: string; IdentityToken?: string | undefined };
       204: unknown;
@@ -1466,7 +1394,6 @@ export namespace Endpoints {
     path: "/info";
     requestFormat: "json";
     parameters: never;
-    response: Schemas.SystemInfo;
     responses: { 200: Schemas.SystemInfo; 500: Schemas.ErrorResponse };
   };
   export type get_SystemVersion = {
@@ -1474,7 +1401,6 @@ export namespace Endpoints {
     path: "/version";
     requestFormat: "json";
     parameters: never;
-    response: Schemas.SystemVersion;
     responses: { 200: Schemas.SystemVersion; 500: Schemas.ErrorResponse };
   };
   export type get_SystemPing = {
@@ -1482,15 +1408,17 @@ export namespace Endpoints {
     path: "/_ping";
     requestFormat: "json";
     parameters: never;
-    response: unknown;
     responses: { 200: unknown; 500: unknown };
     responseHeaders: {
-      swarm: "inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager";
-      "docker-experimental": boolean;
-      "cache-control": string;
-      pragma: string;
-      "api-version": string;
-      "builder-version": string;
+      200: Partial<{
+        Swarm: unknown;
+        "Docker-Experimental": unknown;
+        "Cache-Control": unknown;
+        Pragma: unknown;
+        "API-Version": unknown;
+        "Builder-Version": unknown;
+      }>;
+      500: Partial<{ "Cache-Control": unknown; Pragma: unknown }>;
     };
   };
   export type head_SystemPingHead = {
@@ -1498,15 +1426,16 @@ export namespace Endpoints {
     path: "/_ping";
     requestFormat: "json";
     parameters: never;
-    response: unknown;
     responses: { 200: unknown; 500: unknown };
     responseHeaders: {
-      swarm: "inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager";
-      "docker-experimental": boolean;
-      "cache-control": string;
-      pragma: string;
-      "api-version": string;
-      "builder-version": string;
+      200: Partial<{
+        Swarm: unknown;
+        "Docker-Experimental": unknown;
+        "Cache-Control": unknown;
+        Pragma: unknown;
+        "API-Version": unknown;
+        "Builder-Version": unknown;
+      }>;
     };
   };
   export type post_ImageCommit = {
@@ -1526,7 +1455,6 @@ export namespace Endpoints {
 
       body: Schemas.ContainerConfig;
     };
-    response: Schemas.IdResponse;
     responses: { 201: Schemas.IdResponse; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type get_SystemEvents = {
@@ -1536,7 +1464,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ since: string; until: string; filters: string }>;
     };
-    response: Schemas.EventMessage;
     responses: { 200: Schemas.EventMessage; 400: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type get_SystemDataUsage = {
@@ -1546,13 +1473,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ type: Array<"container" | "image" | "volume" | "build-cache"> }>;
     };
-    response: Partial<{
-      LayersSize: number;
-      Images: Array<Schemas.ImageSummary>;
-      Containers: Array<Schemas.ContainerSummary>;
-      Volumes: Array<Schemas.Volume>;
-      BuildCache: Array<Schemas.BuildCache>;
-    }>;
     responses: {
       200: Partial<{
         LayersSize: number;
@@ -1571,7 +1491,6 @@ export namespace Endpoints {
     parameters: {
       path: { name: string };
     };
-    response: unknown;
     responses: { 200: unknown; 500: unknown };
   };
   export type get_ImageGetAll = {
@@ -1581,7 +1500,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ names: Array<string> }>;
     };
-    response: unknown;
     responses: { 200: unknown; 500: unknown };
   };
   export type post_ImageLoad = {
@@ -1591,7 +1509,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ quiet: boolean }>;
     };
-    response: unknown;
     responses: { 200: unknown; 500: Schemas.ErrorResponse };
   };
   export type post_ContainerExec = {
@@ -1615,7 +1532,6 @@ export namespace Endpoints {
         WorkingDir: string;
       }>;
     };
-    response: Schemas.IdResponse;
     responses: {
       201: Schemas.IdResponse;
       404: Schemas.ErrorResponse;
@@ -1632,7 +1548,6 @@ export namespace Endpoints {
 
       body: Partial<{ Detach: boolean; Tty: boolean; ConsoleSize: Array<number> | null }>;
     };
-    response: unknown;
     responses: { 200: unknown; 404: unknown; 409: unknown };
   };
   export type post_ExecResize = {
@@ -1643,7 +1558,6 @@ export namespace Endpoints {
       query: Partial<{ h: number; w: number }>;
       path: { id: string };
     };
-    response: unknown;
     responses: { 200: unknown; 400: Schemas.ErrorResponse; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type get_ExecInspect = {
@@ -1653,19 +1567,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: Partial<{
-      CanRemove: boolean;
-      DetachKeys: string;
-      ID: string;
-      Running: boolean;
-      ExitCode: number;
-      ProcessConfig: Schemas.ProcessConfig;
-      OpenStdin: boolean;
-      OpenStderr: boolean;
-      OpenStdout: boolean;
-      ContainerID: string;
-      Pid: number;
-    }>;
     responses: {
       200: Partial<{
         CanRemove: boolean;
@@ -1691,7 +1592,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ filters: string }>;
     };
-    response: Schemas.VolumeListResponse;
     responses: { 200: Schemas.VolumeListResponse; 500: Schemas.ErrorResponse };
   };
   export type post_VolumeCreate = {
@@ -1701,7 +1601,6 @@ export namespace Endpoints {
     parameters: {
       body: Schemas.VolumeCreateOptions;
     };
-    response: Schemas.Volume;
     responses: { 201: Schemas.Volume; 500: Schemas.ErrorResponse };
   };
   export type get_VolumeInspect = {
@@ -1711,7 +1610,6 @@ export namespace Endpoints {
     parameters: {
       path: { name: string };
     };
-    response: Schemas.Volume;
     responses: { 200: Schemas.Volume; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type put_VolumeUpdate = {
@@ -1724,7 +1622,6 @@ export namespace Endpoints {
 
       body: Partial<{ Spec: Schemas.ClusterVolumeSpec }>;
     };
-    response: unknown;
     responses: {
       200: unknown;
       400: Schemas.ErrorResponse;
@@ -1741,7 +1638,6 @@ export namespace Endpoints {
       query: Partial<{ force: boolean }>;
       path: { name: string };
     };
-    response: unknown;
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 409: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_VolumePrune = {
@@ -1751,7 +1647,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ filters: string }>;
     };
-    response: Partial<{ VolumesDeleted: Array<string>; SpaceReclaimed: number }>;
     responses: { 200: Partial<{ VolumesDeleted: Array<string>; SpaceReclaimed: number }>; 500: Schemas.ErrorResponse };
   };
   export type get_NetworkList = {
@@ -1761,7 +1656,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ filters: string }>;
     };
-    response: Array<Schemas.Network>;
     responses: { 200: Array<Schemas.Network>; 500: Schemas.ErrorResponse };
   };
   export type get_NetworkInspect = {
@@ -1772,7 +1666,6 @@ export namespace Endpoints {
       query: Partial<{ verbose: boolean; scope: string }>;
       path: { id: string };
     };
-    response: Schemas.Network;
     responses: { 200: Schemas.Network; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type delete_NetworkDelete = {
@@ -1782,7 +1675,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: unknown;
     responses: { 204: unknown; 403: Schemas.ErrorResponse; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_NetworkCreate = {
@@ -1803,7 +1695,6 @@ export namespace Endpoints {
         Labels?: Record<string, string> | undefined;
       };
     };
-    response: Partial<{ Id: string; Warning: string }>;
     responses: {
       201: Partial<{ Id: string; Warning: string }>;
       403: Schemas.ErrorResponse;
@@ -1820,7 +1711,6 @@ export namespace Endpoints {
 
       body: Partial<{ Container: string; EndpointConfig: Schemas.EndpointSettings }>;
     };
-    response: unknown;
     responses: { 200: unknown; 403: Schemas.ErrorResponse; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_NetworkDisconnect = {
@@ -1832,7 +1722,6 @@ export namespace Endpoints {
 
       body: Partial<{ Container: string; Force: boolean }>;
     };
-    response: unknown;
     responses: { 200: unknown; 403: Schemas.ErrorResponse; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_NetworkPrune = {
@@ -1842,7 +1731,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ filters: string }>;
     };
-    response: Partial<{ NetworksDeleted: Array<string> }>;
     responses: { 200: Partial<{ NetworksDeleted: Array<string> }>; 500: Schemas.ErrorResponse };
   };
   export type get_PluginList = {
@@ -1852,7 +1740,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ filters: string }>;
     };
-    response: Array<Schemas.Plugin>;
     responses: { 200: Array<Schemas.Plugin>; 500: Schemas.ErrorResponse };
   };
   export type get_GetPluginPrivileges = {
@@ -1862,7 +1749,6 @@ export namespace Endpoints {
     parameters: {
       query: { remote: string };
     };
-    response: Array<Schemas.PluginPrivilege>;
     responses: { 200: Array<Schemas.PluginPrivilege>; 500: Schemas.ErrorResponse };
   };
   export type post_PluginPull = {
@@ -1875,7 +1761,6 @@ export namespace Endpoints {
       header: Partial<{ "X-Registry-Auth": string }>;
       body: Array<Schemas.PluginPrivilege>;
     };
-    response: unknown;
     responses: { 204: unknown; 500: Schemas.ErrorResponse };
   };
   export type get_PluginInspect = {
@@ -1885,7 +1770,6 @@ export namespace Endpoints {
     parameters: {
       path: { name: string };
     };
-    response: Schemas.Plugin;
     responses: { 200: Schemas.Plugin; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type delete_PluginDelete = {
@@ -1896,7 +1780,6 @@ export namespace Endpoints {
       query: Partial<{ force: boolean }>;
       path: { name: string };
     };
-    response: Schemas.Plugin;
     responses: { 200: Schemas.Plugin; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_PluginEnable = {
@@ -1907,7 +1790,6 @@ export namespace Endpoints {
       query: Partial<{ timeout: number }>;
       path: { name: string };
     };
-    response: unknown;
     responses: { 200: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_PluginDisable = {
@@ -1918,7 +1800,6 @@ export namespace Endpoints {
       query: Partial<{ force: boolean }>;
       path: { name: string };
     };
-    response: unknown;
     responses: { 200: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_PluginUpgrade = {
@@ -1931,7 +1812,6 @@ export namespace Endpoints {
       header: Partial<{ "X-Registry-Auth": string }>;
       body: Array<Schemas.PluginPrivilege>;
     };
-    response: unknown;
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_PluginCreate = {
@@ -1941,7 +1821,6 @@ export namespace Endpoints {
     parameters: {
       query: { name: string };
     };
-    response: unknown;
     responses: { 204: unknown; 500: Schemas.ErrorResponse };
   };
   export type post_PluginPush = {
@@ -1951,7 +1830,6 @@ export namespace Endpoints {
     parameters: {
       path: { name: string };
     };
-    response: unknown;
     responses: { 200: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_PluginSet = {
@@ -1963,7 +1841,6 @@ export namespace Endpoints {
 
       body: Array<string>;
     };
-    response: unknown;
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type get_NodeList = {
@@ -1973,7 +1850,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ filters: string }>;
     };
-    response: Array<Schemas.Node>;
     responses: { 200: Array<Schemas.Node>; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type get_NodeInspect = {
@@ -1983,7 +1859,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: Schemas.Node;
     responses: {
       200: Schemas.Node;
       404: Schemas.ErrorResponse;
@@ -1999,7 +1874,6 @@ export namespace Endpoints {
       query: Partial<{ force: boolean }>;
       path: { id: string };
     };
-    response: unknown;
     responses: { 200: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type post_NodeUpdate = {
@@ -2012,7 +1886,6 @@ export namespace Endpoints {
 
       body: Schemas.NodeSpec;
     };
-    response: unknown;
     responses: {
       200: unknown;
       400: Schemas.ErrorResponse;
@@ -2026,7 +1899,6 @@ export namespace Endpoints {
     path: "/swarm";
     requestFormat: "json";
     parameters: never;
-    response: Schemas.Swarm;
     responses: {
       200: Schemas.Swarm;
       404: Schemas.ErrorResponse;
@@ -2050,7 +1922,6 @@ export namespace Endpoints {
         Spec: Schemas.SwarmSpec;
       }>;
     };
-    response: string;
     responses: { 200: string; 400: Schemas.ErrorResponse; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type post_SwarmJoin = {
@@ -2066,7 +1937,6 @@ export namespace Endpoints {
         JoinToken: string;
       }>;
     };
-    response: unknown;
     responses: { 200: unknown; 400: Schemas.ErrorResponse; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type post_SwarmLeave = {
@@ -2076,7 +1946,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ force: boolean }>;
     };
-    response: unknown;
     responses: { 200: unknown; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type post_SwarmUpdate = {
@@ -2093,7 +1962,6 @@ export namespace Endpoints {
 
       body: Schemas.SwarmSpec;
     };
-    response: unknown;
     responses: { 200: unknown; 400: Schemas.ErrorResponse; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type get_SwarmUnlockkey = {
@@ -2101,7 +1969,6 @@ export namespace Endpoints {
     path: "/swarm/unlockkey";
     requestFormat: "json";
     parameters: never;
-    response: Partial<{ UnlockKey: string }>;
     responses: { 200: Partial<{ UnlockKey: string }>; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type post_SwarmUnlock = {
@@ -2111,7 +1978,6 @@ export namespace Endpoints {
     parameters: {
       body: Partial<{ UnlockKey: string }>;
     };
-    response: unknown;
     responses: { 200: unknown; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type get_ServiceList = {
@@ -2121,7 +1987,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ filters: string; status: boolean }>;
     };
-    response: Array<Schemas.Service>;
     responses: { 200: Array<Schemas.Service>; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type post_ServiceCreate = {
@@ -2132,7 +1997,6 @@ export namespace Endpoints {
       header: Partial<{ "X-Registry-Auth": string }>;
       body: Schemas.ServiceSpec & Record<string, unknown>;
     };
-    response: Partial<{ ID: string; Warning: string }>;
     responses: {
       201: Partial<{ ID: string; Warning: string }>;
       400: Schemas.ErrorResponse;
@@ -2150,7 +2014,6 @@ export namespace Endpoints {
       query: Partial<{ insertDefaults: boolean }>;
       path: { id: string };
     };
-    response: Schemas.Service;
     responses: {
       200: Schemas.Service;
       404: Schemas.ErrorResponse;
@@ -2165,7 +2028,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: unknown;
     responses: { 200: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type post_ServiceUpdate = {
@@ -2182,7 +2044,6 @@ export namespace Endpoints {
       header: Partial<{ "X-Registry-Auth": string }>;
       body: Schemas.ServiceSpec & Record<string, unknown>;
     };
-    response: Schemas.ServiceUpdateResponse;
     responses: {
       200: Schemas.ServiceUpdateResponse;
       400: Schemas.ErrorResponse;
@@ -2207,7 +2068,6 @@ export namespace Endpoints {
       }>;
       path: { id: string };
     };
-    response: unknown;
     responses: { 200: unknown; 404: unknown; 500: unknown; 503: unknown };
   };
   export type get_TaskList = {
@@ -2217,7 +2077,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ filters: string }>;
     };
-    response: Array<Schemas.Task>;
     responses: { 200: Array<Schemas.Task>; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type get_TaskInspect = {
@@ -2227,7 +2086,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: Schemas.Task;
     responses: {
       200: Schemas.Task;
       404: Schemas.ErrorResponse;
@@ -2251,7 +2109,6 @@ export namespace Endpoints {
       }>;
       path: { id: string };
     };
-    response: unknown;
     responses: { 200: unknown; 404: unknown; 500: unknown; 503: unknown };
   };
   export type get_SecretList = {
@@ -2261,7 +2118,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ filters: string }>;
     };
-    response: Array<Schemas.Secret>;
     responses: { 200: Array<Schemas.Secret>; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type post_SecretCreate = {
@@ -2271,7 +2127,6 @@ export namespace Endpoints {
     parameters: {
       body: Schemas.SecretSpec & Record<string, unknown>;
     };
-    response: Schemas.IdResponse;
     responses: {
       201: Schemas.IdResponse;
       409: Schemas.ErrorResponse;
@@ -2286,7 +2141,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: Schemas.Secret;
     responses: {
       200: Schemas.Secret;
       404: Schemas.ErrorResponse;
@@ -2301,7 +2155,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: unknown;
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type post_SecretUpdate = {
@@ -2314,7 +2167,6 @@ export namespace Endpoints {
 
       body: Schemas.SecretSpec;
     };
-    response: unknown;
     responses: {
       200: unknown;
       400: Schemas.ErrorResponse;
@@ -2330,7 +2182,6 @@ export namespace Endpoints {
     parameters: {
       query: Partial<{ filters: string }>;
     };
-    response: Array<Schemas.Config>;
     responses: { 200: Array<Schemas.Config>; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type post_ConfigCreate = {
@@ -2340,7 +2191,6 @@ export namespace Endpoints {
     parameters: {
       body: Schemas.ConfigSpec & Record<string, unknown>;
     };
-    response: Schemas.IdResponse;
     responses: {
       201: Schemas.IdResponse;
       409: Schemas.ErrorResponse;
@@ -2355,7 +2205,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: Schemas.Config;
     responses: {
       200: Schemas.Config;
       404: Schemas.ErrorResponse;
@@ -2370,7 +2219,6 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
     };
-    response: unknown;
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
   export type post_ConfigUpdate = {
@@ -2383,7 +2231,6 @@ export namespace Endpoints {
 
       body: Schemas.ConfigSpec;
     };
-    response: unknown;
     responses: {
       200: unknown;
       400: Schemas.ErrorResponse;
@@ -2399,7 +2246,6 @@ export namespace Endpoints {
     parameters: {
       path: { name: string };
     };
-    response: Schemas.DistributionInspect;
     responses: { 200: Schemas.DistributionInspect; 401: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_Session = {
@@ -2407,7 +2253,6 @@ export namespace Endpoints {
     path: "/session";
     requestFormat: "json";
     parameters: never;
-    response: unknown;
     responses: { 101: unknown; 400: unknown; 500: unknown };
   };
 
@@ -2560,7 +2405,6 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
-  response: unknown;
   responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
@@ -2576,7 +2420,6 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     hasParameters: boolean;
     areParametersRequired: boolean;
   };
-  response: TConfig["response"];
   responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
@@ -2596,7 +2439,7 @@ export type ErrorStatusCode = (typeof errorStatusCodes)[number];
 
 // Error handling types
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedSuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: true;
   status: TStatusCode;
   data: TSuccess;
@@ -2605,7 +2448,7 @@ interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: false;
   status: TStatusCode;
   data: TData;
@@ -2613,32 +2456,25 @@ interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "statu
   json: () => Promise<TData>;
 }
 
-export type TypedApiResponse<
-  TSuccess,
-  TAllResponses extends Record<string | number, unknown> = {},
-> = keyof TAllResponses extends never
-  ? SuccessResponse<TSuccess, number>
-  : {
-      [K in keyof TAllResponses]: K extends string
-        ? K extends `${infer TStatusCode extends number}`
-          ? TStatusCode extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, TStatusCode>
-            : ErrorResponse<TAllResponses[K], TStatusCode>
-          : never
-        : K extends number
-          ? K extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, K>
-            : ErrorResponse<TAllResponses[K], K>
-          : never;
-    }[keyof TAllResponses];
+export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}> = {
+  [K in keyof TAllResponses]: K extends string
+    ? K extends `${infer TStatusCode extends number}`
+      ? TStatusCode extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], TStatusCode>
+        : TypedErrorResponse<TAllResponses[K], TStatusCode>
+      : never
+    : K extends number
+      ? K extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], K>
+        : TypedErrorResponse<TAllResponses[K], K>
+      : never;
+}[keyof TAllResponses];
 
-export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TSuccess, TResponses>
-    : SuccessResponse<TSuccess, number>
-  : TEndpoint extends { response: infer TSuccess }
-    ? SuccessResponse<TSuccess, number>
-    : never;
+    ? TypedApiResponse<TResponses>
+    : never
+  : never;
 
 export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
   SafeApiResponse<TEndpoint>,
@@ -2655,9 +2491,9 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // <TypedResponseError>
 export class TypedResponseError extends Error {
-  response: ErrorResponse<unknown, ErrorStatusCode>;
+  response: TypedErrorResponse<unknown, ErrorStatusCode>;
   status: number;
-  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+  constructor(response: TypedErrorResponse<unknown, ErrorStatusCode>) {
     super(`HTTP ${response.status}: ${response.statusText}`);
     this.name = "TypedResponseError";
     this.response = response;
@@ -2690,7 +2526,7 @@ export class ApiClient {
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-  ): Promise<TEndpoint["response"]>;
+  ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -2723,7 +2559,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<TEndpoint["response"]>;
+    return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.get>
 
@@ -2731,7 +2567,7 @@ export class ApiClient {
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-  ): Promise<TEndpoint["response"]>;
+  ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -2764,7 +2600,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<TEndpoint["response"]>;
+    return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.post>
 
@@ -2772,7 +2608,7 @@ export class ApiClient {
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-  ): Promise<TEndpoint["response"]>;
+  ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -2805,7 +2641,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<TEndpoint["response"]>;
+    return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.delete>
 
@@ -2813,7 +2649,7 @@ export class ApiClient {
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-  ): Promise<TEndpoint["response"]>;
+  ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -2846,7 +2682,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<TEndpoint["response"]>;
+    return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.put>
 
@@ -2854,7 +2690,7 @@ export class ApiClient {
   head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-  ): Promise<TEndpoint["response"]>;
+  ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
 
   head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
     path: Path,
@@ -2887,7 +2723,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<TEndpoint["response"]>;
+    return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.head>
 

@@ -93,7 +93,6 @@ export const put_UpdatePet = {
   parameters: y.object({
     body: Pet,
   }),
-  response: Pet,
   responses: y.object({
     "200": Pet,
     "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -110,7 +109,6 @@ export const post_AddPet = {
   parameters: y.object({
     body: Pet,
   }),
-  response: Pet,
   responses: y.object({
     "200": Pet,
     "405": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -127,7 +125,6 @@ export const get_FindPetsByStatus = {
       status: y.mixed().oneOf(["available", "pending", "sold"]).required().optional(),
     }),
   }),
-  response: y.array(Pet),
   responses: y.object({
     "200": y.array(Pet),
     "400": y.object({
@@ -147,7 +144,6 @@ export const get_FindPetsByTags = {
       tags: y.array(y.string().required()).optional(),
     }),
   }),
-  response: y.array(Pet),
   responses: y.object({
     "200": y.array(Pet),
     "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -164,7 +160,6 @@ export const get_GetPetById = {
       petId: y.number().required(),
     }),
   }),
-  response: Pet,
   responses: y.object({
     "200": Pet,
     "400": y.object({
@@ -192,7 +187,6 @@ export const post_UpdatePetWithForm = {
       petId: y.number().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "405": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   }),
@@ -211,7 +205,6 @@ export const delete_DeletePet = {
       api_key: y.string().required().optional(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   }),
@@ -231,7 +224,6 @@ export const post_UploadFile = {
     }),
     body: y.string().required(),
   }),
-  response: ApiResponse,
   responses: y.object({
     "200": ApiResponse,
   }),
@@ -243,7 +235,6 @@ export const get_GetInventory = {
   path: y.mixed((value): value is "/store/inventory" => value === "/store/inventory").required(),
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
-  response: y.mixed(/* unsupported */),
   responses: y.object({
     "200": y.mixed(/* unsupported */),
   }),
@@ -257,7 +248,6 @@ export const post_PlaceOrder = {
   parameters: y.object({
     body: Order,
   }),
-  response: Order,
   responses: y.object({
     "200": Order,
     "405": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -274,7 +264,6 @@ export const get_GetOrderById = {
       orderId: y.number().required(),
     }),
   }),
-  response: Order,
   responses: y.object({
     "200": Order,
     "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -292,7 +281,6 @@ export const delete_DeleteOrder = {
       orderId: y.number().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -307,7 +295,6 @@ export const post_CreateUser = {
   parameters: y.object({
     body: User,
   }),
-  response: User,
   responses: y.object({
     default: User,
   }),
@@ -321,7 +308,6 @@ export const post_CreateUsersWithListInput = {
   parameters: y.object({
     body: y.array(User),
   }),
-  response: User,
   responses: y.object({
     "200": User,
     default: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -339,14 +325,15 @@ export const get_LoginUser = {
       password: y.string().required().optional(),
     }),
   }),
-  response: y.string().required(),
   responses: y.object({
     "200": y.string().required(),
     "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   }),
   responseHeaders: y.object({
-    "x-rate-limit": y.number().required(),
-    "x-expires-after": y.string().required(),
+    "200": y.object({
+      "X-Rate-Limit": y.number().required(),
+      "X-Expires-After": y.string().required(),
+    }),
   }),
 };
 
@@ -356,7 +343,6 @@ export const get_LogoutUser = {
   path: y.mixed((value): value is "/user/logout" => value === "/user/logout").required(),
   requestFormat: y.mixed((value): value is "json" => value === "json").required(),
   parameters: y.mixed((value): value is never => false).required(),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     default: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   }),
@@ -372,7 +358,6 @@ export const get_GetUserByName = {
       username: y.string().required(),
     }),
   }),
-  response: User,
   responses: y.object({
     "200": User,
     "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -391,7 +376,6 @@ export const put_UpdateUser = {
     }),
     body: User,
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     default: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   }),
@@ -407,7 +391,6 @@ export const delete_DeleteUser = {
       username: y.string().required(),
     }),
   }),
-  response: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   responses: y.object({
     "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
     "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
@@ -469,7 +452,6 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
-  response: unknown;
   responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
@@ -485,7 +467,6 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     hasParameters: boolean;
     areParametersRequired: boolean;
   };
-  response: TConfig["response"];
   responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
@@ -505,7 +486,7 @@ export type ErrorStatusCode = (typeof errorStatusCodes)[number];
 
 // Error handling types
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedSuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: true;
   status: TStatusCode;
   data: TSuccess;
@@ -514,7 +495,7 @@ interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: false;
   status: TStatusCode;
   data: TData;
@@ -522,32 +503,25 @@ interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "statu
   json: () => Promise<TData>;
 }
 
-export type TypedApiResponse<
-  TSuccess,
-  TAllResponses extends Record<string | number, unknown> = {},
-> = keyof TAllResponses extends never
-  ? SuccessResponse<TSuccess, number>
-  : {
-      [K in keyof TAllResponses]: K extends string
-        ? K extends `${infer TStatusCode extends number}`
-          ? TStatusCode extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, TStatusCode>
-            : ErrorResponse<TAllResponses[K], TStatusCode>
-          : never
-        : K extends number
-          ? K extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, K>
-            : ErrorResponse<TAllResponses[K], K>
-          : never;
-    }[keyof TAllResponses];
+export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}> = {
+  [K in keyof TAllResponses]: K extends string
+    ? K extends `${infer TStatusCode extends number}`
+      ? TStatusCode extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], TStatusCode>
+        : TypedErrorResponse<TAllResponses[K], TStatusCode>
+      : never
+    : K extends number
+      ? K extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], K>
+        : TypedErrorResponse<TAllResponses[K], K>
+      : never;
+}[keyof TAllResponses];
 
-export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TSuccess, TResponses>
-    : SuccessResponse<TSuccess, number>
-  : TEndpoint extends { response: infer TSuccess }
-    ? SuccessResponse<TSuccess, number>
-    : never;
+    ? TypedApiResponse<TResponses>
+    : never
+  : never;
 
 export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
   SafeApiResponse<TEndpoint>,
@@ -564,9 +538,9 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // <TypedResponseError>
 export class TypedResponseError extends Error {
-  response: ErrorResponse<unknown, ErrorStatusCode>;
+  response: TypedErrorResponse<unknown, ErrorStatusCode>;
   status: number;
-  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+  constructor(response: TypedErrorResponse<unknown, ErrorStatusCode>) {
     super(`HTTP ${response.status}: ${response.statusText}`);
     this.name = "TypedResponseError";
     this.response = response;
@@ -601,7 +575,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<TEndpoint["response"]>>;
+  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -636,7 +610,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<y.InferType<TEndpoint["response"]>>;
+    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.put>
 
@@ -646,7 +620,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<TEndpoint["response"]>>;
+  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -681,7 +655,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<y.InferType<TEndpoint["response"]>>;
+    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.post>
 
@@ -691,7 +665,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<TEndpoint["response"]>>;
+  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -726,7 +700,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<y.InferType<TEndpoint["response"]>>;
+    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.get>
 
@@ -736,7 +710,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<TEndpoint["response"]>>;
+  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -771,7 +745,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<y.InferType<TEndpoint["response"]>>;
+    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
   }
   // </ApiClient.delete>
 

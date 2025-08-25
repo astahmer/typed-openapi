@@ -56,7 +56,6 @@ describe("generator", () => {
           parameters: {
             body: Schemas.Pet;
           };
-          response: Schemas.Pet;
           responses: { 200: Schemas.Pet; 400: unknown; 404: unknown; 405: unknown };
         };
         export type post_AddPet = {
@@ -66,7 +65,6 @@ describe("generator", () => {
           parameters: {
             body: Schemas.Pet;
           };
-          response: Schemas.Pet;
           responses: { 200: Schemas.Pet; 405: unknown };
         };
         export type get_FindPetsByStatus = {
@@ -76,7 +74,6 @@ describe("generator", () => {
           parameters: {
             query: Partial<{ status: "available" | "pending" | "sold" }>;
           };
-          response: Array<Schemas.Pet>;
           responses: { 200: Array<Schemas.Pet>; 400: { code: number; message: string } };
         };
         export type get_FindPetsByTags = {
@@ -86,7 +83,6 @@ describe("generator", () => {
           parameters: {
             query: Partial<{ tags: Array<string> }>;
           };
-          response: Array<Schemas.Pet>;
           responses: { 200: Array<Schemas.Pet>; 400: unknown };
         };
         export type get_GetPetById = {
@@ -96,7 +92,6 @@ describe("generator", () => {
           parameters: {
             path: { petId: number };
           };
-          response: Schemas.Pet;
           responses: { 200: Schemas.Pet; 400: { code: number; message: string }; 404: { code: number; message: string } };
         };
         export type post_UpdatePetWithForm = {
@@ -107,7 +102,6 @@ describe("generator", () => {
             query: Partial<{ name: string; status: string }>;
             path: { petId: number };
           };
-          response: unknown;
           responses: { 405: unknown };
         };
         export type delete_DeletePet = {
@@ -118,7 +112,6 @@ describe("generator", () => {
             path: { petId: number };
             header: Partial<{ api_key: string }>;
           };
-          response: unknown;
           responses: { 400: unknown };
         };
         export type post_UploadFile = {
@@ -131,7 +124,6 @@ describe("generator", () => {
 
             body: string;
           };
-          response: Schemas.ApiResponse;
           responses: { 200: Schemas.ApiResponse };
         };
         export type get_GetInventory = {
@@ -139,7 +131,6 @@ describe("generator", () => {
           path: "/store/inventory";
           requestFormat: "json";
           parameters: never;
-          response: Record<string, number>;
           responses: { 200: Record<string, number> };
         };
         export type post_PlaceOrder = {
@@ -149,7 +140,6 @@ describe("generator", () => {
           parameters: {
             body: Schemas.Order;
           };
-          response: Schemas.Order;
           responses: { 200: Schemas.Order; 405: unknown };
         };
         export type get_GetOrderById = {
@@ -159,7 +149,6 @@ describe("generator", () => {
           parameters: {
             path: { orderId: number };
           };
-          response: Schemas.Order;
           responses: { 200: Schemas.Order; 400: unknown; 404: unknown };
         };
         export type delete_DeleteOrder = {
@@ -169,7 +158,6 @@ describe("generator", () => {
           parameters: {
             path: { orderId: number };
           };
-          response: unknown;
           responses: { 400: unknown; 404: unknown };
         };
         export type post_CreateUser = {
@@ -179,7 +167,6 @@ describe("generator", () => {
           parameters: {
             body: Schemas.User;
           };
-          response: Schemas.User;
           responses: { default: Schemas.User };
         };
         export type post_CreateUsersWithListInput = {
@@ -189,7 +176,6 @@ describe("generator", () => {
           parameters: {
             body: Array<Schemas.User>;
           };
-          response: Schemas.User;
           responses: { 200: Schemas.User; default: unknown };
         };
         export type get_LoginUser = {
@@ -199,16 +185,14 @@ describe("generator", () => {
           parameters: {
             query: Partial<{ username: string; password: string }>;
           };
-          response: string;
           responses: { 200: string; 400: unknown };
-          responseHeaders: { "x-rate-limit": number; "x-expires-after": string };
+          responseHeaders: { 200: unknown };
         };
         export type get_LogoutUser = {
           method: "GET";
           path: "/user/logout";
           requestFormat: "json";
           parameters: never;
-          response: unknown;
           responses: { default: unknown };
         };
         export type get_GetUserByName = {
@@ -218,7 +202,6 @@ describe("generator", () => {
           parameters: {
             path: { username: string };
           };
-          response: Schemas.User;
           responses: { 200: Schemas.User; 400: unknown; 404: unknown };
         };
         export type put_UpdateUser = {
@@ -230,7 +213,6 @@ describe("generator", () => {
 
             body: Schemas.User;
           };
-          response: unknown;
           responses: { default: unknown };
         };
         export type delete_DeleteUser = {
@@ -240,7 +222,6 @@ describe("generator", () => {
           parameters: {
             path: { username: string };
           };
-          response: unknown;
           responses: { 400: unknown; 404: unknown };
         };
 
@@ -302,7 +283,6 @@ describe("generator", () => {
 
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
-        response: unknown;
         responses?: Record<string, unknown>;
         responseHeaders?: Record<string, unknown>;
       };
@@ -318,7 +298,6 @@ describe("generator", () => {
           hasParameters: boolean;
           areParametersRequired: boolean;
         };
-        response: TConfig["response"];
         responses?: TConfig["responses"];
         responseHeaders?: TConfig["responseHeaders"];
       };
@@ -338,7 +317,7 @@ describe("generator", () => {
 
       // Error handling types
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-      interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+      export interface TypedSuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
         ok: true;
         status: TStatusCode;
         data: TSuccess;
@@ -347,7 +326,7 @@ describe("generator", () => {
       }
 
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-      interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+      export interface TypedErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
         ok: false;
         status: TStatusCode;
         data: TData;
@@ -355,32 +334,25 @@ describe("generator", () => {
         json: () => Promise<TData>;
       }
 
-      export type TypedApiResponse<
-        TSuccess,
-        TAllResponses extends Record<string | number, unknown> = {},
-      > = keyof TAllResponses extends never
-        ? SuccessResponse<TSuccess, number>
-        : {
-            [K in keyof TAllResponses]: K extends string
-              ? K extends \`\${infer TStatusCode extends number}\`
-                ? TStatusCode extends SuccessStatusCode
-                  ? SuccessResponse<TSuccess, TStatusCode>
-                  : ErrorResponse<TAllResponses[K], TStatusCode>
-                : never
-              : K extends number
-                ? K extends SuccessStatusCode
-                  ? SuccessResponse<TSuccess, K>
-                  : ErrorResponse<TAllResponses[K], K>
-                : never;
-          }[keyof TAllResponses];
+      export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}> = {
+        [K in keyof TAllResponses]: K extends string
+          ? K extends \`\${infer TStatusCode extends number}\`
+            ? TStatusCode extends SuccessStatusCode
+              ? TypedSuccessResponse<TAllResponses[K], TStatusCode>
+              : TypedErrorResponse<TAllResponses[K], TStatusCode>
+            : never
+          : K extends number
+            ? K extends SuccessStatusCode
+              ? TypedSuccessResponse<TAllResponses[K], K>
+              : TypedErrorResponse<TAllResponses[K], K>
+            : never;
+      }[keyof TAllResponses];
 
-      export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+      export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
         ? TResponses extends Record<string, unknown>
-          ? TypedApiResponse<TSuccess, TResponses>
-          : SuccessResponse<TSuccess, number>
-        : TEndpoint extends { response: infer TSuccess }
-          ? SuccessResponse<TSuccess, number>
-          : never;
+          ? TypedApiResponse<TResponses>
+          : never
+        : never;
 
       export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
         SafeApiResponse<TEndpoint>,
@@ -397,9 +369,9 @@ describe("generator", () => {
 
       // <TypedResponseError>
       export class TypedResponseError extends Error {
-        response: ErrorResponse<unknown, ErrorStatusCode>;
+        response: TypedErrorResponse<unknown, ErrorStatusCode>;
         status: number;
-        constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+        constructor(response: TypedErrorResponse<unknown, ErrorStatusCode>) {
           super(\`HTTP \${response.status}: \${response.statusText}\`);
           this.name = "TypedResponseError";
           this.response = response;
@@ -432,7 +404,7 @@ describe("generator", () => {
         put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<TEndpoint["response"]>;
+        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
 
         put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
           path: Path,
@@ -465,7 +437,7 @@ describe("generator", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<TEndpoint["response"]>;
+          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
         }
         // </ApiClient.put>
 
@@ -473,7 +445,7 @@ describe("generator", () => {
         post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<TEndpoint["response"]>;
+        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
 
         post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
           path: Path,
@@ -506,7 +478,7 @@ describe("generator", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<TEndpoint["response"]>;
+          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
         }
         // </ApiClient.post>
 
@@ -514,7 +486,7 @@ describe("generator", () => {
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<TEndpoint["response"]>;
+        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
 
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
@@ -547,7 +519,7 @@ describe("generator", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<TEndpoint["response"]>;
+          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
         }
         // </ApiClient.get>
 
@@ -555,7 +527,7 @@ describe("generator", () => {
         delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<TEndpoint["response"]>;
+        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
 
         delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
           path: Path,
@@ -588,7 +560,7 @@ describe("generator", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<TEndpoint["response"]>;
+          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
         }
         // </ApiClient.delete>
 
@@ -907,15 +879,6 @@ describe("generator", () => {
             }>;
             path: { organizationId: string };
           };
-          response: {
-            members: Array<{
-              id: string;
-              firstName?: (string | null) | undefined;
-              lastName?: (string | null) | undefined;
-              email: string;
-              profilePictureURL?: (string | null) | undefined;
-            }>;
-          };
           responses: {
             200: {
               members: Array<{
@@ -960,7 +923,6 @@ describe("generator", () => {
 
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
-        response: unknown;
         responses?: Record<string, unknown>;
         responseHeaders?: Record<string, unknown>;
       };
@@ -976,7 +938,6 @@ describe("generator", () => {
           hasParameters: boolean;
           areParametersRequired: boolean;
         };
-        response: TConfig["response"];
         responses?: TConfig["responses"];
         responseHeaders?: TConfig["responseHeaders"];
       };
@@ -996,7 +957,7 @@ describe("generator", () => {
 
       // Error handling types
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-      interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+      export interface TypedSuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
         ok: true;
         status: TStatusCode;
         data: TSuccess;
@@ -1005,7 +966,7 @@ describe("generator", () => {
       }
 
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-      interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+      export interface TypedErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
         ok: false;
         status: TStatusCode;
         data: TData;
@@ -1013,32 +974,25 @@ describe("generator", () => {
         json: () => Promise<TData>;
       }
 
-      export type TypedApiResponse<
-        TSuccess,
-        TAllResponses extends Record<string | number, unknown> = {},
-      > = keyof TAllResponses extends never
-        ? SuccessResponse<TSuccess, number>
-        : {
-            [K in keyof TAllResponses]: K extends string
-              ? K extends \`\${infer TStatusCode extends number}\`
-                ? TStatusCode extends SuccessStatusCode
-                  ? SuccessResponse<TSuccess, TStatusCode>
-                  : ErrorResponse<TAllResponses[K], TStatusCode>
-                : never
-              : K extends number
-                ? K extends SuccessStatusCode
-                  ? SuccessResponse<TSuccess, K>
-                  : ErrorResponse<TAllResponses[K], K>
-                : never;
-          }[keyof TAllResponses];
+      export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}> = {
+        [K in keyof TAllResponses]: K extends string
+          ? K extends \`\${infer TStatusCode extends number}\`
+            ? TStatusCode extends SuccessStatusCode
+              ? TypedSuccessResponse<TAllResponses[K], TStatusCode>
+              : TypedErrorResponse<TAllResponses[K], TStatusCode>
+            : never
+          : K extends number
+            ? K extends SuccessStatusCode
+              ? TypedSuccessResponse<TAllResponses[K], K>
+              : TypedErrorResponse<TAllResponses[K], K>
+            : never;
+      }[keyof TAllResponses];
 
-      export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+      export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
         ? TResponses extends Record<string, unknown>
-          ? TypedApiResponse<TSuccess, TResponses>
-          : SuccessResponse<TSuccess, number>
-        : TEndpoint extends { response: infer TSuccess }
-          ? SuccessResponse<TSuccess, number>
-          : never;
+          ? TypedApiResponse<TResponses>
+          : never
+        : never;
 
       export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
         SafeApiResponse<TEndpoint>,
@@ -1055,9 +1009,9 @@ describe("generator", () => {
 
       // <TypedResponseError>
       export class TypedResponseError extends Error {
-        response: ErrorResponse<unknown, ErrorStatusCode>;
+        response: TypedErrorResponse<unknown, ErrorStatusCode>;
         status: number;
-        constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+        constructor(response: TypedErrorResponse<unknown, ErrorStatusCode>) {
           super(\`HTTP \${response.status}: \${response.statusText}\`);
           this.name = "TypedResponseError";
           this.response = response;
@@ -1090,7 +1044,7 @@ describe("generator", () => {
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<TEndpoint["response"]>;
+        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
 
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
@@ -1123,7 +1077,7 @@ describe("generator", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<TEndpoint["response"]>;
+          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
         }
         // </ApiClient.get>
 
@@ -1258,7 +1212,6 @@ describe("generator", () => {
             query: { organizationId: string; searchQuery?: string | undefined };
             path: Partial<{ optionalInPath1: string; optionalInPath2: string }>;
           };
-          response: string;
           responses: { 200: string };
         };
 
@@ -1293,7 +1246,6 @@ describe("generator", () => {
 
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
-        response: unknown;
         responses?: Record<string, unknown>;
         responseHeaders?: Record<string, unknown>;
       };
@@ -1309,7 +1261,6 @@ describe("generator", () => {
           hasParameters: boolean;
           areParametersRequired: boolean;
         };
-        response: TConfig["response"];
         responses?: TConfig["responses"];
         responseHeaders?: TConfig["responseHeaders"];
       };
@@ -1329,7 +1280,7 @@ describe("generator", () => {
 
       // Error handling types
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-      interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+      export interface TypedSuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
         ok: true;
         status: TStatusCode;
         data: TSuccess;
@@ -1338,7 +1289,7 @@ describe("generator", () => {
       }
 
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-      interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+      export interface TypedErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
         ok: false;
         status: TStatusCode;
         data: TData;
@@ -1346,32 +1297,25 @@ describe("generator", () => {
         json: () => Promise<TData>;
       }
 
-      export type TypedApiResponse<
-        TSuccess,
-        TAllResponses extends Record<string | number, unknown> = {},
-      > = keyof TAllResponses extends never
-        ? SuccessResponse<TSuccess, number>
-        : {
-            [K in keyof TAllResponses]: K extends string
-              ? K extends \`\${infer TStatusCode extends number}\`
-                ? TStatusCode extends SuccessStatusCode
-                  ? SuccessResponse<TSuccess, TStatusCode>
-                  : ErrorResponse<TAllResponses[K], TStatusCode>
-                : never
-              : K extends number
-                ? K extends SuccessStatusCode
-                  ? SuccessResponse<TSuccess, K>
-                  : ErrorResponse<TAllResponses[K], K>
-                : never;
-          }[keyof TAllResponses];
+      export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}> = {
+        [K in keyof TAllResponses]: K extends string
+          ? K extends \`\${infer TStatusCode extends number}\`
+            ? TStatusCode extends SuccessStatusCode
+              ? TypedSuccessResponse<TAllResponses[K], TStatusCode>
+              : TypedErrorResponse<TAllResponses[K], TStatusCode>
+            : never
+          : K extends number
+            ? K extends SuccessStatusCode
+              ? TypedSuccessResponse<TAllResponses[K], K>
+              : TypedErrorResponse<TAllResponses[K], K>
+            : never;
+      }[keyof TAllResponses];
 
-      export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+      export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
         ? TResponses extends Record<string, unknown>
-          ? TypedApiResponse<TSuccess, TResponses>
-          : SuccessResponse<TSuccess, number>
-        : TEndpoint extends { response: infer TSuccess }
-          ? SuccessResponse<TSuccess, number>
-          : never;
+          ? TypedApiResponse<TResponses>
+          : never
+        : never;
 
       export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
         SafeApiResponse<TEndpoint>,
@@ -1388,9 +1332,9 @@ describe("generator", () => {
 
       // <TypedResponseError>
       export class TypedResponseError extends Error {
-        response: ErrorResponse<unknown, ErrorStatusCode>;
+        response: TypedErrorResponse<unknown, ErrorStatusCode>;
         status: number;
-        constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+        constructor(response: TypedErrorResponse<unknown, ErrorStatusCode>) {
           super(\`HTTP \${response.status}: \${response.statusText}\`);
           this.name = "TypedResponseError";
           this.response = response;
@@ -1423,7 +1367,7 @@ describe("generator", () => {
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
           ...params: MaybeOptionalArg<TEndpoint["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }>
-        ): Promise<TEndpoint["response"]>;
+        ): Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
 
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
@@ -1456,7 +1400,7 @@ describe("generator", () => {
             return withResponse ? typedResponse : data;
           });
 
-          return promise as Promise<TEndpoint["response"]>;
+          return promise as Promise<InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"]>;
         }
         // </ApiClient.get>
 

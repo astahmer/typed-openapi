@@ -96,7 +96,6 @@ export const put_UpdatePet = Type.Object({
   parameters: Type.Object({
     body: Pet,
   }),
-  response: Pet,
   responses: Type.Object({
     200: Pet,
     400: Type.Unknown(),
@@ -113,7 +112,6 @@ export const post_AddPet = Type.Object({
   parameters: Type.Object({
     body: Pet,
   }),
-  response: Pet,
   responses: Type.Object({
     200: Pet,
     405: Type.Unknown(),
@@ -132,7 +130,6 @@ export const get_FindPetsByStatus = Type.Object({
       }),
     ),
   }),
-  response: Type.Array(Pet),
   responses: Type.Object({
     200: Type.Array(Pet),
     400: Type.Object({
@@ -154,7 +151,6 @@ export const get_FindPetsByTags = Type.Object({
       }),
     ),
   }),
-  response: Type.Array(Pet),
   responses: Type.Object({
     200: Type.Array(Pet),
     400: Type.Unknown(),
@@ -171,7 +167,6 @@ export const get_GetPetById = Type.Object({
       petId: Type.Number(),
     }),
   }),
-  response: Pet,
   responses: Type.Object({
     200: Pet,
     400: Type.Object({
@@ -201,7 +196,6 @@ export const post_UpdatePetWithForm = Type.Object({
       petId: Type.Number(),
     }),
   }),
-  response: Type.Unknown(),
   responses: Type.Object({
     405: Type.Unknown(),
   }),
@@ -222,7 +216,6 @@ export const delete_DeletePet = Type.Object({
       }),
     ),
   }),
-  response: Type.Unknown(),
   responses: Type.Object({
     400: Type.Unknown(),
   }),
@@ -244,7 +237,6 @@ export const post_UploadFile = Type.Object({
     }),
     body: Type.String(),
   }),
-  response: ApiResponse,
   responses: Type.Object({
     200: ApiResponse,
   }),
@@ -256,7 +248,6 @@ export const get_GetInventory = Type.Object({
   path: Type.Literal("/store/inventory"),
   requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
-  response: Type.Record(Type.String(), Type.Number()),
   responses: Type.Object({
     200: Type.Record(Type.String(), Type.Number()),
   }),
@@ -270,7 +261,6 @@ export const post_PlaceOrder = Type.Object({
   parameters: Type.Object({
     body: Order,
   }),
-  response: Order,
   responses: Type.Object({
     200: Order,
     405: Type.Unknown(),
@@ -287,7 +277,6 @@ export const get_GetOrderById = Type.Object({
       orderId: Type.Number(),
     }),
   }),
-  response: Order,
   responses: Type.Object({
     200: Order,
     400: Type.Unknown(),
@@ -305,7 +294,6 @@ export const delete_DeleteOrder = Type.Object({
       orderId: Type.Number(),
     }),
   }),
-  response: Type.Unknown(),
   responses: Type.Object({
     400: Type.Unknown(),
     404: Type.Unknown(),
@@ -320,7 +308,6 @@ export const post_CreateUser = Type.Object({
   parameters: Type.Object({
     body: User,
   }),
-  response: User,
   responses: Type.Object({
     default: User,
   }),
@@ -334,7 +321,6 @@ export const post_CreateUsersWithListInput = Type.Object({
   parameters: Type.Object({
     body: Type.Array(User),
   }),
-  response: User,
   responses: Type.Object({
     200: User,
     default: Type.Unknown(),
@@ -354,14 +340,15 @@ export const get_LoginUser = Type.Object({
       }),
     ),
   }),
-  response: Type.String(),
   responses: Type.Object({
     200: Type.String(),
     400: Type.Unknown(),
   }),
   responseHeaders: Type.Object({
-    "x-rate-limit": Type.Number(),
-    "x-expires-after": Type.String(),
+    200: Type.Object({
+      "X-Rate-Limit": Type.Number(),
+      "X-Expires-After": Type.String(),
+    }),
   }),
 });
 
@@ -371,7 +358,6 @@ export const get_LogoutUser = Type.Object({
   path: Type.Literal("/user/logout"),
   requestFormat: Type.Literal("json"),
   parameters: Type.Never(),
-  response: Type.Unknown(),
   responses: Type.Object({
     default: Type.Unknown(),
   }),
@@ -387,7 +373,6 @@ export const get_GetUserByName = Type.Object({
       username: Type.String(),
     }),
   }),
-  response: User,
   responses: Type.Object({
     200: User,
     400: Type.Unknown(),
@@ -406,7 +391,6 @@ export const put_UpdateUser = Type.Object({
     }),
     body: User,
   }),
-  response: Type.Unknown(),
   responses: Type.Object({
     default: Type.Unknown(),
   }),
@@ -422,7 +406,6 @@ export const delete_DeleteUser = Type.Object({
       username: Type.String(),
     }),
   }),
-  response: Type.Unknown(),
   responses: Type.Object({
     400: Type.Unknown(),
     404: Type.Unknown(),
@@ -487,7 +470,6 @@ type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
-  response: unknown;
   responses?: Record<string, unknown>;
   responseHeaders?: Record<string, unknown>;
 };
@@ -503,7 +485,6 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
     hasParameters: boolean;
     areParametersRequired: boolean;
   };
-  response: TConfig["response"];
   responses?: TConfig["responses"];
   responseHeaders?: TConfig["responseHeaders"];
 };
@@ -523,7 +504,7 @@ export type ErrorStatusCode = (typeof errorStatusCodes)[number];
 
 // Error handling types
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedSuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: true;
   status: TStatusCode;
   data: TSuccess;
@@ -532,7 +513,7 @@ interface SuccessResponse<TSuccess, TStatusCode> extends Omit<Response, "ok" | "
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
+export interface TypedErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "status" | "json"> {
   ok: false;
   status: TStatusCode;
   data: TData;
@@ -540,32 +521,25 @@ interface ErrorResponse<TData, TStatusCode> extends Omit<Response, "ok" | "statu
   json: () => Promise<TData>;
 }
 
-export type TypedApiResponse<
-  TSuccess,
-  TAllResponses extends Record<string | number, unknown> = {},
-> = keyof TAllResponses extends never
-  ? SuccessResponse<TSuccess, number>
-  : {
-      [K in keyof TAllResponses]: K extends string
-        ? K extends `${infer TStatusCode extends number}`
-          ? TStatusCode extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, TStatusCode>
-            : ErrorResponse<TAllResponses[K], TStatusCode>
-          : never
-        : K extends number
-          ? K extends SuccessStatusCode
-            ? SuccessResponse<TSuccess, K>
-            : ErrorResponse<TAllResponses[K], K>
-          : never;
-    }[keyof TAllResponses];
+export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}> = {
+  [K in keyof TAllResponses]: K extends string
+    ? K extends `${infer TStatusCode extends number}`
+      ? TStatusCode extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], TStatusCode>
+        : TypedErrorResponse<TAllResponses[K], TStatusCode>
+      : never
+    : K extends number
+      ? K extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], K>
+        : TypedErrorResponse<TAllResponses[K], K>
+      : never;
+}[keyof TAllResponses];
 
-export type SafeApiResponse<TEndpoint> = TEndpoint extends { response: infer TSuccess; responses: infer TResponses }
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TSuccess, TResponses>
-    : SuccessResponse<TSuccess, number>
-  : TEndpoint extends { response: infer TSuccess }
-    ? SuccessResponse<TSuccess, number>
-    : never;
+    ? TypedApiResponse<TResponses>
+    : never
+  : never;
 
 export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
   SafeApiResponse<TEndpoint>,
@@ -582,9 +556,9 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 
 // <TypedResponseError>
 export class TypedResponseError extends Error {
-  response: ErrorResponse<unknown, ErrorStatusCode>;
+  response: TypedErrorResponse<unknown, ErrorStatusCode>;
   status: number;
-  constructor(response: ErrorResponse<unknown, ErrorStatusCode>) {
+  constructor(response: TypedErrorResponse<unknown, ErrorStatusCode>) {
     super(`HTTP ${response.status}: ${response.statusText}`);
     this.name = "TypedResponseError";
     this.response = response;
@@ -619,7 +593,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       Static<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Static<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>["data"]>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -652,7 +626,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<Static<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.put>
 
@@ -662,7 +636,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       Static<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Static<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -695,7 +669,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<Static<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.post>
 
@@ -705,7 +679,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       Static<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Static<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -738,7 +712,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<Static<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.get>
 
@@ -748,7 +722,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       Static<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Static<TEndpoint>["response"]>;
+  ): Promise<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>["data"]>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -781,7 +755,7 @@ export class ApiClient {
       return withResponse ? typedResponse : data;
     });
 
-    return promise as Promise<Static<TEndpoint>["response"]>;
+    return promise as Promise<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>["data"]>;
   }
   // </ApiClient.delete>
 

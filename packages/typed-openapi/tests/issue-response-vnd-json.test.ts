@@ -37,14 +37,15 @@ const openApiDoc: OpenAPIObject = {
   },
 };
 
-describe("issue-52: response of content type '*/*'", () => {
+describe("issue with custom mimetype json", () => {
   test("should not resolve response as unknown", ({ expect }) => {
     const result = mapOpenApiEndpoints(openApiDoc);
     // Find the endpoint by alias (see getAlias logic: 'get_GetTest')
     const endpoint = result.endpointList.find(e => e.meta.alias === "get_GetTest");
     expect(endpoint).toBeDefined();
-    // The bug: endpoint.response is 'unknown' instead of the correct type
-    expect(endpoint?.response).not.toMatchObject({ type: "keyword", value: "unknown" });
-    expect(endpoint?.response).toMatchObject({ type: "array", value: "Array<Response>" });
+
+    const response200 = endpoint?.responses?.["200"];
+    expect(response200).not.toMatchObject({ type: "keyword", value: "unknown" });
+    expect(response200).toMatchObject({ type: "array", value: "Array<Response>" });
   });
 });

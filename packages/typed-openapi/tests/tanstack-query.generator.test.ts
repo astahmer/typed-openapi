@@ -101,7 +101,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.put(path, requestParams);
-                return res as TEndpoint["response"];
+                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
               },
               queryKey: queryKey,
             }),
@@ -116,7 +116,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.put(path, requestParams);
-                return res as TEndpoint["response"];
+                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
               },
             },
           };
@@ -145,7 +145,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.post(path, requestParams);
-                return res as TEndpoint["response"];
+                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
               },
               queryKey: queryKey,
             }),
@@ -160,7 +160,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.post(path, requestParams);
-                return res as TEndpoint["response"];
+                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
               },
             },
           };
@@ -189,7 +189,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.get(path, requestParams);
-                return res as TEndpoint["response"];
+                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
               },
               queryKey: queryKey,
             }),
@@ -204,7 +204,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.get(path, requestParams);
-                return res as TEndpoint["response"];
+                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
               },
             },
           };
@@ -233,7 +233,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.delete(path, requestParams);
-                return res as TEndpoint["response"];
+                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
               },
               queryKey: queryKey,
             }),
@@ -248,7 +248,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.delete(path, requestParams);
-                return res as TEndpoint["response"];
+                return res as InferResponseByStatus<TEndpoint, SuccessStatusCode>["data"];
               },
             },
           };
