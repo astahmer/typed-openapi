@@ -1137,6 +1137,14 @@ describe("map-openapi-endpoints", () => {
                   },
                   "400": {
                     "description": "Invalid username/password supplied",
+                    "headers": {
+                      "X-Error": {
+                        "description": "error code",
+                        "schema": {
+                          "type": "string",
+                        },
+                      },
+                    },
                   },
                 },
                 "summary": "Logs user into the system",
@@ -2484,6 +2492,14 @@ describe("map-openapi-endpoints", () => {
                 },
                 "400": {
                   "description": "Invalid username/password supplied",
+                  "headers": {
+                    "X-Error": {
+                      "description": "error code",
+                      "schema": {
+                        "type": "string",
+                      },
+                    },
+                  },
                 },
               },
               "summary": "Logs user into the system",
@@ -2503,6 +2519,10 @@ describe("map-openapi-endpoints", () => {
               "200": {
                 "type": "object",
                 "value": "{ "X-Rate-Limit": number, "X-Expires-After": string }",
+              },
+              "400": {
+                "type": "object",
+                "value": "{ "X-Error": string }",
               },
             },
             "responses": {
