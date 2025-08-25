@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 2.1.1
+
+### Patch Changes
+
+- 2923a0f: Fix responseHeaders generation by inlining the type instead of referencing it.
+
 ## 2.1.0
 
 ### Minor Changes
