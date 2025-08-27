@@ -6,7 +6,14 @@ import { createBoxFactory } from "./box-factory.ts";
 import { openApiSchemaToTs } from "./openapi-schema-to-ts.ts";
 import { createRefResolver } from "./ref-resolver.ts";
 import { tsFactory } from "./ts-factory.ts";
-import { AnyBox, BoxRef, OpenapiSchemaConvertContext, type BoxObject, type LibSchemaObject } from "./types.ts";
+import {
+  AnyBox,
+  BoxRef,
+  OpenapiSchemaConvertContext,
+  type BoxObject,
+  type BoxUnion,
+  type LibSchemaObject,
+} from "./types.ts";
 import { pathToVariableName } from "./string-utils.ts";
 import { NameTransformOptions } from "./types.ts";
 import { match, P } from "ts-pattern";
@@ -134,7 +141,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
       }
 
       const allResponses: Record<string, AnyBox> = {};
-      const allHeaders: Record<string, Box<BoxObject>> = {};
+      const allResponseHeaders: Record<string, Box<BoxObject>> = {};
 
       Object.entries(operation.responses ?? {}).map(([status, responseOrRef]) => {
         const responseObj = refs.unwrap<ResponseObject>(responseOrRef);
@@ -146,14 +153,26 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
           mediaTypes.forEach((mediaType) => {
             // If no JSON content, use unknown type
             const schema = content[mediaType] ? (content[mediaType].schema ?? {}) : {};
-            const t = createBoxFactory(schema as LibSchemaObject, ctx);
             const mediaTypeResponse = openApiSchemaToTs({ schema, ctx });
 
             if (allResponses[status]) {
+              const t = createBoxFactory(
+                {
+                  oneOf: [
+                    ...((allResponses[status].schema as LibSchemaObject).oneOf
+                      ? (allResponses[status].schema as LibSchemaObject).oneOf!
+                      : [allResponses[status].schema]),
+                    schema,
+                  ],
+                } as LibSchemaObject,
+                ctx,
+              );
               allResponses[status] = t.union([
-                ...(Array.isArray(allResponses[status]) ? allResponses[status] : [allResponses[status]]),
+                ...(allResponses[status].type === "union"
+                  ? (allResponses[status] as Box<BoxUnion>).params.types
+                  : [allResponses[status]]),
                 mediaTypeResponse,
-              ]);
+              ]  as Box[]);
             } else {
               allResponses[status] = mediaTypeResponse;
             }
@@ -162,13 +181,25 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
           // If no content defined, use unknown type
           const schema = {};
           const unknown = openApiSchemaToTs({ schema: {}, ctx });
-          const t = createBoxFactory(schema as LibSchemaObject, ctx);
 
           if (allResponses[status]) {
-            allResponses[status] = t.union([
-              ...(Array.isArray(allResponses[status]) ? allResponses[status] : [allResponses[status]]),
-              unknown,
-            ]);
+            const t = createBoxFactory(
+                {
+                  oneOf: [
+                    ...((allResponses[status].schema as LibSchemaObject).oneOf
+                      ? (allResponses[status].schema as LibSchemaObject).oneOf!
+                      : [allResponses[status].schema]),
+                    schema,
+                  ],
+                } as LibSchemaObject,
+                ctx,
+              );
+              allResponses[status] = t.union([
+                ...(allResponses[status].type === "union"
+                  ? (allResponses[status] as Box<BoxUnion>).params.types
+                  : [allResponses[status]]),
+                unknown,
+              ] as Box[]);
           } else {
             allResponses[status] = unknown;
           }
@@ -193,7 +224,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
           );
 
           if (Object.keys(mappedHeaders).length) {
-            allHeaders[status] = t.object(mappedHeaders);
+            allResponseHeaders[status] = t.object(mappedHeaders);
           }
         }
       });
@@ -203,8 +234,8 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
         endpoint.responses = allResponses;
       }
 
-      if (Object.keys(allHeaders).length) {
-        endpoint.responseHeaders = allHeaders;
+      if (Object.keys(allResponseHeaders).length) {
+        endpoint.responseHeaders = allResponseHeaders;
       }
 
       endpointList.push(endpoint);

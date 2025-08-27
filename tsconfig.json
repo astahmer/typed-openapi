@@ -12,19 +12,26 @@
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-
     "verbatimModuleSyntax": false,
     "checkJs": true,
-
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     //
     "isolatedModules": true, // https://preconstruct.tools/guides/building-typescript-packages
-    "noEmit": true
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   },
-  "exclude": ["node_modules", ".changeset", ".github", "dist"],
-  "types": ["node", "vitest/importMeta"],
+  "exclude": [
+    "node_modules",
+    ".changeset",
+    ".github",
+    "dist"
+  ],
+  "types": [
+    "node",
+    "vitest/importMeta"
+  ],
   //
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Strictest"

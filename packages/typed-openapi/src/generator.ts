@@ -452,7 +452,7 @@ export class ApiClient {
       ...params: MaybeOptionalArg<${match(ctx.runtime)
         .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
         .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
-        .otherwise(() => `TEndpoint["parameters"]`)} & { withResponse?: false; throwOnStatusError?: boolean }>
+        .otherwise(() => `TEndpoint["parameters"]`)} & { header?: HeadersInit; withResponse?: false; throwOnStatusError?: boolean }>
     ): Promise<${match(ctx.runtime)
       .with("zod", "yup", () => infer(`InferResponseByStatus<TEndpoint, SuccessStatusCode>`))
       .with(
@@ -469,7 +469,7 @@ export class ApiClient {
       ...params: MaybeOptionalArg<${match(ctx.runtime)
         .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
         .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
-        .otherwise(() => `TEndpoint["parameters"]`)} & { withResponse: true; throwOnStatusError?: boolean }>
+        .otherwise(() => `TEndpoint["parameters"]`)} & { header?: HeadersInit; withResponse: true; throwOnStatusError?: boolean }>
     ): Promise<SafeApiResponse<TEndpoint>>;
 
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
