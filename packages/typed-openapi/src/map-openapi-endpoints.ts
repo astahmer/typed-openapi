@@ -172,7 +172,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
                   ? (allResponses[status] as Box<BoxUnion>).params.types
                   : [allResponses[status]]),
                 mediaTypeResponse,
-              ]  as Box[]);
+              ] as Box[]);
             } else {
               allResponses[status] = mediaTypeResponse;
             }
@@ -184,22 +184,22 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
 
           if (allResponses[status]) {
             const t = createBoxFactory(
-                {
-                  oneOf: [
-                    ...((allResponses[status].schema as LibSchemaObject).oneOf
-                      ? (allResponses[status].schema as LibSchemaObject).oneOf!
-                      : [allResponses[status].schema]),
-                    schema,
-                  ],
-                } as LibSchemaObject,
-                ctx,
-              );
-              allResponses[status] = t.union([
-                ...(allResponses[status].type === "union"
-                  ? (allResponses[status] as Box<BoxUnion>).params.types
-                  : [allResponses[status]]),
-                unknown,
-              ] as Box[]);
+              {
+                oneOf: [
+                  ...((allResponses[status].schema as LibSchemaObject).oneOf
+                    ? (allResponses[status].schema as LibSchemaObject).oneOf!
+                    : [allResponses[status].schema]),
+                  schema,
+                ],
+              } as LibSchemaObject,
+              ctx,
+            );
+            allResponses[status] = t.union([
+              ...(allResponses[status].type === "union"
+                ? (allResponses[status] as Box<BoxUnion>).params.types
+                : [allResponses[status]]),
+              unknown,
+            ] as Box[]);
           } else {
             allResponses[status] = unknown;
           }

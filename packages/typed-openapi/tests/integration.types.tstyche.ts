@@ -7,8 +7,12 @@ import {
   type Schemas,
   type TypedApiResponse,
   type TypedSuccessResponse,
+  type Fetcher,
+  type TypedErrorResponse,
 } from "../tmp/generated-client.ts";
+import { type TanstackQueryApiClient } from "../tmp/generated-tanstack.ts";
 import { api } from "./api-client.example.ts";
+import { mutationOptions, QueryClient, queryOptions, useMutation } from "@tanstack/react-query";
 
 describe("Example API Client", () => {
   it("infer response with multiple status and one schema unknown / withResponse: undefined", async () => {
@@ -159,7 +163,7 @@ describe("Example API Client", () => {
     }
   });
 
-  it("header specific typings are merged with HeadersInit", async () => {
+  it("header specific typings are merged with overrides/HeadersInit", async () => {
     // @ts-expect-error Property 'header' is missing in type
     const result = await api.delete("/pet/{petId}", {
       path: { petId: 42 },
@@ -171,6 +175,44 @@ describe("Example API Client", () => {
     expect(input).type.toBeAssignableTo<Endpoints.delete_DeletePet["parameters"]>();
     expect(input).type.toBeAssignableTo<{ header?: HeadersInit }>();
     expect(input).type.toBeAssignableTo<Endpoints.delete_DeletePet["parameters"] & { header?: HeadersInit }>();
+    expect(input).type.toBeAssignableTo<{ overrides?: { headers?: HeadersInit } }>();
+  });
+
+  it("infer response using api.request / withResponse: undefined", async () => {
+    const result = await api.request("get", "/pet/findByStatus", { query: {} });
+    expect(result).type.toBe<Schemas.Pet[]>();
+  });
+
+  it("infer/narrow response using api.request / withResponse: true", async () => {
+    const result = await api.request("get", "/pet/findByStatus", { query: {}, withResponse: true });
+    expect(result).type.toBe<
+      TypedApiResponse<
+        {
+          200: Array<Schemas.Pet>;
+          304: unknown;
+          400: {
+            code: number;
+            message: string;
+          };
+        },
+        never
+      >
+    >();
+
+    if (result.ok) {
+      expect(result.status).type.toBe<200 | 304>();
+      expect(result.data).type.toBe<unknown>();
+
+      if (result.status === 200) {
+        expect(result.data).type.toBe<Array<Schemas.Pet>>();
+      }
+    } else {
+      expect(result.status).type.toBe<400>();
+      expect(result.data).type.toBe<{
+        code: number;
+        message: string;
+      }>();
+    }
   });
 
   it("infer path param", async () => {
@@ -255,5 +297,147 @@ describe("Example API Client", () => {
       expect(res.status).type.toBe<400 | 404>();
       expect(res.data).type.toBe<{ code: number; message: string }>();
     }
+  });
+
+  it("TanstackQueryApiClient query", async () => {
+    const tanstack = {} as TanstackQueryApiClient;
+
+    const query = tanstack.get("/pet/{petId}", { path: { petId: 42 } });
+    const input = {} as Parameters<typeof query.mutationOptions.mutationFn>[0];
+    expect(input).type.toBeAssignableTo<Endpoints.get_GetPetById["parameters"]>();
+    expect(input).type.toBeAssignableTo<{
+      path: {
+        petId: number;
+      };
+    }>();
+
+    const output = await query.queryOptions.queryFn?.({} as any);
+    expect(output).type.toBe<Schemas.Pet | undefined>();
+  });
+
+  it("TanstackQueryApiClient mutation withResponse: undefined (global+local)", async () => {
+    const tanstack = {} as TanstackQueryApiClient;
+
+    const mutation = tanstack.mutation("get", "/pet/{petId}");
+    const input = {} as Parameters<typeof mutation.mutationOptions.mutationFn>[0];
+    expect(input).type.toBeAssignableTo<Endpoints.get_GetPetById["parameters"]>();
+    expect(input).type.toBeAssignableTo<{
+      withResponse?: boolean;
+      throwOnStatusError?: boolean;
+    }>();
+    expect(input).type.toBeAssignableTo<{
+      path: {
+        petId: number;
+      };
+    }>();
+
+    const output = await mutation.mutationOptions.mutationFn({ path: { petId: 42 } });
+    expect(output).type.toBe<Schemas.Pet>();
+  });
+
+  it("TanstackQueryApiClient mutation withResponse: true (global) / withResponse: undefined (local)", async () => {
+    const tanstack = {} as TanstackQueryApiClient;
+
+    const mutation = tanstack.mutation("get", "/pet/{petId}", { withResponse: true });
+    const input = {} as Parameters<typeof mutation.mutationOptions.mutationFn>[0];
+    expect(input).type.toBeAssignableTo<Endpoints.get_GetPetById["parameters"]>();
+    expect(input).type.toBeAssignableTo<{
+      withResponse?: boolean;
+      throwOnStatusError?: boolean;
+    }>();
+    expect(input).type.toBeAssignableTo<{
+      path: {
+        petId: number;
+      };
+    }>();
+
+    const output = await mutation.mutationOptions.mutationFn({ path: { petId: 42 } });
+    expect(output).type.toBe<TypedSuccessResponse<Schemas.Pet, 200, never>>();
+  });
+
+  it("TanstackQueryApiClient mutation withResponse: false (global) / withResponse: true (local)", async () => {
+    const tanstack = {} as TanstackQueryApiClient;
+
+    const mutation = tanstack.mutation("get", "/pet/{petId}", { withResponse: false });
+    const input = {} as Parameters<typeof mutation.mutationOptions.mutationFn>[0];
+    expect(input).type.toBeAssignableTo<Endpoints.get_GetPetById["parameters"]>();
+    expect(input).type.toBeAssignableTo<{
+      withResponse?: boolean;
+      throwOnStatusError?: boolean;
+    }>();
+    expect(input).type.toBeAssignableTo<{
+      path: {
+        petId: number;
+      };
+    }>();
+
+    const output = await mutation.mutationOptions.mutationFn({ path: { petId: 42 }, withResponse: true });
+    expect(output).type.toBe<TypedSuccessResponse<Schemas.Pet, 200, never>>();
+  });
+
+  it("TanstackQueryApiClient mutation withResponse: true (local) / withResponse: false (local)", async () => {
+    const tanstack = {} as TanstackQueryApiClient;
+
+    const mutation = tanstack.mutation("get", "/pet/{petId}", { withResponse: true });
+    const input = {} as Parameters<typeof mutation.mutationOptions.mutationFn>[0];
+    expect(input).type.toBeAssignableTo<Endpoints.get_GetPetById["parameters"]>();
+    expect(input).type.toBeAssignableTo<{
+      withResponse?: boolean;
+      throwOnStatusError?: boolean;
+    }>();
+    expect(input).type.toBeAssignableTo<{
+      path: {
+        petId: number;
+      };
+    }>();
+
+    const output = await mutation.mutationOptions.mutationFn({ path: { petId: 42 }, withResponse: false });
+    expect(output).type.toBe<Schemas.Pet>();
+  });
+
+  it("TanstackQueryApiClient mutation withResponse: undefined (global+local) -> onSuccess/onError", async () => {
+    const tanstack = {} as TanstackQueryApiClient;
+
+    const mutation = tanstack.mutation("get", "/pet/{petId}").mutationOptions;
+    const output = await mutation.mutationFn!({ path: { petId: 42 } });
+    expect(output).type.toBe<Schemas.Pet>();
+
+    const hookMutation = useMutation(tanstack.mutation("get", "/pet/{petId}").mutationOptions);
+    expect(hookMutation.error).type.toBe<
+      | TypedErrorResponse<
+          {
+            code: number;
+            message: string;
+          },
+          400,
+          never
+        >
+      | TypedErrorResponse<
+          {
+            code: number;
+            message: string;
+          },
+          404,
+          never
+        >
+      | null
+    >();
+
+    const hookOutput = hookMutation.mutateAsync({ path: { petId: 42 } });
+    expect(hookOutput).type.toBe<Promise<Schemas.Pet>>();
+  });
+
+  it("TanstackQueryApiClient has working typings", () => {
+    const tanstack = {} as TanstackQueryApiClient;
+
+    const mutation = tanstack.mutation("get", "/pet/{petId}");
+    // @ts-expect-error  Type 'string' is not assignable to type 'MutationFunction<unknown, void>'.
+    mutationOptions(mutation);
+    mutationOptions(mutation.mutationOptions);
+
+    const query = tanstack.get("/pet/{petId}", { path: { petId: 42 } });
+    // @ts-expect-error  Type '"You need to pass .queryOptions to the useQuery hook"' is not assignable to type
+    queryOptions(query);
+    queryOptions(query.queryOptions);
   });
 });

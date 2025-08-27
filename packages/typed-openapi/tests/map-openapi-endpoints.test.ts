@@ -566,6 +566,22 @@ describe("map-openapi-endpoints", () => {
                           "type": "array",
                         },
                       },
+                      "application/vnd.github.v3.star+json": {
+                        "schema": {
+                          "items": {
+                            "$ref": "#/components/schemas/User",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "application/vnd.github.v4.star+json": {
+                        "schema": {
+                          "items": {
+                            "$ref": "#/components/schemas/Tag",
+                          },
+                          "type": "array",
+                        },
+                      },
                       "application/xml": {
                         "schema": {
                           "items": {
@@ -1230,7 +1246,48 @@ describe("map-openapi-endpoints", () => {
                     },
                     "description": "successful operation",
                   },
+                  "201": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                            },
+                            "username": {
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "id",
+                            "username",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                    },
+                    "description": "successful operation",
+                  },
                   "400": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "properties": {
+                            "code": {
+                              "type": "integer",
+                            },
+                            "message": {
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                    },
                     "description": "Invalid username supplied",
                   },
                   "404": {
@@ -1647,6 +1704,22 @@ describe("map-openapi-endpoints", () => {
                         "type": "array",
                       },
                     },
+                    "application/vnd.github.v3.star+json": {
+                      "schema": {
+                        "items": {
+                          "$ref": "#/components/schemas/User",
+                        },
+                        "type": "array",
+                      },
+                    },
+                    "application/vnd.github.v4.star+json": {
+                      "schema": {
+                        "items": {
+                          "$ref": "#/components/schemas/Tag",
+                        },
+                        "type": "array",
+                      },
+                    },
                     "application/xml": {
                       "schema": {
                         "items": {
@@ -1685,8 +1758,8 @@ describe("map-openapi-endpoints", () => {
             "requestFormat": "json",
             "responses": {
               "200": {
-                "type": "array",
-                "value": "Array<Pet>",
+                "type": "union",
+                "value": "(Array<Pet> | Array<User> | Array<Tag>)",
               },
               "400": {
                 "type": "keyword",
@@ -2614,7 +2687,48 @@ describe("map-openapi-endpoints", () => {
                   },
                   "description": "successful operation",
                 },
+                "201": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                          },
+                          "username": {
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "id",
+                          "username",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
+                  "description": "successful operation",
+                },
                 "400": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "properties": {
+                          "code": {
+                            "type": "integer",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "code",
+                          "message",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
                   "description": "Invalid username supplied",
                 },
                 "404": {
@@ -2641,9 +2755,13 @@ describe("map-openapi-endpoints", () => {
                 "type": "ref",
                 "value": "User",
               },
+              "201": {
+                "type": "object",
+                "value": "{ id: number, username: string }",
+              },
               "400": {
-                "type": "keyword",
-                "value": "unknown",
+                "type": "object",
+                "value": "{ code: number, message: string }",
               },
               "404": {
                 "type": "keyword",

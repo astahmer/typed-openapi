@@ -28,6 +28,7 @@ type EndpointParameters = {
   path?: Record<string, unknown>;
 };
 
+// TODO
 type Fetcher = (method: string, url: string, params?: EndpointParameters) => Promise<Response>;
 
 /**

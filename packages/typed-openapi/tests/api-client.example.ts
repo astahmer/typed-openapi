@@ -14,7 +14,7 @@
  * 3. Customize error handling and headers as needed
  */
 
-import { type Fetcher, createApiClient  } from "../tmp/generated-client.ts";
+import { type Fetcher, createApiClient } from "../tmp/generated-client.ts";
 
 // Basic configuration
 const API_BASE_URL = process.env["API_BASE_URL"] || "https://api.example.com";
@@ -22,7 +22,8 @@ const API_BASE_URL = process.env["API_BASE_URL"] || "https://api.example.com";
 /**
  * Simple fetcher implementation without external dependencies
  */
-const fetcher: Fetcher = async (method, apiUrl, params) => {
+const fetcher: Fetcher["transformRequest"] = async (input) => {
+  const { method, url: apiUrl, parameters: params } = input;
   const headers = new Headers();
 
   // Replace path parameters (supports both {param} and :param formats)
@@ -82,4 +83,4 @@ function replacePathParams(url: string, params: Record<string, string>): string 
     .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || `:${key}`);
 }
 
-export const api = createApiClient(fetcher, API_BASE_URL);
+export const api = createApiClient({ transformRequest: fetcher }, API_BASE_URL);

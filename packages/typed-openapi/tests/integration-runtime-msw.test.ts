@@ -79,7 +79,14 @@ afterAll(() => server.close());
 describe("minimalist test", () => {
   it("should fetch /pet/findByStatus and receive mocked pets", async () => {
     const fetcher = (method: string, url: string) => fetch(url, { method });
-    const mini = createApiClient(fetcher, "http://localhost");
+    const mini = createApiClient(
+      {
+        transformRequest(input) {
+          return fetcher(input.method, input.url);
+        },
+      },
+      "http://localhost",
+    );
     const result = await mini.get("/pet/findByStatus", { query: {} });
     expect(result).toEqual(mockPets);
   });
@@ -133,16 +140,28 @@ describe("Example API Client", () => {
     expect(result).toBe("deleted");
   });
 
-  it("should use .request to get a Response object", async () => {
+  it("can use .request", async () => {
     const res = await api.request("get", "/pet/findByStatus", { query: {} });
+    expect(res).toEqual(mockPets);
+  });
+
+  it("can use .request withResponse: true", async () => {
+    const res = await api.request("get", "/pet/findByStatus", { query: {}, withResponse: true });
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data).toEqual(mockPets);
   });
 
-  it("should use .request to post and get a Response object", async () => {
+  it("can use .request to post and get a Response object", async () => {
     const newPet = { name: "Tiger", photoUrls: [] };
-    const res = await api.request("post", "/pet", { body: newPet });
+    const data = await api.request("post", "/pet", { body: newPet });
+    expect(data).toMatchObject(newPet);
+    expect(data.id).toBe(99);
+  });
+
+   it("can use .request to post withResponse: true", async () => {
+    const newPet = { name: "Tiger", photoUrls: [] };
+    const res = await api.request("post", "/pet", { body: newPet, withResponse: true });
     expect(res.status).toBe(200);
     expect(res.ok).toBe(true);
     if (!res.ok) throw new Error("res.ok is false");
@@ -240,7 +259,7 @@ describe("Example API Client", () => {
       expect(error.response).toBeDefined();
     });
 
-    it("should not throw when throwOnStatusError is false with withResponse", async () => {
+    it("should not throw when throwOnStatusError is false with withResponse: true", async () => {
       const res = await api.get("/pet/{petId}", {
         path: { petId: 9999 },
         withResponse: true,
@@ -252,7 +271,16 @@ describe("Example API Client", () => {
       expect(res.data).toEqual({ code: 404, message: expect.any(String) });
     });
 
-    it("should throw by default when withResponse is not set and error status", async () => {
+    it("should not throw when throwOnStatusError is false with withResponse: false", async () => {
+      const res = await api.get("/pet/{petId}", {
+        path: { petId: 9999 },
+        withResponse: false,
+        throwOnStatusError: false,
+      });
+      expect(res).toEqual({ code: 404, message: expect.any(String) });
+    });
+
+    it("should throw by default when withResponse: undefined + response has an error status", async () => {
       let err: unknown;
       try {
         await api.get("/pet/{petId}", { path: { petId: 9999 } });

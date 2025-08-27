@@ -132,7 +132,7 @@ export const get_FindPetsByTags = v.object({
     }),
   }),
   responses: v.object({
-    "200": v.array(Pet),
+    "200": v.union([v.array(Pet), v.array(User), v.array(Tag)]),
     "400": v.unknown(),
   }),
 });
@@ -350,7 +350,14 @@ export const get_GetUserByName = v.object({
   }),
   responses: v.object({
     "200": User,
-    "400": v.unknown(),
+    "201": v.object({
+      id: v.number(),
+      username: v.string(),
+    }),
+    "400": v.object({
+      code: v.number(),
+      message: v.string(),
+    }),
     "404": v.unknown(),
   }),
 });
@@ -464,7 +471,16 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   responseHeaders?: TConfig["responseHeaders"];
 };
 
-export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+export interface Fetcher {
+  transformRequest: (input: {
+    method: Method;
+    url: string;
+    parameters?: EndpointParameters | undefined;
+    path: string;
+    overrides?: RequestInit;
+  }) => Promise<Response>;
+  transformResponse?: (response: Response) => Promise<Response>;
+}
 
 export const successStatusCodes = [
   200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308,
@@ -577,6 +593,7 @@ export class TypedResponseError extends Error {
   }
 }
 // </TypedResponseError>
+
 // <ApiClient>
 export class ApiClient {
   baseUrl: string = "";
@@ -602,14 +619,22 @@ export class ApiClient {
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+      (v.InferOutput<TEndpoint> extends { parameters: infer UParams } ? UParams : {}) & {
+        overrides?: HeadersInit;
+        withResponse?: false;
+        throwOnStatusError?: boolean;
+      }
     >
-  ): Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+      (v.InferOutput<TEndpoint> extends { parameters: infer UParams } ? UParams : {}) & {
+        overrides?: HeadersInit;
+        withResponse: true;
+        throwOnStatusError?: boolean;
+      }
     >
   ): Promise<SafeApiResponse<TEndpoint>>;
 
@@ -621,25 +646,31 @@ export class ApiClient {
     const withResponse = requestParams?.withResponse;
     const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
 
-    const promise = this.fetcher(
-      "put",
-      this.baseUrl + path,
-      Object.keys(fetchParams).length ? requestParams : undefined,
-    ).then(async (response) => {
-      const data = await this.parseResponse(response);
-      const typedResponse = Object.assign(response, {
-        data: data,
-        json: () => Promise.resolve(data),
-      }) as SafeApiResponse<TEndpoint>;
+    const promise = this.fetcher
+      .transformRequest({
+        method: "put",
+        path,
+        url: this.baseUrl + path,
+        parameters: Object.keys(fetchParams).length ? requestParams : undefined,
+        overrides: requestParams?.overrides,
+      })
+      .then(async (response) => {
+        const data = await this.parseResponse(response);
+        const typedResponse = Object.assign(response, {
+          data: data,
+          json: () => Promise.resolve(data),
+        }) as SafeApiResponse<TEndpoint>;
 
-      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-        throw new TypedResponseError(typedResponse as never);
-      }
+        if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+          throw new TypedResponseError(typedResponse as never);
+        }
 
-      return withResponse ? typedResponse : data;
-    });
+        return withResponse ? typedResponse : data;
+      });
 
-    return promise as Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
+    return promise as Promise<
+      Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]
+    >;
   }
   // </ApiClient.put>
 
@@ -647,14 +678,22 @@ export class ApiClient {
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+      (v.InferOutput<TEndpoint> extends { parameters: infer UParams } ? UParams : {}) & {
+        overrides?: HeadersInit;
+        withResponse?: false;
+        throwOnStatusError?: boolean;
+      }
     >
-  ): Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+      (v.InferOutput<TEndpoint> extends { parameters: infer UParams } ? UParams : {}) & {
+        overrides?: HeadersInit;
+        withResponse: true;
+        throwOnStatusError?: boolean;
+      }
     >
   ): Promise<SafeApiResponse<TEndpoint>>;
 
@@ -666,25 +705,31 @@ export class ApiClient {
     const withResponse = requestParams?.withResponse;
     const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
 
-    const promise = this.fetcher(
-      "post",
-      this.baseUrl + path,
-      Object.keys(fetchParams).length ? requestParams : undefined,
-    ).then(async (response) => {
-      const data = await this.parseResponse(response);
-      const typedResponse = Object.assign(response, {
-        data: data,
-        json: () => Promise.resolve(data),
-      }) as SafeApiResponse<TEndpoint>;
+    const promise = this.fetcher
+      .transformRequest({
+        method: "post",
+        path,
+        url: this.baseUrl + path,
+        parameters: Object.keys(fetchParams).length ? requestParams : undefined,
+        overrides: requestParams?.overrides,
+      })
+      .then(async (response) => {
+        const data = await this.parseResponse(response);
+        const typedResponse = Object.assign(response, {
+          data: data,
+          json: () => Promise.resolve(data),
+        }) as SafeApiResponse<TEndpoint>;
 
-      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-        throw new TypedResponseError(typedResponse as never);
-      }
+        if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+          throw new TypedResponseError(typedResponse as never);
+        }
 
-      return withResponse ? typedResponse : data;
-    });
+        return withResponse ? typedResponse : data;
+      });
 
-    return promise as Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
+    return promise as Promise<
+      Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]
+    >;
   }
   // </ApiClient.post>
 
@@ -692,14 +737,22 @@ export class ApiClient {
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+      (v.InferOutput<TEndpoint> extends { parameters: infer UParams } ? UParams : {}) & {
+        overrides?: HeadersInit;
+        withResponse?: false;
+        throwOnStatusError?: boolean;
+      }
     >
-  ): Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+      (v.InferOutput<TEndpoint> extends { parameters: infer UParams } ? UParams : {}) & {
+        overrides?: HeadersInit;
+        withResponse: true;
+        throwOnStatusError?: boolean;
+      }
     >
   ): Promise<SafeApiResponse<TEndpoint>>;
 
@@ -711,25 +764,31 @@ export class ApiClient {
     const withResponse = requestParams?.withResponse;
     const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
 
-    const promise = this.fetcher(
-      "get",
-      this.baseUrl + path,
-      Object.keys(fetchParams).length ? requestParams : undefined,
-    ).then(async (response) => {
-      const data = await this.parseResponse(response);
-      const typedResponse = Object.assign(response, {
-        data: data,
-        json: () => Promise.resolve(data),
-      }) as SafeApiResponse<TEndpoint>;
+    const promise = this.fetcher
+      .transformRequest({
+        method: "get",
+        path,
+        url: this.baseUrl + path,
+        parameters: Object.keys(fetchParams).length ? requestParams : undefined,
+        overrides: requestParams?.overrides,
+      })
+      .then(async (response) => {
+        const data = await this.parseResponse(response);
+        const typedResponse = Object.assign(response, {
+          data: data,
+          json: () => Promise.resolve(data),
+        }) as SafeApiResponse<TEndpoint>;
 
-      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-        throw new TypedResponseError(typedResponse as never);
-      }
+        if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+          throw new TypedResponseError(typedResponse as never);
+        }
 
-      return withResponse ? typedResponse : data;
-    });
+        return withResponse ? typedResponse : data;
+      });
 
-    return promise as Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
+    return promise as Promise<
+      Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]
+    >;
   }
   // </ApiClient.get>
 
@@ -737,14 +796,22 @@ export class ApiClient {
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      v.InferOutput<TEndpoint>["parameters"] & { withResponse?: false; throwOnStatusError?: boolean }
+      (v.InferOutput<TEndpoint> extends { parameters: infer UParams } ? UParams : {}) & {
+        overrides?: HeadersInit;
+        withResponse?: false;
+        throwOnStatusError?: boolean;
+      }
     >
-  ): Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      v.InferOutput<TEndpoint>["parameters"] & { withResponse: true; throwOnStatusError?: boolean }
+      (v.InferOutput<TEndpoint> extends { parameters: infer UParams } ? UParams : {}) & {
+        overrides?: HeadersInit;
+        withResponse: true;
+        throwOnStatusError?: boolean;
+      }
     >
   ): Promise<SafeApiResponse<TEndpoint>>;
 
@@ -756,25 +823,31 @@ export class ApiClient {
     const withResponse = requestParams?.withResponse;
     const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
 
-    const promise = this.fetcher(
-      "delete",
-      this.baseUrl + path,
-      Object.keys(fetchParams).length ? requestParams : undefined,
-    ).then(async (response) => {
-      const data = await this.parseResponse(response);
-      const typedResponse = Object.assign(response, {
-        data: data,
-        json: () => Promise.resolve(data),
-      }) as SafeApiResponse<TEndpoint>;
+    const promise = this.fetcher
+      .transformRequest({
+        method: "delete",
+        path,
+        url: this.baseUrl + path,
+        parameters: Object.keys(fetchParams).length ? requestParams : undefined,
+        overrides: requestParams?.overrides,
+      })
+      .then(async (response) => {
+        const data = await this.parseResponse(response);
+        const typedResponse = Object.assign(response, {
+          data: data,
+          json: () => Promise.resolve(data),
+        }) as SafeApiResponse<TEndpoint>;
 
-      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-        throw new TypedResponseError(typedResponse as never);
-      }
+        if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+          throw new TypedResponseError(typedResponse as never);
+        }
 
-      return withResponse ? typedResponse : data;
-    });
+        return withResponse ? typedResponse : data;
+      });
 
-    return promise as Promise<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>["data"]>;
+    return promise as Promise<
+      Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]
+    >;
   }
   // </ApiClient.delete>
 
@@ -789,11 +862,63 @@ export class ApiClient {
   >(
     method: TMethod,
     path: TPath,
-    ...params: MaybeOptionalArg<v.InferOutput<TEndpoint>["parameters"]>
-  ): Promise<SafeApiResponse<TEndpoint>> {
-    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters) as Promise<
-      SafeApiResponse<TEndpoint>
-    >;
+    ...params: MaybeOptionalArg<
+      (v.InferOutput<TEndpoint> extends { parameters: infer UParams } ? UParams : {}) & {
+        overrides?: HeadersInit;
+        withResponse?: false;
+        throwOnStatusError?: boolean;
+      }
+    >
+  ): Promise<Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+
+  request<
+    TMethod extends keyof EndpointByMethod,
+    TPath extends keyof EndpointByMethod[TMethod],
+    TEndpoint extends EndpointByMethod[TMethod][TPath],
+  >(
+    method: TMethod,
+    path: TPath,
+    ...params: MaybeOptionalArg<
+      (v.InferOutput<TEndpoint> extends { parameters: infer UParams } ? UParams : {}) & {
+        overrides?: HeadersInit;
+        withResponse?: true;
+        throwOnStatusError?: boolean;
+      }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  request<
+    TMethod extends keyof EndpointByMethod,
+    TPath extends keyof EndpointByMethod[TMethod],
+    TEndpoint extends EndpointByMethod[TMethod][TPath],
+  >(method: TMethod, path: TPath, ...params: MaybeOptionalArg<any>): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+    const promise = this.fetcher
+      .transformRequest({
+        method: method,
+        path: path as string,
+        url: this.baseUrl + (path as string),
+        parameters: Object.keys(fetchParams).length ? requestParams : undefined,
+        overrides: requestParams?.overrides,
+      })
+      .then(async (response) => {
+        const data = await this.parseResponse(response);
+        const typedResponse = Object.assign(response, {
+          data: data,
+          json: () => Promise.resolve(data),
+        }) as SafeApiResponse<TEndpoint>;
+
+        if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+          throw new TypedResponseError(typedResponse as never);
+        }
+
+        return withResponse ? typedResponse : data;
+      });
+
+    return promise as Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }

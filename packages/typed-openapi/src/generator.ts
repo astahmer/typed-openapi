@@ -233,11 +233,7 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
           : "parameters: never,"
       }
       ${endpoint.responses ? `responses: ${generateResponsesObject(endpoint.responses, ctx)},` : ""}
-      ${
-        endpoint.responseHeaders
-          ? `responseHeaders: ${responseHeadersObjectToString(endpoint.responseHeaders)},`
-          : ""
-      }
+      ${endpoint.responseHeaders ? `responseHeaders: ${responseHeadersObjectToString(endpoint.responseHeaders)},` : ""}
     }\n`;
   });
 
@@ -329,7 +325,10 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   responseHeaders?: TConfig["responseHeaders"]
 };
 
-export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+export interface Fetcher {
+    transformRequest: (input: { method: Method, url: string, parameters?: EndpointParameters | undefined; path: string; overrides?: RequestInit }) => Promise<Response>;
+    transformResponse?: (response: Response) => Promise<Response>;
+}
 
 export const successStatusCodes = [${ctx.successStatusCodes.join(",")}] as const;
 export type SuccessStatusCode = typeof successStatusCodes[number];
@@ -406,6 +405,12 @@ type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [confi
 // </ApiClientTypes>
 `;
 
+  const infer = inferByRuntime[ctx.runtime];
+  const InferTEndpoint = match(ctx.runtime)
+    .with("zod", "yup", () => infer(`TEndpoint`))
+    .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`))
+    .otherwise(() => `TEndpoint`);
+
   const apiClient = `
 // <TypedResponseError>
 export class TypedResponseError extends Error {
@@ -419,6 +424,7 @@ export class TypedResponseError extends Error {
   }
 }
 // </TypedResponseError>
+
 // <ApiClient>
 export class ApiClient {
   baseUrl: string = "";
@@ -443,33 +449,17 @@ export class ApiClient {
   ${Object.entries(byMethods)
     .map(([method, endpointByMethod]) => {
       const capitalizedMethod = capitalize(method);
-      const infer = inferByRuntime[ctx.runtime];
 
       return endpointByMethod.length
         ? `// <ApiClient.${method}>
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
-      ...params: MaybeOptionalArg<${match(ctx.runtime)
-        .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
-        .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
-        .otherwise(() => `TEndpoint["parameters"]`)} & { header?: HeadersInit; withResponse?: false; throwOnStatusError?: boolean }>
-    ): Promise<${match(ctx.runtime)
-      .with("zod", "yup", () => infer(`InferResponseByStatus<TEndpoint, SuccessStatusCode>`))
-      .with(
-        "arktype",
-        "io-ts",
-        "typebox",
-        "valibot",
-        () => `InferResponseByStatus<${infer(`TEndpoint`)}, SuccessStatusCode>["data"]`,
-      )
-      .otherwise(() => `Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]`)}>;
+      ...params: MaybeOptionalArg<(${InferTEndpoint} extends { parameters: infer UParams } ? UParams : {}) & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }>
+    ): Promise<Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]>;
 
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
-      ...params: MaybeOptionalArg<${match(ctx.runtime)
-        .with("zod", "yup", () => infer(`TEndpoint["parameters"]`))
-        .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`) + `["parameters"]`)
-        .otherwise(() => `TEndpoint["parameters"]`)} & { header?: HeadersInit; withResponse: true; throwOnStatusError?: boolean }>
+      ...params: MaybeOptionalArg<(${InferTEndpoint} extends { parameters: infer UParams } ? UParams : {}) & { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean }>
     ): Promise<SafeApiResponse<TEndpoint>>;
 
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
@@ -480,7 +470,13 @@ export class ApiClient {
       const withResponse = requestParams?.withResponse;
       const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
 
-      const promise = this.fetcher("${method}", this.baseUrl + path, Object.keys(fetchParams).length ? requestParams : undefined)
+      const promise = this.fetcher.transformRequest({
+        method: "${method}",
+        path,
+        url: this.baseUrl + path,
+        parameters: Object.keys(fetchParams).length ? requestParams : undefined,
+        overrides: requestParams?.overrides
+      })
         .then(async (response) => {
           const data = await this.parseResponse(response);
           const typedResponse = Object.assign(response, {
@@ -495,16 +491,7 @@ export class ApiClient {
           return withResponse ? typedResponse : data;
         });
 
-        return promise ${match(ctx.runtime)
-          .with("zod", "yup", () => `as Promise<${infer(`InferResponseByStatus<TEndpoint, SuccessStatusCode>`)}>`)
-          .with(
-            "arktype",
-            "io-ts",
-            "typebox",
-            "valibot",
-            () => `as Promise<InferResponseByStatus<${infer(`TEndpoint`)}, SuccessStatusCode>["data"]>`,
-          )
-          .otherwise(() => `as Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>`)}
+        return promise as Promise<Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]>
     }
     // </ApiClient.${method}>
     `
@@ -523,20 +510,54 @@ export class ApiClient {
     >(
       method: TMethod,
       path: TPath,
-      ...params: MaybeOptionalArg<${match(ctx.runtime)
-        .with("zod", "yup", () =>
-          inferByRuntime[ctx.runtime](`TEndpoint extends { parameters: infer Params } ? Params : never`),
-        )
-        .with(
-          "arktype",
-          "io-ts",
-          "typebox",
-          "valibot",
-          () => inferByRuntime[ctx.runtime](`TEndpoint`) + `["parameters"]`,
-        )
-        .otherwise(() => `TEndpoint extends { parameters: infer Params } ? Params : never`)}>)
-    : Promise<SafeApiResponse<TEndpoint>> {
-      return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters) as Promise<SafeApiResponse<TEndpoint>>;
+      ...params: MaybeOptionalArg<(${InferTEndpoint} extends { parameters: infer UParams } ? UParams : {}) & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }>
+    ): Promise<Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]>
+
+    request<
+      TMethod extends keyof EndpointByMethod,
+      TPath extends keyof EndpointByMethod[TMethod],
+      TEndpoint extends EndpointByMethod[TMethod][TPath]
+    >(
+      method: TMethod,
+      path: TPath,
+      ...params: MaybeOptionalArg<(${InferTEndpoint} extends { parameters: infer UParams } ? UParams : {}) & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }>
+    ): Promise<SafeApiResponse<TEndpoint>>;
+
+    request<
+      TMethod extends keyof EndpointByMethod,
+      TPath extends keyof EndpointByMethod[TMethod],
+      TEndpoint extends EndpointByMethod[TMethod][TPath]
+    >(
+      method: TMethod,
+      path: TPath,
+      ...params: MaybeOptionalArg<any>
+    ): Promise<any> {
+      const requestParams = params[0];
+      const withResponse = requestParams?.withResponse;
+      const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
+
+      const promise = this.fetcher.transformRequest({
+        method: method,
+        path: (path as string),
+        url: this.baseUrl + (path as string),
+        parameters: Object.keys(fetchParams).length ? requestParams : undefined,
+        overrides: requestParams?.overrides
+      })
+        .then(async (response) => {
+          const data = await this.parseResponse(response);
+          const typedResponse = Object.assign(response, {
+            data: data,
+            json: () => Promise.resolve(data)
+          }) as SafeApiResponse<TEndpoint>;
+
+          if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+            throw new TypedResponseError(typedResponse as never);
+          }
+
+          return withResponse ? typedResponse : data;
+        });
+
+        return promise as Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]
     }
     // </ApiClient.request>
 }
