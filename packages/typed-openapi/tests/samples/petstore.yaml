@@ -678,6 +678,44 @@ paths:
           description: Invalid username supplied
         "404":
           description: User not found
+  /pet/text:
+    get:
+      tags:
+        - user
+      summary: Returns text/plain response
+      description: ""
+      operationId: getPetTextPlain
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  /pet/empty:
+    get:
+      tags:
+        - user
+      summary: Returns text/plain response
+      description: ""
+      operationId: getPetEmpty
+      responses:
+        "204":
+          description: No content
+  /pet/custom:
+    get:
+      tags:
+        - user
+      summary: Returns text/plain response
+      description: ""
+      operationId: getPetCustom
+      responses:
+        "200":
+          description: Pet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
 components:
   schemas:
     Order:

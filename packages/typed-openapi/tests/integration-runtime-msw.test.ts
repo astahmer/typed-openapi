@@ -32,6 +32,20 @@ const server = setupServer(
   http.get("http://localhost/pet/42", () => {
     return HttpResponse.json({ id: 42, name: "Spot", photoUrls: [], status: "sold" });
   }),
+  // GET with path (success) for decodePathParams
+  http.get("http://localhost/pet/123", () => {
+    return HttpResponse.json({ id: 123, name: "decodePathParams case", photoUrls: [], status: "sold" });
+  }),
+  // GET with path (success) for encodeSearchParams
+  http.get("http://localhost/pet/456", ({ request }) => {
+    const url = new URL(request.url);
+    return HttpResponse.json({
+      id: 456,
+      name: "encodeSearchParams case",
+      photoUrls: [url.searchParams.get("photoUrls")].filter(Boolean),
+      status: "sold",
+    });
+  }),
   // GET with path (404 error)
   http.get("http://localhost/pet/9999", () => {
     return HttpResponse.json({ code: 404, message: "Pet not found" }, { status: 404 });
@@ -57,7 +71,7 @@ const server = setupServer(
     return HttpResponse.text("forbidden", { status: 403 });
   }),
   // GET with headers
-  http.get("http://localhost/user/login", () => {
+  http.get("http://localhost/user/login", ({ request }) => {
     return HttpResponse.json(
       {
         success: true,
@@ -67,28 +81,116 @@ const server = setupServer(
         headers: {
           "X-Rate-Limit": "10",
           "X-Expires-After": "60",
+          "X-Api-Key": request.headers.get("api_key") === "secret" ? "got api key" : "no api key",
         },
       },
     );
+  }),
+  // Additional endpoints for default parse tests
+  http.get("http://localhost/pet/text", () => {
+    return HttpResponse.text("plain text", { status: 200, headers: { "Content-Type": "text/plain" } });
+  }),
+  http.get("http://localhost/pet/empty", () => {
+    return HttpResponse.text("", { status: 204 }); // empty body
+  }),
+  // Endpoint for custom parseResponseData test
+  http.get("http://localhost/pet/custom", () => {
+    return HttpResponse.json({ id: 789, name: "parseResponseData", photoUrls: [], status: "sold" }, { status: 200 });
   }),
 );
 
 beforeAll(() => server.listen());
 afterAll(() => server.close());
 
-describe("minimalist test", () => {
-  it("should fetch /pet/findByStatus and receive mocked pets", async () => {
+describe("custom fetcher", () => {
+  it("minimalist -> should fetch /pet/findByStatus and receive mocked pets", async () => {
     const fetcher = (method: string, url: string) => fetch(url, { method });
     const mini = createApiClient(
       {
-        transformRequest(input) {
-          return fetcher(input.method, input.url);
+        fetch(input) {
+          return fetcher(input.method, input.url.toString());
         },
       },
       "http://localhost",
     );
     const result = await mini.get("/pet/findByStatus", { query: {} });
     expect(result).toEqual(mockPets);
+  });
+
+  it("custom decodePathParams -> should fetch /pet/findByStatus and receive mocked pets", async () => {
+    const fetcher = (method: string, url: string) => fetch(url, { method });
+    const mini = createApiClient(
+      {
+        decodePathParams(path) {
+          return path.replace("{petId}", "123");
+        },
+        fetch(input) {
+          return fetcher(input.method, input.url.toString());
+        },
+      },
+      "http://localhost",
+    );
+    const result = await mini.get("/pet/{petId}", { path: { petId: 42 } });
+    expect(result).toEqual({ id: 123, name: "decodePathParams case", photoUrls: [], status: "sold" });
+  });
+
+  it("custom encodeSearchParams -> should fetch /pet/findByStatus and receive mocked pets", async () => {
+    const fetcher = (method: string, url: string) => fetch(url, { method });
+    const mini = createApiClient(
+      {
+        encodeSearchParams(params) {
+          const urlSearchParams = new URLSearchParams();
+          urlSearchParams.set("photoUrls", `https://example.com/photos/${params?.["photo"]}`);
+          return urlSearchParams;
+        },
+        fetch(input) {
+          return fetcher(input.method, input.url.toString());
+        },
+      },
+      "http://localhost",
+    );
+    const result = await mini.get("/pet/{petId}", {
+      path: { petId: 456 },
+      // @ts-expect-error there's no query schema defined for this openapi endpoint
+      query: { photo: "123" },
+    });
+    expect(result).toEqual({ id: 456, name: "encodeSearchParams case", photoUrls: [], status: "sold" });
+  });
+
+  describe("parseResponseData", () => {
+    beforeAll(() => {
+      api.baseUrl = "http://localhost";
+    });
+
+    it("defaultParseResponseData parses text/plain responses to string (GET /pet/text)", async () => {
+      const result = await api.get("/pet/text", {});
+      expect(result).toBe("plain text");
+    });
+
+    it("defaultParseResponseData handles empty 204 responses as empty string when withResponse: true", async () => {
+      const res = await api.request("get", "/pet/empty", { withResponse: true });
+      expect(res.status).toBe(204);
+      expect(res.data).toBe("");
+    });
+
+    it("custom parseResponseData -> should use provided parser", async () => {
+      const fetcher = (method: string, url: string) => fetch(url, { method });
+      const mini = createApiClient(
+        {
+          fetch(input) {
+            return fetcher(input.method, input.url.toString());
+          },
+          parseResponseData: async (res: Response) => {
+            // custom parser: uppercase the "message" field from JSON
+            const json = await res.json();
+            return { ...json, name: String(json?.name ?? "").toUpperCase() };
+          },
+        },
+        "http://localhost",
+      );
+      const result = await mini.get("/pet/custom", {});
+      expect(result).toMatchObject({ name: "PARSERESPONSEDATA" });
+    });
   });
 });
 
@@ -159,7 +261,7 @@ describe("Example API Client", () => {
     expect(data.id).toBe(99);
   });
 
-   it("can use .request to post withResponse: true", async () => {
+  it("can use .request to post withResponse: true", async () => {
     const newPet = { name: "Tiger", photoUrls: [] };
     const res = await api.request("post", "/pet", { body: newPet, withResponse: true });
     expect(res.status).toBe(200);
@@ -182,6 +284,23 @@ describe("Example API Client", () => {
       message: expect.stringContaining("403"),
       status: 403,
     });
+  });
+
+  it("can add overrides", async () => {
+    const result = await api.get("/user/login", {
+      query: {},
+      withResponse: true,
+      overrides: {
+        headers: {
+          api_key: "secret",
+        },
+      },
+    });
+    if (result.status !== 200) throw new Error("result.status is not 200");
+
+    expect(result.headers.get("X-Rate-Limit")).toEqual("10");
+    expect(result.headers.get("X-Expires-After")).toEqual("60");
+    expect(result.headers.get("X-Api-Key")).toEqual("got api key");
   });
 
   it("has typed headers", async () => {

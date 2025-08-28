@@ -1,18 +1,17 @@
 // Integration test for generated query client using TSTyche
 // This test ensures the generated client (TS types only, no schema validation) has no inference errors
 
+import { mutationOptions, queryOptions, useMutation } from "@tanstack/react-query";
 import { describe, expect, it } from "tstyche";
 import {
   type Endpoints,
   type Schemas,
   type TypedApiResponse,
-  type TypedSuccessResponse,
-  type Fetcher,
   type TypedErrorResponse,
+  type TypedSuccessResponse
 } from "../tmp/generated-client.ts";
 import { type TanstackQueryApiClient } from "../tmp/generated-tanstack.ts";
 import { api } from "./api-client.example.ts";
-import { mutationOptions, QueryClient, queryOptions, useMutation } from "@tanstack/react-query";
 
 describe("Example API Client", () => {
   it("infer response with multiple status and one schema unknown / withResponse: undefined", async () => {
@@ -173,10 +172,17 @@ describe("Example API Client", () => {
     const input = {} as Parameters<typeof endpointRequest>[1];
 
     expect(input).type.toBeAssignableTo<Endpoints.delete_DeletePet["parameters"]>();
-    expect(input).type.toBeAssignableTo<{ header?: HeadersInit }>();
-    expect(input).type.toBeAssignableTo<Endpoints.delete_DeletePet["parameters"] & { header?: HeadersInit }>();
-    expect(input).type.toBeAssignableTo<{ overrides?: { headers?: HeadersInit } }>();
+    expect(input).type.toBeAssignableTo<Endpoints.delete_DeletePet["parameters"] & { overrides?: { headers?: HeadersInit } }>();
+    expect(input).type.toBeAssignableTo<{ overrides?: RequestInit }>();
   });
+
+  it("can pass overrides even if there's no parameters on the endpoint schema", async () => {
+      const endpointRequest = api.get<"/pet/empty", Endpoints.get_GetPetEmpty>;
+    const input = {} as Parameters<typeof endpointRequest>[1];
+
+    expect(input).type.toBeAssignableTo<undefined|{ overrides?: { headers?: HeadersInit }; withResponse?: true }>();
+    });
+
 
   it("infer response using api.request / withResponse: undefined", async () => {
     const result = await api.request("get", "/pet/findByStatus", { query: {} });

@@ -9,8 +9,8 @@
  * - Basic error handling
  *
  * Usage:
- * 1. Replace './generated/api' with your actual generated file path
- * 2. Set your API_BASE_URL
+ * 1. Replace './tmp/generated-client' with your actual generated file path
+ * 2. Set your baseUrl
  * 3. Customize error handling and headers as needed
  */
 
@@ -22,33 +22,17 @@ const API_BASE_URL = process.env["API_BASE_URL"] || "https://api.example.com";
 /**
  * Simple fetcher implementation without external dependencies
  */
-const fetcher: Fetcher["transformRequest"] = async (input) => {
-  const { method, url: apiUrl, parameters: params } = input;
+const fetcher: Fetcher["fetch"] = async (input) => {
   const headers = new Headers();
 
-  // Replace path parameters (supports both {param} and :param formats)
-  const actualUrl = replacePathParams(apiUrl, (params?.path ?? {}) as Record<string, string>);
-  const url = new URL(actualUrl);
-
   // Handle query parameters
-  if (params?.query) {
-    const searchParams = new URLSearchParams();
-    Object.entries(params.query).forEach(([key, value]) => {
-      if (value != null) {
-        // Skip null/undefined values
-        if (Array.isArray(value)) {
-          value.forEach((val) => val != null && searchParams.append(key, String(val)));
-        } else {
-          searchParams.append(key, String(value));
-        }
-      }
-    });
-    url.search = searchParams.toString();
+  if (input.urlSearchParams) {
+    input.url.search = input.urlSearchParams.toString();
   }
 
   // Handle request body for mutation methods
-  const body = ["post", "put", "patch", "delete"].includes(method.toLowerCase())
-    ? JSON.stringify(params?.body)
+  const body = ["post", "put", "patch", "delete"].includes(input.method.toLowerCase())
+    ? JSON.stringify(input.parameters?.body)
     : undefined;
 
   if (body) {
@@ -56,31 +40,22 @@ const fetcher: Fetcher["transformRequest"] = async (input) => {
   }
 
   // Add custom headers
-  if (params?.header) {
-    Object.entries(params.header).forEach(([key, value]) => {
+  if (input.parameters?.header) {
+    Object.entries(input.parameters.header).forEach(([key, value]) => {
       if (value != null) {
         headers.set(key, String(value));
       }
     });
   }
 
-  const response = await fetch(url, {
-    method: method.toUpperCase(),
+  const response = await fetch(input.url, {
+    method: input.method.toUpperCase(),
     ...(body && { body }),
     headers,
+    ...input.overrides,
   });
 
   return response;
 };
 
-/**
- * Replace path parameters in URL
- * Supports both OpenAPI format {param} and Express format :param
- */
-function replacePathParams(url: string, params: Record<string, string>): string {
-  return url
-    .replace(/{(\w+)}/g, (_, key: string) => params[key] || `{${key}}`)
-    .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || `:${key}`);
-}
-
-export const api = createApiClient({ transformRequest: fetcher }, API_BASE_URL);
+export const api = createApiClient({ fetch: fetcher }, API_BASE_URL);
