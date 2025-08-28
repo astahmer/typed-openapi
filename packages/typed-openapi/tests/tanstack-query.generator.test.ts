@@ -97,7 +97,7 @@ describe("generator", () => {
                 const requestParams = {
                   ...(params[0] || {}),
                   ...(queryKey[0] || {}),
-                  signal,
+                  overrides: { signal },
                   withResponse: false as const,
                 };
                 const res = await this.client.put(path, requestParams as never);
@@ -105,20 +105,6 @@ describe("generator", () => {
               },
               queryKey: queryKey,
             }),
-            mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
-            mutationOptions: {
-              mutationKey: queryKey,
-              mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const requestParams = {
-                  ...(params[0] || {}),
-                  ...(queryKey[0] || {}),
-                  ...(localOptions || {}),
-                  withResponse: false as const,
-                };
-                const res = await this.client.put(path, requestParams as never);
-                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
-              },
-            },
           };
 
           return query;
@@ -141,7 +127,7 @@ describe("generator", () => {
                 const requestParams = {
                   ...(params[0] || {}),
                   ...(queryKey[0] || {}),
-                  signal,
+                  overrides: { signal },
                   withResponse: false as const,
                 };
                 const res = await this.client.post(path, requestParams as never);
@@ -149,20 +135,6 @@ describe("generator", () => {
               },
               queryKey: queryKey,
             }),
-            mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
-            mutationOptions: {
-              mutationKey: queryKey,
-              mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const requestParams = {
-                  ...(params[0] || {}),
-                  ...(queryKey[0] || {}),
-                  ...(localOptions || {}),
-                  withResponse: false as const,
-                };
-                const res = await this.client.post(path, requestParams as never);
-                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
-              },
-            },
           };
 
           return query;
@@ -185,7 +157,7 @@ describe("generator", () => {
                 const requestParams = {
                   ...(params[0] || {}),
                   ...(queryKey[0] || {}),
-                  signal,
+                  overrides: { signal },
                   withResponse: false as const,
                 };
                 const res = await this.client.get(path, requestParams as never);
@@ -193,20 +165,6 @@ describe("generator", () => {
               },
               queryKey: queryKey,
             }),
-            mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
-            mutationOptions: {
-              mutationKey: queryKey,
-              mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const requestParams = {
-                  ...(params[0] || {}),
-                  ...(queryKey[0] || {}),
-                  ...(localOptions || {}),
-                  withResponse: false as const,
-                };
-                const res = await this.client.get(path, requestParams as never);
-                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
-              },
-            },
           };
 
           return query;
@@ -229,7 +187,7 @@ describe("generator", () => {
                 const requestParams = {
                   ...(params[0] || {}),
                   ...(queryKey[0] || {}),
-                  signal,
+                  overrides: { signal },
                   withResponse: false as const,
                 };
                 const res = await this.client.delete(path, requestParams as never);
@@ -237,20 +195,6 @@ describe("generator", () => {
               },
               queryKey: queryKey,
             }),
-            mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
-            mutationOptions: {
-              mutationKey: queryKey,
-              mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters } ? Parameters : never) => {
-                const requestParams = {
-                  ...(params[0] || {}),
-                  ...(queryKey[0] || {}),
-                  ...(localOptions || {}),
-                  withResponse: false as const,
-                };
-                const res = await this.client.delete(path, requestParams as never);
-                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
-              },
-            },
           };
 
           return query;

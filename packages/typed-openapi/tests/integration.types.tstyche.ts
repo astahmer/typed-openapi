@@ -309,14 +309,6 @@ describe("Example API Client", () => {
     const tanstack = {} as TanstackQueryApiClient;
 
     const query = tanstack.get("/pet/{petId}", { path: { petId: 42 } });
-    const input = {} as Parameters<typeof query.mutationOptions.mutationFn>[0];
-    expect(input).type.toBeAssignableTo<Endpoints.get_GetPetById["parameters"]>();
-    expect(input).type.toBeAssignableTo<{
-      path: {
-        petId: number;
-      };
-    }>();
-
     const output = await query.queryOptions.queryFn?.({} as any);
     expect(output).type.toBe<Schemas.Pet | undefined>();
   });

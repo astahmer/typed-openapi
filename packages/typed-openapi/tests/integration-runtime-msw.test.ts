@@ -1,7 +1,7 @@
 // Integration test for generated query client using MSW
 // This test ensures the generated client (TS types only, no schema validation) has no runtime errors
 
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import { mutationOptions, QueryClient, queryOptions } from "@tanstack/react-query";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -484,7 +484,7 @@ describe("Example API Client", () => {
       expect(result.data).toEqual({ code: 404, message: expect.any(String) });
     });
 
-    it("should allow aborting requests via AbortController signal (tanstack)", async () => {
+    it("should allow aborting mutation requests via AbortController signal (tanstack)", async () => {
       const mutation = tanstack.mutation("get", "/pet/{petId}");
       const controller = new AbortController();
 
@@ -496,7 +496,16 @@ describe("Example API Client", () => {
       // abort immediately
       controller.abort();
 
-      await expect(promise).rejects.toHaveProperty("name", "AbortError");
+      await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`[AbortError: This operation was aborted]`)
+    });
+
+    it("should allow aborting query requests via AbortController signal (tanstack)", async () => {
+      const client = new QueryClient()
+      const queryOptions =tanstack.get("/pet/{petId}",{path: {petId: 111}}).queryOptions
+      const promise = client.fetchQuery(queryOptions)
+      await client.cancelQueries(queryOptions)
+
+      await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: CancelledError]`)
     });
 
     it("should throw when throwOnStatusError is true (tanstack)", async () => {

@@ -76,7 +76,10 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
         .map(
           (method) => `
         // <ApiClient.${method}>
-        ${method}<Path extends keyof ${capitalize(method)}Endpoints, TEndpoint extends ${capitalize(method)}Endpoints[Path]>(
+        ${method}<
+            Path extends keyof ${capitalize(method)}Endpoints,
+            TEndpoint extends ${capitalize(method)}Endpoints[Path]
+        >(
             path: Path,
             ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ) {
@@ -91,7 +94,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                         const requestParams = {
                             ...(params[0] || {}),
                             ...(queryKey[0] || {}),
-                            signal,
+                            overrides: { signal },
                             withResponse: false as const
                         };
                         const res = await this.client.${method}(path, requestParams as never);
@@ -99,20 +102,6 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                     },
                     queryKey: queryKey
                 }),
-                mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
-                mutationOptions: {
-                    mutationKey: queryKey,
-                    mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters} ? Parameters: never) => {
-                        const requestParams = {
-                            ...(params[0] || {}),
-                            ...(queryKey[0] || {}),
-                            ...(localOptions || {}),
-                            withResponse: false as const
-                        };
-                        const res = await this.client.${method}(path, requestParams as never);
-                        return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
-                    }
-                }
             };
 
             return query
