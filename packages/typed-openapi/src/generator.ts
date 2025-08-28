@@ -500,6 +500,8 @@ export class ApiClient {
         return undefined
       }
     }
+
+    return
   }
 
   ${Object.entries(byMethods)

@@ -4260,6 +4260,8 @@ export class ApiClient {
         return undefined;
       }
     }
+
+    return;
   };
 
   // <ApiClient.get>

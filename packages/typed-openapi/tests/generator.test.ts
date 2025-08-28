@@ -523,6 +523,8 @@ describe("generator", () => {
               return undefined;
             }
           }
+
+          return;
         };
 
         // <ApiClient.put>
@@ -1291,6 +1293,8 @@ describe("generator", () => {
               return undefined;
             }
           }
+
+          return;
         };
 
         // <ApiClient.get>
@@ -1772,6 +1776,8 @@ describe("generator", () => {
               return undefined;
             }
           }
+
+          return;
         };
 
         // <ApiClient.get>

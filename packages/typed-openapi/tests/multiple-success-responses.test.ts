@@ -370,6 +370,8 @@ describe("multiple success responses", () => {
               return undefined;
             }
           }
+
+          return;
         };
 
         // <ApiClient.post>
