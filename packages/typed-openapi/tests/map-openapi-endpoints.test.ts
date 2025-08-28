@@ -450,6 +450,43 @@ describe("map-openapi-endpoints", () => {
                 ],
               },
             },
+            "/pet/custom": {
+              "get": {
+                "description": "",
+                "operationId": "getPetCustom",
+                "responses": {
+                  "200": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/Pet",
+                        },
+                      },
+                    },
+                    "description": "Pet",
+                  },
+                },
+                "summary": "Returns text/plain response",
+                "tags": [
+                  "user",
+                ],
+              },
+            },
+            "/pet/empty": {
+              "get": {
+                "description": "",
+                "operationId": "getPetEmpty",
+                "responses": {
+                  "204": {
+                    "description": "No content",
+                  },
+                },
+                "summary": "Returns text/plain response",
+                "tags": [
+                  "user",
+                ],
+              },
+            },
             "/pet/findByStatus": {
               "get": {
                 "description": "Multiple status values can be provided with comma separated strings",
@@ -566,6 +603,22 @@ describe("map-openapi-endpoints", () => {
                           "type": "array",
                         },
                       },
+                      "application/vnd.github.v3.star+json": {
+                        "schema": {
+                          "items": {
+                            "$ref": "#/components/schemas/User",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "application/vnd.github.v4.star+json": {
+                        "schema": {
+                          "items": {
+                            "$ref": "#/components/schemas/Tag",
+                          },
+                          "type": "array",
+                        },
+                      },
                       "application/xml": {
                         "schema": {
                           "items": {
@@ -592,6 +645,28 @@ describe("map-openapi-endpoints", () => {
                 "summary": "Finds Pets by tags",
                 "tags": [
                   "pet",
+                ],
+              },
+            },
+            "/pet/text": {
+              "get": {
+                "description": "",
+                "operationId": "getPetTextPlain",
+                "responses": {
+                  "200": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/User",
+                        },
+                      },
+                    },
+                    "description": "successful operation",
+                  },
+                },
+                "summary": "Returns text/plain response",
+                "tags": [
+                  "user",
                 ],
               },
             },
@@ -1230,7 +1305,48 @@ describe("map-openapi-endpoints", () => {
                     },
                     "description": "successful operation",
                   },
+                  "201": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                            },
+                            "username": {
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "id",
+                            "username",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                    },
+                    "description": "successful operation",
+                  },
                   "400": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "properties": {
+                            "code": {
+                              "type": "integer",
+                            },
+                            "message": {
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                    },
                     "description": "Invalid username supplied",
                   },
                   "404": {
@@ -1647,6 +1763,22 @@ describe("map-openapi-endpoints", () => {
                         "type": "array",
                       },
                     },
+                    "application/vnd.github.v3.star+json": {
+                      "schema": {
+                        "items": {
+                          "$ref": "#/components/schemas/User",
+                        },
+                        "type": "array",
+                      },
+                    },
+                    "application/vnd.github.v4.star+json": {
+                      "schema": {
+                        "items": {
+                          "$ref": "#/components/schemas/Tag",
+                        },
+                        "type": "array",
+                      },
+                    },
                     "application/xml": {
                       "schema": {
                         "items": {
@@ -1685,8 +1817,8 @@ describe("map-openapi-endpoints", () => {
             "requestFormat": "json",
             "responses": {
               "200": {
-                "type": "array",
-                "value": "Array<Pet>",
+                "type": "union",
+                "value": "(Array<Pet> | Array<User> | Array<Tag>)",
               },
               "400": {
                 "type": "keyword",
@@ -2614,7 +2746,48 @@ describe("map-openapi-endpoints", () => {
                   },
                   "description": "successful operation",
                 },
+                "201": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                          },
+                          "username": {
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "id",
+                          "username",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
+                  "description": "successful operation",
+                },
                 "400": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "properties": {
+                          "code": {
+                            "type": "integer",
+                          },
+                          "message": {
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "code",
+                          "message",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
                   "description": "Invalid username supplied",
                 },
                 "404": {
@@ -2641,9 +2814,13 @@ describe("map-openapi-endpoints", () => {
                 "type": "ref",
                 "value": "User",
               },
+              "201": {
+                "type": "object",
+                "value": "{ id: number, username: string }",
+              },
               "400": {
-                "type": "keyword",
-                "value": "unknown",
+                "type": "object",
+                "value": "{ code: number, message: string }",
               },
               "404": {
                 "type": "keyword",
@@ -2775,6 +2952,110 @@ describe("map-openapi-endpoints", () => {
               "404": {
                 "type": "keyword",
                 "value": "unknown",
+              },
+            },
+          },
+          {
+            "meta": {
+              "alias": "get_GetPetTextPlain",
+              "areParametersRequired": false,
+              "hasParameters": false,
+            },
+            "method": "get",
+            "operation": {
+              "description": "",
+              "operationId": "getPetTextPlain",
+              "responses": {
+                "200": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/User",
+                      },
+                    },
+                  },
+                  "description": "successful operation",
+                },
+              },
+              "summary": "Returns text/plain response",
+              "tags": [
+                "user",
+              ],
+            },
+            "parameters": undefined,
+            "path": "/pet/text",
+            "requestFormat": "json",
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "User",
+              },
+            },
+          },
+          {
+            "meta": {
+              "alias": "get_GetPetEmpty",
+              "areParametersRequired": false,
+              "hasParameters": false,
+            },
+            "method": "get",
+            "operation": {
+              "description": "",
+              "operationId": "getPetEmpty",
+              "responses": {
+                "204": {
+                  "description": "No content",
+                },
+              },
+              "summary": "Returns text/plain response",
+              "tags": [
+                "user",
+              ],
+            },
+            "parameters": undefined,
+            "path": "/pet/empty",
+            "requestFormat": "json",
+            "responses": {
+              "204": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
+          },
+          {
+            "meta": {
+              "alias": "get_GetPetCustom",
+              "areParametersRequired": false,
+              "hasParameters": false,
+            },
+            "method": "get",
+            "operation": {
+              "description": "",
+              "operationId": "getPetCustom",
+              "responses": {
+                "200": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Pet",
+                      },
+                    },
+                  },
+                  "description": "Pet",
+                },
+              },
+              "summary": "Returns text/plain response",
+              "tags": [
+                "user",
+              ],
+            },
+            "parameters": undefined,
+            "path": "/pet/custom",
+            "requestFormat": "json",
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "Pet",
               },
             },
           },

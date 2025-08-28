@@ -76,7 +76,10 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
         .map(
           (method) => `
         // <ApiClient.${method}>
-        ${method}<Path extends keyof ${capitalize(method)}Endpoints, TEndpoint extends ${capitalize(method)}Endpoints[Path]>(
+        ${method}<
+            Path extends keyof ${capitalize(method)}Endpoints,
+            TEndpoint extends ${capitalize(method)}Endpoints[Path]
+        >(
             path: Path,
             ...params: MaybeOptionalArg<TEndpoint["parameters"]>
         ) {
@@ -91,28 +94,14 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                         const requestParams = {
                             ...(params[0] || {}),
                             ...(queryKey[0] || {}),
-                            signal,
+                            overrides: { signal },
                             withResponse: false as const
                         };
-                        const res = await this.client.${method}(path, requestParams);
+                        const res = await this.client.${method}(path, requestParams as never);
                         return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
                     },
                     queryKey: queryKey
                 }),
-                mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
-                mutationOptions: {
-                    mutationKey: queryKey,
-                    mutationFn: async (localOptions: TEndpoint extends { parameters: infer Parameters} ? Parameters: never) => {
-                        const requestParams = {
-                            ...(params[0] || {}),
-                            ...(queryKey[0] || {}),
-                            ...(localOptions || {}),
-                            withResponse: false as const
-                        };
-                        const res = await this.client.${method}(path, requestParams);
-                        return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
-                    }
-                }
             };
 
             return query
@@ -147,40 +136,54 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                 : Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]
             ) => TSelection;
              throwOnStatusError?: boolean
+             throwOnError?: boolean | ((error: TError) => boolean)
         }) {
             const mutationKey = [{ method, path }] as const;
+            const mutationFn = async <TLocalWithResponse extends boolean = TWithResponse, TLocalSelection = TLocalWithResponse extends true
+                ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
+                : Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>
+            (params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
+                withResponse?: TLocalWithResponse;
+                throwOnStatusError?: boolean;
+                overrides?: RequestInit;
+            }): Promise<TLocalSelection> => {
+                const withResponse = params.withResponse ??options?.withResponse ?? false;
+                const throwOnStatusError = params.throwOnStatusError ?? options?.throwOnStatusError ?? (withResponse ? false : true);
+                const selectFn = options?.selectFn;
+                const response = await (this.client as any)[method](path, {
+                    ...params as any,
+                    withResponse: true,
+                    throwOnStatusError: false,
+                });
+
+                if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+                    throw new TypedResponseError(response as never);
+                }
+
+                // Return just the data if withResponse is false, otherwise return the full response
+                const finalResponse = withResponse ? response : response.data;
+                const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
+                return res as never;
+            };
             return {
             /** type-only property if you need easy access to the endpoint params */
             "~endpoint": {} as TEndpoint,
             mutationKey: mutationKey,
             mutationFn: {} as "You need to pass .mutationOptions to the useMutation hook",
             mutationOptions: {
+                throwOnError: options?.throwOnError as boolean | ((error: TError) => boolean),
                 mutationKey: mutationKey,
-                mutationFn: async <TLocalWithResponse extends boolean = TWithResponse, TLocalSelection = TLocalWithResponse extends true
-                    ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
-                    : Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>
-                (params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
-                    withResponse?: TLocalWithResponse;
-                    throwOnStatusError?: boolean;
-                }): Promise<TLocalSelection> => {
-                    const withResponse = params.withResponse ??options?.withResponse ?? false;
-                    const throwOnStatusError = params.throwOnStatusError ?? options?.throwOnStatusError ?? (withResponse ? false : true);
-                    const selectFn = options?.selectFn;
-                    const response = await (this.client as any)[method](path, { ...params as any, withResponse: true, throwOnStatusError: false });
-
-                    if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-                        throw new TypedResponseError(response as never);
-                    }
-
-                    // Return just the data if withResponse is false, otherwise return the full response
-                    const finalResponse = withResponse ? response : response.data;
-                    const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
-                    return res as never;
+                mutationFn: mutationFn,
+            } as Omit<import("@tanstack/react-query").UseMutationOptions<
+                TSelection,
+                TError,
+                (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
+                withResponse?: boolean;
+                throwOnStatusError?: boolean;
                 }
-            } satisfies import("@tanstack/react-query").UseMutationOptions<TSelection, TError, (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
-                    withResponse?: boolean;
-                    throwOnStatusError?: boolean;
-                }>,
+            >, "mutationFn"> & {
+                mutationFn: typeof mutationFn
+            },
         }
     }
         // </ApiClient.request>

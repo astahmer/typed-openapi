@@ -146,7 +146,10 @@ export const get_FindPetsByTags = {
     }),
   }),
   responses: y.object({
-    "200": y.array(Pet),
+    "200": y
+      .mixed()
+      .oneOf([y.array(Pet), y.array(User), y.array(Tag)])
+      .required(),
     "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   }),
 };
@@ -364,7 +367,14 @@ export const get_GetUserByName = {
   }),
   responses: y.object({
     "200": User,
-    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+    "201": y.object({
+      id: y.number().required(),
+      username: y.string().required(),
+    }),
+    "400": y.object({
+      code: y.number().required(),
+      message: y.string().required(),
+    }),
     "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
   }),
 };
@@ -401,6 +411,39 @@ export const delete_DeleteUser = {
   }),
 };
 
+export type get_GetPetTextPlain = typeof get_GetPetTextPlain;
+export const get_GetPetTextPlain = {
+  method: y.mixed((value): value is "GET" => value === "GET").required(),
+  path: y.mixed((value): value is "/pet/text" => value === "/pet/text").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
+  parameters: y.mixed((value): value is never => false).required(),
+  responses: y.object({
+    "200": User,
+  }),
+};
+
+export type get_GetPetEmpty = typeof get_GetPetEmpty;
+export const get_GetPetEmpty = {
+  method: y.mixed((value): value is "GET" => value === "GET").required(),
+  path: y.mixed((value): value is "/pet/empty" => value === "/pet/empty").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
+  parameters: y.mixed((value): value is never => false).required(),
+  responses: y.object({
+    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
+  }),
+};
+
+export type get_GetPetCustom = typeof get_GetPetCustom;
+export const get_GetPetCustom = {
+  method: y.mixed((value): value is "GET" => value === "GET").required(),
+  path: y.mixed((value): value is "/pet/custom" => value === "/pet/custom").required(),
+  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
+  parameters: y.mixed((value): value is never => false).required(),
+  responses: y.object({
+    "200": Pet,
+  }),
+};
+
 // <EndpointByMethod>
 export const EndpointByMethod = {
   put: {
@@ -424,6 +467,9 @@ export const EndpointByMethod = {
     "/user/login": get_LoginUser,
     "/user/logout": get_LogoutUser,
     "/user/{username}": get_GetUserByName,
+    "/pet/text": get_GetPetTextPlain,
+    "/pet/empty": get_GetPetEmpty,
+    "/pet/custom": get_GetPetCustom,
   },
   delete: {
     "/pet/{petId}": delete_DeletePet,
@@ -475,7 +521,21 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   responseHeaders?: TConfig["responseHeaders"];
 };
 
-export type Fetcher = (method: Method, url: string, parameters?: EndpointParameters | undefined) => Promise<Response>;
+export interface Fetcher {
+  decodePathParams?: (path: string, pathParams: Record<string, string>) => string;
+  encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+  //
+  fetch: (input: {
+    method: Method;
+    url: URL;
+    urlSearchParams?: URLSearchParams | undefined;
+    parameters?: EndpointParameters | undefined;
+    path: string;
+    overrides?: RequestInit;
+    throwOnStatusError?: boolean;
+  }) => Promise<Response>;
+  parseResponseData?: (response: Response) => Promise<unknown>;
+}
 
 export const successStatusCodes = [
   200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308,
@@ -573,6 +633,7 @@ type RequiredKeys<T> = {
 }[keyof T];
 
 type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
+type NotNever<T> = [T] extends [never] ? false : true;
 
 // </ApiClientTypes>
 
@@ -588,6 +649,7 @@ export class TypedResponseError extends Error {
   }
 }
 // </TypedResponseError>
+
 // <ApiClient>
 export class ApiClient {
   baseUrl: string = "";
@@ -601,56 +663,88 @@ export class ApiClient {
     return this;
   }
 
-  parseResponse = async <T,>(response: Response): Promise<T> => {
-    const contentType = response.headers.get("content-type");
-    if (contentType?.includes("application/json")) {
-      return response.json();
+  /**
+   * Replace path parameters in URL
+   * Supports both OpenAPI format {param} and Express format :param
+   */
+  defaultDecodePathParams = (url: string, params: Record<string, string>): string => {
+    return url
+      .replace(/{(\w+)}/g, (_, key: string) => params[key] || `{${key}}`)
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || `:${key}`);
+  };
+
+  /** Uses URLSearchParams, skips null/undefined values */
+  defaultEncodeSearchParams = (queryParams: Record<string, unknown> | undefined): URLSearchParams | undefined => {
+    if (!queryParams) return;
+
+    const searchParams = new URLSearchParams();
+    Object.entries(queryParams).forEach(([key, value]) => {
+      if (value != null) {
+        // Skip null/undefined values
+        if (Array.isArray(value)) {
+          value.forEach((val) => val != null && searchParams.append(key, String(val)));
+        } else {
+          searchParams.append(key, String(value));
+        }
+      }
+    });
+
+    return searchParams;
+  };
+
+  defaultParseResponseData = async (response: Response): Promise<unknown> => {
+    const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.startsWith("text/")) {
+      return await response.text();
     }
-    return response.text() as unknown as T;
+
+    if (contentType === "application/octet-stream") {
+      return await response.arrayBuffer();
+    }
+
+    if (
+      contentType.includes("application/json") ||
+      (contentType.includes("application/") && contentType.includes("json")) ||
+      contentType === "*/*"
+    ) {
+      try {
+        return await response.json();
+      } catch {
+        return undefined;
+      }
+    }
+
+    return;
   };
 
   // <ApiClient.put>
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
+  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      y.InferType<TEndpoint["parameters"]> & { withResponse: true; throwOnStatusError?: boolean }
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
   ): Promise<SafeApiResponse<TEndpoint>>;
 
-  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+  put<Path extends keyof PutEndpoints, _TEndpoint extends PutEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<any>
   ): Promise<any> {
-    const requestParams = params[0];
-    const withResponse = requestParams?.withResponse;
-    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
-
-    const promise = this.fetcher(
-      "put",
-      this.baseUrl + path,
-      Object.keys(fetchParams).length ? requestParams : undefined,
-    ).then(async (response) => {
-      const data = await this.parseResponse(response);
-      const typedResponse = Object.assign(response, {
-        data: data,
-        json: () => Promise.resolve(data),
-      }) as SafeApiResponse<TEndpoint>;
-
-      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-        throw new TypedResponseError(typedResponse as never);
-      }
-
-      return withResponse ? typedResponse : data;
-    });
-
-    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
+    return this.request("put", path, ...params);
   }
   // </ApiClient.put>
 
@@ -658,44 +752,30 @@ export class ApiClient {
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
+  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      y.InferType<TEndpoint["parameters"]> & { withResponse: true; throwOnStatusError?: boolean }
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
   ): Promise<SafeApiResponse<TEndpoint>>;
 
-  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+  post<Path extends keyof PostEndpoints, _TEndpoint extends PostEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<any>
   ): Promise<any> {
-    const requestParams = params[0];
-    const withResponse = requestParams?.withResponse;
-    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
-
-    const promise = this.fetcher(
-      "post",
-      this.baseUrl + path,
-      Object.keys(fetchParams).length ? requestParams : undefined,
-    ).then(async (response) => {
-      const data = await this.parseResponse(response);
-      const typedResponse = Object.assign(response, {
-        data: data,
-        json: () => Promise.resolve(data),
-      }) as SafeApiResponse<TEndpoint>;
-
-      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-        throw new TypedResponseError(typedResponse as never);
-      }
-
-      return withResponse ? typedResponse : data;
-    });
-
-    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
+    return this.request("post", path, ...params);
   }
   // </ApiClient.post>
 
@@ -703,44 +783,30 @@ export class ApiClient {
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
+  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      y.InferType<TEndpoint["parameters"]> & { withResponse: true; throwOnStatusError?: boolean }
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
   ): Promise<SafeApiResponse<TEndpoint>>;
 
-  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+  get<Path extends keyof GetEndpoints, _TEndpoint extends GetEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<any>
   ): Promise<any> {
-    const requestParams = params[0];
-    const withResponse = requestParams?.withResponse;
-    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
-
-    const promise = this.fetcher(
-      "get",
-      this.baseUrl + path,
-      Object.keys(fetchParams).length ? requestParams : undefined,
-    ).then(async (response) => {
-      const data = await this.parseResponse(response);
-      const typedResponse = Object.assign(response, {
-        data: data,
-        json: () => Promise.resolve(data),
-      }) as SafeApiResponse<TEndpoint>;
-
-      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-        throw new TypedResponseError(typedResponse as never);
-      }
-
-      return withResponse ? typedResponse : data;
-    });
-
-    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
+    return this.request("get", path, ...params);
   }
   // </ApiClient.get>
 
@@ -748,44 +814,30 @@ export class ApiClient {
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      y.InferType<TEndpoint["parameters"]> & { withResponse?: false; throwOnStatusError?: boolean }
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
+  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
-      y.InferType<TEndpoint["parameters"]> & { withResponse: true; throwOnStatusError?: boolean }
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
   ): Promise<SafeApiResponse<TEndpoint>>;
 
-  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+  delete<Path extends keyof DeleteEndpoints, _TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<any>
   ): Promise<any> {
-    const requestParams = params[0];
-    const withResponse = requestParams?.withResponse;
-    const { withResponse: _, throwOnStatusError = withResponse ? false : true, ...fetchParams } = requestParams || {};
-
-    const promise = this.fetcher(
-      "delete",
-      this.baseUrl + path,
-      Object.keys(fetchParams).length ? requestParams : undefined,
-    ).then(async (response) => {
-      const data = await this.parseResponse(response);
-      const typedResponse = Object.assign(response, {
-        data: data,
-        json: () => Promise.resolve(data),
-      }) as SafeApiResponse<TEndpoint>;
-
-      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-        throw new TypedResponseError(typedResponse as never);
-      }
-
-      return withResponse ? typedResponse : data;
-    });
-
-    return promise as Promise<y.InferType<InferResponseByStatus<TEndpoint, SuccessStatusCode>>>;
+    return this.request("delete", path, ...params);
   }
   // </ApiClient.delete>
 
@@ -800,11 +852,83 @@ export class ApiClient {
   >(
     method: TMethod,
     path: TPath,
-    ...params: MaybeOptionalArg<y.InferType<TEndpoint extends { parameters: infer Params } ? Params : never>>
-  ): Promise<SafeApiResponse<TEndpoint>> {
-    return this.fetcher(method, this.baseUrl + (path as string), params[0] as EndpointParameters) as Promise<
-      SafeApiResponse<TEndpoint>
-    >;
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+
+  request<
+    TMethod extends keyof EndpointByMethod,
+    TPath extends keyof EndpointByMethod[TMethod],
+    TEndpoint extends EndpointByMethod[TMethod][TPath],
+  >(
+    method: TMethod,
+    path: TPath,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  request<
+    TMethod extends keyof EndpointByMethod,
+    TPath extends keyof EndpointByMethod[TMethod],
+    TEndpoint extends EndpointByMethod[TMethod][TPath],
+  >(method: TMethod, path: TPath, ...params: MaybeOptionalArg<any>): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const {
+      withResponse: _,
+      throwOnStatusError = withResponse ? false : true,
+      overrides,
+      ...fetchParams
+    } = requestParams || {};
+
+    const parametersToSend: EndpointParameters = {};
+    if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
+    if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
+    if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
+    if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
+
+    const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
+      this.baseUrl + (path as string),
+      (parametersToSend.path ?? {}) as Record<string, string>,
+    );
+    const url = new URL(resolvedPath);
+    const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(parametersToSend.query);
+
+    const promise = this.fetcher
+      .fetch({
+        method: method,
+        path: path as string,
+        url,
+        urlSearchParams,
+        parameters: Object.keys(fetchParams).length ? fetchParams : undefined,
+        overrides,
+        throwOnStatusError,
+      })
+      .then(async (response) => {
+        const data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+        const typedResponse = Object.assign(response, {
+          data: data,
+          json: () => Promise.resolve(data),
+        }) as SafeApiResponse<TEndpoint>;
+
+        if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+          throw new TypedResponseError(typedResponse as never);
+        }
+
+        return withResponse ? typedResponse : data;
+      });
+
+    return promise as Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }

@@ -195,6 +195,16 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Pet"
+            application/vnd.github.v3.star+json: # <-- this is a custom media type
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+            application/vnd.github.v4.star+json: # <-- this is a custom media type
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tag"
             application/xml:
               schema:
                 type: array
@@ -596,8 +606,30 @@ paths:
             application/xml:
               schema:
                 $ref: "#/components/schemas/User"
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  username:
+                    type: string
+                required: [id, username]
         "400":
           description: Invalid username supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                required: [code, message]
         "404":
           description: User not found
     put:
@@ -646,6 +678,44 @@ paths:
           description: Invalid username supplied
         "404":
           description: User not found
+  /pet/text:
+    get:
+      tags:
+        - user
+      summary: Returns text/plain response
+      description: ""
+      operationId: getPetTextPlain
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  /pet/empty:
+    get:
+      tags:
+        - user
+      summary: Returns text/plain response
+      description: ""
+      operationId: getPetEmpty
+      responses:
+        "204":
+          description: No content
+  /pet/custom:
+    get:
+      tags:
+        - user
+      summary: Returns text/plain response
+      description: ""
+      operationId: getPetCustom
+      responses:
+        "200":
+          description: Pet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
 components:
   schemas:
     Order:

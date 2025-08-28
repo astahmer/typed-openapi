@@ -4,4 +4,7 @@
     "tmp/*",
     "tests/integration-runtime-msw.test.ts"
   ],
+  "compilerOptions": {
+    "tsBuildInfoFile": null
+  }
 }
