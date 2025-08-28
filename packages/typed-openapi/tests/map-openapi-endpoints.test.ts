@@ -450,6 +450,43 @@ describe("map-openapi-endpoints", () => {
                 ],
               },
             },
+            "/pet/custom": {
+              "get": {
+                "description": "",
+                "operationId": "getPetCustom",
+                "responses": {
+                  "200": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/Pet",
+                        },
+                      },
+                    },
+                    "description": "Pet",
+                  },
+                },
+                "summary": "Returns text/plain response",
+                "tags": [
+                  "user",
+                ],
+              },
+            },
+            "/pet/empty": {
+              "get": {
+                "description": "",
+                "operationId": "getPetEmpty",
+                "responses": {
+                  "204": {
+                    "description": "No content",
+                  },
+                },
+                "summary": "Returns text/plain response",
+                "tags": [
+                  "user",
+                ],
+              },
+            },
             "/pet/findByStatus": {
               "get": {
                 "description": "Multiple status values can be provided with comma separated strings",
@@ -608,6 +645,28 @@ describe("map-openapi-endpoints", () => {
                 "summary": "Finds Pets by tags",
                 "tags": [
                   "pet",
+                ],
+              },
+            },
+            "/pet/text": {
+              "get": {
+                "description": "",
+                "operationId": "getPetTextPlain",
+                "responses": {
+                  "200": {
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/User",
+                        },
+                      },
+                    },
+                    "description": "successful operation",
+                  },
+                },
+                "summary": "Returns text/plain response",
+                "tags": [
+                  "user",
                 ],
               },
             },
@@ -2893,6 +2952,110 @@ describe("map-openapi-endpoints", () => {
               "404": {
                 "type": "keyword",
                 "value": "unknown",
+              },
+            },
+          },
+          {
+            "meta": {
+              "alias": "get_GetPetTextPlain",
+              "areParametersRequired": false,
+              "hasParameters": false,
+            },
+            "method": "get",
+            "operation": {
+              "description": "",
+              "operationId": "getPetTextPlain",
+              "responses": {
+                "200": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/User",
+                      },
+                    },
+                  },
+                  "description": "successful operation",
+                },
+              },
+              "summary": "Returns text/plain response",
+              "tags": [
+                "user",
+              ],
+            },
+            "parameters": undefined,
+            "path": "/pet/text",
+            "requestFormat": "json",
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "User",
+              },
+            },
+          },
+          {
+            "meta": {
+              "alias": "get_GetPetEmpty",
+              "areParametersRequired": false,
+              "hasParameters": false,
+            },
+            "method": "get",
+            "operation": {
+              "description": "",
+              "operationId": "getPetEmpty",
+              "responses": {
+                "204": {
+                  "description": "No content",
+                },
+              },
+              "summary": "Returns text/plain response",
+              "tags": [
+                "user",
+              ],
+            },
+            "parameters": undefined,
+            "path": "/pet/empty",
+            "requestFormat": "json",
+            "responses": {
+              "204": {
+                "type": "keyword",
+                "value": "unknown",
+              },
+            },
+          },
+          {
+            "meta": {
+              "alias": "get_GetPetCustom",
+              "areParametersRequired": false,
+              "hasParameters": false,
+            },
+            "method": "get",
+            "operation": {
+              "description": "",
+              "operationId": "getPetCustom",
+              "responses": {
+                "200": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Pet",
+                      },
+                    },
+                  },
+                  "description": "Pet",
+                },
+              },
+              "summary": "Returns text/plain response",
+              "tags": [
+                "user",
+              ],
+            },
+            "parameters": undefined,
+            "path": "/pet/custom",
+            "requestFormat": "json",
+            "responses": {
+              "200": {
+                "type": "ref",
+                "value": "Pet",
               },
             },
           },
