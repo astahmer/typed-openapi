@@ -156,11 +156,16 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             (params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
                 withResponse?: TLocalWithResponse;
                 throwOnStatusError?: boolean;
+                overrides?: RequestInit;
             }): Promise<TLocalSelection> => {
                 const withResponse = params.withResponse ??options?.withResponse ?? false;
                 const throwOnStatusError = params.throwOnStatusError ?? options?.throwOnStatusError ?? (withResponse ? false : true);
                 const selectFn = options?.selectFn;
-                const response = await (this.client as any)[method](path, { ...params as any, withResponse: true, throwOnStatusError: false });
+                const response = await (this.client as any)[method](path, {
+                    ...params as any,
+                    withResponse: true,
+                    throwOnStatusError: false,
+                });
 
                 if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
                     throw new TypedResponseError(response as never);

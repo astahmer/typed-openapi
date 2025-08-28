@@ -299,6 +299,7 @@ describe("generator", () => {
             params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
               withResponse?: TLocalWithResponse;
               throwOnStatusError?: boolean;
+              overrides?: RequestInit;
             },
           ): Promise<TLocalSelection> => {
             const withResponse = params.withResponse ?? options?.withResponse ?? false;

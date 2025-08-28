@@ -46,6 +46,12 @@ const server = setupServer(
       status: "sold",
     });
   }),
+  // Slow endpoint to allow testing AbortController cancellation
+  http.get("http://localhost/pet/111", async () => {
+    // artificial delay so we have time to abort
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    return HttpResponse.json({ id: 500, name: "Slow", photoUrls: [], status: "pending" }, { status: 200 });
+  }),
   // GET with path (404 error)
   http.get("http://localhost/pet/9999", () => {
     return HttpResponse.json({ code: 404, message: "Pet not found" }, { status: 404 });
@@ -207,6 +213,29 @@ describe("Example API Client", () => {
       400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 421, 422, 423, 424,
       425, 426, 428, 429, 431, 451, 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511,
     ]);
+  });
+
+  it("should allow aborting requests via AbortController signal", async () => {
+    // custom client that forwards the provided signal to fetch
+    const mini = createApiClient(
+      {
+        fetch(input) {
+          return fetch(input.url.toString(), {
+            method: input.method,
+            signal: input.overrides?.signal ?? null,
+          });
+        },
+      },
+      "http://localhost",
+    );
+
+    const controller = new AbortController();
+    const promise = mini.get("/pet/{petId}", { path: { petId: 111 }, overrides: { signal: controller.signal } });
+
+    // abort immediately
+    controller.abort();
+
+    await expect(promise).rejects.toHaveProperty("name", "AbortError");
   });
 
   it("should fetch /pet/findByStatus and receive mocked pets", async () => {
@@ -453,6 +482,21 @@ describe("Example API Client", () => {
       expect(result.ok).toBe(false);
       expect(result.status).toBe(404);
       expect(result.data).toEqual({ code: 404, message: expect.any(String) });
+    });
+
+    it("should allow aborting requests via AbortController signal (tanstack)", async () => {
+      const mutation = tanstack.mutation("get", "/pet/{petId}");
+      const controller = new AbortController();
+
+      const promise = mutation.mutationOptions.mutationFn!({
+        path: { petId: 111 },
+        overrides: { signal: controller.signal },
+      });
+
+      // abort immediately
+      controller.abort();
+
+      await expect(promise).rejects.toHaveProperty("name", "AbortError");
     });
 
     it("should throw when throwOnStatusError is true (tanstack)", async () => {
