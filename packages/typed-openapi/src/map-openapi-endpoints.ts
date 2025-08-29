@@ -1,17 +1,11 @@
 import type { OpenAPIObject, ResponseObject } from "openapi3-ts/oas31";
 import { OperationObject, ParameterObject } from "openapi3-ts/oas31";
 import { capitalize, pick } from "pastable/server";
-import { Box } from "./box.ts";
-import { createBoxFactory } from "./box-factory.ts";
 import { openApiSchemaToTs } from "./openapi-schema-to-ts.ts";
 import { createRefResolver } from "./ref-resolver.ts";
 import { tsFactory } from "./ts-factory.ts";
 import {
-  AnyBox,
-  BoxRef,
   OpenapiSchemaConvertContext,
-  type BoxObject,
-  type BoxUnion,
   type LibSchemaObject,
 } from "./types.ts";
 import { pathToVariableName } from "./string-utils.ts";
@@ -23,7 +17,7 @@ const factory = tsFactory;
 
 export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransform?: NameTransformOptions }) => {
   const refs = createRefResolver(doc, factory);
-  const ctx: OpenapiSchemaConvertContext = { refs, factory };
+  const ctx: OpenapiSchemaConvertContext = { refs };
   const endpointList = [] as Array<Endpoint>;
 
   Object.entries(doc.paths ?? {}).forEach(([path, pathItemObj]) => {

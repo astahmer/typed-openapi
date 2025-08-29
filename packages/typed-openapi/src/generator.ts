@@ -1,5 +1,4 @@
 import { capitalize, groupBy } from "pastable/server";
-import { Box } from "./box.ts";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 import { AnyBox, AnyBoxDef } from "./types.ts";
 import * as Codegen from "@sinclair/typebox-codegen";
