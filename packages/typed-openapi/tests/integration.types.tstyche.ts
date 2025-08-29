@@ -164,7 +164,7 @@ describe("Example API Client", () => {
 
   it("header specific typings are merged with overrides/HeadersInit", async () => {
     // @ts-expect-error Property 'header' is missing in type
-    const result = await api.delete("/pet/{petId}", {
+    await api.delete("/pet/{petId}", {
       path: { petId: 42 },
     });
 
