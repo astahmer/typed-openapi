@@ -32,5 +32,8 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: Test types
+        run: pnpm --filter typed-openapi test:types
+
       - name: Release package
         run: pnpm dlx pkg-pr-new publish './packages/typed-openapi'

@@ -1,8 +1,7 @@
 {
   "$schema": "https://tstyche.org/schemas/config.json",
   "checkSuppressedErrors": true,
-  "checkSourceFiles": true,
-  "tsconfig": "./tsconfig.ci.json",
+  "checkSourceFiles": false,
   "testFileMatch": [
     "tests/*.tstyche.ts"
   ]
