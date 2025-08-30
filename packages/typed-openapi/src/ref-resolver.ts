@@ -28,10 +28,7 @@ export type RefInfo = {
   kind: "schemas" | "responses" | "parameters" | "requestBodies" | "headers";
 };
 
-export const createRefResolver = (
-  doc: OpenAPIObject,
-  nameTransform?: NameTransformOptions,
-) => {
+export const createRefResolver = (doc: OpenAPIObject, nameTransform?: NameTransformOptions) => {
   // both used for debugging purpose
   const nameByRef = new Map<string, string>();
   const refByName = new Map<string, string>();
@@ -93,7 +90,7 @@ export const createRefResolver = (
     Object.keys(component).map((name) => {
       const ref = `#/components/${key}/${name}`;
       const schema = getSchemaByRef(ref);
-      boxByRef.set(ref, openApiSchemaToTs({ schema, ctx: { refs: { getInfosByRef } as any } }));
+      boxByRef.set(ref, openApiSchemaToTs({ schema, ctx: { refs: { get: getSchemaByRef, getInfosByRef } as any } }));
 
       if (!directDependencies.has(ref)) {
         directDependencies.set(ref, new Set<string>());

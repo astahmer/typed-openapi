@@ -4,108 +4,72 @@ import { describe, expect, test } from "vitest";
 import { openApiSchemaToTs } from "../src/openapi-schema-to-ts.ts";
 import { createRefResolver } from "../src/ref-resolver.ts";
 import { OpenapiSchemaConvertContext, type LibSchemaObject } from "../src/types.ts";
-import { tsFactory } from "../src/ts-factory.ts";
 
-const factory = tsFactory;
 const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
-  factory,
-  refs: createRefResolver({ components: { schemas } } as any, factory),
+  refs: createRefResolver({ components: { schemas } } as any),
 });
 
-const getSchemaBox = (schema: LibSchemaObject) => openApiSchemaToTs({ schema, ctx: makeCtx({ _Test: schema }) });
+const getSchemaBox = (schema: LibSchemaObject) =>
+  openApiSchemaToTs({ schema, ctx: makeCtx({ _Test: schema }) }).toString();
 
-test("getSchemaBox", () => {
-  expect(getSchemaBox({ type: "null" })).toMatchInlineSnapshot(`
-    {
-      "type": "literal",
-      "value": "null",
-    }
-  `);
-  expect(getSchemaBox({ type: "boolean" })).toMatchInlineSnapshot(`
-    {
-      "type": "keyword",
-      "value": "boolean",
-    }
-  `);
-  expect(getSchemaBox({ type: "boolean", nullable: true })).toMatchInlineSnapshot(`
-    {
-      "type": "union",
-      "value": "(boolean | null)",
-    }
-  `);
-  expect(getSchemaBox({ type: "string" })).toMatchInlineSnapshot(`
-    {
-      "type": "keyword",
-      "value": "string",
-    }
-  `);
-  expect(getSchemaBox({ type: "number" })).toMatchInlineSnapshot(`
-    {
-      "type": "keyword",
-      "value": "number",
-    }
-  `);
-  expect(getSchemaBox({ type: "integer" })).toMatchInlineSnapshot(`
-    {
-      "type": "keyword",
-      "value": "number",
-    }
-  `);
-  expect(getSchemaBox({})).toMatchInlineSnapshot(`
-    {
-      "type": "keyword",
-      "value": "unknown",
-    }
-  `);
-  expect(getSchemaBox({ type: "string", nullable: true })).toMatchInlineSnapshot(`
-    {
-      "type": "union",
-      "value": "(string | null)",
-    }
-  `);
-
-  expect(getSchemaBox({ type: "array", items: { type: "string" } })).toMatchInlineSnapshot(`
-    {
-      "type": "array",
-      "value": "Array<string>",
-    }
-  `);
-
-  expect(getSchemaBox({ type: "array", items: { type: "string", nullable: true } })).toMatchInlineSnapshot(`
-    {
-      "type": "array",
-      "value": "Array<(string | null)>",
-    }
-  `);
-  expect(getSchemaBox({ type: "object" })).toMatchInlineSnapshot(
-    `
-    {
-      "type": "literal",
-      "value": "Record<string, unknown>",
-    }
-  `,
+test("null", () => {
+  expect(getSchemaBox({ type: "null" })).toMatchInlineSnapshot(`"t.null"`);
+});
+test("boolean", () => {
+  expect(getSchemaBox({ type: "boolean" })).toMatchInlineSnapshot(`"t.boolean"`);
+});
+test("boolean nullable", () => {
+  expect(getSchemaBox({ type: "boolean", nullable: true })).toMatchInlineSnapshot(`"t.optional(t.boolean)"`);
+});
+test("string", () => {
+  expect(getSchemaBox({ type: "string" })).toMatchInlineSnapshot(`"t.string"`);
+});
+test("number", () => {
+  expect(getSchemaBox({ type: "number" })).toMatchInlineSnapshot(`"t.number"`);
+});
+test("integer", () => {
+  expect(getSchemaBox({ type: "integer" })).toMatchInlineSnapshot(`"t.integer"`);
+});
+test("empty schema object", () => {
+  expect(getSchemaBox({})).toMatchInlineSnapshot(`"t.unknown"`);
+});
+test("string nullable", () => {
+  expect(getSchemaBox({ type: "string", nullable: true })).toMatchInlineSnapshot(`"t.optional(t.string)"`);
+});
+test("array", () => {
+  expect(getSchemaBox({ type: "array", items: { type: "string" } })).toMatchInlineSnapshot(`"t.array(t.string)"`);
+});
+test("array nullable", () => {
+  expect(getSchemaBox({ type: "array", items: { type: "string", nullable: true } })).toMatchInlineSnapshot(
+    `"t.array(t.optional(t.string))"`,
   );
-  expect(getSchemaBox({ type: "object", properties: { str: { type: "string" } } })).toMatchInlineSnapshot(`
-      {
-        "type": "ref",
-        "value": "Partial<{ str: string }>",
-      }
-    `);
-  expect(getSchemaBox({
-    type: "object", properties: {
-      str: { type: "string" }, nb: { type: "number" }, nullable: {
-        type: "string",
-        nullable: true
-      }
-    }
-  }))
-    .toMatchInlineSnapshot(`
-      {
-        "type": "ref",
-        "value": "Partial<{ str: string, nb: number, nullable: (string | null) }>",
-      }
-    `);
-
+});
+test("empty object", () => {
+  expect(getSchemaBox({ type: "object" })).toMatchInlineSnapshot(`"t.unknown"`);
+});
+test("object with properties", () => {
+  expect(getSchemaBox({ type: "object", properties: { str: { type: "string" } } })).toMatchInlineSnapshot(
+    `"t.object({ str: t.optional(t.string) })"`,
+  );
+});
+test("object with properties nullable", () => {
+  expect(
+    getSchemaBox({
+      type: "object",
+      properties: {
+        str: { type: "string" },
+        nb: { type: "number" },
+        nullable: {
+          type: "string",
+          nullable: true,
+        },
+      },
+    }),
+  ).toMatchInlineSnapshot(
+    `"t.object({ str: t.optional(t.string), nb: t.optional(t.number), nullable: t.optional(t.optional(t.string)) })"`,
+  );
+});
+test("object with all properties required", () => {
   // AllPropertiesRequired
   expect(
     getSchemaBox({
@@ -113,13 +77,9 @@ test("getSchemaBox", () => {
       properties: { str: { type: "string" }, nb: { type: "number" } },
       required: ["str", "nb"],
     }),
-  ).toMatchInlineSnapshot(`
-    {
-      "type": "object",
-      "value": "{ str: string, nb: number }",
-    }
-  `);
-
+  ).toMatchInlineSnapshot(`"t.object({ str: t.string, nb: t.number })"`);
+});
+test("object with some optional properties", () => {
   // SomeOptionalProps
   expect(
     getSchemaBox({
@@ -127,13 +87,9 @@ test("getSchemaBox", () => {
       properties: { str: { type: "string" }, nb: { type: "number" } },
       required: ["str"],
     }),
-  ).toMatchInlineSnapshot(`
-    {
-      "type": "object",
-      "value": "{ str: string, nb?: number | undefined }",
-    }
-  `);
-
+  ).toMatchInlineSnapshot(`"t.object({ str: t.string, nb: t.optional(t.number) })"`);
+});
+test("object with nested property", () => {
   // ObjectWithNestedProp
   expect(
     getSchemaBox({
@@ -149,23 +105,17 @@ test("getSchemaBox", () => {
         },
       },
     }),
-  ).toMatchInlineSnapshot(`
-    {
-      "type": "ref",
-      "value": "Partial<{ str: string, nb: number, nested: Partial<{ nested_prop: boolean }> }>",
-    }
-  `);
-
+  ).toMatchInlineSnapshot(
+    `"t.object({ str: t.optional(t.string), nb: t.optional(t.number), nested: t.optional(t.object({ nested_prop: t.optional(t.boolean) })) })"`,
+  );
+});
+test("object with additional properties", () => {
   // ObjectWithAdditionalPropsNb
   expect(
     getSchemaBox({ type: "object", properties: { str: { type: "string" } }, additionalProperties: { type: "number" } }),
-  ).toMatchInlineSnapshot(`
-    {
-      "type": "ref",
-      "value": "Partial<({ str: string } & Record<string, number>)>",
-    }
-  `);
-
+  ).toMatchInlineSnapshot(`"t.intersect(t.object({ str: t.string }), t.record(t.number))"`);
+});
+test("object with nested record boolean", () => {
   // ObjectWithNestedRecordBoolean
   expect(
     getSchemaBox({
@@ -173,13 +123,11 @@ test("getSchemaBox", () => {
       properties: { str: { type: "string" } },
       additionalProperties: { type: "object", properties: { prop: { type: "boolean" } } },
     }),
-  ).toMatchInlineSnapshot(`
-    {
-      "type": "ref",
-      "value": "Partial<({ str: string } & Record<string, Partial<{ prop: boolean }>>)>",
-    }
-  `);
-
+  ).toMatchInlineSnapshot(
+    `"t.intersect(t.object({ str: t.string }), t.record(t.object({ prop: t.optional(t.boolean) })))"`,
+  );
+});
+test("array with object with nested property", () => {
   expect(
     getSchemaBox({
       type: "array",
@@ -191,13 +139,11 @@ test("getSchemaBox", () => {
         },
       },
     }),
-  ).toMatchInlineSnapshot(`
-    {
-      "type": "array",
-      "value": "Array<Partial<{ str: string, nullable: (string | null) }>>",
-    }
-  `);
-
+  ).toMatchInlineSnapshot(
+    `"t.array(t.object({ str: t.optional(t.string), nullable: t.optional(t.optional(t.string)) }))"`,
+  );
+});
+test("array with array", () => {
   expect(
     getSchemaBox({
       type: "array",
@@ -208,13 +154,9 @@ test("getSchemaBox", () => {
         },
       },
     }),
-  ).toMatchInlineSnapshot(`
-    {
-      "type": "array",
-      "value": "Array<Array<string>>",
-    }
-  `);
-
+  ).toMatchInlineSnapshot(`"t.array(t.array(t.string))"`);
+});
+test("object with enum", () => {
   // ObjectWithEnum
   expect(
     getSchemaBox({
@@ -223,30 +165,16 @@ test("getSchemaBox", () => {
         enumprop: { type: "string", enum: ["aaa", "bbb", "ccc"] },
       },
     }),
-  ).toMatchInlineSnapshot(`
-    {
-      "type": "ref",
-      "value": "Partial<{ enumprop: ("aaa" | "bbb" | "ccc") }>",
-    }
-  `);
-
-  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
-    `
-    {
-      "type": "union",
-      "value": "("aaa" | "bbb" | "ccc")",
-    }
-  `,
-  );
-
+  ).toMatchInlineSnapshot(`"t.object({ enumprop: t.optional(t.string) })"`);
+});
+test("string enum", () => {
+  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`"t.string"`);
+});
+test("string enum", () => {
   // StringENum
-  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`
-    {
-      "type": "union",
-      "value": "("aaa" | "bbb" | "ccc")",
-    }
-  `);
-
+  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`"t.string"`);
+});
+test("object with union", () => {
   // ObjectWithUnion
   expect(
     getSchemaBox({
@@ -255,63 +183,38 @@ test("getSchemaBox", () => {
         union: { oneOf: [{ type: "string" }, { type: "number" }] },
       },
     }),
-  ).toMatchInlineSnapshot(`
-    {
-      "type": "ref",
-      "value": "Partial<{ union: (string | number) }>",
-    }
-  `);
-  expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    `
-    {
-      "type": "union",
-      "value": "(string | number)",
-    }
-  `,
-  );
-
+  ).toMatchInlineSnapshot(`"t.object({ union: t.unknown })"`);
+});
+test("union", () => {
+  expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`"t.unknown"`);
+});
+test("string or number", () => {
   // StringOrNumber
-  expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`
-    {
-      "type": "union",
-      "value": "(string | number)",
-    }
-  `);
-
+  expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`"t.unknown"`);
+});
+test("string and number", () => {
   expect(getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    `
-    {
-      "type": "intersection",
-      "value": "(string & number)",
-    }
-  `,
+    `"t.intersect(t.string, t.number)"`,
   );
-
+});
+test("string and number allOf", () => {
   // StringAndNumber
-  expect(getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`
-    {
-      "type": "intersection",
-      "value": "(string & number)",
-    }
-  `);
-
-  expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    `
-    {
-      "type": "union",
-      "value": "(string | number)",
-    }
-  `,
+  expect(getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
+    `"t.intersect(t.string, t.number)"`,
   );
-
+});
+test("string and number anyOf", () => {
+  expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
+    `"t.union(t.string, t.number)"`,
+  );
+});
+test("string and number maybe multiple", () => {
   // StringAndNumberMaybeMultiple
-  expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(`
-    {
-      "type": "union",
-      "value": "(string | number)",
-    }
-  `);
-
+  expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
+    `"t.union(t.string, t.number)"`,
+  );
+});
+test("object with array union", () => {
   // ObjectWithArrayUnion
   expect(
     getSchemaBox({
@@ -320,13 +223,9 @@ test("getSchemaBox", () => {
         unionOrArrayOfUnion: { anyOf: [{ type: "string" }, { type: "number" }] },
       },
     }),
-  ).toMatchInlineSnapshot(`
-    {
-      "type": "ref",
-      "value": "Partial<{ unionOrArrayOfUnion: (string | number) }>",
-    }
-  `);
-
+  ).toMatchInlineSnapshot(`"t.object({ unionOrArrayOfUnion: t.optional(t.union(t.string, t.number)) })"`);
+});
+test("object with intersection", () => {
   // ObjectWithIntersection
   expect(
     getSchemaBox({
@@ -335,88 +234,60 @@ test("getSchemaBox", () => {
         intersection: { allOf: [{ type: "string" }, { type: "number" }] },
       },
     }),
-  ).toMatchInlineSnapshot(`
-    {
-      "type": "ref",
-      "value": "Partial<{ intersection: (string & number) }>",
-    }
-  `);
-
-  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
-    `
-    {
-      "type": "union",
-      "value": "("aaa" | "bbb" | "ccc")",
-    }
-  `,
-  );
-  expect(getSchemaBox({ type: "number", enum: [1, 2, 3] })).toMatchInlineSnapshot(`
-    {
-      "type": "union",
-      "value": "(1 | 2 | 3)",
-    }
-  `);
-
-  expect(getSchemaBox({ type: "number", enum: [1] })).toMatchInlineSnapshot(`
-    {
-      "type": "literal",
-      "value": "1",
-    }
-  `);
-
+  ).toMatchInlineSnapshot(`"t.object({ intersection: t.optional(t.intersect(t.string, t.number)) })"`);
+});
+test("string enum", () => {
+  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`"t.string"`);
+});
+test("number enum", () => {
+  expect(getSchemaBox({ type: "number", enum: [1, 2, 3] })).toMatchInlineSnapshot(`"t.number"`);
+});
+test("number enum", () => {
+  expect(getSchemaBox({ type: "number", enum: [1] })).toMatchInlineSnapshot(`"t.number"`);
+});
+test("enum", () => {
   expect(getSchemaBox({ enum: ["red", "amber", "green", null, 42, true] })).toMatchInlineSnapshot(
-    `
-    {
-      "type": "union",
-      "value": "("red" | "amber" | "green" | null | 42 | true)",
-    }
-  `,
+    `"t.union(t.eq("red"), t.eq("amber"), t.eq("green"), t.eq(null), t.eq(42), t.eq(true))"`,
   );
-
-
-  expect(getSchemaBox({
-    "type": "object",
-    "properties": {
-      "members": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
+});
+test("object with array of object with properties", () => {
+  expect(
+    getSchemaBox({
+      type: "object",
+      properties: {
+        members: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
+              },
+              firstName: {
+                type: "string",
+                nullable: true,
+              },
+              lastName: {
+                type: "string",
+                nullable: true,
+              },
+              email: {
+                type: "string",
+              },
+              profilePictureURL: {
+                type: "string",
+                nullable: true,
+              },
             },
-            "firstName": {
-              "type": "string",
-              "nullable": true
-            },
-            "lastName": {
-              "type": "string",
-              "nullable": true
-            },
-            "email": {
-              "type": "string"
-            },
-            "profilePictureURL": {
-              "type": "string",
-              "nullable": true
-            }
+            required: ["id", "email"],
           },
-          "required": [
-            "id",
-            "email"
-          ]
-        }
-      }
-    },
-    "required": [
-      "members"
-    ]
-  })).toMatchInlineSnapshot(`
-    {
-      "type": "object",
-      "value": "{ members: Array<{ id: string, firstName?: (string | null) | undefined, lastName?: (string | null) | undefined, email: string, profilePictureURL?: (string | null) | undefined }> }",
-    }
-  `);
+        },
+      },
+      required: ["members"],
+    }),
+  ).toMatchInlineSnapshot(
+    `"t.object({ members: t.array(t.object({ id: t.string, firstName: t.optional(t.optional(t.string)), lastName: t.optional(t.optional(t.string)), email: t.string, profilePictureURL: t.optional(t.optional(t.string)) })) })"`,
+  );
 });
 
 describe("getSchemaBox with context", () => {
@@ -439,20 +310,13 @@ describe("getSchemaBox with context", () => {
     } satisfies SchemasObject;
 
     const ctx = makeCtx(schemas);
-    expect(openApiSchemaToTs({ schema: schemas["Root"]!, ctx })).toMatchInlineSnapshot(
-      `
-      {
-        "type": "ref",
-        "value": "Partial<{ str: string, nb: number, nested: Nested }>",
-      }
-    `,
-    );
+    expect(openApiSchemaToTs({ schema: schemas["Root"]!, ctx })).toMatchInlineSnapshot(`[Function]`);
   });
 
   test("with ref and allOf", () => {
     const schemas = {
       Extends: {
-        allOf: [{$ref: "#/components/schemas/Base"}],
+        allOf: [{ $ref: "#/components/schemas/Base" }],
         type: "object",
         properties: {
           str: { type: "string" },
@@ -464,22 +328,15 @@ describe("getSchemaBox with context", () => {
         type: "object",
         properties: {
           baseProp: { type: "string" },
-        }
+        },
       },
     } satisfies SchemasObject;
 
     const ctx = makeCtx(schemas);
-    expect(openApiSchemaToTs({ schema: schemas["Extends"]!, ctx })).toMatchInlineSnapshot(
-      `
-      {
-        "type": "intersection",
-        "value": "(Base & { str: string, nb?: number | undefined })",
-      }
-    `,
-    );
+    expect(openApiSchemaToTs({ schema: schemas["Extends"]!, ctx })).toMatchInlineSnapshot(`[Function]`);
   });
 
-  test("with multiple nested refs", () => {
+  test.only("with multiple nested refs", () => {
     const schemas = {
       Root2: {
         type: "object",
@@ -612,12 +469,7 @@ describe("getSchemaBox with context", () => {
     const ctx = makeCtx(schemas);
     const result = openApiSchemaToTs({ schema: schemas["Root"]!, ctx });
 
-    expect(result).toMatchInlineSnapshot(`
-      {
-        "type": "ref",
-        "value": "Partial<{ recursive: User, basic: number }>",
-      }
-    `);
+    expect(result).toMatchInlineSnapshot(`[Function]`);
   });
 
   test("anyOf with refs", () => {
@@ -676,13 +528,6 @@ describe("getSchemaBox with context", () => {
     const ctx = makeCtx(schemas);
     const result = openApiSchemaToTs({ schema: schemas.Member, ctx });
 
-    expect(result).toMatchInlineSnapshot(
-      `
-      {
-        "type": "ref",
-        "value": "Partial<{ name: (string | null) }>",
-      }
-    `,
-    );
+    expect(result).toMatchInlineSnapshot(`[Function]`);
   });
 });

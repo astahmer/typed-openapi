@@ -14,6 +14,41 @@ export const openApiSchemaToTs = ({ schema, ctx }: OpenapiSchemaConvertArgs): t.
     throw new Error("Schema is required");
   }
 
+  const stack = [schema];
+  while (stack.length) {
+    let schema = stack.pop()!;
+    if (isReferenceObject(schema)) {
+      // return t.object({ ref: t.eq(Symbol.for("$ref")), value: t.eq(schema.$ref) });
+      const refInfo = ctx.refs.get(schema.$ref);
+      schema = refInfo;
+    }
+
+    if (schema.type === "object") {
+      if (schema.properties) {
+        stack.push(...Object.values(schema.properties));
+      }
+      if (schema.additionalProperties && typeof schema.additionalProperties !== "boolean") {
+        stack.push(schema.additionalProperties);
+      }
+
+      schema.required = schema.required ?? [];
+    }
+
+    if (schema.oneOf) {
+      stack.push(...schema.oneOf);
+    }
+    if (schema.anyOf) {
+      stack.push(...schema.anyOf);
+    }
+    if (schema.allOf) {
+      stack.push(...schema.allOf);
+    }
+
+    if (schema.items) {
+      stack.push(schema.items);
+    }
+  }
+
   if (isReferenceObject(schema)) {
     const refInfo = ctx.refs.getInfosByRef(schema.$ref);
     return t.object({ ref: t.eq(Symbol.for("$ref")), value: t.eq(refInfo) });
@@ -22,7 +57,7 @@ export const openApiSchemaToTs = ({ schema, ctx }: OpenapiSchemaConvertArgs): t.
   let schemaToUse = schema;
 
   if (schemaToUse.type === "object") {
-    if (schema.properties || schema.additionalProperties) {
+    if (true && schema.properties && schema.additionalProperties) {
       if (!schema.properties) {
         if (
           schema.additionalProperties &&
@@ -71,16 +106,19 @@ export const openApiSchemaToTs = ({ schema, ctx }: OpenapiSchemaConvertArgs): t.
 
       // return isPartial ? t.reference("Partial", [objectType]) : objectType;
       return objectType;
-    } else if (!schema.properties || !schema.nullable || !schema.required) {
-      schemaToUse = { ...JsonSchema.RAW.any, required: [], ...schema };
+    } else if (!schema.properties) {
+      schemaToUse = JsonSchema.RAW.any;
+    } else if (!schema.required) {
+      schemaToUse = { required: [], ...schema };
     }
   }
 
   try {
+    console.log(schemaToUse);
     return fromJsonSchema(schemaToUse);
   } catch (e) {
     if (!schema.type) return t.unknown;
-    console.log(e);
+    console.log(1, e, schemaToUse);
     // console.log(fromJsonSchema( { type: 'object', properties: {}, nullable: true }))
     // if(schema.type === "object") return t.object({})
     // if (schema.type === "object") {
