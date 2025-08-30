@@ -1,104 +1,167 @@
+import { toTypeString } from "@traversable/schema-to-string";
+import "@traversable/schema-to-string/install";
 import type { SchemasObject } from "openapi3-ts/oas31";
 import { describe, expect, test } from "vitest";
-
 import { openApiSchemaToTs } from "../src/openapi-schema-to-ts.ts";
 import { createRefResolver } from "../src/ref-resolver.ts";
 import { OpenapiSchemaConvertContext, type LibSchemaObject } from "../src/types.ts";
-import { fold } from "@traversable/schema/schema";
-import { fn, parseKey } from "@traversable/registry";
-import type { Json } from "@traversable/schema/recursive";
-import { t } from "@traversable/schema";
-import { toTypeString } from "@traversable/schema-to-string";
+import { defaultIndex, fold } from "@traversable/schema/schema";
+import { recurse, t } from "@traversable/schema";
+// import { toTypeString } from "@traversable/schema-to-string";
+import { fn, parseKey, typeName, URI } from "@traversable/registry";
+import { defaults, jsonToString, type Options } from "@traversable/schema/recursive";
 
 const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
   refs: createRefResolver({ components: { schemas } } as any),
 });
 
-/** @internal */
-const Object_entries = globalThis.Object.entries;
-/** @internal */
-const JSON_stringify = globalThis.JSON.stringify;
-/** @internal */
-const Object_values = globalThis.Object.values;
-
-const isScalar = (x: unknown) => x == null || typeof x === "boolean" || typeof x === "number" || typeof x === "string";
-
-const isArray: <T>(x: unknown) => x is readonly T[] = globalThis.Array.isArray;
-
-const isObject = <T>(x: unknown): x is { [x: string]: T } => !!x && typeof x === "object" && !isArray(x);
-
-// const getSchemaBox = (schema: LibSchemaObject) => {
-//   const traversable = openApiSchemaToTs({ schema, ctx: makeCtx({ _Test: schema }) });
-//   const typestring = fold<string>((xParam) => {
-//     switch (true) {
-//       default: {
-//         console.log(123, xParam);
-//         return fn.exhaustive(xParam);
-//       }
-//       case typeof xParam === "string":
-//         return JSON_stringify(xParam, null, 1);
-//       case isScalar(xParam):
-//         return globalThis.String(xParam);
-//       case isArray(xParam):
-//         return xParam.length === 0 ? "[]" : "[" + xParam.join(", ") + "]";
-//       case isObject(xParam): {
-//         const xs = Object_entries(xParam);
-//         return xs.length === 0 ? "{}" : "{ " + xs.map(([k, v]) => `${parseKey(k)}: ${v}`).join(", ") + " }";
-//       }
-//     }
-//   })(traversable);
-//   console.log(traversable, typestring, traversable.toString());
-
-//   return traversable.toString();
-// };
-
 const getSchemaBox = (schema: LibSchemaObject) => {
-  const traversable = openApiSchemaToTs({ schema, ctx: makeCtx({ _Test: schema }) });
-  const typestring = toTypeString.toType(traversable);
-  return typestring;
-  // console.log(traversable, typestring, traversable.toString());
+  const ctx = makeCtx({ _Test: schema });
+  const traversable = openApiSchemaToTs({ schema, ctx });
+  return printTraversable(traversable, ctx);
+};
 
+/** @internal */
+const OPT = "<<>>" as const;
+
+/** @internal */
+const trim = (s?: string) => (s == null ? String(s) : s.startsWith(OPT) ? s.substring(OPT.length) : s);
+
+const toTs = (xParam: t.F<any>, ctx: OpenapiSchemaConvertContext) => {
+  if (xParam.tag === "@traversable/schema/URI::eq" && typeof xParam.def === "object") {
+    // const refSchema = ctx.reft.get(xParam.def["$ref"]);
+    // console.log({ xParam, ref: xParam.def["$ref"], refSchema });
+    // const refTraversable = openApiSchemaToTs({ schema: refSchema, ctx });
+    // return refTraversable.toType();
+    // return t.boolean;
+  }
+
+  console.log(123, xParam);
+  return xParam.toType();
+};
+
+const printTraversable = (traversable: t.F<any>, ctx: OpenapiSchemaConvertContext) => {
+  function toType(schema: t.Schema, options?: Options, ix?: t.Functor.Index): string;
+  function toType(schema: t.Schema, options: Options = defaults, ix = defaultIndex) {
+    const {
+      initialOffset: OFF = defaults.initialOffset,
+      format: FORMAT = defaults.format,
+      maxWidth: MAX_WIDTH = defaults.maxWidth,
+    } = options;
+    const out = t.foldWithIndex<string>((x, ix) => {
+      const { depth } = ix;
+      const OFFSET = OFF + depth * 2;
+      const JOIN = ",\n" + "  ".repeat(depth + 1);
+      switch (true) {
+        /* v8 ignore next 1 */
+        default:
+          return fn.exhaustive(x);
+        case x.tag === URI.integer:
+          return "number";
+        case t.isLeaf(x):
+          return typeName(x);
+        case x.tag === URI.eq && typeof x.def === "object": {
+          const refSchema = ctx.refs.get(x.def["$ref"]);
+          console.log({ x, ref: x.def["$ref"], refSchema });
+          const refTraversable = openApiSchemaToTs({ schema: refSchema, ctx });
+          return refTraversable.toType();
+        }
+        case x.tag === URI.eq:
+          return jsonToString(x.def, options, ix);
+        case x.tag === URI.array:
+          return `(${trim(x.def)})[]`;
+        case x.tag === URI.record:
+          return `Record<string, ${trim(x.def)}>`;
+        case x.tag === URI.optional:
+          return `${OPT}(${trim(x.def)} | undefined)`;
+        case x.tag === URI.union:
+          return `(${x.def.map(trim).join(" | ")})`;
+        case x.tag === URI.intersect:
+          return `(${x.def.map(trim).join(" & ")})`;
+        case x.tag === URI.tuple: {
+          const BODY = x.def.map((y) => (y?.startsWith(OPT) ? "_?: " : "") + trim(y));
+          const SINGLE_LINE = `[${BODY.join(", ")}]`;
+          if (!FORMAT) return SINGLE_LINE;
+          else {
+            const WIDTH = OFFSET + SINGLE_LINE.length;
+            const IS_MULTI_LINE = WIDTH > MAX_WIDTH || SINGLE_LINE.includes("\n");
+            return !IS_MULTI_LINE
+              ? SINGLE_LINE
+              : "[" + "\n" + "  ".repeat(depth + 1) + BODY.join(JOIN) + "\n" + "  ".repeat(depth + 0) + "]";
+          }
+        }
+        case x.tag === URI.object: {
+          const BODY = Object.entries(x.def).map(
+            ([k, v]) => parseKey(k) + (v?.startsWith(OPT) ? "?" : "") + `: ${trim(v)}`,
+          );
+          if (BODY.length === 0) return `{}`;
+          else {
+            const SINGLE_LINE = `{ ${BODY.join(", ")} }`;
+            if (!FORMAT) return SINGLE_LINE;
+            else {
+              const WIDTH = OFFSET + SINGLE_LINE.length;
+              const IS_MULTI_LINE = WIDTH > MAX_WIDTH || SINGLE_LINE.includes("\n");
+              return !IS_MULTI_LINE
+                ? SINGLE_LINE
+                : "{" + "\n" + "  ".repeat(depth + 1) + BODY.join(JOIN) + "\n" + "  ".repeat(depth + 0) + "}";
+            }
+          }
+        }
+      }
+    })(schema, ix);
+
+    return out.startsWith(OPT) ? out.slice(OPT.length) : out;
+  }
+
+  // const typestring = toTypeString.toType(traversable);
+  // const typestring = recurse.toType(traversable);
+  const typestring = toType(traversable);
+  // const typestring = fold<any>((term) => term.toType())(traversable);
+  // const typestring = fold<any>((term) => recurse(term, ctx))(traversable);
+  console.log({ typestring, toString: traversable.toString(), toType: traversable.toType() });
+  // const typestring = traversable.toType();
+  return typestring;
   // return traversable.toString();
 };
 
-test.only("null", () => {
-  expect(getSchemaBox({ type: "null" })).toMatchInlineSnapshot(`"t.null"`);
+test("null", () => {
+  expect(getSchemaBox({ type: "null" })).toMatchInlineSnapshot(`"null"`);
 });
 test("boolean", () => {
-  expect(getSchemaBox({ type: "boolean" })).toMatchInlineSnapshot(`"t.boolean"`);
+  expect(getSchemaBox({ type: "boolean" })).toMatchInlineSnapshot(`"boolean"`);
 });
 test("boolean nullable", () => {
-  expect(getSchemaBox({ type: "boolean", nullable: true })).toMatchInlineSnapshot(`"t.union(t.boolean, t.null)"`);
+  expect(getSchemaBox({ type: "boolean", nullable: true })).toMatchInlineSnapshot(`"(boolean | null)"`);
 });
 test("string", () => {
-  expect(getSchemaBox({ type: "string" })).toMatchInlineSnapshot(`"t.string"`);
+  expect(getSchemaBox({ type: "string" })).toMatchInlineSnapshot(`"string"`);
 });
 test("number", () => {
-  expect(getSchemaBox({ type: "number" })).toMatchInlineSnapshot(`"t.number"`);
+  expect(getSchemaBox({ type: "number" })).toMatchInlineSnapshot(`"number"`);
 });
 test("integer", () => {
-  expect(getSchemaBox({ type: "integer" })).toMatchInlineSnapshot(`"t.integer"`);
+  expect(getSchemaBox({ type: "integer" })).toMatchInlineSnapshot(`"number"`);
 });
 test("empty schema object", () => {
-  expect(getSchemaBox({})).toMatchInlineSnapshot(`"t.unknown"`);
+  expect(getSchemaBox({})).toMatchInlineSnapshot(`"unknown"`);
 });
 test("string nullable", () => {
-  expect(getSchemaBox({ type: "string", nullable: true })).toMatchInlineSnapshot(`"t.union(t.string, t.null)"`);
+  expect(getSchemaBox({ type: "string", nullable: true })).toMatchInlineSnapshot(`"(string | null)"`);
 });
 test("array", () => {
-  expect(getSchemaBox({ type: "array", items: { type: "string" } })).toMatchInlineSnapshot(`"t.array(t.string)"`);
+  expect(getSchemaBox({ type: "array", items: { type: "string" } })).toMatchInlineSnapshot(`"(string)[]"`);
 });
 test("array nullable", () => {
   expect(getSchemaBox({ type: "array", items: { type: "string", nullable: true } })).toMatchInlineSnapshot(
-    `"t.array(t.union(t.string, t.null))"`,
+    `"((string | null))[]"`,
   );
 });
 test("empty object", () => {
-  expect(getSchemaBox({ type: "object" })).toMatchInlineSnapshot(`"t.record(t.unknown)"`);
+  expect(getSchemaBox({ type: "object" })).toMatchInlineSnapshot(`"Record<string, unknown>"`);
 });
 test("object with properties", () => {
   expect(getSchemaBox({ type: "object", properties: { str: { type: "string" } } })).toMatchInlineSnapshot(
-    `"t.object({ str: t.string })"`,
+    `"{ 'str': string }"`,
   );
 });
 test("object with properties nullable", () => {
@@ -114,7 +177,7 @@ test("object with properties nullable", () => {
         },
       },
     }),
-  ).toMatchInlineSnapshot(`"t.object({ str: t.string, nb: t.number, nullable: t.union(t.string, t.null) })"`);
+  ).toMatchInlineSnapshot(`"{ 'str': string, 'nb': number, 'nullable': (string | null) }"`);
 });
 test("object with all properties required", () => {
   // AllPropertiesRequired
@@ -124,7 +187,7 @@ test("object with all properties required", () => {
       properties: { str: { type: "string" }, nb: { type: "number" } },
       required: ["str", "nb"],
     }),
-  ).toMatchInlineSnapshot(`"t.object({ str: t.string, nb: t.number })"`);
+  ).toMatchInlineSnapshot(`"{ 'str': string, 'nb': number }"`);
 });
 test("object with some optional properties", () => {
   // SomeOptionalProps
@@ -134,7 +197,7 @@ test("object with some optional properties", () => {
       properties: { str: { type: "string" }, nb: { type: "number" } },
       required: ["str"],
     }),
-  ).toMatchInlineSnapshot(`"t.object({ str: t.string, nb: t.optional(t.number) })"`);
+  ).toMatchInlineSnapshot(`"{ 'str': string, 'nb'?: (number | undefined) }"`);
 });
 test("object with nested property", () => {
   // ObjectWithNestedProp
@@ -152,13 +215,13 @@ test("object with nested property", () => {
         },
       },
     }),
-  ).toMatchInlineSnapshot(`"t.object({ str: t.string, nb: t.number, nested: t.object({ nested_prop: t.boolean }) })"`);
+  ).toMatchInlineSnapshot(`"{ 'str': string, 'nb': number, 'nested': { 'nested_prop': boolean } }"`);
 });
 test("object with additional properties", () => {
   // ObjectWithAdditionalPropsNb
   expect(
     getSchemaBox({ type: "object", properties: { str: { type: "string" } }, additionalProperties: { type: "number" } }),
-  ).toMatchInlineSnapshot(`"t.intersect(t.object({ str: t.string }), t.record(t.number))"`);
+  ).toMatchInlineSnapshot(`"({ 'str': string } & Record<string, number>)"`);
 });
 test("object with nested record boolean", () => {
   // ObjectWithNestedRecordBoolean
@@ -168,7 +231,7 @@ test("object with nested record boolean", () => {
       properties: { str: { type: "string" } },
       additionalProperties: { type: "object", properties: { prop: { type: "boolean" } } },
     }),
-  ).toMatchInlineSnapshot(`"t.intersect(t.object({ str: t.string }), t.record(t.object({ prop: t.boolean })))"`);
+  ).toMatchInlineSnapshot(`"({ 'str': string } & Record<string, { 'prop': boolean }>)"`);
 });
 test("array with object with nested property", () => {
   expect(
@@ -182,7 +245,7 @@ test("array with object with nested property", () => {
         },
       },
     }),
-  ).toMatchInlineSnapshot(`"t.array(t.object({ str: t.string, nullable: t.union(t.string, t.null) }))"`);
+  ).toMatchInlineSnapshot(`"({ 'str': string, 'nullable': (string | null) })[]"`);
 });
 test("array with array", () => {
   expect(
@@ -195,7 +258,7 @@ test("array with array", () => {
         },
       },
     }),
-  ).toMatchInlineSnapshot(`"t.array(t.array(t.string))"`);
+  ).toMatchInlineSnapshot(`"((string)[])[]"`);
 });
 test("object with enum", () => {
   // ObjectWithEnum
@@ -206,17 +269,17 @@ test("object with enum", () => {
         enumprop: { type: "string", enum: ["aaa", "bbb", "ccc"] },
       },
     }),
-  ).toMatchInlineSnapshot(`"t.object({ enumprop: t.union(t.eq("aaa"), t.eq("bbb"), t.eq("ccc")) })"`);
+  ).toMatchInlineSnapshot(`"{ 'enumprop': ('aaa' | 'bbb' | 'ccc') }"`);
 });
 test("string enum", () => {
   expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
-    `"t.union(t.eq("aaa"), t.eq("bbb"), t.eq("ccc"))"`,
+    `"('aaa' | 'bbb' | 'ccc')"`,
   );
 });
 test("string enum", () => {
   // StringENum
   expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
-    `"t.union(t.eq("aaa"), t.eq("bbb"), t.eq("ccc"))"`,
+    `"('aaa' | 'bbb' | 'ccc')"`,
   );
 });
 test("object with union", () => {
@@ -228,39 +291,39 @@ test("object with union", () => {
         union: { oneOf: [{ type: "string" }, { type: "number" }] },
       },
     }),
-  ).toMatchInlineSnapshot(`"t.object({ union: t.union(t.string, t.number) })"`);
+  ).toMatchInlineSnapshot(`"{ 'union': (string | number) }"`);
 });
 test("union", () => {
   expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    `"t.union(t.string, t.number)"`,
+    `"(string | number)"`,
   );
 });
 test("string or number", () => {
   // StringOrNumber
   expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    `"t.union(t.string, t.number)"`,
+    `"(string | number)"`,
   );
 });
 test("string and number", () => {
   expect(getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    `"t.intersect(t.string, t.number)"`,
+    `"(string & number)"`,
   );
 });
 test("string and number allOf", () => {
   // StringAndNumber
   expect(getSchemaBox({ allOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    `"t.intersect(t.string, t.number)"`,
+    `"(string & number)"`,
   );
 });
 test("string and number anyOf", () => {
   expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    `"t.union(t.string, t.number)"`,
+    `"(string | number)"`,
   );
 });
 test("string and number maybe multiple", () => {
   // StringAndNumberMaybeMultiple
   expect(getSchemaBox({ anyOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
-    `"t.union(t.string, t.number)"`,
+    `"(string | number)"`,
   );
 });
 test("object with array union", () => {
@@ -272,7 +335,7 @@ test("object with array union", () => {
         unionOrArrayOfUnion: { anyOf: [{ type: "string" }, { type: "number" }] },
       },
     }),
-  ).toMatchInlineSnapshot(`"t.object({ unionOrArrayOfUnion: t.union(t.string, t.number) })"`);
+  ).toMatchInlineSnapshot(`"{ 'unionOrArrayOfUnion': (string | number) }"`);
 });
 test("object with intersection", () => {
   // ObjectWithIntersection
@@ -283,24 +346,22 @@ test("object with intersection", () => {
         intersection: { allOf: [{ type: "string" }, { type: "number" }] },
       },
     }),
-  ).toMatchInlineSnapshot(`"t.object({ intersection: t.intersect(t.string, t.number) })"`);
+  ).toMatchInlineSnapshot(`"{ 'intersection': (string & number) }"`);
 });
 test("string enum", () => {
   expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
-    `"t.union(t.eq("aaa"), t.eq("bbb"), t.eq("ccc"))"`,
+    `"('aaa' | 'bbb' | 'ccc')"`,
   );
 });
 test("number enum", () => {
-  expect(getSchemaBox({ type: "number", enum: [1, 2, 3] })).toMatchInlineSnapshot(
-    `"t.union(t.eq(1), t.eq(2), t.eq(3))"`,
-  );
+  expect(getSchemaBox({ type: "number", enum: [1, 2, 3] })).toMatchInlineSnapshot(`"(1 | 2 | 3)"`);
 });
 test("number enum - single", () => {
-  expect(getSchemaBox({ type: "number", enum: [1] })).toMatchInlineSnapshot(`"t.eq(1)"`);
+  expect(getSchemaBox({ type: "number", enum: [1] })).toMatchInlineSnapshot(`"1"`);
 });
 test("enum", () => {
   expect(getSchemaBox({ enum: ["red", "amber", "green", null, 42, true] })).toMatchInlineSnapshot(
-    `"t.union(t.eq("red"), t.eq("amber"), t.eq("green"), t.null, t.eq(42), t.eq(true))"`,
+    `"('red' | 'amber' | 'green' | null | 42 | true)"`,
   );
 });
 test("object with array of object with properties", () => {
@@ -339,7 +400,7 @@ test("object with array of object with properties", () => {
       required: ["members"],
     }),
   ).toMatchInlineSnapshot(
-    `"t.object({ members: t.array(t.object({ id: t.string, firstName: t.optional(t.union(t.string, t.null)), lastName: t.optional(t.union(t.string, t.null)), email: t.string, profilePictureURL: t.optional(t.union(t.string, t.null)) })) })"`,
+    `"{ 'members': ({ 'id': string, 'firstName'?: ((string | null) | undefined), 'lastName'?: ((string | null) | undefined), 'email': string, 'profilePictureURL'?: ((string | null) | undefined) })[] }"`,
   );
 });
 
@@ -363,7 +424,7 @@ describe("getSchemaBox with context", () => {
     } satisfies SchemasObject;
 
     const ctx = makeCtx(schemas);
-    expect(openApiSchemaToTs({ schema: schemas["Root"]!, ctx }).toString()).toMatchInlineSnapshot(
+    expect(printTraversable(openApiSchemaToTs({ schema: schemas["Root"]!, ctx }), ctx)).toMatchInlineSnapshot(
       `"t.object({ str: t.string, nb: t.number, nested: t.eq({ $ref: "#/components/schemas/Nested" }) })"`,
     );
   });
@@ -388,7 +449,7 @@ describe("getSchemaBox with context", () => {
     } satisfies SchemasObject;
 
     const ctx = makeCtx(schemas);
-    expect(openApiSchemaToTs({ schema: schemas["Extends"]!, ctx }).toString()).toMatchInlineSnapshot(
+    expect(printTraversable(openApiSchemaToTs({ schema: schemas["Extends"]!, ctx }), ctx)).toMatchInlineSnapshot(
       `"t.intersect(t.eq({ $ref: "#/components/schemas/Base" }), t.object({ str: t.string, nb: t.optional(t.number) }))"`,
     );
   });
@@ -421,7 +482,7 @@ describe("getSchemaBox with context", () => {
     } satisfies SchemasObject;
 
     const ctx = makeCtx(schemas);
-    expect(openApiSchemaToTs({ schema: schemas["Root2"]!, ctx }).toString()).toMatchInlineSnapshot(
+    expect(printTraversable(openApiSchemaToTs({ schema: schemas["Root2"]!, ctx }), ctx)).toMatchInlineSnapshot(
       `"t.object({ str: t.string, nb: t.number, nested: t.eq({ $ref: "#/components/schemas/Nested2" }) })"`,
     );
   });
@@ -448,7 +509,7 @@ describe("getSchemaBox with context", () => {
 
     const ctx = makeCtx(schemas);
 
-    expect(openApiSchemaToTs({ schema: schemas["Root3"]!, ctx }).toString()).toMatchInlineSnapshot(
+    expect(printTraversable(openApiSchemaToTs({ schema: schemas["Root3"]!, ctx }), ctx)).toMatchInlineSnapshot(
       `"t.object({ str: t.string, nb: t.number, nested: t.eq({ $ref: "#/components/schemas/Nested3" }), arrayOfNested: t.array(t.eq({ $ref: "#/components/schemas/Nested3" })) })"`,
     );
   });
@@ -475,9 +536,9 @@ describe("getSchemaBox with context", () => {
     } satisfies SchemasObject;
 
     const ctx = makeCtx(schemas);
-    const result = openApiSchemaToTs({ schema: schemas["Root4"]!, ctx }).toString();
+    const result = openApiSchemaToTs({ schema: schemas["Root4"]!, ctx });
 
-    expect(result).toMatchInlineSnapshot(
+    expect(printTraversable(result, ctx)).toMatchInlineSnapshot(
       `"t.object({ str: t.string, nb: t.number, self: t.eq({ $ref: "#/components/schemas/Root4" }), nested: t.eq({ $ref: "#/components/schemas/Nested4" }), arrayOfSelf: t.array(t.eq({ $ref: "#/components/schemas/Root4" })) })"`,
     );
   });
@@ -509,9 +570,9 @@ describe("getSchemaBox with context", () => {
     } satisfies SchemasObject;
 
     const ctx = makeCtx(schemas);
-    const result = openApiSchemaToTs({ schema: schemas["Root"]!, ctx }).toString();
+    const result = openApiSchemaToTs({ schema: schemas["Root"]!, ctx });
 
-    expect(result).toMatchInlineSnapshot(
+    expect(printTraversable(result, ctx)).toMatchInlineSnapshot(
       `"t.object({ recursive: t.eq({ $ref: "#/components/schemas/User" }), basic: t.number })"`,
     );
   });
@@ -546,9 +607,9 @@ describe("getSchemaBox with context", () => {
     } satisfies SchemasObject;
 
     const ctx = makeCtx(schemas);
-    const result = openApiSchemaToTs({ schema: schemas["Root"]!, ctx }).toString();
+    const result = openApiSchemaToTs({ schema: schemas["Root"]!, ctx });
 
-    expect(result).toMatchInlineSnapshot(
+    expect(printTraversable(result, ctx)).toMatchInlineSnapshot(
       `"t.object({ user: t.union(t.eq({ $ref: "#/components/schemas/User" }), t.eq({ $ref: "#/components/schemas/Member" })), users: t.array(t.union(t.eq({ $ref: "#/components/schemas/User" }), t.eq({ $ref: "#/components/schemas/Member" }))), basic: t.number })"`,
     );
   });
@@ -565,8 +626,8 @@ describe("getSchemaBox with context", () => {
     } satisfies SchemasObject;
 
     const ctx = makeCtx(schemas);
-    const result = openApiSchemaToTs({ schema: schemas.Member, ctx }).toString();
+    const result = openApiSchemaToTs({ schema: schemat.Member, ctx });
 
-    expect(result).toMatchInlineSnapshot(`"t.object({ name: t.union(t.string, t.null) })"`);
+    expect(printTraversable(result, ctx)).toMatchInlineSnapshot(`"t.object({ name: t.union(t.string, t.null) })"`);
   });
 });

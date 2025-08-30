@@ -5,7 +5,7 @@ import { isPrimitiveType } from "./asserts.ts";
 import { isReferenceObject } from "./is-reference-object.ts";
 import { OpenapiSchemaConvertArgs, type LibSchemaObject } from "./types.ts";
 
-export const openApiSchemaToTs = ({ schema, ctx }: OpenapiSchemaConvertArgs): t.LowerBound => {
+export const openApiSchemaToTs = ({ schema, ctx }: OpenapiSchemaConvertArgs): t.F<any> => {
   if (!schema) {
     throw new Error("Schema is required");
   }
@@ -178,6 +178,6 @@ export const openApiSchemaToTs = ({ schema, ctx }: OpenapiSchemaConvertArgs): t.
     }
   }
 
-  console.log(output);
+  // console.log(output);
   return output;
 };
