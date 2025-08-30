@@ -35,6 +35,7 @@
     "@traversable/registry": "0.0.39",
     "@traversable/schema": "0.0.52",
     "@traversable/schema-to-json-schema": "0.0.39",
+    "@traversable/schema-to-string": "0.0.39",
     "arktype": "2.1.20",
     "cac": "^6.7.14",
     "fast-check": "4.3.0",

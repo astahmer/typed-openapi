@@ -29,6 +29,9 @@ importers:
       '@traversable/schema-to-json-schema':
         specifier: 0.0.39
         version: 0.0.39(@traversable/registry@0.0.39)(@traversable/schema@0.0.52(@traversable/registry@0.0.39))
+      '@traversable/schema-to-string':
+        specifier: 0.0.39
+        version: 0.0.39(@traversable/registry@0.0.39)(@traversable/schema@0.0.52(@traversable/registry@0.0.39))
       arktype:
         specifier: 2.1.20
         version: 2.1.20
@@ -1290,6 +1293,12 @@ packages:
 
   '@traversable/schema-to-json-schema@0.0.39':
     resolution: {integrity: sha512-v01hDBycx1s8woVjvjvAaXZNyaXVwnIj1UPKVeVaq8poHFO4kG2FdwwB9zHNJCh0bvS1C5pnnbJokhxBLOonMw==}
+    peerDependencies:
+      '@traversable/registry': ^0.0.39
+      '@traversable/schema': ^0.0.52
+
+  '@traversable/schema-to-string@0.0.39':
+    resolution: {integrity: sha512-OSoneKIYo+9yVORaGFxzaCj5FlQl3qSHQx7dJ4MlWLUkq5LbYaDtafaqM2EYVCV9d6zxeavw2/fKbfB1ET2UfQ==}
     peerDependencies:
       '@traversable/registry': ^0.0.39
       '@traversable/schema': ^0.0.52
@@ -5595,6 +5604,11 @@ snapshots:
   '@traversable/registry@0.0.39': {}
 
   '@traversable/schema-to-json-schema@0.0.39(@traversable/registry@0.0.39)(@traversable/schema@0.0.52(@traversable/registry@0.0.39))':
+    dependencies:
+      '@traversable/registry': 0.0.39
+      '@traversable/schema': 0.0.52(@traversable/registry@0.0.39)
+
+  '@traversable/schema-to-string@0.0.39(@traversable/registry@0.0.39)(@traversable/schema@0.0.52(@traversable/registry@0.0.39))':
     dependencies:
       '@traversable/registry': 0.0.39
       '@traversable/schema': 0.0.52(@traversable/registry@0.0.39)

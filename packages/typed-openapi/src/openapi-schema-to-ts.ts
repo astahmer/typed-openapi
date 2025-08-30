@@ -1,63 +1,121 @@
 import "@traversable/registry";
 import { t } from "@traversable/schema";
-import { fromJsonSchema, JsonSchema } from "@traversable/schema-to-json-schema";
 import "@traversable/schema-to-json-schema/install";
+import { isPrimitiveType } from "./asserts.ts";
 import { isReferenceObject } from "./is-reference-object.ts";
-import { OpenapiSchemaConvertArgs } from "./types.ts";
-import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
-
-// const ok = t.object({ ref: t.eq(Symbol.for('$ref'))});
-// type OkType = t.typeof<typeof ok>
+import { OpenapiSchemaConvertArgs, type LibSchemaObject } from "./types.ts";
 
 export const openApiSchemaToTs = ({ schema, ctx }: OpenapiSchemaConvertArgs): t.LowerBound => {
   if (!schema) {
     throw new Error("Schema is required");
   }
 
-  const stack = [schema];
-  while (stack.length) {
-    let schema = stack.pop()!;
+  const getTs = () => {
     if (isReferenceObject(schema)) {
-      // return t.object({ ref: t.eq(Symbol.for("$ref")), value: t.eq(schema.$ref) });
-      const refInfo = ctx.refs.get(schema.$ref);
-      schema = refInfo;
+      // const refInfo = ctx.refs.getInfosByRef(schema.$ref);
+      return t.eq(schema);
     }
 
-    if (schema.type === "object") {
-      if (schema.properties) {
-        stack.push(...Object.values(schema.properties));
-      }
-      if (schema.additionalProperties && typeof schema.additionalProperties !== "boolean") {
-        stack.push(schema.additionalProperties);
+    if (Array.isArray(schema.type)) {
+      if (schema.type.length === 1) {
+        return openApiSchemaToTs({ schema: { ...schema, type: schema.type[0]! }, ctx });
       }
 
-      schema.required = schema.required ?? [];
+      return t.union(...schema.type.map((prop) => openApiSchemaToTs({ schema: { ...schema, type: prop }, ctx })));
+    }
+
+    if (schema.type === "null") {
+      return t.null;
     }
 
     if (schema.oneOf) {
-      stack.push(...schema.oneOf);
+      if (schema.oneOf.length === 1) {
+        return openApiSchemaToTs({ schema: schema.oneOf[0]!, ctx });
+      }
+
+      return t.union(...schema.oneOf.map((prop) => openApiSchemaToTs({ schema: prop, ctx })));
     }
+
+    // tl;dr: anyOf = oneOf
+    // oneOf matches exactly one subschema, and anyOf can match one or more subschemas.
+    // https://swagger.io/docs/specification/v3_0/data-models/oneof-anyof-allof-not/
     if (schema.anyOf) {
-      stack.push(...schema.anyOf);
+      if (schema.anyOf.length === 1) {
+        return openApiSchemaToTs({ schema: schema.anyOf[0]!, ctx });
+      }
+
+      return t.union(...schema.anyOf.map((prop) => openApiSchemaToTs({ schema: prop, ctx })));
     }
+
     if (schema.allOf) {
-      stack.push(...schema.allOf);
+      const types = schema.allOf.map((prop) => openApiSchemaToTs({ schema: prop, ctx }));
+      const { allOf, externalDocs, example, examples, description, title, ...rest } = schema;
+      if (Object.keys(rest).length > 0) {
+        types.push(openApiSchemaToTs({ schema: rest, ctx }));
+      }
+      return t.intersect(...types);
     }
 
-    if (schema.items) {
-      stack.push(schema.items);
+    const schemaType = schema.type ? (schema.type.toLowerCase() as NonNullable<typeof schema.type>) : undefined;
+    if (schemaType && isPrimitiveType(schemaType)) {
+      if (schema.enum) {
+        if (schema.enum.length === 1) {
+          const value = schema.enum[0];
+          if (value === null) {
+            return t.null;
+          } else if (value === true) {
+            return t.eq(true);
+          } else if (value === false) {
+            return t.eq(false);
+          } else if (typeof value === "number") {
+            return t.eq(value);
+          } else {
+            return t.eq(value);
+          }
+        }
+
+        if (schemaType === "string") {
+          return t.union(...schema.enum.map((value) => t.eq(value)));
+        }
+
+        if (schema.enum.some((e) => typeof e === "string")) {
+          return t.never;
+        }
+
+        return t.union(...schema.enum.map((value) => (value === null ? t.null : t.eq(value))));
+      }
+
+      if (schemaType === "string") return t.string;
+      if (schemaType === "boolean") return t.boolean;
+      if (schemaType === "number") return t.number;
+      if (schemaType === "integer") return t.integer;
+      if (schemaType === "null") return t.null;
     }
-  }
+    if (!schemaType && schema.enum) {
+      return t.union(
+        ...schema.enum.map((value) => {
+          if (typeof value === "string") {
+            return t.eq(value);
+          }
+          if (value === null) {
+            return t.null;
+          }
+          // handle boolean and number eqs
+          return t.eq(value);
+        }),
+      );
+    }
 
-  if (isReferenceObject(schema)) {
-    const refInfo = ctx.refs.getInfosByRef(schema.$ref);
-    return t.object({ ref: t.eq(Symbol.for("$ref")), value: t.eq(refInfo) });
-  }
+    if (schemaType === "array") {
+      if (schema.items) {
+        let arrayOfType = openApiSchemaToTs({ schema: schema.items, ctx });
+        return t.array(arrayOfType);
+      }
 
-  let schemaToUse = schema;
+      return t.array(t.any);
+    }
 
-  if (schemaToUse.type === "object") {
-    if (true && schema.properties && schema.additionalProperties) {
+    if (schemaType === "object" || schema.properties || schema.additionalProperties) {
       if (!schema.properties) {
         if (
           schema.additionalProperties &&
@@ -98,44 +156,28 @@ export const openApiSchemaToTs = ({ schema, ctx }: OpenapiSchemaConvertArgs): t.
           let propType = openApiSchemaToTs({ schema: propSchema, ctx });
           const isRequired = Boolean(isPartial ? true : hasRequiredArray ? schema.required?.includes(prop) : false);
           const isOptional = !isPartial && !isRequired;
-          return [`${wrapWithQuotesIfNeeded(prop)}`, isOptional ? t.optional(propType) : propType];
+          return [prop, isOptional ? t.optional(propType) : propType];
         }),
       );
 
       const objectType = additionalProperties ? t.intersect(t.object(props), additionalProperties) : t.object(props);
 
-      // return isPartial ? t.reference("Partial", [objectType]) : objectType;
       return objectType;
-    } else if (!schema.properties) {
-      schemaToUse = JsonSchema.RAW.any;
-    } else if (!schema.required) {
-      schemaToUse = { required: [], ...schema };
+    }
+
+    if (!schemaType) return t.unknown;
+
+    throw new Error(`Unsupported schema type: ${schemaType}`);
+  };
+
+  let output = getTs();
+  if (!isReferenceObject(schema)) {
+    // OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
+    if ((schema as LibSchemaObject).nullable) {
+      output = t.union(output, t.null);
     }
   }
 
-  try {
-    console.log(schemaToUse);
-    return fromJsonSchema(schemaToUse);
-  } catch (e) {
-    if (!schema.type) return t.unknown;
-    console.log(1, e, schemaToUse);
-    // console.log(fromJsonSchema( { type: 'object', properties: {}, nullable: true }))
-    // if(schema.type === "object") return t.object({})
-    // if (schema.type === "object") {
-    //   const withDefaults = { ...JsonSchema.RAW.any, required: [], ...schema };
-    //   console.log(withDefaults);
-    //   return fromJsonSchema(withDefaults);
-    //   // return t.object({})}
-    //   // return fromJsonSchema({
-    //   //   type: "object",
-    //   //   properties: {
-    //   //     str: { type: "string" },
-    //   //   },
-    //   //   nullable: true,
-    //   // });
-    // }
-
-    console.log(schema);
-    throw e;
-  }
+  console.log(output);
+  return output;
 };
