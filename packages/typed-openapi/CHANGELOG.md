@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 2.2.1
+
+### Patch Changes
+
+- e8526b5: fix: tanstack inference in some edge cases
+
 ## 2.2.0
 
 ### Minor Changes
