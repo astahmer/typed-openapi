@@ -12,7 +12,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
 
   const file = `
   import { queryOptions } from "@tanstack/react-query"
-  import type { EndpointByMethod, ApiClient, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus } from "${ctx.relativeApiClientPath}"
+  import type { EndpointByMethod, ApiClient, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, TypedSuccessResponse } from "${ctx.relativeApiClientPath}"
   import { errorStatusCodes, TypedResponseError } from "${ctx.relativeApiClientPath}"
 
   type EndpointQueryKey<TOptions extends EndpointParameters> = [
@@ -66,6 +66,11 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
 
   type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
 
+  type InferResponseData<TEndpoint, TStatusCode> =  TypedSuccessResponse<any, any, any> extends
+      InferResponseByStatus<TEndpoint, TStatusCode>
+          ? Extract<InferResponseByStatus<TEndpoint, TStatusCode>, { data: {}}>["data"]
+          : Extract<InferResponseByStatus<TEndpoint, TStatusCode>["data"], {}>;
+
   // </ApiClientTypes>
 
   // <ApiClient>
@@ -98,7 +103,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                             withResponse: false as const
                         };
                         const res = await this.client.${method}(path, requestParams as never);
-                        return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
+                        return res as InferResponseData<TEndpoint, SuccessStatusCode>;
                     },
                     queryKey: queryKey
                 }),
@@ -123,7 +128,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             TWithResponse extends boolean = false,
             TSelection = TWithResponse extends true
                 ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
-                : Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+                : InferResponseData<TEndpoint, SuccessStatusCode>,
             TError = TEndpoint extends { responses: infer TResponses }
                 ? TResponses extends Record<string | number, unknown>
                     ? InferResponseByStatus<TEndpoint, ErrorStatusCode>
@@ -133,7 +138,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             withResponse?: TWithResponse;
             selectFn?: (res: TWithResponse extends true
                 ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
-                : Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]
+                : InferResponseData<TEndpoint, SuccessStatusCode>
             ) => TSelection;
              throwOnStatusError?: boolean
              throwOnError?: boolean | ((error: TError) => boolean)
@@ -141,7 +146,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             const mutationKey = [{ method, path }] as const;
             const mutationFn = async <TLocalWithResponse extends boolean = TWithResponse, TLocalSelection = TLocalWithResponse extends true
                 ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
-                : Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>
+                : InferResponseData<TEndpoint, SuccessStatusCode>>
             (params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
                 withResponse?: TLocalWithResponse;
                 throwOnStatusError?: boolean;
