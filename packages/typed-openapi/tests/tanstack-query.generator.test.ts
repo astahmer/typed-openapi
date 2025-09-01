@@ -20,6 +20,7 @@ describe("generator", () => {
         SuccessStatusCode,
         ErrorStatusCode,
         InferResponseByStatus,
+        TypedSuccessResponse,
       } from "./api.client.ts";
       import { errorStatusCodes, TypedResponseError } from "./api.client.ts";
 
@@ -75,6 +76,11 @@ describe("generator", () => {
 
       type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
 
+      type InferResponseData<TEndpoint, TStatusCode> =
+        TypedSuccessResponse<any, any, any> extends InferResponseByStatus<TEndpoint, TStatusCode>
+          ? Extract<InferResponseByStatus<TEndpoint, TStatusCode>, { data: {} }>["data"]
+          : Extract<InferResponseByStatus<TEndpoint, TStatusCode>["data"], {}>;
+
       // </ApiClientTypes>
 
       // <ApiClient>
@@ -101,7 +107,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.put(path, requestParams as never);
-                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
+                return res as InferResponseData<TEndpoint, SuccessStatusCode>;
               },
               queryKey: queryKey,
             }),
@@ -131,7 +137,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.post(path, requestParams as never);
-                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
+                return res as InferResponseData<TEndpoint, SuccessStatusCode>;
               },
               queryKey: queryKey,
             }),
@@ -161,7 +167,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.get(path, requestParams as never);
-                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
+                return res as InferResponseData<TEndpoint, SuccessStatusCode>;
               },
               queryKey: queryKey,
             }),
@@ -191,7 +197,7 @@ describe("generator", () => {
                   withResponse: false as const,
                 };
                 const res = await this.client.delete(path, requestParams as never);
-                return res as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
+                return res as InferResponseData<TEndpoint, SuccessStatusCode>;
               },
               queryKey: queryKey,
             }),
@@ -213,7 +219,7 @@ describe("generator", () => {
           TWithResponse extends boolean = false,
           TSelection = TWithResponse extends true
             ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
-            : Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+            : InferResponseData<TEndpoint, SuccessStatusCode>,
           TError = TEndpoint extends { responses: infer TResponses }
             ? TResponses extends Record<string | number, unknown>
               ? InferResponseByStatus<TEndpoint, ErrorStatusCode>
@@ -227,7 +233,7 @@ describe("generator", () => {
             selectFn?: (
               res: TWithResponse extends true
                 ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
-                : Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+                : InferResponseData<TEndpoint, SuccessStatusCode>,
             ) => TSelection;
             throwOnStatusError?: boolean;
             throwOnError?: boolean | ((error: TError) => boolean);
@@ -238,7 +244,7 @@ describe("generator", () => {
             TLocalWithResponse extends boolean = TWithResponse,
             TLocalSelection = TLocalWithResponse extends true
               ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
-              : Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+              : InferResponseData<TEndpoint, SuccessStatusCode>,
           >(
             params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
               withResponse?: TLocalWithResponse;

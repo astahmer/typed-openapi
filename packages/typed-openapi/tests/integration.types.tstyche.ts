@@ -1,7 +1,7 @@
 // Integration test for generated query client using TSTyche
 // This test ensures the generated client (TS types only, no schema validation) has no inference errors
 
-import { mutationOptions, queryOptions, useMutation } from "@tanstack/react-query";
+import { mutationOptions, queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { describe, expect, it } from "tstyche";
 import {
   type Endpoints,
@@ -437,5 +437,20 @@ describe("Example API Client", () => {
     // @ts-expect-error  Type '"You need to pass .queryOptions to the useQuery hook"' is not assignable to type
     queryOptions(query);
     queryOptions(query.queryOptions);
+  });
+
+  it("TanstackQueryApiClient useQuery withResponse: undefined (global+local)", async () => {
+    const tanstack = {} as TanstackQueryApiClient;
+
+    const queryWithSomeResponseUnknownData = tanstack.get("/pet/findByStatus", { query: {status: "available"} });
+    const queryHook = useQuery(queryWithSomeResponseUnknownData.queryOptions);
+
+    expect(queryHook.data).type.toBe<Schemas.Pet[]|undefined>();
+                    // ^?
+
+    const secondQuery = tanstack.get("/pet/custom");
+    const secondQueryHook = useQuery(secondQuery.queryOptions);
+    expect(secondQueryHook.data).type.toBe<Schemas.Pet|undefined>();
+                         // ^?
   });
 });
