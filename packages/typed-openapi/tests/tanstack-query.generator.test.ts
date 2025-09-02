@@ -22,7 +22,7 @@ describe("generator", () => {
         InferResponseByStatus,
         TypedSuccessResponse,
       } from "./api.client.ts";
-      import { errorStatusCodes, TypedResponseError } from "./api.client.ts";
+      import { errorStatusCodes, TypedStatusError } from "./api.client.ts";
 
       type EndpointQueryKey<TOptions extends EndpointParameters> = [
         TOptions & {
@@ -222,7 +222,7 @@ describe("generator", () => {
             : InferResponseData<TEndpoint, SuccessStatusCode>,
           TError = TEndpoint extends { responses: infer TResponses }
             ? TResponses extends Record<string | number, unknown>
-              ? InferResponseByStatus<TEndpoint, ErrorStatusCode>
+              ? TypedStatusError<InferResponseData<TEndpoint, ErrorStatusCode>>
               : Error
             : Error,
         >(
@@ -240,19 +240,13 @@ describe("generator", () => {
           },
         ) {
           const mutationKey = [{ method, path }] as const;
-          const mutationFn = async <
-            TLocalWithResponse extends boolean = TWithResponse,
-            TLocalSelection = TLocalWithResponse extends true
-              ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
-              : InferResponseData<TEndpoint, SuccessStatusCode>,
-          >(
+          const mutationFn = async (
             params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
-              withResponse?: TLocalWithResponse;
               throwOnStatusError?: boolean;
               overrides?: RequestInit;
             },
-          ): Promise<TLocalSelection> => {
-            const withResponse = params.withResponse ?? options?.withResponse ?? false;
+          ): Promise<TSelection> => {
+            const withResponse = options?.withResponse ?? false;
             const throwOnStatusError =
               params.throwOnStatusError ?? options?.throwOnStatusError ?? (withResponse ? false : true);
             const selectFn = options?.selectFn;
@@ -263,7 +257,7 @@ describe("generator", () => {
             });
 
             if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-              throw new TypedResponseError(response as never);
+              throw new TypedStatusError(response as never);
             }
 
             // Return just the data if withResponse is false, otherwise return the full response

@@ -5,7 +5,7 @@ import { mutationOptions, QueryClient, queryOptions } from "@tanstack/react-quer
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { createApiClient, TypedResponseError } from "../tmp/generated-client.ts";
+import { createApiClient, TypedStatusError } from "../tmp/generated-client.ts";
 import { TanstackQueryApiClient } from "../tmp/generated-tanstack.ts";
 import { api } from "./api-client.example.js";
 
@@ -399,8 +399,8 @@ describe("Example API Client", () => {
         err = e;
       }
 
-      const error = err as TypedResponseError;
-      expect(error).toBeInstanceOf(TypedResponseError);
+      const error = err as TypedStatusError;
+      expect(error).toBeInstanceOf(TypedStatusError);
       expect(error.message).toContain("404");
       expect(error.status).toBe(404);
       expect(error.response.data).toEqual({ code: 404, message: expect.any(String) });
@@ -433,10 +433,10 @@ describe("Example API Client", () => {
       try {
         await api.get("/pet/{petId}", { path: { petId: 9999 } });
       } catch (e) {
-        err = e as TypedResponseError;
+        err = e as TypedStatusError;
       }
-      const error = err as TypedResponseError;
-      expect(error).toBeInstanceOf(TypedResponseError);
+      const error = err as TypedStatusError;
+      expect(error).toBeInstanceOf(TypedStatusError);
       expect(error.message).toContain("404");
       expect(error.status).toBe(404);
       expect(error.response.data).toEqual({ code: 404, message: expect.any(String) });
@@ -453,7 +453,7 @@ describe("Example API Client", () => {
       expect(result).toEqual({ id: 42, name: "Spot", photoUrls: [], status: "sold" });
     });
 
-    it("should throw TypedResponseError for error status", async () => {
+    it("should throw TypedStatusError for error status", async () => {
       const mutation = tanstack.mutation("get", "/pet/{petId}");
       let err: unknown;
       try {
@@ -461,9 +461,9 @@ describe("Example API Client", () => {
       } catch (e) {
         err = e;
       }
-      expect(err).toBeInstanceOf(TypedResponseError);
-      expect((err as TypedResponseError).status).toBe(404);
-      expect((err as TypedResponseError).response.data).toEqual({ code: 404, message: expect.any(String) });
+      expect(err).toBeInstanceOf(TypedStatusError);
+      expect((err as TypedStatusError).status).toBe(404);
+      expect((err as TypedStatusError).response.data).toEqual({ code: 404, message: expect.any(String) });
     });
 
     it("should support withResponse and return union-style result", async () => {
@@ -516,35 +516,11 @@ describe("Example API Client", () => {
       } catch (e) {
         err = e;
       }
-      const error = err as TypedResponseError;
-      expect(error).toBeInstanceOf(TypedResponseError);
+      const error = err as TypedStatusError;
+      expect(error).toBeInstanceOf(TypedStatusError);
       expect(error.status).toBe(404);
       const data = error.response.data ?? error.response?.data ?? (await error.response?.json?.());
       expect(data).toEqual({ code: 404, message: expect.any(String) });
-    });
-
-    it("should support withResponse as a local param (success)", async () => {
-      const mutation = tanstack.mutation("get", "/pet/{petId}");
-      const result = await mutation.mutationOptions.mutationFn!({ path: { petId: 42 }, withResponse: true });
-      expect(result instanceof Response).toBe(true);
-      expect(result.ok).toBe(true);
-      expect(result.status).toBe(200);
-      expect(result.data).toEqual({ id: 42, name: "Spot", photoUrls: [], status: "sold" });
-    });
-
-    it("should support withResponse as a local param (error)", async () => {
-      const mutation = tanstack.mutation("get", "/pet/{petId}");
-      const result = await mutation.mutationOptions.mutationFn!({ path: { petId: 9999 }, withResponse: true });
-      expect(result instanceof Response).toBe(true);
-      expect(result.ok).toBe(false);
-      expect(result.status).toBe(404);
-      expect(result.data).toEqual({ code: 404, message: expect.any(String) });
-    });
-
-    it("should support overriding mutation withResponse with local param (success)", async () => {
-      const mutation = tanstack.mutation("get", "/pet/{petId}", { withResponse: true });
-      const result = await mutation.mutationOptions.mutationFn!({ path: { petId: 42 }, withResponse: false });
-      expect(result).toEqual({ id: 42, name: "Spot", photoUrls: [], status: "sold" });
     });
 
     it("has working typings", () => {

@@ -13,7 +13,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   const file = `
   import { queryOptions } from "@tanstack/react-query"
   import type { EndpointByMethod, ApiClient, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, TypedSuccessResponse } from "${ctx.relativeApiClientPath}"
-  import { errorStatusCodes, TypedResponseError } from "${ctx.relativeApiClientPath}"
+  import { errorStatusCodes, TypedStatusError } from "${ctx.relativeApiClientPath}"
 
   type EndpointQueryKey<TOptions extends EndpointParameters> = [
       TOptions & {
@@ -131,7 +131,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                 : InferResponseData<TEndpoint, SuccessStatusCode>,
             TError = TEndpoint extends { responses: infer TResponses }
                 ? TResponses extends Record<string | number, unknown>
-                    ? InferResponseByStatus<TEndpoint, ErrorStatusCode>
+                    ? TypedStatusError<InferResponseData<TEndpoint, ErrorStatusCode>>
                     : Error
                 : Error
         >(method: TMethod, path: TPath, options?: {
@@ -144,15 +144,11 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
              throwOnError?: boolean | ((error: TError) => boolean)
         }) {
             const mutationKey = [{ method, path }] as const;
-            const mutationFn = async <TLocalWithResponse extends boolean = TWithResponse, TLocalSelection = TLocalWithResponse extends true
-                ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
-                : InferResponseData<TEndpoint, SuccessStatusCode>>
-            (params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
-                withResponse?: TLocalWithResponse;
+            const mutationFn = async (params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
                 throwOnStatusError?: boolean;
                 overrides?: RequestInit;
-            }): Promise<TLocalSelection> => {
-                const withResponse = params.withResponse ??options?.withResponse ?? false;
+            }): Promise<TSelection> => {
+                const withResponse = options?.withResponse ?? false;
                 const throwOnStatusError = params.throwOnStatusError ?? options?.throwOnStatusError ?? (withResponse ? false : true);
                 const selectFn = options?.selectFn;
                 const response = await (this.client as any)[method](path, {
@@ -162,7 +158,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                 });
 
                 if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-                    throw new TypedResponseError(response as never);
+                    throw new TypedStatusError(response as never);
                 }
 
                 // Return just the data if withResponse is false, otherwise return the full response
@@ -183,8 +179,8 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                 TSelection,
                 TError,
                 (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
-                withResponse?: boolean;
-                throwOnStatusError?: boolean;
+                    withResponse?: boolean;
+                    throwOnStatusError?: boolean;
                 }
             >, "mutationFn"> & {
                 mutationFn: typeof mutationFn

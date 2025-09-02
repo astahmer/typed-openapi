@@ -7,7 +7,7 @@ import {
   type Endpoints,
   type Schemas,
   type TypedApiResponse,
-  type TypedErrorResponse,
+  type TypedStatusError,
   type TypedSuccessResponse
 } from "../tmp/generated-client.ts";
 import { type TanstackQueryApiClient } from "../tmp/generated-tanstack.ts";
@@ -353,47 +353,7 @@ describe("Example API Client", () => {
     expect(output).type.toBe<TypedSuccessResponse<Schemas.Pet, 200, never>>();
   });
 
-  it("TanstackQueryApiClient mutation withResponse: false (global) / withResponse: true (local)", async () => {
-    const tanstack = {} as TanstackQueryApiClient;
-
-    const mutation = tanstack.mutation("get", "/pet/{petId}", { withResponse: false });
-    const input = {} as Parameters<typeof mutation.mutationOptions.mutationFn>[0];
-    expect(input).type.toBeAssignableTo<Endpoints.get_GetPetById["parameters"]>();
-    expect(input).type.toBeAssignableTo<{
-      withResponse?: boolean;
-      throwOnStatusError?: boolean;
-    }>();
-    expect(input).type.toBeAssignableTo<{
-      path: {
-        petId: number;
-      };
-    }>();
-
-    const output = await mutation.mutationOptions.mutationFn({ path: { petId: 42 }, withResponse: true });
-    expect(output).type.toBe<TypedSuccessResponse<Schemas.Pet, 200, never>>();
-  });
-
-  it("TanstackQueryApiClient mutation withResponse: true (local) / withResponse: false (local)", async () => {
-    const tanstack = {} as TanstackQueryApiClient;
-
-    const mutation = tanstack.mutation("get", "/pet/{petId}", { withResponse: true });
-    const input = {} as Parameters<typeof mutation.mutationOptions.mutationFn>[0];
-    expect(input).type.toBeAssignableTo<Endpoints.get_GetPetById["parameters"]>();
-    expect(input).type.toBeAssignableTo<{
-      withResponse?: boolean;
-      throwOnStatusError?: boolean;
-    }>();
-    expect(input).type.toBeAssignableTo<{
-      path: {
-        petId: number;
-      };
-    }>();
-
-    const output = await mutation.mutationOptions.mutationFn({ path: { petId: 42 }, withResponse: false });
-    expect(output).type.toBe<Schemas.Pet>();
-  });
-
-  it("TanstackQueryApiClient mutation withResponse: undefined (global+local) -> onSuccess/onError", async () => {
+  it("TanstackQueryApiClient mutation withResponse: undefined (global+local) -> .error / mutateAsync", async () => {
     const tanstack = {} as TanstackQueryApiClient;
 
     const mutation = tanstack.mutation("get", "/pet/{petId}").mutationOptions;
@@ -402,23 +362,13 @@ describe("Example API Client", () => {
 
     const hookMutation = useMutation(tanstack.mutation("get", "/pet/{petId}").mutationOptions);
     expect(hookMutation.error).type.toBe<
-      | TypedErrorResponse<
-          {
-            code: number;
-            message: string;
-          },
-          400,
-          never
-        >
-      | TypedErrorResponse<
-          {
-            code: number;
-            message: string;
-          },
-          404,
-          never
-        >
-      | null
+      TypedStatusError<{
+    code: number;
+    message: string;
+} | {
+    code: number;
+    message: string;
+}> | null
     >();
 
     const hookOutput = hookMutation.mutateAsync({ path: { petId: 42 } });

@@ -4697,18 +4697,18 @@ type NotNever<T> = [T] extends [never] ? false : true;
 
 // </ApiClientTypes>
 
-// <TypedResponseError>
-export class TypedResponseError extends Error {
-  response: TypedErrorResponse<unknown, ErrorStatusCode, unknown>;
+// <TypedStatusError>
+export class TypedStatusError<TData = unknown> extends Error {
+  response: TypedErrorResponse<TData, ErrorStatusCode, unknown>;
   status: number;
-  constructor(response: TypedErrorResponse<unknown, ErrorStatusCode, unknown>) {
+  constructor(response: TypedErrorResponse<TData, ErrorStatusCode, unknown>) {
     super(`HTTP ${response.status}: ${response.statusText}`);
-    this.name = "TypedResponseError";
+    this.name = "TypedStatusError";
     this.response = response;
     this.status = response.status;
   }
 }
-// </TypedResponseError>
+// </TypedStatusError>
 
 // <ApiClient>
 export class ApiClient {
@@ -5013,7 +5013,7 @@ export class ApiClient {
         }) as SafeApiResponse<TEndpoint>;
 
         if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-          throw new TypedResponseError(typedResponse as never);
+          throw new TypedStatusError(typedResponse as never);
         }
 
         return withResponse ? typedResponse : data;
