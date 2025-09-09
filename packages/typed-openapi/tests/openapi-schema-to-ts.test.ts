@@ -1,15 +1,14 @@
-import { toTypeString } from "@traversable/schema-to-string";
+import { t } from "@traversable/schema";
 import "@traversable/schema-to-string/install";
+import { defaultIndex } from "@traversable/schema/schema";
 import type { SchemasObject } from "openapi3-ts/oas31";
 import { describe, expect, test } from "vitest";
 import { openApiSchemaToTs } from "../src/openapi-schema-to-ts.ts";
 import { createRefResolver } from "../src/ref-resolver.ts";
 import { OpenapiSchemaConvertContext, type LibSchemaObject } from "../src/types.ts";
-import { defaultIndex, fold } from "@traversable/schema/schema";
-import { recurse, t } from "@traversable/schema";
 // import { toTypeString } from "@traversable/schema-to-string";
 import { fn, parseKey, typeName, URI } from "@traversable/registry";
-import { defaults, jsonToString, type Options } from "@traversable/schema/recursive";
+import { defaults, type Options } from "@traversable/schema/recursive";
 
 const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
   refs: createRefResolver({ components: { schemas } } as any),
@@ -18,7 +17,7 @@ const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
 const getSchemaBox = (schema: LibSchemaObject) => {
   const ctx = makeCtx({ _Test: schema });
   const traversable = openApiSchemaToTs({ schema, ctx });
-  return printTraversable(traversable, ctx);
+  return printTraversable(traversable);
 };
 
 /** @internal */
@@ -27,20 +26,7 @@ const OPT = "<<>>" as const;
 /** @internal */
 const trim = (s?: string) => (s == null ? String(s) : s.startsWith(OPT) ? s.substring(OPT.length) : s);
 
-const toTs = (xParam: t.F<any>, ctx: OpenapiSchemaConvertContext) => {
-  if (xParam.tag === "@traversable/schema/URI::eq" && typeof xParam.def === "object") {
-    // const refSchema = ctx.reft.get(xParam.def["$ref"]);
-    // console.log({ xParam, ref: xParam.def["$ref"], refSchema });
-    // const refTraversable = openApiSchemaToTs({ schema: refSchema, ctx });
-    // return refTraversable.toType();
-    // return t.boolean;
-  }
-
-  console.log(123, xParam);
-  return xParam.toType();
-};
-
-const printTraversable = (traversable: t.F<any>, ctx: OpenapiSchemaConvertContext) => {
+const printTraversable = (traversable: t.F<any>) => {
   function toType(schema: t.Schema, options?: Options, ix?: t.Functor.Index): string;
   function toType(schema: t.Schema, options: Options = defaults, ix = defaultIndex) {
     const {
@@ -61,13 +47,10 @@ const printTraversable = (traversable: t.F<any>, ctx: OpenapiSchemaConvertContex
         case t.isLeaf(x):
           return typeName(x);
         case x.tag === URI.eq && typeof x.def === "object": {
-          const refSchema = ctx.refs.get(x.def["$ref"]);
-          console.log({ x, ref: x.def["$ref"], refSchema });
-          const refTraversable = openApiSchemaToTs({ schema: refSchema, ctx });
-          return toType(refTraversable);
+          return x.def["$ref"].split("/").pop();
         }
         case x.tag === URI.eq:
-          return jsonToString(x.def, options, ix);
+          return JSON.stringify(x.def);
         case x.tag === URI.array:
           return `(${trim(x.def)})[]`;
         case x.tag === URI.record:
@@ -117,8 +100,8 @@ const printTraversable = (traversable: t.F<any>, ctx: OpenapiSchemaConvertContex
   // const typestring = recurse.toType(traversable);
   const typestring = toType(traversable);
   // const typestring = fold<any>((term) => term.toType())(traversable);
-  // const typestring = fold<any>((term) => recurse(term, ctx))(traversable);
-  console.log({ typestring, toString: traversable.toString(), toType: traversable.toType() });
+  // const typestring = fold<any>((term) => recurse(term))(traversable);
+  // console.log({ typestring, toString: traversable.toString(), toType: traversable.toType() });
   // const typestring = traversable.toType();
   return typestring;
   // return traversable.toString();
@@ -424,8 +407,8 @@ describe("getSchemaBox with context", () => {
     } satisfies SchemasObject;
 
     const ctx = makeCtx(schemas);
-    expect(printTraversable(openApiSchemaToTs({ schema: schemas["Root"]!, ctx }), ctx)).toMatchInlineSnapshot(
-      `"{ str: string, nb: number, nested: { nested_prop: boolean } }"`,
+    expect(printTraversable(openApiSchemaToTs({ schema: schemas["Root"]!, ctx }))).toMatchInlineSnapshot(
+      `"{ str: string, nb: number, nested: Nested }"`,
     );
   });
 
@@ -449,8 +432,8 @@ describe("getSchemaBox with context", () => {
     } satisfies SchemasObject;
 
     const ctx = makeCtx(schemas);
-    expect(printTraversable(openApiSchemaToTs({ schema: schemas["Extends"]!, ctx }), ctx)).toMatchInlineSnapshot(
-      `"({ baseProp: string } & { str: string, nb?: (number | undefined) })"`,
+    expect(printTraversable(openApiSchemaToTs({ schema: schemas["Extends"]!, ctx }))).toMatchInlineSnapshot(
+      `"(Base & { str: string, nb?: (number | undefined) })"`,
     );
   });
 
@@ -482,8 +465,8 @@ describe("getSchemaBox with context", () => {
     } satisfies SchemasObject;
 
     const ctx = makeCtx(schemas);
-    expect(printTraversable(openApiSchemaToTs({ schema: schemas["Root2"]!, ctx }), ctx)).toMatchInlineSnapshot(
-      `"{ str: string, nb: number, nested: { nested_prop: boolean, deeplyNested: (("aaa" | "bbb" | "ccc"))[] } }"`,
+    expect(printTraversable(openApiSchemaToTs({ schema: schemas["Root2"]!, ctx }))).toMatchInlineSnapshot(
+      `"{ str: string, nb: number, nested: Nested2 }"`,
     );
   });
 
@@ -509,8 +492,8 @@ describe("getSchemaBox with context", () => {
 
     const ctx = makeCtx(schemas);
 
-    expect(printTraversable(openApiSchemaToTs({ schema: schemas["Root3"]!, ctx }), ctx)).toMatchInlineSnapshot(
-      `"{ str: string, nb: number, nested: { 'nested_prop': boolean, 'backToRoot': string }, arrayOfNested: ({ 'nested_prop': boolean, 'backToRoot': string })[] }"`,
+    expect(printTraversable(openApiSchemaToTs({ schema: schemas["Root3"]!, ctx }))).toMatchInlineSnapshot(
+      `"{ str: string, nb: number, nested: Nested3, arrayOfNested: (Nested3)[] }"`,
     );
   });
 
@@ -538,8 +521,8 @@ describe("getSchemaBox with context", () => {
     const ctx = makeCtx(schemas);
     const result = openApiSchemaToTs({ schema: schemas["Root4"]!, ctx });
 
-    expect(printTraversable(result, ctx)).toMatchInlineSnapshot(
-      `"{ str: string, nb: number, self: { 'str': string, 'nb': number, 'self': string, 'nested': string, 'arrayOfSelf': (string)[] }, nested: { 'nested_prop': boolean, 'backToRoot': string }, arrayOfSelf: ({ 'str': string, 'nb': number, 'self': string, 'nested': string, 'arrayOfSelf': (string)[] })[] }"`,
+    expect(printTraversable(result)).toMatchInlineSnapshot(
+      `"{ str: string, nb: number, self: Root4, nested: Nested4, arrayOfSelf: (Root4)[] }"`,
     );
   });
 
@@ -572,9 +555,7 @@ describe("getSchemaBox with context", () => {
     const ctx = makeCtx(schemas);
     const result = openApiSchemaToTs({ schema: schemas["Root"]!, ctx });
 
-    expect(printTraversable(result, ctx)).toMatchInlineSnapshot(
-      `"{ recursive: { 'name': string, 'middle': string }, basic: number }"`,
-    );
+    expect(printTraversable(result)).toMatchInlineSnapshot(`"{ recursive: User, basic: number }"`);
   });
 
   test("anyOf with refs", () => {
@@ -609,8 +590,8 @@ describe("getSchemaBox with context", () => {
     const ctx = makeCtx(schemas);
     const result = openApiSchemaToTs({ schema: schemas["Root"]!, ctx });
 
-    expect(printTraversable(result, ctx)).toMatchInlineSnapshot(
-      `"{ user: ({ name: string } | { name: string }), users: (({ name: string } | { name: string }))[], basic: number }"`,
+    expect(printTraversable(result)).toMatchInlineSnapshot(
+      `"{ user: (User | Member), users: ((User | Member))[], basic: number }"`,
     );
   });
 
@@ -628,6 +609,6 @@ describe("getSchemaBox with context", () => {
     const ctx = makeCtx(schemas);
     const result = openApiSchemaToTs({ schema: schemas.Member, ctx });
 
-    expect(printTraversable(result, ctx)).toMatchInlineSnapshot(`"{ name: (string | null) }"`);
+    expect(printTraversable(result)).toMatchInlineSnapshot(`"{ name: (string | null) }"`);
   });
 });
