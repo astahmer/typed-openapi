@@ -5,9 +5,14 @@ import * as TypeBox from "@sinclair/typebox";
 import { parseKey } from "@traversable/registry";
 import { t } from "@traversable/schema";
 import { JsonSchema, canonicalizeRefName } from "@traversable/json-schema";
+
+// Imported for the `toJsonSchema` method
+import "@traversable/schema-to-json-schema/install";
+// Imported for the `toType`
+import "@traversable/schema-to-string/install";
 // These packages are only imported for their `.toString` methods:
 import { zx } from "@traversable/zod";
-import { box, toType } from "@traversable/typebox";
+import { box } from "@traversable/typebox";
 
 /**
  * Motivating issue:
@@ -365,6 +370,32 @@ vi.describe("[JSON Schema -> Traversable]", () => {
 
   vi.test("preserves refs", () => {
     const target = toTraversable(schema, { canonicalizeRefName });
+    vi.expect(target.result.toType()).toMatchInlineSnapshot(
+      `"{ 'name'?: (string | undefined), 'children': (Name)[] }"`,
+    );
+
+    vi.expect(target.result.toJsonSchema()).toMatchInlineSnapshot(
+      `
+      {
+        "properties": {
+          "children": {
+            "items": {
+              "$ref": "Name",
+            },
+            "type": "array",
+          },
+          "name": {
+            "nullable": true,
+            "type": "string",
+          },
+        },
+        "required": [
+          "children",
+        ],
+        "type": "object",
+      }
+    `,
+    );
 
     const refs = Object.entries(target.refs).map(([ident, thunk]) => `const ${ident} = ${thunk()}`);
 
