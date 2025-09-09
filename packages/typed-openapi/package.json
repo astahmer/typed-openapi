@@ -31,11 +31,15 @@
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.1",
+    "@sinclair/typebox": "0.34.40",
     "@sinclair/typebox-codegen": "^0.11.1",
-    "@traversable/registry": "0.0.39",
-    "@traversable/schema": "0.0.52",
-    "@traversable/schema-to-json-schema": "0.0.39",
-    "@traversable/schema-to-string": "0.0.39",
+    "@traversable/json-schema": "0.0.21",
+    "@traversable/registry": "0.0.45",
+    "@traversable/schema": "0.0.58",
+    "@traversable/schema-to-json-schema": "0.0.45",
+    "@traversable/schema-to-string": "0.0.46",
+    "@traversable/typebox": "0.0.26",
+    "@traversable/zod": "0.0.43",
     "arktype": "2.1.20",
     "cac": "^6.7.14",
     "fast-check": "4.3.0",
@@ -55,7 +59,7 @@
     "tsup": "^8.4.0",
     "typescript": "^5.8.3",
     "vitest": "^3.1.3",
-    "zod": "3.21.4"
+    "zod": "4.0.17"
   },
   "files": [
     "src",
