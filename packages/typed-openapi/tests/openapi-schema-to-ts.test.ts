@@ -1,25 +1,21 @@
+import prettier from "@prettier/sync";
 import "@traversable/schema-to-string/install";
 import type { SchemasObject } from "openapi3-ts/oas31";
 import { describe, expect, test } from "vitest";
-import { openApiSchemaToTs } from "../src/openapi-schema-to-ts.ts";
-import { createRefResolver } from "../src/ref-resolver.ts";
-import { OpenapiSchemaConvertContext, type LibSchemaObject } from "../src/types.ts";
+import { type LibSchemaObject } from "../src/types.ts";
 import { SchemaTransform } from "./schema.transform.exports.ts";
-import prettier from "@prettier/sync";
 
 const format = (src: string) => prettier.format(src, { parser: "typescript", semi: false, printWidth: 45 });
 
-const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
-  refs: createRefResolver({ components: { schemas } } as any),
-});
-
 const getSchemaBox = (schema: LibSchemaObject) => {
-  // const ctx = makeCtx({ _Test: schema });
-  // const traversable = openApiSchemaToTs({ schema, ctx });
-  // return format(`type Output = ${traversable.toType()}`);
-
   const traversable = SchemaTransform.toTraversable(schema);
   return format(`type Output = ${traversable.result.toType()}`);
+};
+
+const getNamedSchema = (schema: LibSchemaObject, name: string) => {
+  const traversable = SchemaTransform.toTraversable(schema);
+  console.log(traversable);
+  return format(`type ${name} = ${traversable.refs[name]?.toType()}`);
 };
 
 test("null", () => {
@@ -386,11 +382,11 @@ test("enum", () => {
   expect(getSchemaBox({ enum: ["red", "amber", "green", null, 42, true] })).toMatchInlineSnapshot(
     `
     "type Output =
+      | 42
       | "red"
       | "amber"
       | "green"
       | null
-      | 42
       | true
     "
   `,
@@ -452,25 +448,32 @@ test("object with array of object with properties", () => {
 describe("getSchemaBox with context", () => {
   test("with ref", () => {
     const schemas = {
-      Root: {
         type: "object",
         properties: {
           str: { type: "string" },
           nb: { type: "number" },
           nested: { $ref: "#/components/schemas/Nested" },
         },
-      },
+      components: {
+        schemas: {
       Nested: {
         type: "object",
         properties: {
           nested_prop: { type: "boolean" },
         },
       },
-    } satisfies SchemasObject;
+        },
+      },
+    } as const;
 
-    expect(SchemaTransform.toTraversable(schemas).refs["Root"]?.toString()).toMatchInlineSnapshot(
-      `"{ str: string, nb: number, nested: Nested }"`,
-    );
+    expect(getSchemaBox(schemas)).toMatchInlineSnapshot(`
+      "type Output = {
+        str: string
+        nb: number
+        nested: Nested
+      }
+      "
+    `);
   });
 
   test("with ref and allOf", () => {
