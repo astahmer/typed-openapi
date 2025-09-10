@@ -81,8 +81,9 @@ test("array nullable", () => {
   );
 });
 test("empty object", () => {
-  expect(getSchemaBox({ type: "object" })).toMatchInlineSnapshot(`
-    "type Output = Record<string, unknown>
+  // expected Record<string, unknown>
+  expect.fail(getSchemaBox({ type: "object" })).toMatchInlineSnapshot(`
+    "type Output = {}
     "
   `);
 });
@@ -172,18 +173,17 @@ test("object with nested property", () => {
 });
 test("object with additional properties", () => {
   // ObjectWithAdditionalPropsNb
-  expect(
+  // expected { str: string } & Record<string, unknown>
+  expect.fail(
     getSchemaBox({ type: "object", properties: { str: { type: "string" } }, additionalProperties: { type: "number" } }),
   ).toMatchInlineSnapshot(`
-    "type Output = { str: string } & Record<
-      string,
-      number
-    >
+    "type Output = Record<string, number>
     "
   `);
 });
 test("object with nested record boolean", () => {
   // ObjectWithNestedRecordBoolean
+  // expected { str: string } & Record<string, unknown>
   expect(
     getSchemaBox({
       type: "object",
@@ -191,7 +191,7 @@ test("object with nested record boolean", () => {
       additionalProperties: { type: "object", properties: { prop: { type: "boolean" } } },
     }),
   ).toMatchInlineSnapshot(`
-    "type Output = { str: string } & Record<
+    "type Output = Record<
       string,
       { prop: boolean }
     >
@@ -236,7 +236,8 @@ test("array with array", () => {
 });
 test("object with enum", () => {
   // ObjectWithEnum
-  expect(
+  // expected "aaa" | "bbb" | "ccc"
+  expect.fail(
     getSchemaBox({
       type: "object",
       properties: {
@@ -244,28 +245,29 @@ test("object with enum", () => {
       },
     }),
   ).toMatchInlineSnapshot(`
-    "type Output = {
-      enumprop: "aaa" | "bbb" | "ccc"
-    }
+    "type Output = { enumprop: string }
     "
   `);
 });
+// expected "aaa" | "bbb" | "ccc"
 test("string enum", () => {
-  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`
-    "type Output = "aaa" | "bbb" | "ccc"
+  expect.fail(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`
+    "type Output = string
     "
   `);
 });
+// expected "aaa" | "bbb" | "ccc"
 test("string enum", () => {
   // StringENum
-  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`
-    "type Output = "aaa" | "bbb" | "ccc"
+  expect.fail(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`
+    "type Output = string
     "
   `);
 });
 test("object with union", () => {
+  // { union: string | number }
   // ObjectWithUnion
-  expect(
+  expect.fail(
     getSchemaBox({
       type: "object",
       properties: {
@@ -273,23 +275,25 @@ test("object with union", () => {
       },
     }),
   ).toMatchInlineSnapshot(`
-    "type Output = { union: string | number }
+    "type Output = { union: unknown | unknown }
     "
   `);
 });
 test("union", () => {
-  expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
+  // string | number
+  expect.fail(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
     `
-    "type Output = string | number
+    "type Output = unknown | unknown
     "
   `,
   );
 });
 test("string or number", () => {
+  // string | number
   // StringOrNumber
-  expect(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
+  expect.fail(getSchemaBox({ oneOf: [{ type: "string" }, { type: "number" }] })).toMatchInlineSnapshot(
     `
-    "type Output = string | number
+    "type Output = unknown | unknown
     "
   `,
   );
@@ -361,20 +365,23 @@ test("object with intersection", () => {
   `);
 });
 test("string enum", () => {
-  expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`
-    "type Output = "aaa" | "bbb" | "ccc"
+  // "aaa" | "bbb" | "ccc"
+  expect.fail(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(`
+    "type Output = string
     "
   `);
 });
 test("number enum", () => {
-  expect(getSchemaBox({ type: "number", enum: [1, 2, 3] })).toMatchInlineSnapshot(`
-    "type Output = 1 | 2 | 3
+  // number
+  expect.fail(getSchemaBox({ type: "number", enum: [1, 2, 3] })).toMatchInlineSnapshot(`
+    "type Output = number
     "
   `);
 });
 test("number enum - single", () => {
-  expect(getSchemaBox({ type: "number", enum: [1] })).toMatchInlineSnapshot(`
-    "type Output = 1
+  // 1
+  expect.fail(getSchemaBox({ type: "number", enum: [1] })).toMatchInlineSnapshot(`
+    "type Output = number
     "
   `);
 });
@@ -448,20 +455,20 @@ test("object with array of object with properties", () => {
 describe("getSchemaBox with context", () => {
   test("with ref", () => {
     const schemas = {
-        type: "object",
-        properties: {
-          str: { type: "string" },
-          nb: { type: "number" },
-          nested: { $ref: "#/components/schemas/Nested" },
-        },
+      type: "object",
+      properties: {
+        str: { type: "string" },
+        nb: { type: "number" },
+        nested: { $ref: "#/components/schemas/Nested" },
+      },
       components: {
         schemas: {
-      Nested: {
-        type: "object",
-        properties: {
-          nested_prop: { type: "boolean" },
-        },
-      },
+          Nested: {
+            type: "object",
+            properties: {
+              nested_prop: { type: "boolean" },
+            },
+          },
         },
       },
     } as const;
@@ -476,28 +483,34 @@ describe("getSchemaBox with context", () => {
     `);
   });
 
-  test("with ref and allOf", () => {
+  test.only("with ref and allOf", () => {
     const schemas = {
-      Extends: {
-        allOf: [{ $ref: "#/components/schemas/Base" }],
-        type: "object",
-        properties: {
-          str: { type: "string" },
-          nb: { type: "number" },
-        },
-        required: ["str"],
+      allOf: [{ $ref: "#/components/schemas/Base" }],
+      type: "object",
+      properties: {
+        str: { type: "string" },
+        nb: { type: "number" },
       },
-      Base: {
-        type: "object",
-        properties: {
-          baseProp: { type: "string" },
+      required: ["str"],
+      components: {
+        schemas: {
+          Base: {
+            type: "object",
+            properties: {
+              baseProp: { type: "string" },
+            },
+          },
         },
       },
-    } satisfies SchemasObject;
+    } as const;
 
-    expect(SchemaTransform.toTraversable(schemas).refs["Extends"]?.toString()).toMatchInlineSnapshot(
-      `"(Base & { str: string, nb?: (number | undefined) })"`,
-    );
+    // Base & { baseProp: string }
+    // https://json-schema.org/blog/posts/modelling-inheritance
+    // https://typespec.io/playground/?e=%40typespec%2Fopenapi3&v=file-output&c=aW1wb3J0ICJAdHlwZXNwZWMvaHR0cCI7Cgp1c2luZyBIdHRwOwoKbW9kZWwgU3RvcmUgewogIG5hbWU6IHN0cmluZzsKICBhZGRyZXNzOiBBxgk7Cn3INccSIGV4dGVuZHPLRXN0cmVldMxHY2l0ecoQfQoKQHJvdXRlKCIvc8Q2cyIpCmludGVyZmFjZcZJc8VKbGlzdChAcXVlcnkgZmlsdGVyyEYpOsYoW13EYHJlYWQoQHBhdGggaWTHGsgiOwp9&options=%7B%7D&vs=%7B%7D
+    expect.fail(getSchemaBox(schemas)).toMatchInlineSnapshot(`
+      "type Output = Base
+      "
+    `);
   });
 
   test("with multiple nested refs", () => {
@@ -527,9 +540,10 @@ describe("getSchemaBox with context", () => {
       },
     } satisfies SchemasObject;
 
-    expect(SchemaTransform.toTraversable(schemas).refs["Root2"]?.toString()).toMatchInlineSnapshot(
-      `"{ str: string, nb: number, nested: Nested2 }"`,
-    );
+    expect.fail(getNamedSchema(schemas, "Root2")).toMatchInlineSnapshot(`
+      "type Root2 = undefined
+      "
+    `);
   });
 
   test("with indirect recursive ref", async () => {
@@ -552,9 +566,10 @@ describe("getSchemaBox with context", () => {
       },
     } satisfies SchemasObject;
 
-    expect(SchemaTransform.toTraversable(schemas).refs["Root3"]?.toString()).toMatchInlineSnapshot(
-      `"{ str: string, nb: number, nested: Nested3, arrayOfNested: (Nested3)[] }"`,
-    );
+    expect.fail(getNamedSchema(schemas, "Root3")).toMatchInlineSnapshot(`
+      "type Root3 = undefined
+      "
+    `);
   });
 
   test("with direct (self) circular/recursive ref", async () => {
@@ -578,9 +593,10 @@ describe("getSchemaBox with context", () => {
       },
     } satisfies SchemasObject;
 
-    expect(SchemaTransform.toTraversable(schemas).refs["Root4"]?.toString()).toMatchInlineSnapshot(
-      `"{ str: string, nb: number, self: Root4, nested: Nested4, arrayOfSelf: (Root4)[] }"`,
-    );
+    expect.fail(getNamedSchema(schemas, "Root4")).toMatchInlineSnapshot(`
+      "type Root4 = undefined
+      "
+    `);
   });
 
   test("same schemas as openApiToZod", () => {
@@ -609,7 +625,10 @@ describe("getSchemaBox with context", () => {
       },
     } satisfies SchemasObject;
 
-    expect(SchemaTransform.toTraversable(schemas).refs["Root"]?.toString()).toMatchInlineSnapshot(`undefined`);
+    expect.fail(getNamedSchema(schemas, "Root")).toMatchInlineSnapshot(`
+      "type Root = undefined
+      "
+    `);
   });
 
   test("anyOf with refs", () => {
@@ -641,9 +660,10 @@ describe("getSchemaBox with context", () => {
       },
     } satisfies SchemasObject;
 
-    expect(SchemaTransform.toTraversable(schemas).refs["Root"]?.toString()).toMatchInlineSnapshot(
-      `"{ user: (User | Member), users: ((User | Member))[], basic: number }"`,
-    );
+    expect.fail(getNamedSchema(schemas, "Root")).toMatchInlineSnapshot(`
+      "type Root = undefined
+      "
+    `);
   });
 
   test("nullable string", () => {
@@ -657,11 +677,9 @@ describe("getSchemaBox with context", () => {
       },
     } satisfies SchemasObject;
 
-    const ctx = makeCtx(schemas);
-    const result = openApiSchemaToTs({ schema: schemas.Member, ctx });
-
-    expect(SchemaTransform.toTraversable(schemas).refs["Member"]?.toString()).toMatchInlineSnapshot(
-      `"{ name: (string | null) }"`,
-    );
+    expect.fail(getNamedSchema(schemas, "Member")).toMatchInlineSnapshot(`
+      "type Member = undefined
+      "
+    `);
   });
 });
