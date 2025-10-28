@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 2.2.3
+
+### Patch Changes
+
+- c40f9ad: Fix recursive record type generation
+
 ## 2.2.2
 
 ### Patch Changes
