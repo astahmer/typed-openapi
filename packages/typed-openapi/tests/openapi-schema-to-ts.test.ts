@@ -91,15 +91,19 @@ test("getSchemaBox", () => {
         "value": "Partial<{ str: string }>",
       }
     `);
-  expect(getSchemaBox({
-    type: "object", properties: {
-      str: { type: "string" }, nb: { type: "number" }, nullable: {
-        type: "string",
-        nullable: true
-      }
-    }
-  }))
-    .toMatchInlineSnapshot(`
+  expect(
+    getSchemaBox({
+      type: "object",
+      properties: {
+        str: { type: "string" },
+        nb: { type: "number" },
+        nullable: {
+          type: "string",
+          nullable: true,
+        },
+      },
+    }),
+  ).toMatchInlineSnapshot(`
       {
         "type": "ref",
         "value": "Partial<{ str: string, nb: number, nullable: (string | null) }>",
@@ -373,45 +377,41 @@ test("getSchemaBox", () => {
   `,
   );
 
-
-  expect(getSchemaBox({
-    "type": "object",
-    "properties": {
-      "members": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
+  expect(
+    getSchemaBox({
+      type: "object",
+      properties: {
+        members: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
+              },
+              firstName: {
+                type: "string",
+                nullable: true,
+              },
+              lastName: {
+                type: "string",
+                nullable: true,
+              },
+              email: {
+                type: "string",
+              },
+              profilePictureURL: {
+                type: "string",
+                nullable: true,
+              },
             },
-            "firstName": {
-              "type": "string",
-              "nullable": true
-            },
-            "lastName": {
-              "type": "string",
-              "nullable": true
-            },
-            "email": {
-              "type": "string"
-            },
-            "profilePictureURL": {
-              "type": "string",
-              "nullable": true
-            }
+            required: ["id", "email"],
           },
-          "required": [
-            "id",
-            "email"
-          ]
-        }
-      }
-    },
-    "required": [
-      "members"
-    ]
-  })).toMatchInlineSnapshot(`
+        },
+      },
+      required: ["members"],
+    }),
+  ).toMatchInlineSnapshot(`
     {
       "type": "object",
       "value": "{ members: Array<{ id: string, firstName?: (string | null) | undefined, lastName?: (string | null) | undefined, email: string, profilePictureURL?: (string | null) | undefined }> }",
@@ -452,7 +452,7 @@ describe("getSchemaBox with context", () => {
   test("with ref and allOf", () => {
     const schemas = {
       Extends: {
-        allOf: [{$ref: "#/components/schemas/Base"}],
+        allOf: [{ $ref: "#/components/schemas/Base" }],
         type: "object",
         properties: {
           str: { type: "string" },
@@ -464,7 +464,7 @@ describe("getSchemaBox with context", () => {
         type: "object",
         properties: {
           baseProp: { type: "string" },
-        }
+        },
       },
     } satisfies SchemasObject;
 
@@ -681,6 +681,88 @@ describe("getSchemaBox with context", () => {
       {
         "type": "ref",
         "value": "Partial<{ name: (string | null) }>",
+      }
+    `,
+    );
+  });
+
+  test("nested oneOf", () => {
+    const schemas = {
+      Root: {
+        type: "object",
+        properties: {
+          result: {
+            oneOf: [
+              {
+                type: "object",
+                properties: {
+                  errorCode: {
+                    type: "string",
+                    enum: ["error-a"],
+                  },
+                  result: {
+                    type: "object",
+                    additionalProperties: {
+                      oneOf: [
+                        {
+                          type: "object",
+                          properties: {
+                            type: {
+                              type: "string",
+                              enum: ["type-a"],
+                            },
+                            value: {
+                              type: "string",
+                            },
+                          },
+                          required: ["type", "value"],
+                        },
+                        {
+                          type: "object",
+                          properties: {
+                            type: {
+                              type: "string",
+                              enum: ["type-b"],
+                            },
+                            value: {
+                              type: "number",
+                            },
+                          },
+                          required: ["type", "value"],
+                        },
+                      ],
+                    },
+                  },
+                },
+                required: ["errorCode", "result"],
+              },
+              {
+                type: "object",
+                properties: {
+                  errorCode: {
+                    type: "string",
+                    enum: ["error-b"],
+                  },
+                  value: {
+                    type: "string",
+                  },
+                },
+                required: ["errorCode", "value"],
+              },
+            ],
+          },
+        },
+      },
+    } satisfies SchemasObject;
+
+    const ctx = makeCtx(schemas);
+    const result = openApiSchemaToTs({ schema: schemas["Root"]!, ctx });
+
+    expect(result).toMatchInlineSnapshot(
+      `
+      {
+        "type": "ref",
+        "value": "Partial<{ result: ({ errorCode: "error-a", result: Record<string, ({ type: "type-a", value: string } | { type: "type-b", value: number })> } | { errorCode: "error-b", value: string }) }>",
       }
     `,
     );
