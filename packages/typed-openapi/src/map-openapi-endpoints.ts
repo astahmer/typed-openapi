@@ -262,9 +262,11 @@ const isResponseMediaType = (mediaType: string) =>
   mediaType === "*/*" || (mediaType.includes("application/") && mediaType.includes("json"));
 const getAlias = ({ path, method, operation }: Endpoint) =>
   sanitizeName(
-    (method + "_" + capitalize(operation.operationId ?? pathToVariableName(path))).replace(/-/g, "__"),
+    method + "_" + capitalize((operation.operationId ?? pathToVariableName(path)).replace(/-/g, "__")),
     "endpoint",
   );
+
+
 
 type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
