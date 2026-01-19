@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 2.2.4
+
+### Patch Changes
+
+- 5d58477: fix broken nullable in disriminated unions
+
 ## 2.2.3
 
 ### Patch Changes
