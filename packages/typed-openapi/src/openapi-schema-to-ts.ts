@@ -180,7 +180,17 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
       return isPartial ? t.reference("Partial", [objectType]) : objectType;
     }
 
-    if (!schemaType) return t.unknown();
+    if (!schemaType) {
+      const nullableKey = Object.keys(schema).filter(
+        key => !['nullable'].includes(key)
+      );
+
+      if (nullableKey.length === 0 && (schema as LibSchemaObject).nullable) {
+        return t.literal("null");
+      }
+
+      return t.unknown();
+    }
 
     throw new Error(`Unsupported schema type: ${schemaType}`);
   };
@@ -188,7 +198,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
   let output = getTs();
   if (!isReferenceObject(schema)) {
     // OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
-    if ((schema as LibSchemaObject).nullable) {
+    if ((schema as LibSchemaObject).nullable && output.value !== "null") {
       output = t.union([output, t.literal("null")]);
     }
   }

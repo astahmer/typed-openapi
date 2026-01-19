@@ -767,4 +767,91 @@ describe("getSchemaBox with context", () => {
     `,
     );
   });
+
+  test("discriminated union with null type", () => {
+    const schemas = {
+      Root: {
+        type: "object",
+        properties: {
+          data: {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "itemType": {
+                    "type": "string",
+                    "enum": [
+                      "commitment"
+                    ]
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "EXPIRES_SOON",
+                      "AUTO_RENEWS_SOON",
+                      "EXPIRED",
+                      "SCHEDULED",
+                      "ACTIVE",
+                      "AUTO_RENEWED",
+                      "RENEWED",
+                      "TERMINATED",
+                      "UNKNOWN"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "itemType",
+                  "status"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "itemType": {
+                    "type": "string",
+                    "enum": [
+                      "purchase-project"
+                    ]
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "in-progress",
+                      "done",
+                      "closed"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "itemType",
+                  "status"
+                ]
+              },
+              {
+                "nullable": true
+              }
+            ]
+          }
+        },
+      },
+    } satisfies SchemasObject;
+
+    const ctx = makeCtx(schemas);
+    const result = openApiSchemaToTs({ schema: schemas["Root"]!, ctx });
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "type": "ref",
+        "value": "Partial<{ data: ({ id: string, itemType: "commitment", status: ("EXPIRES_SOON" | "AUTO_RENEWS_SOON" | "EXPIRED" | "SCHEDULED" | "ACTIVE" | "AUTO_RENEWED" | "RENEWED" | "TERMINATED" | "UNKNOWN") } | { id: string, itemType: "purchase-project", status: ("in-progress" | "done" | "closed") } | null) }>",
+      }
+    `);
+  });
 });
