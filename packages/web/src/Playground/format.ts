@@ -1,19 +1,16 @@
-import prettier, { type Options } from "prettier";
-import parserTypescript from "prettier/parser-typescript";
+import { type Options,  } from "prettier";
+import * as prettier from 'prettier/standalone';
+import * as prettierPluginEstree from "prettier/plugins/estree";
+import * as parserTypescript from "prettier/parser-typescript";
 
 /** @see https://github.dev/stephenh/ts-poet/blob/5ea0dbb3c9f1f4b0ee51a54abb2d758102eda4a2/src/Code.ts#L231 */
-function maybePretty(input: string, options?: Options | null): string {
+async function maybePretty(input: string, options?: Options | null): Promise<string> {
   try {
-    const formatted = prettier.format(input, {
-      parser: "typescript",
-      plugins: [parserTypescript],
+    const formatted = await prettier.format(input, {
       ...options,
+      parser: "typescript",
+      plugins: [prettierPluginEstree, parserTypescript],
     });
-
-    // Prettier 3 switched format() to async, which does not fit this synchronous browser update path.
-    if (typeof formatted !== "string") {
-      return input;
-    }
 
     return formatted;
   } catch (err) {

@@ -1,17 +1,43 @@
 import type { Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
-import { assign, setup } from "xstate";
 import { safeJSONParse } from "pastable/utils";
 import { generateFile, mapOpenApiEndpoints, type OutputRuntime } from "typed-openapi";
+import { assign, fromPromise, setup } from "xstate";
 import { parse } from "yaml";
 
+import { prettify } from "./format";
 import { default as petstoreYaml } from "./petstore.yaml?raw";
 import { UrlSaver } from "./url-saver";
-import { prettify } from "./format";
 
 const urlSaver = new UrlSaver();
 const initialInputList = { "petstore.yaml": urlSaver.getValue("input") || petstoreYaml };
 const initialOutputList = { "petstore.client.ts": "" };
+
+type GenerateInput = {
+  inputValue: string;
+  runtime: OutputRuntime;
+};
+
+const generateOutputActor = fromPromise(
+  async ({ input: { inputValue, runtime } }: { input: GenerateInput }) => {
+    const now = new Date();
+    console.log("Generating...");
+
+    const openApiDoc = inputValue.startsWith("{") ? safeJSONParse(inputValue) : safeYAMLParse(inputValue);
+    console.log({ inputValue, openApiDoc });
+    if (!openApiDoc) {
+      return { content: "" };
+    }
+
+    const mappedContext = mapOpenApiEndpoints(openApiDoc);
+    console.log(`Found ${mappedContext.endpointList.length} endpoints`);
+
+    const content = await prettify(generateFile({ ...mappedContext, runtime }));
+    console.log(`Done in ${new Date().getTime() - now.getTime()}ms !`);
+
+    return { content };
+  }
+);
 
 type PlaygroundContext = {
   monaco: Monaco | null;
@@ -36,7 +62,8 @@ type PlaygroundEvent =
   | { type: "Select input tab"; name: string }
   | { type: "Select output tab"; name: string }
   | { type: "Update runtime"; runtime: OutputRuntime }
-  | { type: "Update input"; value: string };
+  | { type: "Update input"; value: string }
+  | { type: "Generate output" };
 
 const initialContext: PlaygroundContext = {
   monaco: null,
@@ -58,6 +85,9 @@ export const playgroundMachine = setup({
   types: {
     context: {} as PlaygroundContext,
     events: {} as PlaygroundEvent,
+  },
+  actors: {
+    generateOutput: generateOutputActor,
   },
   actions: {
     assignEditorRef: assign(({ event }) => {
@@ -107,29 +137,17 @@ export const playgroundMachine = setup({
 
       return { runtime: event.runtime };
     }),
-    updateOutput: assign(({ context, event }) => {
-      const now = new Date();
-      console.log("Generating...");
-
-      const input = (event.type === "Update input" ? event.value : context.inputList[context.selectedInput]) ?? "";
-      const openApiDoc = input.startsWith("{") ? safeJSONParse(input) : safeYAMLParse(input);
-      console.log({ input, openApiDoc });
-      if (!openApiDoc) {
-        // toasts.error("Error while parsing OpenAPI document");
-        return {};
+    assignGeneratedOutput: assign((args) => {
+      if ("output" in  args.event) {
+        const output = args.event.output as { content: string };
+        return {
+          outputList: {
+            ["petstore.client.ts"]: output?.content ?? "",
+          },
+        };
       }
 
-      const mappedContext = mapOpenApiEndpoints(openApiDoc);
-      console.log(`Found ${mappedContext.endpointList.length} endpoints`);
-
-      const content = prettify(generateFile({ ...mappedContext, runtime: context.runtime }));
-      const outputList = {
-        ["petstore.client.ts"]: content,
-      };
-
-      console.log(`Done in ${new Date().getTime() - now.getTime()}ms !`);
-
-      return { outputList };
+      return args.context
     }),
   },
   guards: {
@@ -148,30 +166,59 @@ export const playgroundMachine = setup({
           {
             guard: "willBeReady",
             target: "ready",
-            actions: ["assignEditorRef", "updateOutput"],
+            actions: ["assignEditorRef"],
           },
           { actions: "assignEditorRef" },
         ],
       },
     },
     ready: {
-      initial: "Playing",
-      entry: ["updateUrl", "updateOutput"],
+      entry: ["updateUrl"],
       states: {
         Playing: {
+          initial: "generating",
+          states: {
+            idle: {
+              type: "atomic",
+            },
+            generating: {
+              invoke: {
+                src: "generateOutput",
+                input: ({ context }) => ({
+                  inputValue: context.inputList[context.selectedInput] ?? "",
+                  runtime: context.runtime,
+                }),
+                onDone: {
+                  target: "idle",
+                  actions: ["assignGeneratedOutput"],
+                },
+                onError: {
+                  target: "idle",
+                },
+              },
+            },
+          },
           on: {
             "Select input tab": {
-              actions: ["selectInputTab", "updateUrl", "updateOutput"],
+              actions: ["selectInputTab", "updateUrl"],
+              target: ".generating",
             },
             "Select output tab": { actions: ["selectOutputTab"] },
-            "Update input": { actions: ["updateSelectedInput", "updateUrl", "updateOutput"] },
+            "Update input": {
+              actions: ["updateSelectedInput", "updateUrl"],
+              target: ".generating",
+            },
           },
         },
       },
+      initial: "Playing",
+      on: {
+        "Update runtime": {
+          actions: ["updateRuntime"],
+          target: ".Playing.generating",
+        },
+      },
     },
-  },
-  on: {
-    "Update runtime": { actions: ["updateRuntime", "updateOutput"] },
   },
 });
 
