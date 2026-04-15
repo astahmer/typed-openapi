@@ -1,5 +1,4 @@
 import { capitalize } from "pastable/server";
-import { prettify } from "./format.ts";
 import type { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 
 type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints>;
@@ -191,5 +190,5 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   }
 `;
 
-  return prettify(file);
+    return file;
 };

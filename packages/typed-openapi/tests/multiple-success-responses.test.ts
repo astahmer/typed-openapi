@@ -206,8 +206,10 @@ describe("multiple success responses", () => {
       export type ErrorStatusCode = (typeof errorStatusCodes)[number];
 
       // Taken from https://github.com/unjs/fetchdts/blob/ec4eaeab5d287116171fc1efd61f4a1ad34e4609/src/fetch.ts#L3
-      export interface TypedHeaders<TypedHeaderValues extends Record<string, string> | unknown>
-        extends Omit<Headers, "append" | "delete" | "get" | "getSetCookie" | "has" | "set" | "forEach"> {
+      export interface TypedHeaders<TypedHeaderValues extends Record<string, string> | unknown> extends Omit<
+        Headers,
+        "append" | "delete" | "get" | "getSetCookie" | "has" | "set" | "forEach"
+      > {
         /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/append) */
         append: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(
           name: Name,
@@ -239,8 +241,10 @@ describe("multiple success responses", () => {
       }
 
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-      export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders>
-        extends Omit<Response, "ok" | "status" | "json" | "headers"> {
+      export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<
+        Response,
+        "ok" | "status" | "json" | "headers"
+      > {
         ok: true;
         status: TStatusCode;
         headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
@@ -250,8 +254,10 @@ describe("multiple success responses", () => {
       }
 
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-      export interface TypedErrorResponse<TData, TStatusCode, THeaders>
-        extends Omit<Response, "ok" | "status" | "json" | "headers"> {
+      export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<
+        Response,
+        "ok" | "status" | "json" | "headers"
+      > {
         ok: false;
         status: TStatusCode;
         headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;

@@ -17,6 +17,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "ignoreDeprecations": "6.0",
     //
     "isolatedModules": true, // https://preconstruct.tools/guides/building-typescript-packages
     "noEmit": true,

@@ -1,61 +1,62 @@
-import { Portal } from "@ark-ui/react";
 import { FiChevronDown } from "react-icons/fi";
-import { Button } from "./button";
-import { Select, SelectContent, SelectOption, SelectPositioner, SelectTrigger, type SelectProps } from "./select";
-import { HStack } from "panda/jsx";
+import { HStack, styled } from "panda/jsx";
 
-export const SelectRuntime = (props: SelectProps) => {
+const runtimeOptions = [
+  { value: "none", label: "None (types only)" },
+  { value: "zod", label: "Zod" },
+  { value: "typebox", label: "Typebox" },
+  { value: "arktype", label: "Arktype" },
+  { value: "valibot", label: "Valibot" },
+  { value: "yup", label: "Yup" },
+  { value: "io-ts", label: "io-ts" },
+] as const;
+
+type RuntimeOption = (typeof runtimeOptions)[number];
+
+type SelectRuntimeProps = {
+  defaultValue?: RuntimeOption;
+  onChange?: (option?: RuntimeOption) => void;
+};
+
+export const SelectRuntime = ({ defaultValue, onChange }: SelectRuntimeProps) => {
   return (
-    <Select positioning={{ sameWidth: true }} {...props}>
-      {({ selectedOption, isOpen }) => (
-        <>
-          <SelectTrigger asChild>
-            <Button variant="secondary" minW="252px">
-              <HStack justify="space-between" flex="1" fontWeight="medium">
-                {selectedOption?.label ?? "Select runtime"}
-                <SelectIcon isOpen={isOpen} />
-              </HStack>
-            </Button>
-          </SelectTrigger>
-          <Portal>
-            <SelectPositioner>
-              <SelectContent>
-                <SelectOption value="none" label="None (types only)">
-                  None (types only)
-                </SelectOption>
-                <SelectOption value="zod" label="Zod">
-                  Zod
-                </SelectOption>
-                <SelectOption value="typebox" label="Typebox">
-                  Typebox
-                </SelectOption>
-                <SelectOption value="arktype" label="Arktype">
-                  Arktype
-                </SelectOption>
-                <SelectOption value="valibot" label="Valibot">
-                  Valibot
-                </SelectOption>
-                <SelectOption value="yup" label="Yup">
-                  Yup
-                </SelectOption>
-                <SelectOption value="io-ts" label="io-ts">
-                  io-ts
-                </SelectOption>
-              </SelectContent>
-            </SelectPositioner>
-          </Portal>
-        </>
-      )}
-    </Select>
+    <HStack position="relative" minW="252px">
+      <styled.select
+        defaultValue={defaultValue?.value ?? "none"}
+        onChange={(event) => {
+          onChange?.(runtimeOptions.find((option) => option.value === event.currentTarget.value));
+        }}
+        appearance="none"
+        bg="var(--sp-colors-surface2)"
+        color="inherit"
+        borderRadius="md"
+        borderWidth="1px"
+        borderColor="var(--sp-colors-surface3)"
+        px="3"
+        py="2"
+        pr="10"
+        fontWeight="medium"
+        width="100%"
+        cursor="pointer"
+        outline="none"
+      >
+        {runtimeOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </styled.select>
+      <SelectIcon />
+    </HStack>
   );
 };
 
-const SelectIcon = (props: { isOpen: boolean }) => {
+const SelectIcon = () => {
   const iconStyles = {
-    transform: props.isOpen ? "rotate(-180deg)" : undefined,
-    transition: "transform 0.2s",
-    transformOrigin: "center",
+    position: "absolute" as const,
+    right: "0.75rem",
     fontSize: "18px",
+    pointerEvents: "none" as const,
   };
   return <FiChevronDown style={iconStyles} />;
 };

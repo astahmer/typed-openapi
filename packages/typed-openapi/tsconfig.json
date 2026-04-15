@@ -4,6 +4,9 @@
     "target": "ESNext",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
+    "types": [
+      "node"
+    ],
     "lib": [
       "DOM",
       "ES2021"

@@ -30,6 +30,7 @@ async function ensureDir(dirPath: string): Promise<void> {
 export const optionsSchema = type({
   "output?": "string",
   runtime: allowedRuntimes,
+  "format?": "boolean | 'true' | 'false'",
   tanstack: "boolean | string",
   "defaultFetcher?": type({
     "envApiBaseUrl?": "string",
@@ -43,9 +44,21 @@ export const optionsSchema = type({
   "errorStatusCodes?": "string",
 });
 
-type GenerateClientFilesOptions = typeof optionsSchema.infer & {
+export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
   nameTransform?: NameTransformOptions;
 };
+
+function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
+  if (value === "false") {
+    return false;
+  }
+
+  if (value === "true") {
+    return true;
+  }
+
+  return value;
+}
 
 export async function generateClientFiles(input: string, options: GenerateClientFilesOptions) {
   // TODO CLI option to save that file?
@@ -65,8 +78,8 @@ export async function generateClientFiles(input: string, options: GenerateClient
     : undefined;
 
   // Convert string boolean to actual boolean
-  const includeClient =
-    options.includeClient === "false" ? false : options.includeClient === "true" ? true : options.includeClient;
+  const includeClient = parseBooleanOption(options.includeClient);
+  const shouldFormat = parseBooleanOption(options.format) ?? false;
 
   const generatorOptions: GeneratorOptions = {
     ...ctx,
@@ -78,21 +91,17 @@ export async function generateClientFiles(input: string, options: GenerateClient
     errorStatusCodes: errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES,
   };
 
-  const content = await prettify(generateFile(generatorOptions));
   const outputPath = join(
     cwd,
     options.output ?? input + `.${options.runtime === "none" ? "client" : options.runtime}.ts`,
   );
+  const content = await prettify(generateFile(generatorOptions), { enabled: shouldFormat, filePath: outputPath });
 
   console.log("Generating client...", outputPath);
   await ensureDir(dirname(outputPath));
   await writeFile(outputPath, content);
 
   if (options.tanstack) {
-    const tanstackContent = await generateTanstackQueryFile({
-      ...generatorOptions,
-      relativeApiClientPath: "./" + basename(outputPath),
-    });
     let tanstackOutputPath: string;
     if (typeof options.tanstack === "string" && isAbsolute(options.tanstack)) {
       tanstackOutputPath = options.tanstack;
@@ -102,6 +111,13 @@ export async function generateClientFiles(input: string, options: GenerateClient
         typeof options.tanstack === "string" ? options.tanstack : `tanstack.client.ts`,
       );
     }
+    const tanstackContent = await prettify(
+      await generateTanstackQueryFile({
+        ...generatorOptions,
+        relativeApiClientPath: "./" + basename(outputPath),
+      }),
+      { enabled: shouldFormat, filePath: tanstackOutputPath },
+    );
     console.log("Generating tanstack client...", tanstackOutputPath);
     await ensureDir(dirname(tanstackOutputPath));
     await writeFile(tanstackOutputPath, tanstackContent);
@@ -123,9 +139,13 @@ export async function generateClientFiles(input: string, options: GenerateClient
         typeof options.defaultFetcher === "string" ? options.defaultFetcher : `api.client.ts`,
       );
     }
+    const formattedDefaultFetcherContent = await prettify(defaultFetcherContent, {
+      enabled: shouldFormat,
+      filePath: defaultFetcherOutputPath,
+    });
     console.log("Generating default fetcher...", defaultFetcherOutputPath);
     await ensureDir(dirname(defaultFetcherOutputPath));
-    await writeFile(defaultFetcherOutputPath, defaultFetcherContent);
+    await writeFile(defaultFetcherOutputPath, formattedDefaultFetcherContent);
   }
 
   console.log(`Done in ${new Date().getTime() - now.getTime()}ms !`);

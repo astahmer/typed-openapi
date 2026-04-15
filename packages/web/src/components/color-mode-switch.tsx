@@ -1,7 +1,6 @@
-import { css, cx } from "panda/css";
+import { css } from "panda/css";
 import { ComponentPropsWithoutRef, useEffect, useState } from "react";
 import { useTheme } from "../vite-themes/provider";
-import { styled } from "panda/jsx";
 import { IconButton } from "./icon-button";
 
 export const ColorModeSwitch = () => {
