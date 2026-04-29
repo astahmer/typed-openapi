@@ -1,10 +1,12 @@
 # TanStack Query Error Handling Examples
 
-This document demonstrates how the generated TanStack Query client provides type-safe error handling based on OpenAPI error schemas.
+This document demonstrates how the generated TanStack Query client provides type-safe error handling based on OpenAPI
+error schemas.
 
 ## Error Type Inference
 
-The TanStack Query client automatically infers error types from your OpenAPI spec's error responses (status codes 400-511).
+The TanStack Query client automatically infers error types from your OpenAPI spec's error responses (status codes
+400-511).
 
 ### OpenAPI Spec Example
 
@@ -13,30 +15,30 @@ paths:
   /users:
     post:
       responses:
-        '201':
+        "201":
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '400':
+                $ref: "#/components/schemas/User"
+        "400":
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationError'
-        '409':
+                $ref: "#/components/schemas/ValidationError"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConflictError'
-        '500':
+                $ref: "#/components/schemas/ConflictError"
+        "500":
           description: Server Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ServerError'
+                $ref: "#/components/schemas/ServerError"
 
 components:
   schemas:
@@ -75,9 +77,9 @@ For the above spec, the TanStack Query client generates:
 ```typescript
 // Error type is automatically inferred as:
 type CreateUserError =
-  | Omit<Response, 'status'> & { status: 400; data: ValidationError }
-  | Omit<Response, 'status'> & { status: 409; data: ConflictError }
-  | Omit<Response, 'status'> & { status: 500; data: ServerError }
+  | (Omit<Response, "status"> & { status: 400; data: ValidationError })
+  | (Omit<Response, "status"> & { status: 409; data: ConflictError })
+  | (Omit<Response, "status"> & { status: 500; data: ServerError });
 ```
 
 ## Usage Examples
@@ -136,8 +138,8 @@ function AdvancedCreateUserForm() {
         user: response.ok ? response.data : null,
         error: response.ok ? null : response.data,
         statusCode: response.status,
-        headers: response.headers
-      })
+        headers: response.headers,
+      }),
     }).mutationOptions,
     onError: (error) => {
       // Same typed error handling as above
@@ -147,10 +149,10 @@ function AdvancedCreateUserForm() {
 
       switch (error.status) {
         case 400:
-          toast.error(`Validation: ${error.data.fields.join(', ')}`);
+          toast.error(`Validation: ${error.data.fields.join(", ")}`);
           break;
         case 409:
-          toast.error('Email already taken');
+          toast.error("Email already taken");
           break;
         case 500:
           toast.error(`Server error: ${error.data.code}`);
@@ -161,9 +163,9 @@ function AdvancedCreateUserForm() {
       if (result.success) {
         toast.success(`Welcome ${result.user!.name}!`);
         // Access response headers
-        const rateLimit = result.headers.get('x-rate-limit-remaining');
+        const rateLimit = result.headers.get("x-rate-limit-remaining");
       }
-    }
+    },
   });
 
   // ... rest of component
@@ -179,25 +181,25 @@ const handleError = (error: CreateUserError) => {
     case 400:
       // TypeScript knows error.data is ValidationError
       return {
-        title: 'Validation Failed',
+        title: "Validation Failed",
         message: error.data.message,
-        details: error.data.fields.map(field => `${field} is invalid`)
+        details: error.data.fields.map((field) => `${field} is invalid`),
       };
 
     case 409:
       // TypeScript knows error.data is ConflictError
       return {
-        title: 'User Exists',
+        title: "User Exists",
         message: `User already exists with ID: ${error.data.existingId}`,
-        action: 'login'
+        action: "login",
       };
 
     case 500:
       // TypeScript knows error.data is ServerError
       return {
-        title: 'Server Error',
+        title: "Server Error",
         message: `Internal error (${error.data.code}): ${error.data.message}`,
-        action: 'retry'
+        action: "retry",
       };
   }
 };
@@ -213,12 +215,13 @@ const handleError = (error: CreateUserError) => {
 
 ## Error Structure
 
-All errors thrown by TanStack Query mutations are **Response-like objects** that extend the native Response with additional type safety:
+All errors thrown by TanStack Query mutations are **Response-like objects** that extend the native Response with
+additional type safety:
 
 ```typescript
-interface ApiError<TData = unknown> extends Omit<Response, 'status'> {
-  status: number;  // HTTP status code (400-511) - properly typed
-  data: TData;     // Typed error response body
+interface ApiError<TData = unknown> extends Omit<Response, "status"> {
+  status: number; // HTTP status code (400-511) - properly typed
+  data: TData; // Typed error response body
   // All other Response properties are available:
   // ok: boolean
   // headers: Headers
@@ -244,9 +247,10 @@ try {
   console.log(error.ok); // false
   console.log(error.status); // 400, 401, etc. (properly typed)
   console.log(error.data); // Typed error response body
-  console.log(error.headers.get('content-type')); // Response headers
+  console.log(error.headers.get("content-type")); // Response headers
   console.log(error.url); // Request URL
 }
 ```
 
-This makes error handling predictable and type-safe across your entire application while maintaining consistency with the Response API.
+This makes error handling predictable and type-safe across your entire application while maintaining consistency with
+the Response API.

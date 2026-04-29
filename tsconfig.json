@@ -23,16 +23,8 @@
     "noEmit": true,
     "allowImportingTsExtensions": true
   },
-  "exclude": [
-    "node_modules",
-    ".changeset",
-    ".github",
-    "dist"
-  ],
-  "types": [
-    "node",
-    "vitest/importMeta"
-  ],
+  "exclude": ["node_modules", ".changeset", ".github", "dist"],
+  "types": ["node", "vitest/importMeta"],
   //
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Strictest"

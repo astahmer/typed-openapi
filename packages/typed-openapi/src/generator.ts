@@ -95,7 +95,12 @@ const getSchemaDescription = (schema: Box<AnyBoxDef>["schema"]) => {
 };
 
 const indentMultiline = (value: string, indent = "  ") =>
-  value.includes("\n") ? value.split("\n").map((line, index) => (index === 0 ? line : `${indent}${line}`)).join("\n") : value;
+  value.includes("\n")
+    ? value
+        .split("\n")
+        .map((line, index) => (index === 0 ? line : `${indent}${line}`))
+        .join("\n")
+    : value;
 
 export const generateFile = (options: GeneratorOptions) => {
   const ctx = {
@@ -116,29 +121,29 @@ export const generateFile = (options: GeneratorOptions) => {
     ctx.runtime === "none"
       ? (file: string) => file
       : (file: string) => {
-        const model = Codegen.TypeScriptToModel.Generate(file);
-        const transformer = runtimeValidationGenerator[ctx.runtime as Exclude<typeof ctx.runtime, "none">];
-        // tmp fix for typebox, there's currently a "// todo" only with Codegen.ModelToTypeBox.Generate
-        // https://github.com/sinclairzx81/typebox-codegen/blob/44d44d55932371b69f349331b1c8a60f5d760d9e/src/model/model-to-typebox.ts#L31
-        const generated = ctx.runtime === "typebox" ? Codegen.TypeScriptToTypeBox.Generate(file) : transformer(model);
+          const model = Codegen.TypeScriptToModel.Generate(file);
+          const transformer = runtimeValidationGenerator[ctx.runtime as Exclude<typeof ctx.runtime, "none">];
+          // tmp fix for typebox, there's currently a "// todo" only with Codegen.ModelToTypeBox.Generate
+          // https://github.com/sinclairzx81/typebox-codegen/blob/44d44d55932371b69f349331b1c8a60f5d760d9e/src/model/model-to-typebox.ts#L31
+          const generated = ctx.runtime === "typebox" ? Codegen.TypeScriptToTypeBox.Generate(file) : transformer(model);
 
-        let converted = "";
-        const match = generated.match(/(const __ENDPOINTS_START__ =)([\s\S]*?)(export type __ENDPOINTS_END__)/);
-        const content = match?.[2];
+          let converted = "";
+          const match = generated.match(/(const __ENDPOINTS_START__ =)([\s\S]*?)(export type __ENDPOINTS_END__)/);
+          const content = match?.[2];
 
-        if (content && ctx.runtime in replacerByRuntime) {
-          const before = generated.slice(0, generated.indexOf("export type __ENDPOINTS_START"));
-          converted =
-            before +
-            replacerByRuntime[ctx.runtime as keyof typeof replacerByRuntime](
-              content.slice(content.indexOf("export")),
-            );
-        } else {
-          converted = generated;
-        }
+          if (content && ctx.runtime in replacerByRuntime) {
+            const before = generated.slice(0, generated.indexOf("export type __ENDPOINTS_START"));
+            converted =
+              before +
+              replacerByRuntime[ctx.runtime as keyof typeof replacerByRuntime](
+                content.slice(content.indexOf("export")),
+              );
+          } else {
+            converted = generated;
+          }
 
-        return converted;
-      };
+          return converted;
+        };
 
   const file = `
   ${transform(schemaList + endpointSchemaList)}
@@ -160,9 +165,10 @@ const generateSchemaList = (ctx: GeneratorContext) => {
     if (infos.kind !== "schemas") return;
 
     const description = shouldRenderDescriptionComments(ctx) ? getSchemaDescription(schema.schema) : undefined;
-    const schemaValue = shouldRenderDescriptionComments(ctx) && !Box.isReference(schema)
-      ? boxToString(schema, ctx, { prefixRefsWithSchemas: false })
-      : schema.value;
+    const schemaValue =
+      shouldRenderDescriptionComments(ctx) && !Box.isReference(schema)
+        ? boxToString(schema, ctx, { prefixRefsWithSchemas: false })
+        : schema.value;
 
     file += `${description ? `${renderDescriptionComment(description)}\n` : ""}export type ${infos.normalized} = ${schemaValue}\n`;
   });
@@ -219,9 +225,10 @@ const boxToString = (
     const renderedProps = Object.entries(box.params.props).map(([prop, type]) => {
       const isOptional = typeof type !== "string" && Box.isBox(type) && Box.isOptional(type);
       const renderedValue = indentMultiline(renderValue(type));
-      const description = shouldRenderDescriptionComments(ctx) && typeof type !== "string" && Box.isBox(type)
-        ? getSchemaDescription(type.schema)
-        : undefined;
+      const description =
+        shouldRenderDescriptionComments(ctx) && typeof type !== "string" && Box.isBox(type)
+          ? getSchemaDescription(type.schema)
+          : undefined;
 
       return {
         description,
@@ -229,7 +236,9 @@ const boxToString = (
       };
     });
 
-    const shouldRenderMultiline = shouldRenderDescriptionComments(ctx) && renderedProps.some(({ description, line }) => description || line.includes("\n"));
+    const shouldRenderMultiline =
+      shouldRenderDescriptionComments(ctx) &&
+      renderedProps.some(({ description, line }) => description || line.includes("\n"));
 
     if (!shouldRenderMultiline) {
       const propsString = renderedProps.map(({ line }) => line.slice(0, -1)).join(", ");
@@ -302,17 +311,15 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
       method: "${endpoint.method.toUpperCase()}",
       path: "${endpoint.path}",
       requestFormat: "${endpoint.requestFormat}",
-      ${endpoint.meta.hasParameters
-        ? `parameters: {
+      ${
+        endpoint.meta.hasParameters
+          ? `parameters: {
             ${parameters.query ? `query:  ${parameterObjectToString(parameters.query, ctx)},` : ""}
         ${parameters.path ? `path:  ${parameterObjectToString(parameters.path, ctx)},` : ""}
         ${parameters.header ? `header:  ${parameterObjectToString(parameters.header, ctx)},` : ""}
-        ${parameters.body
-          ? `body:  ${parameterObjectToString(parameters.body, ctx)},`
-          : ""
-        }
+        ${parameters.body ? `body:  ${parameterObjectToString(parameters.body, ctx)},` : ""}
           }`
-        : "parameters: never,"
+          : "parameters: never,"
       }
       ${endpoint.responses ? `responses: ${generateResponsesObject(endpoint.responses, ctx)},` : ""}
       ${endpoint.responseHeaders ? `responseHeaders: ${responseHeadersObjectToString(endpoint.responseHeaders, ctx)},` : ""}
@@ -337,16 +344,16 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
      // <EndpointByMethod>
      export ${ctx.runtime === "none" ? "type" : "const"} EndpointByMethod = {
      ${Object.entries(byMethods)
-      .map(([method, list]) => {
-        return `${method}: {
+       .map(([method, list]) => {
+         return `${method}: {
            ${list
-            .map(
-              (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
-            )
-            .join(",\n")}
+             .map(
+               (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
+             )
+             .join(",\n")}
          }`;
-      })
-      .join(",\n")}
+       })
+       .join(",\n")}
      }
      ${ctx.runtime === "none" ? "" : "export type EndpointByMethod = typeof EndpointByMethod;"}
      // </EndpointByMethod>
@@ -587,11 +594,11 @@ export class ApiClient {
   }
 
   ${Object.entries(byMethods)
-      .map(([method, endpointByMethod]) => {
-        const capitalizedMethod = capitalize(method);
+    .map(([method, endpointByMethod]) => {
+      const capitalizedMethod = capitalize(method);
 
-        return endpointByMethod.length
-          ? `// <ApiClient.${method}>
+      return endpointByMethod.length
+        ? `// <ApiClient.${method}>
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
       ...params: MaybeOptionalArg<
@@ -618,9 +625,9 @@ export class ApiClient {
     }
     // </ApiClient.${method}>
     `
-          : "";
-      })
-      .join("\n")}
+        : "";
+    })
+    .join("\n")}
 
     // <ApiClient.request>
     /**

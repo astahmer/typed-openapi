@@ -17,7 +17,7 @@ const openApiDoc: OpenAPIObject = {
             content: {
               "application/json": {
                 schema: {
-                  type: "string"
+                  type: "string",
                 },
               },
             },
@@ -70,11 +70,14 @@ describe("namespaced header ref is wrong", () => {
     expect(endpoint).toBeDefined();
 
     const response200 = endpoint?.responseHeaders?.["200"];
-    expect(response200?.value).toBe('{ "X-RateLimit-Limit": number, "X-RateLimit-Remaining": number, "X-RateLimit-Reset": number }')
-
+    expect(response200?.value).toBe(
+      '{ "X-RateLimit-Limit": number, "X-RateLimit-Remaining": number, "X-RateLimit-Reset": number }',
+    );
 
     const file = generateFile(result);
     const output = await prettify(file);
-    expect(output).toContain(`{ "X-RateLimit-Limit": number; "X-RateLimit-Remaining": number; "X-RateLimit-Reset": number }`);
+    expect(output).toContain(
+      `{ "X-RateLimit-Limit": number; "X-RateLimit-Remaining": number; "X-RateLimit-Reset": number }`,
+    );
   });
 });

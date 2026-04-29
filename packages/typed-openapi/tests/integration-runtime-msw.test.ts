@@ -496,16 +496,16 @@ describe("Example API Client", () => {
       // abort immediately
       controller.abort();
 
-      await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`[AbortError: This operation was aborted]`)
+      await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`[AbortError: This operation was aborted]`);
     });
 
     it("should allow aborting query requests via AbortController signal (tanstack)", async () => {
-      const client = new QueryClient()
-      const queryOptions =tanstack.get("/pet/{petId}",{path: {petId: 111}}).queryOptions
-      const promise = client.fetchQuery(queryOptions)
-      await client.cancelQueries(queryOptions)
+      const client = new QueryClient();
+      const queryOptions = tanstack.get("/pet/{petId}", { path: { petId: 111 } }).queryOptions;
+      const promise = client.fetchQuery(queryOptions);
+      await client.cancelQueries(queryOptions);
 
-      await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: CancelledError]`)
+      await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: CancelledError]`);
     });
 
     it("should throw when throwOnStatusError is true (tanstack)", async () => {

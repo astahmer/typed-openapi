@@ -9,13 +9,13 @@ paths:
       operationId: get_users
       summary: Returns a list of users.
       responses:
-        '200':
+        "200":
           description: A JSON array of user names
           content:
             application/json:
-              schema: 
+              schema:
                 type: array
-                items: 
+                items:
                   type: string
     post:
       operationId: very_very_very_very_very_very_very_very_very_very_long
@@ -29,6 +29,6 @@ paths:
               properties:
                 username:
                   type: string
-      responses: 
-        '201':
+      responses:
+        "201":
           description: Created

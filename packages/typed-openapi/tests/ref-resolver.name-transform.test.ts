@@ -7,10 +7,10 @@ const openApiDoc = {
   info: { title: "Test", version: "1.0.0" },
   components: {
     schemas: {
-      "import": { type: "string" },
-      "set": { type: "object", properties: { id: { type: "string" } } },
-      "Record": { type: "number" },
-      "normal": { type: "boolean" },
+      import: { type: "string" },
+      set: { type: "object", properties: { id: { type: "string" } } },
+      Record: { type: "number" },
+      normal: { type: "boolean" },
     },
   },
 } as any;
@@ -20,7 +20,7 @@ describe("createRefResolver with NameTransformOptions", () => {
     const resolver = createRefResolver(openApiDoc, tsFactory, {
       transformSchemaName: (name) => `X_${name}_X`,
     });
-    const infos = Array.from(resolver.infos.values()).map(i => i.normalized);
+    const infos = Array.from(resolver.infos.values()).map((i) => i.normalized);
     expect(infos).toMatchInlineSnapshot(`
       [
         "X_import_X",
@@ -33,7 +33,7 @@ describe("createRefResolver with NameTransformOptions", () => {
 
   it("applies no transform and still avoids reserved words and invalid chars", () => {
     const resolver = createRefResolver(openApiDoc, tsFactory);
-    const infos = Array.from(resolver.infos.values()).map(i => i.normalized);
+    const infos = Array.from(resolver.infos.values()).map((i) => i.normalized);
     expect(infos).toMatchInlineSnapshot(`
       [
         "Schema_import",

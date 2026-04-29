@@ -38,20 +38,20 @@ const fetcher: Fetcher["fetch"] = async (input) => {
     : undefined;
 
   if (VALIDATE_REQUESTS) {
-      try {
-        // Example for Zod validation:
-        // const endpoint = EndpointByMethod[input.method as keyof typeof EndpointByMethod];
-        // const pathSchema = endpoint?.[input.url as keyof typeof endpoint];
-        // if (pathSchema?.body) {
-        //   pathSchema.body.parse(input.parameters?.body);
-        // }
+    try {
+      // Example for Zod validation:
+      // const endpoint = EndpointByMethod[input.method as keyof typeof EndpointByMethod];
+      // const pathSchema = endpoint?.[input.url as keyof typeof endpoint];
+      // if (pathSchema?.body) {
+      //   pathSchema.body.parse(input.parameters?.body);
+      // }
 
-        // For now, just log that validation would happen here
-        console.debug("Request validation would happen here for:", input.method, input.url);
-      } catch (error) {
-        throw new ValidationError("Request body validation failed", "request", error);
-      }
+      // For now, just log that validation would happen here
+      console.debug("Request validation would happen here for:", input.method, input.url);
+    } catch (error) {
+      throw new ValidationError("Request body validation failed", "request", error);
     }
+  }
 
   if (body) {
     headers.set("Content-Type", "application/json");

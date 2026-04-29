@@ -5,8 +5,8 @@ This document shows how to use the generated TanStack Query client with the new 
 ## Basic Setup
 
 ```typescript
-import { TanstackQueryApiClient } from './generated/tanstack-query-client';
-import { createApiClient } from './generated/api-client';
+import { TanstackQueryApiClient } from "./generated/tanstack-query-client";
+import { createApiClient } from "./generated/api-client";
 
 // Create the API client and TanStack Query wrapper
 const apiClient = createApiClient(fetch);
@@ -29,7 +29,7 @@ const createUser = useMutation(basicMutation.mutationOptions);
 
 ```typescript
 const withResponseMutation = queryClient.mutation("post", "/users", {
-  withResponse: true
+  withResponse: true,
 });
 // Type: { mutationFn: (params) => Promise<SafeApiResponse<UserEndpoint>> }
 
@@ -38,17 +38,17 @@ const createUser = useMutation({
   ...withResponseMutation.mutationOptions,
   onSuccess: (response) => {
     if (response.ok) {
-      console.log('User created:', response.data);
-      console.log('Status:', response.status);
-      console.log('Headers:', response.headers.get('location'));
+      console.log("User created:", response.data);
+      console.log("Status:", response.status);
+      console.log("Headers:", response.headers.get("location"));
     } else {
       if (response.status === 400) {
-        console.error('Validation error:', response.data);
+        console.error("Validation error:", response.data);
       } else if (response.status === 409) {
-        console.error('User already exists:', response.data);
+        console.error("User already exists:", response.data);
       }
     }
-  }
+  },
 });
 ```
 
@@ -60,8 +60,8 @@ const customSelectMutation = queryClient.mutation("post", "/users", {
   selectFn: (user) => ({
     userId: user.id,
     userName: user.name,
-    isActive: true
-  })
+    isActive: true,
+  }),
 });
 // Type: { mutationFn: (params) => Promise<{ userId: string, userName: string, isActive: boolean }> }
 ```
@@ -76,16 +76,16 @@ const advancedMutation = queryClient.mutation("post", "/users", {
       return {
         success: true,
         user: response.data,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     } else {
       return {
         success: false,
         error: response.data,
-        statusCode: response.status
+        statusCode: response.status,
       };
     }
-  }
+  },
 });
 // Type: { mutationFn: (params) => Promise<{ success: boolean, user?: User, error?: ErrorType, statusCode?: number, timestamp?: string }> }
 ```
@@ -161,9 +161,11 @@ function UserForm() {
 
 ## Error Handling
 
-The TanStack Query client provides automatic error type inference based on your OpenAPI error schemas. For detailed examples, see [TANSTACK_QUERY_ERROR_HANDLING.md](./TANSTACK_QUERY_ERROR_HANDLING.md).
+The TanStack Query client provides automatic error type inference based on your OpenAPI error schemas. For detailed
+examples, see [TANSTACK_QUERY_ERROR_HANDLING.md](./TANSTACK_QUERY_ERROR_HANDLING.md).
 
 Key features:
+
 - **Type-safe errors**: Errors are typed as `{ status: number, data: ErrorSchemaType }`
 - **Status code discrimination**: Different error types based on HTTP status codes
 - **Full IDE support**: Autocomplete and type checking for error properties

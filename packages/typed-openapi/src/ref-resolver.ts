@@ -61,7 +61,9 @@ export const createRefResolver = (
     const name = split[split.length - 1]!;
     const kind = normalizedPath.split(".")[1] as RefInfo["kind"];
     const baseNormalized = sanitizeName(
-      nameTransform?.transformSchemaName ? nameTransform.transformSchemaName(normalizeString(name)) : normalizeString(name),
+      nameTransform?.transformSchemaName
+        ? nameTransform.transformSchemaName(normalizeString(name))
+        : normalizeString(name),
       "schema",
     );
 
@@ -144,7 +146,7 @@ export const createRefResolver = (
   };
 };
 
-export interface RefResolver extends ReturnType<typeof createRefResolver> { }
+export interface RefResolver extends ReturnType<typeof createRefResolver> {}
 
 const setSchemaDependencies = (schema: LibSchemaObject, deps: Set<string>) => {
   const visit = (schema: LibSchemaObject | ReferenceObject): void => {

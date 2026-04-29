@@ -175,9 +175,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
     }
 
     if (!schemaType) {
-      const nullableKey = Object.keys(schema).filter(
-        key => !['nullable'].includes(key)
-      );
+      const nullableKey = Object.keys(schema).filter((key) => !["nullable"].includes(key));
 
       if (nullableKey.length === 0 && (schema as LibSchemaObject).nullable) {
         return t.literal("null");

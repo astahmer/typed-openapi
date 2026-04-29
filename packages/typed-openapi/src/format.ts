@@ -13,11 +13,7 @@ export type PrettifyOptions = OxcFormatOptions & {
 const defaultFilePath = "generated.ts";
 const require = createRequire(import.meta.url);
 
-async function formatWithBundledOxfmt(
-  filePath: string,
-  input: string,
-  options?: OxcFormatOptions,
-): Promise<string> {
+async function formatWithBundledOxfmt(filePath: string, input: string, options?: OxcFormatOptions): Promise<string> {
   const packageJsonPath = require.resolve("oxfmt/package.json");
   const packageRoot = dirname(packageJsonPath);
   const indexSource = await readFile(join(packageRoot, "dist", "index.js"), "utf8");

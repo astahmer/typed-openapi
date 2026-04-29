@@ -190,5 +190,5 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   }
 `;
 
-    return file;
+  return file;
 };
