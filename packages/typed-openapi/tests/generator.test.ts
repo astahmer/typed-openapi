@@ -783,6 +783,49 @@ describe("generator", () => {
     `);
   });
 
+  test("prefixes schema refs inside required parameters", async ({ expect }) => {
+    const openApiDoc: OpenAPIObject = {
+      openapi: "3.0.0",
+      info: { title: "Test API", version: "1.0.0" },
+      components: {
+        schemas: {
+          access_identifier: { type: "string" },
+          access_uuid: { type: "string" },
+        },
+      },
+      paths: {
+        "/apps/{app_id}": {
+          get: {
+            operationId: "getApp",
+            parameters: [
+              {
+                name: "app_id",
+                in: "path",
+                required: true,
+                schema: {
+                  oneOf: [
+                    { $ref: "#/components/schemas/access_identifier" },
+                    { $ref: "#/components/schemas/access_uuid" },
+                  ],
+                },
+              },
+            ],
+            responses: {
+              200: {
+                description: "Success",
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const output = await prettify(generateFile(mapOpenApiEndpoints(openApiDoc)));
+    expect(output.replace(/\s+/g, " ")).toContain(
+      "path: { app_id: Schemas.access_identifier | Schemas.access_uuid }",
+    );
+  });
+
   test("petstore schema only", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
     expect(await prettify(generateFile({...mapOpenApiEndpoints(openApiDoc), schemasOnly: true}))).toMatchInlineSnapshot(`

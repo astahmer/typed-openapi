@@ -149,31 +149,77 @@ const generateSchemaList = ({ refs, runtime }: GeneratorContext) => {
   );
 };
 
-const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, AnyBox>, ctx: GeneratorContext) => {
-  if (parameters instanceof Box) {
-    if (ctx.runtime === "none") {
-      return parameters.recompute((box) => {
-        if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
-          box.value = `Schemas.${box.value}`;
-        }
-        return box;
-      }).value;
+const boxToString = (box: Box<AnyBoxDef>, ctx: GeneratorContext): string => {
+  if (ctx.runtime !== "none") {
+    return box.value;
+  }
+
+  const renderValue = (value: any): string => {
+    if (typeof value === "string") {
+      return value;
     }
 
-    return parameters.value;
+    if (Box.isBox(value)) {
+      return boxToString(value, ctx);
+    }
+
+    return value.value;
+  };
+
+  if (Box.isUnion(box)) {
+    return `(${box.params.types.map((type) => renderValue(type)).join(" | ")})`;
+  }
+
+  if (Box.isIntersection(box)) {
+    return `(${box.params.types.map((type) => renderValue(type)).join(" & ")})`;
+  }
+
+  if (Box.isArray(box)) {
+    return `Array<${renderValue(box.params.type)}>`;
+  }
+
+  if (Box.isOptional(box)) {
+    return `${renderValue(box.params.type)} | undefined`;
+  }
+
+  if (Box.isObject(box)) {
+    const propsString = Object.entries(box.params.props)
+      .map(([prop, type]) => {
+        const isOptional = typeof type !== "string" && Box.isBox(type) && Box.isOptional(type);
+        return `${wrapWithQuotesIfNeeded(prop)}${isOptional ? "?" : ""}: ${renderValue(type)}`;
+      })
+      .join(", ");
+
+    return `{ ${propsString} }`;
+  }
+
+  if (Box.isReference(box)) {
+    if (!box.params.generics) {
+      return box.value === "null" ? box.value : `Schemas.${box.value}`;
+    }
+
+    return `${box.params.name}<${box.params.generics.map((type) => renderValue(type)).join(", ")}>`;
+  }
+
+  return box.value;
+};
+
+const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, AnyBox>, ctx: GeneratorContext) => {
+  if (parameters instanceof Box) {
+    return boxToString(parameters, ctx);
   }
 
   let str = "{";
   for (const [key, box] of Object.entries(parameters)) {
-    str += `${wrapWithQuotesIfNeeded(key)}${box.type === "optional" ? "?" : ""}: ${box.value},\n`;
+    str += `${wrapWithQuotesIfNeeded(key)}${box.type === "optional" ? "?" : ""}: ${boxToString(box, ctx)},\n`;
   }
   return str + "}";
 };
 
-const responseHeadersObjectToString = (responseHeaders: Record<string, Box<BoxObject>>) => {
+const responseHeadersObjectToString = (responseHeaders: Record<string, Box<BoxObject>>, ctx: GeneratorContext) => {
   let str = "{";
   for (const [key, responseHeader] of Object.entries(responseHeaders)) {
-    str += `${wrapWithQuotesIfNeeded(key.toLowerCase())}: ${responseHeader.value},\n`;
+    str += `${wrapWithQuotesIfNeeded(key.toLowerCase())}: ${boxToString(responseHeader, ctx)},\n`;
   }
   return str + "}";
 };
@@ -181,16 +227,7 @@ const responseHeadersObjectToString = (responseHeaders: Record<string, Box<BoxOb
 const generateResponsesObject = (responses: Record<string, AnyBox>, ctx: GeneratorContext) => {
   let str = "{";
   for (const [statusCode, responseType] of Object.entries(responses)) {
-    const value =
-      ctx.runtime === "none"
-        ? responseType.recompute((box) => {
-            if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
-              box.value = `Schemas.${box.value}`;
-            }
-
-            return box;
-          }).value
-        : responseType.value;
+    const value = boxToString(responseType, ctx);
     str += `${wrapWithQuotesIfNeeded(statusCode)}: ${value},\n`;
   }
   return str + "}";
@@ -216,24 +253,14 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
         ${parameters.header ? `header:  ${parameterObjectToString(parameters.header, ctx)},` : ""}
         ${
           parameters.body
-            ? `body:  ${parameterObjectToString(
-                ctx.runtime === "none"
-                  ? parameters.body.recompute((box) => {
-                      if (Box.isReference(box) && !box.params.generics) {
-                        box.value = `Schemas.${box.value}`;
-                      }
-                      return box;
-                    })
-                  : parameters.body,
-                ctx,
-              )},`
+            ? `body:  ${parameterObjectToString(parameters.body, ctx)},`
             : ""
         }
           }`
           : "parameters: never,"
       }
       ${endpoint.responses ? `responses: ${generateResponsesObject(endpoint.responses, ctx)},` : ""}
-      ${endpoint.responseHeaders ? `responseHeaders: ${responseHeadersObjectToString(endpoint.responseHeaders)},` : ""}
+      ${endpoint.responseHeaders ? `responseHeaders: ${responseHeadersObjectToString(endpoint.responseHeaders, ctx)},` : ""}
     }\n`;
   });
 
@@ -327,7 +354,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
 
 export interface Fetcher {
     decodePathParams?: (path: string, pathParams: Record<string, string>) => string
-    encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams
+  encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams
     //
     fetch: (input: {
       method: Method;
