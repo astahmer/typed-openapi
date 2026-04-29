@@ -346,6 +346,34 @@ test("getSchemaBox", () => {
     }
   `);
 
+  expect(getSchemaBox({ oneOf: [] })).toMatchInlineSnapshot(`
+    {
+      "type": "union",
+      "value": "never",
+    }
+  `);
+
+  expect(getSchemaBox({ anyOf: [] })).toMatchInlineSnapshot(`
+    {
+      "type": "union",
+      "value": "never",
+    }
+  `);
+
+  expect(getSchemaBox({ allOf: [] })).toMatchInlineSnapshot(`
+    {
+      "type": "intersection",
+      "value": "unknown",
+    }
+  `);
+
+  expect(getSchemaBox({ type: "string", enum: [] })).toMatchInlineSnapshot(`
+    {
+      "type": "union",
+      "value": "never",
+    }
+  `);
+
   expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
     `
     {
