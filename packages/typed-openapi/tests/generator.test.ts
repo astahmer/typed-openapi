@@ -875,7 +875,7 @@ describe("generator", () => {
 
   test("petstore schema only", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
-    expect(await prettify(generateFile({...mapOpenApiEndpoints(openApiDoc), schemasOnly: true}))).toMatchInlineSnapshot(`
+    expect(await prettify(generateFile({ ...mapOpenApiEndpoints(openApiDoc), schemasOnly: true }))).toMatchInlineSnapshot(`
       "export namespace Schemas {
         // <Schemas>
         export type Order = Partial<{
