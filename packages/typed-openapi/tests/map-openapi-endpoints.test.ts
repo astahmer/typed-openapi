@@ -2233,7 +2233,7 @@ describe("map-openapi-endpoints", () => {
             "requestFormat": "json",
             "responses": {
               "200": {
-                "type": "literal",
+                "type": "ref",
                 "value": "Record<string, number>",
               },
             },
@@ -3148,7 +3148,7 @@ describe("map-openapi-endpoints", () => {
             "#/components/requestBodies/Pet" => {
               "kind": "requestBodies",
               "name": "Pet",
-              "normalized": "Pet",
+              "normalized": "Pet_requestBodies",
               "ref": "#/components/requestBodies/Pet",
             },
             "#/components/requestBodies/UserArray" => {

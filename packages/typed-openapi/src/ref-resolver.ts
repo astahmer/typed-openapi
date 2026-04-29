@@ -52,18 +52,33 @@ export const createRefResolver = (
     const normalizedPath = path.replace("#/", "").replace("#", "").replaceAll("/", ".");
     const map = get(doc, normalizedPath) ?? ({} as any);
 
+    const existingInfo = byRef.get(correctRef);
+    if (existingInfo) {
+      return map[split[split.length - 1]!] as T;
+    }
+
     // "#/components/schemas/Something.jsonld" -> "Something.jsonld"
     const name = split[split.length - 1]!;
-    let normalized = normalizeString(name);
-    if (nameTransform?.transformSchemaName) {
-      normalized = nameTransform.transformSchemaName(normalized);
+    const kind = normalizedPath.split(".")[1] as RefInfo["kind"];
+    const baseNormalized = sanitizeName(
+      nameTransform?.transformSchemaName ? nameTransform.transformSchemaName(normalizeString(name)) : normalizeString(name),
+      "schema",
+    );
+
+    let normalized = baseNormalized;
+    if (refByName.has(normalized) && refByName.get(normalized) !== correctRef) {
+      const kindSuffix = `${baseNormalized}_${kind}`;
+      normalized = kindSuffix;
+      let suffix = 2;
+      while (refByName.has(normalized) && refByName.get(normalized) !== correctRef) {
+        normalized = `${kindSuffix}_${suffix++}`;
+      }
     }
-    normalized = sanitizeName(normalized, "schema");
 
     nameByRef.set(correctRef, normalized);
     refByName.set(normalized, correctRef);
 
-    const infos = { ref: correctRef, name, normalized, kind: normalizedPath.split(".")[1] as RefInfo["kind"] };
+    const infos = { ref: correctRef, name, normalized, kind };
     byRef.set(infos.ref, infos);
     byNormalized.set(infos.normalized, infos);
 
@@ -129,7 +144,7 @@ export const createRefResolver = (
   };
 };
 
-export interface RefResolver extends ReturnType<typeof createRefResolver> {}
+export interface RefResolver extends ReturnType<typeof createRefResolver> { }
 
 const setSchemaDependencies = (schema: LibSchemaObject, deps: Set<string>) => {
   const visit = (schema: LibSchemaObject | ReferenceObject): void => {

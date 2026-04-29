@@ -341,7 +341,7 @@ export const EndpointSettings = z.object({
 
 export type NetworkingConfig = z.infer<typeof NetworkingConfig>;
 export const NetworkingConfig = z.object({
-  EndpointsConfig: z.record(z.unknown()).optional(),
+  EndpointsConfig: z.record(EndpointSettings).optional(),
 });
 
 export type Address = z.infer<typeof Address>;
@@ -369,7 +369,7 @@ export const NetworkSettings = z.object({
   IPPrefixLen: z.number().optional(),
   IPv6Gateway: z.string().optional(),
   MacAddress: z.string().optional(),
-  Networks: z.record(z.unknown()).optional(),
+  Networks: z.record(EndpointSettings).optional(),
 });
 
 export type GraphDriverData = z.infer<typeof GraphDriverData>;
@@ -601,7 +601,7 @@ export const Network = z.object({
   Internal: z.boolean().optional(),
   Attachable: z.boolean().optional(),
   Ingress: z.boolean().optional(),
-  Containers: z.record(z.unknown()).optional(),
+  Containers: z.record(NetworkContainer).optional(),
   Options: z.record(z.string()).optional(),
   Labels: z.record(z.string()).optional(),
 });
@@ -1321,7 +1321,7 @@ export const ContainerSummary = z.object({
     .optional(),
   NetworkSettings: z
     .object({
-      Networks: z.record(z.unknown()).optional(),
+      Networks: z.record(EndpointSettings).optional(),
     })
     .optional(),
   Mounts: z.array(MountPoint).optional(),
@@ -1467,7 +1467,7 @@ export const RegistryServiceConfig = z.union([
     AllowNondistributableArtifactsCIDRs: z.array(z.string()).optional(),
     AllowNondistributableArtifactsHostnames: z.array(z.string()).optional(),
     InsecureRegistryCIDRs: z.array(z.string()).optional(),
-    IndexConfigs: z.record(z.unknown()).optional(),
+    IndexConfigs: z.record(IndexInfo).optional(),
     Mirrors: z.array(z.string()).optional(),
   }),
   z.null(),
@@ -1563,7 +1563,7 @@ export const SystemInfo = z.object({
   Labels: z.array(z.string()).optional(),
   ExperimentalBuild: z.boolean().optional(),
   ServerVersion: z.string().optional(),
-  Runtimes: z.record(z.unknown()).optional(),
+  Runtimes: z.record(Runtime).optional(),
   DefaultRuntime: z.string().optional(),
   Swarm: SwarmInfo.optional(),
   LiveRestoreEnabled: z.boolean().optional(),

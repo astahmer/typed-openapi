@@ -28,6 +28,7 @@ export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
   successStatusCodes?: readonly number[];
   errorStatusCodes?: readonly number[];
   includeClient?: boolean;
+  jsdoc?: boolean;
 };
 type GeneratorContext = Required<GeneratorOptions>;
 
@@ -77,6 +78,25 @@ const replacerByRuntime = {
       ),
 };
 
+const shouldRenderDescriptionComments = (ctx: GeneratorContext) => ctx.jsdoc && ctx.runtime === "none";
+
+const escapeCommentText = (text: string) => text.replace(/\*\//g, "*\\/");
+
+const renderDescriptionComment = (description: string, indent = "") => {
+  const lines = description.trim().split(/\r?\n/);
+
+  return `${indent}/**\n${lines.map((line) => `${indent} * ${escapeCommentText(line)}`).join("\n")}\n${indent} */`;
+};
+
+const getSchemaDescription = (schema: Box<AnyBoxDef>["schema"]) => {
+  if (!schema || typeof schema !== "object") return undefined;
+  if ("description" in schema && typeof schema.description === "string") return schema.description;
+  return undefined;
+};
+
+const indentMultiline = (value: string, indent = "  ") =>
+  value.includes("\n") ? value.split("\n").map((line, index) => (index === 0 ? line : `${indent}${line}`)).join("\n") : value;
+
 export const generateFile = (options: GeneratorOptions) => {
   const ctx = {
     ...options,
@@ -84,6 +104,7 @@ export const generateFile = (options: GeneratorOptions) => {
     successStatusCodes: options.successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
     errorStatusCodes: options.errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES,
     includeClient: options.includeClient ?? true,
+    jsdoc: options.jsdoc ?? false,
   } as GeneratorContext;
 
   const schemaList = generateSchemaList(ctx);
@@ -95,29 +116,29 @@ export const generateFile = (options: GeneratorOptions) => {
     ctx.runtime === "none"
       ? (file: string) => file
       : (file: string) => {
-          const model = Codegen.TypeScriptToModel.Generate(file);
-          const transformer = runtimeValidationGenerator[ctx.runtime as Exclude<typeof ctx.runtime, "none">];
-          // tmp fix for typebox, there's currently a "// todo" only with Codegen.ModelToTypeBox.Generate
-          // https://github.com/sinclairzx81/typebox-codegen/blob/44d44d55932371b69f349331b1c8a60f5d760d9e/src/model/model-to-typebox.ts#L31
-          const generated = ctx.runtime === "typebox" ? Codegen.TypeScriptToTypeBox.Generate(file) : transformer(model);
+        const model = Codegen.TypeScriptToModel.Generate(file);
+        const transformer = runtimeValidationGenerator[ctx.runtime as Exclude<typeof ctx.runtime, "none">];
+        // tmp fix for typebox, there's currently a "// todo" only with Codegen.ModelToTypeBox.Generate
+        // https://github.com/sinclairzx81/typebox-codegen/blob/44d44d55932371b69f349331b1c8a60f5d760d9e/src/model/model-to-typebox.ts#L31
+        const generated = ctx.runtime === "typebox" ? Codegen.TypeScriptToTypeBox.Generate(file) : transformer(model);
 
-          let converted = "";
-          const match = generated.match(/(const __ENDPOINTS_START__ =)([\s\S]*?)(export type __ENDPOINTS_END__)/);
-          const content = match?.[2];
+        let converted = "";
+        const match = generated.match(/(const __ENDPOINTS_START__ =)([\s\S]*?)(export type __ENDPOINTS_END__)/);
+        const content = match?.[2];
 
-          if (content && ctx.runtime in replacerByRuntime) {
-            const before = generated.slice(0, generated.indexOf("export type __ENDPOINTS_START"));
-            converted =
-              before +
-              replacerByRuntime[ctx.runtime as keyof typeof replacerByRuntime](
-                content.slice(content.indexOf("export")),
-              );
-          } else {
-            converted = generated;
-          }
+        if (content && ctx.runtime in replacerByRuntime) {
+          const before = generated.slice(0, generated.indexOf("export type __ENDPOINTS_START"));
+          converted =
+            before +
+            replacerByRuntime[ctx.runtime as keyof typeof replacerByRuntime](
+              content.slice(content.indexOf("export")),
+            );
+        } else {
+          converted = generated;
+        }
 
-          return converted;
-        };
+        return converted;
+      };
 
   const file = `
   ${transform(schemaList + endpointSchemaList)}
@@ -128,7 +149,8 @@ export const generateFile = (options: GeneratorOptions) => {
   return file;
 };
 
-const generateSchemaList = ({ refs, runtime }: GeneratorContext) => {
+const generateSchemaList = (ctx: GeneratorContext) => {
+  const { refs, runtime } = ctx;
   let file = `
   ${runtime === "none" ? "export namespace Schemas {" : ""}
     // <Schemas>
@@ -137,7 +159,12 @@ const generateSchemaList = ({ refs, runtime }: GeneratorContext) => {
     if (!infos?.name) return;
     if (infos.kind !== "schemas") return;
 
-    file += `export type ${infos.normalized} = ${schema.value}\n`;
+    const description = shouldRenderDescriptionComments(ctx) ? getSchemaDescription(schema.schema) : undefined;
+    const schemaValue = shouldRenderDescriptionComments(ctx) && !Box.isReference(schema)
+      ? boxToString(schema, ctx, { prefixRefsWithSchemas: false })
+      : schema.value;
+
+    file += `${description ? `${renderDescriptionComment(description)}\n` : ""}export type ${infos.normalized} = ${schemaValue}\n`;
   });
 
   return (
@@ -149,31 +176,105 @@ const generateSchemaList = ({ refs, runtime }: GeneratorContext) => {
   );
 };
 
-const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, AnyBox>, ctx: GeneratorContext) => {
-  if (parameters instanceof Box) {
-    if (ctx.runtime === "none") {
-      return parameters.recompute((box) => {
-        if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
-          box.value = `Schemas.${box.value}`;
-        }
-        return box;
-      }).value;
+const boxToString = (
+  box: Box<AnyBoxDef>,
+  ctx: GeneratorContext,
+  options: { prefixRefsWithSchemas?: boolean } = {},
+): string => {
+  const prefixRefsWithSchemas = options.prefixRefsWithSchemas ?? true;
+
+  if (ctx.runtime !== "none") {
+    return box.value;
+  }
+
+  const renderValue = (value: any): string => {
+    if (typeof value === "string") {
+      return value;
     }
 
-    return parameters.value;
+    if (Box.isBox(value)) {
+      return boxToString(value, ctx, options);
+    }
+
+    return value.value;
+  };
+
+  if (Box.isUnion(box)) {
+    return `(${box.params.types.map((type) => renderValue(type)).join(" | ")})`;
+  }
+
+  if (Box.isIntersection(box)) {
+    return `(${box.params.types.map((type) => renderValue(type)).join(" & ")})`;
+  }
+
+  if (Box.isArray(box)) {
+    return `Array<${renderValue(box.params.type)}>`;
+  }
+
+  if (Box.isOptional(box)) {
+    return `${renderValue(box.params.type)} | undefined`;
+  }
+
+  if (Box.isObject(box)) {
+    const renderedProps = Object.entries(box.params.props).map(([prop, type]) => {
+      const isOptional = typeof type !== "string" && Box.isBox(type) && Box.isOptional(type);
+      const renderedValue = indentMultiline(renderValue(type));
+      const description = shouldRenderDescriptionComments(ctx) && typeof type !== "string" && Box.isBox(type)
+        ? getSchemaDescription(type.schema)
+        : undefined;
+
+      return {
+        description,
+        line: `${wrapWithQuotesIfNeeded(prop)}${isOptional ? "?" : ""}: ${renderedValue};`,
+      };
+    });
+
+    const shouldRenderMultiline = shouldRenderDescriptionComments(ctx) && renderedProps.some(({ description, line }) => description || line.includes("\n"));
+
+    if (!shouldRenderMultiline) {
+      const propsString = renderedProps.map(({ line }) => line.slice(0, -1)).join(", ");
+      return `{ ${propsString} }`;
+    }
+
+    const propsString = renderedProps
+      .map(({ description, line }) => {
+        const comment = description ? `${renderDescriptionComment(description, "  ")}\n` : "";
+        return `${comment}  ${line}`;
+      })
+      .join("\n");
+
+    return `{
+${propsString}
+}`;
+  }
+
+  if (Box.isReference(box)) {
+    if (!box.params.generics) {
+      return box.value === "null" ? box.value : prefixRefsWithSchemas ? `Schemas.${box.value}` : box.value;
+    }
+
+    return `${box.params.name}<${box.params.generics.map((type) => renderValue(type)).join(", ")}>`;
+  }
+
+  return box.value;
+};
+
+const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, AnyBox>, ctx: GeneratorContext) => {
+  if (parameters instanceof Box) {
+    return boxToString(parameters, ctx);
   }
 
   let str = "{";
   for (const [key, box] of Object.entries(parameters)) {
-    str += `${wrapWithQuotesIfNeeded(key)}${box.type === "optional" ? "?" : ""}: ${box.value},\n`;
+    str += `${wrapWithQuotesIfNeeded(key)}${box.type === "optional" ? "?" : ""}: ${indentMultiline(boxToString(box, ctx))},\n`;
   }
   return str + "}";
 };
 
-const responseHeadersObjectToString = (responseHeaders: Record<string, Box<BoxObject>>) => {
+const responseHeadersObjectToString = (responseHeaders: Record<string, Box<BoxObject>>, ctx: GeneratorContext) => {
   let str = "{";
   for (const [key, responseHeader] of Object.entries(responseHeaders)) {
-    str += `${wrapWithQuotesIfNeeded(key.toLowerCase())}: ${responseHeader.value},\n`;
+    str += `${wrapWithQuotesIfNeeded(key.toLowerCase())}: ${indentMultiline(boxToString(responseHeader, ctx))},\n`;
   }
   return str + "}";
 };
@@ -181,16 +282,7 @@ const responseHeadersObjectToString = (responseHeaders: Record<string, Box<BoxOb
 const generateResponsesObject = (responses: Record<string, AnyBox>, ctx: GeneratorContext) => {
   let str = "{";
   for (const [statusCode, responseType] of Object.entries(responses)) {
-    const value =
-      ctx.runtime === "none"
-        ? responseType.recompute((box) => {
-            if (Box.isReference(box) && !box.params.generics && box.value !== "null") {
-              box.value = `Schemas.${box.value}`;
-            }
-
-            return box;
-          }).value
-        : responseType.value;
+    const value = indentMultiline(boxToString(responseType, ctx));
     str += `${wrapWithQuotesIfNeeded(statusCode)}: ${value},\n`;
   }
   return str + "}";
@@ -204,36 +296,26 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
   `;
   ctx.endpointList.map((endpoint) => {
     const parameters = endpoint.parameters ?? {};
-    file += `export type ${endpoint.meta.alias} = {
+    const description = shouldRenderDescriptionComments(ctx) ? endpoint.operation.description : undefined;
+
+    file += `${description ? `${renderDescriptionComment(description)}\n` : ""}export type ${endpoint.meta.alias} = {
       method: "${endpoint.method.toUpperCase()}",
       path: "${endpoint.path}",
       requestFormat: "${endpoint.requestFormat}",
-      ${
-        endpoint.meta.hasParameters
-          ? `parameters: {
+      ${endpoint.meta.hasParameters
+        ? `parameters: {
             ${parameters.query ? `query:  ${parameterObjectToString(parameters.query, ctx)},` : ""}
         ${parameters.path ? `path:  ${parameterObjectToString(parameters.path, ctx)},` : ""}
         ${parameters.header ? `header:  ${parameterObjectToString(parameters.header, ctx)},` : ""}
-        ${
-          parameters.body
-            ? `body:  ${parameterObjectToString(
-                ctx.runtime === "none"
-                  ? parameters.body.recompute((box) => {
-                      if (Box.isReference(box) && !box.params.generics) {
-                        box.value = `Schemas.${box.value}`;
-                      }
-                      return box;
-                    })
-                  : parameters.body,
-                ctx,
-              )},`
-            : ""
+        ${parameters.body
+          ? `body:  ${parameterObjectToString(parameters.body, ctx)},`
+          : ""
         }
           }`
-          : "parameters: never,"
+        : "parameters: never,"
       }
       ${endpoint.responses ? `responses: ${generateResponsesObject(endpoint.responses, ctx)},` : ""}
-      ${endpoint.responseHeaders ? `responseHeaders: ${responseHeadersObjectToString(endpoint.responseHeaders)},` : ""}
+      ${endpoint.responseHeaders ? `responseHeaders: ${responseHeadersObjectToString(endpoint.responseHeaders, ctx)},` : ""}
     }\n`;
   });
 
@@ -255,16 +337,16 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
      // <EndpointByMethod>
      export ${ctx.runtime === "none" ? "type" : "const"} EndpointByMethod = {
      ${Object.entries(byMethods)
-       .map(([method, list]) => {
-         return `${method}: {
+      .map(([method, list]) => {
+        return `${method}: {
            ${list
-             .map(
-               (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
-             )
-             .join(",\n")}
+            .map(
+              (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
+            )
+            .join(",\n")}
          }`;
-       })
-       .join(",\n")}
+      })
+      .join(",\n")}
      }
      ${ctx.runtime === "none" ? "" : "export type EndpointByMethod = typeof EndpointByMethod;"}
      // </EndpointByMethod>
@@ -327,7 +409,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
 
 export interface Fetcher {
     decodePathParams?: (path: string, pathParams: Record<string, string>) => string
-    encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams
+  encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams
     //
     fetch: (input: {
       method: Method;
@@ -505,11 +587,11 @@ export class ApiClient {
   }
 
   ${Object.entries(byMethods)
-    .map(([method, endpointByMethod]) => {
-      const capitalizedMethod = capitalize(method);
+      .map(([method, endpointByMethod]) => {
+        const capitalizedMethod = capitalize(method);
 
-      return endpointByMethod.length
-        ? `// <ApiClient.${method}>
+        return endpointByMethod.length
+          ? `// <ApiClient.${method}>
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
       ...params: MaybeOptionalArg<
@@ -536,9 +618,9 @@ export class ApiClient {
     }
     // </ApiClient.${method}>
     `
-        : "";
-    })
-    .join("\n")}
+          : "";
+      })
+      .join("\n")}
 
     // <ApiClient.request>
     /**

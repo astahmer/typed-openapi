@@ -3,12 +3,17 @@ import { createFactory, unwrap } from "./box-factory.ts";
 import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
 
 export const tsFactory = createFactory({
-  union: (types) => `(${types.map(unwrap).join(" | ")})`,
-  intersection: (types) => `(${types.map(unwrap).join(" & ")})`,
+  union: (types) => (types.length ? `(${types.map(unwrap).join(" | ")})` : "never"),
+  intersection: (types) => (types.length ? `(${types.map(unwrap).join(" & ")})` : "unknown"),
   array: (type) => `Array<${unwrap(type)}>`,
   optional: (type) => `${unwrap(type)} | undefined`,
   reference: (name, typeArgs) => `${name}${typeArgs ? `<${typeArgs.map(unwrap).join(", ")}>` : ""}`,
-  literal: (value) => value.toString(),
+  literal: (value) => {
+    if (typeof value === "string") return value;
+    if (Box.isBox(value)) return unwrap(value);
+    if (Array.isArray(value) || typeof value === "object") return JSON.stringify(value);
+    return String(value);
+  },
   string: () => "string" as const,
   number: () => "number" as const,
   boolean: () => "boolean" as const,

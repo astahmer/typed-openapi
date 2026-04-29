@@ -40,6 +40,7 @@ export const optionsSchema = type({
   }),
   schemasOnly: "boolean",
   "includeClient?": "boolean | 'true' | 'false'",
+  "jsdoc?": "boolean | 'true' | 'false'",
   "successStatusCodes?": "string",
   "errorStatusCodes?": "string",
 });
@@ -79,6 +80,7 @@ export async function generateClientFiles(input: string, options: GenerateClient
 
   // Convert string boolean to actual boolean
   const includeClient = parseBooleanOption(options.includeClient);
+  const jsdoc = parseBooleanOption(options.jsdoc) ?? true;
   const shouldFormat = parseBooleanOption(options.format) ?? false;
 
   const generatorOptions: GeneratorOptions = {
@@ -87,6 +89,7 @@ export async function generateClientFiles(input: string, options: GenerateClient
     schemasOnly: options.schemasOnly,
     nameTransform: options.nameTransform,
     includeClient: includeClient ?? true,
+    jsdoc,
     successStatusCodes: successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
     errorStatusCodes: errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES,
   };

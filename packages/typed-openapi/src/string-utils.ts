@@ -13,10 +13,10 @@ export function normalizeString(text: string) {
     .replace(/--+/g, "-"); // Replace multiple - with single -
 }
 
-const onlyWordRegex = /^\w+$/;
+const barePropertyNameRegex = /^(?:[A-Za-z_]\w*|\d+)$/;
 export const wrapWithQuotesIfNeeded = (str: string) => {
   if (str[0] === '"' && str[str.length - 1] === '"') return str;
-  if (onlyWordRegex.test(str)) {
+  if (barePropertyNameRegex.test(str)) {
     return str;
   }
 

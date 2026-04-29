@@ -389,7 +389,7 @@ export const EndpointSettings = Type.Partial(
 export type NetworkingConfig = Static<typeof NetworkingConfig>;
 export const NetworkingConfig = Type.Partial(
   Type.Object({
-    EndpointsConfig: Type.Record(Type.String(), Type.Unknown()),
+    EndpointsConfig: Type.Record(Type.String(), EndpointSettings),
   }),
 );
 
@@ -421,7 +421,7 @@ export const NetworkSettings = Type.Partial(
     IPPrefixLen: Type.Number(),
     IPv6Gateway: Type.String(),
     MacAddress: Type.String(),
-    Networks: Type.Record(Type.String(), Type.Unknown()),
+    Networks: Type.Record(Type.String(), EndpointSettings),
   }),
 );
 
@@ -678,7 +678,7 @@ export const Network = Type.Partial(
     Internal: Type.Boolean(),
     Attachable: Type.Boolean(),
     Ingress: Type.Boolean(),
-    Containers: Type.Record(Type.String(), Type.Unknown()),
+    Containers: Type.Record(Type.String(), NetworkContainer),
     Options: Type.Record(Type.String(), Type.String()),
     Labels: Type.Record(Type.String(), Type.String()),
   }),
@@ -1466,7 +1466,7 @@ export const ContainerSummary = Type.Partial(
     ),
     NetworkSettings: Type.Partial(
       Type.Object({
-        Networks: Type.Record(Type.String(), Type.Unknown()),
+        Networks: Type.Record(Type.String(), EndpointSettings),
       }),
     ),
     Mounts: Type.Array(MountPoint),
@@ -1628,7 +1628,7 @@ export const RegistryServiceConfig = Type.Union([
       AllowNondistributableArtifactsCIDRs: Type.Array(Type.String()),
       AllowNondistributableArtifactsHostnames: Type.Array(Type.String()),
       InsecureRegistryCIDRs: Type.Array(Type.String()),
-      IndexConfigs: Type.Record(Type.String(), Type.Unknown()),
+      IndexConfigs: Type.Record(Type.String(), IndexInfo),
       Mirrors: Type.Array(Type.String()),
     }),
   ),
@@ -1734,7 +1734,7 @@ export const SystemInfo = Type.Partial(
     Labels: Type.Array(Type.String()),
     ExperimentalBuild: Type.Boolean(),
     ServerVersion: Type.String(),
-    Runtimes: Type.Record(Type.String(), Type.Unknown()),
+    Runtimes: Type.Record(Type.String(), Runtime),
     DefaultRuntime: Type.String(),
     Swarm: SwarmInfo,
     LiveRestoreEnabled: Type.Boolean(),

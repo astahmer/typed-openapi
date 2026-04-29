@@ -32,6 +32,25 @@ describe("generator", () => {
     `);
     });
 
+    test("keeps colliding schema names unique", () => {
+      const resolver = createRefResolver(
+        {
+          openapi: "3.0.0",
+          info: { title: "Test", version: "1.0.0" },
+          components: {
+            schemas: {
+              "foo-bar": { type: "string" },
+              foo_bar: { type: "number" },
+            },
+          },
+        } as any,
+        tsFactory,
+      );
+
+      const infos = Array.from(resolver.infos.values()).map((i) => i.normalized);
+      expect(new Set(infos).size).toBe(infos.length);
+    });
+
     test("applies transformSchemaName and avoids reserved words", () => {
       const resolver = createRefResolver(openApiDoc, tsFactory, {
         transformSchemaName: (name) => `X_${name}_X`,
@@ -125,7 +144,7 @@ describe("generator", () => {
           "#/components/requestBodies/Pet" => {
             "kind": "requestBodies",
             "name": "Pet",
-            "normalized": "Pet",
+            "normalized": "Pet_requestBodies",
             "ref": "#/components/requestBodies/Pet",
           },
           "#/components/requestBodies/UserArray" => {

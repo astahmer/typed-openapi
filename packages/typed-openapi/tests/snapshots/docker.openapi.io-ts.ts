@@ -362,7 +362,7 @@ export const EndpointSettings = t.type({
 
 export type NetworkingConfig = t.TypeOf<typeof NetworkingConfig>;
 export const NetworkingConfig = t.type({
-  EndpointsConfig: t.union([t.undefined, t.record(t.string, t.unknown)]),
+  EndpointsConfig: t.union([t.undefined, t.record(t.string, EndpointSettings)]),
 });
 
 export type Address = t.TypeOf<typeof Address>;
@@ -390,7 +390,7 @@ export const NetworkSettings = t.type({
   IPPrefixLen: t.union([t.undefined, t.number]),
   IPv6Gateway: t.union([t.undefined, t.string]),
   MacAddress: t.union([t.undefined, t.string]),
-  Networks: t.union([t.undefined, t.record(t.string, t.unknown)]),
+  Networks: t.union([t.undefined, t.record(t.string, EndpointSettings)]),
 });
 
 export type GraphDriverData = t.TypeOf<typeof GraphDriverData>;
@@ -635,7 +635,7 @@ export const Network = t.type({
   Internal: t.union([t.undefined, t.boolean]),
   Attachable: t.union([t.undefined, t.boolean]),
   Ingress: t.union([t.undefined, t.boolean]),
-  Containers: t.union([t.undefined, t.record(t.string, t.unknown)]),
+  Containers: t.union([t.undefined, t.record(t.string, NetworkContainer)]),
   Options: t.union([t.undefined, t.record(t.string, t.string)]),
   Labels: t.union([t.undefined, t.record(t.string, t.string)]),
 });
@@ -1405,7 +1405,7 @@ export const ContainerSummary = t.type({
   NetworkSettings: t.union([
     t.undefined,
     t.type({
-      Networks: t.union([t.undefined, t.record(t.string, t.unknown)]),
+      Networks: t.union([t.undefined, t.record(t.string, EndpointSettings)]),
     }),
   ]),
   Mounts: t.union([t.undefined, t.array(MountPoint)]),
@@ -1554,7 +1554,7 @@ export const RegistryServiceConfig = t.union([
     AllowNondistributableArtifactsCIDRs: t.union([t.undefined, t.array(t.string)]),
     AllowNondistributableArtifactsHostnames: t.union([t.undefined, t.array(t.string)]),
     InsecureRegistryCIDRs: t.union([t.undefined, t.array(t.string)]),
-    IndexConfigs: t.union([t.undefined, t.record(t.string, t.unknown)]),
+    IndexConfigs: t.union([t.undefined, t.record(t.string, IndexInfo)]),
     Mirrors: t.union([t.undefined, t.array(t.string)]),
   }),
   t.null,
@@ -1650,7 +1650,7 @@ export const SystemInfo = t.type({
   Labels: t.union([t.undefined, t.array(t.string)]),
   ExperimentalBuild: t.union([t.undefined, t.boolean]),
   ServerVersion: t.union([t.undefined, t.string]),
-  Runtimes: t.union([t.undefined, t.record(t.string, t.unknown)]),
+  Runtimes: t.union([t.undefined, t.record(t.string, Runtime)]),
   DefaultRuntime: t.union([t.undefined, t.string]),
   Swarm: t.union([t.undefined, SwarmInfo]),
   LiveRestoreEnabled: t.union([t.undefined, t.boolean]),

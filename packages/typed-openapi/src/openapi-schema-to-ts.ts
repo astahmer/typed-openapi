@@ -123,13 +123,9 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
 
     if (schemaType === "object" || schema.properties || schema.additionalProperties) {
       if (!schema.properties) {
-        if (
-          schema.additionalProperties &&
-          !isReferenceObject(schema.additionalProperties) &&
-          typeof schema.additionalProperties !== "boolean"
-        ) {
+        if (schema.additionalProperties && typeof schema.additionalProperties !== "boolean") {
           const valueSchema = openApiSchemaToTs({ schema: schema.additionalProperties, ctx, meta });
-          return t.literal(`Record<string, ${valueSchema.value}>`);
+          return t.reference("Record", [t.string(), valueSchema]);
         }
 
         return t.literal("Record<string, unknown>");
@@ -151,9 +147,7 @@ export const openApiSchemaToTs = ({ schema, meta: _inheritedMeta, ctx }: Openapi
           });
         }
 
-        additionalProperties = t.literal(
-          `Record<string, ${additionalPropertiesType ? additionalPropertiesType.value : t.any().value}>`,
-        );
+        additionalProperties = t.reference("Record", [t.string(), additionalPropertiesType ?? t.any()]);
       }
 
       const hasRequiredArray = schema.required && schema.required.length > 0;
