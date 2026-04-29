@@ -1,5 +1,15 @@
 # typed-openapi
 
+## 2.2.6
+
+### Patch Changes
+
+- cdd33d6: Fix generated clients so array-valued enum literals and referenced `additionalProperties` render valid
+  TypeScript
+- cdd33d6: Fix generated response objects to quote digit-starting status keys like `4XX`, which avoids invalid
+  JavaScript syntax in emitted clients.
+- cdd33d6: add jsdoc flag
+
 ## 2.2.5
 
 ### Patch Changes
