@@ -809,22 +809,20 @@ describe("getSchemaBox with context", () => {
         type: "object",
         properties: {
           data: {
-            "oneOf": [
+            oneOf: [
               {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
+                type: "object",
+                properties: {
+                  id: {
+                    type: "string",
                   },
-                  "itemType": {
-                    "type": "string",
-                    "enum": [
-                      "commitment"
-                    ]
+                  itemType: {
+                    type: "string",
+                    enum: ["commitment"],
                   },
-                  "status": {
-                    "type": "string",
-                    "enum": [
+                  status: {
+                    type: "string",
+                    enum: [
                       "EXPIRES_SOON",
                       "AUTO_RENEWS_SOON",
                       "EXPIRED",
@@ -833,48 +831,34 @@ describe("getSchemaBox with context", () => {
                       "AUTO_RENEWED",
                       "RENEWED",
                       "TERMINATED",
-                      "UNKNOWN"
-                    ]
-                  }
+                      "UNKNOWN",
+                    ],
+                  },
                 },
-                "required": [
-                  "id",
-                  "itemType",
-                  "status"
-                ]
+                required: ["id", "itemType", "status"],
               },
               {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
+                type: "object",
+                properties: {
+                  id: {
+                    type: "string",
                   },
-                  "itemType": {
-                    "type": "string",
-                    "enum": [
-                      "purchase-project"
-                    ]
+                  itemType: {
+                    type: "string",
+                    enum: ["purchase-project"],
                   },
-                  "status": {
-                    "type": "string",
-                    "enum": [
-                      "in-progress",
-                      "done",
-                      "closed"
-                    ]
-                  }
+                  status: {
+                    type: "string",
+                    enum: ["in-progress", "done", "closed"],
+                  },
                 },
-                "required": [
-                  "id",
-                  "itemType",
-                  "status"
-                ]
+                required: ["id", "itemType", "status"],
               },
               {
-                "nullable": true
-              }
-            ]
-          }
+                nullable: true,
+              },
+            ],
+          },
         },
       },
     } satisfies SchemasObject;

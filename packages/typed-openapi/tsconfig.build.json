@@ -3,11 +3,6 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "samples"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "samples"]
 }

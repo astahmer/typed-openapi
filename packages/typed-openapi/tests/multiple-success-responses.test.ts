@@ -10,7 +10,7 @@ describe("multiple success responses", () => {
       openapi: "3.0.3",
       info: {
         title: "Multi Success API",
-        version: "1.0.0"
+        version: "1.0.0",
       },
       paths: {
         "/users": {
@@ -23,12 +23,12 @@ describe("multiple success responses", () => {
                     type: "object",
                     properties: {
                       name: { type: "string" },
-                      email: { type: "string" }
+                      email: { type: "string" },
                     },
-                    required: ["name", "email"]
-                  }
-                }
-              }
+                    required: ["name", "email"],
+                  },
+                },
+              },
             },
             responses: {
               "200": {
@@ -42,12 +42,12 @@ describe("multiple success responses", () => {
                         name: { type: "string" },
                         email: { type: "string" },
                         updated: { type: "boolean", const: true },
-                        updatedAt: { type: "string", format: "date-time" }
+                        updatedAt: { type: "string", format: "date-time" },
                       },
-                      required: ["id", "name", "email", "updated", "updatedAt"]
-                    }
-                  }
-                }
+                      required: ["id", "name", "email", "updated", "updatedAt"],
+                    },
+                  },
+                },
               },
               "201": {
                 description: "User created",
@@ -60,12 +60,12 @@ describe("multiple success responses", () => {
                         name: { type: "string" },
                         email: { type: "string" },
                         created: { type: "boolean", const: true },
-                        createdAt: { type: "string", format: "date-time" }
+                        createdAt: { type: "string", format: "date-time" },
                       },
-                      required: ["id", "name", "email", "created", "createdAt"]
-                    }
-                  }
-                }
+                      required: ["id", "name", "email", "created", "createdAt"],
+                    },
+                  },
+                },
               },
               "400": {
                 description: "Validation error",
@@ -77,18 +77,18 @@ describe("multiple success responses", () => {
                         message: { type: "string" },
                         errors: {
                           type: "array",
-                          items: { type: "string" }
-                        }
+                          items: { type: "string" },
+                        },
                       },
-                      required: ["message", "errors"]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                      required: ["message", "errors"],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     };
 
     const mapped = mapOpenApiEndpoints(openApiDoc);

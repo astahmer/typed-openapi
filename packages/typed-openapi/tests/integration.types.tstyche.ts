@@ -8,7 +8,7 @@ import {
   type Schemas,
   type TypedApiResponse,
   type TypedStatusError,
-  type TypedSuccessResponse
+  type TypedSuccessResponse,
 } from "../tmp/generated-client.ts";
 import { type TanstackQueryApiClient } from "../tmp/generated-tanstack.ts";
 import { api } from "./api-client.example.ts";
@@ -172,17 +172,18 @@ describe("Example API Client", () => {
     const input = {} as Parameters<typeof endpointRequest>[1];
 
     expect(input).type.toBeAssignableTo<Endpoints.delete_DeletePet["parameters"]>();
-    expect(input).type.toBeAssignableTo<Endpoints.delete_DeletePet["parameters"] & { overrides?: { headers?: HeadersInit } }>();
+    expect(input).type.toBeAssignableTo<
+      Endpoints.delete_DeletePet["parameters"] & { overrides?: { headers?: HeadersInit } }
+    >();
     expect(input).type.toBeAssignableTo<{ overrides?: RequestInit }>();
   });
 
   it("can pass overrides even if there's no parameters on the endpoint schema", async () => {
-      const endpointRequest = api.get<"/pet/empty", Endpoints.get_GetPetEmpty>;
+    const endpointRequest = api.get<"/pet/empty", Endpoints.get_GetPetEmpty>;
     const input = {} as Parameters<typeof endpointRequest>[1];
 
-    expect(input).type.toBeAssignableTo<undefined|{ overrides?: { headers?: HeadersInit }; withResponse?: true }>();
-    });
-
+    expect(input).type.toBeAssignableTo<undefined | { overrides?: { headers?: HeadersInit }; withResponse?: true }>();
+  });
 
   it("infer response using api.request / withResponse: undefined", async () => {
     const result = await api.request("get", "/pet/findByStatus", { query: {} });
@@ -361,15 +362,16 @@ describe("Example API Client", () => {
     expect(output).type.toBe<Schemas.Pet>();
 
     const hookMutation = useMutation(tanstack.mutation("get", "/pet/{petId}").mutationOptions);
-    expect(hookMutation.error).type.toBe<
-      TypedStatusError<{
-    code: number;
-    message: string;
-} | {
-    code: number;
-    message: string;
-}> | null
-    >();
+    expect(hookMutation.error).type.toBe<TypedStatusError<
+      | {
+          code: number;
+          message: string;
+        }
+      | {
+          code: number;
+          message: string;
+        }
+    > | null>();
 
     const hookOutput = hookMutation.mutateAsync({ path: { petId: 42 } });
     expect(hookOutput).type.toBe<Promise<Schemas.Pet>>();
@@ -392,15 +394,15 @@ describe("Example API Client", () => {
   it("TanstackQueryApiClient useQuery withResponse: undefined (global+local)", async () => {
     const tanstack = {} as TanstackQueryApiClient;
 
-    const queryWithSomeResponseUnknownData = tanstack.get("/pet/findByStatus", { query: {status: "available"} });
+    const queryWithSomeResponseUnknownData = tanstack.get("/pet/findByStatus", { query: { status: "available" } });
     const queryHook = useQuery(queryWithSomeResponseUnknownData.queryOptions);
 
-    expect(queryHook.data).type.toBe<Schemas.Pet[]|undefined>();
-                    // ^?
+    expect(queryHook.data).type.toBe<Schemas.Pet[] | undefined>();
+    // ^?
 
     const secondQuery = tanstack.get("/pet/custom");
     const secondQueryHook = useQuery(secondQuery.queryOptions);
-    expect(secondQueryHook.data).type.toBe<Schemas.Pet|undefined>();
-                         // ^?
+    expect(secondQueryHook.data).type.toBe<Schemas.Pet | undefined>();
+    // ^?
   });
 });

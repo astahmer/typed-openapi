@@ -1420,9 +1420,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
               example:
-                message:
-                  Container d37cde0fe4ad63c3a7252023b2f9800282894247d145cb5933ddf6e52cc03a28
-                  is not running
+                message: Container d37cde0fe4ad63c3a7252023b2f9800282894247d145cb5933ddf6e52cc03a28 is not running
             text/plain:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
@@ -2040,9 +2038,7 @@ paths:
       tags:
         - Container
       summary: Get an archive of a filesystem resource in a container
-      description:
-        Get a tar archive of a resource in the filesystem of container
-        id.
+      description: Get a tar archive of a resource in the filesystem of container id.
       operationId: ContainerArchive
       parameters:
         - name: id
@@ -2100,9 +2096,7 @@ paths:
             type: string
         - name: path
           in: query
-          description:
-            "Path to a directory in the container to extract the archive’s
-            contents into. "
+          description: "Path to a directory in the container to extract the archive’s contents into. "
           required: true
           schema:
             type: string
@@ -2152,9 +2146,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
         403:
-          description:
-            Permission denied, the volume or container rootfs is marked
-            as read-only.
+          description: Permission denied, the volume or container rootfs is marked as read-only.
           content:
             application/json:
               schema:
@@ -2292,15 +2284,13 @@ paths:
         - Image
       summary: List Images
       description:
-        Returns a list of images on the server. Note that it uses a different,
-        smaller representation of an image than inspecting a single image.
+        Returns a list of images on the server. Note that it uses a different, smaller representation of an image than
+        inspecting a single image.
       operationId: ImageList
       parameters:
         - name: all
           in: query
-          description:
-            Show all images. Only images from a final layer (no children)
-            are shown by default.
+          description: Show all images. Only images from a final layer (no children) are shown by default.
           schema:
             type: boolean
             default: false
@@ -2321,9 +2311,7 @@ paths:
             type: string
         - name: shared-size
           in: query
-          description:
-            Compute and show shared size as a `SharedSize` field on each
-            image.
+          description: Compute and show shared size as a `SharedSize` field on each image.
           schema:
             type: boolean
             default: false
@@ -2366,17 +2354,16 @@ paths:
         - name: dockerfile
           in: query
           description:
-            Path within the build context to the `Dockerfile`. This is ignored
-            if `remote` is specified and points to an external `Dockerfile`.
+            Path within the build context to the `Dockerfile`. This is ignored if `remote` is specified and points to an
+            external `Dockerfile`.
           schema:
             type: string
             default: Dockerfile
         - name: t
           in: query
           description:
-            A name and optional tag to apply to the image in the `name:tag`
-            format. If you omit the tag the default `latest` value is assumed. You can
-            provide several `t` parameters.
+            A name and optional tag to apply to the image in the `name:tag` format. If you omit the tag the default
+            `latest` value is assumed. You can provide several `t` parameters.
           schema:
             type: string
         - name: extrahosts
@@ -2387,12 +2374,10 @@ paths:
         - name: remote
           in: query
           description:
-            A Git repository URI or HTTP/HTTPS context URI. If the URI points
-            to a single text file, the file’s contents are placed into a file called
-            `Dockerfile` and the image is built from that file. If the URI points to
-            a tarball, the file is downloaded by the daemon and the contents therein
-            used as the context for the build. If the URI points to a tarball and the
-            `dockerfile` parameter is also specified, there must be a file with the
+            A Git repository URI or HTTP/HTTPS context URI. If the URI points to a single text file, the file’s contents
+            are placed into a file called `Dockerfile` and the image is built from that file. If the URI points to a
+            tarball, the file is downloaded by the daemon and the contents therein used as the context for the build. If
+            the URI points to a tarball and the `dockerfile` parameter is also specified, there must be a file with the
             corresponding path inside the tarball.
           schema:
             type: string
@@ -2457,9 +2442,7 @@ paths:
             type: integer
         - name: cpuquota
           in: query
-          description:
-            Microseconds of CPU time that the container can get in a CPU
-            period.
+          description: Microseconds of CPU time that the container can get in a CPU period.
           schema:
             type: integer
         - name: buildargs
@@ -2474,23 +2457,17 @@ paths:
             type: string
         - name: shmsize
           in: query
-          description:
-            Size of `/dev/shm` in bytes. The size must be greater than 0.
-            If omitted the system uses 64MB.
+          description: Size of `/dev/shm` in bytes. The size must be greater than 0. If omitted the system uses 64MB.
           schema:
             type: integer
         - name: squash
           in: query
-          description:
-            Squash the resulting images layers into a single layer. *(Experimental
-            release only.)*
+          description: Squash the resulting images layers into a single layer. *(Experimental release only.)*
           schema:
             type: boolean
         - name: labels
           in: query
-          description:
-            Arbitrary key/value labels to set on the image, as a JSON map
-            of string pairs.
+          description: Arbitrary key/value labels to set on the image, as a JSON map of string pairs.
           schema:
             type: string
         - name: networkmode
@@ -2549,8 +2526,7 @@ paths:
             type: string
       requestBody:
         description:
-          "A tar archive compressed with one of the following algorithms:
-          identity (no compression), gzip, bzip2, xz."
+          "A tar archive compressed with one of the following algorithms: identity (no compression), gzip, bzip2, xz."
         content:
           application/octet-stream:
             schema:
@@ -2639,39 +2615,34 @@ paths:
       tags:
         - Image
       summary: Create an image
-      description:
-        Create an image by either pulling it from a registry or importing
-        it.
+      description: Create an image by either pulling it from a registry or importing it.
       operationId: ImageCreate
       parameters:
         - name: fromImage
           in: query
           description:
-            Name of the image to pull. The name may include a tag or digest.
-            This parameter may only be used when pulling an image. The pull is cancelled
-            if the HTTP connection is closed.
+            Name of the image to pull. The name may include a tag or digest. This parameter may only be used when
+            pulling an image. The pull is cancelled if the HTTP connection is closed.
           schema:
             type: string
         - name: fromSrc
           in: query
           description:
-            Source to import. The value may be a URL from which the image
-            can be retrieved or `-` to read the image from the request body. This parameter
-            may only be used when importing an image.
+            Source to import. The value may be a URL from which the image can be retrieved or `-` to read the image from
+            the request body. This parameter may only be used when importing an image.
           schema:
             type: string
         - name: repo
           in: query
           description:
-            Repository name given to an image when it is imported. The repo
-            may include a tag. This parameter may only be used when importing an image.
+            Repository name given to an image when it is imported. The repo may include a tag. This parameter may only
+            be used when importing an image.
           schema:
             type: string
         - name: tag
           in: query
           description:
-            Tag or digest. If empty when pulling an image, this causes all
-            tags for the given image to be pulled.
+            Tag or digest. If empty when pulling an image, this causes all tags for the given image to be pulled.
           schema:
             type: string
         - name: message
@@ -2724,9 +2695,7 @@ paths:
           schema:
             type: string
       requestBody:
-        description:
-          Image content if the value `-` has been specified in fromSrc
-          query parameter
+        description: Image content if the value `-` has been specified in fromSrc query parameter
         content:
           text/plain:
             schema:
@@ -2840,16 +2809,13 @@ paths:
                     Comment:
                       type: string
                       nullable: false
-                  description:
-                    individual image layer information in response to ImageHistory
-                    operation
+                  description: individual image layer information in response to ImageHistory operation
                   x-go-name: HistoryResponseItem
               example:
                 - Id: 3db9c44f45209632d6050b35958829c3a2aa256d81b9a7be45b362ff85c54710
                   Created: 1398108230
                   CreatedBy:
-                    "/bin/sh -c #(nop) ADD file:eb15dbd63394e063b805a3c32ca7bf0266ef64676d5a6fab4801f2e81e2a5148
-                    in /"
+                    "/bin/sh -c #(nop) ADD file:eb15dbd63394e063b805a3c32ca7bf0266ef64676d5a6fab4801f2e81e2a5148 in /"
                   Tags:
                     - ubuntu:lucid
                     - ubuntu:10.04
@@ -2858,9 +2824,8 @@ paths:
                 - Id: 6cfa4d1f33fb861d4d114f43b25abd0ac737509268065cdfd69d544a59c85ab8
                   Created: 1398108222
                   CreatedBy:
-                    "/bin/sh -c #(nop) MAINTAINER Tianon Gravi <admwiggin@gmail.com>
-                    - mkimage-debootstrap.sh -i iproute,iputils-ping,ubuntu-minimal
-                    -t lucid.tar.xz lucid http://archive.ubuntu.com/ubuntu/"
+                    "/bin/sh -c #(nop) MAINTAINER Tianon Gravi <admwiggin@gmail.com> - mkimage-debootstrap.sh -i
+                    iproute,iputils-ping,ubuntu-minimal -t lucid.tar.xz lucid http://archive.ubuntu.com/ubuntu/"
                   Tags: []
                   Size: 0
                   Comment: ""
@@ -3027,9 +2992,7 @@ paths:
             type: string
         - name: force
           in: query
-          description:
-            Remove the image even if it is being used by stopped containers
-            or has other tags
+          description: Remove the image even if it is being used by stopped containers or has other tags
           schema:
             type: boolean
             default: false
@@ -3218,9 +3181,7 @@ paths:
                     nullable: false
                   IdentityToken:
                     type: string
-                    description:
-                      An opaque token used to authenticate a user after
-                      a successful login
+                    description: An opaque token used to authenticate a user after a successful login
                     nullable: false
               example:
                 Status: Login Succeeded
@@ -3266,8 +3227,8 @@ paths:
         - System
       summary: Get version
       description:
-        Returns the version of Docker that is running and various information
-        about the system that Docker is running on.
+        Returns the version of Docker that is running and various information about the system that Docker is running
+        on.
       operationId: SystemVersion
       responses:
         200:
@@ -3670,7 +3631,9 @@ paths:
                     - ID: hw53o5aio51xtltp5xjp8v7fx
                       Parents: []
                       Type: regular
-                      Description: pulled from docker.io/library/debian@sha256:234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
+                      Description:
+                        pulled from
+                        docker.io/library/debian@sha256:234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
                       InUse: false
                       Shared: true
                       Size: 0
@@ -3682,8 +3645,8 @@ paths:
                         - ndlpt0hhvkqcdfkputsk4cq9c
                       Type: regular
                       Description:
-                        mount / from exec /bin/sh -c echo 'Binary::apt::APT::Keep-Downloaded-Packages
-                        "true";' > /etc/apt/apt.conf.d/keep-cache
+                        mount / from exec /bin/sh -c echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' >
+                        /etc/apt/apt.conf.d/keep-cache
                       InUse: false
                       Shared: true
                       Size: 51
@@ -3769,7 +3732,9 @@ paths:
                     - ID: hw53o5aio51xtltp5xjp8v7fx
                       Parents: []
                       Type: regular
-                      Description: pulled from docker.io/library/debian@sha256:234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
+                      Description:
+                        pulled from
+                        docker.io/library/debian@sha256:234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
                       InUse: false
                       Shared: true
                       Size: 0
@@ -3781,8 +3746,8 @@ paths:
                         - ndlpt0hhvkqcdfkputsk4cq9c
                       Type: regular
                       Description:
-                        mount / from exec /bin/sh -c echo 'Binary::apt::APT::Keep-Downloaded-Packages
-                        "true";' > /etc/apt/apt.conf.d/keep-cache
+                        mount / from exec /bin/sh -c echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' >
+                        /etc/apt/apt.conf.d/keep-cache
                       InUse: false
                       Shared: true
                       Size: 51
@@ -6531,8 +6496,7 @@ paths:
                 example:
                   ID: ak7w3gjqoa3kuz8xcpnyy0pvl
                   Warning:
-                    "unable to pin image doesnotexist:latest to digest: image
-                    library/doesnotexist:latest not found"
+                    "unable to pin image doesnotexist:latest to digest: image library/doesnotexist:latest not found"
         400:
           description: bad parameter
           content:
@@ -7999,17 +7963,13 @@ components:
           description: Whether the mount should be read-only.
         Consistency:
           type: string
-          description:
-            "The consistency requirement for the mount: `default`, `consistent`,
-            `cached`, or `delegated`."
+          description: "The consistency requirement for the mount: `default`, `consistent`, `cached`, or `delegated`."
         BindOptions:
           type: object
           properties:
             Propagation:
               type: string
-              description:
-                A propagation mode with the value `[r]private`, `[r]shared`,
-                or `[r]slave`.
+              description: A propagation mode with the value `[r]private`, `[r]shared`, or `[r]slave`.
               enum:
                 - private
                 - rprivate
@@ -8490,9 +8450,7 @@ components:
       nullable: true
       x-nullable: true
     HostConfig:
-      description:
-        Container configuration that depends on the host we are running
-        on
+      description: Container configuration that depends on the host we are running on
       allOf:
         - $ref: "#/components/schemas/Resources"
         - type: object
@@ -9931,8 +9889,8 @@ components:
           description: |
             Description of the build-step that produced the build cache.
           example:
-            mount / from exec /bin/sh -c echo 'Binary::apt::APT::Keep-Downloaded-Packages
-            "true";' > /etc/apt/apt.conf.d/keep-cache
+            mount / from exec /bin/sh -c echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' >
+            /etc/apt/apt.conf.d/keep-cache
         InUse:
           type: boolean
           description: |
@@ -10276,9 +10234,7 @@ components:
           example: tiborvass/sample-volume-plugin
         Enabled:
           type: boolean
-          description:
-            True if the plugin is running. False if the plugin is not running,
-            only installed.
+          description: True if the plugin is running. False if the plugin is not running, only installed.
           nullable: false
           example: true
         Settings:
@@ -11130,9 +11086,7 @@ components:
 
                         > **Note**: `CredentialSpec.File`, `CredentialSpec.Registry`,
                         > and `CredentialSpec.Config` are mutually exclusive.
-                  description:
-                    CredentialSpec for managed service account (Windows
-                    only)
+                  description: CredentialSpec for managed service account (Windows only)
                 SELinuxContext:
                   type: object
                   properties:
@@ -11875,9 +11829,7 @@ components:
             outside. Ports can only be provided if `vip` resolution mode is used.
           items:
             $ref: "#/components/schemas/EndpointPortConfig"
-      description:
-        Properties that can be configured to access and load balance a
-        service.
+      description: Properties that can be configured to access and load balance a service.
     Service:
       type: object
       properties:
@@ -12049,9 +12001,7 @@ components:
           items:
             type: string
       example:
-        Warning:
-          "unable to pin image doesnotexist:latest to digest: image library/doesnotexist:latest
-          not found"
+        Warning: "unable to pin image doesnotexist:latest to digest: image library/doesnotexist:latest not found"
     ContainerSummary:
       type: object
       properties:
@@ -12084,9 +12034,7 @@ components:
             $ref: "#/components/schemas/Port"
         SizeRw:
           type: integer
-          description:
-            The size of files that have been created or changed by this
-            container
+          description: The size of files that have been created or changed by this container
           format: int64
         SizeRootFs:
           type: integer
@@ -12102,9 +12050,7 @@ components:
           description: The state of this container (e.g. `Exited`)
         Status:
           type: string
-          description:
-            Additional human-readable status of this container (e.g. `Exit
-            0`)
+          description: Additional human-readable status of this container (e.g. `Exit 0`)
         HostConfig:
           type: object
           properties:
@@ -12569,15 +12515,11 @@ components:
           example: true
         BridgeNfIptables:
           type: boolean
-          description:
-            Indicates if `bridge-nf-call-iptables` is available on the
-            host.
+          description: Indicates if `bridge-nf-call-iptables` is available on the host.
           example: true
         BridgeNfIp6tables:
           type: boolean
-          description:
-            Indicates if `bridge-nf-call-ip6tables` is available on the
-            host.
+          description: Indicates if `bridge-nf-call-ip6tables` is available on the host.
           example: true
         Debug:
           type: boolean

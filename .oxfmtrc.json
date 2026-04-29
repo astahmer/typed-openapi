@@ -1,4 +1,5 @@
 {
+  "ignorePatterns": ["packages/web/**"],
   "singleQuote": false,
   "printWidth": 120,
   "bracketSpacing": true,
@@ -6,5 +7,6 @@
   "proseWrap": "always",
   "semi": true,
   "tabWidth": 2,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "sortPackageJson": false
 }

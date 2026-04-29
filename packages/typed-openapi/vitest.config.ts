@@ -6,12 +6,11 @@ import { defineConfig, configDefaults } from "vitest/config";
 export default defineConfig({
   test: {
     hideSkippedTests: true,
-    ...process.env["TEST_UNIT"] ? {
-      exclude: [
-        ...configDefaults.exclude,
-        '**\/tests\/integration-runtime-msw.test.ts',
-      ],
-    } : undefined,
+    ...(process.env["TEST_UNIT"]
+      ? {
+          exclude: [...configDefaults.exclude, "**\/tests\/integration-runtime-msw.test.ts"],
+        }
+      : undefined),
     snapshotFormat: {
       escapeString: false,
     },

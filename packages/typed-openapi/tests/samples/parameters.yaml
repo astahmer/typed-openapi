@@ -23,5 +23,5 @@ paths:
           required: false
           description: If true, the endpoint returns only the user metadata.
       responses:
-        '200':
+        "200":
           description: OK

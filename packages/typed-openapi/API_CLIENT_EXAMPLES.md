@@ -1,10 +1,12 @@
 # API Client Examples
 
-These are production-ready API client wrappers for your generated typed-openapi code. Copy the one that fits your needs and customize it.
+These are production-ready API client wrappers for your generated typed-openapi code. Copy the one that fits your needs
+and customize it.
 
 ## Basic API Client ([api-client-example.ts](./tests/api-client.example.ts))
 
 A simple, dependency-free client that handles:
+
 - Path parameter replacement (`{id}` and `:id` formats)
 - Query parameter serialization (including arrays)
 - JSON request/response handling
@@ -28,7 +30,7 @@ A simple, dependency-free client that handles:
  * 3. Customize error handling and headers as needed
  */
 
-import { type Fetcher, createApiClient  } from "../tmp/generated-client.ts";
+import { type Fetcher, createApiClient } from "../tmp/generated-client.ts";
 
 // Basic configuration
 const API_BASE_URL = process.env["API_BASE_URL"] || "https://api.example.com";
@@ -104,11 +106,11 @@ export const api = createApiClient(fetcher, API_BASE_URL);
 1. Copy the file to your project
 2. Update the import path to your generated API file:
    ```typescript
-   import { type EndpointParameters, type Fetcher, createApiClient } from './generated/api';
+   import { type EndpointParameters, type Fetcher, createApiClient } from "./generated/api";
    ```
 3. Set your API base URL:
    ```typescript
-   const API_BASE_URL = process.env['API_BASE_URL'] || 'https://your-api.com';
+   const API_BASE_URL = process.env["API_BASE_URL"] || "https://your-api.com";
    ```
 4. Uncomment the client creation:
    ```typescript
@@ -119,29 +121,30 @@ export const api = createApiClient(fetcher, API_BASE_URL);
 
 ```typescript
 // GET request with query params
-const users = await api.get('/users', {
-  query: { page: 1, limit: 10, tags: ['admin', 'user'] }
+const users = await api.get("/users", {
+  query: { page: 1, limit: 10, tags: ["admin", "user"] },
 });
 
 // POST request with body
-const newUser = await api.post('/users', {
-  body: { name: 'John', email: 'john@example.com' }
+const newUser = await api.post("/users", {
+  body: { name: "John", email: "john@example.com" },
 });
 
 // With path parameters
-const user = await api.get('/users/{id}', {
-  path: { id: '123' }
+const user = await api.get("/users/{id}", {
+  path: { id: "123" },
 });
 
 // With custom headers
-const result = await api.get('/protected', {
-  header: { Authorization: 'Bearer your-token' }
+const result = await api.get("/protected", {
+  header: { Authorization: "Bearer your-token" },
 });
 ```
 
 ## Validating API Client ([api-client-with-validation.ts](./tests/api-client-with-validation.example.ts))
 
 Extends the basic client with schema validation for:
+
 - Request body validation before sending
 - Response validation after receiving
 - Type-safe validation error handling
@@ -150,19 +153,21 @@ Extends the basic client with schema validation for:
 
 1. Follow the basic client setup steps above
 2. Import your validation library and schemas:
+
    ```typescript
    // For Zod
-   import { z } from 'zod';
-   import { EndpointByMethod } from './generated/api';
+   import { z } from "zod";
+   import { EndpointByMethod } from "./generated/api";
 
    // For Yup
-   import * as yup from 'yup';
-   import { EndpointByMethod } from './generated/api';
+   import * as yup from "yup";
+   import { EndpointByMethod } from "./generated/api";
    ```
+
 3. Implement the validation logic in the marked TODO sections
 4. Configure validation settings:
    ```typescript
-   const VALIDATE_REQUESTS = true;  // Validate request bodies
+   const VALIDATE_REQUESTS = true; // Validate request bodies
    const VALIDATE_RESPONSES = true; // Validate response data
    ```
 
@@ -192,18 +197,18 @@ if (statusSchema) {
 
 ```typescript
 try {
-  const result = await api.post('/users', {
-    body: { name: 'John', email: 'invalid-email' }
+  const result = await api.post("/users", {
+    body: { name: "John", email: "invalid-email" },
   });
 } catch (error) {
   if (error instanceof ValidationError) {
-    if (error.type === 'request') {
-      console.error('Invalid request data:', error.validationErrors);
+    if (error.type === "request") {
+      console.error("Invalid request data:", error.validationErrors);
     } else {
-      console.error('Invalid response data:', error.validationErrors);
+      console.error("Invalid response data:", error.validationErrors);
     }
   } else {
-    console.error('Network or HTTP error:', error);
+    console.error("Network or HTTP error:", error);
   }
 }
 ```
@@ -227,10 +232,10 @@ class ApiError extends Error {
   constructor(
     public readonly status: number,
     public readonly statusText: string,
-    public readonly response: Response
+    public readonly response: Response,
   ) {
     super(`HTTP ${status}: ${statusText}`);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 }
 
@@ -248,7 +253,7 @@ For type-safe error handling without exceptions, use the `withResponse: true` op
 // Example with both data access methods
 const result = await api.get("/users/{id}", {
   path: { id: "123" },
-  withResponse: true
+  withResponse: true,
 });
 
 if (result.ok) {
@@ -280,10 +285,13 @@ if (result.ok) {
 ## TanStack Query Integration
 
 For React applications using TanStack Query, see:
+
 - [TANSTACK_QUERY_EXAMPLES.md](./TANSTACK_QUERY_EXAMPLES.md) for usage patterns with `withResponse` and `selectFn`
-- [TANSTACK_QUERY_ERROR_HANDLING.md](./TANSTACK_QUERY_ERROR_HANDLING.md) for type-safe error handling based on OpenAPI error schemas
+- [TANSTACK_QUERY_ERROR_HANDLING.md](./TANSTACK_QUERY_ERROR_HANDLING.md) for type-safe error handling based on OpenAPI
+  error schemas
 
 Key features:
+
 - Type-safe mutations with `withResponse` option
 - Custom response transformation with `selectFn`
 - Automatic error type inference from OpenAPI specs

@@ -821,9 +821,7 @@ describe("generator", () => {
     };
 
     const output = await prettify(generateFile(mapOpenApiEndpoints(openApiDoc)));
-    expect(output.replace(/\s+/g, " ")).toContain(
-      "path: { app_id: Schemas.access_identifier | Schemas.access_uuid }",
-    );
+    expect(output.replace(/\s+/g, " ")).toContain("path: { app_id: Schemas.access_identifier | Schemas.access_uuid }");
   });
 
   test("prefixes schema refs inside record additionalProperties", async ({ expect }) => {
@@ -875,7 +873,8 @@ describe("generator", () => {
 
   test("petstore schema only", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
-    expect(await prettify(generateFile({ ...mapOpenApiEndpoints(openApiDoc), schemasOnly: true }))).toMatchInlineSnapshot(`
+    expect(await prettify(generateFile({ ...mapOpenApiEndpoints(openApiDoc), schemasOnly: true })))
+      .toMatchInlineSnapshot(`
       "export namespace Schemas {
         // <Schemas>
         export type Order = Partial<{
@@ -917,190 +916,175 @@ describe("generator", () => {
   });
 
   test("nullable string", async ({ expect }) => {
-    expect(await prettify(generateFile(mapOpenApiEndpoints({
-      "openapi": "3.0.0",
-      "info": {
-        "version": "1.0.0",
-        "title": "Demo API"
-      },
-      "components": {
-        "schemas": {
-          "SerializedUserSession": {
-            "type": "object",
-            "properties": {
-              "accessToken": {
-                "type": "string"
-              },
-              "accessTokenExpirationDate": {
-                "type": "number"
-              },
-              "me": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "firstName": {
-                    "type": "string",
-                    // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
-                    "nullable": true
-                  },
-                  "lastName": {
-                    "type": "string",
-                    // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
-                    "nullable": true
-                  },
-                  "profilePictureURL": {
-                    "type": "string",
-                    // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
-                    "nullable": true
-                  },
-                  "email": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "id",
-                  "email"
-                ]
-              },
-              "refreshToken": {
-                "type": "string"
-              },
-              "refreshTokenExpirationDate": {
-                "type": "number"
-              }
+    expect(
+      await prettify(
+        generateFile(
+          mapOpenApiEndpoints({
+            openapi: "3.0.0",
+            info: {
+              version: "1.0.0",
+              title: "Demo API",
             },
-            "required": [
-              "accessToken",
-              "accessTokenExpirationDate",
-              "me",
-              "refreshToken",
-              "refreshTokenExpirationDate"
-            ]
-          },
-        },
-      },
-      "paths": {
-        "/authorization/organizations/:organizationId/members/search": {
-          "get": {
-            "summary": "Search for members in an organization",
-            "tags": [
-              "Authorization",
-              "Members"
-            ],
-            "parameters": [
-              {
-                "schema": {
-                  "type": "string",
-                  "format": "uuid"
+            components: {
+              schemas: {
+                SerializedUserSession: {
+                  type: "object",
+                  properties: {
+                    accessToken: {
+                      type: "string",
+                    },
+                    accessTokenExpirationDate: {
+                      type: "number",
+                    },
+                    me: {
+                      type: "object",
+                      properties: {
+                        id: {
+                          type: "string",
+                        },
+                        firstName: {
+                          type: "string",
+                          // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
+                          nullable: true,
+                        },
+                        lastName: {
+                          type: "string",
+                          // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
+                          nullable: true,
+                        },
+                        profilePictureURL: {
+                          type: "string",
+                          // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
+                          nullable: true,
+                        },
+                        email: {
+                          type: "string",
+                        },
+                      },
+                      required: ["id", "email"],
+                    },
+                    refreshToken: {
+                      type: "string",
+                    },
+                    refreshTokenExpirationDate: {
+                      type: "number",
+                    },
+                  },
+                  required: [
+                    "accessToken",
+                    "accessTokenExpirationDate",
+                    "me",
+                    "refreshToken",
+                    "refreshTokenExpirationDate",
+                  ],
                 },
-                "required": true,
-                "name": "organizationId",
-                "in": "path"
               },
-              {
-                "schema": {
-                  "type": "string"
-                },
-                "required": false,
-                "name": "searchQuery",
-                "in": "query"
-              },
-              {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "enum": [
-                          "super-admin"
-                        ]
+            },
+            paths: {
+              "/authorization/organizations/:organizationId/members/search": {
+                get: {
+                  summary: "Search for members in an organization",
+                  tags: ["Authorization", "Members"],
+                  parameters: [
+                    {
+                      schema: {
+                        type: "string",
+                        format: "uuid",
                       },
-                      {
-                        "type": "string",
-                        "enum": [
-                          "buyer"
-                        ]
+                      required: true,
+                      name: "organizationId",
+                      in: "path",
+                    },
+                    {
+                      schema: {
+                        type: "string",
                       },
-                      {
-                        "type": "string",
-                        "enum": [
-                          "admin"
-                        ]
-                      },
-                      {
-                        "type": "string",
-                        "enum": [
-                          "coordinator"
-                        ]
-                      },
-                      {
-                        "type": "string",
-                        "enum": [
-                          "requestor"
-                        ]
-                      }
-                    ]
-                  }
-                },
-                "required": false,
-                "name": "includeRoles",
-                "in": "query"
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "Retrieve a list of members for a specific organization",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "type": "object",
-                      "properties": {
-                        "members": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "firstName": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "lastName": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "email": {
-                                "type": "string"
-                              },
-                              "profilePictureURL": {
-                                "type": "string",
-                                "nullable": true
-                              }
+                      required: false,
+                      name: "searchQuery",
+                      in: "query",
+                    },
+                    {
+                      schema: {
+                        type: "array",
+                        items: {
+                          anyOf: [
+                            {
+                              type: "string",
+                              enum: ["super-admin"],
                             },
-                            "required": [
-                              "id",
-                              "email"
-                            ]
-                          }
-                        }
+                            {
+                              type: "string",
+                              enum: ["buyer"],
+                            },
+                            {
+                              type: "string",
+                              enum: ["admin"],
+                            },
+                            {
+                              type: "string",
+                              enum: ["coordinator"],
+                            },
+                            {
+                              type: "string",
+                              enum: ["requestor"],
+                            },
+                          ],
+                        },
                       },
-                      "required": [
-                        "members"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-      }
-    })))).toMatchInlineSnapshot(`
+                      required: false,
+                      name: "includeRoles",
+                      in: "query",
+                    },
+                  ],
+                  responses: {
+                    "200": {
+                      description: "Retrieve a list of members for a specific organization",
+                      content: {
+                        "application/json": {
+                          schema: {
+                            type: "object",
+                            properties: {
+                              members: {
+                                type: "array",
+                                items: {
+                                  type: "object",
+                                  properties: {
+                                    id: {
+                                      type: "string",
+                                    },
+                                    firstName: {
+                                      type: "string",
+                                      nullable: true,
+                                    },
+                                    lastName: {
+                                      type: "string",
+                                      nullable: true,
+                                    },
+                                    email: {
+                                      type: "string",
+                                    },
+                                    profilePictureURL: {
+                                      type: "string",
+                                      nullable: true,
+                                    },
+                                  },
+                                  required: ["id", "email"],
+                                },
+                              },
+                            },
+                            required: ["members"],
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          }),
+        ),
+      ),
+    ).toMatchInlineSnapshot(`
       "export namespace Schemas {
         // <Schemas>
         export type SerializedUserSession = {
@@ -1557,66 +1541,72 @@ describe("generator", () => {
   });
 
   test("optional query param", async ({ expect }) => {
-    expect(await prettify(generateFile(mapOpenApiEndpoints({
-      "openapi": "3.0.0",
-      "info": {
-        "version": "1.0.0",
-        "title": "Demo API"
-      },
-      "paths": {
-        "/demo": {
-          "get": {
-            "parameters": [
-              {
-                "schema": {
-                  "type": "string",
-                  "format": "uuid"
+    expect(
+      await prettify(
+        generateFile(
+          mapOpenApiEndpoints({
+            openapi: "3.0.0",
+            info: {
+              version: "1.0.0",
+              title: "Demo API",
+            },
+            paths: {
+              "/demo": {
+                get: {
+                  parameters: [
+                    {
+                      schema: {
+                        type: "string",
+                        format: "uuid",
+                      },
+                      required: true,
+                      name: "organizationId",
+                      in: "query",
+                    },
+                    {
+                      schema: {
+                        type: "string",
+                      },
+                      required: false,
+                      name: "searchQuery",
+                      in: "query",
+                    },
+                    {
+                      schema: {
+                        type: "string",
+                        format: "uuid",
+                      },
+                      required: false,
+                      name: "optionalInPath1",
+                      in: "path",
+                    },
+                    {
+                      schema: {
+                        type: "string",
+                      },
+                      required: false,
+                      name: "optionalInPath2",
+                      in: "path",
+                    },
+                  ],
+                  responses: {
+                    "200": {
+                      content: {
+                        "application/json": {
+                          schema: {
+                            type: "string",
+                          },
+                        },
+                      },
+                    },
+                  },
                 },
-                "required": true,
-                "name": "organizationId",
-                "in": "query"
               },
-              {
-                "schema": {
-                  "type": "string"
-                },
-                "required": false,
-                "name": "searchQuery",
-                "in": "query"
-              },
-              {
-                "schema": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "required": false,
-                "name": "optionalInPath1",
-                "in": "path"
-              },
-              {
-                "schema": {
-                  "type": "string"
-                },
-                "required": false,
-                "name": "optionalInPath2",
-                "in": "path"
-              },
-            ],
-            "responses": {
-              "200": {
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "type": "string",
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-      }
-    })))).toMatchInlineSnapshot(`
+            },
+          }),
+        ),
+      ),
+    ).toMatchInlineSnapshot(`
       "export namespace Schemas {
         // <Schemas>
         // </Schemas>
@@ -2057,8 +2047,12 @@ describe("generator", () => {
     expect(generated).toContain("export type ServerError");
 
     // Verify error responses are included in endpoint types
-    expect(generated).toContain('responses: { 200: Schemas.User; 401: Schemas.AuthError; 404: Schemas.NotFoundError; 500: Schemas.ServerError }');
-    expect(generated).toContain('responses: { 201: Schemas.Post; 400: Schemas.ValidationError; 403: Schemas.ForbiddenError }');
+    expect(generated).toContain(
+      "responses: { 200: Schemas.User; 401: Schemas.AuthError; 404: Schemas.NotFoundError; 500: Schemas.ServerError }",
+    );
+    expect(generated).toContain(
+      "responses: { 201: Schemas.Post; 400: Schemas.ValidationError; 403: Schemas.ForbiddenError }",
+    );
 
     // Verify specific error schema structure
     expect(generated).toContain("error: string");

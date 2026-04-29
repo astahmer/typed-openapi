@@ -4,22 +4,11 @@
     "target": "ESNext",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
-    "types": [
-      "node"
-    ],
-    "lib": [
-      "DOM",
-      "ES2021"
-    ],
+    "types": ["node"],
+    "lib": ["DOM", "ES2021"],
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true
   },
-  "include": [
-    "src",
-    "tests"
-  ],
-  "exclude": [
-    "node_modules",
-    "samples"
-  ]
+  "include": ["src", "tests"],
+  "exclude": ["node_modules", "samples"]
 }

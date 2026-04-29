@@ -1,4 +1,4 @@
-import { createApiClient } from './packages/typed-openapi/tests/snapshots/petstore.client';
+import { createApiClient } from "./packages/typed-openapi/tests/snapshots/petstore.client";
 
 // Test type inference with the updated API
 const api = createApiClient((method, url, params) =>
@@ -15,13 +15,13 @@ async function testNewTypeInference() {
   // Test 2: Error handling with inline withResponse parameter
   const result = await api.get("/pet/findByStatus", {
     query: { status: "available" },
-    withResponse: true
+    withResponse: true,
   });
 
   if (result.ok) {
     console.log("✓ Success case: data is properly typed");
     // result.data should be Array<Pet>
-    console.log("Data type:", Array.isArray(result.data) ? 'Array' : typeof result.data);
+    console.log("Data type:", Array.isArray(result.data) ? "Array" : typeof result.data);
   } else {
     console.log("✓ Error case: status and error are properly typed");
     console.log("Status:", result.status, "(type:", typeof result.status, ")");
@@ -31,7 +31,7 @@ async function testNewTypeInference() {
       console.log("✓ Status 400 properly discriminated");
       // result.error should be { code: number; message: string }
       console.log("Error type for 400:", typeof result.error);
-      if (typeof result.error === 'object' && result.error && 'code' in result.error) {
+      if (typeof result.error === "object" && result.error && "code" in result.error) {
         console.log("✓ Error has proper schema with code and message");
       }
     }
@@ -40,7 +40,7 @@ async function testNewTypeInference() {
   // Test 3: Another endpoint to verify generic behavior
   const userResult = await api.get("/pet/{petId}", {
     path: { petId: 123 },
-    withResponse: true
+    withResponse: true,
   });
 
   if (!userResult.ok) {

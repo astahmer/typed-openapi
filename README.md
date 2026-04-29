@@ -10,10 +10,13 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 
 ## Features
 
-- Headless API client, [bring your own fetcher](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets) (fetch, axios, ky, etc...) ! (You can generate that file with `--default-fetcher`)
+- Headless API client,
+  [bring your own fetcher](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets) (fetch,
+  axios, ky, etc...) ! (You can generate that file with `--default-fetcher`)
 - Generates a fully typesafe API client with just types by default (instant suggestions)
 - **Type-safe error handling**: with discriminated unions and configurable success/error status codes
-- **withResponse & throwOnStatusError**: Get a union-style response object or throw on configured error status codes, with full type inference
+- **withResponse & throwOnStatusError**: Get a union-style response object or throw on configured error status codes,
+  with full type inference
 - **TanStack Query integration**: with `withResponse` and `selectFn` options for advanced success/error handling
 - Or you can also generate a client with runtime validation using one of the following runtimes:
   - [zod](https://zod.dev/)
@@ -89,15 +92,17 @@ Basically, let's focus on having a fast and typesafe API client generation inste
 
 The generated client is headless - you need to provide your own fetcher. Here are ready-to-use examples:
 
-- **[Basic API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets)** - Simple, dependency-free wrapper
-- **[Validating API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#validating-api-client-api-client-with-validationts)** - With request/response validation
-
+- **[Basic API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets)** - Simple,
+  dependency-free wrapper
+- **[Validating API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#validating-api-client-api-client-with-validationts)** -
+  With request/response validation
 
 ### Type-Safe Error Handling & Response Modes
 
 You can choose between two response styles:
 
 - **Direct data return** (default):
+
   ```ts
   const user = await api.get("/users/{id}", { path: { id: "123" } });
   // Throws TypedResponseError on error status (default)
@@ -125,21 +130,22 @@ For dynamic endpoint calls or when you need more control:
 // Type-safe generic request method
 const response = await api.request("GET", "/users/{id}", {
   path: { id: "123" },
-  query: { include: ["profile", "settings"] }
+  query: { include: ["profile", "settings"] },
 });
 
 const user = await response.json(); // Fully typed based on endpoint
 ```
 
-
 ### TanStack Query Integration
 
 Generate TanStack Query wrappers for your endpoints with:
+
 ```sh
 npx typed-openapi api.yaml --tanstack
 ```
 
 You get:
+
 - Type-safe queries and mutations with full error inference
 - `withResponse` and `selectFn` for advanced error and response handling
 - All mutation errors are Response-like and type-safe, matching your OpenAPI error schemas
@@ -148,21 +154,19 @@ You get:
 
 ```ts
 // Basic query
-const accessiblePagesQuery = useQuery(
-  tanstackApi.get('/authorization/accessible-pages').queryOptions
-);
+const accessiblePagesQuery = useQuery(tanstackApi.get("/authorization/accessible-pages").queryOptions);
 
 // Query with query parameters
 const membersQuery = useQuery(
-  tanstackApi.get('/authorization/organizations/:organizationId/members/search', {
-    path: { organizationId: 'org123' },
-    query: { searchQuery: 'john' }
-  }).queryOptions
+  tanstackApi.get("/authorization/organizations/:organizationId/members/search", {
+    path: { organizationId: "org123" },
+    query: { searchQuery: "john" },
+  }).queryOptions,
 );
 
 // With additional query options
 const departmentCostsQuery = useQuery({
-  ...tanstackApi.get('/organizations/:organizationId/department-costs', {
+  ...tanstackApi.get("/organizations/:organizationId/department-costs", {
     path: { organizationId: params.orgId },
     query: { period: selectedPeriod },
   }).queryOptions,
@@ -175,10 +179,10 @@ const departmentCostsQuery = useQuery({
 or if you need it in a router `beforeLoad` / `loader`:
 
 ```ts
-import { tanstackApi } from '#api';
+import { tanstackApi } from "#api";
 
 await queryClient.fetchQuery(
-  tanstackApi.get('/:organizationId/remediation/accounting-lines/metrics', {
+  tanstackApi.get("/:organizationId/remediation/accounting-lines/metrics", {
     path: { organizationId: params.orgId },
   }).queryOptions,
 );
@@ -186,47 +190,49 @@ await queryClient.fetchQuery(
 
 ## useMutation
 
-The mutation API supports both basic usage and advanced error handling with `withResponse` and custom transformations with `selectFn`. **Note**: All mutation errors are Response-like objects with type-safe error inference based on your OpenAPI error schemas.
+The mutation API supports both basic usage and advanced error handling with `withResponse` and custom transformations
+with `selectFn`. **Note**: All mutation errors are Response-like objects with type-safe error inference based on your
+OpenAPI error schemas.
 
 ```ts
 // Basic mutation (returns data only)
 const basicMutation = useMutation({
   // Will throws TypedResponseError on error status
-  ...tanstackApi.mutation("post", '/authorization/organizations/:organizationId/invitations').mutationOptions,
+  ...tanstackApi.mutation("post", "/authorization/organizations/:organizationId/invitations").mutationOptions,
   onError: (error) => {
     // error is a Response-like object with typed data based on OpenAPI spec
     console.log(error instanceof Response); // true
     console.log(error.status); // 400, 401, etc. (properly typed)
     console.log(error.data); // Typed error response body
-  }
+  },
 });
 
 // With error handling using withResponse
 const mutationWithErrorHandling = useMutation(
-  tanstackApi.mutation("post", '/users', {
+  tanstackApi.mutation("post", "/users", {
     // Returns union-style result, never throws
-    withResponse: true
-  }).mutationOptions
+    withResponse: true,
+  }).mutationOptions,
 );
 
 // With custom response transformation
 const customMutation = useMutation(
-  tanstackApi.mutation("post", '/users', {
-    selectFn: (user) => ({ userId: user.id, userName: user.name })
-  }).mutationOptions
+  tanstackApi.mutation("post", "/users", {
+    selectFn: (user) => ({ userId: user.id, userName: user.name }),
+  }).mutationOptions,
 );
 
 // Advanced: withResponse + selectFn for comprehensive error handling
 const advancedMutation = useMutation(
-  tanstackApi.mutation("post", '/users', {
+  tanstackApi.mutation("post", "/users", {
     withResponse: true,
     selectFn: (response) => ({
       success: response.ok,
       user: response.ok ? response.data : null,
       error: response.ok ? null : response.data,
-      statusCode: response.status
-    })
-  }).mutationOptions
+      statusCode: response.status,
+    }),
+  }).mutationOptions,
 );
 ```
 
@@ -236,12 +242,11 @@ const advancedMutation = useMutation(
 // Basic usage
 basicMutation.mutate({
   body: {
-    emailAddress: 'user@example.com',
-    department: 'engineering',
-    roleName: 'admin'
-  }
+    emailAddress: "user@example.com",
+    department: "engineering",
+    roleName: "admin",
+  },
 });
-
 
 // With error handling
 // All errors thrown by mutations are type-safe and Response-like, with parsed error data attached.
@@ -255,11 +260,11 @@ mutationWithErrorHandling.mutate(
         if (response.status === 400) {
           toast.error(`Validation error: ${response.data.message}`);
         } else if (response.status === 409) {
-          toast.error('User already exists');
+          toast.error("User already exists");
         }
       }
-    }
-  }
+    },
+  },
 );
 
 // Advanced usage with custom transformation
@@ -268,12 +273,12 @@ advancedMutation.mutate(
   {
     onSuccess: (result) => {
       if (result.success) {
-        console.log('Created user:', result.user.name);
+        console.log("Created user:", result.user.name);
       } else {
         console.error(`Error ${result.statusCode}:`, result.error);
       }
-    }
-  }
+    },
+  },
 );
 ```
 
@@ -283,7 +288,7 @@ If you need to make a custom mutation you could use the `api` directly:
 
 ```ts
 const { mutate: login, isPending } = useMutation({
-  mutationFn: async (type: 'google' | 'microsoft') => {
+  mutationFn: async (type: "google" | "microsoft") => {
     return api.post(`/authentication/${type}`, { body: { redirectUri: search.redirect } });
   },
   onSuccess: (data) => {
@@ -293,8 +298,8 @@ const { mutate: login, isPending } = useMutation({
     console.error(error);
     toast({
       title: t(`toast.login.${type}.error`),
-      icon: 'warning',
-      variant: 'critical',
+      icon: "warning",
+      variant: "critical",
     });
   },
 });

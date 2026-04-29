@@ -3237,136 +3237,130 @@ describe("map-openapi-endpoints", () => {
   });
 
   test("nullable string", async ({ expect }) => {
-    expect(mapOpenApiEndpoints({
-      "openapi": "3.0.0",
-      "info": {
-        "version": "1.0.0",
-        "title": "Demo API"
-      },
-      "components": {
-        "schemas": {
-          "SerializedUserSession": {
-            "type": "object",
-            "properties": {
-              "accessToken": {
-                "type": "string"
-              },
-              "accessTokenExpirationDate": {
-                "type": "number"
-              },
-              "me": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "firstName": {
-                    "type": "string",
-                    // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
-                    "nullable": true
-                  },
-                  "lastName": {
-                    "type": "string",
-                    // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
-                    "nullable": true
-                  },
-                  "profilePictureURL": {
-                    "type": "string",
-                    // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
-                    "nullable": true
-                  },
-                  "email": {
-                    "type": "string"
-                  }
+    expect(
+      mapOpenApiEndpoints({
+        openapi: "3.0.0",
+        info: {
+          version: "1.0.0",
+          title: "Demo API",
+        },
+        components: {
+          schemas: {
+            SerializedUserSession: {
+              type: "object",
+              properties: {
+                accessToken: {
+                  type: "string",
                 },
-                "required": [
-                  "id",
-                  "email"
-                ]
+                accessTokenExpirationDate: {
+                  type: "number",
+                },
+                me: {
+                  type: "object",
+                  properties: {
+                    id: {
+                      type: "string",
+                    },
+                    firstName: {
+                      type: "string",
+                      // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
+                      nullable: true,
+                    },
+                    lastName: {
+                      type: "string",
+                      // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
+                      nullable: true,
+                    },
+                    profilePictureURL: {
+                      type: "string",
+                      // @ts-expect-error - OpenAPI 3.1 does not have nullable, but OpenAPI 3.0 does
+                      nullable: true,
+                    },
+                    email: {
+                      type: "string",
+                    },
+                  },
+                  required: ["id", "email"],
+                },
+                refreshToken: {
+                  type: "string",
+                },
+                refreshTokenExpirationDate: {
+                  type: "number",
+                },
               },
-              "refreshToken": {
-                "type": "string"
-              },
-              "refreshTokenExpirationDate": {
-                "type": "number"
-              }
+              required: [
+                "accessToken",
+                "accessTokenExpirationDate",
+                "me",
+                "refreshToken",
+                "refreshTokenExpirationDate",
+              ],
             },
-            "required": [
-              "accessToken",
-              "accessTokenExpirationDate",
-              "me",
-              "refreshToken",
-              "refreshTokenExpirationDate"
-            ]
           },
         },
-      },
-      "paths": {
-        "/authentication/refresh": {
-          "post": {
-            "summary": "Refresh authentication tokens",
-            "tags": [
-              "Authentication"
-            ],
-            "requestBody": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "accessToken": {
-                        "type": "string",
-                        "pattern": "^\\w+ [A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
+        paths: {
+          "/authentication/refresh": {
+            post: {
+              summary: "Refresh authentication tokens",
+              tags: ["Authentication"],
+              requestBody: {
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      properties: {
+                        accessToken: {
+                          type: "string",
+                          pattern: "^\\w+ [A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$",
+                        },
+                        refreshToken: {
+                          type: "string",
+                          format: "uuid",
+                        },
                       },
-                      "refreshToken": {
-                        "type": "string",
-                        "format": "uuid"
-                      }
+                      required: ["accessToken", "refreshToken"],
                     },
-                    "required": [
-                      "accessToken",
-                      "refreshToken"
-                    ]
-                  }
-                }
-              }
+                  },
+                },
+              },
+              responses: {
+                "200": {
+                  description: "Refresh the access and refresh tokens",
+                  content: {
+                    "application/json": {
+                      schema: {
+                        $ref: "#/components/schemas/SerializedUserSession",
+                      },
+                    },
+                  },
+                },
+                "401": {
+                  description: "Unauthorized",
+                  content: {
+                    "application/json": {
+                      schema: {
+                        type: "string",
+                      },
+                    },
+                  },
+                },
+                "500": {
+                  description: "Internal server error",
+                  content: {
+                    "application/json": {
+                      schema: {
+                        type: "string",
+                      },
+                    },
+                  },
+                },
+              },
             },
-            "responses": {
-              "200": {
-                "description": "Refresh the access and refresh tokens",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/SerializedUserSession"
-                    }
-                  }
-                }
-              },
-              "401": {
-                "description": "Unauthorized",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "type": "string"
-                    }
-                  }
-                }
-              },
-              "500": {
-                "description": "Internal server error",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }).endpointList).toMatchInlineSnapshot(`
+          },
+        },
+      }).endpointList,
+    ).toMatchInlineSnapshot(`
       [
         {
           "meta": {
@@ -3468,7 +3462,7 @@ describe("map-openapi-endpoints", () => {
     const result = mapOpenApiEndpoints(openApiDoc);
 
     // Find the getUserById endpoint
-    const getUserEndpoint = result.endpointList.find(e => e.meta.alias === "get_GetUserById");
+    const getUserEndpoint = result.endpointList.find((e) => e.meta.alias === "get_GetUserById");
     expect(getUserEndpoint).toBeDefined();
     expect(getUserEndpoint?.responses).toMatchInlineSnapshot(`
       {
@@ -3492,7 +3486,7 @@ describe("map-openapi-endpoints", () => {
     `);
 
     // Find the createPost endpoint
-    const createPostEndpoint = result.endpointList.find(e => e.meta.alias === "post_CreatePost");
+    const createPostEndpoint = result.endpointList.find((e) => e.meta.alias === "post_CreatePost");
     expect(createPostEndpoint).toBeDefined();
     expect(createPostEndpoint?.responses).toMatchInlineSnapshot(`
       {
