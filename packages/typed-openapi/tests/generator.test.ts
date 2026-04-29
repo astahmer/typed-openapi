@@ -826,6 +826,53 @@ describe("generator", () => {
     );
   });
 
+  test("prefixes schema refs inside record additionalProperties", async ({ expect }) => {
+    const openApiDoc: OpenAPIObject = {
+      openapi: "3.0.0",
+      info: { title: "Test API", version: "1.0.0" },
+      components: {
+        schemas: {
+          snippets_SnippetFiles: {
+            type: "array",
+            items: { type: "string" },
+          },
+        },
+      },
+      paths: {
+        "/test": {
+          post: {
+            operationId: "createTest",
+            requestBody: {
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      metadata: {
+                        type: "object",
+                        additionalProperties: {
+                          $ref: "#/components/schemas/snippets_SnippetFiles",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            responses: {
+              200: {
+                description: "Success",
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const output = await prettify(generateFile(mapOpenApiEndpoints(openApiDoc)));
+    expect(output).toContain("Record<string, Schemas.snippets_SnippetFiles>");
+  });
+
   test("petstore schema only", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
     expect(await prettify(generateFile({...mapOpenApiEndpoints(openApiDoc), schemasOnly: true}))).toMatchInlineSnapshot(`

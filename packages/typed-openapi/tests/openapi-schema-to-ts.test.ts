@@ -374,6 +374,13 @@ test("getSchemaBox", () => {
     }
   `);
 
+  expect(getSchemaBox({ enum: [[]] })).toMatchInlineSnapshot(`
+    {
+      "type": "union",
+      "value": "([])",
+    }
+  `);
+
   expect(getSchemaBox({ type: "string", enum: ["aaa", "bbb", "ccc"] })).toMatchInlineSnapshot(
     `
     {
