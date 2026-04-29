@@ -56,6 +56,7 @@ For more info, run any command with the `--help` flag:
 Options:
   -o, --output <path>             Output path for the api client ts file (defaults to `<input>.<runtime>.ts`)
   -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: Type<"arktype" | "io-ts" | "none" | "typebox" | "valibot" | "yup" | "zod"> (default: none)
+  --format                        Format generated files with oxfmt (defaults to false) (default: false)
   --schemas-only                  Only generate schemas, skipping client generation (defaults to false) (default: false)
   --include-client                Include API client types and implementation (defaults to true) (default: true)
   --success-status-codes <codes>  Comma-separated list of success status codes (defaults to 2xx and 3xx ranges)

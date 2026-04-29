@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
+import pandacss from "@pandacss/postcss";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { reactClickToComponent } from "vite-plugin-react-click-to-component";
 
@@ -13,6 +14,11 @@ const dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  css: {
+    postcss: {
+      plugins: [pandacss()],
+    },
+  },
   plugins: [
     react(),
     tsconfigPaths(),

@@ -1,4 +1,6 @@
 /// <reference path="global.d.ts" />
+declare module "@fontsource/inter";
+
 import * as CSS from 'csstype';
 import * as PropTypes from 'prop-types';
 import { Interaction } from 'scheduler/tracing';

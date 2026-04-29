@@ -1,20 +1,43 @@
 import type { Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
-import { assign, createMachine } from "xstate";
-import { choose } from "xstate/lib/actions";
 import { safeJSONParse } from "pastable/utils";
 import { generateFile, mapOpenApiEndpoints, type OutputRuntime } from "typed-openapi";
+import { assign, fromPromise, setup } from "xstate";
 import { parse } from "yaml";
 
-// @ts-expect-error
+import { prettify } from "./format";
 import { default as petstoreYaml } from "./petstore.yaml?raw";
 import { UrlSaver } from "./url-saver";
-import { fromPromise } from "xstate/lib/behaviors";
-import { prettify } from "./format";
 
 const urlSaver = new UrlSaver();
 const initialInputList = { "petstore.yaml": urlSaver.getValue("input") || petstoreYaml };
 const initialOutputList = { "petstore.client.ts": "" };
+
+type GenerateInput = {
+  inputValue: string;
+  runtime: OutputRuntime;
+};
+
+const generateOutputActor = fromPromise(
+  async ({ input: { inputValue, runtime } }: { input: GenerateInput }) => {
+    const now = new Date();
+    console.log("Generating...");
+
+    const openApiDoc = inputValue.startsWith("{") ? safeJSONParse(inputValue) : safeYAMLParse(inputValue);
+    console.log({ inputValue, openApiDoc });
+    if (!openApiDoc) {
+      return { content: "" };
+    }
+
+    const mappedContext = mapOpenApiEndpoints(openApiDoc);
+    console.log(`Found ${mappedContext.endpointList.length} endpoints`);
+
+    const content = await prettify(generateFile({ ...mappedContext, runtime }));
+    console.log(`Done in ${new Date().getTime() - now.getTime()}ms !`);
+
+    return { content };
+  }
+);
 
 type PlaygroundContext = {
   monaco: Monaco | null;
@@ -39,7 +62,8 @@ type PlaygroundEvent =
   | { type: "Select input tab"; name: string }
   | { type: "Select output tab"; name: string }
   | { type: "Update runtime"; runtime: OutputRuntime }
-  | { type: "Update input"; value: string };
+  | { type: "Update input"; value: string }
+  | { type: "Generate output" };
 
 const initialContext: PlaygroundContext = {
   monaco: null,
@@ -57,117 +81,148 @@ const initialContext: PlaygroundContext = {
 // @ts-ignore
 globalThis.__dirname = "/";
 
-export const playgroundMachine = createMachine(
-  {
-    predictableActionArguments: true,
-    preserveActionOrder: true,
-    id: "playground",
-    tsTypes: {} as import("./Playground.machine.typegen").Typegen0,
-    schema: {
-      context: {} as PlaygroundContext,
-      events: {} as PlaygroundEvent,
-    },
-    context: initialContext,
-    initial: "loading",
-    states: {
-      loading: {
-        on: {
-          "Editor Loaded": [
-            {
-              cond: "willBeReady",
-              target: "ready",
-              actions: ["assignEditorRef", "updateOutput"],
-            },
-            { actions: "assignEditorRef" },
-          ],
+export const playgroundMachine = setup({
+  types: {
+    context: {} as PlaygroundContext,
+    events: {} as PlaygroundEvent,
+  },
+  actors: {
+    generateOutput: generateOutputActor,
+  },
+  actions: {
+    assignEditorRef: assign(({ event }) => {
+      if (event.type !== "Editor Loaded") {
+        return {};
+      }
+
+      if (event.kind === "input") {
+        return { inputEditor: event.editor, monaco: event.monaco };
+      }
+
+      return { outputEditor: event.editor, monaco: event.monaco };
+    }),
+    selectInputTab: assign(({ event }) => {
+      if (event.type !== "Select input tab") {
+        return {};
+      }
+
+      return { selectedInput: event.name };
+    }),
+    selectOutputTab: assign(({ event }) => {
+      if (event.type !== "Select output tab") {
+        return {};
+      }
+
+      return { selectedOutput: event.name };
+    }),
+    updateSelectedInput: assign(({ context, event }) => {
+      if (event.type !== "Update input") {
+        return {};
+      }
+
+      return {
+        inputList: {
+          ...context.inputList,
+          [context.selectedInput]: event.value,
         },
+      };
+    }),
+    updateUrl: ({ context }) => {
+      urlSaver.setValue("input", context.inputList[context.selectedInput]);
+    },
+    updateRuntime: assign(({ event }) => {
+      if (event.type !== "Update runtime") {
+        return {};
+      }
+
+      return { runtime: event.runtime };
+    }),
+    assignGeneratedOutput: assign((args) => {
+      if ("output" in  args.event) {
+        const output = args.event.output as { content: string };
+        return {
+          outputList: {
+            ["petstore.client.ts"]: output?.content ?? "",
+          },
+        };
+      }
+
+      return args.context
+    }),
+  },
+  guards: {
+    willBeReady: ({ context }) => {
+      return Boolean(context.inputEditor || context.outputEditor);
+    },
+  },
+}).createMachine({
+  id: "playground",
+  context: initialContext,
+  initial: "loading",
+  states: {
+    loading: {
+      on: {
+        "Editor Loaded": [
+          {
+            guard: "willBeReady",
+            target: "ready",
+            actions: ["assignEditorRef"],
+          },
+          { actions: "assignEditorRef" },
+        ],
       },
-      ready: {
-        initial: "Playing",
-        entry: ["updateInput"],
-        states: {
-          Playing: {
-            on: {
-              "Select input tab": {
-                actions: ["selectInputTab", "updateInput"],
+    },
+    ready: {
+      entry: ["updateUrl"],
+      states: {
+        Playing: {
+          initial: "generating",
+          states: {
+            idle: {
+              type: "atomic",
+            },
+            generating: {
+              invoke: {
+                src: "generateOutput",
+                input: ({ context }) => ({
+                  inputValue: context.inputList[context.selectedInput] ?? "",
+                  runtime: context.runtime,
+                }),
+                onDone: {
+                  target: "idle",
+                  actions: ["assignGeneratedOutput"],
+                },
+                onError: {
+                  target: "idle",
+                },
               },
-              "Select output tab": { actions: ["selectOutputTab"] },
-              "Update input": { actions: ["updateInput"] },
+            },
+          },
+          on: {
+            "Select input tab": {
+              actions: ["selectInputTab", "updateUrl"],
+              target: ".generating",
+            },
+            "Select output tab": { actions: ["selectOutputTab"] },
+            "Update input": {
+              actions: ["updateSelectedInput", "updateUrl"],
+              target: ".generating",
             },
           },
         },
       },
-    },
-    on: {
-      "Update runtime": { actions: ["updateRuntime", "updateOutput"] },
-    },
-  },
-  {
-    actions: {
-      assignEditorRef: assign((ctx, event) => {
-        if (event.kind === "input") {
-          return { ...ctx, inputEditor: event.editor, monaco: event.monaco };
-        }
-
-        return { ...ctx, outputEditor: event.editor, monaco: event.monaco };
-      }),
-      selectInputTab: assign((ctx, event) => {
-        return { ...ctx, selectedInput: event.name };
-      }),
-      selectOutputTab: assign((ctx, event) => {
-        return { ...ctx, selectedOutput: event.name };
-      }),
-      updateSelectedInput: assign((ctx, event) => {
-        if (event.type !== "Update input") return ctx;
-
-        const { inputList, selectedInput } = ctx;
-        if (inputList[selectedInput]) {
-          inputList[selectedInput] = event.value;
-        }
-        return { ...ctx, inputList };
-      }),
-      updateUrl(context, event, meta) {
-        urlSaver.setValue("input", context.inputList[context.selectedInput]);
-      },
-      updateInput: choose([{ actions: ["updateSelectedInput", "updateUrl", "updateOutput"] }]),
-      updateRuntime: assign({ runtime: (_, event) => event.runtime }),
-      updateOutput: assign((ctx, event) => {
-        const now = new Date();
-        console.log("Generating...");
-
-        const input = (event.type === "Update input" ? event.value : ctx.inputList[ctx.selectedInput]) ?? "";
-        const openApiDoc = input.startsWith("{") ? safeJSONParse(input) : safeYAMLParse(input);
-        console.log({ input, openApiDoc });
-        if (!openApiDoc) {
-          // toasts.error("Error while parsing OpenAPI document");
-          return ctx;
-        }
-
-        const context = mapOpenApiEndpoints(openApiDoc);
-        console.log(`Found ${context.endpointList.length} endpoints`);
-
-        const content = prettify(generateFile({ ...context, runtime: ctx.runtime }));
-        const outputList = {
-          ["petstore.client.ts"]: content,
-        };
-
-        console.log(`Done in ${new Date().getTime() - now.getTime()}ms !`);
-
-        return {
-          ...ctx,
-          outputList,
-        };
-      }),
-    },
-    guards: {
-      willBeReady: (ctx) => {
-        return Boolean(ctx.inputEditor || ctx.outputEditor);
+      initial: "Playing",
+      on: {
+        "Update runtime": {
+          actions: ["updateRuntime"],
+          target: ".Playing.generating",
+        },
       },
     },
   },
-);
+});
 
-const safeYAMLParse = (value: string): string | null => {
+const safeYAMLParse = (value: string): unknown | null => {
   try {
     return parse(value);
   } catch {

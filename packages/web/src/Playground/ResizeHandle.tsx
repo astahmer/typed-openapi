@@ -1,11 +1,11 @@
-import { PanelResizeHandle } from "react-resizable-panels";
+import { Separator } from "react-resizable-panels";
 import { css } from "panda/css";
 import { styled } from "panda/jsx";
 
 // adapted from https://github.com/bvaughn/react-resizable-panels/blob/820f48f263407b6b78feecf975a6914c417107e6/packages/react-resizable-panels-website/src/components/ResizeHandle.tsx
 export function ResizeHandle({ className = "", id }: { className?: string; id?: string }) {
   return (
-    <PanelResizeHandle
+    <Separator
       className={[
         css({
           position: "relative",
@@ -16,7 +16,7 @@ export function ResizeHandle({ className = "", id }: { className?: string; id?: 
         }),
         className,
       ].join(" ")}
-      id={id ?? null}
+      id={id}
       style={{ flex: "0 0 1.5em", transition: "background-color .2s linear" }}
     >
       <styled.div
@@ -44,7 +44,7 @@ export function ResizeHandle({ className = "", id }: { className?: string; id?: 
           type="resize-vertical"
         />
       </styled.div>
-    </PanelResizeHandle>
+    </Separator>
   );
 }
 

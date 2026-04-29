@@ -1,6 +1,6 @@
 import Editor from "@monaco-editor/react";
-import { useActor } from "@xstate/react";
-import { Panel, PanelGroup } from "react-resizable-panels";
+import { useSelector } from "@xstate/react";
+import { Group, Panel } from "react-resizable-panels";
 import { css } from "panda/css";
 import { Flex, styled } from "panda/jsx";
 import { usePlaygroundContext } from "./PlaygroundMachineProvider";
@@ -22,7 +22,8 @@ import YupDeclaration from "../../declarations/yup.d.ts?raw";
 
 export const Playground = () => {
   const service = usePlaygroundContext();
-  const [state, send] = useActor(service);
+  const state = useSelector(service, (snapshot) => snapshot);
+  const send = service.send.bind(service);
   console.log(state.value, state.context);
 
   const theme = useTheme();
@@ -30,7 +31,7 @@ export const Playground = () => {
 
   return (
     <styled.div display="flex" w="100%" h="100%" pos="relative">
-      <PanelGroup direction="horizontal">
+      <Group orientation="horizontal">
         <Panel className={css({ display: "flex", flexDirection: "column" })} minSize={20}>
           <Flex px="2" bg="var(--sp-colors-surface1)" borderBottom="1px solid var(--sp-colors-surface2)" role="tablist">
             {Object.entries(state.context.inputList).map(([fileName]) => (
@@ -168,7 +169,7 @@ export const Playground = () => {
             />
           </styled.div>
         </Panel>
-      </PanelGroup>
+      </Group>
     </styled.div>
   );
 };

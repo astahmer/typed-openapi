@@ -1,6 +1,6 @@
 import { createContextWithHook } from "pastable/react";
-import { InterpreterFrom } from "xstate";
+import type { ActorRefFrom } from "xstate";
 import { playgroundMachine } from "./Playground.machine";
 
 export const [PlaygroundMachineProvider, usePlaygroundContext] =
-  createContextWithHook<InterpreterFrom<typeof playgroundMachine>>("PlaygroundMachineContext");
+  createContextWithHook<ActorRefFrom<typeof playgroundMachine>>("PlaygroundMachineContext");
