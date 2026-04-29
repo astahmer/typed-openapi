@@ -347,7 +347,7 @@ export const EndpointSettings = v.object({
 
 export type NetworkingConfig = v.InferOutput<typeof NetworkingConfig>;
 export const NetworkingConfig = v.object({
-  EndpointsConfig: v.optional(v.record(v.string(), v.unknown())),
+  EndpointsConfig: v.optional(v.record(v.string(), EndpointSettings)),
 });
 
 export type Address = v.InferOutput<typeof Address>;
@@ -375,7 +375,7 @@ export const NetworkSettings = v.object({
   IPPrefixLen: v.optional(v.number()),
   IPv6Gateway: v.optional(v.string()),
   MacAddress: v.optional(v.string()),
-  Networks: v.optional(v.record(v.string(), v.unknown())),
+  Networks: v.optional(v.record(v.string(), EndpointSettings)),
 });
 
 export type GraphDriverData = v.InferOutput<typeof GraphDriverData>;
@@ -609,7 +609,7 @@ export const Network = v.object({
   Internal: v.optional(v.boolean()),
   Attachable: v.optional(v.boolean()),
   Ingress: v.optional(v.boolean()),
-  Containers: v.optional(v.record(v.string(), v.unknown())),
+  Containers: v.optional(v.record(v.string(), NetworkContainer)),
   Options: v.optional(v.record(v.string(), v.string())),
   Labels: v.optional(v.record(v.string(), v.string())),
 });
@@ -1329,7 +1329,7 @@ export const ContainerSummary = v.object({
   ),
   NetworkSettings: v.optional(
     v.object({
-      Networks: v.optional(v.record(v.string(), v.unknown())),
+      Networks: v.optional(v.record(v.string(), EndpointSettings)),
     }),
   ),
   Mounts: v.optional(v.array(MountPoint)),
@@ -1475,7 +1475,7 @@ export const RegistryServiceConfig = v.union([
     AllowNondistributableArtifactsCIDRs: v.optional(v.array(v.string())),
     AllowNondistributableArtifactsHostnames: v.optional(v.array(v.string())),
     InsecureRegistryCIDRs: v.optional(v.array(v.string())),
-    IndexConfigs: v.optional(v.record(v.string(), v.unknown())),
+    IndexConfigs: v.optional(v.record(v.string(), IndexInfo)),
     Mirrors: v.optional(v.array(v.string())),
   }),
   v.null(),
@@ -1571,7 +1571,7 @@ export const SystemInfo = v.object({
   Labels: v.optional(v.array(v.string())),
   ExperimentalBuild: v.optional(v.boolean()),
   ServerVersion: v.optional(v.string()),
-  Runtimes: v.optional(v.record(v.string(), v.unknown())),
+  Runtimes: v.optional(v.record(v.string(), Runtime)),
   DefaultRuntime: v.optional(v.string()),
   Swarm: v.optional(SwarmInfo),
   LiveRestoreEnabled: v.optional(v.boolean()),

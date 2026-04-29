@@ -195,7 +195,7 @@ export namespace Schemas {
     MacAddress: string;
     DriverOpts: Record<string, string> | null;
   }>;
-  export type NetworkingConfig = Partial<{ EndpointsConfig: Record<string, unknown> }>;
+  export type NetworkingConfig = Partial<{ EndpointsConfig: Record<string, EndpointSettings> }>;
   export type Address = Partial<{ Addr: string; PrefixLen: number }>;
   export type NetworkSettings = Partial<{
     Bridge: string;
@@ -215,7 +215,7 @@ export namespace Schemas {
     IPPrefixLen: number;
     IPv6Gateway: string;
     MacAddress: string;
-    Networks: Record<string, unknown>;
+    Networks: Record<string, EndpointSettings>;
   }>;
   export type GraphDriverData = { Name: string; Data: Record<string, string> };
   export type ChangeType = 0 | 1 | 2;
@@ -341,7 +341,7 @@ export namespace Schemas {
     Internal: boolean;
     Attachable: boolean;
     Ingress: boolean;
-    Containers: Record<string, unknown>;
+    Containers: Record<string, NetworkContainer>;
     Options: Record<string, string>;
     Labels: Record<string, string>;
   }>;
@@ -681,7 +681,7 @@ export namespace Schemas {
     State: string;
     Status: string;
     HostConfig: Partial<{ NetworkMode: string }>;
-    NetworkSettings: Partial<{ Networks: Record<string, unknown> }>;
+    NetworkSettings: Partial<{ Networks: Record<string, EndpointSettings> }>;
     Mounts: Array<MountPoint>;
   }>;
   export type Driver = { Name: string; Options?: Record<string, string> | undefined };
@@ -749,7 +749,7 @@ export namespace Schemas {
     AllowNondistributableArtifactsCIDRs: Array<string>;
     AllowNondistributableArtifactsHostnames: Array<string>;
     InsecureRegistryCIDRs: Array<string>;
-    IndexConfigs: Record<string, unknown>;
+    IndexConfigs: Record<string, IndexInfo>;
     Mirrors: Array<string>;
   }> | null;
   export type Runtime = Partial<{ path: string; runtimeArgs: Array<string> | null }>;
@@ -815,7 +815,7 @@ export namespace Schemas {
     Labels: Array<string>;
     ExperimentalBuild: boolean;
     ServerVersion: string;
-    Runtimes: Record<string, unknown>;
+    Runtimes: Record<string, Runtime>;
     DefaultRuntime: string;
     Swarm: SwarmInfo;
     LiveRestoreEnabled: boolean;
