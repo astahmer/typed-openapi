@@ -1,5 +1,12 @@
 # typed-openapi
 
+## 2.2.5
+
+### Patch Changes
+
+- c312ff1: Fix GitHub Actions installs for `oxfmt` by forcing pnpm to reinstall optional dependencies, which ensures the
+  native formatter binding is present before build and test steps.
+
 ## 2.2.4
 
 ### Patch Changes
@@ -89,7 +96,6 @@
 ### Major Changes
 
 - 8f1eaa5: Add comprehensive type-safe error handling and configurable status codes
-
   - **Type-safe error handling**: Added discriminated unions for API responses with `SafeApiResponse` and
     `InferResponseByStatus` types that distinguish between success and error responses based on HTTP status codes
   - **TypedResponseError class**: Introduced `TypedResponseError` that extends the native Error class to include typed
@@ -271,7 +277,6 @@
 ### Minor Changes
 
 - b122616: Add requestFormat property to endpoint schema.
-
   - json
   - form-data
   - form-url
