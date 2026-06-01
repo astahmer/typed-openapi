@@ -52,7 +52,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
       const paramObjects = [...(pathItemObj.parameters ?? []), ...(operation.parameters ?? [])].reduce(
         (acc, paramOrRef) => {
           const param = refs.unwrap(paramOrRef);
-          const schema = openApiSchemaToTs({ schema: refs.unwrap(param.schema ?? {}), ctx });
+          const schema = openApiSchemaToTs({ schema: param.schema ?? {}, ctx });
 
           if (param.required) endpoint.meta.areParametersRequired = true;
           endpoint.meta.hasParameters = true;
