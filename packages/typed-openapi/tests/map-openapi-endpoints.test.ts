@@ -3512,4 +3512,93 @@ describe("map-openapi-endpoints", () => {
     const validationErrorBox = result.refs.getInfosByRef("#/components/schemas/ValidationError");
     expect(validationErrorBox?.name).toBe("ValidationError");
   });
+
+  test("xquik search endpoint metadata", async ({ expect }) => {
+    const openApiDoc = {
+      openapi: "3.1.0",
+      info: { title: "Xquik API", version: "1.0.0" },
+      paths: {
+        "/api/v1/x/tweets/search": {
+          get: {
+            operationId: "searchTweets",
+            security: [{ apiKey: [] }, { oauthBearer: [] }, {}],
+            parameters: [
+              { name: "q", in: "query", required: true, schema: { type: "string" } },
+              { name: "queryType", in: "query", schema: { type: "string", enum: ["Latest", "Top"] } },
+              { name: "limit", in: "query", schema: { type: "integer", minimum: 1, maximum: 200 } },
+            ],
+            responses: {
+              "200": {
+                description: "Search results",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      properties: {
+                        data: {
+                          type: "array",
+                          items: { type: "object", additionalProperties: true },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      components: {
+        securitySchemes: {
+          apiKey: { type: "apiKey", in: "header", name: "x-api-key" },
+          oauthBearer: { type: "http", scheme: "bearer" },
+        },
+      },
+    } satisfies OpenAPIObject;
+
+    const result = mapOpenApiEndpoints(openApiDoc);
+    const endpoint = result.endpointList.find((e) => e.path === "/api/v1/x/tweets/search");
+
+    expect(endpoint).toMatchObject({
+      method: "get",
+      path: "/api/v1/x/tweets/search",
+      requestFormat: "json",
+      meta: {
+        alias: "get_SearchTweets",
+        hasParameters: true,
+        areParametersRequired: true,
+      },
+      operation: {
+        operationId: "searchTweets",
+        security: [{ apiKey: [] }, { oauthBearer: [] }, {}],
+      },
+    });
+    expect(endpoint?.parameters?.query).toBeDefined();
+    expect(endpoint?.responses?.["200"]).toBeDefined();
+  });
+
+  test("operation parameters override matching path parameters", ({ expect }) => {
+    const openApiDoc = {
+      openapi: "3.1.0",
+      info: { title: "Parameter overrides", version: "1.0.0" },
+      paths: {
+        "/search": {
+          parameters: [{ name: "limit", in: "query", required: true, schema: { type: "string" } }],
+          get: {
+            operationId: "search",
+            parameters: [{ name: "limit", in: "query", required: false, schema: { type: "integer" } }],
+            responses: { "200": { description: "Search results" } },
+          },
+        },
+      },
+    } satisfies OpenAPIObject;
+
+    const endpoint = mapOpenApiEndpoints(openApiDoc).endpointList[0];
+
+    expect(endpoint?.meta).toMatchObject({ hasParameters: true, areParametersRequired: false });
+    expect(endpoint?.parameters?.query).toMatchObject({
+      type: "ref",
+      value: "Partial<{ limit: number }>",
+    });
+  });
 });
