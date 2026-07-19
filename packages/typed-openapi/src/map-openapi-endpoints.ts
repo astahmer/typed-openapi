@@ -49,9 +49,16 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
 
       // Build a list of parameters by type + fill an object with all of them
       const lists = { query: [] as ParameterObject[], path: [] as ParameterObject[], header: [] as ParameterObject[] };
-      const paramObjects = [...(pathItemObj.parameters ?? []), ...(operation.parameters ?? [])].reduce(
-        (acc, paramOrRef) => {
-          const param = refs.unwrap(paramOrRef);
+      const parameters = [
+        ...new Map(
+          [...(pathItemObj.parameters ?? []), ...(operation.parameters ?? [])].map((paramOrRef) => {
+            const param = refs.unwrap(paramOrRef);
+            return [`${param.in}:${param.name}`, param] as const;
+          }),
+        ).values(),
+      ];
+      const paramObjects = parameters.reduce(
+        (acc, param) => {
           const schema = openApiSchemaToTs({ schema: param.schema ?? {}, ctx });
 
           if (param.required) endpoint.meta.areParametersRequired = true;
@@ -76,16 +83,15 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
       );
 
       // Filter out empty objects
-      const params = Object.entries(paramObjects).reduce(
-        (acc, [key, value]) => {
-          if (Object.keys(value).length) {
-            // @ts-expect-error
-            acc[key] = value;
-          }
-          return acc;
-        },
-        {} as { query?: Record<string, Box>; path?: Record<string, Box>; header?: Record<string, Box>; body?: Box },
-      );
+      const params: {
+        query?: Record<string, Box>;
+        path?: Record<string, Box>;
+        header?: Record<string, Box>;
+        body?: Box;
+      } = {};
+      for (const key of ["query", "path", "header"] as const) {
+        if (Object.keys(paramObjects[key]).length) params[key] = paramObjects[key];
+      }
 
       // Body
       if (operation.requestBody) {
