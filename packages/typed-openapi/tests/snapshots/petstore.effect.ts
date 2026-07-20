@@ -500,6 +500,15 @@ type RequiredKeys<T> = {
 type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
 type NotNever<T> = [T] extends [never] ? false : true;
 
+export type ValidateSide = "none" | "input" | "output" | "both";
+export type OnValidate = (ctx: {
+  side: "input" | "output";
+  method: string;
+  path: string;
+  schema: unknown;
+  value: unknown;
+}) => unknown | Promise<unknown>;
+
 // </ApiClientTypes>
 
 // <TypedStatusError>
@@ -515,316 +524,243 @@ export class TypedStatusError<TData = unknown> extends Error {
 }
 // </TypedStatusError>
 
-// <ApiClient>
-export class ApiClient {
+import { Effect } from "effect";
+import type { ParseError } from "effect/ParseResult";
+
+// <HttpClientError>
+export class HttpClientError extends Error {
+  readonly _tag = "HttpClientError";
+  constructor(
+    message: string,
+    readonly cause?: unknown,
+  ) {
+    super(message);
+    this.name = "HttpClientError";
+  }
+}
+// </HttpClientError>
+
+// <ValidateHelpers>
+const defaultParse = (schema: unknown, value: unknown): unknown => {
+  return Schema.decodeUnknownSync(schema as never)(value);
+};
+
+const runValidate = async (ctx: {
+  side: "input" | "output";
+  method: string;
+  path: string;
+  schema: unknown;
+  value: unknown;
+  onValidate?: OnValidate;
+}): Promise<unknown> => {
+  if (ctx.onValidate) return ctx.onValidate(ctx);
+  return defaultParse(ctx.schema, ctx.value);
+};
+// </ValidateHelpers>
+
+export type EffectFetcher = {
+  decodePathParams?: (path: string, pathParams: Record<string, string>) => string;
+  encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+  parseResponseData?: (response: Response) => Promise<unknown>;
+  fetch: (input: {
+    method: Method;
+    url: URL;
+    urlSearchParams?: URLSearchParams | undefined;
+    parameters?: unknown;
+    path: string;
+    overrides?: RequestInit;
+    throwOnStatusError?: boolean;
+  }) => Effect.Effect<Response, HttpClientError, never>;
+};
+
+const wrapPromiseFetcher = (fetcher: Fetcher): EffectFetcher => ({
+  decodePathParams: fetcher.decodePathParams,
+  encodeSearchParams: fetcher.encodeSearchParams,
+  parseResponseData: fetcher.parseResponseData,
+  fetch: (input) =>
+    Effect.tryPromise({
+      try: () => fetcher.fetch(input as never),
+      catch: (cause) => new HttpClientError("fetch failed", cause),
+    }),
+});
+
+// <EffectApiClient>
+export class EffectApiClient {
   baseUrl: string = "";
   successStatusCodes = successStatusCodes;
   errorStatusCodes = errorStatusCodes;
+  validate: ValidateSide = "both";
+  onValidate?: OnValidate;
+  private effectFetcher: EffectFetcher;
 
-  constructor(public fetcher: Fetcher) {}
+  constructor(
+    fetcher: Fetcher | EffectFetcher,
+    options?: { validate?: ValidateSide; onValidate?: OnValidate; effectFetcher?: boolean },
+  ) {
+    this.effectFetcher = options?.effectFetcher ? (fetcher as EffectFetcher) : wrapPromiseFetcher(fetcher as Fetcher);
+    if (options?.validate !== undefined) this.validate = options.validate;
+    if (options?.onValidate) this.onValidate = options.onValidate;
+  }
 
   setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
     return this;
   }
 
-  /**
-   * Replace path parameters in URL
-   * Supports both OpenAPI format {param} and Express format :param
-   */
-  defaultDecodePathParams = (url: string, params: Record<string, string>): string => {
-    return url
-      .replace(/{(\w+)}/g, (_, key: string) => params[key] || `{${key}}`)
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || `:${key}`);
-  };
+  request<
+    TMethod extends keyof EndpointByMethod,
+    TPath extends keyof EndpointByMethod[TMethod],
+    TEndpoint extends EndpointByMethod[TMethod][TPath],
+  >(
+    method: TMethod,
+    path: TPath,
+    ...params: MaybeOptionalArg<any>
+  ): Effect.Effect<
+    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    TypedStatusError | HttpClientError | ParseError | Error,
+    never
+  > {
+    const self = this;
+    return Effect.gen(function* () {
+      const requestParams = params[0];
+      const validateSide: ValidateSide = requestParams?.validate ?? self.validate;
+      const parametersToSend: EndpointParameters = {};
+      if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
+      if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
+      if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
+      if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
 
-  /** Uses URLSearchParams, skips null/undefined values */
-  defaultEncodeSearchParams = (queryParams: Record<string, unknown> | undefined): URLSearchParams | undefined => {
-    if (!queryParams) return;
-
-    const searchParams = new URLSearchParams();
-    Object.entries(queryParams).forEach(([key, value]) => {
-      if (value != null) {
-        // Skip null/undefined values
-        if (Array.isArray(value)) {
-          value.forEach((val) => val != null && searchParams.append(key, String(val)));
-        } else {
-          searchParams.append(key, String(value));
+      const endpointSchema = (EndpointByMethod as any)[method]?.[path];
+      if ((validateSide === "input" || validateSide === "both") && endpointSchema?.parameters) {
+        for (const key of ["body", "query", "header", "path"] as const) {
+          const schema = endpointSchema.parameters[key];
+          const value = (parametersToSend as any)[key];
+          if (schema && value !== undefined) {
+            if (self.onValidate) {
+              (parametersToSend as any)[key] = yield* Effect.tryPromise({
+                try: () =>
+                  runValidate({
+                    side: "input",
+                    method: String(method),
+                    path: String(path),
+                    schema: schema,
+                    value: value,
+                    onValidate: self.onValidate,
+                  }),
+                catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+              });
+            } else {
+              (parametersToSend as any)[key] = yield* Schema.decodeUnknown(schema as never)(value);
+            }
+          }
         }
       }
-    });
 
-    return searchParams;
-  };
+      const decodePath =
+        self.effectFetcher.decodePathParams ??
+        ((url: string, p: Record<string, string>) =>
+          url
+            .replace(/{(\w+)}/g, (_, key: string) => p[key] || `{${key}}`)
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => p[key] || `:${key}`));
+      const encodeSearch =
+        self.effectFetcher.encodeSearchParams ??
+        ((queryParams: Record<string, unknown> | undefined) => {
+          if (!queryParams) return undefined;
+          const searchParams = new URLSearchParams();
+          Object.entries(queryParams).forEach(([key, value]) => {
+            if (value != null) {
+              if (Array.isArray(value)) value.forEach((val) => val != null && searchParams.append(key, String(val)));
+              else searchParams.append(key, String(value));
+            }
+          });
+          return searchParams;
+        });
+      const parseData =
+        self.effectFetcher.parseResponseData ??
+        (async (response: Response) => {
+          const contentType = response.headers.get("content-type") ?? "";
+          if (contentType.includes("json") || contentType === "*/*") {
+            try {
+              return await response.json();
+            } catch {
+              return undefined;
+            }
+          }
+          if (contentType.startsWith("text/")) return response.text();
+          return undefined;
+        });
 
-  defaultParseResponseData = async (response: Response): Promise<unknown> => {
-    const contentType = response.headers.get("content-type") ?? "";
-    if (contentType.startsWith("text/")) {
-      return await response.text();
-    }
+      const resolvedPath = decodePath(
+        self.baseUrl + (path as string),
+        (parametersToSend.path ?? {}) as Record<string, string>,
+      );
+      const url = new URL(resolvedPath);
+      const urlSearchParams = encodeSearch(parametersToSend.query);
 
-    if (contentType === "application/octet-stream") {
-      return await response.arrayBuffer();
-    }
-
-    if (
-      contentType.includes("application/json") ||
-      (contentType.includes("application/") && contentType.includes("json")) ||
-      contentType === "*/*"
-    ) {
-      try {
-        return await response.json();
-      } catch {
-        return undefined;
-      }
-    }
-
-    return;
-  };
-
-  // <ApiClient.put>
-  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
-    path: Path,
-    ...params: MaybeOptionalArg<
-      TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-    >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
-
-  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
-    path: Path,
-    ...params: MaybeOptionalArg<
-      TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-    >
-  ): Promise<SafeApiResponse<TEndpoint>>;
-
-  put<Path extends keyof PutEndpoints, _TEndpoint extends PutEndpoints[Path]>(
-    path: Path,
-    ...params: MaybeOptionalArg<any>
-  ): Promise<any> {
-    return this.request("put", path, ...params);
-  }
-  // </ApiClient.put>
-
-  // <ApiClient.post>
-  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
-    path: Path,
-    ...params: MaybeOptionalArg<
-      TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-    >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
-
-  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
-    path: Path,
-    ...params: MaybeOptionalArg<
-      TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-    >
-  ): Promise<SafeApiResponse<TEndpoint>>;
-
-  post<Path extends keyof PostEndpoints, _TEndpoint extends PostEndpoints[Path]>(
-    path: Path,
-    ...params: MaybeOptionalArg<any>
-  ): Promise<any> {
-    return this.request("post", path, ...params);
-  }
-  // </ApiClient.post>
-
-  // <ApiClient.get>
-  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
-    path: Path,
-    ...params: MaybeOptionalArg<
-      TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-    >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
-
-  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
-    path: Path,
-    ...params: MaybeOptionalArg<
-      TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-    >
-  ): Promise<SafeApiResponse<TEndpoint>>;
-
-  get<Path extends keyof GetEndpoints, _TEndpoint extends GetEndpoints[Path]>(
-    path: Path,
-    ...params: MaybeOptionalArg<any>
-  ): Promise<any> {
-    return this.request("get", path, ...params);
-  }
-  // </ApiClient.get>
-
-  // <ApiClient.delete>
-  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
-    path: Path,
-    ...params: MaybeOptionalArg<
-      TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-    >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
-
-  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
-    path: Path,
-    ...params: MaybeOptionalArg<
-      TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-    >
-  ): Promise<SafeApiResponse<TEndpoint>>;
-
-  delete<Path extends keyof DeleteEndpoints, _TEndpoint extends DeleteEndpoints[Path]>(
-    path: Path,
-    ...params: MaybeOptionalArg<any>
-  ): Promise<any> {
-    return this.request("delete", path, ...params);
-  }
-  // </ApiClient.delete>
-
-  // <ApiClient.request>
-  /**
-   * Generic request method with full type-safety for any endpoint
-   */
-  request<
-    TMethod extends keyof EndpointByMethod,
-    TPath extends keyof EndpointByMethod[TMethod],
-    TEndpoint extends EndpointByMethod[TMethod][TPath],
-  >(
-    method: TMethod,
-    path: TPath,
-    ...params: MaybeOptionalArg<
-      TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-    >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
-
-  request<
-    TMethod extends keyof EndpointByMethod,
-    TPath extends keyof EndpointByMethod[TMethod],
-    TEndpoint extends EndpointByMethod[TMethod][TPath],
-  >(
-    method: TMethod,
-    path: TPath,
-    ...params: MaybeOptionalArg<
-      TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-    >
-  ): Promise<SafeApiResponse<TEndpoint>>;
-
-  request<
-    TMethod extends keyof EndpointByMethod,
-    TPath extends keyof EndpointByMethod[TMethod],
-    TEndpoint extends EndpointByMethod[TMethod][TPath],
-  >(method: TMethod, path: TPath, ...params: MaybeOptionalArg<any>): Promise<any> {
-    const requestParams = params[0];
-    const withResponse = requestParams?.withResponse;
-    const {
-      withResponse: _,
-      throwOnStatusError = withResponse ? false : true,
-      overrides,
-      ...fetchParams
-    } = requestParams || {};
-
-    const parametersToSend: EndpointParameters = {};
-    if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
-    if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
-    if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
-    if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
-
-    const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
-      this.baseUrl + (path as string),
-      (parametersToSend.path ?? {}) as Record<string, string>,
-    );
-    const url = new URL(resolvedPath);
-    const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(parametersToSend.query);
-
-    const promise = this.fetcher
-      .fetch({
-        method: method,
+      const response = yield* self.effectFetcher.fetch({
+        method: method as Method,
         path: path as string,
         url,
         urlSearchParams,
-        parameters: Object.keys(fetchParams).length ? fetchParams : undefined,
-        overrides,
-        throwOnStatusError,
-      })
-      .then(async (response) => {
-        const data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
-        const typedResponse = Object.assign(response, {
-          data: data,
-          json: () => Promise.resolve(data),
-        }) as SafeApiResponse<TEndpoint>;
-
-        if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-          throw new TypedStatusError(typedResponse as never);
-        }
-
-        return withResponse ? typedResponse : data;
+        parameters: parametersToSend,
+        overrides: requestParams?.overrides,
       });
 
-    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
+      let data = yield* Effect.tryPromise({
+        try: () => parseData(response),
+        catch: (cause) => new HttpClientError("parse failed", cause),
+      });
+
+      if ((validateSide === "output" || validateSide === "both") && response.ok && endpointSchema?.responses) {
+        const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+        if (responseSchema) {
+          if (self.onValidate) {
+            data = yield* Effect.tryPromise({
+              try: () =>
+                runValidate({
+                  side: "output",
+                  method: String(method),
+                  path: String(path),
+                  schema: responseSchema,
+                  value: data,
+                  onValidate: self.onValidate,
+                }),
+              catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+            });
+          } else {
+            data = yield* Schema.decodeUnknown(responseSchema as never)(data);
+          }
+        }
+      }
+
+      if (errorStatusCodes.includes(response.status as never)) {
+        const typedResponse = Object.assign(response, { data, json: () => Promise.resolve(data) });
+        return yield* Effect.fail(new TypedStatusError(typedResponse as never));
+      }
+
+      return data as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
+    });
   }
-  // </ApiClient.request>
+
+  put<Path extends keyof PutEndpoints>(path: Path, ...params: MaybeOptionalArg<any>) {
+    return this.request("put" as never, path as never, ...params);
+  }
+  post<Path extends keyof PostEndpoints>(path: Path, ...params: MaybeOptionalArg<any>) {
+    return this.request("post" as never, path as never, ...params);
+  }
+  get<Path extends keyof GetEndpoints>(path: Path, ...params: MaybeOptionalArg<any>) {
+    return this.request("get" as never, path as never, ...params);
+  }
+  delete<Path extends keyof DeleteEndpoints>(path: Path, ...params: MaybeOptionalArg<any>) {
+    return this.request("delete" as never, path as never, ...params);
+  }
 }
 
-export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
-  return new ApiClient(fetcher).setBaseUrl(baseUrl ?? "");
+export function createEffectApiClient(
+  fetcher: Fetcher | EffectFetcher,
+  baseUrl?: string,
+  options?: { validate?: ValidateSide; onValidate?: OnValidate; effectFetcher?: boolean },
+) {
+  return new EffectApiClient(fetcher, options).setBaseUrl(baseUrl ?? "");
 }
-
-/**
- Example usage:
- const api = createApiClient((method, url, params) =>
-   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
- );
- api.get("/users").then((users) => console.log(users));
- api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
- api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
-
- // With error handling
- const result = await api.get("/users/{id}", { path: { id: "123" }, withResponse: true });
- if (result.ok) {
-   // Access data directly
-   const user = result.data;
-   console.log(user);
-
-   // Or use the json() method for compatibility
-   const userFromJson = await result.json();
-   console.log(userFromJson);
- } else {
-   const error = result.data;
-   console.error(`Error ${result.status}:`, error);
- }
-*/
-
-// </ApiClient>
+// </EffectApiClient>

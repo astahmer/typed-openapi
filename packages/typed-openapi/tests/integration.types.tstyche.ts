@@ -397,12 +397,12 @@ describe("Example API Client", () => {
     const queryWithSomeResponseUnknownData = tanstack.get("/pet/findByStatus", { query: { status: "available" } });
     const queryHook = useQuery(queryWithSomeResponseUnknownData.queryOptions);
 
-    expect(queryHook.data).type.toBe<Schemas.Pet[] | undefined>();
+    expect(queryHook.data).type.toBe<NoInfer<Schemas.Pet[]> | undefined>();
     // ^?
 
     const secondQuery = tanstack.get("/pet/custom");
     const secondQueryHook = useQuery(secondQuery.queryOptions);
-    expect(secondQueryHook.data).type.toBe<Schemas.Pet | undefined>();
+    expect(secondQueryHook.data).type.toBe<NoInfer<Schemas.Pet> | undefined>();
     // ^?
   });
 });

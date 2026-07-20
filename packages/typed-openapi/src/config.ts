@@ -25,6 +25,8 @@ export const configFileSchema = type({
   "schemaPatterns?": "string[]",
   "treeShakeSchemas?": "boolean",
   "schemaNaming?": "'auto' | 'always-name' | 'prefer-inline'",
+  "client?": "'promise' | 'effect'",
+  "validateSide?": "'none' | 'input' | 'output' | 'both'",
 });
 
 export type TypedOpenapiConfigFile = typeof configFileSchema.infer;

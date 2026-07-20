@@ -445,6 +445,15 @@ type RequiredKeys<T> = {
 type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
 type NotNever<T> = [T] extends [never] ? false : true;
 
+export type ValidateSide = "none" | "input" | "output" | "both";
+export type OnValidate = (ctx: {
+  side: "input" | "output";
+  method: string;
+  path: string;
+  schema: unknown;
+  value: unknown;
+}) => unknown | Promise<unknown>;
+
 // </ApiClientTypes>
 
 // <TypedStatusError>
@@ -465,11 +474,29 @@ export class ApiClient {
   baseUrl: string = "";
   successStatusCodes = successStatusCodes;
   errorStatusCodes = errorStatusCodes;
+  validate: ValidateSide = "none";
+  onValidate?: OnValidate;
 
-  constructor(public fetcher: Fetcher) {}
+  constructor(
+    public fetcher: Fetcher,
+    options?: { validate?: ValidateSide; onValidate?: OnValidate },
+  ) {
+    if (options?.validate !== undefined) this.validate = options.validate;
+    if (options?.onValidate) this.onValidate = options.onValidate;
+  }
 
   setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
+    return this;
+  }
+
+  setValidate(validate: ValidateSide) {
+    this.validate = validate;
+    return this;
+  }
+
+  setOnValidate(onValidate: OnValidate | undefined) {
+    this.onValidate = onValidate;
     return this;
   }
 
@@ -692,30 +719,36 @@ export class ApiClient {
     TPath extends keyof EndpointByMethod[TMethod],
     TEndpoint extends EndpointByMethod[TMethod][TPath],
   >(method: TMethod, path: TPath, ...params: MaybeOptionalArg<any>): Promise<any> {
-    const requestParams = params[0];
-    const withResponse = requestParams?.withResponse;
-    const {
-      withResponse: _,
-      throwOnStatusError = withResponse ? false : true,
-      overrides,
-      ...fetchParams
-    } = requestParams || {};
+    return (async () => {
+      const requestParams = params[0];
+      const withResponse = requestParams?.withResponse;
+      const {
+        withResponse: _,
+        throwOnStatusError = withResponse ? false : true,
+        overrides,
+        validate: validateOverride,
+        ...fetchParams
+      } = requestParams || {};
+      const validateSide: ValidateSide = validateOverride ?? this.validate;
 
-    const parametersToSend: EndpointParameters = {};
-    if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
-    if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
-    if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
-    if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
+      const parametersToSend: EndpointParameters = {};
+      if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
+      if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
+      if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
+      if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
 
-    const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
-      this.baseUrl + (path as string),
-      (parametersToSend.path ?? {}) as Record<string, string>,
-    );
-    const url = new URL(resolvedPath);
-    const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(parametersToSend.query);
+      const endpointSchema = undefined;
 
-    const promise = this.fetcher
-      .fetch({
+      const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
+        this.baseUrl + (path as string),
+        (parametersToSend.path ?? {}) as Record<string, string>,
+      );
+      const url = new URL(resolvedPath);
+      const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
+        parametersToSend.query,
+      );
+
+      const response = await this.fetcher.fetch({
         method: method,
         path: path as string,
         url,
@@ -723,28 +756,30 @@ export class ApiClient {
         parameters: Object.keys(fetchParams).length ? fetchParams : undefined,
         overrides,
         throwOnStatusError,
-      })
-      .then(async (response) => {
-        const data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
-        const typedResponse = Object.assign(response, {
-          data: data,
-          json: () => Promise.resolve(data),
-        }) as SafeApiResponse<TEndpoint>;
-
-        if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-          throw new TypedStatusError(typedResponse as never);
-        }
-
-        return withResponse ? typedResponse : data;
       });
+      let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
 
-    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
+
+      if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+        throw new TypedStatusError(typedResponse as never);
+      }
+
+      return withResponse ? typedResponse : data;
+    })() as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }
 
-export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
-  return new ApiClient(fetcher).setBaseUrl(baseUrl ?? "");
+export function createApiClient(
+  fetcher: Fetcher,
+  baseUrl?: string,
+  options?: { validate?: ValidateSide; onValidate?: OnValidate },
+) {
+  return new ApiClient(fetcher, options).setBaseUrl(baseUrl ?? "");
 }
 
 /**

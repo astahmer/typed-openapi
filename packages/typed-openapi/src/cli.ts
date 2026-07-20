@@ -49,6 +49,11 @@ cli
     "--schema-naming <mode>",
     "Component schema naming: auto | always-name | prefer-inline (inline single-use non-recursive schemas)",
   )
+  .option(
+    "--client <kind>",
+    "API client style: promise | effect (default: effect when runtime is effect/effect3, else promise)",
+  )
+  .option("--validate-side <side>", "When using a runtime: none | input | output | both (default: both)")
   .action(async (input: string, _options: any) => {
     return generateClientFiles(input, _options);
   });

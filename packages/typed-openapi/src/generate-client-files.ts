@@ -73,6 +73,9 @@ export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
   schemaNaming?: GeneratorOptions["schemaNaming"];
   shouldNameSchema?: GeneratorOptions["shouldNameSchema"];
   "schema-naming"?: GeneratorOptions["schemaNaming"];
+  client?: GeneratorOptions["client"];
+  validateSide?: GeneratorOptions["validateSide"];
+  "validate-side"?: GeneratorOptions["validateSide"];
 };
 
 function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
@@ -146,6 +149,10 @@ export async function generateClientFiles(input: string, options: GenerateClient
       ? { schemaNaming: options.schemaNaming ?? options["schema-naming"] ?? merged.schemaNaming }
       : {}),
     ...(options.shouldNameSchema ? { shouldNameSchema: options.shouldNameSchema } : {}),
+    ...(options.client || merged.client ? { client: options.client ?? merged.client } : {}),
+    ...(options.validateSide || options["validate-side"] || merged.validateSide
+      ? { validateSide: options.validateSide ?? options["validate-side"] ?? merged.validateSide }
+      : {}),
   };
 
   const outputPath = join(

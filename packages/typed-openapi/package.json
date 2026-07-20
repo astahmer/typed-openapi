@@ -29,7 +29,7 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "test": "vitest",
-    "test:types": "tstyche",
+    "test:types": "tsx scripts/gen-effect-client-fixture.ts && tstyche",
     "gen:runtime": "node bin.js ./tests/samples/petstore.yaml --output ./tmp/generated-client.ts --tanstack generated-tanstack.ts --default-fetcher",
     "test:runtime:run": "vitest run tests/integration-runtime-msw.test.ts",
     "test:runtime": "pnpm run gen:runtime && pnpm run test:runtime:run",

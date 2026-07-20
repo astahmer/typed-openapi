@@ -11,6 +11,7 @@ import { irToTs, renderSchemaJsdoc } from "./schema-ir/ir-to-ts.ts";
 import type { SchemaNode } from "./schema-ir/types.ts";
 import { applySpecFilters, shouldEmitSchema, type SpecFilterOptions } from "./filter-spec.ts";
 import { prepareSchemaNaming, type SchemaNamingOptions } from "./schema-naming.ts";
+import { effectApiClientBody } from "./effect-api-client.ts";
 
 // Default success status codes (2xx and 3xx ranges)
 export const DEFAULT_SUCCESS_STATUS_CODES = [
@@ -31,12 +32,16 @@ export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> &
     runtime?: RuntimeName;
     /** Validation depth for runtime adapters (ignored when runtime is `none`) */
     validation?: ValidationPreset | (Partial<ValidationPolicy> & { preset?: ValidationPreset });
+    /** When runtime ≠ none: which side(s) to validate (default both) */
+    validateSide?: "none" | "input" | "output" | "both";
     schemasOnly?: boolean;
     nameTransform?: NameTransformOptions | undefined;
     successStatusCodes?: readonly number[];
     errorStatusCodes?: readonly number[];
     includeClient?: boolean;
     jsdoc?: boolean;
+    /** promise (default) or effect-native client */
+    client?: "promise" | "effect";
   };
 type GeneratorContext = Required<
   Omit<
@@ -49,11 +54,15 @@ type GeneratorContext = Required<
     | "schemaPatterns"
     | "schemaNaming"
     | "shouldNameSchema"
+    | "validateSide"
+    | "client"
   >
 > & {
   validation: ValidationPolicy;
   keptSchemaNames?: Set<string>;
   namedSchemasForEmit?: Array<{ name: string; node: SchemaNode }>;
+  validateSide: "none" | "input" | "output" | "both";
+  client: "promise" | "effect";
 };
 
 export const allowedRuntimes = type("'none' | 'zod' | 'zod3' | 'effect' | 'effect3' | 'valibot' | 'arktype'");
@@ -111,10 +120,17 @@ export const generateFile = (options: GeneratorOptions) => {
     errorStatusCodes: options.errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES,
     includeClient: options.includeClient ?? true,
     jsdoc: options.jsdoc ?? false,
+    validateSide: options.validateSide ?? (runtime === "none" ? "none" : "both"),
+    client: options.client ?? (runtime === "effect" || runtime === "effect3" ? "effect" : "promise"),
   } as GeneratorContext;
 
   const endpointByMethod = options.schemasOnly ? "" : generateEndpointByMethod(ctx);
-  const apiClient = options.schemasOnly || !ctx.includeClient ? "" : generateApiClient(ctx);
+  const apiClient =
+    options.schemasOnly || !ctx.includeClient
+      ? ""
+      : ctx.client === "effect"
+        ? generateEffectApiClient(ctx)
+        : generateApiClient(ctx);
 
   if (ctx.runtime !== "none") {
     const adapter = getRuntimeAdapter(ctx.runtime as ShippedRuntime);
@@ -417,6 +433,15 @@ type RequiredKeys<T> = {
 type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
 type NotNever<T> = [T] extends [never] ? false : true;
 
+export type ValidateSide = "none" | "input" | "output" | "both";
+export type OnValidate = (ctx: {
+  side: "input" | "output";
+  method: string;
+  path: string;
+  schema: unknown;
+  value: unknown;
+}) => unknown | Promise<unknown>;
+
 // </ApiClientTypes>
 `;
 
@@ -437,16 +462,36 @@ export class TypedStatusError<TData = unknown> extends Error {
 }
 // </TypedStatusError>
 
+${ctx.runtime !== "none" ? generateValidateHelpers(ctx) : ""}
+
 // <ApiClient>
 export class ApiClient {
   baseUrl: string = "";
   successStatusCodes = successStatusCodes;
   errorStatusCodes = errorStatusCodes;
+  validate: ValidateSide = ${JSON.stringify(ctx.validateSide)};
+  onValidate?: OnValidate;
 
-  constructor(public fetcher: Fetcher) {}
+  constructor(
+    public fetcher: Fetcher,
+    options?: { validate?: ValidateSide; onValidate?: OnValidate },
+  ) {
+    if (options?.validate !== undefined) this.validate = options.validate;
+    if (options?.onValidate) this.onValidate = options.onValidate;
+  }
 
   setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
+    return this;
+  }
+
+  setValidate(validate: ValidateSide) {
+    this.validate = validate;
+    return this;
+  }
+
+  setOnValidate(onValidate: OnValidate | undefined) {
+    this.onValidate = onValidate;
     return this;
   }
 
@@ -581,9 +626,11 @@ export class ApiClient {
       path: TPath,
       ...params: MaybeOptionalArg<any>
     ): Promise<any> {
+      return (async () => {
       const requestParams = params[0];
       const withResponse = requestParams?.withResponse;
-      const { withResponse: _, throwOnStatusError = withResponse ? false : true, overrides, ...fetchParams } = requestParams || {};
+      const { withResponse: _, throwOnStatusError = withResponse ? false : true, overrides, validate: validateOverride, ...fetchParams } = requestParams || {};
+      const validateSide: ValidateSide = validateOverride ?? this.validate;
 
       const parametersToSend: EndpointParameters = {};
       if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
@@ -591,11 +638,35 @@ export class ApiClient {
       if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
       if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
 
+      ${
+        ctx.runtime !== "none"
+          ? `const endpointSchema = (EndpointByMethod as any)[method]?.[path];
+      const shouldValidateInput = validateSide === "input" || validateSide === "both";
+      if (shouldValidateInput && endpointSchema?.parameters && endpointSchema.parameters !== undefined) {
+        const paramSchema = endpointSchema.parameters;
+        for (const key of ["body", "query", "header", "path"] as const) {
+          const schema = paramSchema[key];
+          const value = (parametersToSend as any)[key];
+          if (schema && value !== undefined) {
+            (parametersToSend as any)[key] = await runValidate({
+              side: "input",
+              method: String(method),
+              path: String(path),
+              schema,
+              value,
+              onValidate: this.onValidate,
+            });
+          }
+        }
+      }`
+          : "const endpointSchema = undefined;"
+      }
+
       const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(this.baseUrl + (path as string), (parametersToSend.path ?? {}) as Record<string, string>);
       const url = new URL(resolvedPath);
       const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(parametersToSend.query);
 
-      const promise = this.fetcher.fetch({
+      const response = await this.fetcher.fetch({
         method: method,
         path: (path as string),
         url,
@@ -603,9 +674,26 @@ export class ApiClient {
         parameters: Object.keys(fetchParams).length ? fetchParams : undefined,
         overrides,
         throwOnStatusError
-      })
-        .then(async (response) => {
-          const data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+      });
+          let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+          ${
+            ctx.runtime !== "none"
+              ? `const shouldValidateOutput = validateSide === "output" || validateSide === "both";
+          if (shouldValidateOutput && response.ok && endpointSchema?.responses) {
+            const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+            if (responseSchema) {
+              data = await runValidate({
+                side: "output",
+                method: String(method),
+                path: String(path),
+                schema: responseSchema,
+                value: data,
+                onValidate: this.onValidate,
+              });
+            }
+          }`
+              : ""
+          }
           const typedResponse = Object.assign(response, {
             data: data,
             json: () => Promise.resolve(data)
@@ -616,15 +704,17 @@ export class ApiClient {
           }
 
           return withResponse ? typedResponse : data;
-        });
-
-        return promise as Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]
+      })() as Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]
     }
     // </ApiClient.request>
 }
 
-export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
-  return new ApiClient(fetcher).setBaseUrl(baseUrl ?? "");
+export function createApiClient(
+  fetcher: Fetcher,
+  baseUrl?: string,
+  options?: { validate?: ValidateSide; onValidate?: OnValidate },
+) {
+  return new ApiClient(fetcher, options).setBaseUrl(baseUrl ?? "");
 }
 
 
@@ -657,4 +747,61 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
 `;
 
   return apiClientTypes + apiClient;
+};
+
+const generateValidateHelpers = (ctx: GeneratorContext): string => {
+  const parseExpr = (() => {
+    switch (ctx.runtime) {
+      case "zod":
+      case "zod3":
+        return `(schema as { parse: (v: unknown) => unknown }).parse(value)`;
+      case "valibot":
+        return `v.parse(schema as v.GenericSchema, value)`;
+      case "effect":
+        return `Schema.decodeUnknownSync(schema as never)(value)`;
+      case "effect3":
+        return `S.decodeUnknownSync(schema as never)(value)`;
+      case "arktype":
+        return `(() => { const out = (schema as { (data: unknown): unknown }).call(schema, value); if (out instanceof type.errors) throw out; return out; })()`;
+      default:
+        return `value`;
+    }
+  })();
+
+  return `
+// <ValidateHelpers>
+const defaultParse = (schema: unknown, value: unknown): unknown => {
+  return ${parseExpr};
+};
+
+const runValidate = async (ctx: {
+  side: "input" | "output";
+  method: string;
+  path: string;
+  schema: unknown;
+  value: unknown;
+  onValidate?: OnValidate;
+}): Promise<unknown> => {
+  if (ctx.onValidate) return ctx.onValidate(ctx);
+  return defaultParse(ctx.schema, ctx.value);
+};
+// </ValidateHelpers>
+`;
+};
+
+/** Effect-native client — returns Effect with typed errors in the channel. */
+const generateEffectApiClient = (ctx: GeneratorContext): string => {
+  const typesOnly = generateApiClient({ ...ctx, client: "promise" });
+  const typesPart = (typesOnly.split("// <ApiClient>")[0] ?? typesOnly).replace(
+    /\/\/ <ValidateHelpers>[\s\S]*?\/\/ <\/ValidateHelpers>\n?/g,
+    "",
+  );
+  const validateHelpers = ctx.runtime !== "none" ? generateValidateHelpers(ctx) : "";
+  const body = effectApiClientBody({
+    validateSide: ctx.validateSide,
+    runtime: ctx.runtime,
+    endpointList: ctx.endpointList,
+    validateHelpers,
+  });
+  return typesPart + body;
 };
