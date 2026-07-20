@@ -45,7 +45,10 @@ describe("issue with custom mimetype json", () => {
     expect(endpoint).toBeDefined();
 
     const response200 = endpoint?.responses?.["200"];
-    expect(response200).not.toMatchObject({ type: "keyword", value: "unknown" });
-    expect(response200).toMatchObject({ type: "array", value: "Array<Response>" });
+    expect(response200).not.toMatchObject({ kind: "unknown" });
+    expect(response200).toMatchObject({
+      kind: "array",
+      items: { kind: "ref", name: "Response" },
+    });
   });
 });

@@ -1127,10 +1127,10 @@ describe("generator", () => {
             200: {
               members: Array<{
                 id: string;
-                firstName?: (string | null) | null;
-                lastName?: (string | null) | null;
+                firstName?: string | null;
+                lastName?: string | null;
                 email: string;
-                profilePictureURL?: (string | null) | null;
+                profilePictureURL?: string | null;
               }>;
             };
           };

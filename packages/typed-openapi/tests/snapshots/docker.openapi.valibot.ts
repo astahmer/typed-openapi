@@ -1493,7 +1493,7 @@ export const get_ContainerStats = {
     query: v.partial(v.object({ stream: v.boolean(), "one-shot": v.boolean() })),
     path: v.object({ id: v.string() }),
   },
-  responses: { 200: v.literal("Record<string, unknown>"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.record(v.string(), v.unknown()), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerResize = typeof post_ContainerResize;
@@ -1637,9 +1637,7 @@ export const post_ContainerWait = {
   path: v.literal("/containers/{id}/wait"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({ condition: v.union([v.literal("not-running"), v.literal("next-exit"), v.literal("removed")]) }),
-    ),
+    query: v.partial(v.object({ condition: v.picklist(["not-running", "next-exit", "removed"]) })),
     path: v.object({ id: v.string() }),
   },
   responses: { 200: ContainerWaitResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
@@ -1950,14 +1948,7 @@ export const get_SystemPing = {
   responses: { 200: v.unknown(), 500: v.unknown() },
   responseHeaders: {
     200: v.object({
-      Swarm: v.union([
-        v.literal("inactive"),
-        v.literal("pending"),
-        v.literal("error"),
-        v.literal("locked"),
-        v.literal("active/worker"),
-        v.literal("active/manager"),
-      ]),
+      Swarm: v.picklist(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]),
       "Docker-Experimental": v.boolean(),
       "Cache-Control": v.string(),
       Pragma: v.string(),
@@ -1977,14 +1968,7 @@ export const head_SystemPingHead = {
   responses: { 200: v.unknown(), 500: v.unknown() },
   responseHeaders: {
     200: v.object({
-      Swarm: v.union([
-        v.literal("inactive"),
-        v.literal("pending"),
-        v.literal("error"),
-        v.literal("locked"),
-        v.literal("active/worker"),
-        v.literal("active/manager"),
-      ]),
+      Swarm: v.picklist(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]),
       "Docker-Experimental": v.boolean(),
       "Cache-Control": v.string(),
       Pragma: v.string(),
@@ -2031,13 +2015,7 @@ export const get_SystemDataUsage = {
   path: v.literal("/system/df"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        type: v.array(
-          v.union([v.literal("container"), v.literal("image"), v.literal("volume"), v.literal("build-cache")]),
-        ),
-      }),
-    ),
+    query: v.partial(v.object({ type: v.array(v.picklist(["container", "image", "volume", "build-cache"])) })),
   },
   responses: {
     200: v.partial(
@@ -2092,7 +2070,9 @@ export const post_ContainerExec = {
         AttachStdin: v.boolean(),
         AttachStdout: v.boolean(),
         AttachStderr: v.boolean(),
-        ConsoleSize: v.nullable(v.array(v.pipe(v.number(), v.integer(), v.minValue(0)))),
+        ConsoleSize: v.nullable(
+          v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2)),
+        ),
         DetachKeys: v.string(),
         Tty: v.boolean(),
         Env: v.array(v.string()),
@@ -2117,7 +2097,9 @@ export const post_ExecStart = {
       v.object({
         Detach: v.boolean(),
         Tty: v.boolean(),
-        ConsoleSize: v.nullable(v.array(v.pipe(v.number(), v.integer(), v.minValue(0)))),
+        ConsoleSize: v.nullable(
+          v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2)),
+        ),
       }),
     ),
   },
@@ -2575,7 +2557,7 @@ export const post_ServiceCreate = {
   requestFormat: v.literal("json"),
   parameters: {
     header: v.partial(v.object({ "X-Registry-Auth": v.string() })),
-    body: v.intersect([ServiceSpec, v.literal("Record<string, unknown>")]),
+    body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]),
   },
   responses: {
     201: v.partial(v.object({ ID: v.string(), Warning: v.string() })),
@@ -2613,12 +2595,12 @@ export const post_ServiceUpdate = {
   parameters: {
     query: v.object({
       version: v.pipe(v.number(), v.integer()),
-      registryAuthFrom: v.optional(v.union([v.literal("spec"), v.literal("previous-spec")])),
+      registryAuthFrom: v.optional(v.picklist(["spec", "previous-spec"])),
       rollback: v.optional(v.string()),
     }),
     path: v.object({ id: v.string() }),
     header: v.partial(v.object({ "X-Registry-Auth": v.string() })),
-    body: v.intersect([ServiceSpec, v.literal("Record<string, unknown>")]),
+    body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]),
   },
   responses: {
     200: ServiceUpdateResponse,
@@ -2705,7 +2687,7 @@ export const post_SecretCreate = {
   method: v.literal("POST"),
   path: v.literal("/secrets/create"),
   requestFormat: v.literal("json"),
-  parameters: { body: v.intersect([SecretSpec, v.literal("Record<string, unknown>")]) },
+  parameters: { body: v.intersect([SecretSpec, v.record(v.string(), v.unknown())]) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2754,7 +2736,7 @@ export const post_ConfigCreate = {
   method: v.literal("POST"),
   path: v.literal("/configs/create"),
   requestFormat: v.literal("json"),
-  parameters: { body: v.intersect([ConfigSpec, v.literal("Record<string, unknown>")]) },
+  parameters: { body: v.intersect([ConfigSpec, v.record(v.string(), v.unknown())]) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 

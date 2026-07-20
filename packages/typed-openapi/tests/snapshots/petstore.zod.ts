@@ -78,9 +78,7 @@ export const get_FindPetsByStatus = {
   method: z.literal("GET"),
   path: z.literal("/pet/findByStatus"),
   requestFormat: z.literal("json"),
-  parameters: {
-    query: z.object({ status: z.union([z.literal("available"), z.literal("pending"), z.literal("sold")]) }).partial(),
-  },
+  parameters: { query: z.object({ status: z.enum(["available", "pending", "sold"]) }).partial() },
   responses: { 200: z.array(Pet), 304: z.unknown(), 400: z.object({ code: z.number().int(), message: z.string() }) },
 };
 

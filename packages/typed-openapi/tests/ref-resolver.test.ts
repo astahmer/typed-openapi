@@ -2,7 +2,6 @@ import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { describe, expect, test } from "vitest";
 import { createRefResolver } from "../src/ref-resolver.ts";
-import { tsFactory } from "../src/ts-factory.ts";
 
 describe("generator", () => {
   const openApiDoc = {
@@ -20,7 +19,7 @@ describe("generator", () => {
 
   describe("createRefResolver with NameTransformOptions", () => {
     test("avoids reserved words", () => {
-      const resolver = createRefResolver(openApiDoc, tsFactory);
+      const resolver = createRefResolver(openApiDoc);
       const infos = Array.from(resolver.infos.values()).map((i) => i.normalized);
       expect(infos).toMatchInlineSnapshot(`
       [
@@ -33,26 +32,23 @@ describe("generator", () => {
     });
 
     test("keeps colliding schema names unique", () => {
-      const resolver = createRefResolver(
-        {
-          openapi: "3.0.0",
-          info: { title: "Test", version: "1.0.0" },
-          components: {
-            schemas: {
-              "foo-bar": { type: "string" },
-              foo_bar: { type: "number" },
-            },
+      const resolver = createRefResolver({
+        openapi: "3.0.0",
+        info: { title: "Test", version: "1.0.0" },
+        components: {
+          schemas: {
+            "foo-bar": { type: "string" },
+            foo_bar: { type: "number" },
           },
-        } as any,
-        tsFactory,
-      );
+        },
+      } as any);
 
       const infos = Array.from(resolver.infos.values()).map((i) => i.normalized);
       expect(new Set(infos).size).toBe(infos.length);
     });
 
     test("applies transformSchemaName and avoids reserved words", () => {
-      const resolver = createRefResolver(openApiDoc, tsFactory, {
+      const resolver = createRefResolver(openApiDoc, {
         transformSchemaName: (name) => `X_${name}_X`,
       });
       const infos = Array.from(resolver.infos.values()).map((i) => i.normalized);
@@ -69,7 +65,7 @@ describe("generator", () => {
 
   test("petstore", async ({ expect }) => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
-    const ref = createRefResolver(openApiDoc, tsFactory);
+    const ref = createRefResolver(openApiDoc);
     expect(ref).toMatchInlineSnapshot(`
       {
         "directDependencies": Map {

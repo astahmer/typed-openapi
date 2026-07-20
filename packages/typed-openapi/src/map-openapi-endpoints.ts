@@ -1,29 +1,27 @@
 import type { OpenAPIObject, ResponseObject } from "openapi3-ts/oas31";
 import { OperationObject, ParameterObject } from "openapi3-ts/oas31";
 import { capitalize, pick } from "pastable/server";
-import { Box } from "./box.ts";
-import { createBoxFactory } from "./box-factory.ts";
-import { openApiSchemaToTs } from "./openapi-schema-to-ts.ts";
 import { createRefResolver } from "./ref-resolver.ts";
-import { tsFactory } from "./ts-factory.ts";
-import {
-  AnyBox,
-  BoxRef,
-  OpenapiSchemaConvertContext,
-  type BoxObject,
-  type BoxUnion,
-  type LibSchemaObject,
-} from "./types.ts";
+import { openApiToIr } from "./schema-ir/openapi-to-ir.ts";
+import type { SchemaIrConvertContext, SchemaNode } from "./schema-ir/types.ts";
 import { pathToVariableName } from "./string-utils.ts";
 import { NameTransformOptions } from "./types.ts";
 import { match, P } from "ts-pattern";
 import { sanitizeName } from "./sanitize-name.ts";
 
-const factory = tsFactory;
+const emptyMeta = () => ({});
+
+/** Merge a new response schema into the existing union (or create one). */
+const mergeUnion = (existing: SchemaNode | undefined, next: SchemaNode): SchemaNode => {
+  if (!existing) return next;
+  const members = existing.kind === "union" ? existing.members.slice() : [existing];
+  members.push(next);
+  return { kind: "union", members, meta: emptyMeta() };
+};
 
 export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransform?: NameTransformOptions }) => {
-  const refs = createRefResolver(doc, factory);
-  const ctx: OpenapiSchemaConvertContext = { refs, factory };
+  const refs = createRefResolver(doc, options?.nameTransform);
+  const irCtx: SchemaIrConvertContext = { getRefName: (ref) => refs.getInfosByRef(ref).normalized };
   const endpointList = [] as Array<Endpoint>;
 
   Object.entries(doc.paths ?? {}).forEach(([path, pathItemObj]) => {
@@ -49,43 +47,56 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
 
       // Build a list of parameters by type + fill an object with all of them
       const lists = { query: [] as ParameterObject[], path: [] as ParameterObject[], header: [] as ParameterObject[] };
-      const paramObjects = [...(pathItemObj.parameters ?? []), ...(operation.parameters ?? [])].reduce(
+      const paramNodes = [...(pathItemObj.parameters ?? []), ...(operation.parameters ?? [])].reduce(
         (acc, paramOrRef) => {
           const param = refs.unwrap(paramOrRef);
-          const schema = openApiSchemaToTs({ schema: param.schema ?? {}, ctx });
+          const node = openApiToIr(param.schema ?? {}, irCtx);
 
           if (param.required) endpoint.meta.areParametersRequired = true;
           endpoint.meta.hasParameters = true;
 
           if (param.in === "query") {
             lists.query.push(param);
-            acc.query[param.name] = schema;
+            acc.query[param.name] = node;
           }
           if (param.in === "path") {
             lists.path.push(param);
-            acc.path[param.name] = schema;
+            acc.path[param.name] = node;
           }
           if (param.in === "header") {
             lists.header.push(param);
-            acc.header[param.name] = schema;
+            acc.header[param.name] = node;
           }
 
           return acc;
         },
-        { query: {} as Record<string, Box>, path: {} as Record<string, Box>, header: {} as Record<string, Box> },
+        {
+          query: {} as Record<string, SchemaNode>,
+          path: {} as Record<string, SchemaNode>,
+          header: {} as Record<string, SchemaNode>,
+        },
       );
 
-      // Filter out empty objects
-      const params = Object.entries(paramObjects).reduce(
-        (acc, [key, value]) => {
-          if (Object.keys(value).length) {
-            // @ts-expect-error
-            acc[key] = value;
-          }
-          return acc;
-        },
-        {} as { query?: Record<string, Box>; path?: Record<string, Box>; header?: Record<string, Box>; body?: Box },
-      );
+      const params = {} as EndpointParameters;
+
+      // Group params (query/path/header) into an object SchemaNode preserving required/partial.
+      for (const key of ["query", "path", "header"] as const) {
+        const properties = paramNodes[key];
+        const paramList = lists[key];
+        if (!paramList.length || Object.keys(properties).length === 0) continue;
+
+        const requiredNames = paramList.filter((p) => p.required).map((p) => p.name);
+        const allOptional = requiredNames.length === 0;
+        params[key] = {
+          kind: "object",
+          properties,
+          required: requiredNames,
+          additionalProperties: false,
+          constraints: {},
+          meta: emptyMeta(),
+          partial: allOptional,
+        };
+      }
 
       // Body
       if (operation.requestBody) {
@@ -95,10 +106,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
         const matchingMediaType = Object.keys(content).find(isAllowedParamMediaTypes);
 
         if (matchingMediaType && content[matchingMediaType]) {
-          params.body = openApiSchemaToTs({
-            schema: content[matchingMediaType]?.schema ?? {},
-            ctx,
-          });
+          params.body = openApiToIr(content[matchingMediaType]?.schema ?? {}, irCtx);
         }
 
         endpoint.requestFormat = match(matchingMediaType)
@@ -109,39 +117,10 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
           .otherwise(() => "text" as const);
       }
 
-      // Make parameters optional if all or some of them are not required
-      if (params) {
-        const filtered_params = ["query", "path", "header"] as Array<
-          keyof Pick<typeof params, "query" | "path" | "header">
-        >;
+      if (Object.keys(params).length) endpoint.parameters = params;
 
-        for (const k of filtered_params) {
-          if (params[k] && lists[k].length) {
-            const properties = Object.entries(params[k]!).reduce(
-              (acc, [key, value]) => {
-                if (value.schema) acc[key] = value.schema;
-                return acc;
-              },
-              {} as Record<string, NonNullable<AnyBox["schema"]>>,
-            );
-            const t = createBoxFactory({ type: "object", properties: properties }, ctx);
-            if (lists[k].every((param) => !param.required)) {
-              params[k] = t.reference("Partial", [t.object(params[k]!)]) as any;
-            } else {
-              for (const p of lists[k]) {
-                if (!p.required) {
-                  params[k]![p.name] = t.optional(params[k]![p.name] as any);
-                }
-              }
-            }
-          }
-        }
-
-        endpoint.parameters = Object.keys(params).length ? (params as any as EndpointParameters) : undefined;
-      }
-
-      const allResponses: Record<string, AnyBox> = {};
-      const allResponseHeaders: Record<string, Box<BoxObject>> = {};
+      const allResponses: Record<string, SchemaNode> = {};
+      const allResponseHeaders: Record<string, SchemaNode> = {};
 
       Object.entries(operation.responses ?? {}).map(([status, responseOrRef]) => {
         const responseObj = refs.unwrap<ResponseObject>(responseOrRef);
@@ -151,98 +130,46 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
         const mediaTypes = Object.keys(content ?? {}).filter(isResponseMediaType);
         if (content && mediaTypes.length) {
           mediaTypes.forEach((mediaType) => {
-            // If no JSON content, use unknown type
             const schema = content[mediaType] ? (content[mediaType].schema ?? {}) : {};
-            const mediaTypeResponse = openApiSchemaToTs({ schema, ctx });
-
-            if (allResponses[status]) {
-              const t = createBoxFactory(
-                {
-                  oneOf: [
-                    ...((allResponses[status].schema as LibSchemaObject).oneOf
-                      ? (allResponses[status].schema as LibSchemaObject).oneOf!
-                      : [allResponses[status].schema]),
-                    schema,
-                  ],
-                } as LibSchemaObject,
-                ctx,
-              );
-              allResponses[status] = t.union([
-                ...(allResponses[status].type === "union"
-                  ? (allResponses[status] as Box<BoxUnion>).params.types
-                  : [allResponses[status]]),
-                mediaTypeResponse,
-              ] as Box[]);
-            } else {
-              allResponses[status] = mediaTypeResponse;
-            }
+            const node = openApiToIr(schema, irCtx);
+            allResponses[status] = mergeUnion(allResponses[status], node);
           });
         } else {
           // If no content defined, use unknown type
-          const schema = {};
-          const unknown = openApiSchemaToTs({ schema: {}, ctx });
-
-          if (allResponses[status]) {
-            const t = createBoxFactory(
-              {
-                oneOf: [
-                  ...((allResponses[status].schema as LibSchemaObject).oneOf
-                    ? (allResponses[status].schema as LibSchemaObject).oneOf!
-                    : [allResponses[status].schema]),
-                  schema,
-                ],
-              } as LibSchemaObject,
-              ctx,
-            );
-            allResponses[status] = t.union([
-              ...(allResponses[status].type === "union"
-                ? (allResponses[status] as Box<BoxUnion>).params.types
-                : [allResponses[status]]),
-              unknown,
-            ] as Box[]);
-          } else {
-            allResponses[status] = unknown;
-          }
+          const unknown: SchemaNode = { kind: "unknown", meta: emptyMeta() };
+          allResponses[status] = mergeUnion(allResponses[status], unknown);
         }
 
         // Map response headers
         const headers = responseObj?.headers;
-        const t = createBoxFactory(
-          { type: "object", properties: (headers ?? {}) as never, required: Object.keys(headers ?? {}) },
-          ctx,
-        );
-        if (headers) {
-          const mappedHeaders = Object.entries(headers).reduce(
-            (acc, [name, headerOrRef]) => {
-              const header = refs.unwrap(headerOrRef);
-              const box = openApiSchemaToTs({ schema: header.schema ?? {}, ctx });
-              acc[name] = box;
-
-              return acc;
-            },
-            {} as Record<string, Box>,
-          );
-
-          if (Object.keys(mappedHeaders).length) {
-            allResponseHeaders[status] = t.object(mappedHeaders);
+        if (headers && Object.keys(headers).length) {
+          const properties: Record<string, SchemaNode> = {};
+          for (const [name, headerOrRef] of Object.entries(headers)) {
+            const header = refs.unwrap(headerOrRef);
+            properties[name] = openApiToIr(header.schema ?? {}, irCtx);
+          }
+          if (Object.keys(properties).length) {
+            allResponseHeaders[status] = {
+              kind: "object",
+              properties,
+              required: Object.keys(properties),
+              additionalProperties: false,
+              constraints: {},
+              meta: emptyMeta(),
+              partial: false,
+            };
           }
         }
       });
 
-      // Set the responses collection
-      if (Object.keys(allResponses).length > 0) {
-        endpoint.responses = allResponses;
-      }
-
-      if (Object.keys(allResponseHeaders).length) {
-        endpoint.responseHeaders = allResponseHeaders;
-      }
+      if (Object.keys(allResponses).length > 0) endpoint.responses = allResponses;
+      if (Object.keys(allResponseHeaders).length) endpoint.responseHeaders = allResponseHeaders;
 
       endpointList.push(endpoint);
     });
   });
 
-  return { doc, refs, endpointList, factory };
+  return { doc, refs, endpointList };
 };
 
 const allowedParamMediaTypes = [
@@ -270,18 +197,18 @@ type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type EndpointParameters = {
-  body?: Box<BoxRef>;
-  query?: Box<BoxRef> | Record<string, AnyBox>;
-  header?: Box<BoxRef> | Record<string, AnyBox>;
-  path?: Box<BoxRef> | Record<string, AnyBox>;
+  body?: SchemaNode;
+  query?: SchemaNode;
+  header?: SchemaNode;
+  path?: SchemaNode;
 };
 
 type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
 type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
-  responses?: Record<string, AnyBox>;
-  responseHeaders?: Record<string, Box<BoxObject>>;
+  responses?: Record<string, SchemaNode>;
+  responseHeaders?: Record<string, SchemaNode>;
 };
 
 export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {

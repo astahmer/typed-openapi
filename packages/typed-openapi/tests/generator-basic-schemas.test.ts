@@ -12,7 +12,7 @@ import { prettify } from "../src/format.ts";
 const factory = tsFactory;
 const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
   factory,
-  refs: createRefResolver({ components: { schemas } } as any, factory),
+  refs: createRefResolver({ components: { schemas } } as any),
 });
 const makeDoc = (schemas: SchemasObject) => ({ components: { schemas } }) as any;
 

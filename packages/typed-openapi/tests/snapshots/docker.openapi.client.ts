@@ -981,7 +981,7 @@ export namespace Endpoints {
       query: Partial<{ stream: boolean; "one-shot": boolean }>;
       path: { id: string };
     };
-    responses: { 200: "Record<string, unknown>"; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
+    responses: { 200: Record<string, unknown>; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
   export type post_ContainerResize = {
     method: "POST";
@@ -1986,7 +1986,7 @@ export namespace Endpoints {
     requestFormat: "json";
     parameters: {
       header: Partial<{ "X-Registry-Auth": string }>;
-      body: Schemas.ServiceSpec & "Record<string, unknown>";
+      body: Schemas.ServiceSpec & Record<string, unknown>;
     };
     responses: {
       201: Partial<{ ID: string; Warning: string }>;
@@ -2029,7 +2029,7 @@ export namespace Endpoints {
       query: { version: number; registryAuthFrom?: "spec" | "previous-spec"; rollback?: string };
       path: { id: string };
       header: Partial<{ "X-Registry-Auth": string }>;
-      body: Schemas.ServiceSpec & "Record<string, unknown>";
+      body: Schemas.ServiceSpec & Record<string, unknown>;
     };
     responses: {
       200: Schemas.ServiceUpdateResponse;
@@ -2112,7 +2112,7 @@ export namespace Endpoints {
     path: "/secrets/create";
     requestFormat: "json";
     parameters: {
-      body: Schemas.SecretSpec & "Record<string, unknown>";
+      body: Schemas.SecretSpec & Record<string, unknown>;
     };
     responses: {
       201: Schemas.IdResponse;
@@ -2176,7 +2176,7 @@ export namespace Endpoints {
     path: "/configs/create";
     requestFormat: "json";
     parameters: {
-      body: Schemas.ConfigSpec & "Record<string, unknown>";
+      body: Schemas.ConfigSpec & Record<string, unknown>;
     };
     responses: {
       201: Schemas.IdResponse;

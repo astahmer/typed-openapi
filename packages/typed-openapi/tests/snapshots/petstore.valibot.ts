@@ -84,9 +84,7 @@ export const get_FindPetsByStatus = {
   method: v.literal("GET"),
   path: v.literal("/pet/findByStatus"),
   requestFormat: v.literal("json"),
-  parameters: {
-    query: v.partial(v.object({ status: v.union([v.literal("available"), v.literal("pending"), v.literal("sold")]) })),
-  },
+  parameters: { query: v.partial(v.object({ status: v.picklist(["available", "pending", "sold"]) })) },
   responses: {
     200: v.array(Pet),
     304: v.unknown(),

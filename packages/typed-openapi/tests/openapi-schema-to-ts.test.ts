@@ -9,7 +9,7 @@ import { tsFactory } from "../src/ts-factory.ts";
 const factory = tsFactory;
 const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
   factory,
-  refs: createRefResolver({ components: { schemas } } as any, factory),
+  refs: createRefResolver({ components: { schemas } } as any),
 });
 
 const getSchemaBox = (schema: LibSchemaObject) => openApiSchemaToTs({ schema, ctx: makeCtx({ _Test: schema }) });

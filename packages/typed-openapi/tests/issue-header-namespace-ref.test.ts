@@ -70,9 +70,15 @@ describe("namespaced header ref is wrong", () => {
     expect(endpoint).toBeDefined();
 
     const response200 = endpoint?.responseHeaders?.["200"];
-    expect(response200?.value).toBe(
-      '{ "X-RateLimit-Limit": number, "X-RateLimit-Remaining": number, "X-RateLimit-Reset": number }',
-    );
+    expect(response200).toMatchObject({
+      kind: "object",
+      properties: {
+        "X-RateLimit-Limit": { kind: "number" },
+        "X-RateLimit-Remaining": { kind: "number" },
+        "X-RateLimit-Reset": { kind: "number" },
+      },
+      required: ["X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset"],
+    });
 
     const file = generateFile(result);
     const output = await prettify(file);

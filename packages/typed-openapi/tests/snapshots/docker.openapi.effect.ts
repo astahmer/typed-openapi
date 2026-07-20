@@ -1628,7 +1628,11 @@ export const get_ContainerStats = {
     query: Schema.partial(Schema.Struct({ stream: Schema.Boolean, "one-shot": Schema.Boolean })),
     path: Schema.Struct({ id: Schema.String }),
   },
-  responses: { 200: Schema.Literal("Record<string, unknown>"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: {
+    200: Schema.Record({ key: Schema.String, value: Schema.Unknown }),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  },
 };
 
 export type post_ContainerResize = typeof post_ContainerResize;
@@ -2255,7 +2259,9 @@ export const post_ContainerExec = {
         AttachStdin: Schema.Boolean,
         AttachStdout: Schema.Boolean,
         AttachStderr: Schema.Boolean,
-        ConsoleSize: Schema.NullOr(Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0)))),
+        ConsoleSize: Schema.NullOr(
+          Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0))).pipe(Schema.minItems(2), Schema.maxItems(2)),
+        ),
         DetachKeys: Schema.String,
         Tty: Schema.Boolean,
         Env: Schema.Array(Schema.String),
@@ -2280,7 +2286,9 @@ export const post_ExecStart = {
       Schema.Struct({
         Detach: Schema.Boolean,
         Tty: Schema.Boolean,
-        ConsoleSize: Schema.NullOr(Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0)))),
+        ConsoleSize: Schema.NullOr(
+          Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0))).pipe(Schema.minItems(2), Schema.maxItems(2)),
+        ),
       }),
     ),
   },
@@ -2757,7 +2765,7 @@ export const post_ServiceCreate = {
   requestFormat: Schema.Literal("json"),
   parameters: {
     header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
-    body: Schema.extend(ServiceSpec, Schema.Literal("Record<string, unknown>")),
+    body: Schema.extend(ServiceSpec, Schema.Record({ key: Schema.String, value: Schema.Unknown })),
   },
   responses: {
     201: Schema.partial(Schema.Struct({ ID: Schema.String, Warning: Schema.String })),
@@ -2803,7 +2811,7 @@ export const post_ServiceUpdate = {
     }),
     path: Schema.Struct({ id: Schema.String }),
     header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
-    body: Schema.extend(ServiceSpec, Schema.Literal("Record<string, unknown>")),
+    body: Schema.extend(ServiceSpec, Schema.Record({ key: Schema.String, value: Schema.Unknown })),
   },
   responses: {
     200: ServiceUpdateResponse,
@@ -2890,7 +2898,7 @@ export const post_SecretCreate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/secrets/create"),
   requestFormat: Schema.Literal("json"),
-  parameters: { body: Schema.extend(SecretSpec, Schema.Literal("Record<string, unknown>")) },
+  parameters: { body: Schema.extend(SecretSpec, Schema.Record({ key: Schema.String, value: Schema.Unknown })) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2939,7 +2947,7 @@ export const post_ConfigCreate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/configs/create"),
   requestFormat: Schema.Literal("json"),
-  parameters: { body: Schema.extend(ConfigSpec, Schema.Literal("Record<string, unknown>")) },
+  parameters: { body: Schema.extend(ConfigSpec, Schema.Record({ key: Schema.String, value: Schema.Unknown })) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 

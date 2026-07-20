@@ -1,12 +1,12 @@
 import type { OpenAPIObject, ReferenceObject } from "openapi3-ts/oas31";
 import { get } from "pastable/server";
 
-import { Box } from "./box.ts";
 import { isReferenceObject } from "./is-reference-object.ts";
-import { openApiSchemaToTs } from "./openapi-schema-to-ts.ts";
+import { openApiToIr } from "./schema-ir/openapi-to-ir.ts";
+import type { SchemaIrConvertContext, SchemaNode } from "./schema-ir/types.ts";
 import { normalizeString } from "./string-utils.ts";
 import { NameTransformOptions } from "./types.ts";
-import { AnyBoxDef, GenericFactory, type LibSchemaObject } from "./types.ts";
+import { type LibSchemaObject } from "./types.ts";
 import { topologicalSort } from "./topological-sort.ts";
 import { sanitizeName } from "./sanitize-name.ts";
 
@@ -28,11 +28,7 @@ export type RefInfo = {
   kind: "schemas" | "responses" | "parameters" | "requestBodies" | "headers";
 };
 
-export const createRefResolver = (
-  doc: OpenAPIObject,
-  factory: GenericFactory,
-  nameTransform?: NameTransformOptions,
-) => {
+export const createRefResolver = (doc: OpenAPIObject, nameTransform?: NameTransformOptions) => {
   // both used for debugging purpose
   const nameByRef = new Map<string, string>();
   const refByName = new Map<string, string>();
@@ -40,7 +36,7 @@ export const createRefResolver = (
   const byRef = new Map<string, RefInfo>();
   const byNormalized = new Map<string, RefInfo>();
 
-  const boxByRef = new Map<string, Box<AnyBoxDef>>();
+  const nodeByRef = new Map<string, SchemaNode>();
 
   const getSchemaByRef = <T = LibSchemaObject>(ref: string) => {
     // #components -> #/components
@@ -106,12 +102,14 @@ export const createRefResolver = (
 
   const directDependencies = new Map<string, Set<string>>();
 
+  const irCtx: SchemaIrConvertContext = { getRefName: (ref) => getInfosByRef(ref).normalized };
+
   // need to be done after all refs are resolved
   schemaEntries.forEach(([key, component]) => {
     Object.keys(component).map((name) => {
       const ref = `#/components/${key}/${name}`;
       const schema = getSchemaByRef(ref);
-      boxByRef.set(ref, openApiSchemaToTs({ schema, ctx: { factory, refs: { getInfosByRef } as any } }));
+      nodeByRef.set(ref, openApiToIr(schema, irCtx));
 
       if (!directDependencies.has(ref)) {
         directDependencies.set(ref, new Set<string>());
@@ -136,7 +134,7 @@ export const createRefResolver = (
     getOrderedSchemas: () => {
       const schemaOrderedByDependencies = topologicalSort(transitiveDependencies).map((ref) => {
         const infos = getInfosByRef(ref);
-        return [boxByRef.get(infos.ref)!, infos] as [schema: Box<AnyBoxDef>, infos: RefInfo];
+        return [nodeByRef.get(infos.ref)!, infos] as [node: SchemaNode, infos: RefInfo];
       });
 
       return schemaOrderedByDependencies;

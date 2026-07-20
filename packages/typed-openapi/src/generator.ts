@@ -1,18 +1,14 @@
 import { capitalize, groupBy } from "pastable/server";
-import { Box } from "./box.ts";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
-import { AnyBox, AnyBoxDef } from "./types.ts";
 import { type } from "arktype";
 import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
-import type { BoxObject, NameTransformOptions } from "./types.ts";
+import type { NameTransformOptions } from "./types.ts";
 import { emitRuntimeFile } from "./runtimes/emit-runtime-file.ts";
 import { getRuntimeAdapter, type ShippedRuntime } from "./runtimes/registry.ts";
 import { resolveValidationPolicy, type ValidationPreset, type ValidationPolicy } from "./runtimes/validation.ts";
 import type { OutputRuntime as RuntimeName } from "./runtimes/types.ts";
-import { boxToIr } from "./schema-ir/box-to-ir.ts";
 import { irToTs, renderSchemaJsdoc } from "./schema-ir/ir-to-ts.ts";
-import { openApiToIr } from "./schema-ir/openapi-to-ir.ts";
-import type { SchemaIrConvertContext } from "./schema-ir/types.ts";
+import type { SchemaNode } from "./schema-ir/types.ts";
 
 // Default success status codes (2xx and 3xx ranges)
 export const DEFAULT_SUCCESS_STATUS_CODES = [
@@ -124,23 +120,16 @@ export const generateFile = (options: GeneratorOptions) => {
   `;
 };
 
-const irCtxFromGenerator = (ctx: GeneratorContext): SchemaIrConvertContext => ({
-  getRefName: (ref: string) => ctx.refs.getInfosByRef(ref).normalized,
-});
-
 const generateSchemaList = (ctx: GeneratorContext) => {
   const { refs, runtime } = ctx;
-  const irCtx = irCtxFromGenerator(ctx);
   let file = `
   ${runtime === "none" ? "export namespace Schemas {" : ""}
     // <Schemas>
   `;
-  refs.getOrderedSchemas().forEach(([, infos]) => {
+  refs.getOrderedSchemas().forEach(([node, infos]) => {
     if (!infos?.name) return;
     if (infos.kind !== "schemas") return;
 
-    const schema = refs.get(infos.ref);
-    const node = openApiToIr(schema, irCtx);
     const description = shouldRenderDescriptionComments(ctx) ? node.meta.description : undefined;
     const schemaValue = irToTs(node, {
       prefixRefsWithSchemas: false,
@@ -159,44 +148,32 @@ const generateSchemaList = (ctx: GeneratorContext) => {
   );
 };
 
-/** Types-only: Box → Schema IR → TS string (single source of truth with runtimes). */
-const boxToString = (
-  box: Box<AnyBoxDef>,
+/** Types-only: Schema IR → TS string (single source of truth with runtimes). */
+const nodeToString = (
+  node: SchemaNode,
   ctx: GeneratorContext,
   options: { prefixRefsWithSchemas?: boolean } = {},
 ): string => {
-  const prefixRefsWithSchemas = options.prefixRefsWithSchemas ?? true;
-  const node = boxToIr(box, irCtxFromGenerator(ctx));
   return irToTs(node, {
-    prefixRefsWithSchemas,
+    prefixRefsWithSchemas: options.prefixRefsWithSchemas ?? true,
     jsdoc: shouldRenderDescriptionComments(ctx),
   });
 };
 
-const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, AnyBox>, ctx: GeneratorContext) => {
-  if (parameters instanceof Box) {
-    return boxToString(parameters, ctx);
-  }
+const parameterObjectToString = (parameters: SchemaNode, ctx: GeneratorContext) => nodeToString(parameters, ctx);
 
+const responseHeadersObjectToString = (responseHeaders: Record<string, SchemaNode>, ctx: GeneratorContext) => {
   let str = "{";
-  for (const [key, box] of Object.entries(parameters)) {
-    str += `${wrapWithQuotesIfNeeded(key)}${box.type === "optional" ? "?" : ""}: ${indentMultiline(boxToString(box, ctx))},\n`;
+  for (const [key, node] of Object.entries(responseHeaders)) {
+    str += `${wrapWithQuotesIfNeeded(key.toLowerCase())}: ${indentMultiline(nodeToString(node, ctx))},\n`;
   }
   return str + "}";
 };
 
-const responseHeadersObjectToString = (responseHeaders: Record<string, Box<BoxObject>>, ctx: GeneratorContext) => {
+const generateResponsesObject = (responses: Record<string, SchemaNode>, ctx: GeneratorContext) => {
   let str = "{";
-  for (const [key, responseHeader] of Object.entries(responseHeaders)) {
-    str += `${wrapWithQuotesIfNeeded(key.toLowerCase())}: ${indentMultiline(boxToString(responseHeader, ctx))},\n`;
-  }
-  return str + "}";
-};
-
-const generateResponsesObject = (responses: Record<string, AnyBox>, ctx: GeneratorContext) => {
-  let str = "{";
-  for (const [statusCode, responseType] of Object.entries(responses)) {
-    const value = indentMultiline(boxToString(responseType, ctx));
+  for (const [statusCode, node] of Object.entries(responses)) {
+    const value = indentMultiline(nodeToString(node, ctx));
     str += `${wrapWithQuotesIfNeeded(statusCode)}: ${value},\n`;
   }
   return str + "}";

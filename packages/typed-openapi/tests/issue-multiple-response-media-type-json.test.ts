@@ -60,8 +60,20 @@ describe("issue with multiple valid response media types", () => {
 
     const response200 = endpoint?.responses?.["200"];
     expect(response200).toMatchObject({
-      type: "union",
-      value: "(Array<Response> | Array<Partial<{ starred_at: string, repo: Response }>>)",
+      kind: "union",
+      members: [
+        {
+          kind: "array",
+          items: { kind: "ref", name: "Response" },
+        },
+        {
+          kind: "array",
+          items: {
+            kind: "object",
+            partial: true,
+          },
+        },
+      ],
     });
   });
 });

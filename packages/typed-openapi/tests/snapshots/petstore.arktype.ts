@@ -86,7 +86,7 @@ export const get_FindPetsByStatus = {
   method: type("'GET'"),
   path: type("'/pet/findByStatus'"),
   requestFormat: type("'json'"),
-  parameters: { query: type({ status: type("'available'").or(type("'pending'")).or(type("'sold'")) }).partial() },
+  parameters: { query: type({ status: type.enumerated("available", "pending", "sold") }).partial() },
   responses: {
     200: Pet.array(),
     304: type("unknown"),

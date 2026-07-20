@@ -1,6 +1,5 @@
 import { createRefResolver } from "../src/ref-resolver.ts";
 import { describe, it, expect } from "vitest";
-import { tsFactory } from "../src/ts-factory.ts";
 
 const openApiDoc = {
   openapi: "3.0.0",
@@ -17,7 +16,7 @@ const openApiDoc = {
 
 describe("createRefResolver with NameTransformOptions", () => {
   it("applies transformSchemaName and avoids reserved words", () => {
-    const resolver = createRefResolver(openApiDoc, tsFactory, {
+    const resolver = createRefResolver(openApiDoc, {
       transformSchemaName: (name) => `X_${name}_X`,
     });
     const infos = Array.from(resolver.infos.values()).map((i) => i.normalized);
@@ -32,7 +31,7 @@ describe("createRefResolver with NameTransformOptions", () => {
   });
 
   it("applies no transform and still avoids reserved words and invalid chars", () => {
-    const resolver = createRefResolver(openApiDoc, tsFactory);
+    const resolver = createRefResolver(openApiDoc);
     const infos = Array.from(resolver.infos.values()).map((i) => i.normalized);
     expect(infos).toMatchInlineSnapshot(`
       [
