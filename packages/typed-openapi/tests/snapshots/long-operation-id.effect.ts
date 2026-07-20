@@ -45,10 +45,10 @@ export type PostEndpoints = EndpointByMethod["post"];
 // <ApiClientTypes>
 export type EndpointParameters = {
   body?: unknown;
-  query?: Record<string, unknown>;
-  header?: Record<string, unknown>;
-  path?: Record<string, unknown>;
-  cookie?: Record<string, unknown>;
+  query?: unknown;
+  header?: unknown;
+  path?: unknown;
+  cookie?: unknown;
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
@@ -81,7 +81,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
  * Minimal response surface used by ApiClient — avoids depending on the DOM `Response`
  * global (helpful for Node without DOM lib). Structural typing accepts fetch Response.
  */
-export interface ApiResponse {
+export interface FetcherResponse {
   ok: boolean;
   status: number;
   statusText: string;
@@ -92,14 +92,14 @@ export interface ApiResponse {
   json(): Promise<unknown>;
   text(): Promise<string>;
   arrayBuffer(): Promise<ArrayBuffer>;
-  clone(): ApiResponse;
+  clone(): FetcherResponse;
 }
 
 export interface Fetcher {
-  decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
-  encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+  decodePathParams?: (path: string, pathParams: unknown) => string;
+  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
   /** Merge cookie params into request headers (default: Cookie header). */
-  encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
+  encodeCookies?: (cookies: unknown, headers: Headers) => void;
   //
   fetch: (input: {
     method: Method;
@@ -109,8 +109,8 @@ export interface Fetcher {
     path: string;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
-  }) => Promise<ApiResponse>;
-  parseResponseData?: (response: ApiResponse) => Promise<unknown>;
+  }) => Promise<FetcherResponse>;
+  parseResponseData?: (response: FetcherResponse) => Promise<unknown>;
 }
 
 export const successStatusCodes = [
@@ -161,12 +161,12 @@ export interface TypedHeaders<TypedHeaderValues extends Record<string, string> |
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<
-  ApiResponse,
+  FetcherResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: true;
   status: TStatusCode;
-  headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? FetcherResponse["headers"] : TypedHeaders<THeaders>;
   data: TSuccess;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TSuccess>;
@@ -174,18 +174,18 @@ export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends O
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<
-  ApiResponse,
+  FetcherResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: false;
   status: TStatusCode;
-  headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? FetcherResponse["headers"] : TypedHeaders<THeaders>;
   data: TData;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TData>;
 }
 
-export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}, THeaders = {}> = {
+export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
   [K in keyof TAllResponses]: K extends string
     ? K extends `${infer TStatusCode extends number}`
       ? TStatusCode extends SuccessStatusCode
@@ -273,7 +273,7 @@ export class HttpClientError extends Error {
 
 // <ValidateHelpers>
 const defaultParse = (schema: unknown, value: unknown): unknown => {
-  return Schema.decodeUnknownSync(schema as never)(value);
+  return Schema.decodeUnknownSync(schema as Schema.Schema<unknown, unknown, never>)(value);
 };
 
 const runValidate = async (ctx: {
@@ -290,19 +290,19 @@ const runValidate = async (ctx: {
 // </ValidateHelpers>
 
 export type EffectFetcher = {
-  decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
-  encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
-  encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
-  parseResponseData?: (response: ApiResponse) => Promise<unknown>;
+  decodePathParams?: (path: string, pathParams: unknown) => string;
+  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
+  encodeCookies?: (cookies: unknown, headers: Headers) => void;
+  parseResponseData?: (response: FetcherResponse) => Promise<unknown>;
   fetch: (input: {
     method: Method;
     url: URL;
     urlSearchParams?: URLSearchParams | undefined;
-    parameters?: unknown;
+    parameters?: EndpointParameters | undefined;
     path: string;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
-  }) => Effect.Effect<ApiResponse, HttpClientError, never>;
+  }) => Effect.Effect<FetcherResponse, HttpClientError, never>;
 };
 
 const wrapPromiseFetcher = (fetcher: Fetcher): EffectFetcher => ({
@@ -312,7 +312,7 @@ const wrapPromiseFetcher = (fetcher: Fetcher): EffectFetcher => ({
   parseResponseData: fetcher.parseResponseData,
   fetch: (input) =>
     Effect.tryPromise({
-      try: () => fetcher.fetch(input as never),
+      try: () => fetcher.fetch(input),
       catch: (cause) => new HttpClientError("fetch failed", cause),
     }),
 });
@@ -358,20 +358,24 @@ export class EffectApiClient {
       const requestParams = params[0];
       const validateSide: ValidateSide = requestParams?.validate ?? self.validate;
       const parametersToSend: EndpointParameters = {};
-      if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
-      if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
-      if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
-      if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
-      if (requestParams?.cookie !== undefined) (parametersToSend as any).cookie = requestParams.cookie;
+      if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
+      if (requestParams?.query !== undefined) parametersToSend.query = requestParams.query;
+      if (requestParams?.header !== undefined) parametersToSend.header = requestParams.header;
+      if (requestParams?.path !== undefined) parametersToSend.path = requestParams.path;
+      if (requestParams?.cookie !== undefined) parametersToSend.cookie = requestParams.cookie;
 
-      const endpointSchema = (EndpointByMethod as any)[method]?.[path];
-      if ((validateSide === "input" || validateSide === "both") && endpointSchema?.parameters) {
+      type RuntimeEndpoint = {
+        parameters?: Partial<Record<"body" | "query" | "header" | "path" | "cookie", unknown>>;
+        responses?: Record<string, unknown>;
+      };
+      const endpointSchema = EndpointByMethod[method][path] as RuntimeEndpoint;
+      if ((validateSide === "input" || validateSide === "both") && endpointSchema.parameters) {
         for (const key of ["body", "query", "header", "path", "cookie"] as const) {
           const schema = endpointSchema.parameters[key];
-          const value = (parametersToSend as any)[key];
-          if (schema && value !== undefined) {
+          const value = parametersToSend[key];
+          if (schema !== undefined && value !== undefined) {
             if (self.onValidate) {
-              (parametersToSend as any)[key] = yield* Effect.tryPromise({
+              parametersToSend[key] = yield* Effect.tryPromise({
                 try: () =>
                   runValidate({
                     side: "input",
@@ -384,7 +388,9 @@ export class EffectApiClient {
                 catch: (e) => (e instanceof Error ? e : new Error(String(e))),
               });
             } else {
-              (parametersToSend as any)[key] = yield* Schema.decodeUnknown(schema as never)(value);
+              parametersToSend[key] = yield* Schema.decodeUnknown(schema as Schema.Schema<unknown, unknown, never>)(
+                value,
+              );
             }
           }
         }
@@ -392,16 +398,18 @@ export class EffectApiClient {
 
       const decodePath =
         self.effectFetcher.decodePathParams ??
-        ((url: string, p: Record<string, string | number | boolean>) =>
-          url
-            .replace(/{(\w+)}/g, (_, key: string) => (p[key] != null ? String(p[key]) : `{${key}}`))
-            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (p[key] != null ? String(p[key]) : `:${key}`)));
+        ((url: string, p: unknown) => {
+          const record = (p ?? {}) as Record<string, unknown>;
+          return url
+            .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
+        });
       const encodeSearch =
         self.effectFetcher.encodeSearchParams ??
-        ((queryParams: Record<string, unknown> | undefined) => {
-          if (!queryParams) return undefined;
+        ((queryParams: unknown) => {
+          if (!queryParams || typeof queryParams !== "object") return undefined;
           const searchParams = new URLSearchParams();
-          Object.entries(queryParams).forEach(([key, value]) => {
+          Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
             if (value != null) {
               if (Array.isArray(value)) value.forEach((val) => val != null && searchParams.append(key, String(val)));
               else searchParams.append(key, String(value));
@@ -411,9 +419,9 @@ export class EffectApiClient {
         });
       const encodeCookies =
         self.effectFetcher.encodeCookies ??
-        ((cookies: Record<string, unknown> | undefined, headers: Headers) => {
-          if (!cookies) return;
-          const parts = Object.entries(cookies)
+        ((cookies: unknown, headers: Headers) => {
+          if (!cookies || typeof cookies !== "object") return;
+          const parts = Object.entries(cookies as Record<string, unknown>)
             .filter(([, value]) => value != null)
             .map(([key, value]) => `${key}=${String(value)}`);
           if (!parts.length) return;
@@ -422,7 +430,7 @@ export class EffectApiClient {
         });
       const parseData =
         self.effectFetcher.parseResponseData ??
-        (async (response: ApiResponse) => {
+        (async (response: FetcherResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
           if (contentType.includes("json") || contentType === "*/*") {
             try {
@@ -435,10 +443,7 @@ export class EffectApiClient {
           return undefined;
         });
 
-      const resolvedPath = decodePath(
-        self.baseUrl + (path as string),
-        (parametersToSend.path ?? {}) as Record<string, string | number | boolean>,
-      );
+      const resolvedPath = decodePath(self.baseUrl + (path as string), parametersToSend.path ?? {});
       const url = new URL(resolvedPath);
       const urlSearchParams = encodeSearch(parametersToSend.query);
 
@@ -480,14 +485,16 @@ export class EffectApiClient {
               catch: (e) => (e instanceof Error ? e : new Error(String(e))),
             });
           } else {
-            data = yield* Schema.decodeUnknown(responseSchema as never)(data);
+            data = yield* Schema.decodeUnknown(responseSchema as Schema.Schema<unknown, unknown, never>)(data);
           }
         }
       }
 
-      if (errorStatusCodes.includes(response.status as never)) {
+      if ((errorStatusCodes as readonly number[]).includes(response.status)) {
         const typedResponse = Object.assign(response, { data, json: () => Promise.resolve(data) });
-        return yield* Effect.fail(new TypedStatusError(typedResponse as never));
+        return yield* Effect.fail(
+          new TypedStatusError(typedResponse as TypedErrorResponse<unknown, ErrorStatusCode, unknown>),
+        );
       }
 
       return data as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
@@ -495,10 +502,10 @@ export class EffectApiClient {
   }
 
   get<Path extends keyof GetEndpoints>(path: Path, ...params: MaybeOptionalArg<any>) {
-    return this.request("get" as never, path as never, ...params);
+    return this.request<"get", Path, GetEndpoints[Path]>("get", path, ...params);
   }
   post<Path extends keyof PostEndpoints>(path: Path, ...params: MaybeOptionalArg<any>) {
-    return this.request("post" as never, path as never, ...params);
+    return this.request<"post", Path, PostEndpoints[Path]>("post", path, ...params);
   }
 }
 
