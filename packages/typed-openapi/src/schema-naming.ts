@@ -131,13 +131,7 @@ export const inlineSchemaRefs = (
 
 const builtin = (name: string) => name === "Partial" || name === "Record";
 
-export const collectEndpointSchemaNodes = (
-  endpoints: Array<{
-    parameters?: Record<string, SchemaNode | undefined>;
-    responses?: Record<string, SchemaNode>;
-    responseHeaders?: Record<string, SchemaNode>;
-  }>,
-): SchemaNode[] => {
+export const collectEndpointSchemaNodes = (endpoints: Endpoint[]): SchemaNode[] => {
   const nodes: SchemaNode[] = [];
   for (const ep of endpoints) {
     if (ep.parameters) {
@@ -178,25 +172,34 @@ export const prepareSchemaNaming = (
   const mapParams = (params: Endpoint["parameters"]): Endpoint["parameters"] => {
     if (!params) return params;
     const next: NonNullable<Endpoint["parameters"]> = {};
-    for (const key of ["query", "path", "header", "body"] as const) {
+    for (const key of ["query", "path", "header", "cookie", "body"] as const) {
       const n = params[key];
       if (n) next[key] = inlineSchemaRefs(n, byName, inlineNames);
     }
     return next;
   };
 
-  const rewritten = endpointList.map((ep) => ({
-    ...ep,
-    parameters: mapParams(ep.parameters),
-    responses: ep.responses
-      ? Object.fromEntries(Object.entries(ep.responses).map(([k, v]) => [k, inlineSchemaRefs(v, byName, inlineNames)]))
-      : ep.responses,
-    responseHeaders: ep.responseHeaders
-      ? Object.fromEntries(
-          Object.entries(ep.responseHeaders).map(([k, v]) => [k, inlineSchemaRefs(v, byName, inlineNames)]),
-        )
-      : ep.responseHeaders,
-  }));
+  const rewritten = endpointList.map((ep): Endpoint => {
+    const next: Endpoint = { ...ep };
+    const parameters = mapParams(ep.parameters);
+    if (parameters) next.parameters = parameters;
+    else delete next.parameters;
+    if (ep.responses) {
+      next.responses = Object.fromEntries(
+        Object.entries(ep.responses).map(([k, v]) => [k, inlineSchemaRefs(v, byName, inlineNames)]),
+      );
+    } else {
+      delete next.responses;
+    }
+    if (ep.responseHeaders) {
+      next.responseHeaders = Object.fromEntries(
+        Object.entries(ep.responseHeaders).map(([k, v]) => [k, inlineSchemaRefs(v, byName, inlineNames)]),
+      );
+    } else {
+      delete next.responseHeaders;
+    }
+    return next;
+  });
 
   return { namedSchemas, endpointList: rewritten };
 };

@@ -123,9 +123,9 @@ export const applySpecFilters = (
         predicate({
           method: ep.method,
           path: ep.path,
-          operationId: ep.operation.operationId,
           alias: ep.meta.alias,
-          tags: ep.operation.tags,
+          ...(ep.operation.operationId ? { operationId: ep.operation.operationId } : {}),
+          ...(ep.operation.tags ? { tags: ep.operation.tags } : {}),
         }),
       )
     : endpointList;

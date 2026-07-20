@@ -136,7 +136,7 @@ export async function generateClientFiles(input: string, options: GenerateClient
     runtime,
     ...(validation ? { validation } : {}),
     schemasOnly: merged.schemasOnly ?? false,
-    nameTransform: options.nameTransform,
+    ...(options.nameTransform ? { nameTransform: options.nameTransform } : {}),
     includeClient: includeClient ?? true,
     jsdoc,
     successStatusCodes: successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
@@ -146,15 +146,22 @@ export async function generateClientFiles(input: string, options: GenerateClient
     ...(treeShakeSchemas !== undefined ? { treeShakeSchemas } : {}),
     ...(options.filterEndpoints ? { filterEndpoints: options.filterEndpoints } : {}),
     ...(options.filterSchemas ? { filterSchemas: options.filterSchemas } : {}),
-    ...(options.schemaNaming || options["schema-naming"] || merged.schemaNaming
-      ? { schemaNaming: options.schemaNaming ?? options["schema-naming"] ?? merged.schemaNaming }
-      : {}),
+    ...(() => {
+      const schemaNaming = options.schemaNaming ?? options["schema-naming"] ?? merged.schemaNaming;
+      return schemaNaming ? { schemaNaming } : {};
+    })(),
     ...(options.shouldNameSchema ? { shouldNameSchema: options.shouldNameSchema } : {}),
-    ...(options.client || merged.client ? { client: options.client ?? merged.client } : {}),
-    ...(options.validateSide || options["validate-side"] || merged.validateSide
-      ? { validateSide: options.validateSide ?? options["validate-side"] ?? merged.validateSide }
+    ...(() => {
+      const client = options.client ?? merged.client;
+      return client ? { client } : {};
+    })(),
+    ...(() => {
+      const validateSide = options.validateSide ?? options["validate-side"] ?? merged.validateSide;
+      return validateSide ? { validateSide } : {};
+    })(),
+    ...(options.coerce !== undefined || merged.coerce !== undefined
+      ? { coerce: (options.coerce ?? merged.coerce)! }
       : {}),
-    ...(options.coerce !== undefined || merged.coerce !== undefined ? { coerce: options.coerce ?? merged.coerce } : {}),
   };
 
   const outputPath = join(
@@ -181,6 +188,7 @@ export async function generateClientFiles(input: string, options: GenerateClient
       await generateTanstackQueryFile({
         ...generatorOptions,
         relativeApiClientPath: "./" + basename(outputPath),
+        client: generatorOptions.client ?? (runtime === "effect" || runtime === "effect3" ? "effect" : "promise"),
       }),
       { enabled: shouldFormat, filePath: tanstackOutputPath },
     );
