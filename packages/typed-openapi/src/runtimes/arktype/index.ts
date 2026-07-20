@@ -20,22 +20,21 @@ const emitStringDef = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitC
 const emitNumberDef = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
   const c = applyNumberConstraints(node.constraints, ctx.validation);
   const base = node.integer ? "number.integer" : "number";
-  // Prefer `0 <= number <= 10` — ArkType rejects `number >= 0 <= 10` at the type level.
-  const left =
-    c.exclusiveMinimum !== undefined
-      ? `${c.exclusiveMinimum} <`
-      : c.minimum !== undefined
-        ? `${c.minimum} <=`
-        : undefined;
-  const right =
-    c.exclusiveMaximum !== undefined
-      ? `< ${c.exclusiveMaximum}`
-      : c.maximum !== undefined
-        ? `<= ${c.maximum}`
-        : undefined;
-  if (left && right) return quote(`${left} ${base} ${right}`);
-  if (left) return quote(`${left} ${base}`);
-  if (right) return quote(`${base} ${right}`);
+  // Both bounds: `0 <= number <= 10` (ArkType rejects `number >= 0 <= 10`).
+  // Single bound: keep on the right (`number >= 0` / `number <= 10`).
+  const hasLo = c.minimum !== undefined || c.exclusiveMinimum !== undefined;
+  const hasHi = c.maximum !== undefined || c.exclusiveMaximum !== undefined;
+  if (hasLo && hasHi) {
+    const left =
+      c.exclusiveMinimum !== undefined ? `${c.exclusiveMinimum} <` : `${c.minimum} <=`;
+    const right =
+      c.exclusiveMaximum !== undefined ? `< ${c.exclusiveMaximum}` : `<= ${c.maximum}`;
+    return quote(`${left} ${base} ${right}`);
+  }
+  if (c.exclusiveMinimum !== undefined) return quote(`${base} > ${c.exclusiveMinimum}`);
+  if (c.minimum !== undefined) return quote(`${base} >= ${c.minimum}`);
+  if (c.exclusiveMaximum !== undefined) return quote(`${base} < ${c.exclusiveMaximum}`);
+  if (c.maximum !== undefined) return quote(`${base} <= ${c.maximum}`);
   return quote(base);
 };
 
