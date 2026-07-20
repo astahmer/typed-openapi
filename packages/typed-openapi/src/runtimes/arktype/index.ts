@@ -20,14 +20,27 @@ const emitStringDef = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitC
 const emitNumberDef = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
   const c = applyNumberConstraints(node.constraints, ctx.validation);
   const base = node.integer ? "number.integer" : "number";
-  const parts: string[] = [base];
-  if (c.minimum !== undefined) parts.push(`>= ${c.minimum}`);
-  if (c.maximum !== undefined) parts.push(`<= ${c.maximum}`);
-  if (c.exclusiveMinimum !== undefined) parts.push(`> ${c.exclusiveMinimum}`);
-  if (c.exclusiveMaximum !== undefined) parts.push(`< ${c.exclusiveMaximum}`);
-  if (parts.length === 1) return quote(base);
-  return quote(parts.join(" "));
+  // Prefer `0 <= number <= 10` — ArkType rejects `number >= 0 <= 10` at the type level.
+  const left =
+    c.exclusiveMinimum !== undefined
+      ? `${c.exclusiveMinimum} <`
+      : c.minimum !== undefined
+        ? `${c.minimum} <=`
+        : undefined;
+  const right =
+    c.exclusiveMaximum !== undefined
+      ? `< ${c.exclusiveMaximum}`
+      : c.maximum !== undefined
+        ? `<= ${c.maximum}`
+        : undefined;
+  if (left && right) return quote(`${left} ${base} ${right}`);
+  if (left) return quote(`${left} ${base}`);
+  if (right) return quote(`${base} ${right}`);
+  return quote(base);
 };
+
+/** Open maps: index signature. `type("Record", …)` is not a valid arity. */
+const emitRecord = (valueExpr: string) => `type({ "[string]": ${valueExpr} })`;
 
 /** ArkType string defs for unit types: "'active'", "null", "true", "1" */
 const arkUnitDef = (value: LiteralValue): string => {
@@ -77,12 +90,12 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         return `${emitNode(node.generics[0], ctx)}.partial()`;
       }
       if (node.name === "Record" && node.generics?.length === 2) {
-        return `type("Record", ${emitNode(node.generics[0]!, ctx)}, ${emitNode(node.generics[1]!, ctx)})`;
+        return emitRecord(emitNode(node.generics[1]!, ctx));
       }
       return node.name;
     }
     case "record":
-      return `type("Record", "string", ${emitNode(node.value, ctx)})`;
+      return emitRecord(emitNode(node.value, ctx));
     case "object": {
       const props = objectProps(node, emitNode, ctx);
       const body = props
