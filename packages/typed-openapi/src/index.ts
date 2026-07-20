@@ -1,4 +1,4 @@
-export { generateFile, type OutputRuntime } from "./generator.ts";
+export { generateFile, type OutputRuntime, type GeneratorOptions } from "./generator.ts";
 export * from "./tanstack-query.generator.ts";
 export * from "./map-openapi-endpoints.ts";
 export * from "./ref-resolver.ts";
@@ -12,3 +12,9 @@ export {
   resolveValidationFromOptions,
   type TypedOpenapiConfigFile,
 } from "./config.ts";
+export {
+  applySpecFilters,
+  collectRefNamesFromEndpoints,
+  type EndpointFilterCtx,
+  type SpecFilterOptions,
+} from "./filter-spec.ts";

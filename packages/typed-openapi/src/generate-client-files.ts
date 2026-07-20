@@ -61,6 +61,15 @@ export const optionsSchema = type({
 
 export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
   nameTransform?: NameTransformOptions;
+  /** From CLI `--endpoint` (cac may pass string | string[]) */
+  endpoint?: string | string[];
+  /** From CLI `--schema` */
+  schema?: string | string[];
+  treeShakeSchemas?: boolean;
+  filterEndpoints?: GeneratorOptions["filterEndpoints"];
+  filterSchemas?: GeneratorOptions["filterSchemas"];
+  endpointPatterns?: string[];
+  schemaPatterns?: string[];
 };
 
 function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
@@ -74,6 +83,11 @@ function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
 
   return value;
 }
+
+const asStringArray = (value: string | string[] | undefined): string[] | undefined => {
+  if (value === undefined) return undefined;
+  return Array.isArray(value) ? value : [value];
+};
 
 export async function generateClientFiles(input: string, options: GenerateClientFilesOptions) {
   const configPath = options.config ?? findDefaultConfigPath(cwd);
@@ -106,6 +120,10 @@ export async function generateClientFiles(input: string, options: GenerateClient
 
   const validation = validationFromConfig(merged.validation);
 
+  const endpointPatterns = asStringArray(options.endpoint) ?? merged.endpointPatterns ?? options.endpointPatterns;
+  const schemaPatterns = asStringArray(options.schema) ?? merged.schemaPatterns ?? options.schemaPatterns;
+  const treeShakeSchemas = options.treeShakeSchemas ?? merged.treeShakeSchemas;
+
   const generatorOptions: GeneratorOptions = {
     ...ctx,
     runtime,
@@ -116,6 +134,11 @@ export async function generateClientFiles(input: string, options: GenerateClient
     jsdoc,
     successStatusCodes: successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
     errorStatusCodes: errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES,
+    ...(endpointPatterns ? { endpointPatterns } : {}),
+    ...(schemaPatterns ? { schemaPatterns } : {}),
+    ...(treeShakeSchemas !== undefined ? { treeShakeSchemas } : {}),
+    ...(options.filterEndpoints ? { filterEndpoints: options.filterEndpoints } : {}),
+    ...(options.filterSchemas ? { filterSchemas: options.filterSchemas } : {}),
   };
 
   const outputPath = join(

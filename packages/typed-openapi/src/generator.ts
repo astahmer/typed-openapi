@@ -9,6 +9,7 @@ import { resolveValidationPolicy, type ValidationPreset, type ValidationPolicy }
 import type { OutputRuntime as RuntimeName } from "./runtimes/types.ts";
 import { irToTs, renderSchemaJsdoc } from "./schema-ir/ir-to-ts.ts";
 import type { SchemaNode } from "./schema-ir/types.ts";
+import { applySpecFilters, shouldEmitSchema, type SpecFilterOptions } from "./filter-spec.ts";
 
 // Default success status codes (2xx and 3xx ranges)
 export const DEFAULT_SUCCESS_STATUS_CODES = [
@@ -23,19 +24,26 @@ export const DEFAULT_ERROR_STATUS_CODES = [
 
 export type ErrorStatusCode = (typeof DEFAULT_ERROR_STATUS_CODES)[number];
 
-export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
-  runtime?: RuntimeName;
-  /** Validation depth for runtime adapters (ignored when runtime is `none`) */
-  validation?: ValidationPreset | (Partial<ValidationPolicy> & { preset?: ValidationPreset });
-  schemasOnly?: boolean;
-  nameTransform?: NameTransformOptions | undefined;
-  successStatusCodes?: readonly number[];
-  errorStatusCodes?: readonly number[];
-  includeClient?: boolean;
-  jsdoc?: boolean;
-};
-type GeneratorContext = Required<Omit<GeneratorOptions, "validation">> & {
+export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> &
+  SpecFilterOptions & {
+    runtime?: RuntimeName;
+    /** Validation depth for runtime adapters (ignored when runtime is `none`) */
+    validation?: ValidationPreset | (Partial<ValidationPolicy> & { preset?: ValidationPreset });
+    schemasOnly?: boolean;
+    nameTransform?: NameTransformOptions | undefined;
+    successStatusCodes?: readonly number[];
+    errorStatusCodes?: readonly number[];
+    includeClient?: boolean;
+    jsdoc?: boolean;
+  };
+type GeneratorContext = Required<
+  Omit<
+    GeneratorOptions,
+    "validation" | "filterEndpoints" | "filterSchemas" | "treeShakeSchemas" | "endpointPatterns" | "schemaPatterns"
+  >
+> & {
   validation: ValidationPolicy;
+  keptSchemaNames?: Set<string>;
 };
 
 export const allowedRuntimes = type("'none' | 'zod' | 'zod3' | 'effect' | 'effect3' | 'valibot' | 'arktype'");
@@ -80,8 +88,11 @@ const indentMultiline = (value: string, indent = "  ") =>
 
 export const generateFile = (options: GeneratorOptions) => {
   const runtime = options.runtime ?? "none";
+  const filtered = applySpecFilters(options.endpointList, options.refs, options);
   const ctx = {
     ...options,
+    endpointList: filtered.endpointList,
+    keptSchemaNames: filtered.keptSchemaNames,
     runtime,
     validation: resolveValidationPolicy(options.validation ?? (runtime === "none" ? "loose" : "strict")),
     successStatusCodes: options.successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
@@ -101,6 +112,7 @@ export const generateFile = (options: GeneratorOptions) => {
       endpointList: ctx.endpointList,
       validation: ctx.validation,
       schemasOnly: options.schemasOnly ?? false,
+      keptSchemaNames: ctx.keptSchemaNames,
     });
 
     return `
@@ -129,6 +141,7 @@ const generateSchemaList = (ctx: GeneratorContext) => {
   refs.getOrderedSchemas().forEach(([node, infos]) => {
     if (!infos?.name) return;
     if (infos.kind !== "schemas") return;
+    if (!shouldEmitSchema(ctx.keptSchemaNames, infos.normalized)) return;
 
     const description = shouldRenderDescriptionComments(ctx) ? node.meta.description : undefined;
     const schemaValue = irToTs(node, {

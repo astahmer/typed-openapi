@@ -1,0 +1,82 @@
+openapi: 3.0.3
+info:
+  title: Filter fixture
+  version: 1.0.0
+paths:
+  /pets:
+    get:
+      operationId: listPets
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pet"
+  /pets/{id}:
+    get:
+      operationId: getPet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+  /orders:
+    get:
+      operationId: listOrders
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+  /users:
+    get:
+      operationId: listUsers
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+components:
+  schemas:
+    Pet:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        tag:
+          $ref: "#/components/schemas/Tag"
+    Tag:
+      type: object
+      properties:
+        id:
+          type: string
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+    User:
+      type: object
+      properties:
+        name:
+          type: string

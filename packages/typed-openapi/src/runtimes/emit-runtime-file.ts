@@ -2,6 +2,7 @@ import type { Endpoint } from "../map-openapi-endpoints.ts";
 import type { RefResolver } from "../ref-resolver.ts";
 import type { SchemaNode } from "../schema-ir/types.ts";
 import { wrapWithQuotesIfNeeded } from "../string-utils.ts";
+import { shouldEmitSchema } from "../filter-spec.ts";
 import { findRecursiveSchemaNames } from "./shared.ts";
 import { createEmitCtx, type RuntimeAdapter } from "./types.ts";
 import type { ValidationPolicy } from "./validation.ts";
@@ -12,6 +13,7 @@ export type EmitRuntimeFileArgs = {
   endpointList: Endpoint[];
   validation: ValidationPolicy;
   schemasOnly?: boolean;
+  keptSchemaNames?: Set<string>;
 };
 
 const emitParameters = (
@@ -61,10 +63,12 @@ export const emitRuntimeFile = ({
   endpointList,
   validation,
   schemasOnly,
+  keptSchemaNames,
 }: EmitRuntimeFileArgs): string => {
   const namedSchemas = refs
     .getOrderedSchemas()
     .filter(([, infos]) => infos?.name && infos.kind === "schemas")
+    .filter(([, infos]) => shouldEmitSchema(keptSchemaNames, infos.normalized))
     .map(([node, infos]) => ({ name: infos.normalized, node }));
 
   const recursiveNames = findRecursiveSchemaNames(namedSchemas);

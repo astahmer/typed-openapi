@@ -21,6 +21,9 @@ export const configFileSchema = type({
   "includeClient?": "boolean",
   "jsdoc?": "boolean",
   "format?": "boolean",
+  "endpointPatterns?": "string[]",
+  "schemaPatterns?": "string[]",
+  "treeShakeSchemas?": "boolean",
 });
 
 export type TypedOpenapiConfigFile = typeof configFileSchema.infer;

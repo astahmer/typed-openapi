@@ -41,6 +41,10 @@ cli
     "--default-fetcher [name]",
     "Generate default fetcher, defaults to false, can optionally specify a name (will be generated next to the main file) or absolute path for the generated file",
   )
+  .option("--endpoint <regex>", "Keep endpoints matching regex (method/path/operationId/alias/tags); repeatable")
+  .option("--schema <regex>", "When tree-shaking, also keep schemas matching regex (name/ref); repeatable")
+  .option("--tree-shake-schemas", "Drop unused component schemas (default: on when --endpoint is set)")
+  .option("--no-tree-shake-schemas", "Emit all component schemas even when filtering endpoints")
   .action(async (input: string, _options: any) => {
     return generateClientFiles(input, _options);
   });
