@@ -262,16 +262,17 @@ export class EffectApiClient {
   }
 
   ${Object.entries(groupBy(endpointList, "method"))
-    .map(([method, list]) =>
-      list.length
-        ? `${method}<Path extends keyof ${capitalize(method)}Endpoints>(
+    .map(([method, list]) => {
+      const endpoints = `${capitalize(method)}Endpoints`;
+      return list.length
+        ? `${method}<Path extends keyof ${endpoints}>(
     path: Path,
     ...params: MaybeOptionalArg<any>
   ) {
-    return this.request("${method}", path as never, ...params);
+    return this.request<"${method}", Path, ${endpoints}[Path]>("${method}", path, ...params);
   }`
-        : "",
-    )
+        : "";
+    })
     .join("\n")}
 }
 
