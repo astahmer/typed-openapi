@@ -163,7 +163,7 @@ describe("Example API Client", () => {
   });
 
   it("header specific typings are merged with overrides/HeadersInit", async () => {
-    // @ts-expect-error Property 'header' is missing in type
+    // api_key header is optional in the petstore delete endpoint (all-optional param group).
     await api.delete("/pet/{petId}", {
       path: { petId: 42 },
     });
