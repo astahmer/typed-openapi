@@ -219,6 +219,10 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
     }
 
     if (schemaType === "string") {
+      const format = schema.format;
+      if (format === "binary" || format === "byte") {
+        return withNullable({ kind: "binary", meta }, schema);
+      }
       return withNullable({ kind: "string", constraints: stringConstraints(schema), meta }, schema);
     }
     if (schemaType === "boolean") {

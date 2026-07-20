@@ -4,6 +4,7 @@ import {
   applyNumberConstraints,
   applyObjectConstraints,
   applyStringConstraints,
+  emitBinaryBlobCheck,
   internEffectDefault,
   isNullOr,
   jsLiteral,
@@ -60,6 +61,8 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
   switch (node.kind) {
     case "string":
       return emitString(node, ctx);
+    case "binary":
+      return emitBinaryBlobCheck("effect");
     case "number":
       return emitNumber(node, ctx);
     case "boolean":

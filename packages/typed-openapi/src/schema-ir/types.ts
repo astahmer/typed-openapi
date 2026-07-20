@@ -70,6 +70,8 @@ export type SchemaNode =
   | { kind: "not"; schema: SchemaNode; meta: SchemaMeta }
   | { kind: "ref"; name: string; generics?: SchemaNode[]; meta: SchemaMeta }
   | { kind: "record"; key: SchemaNode; value: SchemaNode; meta: SchemaMeta }
+  /** OAS `type: string, format: binary|byte` — typed as Blob for uploads/downloads */
+  | { kind: "binary"; meta: SchemaMeta }
   | { kind: "unknown"; meta: SchemaMeta }
   | { kind: "any"; meta: SchemaMeta }
   | { kind: "never"; meta: SchemaMeta };

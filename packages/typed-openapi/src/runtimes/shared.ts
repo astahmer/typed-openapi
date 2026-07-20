@@ -11,6 +11,25 @@ import type { ValidationPolicy } from "./validation.ts";
 
 export const quote = (value: string) => JSON.stringify(value);
 
+/** Runtime expression for OAS binary/byte bodies (Blob in browser/Node 18+). */
+export const emitBinaryBlobCheck = (lib: "zod" | "zod3" | "valibot" | "effect" | "effect3" | "arktype"): string => {
+  switch (lib) {
+    case "zod":
+    case "zod3":
+      return `z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob)`;
+    case "valibot":
+      return `v.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob)`;
+    case "effect":
+      return `Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob)`;
+    case "effect3":
+      return `S.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob)`;
+    case "arktype":
+      return `type.instanceOf(Blob)`;
+    default:
+      return `z.unknown()`;
+  }
+};
+
 /** Quote object keys that are not valid JS identifiers */
 export const objectKey = (key: string): string => {
   if (/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key)) return key;

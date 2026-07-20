@@ -4,6 +4,7 @@ import {
   applyNumberConstraints,
   applyObjectConstraints,
   applyStringConstraints,
+  emitBinaryBlobCheck,
   findMappedUnionMember,
   isNullOr,
   literalValue,
@@ -55,6 +56,8 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
   switch (node.kind) {
     case "string":
       return emitString(node, ctx);
+    case "binary":
+      return emitBinaryBlobCheck("zod3");
     case "number":
       return emitNumber(node, ctx);
     case "boolean":

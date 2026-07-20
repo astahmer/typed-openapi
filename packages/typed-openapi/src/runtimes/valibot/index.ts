@@ -4,6 +4,7 @@ import {
   applyNumberConstraints,
   applyObjectConstraints,
   applyStringConstraints,
+  emitBinaryBlobCheck,
   isNullOr,
   literalValue,
   objectKey,
@@ -58,6 +59,8 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
   switch (node.kind) {
     case "string":
       return emitString(node, ctx);
+    case "binary":
+      return emitBinaryBlobCheck("valibot");
     case "number":
       return emitNumber(node, ctx);
     case "boolean":

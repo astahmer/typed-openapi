@@ -35,6 +35,8 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
   switch (node.kind) {
     case "string":
       return "string";
+    case "binary":
+      return "Blob";
     case "number":
       return "number";
     case "boolean":
