@@ -12,7 +12,8 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 
 - Headless API client,
   [bring your own fetcher](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets) (fetch,
-  axios, ky, etc...) ! (You can generate that file with `--default-fetcher`)
+  axios, ky, etc...) ! (You can generate that file with `--default-fetcher` — honors `requestFormat` for json /
+  form-data / form-url / binary / text bodies)
 - Generates a fully typesafe API client with just types by default (instant suggestions)
 - **Type-safe error handling**: with discriminated unions and configurable success/error status codes
 - **withResponse & throwOnStatusError**: Get a union-style response object or throw on configured error status codes,

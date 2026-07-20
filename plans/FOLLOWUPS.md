@@ -28,14 +28,13 @@ Keep the **single-file client** non-goal; extend the fetcher/requestFormat surfa
 
 ### Multipart / form-data uploads
 
-- Today: `requestFormat: "form-data" | "form-url" | "binary"` is typed on endpoints, but the default fetcher still
-  JSON-stringifies body.
-- Direction:
-  - Document that `Fetcher.fetch` must honor `requestFormat` (or endpoint metadata).
-  - Optional helper in `--default-fetcher`: build `FormData` from object bodies when `requestFormat === "form-data"`.
-  - Binary: accept `Blob | ArrayBuffer | Uint8Array` on body without JSON stringify.
-- Types: keep body schema as-is for form fields; file parts stay `string` / `Blob` via OAS `format: binary` → IR
-  string/unknown (improve later with a dedicated `binary` SchemaNode if needed).
+- **Done (default fetcher):** `Fetcher.fetch` receives `requestFormat`; `--default-fetcher` encodes `form-data` →
+  `FormData`, `form-url` → `URLSearchParams`, `binary` → raw body, `text` / `json` as before. Client emits
+  `endpointRequestFormats` so this works for `runtime: none` too.
+- Still open:
+  - Document fetcher contract for `requestFormat` in README (short section).
+  - Types: file parts stay `string` / `Blob` via OAS `format: binary` → IR string/unknown (improve later with a
+    dedicated `binary` SchemaNode if needed).
 
 ### SSE / streaming responses
 
@@ -51,6 +50,6 @@ Keep the **single-file client** non-goal; extend the fetcher/requestFormat surfa
 
 ### Suggested order when picking this up
 
-1. Default-fetcher `FormData` + binary body (small, high value).
+1. ~~Default-fetcher `FormData` + binary body~~ (done).
 2. Document fetcher contract for `requestFormat`.
 3. SSE as typed `ReadableStream` + skip output validation (only if someone asks).
