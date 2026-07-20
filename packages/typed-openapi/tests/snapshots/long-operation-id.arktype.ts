@@ -1,6 +1,7 @@
 import { type } from "arktype";
 
 // <Schemas>
+
 // </Schemas>
 
 // <Endpoints>

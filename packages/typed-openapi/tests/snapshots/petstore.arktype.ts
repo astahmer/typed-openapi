@@ -60,7 +60,6 @@ export const ApiResponse = type({
   message: type("string"),
 }).partial();
 export type ApiResponse = typeof ApiResponse.infer;
-
 // </Schemas>
 
 // <Endpoints>

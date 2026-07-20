@@ -1,6 +1,6 @@
 import type { LiteralValue, SchemaNode } from "../../schema-ir/types.ts";
 import { applyNumberConstraints, applyStringConstraints, isNullOr, objectKey, objectProps, quote } from "../shared.ts";
-import type { EmitCtx, RuntimeAdapter } from "../types.ts";
+import type { EmitCtx, NamedSchema, RuntimeAdapter } from "../types.ts";
 
 const emitStringDef = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx): string => {
   const c = applyStringConstraints(node.constraints, ctx.validation);
@@ -25,10 +25,8 @@ const emitNumberDef = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitC
   const hasLo = c.minimum !== undefined || c.exclusiveMinimum !== undefined;
   const hasHi = c.maximum !== undefined || c.exclusiveMaximum !== undefined;
   if (hasLo && hasHi) {
-    const left =
-      c.exclusiveMinimum !== undefined ? `${c.exclusiveMinimum} <` : `${c.minimum} <=`;
-    const right =
-      c.exclusiveMaximum !== undefined ? `< ${c.exclusiveMaximum}` : `<= ${c.maximum}`;
+    const left = c.exclusiveMinimum !== undefined ? `${c.exclusiveMinimum} <` : `${c.minimum} <=`;
+    const right = c.exclusiveMaximum !== undefined ? `< ${c.exclusiveMaximum}` : `<= ${c.maximum}`;
     return quote(`${left} ${base} ${right}`);
   }
   if (c.exclusiveMinimum !== undefined) return quote(`${base} > ${c.exclusiveMinimum}`);
@@ -48,9 +46,21 @@ const arkUnitDef = (value: LiteralValue): string => {
   return quote(String(value));
 };
 
+/** Module string defs look like `"Category"` / `"Category[]"` / `"Category | null"`. */
+const isModuleStringDef = (expr: string): boolean =>
+  expr.length >= 2 && expr.startsWith('"') && expr.endsWith('"') && !expr.includes("type(");
+
+const unquote = (expr: string): string => expr.slice(1, -1);
+
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
-  if (nullInner) return `${emitNode(nullInner, ctx)}.or(type("null"))`;
+  if (nullInner) {
+    const inner = emitNode(nullInner, ctx);
+    if (ctx.moduleSchemaNames && isModuleStringDef(inner)) {
+      return quote(`${unquote(inner)} | null`);
+    }
+    return `${inner}.or(type("null"))`;
+  }
 
   switch (node.kind) {
     case "string":
@@ -73,8 +83,13 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       return `type.enumerated(${node.values
         .map((v) => (typeof v === "string" ? quote(v) : v === null ? "null" : String(v)))
         .join(", ")})`;
-    case "array":
-      return `${emitNode(node.items, ctx)}.array()`;
+    case "array": {
+      const items = emitNode(node.items, ctx);
+      if (ctx.moduleSchemaNames && isModuleStringDef(items)) {
+        return quote(`${unquote(items)}[]`);
+      }
+      return `${items}.array()`;
+    }
     case "tuple":
       return `type([${node.items.map((i) => emitNode(i, ctx)).join(", ")}])`;
     case "union":
@@ -91,18 +106,27 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.name === "Record" && node.generics?.length === 2) {
         return emitRecord(emitNode(node.generics[1]!, ctx));
       }
+      if (ctx.moduleSchemaNames?.has(node.name)) {
+        return quote(node.name);
+      }
       return node.name;
     }
     case "record":
       return emitRecord(emitNode(node.value, ctx));
     case "object": {
+      const forceOptional = Boolean(node.partial && ctx.moduleSchemaNames);
       const props = objectProps(node, emitNode, ctx);
       const body = props
         .map(({ key, optional, expr }) => {
-          const keyLit = optional ? quote(`${key}?`) : objectKey(key);
+          const keyLit = optional || forceOptional ? quote(`${key}?`) : objectKey(key);
           return `${keyLit}: ${expr}`;
         })
         .join(", ");
+      // Root values inside type.module must be raw object literals (not type({...}))
+      // so sibling string refs like "Category[]" resolve.
+      if (ctx.moduleSchemaNames && ctx.currentSchemaName) {
+        return `{ ${body} }`;
+      }
       let expr = `type({ ${body} })`;
       if (node.partial) expr = `${expr}.partial()`;
       return expr;
@@ -114,6 +138,34 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   }
 };
 
+const emitNamedSchema = (name: string, node: SchemaNode, ctx: EmitCtx): string => {
+  const childCtx = { ...ctx, currentSchemaName: name };
+  const body = emitNode(node, childCtx);
+  return `export const ${name} = ${body};\nexport type ${name} = typeof ${name}.infer;`;
+};
+
+const emitNamedSchemas = (schemas: NamedSchema[], ctx: EmitCtx): string => {
+  if (ctx.recursiveNames.size === 0 || schemas.length === 0) {
+    return schemas.map(({ name, node }) => emitNamedSchema(name, node, ctx)).join("\n\n");
+  }
+
+  const moduleSchemaNames = new Set(schemas.map((s) => s.name));
+  const moduleCtx: EmitCtx = { ...ctx, moduleSchemaNames };
+
+  const entries = schemas
+    .map(({ name, node }) => {
+      const body = emitNode(node, { ...moduleCtx, currentSchemaName: name });
+      return `  ${name}: ${body},`;
+    })
+    .join("\n");
+
+  let out = `const __schemas = type.module({\n${entries}\n});\n\n`;
+  for (const { name } of schemas) {
+    out += `export const ${name} = __schemas.${name};\nexport type ${name} = typeof ${name}.infer;\n\n`;
+  }
+  return out.trimEnd();
+};
+
 export const arktypeAdapter: RuntimeAdapter = {
   name: "arktype",
   imports: () => `import { type } from "arktype";`,
@@ -123,9 +175,6 @@ export const arktypeAdapter: RuntimeAdapter = {
   literalString: (value) => `type(${arkUnitDef(value)})`,
   unknown: () => `type("unknown")`,
   never: () => `type("never")`,
-  emitNamedSchema: (name, node, ctx) => {
-    const childCtx = { ...ctx, currentSchemaName: name };
-    const body = emitNode(node, childCtx);
-    return `export const ${name} = ${body};\nexport type ${name} = typeof ${name}.infer;`;
-  },
+  emitNamedSchema,
+  emitNamedSchemas,
 };

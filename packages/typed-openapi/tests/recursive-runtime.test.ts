@@ -61,4 +61,17 @@ describe("recursive runtime schemas", async () => {
     const Category = new Function("v", `${stripModuleNoise(src)}\nreturn Category;`)(v);
     expect(v.safeParse(Category, { name: "root", children: [] }).success).toBe(true);
   });
+
+  test("arktype emits type.module and parses nested trees", async () => {
+    const { type } = await import("arktype");
+    const src = generateFile({ ...ctx, runtime: "arktype", schemasOnly: true, validation: "loose" });
+    expect(src).toContain("type.module({");
+    expect(src).toContain('"Category[]"');
+
+    const body = stripModuleNoise(src).replace(/const __schemas/, "var __schemas");
+    const Category = new Function("type", `${body}\nreturn Category;`)(type);
+    const tree = { name: "root", children: [{ name: "child" }] };
+    expect(Category(tree).name).toBe("root");
+    expect(Category({ name: 1 }).name).toBeUndefined();
+  });
 });

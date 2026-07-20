@@ -9,9 +9,16 @@ export type EmitCtx = {
   recursiveNames: Set<string>;
   /** Currently emitting schema name (for lazy detection) */
   currentSchemaName?: string;
+  /**
+   * When set, named schema refs emit as ArkType/module string defs (`"Foo"` / `"Foo[]"`)
+   * so they resolve inside `type.module({ ... })`.
+   */
+  moduleSchemaNames?: Set<string>;
   /** Indent level helper */
   indent: string;
 };
+
+export type NamedSchema = { name: string; node: SchemaNode };
 
 export type RuntimeAdapter = {
   name: Exclude<OutputRuntime, "none">;
@@ -24,6 +31,11 @@ export type RuntimeAdapter = {
   wrapLazy?: (name: string, bodyExpr: string) => string;
   /** Emit `export const Name = ...` (+ optional type) for a top-level schema */
   emitNamedSchema: (name: string, node: SchemaNode, ctx: EmitCtx) => string;
+  /**
+   * Optional batch emit for all component schemas (e.g. ArkType `type.module` for recursion).
+   * When present, used instead of looping `emitNamedSchema`.
+   */
+  emitNamedSchemas?: (schemas: NamedSchema[], ctx: EmitCtx) => string;
   /** Emit endpoint const object body fields using emitNode */
   literalString: (value: string) => string;
   unknown: () => string;

@@ -114,8 +114,12 @@ export const emitRuntimeFile = ({
   let file = `${adapter.imports()}\n\n`;
 
   file += `// <Schemas>\n`;
-  for (const { name, node } of namedSchemas) {
-    file += `${adapter.emitNamedSchema(name, node, ctx)}\n\n`;
+  if (adapter.emitNamedSchemas) {
+    file += `${adapter.emitNamedSchemas(namedSchemas, ctx)}\n`;
+  } else {
+    for (const { name, node } of namedSchemas) {
+      file += `${adapter.emitNamedSchema(name, node, ctx)}\n\n`;
+    }
   }
   file += `// </Schemas>\n`;
 

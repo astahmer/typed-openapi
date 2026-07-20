@@ -20,55 +20,51 @@ describe("tsc audit sample specs", () => {
 
   for (const sample of samples) {
     for (const runtime of runtimes) {
-      test(
-        `${sample} --runtime ${runtime}`,
-        { timeout: sample.startsWith("docker") ? 120_000 : 60_000 },
-        async () => {
-          const openApiDoc = (await SwaggerParser.parse(`${__dirname}/samples/${sample}`)) as OpenAPIObject;
-          const ctx = mapOpenApiEndpoints(openApiDoc);
-          const dir = join(outRoot, sample.replace(/\..*/, ""), runtime);
-          mkdirSync(dir, { recursive: true });
+      test(`${sample} --runtime ${runtime}`, { timeout: sample.startsWith("docker") ? 120_000 : 60_000 }, async () => {
+        const openApiDoc = (await SwaggerParser.parse(`${__dirname}/samples/${sample}`)) as OpenAPIObject;
+        const ctx = mapOpenApiEndpoints(openApiDoc);
+        const dir = join(outRoot, sample.replace(/\..*/, ""), runtime);
+        mkdirSync(dir, { recursive: true });
 
-          const code = generateFile({
-            ...ctx,
-            runtime,
-            validation: "strict",
-            schemasOnly: true,
-            includeClient: false,
-          });
-          writeFileSync(join(dir, "schema.ts"), code);
-          writeFileSync(
-            join(dir, "tsconfig.json"),
-            JSON.stringify(
-              {
-                compilerOptions: {
-                  strict: true,
-                  noEmit: true,
-                  skipLibCheck: true,
-                  module: "ESNext",
-                  moduleResolution: "bundler",
-                  target: "ES2022",
-                  types: [],
-                },
-                include: ["schema.ts"],
+        const code = generateFile({
+          ...ctx,
+          runtime,
+          validation: "strict",
+          schemasOnly: true,
+          includeClient: false,
+        });
+        writeFileSync(join(dir, "schema.ts"), code);
+        writeFileSync(
+          join(dir, "tsconfig.json"),
+          JSON.stringify(
+            {
+              compilerOptions: {
+                strict: true,
+                noEmit: true,
+                skipLibCheck: true,
+                module: "ESNext",
+                moduleResolution: "bundler",
+                target: "ES2022",
+                types: [],
               },
-              null,
-              2,
-            ),
-          );
+              include: ["schema.ts"],
+            },
+            null,
+            2,
+          ),
+        );
 
-          try {
-            execFileSync(process.execPath, [tscBin, "-p", dir, "--pretty", "false"], {
-              cwd: join(__dirname, ".."),
-              stdio: ["ignore", "pipe", "pipe"],
-              encoding: "utf8",
-            });
-          } catch (err: any) {
-            const out = `${err.stdout ?? ""}${err.stderr ?? ""}`;
-            expect.fail(`tsc failed for ${sample}/${runtime}:\n${out.slice(0, 4000)}`);
-          }
-        },
-      );
+        try {
+          execFileSync(process.execPath, [tscBin, "-p", dir, "--pretty", "false"], {
+            cwd: join(__dirname, ".."),
+            stdio: ["ignore", "pipe", "pipe"],
+            encoding: "utf8",
+          });
+        } catch (err: any) {
+          const out = `${err.stdout ?? ""}${err.stderr ?? ""}`;
+          expect.fail(`tsc failed for ${sample}/${runtime}:\n${out.slice(0, 4000)}`);
+        }
+      });
     }
   }
 });
