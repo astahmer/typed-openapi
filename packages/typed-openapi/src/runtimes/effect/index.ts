@@ -13,33 +13,38 @@ import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
 const S = "Schema";
 
-const pipeChecks = (base: string, checks: string[]): string => {
-  if (!checks.length) return base;
-  return `${base}.check(${checks.join(", ")})`;
+/** Effect Schema refinements use `.pipe(Schema.minLength(...))`, not `.check(is*)`. */
+const pipeFilters = (base: string, filters: string[]): string => {
+  if (!filters.length) return base;
+  return `${base}.pipe(${filters.join(", ")})`;
 };
 
 const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx): string => {
   const c = applyStringConstraints(node.constraints, ctx.validation);
-  const checks: string[] = [];
+  const filters: string[] = [];
   let base = `${S}.String`;
   if (c.format === "uuid") base = `${S}.UUID`;
-  else if (c.format === "email") checks.push(`${S}.isEmail()`);
-  if (c.minLength !== undefined) checks.push(`${S}.isMinLength(${c.minLength})`);
-  if (c.maxLength !== undefined) checks.push(`${S}.isMaxLength(${c.maxLength})`);
-  if (c.pattern !== undefined) checks.push(`${S}.isPattern(new RegExp(${quote(c.pattern)}))`);
-  return pipeChecks(base, checks);
+  else if (c.format === "uri" || c.format === "url") base = `${S}.URL`;
+  else if (c.format === "email") {
+    // No dedicated Schema.Email in effect — approximate with pattern
+    filters.push(`${S}.pattern(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/)`);
+  }
+  if (c.minLength !== undefined) filters.push(`${S}.minLength(${c.minLength})`);
+  if (c.maxLength !== undefined) filters.push(`${S}.maxLength(${c.maxLength})`);
+  if (c.pattern !== undefined) filters.push(`${S}.pattern(new RegExp(${quote(c.pattern)}))`);
+  return pipeFilters(base, filters);
 };
 
 const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
   const c = applyNumberConstraints(node.constraints, ctx.validation);
   let base = node.integer ? `${S}.Int` : `${S}.Number`;
-  const checks: string[] = [];
-  if (c.minimum !== undefined) checks.push(`${S}.isGreaterThanOrEqualTo(${c.minimum})`);
-  if (c.maximum !== undefined) checks.push(`${S}.isLessThanOrEqualTo(${c.maximum})`);
-  if (c.exclusiveMinimum !== undefined) checks.push(`${S}.isGreaterThan(${c.exclusiveMinimum})`);
-  if (c.exclusiveMaximum !== undefined) checks.push(`${S}.isLessThan(${c.exclusiveMaximum})`);
-  if (c.multipleOf !== undefined) checks.push(`${S}.isMultipleOf(${c.multipleOf})`);
-  return pipeChecks(base, checks);
+  const filters: string[] = [];
+  if (c.minimum !== undefined) filters.push(`${S}.greaterThanOrEqualTo(${c.minimum})`);
+  if (c.maximum !== undefined) filters.push(`${S}.lessThanOrEqualTo(${c.maximum})`);
+  if (c.exclusiveMinimum !== undefined) filters.push(`${S}.greaterThan(${c.exclusiveMinimum})`);
+  if (c.exclusiveMaximum !== undefined) filters.push(`${S}.lessThan(${c.exclusiveMaximum})`);
+  if (c.multipleOf !== undefined) filters.push(`${S}.multipleOf(${c.multipleOf})`);
+  return pipeFilters(base, filters);
 };
 
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
@@ -68,10 +73,10 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "array": {
       const c = applyArrayConstraints(node.constraints, ctx.validation);
       let expr = `${S}.Array(${emitNode(node.items, ctx)})`;
-      const checks: string[] = [];
-      if (c.minItems !== undefined) checks.push(`${S}.isMinLength(${c.minItems})`);
-      if (c.maxItems !== undefined) checks.push(`${S}.isMaxLength(${c.maxItems})`);
-      return pipeChecks(expr, checks);
+      const filters: string[] = [];
+      if (c.minItems !== undefined) filters.push(`${S}.minItems(${c.minItems})`);
+      if (c.maxItems !== undefined) filters.push(`${S}.maxItems(${c.maxItems})`);
+      return pipeFilters(expr, filters);
     }
     case "tuple": {
       const items = node.items.map((i) => emitNode(i, ctx)).join(", ");

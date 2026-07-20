@@ -46,7 +46,7 @@ export const DeviceRequest = Schema.partial(
 export type DeviceRequest = typeof DeviceRequest.Type;
 
 export const ThrottleDevice = Schema.partial(
-  Schema.Struct({ Path: Schema.String, Rate: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)) }),
+  Schema.Struct({ Path: Schema.String, Rate: Schema.Int.pipe(Schema.greaterThanOrEqualTo(0)) }),
 );
 export type ThrottleDevice = typeof ThrottleDevice.Type;
 
@@ -110,11 +110,9 @@ export const Resources = Schema.partial(
     CpuShares: Schema.Int,
     Memory: Schema.Int,
     CgroupParent: Schema.String,
-    BlkioWeight: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0), Schema.isLessThanOrEqualTo(1000)),
+    BlkioWeight: Schema.Int.pipe(Schema.greaterThanOrEqualTo(0), Schema.lessThanOrEqualTo(1000)),
     BlkioWeightDevice: Schema.Array(
-      Schema.partial(
-        Schema.Struct({ Path: Schema.String, Weight: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)) }),
-      ),
+      Schema.partial(Schema.Struct({ Path: Schema.String, Weight: Schema.Int.pipe(Schema.greaterThanOrEqualTo(0)) })),
     ),
     BlkioDeviceReadBps: Schema.Array(ThrottleDevice),
     BlkioDeviceWriteBps: Schema.Array(ThrottleDevice),
@@ -132,7 +130,7 @@ export const Resources = Schema.partial(
     KernelMemoryTCP: Schema.Int,
     MemoryReservation: Schema.Int,
     MemorySwap: Schema.Int,
-    MemorySwappiness: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0), Schema.isLessThanOrEqualTo(100)),
+    MemorySwappiness: Schema.Int.pipe(Schema.greaterThanOrEqualTo(0), Schema.lessThanOrEqualTo(100)),
     NanoCpus: Schema.Int,
     OomKillDisable: Schema.Boolean,
     Init: Schema.NullOr(Schema.Boolean),
@@ -234,10 +232,7 @@ export const HostConfig = Schema.extend(
       VolumesFrom: Schema.Array(Schema.String),
       Mounts: Schema.Array(Mount),
       ConsoleSize: Schema.NullOr(
-        Schema.Array(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))).check(
-          Schema.isMinLength(2),
-          Schema.isMaxLength(2),
-        ),
+        Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0))).pipe(Schema.minItems(2), Schema.maxItems(2)),
       ),
       Annotations: Schema.Record(Schema.String, Schema.String),
       CapAdd: Schema.Array(Schema.String),
@@ -261,7 +256,7 @@ export const HostConfig = Schema.extend(
       Tmpfs: Schema.Record(Schema.String, Schema.String),
       UTSMode: Schema.String,
       UsernsMode: Schema.String,
-      ShmSize: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)),
+      ShmSize: Schema.Int.pipe(Schema.greaterThanOrEqualTo(0)),
       Sysctls: Schema.Record(Schema.String, Schema.String),
       Runtime: Schema.String,
       Isolation: Schema.Union([Schema.Literal("default"), Schema.Literal("process"), Schema.Literal("hyperv")]),
@@ -878,7 +873,7 @@ export const ClusterInfo = Schema.NullOr(
       RootRotationInProgress: Schema.Boolean,
       DataPathPort: Schema.Int,
       DefaultAddrPool: Schema.Array(Schema.String),
-      SubnetSize: Schema.Int.check(Schema.isLessThanOrEqualTo(29)),
+      SubnetSize: Schema.Int.pipe(Schema.lessThanOrEqualTo(29)),
     }),
   ),
 );
@@ -1502,7 +1497,7 @@ export const post_ContainerCreate = {
   parameters: {
     query: Schema.partial(
       Schema.Struct({
-        name: Schema.String.check(Schema.isPattern(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"))),
+        name: Schema.String.pipe(Schema.pattern(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"))),
         platform: Schema.String,
       }),
     ),
@@ -2249,10 +2244,7 @@ export const post_ContainerExec = {
         AttachStdout: Schema.Boolean,
         AttachStderr: Schema.Boolean,
         ConsoleSize: Schema.NullOr(
-          Schema.Array(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))).check(
-            Schema.isMinLength(2),
-            Schema.isMaxLength(2),
-          ),
+          Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0))).pipe(Schema.minItems(2), Schema.maxItems(2)),
         ),
         DetachKeys: Schema.String,
         Tty: Schema.Boolean,
@@ -2279,10 +2271,7 @@ export const post_ExecStart = {
         Detach: Schema.Boolean,
         Tty: Schema.Boolean,
         ConsoleSize: Schema.NullOr(
-          Schema.Array(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))).check(
-            Schema.isMinLength(2),
-            Schema.isMaxLength(2),
-          ),
+          Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0))).pipe(Schema.minItems(2), Schema.maxItems(2)),
         ),
       }),
     ),
