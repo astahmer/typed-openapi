@@ -157,7 +157,7 @@ export const get_GetInventory = {
   path: type("'/store/inventory'"),
   requestFormat: type("'json'"),
   parameters: type("never"),
-  responses: { 200: type("Record", "string", type("number.integer")) },
+  responses: { 200: type({ "[string]": type("number.integer") }) },
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;

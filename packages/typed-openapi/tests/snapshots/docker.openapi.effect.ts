@@ -40,7 +40,7 @@ export const DeviceRequest = Schema.partial(
     Count: Schema.Int,
     DeviceIDs: Schema.Array(Schema.String),
     Capabilities: Schema.Array(Schema.Array(Schema.String)),
-    Options: Schema.Record(Schema.String, Schema.String),
+    Options: Schema.Record({ key: Schema.String, value: Schema.String }),
   }),
 );
 export type DeviceRequest = typeof DeviceRequest.Type;
@@ -80,9 +80,9 @@ export const Mount = Schema.partial(
     VolumeOptions: Schema.partial(
       Schema.Struct({
         NoCopy: Schema.Boolean,
-        Labels: Schema.Record(Schema.String, Schema.String),
+        Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
         DriverConfig: Schema.partial(
-          Schema.Struct({ Name: Schema.String, Options: Schema.Record(Schema.String, Schema.String) }),
+          Schema.Struct({ Name: Schema.String, Options: Schema.Record({ key: Schema.String, value: Schema.String }) }),
         ),
       }),
     ),
@@ -199,7 +199,7 @@ export type Health = typeof Health.Type;
 export const PortBinding = Schema.partial(Schema.Struct({ HostIp: Schema.String, HostPort: Schema.String }));
 export type PortBinding = typeof PortBinding.Type;
 
-export const PortMap = Schema.Record(Schema.String, Schema.NullOr(Schema.Array(PortBinding)));
+export const PortMap = Schema.Record({ key: Schema.String, value: Schema.NullOr(Schema.Array(PortBinding)) });
 export type PortMap = typeof PortMap.Type;
 
 export const HostConfig = Schema.extend(
@@ -221,7 +221,7 @@ export const HostConfig = Schema.extend(
             Schema.Literal("etwlogs"),
             Schema.Literal("none"),
           ),
-          Config: Schema.Record(Schema.String, Schema.String),
+          Config: Schema.Record({ key: Schema.String, value: Schema.String }),
         }),
       ),
       NetworkMode: Schema.String,
@@ -234,7 +234,7 @@ export const HostConfig = Schema.extend(
       ConsoleSize: Schema.NullOr(
         Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0))).pipe(Schema.minItems(2), Schema.maxItems(2)),
       ),
-      Annotations: Schema.Record(Schema.String, Schema.String),
+      Annotations: Schema.Record({ key: Schema.String, value: Schema.String }),
       CapAdd: Schema.Array(Schema.String),
       CapDrop: Schema.Array(Schema.String),
       CgroupnsMode: Schema.Union(Schema.Literal("private"), Schema.Literal("host")),
@@ -252,12 +252,12 @@ export const HostConfig = Schema.extend(
       PublishAllPorts: Schema.Boolean,
       ReadonlyRootfs: Schema.Boolean,
       SecurityOpt: Schema.Array(Schema.String),
-      StorageOpt: Schema.Record(Schema.String, Schema.String),
-      Tmpfs: Schema.Record(Schema.String, Schema.String),
+      StorageOpt: Schema.Record({ key: Schema.String, value: Schema.String }),
+      Tmpfs: Schema.Record({ key: Schema.String, value: Schema.String }),
       UTSMode: Schema.String,
       UsernsMode: Schema.String,
       ShmSize: Schema.Int.pipe(Schema.greaterThanOrEqualTo(0)),
-      Sysctls: Schema.Record(Schema.String, Schema.String),
+      Sysctls: Schema.Record({ key: Schema.String, value: Schema.String }),
       Runtime: Schema.String,
       Isolation: Schema.Union(Schema.Literal("default"), Schema.Literal("process"), Schema.Literal("hyperv")),
       MaskedPaths: Schema.Array(Schema.String),
@@ -275,7 +275,7 @@ export const ContainerConfig = Schema.partial(
     AttachStdin: Schema.Boolean,
     AttachStdout: Schema.Boolean,
     AttachStderr: Schema.Boolean,
-    ExposedPorts: Schema.NullOr(Schema.Record(Schema.String, Schema.partial(Schema.Struct({})))),
+    ExposedPorts: Schema.NullOr(Schema.Record({ key: Schema.String, value: Schema.partial(Schema.Struct({})) })),
     Tty: Schema.Boolean,
     OpenStdin: Schema.Boolean,
     StdinOnce: Schema.Boolean,
@@ -284,13 +284,13 @@ export const ContainerConfig = Schema.partial(
     Healthcheck: HealthConfig,
     ArgsEscaped: Schema.NullOr(Schema.Boolean),
     Image: Schema.String,
-    Volumes: Schema.Record(Schema.String, Schema.partial(Schema.Struct({}))),
+    Volumes: Schema.Record({ key: Schema.String, value: Schema.partial(Schema.Struct({})) }),
     WorkingDir: Schema.String,
     Entrypoint: Schema.Array(Schema.String),
     NetworkDisabled: Schema.NullOr(Schema.Boolean),
     MacAddress: Schema.NullOr(Schema.String),
     OnBuild: Schema.NullOr(Schema.Array(Schema.String)),
-    Labels: Schema.Record(Schema.String, Schema.String),
+    Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
     StopSignal: Schema.NullOr(Schema.String),
     StopTimeout: Schema.NullOr(Schema.Int),
     Shell: Schema.NullOr(Schema.Array(Schema.String)),
@@ -323,13 +323,13 @@ export const EndpointSettings = Schema.partial(
     GlobalIPv6Address: Schema.String,
     GlobalIPv6PrefixLen: Schema.Int,
     MacAddress: Schema.String,
-    DriverOpts: Schema.NullOr(Schema.Record(Schema.String, Schema.String)),
+    DriverOpts: Schema.NullOr(Schema.Record({ key: Schema.String, value: Schema.String })),
   }),
 );
 export type EndpointSettings = typeof EndpointSettings.Type;
 
 export const NetworkingConfig = Schema.partial(
-  Schema.Struct({ EndpointsConfig: Schema.Record(Schema.String, EndpointSettings) }),
+  Schema.Struct({ EndpointsConfig: Schema.Record({ key: Schema.String, value: EndpointSettings }) }),
 );
 export type NetworkingConfig = typeof NetworkingConfig.Type;
 
@@ -355,14 +355,14 @@ export const NetworkSettings = Schema.partial(
     IPPrefixLen: Schema.Int,
     IPv6Gateway: Schema.String,
     MacAddress: Schema.String,
-    Networks: Schema.Record(Schema.String, EndpointSettings),
+    Networks: Schema.Record({ key: Schema.String, value: EndpointSettings }),
   }),
 );
 export type NetworkSettings = typeof NetworkSettings.Type;
 
 export const GraphDriverData = Schema.Struct({
   Name: Schema.String,
-  Data: Schema.Record(Schema.String, Schema.String),
+  Data: Schema.Record({ key: Schema.String, value: Schema.String }),
 });
 export type GraphDriverData = typeof GraphDriverData.Type;
 
@@ -407,7 +407,7 @@ export const ImageSummary = Schema.Struct({
   Size: Schema.Int,
   SharedSize: Schema.Int,
   VirtualSize: Schema.optional(Schema.Int),
-  Labels: Schema.Record(Schema.String, Schema.String),
+  Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
   Containers: Schema.Int,
 });
 export type ImageSummary = typeof ImageSummary.Type;
@@ -436,7 +436,7 @@ export type ProcessConfig = typeof ProcessConfig.Type;
 export const ObjectVersion = Schema.partial(Schema.Struct({ Index: Schema.Int }));
 export type ObjectVersion = typeof ObjectVersion.Type;
 
-export const Topology = Schema.Record(Schema.String, Schema.String);
+export const Topology = Schema.Record({ key: Schema.String, value: Schema.String });
 export type Topology = typeof Topology.Type;
 
 export const ClusterVolumeSpec = Schema.partial(
@@ -474,7 +474,7 @@ export const ClusterVolume = Schema.partial(
     Info: Schema.partial(
       Schema.Struct({
         CapacityBytes: Schema.Int,
-        VolumeContext: Schema.Record(Schema.String, Schema.String),
+        VolumeContext: Schema.Record({ key: Schema.String, value: Schema.String }),
         VolumeID: Schema.String,
         AccessibleTopology: Schema.Array(Topology),
       }),
@@ -489,7 +489,7 @@ export const ClusterVolume = Schema.partial(
             Schema.Literal("pending-node-unpublish"),
             Schema.Literal("pending-controller-unpublish"),
           ),
-          PublishContext: Schema.Record(Schema.String, Schema.String),
+          PublishContext: Schema.Record({ key: Schema.String, value: Schema.String }),
         }),
       ),
     ),
@@ -502,11 +502,11 @@ export const Volume = Schema.Struct({
   Driver: Schema.String,
   Mountpoint: Schema.String,
   CreatedAt: Schema.optional(Schema.String),
-  Status: Schema.optional(Schema.Record(Schema.String, Schema.partial(Schema.Struct({})))),
-  Labels: Schema.Record(Schema.String, Schema.String),
+  Status: Schema.optional(Schema.Record({ key: Schema.String, value: Schema.partial(Schema.Struct({})) })),
+  Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
   Scope: Schema.Union(Schema.Literal("local"), Schema.Literal("global")),
   ClusterVolume: Schema.optional(ClusterVolume),
-  Options: Schema.Record(Schema.String, Schema.String),
+  Options: Schema.Record({ key: Schema.String, value: Schema.String }),
   UsageData: Schema.optional(Schema.NullOr(Schema.Struct({ Size: Schema.Int, RefCount: Schema.Int }))),
 });
 export type Volume = typeof Volume.Type;
@@ -515,8 +515,8 @@ export const VolumeCreateOptions = Schema.partial(
   Schema.Struct({
     Name: Schema.String,
     Driver: Schema.String,
-    DriverOpts: Schema.Record(Schema.String, Schema.String),
-    Labels: Schema.Record(Schema.String, Schema.String),
+    DriverOpts: Schema.Record({ key: Schema.String, value: Schema.String }),
+    Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
     ClusterVolumeSpec: ClusterVolumeSpec,
   }),
 );
@@ -532,7 +532,7 @@ export const IPAMConfig = Schema.partial(
     Subnet: Schema.String,
     IPRange: Schema.String,
     Gateway: Schema.String,
-    AuxiliaryAddresses: Schema.Record(Schema.String, Schema.String),
+    AuxiliaryAddresses: Schema.Record({ key: Schema.String, value: Schema.String }),
   }),
 );
 export type IPAMConfig = typeof IPAMConfig.Type;
@@ -541,7 +541,7 @@ export const IPAM = Schema.partial(
   Schema.Struct({
     Driver: Schema.String,
     Config: Schema.Array(IPAMConfig),
-    Options: Schema.Record(Schema.String, Schema.String),
+    Options: Schema.Record({ key: Schema.String, value: Schema.String }),
   }),
 );
 export type IPAM = typeof IPAM.Type;
@@ -569,9 +569,9 @@ export const Network = Schema.partial(
     Internal: Schema.Boolean,
     Attachable: Schema.Boolean,
     Ingress: Schema.Boolean,
-    Containers: Schema.Record(Schema.String, NetworkContainer),
-    Options: Schema.Record(Schema.String, Schema.String),
-    Labels: Schema.Record(Schema.String, Schema.String),
+    Containers: Schema.Record({ key: Schema.String, value: NetworkContainer }),
+    Options: Schema.Record({ key: Schema.String, value: Schema.String }),
+    Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
   }),
 );
 export type Network = typeof Network.Type;
@@ -740,7 +740,7 @@ export type Plugin = typeof Plugin.Type;
 export const NodeSpec = Schema.partial(
   Schema.Struct({
     Name: Schema.String,
-    Labels: Schema.Record(Schema.String, Schema.String),
+    Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
     Role: Schema.Union(Schema.Literal("worker"), Schema.Literal("manager")),
     Availability: Schema.Union(Schema.Literal("active"), Schema.Literal("pause"), Schema.Literal("drain")),
   }),
@@ -753,7 +753,7 @@ export type Platform = typeof Platform.Type;
 export const EngineDescription = Schema.partial(
   Schema.Struct({
     EngineVersion: Schema.String,
-    Labels: Schema.Record(Schema.String, Schema.String),
+    Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
     Plugins: Schema.Array(Schema.partial(Schema.Struct({ Type: Schema.String, Name: Schema.String }))),
   }),
 );
@@ -817,7 +817,7 @@ export type Node = typeof Node.Type;
 export const SwarmSpec = Schema.partial(
   Schema.Struct({
     Name: Schema.String,
-    Labels: Schema.Record(Schema.String, Schema.String),
+    Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
     Orchestration: Schema.NullOr(Schema.partial(Schema.Struct({ TaskHistoryRetentionLimit: Schema.Int }))),
     Raft: Schema.partial(
       Schema.Struct({
@@ -838,7 +838,7 @@ export const SwarmSpec = Schema.partial(
               Schema.Struct({
                 Protocol: Schema.Literal("cfssl"),
                 URL: Schema.String,
-                Options: Schema.Record(Schema.String, Schema.String),
+                Options: Schema.Record({ key: Schema.String, value: Schema.String }),
                 CACert: Schema.String,
               }),
             ),
@@ -853,7 +853,7 @@ export const SwarmSpec = Schema.partial(
     TaskDefaults: Schema.partial(
       Schema.Struct({
         LogDriver: Schema.partial(
-          Schema.Struct({ Name: Schema.String, Options: Schema.Record(Schema.String, Schema.String) }),
+          Schema.Struct({ Name: Schema.String, Options: Schema.Record({ key: Schema.String, value: Schema.String }) }),
         ),
       }),
     ),
@@ -889,7 +889,7 @@ export const NetworkAttachmentConfig = Schema.partial(
   Schema.Struct({
     Target: Schema.String,
     Aliases: Schema.Array(Schema.String),
-    DriverOpts: Schema.Record(Schema.String, Schema.String),
+    DriverOpts: Schema.Record({ key: Schema.String, value: Schema.String }),
   }),
 );
 export type NetworkAttachmentConfig = typeof NetworkAttachmentConfig.Type;
@@ -907,7 +907,7 @@ export const TaskSpec = Schema.partial(
     ContainerSpec: Schema.partial(
       Schema.Struct({
         Image: Schema.String,
-        Labels: Schema.Record(Schema.String, Schema.String),
+        Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
         Command: Schema.Array(Schema.String),
         Args: Schema.Array(Schema.String),
         Hostname: Schema.String,
@@ -971,7 +971,7 @@ export const TaskSpec = Schema.partial(
         ),
         Isolation: Schema.Union(Schema.Literal("default"), Schema.Literal("process"), Schema.Literal("hyperv")),
         Init: Schema.NullOr(Schema.Boolean),
-        Sysctls: Schema.Record(Schema.String, Schema.String),
+        Sysctls: Schema.Record({ key: Schema.String, value: Schema.String }),
         CapabilityAdd: Schema.Array(Schema.String),
         CapabilityDrop: Schema.Array(Schema.String),
         Ulimits: Schema.Array(
@@ -1003,7 +1003,7 @@ export const TaskSpec = Schema.partial(
     Runtime: Schema.String,
     Networks: Schema.Array(NetworkAttachmentConfig),
     LogDriver: Schema.partial(
-      Schema.Struct({ Name: Schema.String, Options: Schema.Record(Schema.String, Schema.String) }),
+      Schema.Struct({ Name: Schema.String, Options: Schema.Record({ key: Schema.String, value: Schema.String }) }),
     ),
   }),
 );
@@ -1035,7 +1035,7 @@ export const Task = Schema.partial(
     CreatedAt: Schema.String,
     UpdatedAt: Schema.String,
     Name: Schema.String,
-    Labels: Schema.Record(Schema.String, Schema.String),
+    Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
     Spec: TaskSpec,
     ServiceID: Schema.String,
     Slot: Schema.Int,
@@ -1080,7 +1080,7 @@ export type EndpointSpec = typeof EndpointSpec.Type;
 export const ServiceSpec = Schema.partial(
   Schema.Struct({
     Name: Schema.String,
-    Labels: Schema.Record(Schema.String, Schema.String),
+    Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
     TaskTemplate: TaskSpec,
     Mode: Schema.partial(
       Schema.Struct({
@@ -1165,11 +1165,13 @@ export const ContainerSummary = Schema.partial(
     Ports: Schema.Array(Port),
     SizeRw: Schema.Int,
     SizeRootFs: Schema.Int,
-    Labels: Schema.Record(Schema.String, Schema.String),
+    Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
     State: Schema.String,
     Status: Schema.String,
     HostConfig: Schema.partial(Schema.Struct({ NetworkMode: Schema.String })),
-    NetworkSettings: Schema.partial(Schema.Struct({ Networks: Schema.Record(Schema.String, EndpointSettings) })),
+    NetworkSettings: Schema.partial(
+      Schema.Struct({ Networks: Schema.Record({ key: Schema.String, value: EndpointSettings }) }),
+    ),
     Mounts: Schema.Array(MountPoint),
   }),
 );
@@ -1177,14 +1179,14 @@ export type ContainerSummary = typeof ContainerSummary.Type;
 
 export const Driver = Schema.Struct({
   Name: Schema.String,
-  Options: Schema.optional(Schema.Record(Schema.String, Schema.String)),
+  Options: Schema.optional(Schema.Record({ key: Schema.String, value: Schema.String })),
 });
 export type Driver = typeof Driver.Type;
 
 export const SecretSpec = Schema.partial(
   Schema.Struct({
     Name: Schema.String,
-    Labels: Schema.Record(Schema.String, Schema.String),
+    Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
     Data: Schema.String,
     Driver: Driver,
     Templating: Driver,
@@ -1206,7 +1208,7 @@ export type Secret = typeof Secret.Type;
 export const ConfigSpec = Schema.partial(
   Schema.Struct({
     Name: Schema.String,
-    Labels: Schema.Record(Schema.String, Schema.String),
+    Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
     Data: Schema.String,
     Templating: Driver,
   }),
@@ -1316,7 +1318,7 @@ export const RegistryServiceConfig = Schema.NullOr(
       AllowNondistributableArtifactsCIDRs: Schema.Array(Schema.String),
       AllowNondistributableArtifactsHostnames: Schema.Array(Schema.String),
       InsecureRegistryCIDRs: Schema.Array(Schema.String),
-      IndexConfigs: Schema.Record(Schema.String, IndexInfo),
+      IndexConfigs: Schema.Record({ key: Schema.String, value: IndexInfo }),
       Mirrors: Schema.Array(Schema.String),
     }),
   ),
@@ -1408,7 +1410,7 @@ export const SystemInfo = Schema.partial(
     Labels: Schema.Array(Schema.String),
     ExperimentalBuild: Schema.Boolean,
     ServerVersion: Schema.String,
-    Runtimes: Schema.Record(Schema.String, Runtime),
+    Runtimes: Schema.Record({ key: Schema.String, value: Runtime }),
     DefaultRuntime: Schema.String,
     Swarm: SwarmInfo,
     LiveRestoreEnabled: Schema.Boolean,
@@ -1426,7 +1428,7 @@ export const SystemInfo = Schema.partial(
 export type SystemInfo = typeof SystemInfo.Type;
 
 export const EventActor = Schema.partial(
-  Schema.Struct({ ID: Schema.String, Attributes: Schema.Record(Schema.String, Schema.String) }),
+  Schema.Struct({ ID: Schema.String, Attributes: Schema.Record({ key: Schema.String, value: Schema.String }) }),
 );
 export type EventActor = typeof EventActor.Type;
 
@@ -2433,8 +2435,8 @@ export const post_NetworkCreate = {
       Ingress: Schema.optional(Schema.Boolean),
       IPAM: Schema.optional(IPAM),
       EnableIPv6: Schema.optional(Schema.Boolean),
-      Options: Schema.optional(Schema.Record(Schema.String, Schema.String)),
-      Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)),
+      Options: Schema.optional(Schema.Record({ key: Schema.String, value: Schema.String })),
+      Labels: Schema.optional(Schema.Record({ key: Schema.String, value: Schema.String })),
     }),
   },
   responses: {
