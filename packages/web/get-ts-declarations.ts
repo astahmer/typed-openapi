@@ -6,19 +6,18 @@ import { rollup } from "rollup";
 import dts from "rollup-plugin-dts";
 import type { PackageJson } from "type-fest";
 
-import { OutputRuntime } from "typed-openapi";
-
+/**
+ * Bundles monaco ExtraLib d.ts files for playground runtimes.
+ * Effect stubs are maintained by hand in `./declarations/effect*.d.ts`
+ * (full effect bundle is huge; playground uses noSemanticValidation).
+ */
 const getDeps = (pkg: PackageJson) =>
-  Object.keys(pkg.dependencies ?? {}).concat(
-    // Object.keys(pkg.devDependencies ?? {}),
-    Object.keys(pkg.peerDependencies ?? {}),
-  );
+  Object.keys(pkg.dependencies ?? {}).concat(Object.keys(pkg.peerDependencies ?? {}));
 
 const getPkg = async (name: string) =>
   safeJSONParse<PackageJson>(await readFile(`./node_modules/${name}/package.json`, "utf8"));
 
 const getTypesDeclaration = async (name: string) => {
-  // console.log(`Parsing "${name}" package.json...`);
   const pkg = await getPkg(name);
   const types = pkg.types ?? pkg.typings ?? "index.d.ts";
   const input = path.resolve("./node_modules/", name, types);
@@ -35,14 +34,13 @@ const getTypesDeclaration = async (name: string) => {
   return result.output[0].code;
 };
 
-// const runtimes: OutputRuntime[] = ["zod", "arktype", "typebox", "valibot", "yup", "io-ts"];
-const runtimes: OutputRuntime[] = ["yup"];
+const rollupRuntimes = ["zod", "arktype", "valibot"] as const;
 
 const getDeclarationFiles = async () => {
   const declarations = await Promise.all(
-    runtimes.map(async (runtime) => ({
+    rollupRuntimes.map(async (runtime) => ({
       name: runtime,
-      code: await getTypesDeclaration(runtime === "typebox" ? "@sinclair/typebox" : runtime),
+      code: await getTypesDeclaration(runtime),
     })),
   );
 
@@ -58,4 +56,4 @@ await Promise.all(
   }),
 );
 
-console.log("Done!");
+console.log("Done! (effect/effect3 stubs are hand-maintained)");
