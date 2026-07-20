@@ -4,14 +4,85 @@ import type { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints>;
 type GeneratorContext = Required<GeneratorOptions> & {
   errorStatusCodes?: readonly number[];
+  /** When the linked API client returns Effects (`--client effect`). */
+  client?: "promise" | "effect";
 };
 
 export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relativeApiClientPath: string }) => {
   const endpointMethods = new Set(ctx.endpointList.map((endpoint) => endpoint.method.toLowerCase()));
+  const isEffectClient = ctx.client === "effect";
+  const apiClientType = isEffectClient ? "EffectApiClient" : "ApiClient";
 
-  const file = `
-  import { queryOptions } from "@tanstack/react-query"
-  import type { EndpointByMethod, ApiClient, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, TypedSuccessResponse } from "${ctx.relativeApiClientPath}"
+  const methodBlocks = Array.from(endpointMethods)
+    .map((method) => {
+      const callExpr = isEffectClient
+        ? `await Effect.runPromise(this.client.${method}(path, requestParams as never) as Effect.Effect<InferResponseData<TEndpoint, SuccessStatusCode>, unknown>)`
+        : `await this.client.${method}(path, requestParams as never)`;
+
+      return `
+        // <ApiClient.${method}>
+        ${method}<
+            Path extends keyof ${capitalize(method)}Endpoints,
+            TEndpoint extends ${capitalize(method)}Endpoints[Path]
+        >(
+            path: Path,
+            ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+        ) {
+            const queryKey = createQueryKey(path as string, params[0]);
+            const query = {
+                /** type-only property if you need easy access to the endpoint params */
+                "~endpoint": {} as TEndpoint,
+                queryKey,
+                queryFn: {} as "You need to pass .queryOptions to the useQuery hook",
+                queryOptions: queryOptions({
+                    queryFn: async ({ queryKey, signal, }) => {
+                        const requestParams = {
+                            ...(params[0] || {}),
+                            ...(queryKey[0] || {}),
+                            overrides: { signal },
+                            withResponse: false as const
+                        };
+                        const res = ${callExpr};
+                        return res as InferResponseData<TEndpoint, SuccessStatusCode>;
+                    },
+                    queryKey: queryKey
+                }),
+            };
+
+            return query
+        }
+        // </ApiClient.${method}>
+        `;
+    })
+    .join("\n");
+
+  const mutationFnBody = isEffectClient
+    ? `const data = await Effect.runPromise((this.client as any)[method](path, {
+                ...params as any,
+            }) as Effect.Effect<any, unknown>);
+                // EffectApiClient fails the Effect on error statuses — no Response envelope.
+                const finalResponse = withResponse ? ({ ok: true as const, status: 200, data } as never) : data;
+                const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
+                return res as never;`
+    : `const response = await (this.client as any)[method](path, {
+                ...params as any,
+                withResponse: true,
+                throwOnStatusError: false,
+            });
+
+                if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+                    throw new TypedStatusError(response as never);
+                }
+
+                const finalResponse = withResponse ? response : response.data;
+                const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
+                return res as never;`;
+
+  const effectImport = isEffectClient ? `import { Effect } from "effect"\n` : "";
+
+  return `
+  ${effectImport}import { queryOptions } from "@tanstack/react-query"
+  import type { EndpointByMethod, ${apiClientType}, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, TypedSuccessResponse } from "${ctx.relativeApiClientPath}"
   import { errorStatusCodes, TypedStatusError } from "${ctx.relativeApiClientPath}"
 
   type EndpointQueryKey<TOptions extends EndpointParameters> = [
@@ -40,6 +111,9 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
       if (options?.query) {
           params.query = options.query;
       }
+      if (options?.cookie) {
+          params.cookie = options.cookie;
+      }
       return [
           params
       ];
@@ -57,6 +131,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
       query?: Record<string, unknown>;
       header?: Record<string, unknown>;
       path?: Record<string, unknown>;
+      cookie?: Record<string, unknown>;
   };
 
   type RequiredKeys<T> = {
@@ -74,46 +149,9 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
 
   // <ApiClient>
   export class TanstackQueryApiClient {
-      constructor(public client: ApiClient) { }
+      constructor(public client: ${apiClientType}) { }
 
-      ${Array.from(endpointMethods)
-        .map(
-          (method) => `
-        // <ApiClient.${method}>
-        ${method}<
-            Path extends keyof ${capitalize(method)}Endpoints,
-            TEndpoint extends ${capitalize(method)}Endpoints[Path]
-        >(
-            path: Path,
-            ...params: MaybeOptionalArg<TEndpoint["parameters"]>
-        ) {
-            const queryKey = createQueryKey(path as string, params[0]);
-            const query = {
-                /** type-only property if you need easy access to the endpoint params */
-                "~endpoint": {} as TEndpoint,
-                queryKey,
-                queryFn: {} as "You need to pass .queryOptions to the useQuery hook",
-                queryOptions: queryOptions({
-                    queryFn: async ({ queryKey, signal, }) => {
-                        const requestParams = {
-                            ...(params[0] || {}),
-                            ...(queryKey[0] || {}),
-                            overrides: { signal },
-                            withResponse: false as const
-                        };
-                        const res = await this.client.${method}(path, requestParams as never);
-                        return res as InferResponseData<TEndpoint, SuccessStatusCode>;
-                    },
-                    queryKey: queryKey
-                }),
-            };
-
-            return query
-        }
-        // </ApiClient.${method}>
-        `,
-        )
-        .join("\n")}
+      ${methodBlocks}
 
         // <ApiClient.request>
         /**
@@ -150,20 +188,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                 const withResponse = options?.withResponse ?? false;
                 const throwOnStatusError = params.throwOnStatusError ?? options?.throwOnStatusError ?? (withResponse ? false : true);
                 const selectFn = options?.selectFn;
-                const response = await (this.client as any)[method](path, {
-                    ...params as any,
-                    withResponse: true,
-                    throwOnStatusError: false,
-                });
-
-                if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-                    throw new TypedStatusError(response as never);
-                }
-
-                // Return just the data if withResponse is false, otherwise return the full response
-                const finalResponse = withResponse ? response : response.data;
-                const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
-                return res as never;
+                ${mutationFnBody}
             };
             return {
             /** type-only property if you need easy access to the endpoint params */
@@ -189,6 +214,4 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
         // </ApiClient.request>
   }
 `;
-
-  return file;
 };
