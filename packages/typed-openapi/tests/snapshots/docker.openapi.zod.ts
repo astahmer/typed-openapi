@@ -53,13 +53,13 @@ export const Mount = z
     BindOptions: z
       .object({
         Propagation: z.enum(["private", "rprivate", "shared", "rshared", "slave", "rslave"]),
-        NonRecursive: z.boolean(),
-        CreateMountpoint: z.boolean(),
+        NonRecursive: z.boolean().default(false),
+        CreateMountpoint: z.boolean().default(false),
       })
       .partial(),
     VolumeOptions: z
       .object({
-        NoCopy: z.boolean(),
+        NoCopy: z.boolean().default(false),
         Labels: z.record(z.string(), z.string()),
         DriverConfig: z.object({ Name: z.string(), Options: z.record(z.string(), z.string()) }).partial(),
       })
@@ -77,7 +77,7 @@ export type Resources = z.infer<typeof Resources>;
 export const Resources = z
   .object({
     CpuShares: z.number().int(),
-    Memory: z.number().int(),
+    Memory: z.number().int().default(0),
     CgroupParent: z.string(),
     BlkioWeight: z.number().int().min(0).max(1000),
     BlkioWeightDevice: z.array(z.object({ Path: z.string(), Weight: z.number().int().min(0) }).partial()),
@@ -112,7 +112,7 @@ export const Resources = z
 
 export type Limit = z.infer<typeof Limit>;
 export const Limit = z
-  .object({ NanoCPUs: z.number().int(), MemoryBytes: z.number().int(), Pids: z.number().int() })
+  .object({ NanoCPUs: z.number().int(), MemoryBytes: z.number().int(), Pids: z.number().int().default(0) })
   .partial();
 
 export type GenericResources = z.infer<typeof GenericResources>;
@@ -221,17 +221,17 @@ export const ContainerConfig = z
     Hostname: z.string(),
     Domainname: z.string(),
     User: z.string(),
-    AttachStdin: z.boolean(),
-    AttachStdout: z.boolean(),
-    AttachStderr: z.boolean(),
+    AttachStdin: z.boolean().default(false),
+    AttachStdout: z.boolean().default(true),
+    AttachStderr: z.boolean().default(true),
     ExposedPorts: z.record(z.string(), z.object({}).partial()).nullable(),
-    Tty: z.boolean(),
-    OpenStdin: z.boolean(),
-    StdinOnce: z.boolean(),
+    Tty: z.boolean().default(false),
+    OpenStdin: z.boolean().default(false),
+    StdinOnce: z.boolean().default(false),
     Env: z.array(z.string()),
     Cmd: z.array(z.string()),
     Healthcheck: HealthConfig,
-    ArgsEscaped: z.boolean().nullable(),
+    ArgsEscaped: z.boolean().default(false).nullable().default(false),
     Image: z.string(),
     Volumes: z.record(z.string(), z.object({}).partial()),
     WorkingDir: z.string(),
@@ -378,13 +378,13 @@ export const ClusterVolumeSpec = z
     Group: z.string(),
     AccessMode: z
       .object({
-        Scope: z.enum(["single", "multi"]),
-        Sharing: z.enum(["none", "readonly", "onewriter", "all"]),
+        Scope: z.enum(["single", "multi"]).default("single"),
+        Sharing: z.enum(["none", "readonly", "onewriter", "all"]).default("none"),
         MountVolume: z.object({}).partial(),
         Secrets: z.array(z.object({ Key: z.string(), Secret: z.string() }).partial()),
         AccessibilityRequirements: z.object({ Requisite: z.array(Topology), Preferred: z.array(Topology) }).partial(),
         CapacityRange: z.object({ RequiredBytes: z.number().int(), LimitBytes: z.number().int() }).partial(),
-        Availability: z.enum(["active", "pause", "drain"]),
+        Availability: z.enum(["active", "pause", "drain"]).default("active"),
       })
       .partial(),
   })
@@ -426,17 +426,20 @@ export const Volume = z.object({
   CreatedAt: z.string().optional(),
   Status: z.record(z.string(), z.object({}).partial()).optional(),
   Labels: z.record(z.string(), z.string()),
-  Scope: z.enum(["local", "global"]),
+  Scope: z.enum(["local", "global"]).default("local"),
   ClusterVolume: ClusterVolume.optional(),
   Options: z.record(z.string(), z.string()),
-  UsageData: z.object({ Size: z.number().int(), RefCount: z.number().int() }).nullable().optional(),
+  UsageData: z
+    .object({ Size: z.number().int().default(-1), RefCount: z.number().int().default(-1) })
+    .nullable()
+    .optional(),
 });
 
 export type VolumeCreateOptions = z.infer<typeof VolumeCreateOptions>;
 export const VolumeCreateOptions = z
   .object({
     Name: z.string(),
-    Driver: z.string(),
+    Driver: z.string().default("local"),
     DriverOpts: z.record(z.string(), z.string()),
     Labels: z.record(z.string(), z.string()),
     ClusterVolumeSpec: ClusterVolumeSpec,
@@ -458,7 +461,11 @@ export const IPAMConfig = z
 
 export type IPAM = z.infer<typeof IPAM>;
 export const IPAM = z
-  .object({ Driver: z.string(), Config: z.array(IPAMConfig), Options: z.record(z.string(), z.string()) })
+  .object({
+    Driver: z.string().default("default"),
+    Config: z.array(IPAMConfig),
+    Options: z.record(z.string(), z.string()),
+  })
   .partial();
 
 export type NetworkContainer = z.infer<typeof NetworkContainer>;
@@ -686,7 +693,7 @@ export const Reachability = z.enum(["unknown", "unreachable", "reachable"]);
 
 export type ManagerStatus = z.infer<typeof ManagerStatus>;
 export const ManagerStatus = z
-  .object({ Leader: z.boolean(), Reachability: Reachability, Addr: z.string() })
+  .object({ Leader: z.boolean().default(false), Reachability: Reachability, Addr: z.string() })
   .partial()
   .nullable();
 
@@ -848,15 +855,15 @@ export const TaskSpec = z
       .object({
         Condition: z.enum(["none", "on-failure", "any"]),
         Delay: z.number().int(),
-        MaxAttempts: z.number().int(),
-        Window: z.number().int(),
+        MaxAttempts: z.number().int().default(0),
+        Window: z.number().int().default(0),
       })
       .partial(),
     Placement: z
       .object({
         Constraints: z.array(z.string()),
         Preferences: z.array(z.object({ Spread: z.object({ SpreadDescriptor: z.string() }).partial() }).partial()),
-        MaxReplicas: z.number().int(),
+        MaxReplicas: z.number().int().default(0),
         Platforms: z.array(Platform),
       })
       .partial(),
@@ -923,12 +930,14 @@ export const EndpointPortConfig = z
     Protocol: z.enum(["tcp", "udp", "sctp"]),
     TargetPort: z.number().int(),
     PublishedPort: z.number().int(),
-    PublishMode: z.enum(["ingress", "host"]),
+    PublishMode: z.enum(["ingress", "host"]).default("ingress"),
   })
   .partial();
 
 export type EndpointSpec = z.infer<typeof EndpointSpec>;
-export const EndpointSpec = z.object({ Mode: z.enum(["vip", "dnsrr"]), Ports: z.array(EndpointPortConfig) }).partial();
+export const EndpointSpec = z
+  .object({ Mode: z.enum(["vip", "dnsrr"]).default("vip"), Ports: z.array(EndpointPortConfig) })
+  .partial();
 
 export type ServiceSpec = z.infer<typeof ServiceSpec>;
 export const ServiceSpec = z
@@ -940,7 +949,9 @@ export const ServiceSpec = z
       .object({
         Replicated: z.object({ Replicas: z.number().int() }).partial(),
         Global: z.object({}).partial(),
-        ReplicatedJob: z.object({ MaxConcurrent: z.number().int(), TotalCompletions: z.number().int() }).partial(),
+        ReplicatedJob: z
+          .object({ MaxConcurrent: z.number().int().default(1), TotalCompletions: z.number().int() })
+          .partial(),
         GlobalJob: z.object({}).partial(),
       })
       .partial(),
@@ -1138,7 +1149,7 @@ export type Runtime = z.infer<typeof Runtime>;
 export const Runtime = z.object({ path: z.string(), runtimeArgs: z.array(z.string()).nullable() }).partial();
 
 export type LocalNodeState = z.infer<typeof LocalNodeState>;
-export const LocalNodeState = z.enum(["", "inactive", "pending", "active", "error", "locked"]);
+export const LocalNodeState = z.enum(["", "inactive", "pending", "active", "error", "locked"]).default("");
 
 export type PeerNode = z.infer<typeof PeerNode>;
 export const PeerNode = z.object({ NodeID: z.string(), Addr: z.string() }).partial();
@@ -1146,11 +1157,11 @@ export const PeerNode = z.object({ NodeID: z.string(), Addr: z.string() }).parti
 export type SwarmInfo = z.infer<typeof SwarmInfo>;
 export const SwarmInfo = z
   .object({
-    NodeID: z.string(),
-    NodeAddr: z.string(),
+    NodeID: z.string().default(""),
+    NodeAddr: z.string().default(""),
     LocalNodeState: LocalNodeState,
-    ControlAvailable: z.boolean(),
-    Error: z.string(),
+    ControlAvailable: z.boolean().default(false),
+    Error: z.string().default(""),
     RemoteManagers: z.array(PeerNode).nullable(),
     Nodes: z.number().int().nullable(),
     Managers: z.number().int().nullable(),
@@ -1191,8 +1202,8 @@ export const SystemInfo = z
     NGoroutines: z.number().int(),
     SystemTime: z.string(),
     LoggingDriver: z.string(),
-    CgroupDriver: z.enum(["cgroupfs", "systemd", "none"]),
-    CgroupVersion: z.enum(["1", "2"]),
+    CgroupDriver: z.enum(["cgroupfs", "systemd", "none"]).default("cgroupfs"),
+    CgroupVersion: z.enum(["1", "2"]).default("1"),
     NEventsListener: z.number().int(),
     KernelVersion: z.string(),
     OperatingSystem: z.string(),
@@ -1201,7 +1212,7 @@ export const SystemInfo = z
     Architecture: z.string(),
     NCPU: z.number().int(),
     MemTotal: z.number().int(),
-    IndexServerAddress: z.string(),
+    IndexServerAddress: z.string().default("https://index.docker.io/v1/"),
     RegistryConfig: RegistryServiceConfig,
     GenericResources: GenericResources,
     HttpProxy: z.string(),
@@ -1212,10 +1223,10 @@ export const SystemInfo = z
     ExperimentalBuild: z.boolean(),
     ServerVersion: z.string(),
     Runtimes: z.record(z.string(), Runtime),
-    DefaultRuntime: z.string(),
+    DefaultRuntime: z.string().default("runc"),
     Swarm: SwarmInfo,
-    LiveRestoreEnabled: z.boolean(),
-    Isolation: z.enum(["default", "hyperv", "process"]),
+    LiveRestoreEnabled: z.boolean().default(false),
+    Isolation: z.enum(["default", "hyperv", "process"]).default("default"),
     InitBinary: z.string(),
     ContainerdCommit: Commit,
     RuncCommit: Commit,
@@ -1280,7 +1291,14 @@ export const get_ContainerList = {
   path: z.literal("/containers/json"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ all: z.boolean(), limit: z.number().int(), size: z.boolean(), filters: z.string() }).partial(),
+    query: z
+      .object({
+        all: z.coerce.boolean().default(false),
+        limit: z.coerce.number().int(),
+        size: z.coerce.boolean().default(false),
+        filters: z.string(),
+      })
+      .partial(),
   },
   responses: { 200: z.array(ContainerSummary), 400: ErrorResponse, 500: ErrorResponse },
 };
@@ -1310,7 +1328,10 @@ export const get_ContainerInspect = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/json"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ size: z.boolean() }).partial(), path: z.object({ id: z.string() }) },
+  parameters: {
+    query: z.object({ size: z.coerce.boolean().default(false) }).partial(),
+    path: z.object({ id: z.string() }),
+  },
   responses: {
     200: z
       .object({
@@ -1351,7 +1372,7 @@ export const get_ContainerTop = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/top"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ ps_args: z.string() }).partial(), path: z.object({ id: z.string() }) },
+  parameters: { query: z.object({ ps_args: z.string().default("-ef") }).partial(), path: z.object({ id: z.string() }) },
   responses: {
     200: z.object({ Titles: z.array(z.string()), Processes: z.array(z.array(z.string())) }).partial(),
     404: ErrorResponse,
@@ -1367,13 +1388,13 @@ export const get_ContainerLogs = {
   parameters: {
     query: z
       .object({
-        follow: z.boolean(),
-        stdout: z.boolean(),
-        stderr: z.boolean(),
-        since: z.number().int(),
-        until: z.number().int(),
-        timestamps: z.boolean(),
-        tail: z.string(),
+        follow: z.coerce.boolean().default(false),
+        stdout: z.coerce.boolean().default(false),
+        stderr: z.coerce.boolean().default(false),
+        since: z.coerce.number().int().default(0),
+        until: z.coerce.number().int().default(0),
+        timestamps: z.coerce.boolean().default(false),
+        tail: z.string().default("all"),
       })
       .partial(),
     path: z.object({ id: z.string() }),
@@ -1405,7 +1426,9 @@ export const get_ContainerStats = {
   path: z.literal("/containers/{id}/stats"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ stream: z.boolean(), "one-shot": z.boolean() }).partial(),
+    query: z
+      .object({ stream: z.coerce.boolean().default(true), "one-shot": z.coerce.boolean().default(false) })
+      .partial(),
     path: z.object({ id: z.string() }),
   },
   responses: { 200: z.record(z.string(), z.unknown()), 404: ErrorResponse, 500: ErrorResponse },
@@ -1417,7 +1440,7 @@ export const post_ContainerResize = {
   path: z.literal("/containers/{id}/resize"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ h: z.number().int(), w: z.number().int() }).partial(),
+    query: z.object({ h: z.coerce.number().int(), w: z.coerce.number().int() }).partial(),
     path: z.object({ id: z.string() }),
   },
   responses: { 200: z.unknown(), 404: z.unknown(), 500: z.unknown() },
@@ -1438,7 +1461,7 @@ export const post_ContainerStop = {
   path: z.literal("/containers/{id}/stop"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ signal: z.string(), t: z.number().int() }).partial(),
+    query: z.object({ signal: z.string(), t: z.coerce.number().int() }).partial(),
     path: z.object({ id: z.string() }),
   },
   responses: { 204: z.unknown(), 304: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
@@ -1450,7 +1473,7 @@ export const post_ContainerRestart = {
   path: z.literal("/containers/{id}/restart"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ signal: z.string(), t: z.number().int() }).partial(),
+    query: z.object({ signal: z.string(), t: z.coerce.number().int() }).partial(),
     path: z.object({ id: z.string() }),
   },
   responses: { 204: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
@@ -1461,7 +1484,10 @@ export const post_ContainerKill = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/kill"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ signal: z.string() }).partial(), path: z.object({ id: z.string() }) },
+  parameters: {
+    query: z.object({ signal: z.string().default("SIGKILL") }).partial(),
+    path: z.object({ id: z.string() }),
+  },
   responses: { 204: z.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -1513,11 +1539,11 @@ export const post_ContainerAttach = {
     query: z
       .object({
         detachKeys: z.string(),
-        logs: z.boolean(),
-        stream: z.boolean(),
-        stdin: z.boolean(),
-        stdout: z.boolean(),
-        stderr: z.boolean(),
+        logs: z.coerce.boolean().default(false),
+        stream: z.coerce.boolean().default(false),
+        stdin: z.coerce.boolean().default(false),
+        stdout: z.coerce.boolean().default(false),
+        stderr: z.coerce.boolean().default(false),
       })
       .partial(),
     path: z.object({ id: z.string() }),
@@ -1534,11 +1560,11 @@ export const get_ContainerAttachWebsocket = {
     query: z
       .object({
         detachKeys: z.string(),
-        logs: z.boolean(),
-        stream: z.boolean(),
-        stdin: z.boolean(),
-        stdout: z.boolean(),
-        stderr: z.boolean(),
+        logs: z.coerce.boolean().default(false),
+        stream: z.coerce.boolean().default(false),
+        stdin: z.coerce.boolean().default(false),
+        stdout: z.coerce.boolean().default(false),
+        stderr: z.coerce.boolean().default(false),
       })
       .partial(),
     path: z.object({ id: z.string() }),
@@ -1552,7 +1578,7 @@ export const post_ContainerWait = {
   path: z.literal("/containers/{id}/wait"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ condition: z.enum(["not-running", "next-exit", "removed"]) }).partial(),
+    query: z.object({ condition: z.enum(["not-running", "next-exit", "removed"]).default("not-running") }).partial(),
     path: z.object({ id: z.string() }),
   },
   responses: { 200: ContainerWaitResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
@@ -1564,7 +1590,13 @@ export const delete_ContainerDelete = {
   path: z.literal("/containers/{id}"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ v: z.boolean(), force: z.boolean(), link: z.boolean() }).partial(),
+    query: z
+      .object({
+        v: z.coerce.boolean().default(false),
+        force: z.coerce.boolean().default(false),
+        link: z.coerce.boolean().default(false),
+      })
+      .partial(),
     path: z.object({ id: z.string() }),
   },
   responses: { 204: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -1625,7 +1657,12 @@ export const get_ImageList = {
   requestFormat: z.literal("json"),
   parameters: {
     query: z
-      .object({ all: z.boolean(), filters: z.string(), "shared-size": z.boolean(), digests: z.boolean() })
+      .object({
+        all: z.coerce.boolean().default(false),
+        filters: z.string(),
+        "shared-size": z.coerce.boolean().default(false),
+        digests: z.coerce.boolean().default(false),
+      })
       .partial(),
   },
   responses: { 200: z.array(ImageSummary), 500: ErrorResponse },
@@ -1639,25 +1676,25 @@ export const post_ImageBuild = {
   parameters: {
     query: z
       .object({
-        dockerfile: z.string(),
+        dockerfile: z.string().default("Dockerfile"),
         t: z.string(),
         extrahosts: z.string(),
         remote: z.string(),
-        q: z.boolean(),
-        nocache: z.boolean(),
+        q: z.coerce.boolean().default(false),
+        nocache: z.coerce.boolean().default(false),
         cachefrom: z.string(),
         pull: z.string(),
-        rm: z.boolean(),
-        forcerm: z.boolean(),
-        memory: z.number().int(),
-        memswap: z.number().int(),
-        cpushares: z.number().int(),
+        rm: z.coerce.boolean().default(true),
+        forcerm: z.coerce.boolean().default(false),
+        memory: z.coerce.number().int(),
+        memswap: z.coerce.number().int(),
+        cpushares: z.coerce.number().int(),
         cpusetcpus: z.string(),
-        cpuperiod: z.number().int(),
-        cpuquota: z.number().int(),
+        cpuperiod: z.coerce.number().int(),
+        cpuquota: z.coerce.number().int(),
         buildargs: z.string(),
-        shmsize: z.number().int(),
-        squash: z.boolean(),
+        shmsize: z.coerce.number().int(),
+        squash: z.coerce.boolean(),
         labels: z.string(),
         networkmode: z.string(),
         platform: z.string(),
@@ -1677,7 +1714,9 @@ export const post_BuildPrune = {
   path: z.literal("/build/prune"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ "keep-storage": z.number().int(), all: z.boolean(), filters: z.string() }).partial(),
+    query: z
+      .object({ "keep-storage": z.coerce.number().int(), all: z.coerce.boolean(), filters: z.string() })
+      .partial(),
   },
   responses: {
     200: z.object({ CachesDeleted: z.array(z.string()), SpaceReclaimed: z.number().int() }).partial(),
@@ -1770,7 +1809,7 @@ export const delete_ImageDelete = {
   path: z.literal("/images/{name}"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ force: z.boolean(), noprune: z.boolean() }).partial(),
+    query: z.object({ force: z.coerce.boolean().default(false), noprune: z.coerce.boolean().default(false) }).partial(),
     path: z.object({ name: z.string() }),
   },
   responses: { 200: z.array(ImageDeleteResponseItem), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -1782,7 +1821,7 @@ export const get_ImageSearch = {
   path: z.literal("/images/search"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ term: z.string(), limit: z.number().int().optional(), filters: z.string().optional() }),
+    query: z.object({ term: z.string(), limit: z.coerce.number().int().optional(), filters: z.string().optional() }),
   },
   responses: {
     200: z.array(
@@ -1853,14 +1892,17 @@ export const get_SystemPing = {
   responses: { 200: z.unknown(), 500: z.unknown() },
   responseHeaders: {
     200: z.object({
-      Swarm: z.enum(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]),
+      Swarm: z.enum(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).default("inactive"),
       "Docker-Experimental": z.boolean(),
-      "Cache-Control": z.string(),
-      Pragma: z.string(),
+      "Cache-Control": z.string().default("no-cache, no-store, must-revalidate"),
+      Pragma: z.string().default("no-cache"),
       "API-Version": z.string(),
-      "Builder-Version": z.string(),
+      "Builder-Version": z.string().default("2"),
     }),
-    500: z.object({ "Cache-Control": z.string(), Pragma: z.string() }),
+    500: z.object({
+      "Cache-Control": z.string().default("no-cache, no-store, must-revalidate"),
+      Pragma: z.string().default("no-cache"),
+    }),
   },
 };
 
@@ -1873,10 +1915,10 @@ export const head_SystemPingHead = {
   responses: { 200: z.unknown(), 500: z.unknown() },
   responseHeaders: {
     200: z.object({
-      Swarm: z.enum(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]),
+      Swarm: z.enum(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]).default("inactive"),
       "Docker-Experimental": z.boolean(),
-      "Cache-Control": z.string(),
-      Pragma: z.string(),
+      "Cache-Control": z.string().default("no-cache, no-store, must-revalidate"),
+      Pragma: z.string().default("no-cache"),
       "API-Version": z.string(),
       "Builder-Version": z.string(),
     }),
@@ -1896,7 +1938,7 @@ export const post_ImageCommit = {
         tag: z.string(),
         comment: z.string(),
         author: z.string(),
-        pause: z.boolean(),
+        pause: z.coerce.boolean().default(true),
         changes: z.string(),
       })
       .partial(),
@@ -1957,7 +1999,7 @@ export const post_ImageLoad = {
   method: z.literal("POST"),
   path: z.literal("/images/load"),
   requestFormat: z.literal("text"),
-  parameters: { query: z.object({ quiet: z.boolean() }).partial() },
+  parameters: { query: z.object({ quiet: z.coerce.boolean().default(false) }).partial() },
   responses: { 200: z.unknown(), 500: ErrorResponse },
 };
 
@@ -1978,7 +2020,7 @@ export const post_ContainerExec = {
         Tty: z.boolean(),
         Env: z.array(z.string()),
         Cmd: z.array(z.string()),
-        Privileged: z.boolean(),
+        Privileged: z.boolean().default(false),
         User: z.string(),
         WorkingDir: z.string(),
       })
@@ -2011,7 +2053,7 @@ export const post_ExecResize = {
   path: z.literal("/exec/{id}/resize"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ h: z.number().int(), w: z.number().int() }).partial(),
+    query: z.object({ h: z.coerce.number().int(), w: z.coerce.number().int() }).partial(),
     path: z.object({ id: z.string() }),
   },
   responses: { 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
@@ -2077,7 +2119,7 @@ export const put_VolumeUpdate = {
   path: z.literal("/volumes/{name}"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ version: z.number().int() }),
+    query: z.object({ version: z.coerce.number().int() }),
     path: z.object({ name: z.string() }),
     body: z.object({ Spec: ClusterVolumeSpec }).partial(),
   },
@@ -2089,7 +2131,10 @@ export const delete_VolumeDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/volumes/{name}"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ force: z.boolean() }).partial(), path: z.object({ name: z.string() }) },
+  parameters: {
+    query: z.object({ force: z.coerce.boolean().default(false) }).partial(),
+    path: z.object({ name: z.string() }),
+  },
   responses: { 204: z.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -2120,7 +2165,7 @@ export const get_NetworkInspect = {
   path: z.literal("/networks/{id}"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ verbose: z.boolean(), scope: z.string() }).partial(),
+    query: z.object({ verbose: z.coerce.boolean().default(false), scope: z.string() }).partial(),
     path: z.object({ id: z.string() }),
   },
   responses: { 200: Network, 404: ErrorResponse, 500: ErrorResponse },
@@ -2144,7 +2189,7 @@ export const post_NetworkCreate = {
     body: z.object({
       Name: z.string(),
       CheckDuplicate: z.boolean().optional(),
-      Driver: z.string().optional(),
+      Driver: z.string().default("bridge"),
       Internal: z.boolean().optional(),
       Attachable: z.boolean().optional(),
       Ingress: z.boolean().optional(),
@@ -2240,7 +2285,10 @@ export const delete_PluginDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/plugins/{name}"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ force: z.boolean() }).partial(), path: z.object({ name: z.string() }) },
+  parameters: {
+    query: z.object({ force: z.coerce.boolean().default(false) }).partial(),
+    path: z.object({ name: z.string() }),
+  },
   responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -2249,7 +2297,10 @@ export const post_PluginEnable = {
   method: z.literal("POST"),
   path: z.literal("/plugins/{name}/enable"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ timeout: z.number().int() }).partial(), path: z.object({ name: z.string() }) },
+  parameters: {
+    query: z.object({ timeout: z.coerce.number().int().default(0) }).partial(),
+    path: z.object({ name: z.string() }),
+  },
   responses: { 200: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -2258,7 +2309,7 @@ export const post_PluginDisable = {
   method: z.literal("POST"),
   path: z.literal("/plugins/{name}/disable"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ force: z.boolean() }).partial(), path: z.object({ name: z.string() }) },
+  parameters: { query: z.object({ force: z.coerce.boolean() }).partial(), path: z.object({ name: z.string() }) },
   responses: { 200: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -2326,7 +2377,10 @@ export const delete_NodeDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/nodes/{id}"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ force: z.boolean() }).partial(), path: z.object({ id: z.string() }) },
+  parameters: {
+    query: z.object({ force: z.coerce.boolean().default(false) }).partial(),
+    path: z.object({ id: z.string() }),
+  },
   responses: { 200: z.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2335,7 +2389,11 @@ export const post_NodeUpdate = {
   method: z.literal("POST"),
   path: z.literal("/nodes/{id}/update"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ version: z.number().int() }), path: z.object({ id: z.string() }), body: NodeSpec },
+  parameters: {
+    query: z.object({ version: z.coerce.number().int() }),
+    path: z.object({ id: z.string() }),
+    body: NodeSpec,
+  },
   responses: { 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2394,7 +2452,7 @@ export const post_SwarmLeave = {
   method: z.literal("POST"),
   path: z.literal("/swarm/leave"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ force: z.boolean() }).partial() },
+  parameters: { query: z.object({ force: z.coerce.boolean().default(false) }).partial() },
   responses: { 200: z.unknown(), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2405,10 +2463,10 @@ export const post_SwarmUpdate = {
   requestFormat: z.literal("json"),
   parameters: {
     query: z.object({
-      version: z.number().int(),
-      rotateWorkerToken: z.boolean().optional(),
-      rotateManagerToken: z.boolean().optional(),
-      rotateManagerUnlockKey: z.boolean().optional(),
+      version: z.coerce.number().int(),
+      rotateWorkerToken: z.coerce.boolean().default(false),
+      rotateManagerToken: z.coerce.boolean().default(false),
+      rotateManagerUnlockKey: z.coerce.boolean().default(false),
     }),
     body: SwarmSpec,
   },
@@ -2438,7 +2496,7 @@ export const get_ServiceList = {
   method: z.literal("GET"),
   path: z.literal("/services"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ filters: z.string(), status: z.boolean() }).partial() },
+  parameters: { query: z.object({ filters: z.string(), status: z.coerce.boolean() }).partial() },
   responses: { 200: z.array(Service), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2466,7 +2524,10 @@ export const get_ServiceInspect = {
   method: z.literal("GET"),
   path: z.literal("/services/{id}"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ insertDefaults: z.boolean() }).partial(), path: z.object({ id: z.string() }) },
+  parameters: {
+    query: z.object({ insertDefaults: z.coerce.boolean().default(false) }).partial(),
+    path: z.object({ id: z.string() }),
+  },
   responses: { 200: Service, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2486,8 +2547,8 @@ export const post_ServiceUpdate = {
   requestFormat: z.literal("json"),
   parameters: {
     query: z.object({
-      version: z.number().int(),
-      registryAuthFrom: z.enum(["spec", "previous-spec"]).optional(),
+      version: z.coerce.number().int(),
+      registryAuthFrom: z.enum(["spec", "previous-spec"]).default("spec"),
       rollback: z.string().optional(),
     }),
     path: z.object({ id: z.string() }),
@@ -2511,13 +2572,13 @@ export const get_ServiceLogs = {
   parameters: {
     query: z
       .object({
-        details: z.boolean(),
-        follow: z.boolean(),
-        stdout: z.boolean(),
-        stderr: z.boolean(),
-        since: z.number().int(),
-        timestamps: z.boolean(),
-        tail: z.string(),
+        details: z.coerce.boolean().default(false),
+        follow: z.coerce.boolean().default(false),
+        stdout: z.coerce.boolean().default(false),
+        stderr: z.coerce.boolean().default(false),
+        since: z.coerce.number().int().default(0),
+        timestamps: z.coerce.boolean().default(false),
+        tail: z.string().default("all"),
       })
       .partial(),
     path: z.object({ id: z.string() }),
@@ -2551,13 +2612,13 @@ export const get_TaskLogs = {
   parameters: {
     query: z
       .object({
-        details: z.boolean(),
-        follow: z.boolean(),
-        stdout: z.boolean(),
-        stderr: z.boolean(),
-        since: z.number().int(),
-        timestamps: z.boolean(),
-        tail: z.string(),
+        details: z.coerce.boolean().default(false),
+        follow: z.coerce.boolean().default(false),
+        stdout: z.coerce.boolean().default(false),
+        stderr: z.coerce.boolean().default(false),
+        since: z.coerce.number().int().default(0),
+        timestamps: z.coerce.boolean().default(false),
+        tail: z.string().default("all"),
       })
       .partial(),
     path: z.object({ id: z.string() }),
@@ -2606,7 +2667,11 @@ export const post_SecretUpdate = {
   method: z.literal("POST"),
   path: z.literal("/secrets/{id}/update"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ version: z.number().int() }), path: z.object({ id: z.string() }), body: SecretSpec },
+  parameters: {
+    query: z.object({ version: z.coerce.number().int() }),
+    path: z.object({ id: z.string() }),
+    body: SecretSpec,
+  },
   responses: { 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2651,7 +2716,11 @@ export const post_ConfigUpdate = {
   method: z.literal("POST"),
   path: z.literal("/configs/{id}/update"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ version: z.number().int() }), path: z.object({ id: z.string() }), body: ConfigSpec },
+  parameters: {
+    query: z.object({ version: z.coerce.number().int() }),
+    path: z.object({ id: z.string() }),
+    body: ConfigSpec,
+  },
   responses: { 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2812,6 +2881,7 @@ export type EndpointParameters = {
   query?: Record<string, unknown>;
   header?: Record<string, unknown>;
   path?: Record<string, unknown>;
+  cookie?: Record<string, unknown>;
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
@@ -2840,9 +2910,29 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   responseHeaders?: TConfig["responseHeaders"];
 };
 
+/**
+ * Minimal response surface used by ApiClient — avoids depending on the DOM `Response`
+ * global (helpful for Node without DOM lib). Structural typing accepts fetch Response.
+ */
+export interface ApiResponse {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  headers: {
+    get(name: string): string | null;
+    getSetCookie?: () => string[];
+  };
+  json(): Promise<unknown>;
+  text(): Promise<string>;
+  arrayBuffer(): Promise<ArrayBuffer>;
+  clone(): ApiResponse;
+}
+
 export interface Fetcher {
-  decodePathParams?: (path: string, pathParams: Record<string, string>) => string;
+  decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
   encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+  /** Merge cookie params into request headers (default: Cookie header). */
+  encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
   //
   fetch: (input: {
     method: Method;
@@ -2852,8 +2942,8 @@ export interface Fetcher {
     path: string;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
-  }) => Promise<Response>;
-  parseResponseData?: (response: Response) => Promise<unknown>;
+  }) => Promise<ApiResponse>;
+  parseResponseData?: (response: ApiResponse) => Promise<unknown>;
 }
 
 export const successStatusCodes = [
@@ -2904,12 +2994,12 @@ export interface TypedHeaders<TypedHeaderValues extends Record<string, string> |
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<
-  Response,
+  ApiResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: true;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
   data: TSuccess;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TSuccess>;
@@ -2917,12 +3007,12 @@ export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends O
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<
-  Response,
+  ApiResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: false;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
   data: TData;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TData>;
@@ -2946,6 +3036,11 @@ type InferSchemaValue<T> = T extends z.ZodType
   ? z.infer<T>
   : T extends object
     ? { [K in keyof T]: InferSchemaValue<T[K]> }
+    : T;
+type InferSchemaInput<T> = T extends z.ZodType
+  ? z.input<T>
+  : T extends object
+    ? { [K in keyof T]: InferSchemaInput<T[K]> }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
@@ -3046,10 +3141,10 @@ export class ApiClient {
    * Replace path parameters in URL
    * Supports both OpenAPI format {param} and Express format :param
    */
-  defaultDecodePathParams = (url: string, params: Record<string, string>): string => {
+  defaultDecodePathParams = (url: string, params: Record<string, string | number | boolean>): string => {
     return url
-      .replace(/{(\w+)}/g, (_, key: string) => params[key] || `{${key}}`)
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || `:${key}`);
+      .replace(/{(\w+)}/g, (_, key: string) => (params[key] != null ? String(params[key]) : `{${key}}`))
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (params[key] != null ? String(params[key]) : `:${key}`));
   };
 
   /** Uses URLSearchParams, skips null/undefined values */
@@ -3071,7 +3166,18 @@ export class ApiClient {
     return searchParams;
   };
 
-  defaultParseResponseData = async (response: Response): Promise<unknown> => {
+  /** Append cookie params as a Cookie header (or merge into existing). */
+  defaultEncodeCookies = (cookies: Record<string, unknown> | undefined, headers: Headers): void => {
+    if (!cookies) return;
+    const parts = Object.entries(cookies)
+      .filter(([, value]) => value != null)
+      .map(([key, value]) => `${key}=${String(value)}`);
+    if (!parts.length) return;
+    const existing = headers.get("cookie");
+    headers.set("cookie", existing ? `${existing}; ${parts.join("; ")}` : parts.join("; "));
+  };
+
+  defaultParseResponseData = async (response: ApiResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
     if (contentType.startsWith("text/")) {
       return await response.text();
@@ -3102,7 +3208,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -3113,7 +3219,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -3133,7 +3239,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -3144,7 +3250,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -3164,7 +3270,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -3175,7 +3281,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -3195,7 +3301,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -3206,7 +3312,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -3226,7 +3332,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -3237,7 +3343,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -3265,7 +3371,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -3281,7 +3387,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -3298,10 +3404,11 @@ export class ApiClient {
       const {
         withResponse: _,
         throwOnStatusError = withResponse ? false : true,
-        overrides,
+        overrides: overridesIn,
         validate: validateOverride,
         ...fetchParams
       } = requestParams || {};
+      let overrides = overridesIn;
       const validateSide: ValidateSide = validateOverride ?? this.validate;
 
       const parametersToSend: EndpointParameters = {};
@@ -3309,12 +3416,13 @@ export class ApiClient {
       if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
       if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
       if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
+      if (requestParams?.cookie !== undefined) (parametersToSend as any).cookie = requestParams.cookie;
 
       const endpointSchema = (EndpointByMethod as any)[method]?.[path];
       const shouldValidateInput = validateSide === "input" || validateSide === "both";
       if (shouldValidateInput && endpointSchema?.parameters && endpointSchema.parameters !== undefined) {
         const paramSchema = endpointSchema.parameters;
-        for (const key of ["body", "query", "header", "path"] as const) {
+        for (const key of ["body", "query", "header", "path", "cookie"] as const) {
           const schema = paramSchema[key];
           const value = (parametersToSend as any)[key];
           if (schema && value !== undefined) {
@@ -3332,12 +3440,18 @@ export class ApiClient {
 
       const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
         this.baseUrl + (path as string),
-        (parametersToSend.path ?? {}) as Record<string, string>,
+        (parametersToSend.path ?? {}) as Record<string, string | number | boolean>,
       );
       const url = new URL(resolvedPath);
       const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
         parametersToSend.query,
       );
+
+      if (parametersToSend.cookie) {
+        const headers = new Headers((overrides as RequestInit | undefined)?.headers);
+        (this.fetcher.encodeCookies ?? this.defaultEncodeCookies)(parametersToSend.cookie, headers);
+        overrides = { ...overrides, headers };
+      }
 
       const response = await this.fetcher.fetch({
         method: method,

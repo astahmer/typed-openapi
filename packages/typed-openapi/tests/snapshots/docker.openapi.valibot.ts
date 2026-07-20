@@ -55,13 +55,13 @@ export const Mount = v.partial(
     BindOptions: v.partial(
       v.object({
         Propagation: v.picklist(["private", "rprivate", "shared", "rshared", "slave", "rslave"]),
-        NonRecursive: v.boolean(),
-        CreateMountpoint: v.boolean(),
+        NonRecursive: v.optional(v.boolean(), false),
+        CreateMountpoint: v.optional(v.boolean(), false),
       }),
     ),
     VolumeOptions: v.partial(
       v.object({
-        NoCopy: v.boolean(),
+        NoCopy: v.optional(v.boolean(), false),
         Labels: v.record(v.string(), v.string()),
         DriverConfig: v.partial(v.object({ Name: v.string(), Options: v.record(v.string(), v.string()) })),
       }),
@@ -84,7 +84,7 @@ export type Resources = v.InferOutput<typeof Resources>;
 export const Resources = v.partial(
   v.object({
     CpuShares: v.pipe(v.number(), v.integer()),
-    Memory: v.pipe(v.number(), v.integer()),
+    Memory: v.optional(v.pipe(v.number(), v.integer()), 0),
     CgroupParent: v.string(),
     BlkioWeight: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(1000)),
     BlkioWeightDevice: v.array(
@@ -128,7 +128,7 @@ export const Limit = v.partial(
   v.object({
     NanoCPUs: v.pipe(v.number(), v.integer()),
     MemoryBytes: v.pipe(v.number(), v.integer()),
-    Pids: v.pipe(v.number(), v.integer()),
+    Pids: v.optional(v.pipe(v.number(), v.integer()), 0),
   }),
 );
 
@@ -257,17 +257,17 @@ export const ContainerConfig = v.partial(
     Hostname: v.string(),
     Domainname: v.string(),
     User: v.string(),
-    AttachStdin: v.boolean(),
-    AttachStdout: v.boolean(),
-    AttachStderr: v.boolean(),
+    AttachStdin: v.optional(v.boolean(), false),
+    AttachStdout: v.optional(v.boolean(), true),
+    AttachStderr: v.optional(v.boolean(), true),
     ExposedPorts: v.nullable(v.record(v.string(), v.partial(v.object({})))),
-    Tty: v.boolean(),
-    OpenStdin: v.boolean(),
-    StdinOnce: v.boolean(),
+    Tty: v.optional(v.boolean(), false),
+    OpenStdin: v.optional(v.boolean(), false),
+    StdinOnce: v.optional(v.boolean(), false),
     Env: v.array(v.string()),
     Cmd: v.array(v.string()),
     Healthcheck: HealthConfig,
-    ArgsEscaped: v.nullable(v.boolean()),
+    ArgsEscaped: v.optional(v.nullable(v.optional(v.boolean(), false)), false),
     Image: v.string(),
     Volumes: v.record(v.string(), v.partial(v.object({}))),
     WorkingDir: v.string(),
@@ -413,15 +413,15 @@ export const ClusterVolumeSpec = v.partial(
     Group: v.string(),
     AccessMode: v.partial(
       v.object({
-        Scope: v.picklist(["single", "multi"]),
-        Sharing: v.picklist(["none", "readonly", "onewriter", "all"]),
+        Scope: v.optional(v.picklist(["single", "multi"]), "single"),
+        Sharing: v.optional(v.picklist(["none", "readonly", "onewriter", "all"]), "none"),
         MountVolume: v.partial(v.object({})),
         Secrets: v.array(v.partial(v.object({ Key: v.string(), Secret: v.string() }))),
         AccessibilityRequirements: v.partial(v.object({ Requisite: v.array(Topology), Preferred: v.array(Topology) })),
         CapacityRange: v.partial(
           v.object({ RequiredBytes: v.pipe(v.number(), v.integer()), LimitBytes: v.pipe(v.number(), v.integer()) }),
         ),
-        Availability: v.picklist(["active", "pause", "drain"]),
+        Availability: v.optional(v.picklist(["active", "pause", "drain"]), "active"),
       }),
     ),
   }),
@@ -463,11 +463,16 @@ export const Volume = v.object({
   CreatedAt: v.optional(v.string()),
   Status: v.optional(v.record(v.string(), v.partial(v.object({})))),
   Labels: v.record(v.string(), v.string()),
-  Scope: v.picklist(["local", "global"]),
+  Scope: v.optional(v.picklist(["local", "global"]), "local"),
   ClusterVolume: v.optional(ClusterVolume),
   Options: v.record(v.string(), v.string()),
   UsageData: v.optional(
-    v.nullable(v.object({ Size: v.pipe(v.number(), v.integer()), RefCount: v.pipe(v.number(), v.integer()) })),
+    v.nullable(
+      v.object({
+        Size: v.optional(v.pipe(v.number(), v.integer()), -1),
+        RefCount: v.optional(v.pipe(v.number(), v.integer()), -1),
+      }),
+    ),
   ),
 });
 
@@ -475,7 +480,7 @@ export type VolumeCreateOptions = v.InferOutput<typeof VolumeCreateOptions>;
 export const VolumeCreateOptions = v.partial(
   v.object({
     Name: v.string(),
-    Driver: v.string(),
+    Driver: v.optional(v.string(), "local"),
     DriverOpts: v.record(v.string(), v.string()),
     Labels: v.record(v.string(), v.string()),
     ClusterVolumeSpec: ClusterVolumeSpec,
@@ -497,7 +502,11 @@ export const IPAMConfig = v.partial(
 
 export type IPAM = v.InferOutput<typeof IPAM>;
 export const IPAM = v.partial(
-  v.object({ Driver: v.string(), Config: v.array(IPAMConfig), Options: v.record(v.string(), v.string()) }),
+  v.object({
+    Driver: v.optional(v.string(), "default"),
+    Config: v.array(IPAMConfig),
+    Options: v.record(v.string(), v.string()),
+  }),
 );
 
 export type NetworkContainer = v.InferOutput<typeof NetworkContainer>;
@@ -726,7 +735,7 @@ export const Reachability = v.picklist(["unknown", "unreachable", "reachable"]);
 
 export type ManagerStatus = v.InferOutput<typeof ManagerStatus>;
 export const ManagerStatus = v.nullable(
-  v.partial(v.object({ Leader: v.boolean(), Reachability: Reachability, Addr: v.string() })),
+  v.partial(v.object({ Leader: v.optional(v.boolean(), false), Reachability: Reachability, Addr: v.string() })),
 );
 
 export type Node = v.InferOutput<typeof Node>;
@@ -907,15 +916,15 @@ export const TaskSpec = v.partial(
       v.object({
         Condition: v.picklist(["none", "on-failure", "any"]),
         Delay: v.pipe(v.number(), v.integer()),
-        MaxAttempts: v.pipe(v.number(), v.integer()),
-        Window: v.pipe(v.number(), v.integer()),
+        MaxAttempts: v.optional(v.pipe(v.number(), v.integer()), 0),
+        Window: v.optional(v.pipe(v.number(), v.integer()), 0),
       }),
     ),
     Placement: v.partial(
       v.object({
         Constraints: v.array(v.string()),
         Preferences: v.array(v.partial(v.object({ Spread: v.partial(v.object({ SpreadDescriptor: v.string() })) }))),
-        MaxReplicas: v.pipe(v.number(), v.integer()),
+        MaxReplicas: v.optional(v.pipe(v.number(), v.integer()), 0),
         Platforms: v.array(Platform),
       }),
     ),
@@ -986,13 +995,13 @@ export const EndpointPortConfig = v.partial(
     Protocol: v.picklist(["tcp", "udp", "sctp"]),
     TargetPort: v.pipe(v.number(), v.integer()),
     PublishedPort: v.pipe(v.number(), v.integer()),
-    PublishMode: v.picklist(["ingress", "host"]),
+    PublishMode: v.optional(v.picklist(["ingress", "host"]), "ingress"),
   }),
 );
 
 export type EndpointSpec = v.InferOutput<typeof EndpointSpec>;
 export const EndpointSpec = v.partial(
-  v.object({ Mode: v.picklist(["vip", "dnsrr"]), Ports: v.array(EndpointPortConfig) }),
+  v.object({ Mode: v.optional(v.picklist(["vip", "dnsrr"]), "vip"), Ports: v.array(EndpointPortConfig) }),
 );
 
 export type ServiceSpec = v.InferOutput<typeof ServiceSpec>;
@@ -1007,7 +1016,7 @@ export const ServiceSpec = v.partial(
         Global: v.partial(v.object({})),
         ReplicatedJob: v.partial(
           v.object({
-            MaxConcurrent: v.pipe(v.number(), v.integer()),
+            MaxConcurrent: v.optional(v.pipe(v.number(), v.integer()), 1),
             TotalCompletions: v.pipe(v.number(), v.integer()),
           }),
         ),
@@ -1213,7 +1222,7 @@ export type Runtime = v.InferOutput<typeof Runtime>;
 export const Runtime = v.partial(v.object({ path: v.string(), runtimeArgs: v.nullable(v.array(v.string())) }));
 
 export type LocalNodeState = v.InferOutput<typeof LocalNodeState>;
-export const LocalNodeState = v.picklist(["", "inactive", "pending", "active", "error", "locked"]);
+export const LocalNodeState = v.optional(v.picklist(["", "inactive", "pending", "active", "error", "locked"]), "");
 
 export type PeerNode = v.InferOutput<typeof PeerNode>;
 export const PeerNode = v.partial(v.object({ NodeID: v.string(), Addr: v.string() }));
@@ -1221,11 +1230,11 @@ export const PeerNode = v.partial(v.object({ NodeID: v.string(), Addr: v.string(
 export type SwarmInfo = v.InferOutput<typeof SwarmInfo>;
 export const SwarmInfo = v.partial(
   v.object({
-    NodeID: v.string(),
-    NodeAddr: v.string(),
+    NodeID: v.optional(v.string(), ""),
+    NodeAddr: v.optional(v.string(), ""),
     LocalNodeState: LocalNodeState,
-    ControlAvailable: v.boolean(),
-    Error: v.string(),
+    ControlAvailable: v.optional(v.boolean(), false),
+    Error: v.optional(v.string(), ""),
     RemoteManagers: v.nullable(v.array(PeerNode)),
     Nodes: v.nullable(v.pipe(v.number(), v.integer())),
     Managers: v.nullable(v.pipe(v.number(), v.integer())),
@@ -1266,8 +1275,8 @@ export const SystemInfo = v.partial(
     NGoroutines: v.pipe(v.number(), v.integer()),
     SystemTime: v.string(),
     LoggingDriver: v.string(),
-    CgroupDriver: v.picklist(["cgroupfs", "systemd", "none"]),
-    CgroupVersion: v.picklist(["1", "2"]),
+    CgroupDriver: v.optional(v.picklist(["cgroupfs", "systemd", "none"]), "cgroupfs"),
+    CgroupVersion: v.optional(v.picklist(["1", "2"]), "1"),
     NEventsListener: v.pipe(v.number(), v.integer()),
     KernelVersion: v.string(),
     OperatingSystem: v.string(),
@@ -1276,7 +1285,7 @@ export const SystemInfo = v.partial(
     Architecture: v.string(),
     NCPU: v.pipe(v.number(), v.integer()),
     MemTotal: v.pipe(v.number(), v.integer()),
-    IndexServerAddress: v.string(),
+    IndexServerAddress: v.optional(v.string(), "https://index.docker.io/v1/"),
     RegistryConfig: RegistryServiceConfig,
     GenericResources: GenericResources,
     HttpProxy: v.string(),
@@ -1287,10 +1296,10 @@ export const SystemInfo = v.partial(
     ExperimentalBuild: v.boolean(),
     ServerVersion: v.string(),
     Runtimes: v.record(v.string(), Runtime),
-    DefaultRuntime: v.string(),
+    DefaultRuntime: v.optional(v.string(), "runc"),
     Swarm: SwarmInfo,
-    LiveRestoreEnabled: v.boolean(),
-    Isolation: v.picklist(["default", "hyperv", "process"]),
+    LiveRestoreEnabled: v.optional(v.boolean(), false),
+    Isolation: v.optional(v.picklist(["default", "hyperv", "process"]), "default"),
     InitBinary: v.string(),
     ContainerdCommit: Commit,
     RuncCommit: Commit,
@@ -1358,7 +1367,28 @@ export const get_ContainerList = {
   requestFormat: v.literal("json"),
   parameters: {
     query: v.partial(
-      v.object({ all: v.boolean(), limit: v.pipe(v.number(), v.integer()), size: v.boolean(), filters: v.string() }),
+      v.object({
+        all: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        limit: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+        size: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        filters: v.string(),
+      }),
     ),
   },
   responses: { 200: v.array(ContainerSummary), 400: ErrorResponse, 500: ErrorResponse },
@@ -1395,7 +1425,20 @@ export const get_ContainerInspect = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/json"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ size: v.boolean() })), path: v.object({ id: v.string() }) },
+  parameters: {
+    query: v.partial(
+      v.object({
+        size: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+      }),
+    ),
+    path: v.object({ id: v.string() }),
+  },
   responses: {
     200: v.partial(
       v.object({
@@ -1436,7 +1479,10 @@ export const get_ContainerTop = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/top"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ ps_args: v.string() })), path: v.object({ id: v.string() }) },
+  parameters: {
+    query: v.partial(v.object({ ps_args: v.optional(v.string(), "-ef") })),
+    path: v.object({ id: v.string() }),
+  },
   responses: {
     200: v.partial(v.object({ Titles: v.array(v.string()), Processes: v.array(v.array(v.string())) })),
     404: ErrorResponse,
@@ -1452,13 +1498,51 @@ export const get_ContainerLogs = {
   parameters: {
     query: v.partial(
       v.object({
-        follow: v.boolean(),
-        stdout: v.boolean(),
-        stderr: v.boolean(),
-        since: v.pipe(v.number(), v.integer()),
-        until: v.pipe(v.number(), v.integer()),
-        timestamps: v.boolean(),
-        tail: v.string(),
+        follow: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stdout: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stderr: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        since: v.optional(
+          v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          0,
+        ),
+        until: v.optional(
+          v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          0,
+        ),
+        timestamps: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        tail: v.optional(v.string(), "all"),
       }),
     ),
     path: v.object({ id: v.string() }),
@@ -1490,7 +1574,24 @@ export const get_ContainerStats = {
   path: v.literal("/containers/{id}/stats"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ stream: v.boolean(), "one-shot": v.boolean() })),
+    query: v.partial(
+      v.object({
+        stream: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          true,
+        ),
+        "one-shot": v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+      }),
+    ),
     path: v.object({ id: v.string() }),
   },
   responses: { 200: v.record(v.string(), v.unknown()), 404: ErrorResponse, 500: ErrorResponse },
@@ -1502,7 +1603,20 @@ export const post_ContainerResize = {
   path: v.literal("/containers/{id}/resize"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ h: v.pipe(v.number(), v.integer()), w: v.pipe(v.number(), v.integer()) })),
+    query: v.partial(
+      v.object({
+        h: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+        w: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+      }),
+    ),
     path: v.object({ id: v.string() }),
   },
   responses: { 200: v.unknown(), 404: v.unknown(), 500: v.unknown() },
@@ -1523,7 +1637,16 @@ export const post_ContainerStop = {
   path: v.literal("/containers/{id}/stop"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ signal: v.string(), t: v.pipe(v.number(), v.integer()) })),
+    query: v.partial(
+      v.object({
+        signal: v.string(),
+        t: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+      }),
+    ),
     path: v.object({ id: v.string() }),
   },
   responses: { 204: v.unknown(), 304: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
@@ -1535,7 +1658,16 @@ export const post_ContainerRestart = {
   path: v.literal("/containers/{id}/restart"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ signal: v.string(), t: v.pipe(v.number(), v.integer()) })),
+    query: v.partial(
+      v.object({
+        signal: v.string(),
+        t: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+      }),
+    ),
     path: v.object({ id: v.string() }),
   },
   responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
@@ -1546,7 +1678,10 @@ export const post_ContainerKill = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/kill"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ signal: v.string() })), path: v.object({ id: v.string() }) },
+  parameters: {
+    query: v.partial(v.object({ signal: v.optional(v.string(), "SIGKILL") })),
+    path: v.object({ id: v.string() }),
+  },
   responses: { 204: v.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -1598,11 +1733,41 @@ export const post_ContainerAttach = {
     query: v.partial(
       v.object({
         detachKeys: v.string(),
-        logs: v.boolean(),
-        stream: v.boolean(),
-        stdin: v.boolean(),
-        stdout: v.boolean(),
-        stderr: v.boolean(),
+        logs: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stream: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stdin: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stdout: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stderr: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
       }),
     ),
     path: v.object({ id: v.string() }),
@@ -1619,11 +1784,41 @@ export const get_ContainerAttachWebsocket = {
     query: v.partial(
       v.object({
         detachKeys: v.string(),
-        logs: v.boolean(),
-        stream: v.boolean(),
-        stdin: v.boolean(),
-        stdout: v.boolean(),
-        stderr: v.boolean(),
+        logs: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stream: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stdin: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stdout: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stderr: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
       }),
     ),
     path: v.object({ id: v.string() }),
@@ -1637,7 +1832,9 @@ export const post_ContainerWait = {
   path: v.literal("/containers/{id}/wait"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ condition: v.picklist(["not-running", "next-exit", "removed"]) })),
+    query: v.partial(
+      v.object({ condition: v.optional(v.picklist(["not-running", "next-exit", "removed"]), "not-running") }),
+    ),
     path: v.object({ id: v.string() }),
   },
   responses: { 200: ContainerWaitResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
@@ -1649,7 +1846,31 @@ export const delete_ContainerDelete = {
   path: v.literal("/containers/{id}"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ v: v.boolean(), force: v.boolean(), link: v.boolean() })),
+    query: v.partial(
+      v.object({
+        v: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        force: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        link: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+      }),
+    ),
     path: v.object({ id: v.string() }),
   },
   responses: { 204: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -1712,7 +1933,30 @@ export const get_ImageList = {
   requestFormat: v.literal("json"),
   parameters: {
     query: v.partial(
-      v.object({ all: v.boolean(), filters: v.string(), "shared-size": v.boolean(), digests: v.boolean() }),
+      v.object({
+        all: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        filters: v.string(),
+        "shared-size": v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        digests: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+      }),
     ),
   },
   responses: { 200: v.array(ImageSummary), 500: ErrorResponse },
@@ -1726,25 +1970,76 @@ export const post_ImageBuild = {
   parameters: {
     query: v.partial(
       v.object({
-        dockerfile: v.string(),
+        dockerfile: v.optional(v.string(), "Dockerfile"),
         t: v.string(),
         extrahosts: v.string(),
         remote: v.string(),
-        q: v.boolean(),
-        nocache: v.boolean(),
+        q: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        nocache: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
         cachefrom: v.string(),
         pull: v.string(),
-        rm: v.boolean(),
-        forcerm: v.boolean(),
-        memory: v.pipe(v.number(), v.integer()),
-        memswap: v.pipe(v.number(), v.integer()),
-        cpushares: v.pipe(v.number(), v.integer()),
+        rm: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          true,
+        ),
+        forcerm: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        memory: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+        memswap: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+        cpushares: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
         cpusetcpus: v.string(),
-        cpuperiod: v.pipe(v.number(), v.integer()),
-        cpuquota: v.pipe(v.number(), v.integer()),
+        cpuperiod: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+        cpuquota: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
         buildargs: v.string(),
-        shmsize: v.pipe(v.number(), v.integer()),
-        squash: v.boolean(),
+        shmsize: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+        squash: v.pipe(
+          v.union([v.boolean(), v.string(), v.number()]),
+          v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+        ),
         labels: v.string(),
         networkmode: v.string(),
         platform: v.string(),
@@ -1765,7 +2060,18 @@ export const post_BuildPrune = {
   requestFormat: v.literal("json"),
   parameters: {
     query: v.partial(
-      v.object({ "keep-storage": v.pipe(v.number(), v.integer()), all: v.boolean(), filters: v.string() }),
+      v.object({
+        "keep-storage": v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+        all: v.pipe(
+          v.union([v.boolean(), v.string(), v.number()]),
+          v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+        ),
+        filters: v.string(),
+      }),
     ),
   },
   responses: {
@@ -1859,7 +2165,24 @@ export const delete_ImageDelete = {
   path: v.literal("/images/{name}"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ force: v.boolean(), noprune: v.boolean() })),
+    query: v.partial(
+      v.object({
+        force: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        noprune: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+      }),
+    ),
     path: v.object({ name: v.string() }),
   },
   responses: { 200: v.array(ImageDeleteResponseItem), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -1873,7 +2196,13 @@ export const get_ImageSearch = {
   parameters: {
     query: v.object({
       term: v.string(),
-      limit: v.optional(v.pipe(v.number(), v.integer())),
+      limit: v.optional(
+        v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+      ),
       filters: v.optional(v.string()),
     }),
   },
@@ -1948,14 +2277,20 @@ export const get_SystemPing = {
   responses: { 200: v.unknown(), 500: v.unknown() },
   responseHeaders: {
     200: v.object({
-      Swarm: v.picklist(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]),
+      Swarm: v.optional(
+        v.picklist(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]),
+        "inactive",
+      ),
       "Docker-Experimental": v.boolean(),
-      "Cache-Control": v.string(),
-      Pragma: v.string(),
+      "Cache-Control": v.optional(v.string(), "no-cache, no-store, must-revalidate"),
+      Pragma: v.optional(v.string(), "no-cache"),
       "API-Version": v.string(),
-      "Builder-Version": v.string(),
+      "Builder-Version": v.optional(v.string(), "2"),
     }),
-    500: v.object({ "Cache-Control": v.string(), Pragma: v.string() }),
+    500: v.object({
+      "Cache-Control": v.optional(v.string(), "no-cache, no-store, must-revalidate"),
+      Pragma: v.optional(v.string(), "no-cache"),
+    }),
   },
 };
 
@@ -1968,10 +2303,13 @@ export const head_SystemPingHead = {
   responses: { 200: v.unknown(), 500: v.unknown() },
   responseHeaders: {
     200: v.object({
-      Swarm: v.picklist(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]),
+      Swarm: v.optional(
+        v.picklist(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]),
+        "inactive",
+      ),
       "Docker-Experimental": v.boolean(),
-      "Cache-Control": v.string(),
-      Pragma: v.string(),
+      "Cache-Control": v.optional(v.string(), "no-cache, no-store, must-revalidate"),
+      Pragma: v.optional(v.string(), "no-cache"),
       "API-Version": v.string(),
       "Builder-Version": v.string(),
     }),
@@ -1991,7 +2329,13 @@ export const post_ImageCommit = {
         tag: v.string(),
         comment: v.string(),
         author: v.string(),
-        pause: v.boolean(),
+        pause: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          true,
+        ),
         changes: v.string(),
       }),
     ),
@@ -2054,7 +2398,19 @@ export const post_ImageLoad = {
   method: v.literal("POST"),
   path: v.literal("/images/load"),
   requestFormat: v.literal("text"),
-  parameters: { query: v.partial(v.object({ quiet: v.boolean() })) },
+  parameters: {
+    query: v.partial(
+      v.object({
+        quiet: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+      }),
+    ),
+  },
   responses: { 200: v.unknown(), 500: ErrorResponse },
 };
 
@@ -2077,7 +2433,7 @@ export const post_ContainerExec = {
         Tty: v.boolean(),
         Env: v.array(v.string()),
         Cmd: v.array(v.string()),
-        Privileged: v.boolean(),
+        Privileged: v.optional(v.boolean(), false),
         User: v.string(),
         WorkingDir: v.string(),
       }),
@@ -2112,7 +2468,20 @@ export const post_ExecResize = {
   path: v.literal("/exec/{id}/resize"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ h: v.pipe(v.number(), v.integer()), w: v.pipe(v.number(), v.integer()) })),
+    query: v.partial(
+      v.object({
+        h: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+        w: v.pipe(
+          v.union([v.string(), v.number()]),
+          v.transform((x) => Number(x)),
+          v.pipe(v.number(), v.integer()),
+        ),
+      }),
+    ),
     path: v.object({ id: v.string() }),
   },
   responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
@@ -2178,7 +2547,13 @@ export const put_VolumeUpdate = {
   path: v.literal("/volumes/{name}"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.object({ version: v.pipe(v.number(), v.integer()) }),
+    query: v.object({
+      version: v.pipe(
+        v.union([v.string(), v.number()]),
+        v.transform((x) => Number(x)),
+        v.pipe(v.number(), v.integer()),
+      ),
+    }),
     path: v.object({ name: v.string() }),
     body: v.partial(v.object({ Spec: ClusterVolumeSpec })),
   },
@@ -2190,7 +2565,20 @@ export const delete_VolumeDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/volumes/{name}"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ force: v.boolean() })), path: v.object({ name: v.string() }) },
+  parameters: {
+    query: v.partial(
+      v.object({
+        force: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+      }),
+    ),
+    path: v.object({ name: v.string() }),
+  },
   responses: { 204: v.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -2221,7 +2609,18 @@ export const get_NetworkInspect = {
   path: v.literal("/networks/{id}"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ verbose: v.boolean(), scope: v.string() })),
+    query: v.partial(
+      v.object({
+        verbose: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        scope: v.string(),
+      }),
+    ),
     path: v.object({ id: v.string() }),
   },
   responses: { 200: Network, 404: ErrorResponse, 500: ErrorResponse },
@@ -2245,7 +2644,7 @@ export const post_NetworkCreate = {
     body: v.object({
       Name: v.string(),
       CheckDuplicate: v.optional(v.boolean()),
-      Driver: v.optional(v.string()),
+      Driver: v.optional(v.string(), "bridge"),
       Internal: v.optional(v.boolean()),
       Attachable: v.optional(v.boolean()),
       Ingress: v.optional(v.boolean()),
@@ -2341,7 +2740,20 @@ export const delete_PluginDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/plugins/{name}"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ force: v.boolean() })), path: v.object({ name: v.string() }) },
+  parameters: {
+    query: v.partial(
+      v.object({
+        force: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+      }),
+    ),
+    path: v.object({ name: v.string() }),
+  },
   responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -2351,7 +2763,18 @@ export const post_PluginEnable = {
   path: v.literal("/plugins/{name}/enable"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ timeout: v.pipe(v.number(), v.integer()) })),
+    query: v.partial(
+      v.object({
+        timeout: v.optional(
+          v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          0,
+        ),
+      }),
+    ),
     path: v.object({ name: v.string() }),
   },
   responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
@@ -2362,7 +2785,17 @@ export const post_PluginDisable = {
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/disable"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ force: v.boolean() })), path: v.object({ name: v.string() }) },
+  parameters: {
+    query: v.partial(
+      v.object({
+        force: v.pipe(
+          v.union([v.boolean(), v.string(), v.number()]),
+          v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+        ),
+      }),
+    ),
+    path: v.object({ name: v.string() }),
+  },
   responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -2430,7 +2863,20 @@ export const delete_NodeDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/nodes/{id}"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ force: v.boolean() })), path: v.object({ id: v.string() }) },
+  parameters: {
+    query: v.partial(
+      v.object({
+        force: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+      }),
+    ),
+    path: v.object({ id: v.string() }),
+  },
   responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2440,7 +2886,13 @@ export const post_NodeUpdate = {
   path: v.literal("/nodes/{id}/update"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.object({ version: v.pipe(v.number(), v.integer()) }),
+    query: v.object({
+      version: v.pipe(
+        v.union([v.string(), v.number()]),
+        v.transform((x) => Number(x)),
+        v.pipe(v.number(), v.integer()),
+      ),
+    }),
     path: v.object({ id: v.string() }),
     body: NodeSpec,
   },
@@ -2502,7 +2954,19 @@ export const post_SwarmLeave = {
   method: v.literal("POST"),
   path: v.literal("/swarm/leave"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ force: v.boolean() })) },
+  parameters: {
+    query: v.partial(
+      v.object({
+        force: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+      }),
+    ),
+  },
   responses: { 200: v.unknown(), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2513,10 +2977,32 @@ export const post_SwarmUpdate = {
   requestFormat: v.literal("json"),
   parameters: {
     query: v.object({
-      version: v.pipe(v.number(), v.integer()),
-      rotateWorkerToken: v.optional(v.boolean()),
-      rotateManagerToken: v.optional(v.boolean()),
-      rotateManagerUnlockKey: v.optional(v.boolean()),
+      version: v.pipe(
+        v.union([v.string(), v.number()]),
+        v.transform((x) => Number(x)),
+        v.pipe(v.number(), v.integer()),
+      ),
+      rotateWorkerToken: v.optional(
+        v.pipe(
+          v.union([v.boolean(), v.string(), v.number()]),
+          v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+        ),
+        false,
+      ),
+      rotateManagerToken: v.optional(
+        v.pipe(
+          v.union([v.boolean(), v.string(), v.number()]),
+          v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+        ),
+        false,
+      ),
+      rotateManagerUnlockKey: v.optional(
+        v.pipe(
+          v.union([v.boolean(), v.string(), v.number()]),
+          v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+        ),
+        false,
+      ),
     }),
     body: SwarmSpec,
   },
@@ -2546,7 +3032,17 @@ export const get_ServiceList = {
   method: v.literal("GET"),
   path: v.literal("/services"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ filters: v.string(), status: v.boolean() })) },
+  parameters: {
+    query: v.partial(
+      v.object({
+        filters: v.string(),
+        status: v.pipe(
+          v.union([v.boolean(), v.string(), v.number()]),
+          v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+        ),
+      }),
+    ),
+  },
   responses: { 200: v.array(Service), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2574,7 +3070,20 @@ export const get_ServiceInspect = {
   method: v.literal("GET"),
   path: v.literal("/services/{id}"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ insertDefaults: v.boolean() })), path: v.object({ id: v.string() }) },
+  parameters: {
+    query: v.partial(
+      v.object({
+        insertDefaults: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+      }),
+    ),
+    path: v.object({ id: v.string() }),
+  },
   responses: { 200: Service, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2594,8 +3103,12 @@ export const post_ServiceUpdate = {
   requestFormat: v.literal("json"),
   parameters: {
     query: v.object({
-      version: v.pipe(v.number(), v.integer()),
-      registryAuthFrom: v.optional(v.picklist(["spec", "previous-spec"])),
+      version: v.pipe(
+        v.union([v.string(), v.number()]),
+        v.transform((x) => Number(x)),
+        v.pipe(v.number(), v.integer()),
+      ),
+      registryAuthFrom: v.optional(v.picklist(["spec", "previous-spec"]), "spec"),
       rollback: v.optional(v.string()),
     }),
     path: v.object({ id: v.string() }),
@@ -2619,13 +3132,50 @@ export const get_ServiceLogs = {
   parameters: {
     query: v.partial(
       v.object({
-        details: v.boolean(),
-        follow: v.boolean(),
-        stdout: v.boolean(),
-        stderr: v.boolean(),
-        since: v.pipe(v.number(), v.integer()),
-        timestamps: v.boolean(),
-        tail: v.string(),
+        details: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        follow: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stdout: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stderr: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        since: v.optional(
+          v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          0,
+        ),
+        timestamps: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        tail: v.optional(v.string(), "all"),
       }),
     ),
     path: v.object({ id: v.string() }),
@@ -2659,13 +3209,50 @@ export const get_TaskLogs = {
   parameters: {
     query: v.partial(
       v.object({
-        details: v.boolean(),
-        follow: v.boolean(),
-        stdout: v.boolean(),
-        stderr: v.boolean(),
-        since: v.pipe(v.number(), v.integer()),
-        timestamps: v.boolean(),
-        tail: v.string(),
+        details: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        follow: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stdout: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        stderr: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        since: v.optional(
+          v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          0,
+        ),
+        timestamps: v.optional(
+          v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          false,
+        ),
+        tail: v.optional(v.string(), "all"),
       }),
     ),
     path: v.object({ id: v.string() }),
@@ -2715,7 +3302,13 @@ export const post_SecretUpdate = {
   path: v.literal("/secrets/{id}/update"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.object({ version: v.pipe(v.number(), v.integer()) }),
+    query: v.object({
+      version: v.pipe(
+        v.union([v.string(), v.number()]),
+        v.transform((x) => Number(x)),
+        v.pipe(v.number(), v.integer()),
+      ),
+    }),
     path: v.object({ id: v.string() }),
     body: SecretSpec,
   },
@@ -2764,7 +3357,13 @@ export const post_ConfigUpdate = {
   path: v.literal("/configs/{id}/update"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.object({ version: v.pipe(v.number(), v.integer()) }),
+    query: v.object({
+      version: v.pipe(
+        v.union([v.string(), v.number()]),
+        v.transform((x) => Number(x)),
+        v.pipe(v.number(), v.integer()),
+      ),
+    }),
     path: v.object({ id: v.string() }),
     body: ConfigSpec,
   },
@@ -2928,6 +3527,7 @@ export type EndpointParameters = {
   query?: Record<string, unknown>;
   header?: Record<string, unknown>;
   path?: Record<string, unknown>;
+  cookie?: Record<string, unknown>;
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
@@ -2956,9 +3556,29 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   responseHeaders?: TConfig["responseHeaders"];
 };
 
+/**
+ * Minimal response surface used by ApiClient — avoids depending on the DOM `Response`
+ * global (helpful for Node without DOM lib). Structural typing accepts fetch Response.
+ */
+export interface ApiResponse {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  headers: {
+    get(name: string): string | null;
+    getSetCookie?: () => string[];
+  };
+  json(): Promise<unknown>;
+  text(): Promise<string>;
+  arrayBuffer(): Promise<ArrayBuffer>;
+  clone(): ApiResponse;
+}
+
 export interface Fetcher {
-  decodePathParams?: (path: string, pathParams: Record<string, string>) => string;
+  decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
   encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+  /** Merge cookie params into request headers (default: Cookie header). */
+  encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
   //
   fetch: (input: {
     method: Method;
@@ -2968,8 +3588,8 @@ export interface Fetcher {
     path: string;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
-  }) => Promise<Response>;
-  parseResponseData?: (response: Response) => Promise<unknown>;
+  }) => Promise<ApiResponse>;
+  parseResponseData?: (response: ApiResponse) => Promise<unknown>;
 }
 
 export const successStatusCodes = [
@@ -3020,12 +3640,12 @@ export interface TypedHeaders<TypedHeaderValues extends Record<string, string> |
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<
-  Response,
+  ApiResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: true;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
   data: TSuccess;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TSuccess>;
@@ -3033,12 +3653,12 @@ export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends O
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<
-  Response,
+  ApiResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: false;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
   data: TData;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TData>;
@@ -3062,6 +3682,11 @@ type InferSchemaValue<T> = T extends v.GenericSchema
   ? v.InferOutput<T>
   : T extends object
     ? { [K in keyof T]: InferSchemaValue<T[K]> }
+    : T;
+type InferSchemaInput<T> = T extends v.GenericSchema
+  ? v.InferInput<T>
+  : T extends object
+    ? { [K in keyof T]: InferSchemaInput<T[K]> }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
@@ -3162,10 +3787,10 @@ export class ApiClient {
    * Replace path parameters in URL
    * Supports both OpenAPI format {param} and Express format :param
    */
-  defaultDecodePathParams = (url: string, params: Record<string, string>): string => {
+  defaultDecodePathParams = (url: string, params: Record<string, string | number | boolean>): string => {
     return url
-      .replace(/{(\w+)}/g, (_, key: string) => params[key] || `{${key}}`)
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || `:${key}`);
+      .replace(/{(\w+)}/g, (_, key: string) => (params[key] != null ? String(params[key]) : `{${key}}`))
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (params[key] != null ? String(params[key]) : `:${key}`));
   };
 
   /** Uses URLSearchParams, skips null/undefined values */
@@ -3187,7 +3812,18 @@ export class ApiClient {
     return searchParams;
   };
 
-  defaultParseResponseData = async (response: Response): Promise<unknown> => {
+  /** Append cookie params as a Cookie header (or merge into existing). */
+  defaultEncodeCookies = (cookies: Record<string, unknown> | undefined, headers: Headers): void => {
+    if (!cookies) return;
+    const parts = Object.entries(cookies)
+      .filter(([, value]) => value != null)
+      .map(([key, value]) => `${key}=${String(value)}`);
+    if (!parts.length) return;
+    const existing = headers.get("cookie");
+    headers.set("cookie", existing ? `${existing}; ${parts.join("; ")}` : parts.join("; "));
+  };
+
+  defaultParseResponseData = async (response: ApiResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
     if (contentType.startsWith("text/")) {
       return await response.text();
@@ -3218,7 +3854,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -3229,7 +3865,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -3249,7 +3885,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -3260,7 +3896,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -3280,7 +3916,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -3291,7 +3927,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -3311,7 +3947,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -3322,7 +3958,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -3342,7 +3978,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -3353,7 +3989,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -3381,7 +4017,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -3397,7 +4033,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -3414,10 +4050,11 @@ export class ApiClient {
       const {
         withResponse: _,
         throwOnStatusError = withResponse ? false : true,
-        overrides,
+        overrides: overridesIn,
         validate: validateOverride,
         ...fetchParams
       } = requestParams || {};
+      let overrides = overridesIn;
       const validateSide: ValidateSide = validateOverride ?? this.validate;
 
       const parametersToSend: EndpointParameters = {};
@@ -3425,12 +4062,13 @@ export class ApiClient {
       if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
       if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
       if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
+      if (requestParams?.cookie !== undefined) (parametersToSend as any).cookie = requestParams.cookie;
 
       const endpointSchema = (EndpointByMethod as any)[method]?.[path];
       const shouldValidateInput = validateSide === "input" || validateSide === "both";
       if (shouldValidateInput && endpointSchema?.parameters && endpointSchema.parameters !== undefined) {
         const paramSchema = endpointSchema.parameters;
-        for (const key of ["body", "query", "header", "path"] as const) {
+        for (const key of ["body", "query", "header", "path", "cookie"] as const) {
           const schema = paramSchema[key];
           const value = (parametersToSend as any)[key];
           if (schema && value !== undefined) {
@@ -3448,12 +4086,18 @@ export class ApiClient {
 
       const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
         this.baseUrl + (path as string),
-        (parametersToSend.path ?? {}) as Record<string, string>,
+        (parametersToSend.path ?? {}) as Record<string, string | number | boolean>,
       );
       const url = new URL(resolvedPath);
       const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
         parametersToSend.query,
       );
+
+      if (parametersToSend.cookie) {
+        const headers = new Headers((overrides as RequestInit | undefined)?.headers);
+        (this.fetcher.encodeCookies ?? this.defaultEncodeCookies)(parametersToSend.cookie, headers);
+        overrides = { ...overrides, headers };
+      }
 
       const response = await this.fetcher.fetch({
         method: method,

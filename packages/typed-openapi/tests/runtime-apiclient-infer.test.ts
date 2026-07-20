@@ -53,12 +53,14 @@ const miniDoc = {
 } as unknown as OpenAPIObject;
 
 describe("runtime ApiClient InferSchemaValue", () => {
-  test("generated zod client exposes InferSchemaValue helper", () => {
+  test("generated zod client exposes InferSchemaValue / InferSchemaInput helpers", () => {
     const ctx = mapOpenApiEndpoints(miniDoc);
     const out = generateFile({ ...ctx, runtime: "zod", includeClient: true });
     expect(out).toContain("type InferSchemaValue<T>");
+    expect(out).toContain("type InferSchemaInput<T>");
     expect(out).toContain("z.infer<T>");
-    expect(out).toContain("InferSchemaValue<UParams>");
+    expect(out).toContain("z.input<T>");
+    expect(out).toContain("InferSchemaInput<UParams>");
     expect(out).toContain("TypedApiResponse<InferSchemaValue<TResponses>");
   });
 

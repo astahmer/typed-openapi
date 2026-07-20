@@ -87,7 +87,13 @@ export const get_FindPetsByStatus = {
   parameters: {
     query: Schema.partial(
       Schema.Struct({
-        status: Schema.Union(Schema.Literal("available"), Schema.Literal("pending"), Schema.Literal("sold")),
+        status: Schema.transform(
+          Schema.UndefinedOr(
+            Schema.Union(Schema.Literal("available"), Schema.Literal("pending"), Schema.Literal("sold")),
+          ),
+          Schema.Union(Schema.Literal("available"), Schema.Literal("pending"), Schema.Literal("sold")),
+          { strict: true, decode: (i) => (i === undefined ? "available" : i), encode: (a) => a },
+        ),
       }),
     ),
   },
@@ -112,7 +118,7 @@ export const get_GetPetById = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/pet/{petId}"),
   requestFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ petId: Schema.Int }) },
+  parameters: { path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }) },
   responses: {
     200: Pet,
     400: Schema.Struct({ code: Schema.Int, message: Schema.String }),
@@ -127,7 +133,7 @@ export const post_UpdatePetWithForm = {
   requestFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.partial(Schema.Struct({ name: Schema.String, status: Schema.String })),
-    path: Schema.Struct({ petId: Schema.Int }),
+    path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
   },
   responses: { 405: Schema.Unknown },
 };
@@ -138,7 +144,7 @@ export const delete_DeletePet = {
   path: Schema.Literal("/pet/{petId}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    path: Schema.Struct({ petId: Schema.Int }),
+    path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
     header: Schema.partial(Schema.Struct({ api_key: Schema.String })),
   },
   responses: { 400: Schema.Unknown },
@@ -151,7 +157,7 @@ export const post_UploadFile = {
   requestFormat: Schema.Literal("binary"),
   parameters: {
     query: Schema.partial(Schema.Struct({ additionalMetadata: Schema.String })),
-    path: Schema.Struct({ petId: Schema.Int }),
+    path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
     body: Schema.String,
   },
   responses: { 200: ApiResponse },
@@ -180,7 +186,7 @@ export const get_GetOrderById = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/store/order/{orderId}"),
   requestFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ orderId: Schema.Int }) },
+  parameters: { path: Schema.Struct({ orderId: Schema.NumberFromString.pipe(Schema.int()) }) },
   responses: { 200: Order, 400: Schema.Unknown, 404: Schema.Unknown },
 };
 
@@ -189,7 +195,7 @@ export const delete_DeleteOrder = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/store/order/{orderId}"),
   requestFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ orderId: Schema.Int }) },
+  parameters: { path: Schema.Struct({ orderId: Schema.NumberFromString.pipe(Schema.int()) }) },
   responses: { 400: Schema.Unknown, 404: Schema.Unknown },
 };
 
@@ -343,6 +349,7 @@ export type EndpointParameters = {
   query?: Record<string, unknown>;
   header?: Record<string, unknown>;
   path?: Record<string, unknown>;
+  cookie?: Record<string, unknown>;
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
@@ -371,9 +378,29 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   responseHeaders?: TConfig["responseHeaders"];
 };
 
+/**
+ * Minimal response surface used by ApiClient — avoids depending on the DOM `Response`
+ * global (helpful for Node without DOM lib). Structural typing accepts fetch Response.
+ */
+export interface ApiResponse {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  headers: {
+    get(name: string): string | null;
+    getSetCookie?: () => string[];
+  };
+  json(): Promise<unknown>;
+  text(): Promise<string>;
+  arrayBuffer(): Promise<ArrayBuffer>;
+  clone(): ApiResponse;
+}
+
 export interface Fetcher {
-  decodePathParams?: (path: string, pathParams: Record<string, string>) => string;
+  decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
   encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+  /** Merge cookie params into request headers (default: Cookie header). */
+  encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
   //
   fetch: (input: {
     method: Method;
@@ -383,8 +410,8 @@ export interface Fetcher {
     path: string;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
-  }) => Promise<Response>;
-  parseResponseData?: (response: Response) => Promise<unknown>;
+  }) => Promise<ApiResponse>;
+  parseResponseData?: (response: ApiResponse) => Promise<unknown>;
 }
 
 export const successStatusCodes = [
@@ -435,12 +462,12 @@ export interface TypedHeaders<TypedHeaderValues extends Record<string, string> |
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<
-  Response,
+  ApiResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: true;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
   data: TSuccess;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TSuccess>;
@@ -448,12 +475,12 @@ export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends O
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<
-  Response,
+  ApiResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: false;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
   data: TData;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TData>;
@@ -477,6 +504,11 @@ type InferSchemaValue<T> = T extends { Type: infer O }
   ? O
   : T extends object
     ? { [K in keyof T]: InferSchemaValue<T[K]> }
+    : T;
+type InferSchemaInput<T> = T extends { Encoded: infer I }
+  ? I
+  : T extends object
+    ? { [K in keyof T]: InferSchemaInput<T[K]> }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
@@ -559,9 +591,10 @@ const runValidate = async (ctx: {
 // </ValidateHelpers>
 
 export type EffectFetcher = {
-  decodePathParams?: (path: string, pathParams: Record<string, string>) => string;
+  decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
   encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
-  parseResponseData?: (response: Response) => Promise<unknown>;
+  encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
+  parseResponseData?: (response: ApiResponse) => Promise<unknown>;
   fetch: (input: {
     method: Method;
     url: URL;
@@ -570,12 +603,13 @@ export type EffectFetcher = {
     path: string;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
-  }) => Effect.Effect<Response, HttpClientError, never>;
+  }) => Effect.Effect<ApiResponse, HttpClientError, never>;
 };
 
 const wrapPromiseFetcher = (fetcher: Fetcher): EffectFetcher => ({
   decodePathParams: fetcher.decodePathParams,
   encodeSearchParams: fetcher.encodeSearchParams,
+  encodeCookies: fetcher.encodeCookies,
   parseResponseData: fetcher.parseResponseData,
   fetch: (input) =>
     Effect.tryPromise({
@@ -629,10 +663,11 @@ export class EffectApiClient {
       if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
       if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
       if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
+      if (requestParams?.cookie !== undefined) (parametersToSend as any).cookie = requestParams.cookie;
 
       const endpointSchema = (EndpointByMethod as any)[method]?.[path];
       if ((validateSide === "input" || validateSide === "both") && endpointSchema?.parameters) {
-        for (const key of ["body", "query", "header", "path"] as const) {
+        for (const key of ["body", "query", "header", "path", "cookie"] as const) {
           const schema = endpointSchema.parameters[key];
           const value = (parametersToSend as any)[key];
           if (schema && value !== undefined) {
@@ -658,10 +693,10 @@ export class EffectApiClient {
 
       const decodePath =
         self.effectFetcher.decodePathParams ??
-        ((url: string, p: Record<string, string>) =>
+        ((url: string, p: Record<string, string | number | boolean>) =>
           url
-            .replace(/{(\w+)}/g, (_, key: string) => p[key] || `{${key}}`)
-            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => p[key] || `:${key}`));
+            .replace(/{(\w+)}/g, (_, key: string) => (p[key] != null ? String(p[key]) : `{${key}}`))
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (p[key] != null ? String(p[key]) : `:${key}`)));
       const encodeSearch =
         self.effectFetcher.encodeSearchParams ??
         ((queryParams: Record<string, unknown> | undefined) => {
@@ -675,9 +710,20 @@ export class EffectApiClient {
           });
           return searchParams;
         });
+      const encodeCookies =
+        self.effectFetcher.encodeCookies ??
+        ((cookies: Record<string, unknown> | undefined, headers: Headers) => {
+          if (!cookies) return;
+          const parts = Object.entries(cookies)
+            .filter(([, value]) => value != null)
+            .map(([key, value]) => `${key}=${String(value)}`);
+          if (!parts.length) return;
+          const existing = headers.get("cookie");
+          headers.set("cookie", existing ? `${existing}; ${parts.join("; ")}` : parts.join("; "));
+        });
       const parseData =
         self.effectFetcher.parseResponseData ??
-        (async (response: Response) => {
+        (async (response: ApiResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
           if (contentType.includes("json") || contentType === "*/*") {
             try {
@@ -692,10 +738,17 @@ export class EffectApiClient {
 
       const resolvedPath = decodePath(
         self.baseUrl + (path as string),
-        (parametersToSend.path ?? {}) as Record<string, string>,
+        (parametersToSend.path ?? {}) as Record<string, string | number | boolean>,
       );
       const url = new URL(resolvedPath);
       const urlSearchParams = encodeSearch(parametersToSend.query);
+
+      let overrides = requestParams?.overrides as RequestInit | undefined;
+      if (parametersToSend.cookie) {
+        const headers = new Headers(overrides?.headers);
+        encodeCookies(parametersToSend.cookie, headers);
+        overrides = { ...overrides, headers };
+      }
 
       const response = yield* self.effectFetcher.fetch({
         method: method as Method,
@@ -703,7 +756,7 @@ export class EffectApiClient {
         url,
         urlSearchParams,
         parameters: parametersToSend,
-        overrides: requestParams?.overrides,
+        overrides,
       });
 
       let data = yield* Effect.tryPromise({

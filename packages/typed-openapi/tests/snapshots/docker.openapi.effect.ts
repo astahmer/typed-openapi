@@ -73,13 +73,25 @@ export const Mount = Schema.partial(
           Schema.Literal("slave"),
           Schema.Literal("rslave"),
         ),
-        NonRecursive: Schema.Boolean,
-        CreateMountpoint: Schema.Boolean,
+        NonRecursive: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        CreateMountpoint: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
       }),
     ),
     VolumeOptions: Schema.partial(
       Schema.Struct({
-        NoCopy: Schema.Boolean,
+        NoCopy: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
         Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
         DriverConfig: Schema.partial(
           Schema.Struct({ Name: Schema.String, Options: Schema.Record({ key: Schema.String, value: Schema.String }) }),
@@ -108,7 +120,11 @@ export type RestartPolicy = typeof RestartPolicy.Type;
 export const Resources = Schema.partial(
   Schema.Struct({
     CpuShares: Schema.Int,
-    Memory: Schema.Int,
+    Memory: Schema.transform(Schema.UndefinedOr(Schema.Int), Schema.Int, {
+      strict: true,
+      decode: (i) => (i === undefined ? 0 : i),
+      encode: (a) => a,
+    }),
     CgroupParent: Schema.String,
     BlkioWeight: Schema.Int.pipe(Schema.greaterThanOrEqualTo(0), Schema.lessThanOrEqualTo(1000)),
     BlkioWeightDevice: Schema.Array(
@@ -144,7 +160,17 @@ export const Resources = Schema.partial(
 );
 export type Resources = typeof Resources.Type;
 
-export const Limit = Schema.partial(Schema.Struct({ NanoCPUs: Schema.Int, MemoryBytes: Schema.Int, Pids: Schema.Int }));
+export const Limit = Schema.partial(
+  Schema.Struct({
+    NanoCPUs: Schema.Int,
+    MemoryBytes: Schema.Int,
+    Pids: Schema.transform(Schema.UndefinedOr(Schema.Int), Schema.Int, {
+      strict: true,
+      decode: (i) => (i === undefined ? 0 : i),
+      encode: (a) => a,
+    }),
+  }),
+);
 export type Limit = typeof Limit.Type;
 
 export const GenericResources = Schema.Array(
@@ -272,17 +298,59 @@ export const ContainerConfig = Schema.partial(
     Hostname: Schema.String,
     Domainname: Schema.String,
     User: Schema.String,
-    AttachStdin: Schema.Boolean,
-    AttachStdout: Schema.Boolean,
-    AttachStderr: Schema.Boolean,
+    AttachStdin: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+      strict: true,
+      decode: (i) => (i === undefined ? false : i),
+      encode: (a) => a,
+    }),
+    AttachStdout: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+      strict: true,
+      decode: (i) => (i === undefined ? true : i),
+      encode: (a) => a,
+    }),
+    AttachStderr: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+      strict: true,
+      decode: (i) => (i === undefined ? true : i),
+      encode: (a) => a,
+    }),
     ExposedPorts: Schema.NullOr(Schema.Record({ key: Schema.String, value: Schema.partial(Schema.Struct({})) })),
-    Tty: Schema.Boolean,
-    OpenStdin: Schema.Boolean,
-    StdinOnce: Schema.Boolean,
+    Tty: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+      strict: true,
+      decode: (i) => (i === undefined ? false : i),
+      encode: (a) => a,
+    }),
+    OpenStdin: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+      strict: true,
+      decode: (i) => (i === undefined ? false : i),
+      encode: (a) => a,
+    }),
+    StdinOnce: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+      strict: true,
+      decode: (i) => (i === undefined ? false : i),
+      encode: (a) => a,
+    }),
     Env: Schema.Array(Schema.String),
     Cmd: Schema.Array(Schema.String),
     Healthcheck: HealthConfig,
-    ArgsEscaped: Schema.NullOr(Schema.Boolean),
+    ArgsEscaped: Schema.transform(
+      Schema.UndefinedOr(
+        Schema.NullOr(
+          Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+            strict: true,
+            decode: (i) => (i === undefined ? false : i),
+            encode: (a) => a,
+          }),
+        ),
+      ),
+      Schema.NullOr(
+        Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+      ),
+      { strict: true, decode: (i) => (i === undefined ? false : i), encode: (a) => a },
+    ),
     Image: Schema.String,
     Volumes: Schema.Record({ key: Schema.String, value: Schema.partial(Schema.Struct({})) }),
     WorkingDir: Schema.String,
@@ -444,12 +512,27 @@ export const ClusterVolumeSpec = Schema.partial(
     Group: Schema.String,
     AccessMode: Schema.partial(
       Schema.Struct({
-        Scope: Schema.Union(Schema.Literal("single"), Schema.Literal("multi")),
-        Sharing: Schema.Union(
-          Schema.Literal("none"),
-          Schema.Literal("readonly"),
-          Schema.Literal("onewriter"),
-          Schema.Literal("all"),
+        Scope: Schema.transform(
+          Schema.UndefinedOr(Schema.Union(Schema.Literal("single"), Schema.Literal("multi"))),
+          Schema.Union(Schema.Literal("single"), Schema.Literal("multi")),
+          { strict: true, decode: (i) => (i === undefined ? "single" : i), encode: (a) => a },
+        ),
+        Sharing: Schema.transform(
+          Schema.UndefinedOr(
+            Schema.Union(
+              Schema.Literal("none"),
+              Schema.Literal("readonly"),
+              Schema.Literal("onewriter"),
+              Schema.Literal("all"),
+            ),
+          ),
+          Schema.Union(
+            Schema.Literal("none"),
+            Schema.Literal("readonly"),
+            Schema.Literal("onewriter"),
+            Schema.Literal("all"),
+          ),
+          { strict: true, decode: (i) => (i === undefined ? "none" : i), encode: (a) => a },
         ),
         MountVolume: Schema.partial(Schema.Struct({})),
         Secrets: Schema.Array(Schema.partial(Schema.Struct({ Key: Schema.String, Secret: Schema.String }))),
@@ -457,7 +540,11 @@ export const ClusterVolumeSpec = Schema.partial(
           Schema.Struct({ Requisite: Schema.Array(Topology), Preferred: Schema.Array(Topology) }),
         ),
         CapacityRange: Schema.partial(Schema.Struct({ RequiredBytes: Schema.Int, LimitBytes: Schema.Int })),
-        Availability: Schema.Union(Schema.Literal("active"), Schema.Literal("pause"), Schema.Literal("drain")),
+        Availability: Schema.transform(
+          Schema.UndefinedOr(Schema.Union(Schema.Literal("active"), Schema.Literal("pause"), Schema.Literal("drain"))),
+          Schema.Union(Schema.Literal("active"), Schema.Literal("pause"), Schema.Literal("drain")),
+          { strict: true, decode: (i) => (i === undefined ? "active" : i), encode: (a) => a },
+        ),
       }),
     ),
   }),
@@ -504,17 +591,40 @@ export const Volume = Schema.Struct({
   CreatedAt: Schema.optional(Schema.String),
   Status: Schema.optional(Schema.Record({ key: Schema.String, value: Schema.partial(Schema.Struct({})) })),
   Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
-  Scope: Schema.Union(Schema.Literal("local"), Schema.Literal("global")),
+  Scope: Schema.transform(
+    Schema.UndefinedOr(Schema.Union(Schema.Literal("local"), Schema.Literal("global"))),
+    Schema.Union(Schema.Literal("local"), Schema.Literal("global")),
+    { strict: true, decode: (i) => (i === undefined ? "local" : i), encode: (a) => a },
+  ),
   ClusterVolume: Schema.optional(ClusterVolume),
   Options: Schema.Record({ key: Schema.String, value: Schema.String }),
-  UsageData: Schema.optional(Schema.NullOr(Schema.Struct({ Size: Schema.Int, RefCount: Schema.Int }))),
+  UsageData: Schema.optional(
+    Schema.NullOr(
+      Schema.Struct({
+        Size: Schema.transform(Schema.UndefinedOr(Schema.Int), Schema.Int, {
+          strict: true,
+          decode: (i) => (i === undefined ? -1 : i),
+          encode: (a) => a,
+        }),
+        RefCount: Schema.transform(Schema.UndefinedOr(Schema.Int), Schema.Int, {
+          strict: true,
+          decode: (i) => (i === undefined ? -1 : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
+  ),
 });
 export type Volume = typeof Volume.Type;
 
 export const VolumeCreateOptions = Schema.partial(
   Schema.Struct({
     Name: Schema.String,
-    Driver: Schema.String,
+    Driver: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+      strict: true,
+      decode: (i) => (i === undefined ? "local" : i),
+      encode: (a) => a,
+    }),
     DriverOpts: Schema.Record({ key: Schema.String, value: Schema.String }),
     Labels: Schema.Record({ key: Schema.String, value: Schema.String }),
     ClusterVolumeSpec: ClusterVolumeSpec,
@@ -539,7 +649,11 @@ export type IPAMConfig = typeof IPAMConfig.Type;
 
 export const IPAM = Schema.partial(
   Schema.Struct({
-    Driver: Schema.String,
+    Driver: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+      strict: true,
+      decode: (i) => (i === undefined ? "default" : i),
+      encode: (a) => a,
+    }),
     Config: Schema.Array(IPAMConfig),
     Options: Schema.Record({ key: Schema.String, value: Schema.String }),
   }),
@@ -796,7 +910,17 @@ export const Reachability = Schema.Union(
 export type Reachability = typeof Reachability.Type;
 
 export const ManagerStatus = Schema.NullOr(
-  Schema.partial(Schema.Struct({ Leader: Schema.Boolean, Reachability: Reachability, Addr: Schema.String })),
+  Schema.partial(
+    Schema.Struct({
+      Leader: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+        strict: true,
+        decode: (i) => (i === undefined ? false : i),
+        encode: (a) => a,
+      }),
+      Reachability: Reachability,
+      Addr: Schema.String,
+    }),
+  ),
 );
 export type ManagerStatus = typeof ManagerStatus.Type;
 
@@ -985,8 +1109,16 @@ export const TaskSpec = Schema.partial(
       Schema.Struct({
         Condition: Schema.Union(Schema.Literal("none"), Schema.Literal("on-failure"), Schema.Literal("any")),
         Delay: Schema.Int,
-        MaxAttempts: Schema.Int,
-        Window: Schema.Int,
+        MaxAttempts: Schema.transform(Schema.UndefinedOr(Schema.Int), Schema.Int, {
+          strict: true,
+          decode: (i) => (i === undefined ? 0 : i),
+          encode: (a) => a,
+        }),
+        Window: Schema.transform(Schema.UndefinedOr(Schema.Int), Schema.Int, {
+          strict: true,
+          decode: (i) => (i === undefined ? 0 : i),
+          encode: (a) => a,
+        }),
       }),
     ),
     Placement: Schema.partial(
@@ -995,7 +1127,11 @@ export const TaskSpec = Schema.partial(
         Preferences: Schema.Array(
           Schema.partial(Schema.Struct({ Spread: Schema.partial(Schema.Struct({ SpreadDescriptor: Schema.String })) })),
         ),
-        MaxReplicas: Schema.Int,
+        MaxReplicas: Schema.transform(Schema.UndefinedOr(Schema.Int), Schema.Int, {
+          strict: true,
+          decode: (i) => (i === undefined ? 0 : i),
+          encode: (a) => a,
+        }),
         Platforms: Schema.Array(Platform),
       }),
     ),
@@ -1064,14 +1200,22 @@ export const EndpointPortConfig = Schema.partial(
     Protocol: Schema.Union(Schema.Literal("tcp"), Schema.Literal("udp"), Schema.Literal("sctp")),
     TargetPort: Schema.Int,
     PublishedPort: Schema.Int,
-    PublishMode: Schema.Union(Schema.Literal("ingress"), Schema.Literal("host")),
+    PublishMode: Schema.transform(
+      Schema.UndefinedOr(Schema.Union(Schema.Literal("ingress"), Schema.Literal("host"))),
+      Schema.Union(Schema.Literal("ingress"), Schema.Literal("host")),
+      { strict: true, decode: (i) => (i === undefined ? "ingress" : i), encode: (a) => a },
+    ),
   }),
 );
 export type EndpointPortConfig = typeof EndpointPortConfig.Type;
 
 export const EndpointSpec = Schema.partial(
   Schema.Struct({
-    Mode: Schema.Union(Schema.Literal("vip"), Schema.Literal("dnsrr")),
+    Mode: Schema.transform(
+      Schema.UndefinedOr(Schema.Union(Schema.Literal("vip"), Schema.Literal("dnsrr"))),
+      Schema.Union(Schema.Literal("vip"), Schema.Literal("dnsrr")),
+      { strict: true, decode: (i) => (i === undefined ? "vip" : i), encode: (a) => a },
+    ),
     Ports: Schema.Array(EndpointPortConfig),
   }),
 );
@@ -1086,7 +1230,16 @@ export const ServiceSpec = Schema.partial(
       Schema.Struct({
         Replicated: Schema.partial(Schema.Struct({ Replicas: Schema.Int })),
         Global: Schema.partial(Schema.Struct({})),
-        ReplicatedJob: Schema.partial(Schema.Struct({ MaxConcurrent: Schema.Int, TotalCompletions: Schema.Int })),
+        ReplicatedJob: Schema.partial(
+          Schema.Struct({
+            MaxConcurrent: Schema.transform(Schema.UndefinedOr(Schema.Int), Schema.Int, {
+              strict: true,
+              decode: (i) => (i === undefined ? 1 : i),
+              encode: (a) => a,
+            }),
+            TotalCompletions: Schema.Int,
+          }),
+        ),
         GlobalJob: Schema.partial(Schema.Struct({})),
       }),
     ),
@@ -1330,13 +1483,26 @@ export const Runtime = Schema.partial(
 );
 export type Runtime = typeof Runtime.Type;
 
-export const LocalNodeState = Schema.Union(
-  Schema.Literal(""),
-  Schema.Literal("inactive"),
-  Schema.Literal("pending"),
-  Schema.Literal("active"),
-  Schema.Literal("error"),
-  Schema.Literal("locked"),
+export const LocalNodeState = Schema.transform(
+  Schema.UndefinedOr(
+    Schema.Union(
+      Schema.Literal(""),
+      Schema.Literal("inactive"),
+      Schema.Literal("pending"),
+      Schema.Literal("active"),
+      Schema.Literal("error"),
+      Schema.Literal("locked"),
+    ),
+  ),
+  Schema.Union(
+    Schema.Literal(""),
+    Schema.Literal("inactive"),
+    Schema.Literal("pending"),
+    Schema.Literal("active"),
+    Schema.Literal("error"),
+    Schema.Literal("locked"),
+  ),
+  { strict: true, decode: (i) => (i === undefined ? "" : i), encode: (a) => a },
 );
 export type LocalNodeState = typeof LocalNodeState.Type;
 
@@ -1345,11 +1511,27 @@ export type PeerNode = typeof PeerNode.Type;
 
 export const SwarmInfo = Schema.partial(
   Schema.Struct({
-    NodeID: Schema.String,
-    NodeAddr: Schema.String,
+    NodeID: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+      strict: true,
+      decode: (i) => (i === undefined ? "" : i),
+      encode: (a) => a,
+    }),
+    NodeAddr: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+      strict: true,
+      decode: (i) => (i === undefined ? "" : i),
+      encode: (a) => a,
+    }),
     LocalNodeState: LocalNodeState,
-    ControlAvailable: Schema.Boolean,
-    Error: Schema.String,
+    ControlAvailable: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+      strict: true,
+      decode: (i) => (i === undefined ? false : i),
+      encode: (a) => a,
+    }),
+    Error: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+      strict: true,
+      decode: (i) => (i === undefined ? "" : i),
+      encode: (a) => a,
+    }),
     RemoteManagers: Schema.NullOr(Schema.Array(PeerNode)),
     Nodes: Schema.NullOr(Schema.Int),
     Managers: Schema.NullOr(Schema.Int),
@@ -1390,8 +1572,16 @@ export const SystemInfo = Schema.partial(
     NGoroutines: Schema.Int,
     SystemTime: Schema.String,
     LoggingDriver: Schema.String,
-    CgroupDriver: Schema.Union(Schema.Literal("cgroupfs"), Schema.Literal("systemd"), Schema.Literal("none")),
-    CgroupVersion: Schema.Union(Schema.Literal("1"), Schema.Literal("2")),
+    CgroupDriver: Schema.transform(
+      Schema.UndefinedOr(Schema.Union(Schema.Literal("cgroupfs"), Schema.Literal("systemd"), Schema.Literal("none"))),
+      Schema.Union(Schema.Literal("cgroupfs"), Schema.Literal("systemd"), Schema.Literal("none")),
+      { strict: true, decode: (i) => (i === undefined ? "cgroupfs" : i), encode: (a) => a },
+    ),
+    CgroupVersion: Schema.transform(
+      Schema.UndefinedOr(Schema.Union(Schema.Literal("1"), Schema.Literal("2"))),
+      Schema.Union(Schema.Literal("1"), Schema.Literal("2")),
+      { strict: true, decode: (i) => (i === undefined ? "1" : i), encode: (a) => a },
+    ),
     NEventsListener: Schema.Int,
     KernelVersion: Schema.String,
     OperatingSystem: Schema.String,
@@ -1400,7 +1590,11 @@ export const SystemInfo = Schema.partial(
     Architecture: Schema.String,
     NCPU: Schema.Int,
     MemTotal: Schema.Int,
-    IndexServerAddress: Schema.String,
+    IndexServerAddress: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+      strict: true,
+      decode: (i) => (i === undefined ? "https://index.docker.io/v1/" : i),
+      encode: (a) => a,
+    }),
     RegistryConfig: RegistryServiceConfig,
     GenericResources: GenericResources,
     HttpProxy: Schema.String,
@@ -1411,10 +1605,22 @@ export const SystemInfo = Schema.partial(
     ExperimentalBuild: Schema.Boolean,
     ServerVersion: Schema.String,
     Runtimes: Schema.Record({ key: Schema.String, value: Runtime }),
-    DefaultRuntime: Schema.String,
+    DefaultRuntime: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+      strict: true,
+      decode: (i) => (i === undefined ? "runc" : i),
+      encode: (a) => a,
+    }),
     Swarm: SwarmInfo,
-    LiveRestoreEnabled: Schema.Boolean,
-    Isolation: Schema.Union(Schema.Literal("default"), Schema.Literal("hyperv"), Schema.Literal("process")),
+    LiveRestoreEnabled: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+      strict: true,
+      decode: (i) => (i === undefined ? false : i),
+      encode: (a) => a,
+    }),
+    Isolation: Schema.transform(
+      Schema.UndefinedOr(Schema.Union(Schema.Literal("default"), Schema.Literal("hyperv"), Schema.Literal("process"))),
+      Schema.Union(Schema.Literal("default"), Schema.Literal("hyperv"), Schema.Literal("process")),
+      { strict: true, decode: (i) => (i === undefined ? "default" : i), encode: (a) => a },
+    ),
     InitBinary: Schema.String,
     ContainerdCommit: Commit,
     RuncCommit: Commit,
@@ -1485,7 +1691,20 @@ export const get_ContainerList = {
   requestFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.partial(
-      Schema.Struct({ all: Schema.Boolean, limit: Schema.Int, size: Schema.Boolean, filters: Schema.String }),
+      Schema.Struct({
+        all: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        limit: Schema.NumberFromString.pipe(Schema.int()),
+        size: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        filters: Schema.String,
+      }),
     ),
   },
   responses: { 200: Schema.Array(ContainerSummary), 400: ErrorResponse, 500: ErrorResponse },
@@ -1523,7 +1742,15 @@ export const get_ContainerInspect = {
   path: Schema.Literal("/containers/{id}/json"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ size: Schema.Boolean })),
+    query: Schema.partial(
+      Schema.Struct({
+        size: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: {
@@ -1567,7 +1794,15 @@ export const get_ContainerTop = {
   path: Schema.Literal("/containers/{id}/top"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ ps_args: Schema.String })),
+    query: Schema.partial(
+      Schema.Struct({
+        ps_args: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+          strict: true,
+          decode: (i) => (i === undefined ? "-ef" : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: {
@@ -1587,13 +1822,41 @@ export const get_ContainerLogs = {
   parameters: {
     query: Schema.partial(
       Schema.Struct({
-        follow: Schema.Boolean,
-        stdout: Schema.Boolean,
-        stderr: Schema.Boolean,
-        since: Schema.Int,
-        until: Schema.Int,
-        timestamps: Schema.Boolean,
-        tail: Schema.String,
+        follow: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stdout: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stderr: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        since: Schema.transform(
+          Schema.UndefinedOr(Schema.NumberFromString.pipe(Schema.int())),
+          Schema.NumberFromString.pipe(Schema.int()),
+          { strict: true, decode: (i) => (i === undefined ? 0 : i), encode: (a) => a },
+        ),
+        until: Schema.transform(
+          Schema.UndefinedOr(Schema.NumberFromString.pipe(Schema.int())),
+          Schema.NumberFromString.pipe(Schema.int()),
+          { strict: true, decode: (i) => (i === undefined ? 0 : i), encode: (a) => a },
+        ),
+        timestamps: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        tail: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+          strict: true,
+          decode: (i) => (i === undefined ? "all" : i),
+          encode: (a) => a,
+        }),
       }),
     ),
     path: Schema.Struct({ id: Schema.String }),
@@ -1625,7 +1888,20 @@ export const get_ContainerStats = {
   path: Schema.Literal("/containers/{id}/stats"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ stream: Schema.Boolean, "one-shot": Schema.Boolean })),
+    query: Schema.partial(
+      Schema.Struct({
+        stream: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? true : i),
+          encode: (a) => a,
+        }),
+        "one-shot": Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: {
@@ -1641,7 +1917,9 @@ export const post_ContainerResize = {
   path: Schema.Literal("/containers/{id}/resize"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ h: Schema.Int, w: Schema.Int })),
+    query: Schema.partial(
+      Schema.Struct({ h: Schema.NumberFromString.pipe(Schema.int()), w: Schema.NumberFromString.pipe(Schema.int()) }),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 200: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown },
@@ -1665,7 +1943,7 @@ export const post_ContainerStop = {
   path: Schema.Literal("/containers/{id}/stop"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ signal: Schema.String, t: Schema.Int })),
+    query: Schema.partial(Schema.Struct({ signal: Schema.String, t: Schema.NumberFromString.pipe(Schema.int()) })),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 204: Schema.Unknown, 304: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
@@ -1677,7 +1955,7 @@ export const post_ContainerRestart = {
   path: Schema.Literal("/containers/{id}/restart"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ signal: Schema.String, t: Schema.Int })),
+    query: Schema.partial(Schema.Struct({ signal: Schema.String, t: Schema.NumberFromString.pipe(Schema.int()) })),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
@@ -1689,7 +1967,15 @@ export const post_ContainerKill = {
   path: Schema.Literal("/containers/{id}/kill"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ signal: Schema.String })),
+    query: Schema.partial(
+      Schema.Struct({
+        signal: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+          strict: true,
+          decode: (i) => (i === undefined ? "SIGKILL" : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -1747,11 +2033,31 @@ export const post_ContainerAttach = {
     query: Schema.partial(
       Schema.Struct({
         detachKeys: Schema.String,
-        logs: Schema.Boolean,
-        stream: Schema.Boolean,
-        stdin: Schema.Boolean,
-        stdout: Schema.Boolean,
-        stderr: Schema.Boolean,
+        logs: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stream: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stdin: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stdout: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stderr: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
       }),
     ),
     path: Schema.Struct({ id: Schema.String }),
@@ -1774,11 +2080,31 @@ export const get_ContainerAttachWebsocket = {
     query: Schema.partial(
       Schema.Struct({
         detachKeys: Schema.String,
-        logs: Schema.Boolean,
-        stream: Schema.Boolean,
-        stdin: Schema.Boolean,
-        stdout: Schema.Boolean,
-        stderr: Schema.Boolean,
+        logs: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stream: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stdin: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stdout: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stderr: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
       }),
     ),
     path: Schema.Struct({ id: Schema.String }),
@@ -1794,7 +2120,13 @@ export const post_ContainerWait = {
   parameters: {
     query: Schema.partial(
       Schema.Struct({
-        condition: Schema.Union(Schema.Literal("not-running"), Schema.Literal("next-exit"), Schema.Literal("removed")),
+        condition: Schema.transform(
+          Schema.UndefinedOr(
+            Schema.Union(Schema.Literal("not-running"), Schema.Literal("next-exit"), Schema.Literal("removed")),
+          ),
+          Schema.Union(Schema.Literal("not-running"), Schema.Literal("next-exit"), Schema.Literal("removed")),
+          { strict: true, decode: (i) => (i === undefined ? "not-running" : i), encode: (a) => a },
+        ),
       }),
     ),
     path: Schema.Struct({ id: Schema.String }),
@@ -1808,7 +2140,25 @@ export const delete_ContainerDelete = {
   path: Schema.Literal("/containers/{id}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ v: Schema.Boolean, force: Schema.Boolean, link: Schema.Boolean })),
+    query: Schema.partial(
+      Schema.Struct({
+        v: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        force: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        link: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 204: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -1870,10 +2220,22 @@ export const get_ImageList = {
   parameters: {
     query: Schema.partial(
       Schema.Struct({
-        all: Schema.Boolean,
+        all: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
         filters: Schema.String,
-        "shared-size": Schema.Boolean,
-        digests: Schema.Boolean,
+        "shared-size": Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        digests: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
       }),
     ),
   },
@@ -1888,25 +2250,45 @@ export const post_ImageBuild = {
   parameters: {
     query: Schema.partial(
       Schema.Struct({
-        dockerfile: Schema.String,
+        dockerfile: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+          strict: true,
+          decode: (i) => (i === undefined ? "Dockerfile" : i),
+          encode: (a) => a,
+        }),
         t: Schema.String,
         extrahosts: Schema.String,
         remote: Schema.String,
-        q: Schema.Boolean,
-        nocache: Schema.Boolean,
+        q: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        nocache: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
         cachefrom: Schema.String,
         pull: Schema.String,
-        rm: Schema.Boolean,
-        forcerm: Schema.Boolean,
-        memory: Schema.Int,
-        memswap: Schema.Int,
-        cpushares: Schema.Int,
+        rm: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? true : i),
+          encode: (a) => a,
+        }),
+        forcerm: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        memory: Schema.NumberFromString.pipe(Schema.int()),
+        memswap: Schema.NumberFromString.pipe(Schema.int()),
+        cpushares: Schema.NumberFromString.pipe(Schema.int()),
         cpusetcpus: Schema.String,
-        cpuperiod: Schema.Int,
-        cpuquota: Schema.Int,
+        cpuperiod: Schema.NumberFromString.pipe(Schema.int()),
+        cpuquota: Schema.NumberFromString.pipe(Schema.int()),
         buildargs: Schema.String,
-        shmsize: Schema.Int,
-        squash: Schema.Boolean,
+        shmsize: Schema.NumberFromString.pipe(Schema.int()),
+        squash: Schema.BooleanFromString,
         labels: Schema.String,
         networkmode: Schema.String,
         platform: Schema.String,
@@ -1928,7 +2310,13 @@ export const post_BuildPrune = {
   path: Schema.Literal("/build/prune"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ "keep-storage": Schema.Int, all: Schema.Boolean, filters: Schema.String })),
+    query: Schema.partial(
+      Schema.Struct({
+        "keep-storage": Schema.NumberFromString.pipe(Schema.int()),
+        all: Schema.BooleanFromString,
+        filters: Schema.String,
+      }),
+    ),
   },
   responses: {
     200: Schema.partial(Schema.Struct({ CachesDeleted: Schema.Array(Schema.String), SpaceReclaimed: Schema.Int })),
@@ -2021,7 +2409,20 @@ export const delete_ImageDelete = {
   path: Schema.Literal("/images/{name}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ force: Schema.Boolean, noprune: Schema.Boolean })),
+    query: Schema.partial(
+      Schema.Struct({
+        force: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        noprune: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
     path: Schema.Struct({ name: Schema.String }),
   },
   responses: { 200: Schema.Array(ImageDeleteResponseItem), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -2035,7 +2436,7 @@ export const get_ImageSearch = {
   parameters: {
     query: Schema.Struct({
       term: Schema.String,
-      limit: Schema.optional(Schema.Int),
+      limit: Schema.optional(Schema.NumberFromString.pipe(Schema.int())),
       filters: Schema.optional(Schema.String),
     }),
   },
@@ -2110,21 +2511,57 @@ export const get_SystemPing = {
   responses: { 200: Schema.Unknown, 500: Schema.Unknown },
   responseHeaders: {
     200: Schema.Struct({
-      Swarm: Schema.Union(
-        Schema.Literal("inactive"),
-        Schema.Literal("pending"),
-        Schema.Literal("error"),
-        Schema.Literal("locked"),
-        Schema.Literal("active/worker"),
-        Schema.Literal("active/manager"),
+      Swarm: Schema.transform(
+        Schema.UndefinedOr(
+          Schema.Union(
+            Schema.Literal("inactive"),
+            Schema.Literal("pending"),
+            Schema.Literal("error"),
+            Schema.Literal("locked"),
+            Schema.Literal("active/worker"),
+            Schema.Literal("active/manager"),
+          ),
+        ),
+        Schema.Union(
+          Schema.Literal("inactive"),
+          Schema.Literal("pending"),
+          Schema.Literal("error"),
+          Schema.Literal("locked"),
+          Schema.Literal("active/worker"),
+          Schema.Literal("active/manager"),
+        ),
+        { strict: true, decode: (i) => (i === undefined ? "inactive" : i), encode: (a) => a },
       ),
       "Docker-Experimental": Schema.Boolean,
-      "Cache-Control": Schema.String,
-      Pragma: Schema.String,
+      "Cache-Control": Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+        strict: true,
+        decode: (i) => (i === undefined ? "no-cache, no-store, must-revalidate" : i),
+        encode: (a) => a,
+      }),
+      Pragma: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+        strict: true,
+        decode: (i) => (i === undefined ? "no-cache" : i),
+        encode: (a) => a,
+      }),
       "API-Version": Schema.String,
-      "Builder-Version": Schema.String,
+      "Builder-Version": Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+        strict: true,
+        decode: (i) => (i === undefined ? "2" : i),
+        encode: (a) => a,
+      }),
     }),
-    500: Schema.Struct({ "Cache-Control": Schema.String, Pragma: Schema.String }),
+    500: Schema.Struct({
+      "Cache-Control": Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+        strict: true,
+        decode: (i) => (i === undefined ? "no-cache, no-store, must-revalidate" : i),
+        encode: (a) => a,
+      }),
+      Pragma: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+        strict: true,
+        decode: (i) => (i === undefined ? "no-cache" : i),
+        encode: (a) => a,
+      }),
+    }),
   },
 };
 
@@ -2137,17 +2574,38 @@ export const head_SystemPingHead = {
   responses: { 200: Schema.Unknown, 500: Schema.Unknown },
   responseHeaders: {
     200: Schema.Struct({
-      Swarm: Schema.Union(
-        Schema.Literal("inactive"),
-        Schema.Literal("pending"),
-        Schema.Literal("error"),
-        Schema.Literal("locked"),
-        Schema.Literal("active/worker"),
-        Schema.Literal("active/manager"),
+      Swarm: Schema.transform(
+        Schema.UndefinedOr(
+          Schema.Union(
+            Schema.Literal("inactive"),
+            Schema.Literal("pending"),
+            Schema.Literal("error"),
+            Schema.Literal("locked"),
+            Schema.Literal("active/worker"),
+            Schema.Literal("active/manager"),
+          ),
+        ),
+        Schema.Union(
+          Schema.Literal("inactive"),
+          Schema.Literal("pending"),
+          Schema.Literal("error"),
+          Schema.Literal("locked"),
+          Schema.Literal("active/worker"),
+          Schema.Literal("active/manager"),
+        ),
+        { strict: true, decode: (i) => (i === undefined ? "inactive" : i), encode: (a) => a },
       ),
       "Docker-Experimental": Schema.Boolean,
-      "Cache-Control": Schema.String,
-      Pragma: Schema.String,
+      "Cache-Control": Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+        strict: true,
+        decode: (i) => (i === undefined ? "no-cache, no-store, must-revalidate" : i),
+        encode: (a) => a,
+      }),
+      Pragma: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+        strict: true,
+        decode: (i) => (i === undefined ? "no-cache" : i),
+        encode: (a) => a,
+      }),
       "API-Version": Schema.String,
       "Builder-Version": Schema.String,
     }),
@@ -2167,7 +2625,11 @@ export const post_ImageCommit = {
         tag: Schema.String,
         comment: Schema.String,
         author: Schema.String,
-        pause: Schema.Boolean,
+        pause: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? true : i),
+          encode: (a) => a,
+        }),
         changes: Schema.String,
       }),
     ),
@@ -2243,7 +2705,17 @@ export const post_ImageLoad = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/images/load"),
   requestFormat: Schema.Literal("text"),
-  parameters: { query: Schema.partial(Schema.Struct({ quiet: Schema.Boolean })) },
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        quiet: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
+  },
   responses: { 200: Schema.Unknown, 500: ErrorResponse },
 };
 
@@ -2266,7 +2738,11 @@ export const post_ContainerExec = {
         Tty: Schema.Boolean,
         Env: Schema.Array(Schema.String),
         Cmd: Schema.Array(Schema.String),
-        Privileged: Schema.Boolean,
+        Privileged: Schema.transform(Schema.UndefinedOr(Schema.Boolean), Schema.Boolean, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
         User: Schema.String,
         WorkingDir: Schema.String,
       }),
@@ -2301,7 +2777,9 @@ export const post_ExecResize = {
   path: Schema.Literal("/exec/{id}/resize"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ h: Schema.Int, w: Schema.Int })),
+    query: Schema.partial(
+      Schema.Struct({ h: Schema.NumberFromString.pipe(Schema.int()), w: Schema.NumberFromString.pipe(Schema.int()) }),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
@@ -2367,7 +2845,7 @@ export const put_VolumeUpdate = {
   path: Schema.Literal("/volumes/{name}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.Struct({ version: Schema.Int }),
+    query: Schema.Struct({ version: Schema.NumberFromString.pipe(Schema.int()) }),
     path: Schema.Struct({ name: Schema.String }),
     body: Schema.partial(Schema.Struct({ Spec: ClusterVolumeSpec })),
   },
@@ -2380,7 +2858,15 @@ export const delete_VolumeDelete = {
   path: Schema.Literal("/volumes/{name}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ force: Schema.Boolean })),
+    query: Schema.partial(
+      Schema.Struct({
+        force: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
     path: Schema.Struct({ name: Schema.String }),
   },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -2413,7 +2899,16 @@ export const get_NetworkInspect = {
   path: Schema.Literal("/networks/{id}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ verbose: Schema.Boolean, scope: Schema.String })),
+    query: Schema.partial(
+      Schema.Struct({
+        verbose: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        scope: Schema.String,
+      }),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 200: Network, 404: ErrorResponse, 500: ErrorResponse },
@@ -2437,7 +2932,11 @@ export const post_NetworkCreate = {
     body: Schema.Struct({
       Name: Schema.String,
       CheckDuplicate: Schema.optional(Schema.Boolean),
-      Driver: Schema.optional(Schema.String),
+      Driver: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+        strict: true,
+        decode: (i) => (i === undefined ? "bridge" : i),
+        encode: (a) => a,
+      }),
       Internal: Schema.optional(Schema.Boolean),
       Attachable: Schema.optional(Schema.Boolean),
       Ingress: Schema.optional(Schema.Boolean),
@@ -2537,7 +3036,15 @@ export const delete_PluginDelete = {
   path: Schema.Literal("/plugins/{name}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ force: Schema.Boolean })),
+    query: Schema.partial(
+      Schema.Struct({
+        force: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
     path: Schema.Struct({ name: Schema.String }),
   },
   responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
@@ -2549,7 +3056,15 @@ export const post_PluginEnable = {
   path: Schema.Literal("/plugins/{name}/enable"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ timeout: Schema.Int })),
+    query: Schema.partial(
+      Schema.Struct({
+        timeout: Schema.transform(
+          Schema.UndefinedOr(Schema.NumberFromString.pipe(Schema.int())),
+          Schema.NumberFromString.pipe(Schema.int()),
+          { strict: true, decode: (i) => (i === undefined ? 0 : i), encode: (a) => a },
+        ),
+      }),
+    ),
     path: Schema.Struct({ name: Schema.String }),
   },
   responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
@@ -2561,7 +3076,7 @@ export const post_PluginDisable = {
   path: Schema.Literal("/plugins/{name}/disable"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ force: Schema.Boolean })),
+    query: Schema.partial(Schema.Struct({ force: Schema.BooleanFromString })),
     path: Schema.Struct({ name: Schema.String }),
   },
   responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
@@ -2632,7 +3147,15 @@ export const delete_NodeDelete = {
   path: Schema.Literal("/nodes/{id}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ force: Schema.Boolean })),
+    query: Schema.partial(
+      Schema.Struct({
+        force: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
@@ -2644,7 +3167,7 @@ export const post_NodeUpdate = {
   path: Schema.Literal("/nodes/{id}/update"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.Struct({ version: Schema.Int }),
+    query: Schema.Struct({ version: Schema.NumberFromString.pipe(Schema.int()) }),
     path: Schema.Struct({ id: Schema.String }),
     body: NodeSpec,
   },
@@ -2706,7 +3229,17 @@ export const post_SwarmLeave = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/swarm/leave"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ force: Schema.Boolean })) },
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        force: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
+  },
   responses: { 200: Schema.Unknown, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2717,10 +3250,22 @@ export const post_SwarmUpdate = {
   requestFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({
-      version: Schema.Int,
-      rotateWorkerToken: Schema.optional(Schema.Boolean),
-      rotateManagerToken: Schema.optional(Schema.Boolean),
-      rotateManagerUnlockKey: Schema.optional(Schema.Boolean),
+      version: Schema.NumberFromString.pipe(Schema.int()),
+      rotateWorkerToken: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+        strict: true,
+        decode: (i) => (i === undefined ? false : i),
+        encode: (a) => a,
+      }),
+      rotateManagerToken: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+        strict: true,
+        decode: (i) => (i === undefined ? false : i),
+        encode: (a) => a,
+      }),
+      rotateManagerUnlockKey: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+        strict: true,
+        decode: (i) => (i === undefined ? false : i),
+        encode: (a) => a,
+      }),
     }),
     body: SwarmSpec,
   },
@@ -2754,7 +3299,7 @@ export const get_ServiceList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/services"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String, status: Schema.Boolean })) },
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String, status: Schema.BooleanFromString })) },
   responses: { 200: Schema.Array(Service), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2783,7 +3328,15 @@ export const get_ServiceInspect = {
   path: Schema.Literal("/services/{id}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ insertDefaults: Schema.Boolean })),
+    query: Schema.partial(
+      Schema.Struct({
+        insertDefaults: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+      }),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 200: Service, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
@@ -2805,8 +3358,12 @@ export const post_ServiceUpdate = {
   requestFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({
-      version: Schema.Int,
-      registryAuthFrom: Schema.optional(Schema.Union(Schema.Literal("spec"), Schema.Literal("previous-spec"))),
+      version: Schema.NumberFromString.pipe(Schema.int()),
+      registryAuthFrom: Schema.transform(
+        Schema.UndefinedOr(Schema.Union(Schema.Literal("spec"), Schema.Literal("previous-spec"))),
+        Schema.Union(Schema.Literal("spec"), Schema.Literal("previous-spec")),
+        { strict: true, decode: (i) => (i === undefined ? "spec" : i), encode: (a) => a },
+      ),
       rollback: Schema.optional(Schema.String),
     }),
     path: Schema.Struct({ id: Schema.String }),
@@ -2830,13 +3387,41 @@ export const get_ServiceLogs = {
   parameters: {
     query: Schema.partial(
       Schema.Struct({
-        details: Schema.Boolean,
-        follow: Schema.Boolean,
-        stdout: Schema.Boolean,
-        stderr: Schema.Boolean,
-        since: Schema.Int,
-        timestamps: Schema.Boolean,
-        tail: Schema.String,
+        details: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        follow: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stdout: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stderr: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        since: Schema.transform(
+          Schema.UndefinedOr(Schema.NumberFromString.pipe(Schema.int())),
+          Schema.NumberFromString.pipe(Schema.int()),
+          { strict: true, decode: (i) => (i === undefined ? 0 : i), encode: (a) => a },
+        ),
+        timestamps: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        tail: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+          strict: true,
+          decode: (i) => (i === undefined ? "all" : i),
+          encode: (a) => a,
+        }),
       }),
     ),
     path: Schema.Struct({ id: Schema.String }),
@@ -2870,13 +3455,41 @@ export const get_TaskLogs = {
   parameters: {
     query: Schema.partial(
       Schema.Struct({
-        details: Schema.Boolean,
-        follow: Schema.Boolean,
-        stdout: Schema.Boolean,
-        stderr: Schema.Boolean,
-        since: Schema.Int,
-        timestamps: Schema.Boolean,
-        tail: Schema.String,
+        details: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        follow: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stdout: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        stderr: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        since: Schema.transform(
+          Schema.UndefinedOr(Schema.NumberFromString.pipe(Schema.int())),
+          Schema.NumberFromString.pipe(Schema.int()),
+          { strict: true, decode: (i) => (i === undefined ? 0 : i), encode: (a) => a },
+        ),
+        timestamps: Schema.transform(Schema.UndefinedOr(Schema.BooleanFromString), Schema.BooleanFromString, {
+          strict: true,
+          decode: (i) => (i === undefined ? false : i),
+          encode: (a) => a,
+        }),
+        tail: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+          strict: true,
+          decode: (i) => (i === undefined ? "all" : i),
+          encode: (a) => a,
+        }),
       }),
     ),
     path: Schema.Struct({ id: Schema.String }),
@@ -2926,7 +3539,7 @@ export const post_SecretUpdate = {
   path: Schema.Literal("/secrets/{id}/update"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.Struct({ version: Schema.Int }),
+    query: Schema.Struct({ version: Schema.NumberFromString.pipe(Schema.int()) }),
     path: Schema.Struct({ id: Schema.String }),
     body: SecretSpec,
   },
@@ -2975,7 +3588,7 @@ export const post_ConfigUpdate = {
   path: Schema.Literal("/configs/{id}/update"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.Struct({ version: Schema.Int }),
+    query: Schema.Struct({ version: Schema.NumberFromString.pipe(Schema.int()) }),
     path: Schema.Struct({ id: Schema.String }),
     body: ConfigSpec,
   },
@@ -3139,6 +3752,7 @@ export type EndpointParameters = {
   query?: Record<string, unknown>;
   header?: Record<string, unknown>;
   path?: Record<string, unknown>;
+  cookie?: Record<string, unknown>;
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
@@ -3167,9 +3781,29 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   responseHeaders?: TConfig["responseHeaders"];
 };
 
+/**
+ * Minimal response surface used by ApiClient — avoids depending on the DOM `Response`
+ * global (helpful for Node without DOM lib). Structural typing accepts fetch Response.
+ */
+export interface ApiResponse {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  headers: {
+    get(name: string): string | null;
+    getSetCookie?: () => string[];
+  };
+  json(): Promise<unknown>;
+  text(): Promise<string>;
+  arrayBuffer(): Promise<ArrayBuffer>;
+  clone(): ApiResponse;
+}
+
 export interface Fetcher {
-  decodePathParams?: (path: string, pathParams: Record<string, string>) => string;
+  decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
   encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+  /** Merge cookie params into request headers (default: Cookie header). */
+  encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
   //
   fetch: (input: {
     method: Method;
@@ -3179,8 +3813,8 @@ export interface Fetcher {
     path: string;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
-  }) => Promise<Response>;
-  parseResponseData?: (response: Response) => Promise<unknown>;
+  }) => Promise<ApiResponse>;
+  parseResponseData?: (response: ApiResponse) => Promise<unknown>;
 }
 
 export const successStatusCodes = [
@@ -3231,12 +3865,12 @@ export interface TypedHeaders<TypedHeaderValues extends Record<string, string> |
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<
-  Response,
+  ApiResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: true;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
   data: TSuccess;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TSuccess>;
@@ -3244,12 +3878,12 @@ export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends O
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<
-  Response,
+  ApiResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: false;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
   data: TData;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TData>;
@@ -3273,6 +3907,11 @@ type InferSchemaValue<T> = T extends { Type: infer O }
   ? O
   : T extends object
     ? { [K in keyof T]: InferSchemaValue<T[K]> }
+    : T;
+type InferSchemaInput<T> = T extends { Encoded: infer I }
+  ? I
+  : T extends object
+    ? { [K in keyof T]: InferSchemaInput<T[K]> }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
@@ -3355,9 +3994,10 @@ const runValidate = async (ctx: {
 // </ValidateHelpers>
 
 export type EffectFetcher = {
-  decodePathParams?: (path: string, pathParams: Record<string, string>) => string;
+  decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
   encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
-  parseResponseData?: (response: Response) => Promise<unknown>;
+  encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
+  parseResponseData?: (response: ApiResponse) => Promise<unknown>;
   fetch: (input: {
     method: Method;
     url: URL;
@@ -3366,12 +4006,13 @@ export type EffectFetcher = {
     path: string;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
-  }) => Effect.Effect<Response, HttpClientError, never>;
+  }) => Effect.Effect<ApiResponse, HttpClientError, never>;
 };
 
 const wrapPromiseFetcher = (fetcher: Fetcher): EffectFetcher => ({
   decodePathParams: fetcher.decodePathParams,
   encodeSearchParams: fetcher.encodeSearchParams,
+  encodeCookies: fetcher.encodeCookies,
   parseResponseData: fetcher.parseResponseData,
   fetch: (input) =>
     Effect.tryPromise({
@@ -3425,10 +4066,11 @@ export class EffectApiClient {
       if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
       if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
       if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
+      if (requestParams?.cookie !== undefined) (parametersToSend as any).cookie = requestParams.cookie;
 
       const endpointSchema = (EndpointByMethod as any)[method]?.[path];
       if ((validateSide === "input" || validateSide === "both") && endpointSchema?.parameters) {
-        for (const key of ["body", "query", "header", "path"] as const) {
+        for (const key of ["body", "query", "header", "path", "cookie"] as const) {
           const schema = endpointSchema.parameters[key];
           const value = (parametersToSend as any)[key];
           if (schema && value !== undefined) {
@@ -3454,10 +4096,10 @@ export class EffectApiClient {
 
       const decodePath =
         self.effectFetcher.decodePathParams ??
-        ((url: string, p: Record<string, string>) =>
+        ((url: string, p: Record<string, string | number | boolean>) =>
           url
-            .replace(/{(\w+)}/g, (_, key: string) => p[key] || `{${key}}`)
-            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => p[key] || `:${key}`));
+            .replace(/{(\w+)}/g, (_, key: string) => (p[key] != null ? String(p[key]) : `{${key}}`))
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (p[key] != null ? String(p[key]) : `:${key}`)));
       const encodeSearch =
         self.effectFetcher.encodeSearchParams ??
         ((queryParams: Record<string, unknown> | undefined) => {
@@ -3471,9 +4113,20 @@ export class EffectApiClient {
           });
           return searchParams;
         });
+      const encodeCookies =
+        self.effectFetcher.encodeCookies ??
+        ((cookies: Record<string, unknown> | undefined, headers: Headers) => {
+          if (!cookies) return;
+          const parts = Object.entries(cookies)
+            .filter(([, value]) => value != null)
+            .map(([key, value]) => `${key}=${String(value)}`);
+          if (!parts.length) return;
+          const existing = headers.get("cookie");
+          headers.set("cookie", existing ? `${existing}; ${parts.join("; ")}` : parts.join("; "));
+        });
       const parseData =
         self.effectFetcher.parseResponseData ??
-        (async (response: Response) => {
+        (async (response: ApiResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
           if (contentType.includes("json") || contentType === "*/*") {
             try {
@@ -3488,10 +4141,17 @@ export class EffectApiClient {
 
       const resolvedPath = decodePath(
         self.baseUrl + (path as string),
-        (parametersToSend.path ?? {}) as Record<string, string>,
+        (parametersToSend.path ?? {}) as Record<string, string | number | boolean>,
       );
       const url = new URL(resolvedPath);
       const urlSearchParams = encodeSearch(parametersToSend.query);
+
+      let overrides = requestParams?.overrides as RequestInit | undefined;
+      if (parametersToSend.cookie) {
+        const headers = new Headers(overrides?.headers);
+        encodeCookies(parametersToSend.cookie, headers);
+        overrides = { ...overrides, headers };
+      }
 
       const response = yield* self.effectFetcher.fetch({
         method: method as Method,
@@ -3499,7 +4159,7 @@ export class EffectApiClient {
         url,
         urlSearchParams,
         parameters: parametersToSend,
-        overrides: requestParams?.overrides,
+        overrides,
       });
 
       let data = yield* Effect.tryPromise({

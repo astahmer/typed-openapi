@@ -108,7 +108,7 @@ export const get_GetPetById = {
   method: type("'GET'"),
   path: type("'/pet/{petId}'"),
   requestFormat: type("'json'"),
-  parameters: { path: type({ petId: type("number.integer") }) },
+  parameters: { path: type({ petId: type("string.integer.parse") }) },
   responses: {
     200: Pet,
     400: type({ code: type("number.integer"), message: type("string") }),
@@ -123,7 +123,7 @@ export const post_UpdatePetWithForm = {
   requestFormat: type("'json'"),
   parameters: {
     query: type({ name: type("string"), status: type("string") }).partial(),
-    path: type({ petId: type("number.integer") }),
+    path: type({ petId: type("string.integer.parse") }),
   },
   responses: { 405: type("unknown") },
 };
@@ -133,7 +133,10 @@ export const delete_DeletePet = {
   method: type("'DELETE'"),
   path: type("'/pet/{petId}'"),
   requestFormat: type("'json'"),
-  parameters: { path: type({ petId: type("number.integer") }), header: type({ api_key: type("string") }).partial() },
+  parameters: {
+    path: type({ petId: type("string.integer.parse") }),
+    header: type({ api_key: type("string") }).partial(),
+  },
   responses: { 400: type("unknown") },
 };
 
@@ -144,7 +147,7 @@ export const post_UploadFile = {
   requestFormat: type("'binary'"),
   parameters: {
     query: type({ additionalMetadata: type("string") }).partial(),
-    path: type({ petId: type("number.integer") }),
+    path: type({ petId: type("string.integer.parse") }),
     body: type("string"),
   },
   responses: { 200: ApiResponse },
@@ -173,7 +176,7 @@ export const get_GetOrderById = {
   method: type("'GET'"),
   path: type("'/store/order/{orderId}'"),
   requestFormat: type("'json'"),
-  parameters: { path: type({ orderId: type("number.integer") }) },
+  parameters: { path: type({ orderId: type("string.integer.parse") }) },
   responses: { 200: Order, 400: type("unknown"), 404: type("unknown") },
 };
 
@@ -182,7 +185,7 @@ export const delete_DeleteOrder = {
   method: type("'DELETE'"),
   path: type("'/store/order/{orderId}'"),
   requestFormat: type("'json'"),
-  parameters: { path: type({ orderId: type("number.integer") }) },
+  parameters: { path: type({ orderId: type("string.integer.parse") }) },
   responses: { 400: type("unknown"), 404: type("unknown") },
 };
 
@@ -336,6 +339,7 @@ export type EndpointParameters = {
   query?: Record<string, unknown>;
   header?: Record<string, unknown>;
   path?: Record<string, unknown>;
+  cookie?: Record<string, unknown>;
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
@@ -364,9 +368,29 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   responseHeaders?: TConfig["responseHeaders"];
 };
 
+/**
+ * Minimal response surface used by ApiClient — avoids depending on the DOM `Response`
+ * global (helpful for Node without DOM lib). Structural typing accepts fetch Response.
+ */
+export interface ApiResponse {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  headers: {
+    get(name: string): string | null;
+    getSetCookie?: () => string[];
+  };
+  json(): Promise<unknown>;
+  text(): Promise<string>;
+  arrayBuffer(): Promise<ArrayBuffer>;
+  clone(): ApiResponse;
+}
+
 export interface Fetcher {
-  decodePathParams?: (path: string, pathParams: Record<string, string>) => string;
+  decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
   encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+  /** Merge cookie params into request headers (default: Cookie header). */
+  encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
   //
   fetch: (input: {
     method: Method;
@@ -376,8 +400,8 @@ export interface Fetcher {
     path: string;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
-  }) => Promise<Response>;
-  parseResponseData?: (response: Response) => Promise<unknown>;
+  }) => Promise<ApiResponse>;
+  parseResponseData?: (response: ApiResponse) => Promise<unknown>;
 }
 
 export const successStatusCodes = [
@@ -428,12 +452,12 @@ export interface TypedHeaders<TypedHeaderValues extends Record<string, string> |
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<
-  Response,
+  ApiResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: true;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
   data: TSuccess;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TSuccess>;
@@ -441,12 +465,12 @@ export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends O
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<
-  Response,
+  ApiResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: false;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
   data: TData;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TData>;
@@ -470,6 +494,11 @@ type InferSchemaValue<T> = T extends { infer: infer O }
   ? O
   : T extends object
     ? { [K in keyof T]: InferSchemaValue<T[K]> }
+    : T;
+type InferSchemaInput<T> = T extends { inferIn: infer I }
+  ? I
+  : T extends object
+    ? { [K in keyof T]: InferSchemaInput<T[K]> }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
@@ -574,10 +603,10 @@ export class ApiClient {
    * Replace path parameters in URL
    * Supports both OpenAPI format {param} and Express format :param
    */
-  defaultDecodePathParams = (url: string, params: Record<string, string>): string => {
+  defaultDecodePathParams = (url: string, params: Record<string, string | number | boolean>): string => {
     return url
-      .replace(/{(\w+)}/g, (_, key: string) => params[key] || `{${key}}`)
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || `:${key}`);
+      .replace(/{(\w+)}/g, (_, key: string) => (params[key] != null ? String(params[key]) : `{${key}}`))
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (params[key] != null ? String(params[key]) : `:${key}`));
   };
 
   /** Uses URLSearchParams, skips null/undefined values */
@@ -599,7 +628,18 @@ export class ApiClient {
     return searchParams;
   };
 
-  defaultParseResponseData = async (response: Response): Promise<unknown> => {
+  /** Append cookie params as a Cookie header (or merge into existing). */
+  defaultEncodeCookies = (cookies: Record<string, unknown> | undefined, headers: Headers): void => {
+    if (!cookies) return;
+    const parts = Object.entries(cookies)
+      .filter(([, value]) => value != null)
+      .map(([key, value]) => `${key}=${String(value)}`);
+    if (!parts.length) return;
+    const existing = headers.get("cookie");
+    headers.set("cookie", existing ? `${existing}; ${parts.join("; ")}` : parts.join("; "));
+  };
+
+  defaultParseResponseData = async (response: ApiResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
     if (contentType.startsWith("text/")) {
       return await response.text();
@@ -630,7 +670,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -641,7 +681,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -661,7 +701,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -672,7 +712,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -692,7 +732,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -703,7 +743,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -723,7 +763,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -734,7 +774,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -762,7 +802,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -778,7 +818,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -795,10 +835,11 @@ export class ApiClient {
       const {
         withResponse: _,
         throwOnStatusError = withResponse ? false : true,
-        overrides,
+        overrides: overridesIn,
         validate: validateOverride,
         ...fetchParams
       } = requestParams || {};
+      let overrides = overridesIn;
       const validateSide: ValidateSide = validateOverride ?? this.validate;
 
       const parametersToSend: EndpointParameters = {};
@@ -806,12 +847,13 @@ export class ApiClient {
       if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
       if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
       if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
+      if (requestParams?.cookie !== undefined) (parametersToSend as any).cookie = requestParams.cookie;
 
       const endpointSchema = (EndpointByMethod as any)[method]?.[path];
       const shouldValidateInput = validateSide === "input" || validateSide === "both";
       if (shouldValidateInput && endpointSchema?.parameters && endpointSchema.parameters !== undefined) {
         const paramSchema = endpointSchema.parameters;
-        for (const key of ["body", "query", "header", "path"] as const) {
+        for (const key of ["body", "query", "header", "path", "cookie"] as const) {
           const schema = paramSchema[key];
           const value = (parametersToSend as any)[key];
           if (schema && value !== undefined) {
@@ -829,12 +871,18 @@ export class ApiClient {
 
       const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
         this.baseUrl + (path as string),
-        (parametersToSend.path ?? {}) as Record<string, string>,
+        (parametersToSend.path ?? {}) as Record<string, string | number | boolean>,
       );
       const url = new URL(resolvedPath);
       const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
         parametersToSend.query,
       );
+
+      if (parametersToSend.cookie) {
+        const headers = new Headers((overrides as RequestInit | undefined)?.headers);
+        (this.fetcher.encodeCookies ?? this.defaultEncodeCookies)(parametersToSend.cookie, headers);
+        overrides = { ...overrides, headers };
+      }
 
       const response = await this.fetcher.fetch({
         method: method,
