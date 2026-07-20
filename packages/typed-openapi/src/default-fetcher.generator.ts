@@ -1,3 +1,5 @@
+import { encodeRequestBody } from "./encode-request-body.ts";
+
 // The contents of api-client.example.ts (kept in sync with the file)
 export const generateDefaultFetcher = (options: {
   envApiBaseUrl?: string | undefined;
@@ -17,11 +19,17 @@ export const generateDefaultFetcher = (options: {
 
   const isEffect = client === "effect";
   const importLine = isEffect
-    ? `import { type Fetcher, createEffectApiClient } from "${clientPath}";`
-    : `import { type Fetcher, createApiClient } from "${clientPath}";`;
+    ? `import { type Fetcher, type RequestFormat, createEffectApiClient } from "${clientPath}";`
+    : `import { type Fetcher, type RequestFormat, createApiClient } from "${clientPath}";`;
   const exportLine = isEffect
     ? `export const ${apiName} = createEffectApiClient({ fetch: ${fetcherName} }, ${envApiBaseUrl});`
     : `export const ${apiName} = createApiClient({ fetch: ${fetcherName} }, ${envApiBaseUrl});`;
+
+  // Inline the real helper (types erased; re-annotate for the generated file).
+  const encodeRequestBodySource = `const encodeRequestBody = ${encodeRequestBody.toString()} as (
+  requestFormat: RequestFormat,
+  body: unknown,
+) => { body?: BodyInit; contentType?: string };`;
 
   return `/**
  * Generic API Client for typed-openapi generated code
@@ -31,7 +39,7 @@ export const generateDefaultFetcher = (options: {
  * - Path parameter replacement
  * - Query parameter serialization
  * - Cookie header encoding
- * - JSON request/response handling
+ * - Body encoding by \`requestFormat\` (json / form-data / form-url / binary / text)
  * - Basic error handling
  *
  * Usage:
@@ -44,6 +52,11 @@ ${importLine}
 
 // Basic configuration
 const ${envApiBaseUrl} = process.env["${envApiBaseUrl}"] || "https://api.example.com";
+
+const isMutationMethod = (method: string) => ["post", "put", "patch", "delete"].includes(method.toLowerCase());
+
+/** Encode body according to OpenAPI requestBody content type (\`requestFormat\`). */
+${encodeRequestBodySource}
 
 /**
  * Simple fetcher implementation without external dependencies.
@@ -68,13 +81,13 @@ const ${fetcherName}: Fetcher["fetch"] = async (input) => {
     }
   }
 
-  // Handle request body for mutation methods
-  const body = ["post", "put", "patch", "delete"].includes(input.method.toLowerCase())
-    ? JSON.stringify(input.parameters?.body)
-    : undefined;
-
-  if (body) {
-    headers.set("Content-Type", "application/json");
+  let body: BodyInit | undefined;
+  if (isMutationMethod(input.method)) {
+    const encoded = encodeRequestBody(input.requestFormat, input.parameters?.body);
+    body = encoded.body;
+    if (encoded.contentType && !headers.has("content-type")) {
+      headers.set("Content-Type", encoded.contentType);
+    }
   }
 
   // Add custom headers
@@ -88,7 +101,7 @@ const ${fetcherName}: Fetcher["fetch"] = async (input) => {
 
   const response = await fetch(input.url, {
     method: input.method.toUpperCase(),
-    ...(body && { body }),
+    ...(body !== undefined && { body }),
     ...input.overrides,
     headers,
   });

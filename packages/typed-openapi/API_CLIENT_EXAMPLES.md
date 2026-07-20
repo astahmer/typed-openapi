@@ -61,7 +61,8 @@ const fetcher: Fetcher = async (method, apiUrl, params) => {
     url.search = searchParams.toString();
   }
 
-  // Handle request body for mutation methods
+  // Handle request body for mutation methods.
+  // Prefer `--default-fetcher`: it honors `requestFormat` (json / form-data / form-url / binary / text).
   const body = ["post", "put", "patch", "delete"].includes(method.toLowerCase())
     ? JSON.stringify(params?.body)
     : undefined;
