@@ -454,9 +454,18 @@ export type TypedApiResponse<TAllResponses extends Record<string | number, unkno
       : never;
 }[keyof TAllResponses];
 
+type InferSchemaValue<T> = T extends z.ZodType
+  ? z.infer<T>
+  : T extends object
+    ? { [K in keyof T]: InferSchemaValue<T[K]> }
+    : T;
+
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TResponses, TEndpoint extends { responseHeaders: infer THeaders } ? THeaders : never>
+    ? TypedApiResponse<
+        InferSchemaValue<TResponses>,
+        TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never
+      >
     : never
   : never;
 
@@ -560,7 +569,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -571,7 +580,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -591,7 +600,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -602,7 +611,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -622,7 +631,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -633,7 +642,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -653,7 +662,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -664,7 +673,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >
@@ -692,7 +701,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
@@ -708,7 +717,7 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
     >

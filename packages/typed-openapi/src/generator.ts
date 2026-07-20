@@ -47,6 +47,26 @@ export type OutputRuntime = typeof allowedRuntimes.infer;
 
 const shouldRenderDescriptionComments = (ctx: GeneratorContext) => ctx.jsdoc && ctx.runtime === "none";
 
+/** Deep-infer runtime schema values hanging off endpoint const objects. */
+const runtimeInferHelper = (runtime: OutputRuntime): string => {
+  if (runtime === "none") {
+    return `type InferSchemaValue<T> = T;`;
+  }
+  if (runtime === "zod" || runtime === "zod3") {
+    return `type InferSchemaValue<T> = T extends z.ZodType ? z.infer<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;`;
+  }
+  if (runtime === "valibot") {
+    return `type InferSchemaValue<T> = T extends v.GenericSchema ? v.InferOutput<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;`;
+  }
+  if (runtime === "effect" || runtime === "effect3") {
+    return `type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;`;
+  }
+  if (runtime === "arktype") {
+    return `type InferSchemaValue<T> = T extends { infer: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;`;
+  }
+  return `type InferSchemaValue<T> = T;`;
+};
+
 const escapeCommentText = (text: string) => text.replace(/\*\//g, "*\\/");
 
 const renderDescriptionComment = (description: string, indent = "") => {
@@ -373,9 +393,11 @@ export type TypedApiResponse<TAllResponses extends Record<string | number, unkno
         : never;
   }[keyof TAllResponses]);
 
+${runtimeInferHelper(ctx.runtime)}
+
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TResponses, TEndpoint extends { responseHeaders: infer THeaders } ? THeaders : never>
+    ? TypedApiResponse<InferSchemaValue<TResponses>, TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never>
     : never
   : never
 
@@ -391,7 +413,7 @@ type NotNever<T> = [T] extends [never] ? false : true;
 // </ApiClientTypes>
 `;
 
-  // Endpoint defs are structural (`typeof endpointConst`); response maps hang off that shape.
+  // Endpoint defs are structural (`typeof endpointConst`); DeepInfer via InferSchemaValue.
   const InferTEndpoint = "TEndpoint";
 
   const apiClient = `
@@ -485,7 +507,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? NotNever<UParams> extends true ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean })
       >
     ): Promise<Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]>;
@@ -494,7 +516,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? NotNever<UParams> extends true ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -524,7 +546,7 @@ export class ApiClient {
       path: TPath,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? NotNever<UParams> extends true ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean })
       >
     ): Promise<Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]>
@@ -538,7 +560,7 @@ export class ApiClient {
       path: TPath,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? NotNever<UParams> extends true ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
