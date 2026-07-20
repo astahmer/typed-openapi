@@ -192,9 +192,10 @@ export async function generateClientFiles(input: string, options: GenerateClient
   if (options.defaultFetcher) {
     const defaultFetcherContent = generateDefaultFetcher({
       envApiBaseUrl: options.defaultFetcher.envApiBaseUrl,
-      clientPath: options.defaultFetcher.clientPath ?? join(dirname(outputPath), basename(outputPath)),
+      clientPath: options.defaultFetcher.clientPath ?? `./${basename(outputPath)}`,
       fetcherName: options.defaultFetcher.fetcherName,
       apiName: options.defaultFetcher.apiName,
+      client: generatorOptions.client ?? (runtime === "effect" || runtime === "effect3" ? "effect" : "promise"),
     });
     let defaultFetcherOutputPath: string;
     if (typeof options.defaultFetcher === "string" && isAbsolute(options.defaultFetcher)) {

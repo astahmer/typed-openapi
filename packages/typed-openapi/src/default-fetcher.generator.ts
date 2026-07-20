@@ -4,13 +4,25 @@ export const generateDefaultFetcher = (options: {
   clientPath?: string | undefined;
   fetcherName?: string | undefined;
   apiName?: string | undefined;
+  /** When the generated client uses EffectApiClient */
+  client?: "promise" | "effect";
 }) => {
   const {
     envApiBaseUrl = "API_BASE_URL",
     clientPath = "./openapi.client.ts",
     fetcherName = "defaultFetcher",
     apiName = "api",
+    client = "promise",
   } = options;
+
+  const isEffect = client === "effect";
+  const importLine = isEffect
+    ? `import { type Fetcher, createEffectApiClient } from "${clientPath}";`
+    : `import { type Fetcher, createApiClient } from "${clientPath}";`;
+  const exportLine = isEffect
+    ? `export const ${apiName} = createEffectApiClient({ fetch: ${fetcherName} }, ${envApiBaseUrl});`
+    : `export const ${apiName} = createApiClient({ fetch: ${fetcherName} }, ${envApiBaseUrl});`;
+
   return `/**
  * Generic API Client for typed-openapi generated code
  *
@@ -18,6 +30,7 @@ export const generateDefaultFetcher = (options: {
  * It handles:
  * - Path parameter replacement
  * - Query parameter serialization
+ * - Cookie header encoding
  * - JSON request/response handling
  * - Basic error handling
  *
@@ -27,20 +40,32 @@ export const generateDefaultFetcher = (options: {
  * 3. Customize error handling and headers as needed
  */
 
-import { type Fetcher, createApiClient } from "${clientPath}";
+${importLine}
 
 // Basic configuration
 const ${envApiBaseUrl} = process.env["${envApiBaseUrl}"] || "https://api.example.com";
 
 /**
- * Simple fetcher implementation without external dependencies
+ * Simple fetcher implementation without external dependencies.
+ * Compatible with both ApiClient and EffectApiClient (promise fetcher is wrapped).
  */
 const ${fetcherName}: Fetcher["fetch"] = async (input) => {
-  const headers = new Headers();
+  const headers = new Headers(input.overrides?.headers);
 
   // Handle query parameters
   if (input.urlSearchParams) {
     input.url.search = input.urlSearchParams.toString();
+  }
+
+  // Cookie params (OpenAPI \`in: cookie\`)
+  if (input.parameters?.cookie) {
+    const parts = Object.entries(input.parameters.cookie)
+      .filter(([, value]) => value != null)
+      .map(([key, value]) => \`\${key}=\${String(value)}\`);
+    if (parts.length) {
+      const existing = headers.get("cookie");
+      headers.set("cookie", existing ? \`\${existing}; \${parts.join("; ")}\` : parts.join("; "));
+    }
   }
 
   // Handle request body for mutation methods
@@ -64,12 +89,13 @@ const ${fetcherName}: Fetcher["fetch"] = async (input) => {
   const response = await fetch(input.url, {
     method: input.method.toUpperCase(),
     ...(body && { body }),
-    headers,
     ...input.overrides,
+    headers,
   });
 
   return response;
 };
 
-export const ${apiName} = createApiClient({ fetch: ${fetcherName} }, API_BASE_URL);`;
+${exportLine}
+`;
 };
