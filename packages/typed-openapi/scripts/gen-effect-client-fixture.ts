@@ -7,9 +7,7 @@ import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { generateFile } from "../src/generator.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const doc = (await SwaggerParser.parse(
-  join(root, "tests/samples/filter-fixture.openapi.yaml"),
-)) as OpenAPIObject;
+const doc = (await SwaggerParser.parse(join(root, "tests/samples/filter-fixture.openapi.yaml"))) as OpenAPIObject;
 const ctx = mapOpenApiEndpoints(doc);
 const src = generateFile({ ...ctx, runtime: "effect", endpointPatterns: ["/pets"] });
 mkdirSync(join(root, "tmp"), { recursive: true });
