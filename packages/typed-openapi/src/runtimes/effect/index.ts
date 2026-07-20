@@ -5,6 +5,7 @@ import {
   applyObjectConstraints,
   applyStringConstraints,
   emitBinaryBlobCheck,
+  emitStreamCheck,
   internEffectDefault,
   isNullOr,
   jsLiteral,
@@ -63,6 +64,8 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       return emitString(node, ctx);
     case "binary":
       return emitBinaryBlobCheck("effect");
+    case "stream":
+      return emitStreamCheck("effect");
     case "number":
       return emitNumber(node, ctx);
     case "boolean":

@@ -5,6 +5,7 @@ import {
   applyObjectConstraints,
   applyStringConstraints,
   emitBinaryBlobCheck,
+  emitStreamCheck,
   findMappedUnionMember,
   isNullOr,
   literalValue,
@@ -58,6 +59,8 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       return emitString(node, ctx);
     case "binary":
       return emitBinaryBlobCheck("zod3");
+    case "stream":
+      return emitStreamCheck("zod3");
     case "number":
       return emitNumber(node, ctx);
     case "boolean":

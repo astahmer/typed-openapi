@@ -52,6 +52,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
         method: method as Method,
         path,
         requestFormat: "json",
+        responseFormat: "json",
         meta: {
           alias,
           areParametersRequired: false,
@@ -141,7 +142,12 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
         // Collect all responses for error handling — strip writeOnly (request-only)
         const content = responseObj?.content;
         const mediaTypes = Object.keys(content ?? {}).filter(isResponseMediaType);
-        if (content && mediaTypes.length) {
+        const sseMedia = mediaTypes.find(isSseMediaType);
+        if (sseMedia) {
+          endpoint.responseFormat = "sse";
+          const streamNode: SchemaNode = { kind: "stream", meta: emptyMeta() };
+          allResponses[status] = mergeUnion(allResponses[status], streamNode);
+        } else if (content && mediaTypes.length) {
           mediaTypes.forEach((mediaType) => {
             const schema = content[mediaType] ? (content[mediaType].schema ?? {}) : {};
             const node = stripReadWrite(openApiToIr(schema, irCtx), "response");
@@ -198,8 +204,12 @@ const isAllowedParamMediaTypes = (
   allowedParamMediaTypes.includes(mediaType as any) ||
   mediaType.includes("text/");
 
+const isSseMediaType = (mediaType: string) => mediaType.includes("text/event-stream");
+
 const isResponseMediaType = (mediaType: string) =>
-  mediaType === "*/*" || (mediaType.includes("application/") && mediaType.includes("json"));
+  mediaType === "*/*" ||
+  (mediaType.includes("application/") && mediaType.includes("json")) ||
+  isSseMediaType(mediaType);
 const getAlias = ({ path, method, operation }: Endpoint) =>
   sanitizeName(
     (method + "_" + capitalize(operation.operationId ?? pathToVariableName(path))).replace(/-/g, "__"),
@@ -218,6 +228,7 @@ export type EndpointParameters = {
 };
 
 type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+type ResponseFormat = "json" | "sse";
 
 type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -231,6 +242,8 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   path: string;
   parameters?: TConfig["parameters"];
   requestFormat: RequestFormat;
+  /** How to consume the success response body (SSE skips JSON parse + output validation). */
+  responseFormat: ResponseFormat;
   meta: {
     alias: string;
     hasParameters: boolean;

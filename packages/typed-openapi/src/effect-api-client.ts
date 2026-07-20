@@ -75,7 +75,7 @@ ${validateValue("input", "value", "schema", "parametersToSend[key] =")}
     : "const endpointSchema = undefined;";
 
   const outputBlock = hasRuntime
-    ? `if ((validateSide === "output" || validateSide === "both") && response.ok && endpointSchema?.responses) {
+    ? `if (responseFormat !== "sse" && (validateSide === "output" || validateSide === "both") && response.ok && endpointSchema?.responses) {
         const responseSchema =
           endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
         if (responseSchema) {
@@ -204,6 +204,9 @@ export class EffectApiClient {
         self.effectFetcher.parseResponseData ??
         (async (response: FetcherResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
+          if (contentType.includes("text/event-stream")) {
+            return response.body ?? null;
+          }
           if (contentType.includes("json") || contentType === "*/*") {
             try {
               return await response.json();
@@ -236,10 +239,14 @@ export class EffectApiClient {
         overrides,
       });
 
-      let data = yield* Effect.tryPromise({
-        try: () => parseData(response),
-        catch: (cause) => new HttpClientError("parse failed", cause),
-      });
+      const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+      let data =
+        responseFormat === "sse"
+          ? (response.body ?? null)
+          : yield* Effect.tryPromise({
+              try: () => parseData(response),
+              catch: (cause) => new HttpClientError("parse failed", cause),
+            });
 
       ${outputBlock}
 

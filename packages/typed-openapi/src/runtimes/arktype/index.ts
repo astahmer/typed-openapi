@@ -4,6 +4,7 @@ import {
   applyStringConstraints,
   arktypeDefaultDef,
   emitBinaryBlobCheck,
+  emitStreamCheck,
   isNullOr,
   objectKey,
   objectProps,
@@ -80,6 +81,8 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       return `type(${emitStringDef(node, ctx)})`;
     case "binary":
       return emitBinaryBlobCheck("arktype");
+    case "stream":
+      return emitStreamCheck("arktype");
     case "number":
       return `type(${emitNumberDef(node, ctx)})`;
     case "boolean":

@@ -72,7 +72,9 @@ type GeneratorContext = Required<
   coerce: boolean;
 };
 
-export const allowedRuntimes = type("'none' | 'zod' | 'zod3' | 'effect' | 'effect3' | 'valibot' | 'arktype'");
+export const allowedRuntimes = type(
+  "'none' | 'zod' | 'zod3' | 'effect' | 'effect3' | 'valibot' | 'arktype' | 'typebox' | 'typia'",
+);
 export type OutputRuntime = typeof allowedRuntimes.infer;
 
 const shouldRenderDescriptionComments = (ctx: GeneratorContext) => ctx.jsdoc && ctx.runtime === "none";
@@ -103,6 +105,14 @@ type InferSchemaInput<T> = T extends { Encoded: infer I } ? I : ${optionalKeyObj
   if (runtime === "arktype") {
     return `type InferSchemaValue<T> = T extends { infer: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
 type InferSchemaInput<T> = T extends { inferIn: infer I } ? I : ${optionalKeyObjectMap("InferSchemaInput<T[K]>")};`;
+  }
+  if (runtime === "typebox") {
+    return `type InferSchemaValue<T> = T extends import("@sinclair/typebox").TSchema ? import("@sinclair/typebox").Static<T> : ${optionalKeyObjectMap("InferSchemaValue<T[K]>")};
+type InferSchemaInput<T> = InferSchemaValue<T>;`;
+  }
+  if (runtime === "typia") {
+    return `type InferSchemaValue<T> = T extends (input: unknown) => input is infer U ? U : ${optionalKeyObjectMap("InferSchemaValue<T[K]>")};
+type InferSchemaInput<T> = InferSchemaValue<T>;`;
   }
   return `type InferSchemaValue<T> = T;\ntype InferSchemaInput<T> = T;`;
 };
@@ -261,6 +271,7 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
       method: "${endpoint.method.toUpperCase()}",
       path: "${endpoint.path}",
       requestFormat: "${endpoint.requestFormat}",
+      responseFormat: "${endpoint.responseFormat}",
       ${
         endpoint.meta.hasParameters
           ? `parameters: {
@@ -346,6 +357,30 @@ const generateEndpointRequestFormats = (ctx: GeneratorContext) => {
     `;
 };
 
+/** Sparse map of non-json responseFormat overrides (default `"json"`). */
+const generateEndpointResponseFormats = (ctx: GeneratorContext) => {
+  const byMethods = groupBy(ctx.endpointList, "method");
+  const nonJsonEntries = Object.entries(byMethods)
+    .map(([method, list]) => {
+      const overrides = list.filter((endpoint) => endpoint.responseFormat !== "json");
+      if (!overrides.length) return "";
+      return `${method}: {
+          ${overrides.map((endpoint) => `"${endpoint.path}": "${endpoint.responseFormat}"`).join(",\n")}
+        }`;
+    })
+    .filter(Boolean)
+    .join(",\n");
+
+  return `
+    // <EndpointResponseFormats>
+    /** Non-json response body modes; missing entries default to \`"json"\`. SSE skips JSON parse + output validation. */
+    export const endpointResponseFormats = {
+    ${nonJsonEntries}
+    } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }> }>;
+    // </EndpointResponseFormats>
+    `;
+};
+
 const generateApiClient = (ctx: GeneratorContext) => {
   if (!ctx.includeClient) {
     return "";
@@ -368,8 +403,10 @@ export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
 
 ${generateEndpointRequestFormats(ctx)}
+${generateEndpointResponseFormats(ctx)}
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -382,6 +419,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -404,6 +442,8 @@ export interface FetcherResponse {
     get(name: string): string | null;
     getSetCookie?: () => string[];
   };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>;
   text(): Promise<string>;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -609,6 +649,9 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.includes("text/event-stream")) {
+      return response.body ?? null;
+    }
     if (contentType.startsWith("text/")) {
       return (await response.text())
     }
@@ -771,11 +814,15 @@ export class ApiClient {
         overrides,
         throwOnStatusError
       });
-          let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+          const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+          let data =
+            responseFormat === "sse"
+              ? (response.body ?? null)
+              : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
           ${
             ctx.runtime !== "none"
               ? `const shouldValidateOutput = validateSide === "output" || validateSide === "both";
-          if (shouldValidateOutput && response.ok && endpointSchema?.responses) {
+          if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
             const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
             if (responseSchema) {
               data = await runValidate({
@@ -859,6 +906,10 @@ const generateValidateHelpers = (ctx: GeneratorContext): string => {
         return `S.decodeUnknownSync(schema as S.Schema<unknown, unknown, never>)(value)`;
       case "arktype":
         return `(() => { const out = (schema as { (data: unknown): unknown }).call(schema, value); if (out instanceof type.errors) throw out; return out; })()`;
+      case "typebox":
+        return `(() => { if (!Value.Check(schema as import("@sinclair/typebox").TSchema, value)) throw new Error("TypeBox validation failed"); return value; })()`;
+      case "typia":
+        return `(() => { const isValid = (schema as (input: unknown) => boolean)(value); if (!isValid) throw new Error("typia validation failed"); return value; })()`;
       default:
         return `value`;
     }

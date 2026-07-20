@@ -37,6 +37,8 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
       return "string";
     case "binary":
       return "Blob";
+    case "stream":
+      return "ReadableStream<Uint8Array>";
     case "number":
       return "number";
     case "boolean":

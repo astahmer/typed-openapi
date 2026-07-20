@@ -39,6 +39,10 @@ const wrapOptionalParamGroup = (adapter: RuntimeAdapter, expr: string): string =
       return `S.optional(${expr})`;
     case "arktype":
       return `${expr}.optional()`;
+    case "typebox":
+      return `Type.Optional(${expr})`;
+    case "typia":
+      return expr;
     default:
       return expr;
   }
@@ -138,6 +142,7 @@ export const emitRuntimeFile = ({
       endpointsBlock += `  method: ${adapter.literalString(endpoint.method.toUpperCase())},\n`;
       endpointsBlock += `  path: ${adapter.literalString(endpoint.path)},\n`;
       endpointsBlock += `  requestFormat: ${adapter.literalString(endpoint.requestFormat)},\n`;
+      endpointsBlock += `  responseFormat: ${adapter.literalString(endpoint.responseFormat)},\n`;
       endpointsBlock += `  parameters: ${endpoint.meta.hasParameters ? parameters : adapter.never()},\n`;
       endpointsBlock += `  responses: ${responses},\n`;
       if (responseHeaders) endpointsBlock += `  ${responseHeaders}\n`;

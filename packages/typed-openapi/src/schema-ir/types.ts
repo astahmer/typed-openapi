@@ -72,6 +72,8 @@ export type SchemaNode =
   | { kind: "record"; key: SchemaNode; value: SchemaNode; meta: SchemaMeta }
   /** OAS `type: string, format: binary|byte` — typed as Blob for uploads/downloads */
   | { kind: "binary"; meta: SchemaMeta }
+  /** OAS `text/event-stream` response body — typed as ReadableStream */
+  | { kind: "stream"; meta: SchemaMeta }
   | { kind: "unknown"; meta: SchemaMeta }
   | { kind: "any"; meta: SchemaMeta }
   | { kind: "never"; meta: SchemaMeta };

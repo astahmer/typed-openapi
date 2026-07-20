@@ -12,7 +12,9 @@ import type { ValidationPolicy } from "./validation.ts";
 export const quote = (value: string) => JSON.stringify(value);
 
 /** Runtime expression for OAS binary/byte bodies (Blob in browser/Node 18+). */
-export const emitBinaryBlobCheck = (lib: "zod" | "zod3" | "valibot" | "effect" | "effect3" | "arktype"): string => {
+export const emitBinaryBlobCheck = (
+  lib: "zod" | "zod3" | "valibot" | "effect" | "effect3" | "arktype" | "typebox" | "typia",
+): string => {
   switch (lib) {
     case "zod":
     case "zod3":
@@ -25,6 +27,35 @@ export const emitBinaryBlobCheck = (lib: "zod" | "zod3" | "valibot" | "effect" |
       return `S.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob)`;
     case "arktype":
       return `type.instanceOf(Blob)`;
+    case "typebox":
+      return `Type.Unsafe<Blob>({ type: "string", format: "binary" })`;
+    case "typia":
+      return `typia.createIs<Blob>()`;
+    default:
+      return `z.unknown()`;
+  }
+};
+
+/** SSE / streaming response body — usually skipped at validate-time; still emit a weak check. */
+export const emitStreamCheck = (
+  lib: "zod" | "zod3" | "valibot" | "effect" | "effect3" | "arktype" | "typebox" | "typia",
+): string => {
+  switch (lib) {
+    case "zod":
+    case "zod3":
+      return `z.custom<ReadableStream<Uint8Array>>((v) => typeof ReadableStream !== "undefined" && v instanceof ReadableStream)`;
+    case "valibot":
+      return `v.custom<ReadableStream<Uint8Array>>((v) => typeof ReadableStream !== "undefined" && v instanceof ReadableStream)`;
+    case "effect":
+      return `Schema.declare((v): v is ReadableStream<Uint8Array> => typeof ReadableStream !== "undefined" && v instanceof ReadableStream)`;
+    case "effect3":
+      return `S.declare((v): v is ReadableStream<Uint8Array> => typeof ReadableStream !== "undefined" && v instanceof ReadableStream)`;
+    case "arktype":
+      return `type.instanceOf(ReadableStream)`;
+    case "typebox":
+      return `Type.Unsafe<ReadableStream<Uint8Array>>({ type: "object", description: "ReadableStream" })`;
+    case "typia":
+      return `typia.createIs<ReadableStream<Uint8Array>>()`;
     default:
       return `z.unknown()`;
   }
