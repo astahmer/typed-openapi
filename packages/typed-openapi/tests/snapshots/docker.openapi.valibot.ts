@@ -2269,8 +2269,8 @@ export const post_NetworkCreate = {
       Ingress: v.optional(v.boolean()),
       IPAM: v.optional(IPAM),
       EnableIPv6: v.optional(v.boolean()),
-      Options: v.optional(v.record(v.record(v.string(), v.string()), v.string())),
-      Labels: v.optional(v.record(v.record(v.string(), v.string()), v.string())),
+      Options: v.optional(v.record(v.string(), v.string())),
+      Labels: v.optional(v.record(v.string(), v.string())),
     }),
   },
   responses: {

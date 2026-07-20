@@ -2170,8 +2170,8 @@ export const post_NetworkCreate = {
       Ingress: z.boolean().optional(),
       IPAM: IPAM.optional(),
       EnableIPv6: z.boolean().optional(),
-      Options: z.record(z.record(z.string(), z.string()), z.string()).optional(),
-      Labels: z.record(z.record(z.string(), z.string()), z.string()).optional(),
+      Options: z.record(z.string(), z.string()).optional(),
+      Labels: z.record(z.string(), z.string()).optional(),
     }),
   },
   responses: {

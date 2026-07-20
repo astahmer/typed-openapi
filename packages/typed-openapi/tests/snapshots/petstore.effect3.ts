@@ -143,7 +143,7 @@ export const get_GetInventory = {
   path: S.Literal("/store/inventory"),
   requestFormat: S.Literal("json"),
   parameters: S.Never,
-  responses: { 200: S.Record({ key: S.Record({ key: S.String, value: S.Int }), value: S.Int }) },
+  responses: { 200: S.Record({ key: S.String, value: S.Int }) },
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;

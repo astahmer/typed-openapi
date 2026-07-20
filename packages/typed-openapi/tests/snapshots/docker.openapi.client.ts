@@ -1682,8 +1682,8 @@ export namespace Endpoints {
         Ingress?: boolean;
         IPAM?: Schemas.IPAM;
         EnableIPv6?: boolean;
-        Options?: Record<Record<string, string>, string>;
-        Labels?: Record<Record<string, string>, string>;
+        Options?: Record<string, string>;
+        Labels?: Record<string, string>;
       };
     };
     responses: {

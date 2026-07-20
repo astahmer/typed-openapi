@@ -96,11 +96,19 @@ export const boxToIr = (box: Box<AnyBoxDef> | AnyBox | string, ctx: SchemaIrConv
     return { kind: "literal", value: raw, meta: emptyMeta() };
   }
   if (Box.isKeyword(box)) {
-    // Prefer original OAS schema so formats/constraints survive
-    if (box.schema && !isReferenceObject(box.schema)) {
-      return openApiToIr(box.schema, ctx);
-    }
     const name = box.params.name;
+    // Only reuse box.schema when it matches this keyword — factory boxes often inherit
+    // a parent object schema (e.g. Record key `t.string()` carries the object schema).
+    if (box.schema && !isReferenceObject(box.schema)) {
+      const st = typeof box.schema.type === "string" ? box.schema.type.toLowerCase() : undefined;
+      const schemaMatchesKeyword =
+        (name === "string" && st === "string") ||
+        (name === "number" && (st === "number" || st === "integer")) ||
+        (name === "boolean" && st === "boolean");
+      if (schemaMatchesKeyword) {
+        return openApiToIr(box.schema, ctx);
+      }
+    }
     if (name === "string") return { kind: "string", constraints: {}, meta: emptyMeta() };
     if (name === "number") return { kind: "number", integer: false, constraints: {}, meta: emptyMeta() };
     if (name === "boolean") return { kind: "boolean", meta: emptyMeta() };

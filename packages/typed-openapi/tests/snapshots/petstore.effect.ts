@@ -163,7 +163,7 @@ export const get_GetInventory = {
   path: Schema.Literal("/store/inventory"),
   requestFormat: Schema.Literal("json"),
   parameters: Schema.Never,
-  responses: { 200: Schema.Record(Schema.Record(Schema.String, Schema.Int), Schema.Int) },
+  responses: { 200: Schema.Record(Schema.String, Schema.Int) },
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;

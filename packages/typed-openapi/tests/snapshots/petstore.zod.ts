@@ -146,7 +146,7 @@ export const get_GetInventory = {
   path: z.literal("/store/inventory"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  responses: { 200: z.record(z.record(z.string(), z.number().int()), z.number().int()) },
+  responses: { 200: z.record(z.string(), z.number().int()) },
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;

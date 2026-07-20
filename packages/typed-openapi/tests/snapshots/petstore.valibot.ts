@@ -159,7 +159,7 @@ export const get_GetInventory = {
   path: v.literal("/store/inventory"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  responses: { 200: v.record(v.record(v.string(), v.pipe(v.number(), v.integer())), v.pipe(v.number(), v.integer())) },
+  responses: { 200: v.record(v.string(), v.pipe(v.number(), v.integer())) },
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;

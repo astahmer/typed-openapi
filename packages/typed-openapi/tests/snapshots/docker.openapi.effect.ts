@@ -2433,8 +2433,8 @@ export const post_NetworkCreate = {
       Ingress: Schema.optional(Schema.Boolean),
       IPAM: Schema.optional(IPAM),
       EnableIPv6: Schema.optional(Schema.Boolean),
-      Options: Schema.optional(Schema.Record(Schema.Record(Schema.String, Schema.String), Schema.String)),
-      Labels: Schema.optional(Schema.Record(Schema.Record(Schema.String, Schema.String), Schema.String)),
+      Options: Schema.optional(Schema.Record(Schema.String, Schema.String)),
+      Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)),
     }),
   },
   responses: {

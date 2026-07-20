@@ -120,7 +120,7 @@ export namespace Endpoints {
     path: "/store/inventory";
     requestFormat: "json";
     parameters: never;
-    responses: { 200: Record<Record<string, number>, number> };
+    responses: { 200: Record<string, number> };
   };
   export type post_PlaceOrder = {
     method: "POST";
