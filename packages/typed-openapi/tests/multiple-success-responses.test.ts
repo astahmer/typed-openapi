@@ -156,7 +156,15 @@ describe("multiple success responses", () => {
       export type MutationMethod = "post" | "put" | "patch" | "delete";
       export type Method = "get" | "head" | "options" | MutationMethod;
 
-      type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+      export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
+      // <EndpointRequestFormats>
+      export const endpointRequestFormats = {
+        post: {
+          "/users": "json",
+        },
+      } as { [M in keyof EndpointByMethod]: { [P in keyof EndpointByMethod[M]]: RequestFormat } };
+      // </EndpointRequestFormats>
 
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
@@ -209,6 +217,8 @@ describe("multiple success responses", () => {
           urlSearchParams?: URLSearchParams | undefined;
           parameters?: EndpointParameters | undefined;
           path: string;
+          /** How to encode \`parameters.body\` (from OpenAPI requestBody content type). */
+          requestFormat: RequestFormat;
           overrides?: RequestInit;
           throwOnStatusError?: boolean;
         }) => Promise<FetcherResponse>;
@@ -521,15 +531,9 @@ describe("multiple success responses", () => {
           return (async () => {
             const requestParams = params[0];
             const withResponse = requestParams?.withResponse;
-            const {
-              withResponse: _,
-              throwOnStatusError = withResponse ? false : true,
-              overrides: overridesIn,
-              validate: validateOverride,
-              ...fetchParams
-            } = requestParams || {};
-            let overrides = overridesIn;
-            const validateSide: ValidateSide = validateOverride ?? this.validate;
+            const throwOnStatusError = requestParams?.throwOnStatusError ?? (withResponse ? false : true);
+            let overrides = requestParams?.overrides;
+            const validateSide: ValidateSide = requestParams?.validate ?? this.validate;
 
             const parametersToSend: EndpointParameters = {};
             if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
@@ -560,7 +564,8 @@ describe("multiple success responses", () => {
               path: path as string,
               url,
               urlSearchParams,
-              parameters: Object.keys(fetchParams).length ? fetchParams : undefined,
+              parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
+              requestFormat: endpointRequestFormats[method][path],
               overrides,
               throwOnStatusError,
             });

@@ -351,7 +351,42 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
-type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
+// <EndpointRequestFormats>
+export const endpointRequestFormats = {
+  put: {
+    "/pet": "json",
+    "/user/{username}": "json",
+  },
+  post: {
+    "/pet": "json",
+    "/pet/{petId}": "json",
+    "/pet/{petId}/uploadImage": "binary",
+    "/store/order": "json",
+    "/user": "json",
+    "/user/createWithList": "json",
+  },
+  get: {
+    "/pet/findByStatus": "json",
+    "/pet/findByTags": "json",
+    "/pet/{petId}": "json",
+    "/store/inventory": "json",
+    "/store/order/{orderId}": "json",
+    "/user/login": "json",
+    "/user/logout": "json",
+    "/user/{username}": "json",
+    "/pet/text": "json",
+    "/pet/empty": "json",
+    "/pet/custom": "json",
+  },
+  delete: {
+    "/pet/{petId}": "json",
+    "/store/order/{orderId}": "json",
+    "/user/{username}": "json",
+  },
+} as { [M in keyof EndpointByMethod]: { [P in keyof EndpointByMethod[M]]: RequestFormat } };
+// </EndpointRequestFormats>
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -404,6 +439,8 @@ export interface Fetcher {
     urlSearchParams?: URLSearchParams | undefined;
     parameters?: EndpointParameters | undefined;
     path: string;
+    /** How to encode `parameters.body` (from OpenAPI requestBody content type). */
+    requestFormat: RequestFormat;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
   }) => Promise<FetcherResponse>;
@@ -591,15 +628,7 @@ export type EffectFetcher = {
   encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
   encodeCookies?: (cookies: unknown, headers: Headers) => void;
   parseResponseData?: (response: FetcherResponse) => Promise<unknown>;
-  fetch: (input: {
-    method: Method;
-    url: URL;
-    urlSearchParams?: URLSearchParams | undefined;
-    parameters?: EndpointParameters | undefined;
-    path: string;
-    overrides?: RequestInit;
-    throwOnStatusError?: boolean;
-  }) => Effect.Effect<FetcherResponse, HttpClientError, never>;
+  fetch: (input: Parameters<Fetcher["fetch"]>[0]) => Effect.Effect<FetcherResponse, HttpClientError, never>;
 };
 
 const wrapPromiseFetcher = (fetcher: Fetcher): EffectFetcher => ({
@@ -756,7 +785,8 @@ export class EffectApiClient {
         path: path as string,
         url,
         urlSearchParams,
-        parameters: parametersToSend,
+        parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
+        requestFormat: endpointRequestFormats[method][path],
         overrides,
       });
 

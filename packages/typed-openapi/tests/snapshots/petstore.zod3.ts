@@ -333,7 +333,42 @@ export type EndpointParameters = {
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
-type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
+// <EndpointRequestFormats>
+export const endpointRequestFormats = {
+  put: {
+    "/pet": "json",
+    "/user/{username}": "json",
+  },
+  post: {
+    "/pet": "json",
+    "/pet/{petId}": "json",
+    "/pet/{petId}/uploadImage": "binary",
+    "/store/order": "json",
+    "/user": "json",
+    "/user/createWithList": "json",
+  },
+  get: {
+    "/pet/findByStatus": "json",
+    "/pet/findByTags": "json",
+    "/pet/{petId}": "json",
+    "/store/inventory": "json",
+    "/store/order/{orderId}": "json",
+    "/user/login": "json",
+    "/user/logout": "json",
+    "/user/{username}": "json",
+    "/pet/text": "json",
+    "/pet/empty": "json",
+    "/pet/custom": "json",
+  },
+  delete: {
+    "/pet/{petId}": "json",
+    "/store/order/{orderId}": "json",
+    "/user/{username}": "json",
+  },
+} as { [M in keyof EndpointByMethod]: { [P in keyof EndpointByMethod[M]]: RequestFormat } };
+// </EndpointRequestFormats>
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -386,6 +421,8 @@ export interface Fetcher {
     urlSearchParams?: URLSearchParams | undefined;
     parameters?: EndpointParameters | undefined;
     path: string;
+    /** How to encode `parameters.body` (from OpenAPI requestBody content type). */
+    requestFormat: RequestFormat;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
   }) => Promise<FetcherResponse>;
@@ -817,15 +854,9 @@ export class ApiClient {
     return (async () => {
       const requestParams = params[0];
       const withResponse = requestParams?.withResponse;
-      const {
-        withResponse: _,
-        throwOnStatusError = withResponse ? false : true,
-        overrides: overridesIn,
-        validate: validateOverride,
-        ...fetchParams
-      } = requestParams || {};
-      let overrides = overridesIn;
-      const validateSide: ValidateSide = validateOverride ?? this.validate;
+      const throwOnStatusError = requestParams?.throwOnStatusError ?? (withResponse ? false : true);
+      let overrides = requestParams?.overrides;
+      const validateSide: ValidateSide = requestParams?.validate ?? this.validate;
 
       const parametersToSend: EndpointParameters = {};
       if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
@@ -878,7 +909,8 @@ export class ApiClient {
         path: path as string,
         url,
         urlSearchParams,
-        parameters: Object.keys(fetchParams).length ? fetchParams : undefined,
+        parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
+        requestFormat: endpointRequestFormats[method][path],
         overrides,
         throwOnStatusError,
       });
