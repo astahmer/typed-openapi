@@ -232,7 +232,7 @@ export class EffectApiClient {
         url,
         urlSearchParams,
         parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
-        requestFormat: endpointRequestFormats[method][path],
+        requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
         overrides,
       });
 

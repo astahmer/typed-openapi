@@ -159,11 +159,10 @@ describe("multiple success responses", () => {
       export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
       // <EndpointRequestFormats>
-      export const endpointRequestFormats = {
-        post: {
-          "/users": "json",
-        },
-      } as { [M in keyof EndpointByMethod]: { [P in keyof EndpointByMethod[M]]: RequestFormat } };
+      /** Non-json request body encodings; missing entries default to \`"json"\`. */
+      export const endpointRequestFormats = {} as Partial<{
+        [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }>;
+      }>;
       // </EndpointRequestFormats>
 
       export type DefaultEndpoint = {
@@ -565,7 +564,7 @@ describe("multiple success responses", () => {
               url,
               urlSearchParams,
               parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
-              requestFormat: endpointRequestFormats[method][path],
+              requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
               overrides,
               throwOnStatusError,
             });

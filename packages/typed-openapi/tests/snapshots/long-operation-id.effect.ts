@@ -57,14 +57,10 @@ export type Method = "get" | "head" | "options" | MutationMethod;
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
 // <EndpointRequestFormats>
-export const endpointRequestFormats = {
-  get: {
-    "/users": "json",
-  },
-  post: {
-    "/users": "json",
-  },
-} as { [M in keyof EndpointByMethod]: { [P in keyof EndpointByMethod[M]]: RequestFormat } };
+/** Non-json request body encodings; missing entries default to `"json"`. */
+export const endpointRequestFormats = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }>;
+}>;
 // </EndpointRequestFormats>
 
 export type DefaultEndpoint = {
@@ -465,7 +461,7 @@ export class EffectApiClient {
         url,
         urlSearchParams,
         parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
-        requestFormat: endpointRequestFormats[method][path],
+        requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
         overrides,
       });
 

@@ -107,7 +107,27 @@ describe("default fetcher + client requestFormat wiring", () => {
     expect(file).toContain("// <EndpointRequestFormats>");
     expect(file).toContain('"/upload": "form-data"');
     expect(file).toContain('"/raw": "binary"');
-    expect(file).toContain("requestFormat: endpointRequestFormats[method][path]");
+    expect(file).not.toMatch(/"\/upload": "json"/);
+    expect(file).toContain('requestFormat: endpointRequestFormats[method]?.[path] ?? "json"');
     expect(file).toContain("export type RequestFormat");
+  });
+
+  test("all-json specs emit an empty endpointRequestFormats map", () => {
+    const openApiDoc = {
+      openapi: "3.0.3",
+      info: { title: "t", version: "1" },
+      paths: {
+        "/pets": {
+          get: {
+            operationId: "listPets",
+            responses: { "200": { description: "ok" } },
+          },
+        },
+      },
+    } satisfies OpenAPIObject;
+
+    const ctx = mapOpenApiEndpoints(openApiDoc);
+    const file = generateFile({ ...ctx, runtime: "none", includeClient: true });
+    expect(file).toMatch(/export const endpointRequestFormats = \{\s*\} as Partial/);
   });
 });

@@ -314,20 +314,26 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
   return endpointByMethod + shorthands;
 };
 
-/** Runtime map of requestFormat per method/path (needed when EndpointByMethod is types-only). */
+/** Runtime overrides for non-json requestFormat (default is `"json"`). */
 const generateEndpointRequestFormats = (ctx: GeneratorContext) => {
   const byMethods = groupBy(ctx.endpointList, "method");
+  const nonJsonEntries = Object.entries(byMethods)
+    .map(([method, list]) => {
+      const overrides = list.filter((endpoint) => endpoint.requestFormat !== "json");
+      if (!overrides.length) return "";
+      return `${method}: {
+          ${overrides.map((endpoint) => `"${endpoint.path}": "${endpoint.requestFormat}"`).join(",\n")}
+        }`;
+    })
+    .filter(Boolean)
+    .join(",\n");
+
   return `
     // <EndpointRequestFormats>
+    /** Non-json request body encodings; missing entries default to \`"json"\`. */
     export const endpointRequestFormats = {
-    ${Object.entries(byMethods)
-      .map(([method, list]) => {
-        return `${method}: {
-          ${list.map((endpoint) => `"${endpoint.path}": "${endpoint.requestFormat}"`).join(",\n")}
-        }`;
-      })
-      .join(",\n")}
-    } as { [M in keyof EndpointByMethod]: { [P in keyof EndpointByMethod[M]]: RequestFormat } };
+    ${nonJsonEntries}
+    } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
     // </EndpointRequestFormats>
     `;
 };
@@ -753,7 +759,7 @@ export class ApiClient {
         url,
         urlSearchParams,
         parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
-        requestFormat: endpointRequestFormats[method][path],
+        requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
         overrides,
         throwOnStatusError
       });

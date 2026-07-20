@@ -312,38 +312,12 @@ describe("generator", () => {
       export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
       // <EndpointRequestFormats>
+      /** Non-json request body encodings; missing entries default to \`"json"\`. */
       export const endpointRequestFormats = {
-        put: {
-          "/pet": "json",
-          "/user/{username}": "json",
-        },
         post: {
-          "/pet": "json",
-          "/pet/{petId}": "json",
           "/pet/{petId}/uploadImage": "binary",
-          "/store/order": "json",
-          "/user": "json",
-          "/user/createWithList": "json",
         },
-        get: {
-          "/pet/findByStatus": "json",
-          "/pet/findByTags": "json",
-          "/pet/{petId}": "json",
-          "/store/inventory": "json",
-          "/store/order/{orderId}": "json",
-          "/user/login": "json",
-          "/user/logout": "json",
-          "/user/{username}": "json",
-          "/pet/text": "json",
-          "/pet/empty": "json",
-          "/pet/custom": "json",
-        },
-        delete: {
-          "/pet/{petId}": "json",
-          "/store/order/{orderId}": "json",
-          "/user/{username}": "json",
-        },
-      } as { [M in keyof EndpointByMethod]: { [P in keyof EndpointByMethod[M]]: RequestFormat } };
+      } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
       // </EndpointRequestFormats>
 
       export type DefaultEndpoint = {
@@ -838,7 +812,7 @@ describe("generator", () => {
               url,
               urlSearchParams,
               parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
-              requestFormat: endpointRequestFormats[method][path],
+              requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
               overrides,
               throwOnStatusError,
             });
@@ -1276,11 +1250,10 @@ describe("generator", () => {
       export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
       // <EndpointRequestFormats>
-      export const endpointRequestFormats = {
-        get: {
-          "/authorization/organizations/:organizationId/members/search": "json",
-        },
-      } as { [M in keyof EndpointByMethod]: { [P in keyof EndpointByMethod[M]]: RequestFormat } };
+      /** Non-json request body encodings; missing entries default to \`"json"\`. */
+      export const endpointRequestFormats = {} as Partial<{
+        [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }>;
+      }>;
       // </EndpointRequestFormats>
 
       export type DefaultEndpoint = {
@@ -1682,7 +1655,7 @@ describe("generator", () => {
               url,
               urlSearchParams,
               parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
-              requestFormat: endpointRequestFormats[method][path],
+              requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
               overrides,
               throwOnStatusError,
             });
@@ -1858,11 +1831,10 @@ describe("generator", () => {
       export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 
       // <EndpointRequestFormats>
-      export const endpointRequestFormats = {
-        get: {
-          "/demo": "json",
-        },
-      } as { [M in keyof EndpointByMethod]: { [P in keyof EndpointByMethod[M]]: RequestFormat } };
+      /** Non-json request body encodings; missing entries default to \`"json"\`. */
+      export const endpointRequestFormats = {} as Partial<{
+        [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }>;
+      }>;
       // </EndpointRequestFormats>
 
       export type DefaultEndpoint = {
@@ -2264,7 +2236,7 @@ describe("generator", () => {
               url,
               urlSearchParams,
               parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
-              requestFormat: endpointRequestFormats[method][path],
+              requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
               overrides,
               throwOnStatusError,
             });
