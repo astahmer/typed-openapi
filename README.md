@@ -27,7 +27,8 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 - **Validate input and/or output** (`--validate-side`) with optional `onValidate` hook
 - **Coerce path/query/cookie/header primitives** from strings (`--coerce`, default on when runtime ≠ none)
 - **Cookie parameters**, OAS **defaults** on runtime schemas, **readOnly/writeOnly** stripping
-- **Node-friendly `ApiResponse`** (no DOM `Response` dependency) + **request input types** (`z.input` / encoded)
+- **Node-friendly `FetcherResponse`** (no DOM `Response` dependency; avoids clash with OAS `ApiResponse` schemas) +
+  **request input types** (`z.input` / encoded)
 - **Filter endpoints/schemas** (`--endpoint`, `--schema`, `--tree-shake-schemas`) and control naming (`--schema-naming`)
 
 The generated client is a single file that can be used in the browser or in node. Runtime schemas are emitted by
