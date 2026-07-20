@@ -1,6 +1,8 @@
 import { arktypeAdapter } from "./arktype/index.ts";
 import { effectAdapter } from "./effect/index.ts";
 import { effect3Adapter } from "./effect3/index.ts";
+import { typeboxAdapter } from "./typebox/index.ts";
+import { typiaAdapter } from "./typia/index.ts";
 import type { OutputRuntime, RuntimeAdapter } from "./types.ts";
 import { valibotAdapter } from "./valibot/index.ts";
 import { zodAdapter } from "./zod/index.ts";
@@ -13,6 +15,8 @@ export const runtimeAdapters = {
   effect3: effect3Adapter,
   valibot: valibotAdapter,
   arktype: arktypeAdapter,
+  typebox: typeboxAdapter,
+  typia: typiaAdapter,
 } as const satisfies Record<Exclude<OutputRuntime, "none">, RuntimeAdapter>;
 
 export type ShippedRuntime = keyof typeof runtimeAdapters;

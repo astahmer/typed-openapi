@@ -1,7 +1,16 @@
 import type { SchemaNode } from "../schema-ir/types.ts";
 import type { ValidationPolicy } from "./validation.ts";
 
-export type OutputRuntime = "none" | "zod" | "zod3" | "effect" | "effect3" | "valibot" | "arktype";
+export type OutputRuntime =
+  | "none"
+  | "zod"
+  | "zod3"
+  | "effect"
+  | "effect3"
+  | "valibot"
+  | "arktype"
+  | "typebox"
+  | "typia";
 
 /** Interned reusable defaulted schema (emitted once, referenced by name). */
 export type InternedDefaultSchema = {

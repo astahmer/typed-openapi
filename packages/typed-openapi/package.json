@@ -14,7 +14,9 @@
     "./runtimes/effect": "./dist/runtimes/effect.export.js",
     "./runtimes/effect3": "./dist/runtimes/effect3.export.js",
     "./runtimes/valibot": "./dist/runtimes/valibot.export.js",
-    "./runtimes/arktype": "./dist/runtimes/arktype.export.js"
+    "./runtimes/arktype": "./dist/runtimes/arktype.export.js",
+    "./runtimes/typebox": "./dist/runtimes/typebox.export.js",
+    "./runtimes/typia": "./dist/runtimes/typia.export.js"
   },
   "bin": {
     "typed-openapi": "bin.js"
@@ -47,11 +49,13 @@
     "ts-pattern": "5.9.0"
   },
   "peerDependencies": {
-    "zod": "3.25.76 || 4.4.3",
-    "effect": "3.22.0",
     "@effect/schema": "0.75.5",
+    "@sinclair/typebox": "0.34.52",
+    "arktype": "2.2.3",
+    "effect": "3.22.0",
+    "typia": "13.1.19",
     "valibot": "1.4.2",
-    "arktype": "2.2.3"
+    "zod": "3.25.76 || 4.4.3"
   },
   "peerDependenciesMeta": {
     "zod": {
@@ -68,11 +72,18 @@
     },
     "arktype": {
       "optional": true
+    },
+    "@sinclair/typebox": {
+      "optional": true
+    },
+    "typia": {
+      "optional": true
     }
   },
   "devDependencies": {
     "@changesets/cli": "2.31.1",
     "@effect/schema": "0.75.5",
+    "@sinclair/typebox": "0.34.52",
     "@tanstack/react-query": "5.101.3",
     "@types/node": "25.6.0",
     "effect": "3.22.0",
@@ -80,6 +91,7 @@
     "tstyche": "7.2.2",
     "tsup": "8.5.1",
     "typescript": "6.0.3",
+    "typia": "13.1.19",
     "valibot": "1.4.2",
     "vite": "7.3.6",
     "vitest": "4.1.10",
@@ -100,7 +112,9 @@
     "zod",
     "effect",
     "arktype",
-    "valibot"
+    "valibot",
+    "typebox",
+    "typia"
   ],
   "sideEffects": false,
   "publishConfig": {

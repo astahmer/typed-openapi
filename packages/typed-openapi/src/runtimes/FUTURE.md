@@ -5,10 +5,11 @@
 3. Add the name to `allowedRuntimes` in `generator.ts`.
 4. Optional: add a subpath export in `package.json` + `tsup.config.ts`.
 
-## Historical Sinclair targets (not shipped)
+## Historical Sinclair targets
 
-yup / io-ts / typebox used to be emitted via `@sinclair/typebox-codegen`. v3 dropped them in favor of first-party
-adapters. Re-adding is mostly mechanical — same Schema IR, new `emitNode`.
+yup / io-ts used to be emitted via `@sinclair/typebox-codegen`. v3 dropped them in favor of first-party adapters.
+**TypeBox** and **Typia** are shipped again (`--runtime typebox` / `--runtime typia`). Re-adding more is mostly
+mechanical — same Schema IR, new `emitNode`.
 
 Minimal skeleton:
 

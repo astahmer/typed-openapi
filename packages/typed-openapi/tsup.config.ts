@@ -14,6 +14,8 @@ export default defineConfig({
     "src/runtimes/effect3.export.ts",
     "src/runtimes/valibot.export.ts",
     "src/runtimes/arktype.export.ts",
+    "src/runtimes/typebox.export.ts",
+    "src/runtimes/typia.export.ts",
   ],
   outDir: "dist",
   dts: true,
