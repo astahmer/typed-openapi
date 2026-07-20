@@ -2,6 +2,7 @@ import type { SchemaNode } from "../../schema-ir/types.ts";
 import {
   applyArrayConstraints,
   applyNumberConstraints,
+  applyObjectConstraints,
   applyStringConstraints,
   isNullOr,
   literalValue,
@@ -11,30 +12,42 @@ import {
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
-/** Legacy `@effect/schema` (Effect 3 era) adapter */
+/** Legacy `@effect/schema` adapter — mirrors effect4 coverage with package-specific APIs. */
 const S = "S";
+
+const pipeFilters = (base: string, filters: string[]): string => {
+  if (!filters.length) return base;
+  return `${base}.pipe(${filters.join(", ")})`;
+};
 
 const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx): string => {
   const c = applyStringConstraints(node.constraints, ctx.validation);
-  let expr = `${S}.String`;
-  if (c.format === "uuid") expr = `${S}.UUID`;
-  else if (c.format === "email") expr = `${expr}.pipe(${S}.pattern(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/))`;
-  if (c.minLength !== undefined) expr = `${expr}.pipe(${S}.minLength(${c.minLength}))`;
-  if (c.maxLength !== undefined) expr = `${expr}.pipe(${S}.maxLength(${c.maxLength}))`;
-  if (c.pattern !== undefined) expr = `${expr}.pipe(${S}.pattern(new RegExp(${quote(c.pattern)})))`;
-  return expr;
+  const filters: string[] = [];
+  let base = `${S}.String`;
+  if (c.format === "uuid") base = `${S}.UUID`;
+  else if (c.format === "email") {
+    filters.push(`${S}.pattern(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/)`);
+  }
+  // no Schema.URL in @effect/schema — keep String for uri/url
+  if (c.minLength !== undefined) filters.push(`${S}.minLength(${c.minLength})`);
+  if (c.maxLength !== undefined) filters.push(`${S}.maxLength(${c.maxLength})`);
+  if (c.pattern !== undefined) filters.push(`${S}.pattern(new RegExp(${quote(c.pattern)}))`);
+  return pipeFilters(base, filters);
 };
 
 const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
   const c = applyNumberConstraints(node.constraints, ctx.validation);
-  let expr = node.integer ? `${S}.Int` : `${S}.Number`;
-  if (c.minimum !== undefined) expr = `${expr}.pipe(${S}.greaterThanOrEqualTo(${c.minimum}))`;
-  if (c.maximum !== undefined) expr = `${expr}.pipe(${S}.lessThanOrEqualTo(${c.maximum}))`;
-  if (c.exclusiveMinimum !== undefined) expr = `${expr}.pipe(${S}.greaterThan(${c.exclusiveMinimum}))`;
-  if (c.exclusiveMaximum !== undefined) expr = `${expr}.pipe(${S}.lessThan(${c.exclusiveMaximum}))`;
-  if (c.multipleOf !== undefined) expr = `${expr}.pipe(${S}.multipleOf(${c.multipleOf}))`;
-  return expr;
+  let base = node.integer ? `${S}.Int` : `${S}.Number`;
+  const filters: string[] = [];
+  if (c.minimum !== undefined) filters.push(`${S}.greaterThanOrEqualTo(${c.minimum})`);
+  if (c.maximum !== undefined) filters.push(`${S}.lessThanOrEqualTo(${c.maximum})`);
+  if (c.exclusiveMinimum !== undefined) filters.push(`${S}.greaterThan(${c.exclusiveMinimum})`);
+  if (c.exclusiveMaximum !== undefined) filters.push(`${S}.lessThan(${c.exclusiveMaximum})`);
+  if (c.multipleOf !== undefined) filters.push(`${S}.multipleOf(${c.multipleOf})`);
+  return pipeFilters(base, filters);
 };
+
+const emitRecord = (key: string, value: string) => `${S}.Record({ key: ${key}, value: ${value} })`;
 
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
@@ -62,9 +75,13 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "array": {
       const c = applyArrayConstraints(node.constraints, ctx.validation);
       let expr = `${S}.Array(${emitNode(node.items, ctx)})`;
-      if (c.minItems !== undefined) expr = `${expr}.pipe(${S}.minItems(${c.minItems}))`;
-      if (c.maxItems !== undefined) expr = `${expr}.pipe(${S}.maxItems(${c.maxItems}))`;
-      return expr;
+      const filters: string[] = [];
+      if (c.minItems !== undefined) filters.push(`${S}.minItems(${c.minItems})`);
+      if (c.maxItems !== undefined) filters.push(`${S}.maxItems(${c.maxItems})`);
+      if (c.uniqueItems) {
+        filters.push(`${S}.filter((arr) => new Set(arr).size === arr.length)`);
+      }
+      return pipeFilters(expr, filters);
     }
     case "tuple": {
       const items = node.items.map((i) => emitNode(i, ctx)).join(", ");
@@ -74,17 +91,21 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       return `${S}.Union(${node.members.map((m) => emitNode(m, ctx)).join(", ")})`;
     case "intersection":
       return node.members.map((m) => emitNode(m, ctx)).reduce((acc, cur) => `${S}.extend(${acc}, ${cur})`);
-    case "not":
-      return `${S}.Unknown`;
+    case "not": {
+      const inner = emitNode(node.schema, ctx);
+      return `${S}.Unknown.pipe(${S}.filter((data) => !${S}.is(${inner})(data)))`;
+    }
     case "ref": {
-      if (node.name === "Partial" && node.generics?.[0]) return `${S}.partial(${emitNode(node.generics[0], ctx)})`;
+      if (node.name === "Partial" && node.generics?.[0]) {
+        return `${S}.partial(${emitNode(node.generics[0], ctx)})`;
+      }
       if (node.name === "Record" && node.generics?.length === 2) {
-        return `${S}.Record({ key: ${emitNode(node.generics[0]!, ctx)}, value: ${emitNode(node.generics[1]!, ctx)} })`;
+        return emitRecord(emitNode(node.generics[0]!, ctx), emitNode(node.generics[1]!, ctx));
       }
       return node.name;
     }
     case "record":
-      return `${S}.Record({ key: ${emitNode(node.key, ctx)}, value: ${emitNode(node.value, ctx)} })`;
+      return emitRecord(emitNode(node.key, ctx), emitNode(node.value, ctx));
     case "object": {
       const props = objectProps(node, emitNode, ctx);
       const body = props
@@ -92,7 +113,20 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         .join(", ");
       let expr = `${S}.Struct({ ${body} })`;
       if (node.partial) expr = `${S}.partial(${expr})`;
-      return expr;
+      if (node.additionalProperties === true) {
+        expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, `${S}.Unknown`)})`;
+      } else if (typeof node.additionalProperties === "object") {
+        expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, emitNode(node.additionalProperties, ctx))})`;
+      }
+      const oc = applyObjectConstraints(node.constraints, ctx.validation);
+      const filters: string[] = [];
+      if (oc.minProperties !== undefined) {
+        filters.push(`${S}.filter((obj) => Object.keys(obj).length >= ${oc.minProperties})`);
+      }
+      if (oc.maxProperties !== undefined) {
+        filters.push(`${S}.filter((obj) => Object.keys(obj).length <= ${oc.maxProperties})`);
+      }
+      return pipeFilters(expr, filters);
     }
     default: {
       const _e: never = node;
