@@ -8,3 +8,4 @@ Replace `@sinclair/typebox-codegen` with a first-party Schema IR and pluggable r
 - New `--validation loose|formats|strict` for constraint depth
 - Subpath exports: `typed-openapi/runtimes`, `typed-openapi/runtimes/*`
 - Dropped shipped adapters for yup / io-ts / typebox (easy to re-add via the adapter contract)
+- Optional peers: `zod`, `effect`, `@effect/schema`, `valibot`, `arktype` — install only what you emit

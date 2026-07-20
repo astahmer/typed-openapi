@@ -1,5 +1,27 @@
 # typed-openapi
 
+## 3.0.0
+
+### Major Changes
+
+- Replace `@sinclair/typebox-codegen` with a first-party Schema IR and pluggable runtime adapters.
+  - Runtimes: `none` | `zod` (v4) | `zod3` | `effect` (`effect` Schema) | `effect3` (`@effect/schema`) | `valibot` |
+    `arktype`
+  - New CLI `--validation loose|formats|strict` controls how deep OpenAPI constraints are applied
+  - Subpath exports: `typed-openapi/runtimes`, `typed-openapi/runtimes/{zod,zod3,effect,effect3,valibot,arktype}`
+  - Dropped shipped yup / io-ts / typebox emitters (re-add via the adapter contract if needed)
+
+  **Peer dependencies (all optional):** install only the runtime you generate for.
+
+  | Runtime   | Peer                                              |
+  | --------- | ------------------------------------------------- |
+  | `zod`     | `zod` ^4                                          |
+  | `zod3`    | `zod` ^3                                          |
+  | `effect`  | `effect` ^3 (built-in `Schema`)                   |
+  | `effect3` | `@effect/schema` ^0.75                            |
+  | `valibot` | `valibot` ^1                                      |
+  | `arktype` | `arktype` ^2 (also a hard dep for CLI validation) |
+
 ## 2.2.7
 
 ### Patch Changes
