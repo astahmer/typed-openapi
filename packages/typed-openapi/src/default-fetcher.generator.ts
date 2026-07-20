@@ -26,7 +26,7 @@ export const generateDefaultFetcher = (options: {
     : `export const ${apiName} = createApiClient({ fetch: ${fetcherName} }, ${envApiBaseUrl});`;
 
   // Inline the real helper (types erased; re-annotate for the generated file).
-  const encodeRequestBodySource = `const encodeRequestBody = ${encodeRequestBody.toString()} as (
+  const encodeRequestBodySource = `const encodeRequestBody = (${encodeRequestBody.toString()}) as (
   requestFormat: RequestFormat,
   body: unknown,
 ) => { body?: BodyInit; contentType?: string };`;

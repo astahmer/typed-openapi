@@ -146,7 +146,10 @@ describe("custom fetcher", () => {
       {
         encodeSearchParams(params) {
           const urlSearchParams = new URLSearchParams();
-          urlSearchParams.set("photoUrls", `https://example.com/photos/${params?.["photo"]}`);
+          urlSearchParams.set(
+            "photoUrls",
+            `https://example.com/photos/${(params as Record<string, unknown> | undefined)?.["photo"]}`,
+          );
           return urlSearchParams;
         },
         fetch(input) {
@@ -186,9 +189,9 @@ describe("custom fetcher", () => {
           fetch(input) {
             return fetcher(input.method, input.url.toString());
           },
-          parseResponseData: async (res: Response) => {
+          parseResponseData: async (res) => {
             // custom parser: uppercase the "message" field from JSON
-            const json = await res.json();
+            const json = (await res.json()) as { name?: string };
             return { ...json, name: String(json?.name ?? "").toUpperCase() };
           },
         },
