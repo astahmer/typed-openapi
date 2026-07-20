@@ -7,7 +7,9 @@ import type { SchemaIrConvertContext, SchemaNode } from "./types.ts";
 const emptyMeta = () => ({});
 
 /**
- * Prefer OpenAPI schema on the box (keeps constraints). Fall back to structural Box walk.
+ * Prefer structural Box walk (params) so synthetic factory schemas that still
+ * hold raw `$ref`s (e.g. response header maps) don't leak into IR.
+ * Fall back to OpenAPI schema for leaves to preserve constraints.
  */
 export const boxToIr = (box: Box<AnyBoxDef> | AnyBox | string, ctx: SchemaIrConvertContext): SchemaNode => {
   if (typeof box === "string") {
@@ -32,31 +34,8 @@ export const boxToIr = (box: Box<AnyBoxDef> | AnyBox | string, ctx: SchemaIrConv
         meta: emptyMeta(),
       };
     }
-    // Component ref — use normalized name from box value / params
     const refName = box.params.name || box.value;
     return { kind: "ref", name: refName, meta: emptyMeta() };
-  }
-
-  if (box.schema) {
-    // For optional wrappers, schema is the inner schema; still walk optional for structure
-    if (Box.isOptional(box)) {
-      return boxToIr(box.params.type as AnyBox, ctx);
-    }
-    if (!Box.isUnion(box) && !Box.isIntersection(box) && !Box.isArray(box) && !Box.isObject(box)) {
-      return openApiToIr(box.schema as never, ctx);
-    }
-    // Prefer schema when it's a real OAS object (not synthetic Partial factory)
-    if (
-      !isReferenceObject(box.schema) &&
-      (box.schema.type ||
-        box.schema.properties ||
-        box.schema.enum ||
-        box.schema.oneOf ||
-        box.schema.anyOf ||
-        box.schema.allOf)
-    ) {
-      return openApiToIr(box.schema, ctx);
-    }
   }
 
   if (Box.isOptional(box)) {
@@ -117,6 +96,10 @@ export const boxToIr = (box: Box<AnyBoxDef> | AnyBox | string, ctx: SchemaIrConv
     return { kind: "literal", value: raw, meta: emptyMeta() };
   }
   if (Box.isKeyword(box)) {
+    // Prefer original OAS schema so formats/constraints survive
+    if (box.schema && !isReferenceObject(box.schema)) {
+      return openApiToIr(box.schema, ctx);
+    }
     const name = box.params.name;
     if (name === "string") return { kind: "string", constraints: {}, meta: emptyMeta() };
     if (name === "number") return { kind: "number", integer: false, constraints: {}, meta: emptyMeta() };

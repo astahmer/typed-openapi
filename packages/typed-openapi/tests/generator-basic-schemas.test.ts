@@ -64,7 +64,7 @@ test("getSchemaBox", async () => {
       properties: { str: { type: "string" }, nb: { type: "number" } },
       required: ["str"],
     }),
-  ).toMatchInlineSnapshot(`"export type _Test = { str: string; nb?: number | undefined };"`);
+  ).toMatchInlineSnapshot(`"export type _Test = { str: string; nb?: number };"`);
 
   // ObjectWithNestedProp
   expect(
@@ -92,7 +92,7 @@ test("getSchemaBox", async () => {
       properties: { str: { type: "string" } },
       additionalProperties: { type: "number" },
     }),
-  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ str: string } & Record<string, number>>;"`);
+  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ str: string }> & Record<string, number>;"`);
 
   // ObjectWithNestedRecordBoolean
   expect(
@@ -102,7 +102,7 @@ test("getSchemaBox", async () => {
       additionalProperties: { type: "object", properties: { prop: { type: "boolean" } } },
     }),
   ).toMatchInlineSnapshot(
-    `"export type _Test = Partial<{ str: string } & Record<string, Partial<{ prop: boolean }>>>;"`,
+    `"export type _Test = Partial<{ str: string }> & Record<string, Partial<{ prop: boolean }>>;"`,
   );
 
   expect(
@@ -273,8 +273,8 @@ test("getSchemaBox", async () => {
     }),
   ).toMatchInlineSnapshot(`
     "export type _Test = (
-        | { category: "finance"; chift?: { integrationId: number } | undefined }
-        | { category: "hris"; kombo?: { integrationId: string } | undefined }
+        | { category: "finance"; chift?: { integrationId: number } }
+        | { category: "hris"; kombo?: { integrationId: string } }
         | { category: "it-and-security" }
       ) & { sourceName: string };"
   `);

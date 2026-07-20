@@ -12,27 +12,27 @@ describe("generator", () => {
       "export namespace Schemas {
         // <Schemas>
         export type Order = Partial<{
-          id?: number;
-          petId?: number;
-          quantity?: number;
-          shipDate?: string;
-          status?: "placed" | "approved" | "delivered";
-          complete?: boolean;
+          id: number;
+          petId: number;
+          quantity: number;
+          shipDate: string;
+          status: "placed" | "approved" | "delivered";
+          complete: boolean;
         }>;
-        export type Address = Partial<{ street?: string; city?: string; state?: string; zip?: string }>;
-        export type Customer = Partial<{ id?: number; username?: string; address?: Array<Address> }>;
-        export type Category = Partial<{ id?: number; name?: string }>;
+        export type Address = Partial<{ street: string; city: string; state: string; zip: string }>;
+        export type Customer = Partial<{ id: number; username: string; address: Array<Address> }>;
+        export type Category = Partial<{ id: number; name: string }>;
         export type User = Partial<{
-          id?: number;
-          username?: string;
-          firstName?: string;
-          lastName?: string;
-          email?: string;
-          password?: string;
-          phone?: string;
-          userStatus?: number;
+          id: number;
+          username: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          password: string;
+          phone: string;
+          userStatus: number;
         }>;
-        export type Tag = Partial<{ id?: number; name?: string }>;
+        export type Tag = Partial<{ id: number; name: string }>;
         export type Pet = {
           id?: number;
           name: string;
@@ -41,7 +41,7 @@ describe("generator", () => {
           tags?: Array<Tag>;
           status?: "available" | "pending" | "sold";
         };
-        export type ApiResponse = Partial<{ code?: number; type?: string; message?: string }>;
+        export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
 
         // </Schemas>
       }
@@ -72,7 +72,7 @@ describe("generator", () => {
           path: "/pet/findByStatus";
           requestFormat: "json";
           parameters: {
-            query: Partial<{ status?: "available" | "pending" | "sold" }>;
+            query: Partial<{ status: "available" | "pending" | "sold" }>;
           };
           responses: { 200: Array<Schemas.Pet>; 304: unknown; 400: { code: number; message: string } };
         };
@@ -81,7 +81,7 @@ describe("generator", () => {
           path: "/pet/findByTags";
           requestFormat: "json";
           parameters: {
-            query: Partial<{ tags?: Array<string> }>;
+            query: Partial<{ tags: Array<string> }>;
           };
           responses: { 200: Array<Schemas.Pet> | Array<Schemas.User> | Array<Schemas.Tag>; 400: unknown };
         };
@@ -99,7 +99,7 @@ describe("generator", () => {
           path: "/pet/{petId}";
           requestFormat: "json";
           parameters: {
-            query: Partial<{ name?: string; status?: string }>;
+            query: Partial<{ name: string; status: string }>;
             path: { petId: number };
           };
           responses: { 405: unknown };
@@ -110,7 +110,7 @@ describe("generator", () => {
           requestFormat: "json";
           parameters: {
             path: { petId: number };
-            header: Partial<{ api_key?: string }>;
+            header: Partial<{ api_key: string }>;
           };
           responses: { 400: unknown };
         };
@@ -119,7 +119,7 @@ describe("generator", () => {
           path: "/pet/{petId}/uploadImage";
           requestFormat: "binary";
           parameters: {
-            query: Partial<{ additionalMetadata?: string }>;
+            query: Partial<{ additionalMetadata: string }>;
             path: { petId: number };
 
             body: string;
@@ -183,10 +183,10 @@ describe("generator", () => {
           path: "/user/login";
           requestFormat: "json";
           parameters: {
-            query: Partial<{ username?: string; password?: string }>;
+            query: Partial<{ username: string; password: string }>;
           };
           responses: { 200: string; 400: unknown };
-          responseHeaders: { 200: { "X-Rate-Limit": unknown; "X-Expires-After": unknown }; 400: { "X-Error": unknown } };
+          responseHeaders: { 200: { "X-Rate-Limit": number; "X-Expires-After": string }; 400: { "X-Error": string } };
         };
         export type get_LogoutUser = {
           method: "GET";
@@ -433,9 +433,14 @@ describe("generator", () => {
             : never;
       }[keyof TAllResponses];
 
+      type InferSchemaValue<T> = T;
+
       export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
         ? TResponses extends Record<string, unknown>
-          ? TypedApiResponse<TResponses, TEndpoint extends { responseHeaders: infer THeaders } ? THeaders : never>
+          ? TypedApiResponse<
+              InferSchemaValue<TResponses>,
+              TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never
+            >
           : never
         : never;
 
@@ -539,7 +544,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           >
@@ -550,7 +555,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           >
@@ -570,7 +575,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           >
@@ -581,7 +586,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           >
@@ -601,7 +606,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           >
@@ -612,7 +617,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           >
@@ -632,7 +637,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           >
@@ -643,7 +648,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           >
@@ -671,7 +676,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           >
@@ -687,7 +692,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           >
@@ -878,27 +883,27 @@ describe("generator", () => {
         "export namespace Schemas {
           // <Schemas>
           export type Order = Partial<{
-            id?: number;
-            petId?: number;
-            quantity?: number;
-            shipDate?: string;
-            status?: "placed" | "approved" | "delivered";
-            complete?: boolean;
+            id: number;
+            petId: number;
+            quantity: number;
+            shipDate: string;
+            status: "placed" | "approved" | "delivered";
+            complete: boolean;
           }>;
-          export type Address = Partial<{ street?: string; city?: string; state?: string; zip?: string }>;
-          export type Customer = Partial<{ id?: number; username?: string; address?: Array<Address> }>;
-          export type Category = Partial<{ id?: number; name?: string }>;
+          export type Address = Partial<{ street: string; city: string; state: string; zip: string }>;
+          export type Customer = Partial<{ id: number; username: string; address: Array<Address> }>;
+          export type Category = Partial<{ id: number; name: string }>;
           export type User = Partial<{
-            id?: number;
-            username?: string;
-            firstName?: string;
-            lastName?: string;
-            email?: string;
-            password?: string;
-            phone?: string;
-            userStatus?: number;
+            id: number;
+            username: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            password: string;
+            phone: string;
+            userStatus: number;
           }>;
-          export type Tag = Partial<{ id?: number; name?: string }>;
+          export type Tag = Partial<{ id: number; name: string }>;
           export type Pet = {
             id?: number;
             name: string;
@@ -907,7 +912,7 @@ describe("generator", () => {
             tags?: Array<Tag>;
             status?: "available" | "pending" | "sold";
           };
-          export type ApiResponse = Partial<{ code?: number; type?: string; message?: string }>;
+          export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
 
           // </Schemas>
         }
@@ -1113,8 +1118,8 @@ describe("generator", () => {
           requestFormat: "json";
           parameters: {
             query: Partial<{
-              searchQuery?: string;
-              includeRoles?: Array<"super-admin" | "buyer" | "admin" | "coordinator" | "requestor">;
+              searchQuery: string;
+              includeRoles: Array<"super-admin" | "buyer" | "admin" | "coordinator" | "requestor">;
             }>;
             path: { organizationId: string };
           };
@@ -1122,10 +1127,10 @@ describe("generator", () => {
             200: {
               members: Array<{
                 id: string;
-                firstName?: string | null;
-                lastName?: string | null;
+                firstName?: (string | null) | null;
+                lastName?: (string | null) | null;
                 email: string;
-                profilePictureURL?: string | null;
+                profilePictureURL?: (string | null) | null;
               }>;
             };
           };
@@ -1283,9 +1288,14 @@ describe("generator", () => {
             : never;
       }[keyof TAllResponses];
 
+      type InferSchemaValue<T> = T;
+
       export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
         ? TResponses extends Record<string, unknown>
-          ? TypedApiResponse<TResponses, TEndpoint extends { responseHeaders: infer THeaders } ? THeaders : never>
+          ? TypedApiResponse<
+              InferSchemaValue<TResponses>,
+              TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never
+            >
           : never
         : never;
 
@@ -1389,7 +1399,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           >
@@ -1400,7 +1410,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           >
@@ -1428,7 +1438,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           >
@@ -1444,7 +1454,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           >
@@ -1621,7 +1631,7 @@ describe("generator", () => {
           requestFormat: "json";
           parameters: {
             query: { organizationId: string; searchQuery?: string };
-            path: Partial<{ optionalInPath1?: string; optionalInPath2?: string }>;
+            path: Partial<{ optionalInPath1: string; optionalInPath2: string }>;
           };
           responses: { 200: string };
         };
@@ -1778,9 +1788,14 @@ describe("generator", () => {
             : never;
       }[keyof TAllResponses];
 
+      type InferSchemaValue<T> = T;
+
       export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
         ? TResponses extends Record<string, unknown>
-          ? TypedApiResponse<TResponses, TEndpoint extends { responseHeaders: infer THeaders } ? THeaders : never>
+          ? TypedApiResponse<
+              InferSchemaValue<TResponses>,
+              TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never
+            >
           : never
         : never;
 
@@ -1884,7 +1899,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           >
@@ -1895,7 +1910,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           >
@@ -1923,7 +1938,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
           >
@@ -1939,7 +1954,7 @@ describe("generator", () => {
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
               ? NotNever<UParams> extends true
-                ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+                ? InferSchemaValue<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
                 : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
               : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
           >

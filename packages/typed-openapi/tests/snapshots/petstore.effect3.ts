@@ -199,8 +199,8 @@ export const get_LoginUser = {
   parameters: { query: S.partial(S.Struct({ username: S.String, password: S.String })) },
   responses: { 200: S.String, 400: S.Unknown },
   responseHeaders: {
-    200: S.Struct({ "X-Rate-Limit": S.Unknown, "X-Expires-After": S.Unknown }),
-    400: S.Struct({ "X-Error": S.Unknown }),
+    200: S.Struct({ "X-Rate-Limit": S.Int, "X-Expires-After": S.String }),
+    400: S.Struct({ "X-Error": S.String }),
   },
 };
 

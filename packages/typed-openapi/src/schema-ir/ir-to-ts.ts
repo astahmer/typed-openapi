@@ -77,7 +77,8 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
     case "object": {
       const entries = Object.entries(node.properties);
       const rendered = entries.map(([prop, propNode]) => {
-        const optional = node.partial || !node.required.includes(prop);
+        // When `partial`, wrap with Partial<> — do not also mark props optional.
+        const optional = !node.partial && !node.required.includes(prop);
         const value = indentMultiline(irToTs(propNode, options));
         const description = options.jsdoc ? propNode.meta.description : undefined;
         return {

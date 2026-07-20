@@ -87,7 +87,7 @@ export const get_FindPetsByStatus = {
   method: type("'GET'"),
   path: type("'/pet/findByStatus'"),
   requestFormat: type("'json'"),
-  parameters: { query: type({ status: type.enumerated("available", "pending", "sold") }).partial() },
+  parameters: { query: type({ status: type("'available'").or(type("'pending'")).or(type("'sold'")) }).partial() },
   responses: {
     200: Pet.array(),
     304: type("unknown"),
@@ -213,8 +213,8 @@ export const get_LoginUser = {
   parameters: { query: type({ username: type("string"), password: type("string") }).partial() },
   responses: { 200: type("string"), 400: type("unknown") },
   responseHeaders: {
-    200: type({ "X-Rate-Limit": type("unknown"), "X-Expires-After": type("unknown") }),
-    400: type({ "X-Error": type("unknown") }),
+    200: type({ "X-Rate-Limit": type("number.integer"), "X-Expires-After": type("string.date") }),
+    400: type({ "X-Error": type("string") }),
   },
 };
 

@@ -18,7 +18,7 @@ export namespace Endpoints {
     path: "/users";
     requestFormat: "json";
     parameters: {
-      body: Partial<{ username?: string }>;
+      body: Partial<{ username: string }>;
     };
     responses: { 201: unknown };
   };

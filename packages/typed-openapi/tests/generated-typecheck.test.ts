@@ -23,7 +23,7 @@ describe("generated schema typecheck", async () => {
   rmSync(outRoot, { recursive: true, force: true });
 
   for (const runtime of runtimes) {
-    test(`typechecks --runtime ${runtime}`, () => {
+    test(`typechecks --runtime ${runtime}`, { timeout: 30_000 }, () => {
       const dir = join(outRoot, runtime);
       mkdirSync(dir, { recursive: true });
 

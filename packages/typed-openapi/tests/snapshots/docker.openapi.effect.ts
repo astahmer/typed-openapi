@@ -1626,7 +1626,7 @@ export const get_ContainerStats = {
     query: Schema.partial(Schema.Struct({ stream: Schema.Boolean, "one-shot": Schema.Boolean })),
     path: Schema.Struct({ id: Schema.String }),
   },
-  responses: { 200: Schema.Record(Schema.String, Schema.Unknown), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: Schema.Literal("Record<string, unknown>"), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerResize = typeof post_ContainerResize;
@@ -1841,7 +1841,7 @@ export const head_ContainerArchiveInfo = {
   requestFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ path: Schema.String }), path: Schema.Struct({ id: Schema.String }) },
   responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
-  responseHeaders: { 200: Schema.Struct({ "X-Docker-Container-Path-Stat": Schema.Unknown }) },
+  responseHeaders: { 200: Schema.Struct({ "X-Docker-Container-Path-Stat": Schema.String }) },
 };
 
 export type post_ContainerPrune = typeof post_ContainerPrune;
@@ -2104,14 +2104,21 @@ export const get_SystemPing = {
   responses: { 200: Schema.Unknown, 500: Schema.Unknown },
   responseHeaders: {
     200: Schema.Struct({
-      Swarm: Schema.Unknown,
-      "Docker-Experimental": Schema.Unknown,
-      "Cache-Control": Schema.Unknown,
-      Pragma: Schema.Unknown,
-      "API-Version": Schema.Unknown,
-      "Builder-Version": Schema.Unknown,
+      Swarm: Schema.Union(
+        Schema.Literal("inactive"),
+        Schema.Literal("pending"),
+        Schema.Literal("error"),
+        Schema.Literal("locked"),
+        Schema.Literal("active/worker"),
+        Schema.Literal("active/manager"),
+      ),
+      "Docker-Experimental": Schema.Boolean,
+      "Cache-Control": Schema.String,
+      Pragma: Schema.String,
+      "API-Version": Schema.String,
+      "Builder-Version": Schema.String,
     }),
-    500: Schema.Struct({ "Cache-Control": Schema.Unknown, Pragma: Schema.Unknown }),
+    500: Schema.Struct({ "Cache-Control": Schema.String, Pragma: Schema.String }),
   },
 };
 
@@ -2124,12 +2131,19 @@ export const head_SystemPingHead = {
   responses: { 200: Schema.Unknown, 500: Schema.Unknown },
   responseHeaders: {
     200: Schema.Struct({
-      Swarm: Schema.Unknown,
-      "Docker-Experimental": Schema.Unknown,
-      "Cache-Control": Schema.Unknown,
-      Pragma: Schema.Unknown,
-      "API-Version": Schema.Unknown,
-      "Builder-Version": Schema.Unknown,
+      Swarm: Schema.Union(
+        Schema.Literal("inactive"),
+        Schema.Literal("pending"),
+        Schema.Literal("error"),
+        Schema.Literal("locked"),
+        Schema.Literal("active/worker"),
+        Schema.Literal("active/manager"),
+      ),
+      "Docker-Experimental": Schema.Boolean,
+      "Cache-Control": Schema.String,
+      Pragma: Schema.String,
+      "API-Version": Schema.String,
+      "Builder-Version": Schema.String,
     }),
   },
 };
@@ -2239,9 +2253,7 @@ export const post_ContainerExec = {
         AttachStdin: Schema.Boolean,
         AttachStdout: Schema.Boolean,
         AttachStderr: Schema.Boolean,
-        ConsoleSize: Schema.NullOr(
-          Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0))).pipe(Schema.minItems(2), Schema.maxItems(2)),
-        ),
+        ConsoleSize: Schema.NullOr(Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0)))),
         DetachKeys: Schema.String,
         Tty: Schema.Boolean,
         Env: Schema.Array(Schema.String),
@@ -2266,9 +2278,7 @@ export const post_ExecStart = {
       Schema.Struct({
         Detach: Schema.Boolean,
         Tty: Schema.Boolean,
-        ConsoleSize: Schema.NullOr(
-          Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0))).pipe(Schema.minItems(2), Schema.maxItems(2)),
-        ),
+        ConsoleSize: Schema.NullOr(Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0)))),
       }),
     ),
   },
@@ -2423,8 +2433,8 @@ export const post_NetworkCreate = {
       Ingress: Schema.optional(Schema.Boolean),
       IPAM: Schema.optional(IPAM),
       EnableIPv6: Schema.optional(Schema.Boolean),
-      Options: Schema.optional(Schema.Record(Schema.String, Schema.String)),
-      Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)),
+      Options: Schema.optional(Schema.Record(Schema.Record(Schema.String, Schema.String), Schema.String)),
+      Labels: Schema.optional(Schema.Record(Schema.Record(Schema.String, Schema.String), Schema.String)),
     }),
   },
   responses: {
@@ -2745,7 +2755,7 @@ export const post_ServiceCreate = {
   requestFormat: Schema.Literal("json"),
   parameters: {
     header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
-    body: Schema.extend(ServiceSpec, Schema.Record(Schema.String, Schema.Unknown)),
+    body: Schema.extend(ServiceSpec, Schema.Literal("Record<string, unknown>")),
   },
   responses: {
     201: Schema.partial(Schema.Struct({ ID: Schema.String, Warning: Schema.String })),
@@ -2791,7 +2801,7 @@ export const post_ServiceUpdate = {
     }),
     path: Schema.Struct({ id: Schema.String }),
     header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
-    body: Schema.extend(ServiceSpec, Schema.Record(Schema.String, Schema.Unknown)),
+    body: Schema.extend(ServiceSpec, Schema.Literal("Record<string, unknown>")),
   },
   responses: {
     200: ServiceUpdateResponse,
@@ -2878,7 +2888,7 @@ export const post_SecretCreate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/secrets/create"),
   requestFormat: Schema.Literal("json"),
-  parameters: { body: Schema.extend(SecretSpec, Schema.Record(Schema.String, Schema.Unknown)) },
+  parameters: { body: Schema.extend(SecretSpec, Schema.Literal("Record<string, unknown>")) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2927,7 +2937,7 @@ export const post_ConfigCreate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/configs/create"),
   requestFormat: Schema.Literal("json"),
-  parameters: { body: Schema.extend(ConfigSpec, Schema.Record(Schema.String, Schema.Unknown)) },
+  parameters: { body: Schema.extend(ConfigSpec, Schema.Literal("Record<string, unknown>")) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 

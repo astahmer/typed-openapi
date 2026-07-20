@@ -219,8 +219,8 @@ export const get_LoginUser = {
   parameters: { query: Schema.partial(Schema.Struct({ username: Schema.String, password: Schema.String })) },
   responses: { 200: Schema.String, 400: Schema.Unknown },
   responseHeaders: {
-    200: Schema.Struct({ "X-Rate-Limit": Schema.Unknown, "X-Expires-After": Schema.Unknown }),
-    400: Schema.Struct({ "X-Error": Schema.Unknown }),
+    200: Schema.Struct({ "X-Rate-Limit": Schema.Int, "X-Expires-After": Schema.String }),
+    400: Schema.Struct({ "X-Error": Schema.String }),
   },
 };
 

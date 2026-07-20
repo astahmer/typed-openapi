@@ -84,7 +84,9 @@ export const get_FindPetsByStatus = {
   method: v.literal("GET"),
   path: v.literal("/pet/findByStatus"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ status: v.picklist(["available", "pending", "sold"]) })) },
+  parameters: {
+    query: v.partial(v.object({ status: v.union([v.literal("available"), v.literal("pending"), v.literal("sold")]) })),
+  },
   responses: {
     200: v.array(Pet),
     304: v.unknown(),
@@ -213,8 +215,8 @@ export const get_LoginUser = {
   parameters: { query: v.partial(v.object({ username: v.string(), password: v.string() })) },
   responses: { 200: v.string(), 400: v.unknown() },
   responseHeaders: {
-    200: v.object({ "X-Rate-Limit": v.unknown(), "X-Expires-After": v.unknown() }),
-    400: v.object({ "X-Error": v.unknown() }),
+    200: v.object({ "X-Rate-Limit": v.pipe(v.number(), v.integer()), "X-Expires-After": v.string() }),
+    400: v.object({ "X-Error": v.string() }),
   },
 };
 

@@ -78,7 +78,9 @@ export const get_FindPetsByStatus = {
   method: z.literal("GET"),
   path: z.literal("/pet/findByStatus"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ status: z.enum(["available", "pending", "sold"]) }).partial() },
+  parameters: {
+    query: z.object({ status: z.union([z.literal("available"), z.literal("pending"), z.literal("sold")]) }).partial(),
+  },
   responses: { 200: z.array(Pet), 304: z.unknown(), 400: z.object({ code: z.number().int(), message: z.string() }) },
 };
 
@@ -200,8 +202,8 @@ export const get_LoginUser = {
   parameters: { query: z.object({ username: z.string(), password: z.string() }).partial() },
   responses: { 200: z.string(), 400: z.unknown() },
   responseHeaders: {
-    200: z.object({ "X-Rate-Limit": z.unknown(), "X-Expires-After": z.unknown() }),
-    400: z.object({ "X-Error": z.unknown() }),
+    200: z.object({ "X-Rate-Limit": z.number().int(), "X-Expires-After": z.string().datetime() }),
+    400: z.object({ "X-Error": z.string() }),
   },
 };
 

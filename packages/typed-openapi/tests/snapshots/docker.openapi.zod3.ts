@@ -1408,7 +1408,7 @@ export const get_ContainerStats = {
     query: z.object({ stream: z.boolean(), "one-shot": z.boolean() }).partial(),
     path: z.object({ id: z.string() }),
   },
-  responses: { 200: z.record(z.string(), z.unknown()), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: z.literal("Record<string, unknown>"), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerResize = typeof post_ContainerResize;
@@ -1552,7 +1552,9 @@ export const post_ContainerWait = {
   path: z.literal("/containers/{id}/wait"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ condition: z.enum(["not-running", "next-exit", "removed"]) }).partial(),
+    query: z
+      .object({ condition: z.union([z.literal("not-running"), z.literal("next-exit"), z.literal("removed")]) })
+      .partial(),
     path: z.object({ id: z.string() }),
   },
   responses: { 200: ContainerWaitResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
@@ -1603,7 +1605,7 @@ export const head_ContainerArchiveInfo = {
   requestFormat: z.literal("json"),
   parameters: { query: z.object({ path: z.string() }), path: z.object({ id: z.string() }) },
   responses: { 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
-  responseHeaders: { 200: z.object({ "X-Docker-Container-Path-Stat": z.unknown() }) },
+  responseHeaders: { 200: z.object({ "X-Docker-Container-Path-Stat": z.string() }) },
 };
 
 export type post_ContainerPrune = typeof post_ContainerPrune;
@@ -1853,14 +1855,21 @@ export const get_SystemPing = {
   responses: { 200: z.unknown(), 500: z.unknown() },
   responseHeaders: {
     200: z.object({
-      Swarm: z.unknown(),
-      "Docker-Experimental": z.unknown(),
-      "Cache-Control": z.unknown(),
-      Pragma: z.unknown(),
-      "API-Version": z.unknown(),
-      "Builder-Version": z.unknown(),
+      Swarm: z.union([
+        z.literal("inactive"),
+        z.literal("pending"),
+        z.literal("error"),
+        z.literal("locked"),
+        z.literal("active/worker"),
+        z.literal("active/manager"),
+      ]),
+      "Docker-Experimental": z.boolean(),
+      "Cache-Control": z.string(),
+      Pragma: z.string(),
+      "API-Version": z.string(),
+      "Builder-Version": z.string(),
     }),
-    500: z.object({ "Cache-Control": z.unknown(), Pragma: z.unknown() }),
+    500: z.object({ "Cache-Control": z.string(), Pragma: z.string() }),
   },
 };
 
@@ -1873,12 +1882,19 @@ export const head_SystemPingHead = {
   responses: { 200: z.unknown(), 500: z.unknown() },
   responseHeaders: {
     200: z.object({
-      Swarm: z.unknown(),
-      "Docker-Experimental": z.unknown(),
-      "Cache-Control": z.unknown(),
-      Pragma: z.unknown(),
-      "API-Version": z.unknown(),
-      "Builder-Version": z.unknown(),
+      Swarm: z.union([
+        z.literal("inactive"),
+        z.literal("pending"),
+        z.literal("error"),
+        z.literal("locked"),
+        z.literal("active/worker"),
+        z.literal("active/manager"),
+      ]),
+      "Docker-Experimental": z.boolean(),
+      "Cache-Control": z.string(),
+      Pragma: z.string(),
+      "API-Version": z.string(),
+      "Builder-Version": z.string(),
     }),
   },
 };
@@ -1919,7 +1935,15 @@ export const get_SystemDataUsage = {
   method: z.literal("GET"),
   path: z.literal("/system/df"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ type: z.array(z.enum(["container", "image", "volume", "build-cache"])) }).partial() },
+  parameters: {
+    query: z
+      .object({
+        type: z.array(
+          z.union([z.literal("container"), z.literal("image"), z.literal("volume"), z.literal("build-cache")]),
+        ),
+      })
+      .partial(),
+  },
   responses: {
     200: z
       .object({
@@ -1973,7 +1997,7 @@ export const post_ContainerExec = {
         AttachStdin: z.boolean(),
         AttachStdout: z.boolean(),
         AttachStderr: z.boolean(),
-        ConsoleSize: z.array(z.number().int().min(0)).min(2).max(2).nullable(),
+        ConsoleSize: z.array(z.number().int().min(0)).nullable(),
         DetachKeys: z.string(),
         Tty: z.boolean(),
         Env: z.array(z.string()),
@@ -1995,11 +2019,7 @@ export const post_ExecStart = {
   parameters: {
     path: z.object({ id: z.string() }),
     body: z
-      .object({
-        Detach: z.boolean(),
-        Tty: z.boolean(),
-        ConsoleSize: z.array(z.number().int().min(0)).min(2).max(2).nullable(),
-      })
+      .object({ Detach: z.boolean(), Tty: z.boolean(), ConsoleSize: z.array(z.number().int().min(0)).nullable() })
       .partial(),
   },
   responses: { 200: z.unknown(), 404: z.unknown(), 409: z.unknown() },
@@ -2150,8 +2170,8 @@ export const post_NetworkCreate = {
       Ingress: z.boolean().optional(),
       IPAM: IPAM.optional(),
       EnableIPv6: z.boolean().optional(),
-      Options: z.record(z.string(), z.string()).optional(),
-      Labels: z.record(z.string(), z.string()).optional(),
+      Options: z.record(z.record(z.string(), z.string()), z.string()).optional(),
+      Labels: z.record(z.record(z.string(), z.string()), z.string()).optional(),
     }),
   },
   responses: {
@@ -2449,7 +2469,7 @@ export const post_ServiceCreate = {
   requestFormat: z.literal("json"),
   parameters: {
     header: z.object({ "X-Registry-Auth": z.string() }).partial(),
-    body: ServiceSpec.and(z.record(z.string(), z.unknown())),
+    body: ServiceSpec.and(z.literal("Record<string, unknown>")),
   },
   responses: {
     201: z.object({ ID: z.string(), Warning: z.string() }).partial(),
@@ -2487,12 +2507,12 @@ export const post_ServiceUpdate = {
   parameters: {
     query: z.object({
       version: z.number().int(),
-      registryAuthFrom: z.enum(["spec", "previous-spec"]).optional(),
+      registryAuthFrom: z.union([z.literal("spec"), z.literal("previous-spec")]).optional(),
       rollback: z.string().optional(),
     }),
     path: z.object({ id: z.string() }),
     header: z.object({ "X-Registry-Auth": z.string() }).partial(),
-    body: ServiceSpec.and(z.record(z.string(), z.unknown())),
+    body: ServiceSpec.and(z.literal("Record<string, unknown>")),
   },
   responses: {
     200: ServiceUpdateResponse,
@@ -2579,7 +2599,7 @@ export const post_SecretCreate = {
   method: z.literal("POST"),
   path: z.literal("/secrets/create"),
   requestFormat: z.literal("json"),
-  parameters: { body: SecretSpec.and(z.record(z.string(), z.unknown())) },
+  parameters: { body: SecretSpec.and(z.literal("Record<string, unknown>")) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2624,7 +2644,7 @@ export const post_ConfigCreate = {
   method: z.literal("POST"),
   path: z.literal("/configs/create"),
   requestFormat: z.literal("json"),
-  parameters: { body: ConfigSpec.and(z.record(z.string(), z.unknown())) },
+  parameters: { body: ConfigSpec.and(z.literal("Record<string, unknown>")) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 

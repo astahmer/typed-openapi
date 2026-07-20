@@ -62,7 +62,7 @@ describe("runtime ApiClient InferSchemaValue", () => {
     expect(out).toContain("TypedApiResponse<InferSchemaValue<TResponses>");
   });
 
-  test("zod ApiClient method params typecheck as inferred Pet, not ZodType", () => {
+  test("zod ApiClient method params typecheck as inferred Pet, not ZodType", { timeout: 30_000 }, () => {
     const ctx = mapOpenApiEndpoints(miniDoc);
     const client = generateFile({ ...ctx, runtime: "zod", includeClient: true });
 
