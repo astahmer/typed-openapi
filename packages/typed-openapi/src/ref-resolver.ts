@@ -55,7 +55,14 @@ export const createRefResolver = (doc: OpenAPIObject, nameTransform?: NameTransf
 
     // "#/components/schemas/Something.jsonld" -> "Something.jsonld"
     const name = split[split.length - 1]!;
-    const kind = normalizedPath.split(".")[1] as RefInfo["kind"];
+    // `#/definitions/Foo` (Swagger 2 / hybrid) has no `components.*` segment — treat as schemas.
+    const kind = (
+      normalizedPath.startsWith("components.")
+        ? normalizedPath.split(".")[1]
+        : normalizedPath === "definitions"
+          ? "schemas"
+          : normalizedPath.split(".")[1]
+    ) as RefInfo["kind"];
     const baseNormalized = sanitizeName(
       nameTransform?.transformSchemaName
         ? nameTransform.transformSchemaName(normalizeString(name))
@@ -89,7 +96,14 @@ export const createRefResolver = (doc: OpenAPIObject, nameTransform?: NameTransf
     return schema;
   };
 
-  const getInfosByRef = (ref: string) => byRef.get(autocorrectRef(ref))!;
+  const getInfosByRef = (ref: string) => {
+    const correctRef = autocorrectRef(ref);
+    if (!byRef.has(correctRef)) {
+      // Lazy register (e.g. `#/definitions/*` or refs not under components)
+      getSchemaByRef(correctRef);
+    }
+    return byRef.get(correctRef)!;
+  };
 
   const schemaEntries = Object.entries(doc.components ?? {}).filter(([key]) => componentsWithSchemas.includes(key));
 
@@ -100,23 +114,40 @@ export const createRefResolver = (doc: OpenAPIObject, nameTransform?: NameTransf
     });
   });
 
+  // Swagger 2 / hybrid OAS docs may still expose schemas under `definitions`
+  const definitions = (doc as OpenAPIObject & { definitions?: Record<string, LibSchemaObject> }).definitions;
+  if (definitions) {
+    Object.keys(definitions).forEach((name) => {
+      getSchemaByRef(`#/definitions/${name}`);
+    });
+  }
+
   const directDependencies = new Map<string, Set<string>>();
 
   const irCtx: SchemaIrConvertContext = { getRefName: (ref) => getInfosByRef(ref).normalized };
 
+  const registerSchemaNode = (ref: string) => {
+    const schema = getSchemaByRef(ref);
+    nodeByRef.set(ref, openApiToIr(schema, irCtx));
+
+    if (!directDependencies.has(ref)) {
+      directDependencies.set(ref, new Set<string>());
+    }
+    setSchemaDependencies(schema, directDependencies.get(ref)!);
+  };
+
   // need to be done after all refs are resolved
   schemaEntries.forEach(([key, component]) => {
     Object.keys(component).map((name) => {
-      const ref = `#/components/${key}/${name}`;
-      const schema = getSchemaByRef(ref);
-      nodeByRef.set(ref, openApiToIr(schema, irCtx));
-
-      if (!directDependencies.has(ref)) {
-        directDependencies.set(ref, new Set<string>());
-      }
-      setSchemaDependencies(schema, directDependencies.get(ref)!);
+      registerSchemaNode(`#/components/${key}/${name}`);
     });
   });
+
+  if (definitions) {
+    Object.keys(definitions).forEach((name) => {
+      registerSchemaNode(`#/definitions/${name}`);
+    });
+  }
 
   const transitiveDependencies = getTransitiveDependencies(directDependencies);
 
