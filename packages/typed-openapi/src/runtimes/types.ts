@@ -14,6 +14,11 @@ export type EmitCtx = {
    * so they resolve inside `type.module({ ... })`.
    */
   moduleSchemaNames?: Set<string>;
+  /**
+   * When true, emit number/boolean (and integer) schemas with string coercion —
+   * for path/query/cookie/header params that arrive as strings over HTTP.
+   */
+  coercePrimitives?: boolean;
   /** Indent level helper */
   indent: string;
 };
@@ -42,8 +47,13 @@ export type RuntimeAdapter = {
   never: () => string;
 };
 
-export const createEmitCtx = (validation: ValidationPolicy, recursiveNames: Set<string> = new Set()): EmitCtx => ({
+export const createEmitCtx = (
+  validation: ValidationPolicy,
+  recursiveNames: Set<string> = new Set(),
+  options?: { coercePrimitives?: boolean },
+): EmitCtx => ({
   validation,
   recursiveNames,
   indent: "  ",
+  ...(options?.coercePrimitives ? { coercePrimitives: true } : {}),
 });

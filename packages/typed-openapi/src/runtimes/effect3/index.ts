@@ -9,6 +9,7 @@ import {
   objectKey,
   objectProps,
   quote,
+  withEffectDefault,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
@@ -37,19 +38,26 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
 
 const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
   const c = applyNumberConstraints(node.constraints, ctx.validation);
-  let base = node.integer ? `${S}.Int` : `${S}.Number`;
   const filters: string[] = [];
+  if (node.integer && ctx.coercePrimitives) filters.push(`${S}.int()`);
   if (c.minimum !== undefined) filters.push(`${S}.greaterThanOrEqualTo(${c.minimum})`);
   if (c.maximum !== undefined) filters.push(`${S}.lessThanOrEqualTo(${c.maximum})`);
   if (c.exclusiveMinimum !== undefined) filters.push(`${S}.greaterThan(${c.exclusiveMinimum})`);
   if (c.exclusiveMaximum !== undefined) filters.push(`${S}.lessThan(${c.exclusiveMaximum})`);
   if (c.multipleOf !== undefined) filters.push(`${S}.multipleOf(${c.multipleOf})`);
+  const base = ctx.coercePrimitives ? `${S}.NumberFromString` : node.integer ? `${S}.Int` : `${S}.Number`;
   return pipeFilters(base, filters);
 };
 
 const emitRecord = (key: string, value: string) => `${S}.Record({ key: ${key}, value: ${value} })`;
 
-const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
+const emitBoolean = (ctx: EmitCtx): string => {
+  if (!ctx.coercePrimitives) return `${S}.Boolean`;
+  // @effect/schema has no BooleanFromString
+  return `${S}.transform(${S}.Union(${S}.Boolean, ${S}.String, ${S}.Number), ${S}.Boolean, { decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })`;
+};
+
+const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
   if (nullInner) return `${S}.NullOr(${emitNode(nullInner, ctx)})`;
 
@@ -59,7 +67,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "number":
       return emitNumber(node, ctx);
     case "boolean":
-      return `${S}.Boolean`;
+      return emitBoolean(ctx);
     case "null":
       return `${S}.Null`;
     case "unknown":
@@ -109,7 +117,10 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "object": {
       const props = objectProps(node, emitNode, ctx);
       const body = props
-        .map(({ key, optional, expr }) => `${objectKey(key)}: ${optional ? `${S}.optional(${expr})` : expr}`)
+        .map(({ key, optional, expr, meta }) => {
+          const hasDefault = meta.default !== undefined;
+          return `${objectKey(key)}: ${optional && !hasDefault ? `${S}.optional(${expr})` : expr}`;
+        })
         .join(", ");
       let expr = `${S}.Struct({ ${body} })`;
       if (node.partial) expr = `${S}.partial(${expr})`;
@@ -134,6 +145,8 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     }
   }
 };
+
+const emitNode = (node: SchemaNode, ctx: EmitCtx): string => withEffectDefault(emitNodeInner(node, ctx), node.meta, S);
 
 export const effect3Adapter: RuntimeAdapter = {
   name: "effect3",

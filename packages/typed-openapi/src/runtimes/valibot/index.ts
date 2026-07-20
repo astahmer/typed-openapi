@@ -9,6 +9,7 @@ import {
   objectKey,
   objectProps,
   quote,
+  withValibotDefault,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
@@ -40,10 +41,17 @@ const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx)
   if (c.exclusiveMinimum !== undefined) actions.push(`v.gtValue(${c.exclusiveMinimum})`);
   if (c.exclusiveMaximum !== undefined) actions.push(`v.ltValue(${c.exclusiveMaximum})`);
   if (c.multipleOf !== undefined) actions.push(`v.multipleOf(${c.multipleOf})`);
-  return pipe("v.number()", actions);
+  const numberSchema = pipe("v.number()", actions);
+  if (!ctx.coercePrimitives) return numberSchema;
+  return `v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), ${numberSchema})`;
 };
 
-const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
+const emitBoolean = (ctx: EmitCtx): string => {
+  if (!ctx.coercePrimitives) return "v.boolean()";
+  return `v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1"))`;
+};
+
+const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
   if (nullInner) return `v.nullable(${emitNode(nullInner, ctx)})`;
 
@@ -53,7 +61,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "number":
       return emitNumber(node, ctx);
     case "boolean":
-      return "v.boolean()";
+      return emitBoolean(ctx);
     case "null":
       return "v.null()";
     case "unknown":
@@ -102,7 +110,10 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "object": {
       const props = objectProps(node, emitNode, ctx);
       const body = props
-        .map(({ key, optional, expr }) => `${objectKey(key)}: ${optional ? `v.optional(${expr})` : expr}`)
+        .map(({ key, optional, expr, meta }) => {
+          const hasDefault = meta.default !== undefined;
+          return `${objectKey(key)}: ${optional && !hasDefault ? `v.optional(${expr})` : expr}`;
+        })
         .join(", ");
       let expr = `v.object({ ${body} })`;
       if (node.partial) expr = `v.partial(${expr})`;
@@ -122,6 +133,8 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     }
   }
 };
+
+const emitNode = (node: SchemaNode, ctx: EmitCtx): string => withValibotDefault(emitNodeInner(node, ctx), node.meta);
 
 export const valibotAdapter: RuntimeAdapter = {
   name: "valibot",

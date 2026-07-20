@@ -1,5 +1,13 @@
 import type { LiteralValue, SchemaNode } from "../../schema-ir/types.ts";
-import { applyNumberConstraints, applyStringConstraints, isNullOr, objectKey, objectProps, quote } from "../shared.ts";
+import {
+  applyNumberConstraints,
+  applyStringConstraints,
+  arktypeDefaultDef,
+  isNullOr,
+  objectKey,
+  objectProps,
+  quote,
+} from "../shared.ts";
 import type { EmitCtx, NamedSchema, RuntimeAdapter } from "../types.ts";
 
 const emitStringDef = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx): string => {
@@ -18,6 +26,10 @@ const emitStringDef = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitC
 };
 
 const emitNumberDef = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
+  if (ctx.coercePrimitives) {
+    // HTTP params arrive as strings — ArkType morph keywords.
+    return quote(node.integer ? "string.integer.parse" : "string.numeric.parse");
+  }
   const c = applyNumberConstraints(node.constraints, ctx.validation);
   const base = node.integer ? "number.integer" : "number";
   // Both bounds: `0 <= number <= 10` (ArkType rejects `number >= 0 <= 10`).
@@ -68,7 +80,9 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "number":
       return `type(${emitNumberDef(node, ctx)})`;
     case "boolean":
-      return `type("boolean")`;
+      return ctx.coercePrimitives
+        ? `type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1")`
+        : `type("boolean")`;
     case "null":
       return `type("null")`;
     case "unknown":
@@ -117,8 +131,20 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       const forceOptional = Boolean(node.partial && ctx.moduleSchemaNames);
       const props = objectProps(node, emitNode, ctx);
       const body = props
-        .map(({ key, optional, expr }) => {
-          const keyLit = optional || forceOptional ? quote(`${key}?`) : objectKey(key);
+        .map(({ key, optional, expr, meta }) => {
+          const hasDefault = meta.default !== undefined;
+          const keyLit = (optional || forceOptional) && !hasDefault ? quote(`${key}?`) : objectKey(key);
+          // ArkType defaults only valid on object/tuple properties as string defs.
+          if (hasDefault && expr.startsWith("type(") && expr.endsWith(")")) {
+            const innerArg = expr.slice("type(".length, -1);
+            const withDef = arktypeDefaultDef(innerArg, meta);
+            if (withDef) return `${keyLit}: ${withDef}`;
+          }
+          if (hasDefault && isModuleStringDef(expr)) {
+            const withDef = arktypeDefaultDef(expr, meta);
+            if (withDef) return `${keyLit}: ${withDef}`;
+          }
+          // Fallback: keep expr (defaults only attach to string defs in ArkType)
           return `${keyLit}: ${expr}`;
         })
         .join(", ");

@@ -9,6 +9,7 @@ import {
   objectKey,
   objectProps,
   quote,
+  withEffectDefault,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
@@ -38,20 +39,21 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
 
 const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
   const c = applyNumberConstraints(node.constraints, ctx.validation);
-  let base = node.integer ? `${S}.Int` : `${S}.Number`;
   const filters: string[] = [];
+  if (node.integer && ctx.coercePrimitives) filters.push(`${S}.int()`);
   if (c.minimum !== undefined) filters.push(`${S}.greaterThanOrEqualTo(${c.minimum})`);
   if (c.maximum !== undefined) filters.push(`${S}.lessThanOrEqualTo(${c.maximum})`);
   if (c.exclusiveMinimum !== undefined) filters.push(`${S}.greaterThan(${c.exclusiveMinimum})`);
   if (c.exclusiveMaximum !== undefined) filters.push(`${S}.lessThan(${c.exclusiveMaximum})`);
   if (c.multipleOf !== undefined) filters.push(`${S}.multipleOf(${c.multipleOf})`);
+  const base = ctx.coercePrimitives ? `${S}.NumberFromString` : node.integer ? `${S}.Int` : `${S}.Number`;
   return pipeFilters(base, filters);
 };
 
 /** Effect Schema.Record requires `{ key, value }` (2-arg form fails at runtime/types). */
 const emitRecord = (key: string, value: string) => `${S}.Record({ key: ${key}, value: ${value} })`;
 
-const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
+const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
   if (nullInner) return `${S}.NullOr(${emitNode(nullInner, ctx)})`;
 
@@ -61,7 +63,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "number":
       return emitNumber(node, ctx);
     case "boolean":
-      return `${S}.Boolean`;
+      return ctx.coercePrimitives ? `${S}.BooleanFromString` : `${S}.Boolean`;
     case "null":
       return `${S}.Null`;
     case "unknown":
@@ -113,7 +115,11 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "object": {
       const props = objectProps(node, emitNode, ctx);
       const body = props
-        .map(({ key, optional, expr }) => `${objectKey(key)}: ${optional ? `${S}.optional(${expr})` : expr}`)
+        .map(({ key, optional, expr, meta }) => {
+          const hasDefault = meta.default !== undefined;
+          // Defaults already wrap as UndefinedOr→transform; skip extra optional().
+          return `${objectKey(key)}: ${optional && !hasDefault ? `${S}.optional(${expr})` : expr}`;
+        })
         .join(", ");
       let expr = `${S}.Struct({ ${body} })`;
       if (node.partial) expr = `${S}.partial(${expr})`;
@@ -142,6 +148,8 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     }
   }
 };
+
+const emitNode = (node: SchemaNode, ctx: EmitCtx): string => withEffectDefault(emitNodeInner(node, ctx), node.meta, S);
 
 export const effectAdapter: RuntimeAdapter = {
   name: "effect",

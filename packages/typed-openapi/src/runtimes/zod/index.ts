@@ -10,6 +10,7 @@ import {
   objectKey,
   objectProps,
   quote,
+  withZodDefault,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
@@ -34,7 +35,13 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
 
 const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
   const c = applyNumberConstraints(node.constraints, ctx.validation);
-  let expr = node.integer ? "z.number().int()" : "z.number()";
+  let expr = ctx.coercePrimitives
+    ? node.integer
+      ? "z.coerce.number().int()"
+      : "z.coerce.number()"
+    : node.integer
+      ? "z.number().int()"
+      : "z.number()";
   if (c.minimum !== undefined) expr += `.min(${c.minimum})`;
   if (c.maximum !== undefined) expr += `.max(${c.maximum})`;
   if (c.exclusiveMinimum !== undefined) expr += `.gt(${c.exclusiveMinimum})`;
@@ -43,7 +50,7 @@ const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx)
   return expr;
 };
 
-const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
+const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
   if (nullInner) {
     return `${emitNode(nullInner, ctx)}.nullable()`;
@@ -55,7 +62,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "number":
       return emitNumber(node, ctx);
     case "boolean":
-      return "z.boolean()";
+      return ctx.coercePrimitives ? "z.coerce.boolean()" : "z.boolean()";
     case "null":
       return "z.null()";
     case "unknown":
@@ -130,7 +137,11 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "object": {
       const props = objectProps(node, emitNode, ctx);
       const body = props
-        .map(({ key, optional, expr }) => `${objectKey(key)}: ${optional ? `${expr}.optional()` : expr}`)
+        .map(({ key, optional, expr, meta }) => {
+          // `.default()` already makes the input optional — skip redundant `.optional()`.
+          const hasDefault = meta.default !== undefined;
+          return `${objectKey(key)}: ${optional && !hasDefault ? `${expr}.optional()` : expr}`;
+        })
         .join(", ");
       let expr = `z.object({ ${body} })`;
       if (node.partial) expr += ".partial()";
@@ -153,6 +164,8 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     }
   }
 };
+
+const emitNode = (node: SchemaNode, ctx: EmitCtx): string => withZodDefault(emitNodeInner(node, ctx), node.meta);
 
 export const zodAdapter: RuntimeAdapter = {
   name: "zod",

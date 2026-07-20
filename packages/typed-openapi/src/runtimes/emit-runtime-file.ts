@@ -16,20 +16,29 @@ export type EmitRuntimeFileArgs = {
   keptSchemaNames?: Set<string>;
   /** When set, use these instead of refs.getOrderedSchemas() (after naming/inline policy). */
   namedSchemas?: Array<{ name: string; node: SchemaNode }>;
+  /**
+   * Coerce number/boolean path|query|cookie|header params from strings.
+   * Default true for runtime adapters.
+   */
+  coerce?: boolean;
 };
+
+const coerceParamKeys = new Set(["query", "path", "header", "cookie"]);
 
 const emitParameters = (
   adapter: RuntimeAdapter,
   parameters: Endpoint["parameters"],
   ctx: ReturnType<typeof createEmitCtx>,
+  coerce: boolean,
 ): string => {
   if (!parameters) return adapter.never();
 
   const parts: string[] = [];
-  for (const key of ["query", "path", "header", "body"] as const) {
+  for (const key of ["query", "path", "header", "cookie", "body"] as const) {
     const node = parameters[key];
     if (!node) continue;
-    parts.push(`${key}: ${adapter.emitNode(node, ctx)}`);
+    const paramCtx = coerce && coerceParamKeys.has(key) ? { ...ctx, coercePrimitives: true } : ctx;
+    parts.push(`${key}: ${adapter.emitNode(node, paramCtx)}`);
   }
 
   return `{ ${parts.join(", ")} }`;
@@ -67,6 +76,7 @@ export const emitRuntimeFile = ({
   schemasOnly,
   keptSchemaNames,
   namedSchemas: namedSchemasOption,
+  coerce = true,
 }: EmitRuntimeFileArgs): string => {
   const namedSchemas =
     namedSchemasOption ??
@@ -95,7 +105,7 @@ export const emitRuntimeFile = ({
 
   file += `\n// <Endpoints>\n`;
   for (const endpoint of endpointList) {
-    const parameters = emitParameters(adapter, endpoint.parameters, ctx);
+    const parameters = emitParameters(adapter, endpoint.parameters, ctx, coerce);
     const responses = emitResponses(adapter, endpoint.responses, ctx);
     const responseHeaders = emitResponseHeaders(adapter, endpoint.responseHeaders, ctx);
 

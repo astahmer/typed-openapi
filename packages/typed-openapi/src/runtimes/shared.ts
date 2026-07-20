@@ -1,5 +1,6 @@
 import type {
   LiteralValue,
+  SchemaMeta,
   SchemaNode,
   StringConstraints,
   NumberConstraints,
@@ -20,6 +21,53 @@ export const literalValue = (value: LiteralValue): string => {
   if (value === null) return "null";
   if (typeof value === "string") return quote(value);
   return String(value);
+};
+
+/** Serialize OpenAPI `default` for embedding in generated runtime code. */
+export const jsLiteral = (value: unknown): string | undefined => {
+  if (value === undefined) return undefined;
+  if (value === null || typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    return literalValue(value);
+  }
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return undefined;
+  }
+};
+
+/** Zod / Zod3: append `.default(...)` when schema meta carries a default. */
+export const withZodDefault = (expr: string, meta: SchemaMeta): string => {
+  const lit = jsLiteral(meta.default);
+  if (lit === undefined) return expr;
+  return `${expr}.default(${lit})`;
+};
+
+/** Valibot: wrap with `v.optional(schema, default)` when meta has a default. */
+export const withValibotDefault = (expr: string, meta: SchemaMeta): string => {
+  const lit = jsLiteral(meta.default);
+  if (lit === undefined) return expr;
+  return `v.optional(${expr}, ${lit})`;
+};
+
+/**
+ * Effect Schema: transform UndefinedOr → schema, substituting default on decode.
+ * Works for standalone schemas (property-level `optionalWith` is nicer inside Struct).
+ */
+export const withEffectDefault = (expr: string, meta: SchemaMeta, schemaNs: string): string => {
+  const lit = jsLiteral(meta.default);
+  if (lit === undefined) return expr;
+  return `${schemaNs}.transform(${schemaNs}.UndefinedOr(${expr}), ${expr}, { strict: true, decode: (i) => i === undefined ? ${lit} : i, encode: (a) => a })`;
+};
+
+/** ArkType object-property string def with default (`"string = \"hi\""`). */
+export const arktypeDefaultDef = (stringDef: string, meta: SchemaMeta): string | undefined => {
+  const lit = jsLiteral(meta.default);
+  if (lit === undefined) return undefined;
+  // stringDef is a quoted arktype def like `"string"` or `"number.integer"`
+  if (!(stringDef.startsWith('"') && stringDef.endsWith('"'))) return undefined;
+  const inner = stringDef.slice(1, -1);
+  return quote(`${inner} = ${lit}`);
 };
 
 export const isNullOr = (node: SchemaNode): SchemaNode | undefined => {
@@ -124,12 +172,13 @@ export const objectProps = (
   node: Extract<SchemaNode, { kind: "object" }>,
   emit: (n: SchemaNode, ctx: EmitCtx) => string,
   ctx: EmitCtx,
-): { key: string; optional: boolean; expr: string }[] => {
+): { key: string; optional: boolean; expr: string; meta: SchemaMeta }[] => {
   return Object.entries(node.properties).map(([key, prop]) => ({
     key,
     // When `partial` is true, adapters apply `.partial()` / equivalent on the whole object.
     optional: node.partial ? false : !node.required.includes(key),
     expr: emit(prop, ctx),
+    meta: prop.meta,
   }));
 };
 
