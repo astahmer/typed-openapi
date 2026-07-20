@@ -48,6 +48,9 @@ const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx)
   return pipeFilters(base, filters);
 };
 
+/** Effect Schema.Record requires `{ key, value }` (2-arg form fails at runtime/types). */
+const emitRecord = (key: string, value: string) => `${S}.Record({ key: ${key}, value: ${value} })`;
+
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
   if (nullInner) return `${S}.NullOr(${emitNode(nullInner, ctx)})`;
@@ -101,12 +104,12 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         return `${S}.partial(${emitNode(node.generics[0], ctx)})`;
       }
       if (node.name === "Record" && node.generics?.length === 2) {
-        return `${S}.Record(${emitNode(node.generics[0]!, ctx)}, ${emitNode(node.generics[1]!, ctx)})`;
+        return emitRecord(emitNode(node.generics[0]!, ctx), emitNode(node.generics[1]!, ctx));
       }
       return node.name;
     }
     case "record":
-      return `${S}.Record(${emitNode(node.key, ctx)}, ${emitNode(node.value, ctx)})`;
+      return emitRecord(emitNode(node.key, ctx), emitNode(node.value, ctx));
     case "object": {
       const props = objectProps(node, emitNode, ctx);
       const body = props
@@ -115,9 +118,9 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       let expr = `${S}.Struct({ ${body} })`;
       if (node.partial) expr = `${S}.partial(${expr})`;
       if (node.additionalProperties === true) {
-        expr = `${S}.extend(${expr}, ${S}.Record(${S}.String, ${S}.Unknown))`;
+        expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, `${S}.Unknown`)})`;
       } else if (typeof node.additionalProperties === "object") {
-        expr = `${S}.extend(${expr}, ${S}.Record(${S}.String, ${emitNode(node.additionalProperties, ctx)}))`;
+        expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, emitNode(node.additionalProperties, ctx))})`;
       }
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       const filters: string[] = [];
