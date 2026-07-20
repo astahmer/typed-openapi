@@ -82,22 +82,27 @@ const runtimeInferHelper = (runtime: OutputRuntime): string => {
   if (runtime === "none") {
     return `type InferSchemaValue<T> = T;\ntype InferSchemaInput<T> = T;`;
   }
+  // Object maps: when a nested schema input includes `undefined` (e.g. `.optional()` param group),
+  // make that key optional so all-optional query endpoints don't require `{ query: {} }`.
+  const optionalKeyObjectMap = (value: string) =>
+    `T extends object ? { [K in keyof T as undefined extends ${value} ? never : K]: ${value} } & { [K in keyof T as undefined extends ${value} ? K : never]?: Exclude<${value}, undefined> } : T`;
+
   if (runtime === "zod" || runtime === "zod3") {
     return `type InferSchemaValue<T> = T extends z.ZodType ? z.infer<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInput<T> = T extends z.ZodType ? z.input<T> : T extends object ? { [K in keyof T]: InferSchemaInput<T[K]> } : T;`;
+type InferSchemaInput<T> = T extends z.ZodType ? z.input<T> : ${optionalKeyObjectMap("InferSchemaInput<T[K]>")};`;
   }
   if (runtime === "valibot") {
     return `type InferSchemaValue<T> = T extends v.GenericSchema ? v.InferOutput<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInput<T> = T extends v.GenericSchema ? v.InferInput<T> : T extends object ? { [K in keyof T]: InferSchemaInput<T[K]> } : T;`;
+type InferSchemaInput<T> = T extends v.GenericSchema ? v.InferInput<T> : ${optionalKeyObjectMap("InferSchemaInput<T[K]>")};`;
   }
   if (runtime === "effect" || runtime === "effect3") {
     // Effect: Type = decoded output, Encoded = input to decode
     return `type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInput<T> = T extends { Encoded: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInput<T[K]> } : T;`;
+type InferSchemaInput<T> = T extends { Encoded: infer I } ? I : ${optionalKeyObjectMap("InferSchemaInput<T[K]>")};`;
   }
   if (runtime === "arktype") {
     return `type InferSchemaValue<T> = T extends { infer: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInput<T> = T extends { inferIn: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInput<T[K]> } : T;`;
+type InferSchemaInput<T> = T extends { inferIn: infer I } ? I : ${optionalKeyObjectMap("InferSchemaInput<T[K]>")};`;
   }
   return `type InferSchemaValue<T> = T;\ntype InferSchemaInput<T> = T;`;
 };
@@ -222,6 +227,9 @@ const nodeToString = (
 
 const parameterObjectToString = (parameters: SchemaNode, ctx: GeneratorContext) => nodeToString(parameters, ctx);
 
+/** Optional param groups (all fields optional / `partial`) so `api.get(path)` needs no `{ query: {} }`. */
+const paramGroupKey = (key: string, node: SchemaNode) => (node.kind === "object" && node.partial ? `${key}?` : key);
+
 const responseHeadersObjectToString = (responseHeaders: Record<string, SchemaNode>, ctx: GeneratorContext) => {
   let str = "{";
   for (const [key, node] of Object.entries(responseHeaders)) {
@@ -256,11 +264,11 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
       ${
         endpoint.meta.hasParameters
           ? `parameters: {
-            ${parameters.query ? `query:  ${parameterObjectToString(parameters.query, ctx)},` : ""}
-        ${parameters.path ? `path:  ${parameterObjectToString(parameters.path, ctx)},` : ""}
-        ${parameters.header ? `header:  ${parameterObjectToString(parameters.header, ctx)},` : ""}
-        ${parameters.cookie ? `cookie:  ${parameterObjectToString(parameters.cookie, ctx)},` : ""}
-        ${parameters.body ? `body:  ${parameterObjectToString(parameters.body, ctx)},` : ""}
+            ${parameters.query ? `${paramGroupKey("query", parameters.query)}:  ${parameterObjectToString(parameters.query, ctx)},` : ""}
+        ${parameters.path ? `${paramGroupKey("path", parameters.path)}:  ${parameterObjectToString(parameters.path, ctx)},` : ""}
+        ${parameters.header ? `${paramGroupKey("header", parameters.header)}:  ${parameterObjectToString(parameters.header, ctx)},` : ""}
+        ${parameters.cookie ? `${paramGroupKey("cookie", parameters.cookie)}:  ${parameterObjectToString(parameters.cookie, ctx)},` : ""}
+        ${parameters.body ? `${paramGroupKey("body", parameters.body)}:  ${parameterObjectToString(parameters.body, ctx)},` : ""}
           }`
           : "parameters: never,"
       }

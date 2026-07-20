@@ -43,7 +43,7 @@ describe("parameter direct $ref should reference named schema, not inline it", (
   test("query parameter with $ref schema uses Schemas namespace", async ({ expect }) => {
     const file = generateFile(mapOpenApiEndpoints(spec));
     const output = await prettify(file);
-    expect(output).toContain("query: Partial<{ status: Schemas.Status }>;");
+    expect(output).toContain("query?: Partial<{ status: Schemas.Status }>;");
     expect(output).not.toContain('z.literal("active")');
   });
 });

@@ -245,10 +245,11 @@ describe("Example API Client", () => {
     const input = {} as Parameters<typeof endpointRequest>[1];
 
     expect(input).type.toBeAssignableTo<{
-      query: Partial<{
+      query?: Partial<{
         name: string;
         status: string;
       }>;
+      path: { petId: number };
     }>();
   });
 

@@ -49,6 +49,6 @@ describe("issue #51 - Schemas namespace missing for schema refs within parameter
   test("parameter array $ref should use Schemas namespace", async ({ expect }) => {
     const file = generateFile(mapOpenApiEndpoints(minimalSpec));
     const output = await prettify(file);
-    expect(output).toContain("query: Partial<{ test: Array<Schemas.Test> }>");
+    expect(output).toContain("query?: Partial<{ test: Array<Schemas.Test> }>");
   });
 });

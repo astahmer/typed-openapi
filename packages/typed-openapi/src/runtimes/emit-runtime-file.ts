@@ -25,6 +25,25 @@ export type EmitRuntimeFileArgs = {
 
 const coerceParamKeys = new Set(["query", "path", "header", "cookie"]);
 
+/** Make an all-optional param group itself optional (`query?: …`) for InferSchemaInput. */
+const wrapOptionalParamGroup = (adapter: RuntimeAdapter, expr: string): string => {
+  switch (adapter.name) {
+    case "zod":
+    case "zod3":
+      return `${expr}.optional()`;
+    case "valibot":
+      return `v.optional(${expr})`;
+    case "effect":
+      return `Schema.optional(${expr})`;
+    case "effect3":
+      return `S.optional(${expr})`;
+    case "arktype":
+      return `${expr}.optional()`;
+    default:
+      return expr;
+  }
+};
+
 const emitParameters = (
   adapter: RuntimeAdapter,
   parameters: Endpoint["parameters"],
@@ -38,7 +57,11 @@ const emitParameters = (
     const node = parameters[key];
     if (!node) continue;
     const paramCtx = coerce && coerceParamKeys.has(key) ? { ...ctx, coercePrimitives: true } : ctx;
-    parts.push(`${key}: ${adapter.emitNode(node, paramCtx)}`);
+    let expr = adapter.emitNode(node, paramCtx);
+    if (node.kind === "object" && node.partial) {
+      expr = wrapOptionalParamGroup(adapter, expr);
+    }
+    parts.push(`${key}: ${expr}`);
   }
 
   return `{ ${parts.join(", ")} }`;

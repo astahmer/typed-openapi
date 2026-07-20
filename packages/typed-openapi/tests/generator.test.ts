@@ -72,7 +72,7 @@ describe("generator", () => {
           path: "/pet/findByStatus";
           requestFormat: "json";
           parameters: {
-            query: Partial<{ status: "available" | "pending" | "sold" }>;
+            query?: Partial<{ status: "available" | "pending" | "sold" }>;
           };
           responses: { 200: Array<Schemas.Pet>; 304: unknown; 400: { code: number; message: string } };
         };
@@ -81,7 +81,7 @@ describe("generator", () => {
           path: "/pet/findByTags";
           requestFormat: "json";
           parameters: {
-            query: Partial<{ tags: Array<string> }>;
+            query?: Partial<{ tags: Array<string> }>;
           };
           responses: { 200: Array<Schemas.Pet> | Array<Schemas.User> | Array<Schemas.Tag>; 400: unknown };
         };
@@ -99,7 +99,7 @@ describe("generator", () => {
           path: "/pet/{petId}";
           requestFormat: "json";
           parameters: {
-            query: Partial<{ name: string; status: string }>;
+            query?: Partial<{ name: string; status: string }>;
             path: { petId: number };
           };
           responses: { 405: unknown };
@@ -110,7 +110,7 @@ describe("generator", () => {
           requestFormat: "json";
           parameters: {
             path: { petId: number };
-            header: Partial<{ api_key: string }>;
+            header?: Partial<{ api_key: string }>;
           };
           responses: { 400: unknown };
         };
@@ -119,7 +119,7 @@ describe("generator", () => {
           path: "/pet/{petId}/uploadImage";
           requestFormat: "binary";
           parameters: {
-            query: Partial<{ additionalMetadata: string }>;
+            query?: Partial<{ additionalMetadata: string }>;
             path: { petId: number };
 
             body: string;
@@ -183,7 +183,7 @@ describe("generator", () => {
           path: "/user/login";
           requestFormat: "json";
           parameters: {
-            query: Partial<{ username: string; password: string }>;
+            query?: Partial<{ username: string; password: string }>;
           };
           responses: { 200: string; 400: unknown };
           responseHeaders: { 200: { "X-Rate-Limit": number; "X-Expires-After": string }; 400: { "X-Error": string } };
@@ -1200,7 +1200,7 @@ describe("generator", () => {
           path: "/authorization/organizations/:organizationId/members/search";
           requestFormat: "json";
           parameters: {
-            query: Partial<{
+            query?: Partial<{
               searchQuery: string;
               includeRoles: Array<"super-admin" | "buyer" | "admin" | "coordinator" | "requestor">;
             }>;
@@ -1795,7 +1795,7 @@ describe("generator", () => {
           requestFormat: "json";
           parameters: {
             query: { organizationId: string; searchQuery?: string };
-            path: Partial<{ optionalInPath1: string; optionalInPath2: string }>;
+            path?: Partial<{ optionalInPath1: string; optionalInPath2: string }>;
           };
           responses: { 200: string };
         };
