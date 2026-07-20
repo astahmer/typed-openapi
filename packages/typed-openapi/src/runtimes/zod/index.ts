@@ -6,6 +6,7 @@ import {
   applyStringConstraints,
   isNullOr,
   literalValue,
+  findMappedUnionMember,
   objectKey,
   objectProps,
   quote,
@@ -88,9 +89,20 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     }
     case "union": {
       if (node.discriminator?.propertyName) {
-        return `z.discriminatedUnion(${quote(node.discriminator.propertyName)}, [${node.members
-          .map((m) => emitNode(m, ctx))
-          .join(", ")}])`;
+        const prop = node.discriminator.propertyName;
+        const mapping = node.discriminator.mapping;
+        const members =
+          mapping && Object.keys(mapping).length > 0
+            ? Object.entries(mapping).flatMap(([value, target]) => {
+                const member = findMappedUnionMember(node.members, target);
+                if (!member) return [];
+                const base = emitNode(member, ctx);
+                return [`${base}.extend({ ${objectKey(prop)}: z.literal(${quote(value)}) })`];
+              })
+            : node.members.map((m) => emitNode(m, ctx));
+        if (members.length > 0) {
+          return `z.discriminatedUnion(${quote(prop)}, [${members.join(", ")}])`;
+        }
       }
       return `z.union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
     }

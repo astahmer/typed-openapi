@@ -199,3 +199,19 @@ export const findRecursiveSchemaNames = (schemas: Array<{ name: string; node: Sc
 
   return recursive;
 };
+
+/** `#/components/schemas/Dog` → `Dog`; bare names pass through. */
+export const schemaNameFromRef = (refOrName: string): string => {
+  const trimmed = refOrName.trim();
+  const parts = trimmed.split("/");
+  return parts[parts.length - 1] || trimmed;
+};
+
+/**
+ * Match a discriminator mapping target to a union member (by ref name).
+ * Inline object members are matched when mapping value equals schema title — rare; prefer refs.
+ */
+export const findMappedUnionMember = (members: SchemaNode[], mappingTarget: string): SchemaNode | undefined => {
+  const want = schemaNameFromRef(mappingTarget);
+  return members.find((m) => m.kind === "ref" && m.name === want);
+};
