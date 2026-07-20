@@ -1,19 +1,11 @@
 import { describe, expect, test } from "vitest";
 
-import { openApiSchemaToTs } from "../src/openapi-schema-to-ts.ts";
 import type { SchemasObject } from "openapi3-ts/oas31";
-import { createRefResolver } from "../src/ref-resolver.ts";
-import { OpenapiSchemaConvertContext, type LibSchemaObject } from "../src/types.ts";
-import { tsFactory } from "../src/ts-factory.ts";
+import { type LibSchemaObject } from "../src/types.ts";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { generateFile } from "../src/generator.ts";
 import { prettify } from "../src/format.ts";
 
-const factory = tsFactory;
-const makeCtx = (schemas: SchemasObject): OpenapiSchemaConvertContext => ({
-  factory,
-  refs: createRefResolver({ components: { schemas } } as any),
-});
 const makeDoc = (schemas: SchemasObject) => ({ components: { schemas } }) as any;
 
 const getSchemaBox = async (schema: LibSchemaObject) => {
@@ -288,7 +280,16 @@ test("getSchemaBox", async () => {
 });
 
 describe("getSchemaBox with context", () => {
-  test("with ref", () => {
+  const getSchemaOutputFor = async (schemas: SchemasObject, rootKey: string) => {
+    const output = await prettify(generateFile(mapOpenApiEndpoints(makeDoc(schemas))));
+    const start = output.indexOf("// <Schemas>");
+    const end = output.indexOf("// </Schemas>");
+    const section = output.substring(start + "// <Schemas>".length, end);
+    const line = section.split("\n").find((l) => l.includes(`export type ${rootKey}`));
+    return line?.trim();
+  };
+
+  test("with ref", async () => {
     const schemas = {
       Root: {
         type: "object",
@@ -306,18 +307,12 @@ describe("getSchemaBox with context", () => {
       },
     } satisfies SchemasObject;
 
-    const ctx = makeCtx(schemas);
-    expect(openApiSchemaToTs({ schema: schemas["Root"]!, ctx })).toMatchInlineSnapshot(
-      `
-      {
-        "type": "ref",
-        "value": "Partial<{ str: string, nb: number, nested: Nested }>",
-      }
-    `,
+    expect(await getSchemaOutputFor(schemas, "Root")).toMatchInlineSnapshot(
+      `"export type Root = Partial<{ str: string; nb: number; nested: Nested }>;"`,
     );
   });
 
-  test("with multiple nested refs", () => {
+  test("with multiple nested refs", async () => {
     const schemas = {
       Root2: {
         type: "object",
@@ -344,14 +339,8 @@ describe("getSchemaBox with context", () => {
       },
     } satisfies SchemasObject;
 
-    const ctx = makeCtx(schemas);
-    expect(openApiSchemaToTs({ schema: schemas["Root2"]!, ctx })).toMatchInlineSnapshot(
-      `
-      {
-        "type": "ref",
-        "value": "Partial<{ str: string, nb: number, nested: Nested2 }>",
-      }
-    `,
+    expect(await getSchemaOutputFor(schemas, "Root2")).toMatchInlineSnapshot(
+      `"export type Root2 = Partial<{ str: string; nb: number; nested: Nested2 }>;"`,
     );
   });
 
@@ -375,15 +364,8 @@ describe("getSchemaBox with context", () => {
       },
     } satisfies SchemasObject;
 
-    const ctx = makeCtx(schemas);
-
-    expect(openApiSchemaToTs({ schema: schemas["Root3"]!, ctx })).toMatchInlineSnapshot(
-      `
-      {
-        "type": "ref",
-        "value": "Partial<{ str: string, nb: number, nested: Nested3, arrayOfNested: Array<Nested3> }>",
-      }
-    `,
+    expect(await getSchemaOutputFor(schemas, "Root3")).toMatchInlineSnapshot(
+      `"export type Root3 = Partial<{ str: string; nb: number; nested: Nested3; arrayOfNested: Array<Nested3> }>;"`,
     );
   });
 
@@ -408,20 +390,12 @@ describe("getSchemaBox with context", () => {
       },
     } satisfies SchemasObject;
 
-    const ctx = makeCtx(schemas);
-    const result = openApiSchemaToTs({ schema: schemas["Root4"]!, ctx });
-
-    expect(result).toMatchInlineSnapshot(
-      `
-      {
-        "type": "ref",
-        "value": "Partial<{ str: string, nb: number, self: Root4, nested: Nested4, arrayOfSelf: Array<Root4> }>",
-      }
-    `,
+    expect(await getSchemaOutputFor(schemas, "Root4")).toMatchInlineSnapshot(
+      `"export type Root4 = Partial<{ str: string; nb: number; self: Root4; nested: Nested4; arrayOfSelf: Array<Root4> }>;"`,
     );
   });
 
-  test("same schemas as openApiToZod", () => {
+  test("same schemas as openApiToZod", async () => {
     const schemas = {
       User: {
         type: "object",
@@ -447,18 +421,12 @@ describe("getSchemaBox with context", () => {
       },
     } satisfies SchemasObject;
 
-    const ctx = makeCtx(schemas);
-    const result = openApiSchemaToTs({ schema: schemas["Root"]!, ctx });
-
-    expect(result).toMatchInlineSnapshot(`
-      {
-        "type": "ref",
-        "value": "Partial<{ recursive: User, basic: number }>",
-      }
-    `);
+    expect(await getSchemaOutputFor(schemas, "Root")).toMatchInlineSnapshot(
+      `"export type Root = Partial<{ recursive: User; basic: number }>;"`,
+    );
   });
 
-  test("anyOf with refs", () => {
+  test("anyOf with refs", async () => {
     const schemas = {
       User: {
         type: "object",
@@ -487,16 +455,8 @@ describe("getSchemaBox with context", () => {
       },
     } satisfies SchemasObject;
 
-    const ctx = makeCtx(schemas);
-    const result = openApiSchemaToTs({ schema: schemas["Root"]!, ctx });
-
-    expect(result).toMatchInlineSnapshot(
-      `
-      {
-        "type": "ref",
-        "value": "Partial<{ user: (User | Member), users: Array<(User | Member)>, basic: number }>",
-      }
-    `,
+    expect(await getSchemaOutputFor(schemas, "Root")).toMatchInlineSnapshot(
+      `"export type Root = Partial<{ user: User | Member; users: Array<User | Member>; basic: number }>;"`,
     );
   });
 });
