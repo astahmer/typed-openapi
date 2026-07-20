@@ -9,6 +9,10 @@ import { emitRuntimeFile } from "./runtimes/emit-runtime-file.ts";
 import { getRuntimeAdapter, type ShippedRuntime } from "./runtimes/registry.ts";
 import { resolveValidationPolicy, type ValidationPreset, type ValidationPolicy } from "./runtimes/validation.ts";
 import type { OutputRuntime as RuntimeName } from "./runtimes/types.ts";
+import { boxToIr } from "./schema-ir/box-to-ir.ts";
+import { irToTs, renderSchemaJsdoc } from "./schema-ir/ir-to-ts.ts";
+import { openApiToIr } from "./schema-ir/openapi-to-ir.ts";
+import type { SchemaIrConvertContext } from "./schema-ir/types.ts";
 
 // Default success status codes (2xx and 3xx ranges)
 export const DEFAULT_SUCCESS_STATUS_CODES = [
@@ -47,14 +51,7 @@ const escapeCommentText = (text: string) => text.replace(/\*\//g, "*\\/");
 
 const renderDescriptionComment = (description: string, indent = "") => {
   const lines = description.trim().split(/\r?\n/);
-
   return `${indent}/**\n${lines.map((line) => `${indent} * ${escapeCommentText(line)}`).join("\n")}\n${indent} */`;
-};
-
-const getSchemaDescription = (schema: Box<AnyBoxDef>["schema"]) => {
-  if (!schema || typeof schema !== "object") return undefined;
-  if ("description" in schema && typeof schema.description === "string") return schema.description;
-  return undefined;
 };
 
 const indentMultiline = (value: string, indent = "  ") =>
@@ -107,23 +104,30 @@ export const generateFile = (options: GeneratorOptions) => {
   `;
 };
 
+const irCtxFromGenerator = (ctx: GeneratorContext): SchemaIrConvertContext => ({
+  getRefName: (ref: string) => ctx.refs.getInfosByRef(ref).normalized,
+});
+
 const generateSchemaList = (ctx: GeneratorContext) => {
   const { refs, runtime } = ctx;
+  const irCtx = irCtxFromGenerator(ctx);
   let file = `
   ${runtime === "none" ? "export namespace Schemas {" : ""}
     // <Schemas>
   `;
-  refs.getOrderedSchemas().forEach(([schema, infos]) => {
+  refs.getOrderedSchemas().forEach(([, infos]) => {
     if (!infos?.name) return;
     if (infos.kind !== "schemas") return;
 
-    const description = shouldRenderDescriptionComments(ctx) ? getSchemaDescription(schema.schema) : undefined;
-    const schemaValue =
-      shouldRenderDescriptionComments(ctx) && !Box.isReference(schema)
-        ? boxToString(schema, ctx, { prefixRefsWithSchemas: false })
-        : schema.value;
+    const schema = refs.get(infos.ref);
+    const node = openApiToIr(schema, irCtx);
+    const description = shouldRenderDescriptionComments(ctx) ? node.meta.description : undefined;
+    const schemaValue = irToTs(node, {
+      prefixRefsWithSchemas: false,
+      jsdoc: shouldRenderDescriptionComments(ctx),
+    });
 
-    file += `${description ? `${renderDescriptionComment(description)}\n` : ""}export type ${infos.normalized} = ${schemaValue}\n`;
+    file += `${renderSchemaJsdoc(description)}export type ${infos.normalized} = ${schemaValue}\n`;
   });
 
   return (
@@ -135,90 +139,18 @@ const generateSchemaList = (ctx: GeneratorContext) => {
   );
 };
 
+/** Types-only: Box → Schema IR → TS string (single source of truth with runtimes). */
 const boxToString = (
   box: Box<AnyBoxDef>,
   ctx: GeneratorContext,
   options: { prefixRefsWithSchemas?: boolean } = {},
 ): string => {
   const prefixRefsWithSchemas = options.prefixRefsWithSchemas ?? true;
-
-  if (ctx.runtime !== "none") {
-    return box.value;
-  }
-
-  const renderValue = (value: any): string => {
-    if (typeof value === "string") {
-      return value;
-    }
-
-    if (Box.isBox(value)) {
-      return boxToString(value, ctx, options);
-    }
-
-    return value.value;
-  };
-
-  if (Box.isUnion(box)) {
-    return `(${box.params.types.map((type) => renderValue(type)).join(" | ")})`;
-  }
-
-  if (Box.isIntersection(box)) {
-    return `(${box.params.types.map((type) => renderValue(type)).join(" & ")})`;
-  }
-
-  if (Box.isArray(box)) {
-    return `Array<${renderValue(box.params.type)}>`;
-  }
-
-  if (Box.isOptional(box)) {
-    return `${renderValue(box.params.type)} | undefined`;
-  }
-
-  if (Box.isObject(box)) {
-    const renderedProps = Object.entries(box.params.props).map(([prop, type]) => {
-      const isOptional = typeof type !== "string" && Box.isBox(type) && Box.isOptional(type);
-      const renderedValue = indentMultiline(renderValue(type));
-      const description =
-        shouldRenderDescriptionComments(ctx) && typeof type !== "string" && Box.isBox(type)
-          ? getSchemaDescription(type.schema)
-          : undefined;
-
-      return {
-        description,
-        line: `${wrapWithQuotesIfNeeded(prop)}${isOptional ? "?" : ""}: ${renderedValue};`,
-      };
-    });
-
-    const shouldRenderMultiline =
-      shouldRenderDescriptionComments(ctx) &&
-      renderedProps.some(({ description, line }) => description || line.includes("\n"));
-
-    if (!shouldRenderMultiline) {
-      const propsString = renderedProps.map(({ line }) => line.slice(0, -1)).join(", ");
-      return `{ ${propsString} }`;
-    }
-
-    const propsString = renderedProps
-      .map(({ description, line }) => {
-        const comment = description ? `${renderDescriptionComment(description, "  ")}\n` : "";
-        return `${comment}  ${line}`;
-      })
-      .join("\n");
-
-    return `{
-${propsString}
-}`;
-  }
-
-  if (Box.isReference(box)) {
-    if (!box.params.generics) {
-      return box.value === "null" ? box.value : prefixRefsWithSchemas ? `Schemas.${box.value}` : box.value;
-    }
-
-    return `${box.params.name}<${box.params.generics.map((type) => renderValue(type)).join(", ")}>`;
-  }
-
-  return box.value;
+  const node = boxToIr(box, irCtxFromGenerator(ctx));
+  return irToTs(node, {
+    prefixRefsWithSchemas,
+    jsdoc: shouldRenderDescriptionComments(ctx),
+  });
 };
 
 const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, AnyBox>, ctx: GeneratorContext) => {

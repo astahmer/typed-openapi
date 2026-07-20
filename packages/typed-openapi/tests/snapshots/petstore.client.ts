@@ -1,36 +1,36 @@
 export namespace Schemas {
   // <Schemas>
   export type Order = Partial<{
-    id: number;
-    petId: number;
-    quantity: number;
-    shipDate: string;
-    status: "placed" | "approved" | "delivered";
-    complete: boolean;
+    id?: number;
+    petId?: number;
+    quantity?: number;
+    shipDate?: string;
+    status?: "placed" | "approved" | "delivered";
+    complete?: boolean;
   }>;
-  export type Address = Partial<{ street: string; city: string; state: string; zip: string }>;
-  export type Customer = Partial<{ id: number; username: string; address: Array<Address> }>;
-  export type Category = Partial<{ id: number; name: string }>;
+  export type Address = Partial<{ street?: string; city?: string; state?: string; zip?: string }>;
+  export type Customer = Partial<{ id?: number; username?: string; address?: Array<Address> }>;
+  export type Category = Partial<{ id?: number; name?: string }>;
   export type User = Partial<{
-    id: number;
-    username: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    phone: string;
-    userStatus: number;
+    id?: number;
+    username?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    password?: string;
+    phone?: string;
+    userStatus?: number;
   }>;
-  export type Tag = Partial<{ id: number; name: string }>;
+  export type Tag = Partial<{ id?: number; name?: string }>;
   export type Pet = {
-    id?: number | undefined;
+    id?: number;
     name: string;
-    category?: Category | undefined;
+    category?: Category;
     photoUrls: Array<string>;
-    tags?: Array<Tag> | undefined;
-    status?: ("available" | "pending" | "sold") | undefined;
+    tags?: Array<Tag>;
+    status?: "available" | "pending" | "sold";
   };
-  export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
+  export type ApiResponse = Partial<{ code?: number; type?: string; message?: string }>;
 
   // </Schemas>
 }
@@ -61,7 +61,7 @@ export namespace Endpoints {
     path: "/pet/findByStatus";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ status: "available" | "pending" | "sold" }>;
+      query: Partial<{ status?: "available" | "pending" | "sold" }>;
     };
     responses: { 200: Array<Schemas.Pet>; 304: unknown; 400: { code: number; message: string } };
   };
@@ -70,7 +70,7 @@ export namespace Endpoints {
     path: "/pet/findByTags";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ tags: Array<string> }>;
+      query: Partial<{ tags?: Array<string> }>;
     };
     responses: { 200: Array<Schemas.Pet> | Array<Schemas.User> | Array<Schemas.Tag>; 400: unknown };
   };
@@ -88,7 +88,7 @@ export namespace Endpoints {
     path: "/pet/{petId}";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ name: string; status: string }>;
+      query: Partial<{ name?: string; status?: string }>;
       path: { petId: number };
     };
     responses: { 405: unknown };
@@ -99,7 +99,7 @@ export namespace Endpoints {
     requestFormat: "json";
     parameters: {
       path: { petId: number };
-      header: Partial<{ api_key: string }>;
+      header: Partial<{ api_key?: string }>;
     };
     responses: { 400: unknown };
   };
@@ -108,7 +108,7 @@ export namespace Endpoints {
     path: "/pet/{petId}/uploadImage";
     requestFormat: "binary";
     parameters: {
-      query: Partial<{ additionalMetadata: string }>;
+      query: Partial<{ additionalMetadata?: string }>;
       path: { petId: number };
 
       body: string;
@@ -120,7 +120,7 @@ export namespace Endpoints {
     path: "/store/inventory";
     requestFormat: "json";
     parameters: never;
-    responses: { 200: Record<string, number> };
+    responses: { 200: Record<Record<string, number>, number> };
   };
   export type post_PlaceOrder = {
     method: "POST";
@@ -172,10 +172,10 @@ export namespace Endpoints {
     path: "/user/login";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ username: string; password: string }>;
+      query: Partial<{ username?: string; password?: string }>;
     };
     responses: { 200: string; 400: unknown };
-    responseHeaders: { 200: { "X-Rate-Limit": number; "X-Expires-After": string }; 400: { "X-Error": string } };
+    responseHeaders: { 200: { "X-Rate-Limit": unknown; "X-Expires-After": unknown }; 400: { "X-Error": unknown } };
   };
   export type get_LogoutUser = {
     method: "GET";
