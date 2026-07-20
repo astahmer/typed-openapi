@@ -19,23 +19,7 @@ export default defineConfig({
       plugins: [pandacss()],
     },
   },
-  plugins: [
-    react(),
-    tsconfigPaths(),
-    reactClickToComponent(),
-    {
-      name: "replace-ts-patch",
-      transform(code, id) {
-        // fix ts-patch used in @sinclair/typebox-codegen
-        if (!id.includes("sinclair")) return;
-        const transformedCode = code.replace("tsp2.tsShim.sys.fileExists", "() => false");
-        return {
-          code: transformedCode,
-          map: { mappings: "" },
-        };
-      },
-    },
-  ],
+  plugins: [react(), tsconfigPaths(), reactClickToComponent()],
   optimizeDeps: {
     include: ["escalade"],
     esbuildOptions: {
