@@ -104,15 +104,7 @@ export type EffectFetcher = {
   encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
   encodeCookies?: (cookies: unknown, headers: Headers) => void;
   parseResponseData?: (response: FetcherResponse) => Promise<unknown>;
-  fetch: (input: {
-    method: Method;
-    url: URL;
-    urlSearchParams?: URLSearchParams | undefined;
-    parameters?: EndpointParameters | undefined;
-    path: string;
-    overrides?: RequestInit;
-    throwOnStatusError?: boolean;
-  }) => Effect.Effect<FetcherResponse, HttpClientError, never>;
+  fetch: (input: Parameters<Fetcher["fetch"]>[0]) => Effect.Effect<FetcherResponse, HttpClientError, never>;
 };
 
 const wrapPromiseFetcher = (fetcher: Fetcher): EffectFetcher => ({
@@ -239,7 +231,8 @@ export class EffectApiClient {
         path: path as string,
         url,
         urlSearchParams,
-        parameters: parametersToSend,
+        parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
+        requestFormat: endpointRequestFormats[method][path],
         overrides,
       });
 
