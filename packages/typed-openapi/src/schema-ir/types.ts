@@ -56,8 +56,14 @@ export type SchemaNode =
       /** When true, emit as Partial&lt;{...}&gt; / all props optional */
       partial: boolean;
     }
-  | { kind: "union"; members: SchemaNode[]; meta: SchemaMeta }
+  | {
+      kind: "union";
+      members: SchemaNode[];
+      meta: SchemaMeta;
+      discriminator?: { propertyName: string; mapping?: Record<string, string> };
+    }
   | { kind: "intersection"; members: SchemaNode[]; meta: SchemaMeta }
+  | { kind: "not"; schema: SchemaNode; meta: SchemaMeta }
   | { kind: "ref"; name: string; generics?: SchemaNode[]; meta: SchemaMeta }
   | { kind: "record"; key: SchemaNode; value: SchemaNode; meta: SchemaMeta }
   | { kind: "unknown"; meta: SchemaMeta }

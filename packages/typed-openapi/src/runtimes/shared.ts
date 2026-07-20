@@ -62,6 +62,10 @@ export const applyStringConstraints = (
 ): AppliedStringConstraints => {
   const out: AppliedStringConstraints = {};
   if (policy.formats && constraints.format) out.format = constraints.format;
+  // contentEncoding base64 ≈ OpenAPI format: byte
+  if (policy.formats && !out.format && constraints.contentEncoding === "base64") {
+    out.format = "byte";
+  }
   if (policy.stringConstraints) {
     if (constraints.minLength !== undefined) out.minLength = constraints.minLength;
     if (constraints.maxLength !== undefined) out.maxLength = constraints.maxLength;
@@ -154,6 +158,9 @@ export const findRecursiveSchemaNames = (schemas: Array<{ name: string; node: Sc
       case "union":
       case "intersection":
         node.members.forEach((m) => refsIn(m, into));
+        break;
+      case "not":
+        refsIn(node.schema, into);
         break;
       case "record":
         refsIn(node.key, into);

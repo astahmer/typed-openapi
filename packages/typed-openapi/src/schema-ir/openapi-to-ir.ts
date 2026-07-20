@@ -112,6 +112,18 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
     return { kind: "null", meta };
   }
 
+  if (schema.not) {
+    return withNullable({ kind: "not", schema: openApiToIr(schema.not, ctx), meta }, schema);
+  }
+
+  const discriminator =
+    schema.discriminator && typeof schema.discriminator.propertyName === "string"
+      ? {
+          propertyName: schema.discriminator.propertyName,
+          ...(schema.discriminator.mapping ? { mapping: schema.discriminator.mapping as Record<string, string> } : {}),
+        }
+      : undefined;
+
   if (schema.oneOf) {
     if (schema.oneOf.length === 1) {
       return withNullable(openApiToIr(schema.oneOf[0]!, ctx), schema);
@@ -121,6 +133,7 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
         kind: "union",
         members: schema.oneOf.map((prop: unknown) => openApiToIr(prop, ctx)),
         meta,
+        ...(discriminator ? { discriminator } : {}),
       },
       schema,
     );
@@ -135,6 +148,7 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
         kind: "union",
         members: schema.anyOf.map((prop: unknown) => openApiToIr(prop, ctx)),
         meta,
+        ...(discriminator ? { discriminator } : {}),
       },
       schema,
     );

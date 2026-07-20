@@ -86,6 +86,10 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       return `v.union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
     case "intersection":
       return `v.intersect([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
+    case "not": {
+      const inner = emitNode(node.schema, ctx);
+      return `v.pipe(v.unknown(), v.check((data) => !v.is(${inner}, data), "not"))`;
+    }
     case "ref": {
       if (node.name === "Partial" && node.generics?.[0]) return `v.partial(${emitNode(node.generics[0], ctx)})`;
       if (node.name === "Record" && node.generics?.length === 2) {

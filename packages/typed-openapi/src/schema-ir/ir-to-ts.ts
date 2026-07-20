@@ -62,6 +62,9 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
       return `(${node.members.map((m) => irToTs(m, options)).join(" | ")})`;
     case "intersection":
       return `(${node.members.map((m) => irToTs(m, options)).join(" & ")})`;
+    case "not":
+      // TypeScript has no JSON-Schema `not`; keep structural assignability wide.
+      return "unknown";
     case "ref": {
       if (node.generics?.length) {
         return `${node.name}<${node.generics.map((g) => irToTs(g, options)).join(", ")}>`;

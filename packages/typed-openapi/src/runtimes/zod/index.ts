@@ -86,10 +86,20 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.rest) return `z.tuple([${items}]).rest(${emitNode(node.rest, ctx)})`;
       return `z.tuple([${items}])`;
     }
-    case "union":
+    case "union": {
+      if (node.discriminator?.propertyName) {
+        return `z.discriminatedUnion(${quote(node.discriminator.propertyName)}, [${node.members
+          .map((m) => emitNode(m, ctx))
+          .join(", ")}])`;
+      }
       return `z.union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
+    }
     case "intersection":
       return node.members.map((m) => emitNode(m, ctx)).reduce((acc, cur) => `${acc}.and(${cur})`);
+    case "not": {
+      const inner = emitNode(node.schema, ctx);
+      return `z.unknown().refine((data) => !${inner}.safeParse(data).success, { message: "not" })`;
+    }
     case "ref": {
       if (node.name === "Partial" && node.generics?.[0]) {
         const inner = emitNode(node.generics[0], ctx);

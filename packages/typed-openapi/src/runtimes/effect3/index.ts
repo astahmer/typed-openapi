@@ -74,6 +74,8 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       return `${S}.Union(${node.members.map((m) => emitNode(m, ctx)).join(", ")})`;
     case "intersection":
       return node.members.map((m) => emitNode(m, ctx)).reduce((acc, cur) => `${S}.extend(${acc}, ${cur})`);
+    case "not":
+      return `${S}.Unknown`;
     case "ref": {
       if (node.name === "Partial" && node.generics?.[0]) return `${S}.partial(${emitNode(node.generics[0], ctx)})`;
       if (node.name === "Record" && node.generics?.length === 2) {

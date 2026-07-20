@@ -69,6 +69,9 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       return node.members.map((m) => emitNode(m, ctx)).reduce((a, b) => `${a}.or(${b})`);
     case "intersection":
       return node.members.map((m) => emitNode(m, ctx)).reduce((a, b) => `${a}.and(${b})`);
+    case "not":
+      // ArkType negation is limited; fall back to unknown
+      return `type("unknown")`;
     case "ref": {
       if (node.name === "Partial" && node.generics?.[0]) {
         return `${emitNode(node.generics[0], ctx)}.partial()`;
