@@ -2,6 +2,7 @@ import type { SchemaNode } from "../../schema-ir/types.ts";
 import {
   applyArrayConstraints,
   applyNumberConstraints,
+  applyObjectConstraints,
   applyStringConstraints,
   isNullOr,
   literalValue,
@@ -75,6 +76,9 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       let expr = `z.array(${emitNode(node.items, ctx)})`;
       if (c.minItems !== undefined) expr += `.min(${c.minItems})`;
       if (c.maxItems !== undefined) expr += `.max(${c.maxItems})`;
+      if (c.uniqueItems) {
+        expr += `.refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" })`;
+      }
       return expr;
     }
     case "tuple": {
@@ -112,10 +116,12 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       else if (typeof node.additionalProperties === "object") {
         expr += `.catchall(${emitNode(node.additionalProperties, ctx)})`;
       }
-      if (ctx.validation.objectConstraints) {
-        if (node.constraints.minProperties !== undefined) {
-          // zod has no minProperties; approximate via refine omitted — keep structural
-        }
+      const oc = applyObjectConstraints(node.constraints, ctx.validation);
+      if (oc.minProperties !== undefined) {
+        expr += `.refine((obj) => Object.keys(obj).length >= ${oc.minProperties}, { message: "minProperties" })`;
+      }
+      if (oc.maxProperties !== undefined) {
+        expr += `.refine((obj) => Object.keys(obj).length <= ${oc.maxProperties}, { message: "maxProperties" })`;
       }
       return expr;
     }

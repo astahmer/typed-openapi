@@ -2,6 +2,7 @@ import type { SchemaNode } from "../../schema-ir/types.ts";
 import {
   applyArrayConstraints,
   applyNumberConstraints,
+  applyObjectConstraints,
   applyStringConstraints,
   isNullOr,
   literalValue,
@@ -74,6 +75,9 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       const actions: string[] = [];
       if (c.minItems !== undefined) actions.push(`v.minLength(${c.minItems})`);
       if (c.maxItems !== undefined) actions.push(`v.maxLength(${c.maxItems})`);
+      if (c.uniqueItems) {
+        actions.push(`v.check((arr) => new Set(arr).size === arr.length, "uniqueItems")`);
+      }
       return pipe(`v.array(${emitNode(node.items, ctx)})`, actions);
     }
     case "tuple":
@@ -98,7 +102,15 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         .join(", ");
       let expr = `v.object({ ${body} })`;
       if (node.partial) expr = `v.partial(${expr})`;
-      return expr;
+      const oc = applyObjectConstraints(node.constraints, ctx.validation);
+      const actions: string[] = [];
+      if (oc.minProperties !== undefined) {
+        actions.push(`v.check((obj) => Object.keys(obj).length >= ${oc.minProperties}, "minProperties")`);
+      }
+      if (oc.maxProperties !== undefined) {
+        actions.push(`v.check((obj) => Object.keys(obj).length <= ${oc.maxProperties}, "maxProperties")`);
+      }
+      return pipe(expr, actions);
     }
     default: {
       const _e: never = node;

@@ -51,6 +51,11 @@ export type AppliedArrayConstraints = {
   uniqueItems?: boolean;
 };
 
+export type AppliedObjectConstraints = {
+  minProperties?: number;
+  maxProperties?: number;
+};
+
 export const applyStringConstraints = (
   constraints: StringConstraints,
   policy: ValidationPolicy,
@@ -97,6 +102,17 @@ export const applyArrayConstraints = (
   if (constraints.minItems !== undefined) out.minItems = constraints.minItems;
   if (constraints.maxItems !== undefined) out.maxItems = constraints.maxItems;
   if (constraints.uniqueItems) out.uniqueItems = true;
+  return out;
+};
+
+export const applyObjectConstraints = (
+  constraints: { minProperties?: number; maxProperties?: number },
+  policy: ValidationPolicy,
+): AppliedObjectConstraints => {
+  if (!policy.objectConstraints) return {};
+  const out: AppliedObjectConstraints = {};
+  if (constraints.minProperties !== undefined) out.minProperties = constraints.minProperties;
+  if (constraints.maxProperties !== undefined) out.maxProperties = constraints.maxProperties;
   return out;
 };
 
