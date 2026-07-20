@@ -68,6 +68,7 @@ export const put_UpdatePet = {
   method: S.Literal("PUT"),
   path: S.Literal("/pet"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { body: Pet },
   responses: { 200: Pet, 400: S.Unknown, 404: S.Unknown, 405: S.Unknown },
 };
@@ -77,6 +78,7 @@ export const post_AddPet = {
   method: S.Literal("POST"),
   path: S.Literal("/pet"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { body: Pet },
   responses: { 200: Pet, 405: S.Unknown },
 };
@@ -86,6 +88,7 @@ export const get_FindPetsByStatus = {
   method: S.Literal("GET"),
   path: S.Literal("/pet/findByStatus"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.partial(S.Struct({ status: Union_default_available_prop }))) },
   responses: { 200: S.Array(Pet), 304: S.Unknown, 400: S.Struct({ code: S.Int, message: S.String }) },
 };
@@ -95,6 +98,7 @@ export const get_FindPetsByTags = {
   method: S.Literal("GET"),
   path: S.Literal("/pet/findByTags"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.partial(S.Struct({ tags: S.Array(S.String) }))) },
   responses: { 200: S.Union(S.Array(Pet), S.Array(User), S.Array(Tag)), 400: S.Unknown },
 };
@@ -104,6 +108,7 @@ export const get_GetPetById = {
   method: S.Literal("GET"),
   path: S.Literal("/pet/{petId}"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }) },
   responses: {
     200: Pet,
@@ -117,6 +122,7 @@ export const post_UpdatePetWithForm = {
   method: S.Literal("POST"),
   path: S.Literal("/pet/{petId}"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: {
     query: S.optional(S.partial(S.Struct({ name: S.String, status: S.String }))),
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }),
@@ -129,6 +135,7 @@ export const delete_DeletePet = {
   method: S.Literal("DELETE"),
   path: S.Literal("/pet/{petId}"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: {
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }),
     header: S.optional(S.partial(S.Struct({ api_key: S.String }))),
@@ -141,10 +148,11 @@ export const post_UploadFile = {
   method: S.Literal("POST"),
   path: S.Literal("/pet/{petId}/uploadImage"),
   requestFormat: S.Literal("binary"),
+  responseFormat: S.Literal("json"),
   parameters: {
     query: S.optional(S.partial(S.Struct({ additionalMetadata: S.String }))),
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }),
-    body: S.String,
+    body: S.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: ApiResponse },
 };
@@ -154,6 +162,7 @@ export const get_GetInventory = {
   method: S.Literal("GET"),
   path: S.Literal("/store/inventory"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: S.Never,
   responses: { 200: S.Record({ key: S.String, value: S.Int }) },
 };
@@ -163,6 +172,7 @@ export const post_PlaceOrder = {
   method: S.Literal("POST"),
   path: S.Literal("/store/order"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { body: Order },
   responses: { 200: Order, 405: S.Unknown },
 };
@@ -172,6 +182,7 @@ export const get_GetOrderById = {
   method: S.Literal("GET"),
   path: S.Literal("/store/order/{orderId}"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ orderId: S.NumberFromString.pipe(S.int()) }) },
   responses: { 200: Order, 400: S.Unknown, 404: S.Unknown },
 };
@@ -181,6 +192,7 @@ export const delete_DeleteOrder = {
   method: S.Literal("DELETE"),
   path: S.Literal("/store/order/{orderId}"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ orderId: S.NumberFromString.pipe(S.int()) }) },
   responses: { 400: S.Unknown, 404: S.Unknown },
 };
@@ -190,6 +202,7 @@ export const post_CreateUser = {
   method: S.Literal("POST"),
   path: S.Literal("/user"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { body: User },
   responses: { default: User },
 };
@@ -199,6 +212,7 @@ export const post_CreateUsersWithListInput = {
   method: S.Literal("POST"),
   path: S.Literal("/user/createWithList"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { body: S.Array(User) },
   responses: { 200: User, default: S.Unknown },
 };
@@ -208,6 +222,7 @@ export const get_LoginUser = {
   method: S.Literal("GET"),
   path: S.Literal("/user/login"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.partial(S.Struct({ username: S.String, password: S.String }))) },
   responses: { 200: S.String, 400: S.Unknown },
   responseHeaders: {
@@ -221,6 +236,7 @@ export const get_LogoutUser = {
   method: S.Literal("GET"),
   path: S.Literal("/user/logout"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: S.Never,
   responses: { default: S.Unknown },
 };
@@ -230,6 +246,7 @@ export const get_GetUserByName = {
   method: S.Literal("GET"),
   path: S.Literal("/user/{username}"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ username: S.String }) },
   responses: {
     200: User,
@@ -244,6 +261,7 @@ export const put_UpdateUser = {
   method: S.Literal("PUT"),
   path: S.Literal("/user/{username}"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ username: S.String }), body: User },
   responses: { default: S.Unknown },
 };
@@ -253,6 +271,7 @@ export const delete_DeleteUser = {
   method: S.Literal("DELETE"),
   path: S.Literal("/user/{username}"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ username: S.String }) },
   responses: { 400: S.Unknown, 404: S.Unknown },
 };
@@ -262,6 +281,7 @@ export const get_GetPetTextPlain = {
   method: S.Literal("GET"),
   path: S.Literal("/pet/text"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: S.Never,
   responses: { 200: User },
 };
@@ -271,6 +291,7 @@ export const get_GetPetEmpty = {
   method: S.Literal("GET"),
   path: S.Literal("/pet/empty"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: S.Never,
   responses: { 204: S.Unknown },
 };
@@ -280,6 +301,7 @@ export const get_GetPetCustom = {
   method: S.Literal("GET"),
   path: S.Literal("/pet/custom"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: S.Never,
   responses: { 200: Pet },
 };
@@ -342,6 +364,7 @@ export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
 
 // <EndpointRequestFormats>
 /** Non-json request body encodings; missing entries default to `"json"`. */
@@ -351,6 +374,13 @@ export const endpointRequestFormats = {
   },
 } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
+
+// <EndpointResponseFormats>
+/** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
+export const endpointResponseFormats = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+}>;
+// </EndpointResponseFormats>
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -363,6 +393,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -385,6 +416,8 @@ export interface FetcherResponse {
     get(name: string): string | null;
     getSetCookie?: () => string[];
   };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>;
   text(): Promise<string>;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -725,6 +758,9 @@ export class EffectApiClient {
         self.effectFetcher.parseResponseData ??
         (async (response: FetcherResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
+          if (contentType.includes("text/event-stream")) {
+            return response.body ?? null;
+          }
           if (contentType.includes("json") || contentType === "*/*") {
             try {
               return await response.json();
@@ -757,12 +793,21 @@ export class EffectApiClient {
         overrides,
       });
 
-      let data = yield* Effect.tryPromise({
-        try: () => parseData(response),
-        catch: (cause) => new HttpClientError("parse failed", cause),
-      });
+      const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+      let data =
+        responseFormat === "sse"
+          ? (response.body ?? null)
+          : yield* Effect.tryPromise({
+              try: () => parseData(response),
+              catch: (cause) => new HttpClientError("parse failed", cause),
+            });
 
-      if ((validateSide === "output" || validateSide === "both") && response.ok && endpointSchema?.responses) {
+      if (
+        responseFormat !== "sse" &&
+        (validateSide === "output" || validateSide === "both") &&
+        response.ok &&
+        endpointSchema?.responses
+      ) {
         const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
         if (responseSchema) {
           if (self.onValidate) {

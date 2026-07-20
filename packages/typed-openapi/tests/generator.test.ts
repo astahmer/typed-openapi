@@ -53,6 +53,7 @@ describe("generator", () => {
           method: "PUT";
           path: "/pet";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             body: Schemas.Pet;
           };
@@ -62,6 +63,7 @@ describe("generator", () => {
           method: "POST";
           path: "/pet";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             body: Schemas.Pet;
           };
@@ -71,6 +73,7 @@ describe("generator", () => {
           method: "GET";
           path: "/pet/findByStatus";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             query?: Partial<{ status: "available" | "pending" | "sold" }>;
           };
@@ -80,6 +83,7 @@ describe("generator", () => {
           method: "GET";
           path: "/pet/findByTags";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             query?: Partial<{ tags: Array<string> }>;
           };
@@ -89,6 +93,7 @@ describe("generator", () => {
           method: "GET";
           path: "/pet/{petId}";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             path: { petId: number };
           };
@@ -98,6 +103,7 @@ describe("generator", () => {
           method: "POST";
           path: "/pet/{petId}";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             query?: Partial<{ name: string; status: string }>;
             path: { petId: number };
@@ -108,6 +114,7 @@ describe("generator", () => {
           method: "DELETE";
           path: "/pet/{petId}";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             path: { petId: number };
             header?: Partial<{ api_key: string }>;
@@ -118,11 +125,12 @@ describe("generator", () => {
           method: "POST";
           path: "/pet/{petId}/uploadImage";
           requestFormat: "binary";
+          responseFormat: "json";
           parameters: {
             query?: Partial<{ additionalMetadata: string }>;
             path: { petId: number };
 
-            body: string;
+            body: Blob;
           };
           responses: { 200: Schemas.ApiResponse };
         };
@@ -130,6 +138,7 @@ describe("generator", () => {
           method: "GET";
           path: "/store/inventory";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: never;
           responses: { 200: Record<string, number> };
         };
@@ -137,6 +146,7 @@ describe("generator", () => {
           method: "POST";
           path: "/store/order";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             body: Schemas.Order;
           };
@@ -146,6 +156,7 @@ describe("generator", () => {
           method: "GET";
           path: "/store/order/{orderId}";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             path: { orderId: number };
           };
@@ -155,6 +166,7 @@ describe("generator", () => {
           method: "DELETE";
           path: "/store/order/{orderId}";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             path: { orderId: number };
           };
@@ -164,6 +176,7 @@ describe("generator", () => {
           method: "POST";
           path: "/user";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             body: Schemas.User;
           };
@@ -173,6 +186,7 @@ describe("generator", () => {
           method: "POST";
           path: "/user/createWithList";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             body: Array<Schemas.User>;
           };
@@ -182,6 +196,7 @@ describe("generator", () => {
           method: "GET";
           path: "/user/login";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             query?: Partial<{ username: string; password: string }>;
           };
@@ -192,6 +207,7 @@ describe("generator", () => {
           method: "GET";
           path: "/user/logout";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: never;
           responses: { default: unknown };
         };
@@ -199,6 +215,7 @@ describe("generator", () => {
           method: "GET";
           path: "/user/{username}";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             path: { username: string };
           };
@@ -213,6 +230,7 @@ describe("generator", () => {
           method: "PUT";
           path: "/user/{username}";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             path: { username: string };
 
@@ -224,6 +242,7 @@ describe("generator", () => {
           method: "DELETE";
           path: "/user/{username}";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             path: { username: string };
           };
@@ -233,6 +252,7 @@ describe("generator", () => {
           method: "GET";
           path: "/pet/text";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: never;
           responses: { 200: Schemas.User };
         };
@@ -240,6 +260,7 @@ describe("generator", () => {
           method: "GET";
           path: "/pet/empty";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: never;
           responses: { 204: unknown };
         };
@@ -247,6 +268,7 @@ describe("generator", () => {
           method: "GET";
           path: "/pet/custom";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: never;
           responses: { 200: Schemas.Pet };
         };
@@ -310,6 +332,7 @@ describe("generator", () => {
       export type Method = "get" | "head" | "options" | MutationMethod;
 
       export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+      export type ResponseFormat = "json" | "sse";
 
       // <EndpointRequestFormats>
       /** Non-json request body encodings; missing entries default to \`"json"\`. */
@@ -319,6 +342,13 @@ describe("generator", () => {
         },
       } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
       // </EndpointRequestFormats>
+
+      // <EndpointResponseFormats>
+      /** Non-json response body modes; missing entries default to \`"json"\`. SSE skips JSON parse + output validation. */
+      export const endpointResponseFormats = {} as Partial<{
+        [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+      }>;
+      // </EndpointResponseFormats>
 
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
@@ -331,6 +361,7 @@ describe("generator", () => {
         method: Method;
         path: string;
         requestFormat: RequestFormat;
+        responseFormat: ResponseFormat;
         parameters?: TConfig["parameters"];
         meta: {
           alias: string;
@@ -353,6 +384,8 @@ describe("generator", () => {
           get(name: string): string | null;
           getSetCookie?: () => string[];
         };
+        /** Present on fetch Response; used for SSE / streaming bodies. */
+        body?: ReadableStream<Uint8Array> | null;
         json(): Promise<unknown>;
         text(): Promise<string>;
         arrayBuffer(): Promise<ArrayBuffer>;
@@ -587,6 +620,9 @@ describe("generator", () => {
 
         defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
           const contentType = response.headers.get("content-type") ?? "";
+          if (contentType.includes("text/event-stream")) {
+            return response.body ?? null;
+          }
           if (contentType.startsWith("text/")) {
             return await response.text();
           }
@@ -816,7 +852,11 @@ describe("generator", () => {
               overrides,
               throwOnStatusError,
             });
-            let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+            const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+            let data =
+              responseFormat === "sse"
+                ? (response.body ?? null)
+                : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
 
             const typedResponse = Object.assign(response, {
               data: data,
@@ -1199,6 +1239,7 @@ describe("generator", () => {
           method: "GET";
           path: "/authorization/organizations/:organizationId/members/search";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             query?: Partial<{
               searchQuery: string;
@@ -1248,6 +1289,7 @@ describe("generator", () => {
       export type Method = "get" | "head" | "options" | MutationMethod;
 
       export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+      export type ResponseFormat = "json" | "sse";
 
       // <EndpointRequestFormats>
       /** Non-json request body encodings; missing entries default to \`"json"\`. */
@@ -1255,6 +1297,13 @@ describe("generator", () => {
         [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }>;
       }>;
       // </EndpointRequestFormats>
+
+      // <EndpointResponseFormats>
+      /** Non-json response body modes; missing entries default to \`"json"\`. SSE skips JSON parse + output validation. */
+      export const endpointResponseFormats = {} as Partial<{
+        [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+      }>;
+      // </EndpointResponseFormats>
 
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
@@ -1267,6 +1316,7 @@ describe("generator", () => {
         method: Method;
         path: string;
         requestFormat: RequestFormat;
+        responseFormat: ResponseFormat;
         parameters?: TConfig["parameters"];
         meta: {
           alias: string;
@@ -1289,6 +1339,8 @@ describe("generator", () => {
           get(name: string): string | null;
           getSetCookie?: () => string[];
         };
+        /** Present on fetch Response; used for SSE / streaming bodies. */
+        body?: ReadableStream<Uint8Array> | null;
         json(): Promise<unknown>;
         text(): Promise<string>;
         arrayBuffer(): Promise<ArrayBuffer>;
@@ -1523,6 +1575,9 @@ describe("generator", () => {
 
         defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
           const contentType = response.headers.get("content-type") ?? "";
+          if (contentType.includes("text/event-stream")) {
+            return response.body ?? null;
+          }
           if (contentType.startsWith("text/")) {
             return await response.text();
           }
@@ -1659,7 +1714,11 @@ describe("generator", () => {
               overrides,
               throwOnStatusError,
             });
-            let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+            const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+            let data =
+              responseFormat === "sse"
+                ? (response.body ?? null)
+                : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
 
             const typedResponse = Object.assign(response, {
               data: data,
@@ -1793,6 +1852,7 @@ describe("generator", () => {
           method: "GET";
           path: "/demo";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             query: { organizationId: string; searchQuery?: string };
             path?: Partial<{ optionalInPath1: string; optionalInPath2: string }>;
@@ -1829,6 +1889,7 @@ describe("generator", () => {
       export type Method = "get" | "head" | "options" | MutationMethod;
 
       export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+      export type ResponseFormat = "json" | "sse";
 
       // <EndpointRequestFormats>
       /** Non-json request body encodings; missing entries default to \`"json"\`. */
@@ -1836,6 +1897,13 @@ describe("generator", () => {
         [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }>;
       }>;
       // </EndpointRequestFormats>
+
+      // <EndpointResponseFormats>
+      /** Non-json response body modes; missing entries default to \`"json"\`. SSE skips JSON parse + output validation. */
+      export const endpointResponseFormats = {} as Partial<{
+        [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+      }>;
+      // </EndpointResponseFormats>
 
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
@@ -1848,6 +1916,7 @@ describe("generator", () => {
         method: Method;
         path: string;
         requestFormat: RequestFormat;
+        responseFormat: ResponseFormat;
         parameters?: TConfig["parameters"];
         meta: {
           alias: string;
@@ -1870,6 +1939,8 @@ describe("generator", () => {
           get(name: string): string | null;
           getSetCookie?: () => string[];
         };
+        /** Present on fetch Response; used for SSE / streaming bodies. */
+        body?: ReadableStream<Uint8Array> | null;
         json(): Promise<unknown>;
         text(): Promise<string>;
         arrayBuffer(): Promise<ArrayBuffer>;
@@ -2104,6 +2175,9 @@ describe("generator", () => {
 
         defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
           const contentType = response.headers.get("content-type") ?? "";
+          if (contentType.includes("text/event-stream")) {
+            return response.body ?? null;
+          }
           if (contentType.startsWith("text/")) {
             return await response.text();
           }
@@ -2240,7 +2314,11 @@ describe("generator", () => {
               overrides,
               throwOnStatusError,
             });
-            let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+            const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+            let data =
+              responseFormat === "sse"
+                ? (response.body ?? null)
+                : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
 
             const typedResponse = Object.assign(response, {
               data: data,

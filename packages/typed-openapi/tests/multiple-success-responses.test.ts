@@ -118,6 +118,7 @@ describe("multiple success responses", () => {
           method: "POST";
           path: "/users";
           requestFormat: "json";
+          responseFormat: "json";
           parameters: {
             body: { name: string; email: string };
           };
@@ -157,6 +158,7 @@ describe("multiple success responses", () => {
       export type Method = "get" | "head" | "options" | MutationMethod;
 
       export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+      export type ResponseFormat = "json" | "sse";
 
       // <EndpointRequestFormats>
       /** Non-json request body encodings; missing entries default to \`"json"\`. */
@@ -164,6 +166,13 @@ describe("multiple success responses", () => {
         [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }>;
       }>;
       // </EndpointRequestFormats>
+
+      // <EndpointResponseFormats>
+      /** Non-json response body modes; missing entries default to \`"json"\`. SSE skips JSON parse + output validation. */
+      export const endpointResponseFormats = {} as Partial<{
+        [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+      }>;
+      // </EndpointResponseFormats>
 
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
@@ -176,6 +185,7 @@ describe("multiple success responses", () => {
         method: Method;
         path: string;
         requestFormat: RequestFormat;
+        responseFormat: ResponseFormat;
         parameters?: TConfig["parameters"];
         meta: {
           alias: string;
@@ -198,6 +208,8 @@ describe("multiple success responses", () => {
           get(name: string): string | null;
           getSetCookie?: () => string[];
         };
+        /** Present on fetch Response; used for SSE / streaming bodies. */
+        body?: ReadableStream<Uint8Array> | null;
         json(): Promise<unknown>;
         text(): Promise<string>;
         arrayBuffer(): Promise<ArrayBuffer>;
@@ -432,6 +444,9 @@ describe("multiple success responses", () => {
 
         defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
           const contentType = response.headers.get("content-type") ?? "";
+          if (contentType.includes("text/event-stream")) {
+            return response.body ?? null;
+          }
           if (contentType.startsWith("text/")) {
             return await response.text();
           }
@@ -568,7 +583,11 @@ describe("multiple success responses", () => {
               overrides,
               throwOnStatusError,
             });
-            let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+            const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+            let data =
+              responseFormat === "sse"
+                ? (response.body ?? null)
+                : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
 
             const typedResponse = Object.assign(response, {
               data: data,

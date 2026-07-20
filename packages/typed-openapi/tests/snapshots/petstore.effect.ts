@@ -74,6 +74,7 @@ export const put_UpdatePet = {
   method: Schema.Literal("PUT"),
   path: Schema.Literal("/pet"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { body: Pet },
   responses: { 200: Pet, 400: Schema.Unknown, 404: Schema.Unknown, 405: Schema.Unknown },
 };
@@ -83,6 +84,7 @@ export const post_AddPet = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/pet"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { body: Pet },
   responses: { 200: Pet, 405: Schema.Unknown },
 };
@@ -92,6 +94,7 @@ export const get_FindPetsByStatus = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/pet/findByStatus"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ status: Union_default_available_prop }))) },
   responses: {
     200: Schema.Array(Pet),
@@ -105,6 +108,7 @@ export const get_FindPetsByTags = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/pet/findByTags"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ tags: Schema.Array(Schema.String) }))) },
   responses: { 200: Schema.Union(Schema.Array(Pet), Schema.Array(User), Schema.Array(Tag)), 400: Schema.Unknown },
 };
@@ -114,6 +118,7 @@ export const get_GetPetById = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/pet/{petId}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }) },
   responses: {
     200: Pet,
@@ -127,6 +132,7 @@ export const post_UpdatePetWithForm = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/pet/{petId}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ name: Schema.String, status: Schema.String }))),
     path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
@@ -139,6 +145,7 @@ export const delete_DeletePet = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/pet/{petId}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
     header: Schema.optional(Schema.partial(Schema.Struct({ api_key: Schema.String }))),
@@ -151,10 +158,11 @@ export const post_UploadFile = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/pet/{petId}/uploadImage"),
   requestFormat: Schema.Literal("binary"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ additionalMetadata: Schema.String }))),
     path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
-    body: Schema.String,
+    body: Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: ApiResponse },
 };
@@ -164,6 +172,7 @@ export const get_GetInventory = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/store/inventory"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { 200: Schema.Record({ key: Schema.String, value: Schema.Int }) },
 };
@@ -173,6 +182,7 @@ export const post_PlaceOrder = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/store/order"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { body: Order },
   responses: { 200: Order, 405: Schema.Unknown },
 };
@@ -182,6 +192,7 @@ export const get_GetOrderById = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/store/order/{orderId}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ orderId: Schema.NumberFromString.pipe(Schema.int()) }) },
   responses: { 200: Order, 400: Schema.Unknown, 404: Schema.Unknown },
 };
@@ -191,6 +202,7 @@ export const delete_DeleteOrder = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/store/order/{orderId}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ orderId: Schema.NumberFromString.pipe(Schema.int()) }) },
   responses: { 400: Schema.Unknown, 404: Schema.Unknown },
 };
@@ -200,6 +212,7 @@ export const post_CreateUser = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/user"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { body: User },
   responses: { default: User },
 };
@@ -209,6 +222,7 @@ export const post_CreateUsersWithListInput = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/user/createWithList"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { body: Schema.Array(User) },
   responses: { 200: User, default: Schema.Unknown },
 };
@@ -218,6 +232,7 @@ export const get_LoginUser = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/user/login"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ username: Schema.String, password: Schema.String }))),
   },
@@ -233,6 +248,7 @@ export const get_LogoutUser = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/user/logout"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { default: Schema.Unknown },
 };
@@ -242,6 +258,7 @@ export const get_GetUserByName = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/user/{username}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ username: Schema.String }) },
   responses: {
     200: User,
@@ -256,6 +273,7 @@ export const put_UpdateUser = {
   method: Schema.Literal("PUT"),
   path: Schema.Literal("/user/{username}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ username: Schema.String }), body: User },
   responses: { default: Schema.Unknown },
 };
@@ -265,6 +283,7 @@ export const delete_DeleteUser = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/user/{username}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ username: Schema.String }) },
   responses: { 400: Schema.Unknown, 404: Schema.Unknown },
 };
@@ -274,6 +293,7 @@ export const get_GetPetTextPlain = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/pet/text"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { 200: User },
 };
@@ -283,6 +303,7 @@ export const get_GetPetEmpty = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/pet/empty"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { 204: Schema.Unknown },
 };
@@ -292,6 +313,7 @@ export const get_GetPetCustom = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/pet/custom"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { 200: Pet },
 };
@@ -354,6 +376,7 @@ export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
 
 // <EndpointRequestFormats>
 /** Non-json request body encodings; missing entries default to `"json"`. */
@@ -363,6 +386,13 @@ export const endpointRequestFormats = {
   },
 } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
+
+// <EndpointResponseFormats>
+/** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
+export const endpointResponseFormats = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+}>;
+// </EndpointResponseFormats>
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -375,6 +405,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -397,6 +428,8 @@ export interface FetcherResponse {
     get(name: string): string | null;
     getSetCookie?: () => string[];
   };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>;
   text(): Promise<string>;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -739,6 +772,9 @@ export class EffectApiClient {
         self.effectFetcher.parseResponseData ??
         (async (response: FetcherResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
+          if (contentType.includes("text/event-stream")) {
+            return response.body ?? null;
+          }
           if (contentType.includes("json") || contentType === "*/*") {
             try {
               return await response.json();
@@ -771,12 +807,21 @@ export class EffectApiClient {
         overrides,
       });
 
-      let data = yield* Effect.tryPromise({
-        try: () => parseData(response),
-        catch: (cause) => new HttpClientError("parse failed", cause),
-      });
+      const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+      let data =
+        responseFormat === "sse"
+          ? (response.body ?? null)
+          : yield* Effect.tryPromise({
+              try: () => parseData(response),
+              catch: (cause) => new HttpClientError("parse failed", cause),
+            });
 
-      if ((validateSide === "output" || validateSide === "both") && response.ok && endpointSchema?.responses) {
+      if (
+        responseFormat !== "sse" &&
+        (validateSide === "output" || validateSide === "both") &&
+        response.ok &&
+        endpointSchema?.responses
+      ) {
         const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
         if (responseSchema) {
           if (self.onValidate) {

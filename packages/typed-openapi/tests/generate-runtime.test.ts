@@ -19,6 +19,8 @@ samples.forEach((sample) => {
     runtimes.forEach((runtime: string) => {
       // Heavy / recursive-heavy specs: skip slow or unstable runtimes
       if (sample === "docker.openapi" && (runtime === "arktype" || runtime === "effect3")) return;
+      // TypeBox + Typia have focused coverage; avoid broad snapshot churn here.
+      if (runtime === "typebox" || runtime === "typia") return;
 
       test(`generate ${runtime}`, async () => {
         const tsRouter = await prettify(generateFile({ ...ctx, runtime: runtime as any }));

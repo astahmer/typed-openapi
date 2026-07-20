@@ -60,6 +60,7 @@ export const put_UpdatePet = {
   method: z.literal("PUT"),
   path: z.literal("/pet"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { body: Pet },
   responses: { 200: Pet, 400: z.unknown(), 404: z.unknown(), 405: z.unknown() },
 };
@@ -69,6 +70,7 @@ export const post_AddPet = {
   method: z.literal("POST"),
   path: z.literal("/pet"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { body: Pet },
   responses: { 200: Pet, 405: z.unknown() },
 };
@@ -78,6 +80,7 @@ export const get_FindPetsByStatus = {
   method: z.literal("GET"),
   path: z.literal("/pet/findByStatus"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ status: z.enum(["available", "pending", "sold"]).default("available") })
@@ -92,6 +95,7 @@ export const get_FindPetsByTags = {
   method: z.literal("GET"),
   path: z.literal("/pet/findByTags"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ tags: z.array(z.string()) })
@@ -106,6 +110,7 @@ export const get_GetPetById = {
   method: z.literal("GET"),
   path: z.literal("/pet/{petId}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ petId: z.coerce.number().int() }) },
   responses: {
     200: Pet,
@@ -119,6 +124,7 @@ export const post_UpdatePetWithForm = {
   method: z.literal("POST"),
   path: z.literal("/pet/{petId}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ name: z.string(), status: z.string() }).partial().optional(),
     path: z.object({ petId: z.coerce.number().int() }),
@@ -131,6 +137,7 @@ export const delete_DeletePet = {
   method: z.literal("DELETE"),
   path: z.literal("/pet/{petId}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     path: z.object({ petId: z.coerce.number().int() }),
     header: z.object({ api_key: z.string() }).partial().optional(),
@@ -143,10 +150,11 @@ export const post_UploadFile = {
   method: z.literal("POST"),
   path: z.literal("/pet/{petId}/uploadImage"),
   requestFormat: z.literal("binary"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ additionalMetadata: z.string() }).partial().optional(),
     path: z.object({ petId: z.coerce.number().int() }),
-    body: z.string(),
+    body: z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: ApiResponse },
 };
@@ -156,6 +164,7 @@ export const get_GetInventory = {
   method: z.literal("GET"),
   path: z.literal("/store/inventory"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
   responses: { 200: z.record(z.string(), z.number().int()) },
 };
@@ -165,6 +174,7 @@ export const post_PlaceOrder = {
   method: z.literal("POST"),
   path: z.literal("/store/order"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { body: Order },
   responses: { 200: Order, 405: z.unknown() },
 };
@@ -174,6 +184,7 @@ export const get_GetOrderById = {
   method: z.literal("GET"),
   path: z.literal("/store/order/{orderId}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ orderId: z.coerce.number().int() }) },
   responses: { 200: Order, 400: z.unknown(), 404: z.unknown() },
 };
@@ -183,6 +194,7 @@ export const delete_DeleteOrder = {
   method: z.literal("DELETE"),
   path: z.literal("/store/order/{orderId}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ orderId: z.coerce.number().int() }) },
   responses: { 400: z.unknown(), 404: z.unknown() },
 };
@@ -192,6 +204,7 @@ export const post_CreateUser = {
   method: z.literal("POST"),
   path: z.literal("/user"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { body: User },
   responses: { default: User },
 };
@@ -201,6 +214,7 @@ export const post_CreateUsersWithListInput = {
   method: z.literal("POST"),
   path: z.literal("/user/createWithList"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { body: z.array(User) },
   responses: { 200: User, default: z.unknown() },
 };
@@ -210,6 +224,7 @@ export const get_LoginUser = {
   method: z.literal("GET"),
   path: z.literal("/user/login"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ username: z.string(), password: z.string() }).partial().optional() },
   responses: { 200: z.string(), 400: z.unknown() },
   responseHeaders: {
@@ -223,6 +238,7 @@ export const get_LogoutUser = {
   method: z.literal("GET"),
   path: z.literal("/user/logout"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
   responses: { default: z.unknown() },
 };
@@ -232,6 +248,7 @@ export const get_GetUserByName = {
   method: z.literal("GET"),
   path: z.literal("/user/{username}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ username: z.string() }) },
   responses: {
     200: User,
@@ -246,6 +263,7 @@ export const put_UpdateUser = {
   method: z.literal("PUT"),
   path: z.literal("/user/{username}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ username: z.string() }), body: User },
   responses: { default: z.unknown() },
 };
@@ -255,6 +273,7 @@ export const delete_DeleteUser = {
   method: z.literal("DELETE"),
   path: z.literal("/user/{username}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ username: z.string() }) },
   responses: { 400: z.unknown(), 404: z.unknown() },
 };
@@ -264,6 +283,7 @@ export const get_GetPetTextPlain = {
   method: z.literal("GET"),
   path: z.literal("/pet/text"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
   responses: { 200: User },
 };
@@ -273,6 +293,7 @@ export const get_GetPetEmpty = {
   method: z.literal("GET"),
   path: z.literal("/pet/empty"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
   responses: { 204: z.unknown() },
 };
@@ -282,6 +303,7 @@ export const get_GetPetCustom = {
   method: z.literal("GET"),
   path: z.literal("/pet/custom"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
   responses: { 200: Pet },
 };
@@ -344,6 +366,7 @@ export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
 
 // <EndpointRequestFormats>
 /** Non-json request body encodings; missing entries default to `"json"`. */
@@ -353,6 +376,13 @@ export const endpointRequestFormats = {
   },
 } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
+
+// <EndpointResponseFormats>
+/** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
+export const endpointResponseFormats = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+}>;
+// </EndpointResponseFormats>
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -365,6 +395,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -387,6 +418,8 @@ export interface FetcherResponse {
     get(name: string): string | null;
     getSetCookie?: () => string[];
   };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>;
   text(): Promise<string>;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -652,6 +685,9 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.includes("text/event-stream")) {
+      return response.body ?? null;
+    }
     if (contentType.startsWith("text/")) {
       return await response.text();
     }
@@ -903,9 +939,13 @@ export class ApiClient {
         overrides,
         throwOnStatusError,
       });
-      let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+      const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+      let data =
+        responseFormat === "sse"
+          ? (response.body ?? null)
+          : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
       const shouldValidateOutput = validateSide === "output" || validateSide === "both";
-      if (shouldValidateOutput && response.ok && endpointSchema?.responses) {
+      if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
         const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
         if (responseSchema) {
           data = await runValidate({

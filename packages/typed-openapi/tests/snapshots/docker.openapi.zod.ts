@@ -1290,6 +1290,7 @@ export const get_ContainerList = {
   method: z.literal("GET"),
   path: z.literal("/containers/json"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({
@@ -1309,6 +1310,7 @@ export const post_ContainerCreate = {
   method: z.literal("POST"),
   path: z.literal("/containers/create"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ name: z.string().regex(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$")), platform: z.string() })
@@ -1330,6 +1332,7 @@ export const get_ContainerInspect = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/json"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ size: z.coerce.boolean().default(false) })
@@ -1377,6 +1380,7 @@ export const get_ContainerTop = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/top"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ ps_args: z.string().default("-ef") })
@@ -1396,6 +1400,7 @@ export const get_ContainerLogs = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/logs"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({
@@ -1419,6 +1424,7 @@ export const get_ContainerChanges = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/changes"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: { 200: z.array(FilesystemChange), 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1428,6 +1434,7 @@ export const get_ContainerExport = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/export"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: { 200: z.unknown(), 404: z.unknown(), 500: z.unknown() },
 };
@@ -1437,6 +1444,7 @@ export const get_ContainerStats = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/stats"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ stream: z.coerce.boolean().default(true), "one-shot": z.coerce.boolean().default(false) })
@@ -1452,6 +1460,7 @@ export const post_ContainerResize = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/resize"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ h: z.coerce.number().int(), w: z.coerce.number().int() }).partial().optional(),
     path: z.object({ id: z.string() }),
@@ -1464,6 +1473,7 @@ export const post_ContainerStart = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/start"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ detachKeys: z.string() }).partial().optional(), path: z.object({ id: z.string() }) },
   responses: { 204: z.unknown(), 304: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1473,6 +1483,7 @@ export const post_ContainerStop = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/stop"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ signal: z.string(), t: z.coerce.number().int() }).partial().optional(),
     path: z.object({ id: z.string() }),
@@ -1485,6 +1496,7 @@ export const post_ContainerRestart = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/restart"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ signal: z.string(), t: z.coerce.number().int() }).partial().optional(),
     path: z.object({ id: z.string() }),
@@ -1497,6 +1509,7 @@ export const post_ContainerKill = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/kill"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ signal: z.string().default("SIGKILL") })
@@ -1512,6 +1525,7 @@ export const post_ContainerUpdate = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/update"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     path: z.object({ id: z.string() }),
     body: Resources.and(z.object({ RestartPolicy: RestartPolicy }).partial()),
@@ -1524,6 +1538,7 @@ export const post_ContainerRename = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/rename"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ name: z.string() }), path: z.object({ id: z.string() }) },
   responses: { 204: z.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
@@ -1533,6 +1548,7 @@ export const post_ContainerPause = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/pause"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: { 204: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1542,6 +1558,7 @@ export const post_ContainerUnpause = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/unpause"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: { 204: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1551,6 +1568,7 @@ export const post_ContainerAttach = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/attach"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({
@@ -1573,6 +1591,7 @@ export const get_ContainerAttachWebsocket = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/attach/ws"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({
@@ -1595,6 +1614,7 @@ export const post_ContainerWait = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/wait"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ condition: z.enum(["not-running", "next-exit", "removed"]).default("not-running") })
@@ -1610,6 +1630,7 @@ export const delete_ContainerDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/containers/{id}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({
@@ -1629,6 +1650,7 @@ export const get_ContainerArchive = {
   method: z.literal("GET"),
   path: z.literal("/containers/{id}/archive"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ path: z.string() }), path: z.object({ id: z.string() }) },
   responses: { 200: z.unknown(), 400: z.unknown(), 404: z.unknown(), 500: z.unknown() },
 };
@@ -1638,6 +1660,7 @@ export const put_PutContainerArchive = {
   method: z.literal("PUT"),
   path: z.literal("/containers/{id}/archive"),
   requestFormat: z.literal("binary"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({
       path: z.string(),
@@ -1645,7 +1668,7 @@ export const put_PutContainerArchive = {
       copyUIDGID: z.string().optional(),
     }),
     path: z.object({ id: z.string() }),
-    body: z.string(),
+    body: z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: z.unknown(), 400: ErrorResponse, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1655,6 +1678,7 @@ export const head_ContainerArchiveInfo = {
   method: z.literal("HEAD"),
   path: z.literal("/containers/{id}/archive"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ path: z.string() }), path: z.object({ id: z.string() }) },
   responses: { 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
   responseHeaders: { 200: z.object({ "X-Docker-Container-Path-Stat": z.string() }) },
@@ -1665,6 +1689,7 @@ export const post_ContainerPrune = {
   method: z.literal("POST"),
   path: z.literal("/containers/prune"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().optional() },
   responses: {
     200: z.object({ ContainersDeleted: z.array(z.string()), SpaceReclaimed: z.number().int() }).partial(),
@@ -1677,6 +1702,7 @@ export const get_ImageList = {
   method: z.literal("GET"),
   path: z.literal("/images/json"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({
@@ -1696,6 +1722,7 @@ export const post_ImageBuild = {
   method: z.literal("POST"),
   path: z.literal("/build"),
   requestFormat: z.literal("binary"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({
@@ -1730,7 +1757,7 @@ export const post_ImageBuild = {
       .object({ "Content-type": z.literal("application/x-tar"), "X-Registry-Config": z.string() })
       .partial()
       .optional(),
-    body: z.string(),
+    body: z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: z.unknown(), 400: ErrorResponse, 500: ErrorResponse },
 };
@@ -1740,6 +1767,7 @@ export const post_BuildPrune = {
   method: z.literal("POST"),
   path: z.literal("/build/prune"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ "keep-storage": z.coerce.number().int(), all: z.coerce.boolean(), filters: z.string() })
@@ -1757,6 +1785,7 @@ export const post_ImageCreate = {
   method: z.literal("POST"),
   path: z.literal("/images/create"),
   requestFormat: z.literal("text"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({
@@ -1781,6 +1810,7 @@ export const get_ImageInspect = {
   method: z.literal("GET"),
   path: z.literal("/images/{name}/json"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ name: z.string() }) },
   responses: { 200: ImageInspect, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1790,6 +1820,7 @@ export const get_ImageHistory = {
   method: z.literal("GET"),
   path: z.literal("/images/{name}/history"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ name: z.string() }) },
   responses: {
     200: z.array(
@@ -1812,6 +1843,7 @@ export const post_ImagePush = {
   method: z.literal("POST"),
   path: z.literal("/images/{name}/push"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ tag: z.string() }).partial().optional(),
     path: z.object({ name: z.string() }),
@@ -1825,6 +1857,7 @@ export const post_ImageTag = {
   method: z.literal("POST"),
   path: z.literal("/images/{name}/tag"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ repo: z.string(), tag: z.string() }).partial().optional(),
     path: z.object({ name: z.string() }),
@@ -1837,6 +1870,7 @@ export const delete_ImageDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/images/{name}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ force: z.coerce.boolean().default(false), noprune: z.coerce.boolean().default(false) })
@@ -1852,6 +1886,7 @@ export const get_ImageSearch = {
   method: z.literal("GET"),
   path: z.literal("/images/search"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ term: z.string(), limit: z.coerce.number().int().optional(), filters: z.string().optional() }),
   },
@@ -1876,6 +1911,7 @@ export const post_ImagePrune = {
   method: z.literal("POST"),
   path: z.literal("/images/prune"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().optional() },
   responses: {
     200: z.object({ ImagesDeleted: z.array(ImageDeleteResponseItem), SpaceReclaimed: z.number().int() }).partial(),
@@ -1888,6 +1924,7 @@ export const post_SystemAuth = {
   method: z.literal("POST"),
   path: z.literal("/auth"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { body: AuthConfig },
   responses: {
     200: z.object({ Status: z.string(), IdentityToken: z.string().optional() }),
@@ -1902,6 +1939,7 @@ export const get_SystemInfo = {
   method: z.literal("GET"),
   path: z.literal("/info"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
   responses: { 200: SystemInfo, 500: ErrorResponse },
 };
@@ -1911,6 +1949,7 @@ export const get_SystemVersion = {
   method: z.literal("GET"),
   path: z.literal("/version"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
   responses: { 200: SystemVersion, 500: ErrorResponse },
 };
@@ -1920,6 +1959,7 @@ export const get_SystemPing = {
   method: z.literal("GET"),
   path: z.literal("/_ping"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
   responses: { 200: z.unknown(), 500: z.unknown() },
   responseHeaders: {
@@ -1943,6 +1983,7 @@ export const head_SystemPingHead = {
   method: z.literal("HEAD"),
   path: z.literal("/_ping"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
   responses: { 200: z.unknown(), 500: z.unknown() },
   responseHeaders: {
@@ -1962,6 +2003,7 @@ export const post_ImageCommit = {
   method: z.literal("POST"),
   path: z.literal("/commit"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({
@@ -1985,6 +2027,7 @@ export const get_SystemEvents = {
   method: z.literal("GET"),
   path: z.literal("/events"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ since: z.string(), until: z.string(), filters: z.string() }).partial().optional() },
   responses: { 200: EventMessage, 400: ErrorResponse, 500: ErrorResponse },
 };
@@ -1994,6 +2037,7 @@ export const get_SystemDataUsage = {
   method: z.literal("GET"),
   path: z.literal("/system/df"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ type: z.array(z.enum(["container", "image", "volume", "build-cache"])) })
@@ -2019,6 +2063,7 @@ export const get_ImageGet = {
   method: z.literal("GET"),
   path: z.literal("/images/{name}/get"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ name: z.string() }) },
   responses: { 200: z.unknown(), 500: z.unknown() },
 };
@@ -2028,6 +2073,7 @@ export const get_ImageGetAll = {
   method: z.literal("GET"),
   path: z.literal("/images/get"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ names: z.array(z.string()) })
@@ -2042,6 +2088,7 @@ export const post_ImageLoad = {
   method: z.literal("POST"),
   path: z.literal("/images/load"),
   requestFormat: z.literal("text"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ quiet: z.coerce.boolean().default(false) })
@@ -2056,6 +2103,7 @@ export const post_ContainerExec = {
   method: z.literal("POST"),
   path: z.literal("/containers/{id}/exec"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     path: z.object({ id: z.string() }),
     body: z
@@ -2083,6 +2131,7 @@ export const post_ExecStart = {
   method: z.literal("POST"),
   path: z.literal("/exec/{id}/start"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     path: z.object({ id: z.string() }),
     body: z
@@ -2102,6 +2151,7 @@ export const post_ExecResize = {
   method: z.literal("POST"),
   path: z.literal("/exec/{id}/resize"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ h: z.coerce.number().int(), w: z.coerce.number().int() }).partial().optional(),
     path: z.object({ id: z.string() }),
@@ -2114,6 +2164,7 @@ export const get_ExecInspect = {
   method: z.literal("GET"),
   path: z.literal("/exec/{id}/json"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: {
     200: z
@@ -2141,6 +2192,7 @@ export const get_VolumeList = {
   method: z.literal("GET"),
   path: z.literal("/volumes"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().optional() },
   responses: { 200: VolumeListResponse, 500: ErrorResponse },
 };
@@ -2150,6 +2202,7 @@ export const post_VolumeCreate = {
   method: z.literal("POST"),
   path: z.literal("/volumes/create"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { body: VolumeCreateOptions },
   responses: { 201: Volume, 500: ErrorResponse },
 };
@@ -2159,6 +2212,7 @@ export const get_VolumeInspect = {
   method: z.literal("GET"),
   path: z.literal("/volumes/{name}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ name: z.string() }) },
   responses: { 200: Volume, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2168,6 +2222,7 @@ export const put_VolumeUpdate = {
   method: z.literal("PUT"),
   path: z.literal("/volumes/{name}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ version: z.coerce.number().int() }),
     path: z.object({ name: z.string() }),
@@ -2181,6 +2236,7 @@ export const delete_VolumeDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/volumes/{name}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ force: z.coerce.boolean().default(false) })
@@ -2196,6 +2252,7 @@ export const post_VolumePrune = {
   method: z.literal("POST"),
   path: z.literal("/volumes/prune"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().optional() },
   responses: {
     200: z.object({ VolumesDeleted: z.array(z.string()), SpaceReclaimed: z.number().int() }).partial(),
@@ -2208,6 +2265,7 @@ export const get_NetworkList = {
   method: z.literal("GET"),
   path: z.literal("/networks"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().optional() },
   responses: { 200: z.array(Network), 500: ErrorResponse },
 };
@@ -2217,6 +2275,7 @@ export const get_NetworkInspect = {
   method: z.literal("GET"),
   path: z.literal("/networks/{id}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ verbose: z.coerce.boolean().default(false), scope: z.string() })
@@ -2232,6 +2291,7 @@ export const delete_NetworkDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/networks/{id}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: { 204: z.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2241,6 +2301,7 @@ export const post_NetworkCreate = {
   method: z.literal("POST"),
   path: z.literal("/networks/create"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     body: z.object({
       Name: z.string(),
@@ -2268,6 +2329,7 @@ export const post_NetworkConnect = {
   method: z.literal("POST"),
   path: z.literal("/networks/{id}/connect"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     path: z.object({ id: z.string() }),
     body: z.object({ Container: z.string(), EndpointConfig: EndpointSettings }).partial().optional(),
@@ -2280,6 +2342,7 @@ export const post_NetworkDisconnect = {
   method: z.literal("POST"),
   path: z.literal("/networks/{id}/disconnect"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     path: z.object({ id: z.string() }),
     body: z.object({ Container: z.string(), Force: z.boolean() }).partial().optional(),
@@ -2292,6 +2355,7 @@ export const post_NetworkPrune = {
   method: z.literal("POST"),
   path: z.literal("/networks/prune"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().optional() },
   responses: { 200: z.object({ NetworksDeleted: z.array(z.string()) }).partial(), 500: ErrorResponse },
 };
@@ -2301,6 +2365,7 @@ export const get_PluginList = {
   method: z.literal("GET"),
   path: z.literal("/plugins"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().optional() },
   responses: { 200: z.array(Plugin), 500: ErrorResponse },
 };
@@ -2310,6 +2375,7 @@ export const get_GetPluginPrivileges = {
   method: z.literal("GET"),
   path: z.literal("/plugins/privileges"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ remote: z.string() }) },
   responses: { 200: z.array(PluginPrivilege), 500: ErrorResponse },
 };
@@ -2319,6 +2385,7 @@ export const post_PluginPull = {
   method: z.literal("POST"),
   path: z.literal("/plugins/pull"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ remote: z.string(), name: z.string().optional() }),
     header: z.object({ "X-Registry-Auth": z.string() }).partial().optional(),
@@ -2332,6 +2399,7 @@ export const get_PluginInspect = {
   method: z.literal("GET"),
   path: z.literal("/plugins/{name}/json"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ name: z.string() }) },
   responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2341,6 +2409,7 @@ export const delete_PluginDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/plugins/{name}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ force: z.coerce.boolean().default(false) })
@@ -2356,6 +2425,7 @@ export const post_PluginEnable = {
   method: z.literal("POST"),
   path: z.literal("/plugins/{name}/enable"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ timeout: z.coerce.number().int().default(0) })
@@ -2371,6 +2441,7 @@ export const post_PluginDisable = {
   method: z.literal("POST"),
   path: z.literal("/plugins/{name}/disable"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ force: z.coerce.boolean() }).partial().optional(),
     path: z.object({ name: z.string() }),
@@ -2383,6 +2454,7 @@ export const post_PluginUpgrade = {
   method: z.literal("POST"),
   path: z.literal("/plugins/{name}/upgrade"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ remote: z.string() }),
     path: z.object({ name: z.string() }),
@@ -2397,6 +2469,7 @@ export const post_PluginCreate = {
   method: z.literal("POST"),
   path: z.literal("/plugins/create"),
   requestFormat: z.literal("text"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ name: z.string() }) },
   responses: { 204: z.unknown(), 500: ErrorResponse },
 };
@@ -2406,6 +2479,7 @@ export const post_PluginPush = {
   method: z.literal("POST"),
   path: z.literal("/plugins/{name}/push"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ name: z.string() }) },
   responses: { 200: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2415,6 +2489,7 @@ export const post_PluginSet = {
   method: z.literal("POST"),
   path: z.literal("/plugins/{name}/set"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ name: z.string() }), body: z.array(z.string()) },
   responses: { 204: z.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2424,6 +2499,7 @@ export const get_NodeList = {
   method: z.literal("GET"),
   path: z.literal("/nodes"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().optional() },
   responses: { 200: z.array(Node), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2433,6 +2509,7 @@ export const get_NodeInspect = {
   method: z.literal("GET"),
   path: z.literal("/nodes/{id}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: { 200: Node, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2442,6 +2519,7 @@ export const delete_NodeDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/nodes/{id}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ force: z.coerce.boolean().default(false) })
@@ -2457,6 +2535,7 @@ export const post_NodeUpdate = {
   method: z.literal("POST"),
   path: z.literal("/nodes/{id}/update"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ version: z.coerce.number().int() }),
     path: z.object({ id: z.string() }),
@@ -2470,6 +2549,7 @@ export const get_SwarmInspect = {
   method: z.literal("GET"),
   path: z.literal("/swarm"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
   responses: { 200: Swarm, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2479,6 +2559,7 @@ export const post_SwarmInit = {
   method: z.literal("POST"),
   path: z.literal("/swarm/init"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     body: z
       .object({
@@ -2502,6 +2583,7 @@ export const post_SwarmJoin = {
   method: z.literal("POST"),
   path: z.literal("/swarm/join"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     body: z
       .object({
@@ -2522,6 +2604,7 @@ export const post_SwarmLeave = {
   method: z.literal("POST"),
   path: z.literal("/swarm/leave"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ force: z.coerce.boolean().default(false) })
@@ -2536,6 +2619,7 @@ export const post_SwarmUpdate = {
   method: z.literal("POST"),
   path: z.literal("/swarm/update"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({
       version: z.coerce.number().int(),
@@ -2553,6 +2637,7 @@ export const get_SwarmUnlockkey = {
   method: z.literal("GET"),
   path: z.literal("/swarm/unlockkey"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
   responses: { 200: z.object({ UnlockKey: z.string() }).partial(), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2562,6 +2647,7 @@ export const post_SwarmUnlock = {
   method: z.literal("POST"),
   path: z.literal("/swarm/unlock"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { body: z.object({ UnlockKey: z.string() }).partial().optional() },
   responses: { 200: z.unknown(), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2571,6 +2657,7 @@ export const get_ServiceList = {
   method: z.literal("GET"),
   path: z.literal("/services"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string(), status: z.coerce.boolean() }).partial().optional() },
   responses: { 200: z.array(Service), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2580,6 +2667,7 @@ export const post_ServiceCreate = {
   method: z.literal("POST"),
   path: z.literal("/services/create"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     header: z.object({ "X-Registry-Auth": z.string() }).partial().optional(),
     body: ServiceSpec.and(z.record(z.string(), z.unknown())),
@@ -2599,6 +2687,7 @@ export const get_ServiceInspect = {
   method: z.literal("GET"),
   path: z.literal("/services/{id}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({ insertDefaults: z.coerce.boolean().default(false) })
@@ -2614,6 +2703,7 @@ export const delete_ServiceDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/services/{id}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: { 200: z.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2623,6 +2713,7 @@ export const post_ServiceUpdate = {
   method: z.literal("POST"),
   path: z.literal("/services/{id}/update"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({
       version: z.coerce.number().int(),
@@ -2647,6 +2738,7 @@ export const get_ServiceLogs = {
   method: z.literal("GET"),
   path: z.literal("/services/{id}/logs"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({
@@ -2670,6 +2762,7 @@ export const get_TaskList = {
   method: z.literal("GET"),
   path: z.literal("/tasks"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().optional() },
   responses: { 200: z.array(Task), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2679,6 +2772,7 @@ export const get_TaskInspect = {
   method: z.literal("GET"),
   path: z.literal("/tasks/{id}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: { 200: Task, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2688,6 +2782,7 @@ export const get_TaskLogs = {
   method: z.literal("GET"),
   path: z.literal("/tasks/{id}/logs"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z
       .object({
@@ -2711,6 +2806,7 @@ export const get_SecretList = {
   method: z.literal("GET"),
   path: z.literal("/secrets"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().optional() },
   responses: { 200: z.array(Secret), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2720,6 +2816,7 @@ export const post_SecretCreate = {
   method: z.literal("POST"),
   path: z.literal("/secrets/create"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { body: SecretSpec.and(z.record(z.string(), z.unknown())) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2729,6 +2826,7 @@ export const get_SecretInspect = {
   method: z.literal("GET"),
   path: z.literal("/secrets/{id}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: { 200: Secret, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2738,6 +2836,7 @@ export const delete_SecretDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/secrets/{id}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: { 204: z.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2747,6 +2846,7 @@ export const post_SecretUpdate = {
   method: z.literal("POST"),
   path: z.literal("/secrets/{id}/update"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ version: z.coerce.number().int() }),
     path: z.object({ id: z.string() }),
@@ -2760,6 +2860,7 @@ export const get_ConfigList = {
   method: z.literal("GET"),
   path: z.literal("/configs"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().optional() },
   responses: { 200: z.array(Config), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2769,6 +2870,7 @@ export const post_ConfigCreate = {
   method: z.literal("POST"),
   path: z.literal("/configs/create"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { body: ConfigSpec.and(z.record(z.string(), z.unknown())) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2778,6 +2880,7 @@ export const get_ConfigInspect = {
   method: z.literal("GET"),
   path: z.literal("/configs/{id}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: { 200: Config, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2787,6 +2890,7 @@ export const delete_ConfigDelete = {
   method: z.literal("DELETE"),
   path: z.literal("/configs/{id}"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }) },
   responses: { 204: z.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2796,6 +2900,7 @@ export const post_ConfigUpdate = {
   method: z.literal("POST"),
   path: z.literal("/configs/{id}/update"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: {
     query: z.object({ version: z.coerce.number().int() }),
     path: z.object({ id: z.string() }),
@@ -2809,6 +2914,7 @@ export const get_DistributionInspect = {
   method: z.literal("GET"),
   path: z.literal("/distribution/{name}/json"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: { path: z.object({ name: z.string() }) },
   responses: { 200: DistributionInspect, 401: ErrorResponse, 500: ErrorResponse },
 };
@@ -2818,6 +2924,7 @@ export const post_Session = {
   method: z.literal("POST"),
   path: z.literal("/session"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
   responses: { 101: z.unknown(), 400: z.unknown(), 500: z.unknown() },
 };
@@ -2968,6 +3075,7 @@ export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
 
 // <EndpointRequestFormats>
 /** Non-json request body encodings; missing entries default to `"json"`. */
@@ -2984,6 +3092,13 @@ export const endpointRequestFormats = {
 } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
 
+// <EndpointResponseFormats>
+/** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
+export const endpointResponseFormats = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+}>;
+// </EndpointResponseFormats>
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   responses?: Record<string, unknown>;
@@ -2995,6 +3110,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -3017,6 +3133,8 @@ export interface FetcherResponse {
     get(name: string): string | null;
     getSetCookie?: () => string[];
   };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>;
   text(): Promise<string>;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -3282,6 +3400,9 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.includes("text/event-stream")) {
+      return response.body ?? null;
+    }
     if (contentType.startsWith("text/")) {
       return await response.text();
     }
@@ -3564,9 +3685,13 @@ export class ApiClient {
         overrides,
         throwOnStatusError,
       });
-      let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+      const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+      let data =
+        responseFormat === "sse"
+          ? (response.body ?? null)
+          : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
       const shouldValidateOutput = validateSide === "output" || validateSide === "both";
-      if (shouldValidateOutput && response.ok && endpointSchema?.responses) {
+      if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
         const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
         if (responseSchema) {
           data = await runValidate({

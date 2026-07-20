@@ -9,6 +9,7 @@ export const get_Get_users = {
   method: S.Literal("GET"),
   path: S.Literal("/users"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: S.Never,
   responses: { 200: S.Array(S.String) },
 };
@@ -19,6 +20,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   method: S.Literal("POST"),
   path: S.Literal("/users"),
   requestFormat: S.Literal("json"),
+  responseFormat: S.Literal("json"),
   parameters: { body: S.optional(S.partial(S.Struct({ username: S.String }))) },
   responses: { 201: S.Unknown },
 };
@@ -55,6 +57,7 @@ export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
 
 // <EndpointRequestFormats>
 /** Non-json request body encodings; missing entries default to `"json"`. */
@@ -62,6 +65,13 @@ export const endpointRequestFormats = {} as Partial<{
   [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }>;
 }>;
 // </EndpointRequestFormats>
+
+// <EndpointResponseFormats>
+/** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
+export const endpointResponseFormats = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+}>;
+// </EndpointResponseFormats>
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -74,6 +84,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -96,6 +107,8 @@ export interface FetcherResponse {
     get(name: string): string | null;
     getSetCookie?: () => string[];
   };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>;
   text(): Promise<string>;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -436,6 +449,9 @@ export class EffectApiClient {
         self.effectFetcher.parseResponseData ??
         (async (response: FetcherResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
+          if (contentType.includes("text/event-stream")) {
+            return response.body ?? null;
+          }
           if (contentType.includes("json") || contentType === "*/*") {
             try {
               return await response.json();
@@ -468,12 +484,21 @@ export class EffectApiClient {
         overrides,
       });
 
-      let data = yield* Effect.tryPromise({
-        try: () => parseData(response),
-        catch: (cause) => new HttpClientError("parse failed", cause),
-      });
+      const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+      let data =
+        responseFormat === "sse"
+          ? (response.body ?? null)
+          : yield* Effect.tryPromise({
+              try: () => parseData(response),
+              catch: (cause) => new HttpClientError("parse failed", cause),
+            });
 
-      if ((validateSide === "output" || validateSide === "both") && response.ok && endpointSchema?.responses) {
+      if (
+        responseFormat !== "sse" &&
+        (validateSide === "output" || validateSide === "both") &&
+        response.ok &&
+        endpointSchema?.responses
+      ) {
         const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
         if (responseSchema) {
           if (self.onValidate) {

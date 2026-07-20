@@ -1365,6 +1365,7 @@ export const get_ContainerList = {
   method: v.literal("GET"),
   path: v.literal("/containers/json"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1401,6 +1402,7 @@ export const post_ContainerCreate = {
   method: v.literal("POST"),
   path: v.literal("/containers/create"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1429,6 +1431,7 @@ export const get_ContainerInspect = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/json"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1485,6 +1488,7 @@ export const get_ContainerTop = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/top"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(v.partial(v.object({ ps_args: v.optional(v.string(), "-ef") }))),
     path: v.object({ id: v.string() }),
@@ -1501,6 +1505,7 @@ export const get_ContainerLogs = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/logs"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1563,6 +1568,7 @@ export const get_ContainerChanges = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/changes"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: { 200: v.array(FilesystemChange), 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1572,6 +1578,7 @@ export const get_ContainerExport = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/export"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: { 200: v.unknown(), 404: v.unknown(), 500: v.unknown() },
 };
@@ -1581,6 +1588,7 @@ export const get_ContainerStats = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/stats"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1612,6 +1620,7 @@ export const post_ContainerResize = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/resize"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1639,6 +1648,7 @@ export const post_ContainerStart = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/start"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(v.partial(v.object({ detachKeys: v.string() }))),
     path: v.object({ id: v.string() }),
@@ -1651,6 +1661,7 @@ export const post_ContainerStop = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/stop"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1674,6 +1685,7 @@ export const post_ContainerRestart = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/restart"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1697,6 +1709,7 @@ export const post_ContainerKill = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/kill"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(v.partial(v.object({ signal: v.optional(v.string(), "SIGKILL") }))),
     path: v.object({ id: v.string() }),
@@ -1709,6 +1722,7 @@ export const post_ContainerUpdate = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/update"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     path: v.object({ id: v.string() }),
     body: v.intersect([Resources, v.partial(v.object({ RestartPolicy: RestartPolicy }))]),
@@ -1721,6 +1735,7 @@ export const post_ContainerRename = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/rename"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.object({ name: v.string() }), path: v.object({ id: v.string() }) },
   responses: { 204: v.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
@@ -1730,6 +1745,7 @@ export const post_ContainerPause = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/pause"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1739,6 +1755,7 @@ export const post_ContainerUnpause = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/unpause"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1748,6 +1765,7 @@ export const post_ContainerAttach = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/attach"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1801,6 +1819,7 @@ export const get_ContainerAttachWebsocket = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/attach/ws"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1854,6 +1873,7 @@ export const post_ContainerWait = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/wait"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1870,6 +1890,7 @@ export const delete_ContainerDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/containers/{id}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1908,6 +1929,7 @@ export const get_ContainerArchive = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/archive"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.object({ path: v.string() }), path: v.object({ id: v.string() }) },
   responses: { 200: v.unknown(), 400: v.unknown(), 404: v.unknown(), 500: v.unknown() },
 };
@@ -1917,6 +1939,7 @@ export const put_PutContainerArchive = {
   method: v.literal("PUT"),
   path: v.literal("/containers/{id}/archive"),
   requestFormat: v.literal("binary"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.object({
       path: v.string(),
@@ -1924,7 +1947,7 @@ export const put_PutContainerArchive = {
       copyUIDGID: v.optional(v.string()),
     }),
     path: v.object({ id: v.string() }),
-    body: v.string(),
+    body: v.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: v.unknown(), 400: ErrorResponse, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1934,6 +1957,7 @@ export const head_ContainerArchiveInfo = {
   method: v.literal("HEAD"),
   path: v.literal("/containers/{id}/archive"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.object({ path: v.string() }), path: v.object({ id: v.string() }) },
   responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
   responseHeaders: { 200: v.object({ "X-Docker-Container-Path-Stat": v.string() }) },
@@ -1944,6 +1968,7 @@ export const post_ContainerPrune = {
   method: v.literal("POST"),
   path: v.literal("/containers/prune"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: {
     200: v.partial(
@@ -1958,6 +1983,7 @@ export const get_ImageList = {
   method: v.literal("GET"),
   path: v.literal("/images/json"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -1996,6 +2022,7 @@ export const post_ImageBuild = {
   method: v.literal("POST"),
   path: v.literal("/build"),
   requestFormat: v.literal("binary"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2081,7 +2108,7 @@ export const post_ImageBuild = {
     header: v.optional(
       v.partial(v.object({ "Content-type": v.literal("application/x-tar"), "X-Registry-Config": v.string() })),
     ),
-    body: v.string(),
+    body: v.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: v.unknown(), 400: ErrorResponse, 500: ErrorResponse },
 };
@@ -2091,6 +2118,7 @@ export const post_BuildPrune = {
   method: v.literal("POST"),
   path: v.literal("/build/prune"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2120,6 +2148,7 @@ export const post_ImageCreate = {
   method: v.literal("POST"),
   path: v.literal("/images/create"),
   requestFormat: v.literal("text"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2145,6 +2174,7 @@ export const get_ImageInspect = {
   method: v.literal("GET"),
   path: v.literal("/images/{name}/json"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ name: v.string() }) },
   responses: { 200: ImageInspect, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2154,6 +2184,7 @@ export const get_ImageHistory = {
   method: v.literal("GET"),
   path: v.literal("/images/{name}/history"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ name: v.string() }) },
   responses: {
     200: v.array(
@@ -2176,6 +2207,7 @@ export const post_ImagePush = {
   method: v.literal("POST"),
   path: v.literal("/images/{name}/push"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(v.partial(v.object({ tag: v.string() }))),
     path: v.object({ name: v.string() }),
@@ -2189,6 +2221,7 @@ export const post_ImageTag = {
   method: v.literal("POST"),
   path: v.literal("/images/{name}/tag"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(v.partial(v.object({ repo: v.string(), tag: v.string() }))),
     path: v.object({ name: v.string() }),
@@ -2201,6 +2234,7 @@ export const delete_ImageDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/images/{name}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2232,6 +2266,7 @@ export const get_ImageSearch = {
   method: v.literal("GET"),
   path: v.literal("/images/search"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.object({
       term: v.string(),
@@ -2266,6 +2301,7 @@ export const post_ImagePrune = {
   method: v.literal("POST"),
   path: v.literal("/images/prune"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: {
     200: v.partial(
@@ -2280,6 +2316,7 @@ export const post_SystemAuth = {
   method: v.literal("POST"),
   path: v.literal("/auth"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { body: AuthConfig },
   responses: {
     200: v.object({ Status: v.string(), IdentityToken: v.optional(v.string()) }),
@@ -2294,6 +2331,7 @@ export const get_SystemInfo = {
   method: v.literal("GET"),
   path: v.literal("/info"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: v.never(),
   responses: { 200: SystemInfo, 500: ErrorResponse },
 };
@@ -2303,6 +2341,7 @@ export const get_SystemVersion = {
   method: v.literal("GET"),
   path: v.literal("/version"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: v.never(),
   responses: { 200: SystemVersion, 500: ErrorResponse },
 };
@@ -2312,6 +2351,7 @@ export const get_SystemPing = {
   method: v.literal("GET"),
   path: v.literal("/_ping"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: v.never(),
   responses: { 200: v.unknown(), 500: v.unknown() },
   responseHeaders: {
@@ -2338,6 +2378,7 @@ export const head_SystemPingHead = {
   method: v.literal("HEAD"),
   path: v.literal("/_ping"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: v.never(),
   responses: { 200: v.unknown(), 500: v.unknown() },
   responseHeaders: {
@@ -2360,6 +2401,7 @@ export const post_ImageCommit = {
   method: v.literal("POST"),
   path: v.literal("/commit"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2390,6 +2432,7 @@ export const get_SystemEvents = {
   method: v.literal("GET"),
   path: v.literal("/events"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ since: v.string(), until: v.string(), filters: v.string() }))) },
   responses: { 200: EventMessage, 400: ErrorResponse, 500: ErrorResponse },
 };
@@ -2399,6 +2442,7 @@ export const get_SystemDataUsage = {
   method: v.literal("GET"),
   path: v.literal("/system/df"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(v.object({ type: v.array(v.picklist(["container", "image", "volume", "build-cache"])) })),
@@ -2423,6 +2467,7 @@ export const get_ImageGet = {
   method: v.literal("GET"),
   path: v.literal("/images/{name}/get"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ name: v.string() }) },
   responses: { 200: v.unknown(), 500: v.unknown() },
 };
@@ -2432,6 +2477,7 @@ export const get_ImageGetAll = {
   method: v.literal("GET"),
   path: v.literal("/images/get"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ names: v.array(v.string()) }))) },
   responses: { 200: v.unknown(), 500: v.unknown() },
 };
@@ -2441,6 +2487,7 @@ export const post_ImageLoad = {
   method: v.literal("POST"),
   path: v.literal("/images/load"),
   requestFormat: v.literal("text"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2464,6 +2511,7 @@ export const post_ContainerExec = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/exec"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     path: v.object({ id: v.string() }),
     body: v.optional(
@@ -2494,6 +2542,7 @@ export const post_ExecStart = {
   method: v.literal("POST"),
   path: v.literal("/exec/{id}/start"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     path: v.object({ id: v.string() }),
     body: v.optional(
@@ -2516,6 +2565,7 @@ export const post_ExecResize = {
   method: v.literal("POST"),
   path: v.literal("/exec/{id}/resize"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2543,6 +2593,7 @@ export const get_ExecInspect = {
   method: v.literal("GET"),
   path: v.literal("/exec/{id}/json"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: {
     200: v.partial(
@@ -2570,6 +2621,7 @@ export const get_VolumeList = {
   method: v.literal("GET"),
   path: v.literal("/volumes"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: VolumeListResponse, 500: ErrorResponse },
 };
@@ -2579,6 +2631,7 @@ export const post_VolumeCreate = {
   method: v.literal("POST"),
   path: v.literal("/volumes/create"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { body: VolumeCreateOptions },
   responses: { 201: Volume, 500: ErrorResponse },
 };
@@ -2588,6 +2641,7 @@ export const get_VolumeInspect = {
   method: v.literal("GET"),
   path: v.literal("/volumes/{name}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ name: v.string() }) },
   responses: { 200: Volume, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2597,6 +2651,7 @@ export const put_VolumeUpdate = {
   method: v.literal("PUT"),
   path: v.literal("/volumes/{name}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.object({
       version: v.pipe(
@@ -2616,6 +2671,7 @@ export const delete_VolumeDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/volumes/{name}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2640,6 +2696,7 @@ export const post_VolumePrune = {
   method: v.literal("POST"),
   path: v.literal("/volumes/prune"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: {
     200: v.partial(v.object({ VolumesDeleted: v.array(v.string()), SpaceReclaimed: v.pipe(v.number(), v.integer()) })),
@@ -2652,6 +2709,7 @@ export const get_NetworkList = {
   method: v.literal("GET"),
   path: v.literal("/networks"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.array(Network), 500: ErrorResponse },
 };
@@ -2661,6 +2719,7 @@ export const get_NetworkInspect = {
   method: v.literal("GET"),
   path: v.literal("/networks/{id}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2686,6 +2745,7 @@ export const delete_NetworkDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/networks/{id}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: { 204: v.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2695,6 +2755,7 @@ export const post_NetworkCreate = {
   method: v.literal("POST"),
   path: v.literal("/networks/create"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     body: v.object({
       Name: v.string(),
@@ -2722,6 +2783,7 @@ export const post_NetworkConnect = {
   method: v.literal("POST"),
   path: v.literal("/networks/{id}/connect"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     path: v.object({ id: v.string() }),
     body: v.optional(v.partial(v.object({ Container: v.string(), EndpointConfig: EndpointSettings }))),
@@ -2734,6 +2796,7 @@ export const post_NetworkDisconnect = {
   method: v.literal("POST"),
   path: v.literal("/networks/{id}/disconnect"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     path: v.object({ id: v.string() }),
     body: v.optional(v.partial(v.object({ Container: v.string(), Force: v.boolean() }))),
@@ -2746,6 +2809,7 @@ export const post_NetworkPrune = {
   method: v.literal("POST"),
   path: v.literal("/networks/prune"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.partial(v.object({ NetworksDeleted: v.array(v.string()) })), 500: ErrorResponse },
 };
@@ -2755,6 +2819,7 @@ export const get_PluginList = {
   method: v.literal("GET"),
   path: v.literal("/plugins"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.array(Plugin), 500: ErrorResponse },
 };
@@ -2764,6 +2829,7 @@ export const get_GetPluginPrivileges = {
   method: v.literal("GET"),
   path: v.literal("/plugins/privileges"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.object({ remote: v.string() }) },
   responses: { 200: v.array(PluginPrivilege), 500: ErrorResponse },
 };
@@ -2773,6 +2839,7 @@ export const post_PluginPull = {
   method: v.literal("POST"),
   path: v.literal("/plugins/pull"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.object({ remote: v.string(), name: v.optional(v.string()) }),
     header: v.optional(v.partial(v.object({ "X-Registry-Auth": v.string() }))),
@@ -2786,6 +2853,7 @@ export const get_PluginInspect = {
   method: v.literal("GET"),
   path: v.literal("/plugins/{name}/json"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ name: v.string() }) },
   responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2795,6 +2863,7 @@ export const delete_PluginDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/plugins/{name}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2819,6 +2888,7 @@ export const post_PluginEnable = {
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/enable"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2844,6 +2914,7 @@ export const post_PluginDisable = {
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/disable"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2865,6 +2936,7 @@ export const post_PluginUpgrade = {
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/upgrade"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.object({ remote: v.string() }),
     path: v.object({ name: v.string() }),
@@ -2879,6 +2951,7 @@ export const post_PluginCreate = {
   method: v.literal("POST"),
   path: v.literal("/plugins/create"),
   requestFormat: v.literal("text"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.object({ name: v.string() }) },
   responses: { 204: v.unknown(), 500: ErrorResponse },
 };
@@ -2888,6 +2961,7 @@ export const post_PluginPush = {
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/push"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ name: v.string() }) },
   responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2897,6 +2971,7 @@ export const post_PluginSet = {
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/set"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ name: v.string() }), body: v.array(v.string()) },
   responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2906,6 +2981,7 @@ export const get_NodeList = {
   method: v.literal("GET"),
   path: v.literal("/nodes"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.array(Node), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2915,6 +2991,7 @@ export const get_NodeInspect = {
   method: v.literal("GET"),
   path: v.literal("/nodes/{id}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: { 200: Node, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2924,6 +3001,7 @@ export const delete_NodeDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/nodes/{id}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -2948,6 +3026,7 @@ export const post_NodeUpdate = {
   method: v.literal("POST"),
   path: v.literal("/nodes/{id}/update"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.object({
       version: v.pipe(
@@ -2967,6 +3046,7 @@ export const get_SwarmInspect = {
   method: v.literal("GET"),
   path: v.literal("/swarm"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: v.never(),
   responses: { 200: Swarm, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2976,6 +3056,7 @@ export const post_SwarmInit = {
   method: v.literal("POST"),
   path: v.literal("/swarm/init"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     body: v.optional(
       v.partial(
@@ -3000,6 +3081,7 @@ export const post_SwarmJoin = {
   method: v.literal("POST"),
   path: v.literal("/swarm/join"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     body: v.optional(
       v.partial(
@@ -3021,6 +3103,7 @@ export const post_SwarmLeave = {
   method: v.literal("POST"),
   path: v.literal("/swarm/leave"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -3044,6 +3127,7 @@ export const post_SwarmUpdate = {
   method: v.literal("POST"),
   path: v.literal("/swarm/update"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.object({
       version: v.pipe(
@@ -3083,6 +3167,7 @@ export const get_SwarmUnlockkey = {
   method: v.literal("GET"),
   path: v.literal("/swarm/unlockkey"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: v.never(),
   responses: { 200: v.partial(v.object({ UnlockKey: v.string() })), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3092,6 +3177,7 @@ export const post_SwarmUnlock = {
   method: v.literal("POST"),
   path: v.literal("/swarm/unlock"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { body: v.optional(v.partial(v.object({ UnlockKey: v.string() }))) },
   responses: { 200: v.unknown(), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3101,6 +3187,7 @@ export const get_ServiceList = {
   method: v.literal("GET"),
   path: v.literal("/services"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -3122,6 +3209,7 @@ export const post_ServiceCreate = {
   method: v.literal("POST"),
   path: v.literal("/services/create"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     header: v.optional(v.partial(v.object({ "X-Registry-Auth": v.string() }))),
     body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]),
@@ -3141,6 +3229,7 @@ export const get_ServiceInspect = {
   method: v.literal("GET"),
   path: v.literal("/services/{id}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -3165,6 +3254,7 @@ export const delete_ServiceDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/services/{id}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3174,6 +3264,7 @@ export const post_ServiceUpdate = {
   method: v.literal("POST"),
   path: v.literal("/services/{id}/update"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.object({
       version: v.pipe(
@@ -3202,6 +3293,7 @@ export const get_ServiceLogs = {
   method: v.literal("GET"),
   path: v.literal("/services/{id}/logs"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -3263,6 +3355,7 @@ export const get_TaskList = {
   method: v.literal("GET"),
   path: v.literal("/tasks"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.array(Task), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3272,6 +3365,7 @@ export const get_TaskInspect = {
   method: v.literal("GET"),
   path: v.literal("/tasks/{id}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: { 200: Task, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3281,6 +3375,7 @@ export const get_TaskLogs = {
   method: v.literal("GET"),
   path: v.literal("/tasks/{id}/logs"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(
@@ -3342,6 +3437,7 @@ export const get_SecretList = {
   method: v.literal("GET"),
   path: v.literal("/secrets"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.array(Secret), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3351,6 +3447,7 @@ export const post_SecretCreate = {
   method: v.literal("POST"),
   path: v.literal("/secrets/create"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { body: v.intersect([SecretSpec, v.record(v.string(), v.unknown())]) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3360,6 +3457,7 @@ export const get_SecretInspect = {
   method: v.literal("GET"),
   path: v.literal("/secrets/{id}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: { 200: Secret, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3369,6 +3467,7 @@ export const delete_SecretDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/secrets/{id}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3378,6 +3477,7 @@ export const post_SecretUpdate = {
   method: v.literal("POST"),
   path: v.literal("/secrets/{id}/update"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.object({
       version: v.pipe(
@@ -3397,6 +3497,7 @@ export const get_ConfigList = {
   method: v.literal("GET"),
   path: v.literal("/configs"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.array(Config), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3406,6 +3507,7 @@ export const post_ConfigCreate = {
   method: v.literal("POST"),
   path: v.literal("/configs/create"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { body: v.intersect([ConfigSpec, v.record(v.string(), v.unknown())]) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3415,6 +3517,7 @@ export const get_ConfigInspect = {
   method: v.literal("GET"),
   path: v.literal("/configs/{id}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: { 200: Config, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3424,6 +3527,7 @@ export const delete_ConfigDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/configs/{id}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
   responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3433,6 +3537,7 @@ export const post_ConfigUpdate = {
   method: v.literal("POST"),
   path: v.literal("/configs/{id}/update"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.object({
       version: v.pipe(
@@ -3452,6 +3557,7 @@ export const get_DistributionInspect = {
   method: v.literal("GET"),
   path: v.literal("/distribution/{name}/json"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ name: v.string() }) },
   responses: { 200: DistributionInspect, 401: ErrorResponse, 500: ErrorResponse },
 };
@@ -3461,6 +3567,7 @@ export const post_Session = {
   method: v.literal("POST"),
   path: v.literal("/session"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: v.never(),
   responses: { 101: v.unknown(), 400: v.unknown(), 500: v.unknown() },
 };
@@ -3611,6 +3718,7 @@ export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
 
 // <EndpointRequestFormats>
 /** Non-json request body encodings; missing entries default to `"json"`. */
@@ -3627,6 +3735,13 @@ export const endpointRequestFormats = {
 } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
 
+// <EndpointResponseFormats>
+/** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
+export const endpointResponseFormats = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+}>;
+// </EndpointResponseFormats>
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   responses?: Record<string, unknown>;
@@ -3638,6 +3753,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -3660,6 +3776,8 @@ export interface FetcherResponse {
     get(name: string): string | null;
     getSetCookie?: () => string[];
   };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>;
   text(): Promise<string>;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -3925,6 +4043,9 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.includes("text/event-stream")) {
+      return response.body ?? null;
+    }
     if (contentType.startsWith("text/")) {
       return await response.text();
     }
@@ -4207,9 +4328,13 @@ export class ApiClient {
         overrides,
         throwOnStatusError,
       });
-      let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+      const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+      let data =
+        responseFormat === "sse"
+          ? (response.body ?? null)
+          : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
       const shouldValidateOutput = validateSide === "output" || validateSide === "both";
-      if (shouldValidateOutput && response.ok && endpointSchema?.responses) {
+      if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
         const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
         if (responseSchema) {
           data = await runValidate({

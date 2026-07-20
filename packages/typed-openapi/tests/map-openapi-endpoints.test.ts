@@ -1512,6 +1512,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "kind": "ref",
@@ -1605,6 +1606,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "kind": "ref",
@@ -1733,6 +1735,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/findByStatus",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "constraints": {},
@@ -1886,6 +1889,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/findByTags",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "kind": "union",
@@ -2054,6 +2058,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/{petId}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "kind": "ref",
@@ -2224,6 +2229,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/{petId}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "405": {
                 "kind": "unknown",
@@ -2317,6 +2323,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/{petId}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "400": {
                 "kind": "unknown",
@@ -2392,10 +2399,7 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "body": {
-                "constraints": {
-                  "format": "binary",
-                },
-                "kind": "string",
+                "kind": "binary",
                 "meta": {},
               },
               "path": {
@@ -2434,6 +2438,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/{petId}/uploadImage",
             "requestFormat": "binary",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "kind": "ref",
@@ -2480,6 +2485,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/store/inventory",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "key": {
@@ -2556,6 +2562,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/store/order",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "kind": "ref",
@@ -2640,6 +2647,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/store/order/{orderId}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "kind": "ref",
@@ -2713,6 +2721,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/store/order/{orderId}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "400": {
                 "kind": "unknown",
@@ -2785,6 +2794,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "default": {
                 "kind": "ref",
@@ -2854,6 +2864,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user/createWithList",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "kind": "ref",
@@ -2969,6 +2980,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user/login",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responseHeaders": {
               "200": {
                 "additionalProperties": false,
@@ -3049,6 +3061,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user/logout",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "default": {
                 "kind": "unknown",
@@ -3167,6 +3180,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user/{username}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "kind": "ref",
@@ -3304,6 +3318,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user/{username}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "default": {
                 "kind": "unknown",
@@ -3366,6 +3381,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/user/{username}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "400": {
                 "kind": "unknown",
@@ -3406,6 +3422,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/text",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "kind": "ref",
@@ -3436,6 +3453,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/empty",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "204": {
                 "kind": "unknown",
@@ -3472,6 +3490,7 @@ describe("map-openapi-endpoints", () => {
             },
             "path": "/pet/custom",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
                 "kind": "ref",
@@ -3653,6 +3672,7 @@ describe("map-openapi-endpoints", () => {
           },
           "path": "/users/{id}",
           "requestFormat": "json",
+          "responseFormat": "json",
           "responses": {
             "200": {
               "kind": "unknown",
@@ -3889,6 +3909,7 @@ describe("map-openapi-endpoints", () => {
           },
           "path": "/authentication/refresh",
           "requestFormat": "json",
+          "responseFormat": "json",
           "responses": {
             "200": {
               "kind": "ref",

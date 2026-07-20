@@ -1578,6 +1578,7 @@ export const get_ContainerList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/containers/json"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -1598,6 +1599,7 @@ export const post_ContainerCreate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/create"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -1626,6 +1628,7 @@ export const get_ContainerInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/containers/{id}/json"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ size: BooleanFromString_default_false_prop }))),
     path: Schema.Struct({ id: Schema.String }),
@@ -1670,6 +1673,7 @@ export const get_ContainerTop = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/containers/{id}/top"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ ps_args: String_default_neg_ef_prop }))),
     path: Schema.Struct({ id: Schema.String }),
@@ -1688,6 +1692,7 @@ export const get_ContainerLogs = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/containers/{id}/logs"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -1712,6 +1717,7 @@ export const get_ContainerChanges = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/containers/{id}/changes"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: { 200: Schema.Array(FilesystemChange), 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1721,6 +1727,7 @@ export const get_ContainerExport = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/containers/{id}/export"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: { 200: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown },
 };
@@ -1730,6 +1737,7 @@ export const get_ContainerStats = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/containers/{id}/stats"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -1753,6 +1761,7 @@ export const post_ContainerResize = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/{id}/resize"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -1769,6 +1778,7 @@ export const post_ContainerStart = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/{id}/start"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ detachKeys: Schema.String }))),
     path: Schema.Struct({ id: Schema.String }),
@@ -1781,6 +1791,7 @@ export const post_ContainerStop = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/{id}/stop"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(Schema.Struct({ signal: Schema.String, t: Schema.NumberFromString.pipe(Schema.int()) })),
@@ -1795,6 +1806,7 @@ export const post_ContainerRestart = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/{id}/restart"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(Schema.Struct({ signal: Schema.String, t: Schema.NumberFromString.pipe(Schema.int()) })),
@@ -1809,6 +1821,7 @@ export const post_ContainerKill = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/{id}/kill"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ signal: String_default_SIGKILL_prop }))),
     path: Schema.Struct({ id: Schema.String }),
@@ -1821,6 +1834,7 @@ export const post_ContainerUpdate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/{id}/update"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ id: Schema.String }),
     body: Schema.extend(Resources, Schema.partial(Schema.Struct({ RestartPolicy: RestartPolicy }))),
@@ -1837,6 +1851,7 @@ export const post_ContainerRename = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/{id}/rename"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ name: Schema.String }), path: Schema.Struct({ id: Schema.String }) },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
@@ -1846,6 +1861,7 @@ export const post_ContainerPause = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/{id}/pause"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1855,6 +1871,7 @@ export const post_ContainerUnpause = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/{id}/unpause"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1864,6 +1881,7 @@ export const post_ContainerAttach = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/{id}/attach"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -1893,6 +1911,7 @@ export const get_ContainerAttachWebsocket = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/containers/{id}/attach/ws"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -1916,6 +1935,7 @@ export const post_ContainerWait = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/{id}/wait"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ condition: Union_default_notneg_running_prop }))),
     path: Schema.Struct({ id: Schema.String }),
@@ -1928,6 +1948,7 @@ export const delete_ContainerDelete = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/containers/{id}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -1948,6 +1969,7 @@ export const get_ContainerArchive = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/containers/{id}/archive"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ path: Schema.String }), path: Schema.Struct({ id: Schema.String }) },
   responses: { 200: Schema.Unknown, 400: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown },
 };
@@ -1957,6 +1979,7 @@ export const put_PutContainerArchive = {
   method: Schema.Literal("PUT"),
   path: Schema.Literal("/containers/{id}/archive"),
   requestFormat: Schema.Literal("binary"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({
       path: Schema.String,
@@ -1964,7 +1987,7 @@ export const put_PutContainerArchive = {
       copyUIDGID: Schema.optional(Schema.String),
     }),
     path: Schema.Struct({ id: Schema.String }),
-    body: Schema.String,
+    body: Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: Schema.Unknown, 400: ErrorResponse, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -1974,6 +1997,7 @@ export const head_ContainerArchiveInfo = {
   method: Schema.Literal("HEAD"),
   path: Schema.Literal("/containers/{id}/archive"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ path: Schema.String }), path: Schema.Struct({ id: Schema.String }) },
   responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
   responseHeaders: { 200: Schema.Struct({ "X-Docker-Container-Path-Stat": Schema.String }) },
@@ -1984,6 +2008,7 @@ export const post_ContainerPrune = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/prune"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: {
     200: Schema.partial(Schema.Struct({ ContainersDeleted: Schema.Array(Schema.String), SpaceReclaimed: Schema.Int })),
@@ -1996,6 +2021,7 @@ export const get_ImageList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/images/json"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -2016,6 +2042,7 @@ export const post_ImageBuild = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/build"),
   requestFormat: Schema.Literal("binary"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -2052,7 +2079,7 @@ export const post_ImageBuild = {
         Schema.Struct({ "Content-type": Schema.Literal("application/x-tar"), "X-Registry-Config": Schema.String }),
       ),
     ),
-    body: Schema.String,
+    body: Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: Schema.Unknown, 400: ErrorResponse, 500: ErrorResponse },
 };
@@ -2062,6 +2089,7 @@ export const post_BuildPrune = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/build/prune"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -2084,6 +2112,7 @@ export const post_ImageCreate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/images/create"),
   requestFormat: Schema.Literal("text"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -2109,6 +2138,7 @@ export const get_ImageInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/images/{name}/json"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ name: Schema.String }) },
   responses: { 200: ImageInspect, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2118,6 +2148,7 @@ export const get_ImageHistory = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/images/{name}/history"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ name: Schema.String }) },
   responses: {
     200: Schema.Array(
@@ -2140,6 +2171,7 @@ export const post_ImagePush = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/images/{name}/push"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ tag: Schema.String }))),
     path: Schema.Struct({ name: Schema.String }),
@@ -2153,6 +2185,7 @@ export const post_ImageTag = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/images/{name}/tag"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ repo: Schema.String, tag: Schema.String }))),
     path: Schema.Struct({ name: Schema.String }),
@@ -2165,6 +2198,7 @@ export const delete_ImageDelete = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/images/{name}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -2181,6 +2215,7 @@ export const get_ImageSearch = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/images/search"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({
       term: Schema.String,
@@ -2209,6 +2244,7 @@ export const post_ImagePrune = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/images/prune"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: {
     200: Schema.partial(
@@ -2223,6 +2259,7 @@ export const post_SystemAuth = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/auth"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { body: AuthConfig },
   responses: {
     200: Schema.Struct({ Status: Schema.String, IdentityToken: Schema.optional(Schema.String) }),
@@ -2237,6 +2274,7 @@ export const get_SystemInfo = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/info"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { 200: SystemInfo, 500: ErrorResponse },
 };
@@ -2246,6 +2284,7 @@ export const get_SystemVersion = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/version"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { 200: SystemVersion, 500: ErrorResponse },
 };
@@ -2255,6 +2294,7 @@ export const get_SystemPing = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/_ping"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { 200: Schema.Unknown, 500: Schema.Unknown },
   responseHeaders: {
@@ -2278,6 +2318,7 @@ export const head_SystemPingHead = {
   method: Schema.Literal("HEAD"),
   path: Schema.Literal("/_ping"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { 200: Schema.Unknown, 500: Schema.Unknown },
   responseHeaders: {
@@ -2297,6 +2338,7 @@ export const post_ImageCommit = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/commit"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -2321,6 +2363,7 @@ export const get_SystemEvents = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/events"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(Schema.Struct({ since: Schema.String, until: Schema.String, filters: Schema.String })),
@@ -2334,6 +2377,7 @@ export const get_SystemDataUsage = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/system/df"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -2369,6 +2413,7 @@ export const get_ImageGet = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/images/{name}/get"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ name: Schema.String }) },
   responses: { 200: Schema.Unknown, 500: Schema.Unknown },
 };
@@ -2378,6 +2423,7 @@ export const get_ImageGetAll = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/images/get"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ names: Schema.Array(Schema.String) }))) },
   responses: { 200: Schema.Unknown, 500: Schema.Unknown },
 };
@@ -2387,6 +2433,7 @@ export const post_ImageLoad = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/images/load"),
   requestFormat: Schema.Literal("text"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ quiet: BooleanFromString_default_false_prop }))),
   },
@@ -2398,6 +2445,7 @@ export const post_ContainerExec = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/{id}/exec"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ id: Schema.String }),
     body: Schema.optional(
@@ -2428,6 +2476,7 @@ export const post_ExecStart = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/exec/{id}/start"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ id: Schema.String }),
     body: Schema.optional(
@@ -2450,6 +2499,7 @@ export const post_ExecResize = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/exec/{id}/resize"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -2466,6 +2516,7 @@ export const get_ExecInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/exec/{id}/json"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: {
     200: Schema.partial(
@@ -2493,6 +2544,7 @@ export const get_VolumeList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/volumes"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: VolumeListResponse, 500: ErrorResponse },
 };
@@ -2502,6 +2554,7 @@ export const post_VolumeCreate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/volumes/create"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { body: VolumeCreateOptions },
   responses: { 201: Volume, 500: ErrorResponse },
 };
@@ -2511,6 +2564,7 @@ export const get_VolumeInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/volumes/{name}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ name: Schema.String }) },
   responses: { 200: Volume, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2520,6 +2574,7 @@ export const put_VolumeUpdate = {
   method: Schema.Literal("PUT"),
   path: Schema.Literal("/volumes/{name}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({ version: Schema.NumberFromString.pipe(Schema.int()) }),
     path: Schema.Struct({ name: Schema.String }),
@@ -2533,6 +2588,7 @@ export const delete_VolumeDelete = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/volumes/{name}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ force: BooleanFromString_default_false_prop }))),
     path: Schema.Struct({ name: Schema.String }),
@@ -2545,6 +2601,7 @@ export const post_VolumePrune = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/volumes/prune"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: {
     200: Schema.partial(Schema.Struct({ VolumesDeleted: Schema.Array(Schema.String), SpaceReclaimed: Schema.Int })),
@@ -2557,6 +2614,7 @@ export const get_NetworkList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/networks"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: Schema.Array(Network), 500: ErrorResponse },
 };
@@ -2566,6 +2624,7 @@ export const get_NetworkInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/networks/{id}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(Schema.Struct({ verbose: BooleanFromString_default_false_prop, scope: Schema.String })),
@@ -2580,6 +2639,7 @@ export const delete_NetworkDelete = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/networks/{id}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: { 204: Schema.Unknown, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2589,6 +2649,7 @@ export const post_NetworkCreate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/networks/create"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     body: Schema.Struct({
       Name: Schema.String,
@@ -2616,6 +2677,7 @@ export const post_NetworkConnect = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/networks/{id}/connect"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ id: Schema.String }),
     body: Schema.optional(
@@ -2630,6 +2692,7 @@ export const post_NetworkDisconnect = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/networks/{id}/disconnect"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ id: Schema.String }),
     body: Schema.optional(Schema.partial(Schema.Struct({ Container: Schema.String, Force: Schema.Boolean }))),
@@ -2642,6 +2705,7 @@ export const post_NetworkPrune = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/networks/prune"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: {
     200: Schema.partial(Schema.Struct({ NetworksDeleted: Schema.Array(Schema.String) })),
@@ -2654,6 +2718,7 @@ export const get_PluginList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/plugins"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: Schema.Array(Plugin), 500: ErrorResponse },
 };
@@ -2663,6 +2728,7 @@ export const get_GetPluginPrivileges = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/plugins/privileges"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ remote: Schema.String }) },
   responses: { 200: Schema.Array(PluginPrivilege), 500: ErrorResponse },
 };
@@ -2672,6 +2738,7 @@ export const post_PluginPull = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/plugins/pull"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({ remote: Schema.String, name: Schema.optional(Schema.String) }),
     header: Schema.optional(Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String }))),
@@ -2685,6 +2752,7 @@ export const get_PluginInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/plugins/{name}/json"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ name: Schema.String }) },
   responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2694,6 +2762,7 @@ export const delete_PluginDelete = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/plugins/{name}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ force: BooleanFromString_default_false_prop }))),
     path: Schema.Struct({ name: Schema.String }),
@@ -2706,6 +2775,7 @@ export const post_PluginEnable = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/plugins/{name}/enable"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ timeout: Schema_default_0_prop }))),
     path: Schema.Struct({ name: Schema.String }),
@@ -2718,6 +2788,7 @@ export const post_PluginDisable = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/plugins/{name}/disable"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ force: Schema.BooleanFromString }))),
     path: Schema.Struct({ name: Schema.String }),
@@ -2730,6 +2801,7 @@ export const post_PluginUpgrade = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/plugins/{name}/upgrade"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({ remote: Schema.String }),
     path: Schema.Struct({ name: Schema.String }),
@@ -2744,6 +2816,7 @@ export const post_PluginCreate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/plugins/create"),
   requestFormat: Schema.Literal("text"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.Struct({ name: Schema.String }) },
   responses: { 204: Schema.Unknown, 500: ErrorResponse },
 };
@@ -2753,6 +2826,7 @@ export const post_PluginPush = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/plugins/{name}/push"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ name: Schema.String }) },
   responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2762,6 +2836,7 @@ export const post_PluginSet = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/plugins/{name}/set"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ name: Schema.String }), body: Schema.Array(Schema.String) },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2771,6 +2846,7 @@ export const get_NodeList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/nodes"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: Schema.Array(Node), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2780,6 +2856,7 @@ export const get_NodeInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/nodes/{id}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: { 200: Node, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2789,6 +2866,7 @@ export const delete_NodeDelete = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/nodes/{id}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ force: BooleanFromString_default_false_prop }))),
     path: Schema.Struct({ id: Schema.String }),
@@ -2801,6 +2879,7 @@ export const post_NodeUpdate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/nodes/{id}/update"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({ version: Schema.NumberFromString.pipe(Schema.int()) }),
     path: Schema.Struct({ id: Schema.String }),
@@ -2814,6 +2893,7 @@ export const get_SwarmInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/swarm"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { 200: Swarm, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2823,6 +2903,7 @@ export const post_SwarmInit = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/swarm/init"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     body: Schema.optional(
       Schema.partial(
@@ -2847,6 +2928,7 @@ export const post_SwarmJoin = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/swarm/join"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     body: Schema.optional(
       Schema.partial(
@@ -2868,6 +2950,7 @@ export const post_SwarmLeave = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/swarm/leave"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ force: BooleanFromString_default_false_prop }))),
   },
@@ -2879,6 +2962,7 @@ export const post_SwarmUpdate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/swarm/update"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({
       version: Schema.NumberFromString.pipe(Schema.int()),
@@ -2896,6 +2980,7 @@ export const get_SwarmUnlockkey = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/swarm/unlockkey"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: {
     200: Schema.partial(Schema.Struct({ UnlockKey: Schema.String })),
@@ -2909,6 +2994,7 @@ export const post_SwarmUnlock = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/swarm/unlock"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { body: Schema.optional(Schema.partial(Schema.Struct({ UnlockKey: Schema.String }))) },
   responses: { 200: Schema.Unknown, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2918,6 +3004,7 @@ export const get_ServiceList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/services"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String, status: Schema.BooleanFromString }))),
   },
@@ -2929,6 +3016,7 @@ export const post_ServiceCreate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/services/create"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     header: Schema.optional(Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String }))),
     body: Schema.extend(ServiceSpec, Schema.Record({ key: Schema.String, value: Schema.Unknown })),
@@ -2948,6 +3036,7 @@ export const get_ServiceInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/services/{id}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.partial(Schema.Struct({ insertDefaults: BooleanFromString_default_false_prop }))),
     path: Schema.Struct({ id: Schema.String }),
@@ -2960,6 +3049,7 @@ export const delete_ServiceDelete = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/services/{id}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2969,6 +3059,7 @@ export const post_ServiceUpdate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/services/{id}/update"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({
       version: Schema.NumberFromString.pipe(Schema.int()),
@@ -2993,6 +3084,7 @@ export const get_ServiceLogs = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/services/{id}/logs"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -3017,6 +3109,7 @@ export const get_TaskList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/tasks"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: Schema.Array(Task), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3026,6 +3119,7 @@ export const get_TaskInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/tasks/{id}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: { 200: Task, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3035,6 +3129,7 @@ export const get_TaskLogs = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/tasks/{id}/logs"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
       Schema.partial(
@@ -3059,6 +3154,7 @@ export const get_SecretList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/secrets"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: Schema.Array(Secret), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3068,6 +3164,7 @@ export const post_SecretCreate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/secrets/create"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { body: Schema.extend(SecretSpec, Schema.Record({ key: Schema.String, value: Schema.Unknown })) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3077,6 +3174,7 @@ export const get_SecretInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/secrets/{id}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: { 200: Secret, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3086,6 +3184,7 @@ export const delete_SecretDelete = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/secrets/{id}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3095,6 +3194,7 @@ export const post_SecretUpdate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/secrets/{id}/update"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({ version: Schema.NumberFromString.pipe(Schema.int()) }),
     path: Schema.Struct({ id: Schema.String }),
@@ -3108,6 +3208,7 @@ export const get_ConfigList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/configs"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: Schema.Array(Config), 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3117,6 +3218,7 @@ export const post_ConfigCreate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/configs/create"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { body: Schema.extend(ConfigSpec, Schema.Record({ key: Schema.String, value: Schema.Unknown })) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3126,6 +3228,7 @@ export const get_ConfigInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/configs/{id}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: { 200: Config, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3135,6 +3238,7 @@ export const delete_ConfigDelete = {
   method: Schema.Literal("DELETE"),
   path: Schema.Literal("/configs/{id}"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ id: Schema.String }) },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -3144,6 +3248,7 @@ export const post_ConfigUpdate = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/configs/{id}/update"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({ version: Schema.NumberFromString.pipe(Schema.int()) }),
     path: Schema.Struct({ id: Schema.String }),
@@ -3157,6 +3262,7 @@ export const get_DistributionInspect = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/distribution/{name}/json"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: { path: Schema.Struct({ name: Schema.String }) },
   responses: { 200: DistributionInspect, 401: ErrorResponse, 500: ErrorResponse },
 };
@@ -3166,6 +3272,7 @@ export const post_Session = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/session"),
   requestFormat: Schema.Literal("json"),
+  responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { 101: Schema.Unknown, 400: Schema.Unknown, 500: Schema.Unknown },
 };
@@ -3316,6 +3423,7 @@ export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
 
 // <EndpointRequestFormats>
 /** Non-json request body encodings; missing entries default to `"json"`. */
@@ -3332,6 +3440,13 @@ export const endpointRequestFormats = {
 } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
 
+// <EndpointResponseFormats>
+/** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
+export const endpointResponseFormats = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+}>;
+// </EndpointResponseFormats>
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   responses?: Record<string, unknown>;
@@ -3343,6 +3458,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -3365,6 +3481,8 @@ export interface FetcherResponse {
     get(name: string): string | null;
     getSetCookie?: () => string[];
   };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>;
   text(): Promise<string>;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -3707,6 +3825,9 @@ export class EffectApiClient {
         self.effectFetcher.parseResponseData ??
         (async (response: FetcherResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
+          if (contentType.includes("text/event-stream")) {
+            return response.body ?? null;
+          }
           if (contentType.includes("json") || contentType === "*/*") {
             try {
               return await response.json();
@@ -3739,12 +3860,21 @@ export class EffectApiClient {
         overrides,
       });
 
-      let data = yield* Effect.tryPromise({
-        try: () => parseData(response),
-        catch: (cause) => new HttpClientError("parse failed", cause),
-      });
+      const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+      let data =
+        responseFormat === "sse"
+          ? (response.body ?? null)
+          : yield* Effect.tryPromise({
+              try: () => parseData(response),
+              catch: (cause) => new HttpClientError("parse failed", cause),
+            });
 
-      if ((validateSide === "output" || validateSide === "both") && response.ok && endpointSchema?.responses) {
+      if (
+        responseFormat !== "sse" &&
+        (validateSide === "output" || validateSide === "both") &&
+        response.ok &&
+        endpointSchema?.responses
+      ) {
         const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
         if (responseSchema) {
           if (self.onValidate) {

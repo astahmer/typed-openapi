@@ -55,6 +55,9 @@ describe("generator", () => {
         if (options?.query) {
           params.query = options.query;
         }
+        if (options?.cookie) {
+          params.cookie = options.cookie;
+        }
         return [params];
       };
 
@@ -71,6 +74,7 @@ describe("generator", () => {
         query?: Record<string, unknown>;
         header?: Record<string, unknown>;
         path?: Record<string, unknown>;
+        cookie?: Record<string, unknown>;
       };
 
       type RequiredKeys<T> = {
@@ -263,7 +267,6 @@ describe("generator", () => {
               throw new TypedStatusError(response as never);
             }
 
-            // Return just the data if withResponse is false, otherwise return the full response
             const finalResponse = withResponse ? response : response.data;
             const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
             return res as never;

@@ -66,6 +66,7 @@ export const put_UpdatePet = {
   method: v.literal("PUT"),
   path: v.literal("/pet"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { body: Pet },
   responses: { 200: Pet, 400: v.unknown(), 404: v.unknown(), 405: v.unknown() },
 };
@@ -75,6 +76,7 @@ export const post_AddPet = {
   method: v.literal("POST"),
   path: v.literal("/pet"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { body: Pet },
   responses: { 200: Pet, 405: v.unknown() },
 };
@@ -84,6 +86,7 @@ export const get_FindPetsByStatus = {
   method: v.literal("GET"),
   path: v.literal("/pet/findByStatus"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
       v.partial(v.object({ status: v.optional(v.picklist(["available", "pending", "sold"]), "available") })),
@@ -101,6 +104,7 @@ export const get_FindPetsByTags = {
   method: v.literal("GET"),
   path: v.literal("/pet/findByTags"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ tags: v.array(v.string()) }))) },
   responses: { 200: v.union([v.array(Pet), v.array(User), v.array(Tag)]), 400: v.unknown() },
 };
@@ -110,6 +114,7 @@ export const get_GetPetById = {
   method: v.literal("GET"),
   path: v.literal("/pet/{petId}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     path: v.object({
       petId: v.pipe(
@@ -131,6 +136,7 @@ export const post_UpdatePetWithForm = {
   method: v.literal("POST"),
   path: v.literal("/pet/{petId}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(v.partial(v.object({ name: v.string(), status: v.string() }))),
     path: v.object({
@@ -149,6 +155,7 @@ export const delete_DeletePet = {
   method: v.literal("DELETE"),
   path: v.literal("/pet/{petId}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     path: v.object({
       petId: v.pipe(
@@ -167,6 +174,7 @@ export const post_UploadFile = {
   method: v.literal("POST"),
   path: v.literal("/pet/{petId}/uploadImage"),
   requestFormat: v.literal("binary"),
+  responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(v.partial(v.object({ additionalMetadata: v.string() }))),
     path: v.object({
@@ -176,7 +184,7 @@ export const post_UploadFile = {
         v.pipe(v.number(), v.integer()),
       ),
     }),
-    body: v.string(),
+    body: v.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: ApiResponse },
 };
@@ -186,6 +194,7 @@ export const get_GetInventory = {
   method: v.literal("GET"),
   path: v.literal("/store/inventory"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: v.never(),
   responses: { 200: v.record(v.string(), v.pipe(v.number(), v.integer())) },
 };
@@ -195,6 +204,7 @@ export const post_PlaceOrder = {
   method: v.literal("POST"),
   path: v.literal("/store/order"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { body: Order },
   responses: { 200: Order, 405: v.unknown() },
 };
@@ -204,6 +214,7 @@ export const get_GetOrderById = {
   method: v.literal("GET"),
   path: v.literal("/store/order/{orderId}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     path: v.object({
       orderId: v.pipe(
@@ -221,6 +232,7 @@ export const delete_DeleteOrder = {
   method: v.literal("DELETE"),
   path: v.literal("/store/order/{orderId}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: {
     path: v.object({
       orderId: v.pipe(
@@ -238,6 +250,7 @@ export const post_CreateUser = {
   method: v.literal("POST"),
   path: v.literal("/user"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { body: User },
   responses: { default: User },
 };
@@ -247,6 +260,7 @@ export const post_CreateUsersWithListInput = {
   method: v.literal("POST"),
   path: v.literal("/user/createWithList"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { body: v.array(User) },
   responses: { 200: User, default: v.unknown() },
 };
@@ -256,6 +270,7 @@ export const get_LoginUser = {
   method: v.literal("GET"),
   path: v.literal("/user/login"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ username: v.string(), password: v.string() }))) },
   responses: { 200: v.string(), 400: v.unknown() },
   responseHeaders: {
@@ -269,6 +284,7 @@ export const get_LogoutUser = {
   method: v.literal("GET"),
   path: v.literal("/user/logout"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: v.never(),
   responses: { default: v.unknown() },
 };
@@ -278,6 +294,7 @@ export const get_GetUserByName = {
   method: v.literal("GET"),
   path: v.literal("/user/{username}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ username: v.string() }) },
   responses: {
     200: User,
@@ -292,6 +309,7 @@ export const put_UpdateUser = {
   method: v.literal("PUT"),
   path: v.literal("/user/{username}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ username: v.string() }), body: User },
   responses: { default: v.unknown() },
 };
@@ -301,6 +319,7 @@ export const delete_DeleteUser = {
   method: v.literal("DELETE"),
   path: v.literal("/user/{username}"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: { path: v.object({ username: v.string() }) },
   responses: { 400: v.unknown(), 404: v.unknown() },
 };
@@ -310,6 +329,7 @@ export const get_GetPetTextPlain = {
   method: v.literal("GET"),
   path: v.literal("/pet/text"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: v.never(),
   responses: { 200: User },
 };
@@ -319,6 +339,7 @@ export const get_GetPetEmpty = {
   method: v.literal("GET"),
   path: v.literal("/pet/empty"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: v.never(),
   responses: { 204: v.unknown() },
 };
@@ -328,6 +349,7 @@ export const get_GetPetCustom = {
   method: v.literal("GET"),
   path: v.literal("/pet/custom"),
   requestFormat: v.literal("json"),
+  responseFormat: v.literal("json"),
   parameters: v.never(),
   responses: { 200: Pet },
 };
@@ -390,6 +412,7 @@ export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
 
 // <EndpointRequestFormats>
 /** Non-json request body encodings; missing entries default to `"json"`. */
@@ -399,6 +422,13 @@ export const endpointRequestFormats = {
   },
 } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
+
+// <EndpointResponseFormats>
+/** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
+export const endpointResponseFormats = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+}>;
+// </EndpointResponseFormats>
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -411,6 +441,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -433,6 +464,8 @@ export interface FetcherResponse {
     get(name: string): string | null;
     getSetCookie?: () => string[];
   };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>;
   text(): Promise<string>;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -698,6 +731,9 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.includes("text/event-stream")) {
+      return response.body ?? null;
+    }
     if (contentType.startsWith("text/")) {
       return await response.text();
     }
@@ -949,9 +985,13 @@ export class ApiClient {
         overrides,
         throwOnStatusError,
       });
-      let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+      const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+      let data =
+        responseFormat === "sse"
+          ? (response.body ?? null)
+          : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
       const shouldValidateOutput = validateSide === "output" || validateSide === "both";
-      if (shouldValidateOutput && response.ok && endpointSchema?.responses) {
+      if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
         const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
         if (responseSchema) {
           data = await runValidate({

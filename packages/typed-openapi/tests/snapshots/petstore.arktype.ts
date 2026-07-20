@@ -68,6 +68,7 @@ export const put_UpdatePet = {
   method: type("'PUT'"),
   path: type("'/pet'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: { body: Pet },
   responses: { 200: Pet, 400: type("unknown"), 404: type("unknown"), 405: type("unknown") },
 };
@@ -77,6 +78,7 @@ export const post_AddPet = {
   method: type("'POST'"),
   path: type("'/pet'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: { body: Pet },
   responses: { 200: Pet, 405: type("unknown") },
 };
@@ -86,6 +88,7 @@ export const get_FindPetsByStatus = {
   method: type("'GET'"),
   path: type("'/pet/findByStatus'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: {
     query: type({ status: type.enumerated("available", "pending", "sold") })
       .partial()
@@ -103,6 +106,7 @@ export const get_FindPetsByTags = {
   method: type("'GET'"),
   path: type("'/pet/findByTags'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: {
     query: type({ tags: type("string").array() })
       .partial()
@@ -116,6 +120,7 @@ export const get_GetPetById = {
   method: type("'GET'"),
   path: type("'/pet/{petId}'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: { path: type({ petId: type("string.integer.parse") }) },
   responses: {
     200: Pet,
@@ -129,6 +134,7 @@ export const post_UpdatePetWithForm = {
   method: type("'POST'"),
   path: type("'/pet/{petId}'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: {
     query: type({ name: type("string"), status: type("string") })
       .partial()
@@ -143,6 +149,7 @@ export const delete_DeletePet = {
   method: type("'DELETE'"),
   path: type("'/pet/{petId}'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: {
     path: type({ petId: type("string.integer.parse") }),
     header: type({ api_key: type("string") })
@@ -157,12 +164,13 @@ export const post_UploadFile = {
   method: type("'POST'"),
   path: type("'/pet/{petId}/uploadImage'"),
   requestFormat: type("'binary'"),
+  responseFormat: type("'json'"),
   parameters: {
     query: type({ additionalMetadata: type("string") })
       .partial()
       .optional(),
     path: type({ petId: type("string.integer.parse") }),
-    body: type("string"),
+    body: type.instanceOf(Blob),
   },
   responses: { 200: ApiResponse },
 };
@@ -172,6 +180,7 @@ export const get_GetInventory = {
   method: type("'GET'"),
   path: type("'/store/inventory'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: type("never"),
   responses: { 200: type({ "[string]": type("number.integer") }) },
 };
@@ -181,6 +190,7 @@ export const post_PlaceOrder = {
   method: type("'POST'"),
   path: type("'/store/order'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: { body: Order },
   responses: { 200: Order, 405: type("unknown") },
 };
@@ -190,6 +200,7 @@ export const get_GetOrderById = {
   method: type("'GET'"),
   path: type("'/store/order/{orderId}'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: { path: type({ orderId: type("string.integer.parse") }) },
   responses: { 200: Order, 400: type("unknown"), 404: type("unknown") },
 };
@@ -199,6 +210,7 @@ export const delete_DeleteOrder = {
   method: type("'DELETE'"),
   path: type("'/store/order/{orderId}'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: { path: type({ orderId: type("string.integer.parse") }) },
   responses: { 400: type("unknown"), 404: type("unknown") },
 };
@@ -208,6 +220,7 @@ export const post_CreateUser = {
   method: type("'POST'"),
   path: type("'/user'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: { body: User },
   responses: { default: User },
 };
@@ -217,6 +230,7 @@ export const post_CreateUsersWithListInput = {
   method: type("'POST'"),
   path: type("'/user/createWithList'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: { body: User.array() },
   responses: { 200: User, default: type("unknown") },
 };
@@ -226,6 +240,7 @@ export const get_LoginUser = {
   method: type("'GET'"),
   path: type("'/user/login'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: {
     query: type({ username: type("string"), password: type("string") })
       .partial()
@@ -243,6 +258,7 @@ export const get_LogoutUser = {
   method: type("'GET'"),
   path: type("'/user/logout'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: type("never"),
   responses: { default: type("unknown") },
 };
@@ -252,6 +268,7 @@ export const get_GetUserByName = {
   method: type("'GET'"),
   path: type("'/user/{username}'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: { path: type({ username: type("string") }) },
   responses: {
     200: User,
@@ -266,6 +283,7 @@ export const put_UpdateUser = {
   method: type("'PUT'"),
   path: type("'/user/{username}'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: { path: type({ username: type("string") }), body: User },
   responses: { default: type("unknown") },
 };
@@ -275,6 +293,7 @@ export const delete_DeleteUser = {
   method: type("'DELETE'"),
   path: type("'/user/{username}'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: { path: type({ username: type("string") }) },
   responses: { 400: type("unknown"), 404: type("unknown") },
 };
@@ -284,6 +303,7 @@ export const get_GetPetTextPlain = {
   method: type("'GET'"),
   path: type("'/pet/text'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: type("never"),
   responses: { 200: User },
 };
@@ -293,6 +313,7 @@ export const get_GetPetEmpty = {
   method: type("'GET'"),
   path: type("'/pet/empty'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: type("never"),
   responses: { 204: type("unknown") },
 };
@@ -302,6 +323,7 @@ export const get_GetPetCustom = {
   method: type("'GET'"),
   path: type("'/pet/custom'"),
   requestFormat: type("'json'"),
+  responseFormat: type("'json'"),
   parameters: type("never"),
   responses: { 200: Pet },
 };
@@ -364,6 +386,7 @@ export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
 
 // <EndpointRequestFormats>
 /** Non-json request body encodings; missing entries default to `"json"`. */
@@ -373,6 +396,13 @@ export const endpointRequestFormats = {
   },
 } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
+
+// <EndpointResponseFormats>
+/** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
+export const endpointResponseFormats = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+}>;
+// </EndpointResponseFormats>
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -385,6 +415,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -407,6 +438,8 @@ export interface FetcherResponse {
     get(name: string): string | null;
     getSetCookie?: () => string[];
   };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>;
   text(): Promise<string>;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -676,6 +709,9 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.includes("text/event-stream")) {
+      return response.body ?? null;
+    }
     if (contentType.startsWith("text/")) {
       return await response.text();
     }
@@ -927,9 +963,13 @@ export class ApiClient {
         overrides,
         throwOnStatusError,
       });
-      let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+      const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+      let data =
+        responseFormat === "sse"
+          ? (response.body ?? null)
+          : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
       const shouldValidateOutput = validateSide === "output" || validateSide === "both";
-      if (shouldValidateOutput && response.ok && endpointSchema?.responses) {
+      if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
         const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
         if (responseSchema) {
           data = await runValidate({

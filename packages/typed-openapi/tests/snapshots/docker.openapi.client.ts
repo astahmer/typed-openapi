@@ -860,6 +860,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/json";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ all: boolean; limit: number; size: boolean; filters: string }>;
     };
@@ -869,6 +870,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/create";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ name: string; platform: string }>;
 
@@ -887,6 +889,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/json";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ size: boolean }>;
       path: { id: string };
@@ -927,6 +930,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/top";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ ps_args: string }>;
       path: { id: string };
@@ -941,6 +945,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/logs";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{
         follow: boolean;
@@ -959,6 +964,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/changes";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -968,6 +974,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/export";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -977,6 +984,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/stats";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ stream: boolean; "one-shot": boolean }>;
       path: { id: string };
@@ -987,6 +995,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/resize";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ h: number; w: number }>;
       path: { id: string };
@@ -997,6 +1006,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/start";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ detachKeys: string }>;
       path: { id: string };
@@ -1007,6 +1017,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/stop";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ signal: string; t: number }>;
       path: { id: string };
@@ -1017,6 +1028,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/restart";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ signal: string; t: number }>;
       path: { id: string };
@@ -1027,6 +1039,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/kill";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ signal: string }>;
       path: { id: string };
@@ -1037,6 +1050,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/update";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
 
@@ -1048,6 +1062,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/rename";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: { name: string };
       path: { id: string };
@@ -1058,6 +1073,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/pause";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1067,6 +1083,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/unpause";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1076,6 +1093,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/attach";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{
         detachKeys: string;
@@ -1093,6 +1111,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/attach/ws";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{
         detachKeys: string;
@@ -1116,6 +1135,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/wait";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ condition: "not-running" | "next-exit" | "removed" }>;
       path: { id: string };
@@ -1131,6 +1151,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/containers/{id}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ v: boolean; force: boolean; link: boolean }>;
       path: { id: string };
@@ -1147,6 +1168,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/containers/{id}/archive";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: { path: string };
       path: { id: string };
@@ -1157,11 +1179,12 @@ export namespace Endpoints {
     method: "PUT";
     path: "/containers/{id}/archive";
     requestFormat: "binary";
+    responseFormat: "json";
     parameters: {
       query: { path: string; noOverwriteDirNonDir?: string; copyUIDGID?: string };
       path: { id: string };
 
-      body: string;
+      body: Blob;
     };
     responses: {
       200: unknown;
@@ -1175,6 +1198,7 @@ export namespace Endpoints {
     method: "HEAD";
     path: "/containers/{id}/archive";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: { path: string };
       path: { id: string };
@@ -1186,6 +1210,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/prune";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ filters: string }>;
     };
@@ -1198,6 +1223,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/images/json";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ all: boolean; filters: string; "shared-size": boolean; digests: boolean }>;
     };
@@ -1207,6 +1233,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/build";
     requestFormat: "binary";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{
         dockerfile: string;
@@ -1237,7 +1264,7 @@ export namespace Endpoints {
 
       header?: Partial<{ "Content-type": "application/x-tar"; "X-Registry-Config": string }>;
 
-      body: string;
+      body: Blob;
     };
     responses: { 200: unknown; 400: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
@@ -1245,6 +1272,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/build/prune";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ "keep-storage": number; all: boolean; filters: string }>;
     };
@@ -1254,6 +1282,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/images/create";
     requestFormat: "text";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{
         fromImage: string;
@@ -1275,6 +1304,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/images/{name}/json";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1284,6 +1314,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/images/{name}/history";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1304,6 +1335,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/images/{name}/push";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ tag: string }>;
       path: { name: string };
@@ -1315,6 +1347,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/images/{name}/tag";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ repo: string; tag: string }>;
       path: { name: string };
@@ -1331,6 +1364,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/images/{name}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ force: boolean; noprune: boolean }>;
       path: { name: string };
@@ -1346,6 +1380,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/images/search";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: { term: string; limit?: number; filters?: string };
     };
@@ -1360,6 +1395,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/images/prune";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ filters: string }>;
     };
@@ -1372,6 +1408,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/auth";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       body: Schemas.AuthConfig;
     };
@@ -1386,6 +1423,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/info";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: never;
     responses: { 200: Schemas.SystemInfo; 500: Schemas.ErrorResponse };
   };
@@ -1393,6 +1431,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/version";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: never;
     responses: { 200: Schemas.SystemVersion; 500: Schemas.ErrorResponse };
   };
@@ -1400,6 +1439,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/_ping";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: never;
     responses: { 200: unknown; 500: unknown };
     responseHeaders: {
@@ -1418,6 +1458,7 @@ export namespace Endpoints {
     method: "HEAD";
     path: "/_ping";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: never;
     responses: { 200: unknown; 500: unknown };
     responseHeaders: {
@@ -1435,6 +1476,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/commit";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{
         container: string;
@@ -1454,6 +1496,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/events";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ since: string; until: string; filters: string }>;
     };
@@ -1463,6 +1506,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/system/df";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ type: Array<"container" | "image" | "volume" | "build-cache"> }>;
     };
@@ -1481,6 +1525,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/images/{name}/get";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1490,6 +1535,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/images/get";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ names: Array<string> }>;
     };
@@ -1499,6 +1545,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/images/load";
     requestFormat: "text";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ quiet: boolean }>;
     };
@@ -1508,6 +1555,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/containers/{id}/exec";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
 
@@ -1536,6 +1584,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/exec/{id}/start";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
 
@@ -1547,6 +1596,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/exec/{id}/resize";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ h: number; w: number }>;
       path: { id: string };
@@ -1557,6 +1607,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/exec/{id}/json";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1582,6 +1633,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/volumes";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ filters: string }>;
     };
@@ -1591,6 +1643,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/volumes/create";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       body: Schemas.VolumeCreateOptions;
     };
@@ -1600,6 +1653,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/volumes/{name}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1609,6 +1663,7 @@ export namespace Endpoints {
     method: "PUT";
     path: "/volumes/{name}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: { version: number };
       path: { name: string };
@@ -1627,6 +1682,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/volumes/{name}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ force: boolean }>;
       path: { name: string };
@@ -1637,6 +1693,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/volumes/prune";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ filters: string }>;
     };
@@ -1646,6 +1703,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/networks";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ filters: string }>;
     };
@@ -1655,6 +1713,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/networks/{id}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ verbose: boolean; scope: string }>;
       path: { id: string };
@@ -1665,6 +1724,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/networks/{id}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1674,6 +1734,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/networks/create";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       body: {
         Name: string;
@@ -1699,6 +1760,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/networks/{id}/connect";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
 
@@ -1710,6 +1772,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/networks/{id}/disconnect";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
 
@@ -1721,6 +1784,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/networks/prune";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ filters: string }>;
     };
@@ -1730,6 +1794,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/plugins";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ filters: string }>;
     };
@@ -1739,6 +1804,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/plugins/privileges";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: { remote: string };
     };
@@ -1748,6 +1814,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/plugins/pull";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: { remote: string; name?: string };
 
@@ -1761,6 +1828,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/plugins/{name}/json";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1770,6 +1838,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/plugins/{name}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ force: boolean }>;
       path: { name: string };
@@ -1780,6 +1849,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/plugins/{name}/enable";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ timeout: number }>;
       path: { name: string };
@@ -1790,6 +1860,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/plugins/{name}/disable";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ force: boolean }>;
       path: { name: string };
@@ -1800,6 +1871,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/plugins/{name}/upgrade";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: { remote: string };
       path: { name: string };
@@ -1813,6 +1885,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/plugins/create";
     requestFormat: "text";
+    responseFormat: "json";
     parameters: {
       query: { name: string };
     };
@@ -1822,6 +1895,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/plugins/{name}/push";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -1831,6 +1905,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/plugins/{name}/set";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { name: string };
 
@@ -1842,6 +1917,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/nodes";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ filters: string }>;
     };
@@ -1851,6 +1927,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/nodes/{id}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -1865,6 +1942,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/nodes/{id}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ force: boolean }>;
       path: { id: string };
@@ -1875,6 +1953,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/nodes/{id}/update";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: { version: number };
       path: { id: string };
@@ -1893,6 +1972,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/swarm";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: never;
     responses: {
       200: Schemas.Swarm;
@@ -1905,6 +1985,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/swarm/init";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       body?: Partial<{
         ListenAddr: string;
@@ -1923,6 +2004,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/swarm/join";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       body?: Partial<{
         ListenAddr: string;
@@ -1938,6 +2020,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/swarm/leave";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ force: boolean }>;
     };
@@ -1947,6 +2030,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/swarm/update";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: {
         version: number;
@@ -1963,6 +2047,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/swarm/unlockkey";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: never;
     responses: { 200: Partial<{ UnlockKey: string }>; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
@@ -1970,6 +2055,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/swarm/unlock";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       body?: Partial<{ UnlockKey: string }>;
     };
@@ -1979,6 +2065,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/services";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ filters: string; status: boolean }>;
     };
@@ -1988,6 +2075,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/services/create";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       header?: Partial<{ "X-Registry-Auth": string }>;
 
@@ -2006,6 +2094,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/services/{id}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ insertDefaults: boolean }>;
       path: { id: string };
@@ -2021,6 +2110,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/services/{id}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -2030,6 +2120,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/services/{id}/update";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: { version: number; registryAuthFrom?: "spec" | "previous-spec"; rollback?: string };
       path: { id: string };
@@ -2049,6 +2140,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/services/{id}/logs";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{
         details: boolean;
@@ -2067,6 +2159,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/tasks";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ filters: string }>;
     };
@@ -2076,6 +2169,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/tasks/{id}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -2090,6 +2184,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/tasks/{id}/logs";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{
         details: boolean;
@@ -2108,6 +2203,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/secrets";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ filters: string }>;
     };
@@ -2117,6 +2213,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/secrets/create";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       body: Schemas.SecretSpec & Record<string, unknown>;
     };
@@ -2131,6 +2228,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/secrets/{id}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -2145,6 +2243,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/secrets/{id}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -2154,6 +2253,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/secrets/{id}/update";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: { version: number };
       path: { id: string };
@@ -2172,6 +2272,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/configs";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query?: Partial<{ filters: string }>;
     };
@@ -2181,6 +2282,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/configs/create";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       body: Schemas.ConfigSpec & Record<string, unknown>;
     };
@@ -2195,6 +2297,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/configs/{id}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -2209,6 +2312,7 @@ export namespace Endpoints {
     method: "DELETE";
     path: "/configs/{id}";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { id: string };
     };
@@ -2218,6 +2322,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/configs/{id}/update";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       query: { version: number };
       path: { id: string };
@@ -2236,6 +2341,7 @@ export namespace Endpoints {
     method: "GET";
     path: "/distribution/{name}/json";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: {
       path: { name: string };
     };
@@ -2245,6 +2351,7 @@ export namespace Endpoints {
     method: "POST";
     path: "/session";
     requestFormat: "json";
+    responseFormat: "json";
     parameters: never;
     responses: { 101: unknown; 400: unknown; 500: unknown };
   };
@@ -2396,6 +2503,7 @@ export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
 
 // <EndpointRequestFormats>
 /** Non-json request body encodings; missing entries default to `"json"`. */
@@ -2412,6 +2520,13 @@ export const endpointRequestFormats = {
 } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
 
+// <EndpointResponseFormats>
+/** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
+export const endpointResponseFormats = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+}>;
+// </EndpointResponseFormats>
+
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
   responses?: Record<string, unknown>;
@@ -2423,6 +2538,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -2445,6 +2561,8 @@ export interface FetcherResponse {
     get(name: string): string | null;
     getSetCookie?: () => string[];
   };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
   json(): Promise<unknown>;
   text(): Promise<string>;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -2679,6 +2797,9 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.includes("text/event-stream")) {
+      return response.body ?? null;
+    }
     if (contentType.startsWith("text/")) {
       return await response.text();
     }
@@ -2939,7 +3060,11 @@ export class ApiClient {
         overrides,
         throwOnStatusError,
       });
-      let data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+      const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+      let data =
+        responseFormat === "sse"
+          ? (response.body ?? null)
+          : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
 
       const typedResponse = Object.assign(response, {
         data: data,

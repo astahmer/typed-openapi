@@ -104,7 +104,29 @@ describe("GitHub issue regressions", () => {
     expect(() => new Function("z", `return ${src}`)(z)).not.toThrow();
   });
 
-  test.todo("#114 Typebox UParams — obsolete: typebox adapter dropped in v3");
+  test("#114 Typebox UParams", () => {
+    const doc = minimalDoc({
+      "/pet/findByStatus": {
+        get: {
+          operationId: "findByStatus",
+          parameters: [
+            {
+              name: "status",
+              in: "query",
+              required: false,
+              schema: { type: "string", enum: ["available", "pending", "sold"] },
+            },
+          ],
+          responses: { "200": { description: "ok" } },
+        },
+      },
+    });
+    const ctx = mapOpenApiEndpoints(doc);
+    const file = generateFile({ ...ctx, runtime: "typebox", includeClient: true });
+    expect(file).toContain("type InferSchemaInput<T> = InferSchemaValue<T>;");
+    expect(file).toContain("parameters: { query: Type.Optional(Type.Partial(Type.Object(");
+    expect(file).toContain("InferSchemaInput<UParams>");
+  });
 
   test("#32 partial query params make the whole config optional", () => {
     const doc = minimalDoc({
@@ -147,7 +169,35 @@ describe("GitHub issue regressions", () => {
     expect(src).toBe("z.unknown()");
   });
 
-  test.todo("#62 Typia export — out of scope unless a typia adapter is added");
+  test("#62 Typia export", () => {
+    const doc = minimalDoc(
+      {
+        "/pets": {
+          get: {
+            operationId: "listPets",
+            responses: {
+              "200": {
+                description: "ok",
+                content: { "application/json": { schema: { $ref: "#/components/schemas/Pet" } } },
+              },
+            },
+          },
+        },
+      },
+      {
+        Pet: {
+          type: "object",
+          required: ["name"],
+          properties: { name: { type: "string" } },
+        },
+      },
+    );
+    const ctx = mapOpenApiEndpoints(doc);
+    const file = generateFile({ ...ctx, runtime: "typia", includeClient: false, schemaNaming: "always-name" });
+    expect(file).toContain("export type Pet = { name: string };");
+    expect(file).toContain("export const isPet = typia.createIs<Pet>();");
+    expect(file).toContain("responses: { 200: isPet }");
+  });
 
   test("#121 coerce number/boolean path params for Zod", () => {
     const doc = minimalDoc({
