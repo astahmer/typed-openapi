@@ -50,14 +50,66 @@ export const withValibotDefault = (expr: string, meta: SchemaMeta): string => {
   return `v.optional(${expr}, ${lit})`;
 };
 
+/** Turn a schema expr + default literal into a stable helper name, e.g. `Boolean_default_false`. */
+export const effectDefaultHelperName = (baseExpr: string, lit: string): string => {
+  const simple = baseExpr.match(/^(?:Schema|S)\.([A-Za-z][A-Za-z0-9]*)$/);
+  let base = simple?.[1];
+  if (!base) {
+    if (/\.NullOr\(/.test(baseExpr) || /NullOr\(/.test(baseExpr)) base = "NullOr";
+    else if (/\.Union\(/.test(baseExpr) || /Union\(/.test(baseExpr)) base = "Union";
+    else if (/\.Array\(/.test(baseExpr) || /Array\(/.test(baseExpr)) base = "Array";
+    else if (/\.Literal\(/.test(baseExpr) || /Literal\(/.test(baseExpr)) base = "Literal";
+    else base = "Schema";
+  }
+  const defPart = lit
+    .replace(/-/g, "neg_")
+    .replace(/[^A-Za-z0-9]+/g, "_")
+    .replace(/^_|_$/g, "")
+    .slice(0, 40);
+  const name = `${base}_default_${defPart || "value"}`;
+  return /^[A-Za-z_]/.test(name) ? name : `_${name}`;
+};
+
 /**
- * Effect Schema: transform UndefinedOr → schema, substituting default on decode.
- * Works for standalone schemas (property-level `optionalWith` is nicer inside Struct).
+ * Effect Schema: intern a reusable defaulted schema and return its name.
+ * - `optionalWith` for Struct fields (kind: "prop")
+ * - `transform(UndefinedOr)` for standalone values (kind: "value")
  */
-export const withEffectDefault = (expr: string, meta: SchemaMeta, schemaNs: string): string => {
+export const internEffectDefault = (
+  baseExpr: string,
+  meta: SchemaMeta,
+  schemaNs: string,
+  ctx: EmitCtx,
+  kind: "prop" | "value",
+): string | undefined => {
   const lit = jsLiteral(meta.default);
-  if (lit === undefined) return expr;
-  return `${schemaNs}.transform(${schemaNs}.UndefinedOr(${expr}), ${expr}, { strict: true, decode: (i) => i === undefined ? ${lit} : i, encode: (a) => a })`;
+  if (lit === undefined) return undefined;
+  const map = ctx.internedDefaults ?? (ctx.internedDefaults = new Map());
+  const key = `${kind}:${baseExpr}:${lit}`;
+  const existing = map.get(key);
+  if (existing) return existing.name;
+
+  let name = effectDefaultHelperName(baseExpr, lit);
+  if (kind === "prop") name = `${name}_prop`;
+  // Disambiguate collisions across different base exprs that sanitize the same
+  if ([...map.values()].some((e) => e.name === name)) {
+    name = `${name}_${map.size}`;
+  }
+
+  const decl =
+    kind === "prop"
+      ? `const ${name} = ${schemaNs}.optionalWith(${baseExpr}, { default: () => ${lit} });`
+      : `const ${name} = ${schemaNs}.transform(${schemaNs}.UndefinedOr(${baseExpr}), ${baseExpr}, { strict: true, decode: (i) => (i === undefined ? ${lit} : i), encode: (a) => a });`;
+
+  map.set(key, { name, decl });
+  return name;
+};
+
+/** Emit interned default helper declarations (before component schemas). */
+export const renderInternedDefaults = (ctx: EmitCtx): string => {
+  const map = ctx.internedDefaults;
+  if (!map?.size) return "";
+  return [...map.values()].map((e) => e.decl).join("\n") + "\n\n";
 };
 
 /** ArkType object-property string def with default (`"string = \"hi\""`). */

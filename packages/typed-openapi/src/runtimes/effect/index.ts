@@ -4,12 +4,13 @@ import {
   applyNumberConstraints,
   applyObjectConstraints,
   applyStringConstraints,
+  internEffectDefault,
   isNullOr,
+  jsLiteral,
   literalValue,
   objectKey,
   objectProps,
   quote,
-  withEffectDefault,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
@@ -28,7 +29,6 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
   if (c.format === "uuid") base = `${S}.UUID`;
   else if (c.format === "uri" || c.format === "url") base = `${S}.URL`;
   else if (c.format === "email") {
-    // No dedicated Schema.Email in effect — approximate with pattern
     filters.push(`${S}.pattern(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/)`);
   }
   if (c.minLength !== undefined) filters.push(`${S}.minLength(${c.minLength})`);
@@ -75,7 +75,6 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     case "literal":
       return `${S}.Literal(${literalValue(node.value)})`;
     case "enum":
-      // Effect overloads: prefer rest args for TS; array form is runtime-ok but poorly typed
       return `${S}.Union(${node.values.map((v) => `${S}.Literal(${literalValue(v)})`).join(", ")})`;
     case "array": {
       const c = applyArrayConstraints(node.constraints, ctx.validation);
@@ -113,12 +112,16 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     case "record":
       return emitRecord(emitNode(node.key, ctx), emitNode(node.value, ctx));
     case "object": {
-      const props = objectProps(node, emitNode, ctx);
+      const omitCtx: EmitCtx = { ...ctx, omitDefaults: true };
+      const props = objectProps(node, emitNode, omitCtx);
       const body = props
         .map(({ key, optional, expr, meta }) => {
-          const hasDefault = meta.default !== undefined;
-          // Defaults already wrap as UndefinedOr→transform; skip extra optional().
-          return `${objectKey(key)}: ${optional && !hasDefault ? `${S}.optional(${expr})` : expr}`;
+          const lit = jsLiteral(meta.default);
+          if (lit !== undefined) {
+            const named = internEffectDefault(expr, meta, S, ctx, "prop");
+            return `${objectKey(key)}: ${named ?? `${S}.optionalWith(${expr}, { default: () => ${lit} })`}`;
+          }
+          return `${objectKey(key)}: ${optional ? `${S}.optional(${expr})` : expr}`;
         })
         .join(", ");
       let expr = `${S}.Struct({ ${body} })`;
@@ -149,7 +152,13 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
   }
 };
 
-const emitNode = (node: SchemaNode, ctx: EmitCtx): string => withEffectDefault(emitNodeInner(node, ctx), node.meta, S);
+const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
+  const inner = emitNodeInner(node, ctx);
+  if (ctx.omitDefaults || node.meta.default === undefined) return inner;
+  // Object/struct defaults are applied per-property via optionalWith.
+  if (node.kind === "object") return inner;
+  return internEffectDefault(inner, node.meta, S, ctx, "value") ?? inner;
+};
 
 export const effectAdapter: RuntimeAdapter = {
   name: "effect",

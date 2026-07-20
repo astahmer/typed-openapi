@@ -64,11 +64,22 @@ const objectConstraints = (schema: LibSchemaObject): ObjectConstraints => {
   return c;
 };
 
+/** Keep defaults on the outer nullable union only — avoid `.default().nullable().default()`. */
+const stripDefault = (node: SchemaNode): SchemaNode => {
+  if (node.meta.default === undefined) return node;
+  const { default: _d, ...meta } = node.meta;
+  return { ...node, meta } as SchemaNode;
+};
+
 const withNullable = (node: SchemaNode, schema: LibSchemaObject): SchemaNode => {
   if (isReferenceObject(schema)) return node;
   if ((schema as LibSchemaObject).nullable && node.kind !== "null") {
     if (node.kind === "union" && node.members.some((m) => m.kind === "null")) return node;
-    return { kind: "union", members: [node, { kind: "null", meta: emptyMeta() }], meta: node.meta };
+    return {
+      kind: "union",
+      members: [stripDefault(node), { kind: "null", meta: emptyMeta() }],
+      meta: node.meta,
+    };
   }
   return node;
 };

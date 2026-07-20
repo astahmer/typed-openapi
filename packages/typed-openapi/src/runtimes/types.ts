@@ -3,6 +3,13 @@ import type { ValidationPolicy } from "./validation.ts";
 
 export type OutputRuntime = "none" | "zod" | "zod3" | "effect" | "effect3" | "valibot" | "arktype";
 
+/** Interned reusable defaulted schema (emitted once, referenced by name). */
+export type InternedDefaultSchema = {
+  name: string;
+  /** Full `const Name = ...` declaration (no export) */
+  decl: string;
+};
+
 export type EmitCtx = {
   validation: ValidationPolicy;
   /** Named schemas that are recursive and need lazy/suspend wrapping when referenced from themselves */
@@ -19,6 +26,15 @@ export type EmitCtx = {
    * for path/query/cookie/header params that arrive as strings over HTTP.
    */
   coercePrimitives?: boolean;
+  /**
+   * When true, do not wrap with defaults (caller applies `optionalWith` / `.default` itself).
+   */
+  omitDefaults?: boolean;
+  /**
+   * Mutable registry of reusable defaulted schemas shared for one file emit.
+   * Keyed by `${kind}:${baseExpr}:${defaultLit}`.
+   */
+  internedDefaults?: Map<string, InternedDefaultSchema>;
   /** Indent level helper */
   indent: string;
 };
@@ -55,5 +71,6 @@ export const createEmitCtx = (
   validation,
   recursiveNames,
   indent: "  ",
+  internedDefaults: new Map(),
   ...(options?.coercePrimitives ? { coercePrimitives: true } : {}),
 });

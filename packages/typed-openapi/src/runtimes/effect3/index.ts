@@ -4,12 +4,13 @@ import {
   applyNumberConstraints,
   applyObjectConstraints,
   applyStringConstraints,
+  internEffectDefault,
   isNullOr,
+  jsLiteral,
   literalValue,
   objectKey,
   objectProps,
   quote,
-  withEffectDefault,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
@@ -115,11 +116,16 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     case "record":
       return emitRecord(emitNode(node.key, ctx), emitNode(node.value, ctx));
     case "object": {
-      const props = objectProps(node, emitNode, ctx);
+      const omitCtx: EmitCtx = { ...ctx, omitDefaults: true };
+      const props = objectProps(node, emitNode, omitCtx);
       const body = props
         .map(({ key, optional, expr, meta }) => {
-          const hasDefault = meta.default !== undefined;
-          return `${objectKey(key)}: ${optional && !hasDefault ? `${S}.optional(${expr})` : expr}`;
+          const lit = jsLiteral(meta.default);
+          if (lit !== undefined) {
+            const named = internEffectDefault(expr, meta, S, ctx, "prop");
+            return `${objectKey(key)}: ${named ?? `${S}.optionalWith(${expr}, { default: () => ${lit} })`}`;
+          }
+          return `${objectKey(key)}: ${optional ? `${S}.optional(${expr})` : expr}`;
         })
         .join(", ");
       let expr = `${S}.Struct({ ${body} })`;
@@ -146,7 +152,12 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
   }
 };
 
-const emitNode = (node: SchemaNode, ctx: EmitCtx): string => withEffectDefault(emitNodeInner(node, ctx), node.meta, S);
+const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
+  const inner = emitNodeInner(node, ctx);
+  if (ctx.omitDefaults || node.meta.default === undefined) return inner;
+  if (node.kind === "object") return inner;
+  return internEffectDefault(inner, node.meta, S, ctx, "value") ?? inner;
+};
 
 export const effect3Adapter: RuntimeAdapter = {
   name: "effect3",

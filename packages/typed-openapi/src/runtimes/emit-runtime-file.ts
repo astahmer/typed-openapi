@@ -3,7 +3,7 @@ import type { RefResolver } from "../ref-resolver.ts";
 import type { SchemaNode } from "../schema-ir/types.ts";
 import { wrapWithQuotesIfNeeded } from "../string-utils.ts";
 import { shouldEmitSchema } from "../filter-spec.ts";
-import { findRecursiveSchemaNames } from "./shared.ts";
+import { findRecursiveSchemaNames, renderInternedDefaults } from "./shared.ts";
 import { createEmitCtx, type RuntimeAdapter } from "./types.ts";
 import type { ValidationPolicy } from "./validation.ts";
 
@@ -91,35 +91,43 @@ export const emitRuntimeFile = ({
 
   let file = `${adapter.imports()}\n\n`;
 
-  file += `// <Schemas>\n`;
+  // Emit schemas first so internedDefaults fills while walking component + endpoint trees.
+  let schemasBlock = `// <Schemas>\n`;
   if (adapter.emitNamedSchemas) {
-    file += `${adapter.emitNamedSchemas(namedSchemas, ctx)}\n`;
+    schemasBlock += `${adapter.emitNamedSchemas(namedSchemas, ctx)}\n`;
   } else {
     for (const { name, node } of namedSchemas) {
-      file += `${adapter.emitNamedSchema(name, node, ctx)}\n\n`;
+      schemasBlock += `${adapter.emitNamedSchema(name, node, ctx)}\n\n`;
     }
   }
-  file += `// </Schemas>\n`;
+  schemasBlock += `// </Schemas>\n`;
 
-  if (schemasOnly) return file;
+  let endpointsBlock = "";
+  if (!schemasOnly) {
+    endpointsBlock += `\n// <Endpoints>\n`;
+    for (const endpoint of endpointList) {
+      const parameters = emitParameters(adapter, endpoint.parameters, ctx, coerce);
+      const responses = emitResponses(adapter, endpoint.responses, ctx);
+      const responseHeaders = emitResponseHeaders(adapter, endpoint.responseHeaders, ctx);
 
-  file += `\n// <Endpoints>\n`;
-  for (const endpoint of endpointList) {
-    const parameters = emitParameters(adapter, endpoint.parameters, ctx, coerce);
-    const responses = emitResponses(adapter, endpoint.responses, ctx);
-    const responseHeaders = emitResponseHeaders(adapter, endpoint.responseHeaders, ctx);
-
-    file += `export type ${endpoint.meta.alias} = typeof ${endpoint.meta.alias};\n`;
-    file += `export const ${endpoint.meta.alias} = {\n`;
-    file += `  method: ${adapter.literalString(endpoint.method.toUpperCase())},\n`;
-    file += `  path: ${adapter.literalString(endpoint.path)},\n`;
-    file += `  requestFormat: ${adapter.literalString(endpoint.requestFormat)},\n`;
-    file += `  parameters: ${endpoint.meta.hasParameters ? parameters : adapter.never()},\n`;
-    file += `  responses: ${responses},\n`;
-    if (responseHeaders) file += `  ${responseHeaders}\n`;
-    file += `};\n\n`;
+      endpointsBlock += `export type ${endpoint.meta.alias} = typeof ${endpoint.meta.alias};\n`;
+      endpointsBlock += `export const ${endpoint.meta.alias} = {\n`;
+      endpointsBlock += `  method: ${adapter.literalString(endpoint.method.toUpperCase())},\n`;
+      endpointsBlock += `  path: ${adapter.literalString(endpoint.path)},\n`;
+      endpointsBlock += `  requestFormat: ${adapter.literalString(endpoint.requestFormat)},\n`;
+      endpointsBlock += `  parameters: ${endpoint.meta.hasParameters ? parameters : adapter.never()},\n`;
+      endpointsBlock += `  responses: ${responses},\n`;
+      if (responseHeaders) endpointsBlock += `  ${responseHeaders}\n`;
+      endpointsBlock += `};\n\n`;
+    }
+    endpointsBlock += `// </Endpoints>\n`;
   }
-  file += `// </Endpoints>\n`;
+
+  const helpers = renderInternedDefaults(ctx);
+  if (helpers) {
+    file += `// <DefaultSchemas>\n${helpers}// </DefaultSchemas>\n\n`;
+  }
+  file += schemasBlock + endpointsBlock;
 
   return file;
 };
