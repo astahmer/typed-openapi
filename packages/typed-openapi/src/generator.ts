@@ -158,9 +158,9 @@ export const generateFile = (options: GeneratorOptions) => {
       endpointList: ctx.endpointList,
       validation: ctx.validation,
       schemasOnly: options.schemasOnly ?? false,
-      keptSchemaNames: ctx.keptSchemaNames,
-      namedSchemas: ctx.namedSchemasForEmit,
       coerce: ctx.coerce,
+      ...(ctx.keptSchemaNames ? { keptSchemaNames: ctx.keptSchemaNames } : {}),
+      ...(ctx.namedSchemasForEmit ? { namedSchemas: ctx.namedSchemasForEmit } : {}),
     });
 
     return `
