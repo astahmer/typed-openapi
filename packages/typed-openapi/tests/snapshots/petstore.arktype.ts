@@ -86,7 +86,11 @@ export const get_FindPetsByStatus = {
   method: type("'GET'"),
   path: type("'/pet/findByStatus'"),
   requestFormat: type("'json'"),
-  parameters: { query: type({ status: type.enumerated("available", "pending", "sold") }).partial() },
+  parameters: {
+    query: type({ status: type.enumerated("available", "pending", "sold") })
+      .partial()
+      .optional(),
+  },
   responses: {
     200: Pet.array(),
     304: type("unknown"),
@@ -99,7 +103,11 @@ export const get_FindPetsByTags = {
   method: type("'GET'"),
   path: type("'/pet/findByTags'"),
   requestFormat: type("'json'"),
-  parameters: { query: type({ tags: type("string").array() }).partial() },
+  parameters: {
+    query: type({ tags: type("string").array() })
+      .partial()
+      .optional(),
+  },
   responses: { 200: Pet.array().or(User.array()).or(Tag.array()), 400: type("unknown") },
 };
 
@@ -122,7 +130,9 @@ export const post_UpdatePetWithForm = {
   path: type("'/pet/{petId}'"),
   requestFormat: type("'json'"),
   parameters: {
-    query: type({ name: type("string"), status: type("string") }).partial(),
+    query: type({ name: type("string"), status: type("string") })
+      .partial()
+      .optional(),
     path: type({ petId: type("string.integer.parse") }),
   },
   responses: { 405: type("unknown") },
@@ -135,7 +145,9 @@ export const delete_DeletePet = {
   requestFormat: type("'json'"),
   parameters: {
     path: type({ petId: type("string.integer.parse") }),
-    header: type({ api_key: type("string") }).partial(),
+    header: type({ api_key: type("string") })
+      .partial()
+      .optional(),
   },
   responses: { 400: type("unknown") },
 };
@@ -146,7 +158,9 @@ export const post_UploadFile = {
   path: type("'/pet/{petId}/uploadImage'"),
   requestFormat: type("'binary'"),
   parameters: {
-    query: type({ additionalMetadata: type("string") }).partial(),
+    query: type({ additionalMetadata: type("string") })
+      .partial()
+      .optional(),
     path: type({ petId: type("string.integer.parse") }),
     body: type("string"),
   },
@@ -212,7 +226,11 @@ export const get_LoginUser = {
   method: type("'GET'"),
   path: type("'/user/login'"),
   requestFormat: type("'json'"),
-  parameters: { query: type({ username: type("string"), password: type("string") }).partial() },
+  parameters: {
+    query: type({ username: type("string"), password: type("string") })
+      .partial()
+      .optional(),
+  },
   responses: { 200: type("string"), 400: type("unknown") },
   responseHeaders: {
     200: type({ "X-Rate-Limit": type("number.integer"), "X-Expires-After": type("string.date") }),
@@ -509,7 +527,12 @@ type InferSchemaValue<T> = T extends { infer: infer O }
 type InferSchemaInput<T> = T extends { inferIn: infer I }
   ? I
   : T extends object
-    ? { [K in keyof T]: InferSchemaInput<T[K]> }
+    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
+          InferSchemaInput<T[K]>,
+          undefined
+        >;
+      }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

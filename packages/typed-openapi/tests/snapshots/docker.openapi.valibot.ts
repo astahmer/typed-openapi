@@ -1366,29 +1366,31 @@ export const get_ContainerList = {
   path: v.literal("/containers/json"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        all: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          all: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        limit: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-        size: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          limit: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
           ),
-          false,
-        ),
-        filters: v.string(),
-      }),
+          size: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
+          ),
+          filters: v.string(),
+        }),
+      ),
     ),
   },
   responses: { 200: v.array(ContainerSummary), 400: ErrorResponse, 500: ErrorResponse },
@@ -1400,11 +1402,13 @@ export const post_ContainerCreate = {
   path: v.literal("/containers/create"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        name: v.pipe(v.string(), v.regex(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"))),
-        platform: v.string(),
-      }),
+    query: v.optional(
+      v.partial(
+        v.object({
+          name: v.pipe(v.string(), v.regex(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"))),
+          platform: v.string(),
+        }),
+      ),
     ),
     body: v.intersect([
       ContainerConfig,
@@ -1426,16 +1430,18 @@ export const get_ContainerInspect = {
   path: v.literal("/containers/{id}/json"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        size: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          size: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -1480,7 +1486,7 @@ export const get_ContainerTop = {
   path: v.literal("/containers/{id}/top"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ ps_args: v.optional(v.string(), "-ef") })),
+    query: v.optional(v.partial(v.object({ ps_args: v.optional(v.string(), "-ef") }))),
     path: v.object({ id: v.string() }),
   },
   responses: {
@@ -1496,54 +1502,56 @@ export const get_ContainerLogs = {
   path: v.literal("/containers/{id}/logs"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        follow: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          follow: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stdout: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stdout: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stderr: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stderr: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        since: v.optional(
-          v.pipe(
-            v.union([v.string(), v.number()]),
-            v.transform((x) => Number(x)),
-            v.pipe(v.number(), v.integer()),
+          since: v.optional(
+            v.pipe(
+              v.union([v.string(), v.number()]),
+              v.transform((x) => Number(x)),
+              v.pipe(v.number(), v.integer()),
+            ),
+            0,
           ),
-          0,
-        ),
-        until: v.optional(
-          v.pipe(
-            v.union([v.string(), v.number()]),
-            v.transform((x) => Number(x)),
-            v.pipe(v.number(), v.integer()),
+          until: v.optional(
+            v.pipe(
+              v.union([v.string(), v.number()]),
+              v.transform((x) => Number(x)),
+              v.pipe(v.number(), v.integer()),
+            ),
+            0,
           ),
-          0,
-        ),
-        timestamps: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          timestamps: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        tail: v.optional(v.string(), "all"),
-      }),
+          tail: v.optional(v.string(), "all"),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -1574,23 +1582,25 @@ export const get_ContainerStats = {
   path: v.literal("/containers/{id}/stats"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        stream: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          stream: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            true,
           ),
-          true,
-        ),
-        "one-shot": v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          "one-shot": v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -1603,19 +1613,21 @@ export const post_ContainerResize = {
   path: v.literal("/containers/{id}/resize"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        h: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-        w: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-      }),
+    query: v.optional(
+      v.partial(
+        v.object({
+          h: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          w: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -1627,7 +1639,10 @@ export const post_ContainerStart = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/start"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ detachKeys: v.string() })), path: v.object({ id: v.string() }) },
+  parameters: {
+    query: v.optional(v.partial(v.object({ detachKeys: v.string() }))),
+    path: v.object({ id: v.string() }),
+  },
   responses: { 204: v.unknown(), 304: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -1637,15 +1652,17 @@ export const post_ContainerStop = {
   path: v.literal("/containers/{id}/stop"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        signal: v.string(),
-        t: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-      }),
+    query: v.optional(
+      v.partial(
+        v.object({
+          signal: v.string(),
+          t: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -1658,15 +1675,17 @@ export const post_ContainerRestart = {
   path: v.literal("/containers/{id}/restart"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        signal: v.string(),
-        t: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-      }),
+    query: v.optional(
+      v.partial(
+        v.object({
+          signal: v.string(),
+          t: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -1679,7 +1698,7 @@ export const post_ContainerKill = {
   path: v.literal("/containers/{id}/kill"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ signal: v.optional(v.string(), "SIGKILL") })),
+    query: v.optional(v.partial(v.object({ signal: v.optional(v.string(), "SIGKILL") }))),
     path: v.object({ id: v.string() }),
   },
   responses: { 204: v.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -1730,45 +1749,47 @@ export const post_ContainerAttach = {
   path: v.literal("/containers/{id}/attach"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        detachKeys: v.string(),
-        logs: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          detachKeys: v.string(),
+          logs: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stream: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stream: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stdin: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stdin: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stdout: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stdout: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stderr: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stderr: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -1781,45 +1802,47 @@ export const get_ContainerAttachWebsocket = {
   path: v.literal("/containers/{id}/attach/ws"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        detachKeys: v.string(),
-        logs: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          detachKeys: v.string(),
+          logs: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stream: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stream: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stdin: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stdin: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stdout: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stdout: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stderr: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stderr: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -1832,8 +1855,10 @@ export const post_ContainerWait = {
   path: v.literal("/containers/{id}/wait"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({ condition: v.optional(v.picklist(["not-running", "next-exit", "removed"]), "not-running") }),
+    query: v.optional(
+      v.partial(
+        v.object({ condition: v.optional(v.picklist(["not-running", "next-exit", "removed"]), "not-running") }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -1846,30 +1871,32 @@ export const delete_ContainerDelete = {
   path: v.literal("/containers/{id}"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        v: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          v: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        force: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          force: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        link: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          link: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -1917,7 +1944,7 @@ export const post_ContainerPrune = {
   method: v.literal("POST"),
   path: v.literal("/containers/prune"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: {
     200: v.partial(
       v.object({ ContainersDeleted: v.array(v.string()), SpaceReclaimed: v.pipe(v.number(), v.integer()) }),
@@ -1932,31 +1959,33 @@ export const get_ImageList = {
   path: v.literal("/images/json"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        all: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          all: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        filters: v.string(),
-        "shared-size": v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          filters: v.string(),
+          "shared-size": v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        digests: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          digests: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
   },
   responses: { 200: v.array(ImageSummary), 500: ErrorResponse },
@@ -1968,86 +1997,90 @@ export const post_ImageBuild = {
   path: v.literal("/build"),
   requestFormat: v.literal("binary"),
   parameters: {
-    query: v.partial(
-      v.object({
-        dockerfile: v.optional(v.string(), "Dockerfile"),
-        t: v.string(),
-        extrahosts: v.string(),
-        remote: v.string(),
-        q: v.optional(
-          v.pipe(
+    query: v.optional(
+      v.partial(
+        v.object({
+          dockerfile: v.optional(v.string(), "Dockerfile"),
+          t: v.string(),
+          extrahosts: v.string(),
+          remote: v.string(),
+          q: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
+          ),
+          nocache: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
+          ),
+          cachefrom: v.string(),
+          pull: v.string(),
+          rm: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            true,
+          ),
+          forcerm: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
+          ),
+          memory: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          memswap: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          cpushares: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          cpusetcpus: v.string(),
+          cpuperiod: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          cpuquota: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          buildargs: v.string(),
+          shmsize: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          squash: v.pipe(
             v.union([v.boolean(), v.string(), v.number()]),
             v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
           ),
-          false,
-        ),
-        nocache: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
-          ),
-          false,
-        ),
-        cachefrom: v.string(),
-        pull: v.string(),
-        rm: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
-          ),
-          true,
-        ),
-        forcerm: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
-          ),
-          false,
-        ),
-        memory: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-        memswap: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-        cpushares: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-        cpusetcpus: v.string(),
-        cpuperiod: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-        cpuquota: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-        buildargs: v.string(),
-        shmsize: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-        squash: v.pipe(
-          v.union([v.boolean(), v.string(), v.number()]),
-          v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
-        ),
-        labels: v.string(),
-        networkmode: v.string(),
-        platform: v.string(),
-        target: v.string(),
-        outputs: v.string(),
-      }),
+          labels: v.string(),
+          networkmode: v.string(),
+          platform: v.string(),
+          target: v.string(),
+          outputs: v.string(),
+        }),
+      ),
     ),
-    header: v.partial(v.object({ "Content-type": v.literal("application/x-tar"), "X-Registry-Config": v.string() })),
+    header: v.optional(
+      v.partial(v.object({ "Content-type": v.literal("application/x-tar"), "X-Registry-Config": v.string() })),
+    ),
     body: v.string(),
   },
   responses: { 200: v.unknown(), 400: ErrorResponse, 500: ErrorResponse },
@@ -2059,19 +2092,21 @@ export const post_BuildPrune = {
   path: v.literal("/build/prune"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        "keep-storage": v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-        all: v.pipe(
-          v.union([v.boolean(), v.string(), v.number()]),
-          v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
-        ),
-        filters: v.string(),
-      }),
+    query: v.optional(
+      v.partial(
+        v.object({
+          "keep-storage": v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          all: v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+          filters: v.string(),
+        }),
+      ),
     ),
   },
   responses: {
@@ -2086,18 +2121,20 @@ export const post_ImageCreate = {
   path: v.literal("/images/create"),
   requestFormat: v.literal("text"),
   parameters: {
-    query: v.partial(
-      v.object({
-        fromImage: v.string(),
-        fromSrc: v.string(),
-        repo: v.string(),
-        tag: v.string(),
-        message: v.string(),
-        changes: v.array(v.string()),
-        platform: v.string(),
-      }),
+    query: v.optional(
+      v.partial(
+        v.object({
+          fromImage: v.string(),
+          fromSrc: v.string(),
+          repo: v.string(),
+          tag: v.string(),
+          message: v.string(),
+          changes: v.array(v.string()),
+          platform: v.string(),
+        }),
+      ),
     ),
-    header: v.partial(v.object({ "X-Registry-Auth": v.string() })),
+    header: v.optional(v.partial(v.object({ "X-Registry-Auth": v.string() }))),
     body: v.string(),
   },
   responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
@@ -2140,7 +2177,7 @@ export const post_ImagePush = {
   path: v.literal("/images/{name}/push"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ tag: v.string() })),
+    query: v.optional(v.partial(v.object({ tag: v.string() }))),
     path: v.object({ name: v.string() }),
     header: v.object({ "X-Registry-Auth": v.string() }),
   },
@@ -2153,7 +2190,7 @@ export const post_ImageTag = {
   path: v.literal("/images/{name}/tag"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ repo: v.string(), tag: v.string() })),
+    query: v.optional(v.partial(v.object({ repo: v.string(), tag: v.string() }))),
     path: v.object({ name: v.string() }),
   },
   responses: { 201: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -2165,23 +2202,25 @@ export const delete_ImageDelete = {
   path: v.literal("/images/{name}"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        force: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          force: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        noprune: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          noprune: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
     path: v.object({ name: v.string() }),
   },
@@ -2227,7 +2266,7 @@ export const post_ImagePrune = {
   method: v.literal("POST"),
   path: v.literal("/images/prune"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: {
     200: v.partial(
       v.object({ ImagesDeleted: v.array(ImageDeleteResponseItem), SpaceReclaimed: v.pipe(v.number(), v.integer()) }),
@@ -2322,22 +2361,24 @@ export const post_ImageCommit = {
   path: v.literal("/commit"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        container: v.string(),
-        repo: v.string(),
-        tag: v.string(),
-        comment: v.string(),
-        author: v.string(),
-        pause: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          container: v.string(),
+          repo: v.string(),
+          tag: v.string(),
+          comment: v.string(),
+          author: v.string(),
+          pause: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            true,
           ),
-          true,
-        ),
-        changes: v.string(),
-      }),
+          changes: v.string(),
+        }),
+      ),
     ),
     body: ContainerConfig,
   },
@@ -2349,7 +2390,7 @@ export const get_SystemEvents = {
   method: v.literal("GET"),
   path: v.literal("/events"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ since: v.string(), until: v.string(), filters: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ since: v.string(), until: v.string(), filters: v.string() }))) },
   responses: { 200: EventMessage, 400: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -2359,7 +2400,9 @@ export const get_SystemDataUsage = {
   path: v.literal("/system/df"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ type: v.array(v.picklist(["container", "image", "volume", "build-cache"])) })),
+    query: v.optional(
+      v.partial(v.object({ type: v.array(v.picklist(["container", "image", "volume", "build-cache"])) })),
+    ),
   },
   responses: {
     200: v.partial(
@@ -2389,7 +2432,7 @@ export const get_ImageGetAll = {
   method: v.literal("GET"),
   path: v.literal("/images/get"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ names: v.array(v.string()) })) },
+  parameters: { query: v.optional(v.partial(v.object({ names: v.array(v.string()) }))) },
   responses: { 200: v.unknown(), 500: v.unknown() },
 };
 
@@ -2399,16 +2442,18 @@ export const post_ImageLoad = {
   path: v.literal("/images/load"),
   requestFormat: v.literal("text"),
   parameters: {
-    query: v.partial(
-      v.object({
-        quiet: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          quiet: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
   },
   responses: { 200: v.unknown(), 500: ErrorResponse },
@@ -2421,22 +2466,24 @@ export const post_ContainerExec = {
   requestFormat: v.literal("json"),
   parameters: {
     path: v.object({ id: v.string() }),
-    body: v.partial(
-      v.object({
-        AttachStdin: v.boolean(),
-        AttachStdout: v.boolean(),
-        AttachStderr: v.boolean(),
-        ConsoleSize: v.nullable(
-          v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2)),
-        ),
-        DetachKeys: v.string(),
-        Tty: v.boolean(),
-        Env: v.array(v.string()),
-        Cmd: v.array(v.string()),
-        Privileged: v.optional(v.boolean(), false),
-        User: v.string(),
-        WorkingDir: v.string(),
-      }),
+    body: v.optional(
+      v.partial(
+        v.object({
+          AttachStdin: v.boolean(),
+          AttachStdout: v.boolean(),
+          AttachStderr: v.boolean(),
+          ConsoleSize: v.nullable(
+            v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2)),
+          ),
+          DetachKeys: v.string(),
+          Tty: v.boolean(),
+          Env: v.array(v.string()),
+          Cmd: v.array(v.string()),
+          Privileged: v.optional(v.boolean(), false),
+          User: v.string(),
+          WorkingDir: v.string(),
+        }),
+      ),
     ),
   },
   responses: { 201: IdResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -2449,14 +2496,16 @@ export const post_ExecStart = {
   requestFormat: v.literal("json"),
   parameters: {
     path: v.object({ id: v.string() }),
-    body: v.partial(
-      v.object({
-        Detach: v.boolean(),
-        Tty: v.boolean(),
-        ConsoleSize: v.nullable(
-          v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2)),
-        ),
-      }),
+    body: v.optional(
+      v.partial(
+        v.object({
+          Detach: v.boolean(),
+          Tty: v.boolean(),
+          ConsoleSize: v.nullable(
+            v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2)),
+          ),
+        }),
+      ),
     ),
   },
   responses: { 200: v.unknown(), 404: v.unknown(), 409: v.unknown() },
@@ -2468,19 +2517,21 @@ export const post_ExecResize = {
   path: v.literal("/exec/{id}/resize"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        h: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-        w: v.pipe(
-          v.union([v.string(), v.number()]),
-          v.transform((x) => Number(x)),
-          v.pipe(v.number(), v.integer()),
-        ),
-      }),
+    query: v.optional(
+      v.partial(
+        v.object({
+          h: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+          w: v.pipe(
+            v.union([v.string(), v.number()]),
+            v.transform((x) => Number(x)),
+            v.pipe(v.number(), v.integer()),
+          ),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -2519,7 +2570,7 @@ export const get_VolumeList = {
   method: v.literal("GET"),
   path: v.literal("/volumes"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: VolumeListResponse, 500: ErrorResponse },
 };
 
@@ -2555,7 +2606,7 @@ export const put_VolumeUpdate = {
       ),
     }),
     path: v.object({ name: v.string() }),
-    body: v.partial(v.object({ Spec: ClusterVolumeSpec })),
+    body: v.optional(v.partial(v.object({ Spec: ClusterVolumeSpec }))),
   },
   responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2566,16 +2617,18 @@ export const delete_VolumeDelete = {
   path: v.literal("/volumes/{name}"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        force: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          force: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
     path: v.object({ name: v.string() }),
   },
@@ -2587,7 +2640,7 @@ export const post_VolumePrune = {
   method: v.literal("POST"),
   path: v.literal("/volumes/prune"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: {
     200: v.partial(v.object({ VolumesDeleted: v.array(v.string()), SpaceReclaimed: v.pipe(v.number(), v.integer()) })),
     500: ErrorResponse,
@@ -2599,7 +2652,7 @@ export const get_NetworkList = {
   method: v.literal("GET"),
   path: v.literal("/networks"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.array(Network), 500: ErrorResponse },
 };
 
@@ -2609,17 +2662,19 @@ export const get_NetworkInspect = {
   path: v.literal("/networks/{id}"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        verbose: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          verbose: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        scope: v.string(),
-      }),
+          scope: v.string(),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -2669,7 +2724,7 @@ export const post_NetworkConnect = {
   requestFormat: v.literal("json"),
   parameters: {
     path: v.object({ id: v.string() }),
-    body: v.partial(v.object({ Container: v.string(), EndpointConfig: EndpointSettings })),
+    body: v.optional(v.partial(v.object({ Container: v.string(), EndpointConfig: EndpointSettings }))),
   },
   responses: { 200: v.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2681,7 +2736,7 @@ export const post_NetworkDisconnect = {
   requestFormat: v.literal("json"),
   parameters: {
     path: v.object({ id: v.string() }),
-    body: v.partial(v.object({ Container: v.string(), Force: v.boolean() })),
+    body: v.optional(v.partial(v.object({ Container: v.string(), Force: v.boolean() }))),
   },
   responses: { 200: v.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2691,7 +2746,7 @@ export const post_NetworkPrune = {
   method: v.literal("POST"),
   path: v.literal("/networks/prune"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.partial(v.object({ NetworksDeleted: v.array(v.string()) })), 500: ErrorResponse },
 };
 
@@ -2700,7 +2755,7 @@ export const get_PluginList = {
   method: v.literal("GET"),
   path: v.literal("/plugins"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.array(Plugin), 500: ErrorResponse },
 };
 
@@ -2720,7 +2775,7 @@ export const post_PluginPull = {
   requestFormat: v.literal("json"),
   parameters: {
     query: v.object({ remote: v.string(), name: v.optional(v.string()) }),
-    header: v.partial(v.object({ "X-Registry-Auth": v.string() })),
+    header: v.optional(v.partial(v.object({ "X-Registry-Auth": v.string() }))),
     body: v.array(PluginPrivilege),
   },
   responses: { 204: v.unknown(), 500: ErrorResponse },
@@ -2741,16 +2796,18 @@ export const delete_PluginDelete = {
   path: v.literal("/plugins/{name}"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        force: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          force: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
     path: v.object({ name: v.string() }),
   },
@@ -2763,17 +2820,19 @@ export const post_PluginEnable = {
   path: v.literal("/plugins/{name}/enable"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        timeout: v.optional(
-          v.pipe(
-            v.union([v.string(), v.number()]),
-            v.transform((x) => Number(x)),
-            v.pipe(v.number(), v.integer()),
+    query: v.optional(
+      v.partial(
+        v.object({
+          timeout: v.optional(
+            v.pipe(
+              v.union([v.string(), v.number()]),
+              v.transform((x) => Number(x)),
+              v.pipe(v.number(), v.integer()),
+            ),
+            0,
           ),
-          0,
-        ),
-      }),
+        }),
+      ),
     ),
     path: v.object({ name: v.string() }),
   },
@@ -2786,13 +2845,15 @@ export const post_PluginDisable = {
   path: v.literal("/plugins/{name}/disable"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        force: v.pipe(
-          v.union([v.boolean(), v.string(), v.number()]),
-          v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
-        ),
-      }),
+    query: v.optional(
+      v.partial(
+        v.object({
+          force: v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+        }),
+      ),
     ),
     path: v.object({ name: v.string() }),
   },
@@ -2807,7 +2868,7 @@ export const post_PluginUpgrade = {
   parameters: {
     query: v.object({ remote: v.string() }),
     path: v.object({ name: v.string() }),
-    header: v.partial(v.object({ "X-Registry-Auth": v.string() })),
+    header: v.optional(v.partial(v.object({ "X-Registry-Auth": v.string() }))),
     body: v.array(PluginPrivilege),
   },
   responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
@@ -2845,7 +2906,7 @@ export const get_NodeList = {
   method: v.literal("GET"),
   path: v.literal("/nodes"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.array(Node), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2864,16 +2925,18 @@ export const delete_NodeDelete = {
   path: v.literal("/nodes/{id}"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        force: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          force: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -2914,17 +2977,19 @@ export const post_SwarmInit = {
   path: v.literal("/swarm/init"),
   requestFormat: v.literal("json"),
   parameters: {
-    body: v.partial(
-      v.object({
-        ListenAddr: v.string(),
-        AdvertiseAddr: v.string(),
-        DataPathAddr: v.string(),
-        DataPathPort: v.pipe(v.number(), v.integer()),
-        DefaultAddrPool: v.array(v.string()),
-        ForceNewCluster: v.boolean(),
-        SubnetSize: v.pipe(v.number(), v.integer()),
-        Spec: SwarmSpec,
-      }),
+    body: v.optional(
+      v.partial(
+        v.object({
+          ListenAddr: v.string(),
+          AdvertiseAddr: v.string(),
+          DataPathAddr: v.string(),
+          DataPathPort: v.pipe(v.number(), v.integer()),
+          DefaultAddrPool: v.array(v.string()),
+          ForceNewCluster: v.boolean(),
+          SubnetSize: v.pipe(v.number(), v.integer()),
+          Spec: SwarmSpec,
+        }),
+      ),
     ),
   },
   responses: { 200: v.string(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
@@ -2936,14 +3001,16 @@ export const post_SwarmJoin = {
   path: v.literal("/swarm/join"),
   requestFormat: v.literal("json"),
   parameters: {
-    body: v.partial(
-      v.object({
-        ListenAddr: v.string(),
-        AdvertiseAddr: v.string(),
-        DataPathAddr: v.string(),
-        RemoteAddrs: v.array(v.string()),
-        JoinToken: v.string(),
-      }),
+    body: v.optional(
+      v.partial(
+        v.object({
+          ListenAddr: v.string(),
+          AdvertiseAddr: v.string(),
+          DataPathAddr: v.string(),
+          RemoteAddrs: v.array(v.string()),
+          JoinToken: v.string(),
+        }),
+      ),
     ),
   },
   responses: { 200: v.unknown(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
@@ -2955,16 +3022,18 @@ export const post_SwarmLeave = {
   path: v.literal("/swarm/leave"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        force: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          force: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
   },
   responses: { 200: v.unknown(), 500: ErrorResponse, 503: ErrorResponse },
@@ -3023,7 +3092,7 @@ export const post_SwarmUnlock = {
   method: v.literal("POST"),
   path: v.literal("/swarm/unlock"),
   requestFormat: v.literal("json"),
-  parameters: { body: v.partial(v.object({ UnlockKey: v.string() })) },
+  parameters: { body: v.optional(v.partial(v.object({ UnlockKey: v.string() }))) },
   responses: { 200: v.unknown(), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -3033,14 +3102,16 @@ export const get_ServiceList = {
   path: v.literal("/services"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        filters: v.string(),
-        status: v.pipe(
-          v.union([v.boolean(), v.string(), v.number()]),
-          v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
-        ),
-      }),
+    query: v.optional(
+      v.partial(
+        v.object({
+          filters: v.string(),
+          status: v.pipe(
+            v.union([v.boolean(), v.string(), v.number()]),
+            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          ),
+        }),
+      ),
     ),
   },
   responses: { 200: v.array(Service), 500: ErrorResponse, 503: ErrorResponse },
@@ -3052,7 +3123,7 @@ export const post_ServiceCreate = {
   path: v.literal("/services/create"),
   requestFormat: v.literal("json"),
   parameters: {
-    header: v.partial(v.object({ "X-Registry-Auth": v.string() })),
+    header: v.optional(v.partial(v.object({ "X-Registry-Auth": v.string() }))),
     body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]),
   },
   responses: {
@@ -3071,16 +3142,18 @@ export const get_ServiceInspect = {
   path: v.literal("/services/{id}"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        insertDefaults: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          insertDefaults: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-      }),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -3112,7 +3185,7 @@ export const post_ServiceUpdate = {
       rollback: v.optional(v.string()),
     }),
     path: v.object({ id: v.string() }),
-    header: v.partial(v.object({ "X-Registry-Auth": v.string() })),
+    header: v.optional(v.partial(v.object({ "X-Registry-Auth": v.string() }))),
     body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]),
   },
   responses: {
@@ -3130,53 +3203,55 @@ export const get_ServiceLogs = {
   path: v.literal("/services/{id}/logs"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        details: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          details: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        follow: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          follow: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stdout: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stdout: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stderr: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stderr: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        since: v.optional(
-          v.pipe(
-            v.union([v.string(), v.number()]),
-            v.transform((x) => Number(x)),
-            v.pipe(v.number(), v.integer()),
+          since: v.optional(
+            v.pipe(
+              v.union([v.string(), v.number()]),
+              v.transform((x) => Number(x)),
+              v.pipe(v.number(), v.integer()),
+            ),
+            0,
           ),
-          0,
-        ),
-        timestamps: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          timestamps: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        tail: v.optional(v.string(), "all"),
-      }),
+          tail: v.optional(v.string(), "all"),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -3188,7 +3263,7 @@ export const get_TaskList = {
   method: v.literal("GET"),
   path: v.literal("/tasks"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.array(Task), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -3207,53 +3282,55 @@ export const get_TaskLogs = {
   path: v.literal("/tasks/{id}/logs"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(
-      v.object({
-        details: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+    query: v.optional(
+      v.partial(
+        v.object({
+          details: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        follow: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          follow: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stdout: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stdout: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        stderr: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          stderr: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        since: v.optional(
-          v.pipe(
-            v.union([v.string(), v.number()]),
-            v.transform((x) => Number(x)),
-            v.pipe(v.number(), v.integer()),
+          since: v.optional(
+            v.pipe(
+              v.union([v.string(), v.number()]),
+              v.transform((x) => Number(x)),
+              v.pipe(v.number(), v.integer()),
+            ),
+            0,
           ),
-          0,
-        ),
-        timestamps: v.optional(
-          v.pipe(
-            v.union([v.boolean(), v.string(), v.number()]),
-            v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+          timestamps: v.optional(
+            v.pipe(
+              v.union([v.boolean(), v.string(), v.number()]),
+              v.transform((x) => x === true || x === "true" || x === 1 || x === "1"),
+            ),
+            false,
           ),
-          false,
-        ),
-        tail: v.optional(v.string(), "all"),
-      }),
+          tail: v.optional(v.string(), "all"),
+        }),
+      ),
     ),
     path: v.object({ id: v.string() }),
   },
@@ -3265,7 +3342,7 @@ export const get_SecretList = {
   method: v.literal("GET"),
   path: v.literal("/secrets"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.array(Secret), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -3320,7 +3397,7 @@ export const get_ConfigList = {
   method: v.literal("GET"),
   path: v.literal("/configs"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
   responses: { 200: v.array(Config), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -3703,7 +3780,12 @@ type InferSchemaValue<T> = T extends v.GenericSchema
 type InferSchemaInput<T> = T extends v.GenericSchema
   ? v.InferInput<T>
   : T extends object
-    ? { [K in keyof T]: InferSchemaInput<T[K]> }
+    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
+          InferSchemaInput<T[K]>,
+          undefined
+        >;
+      }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

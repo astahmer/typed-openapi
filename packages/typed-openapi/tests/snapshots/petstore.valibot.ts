@@ -85,7 +85,9 @@ export const get_FindPetsByStatus = {
   path: v.literal("/pet/findByStatus"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ status: v.optional(v.picklist(["available", "pending", "sold"]), "available") })),
+    query: v.optional(
+      v.partial(v.object({ status: v.optional(v.picklist(["available", "pending", "sold"]), "available") })),
+    ),
   },
   responses: {
     200: v.array(Pet),
@@ -99,7 +101,7 @@ export const get_FindPetsByTags = {
   method: v.literal("GET"),
   path: v.literal("/pet/findByTags"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ tags: v.array(v.string()) })) },
+  parameters: { query: v.optional(v.partial(v.object({ tags: v.array(v.string()) }))) },
   responses: { 200: v.union([v.array(Pet), v.array(User), v.array(Tag)]), 400: v.unknown() },
 };
 
@@ -130,7 +132,7 @@ export const post_UpdatePetWithForm = {
   path: v.literal("/pet/{petId}"),
   requestFormat: v.literal("json"),
   parameters: {
-    query: v.partial(v.object({ name: v.string(), status: v.string() })),
+    query: v.optional(v.partial(v.object({ name: v.string(), status: v.string() }))),
     path: v.object({
       petId: v.pipe(
         v.union([v.string(), v.number()]),
@@ -155,7 +157,7 @@ export const delete_DeletePet = {
         v.pipe(v.number(), v.integer()),
       ),
     }),
-    header: v.partial(v.object({ api_key: v.string() })),
+    header: v.optional(v.partial(v.object({ api_key: v.string() }))),
   },
   responses: { 400: v.unknown() },
 };
@@ -166,7 +168,7 @@ export const post_UploadFile = {
   path: v.literal("/pet/{petId}/uploadImage"),
   requestFormat: v.literal("binary"),
   parameters: {
-    query: v.partial(v.object({ additionalMetadata: v.string() })),
+    query: v.optional(v.partial(v.object({ additionalMetadata: v.string() }))),
     path: v.object({
       petId: v.pipe(
         v.union([v.string(), v.number()]),
@@ -254,7 +256,7 @@ export const get_LoginUser = {
   method: v.literal("GET"),
   path: v.literal("/user/login"),
   requestFormat: v.literal("json"),
-  parameters: { query: v.partial(v.object({ username: v.string(), password: v.string() })) },
+  parameters: { query: v.optional(v.partial(v.object({ username: v.string(), password: v.string() }))) },
   responses: { 200: v.string(), 400: v.unknown() },
   responseHeaders: {
     200: v.object({ "X-Rate-Limit": v.pipe(v.number(), v.integer()), "X-Expires-After": v.string() }),
@@ -551,7 +553,12 @@ type InferSchemaValue<T> = T extends v.GenericSchema
 type InferSchemaInput<T> = T extends v.GenericSchema
   ? v.InferInput<T>
   : T extends object
-    ? { [K in keyof T]: InferSchemaInput<T[K]> }
+    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
+          InferSchemaInput<T[K]>,
+          undefined
+        >;
+      }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

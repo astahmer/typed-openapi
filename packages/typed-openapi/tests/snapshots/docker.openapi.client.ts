@@ -861,7 +861,7 @@ export namespace Endpoints {
     path: "/containers/json";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ all: boolean; limit: number; size: boolean; filters: string }>;
+      query?: Partial<{ all: boolean; limit: number; size: boolean; filters: string }>;
     };
     responses: { 200: Array<Schemas.ContainerSummary>; 400: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
@@ -870,7 +870,7 @@ export namespace Endpoints {
     path: "/containers/create";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ name: string; platform: string }>;
+      query?: Partial<{ name: string; platform: string }>;
 
       body: Schemas.ContainerConfig &
         Partial<{ HostConfig: Schemas.HostConfig; NetworkingConfig: Schemas.NetworkingConfig }>;
@@ -888,7 +888,7 @@ export namespace Endpoints {
     path: "/containers/{id}/json";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ size: boolean }>;
+      query?: Partial<{ size: boolean }>;
       path: { id: string };
     };
     responses: {
@@ -928,7 +928,7 @@ export namespace Endpoints {
     path: "/containers/{id}/top";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ ps_args: string }>;
+      query?: Partial<{ ps_args: string }>;
       path: { id: string };
     };
     responses: {
@@ -942,7 +942,7 @@ export namespace Endpoints {
     path: "/containers/{id}/logs";
     requestFormat: "json";
     parameters: {
-      query: Partial<{
+      query?: Partial<{
         follow: boolean;
         stdout: boolean;
         stderr: boolean;
@@ -978,7 +978,7 @@ export namespace Endpoints {
     path: "/containers/{id}/stats";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ stream: boolean; "one-shot": boolean }>;
+      query?: Partial<{ stream: boolean; "one-shot": boolean }>;
       path: { id: string };
     };
     responses: { 200: Record<string, unknown>; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
@@ -988,7 +988,7 @@ export namespace Endpoints {
     path: "/containers/{id}/resize";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ h: number; w: number }>;
+      query?: Partial<{ h: number; w: number }>;
       path: { id: string };
     };
     responses: { 200: unknown; 404: unknown; 500: unknown };
@@ -998,7 +998,7 @@ export namespace Endpoints {
     path: "/containers/{id}/start";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ detachKeys: string }>;
+      query?: Partial<{ detachKeys: string }>;
       path: { id: string };
     };
     responses: { 204: unknown; 304: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
@@ -1008,7 +1008,7 @@ export namespace Endpoints {
     path: "/containers/{id}/stop";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ signal: string; t: number }>;
+      query?: Partial<{ signal: string; t: number }>;
       path: { id: string };
     };
     responses: { 204: unknown; 304: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
@@ -1018,7 +1018,7 @@ export namespace Endpoints {
     path: "/containers/{id}/restart";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ signal: string; t: number }>;
+      query?: Partial<{ signal: string; t: number }>;
       path: { id: string };
     };
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
@@ -1028,7 +1028,7 @@ export namespace Endpoints {
     path: "/containers/{id}/kill";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ signal: string }>;
+      query?: Partial<{ signal: string }>;
       path: { id: string };
     };
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 409: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
@@ -1077,7 +1077,7 @@ export namespace Endpoints {
     path: "/containers/{id}/attach";
     requestFormat: "json";
     parameters: {
-      query: Partial<{
+      query?: Partial<{
         detachKeys: string;
         logs: boolean;
         stream: boolean;
@@ -1094,7 +1094,7 @@ export namespace Endpoints {
     path: "/containers/{id}/attach/ws";
     requestFormat: "json";
     parameters: {
-      query: Partial<{
+      query?: Partial<{
         detachKeys: string;
         logs: boolean;
         stream: boolean;
@@ -1117,7 +1117,7 @@ export namespace Endpoints {
     path: "/containers/{id}/wait";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ condition: "not-running" | "next-exit" | "removed" }>;
+      query?: Partial<{ condition: "not-running" | "next-exit" | "removed" }>;
       path: { id: string };
     };
     responses: {
@@ -1132,7 +1132,7 @@ export namespace Endpoints {
     path: "/containers/{id}";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ v: boolean; force: boolean; link: boolean }>;
+      query?: Partial<{ v: boolean; force: boolean; link: boolean }>;
       path: { id: string };
     };
     responses: {
@@ -1187,7 +1187,7 @@ export namespace Endpoints {
     path: "/containers/prune";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ filters: string }>;
+      query?: Partial<{ filters: string }>;
     };
     responses: {
       200: Partial<{ ContainersDeleted: Array<string>; SpaceReclaimed: number }>;
@@ -1199,7 +1199,7 @@ export namespace Endpoints {
     path: "/images/json";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ all: boolean; filters: string; "shared-size": boolean; digests: boolean }>;
+      query?: Partial<{ all: boolean; filters: string; "shared-size": boolean; digests: boolean }>;
     };
     responses: { 200: Array<Schemas.ImageSummary>; 500: Schemas.ErrorResponse };
   };
@@ -1208,7 +1208,7 @@ export namespace Endpoints {
     path: "/build";
     requestFormat: "binary";
     parameters: {
-      query: Partial<{
+      query?: Partial<{
         dockerfile: string;
         t: string;
         extrahosts: string;
@@ -1235,7 +1235,7 @@ export namespace Endpoints {
         outputs: string;
       }>;
 
-      header: Partial<{ "Content-type": "application/x-tar"; "X-Registry-Config": string }>;
+      header?: Partial<{ "Content-type": "application/x-tar"; "X-Registry-Config": string }>;
 
       body: string;
     };
@@ -1246,7 +1246,7 @@ export namespace Endpoints {
     path: "/build/prune";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ "keep-storage": number; all: boolean; filters: string }>;
+      query?: Partial<{ "keep-storage": number; all: boolean; filters: string }>;
     };
     responses: { 200: Partial<{ CachesDeleted: Array<string>; SpaceReclaimed: number }>; 500: Schemas.ErrorResponse };
   };
@@ -1255,7 +1255,7 @@ export namespace Endpoints {
     path: "/images/create";
     requestFormat: "text";
     parameters: {
-      query: Partial<{
+      query?: Partial<{
         fromImage: string;
         fromSrc: string;
         repo: string;
@@ -1265,7 +1265,7 @@ export namespace Endpoints {
         platform: string;
       }>;
 
-      header: Partial<{ "X-Registry-Auth": string }>;
+      header?: Partial<{ "X-Registry-Auth": string }>;
 
       body: string;
     };
@@ -1305,7 +1305,7 @@ export namespace Endpoints {
     path: "/images/{name}/push";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ tag: string }>;
+      query?: Partial<{ tag: string }>;
       path: { name: string };
       header: { "X-Registry-Auth": string };
     };
@@ -1316,7 +1316,7 @@ export namespace Endpoints {
     path: "/images/{name}/tag";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ repo: string; tag: string }>;
+      query?: Partial<{ repo: string; tag: string }>;
       path: { name: string };
     };
     responses: {
@@ -1332,7 +1332,7 @@ export namespace Endpoints {
     path: "/images/{name}";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ force: boolean; noprune: boolean }>;
+      query?: Partial<{ force: boolean; noprune: boolean }>;
       path: { name: string };
     };
     responses: {
@@ -1361,7 +1361,7 @@ export namespace Endpoints {
     path: "/images/prune";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ filters: string }>;
+      query?: Partial<{ filters: string }>;
     };
     responses: {
       200: Partial<{ ImagesDeleted: Array<Schemas.ImageDeleteResponseItem>; SpaceReclaimed: number }>;
@@ -1436,7 +1436,7 @@ export namespace Endpoints {
     path: "/commit";
     requestFormat: "json";
     parameters: {
-      query: Partial<{
+      query?: Partial<{
         container: string;
         repo: string;
         tag: string;
@@ -1455,7 +1455,7 @@ export namespace Endpoints {
     path: "/events";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ since: string; until: string; filters: string }>;
+      query?: Partial<{ since: string; until: string; filters: string }>;
     };
     responses: { 200: Schemas.EventMessage; 400: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
@@ -1464,7 +1464,7 @@ export namespace Endpoints {
     path: "/system/df";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ type: Array<"container" | "image" | "volume" | "build-cache"> }>;
+      query?: Partial<{ type: Array<"container" | "image" | "volume" | "build-cache"> }>;
     };
     responses: {
       200: Partial<{
@@ -1491,7 +1491,7 @@ export namespace Endpoints {
     path: "/images/get";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ names: Array<string> }>;
+      query?: Partial<{ names: Array<string> }>;
     };
     responses: { 200: unknown; 500: unknown };
   };
@@ -1500,7 +1500,7 @@ export namespace Endpoints {
     path: "/images/load";
     requestFormat: "text";
     parameters: {
-      query: Partial<{ quiet: boolean }>;
+      query?: Partial<{ quiet: boolean }>;
     };
     responses: { 200: unknown; 500: Schemas.ErrorResponse };
   };
@@ -1511,7 +1511,7 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
 
-      body: Partial<{
+      body?: Partial<{
         AttachStdin: boolean;
         AttachStdout: boolean;
         AttachStderr: boolean;
@@ -1539,7 +1539,7 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
 
-      body: Partial<{ Detach: boolean; Tty: boolean; ConsoleSize: Array<number> | null }>;
+      body?: Partial<{ Detach: boolean; Tty: boolean; ConsoleSize: Array<number> | null }>;
     };
     responses: { 200: unknown; 404: unknown; 409: unknown };
   };
@@ -1548,7 +1548,7 @@ export namespace Endpoints {
     path: "/exec/{id}/resize";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ h: number; w: number }>;
+      query?: Partial<{ h: number; w: number }>;
       path: { id: string };
     };
     responses: { 200: unknown; 400: Schemas.ErrorResponse; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
@@ -1583,7 +1583,7 @@ export namespace Endpoints {
     path: "/volumes";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ filters: string }>;
+      query?: Partial<{ filters: string }>;
     };
     responses: { 200: Schemas.VolumeListResponse; 500: Schemas.ErrorResponse };
   };
@@ -1613,7 +1613,7 @@ export namespace Endpoints {
       query: { version: number };
       path: { name: string };
 
-      body: Partial<{ Spec: Schemas.ClusterVolumeSpec }>;
+      body?: Partial<{ Spec: Schemas.ClusterVolumeSpec }>;
     };
     responses: {
       200: unknown;
@@ -1628,7 +1628,7 @@ export namespace Endpoints {
     path: "/volumes/{name}";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ force: boolean }>;
+      query?: Partial<{ force: boolean }>;
       path: { name: string };
     };
     responses: { 204: unknown; 404: Schemas.ErrorResponse; 409: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
@@ -1638,7 +1638,7 @@ export namespace Endpoints {
     path: "/volumes/prune";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ filters: string }>;
+      query?: Partial<{ filters: string }>;
     };
     responses: { 200: Partial<{ VolumesDeleted: Array<string>; SpaceReclaimed: number }>; 500: Schemas.ErrorResponse };
   };
@@ -1647,7 +1647,7 @@ export namespace Endpoints {
     path: "/networks";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ filters: string }>;
+      query?: Partial<{ filters: string }>;
     };
     responses: { 200: Array<Schemas.Network>; 500: Schemas.ErrorResponse };
   };
@@ -1656,7 +1656,7 @@ export namespace Endpoints {
     path: "/networks/{id}";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ verbose: boolean; scope: string }>;
+      query?: Partial<{ verbose: boolean; scope: string }>;
       path: { id: string };
     };
     responses: { 200: Schemas.Network; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
@@ -1702,7 +1702,7 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
 
-      body: Partial<{ Container: string; EndpointConfig: Schemas.EndpointSettings }>;
+      body?: Partial<{ Container: string; EndpointConfig: Schemas.EndpointSettings }>;
     };
     responses: { 200: unknown; 403: Schemas.ErrorResponse; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
@@ -1713,7 +1713,7 @@ export namespace Endpoints {
     parameters: {
       path: { id: string };
 
-      body: Partial<{ Container: string; Force: boolean }>;
+      body?: Partial<{ Container: string; Force: boolean }>;
     };
     responses: { 200: unknown; 403: Schemas.ErrorResponse; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
   };
@@ -1722,7 +1722,7 @@ export namespace Endpoints {
     path: "/networks/prune";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ filters: string }>;
+      query?: Partial<{ filters: string }>;
     };
     responses: { 200: Partial<{ NetworksDeleted: Array<string> }>; 500: Schemas.ErrorResponse };
   };
@@ -1731,7 +1731,7 @@ export namespace Endpoints {
     path: "/plugins";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ filters: string }>;
+      query?: Partial<{ filters: string }>;
     };
     responses: { 200: Array<Schemas.Plugin>; 500: Schemas.ErrorResponse };
   };
@@ -1751,7 +1751,7 @@ export namespace Endpoints {
     parameters: {
       query: { remote: string; name?: string };
 
-      header: Partial<{ "X-Registry-Auth": string }>;
+      header?: Partial<{ "X-Registry-Auth": string }>;
 
       body: Array<Schemas.PluginPrivilege>;
     };
@@ -1771,7 +1771,7 @@ export namespace Endpoints {
     path: "/plugins/{name}";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ force: boolean }>;
+      query?: Partial<{ force: boolean }>;
       path: { name: string };
     };
     responses: { 200: Schemas.Plugin; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
@@ -1781,7 +1781,7 @@ export namespace Endpoints {
     path: "/plugins/{name}/enable";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ timeout: number }>;
+      query?: Partial<{ timeout: number }>;
       path: { name: string };
     };
     responses: { 200: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
@@ -1791,7 +1791,7 @@ export namespace Endpoints {
     path: "/plugins/{name}/disable";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ force: boolean }>;
+      query?: Partial<{ force: boolean }>;
       path: { name: string };
     };
     responses: { 200: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse };
@@ -1803,7 +1803,7 @@ export namespace Endpoints {
     parameters: {
       query: { remote: string };
       path: { name: string };
-      header: Partial<{ "X-Registry-Auth": string }>;
+      header?: Partial<{ "X-Registry-Auth": string }>;
 
       body: Array<Schemas.PluginPrivilege>;
     };
@@ -1843,7 +1843,7 @@ export namespace Endpoints {
     path: "/nodes";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ filters: string }>;
+      query?: Partial<{ filters: string }>;
     };
     responses: { 200: Array<Schemas.Node>; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
@@ -1866,7 +1866,7 @@ export namespace Endpoints {
     path: "/nodes/{id}";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ force: boolean }>;
+      query?: Partial<{ force: boolean }>;
       path: { id: string };
     };
     responses: { 200: unknown; 404: Schemas.ErrorResponse; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
@@ -1906,7 +1906,7 @@ export namespace Endpoints {
     path: "/swarm/init";
     requestFormat: "json";
     parameters: {
-      body: Partial<{
+      body?: Partial<{
         ListenAddr: string;
         AdvertiseAddr: string;
         DataPathAddr: string;
@@ -1924,7 +1924,7 @@ export namespace Endpoints {
     path: "/swarm/join";
     requestFormat: "json";
     parameters: {
-      body: Partial<{
+      body?: Partial<{
         ListenAddr: string;
         AdvertiseAddr: string;
         DataPathAddr: string;
@@ -1939,7 +1939,7 @@ export namespace Endpoints {
     path: "/swarm/leave";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ force: boolean }>;
+      query?: Partial<{ force: boolean }>;
     };
     responses: { 200: unknown; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
@@ -1971,7 +1971,7 @@ export namespace Endpoints {
     path: "/swarm/unlock";
     requestFormat: "json";
     parameters: {
-      body: Partial<{ UnlockKey: string }>;
+      body?: Partial<{ UnlockKey: string }>;
     };
     responses: { 200: unknown; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
@@ -1980,7 +1980,7 @@ export namespace Endpoints {
     path: "/services";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ filters: string; status: boolean }>;
+      query?: Partial<{ filters: string; status: boolean }>;
     };
     responses: { 200: Array<Schemas.Service>; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
@@ -1989,7 +1989,7 @@ export namespace Endpoints {
     path: "/services/create";
     requestFormat: "json";
     parameters: {
-      header: Partial<{ "X-Registry-Auth": string }>;
+      header?: Partial<{ "X-Registry-Auth": string }>;
 
       body: Schemas.ServiceSpec & Record<string, unknown>;
     };
@@ -2007,7 +2007,7 @@ export namespace Endpoints {
     path: "/services/{id}";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ insertDefaults: boolean }>;
+      query?: Partial<{ insertDefaults: boolean }>;
       path: { id: string };
     };
     responses: {
@@ -2033,7 +2033,7 @@ export namespace Endpoints {
     parameters: {
       query: { version: number; registryAuthFrom?: "spec" | "previous-spec"; rollback?: string };
       path: { id: string };
-      header: Partial<{ "X-Registry-Auth": string }>;
+      header?: Partial<{ "X-Registry-Auth": string }>;
 
       body: Schemas.ServiceSpec & Record<string, unknown>;
     };
@@ -2050,7 +2050,7 @@ export namespace Endpoints {
     path: "/services/{id}/logs";
     requestFormat: "json";
     parameters: {
-      query: Partial<{
+      query?: Partial<{
         details: boolean;
         follow: boolean;
         stdout: boolean;
@@ -2068,7 +2068,7 @@ export namespace Endpoints {
     path: "/tasks";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ filters: string }>;
+      query?: Partial<{ filters: string }>;
     };
     responses: { 200: Array<Schemas.Task>; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
@@ -2091,7 +2091,7 @@ export namespace Endpoints {
     path: "/tasks/{id}/logs";
     requestFormat: "json";
     parameters: {
-      query: Partial<{
+      query?: Partial<{
         details: boolean;
         follow: boolean;
         stdout: boolean;
@@ -2109,7 +2109,7 @@ export namespace Endpoints {
     path: "/secrets";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ filters: string }>;
+      query?: Partial<{ filters: string }>;
     };
     responses: { 200: Array<Schemas.Secret>; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };
@@ -2173,7 +2173,7 @@ export namespace Endpoints {
     path: "/configs";
     requestFormat: "json";
     parameters: {
-      query: Partial<{ filters: string }>;
+      query?: Partial<{ filters: string }>;
     };
     responses: { 200: Array<Schemas.Config>; 500: Schemas.ErrorResponse; 503: Schemas.ErrorResponse };
   };

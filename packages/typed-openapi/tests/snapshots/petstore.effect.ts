@@ -92,7 +92,7 @@ export const get_FindPetsByStatus = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/pet/findByStatus"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ status: Union_default_available_prop })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ status: Union_default_available_prop }))) },
   responses: {
     200: Schema.Array(Pet),
     304: Schema.Unknown,
@@ -105,7 +105,7 @@ export const get_FindPetsByTags = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/pet/findByTags"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ tags: Schema.Array(Schema.String) })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ tags: Schema.Array(Schema.String) }))) },
   responses: { 200: Schema.Union(Schema.Array(Pet), Schema.Array(User), Schema.Array(Tag)), 400: Schema.Unknown },
 };
 
@@ -128,7 +128,7 @@ export const post_UpdatePetWithForm = {
   path: Schema.Literal("/pet/{petId}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ name: Schema.String, status: Schema.String })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ name: Schema.String, status: Schema.String }))),
     path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
   },
   responses: { 405: Schema.Unknown },
@@ -141,7 +141,7 @@ export const delete_DeletePet = {
   requestFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
-    header: Schema.partial(Schema.Struct({ api_key: Schema.String })),
+    header: Schema.optional(Schema.partial(Schema.Struct({ api_key: Schema.String }))),
   },
   responses: { 400: Schema.Unknown },
 };
@@ -152,7 +152,7 @@ export const post_UploadFile = {
   path: Schema.Literal("/pet/{petId}/uploadImage"),
   requestFormat: Schema.Literal("binary"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ additionalMetadata: Schema.String })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ additionalMetadata: Schema.String }))),
     path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
     body: Schema.String,
   },
@@ -218,7 +218,9 @@ export const get_LoginUser = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/user/login"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ username: Schema.String, password: Schema.String })) },
+  parameters: {
+    query: Schema.optional(Schema.partial(Schema.Struct({ username: Schema.String, password: Schema.String }))),
+  },
   responses: { 200: Schema.String, 400: Schema.Unknown },
   responseHeaders: {
     200: Schema.Struct({ "X-Rate-Limit": Schema.Int, "X-Expires-After": Schema.String }),
@@ -515,7 +517,12 @@ type InferSchemaValue<T> = T extends { Type: infer O }
 type InferSchemaInput<T> = T extends { Encoded: infer I }
   ? I
   : T extends object
-    ? { [K in keyof T]: InferSchemaInput<T[K]> }
+    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
+          InferSchemaInput<T[K]>,
+          undefined
+        >;
+      }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

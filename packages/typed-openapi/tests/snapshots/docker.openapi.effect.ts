@@ -1579,13 +1579,15 @@ export const get_ContainerList = {
   path: Schema.Literal("/containers/json"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        all: BooleanFromString_default_false_prop,
-        limit: Schema.NumberFromString.pipe(Schema.int()),
-        size: BooleanFromString_default_false_prop,
-        filters: Schema.String,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          all: BooleanFromString_default_false_prop,
+          limit: Schema.NumberFromString.pipe(Schema.int()),
+          size: BooleanFromString_default_false_prop,
+          filters: Schema.String,
+        }),
+      ),
     ),
   },
   responses: { 200: Schema.Array(ContainerSummary), 400: ErrorResponse, 500: ErrorResponse },
@@ -1597,11 +1599,13 @@ export const post_ContainerCreate = {
   path: Schema.Literal("/containers/create"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        name: Schema.String.pipe(Schema.pattern(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"))),
-        platform: Schema.String,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          name: Schema.String.pipe(Schema.pattern(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"))),
+          platform: Schema.String,
+        }),
+      ),
     ),
     body: Schema.extend(
       ContainerConfig,
@@ -1623,7 +1627,7 @@ export const get_ContainerInspect = {
   path: Schema.Literal("/containers/{id}/json"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ size: BooleanFromString_default_false_prop })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ size: BooleanFromString_default_false_prop }))),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: {
@@ -1667,7 +1671,7 @@ export const get_ContainerTop = {
   path: Schema.Literal("/containers/{id}/top"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ ps_args: String_default_neg_ef_prop })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ ps_args: String_default_neg_ef_prop }))),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: {
@@ -1685,16 +1689,18 @@ export const get_ContainerLogs = {
   path: Schema.Literal("/containers/{id}/logs"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        follow: BooleanFromString_default_false_prop,
-        stdout: BooleanFromString_default_false_prop,
-        stderr: BooleanFromString_default_false_prop,
-        since: Schema_default_0_prop,
-        until: Schema_default_0_prop,
-        timestamps: BooleanFromString_default_false_prop,
-        tail: String_default_all_prop,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          follow: BooleanFromString_default_false_prop,
+          stdout: BooleanFromString_default_false_prop,
+          stderr: BooleanFromString_default_false_prop,
+          since: Schema_default_0_prop,
+          until: Schema_default_0_prop,
+          timestamps: BooleanFromString_default_false_prop,
+          tail: String_default_all_prop,
+        }),
+      ),
     ),
     path: Schema.Struct({ id: Schema.String }),
   },
@@ -1725,8 +1731,13 @@ export const get_ContainerStats = {
   path: Schema.Literal("/containers/{id}/stats"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({ stream: BooleanFromString_default_true_prop, "one-shot": BooleanFromString_default_false_prop }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          stream: BooleanFromString_default_true_prop,
+          "one-shot": BooleanFromString_default_false_prop,
+        }),
+      ),
     ),
     path: Schema.Struct({ id: Schema.String }),
   },
@@ -1743,8 +1754,10 @@ export const post_ContainerResize = {
   path: Schema.Literal("/containers/{id}/resize"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({ h: Schema.NumberFromString.pipe(Schema.int()), w: Schema.NumberFromString.pipe(Schema.int()) }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({ h: Schema.NumberFromString.pipe(Schema.int()), w: Schema.NumberFromString.pipe(Schema.int()) }),
+      ),
     ),
     path: Schema.Struct({ id: Schema.String }),
   },
@@ -1757,7 +1770,7 @@ export const post_ContainerStart = {
   path: Schema.Literal("/containers/{id}/start"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ detachKeys: Schema.String })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ detachKeys: Schema.String }))),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 204: Schema.Unknown, 304: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
@@ -1769,7 +1782,9 @@ export const post_ContainerStop = {
   path: Schema.Literal("/containers/{id}/stop"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ signal: Schema.String, t: Schema.NumberFromString.pipe(Schema.int()) })),
+    query: Schema.optional(
+      Schema.partial(Schema.Struct({ signal: Schema.String, t: Schema.NumberFromString.pipe(Schema.int()) })),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 204: Schema.Unknown, 304: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
@@ -1781,7 +1796,9 @@ export const post_ContainerRestart = {
   path: Schema.Literal("/containers/{id}/restart"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ signal: Schema.String, t: Schema.NumberFromString.pipe(Schema.int()) })),
+    query: Schema.optional(
+      Schema.partial(Schema.Struct({ signal: Schema.String, t: Schema.NumberFromString.pipe(Schema.int()) })),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
@@ -1793,7 +1810,7 @@ export const post_ContainerKill = {
   path: Schema.Literal("/containers/{id}/kill"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ signal: String_default_SIGKILL_prop })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ signal: String_default_SIGKILL_prop }))),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -1848,15 +1865,17 @@ export const post_ContainerAttach = {
   path: Schema.Literal("/containers/{id}/attach"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        detachKeys: Schema.String,
-        logs: BooleanFromString_default_false_prop,
-        stream: BooleanFromString_default_false_prop,
-        stdin: BooleanFromString_default_false_prop,
-        stdout: BooleanFromString_default_false_prop,
-        stderr: BooleanFromString_default_false_prop,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          detachKeys: Schema.String,
+          logs: BooleanFromString_default_false_prop,
+          stream: BooleanFromString_default_false_prop,
+          stdin: BooleanFromString_default_false_prop,
+          stdout: BooleanFromString_default_false_prop,
+          stderr: BooleanFromString_default_false_prop,
+        }),
+      ),
     ),
     path: Schema.Struct({ id: Schema.String }),
   },
@@ -1875,15 +1894,17 @@ export const get_ContainerAttachWebsocket = {
   path: Schema.Literal("/containers/{id}/attach/ws"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        detachKeys: Schema.String,
-        logs: BooleanFromString_default_false_prop,
-        stream: BooleanFromString_default_false_prop,
-        stdin: BooleanFromString_default_false_prop,
-        stdout: BooleanFromString_default_false_prop,
-        stderr: BooleanFromString_default_false_prop,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          detachKeys: Schema.String,
+          logs: BooleanFromString_default_false_prop,
+          stream: BooleanFromString_default_false_prop,
+          stdin: BooleanFromString_default_false_prop,
+          stdout: BooleanFromString_default_false_prop,
+          stderr: BooleanFromString_default_false_prop,
+        }),
+      ),
     ),
     path: Schema.Struct({ id: Schema.String }),
   },
@@ -1896,7 +1917,7 @@ export const post_ContainerWait = {
   path: Schema.Literal("/containers/{id}/wait"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ condition: Union_default_notneg_running_prop })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ condition: Union_default_notneg_running_prop }))),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 200: ContainerWaitResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
@@ -1908,12 +1929,14 @@ export const delete_ContainerDelete = {
   path: Schema.Literal("/containers/{id}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        v: BooleanFromString_default_false_prop,
-        force: BooleanFromString_default_false_prop,
-        link: BooleanFromString_default_false_prop,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          v: BooleanFromString_default_false_prop,
+          force: BooleanFromString_default_false_prop,
+          link: BooleanFromString_default_false_prop,
+        }),
+      ),
     ),
     path: Schema.Struct({ id: Schema.String }),
   },
@@ -1961,7 +1984,7 @@ export const post_ContainerPrune = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/containers/prune"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: {
     200: Schema.partial(Schema.Struct({ ContainersDeleted: Schema.Array(Schema.String), SpaceReclaimed: Schema.Int })),
     500: ErrorResponse,
@@ -1974,13 +1997,15 @@ export const get_ImageList = {
   path: Schema.Literal("/images/json"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        all: BooleanFromString_default_false_prop,
-        filters: Schema.String,
-        "shared-size": BooleanFromString_default_false_prop,
-        digests: BooleanFromString_default_false_prop,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          all: BooleanFromString_default_false_prop,
+          filters: Schema.String,
+          "shared-size": BooleanFromString_default_false_prop,
+          digests: BooleanFromString_default_false_prop,
+        }),
+      ),
     ),
   },
   responses: { 200: Schema.Array(ImageSummary), 500: ErrorResponse },
@@ -1992,36 +2017,40 @@ export const post_ImageBuild = {
   path: Schema.Literal("/build"),
   requestFormat: Schema.Literal("binary"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        dockerfile: String_default_Dockerfile_prop,
-        t: Schema.String,
-        extrahosts: Schema.String,
-        remote: Schema.String,
-        q: BooleanFromString_default_false_prop,
-        nocache: BooleanFromString_default_false_prop,
-        cachefrom: Schema.String,
-        pull: Schema.String,
-        rm: BooleanFromString_default_true_prop,
-        forcerm: BooleanFromString_default_false_prop,
-        memory: Schema.NumberFromString.pipe(Schema.int()),
-        memswap: Schema.NumberFromString.pipe(Schema.int()),
-        cpushares: Schema.NumberFromString.pipe(Schema.int()),
-        cpusetcpus: Schema.String,
-        cpuperiod: Schema.NumberFromString.pipe(Schema.int()),
-        cpuquota: Schema.NumberFromString.pipe(Schema.int()),
-        buildargs: Schema.String,
-        shmsize: Schema.NumberFromString.pipe(Schema.int()),
-        squash: Schema.BooleanFromString,
-        labels: Schema.String,
-        networkmode: Schema.String,
-        platform: Schema.String,
-        target: Schema.String,
-        outputs: Schema.String,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          dockerfile: String_default_Dockerfile_prop,
+          t: Schema.String,
+          extrahosts: Schema.String,
+          remote: Schema.String,
+          q: BooleanFromString_default_false_prop,
+          nocache: BooleanFromString_default_false_prop,
+          cachefrom: Schema.String,
+          pull: Schema.String,
+          rm: BooleanFromString_default_true_prop,
+          forcerm: BooleanFromString_default_false_prop,
+          memory: Schema.NumberFromString.pipe(Schema.int()),
+          memswap: Schema.NumberFromString.pipe(Schema.int()),
+          cpushares: Schema.NumberFromString.pipe(Schema.int()),
+          cpusetcpus: Schema.String,
+          cpuperiod: Schema.NumberFromString.pipe(Schema.int()),
+          cpuquota: Schema.NumberFromString.pipe(Schema.int()),
+          buildargs: Schema.String,
+          shmsize: Schema.NumberFromString.pipe(Schema.int()),
+          squash: Schema.BooleanFromString,
+          labels: Schema.String,
+          networkmode: Schema.String,
+          platform: Schema.String,
+          target: Schema.String,
+          outputs: Schema.String,
+        }),
+      ),
     ),
-    header: Schema.partial(
-      Schema.Struct({ "Content-type": Schema.Literal("application/x-tar"), "X-Registry-Config": Schema.String }),
+    header: Schema.optional(
+      Schema.partial(
+        Schema.Struct({ "Content-type": Schema.Literal("application/x-tar"), "X-Registry-Config": Schema.String }),
+      ),
     ),
     body: Schema.String,
   },
@@ -2034,12 +2063,14 @@ export const post_BuildPrune = {
   path: Schema.Literal("/build/prune"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        "keep-storage": Schema.NumberFromString.pipe(Schema.int()),
-        all: Schema.BooleanFromString,
-        filters: Schema.String,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          "keep-storage": Schema.NumberFromString.pipe(Schema.int()),
+          all: Schema.BooleanFromString,
+          filters: Schema.String,
+        }),
+      ),
     ),
   },
   responses: {
@@ -2054,18 +2085,20 @@ export const post_ImageCreate = {
   path: Schema.Literal("/images/create"),
   requestFormat: Schema.Literal("text"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        fromImage: Schema.String,
-        fromSrc: Schema.String,
-        repo: Schema.String,
-        tag: Schema.String,
-        message: Schema.String,
-        changes: Schema.Array(Schema.String),
-        platform: Schema.String,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          fromImage: Schema.String,
+          fromSrc: Schema.String,
+          repo: Schema.String,
+          tag: Schema.String,
+          message: Schema.String,
+          changes: Schema.Array(Schema.String),
+          platform: Schema.String,
+        }),
+      ),
     ),
-    header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
+    header: Schema.optional(Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String }))),
     body: Schema.String,
   },
   responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
@@ -2108,7 +2141,7 @@ export const post_ImagePush = {
   path: Schema.Literal("/images/{name}/push"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ tag: Schema.String })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ tag: Schema.String }))),
     path: Schema.Struct({ name: Schema.String }),
     header: Schema.Struct({ "X-Registry-Auth": Schema.String }),
   },
@@ -2121,7 +2154,7 @@ export const post_ImageTag = {
   path: Schema.Literal("/images/{name}/tag"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ repo: Schema.String, tag: Schema.String })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ repo: Schema.String, tag: Schema.String }))),
     path: Schema.Struct({ name: Schema.String }),
   },
   responses: { 201: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -2133,8 +2166,10 @@ export const delete_ImageDelete = {
   path: Schema.Literal("/images/{name}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({ force: BooleanFromString_default_false_prop, noprune: BooleanFromString_default_false_prop }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({ force: BooleanFromString_default_false_prop, noprune: BooleanFromString_default_false_prop }),
+      ),
     ),
     path: Schema.Struct({ name: Schema.String }),
   },
@@ -2174,7 +2209,7 @@ export const post_ImagePrune = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/images/prune"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: {
     200: Schema.partial(
       Schema.Struct({ ImagesDeleted: Schema.Array(ImageDeleteResponseItem), SpaceReclaimed: Schema.Int }),
@@ -2263,16 +2298,18 @@ export const post_ImageCommit = {
   path: Schema.Literal("/commit"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        container: Schema.String,
-        repo: Schema.String,
-        tag: Schema.String,
-        comment: Schema.String,
-        author: Schema.String,
-        pause: BooleanFromString_default_true_prop,
-        changes: Schema.String,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          container: Schema.String,
+          repo: Schema.String,
+          tag: Schema.String,
+          comment: Schema.String,
+          author: Schema.String,
+          pause: BooleanFromString_default_true_prop,
+          changes: Schema.String,
+        }),
+      ),
     ),
     body: ContainerConfig,
   },
@@ -2285,7 +2322,9 @@ export const get_SystemEvents = {
   path: Schema.Literal("/events"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ since: Schema.String, until: Schema.String, filters: Schema.String })),
+    query: Schema.optional(
+      Schema.partial(Schema.Struct({ since: Schema.String, until: Schema.String, filters: Schema.String })),
+    ),
   },
   responses: { 200: EventMessage, 400: ErrorResponse, 500: ErrorResponse },
 };
@@ -2296,17 +2335,19 @@ export const get_SystemDataUsage = {
   path: Schema.Literal("/system/df"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        type: Schema.Array(
-          Schema.Union(
-            Schema.Literal("container"),
-            Schema.Literal("image"),
-            Schema.Literal("volume"),
-            Schema.Literal("build-cache"),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          type: Schema.Array(
+            Schema.Union(
+              Schema.Literal("container"),
+              Schema.Literal("image"),
+              Schema.Literal("volume"),
+              Schema.Literal("build-cache"),
+            ),
           ),
-        ),
-      }),
+        }),
+      ),
     ),
   },
   responses: {
@@ -2337,7 +2378,7 @@ export const get_ImageGetAll = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/images/get"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ names: Schema.Array(Schema.String) })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ names: Schema.Array(Schema.String) }))) },
   responses: { 200: Schema.Unknown, 500: Schema.Unknown },
 };
 
@@ -2346,7 +2387,9 @@ export const post_ImageLoad = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/images/load"),
   requestFormat: Schema.Literal("text"),
-  parameters: { query: Schema.partial(Schema.Struct({ quiet: BooleanFromString_default_false_prop })) },
+  parameters: {
+    query: Schema.optional(Schema.partial(Schema.Struct({ quiet: BooleanFromString_default_false_prop }))),
+  },
   responses: { 200: Schema.Unknown, 500: ErrorResponse },
 };
 
@@ -2357,22 +2400,24 @@ export const post_ContainerExec = {
   requestFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ id: Schema.String }),
-    body: Schema.partial(
-      Schema.Struct({
-        AttachStdin: Schema.Boolean,
-        AttachStdout: Schema.Boolean,
-        AttachStderr: Schema.Boolean,
-        ConsoleSize: Schema.NullOr(
-          Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0))).pipe(Schema.minItems(2), Schema.maxItems(2)),
-        ),
-        DetachKeys: Schema.String,
-        Tty: Schema.Boolean,
-        Env: Schema.Array(Schema.String),
-        Cmd: Schema.Array(Schema.String),
-        Privileged: Boolean_default_false_prop,
-        User: Schema.String,
-        WorkingDir: Schema.String,
-      }),
+    body: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          AttachStdin: Schema.Boolean,
+          AttachStdout: Schema.Boolean,
+          AttachStderr: Schema.Boolean,
+          ConsoleSize: Schema.NullOr(
+            Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0))).pipe(Schema.minItems(2), Schema.maxItems(2)),
+          ),
+          DetachKeys: Schema.String,
+          Tty: Schema.Boolean,
+          Env: Schema.Array(Schema.String),
+          Cmd: Schema.Array(Schema.String),
+          Privileged: Boolean_default_false_prop,
+          User: Schema.String,
+          WorkingDir: Schema.String,
+        }),
+      ),
     ),
   },
   responses: { 201: IdResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -2385,14 +2430,16 @@ export const post_ExecStart = {
   requestFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ id: Schema.String }),
-    body: Schema.partial(
-      Schema.Struct({
-        Detach: Schema.Boolean,
-        Tty: Schema.Boolean,
-        ConsoleSize: Schema.NullOr(
-          Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0))).pipe(Schema.minItems(2), Schema.maxItems(2)),
-        ),
-      }),
+    body: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          Detach: Schema.Boolean,
+          Tty: Schema.Boolean,
+          ConsoleSize: Schema.NullOr(
+            Schema.Array(Schema.Int.pipe(Schema.greaterThanOrEqualTo(0))).pipe(Schema.minItems(2), Schema.maxItems(2)),
+          ),
+        }),
+      ),
     ),
   },
   responses: { 200: Schema.Unknown, 404: Schema.Unknown, 409: Schema.Unknown },
@@ -2404,8 +2451,10 @@ export const post_ExecResize = {
   path: Schema.Literal("/exec/{id}/resize"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({ h: Schema.NumberFromString.pipe(Schema.int()), w: Schema.NumberFromString.pipe(Schema.int()) }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({ h: Schema.NumberFromString.pipe(Schema.int()), w: Schema.NumberFromString.pipe(Schema.int()) }),
+      ),
     ),
     path: Schema.Struct({ id: Schema.String }),
   },
@@ -2444,7 +2493,7 @@ export const get_VolumeList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/volumes"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: VolumeListResponse, 500: ErrorResponse },
 };
 
@@ -2474,7 +2523,7 @@ export const put_VolumeUpdate = {
   parameters: {
     query: Schema.Struct({ version: Schema.NumberFromString.pipe(Schema.int()) }),
     path: Schema.Struct({ name: Schema.String }),
-    body: Schema.partial(Schema.Struct({ Spec: ClusterVolumeSpec })),
+    body: Schema.optional(Schema.partial(Schema.Struct({ Spec: ClusterVolumeSpec }))),
   },
   responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
@@ -2485,7 +2534,7 @@ export const delete_VolumeDelete = {
   path: Schema.Literal("/volumes/{name}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ force: BooleanFromString_default_false_prop })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ force: BooleanFromString_default_false_prop }))),
     path: Schema.Struct({ name: Schema.String }),
   },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
@@ -2496,7 +2545,7 @@ export const post_VolumePrune = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/volumes/prune"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: {
     200: Schema.partial(Schema.Struct({ VolumesDeleted: Schema.Array(Schema.String), SpaceReclaimed: Schema.Int })),
     500: ErrorResponse,
@@ -2508,7 +2557,7 @@ export const get_NetworkList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/networks"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: Schema.Array(Network), 500: ErrorResponse },
 };
 
@@ -2518,7 +2567,9 @@ export const get_NetworkInspect = {
   path: Schema.Literal("/networks/{id}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ verbose: BooleanFromString_default_false_prop, scope: Schema.String })),
+    query: Schema.optional(
+      Schema.partial(Schema.Struct({ verbose: BooleanFromString_default_false_prop, scope: Schema.String })),
+    ),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 200: Network, 404: ErrorResponse, 500: ErrorResponse },
@@ -2567,7 +2618,9 @@ export const post_NetworkConnect = {
   requestFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ id: Schema.String }),
-    body: Schema.partial(Schema.Struct({ Container: Schema.String, EndpointConfig: EndpointSettings })),
+    body: Schema.optional(
+      Schema.partial(Schema.Struct({ Container: Schema.String, EndpointConfig: EndpointSettings })),
+    ),
   },
   responses: { 200: Schema.Unknown, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2579,7 +2632,7 @@ export const post_NetworkDisconnect = {
   requestFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ id: Schema.String }),
-    body: Schema.partial(Schema.Struct({ Container: Schema.String, Force: Schema.Boolean })),
+    body: Schema.optional(Schema.partial(Schema.Struct({ Container: Schema.String, Force: Schema.Boolean }))),
   },
   responses: { 200: Schema.Unknown, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
@@ -2589,7 +2642,7 @@ export const post_NetworkPrune = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/networks/prune"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: {
     200: Schema.partial(Schema.Struct({ NetworksDeleted: Schema.Array(Schema.String) })),
     500: ErrorResponse,
@@ -2601,7 +2654,7 @@ export const get_PluginList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/plugins"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: Schema.Array(Plugin), 500: ErrorResponse },
 };
 
@@ -2621,7 +2674,7 @@ export const post_PluginPull = {
   requestFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.Struct({ remote: Schema.String, name: Schema.optional(Schema.String) }),
-    header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
+    header: Schema.optional(Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String }))),
     body: Schema.Array(PluginPrivilege),
   },
   responses: { 204: Schema.Unknown, 500: ErrorResponse },
@@ -2642,7 +2695,7 @@ export const delete_PluginDelete = {
   path: Schema.Literal("/plugins/{name}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ force: BooleanFromString_default_false_prop })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ force: BooleanFromString_default_false_prop }))),
     path: Schema.Struct({ name: Schema.String }),
   },
   responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
@@ -2654,7 +2707,7 @@ export const post_PluginEnable = {
   path: Schema.Literal("/plugins/{name}/enable"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ timeout: Schema_default_0_prop })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ timeout: Schema_default_0_prop }))),
     path: Schema.Struct({ name: Schema.String }),
   },
   responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
@@ -2666,7 +2719,7 @@ export const post_PluginDisable = {
   path: Schema.Literal("/plugins/{name}/disable"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ force: Schema.BooleanFromString })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ force: Schema.BooleanFromString }))),
     path: Schema.Struct({ name: Schema.String }),
   },
   responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
@@ -2680,7 +2733,7 @@ export const post_PluginUpgrade = {
   parameters: {
     query: Schema.Struct({ remote: Schema.String }),
     path: Schema.Struct({ name: Schema.String }),
-    header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
+    header: Schema.optional(Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String }))),
     body: Schema.Array(PluginPrivilege),
   },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
@@ -2718,7 +2771,7 @@ export const get_NodeList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/nodes"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: Schema.Array(Node), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2737,7 +2790,7 @@ export const delete_NodeDelete = {
   path: Schema.Literal("/nodes/{id}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ force: BooleanFromString_default_false_prop })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ force: BooleanFromString_default_false_prop }))),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
@@ -2771,17 +2824,19 @@ export const post_SwarmInit = {
   path: Schema.Literal("/swarm/init"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    body: Schema.partial(
-      Schema.Struct({
-        ListenAddr: Schema.String,
-        AdvertiseAddr: Schema.String,
-        DataPathAddr: Schema.String,
-        DataPathPort: Schema.Int,
-        DefaultAddrPool: Schema.Array(Schema.String),
-        ForceNewCluster: Schema.Boolean,
-        SubnetSize: Schema.Int,
-        Spec: SwarmSpec,
-      }),
+    body: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          ListenAddr: Schema.String,
+          AdvertiseAddr: Schema.String,
+          DataPathAddr: Schema.String,
+          DataPathPort: Schema.Int,
+          DefaultAddrPool: Schema.Array(Schema.String),
+          ForceNewCluster: Schema.Boolean,
+          SubnetSize: Schema.Int,
+          Spec: SwarmSpec,
+        }),
+      ),
     ),
   },
   responses: { 200: Schema.String, 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
@@ -2793,14 +2848,16 @@ export const post_SwarmJoin = {
   path: Schema.Literal("/swarm/join"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    body: Schema.partial(
-      Schema.Struct({
-        ListenAddr: Schema.String,
-        AdvertiseAddr: Schema.String,
-        DataPathAddr: Schema.String,
-        RemoteAddrs: Schema.Array(Schema.String),
-        JoinToken: Schema.String,
-      }),
+    body: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          ListenAddr: Schema.String,
+          AdvertiseAddr: Schema.String,
+          DataPathAddr: Schema.String,
+          RemoteAddrs: Schema.Array(Schema.String),
+          JoinToken: Schema.String,
+        }),
+      ),
     ),
   },
   responses: { 200: Schema.Unknown, 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
@@ -2811,7 +2868,9 @@ export const post_SwarmLeave = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/swarm/leave"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ force: BooleanFromString_default_false_prop })) },
+  parameters: {
+    query: Schema.optional(Schema.partial(Schema.Struct({ force: BooleanFromString_default_false_prop }))),
+  },
   responses: { 200: Schema.Unknown, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2850,7 +2909,7 @@ export const post_SwarmUnlock = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/swarm/unlock"),
   requestFormat: Schema.Literal("json"),
-  parameters: { body: Schema.partial(Schema.Struct({ UnlockKey: Schema.String })) },
+  parameters: { body: Schema.optional(Schema.partial(Schema.Struct({ UnlockKey: Schema.String }))) },
   responses: { 200: Schema.Unknown, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2859,7 +2918,9 @@ export const get_ServiceList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/services"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String, status: Schema.BooleanFromString })) },
+  parameters: {
+    query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String, status: Schema.BooleanFromString }))),
+  },
   responses: { 200: Schema.Array(Service), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2869,7 +2930,7 @@ export const post_ServiceCreate = {
   path: Schema.Literal("/services/create"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
+    header: Schema.optional(Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String }))),
     body: Schema.extend(ServiceSpec, Schema.Record({ key: Schema.String, value: Schema.Unknown })),
   },
   responses: {
@@ -2888,7 +2949,7 @@ export const get_ServiceInspect = {
   path: Schema.Literal("/services/{id}"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(Schema.Struct({ insertDefaults: BooleanFromString_default_false_prop })),
+    query: Schema.optional(Schema.partial(Schema.Struct({ insertDefaults: BooleanFromString_default_false_prop }))),
     path: Schema.Struct({ id: Schema.String }),
   },
   responses: { 200: Service, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
@@ -2915,7 +2976,7 @@ export const post_ServiceUpdate = {
       rollback: Schema.optional(Schema.String),
     }),
     path: Schema.Struct({ id: Schema.String }),
-    header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
+    header: Schema.optional(Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String }))),
     body: Schema.extend(ServiceSpec, Schema.Record({ key: Schema.String, value: Schema.Unknown })),
   },
   responses: {
@@ -2933,16 +2994,18 @@ export const get_ServiceLogs = {
   path: Schema.Literal("/services/{id}/logs"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        details: BooleanFromString_default_false_prop,
-        follow: BooleanFromString_default_false_prop,
-        stdout: BooleanFromString_default_false_prop,
-        stderr: BooleanFromString_default_false_prop,
-        since: Schema_default_0_prop,
-        timestamps: BooleanFromString_default_false_prop,
-        tail: String_default_all_prop,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          details: BooleanFromString_default_false_prop,
+          follow: BooleanFromString_default_false_prop,
+          stdout: BooleanFromString_default_false_prop,
+          stderr: BooleanFromString_default_false_prop,
+          since: Schema_default_0_prop,
+          timestamps: BooleanFromString_default_false_prop,
+          tail: String_default_all_prop,
+        }),
+      ),
     ),
     path: Schema.Struct({ id: Schema.String }),
   },
@@ -2954,7 +3017,7 @@ export const get_TaskList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/tasks"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: Schema.Array(Task), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -2973,16 +3036,18 @@ export const get_TaskLogs = {
   path: Schema.Literal("/tasks/{id}/logs"),
   requestFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.partial(
-      Schema.Struct({
-        details: BooleanFromString_default_false_prop,
-        follow: BooleanFromString_default_false_prop,
-        stdout: BooleanFromString_default_false_prop,
-        stderr: BooleanFromString_default_false_prop,
-        since: Schema_default_0_prop,
-        timestamps: BooleanFromString_default_false_prop,
-        tail: String_default_all_prop,
-      }),
+    query: Schema.optional(
+      Schema.partial(
+        Schema.Struct({
+          details: BooleanFromString_default_false_prop,
+          follow: BooleanFromString_default_false_prop,
+          stdout: BooleanFromString_default_false_prop,
+          stderr: BooleanFromString_default_false_prop,
+          since: Schema_default_0_prop,
+          timestamps: BooleanFromString_default_false_prop,
+          tail: String_default_all_prop,
+        }),
+      ),
     ),
     path: Schema.Struct({ id: Schema.String }),
   },
@@ -2994,7 +3059,7 @@ export const get_SecretList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/secrets"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: Schema.Array(Secret), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -3043,7 +3108,7 @@ export const get_ConfigList = {
   method: Schema.Literal("GET"),
   path: Schema.Literal("/configs"),
   requestFormat: Schema.Literal("json"),
-  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ filters: Schema.String }))) },
   responses: { 200: Schema.Array(Config), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -3420,7 +3485,12 @@ type InferSchemaValue<T> = T extends { Type: infer O }
 type InferSchemaInput<T> = T extends { Encoded: infer I }
   ? I
   : T extends object
-    ? { [K in keyof T]: InferSchemaInput<T[K]> }
+    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
+          InferSchemaInput<T[K]>,
+          undefined
+        >;
+      }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

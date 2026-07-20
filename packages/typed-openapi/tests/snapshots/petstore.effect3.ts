@@ -86,7 +86,7 @@ export const get_FindPetsByStatus = {
   method: S.Literal("GET"),
   path: S.Literal("/pet/findByStatus"),
   requestFormat: S.Literal("json"),
-  parameters: { query: S.partial(S.Struct({ status: Union_default_available_prop })) },
+  parameters: { query: S.optional(S.partial(S.Struct({ status: Union_default_available_prop }))) },
   responses: { 200: S.Array(Pet), 304: S.Unknown, 400: S.Struct({ code: S.Int, message: S.String }) },
 };
 
@@ -95,7 +95,7 @@ export const get_FindPetsByTags = {
   method: S.Literal("GET"),
   path: S.Literal("/pet/findByTags"),
   requestFormat: S.Literal("json"),
-  parameters: { query: S.partial(S.Struct({ tags: S.Array(S.String) })) },
+  parameters: { query: S.optional(S.partial(S.Struct({ tags: S.Array(S.String) }))) },
   responses: { 200: S.Union(S.Array(Pet), S.Array(User), S.Array(Tag)), 400: S.Unknown },
 };
 
@@ -118,7 +118,7 @@ export const post_UpdatePetWithForm = {
   path: S.Literal("/pet/{petId}"),
   requestFormat: S.Literal("json"),
   parameters: {
-    query: S.partial(S.Struct({ name: S.String, status: S.String })),
+    query: S.optional(S.partial(S.Struct({ name: S.String, status: S.String }))),
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }),
   },
   responses: { 405: S.Unknown },
@@ -131,7 +131,7 @@ export const delete_DeletePet = {
   requestFormat: S.Literal("json"),
   parameters: {
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }),
-    header: S.partial(S.Struct({ api_key: S.String })),
+    header: S.optional(S.partial(S.Struct({ api_key: S.String }))),
   },
   responses: { 400: S.Unknown },
 };
@@ -142,7 +142,7 @@ export const post_UploadFile = {
   path: S.Literal("/pet/{petId}/uploadImage"),
   requestFormat: S.Literal("binary"),
   parameters: {
-    query: S.partial(S.Struct({ additionalMetadata: S.String })),
+    query: S.optional(S.partial(S.Struct({ additionalMetadata: S.String }))),
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }),
     body: S.String,
   },
@@ -208,7 +208,7 @@ export const get_LoginUser = {
   method: S.Literal("GET"),
   path: S.Literal("/user/login"),
   requestFormat: S.Literal("json"),
-  parameters: { query: S.partial(S.Struct({ username: S.String, password: S.String })) },
+  parameters: { query: S.optional(S.partial(S.Struct({ username: S.String, password: S.String }))) },
   responses: { 200: S.String, 400: S.Unknown },
   responseHeaders: {
     200: S.Struct({ "X-Rate-Limit": S.Int, "X-Expires-After": S.String }),
@@ -505,7 +505,12 @@ type InferSchemaValue<T> = T extends { Type: infer O }
 type InferSchemaInput<T> = T extends { Encoded: infer I }
   ? I
   : T extends object
-    ? { [K in keyof T]: InferSchemaInput<T[K]> }
+    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
+          InferSchemaInput<T[K]>,
+          undefined
+        >;
+      }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

@@ -19,7 +19,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   method: Schema.Literal("POST"),
   path: Schema.Literal("/users"),
   requestFormat: Schema.Literal("json"),
-  parameters: { body: Schema.partial(Schema.Struct({ username: Schema.String })) },
+  parameters: { body: Schema.optional(Schema.partial(Schema.Struct({ username: Schema.String }))) },
   responses: { 201: Schema.Unknown },
 };
 
@@ -216,7 +216,12 @@ type InferSchemaValue<T> = T extends { Type: infer O }
 type InferSchemaInput<T> = T extends { Encoded: infer I }
   ? I
   : T extends object
-    ? { [K in keyof T]: InferSchemaInput<T[K]> }
+    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
+          InferSchemaInput<T[K]>,
+          undefined
+        >;
+      }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

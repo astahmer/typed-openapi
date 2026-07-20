@@ -19,7 +19,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   method: z.literal("POST"),
   path: z.literal("/users"),
   requestFormat: z.literal("json"),
-  parameters: { body: z.object({ username: z.string() }).partial() },
+  parameters: { body: z.object({ username: z.string() }).partial().optional() },
   responses: { 201: z.unknown() },
 };
 
@@ -216,7 +216,12 @@ type InferSchemaValue<T> = T extends z.ZodType
 type InferSchemaInput<T> = T extends z.ZodType
   ? z.input<T>
   : T extends object
-    ? { [K in keyof T]: InferSchemaInput<T[K]> }
+    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
+          InferSchemaInput<T[K]>,
+          undefined
+        >;
+      }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

@@ -19,7 +19,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   method: S.Literal("POST"),
   path: S.Literal("/users"),
   requestFormat: S.Literal("json"),
-  parameters: { body: S.partial(S.Struct({ username: S.String })) },
+  parameters: { body: S.optional(S.partial(S.Struct({ username: S.String }))) },
   responses: { 201: S.Unknown },
 };
 
@@ -216,7 +216,12 @@ type InferSchemaValue<T> = T extends { Type: infer O }
 type InferSchemaInput<T> = T extends { Encoded: infer I }
   ? I
   : T extends object
-    ? { [K in keyof T]: InferSchemaInput<T[K]> }
+    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
+          InferSchemaInput<T[K]>,
+          undefined
+        >;
+      }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

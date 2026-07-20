@@ -19,7 +19,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   method: v.literal("POST"),
   path: v.literal("/users"),
   requestFormat: v.literal("json"),
-  parameters: { body: v.partial(v.object({ username: v.string() })) },
+  parameters: { body: v.optional(v.partial(v.object({ username: v.string() }))) },
   responses: { 201: v.unknown() },
 };
 
@@ -216,7 +216,12 @@ type InferSchemaValue<T> = T extends v.GenericSchema
 type InferSchemaInput<T> = T extends v.GenericSchema
   ? v.InferInput<T>
   : T extends object
-    ? { [K in keyof T]: InferSchemaInput<T[K]> }
+    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
+          InferSchemaInput<T[K]>,
+          undefined
+        >;
+      }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

@@ -20,7 +20,11 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   method: type("'POST'"),
   path: type("'/users'"),
   requestFormat: type("'json'"),
-  parameters: { body: type({ username: type("string") }).partial() },
+  parameters: {
+    body: type({ username: type("string") })
+      .partial()
+      .optional(),
+  },
   responses: { 201: type("unknown") },
 };
 
@@ -217,7 +221,12 @@ type InferSchemaValue<T> = T extends { infer: infer O }
 type InferSchemaInput<T> = T extends { inferIn: infer I }
   ? I
   : T extends object
-    ? { [K in keyof T]: InferSchemaInput<T[K]> }
+    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
+          InferSchemaInput<T[K]>,
+          undefined
+        >;
+      }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

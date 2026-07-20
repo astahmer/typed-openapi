@@ -78,7 +78,12 @@ export const get_FindPetsByStatus = {
   method: z.literal("GET"),
   path: z.literal("/pet/findByStatus"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ status: z.enum(["available", "pending", "sold"]).default("available") }).partial() },
+  parameters: {
+    query: z
+      .object({ status: z.enum(["available", "pending", "sold"]).default("available") })
+      .partial()
+      .optional(),
+  },
   responses: { 200: z.array(Pet), 304: z.unknown(), 400: z.object({ code: z.number().int(), message: z.string() }) },
 };
 
@@ -87,7 +92,12 @@ export const get_FindPetsByTags = {
   method: z.literal("GET"),
   path: z.literal("/pet/findByTags"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ tags: z.array(z.string()) }).partial() },
+  parameters: {
+    query: z
+      .object({ tags: z.array(z.string()) })
+      .partial()
+      .optional(),
+  },
   responses: { 200: z.union([z.array(Pet), z.array(User), z.array(Tag)]), 400: z.unknown() },
 };
 
@@ -110,7 +120,7 @@ export const post_UpdatePetWithForm = {
   path: z.literal("/pet/{petId}"),
   requestFormat: z.literal("json"),
   parameters: {
-    query: z.object({ name: z.string(), status: z.string() }).partial(),
+    query: z.object({ name: z.string(), status: z.string() }).partial().optional(),
     path: z.object({ petId: z.coerce.number().int() }),
   },
   responses: { 405: z.unknown() },
@@ -123,7 +133,7 @@ export const delete_DeletePet = {
   requestFormat: z.literal("json"),
   parameters: {
     path: z.object({ petId: z.coerce.number().int() }),
-    header: z.object({ api_key: z.string() }).partial(),
+    header: z.object({ api_key: z.string() }).partial().optional(),
   },
   responses: { 400: z.unknown() },
 };
@@ -134,7 +144,7 @@ export const post_UploadFile = {
   path: z.literal("/pet/{petId}/uploadImage"),
   requestFormat: z.literal("binary"),
   parameters: {
-    query: z.object({ additionalMetadata: z.string() }).partial(),
+    query: z.object({ additionalMetadata: z.string() }).partial().optional(),
     path: z.object({ petId: z.coerce.number().int() }),
     body: z.string(),
   },
@@ -200,7 +210,7 @@ export const get_LoginUser = {
   method: z.literal("GET"),
   path: z.literal("/user/login"),
   requestFormat: z.literal("json"),
-  parameters: { query: z.object({ username: z.string(), password: z.string() }).partial() },
+  parameters: { query: z.object({ username: z.string(), password: z.string() }).partial().optional() },
   responses: { 200: z.string(), 400: z.unknown() },
   responseHeaders: {
     200: z.object({ "X-Rate-Limit": z.number().int(), "X-Expires-After": z.iso.datetime() }),
@@ -497,7 +507,12 @@ type InferSchemaValue<T> = T extends z.ZodType
 type InferSchemaInput<T> = T extends z.ZodType
   ? z.input<T>
   : T extends object
-    ? { [K in keyof T]: InferSchemaInput<T[K]> }
+    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
+          InferSchemaInput<T[K]>,
+          undefined
+        >;
+      }
     : T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
