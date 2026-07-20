@@ -1,0 +1,17 @@
+openapi: 3.0.3
+info:
+  title: Multi-file sample
+  version: 1.0.0
+paths:
+  /pets:
+    get:
+      operationId: listPets
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/Pet"
