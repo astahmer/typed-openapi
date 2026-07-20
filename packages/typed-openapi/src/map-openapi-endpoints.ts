@@ -3,6 +3,7 @@ import { OperationObject, ParameterObject } from "openapi3-ts/oas31";
 import { capitalize, pick } from "pastable/server";
 import { createRefResolver } from "./ref-resolver.ts";
 import { openApiToIr } from "./schema-ir/openapi-to-ir.ts";
+import { stripReadWrite } from "./schema-ir/read-write.ts";
 import type { SchemaIrConvertContext, SchemaNode } from "./schema-ir/types.ts";
 import { pathToVariableName } from "./string-utils.ts";
 import { NameTransformOptions } from "./types.ts";
@@ -18,6 +19,19 @@ const mergeUnion = (existing: SchemaNode | undefined, next: SchemaNode): SchemaN
   members.push(next);
   return { kind: "union", members, meta: emptyMeta() };
 };
+
+/** Prefer `schema`; fall back to first `content[*].schema` (common for cookie params). */
+const schemaFromParameter = (param: ParameterObject): unknown => {
+  if (param.schema) return param.schema;
+  const content = param.content;
+  if (content) {
+    const mediaType = Object.keys(content)[0];
+    if (mediaType && content[mediaType]?.schema) return content[mediaType].schema;
+  }
+  return {};
+};
+
+type ParamLocation = "query" | "path" | "header" | "cookie";
 
 export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransform?: NameTransformOptions }) => {
   const refs = createRefResolver(doc, options?.nameTransform);
@@ -46,26 +60,24 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
       } as Endpoint;
 
       // Build a list of parameters by type + fill an object with all of them
-      const lists = { query: [] as ParameterObject[], path: [] as ParameterObject[], header: [] as ParameterObject[] };
+      const lists = {
+        query: [] as ParameterObject[],
+        path: [] as ParameterObject[],
+        header: [] as ParameterObject[],
+        cookie: [] as ParameterObject[],
+      };
       const paramNodes = [...(pathItemObj.parameters ?? []), ...(operation.parameters ?? [])].reduce(
         (acc, paramOrRef) => {
           const param = refs.unwrap(paramOrRef);
-          const node = openApiToIr(param.schema ?? {}, irCtx);
+          const node = openApiToIr(schemaFromParameter(param), irCtx);
 
           if (param.required) endpoint.meta.areParametersRequired = true;
           endpoint.meta.hasParameters = true;
 
-          if (param.in === "query") {
-            lists.query.push(param);
-            acc.query[param.name] = node;
-          }
-          if (param.in === "path") {
-            lists.path.push(param);
-            acc.path[param.name] = node;
-          }
-          if (param.in === "header") {
-            lists.header.push(param);
-            acc.header[param.name] = node;
+          const loc = param.in as ParamLocation;
+          if (loc === "query" || loc === "path" || loc === "header" || loc === "cookie") {
+            lists[loc].push(param);
+            acc[loc][param.name] = node;
           }
 
           return acc;
@@ -74,13 +86,14 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
           query: {} as Record<string, SchemaNode>,
           path: {} as Record<string, SchemaNode>,
           header: {} as Record<string, SchemaNode>,
+          cookie: {} as Record<string, SchemaNode>,
         },
       );
 
       const params = {} as EndpointParameters;
 
-      // Group params (query/path/header) into an object SchemaNode preserving required/partial.
-      for (const key of ["query", "path", "header"] as const) {
+      // Group params into an object SchemaNode preserving required/partial.
+      for (const key of ["query", "path", "header", "cookie"] as const) {
         const properties = paramNodes[key];
         const paramList = lists[key];
         if (!paramList.length || Object.keys(properties).length === 0) continue;
@@ -98,7 +111,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
         };
       }
 
-      // Body
+      // Body — strip readOnly fields (response-only)
       if (operation.requestBody) {
         endpoint.meta.hasParameters = true;
         const requestBody = refs.unwrap(operation.requestBody ?? {});
@@ -106,7 +119,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
         const matchingMediaType = Object.keys(content).find(isAllowedParamMediaTypes);
 
         if (matchingMediaType && content[matchingMediaType]) {
-          params.body = openApiToIr(content[matchingMediaType]?.schema ?? {}, irCtx);
+          params.body = stripReadWrite(openApiToIr(content[matchingMediaType]?.schema ?? {}, irCtx), "request");
         }
 
         endpoint.requestFormat = match(matchingMediaType)
@@ -125,13 +138,13 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
       Object.entries(operation.responses ?? {}).map(([status, responseOrRef]) => {
         const responseObj = refs.unwrap<ResponseObject>(responseOrRef);
 
-        // Collect all responses for error handling
+        // Collect all responses for error handling — strip writeOnly (request-only)
         const content = responseObj?.content;
         const mediaTypes = Object.keys(content ?? {}).filter(isResponseMediaType);
         if (content && mediaTypes.length) {
           mediaTypes.forEach((mediaType) => {
             const schema = content[mediaType] ? (content[mediaType].schema ?? {}) : {};
-            const node = openApiToIr(schema, irCtx);
+            const node = stripReadWrite(openApiToIr(schema, irCtx), "response");
             allResponses[status] = mergeUnion(allResponses[status], node);
           });
         } else {
@@ -201,6 +214,7 @@ export type EndpointParameters = {
   query?: SchemaNode;
   header?: SchemaNode;
   path?: SchemaNode;
+  cookie?: SchemaNode;
 };
 
 type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";

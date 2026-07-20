@@ -5,6 +5,10 @@ export type SchemaMeta = {
   default?: unknown;
   examples?: unknown[];
   nullable?: boolean;
+  /** OAS readOnly — response-only; strip from request bodies */
+  readOnly?: boolean;
+  /** OAS writeOnly — request-only; strip from responses */
+  writeOnly?: boolean;
 };
 
 export type StringConstraints = {

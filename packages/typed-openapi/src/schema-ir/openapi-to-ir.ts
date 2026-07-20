@@ -23,6 +23,8 @@ const extractMeta = (schema: LibSchemaObject): SchemaMeta => {
   if (schema.examples !== undefined) meta.examples = schema.examples as unknown[];
   else if ("example" in schema && schema.example !== undefined) meta.examples = [schema.example];
   if ((schema as LibSchemaObject).nullable === true) meta.nullable = true;
+  if (schema.readOnly === true) meta.readOnly = true;
+  if (schema.writeOnly === true) meta.writeOnly = true;
   return meta;
 };
 
