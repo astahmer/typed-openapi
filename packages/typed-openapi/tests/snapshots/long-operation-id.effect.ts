@@ -1,38 +1,29 @@
-import t from "io-ts";
+import { Schema } from "effect";
 
-export type __ENDPOINTS_START__ = t.TypeOf<typeof __ENDPOINTS_START__>;
-export const __ENDPOINTS_START__ = t.type({});
+// <Schemas>
+// </Schemas>
 
-export type get_Get_users = t.TypeOf<typeof get_Get_users>;
-export const get_Get_users = t.type({
-  method: t.literal("GET"),
-  path: t.literal("/users"),
-  requestFormat: t.literal("json"),
-  parameters: t.never,
-  responses: t.type({
-    "200": t.array(t.string),
-  }),
-});
+// <Endpoints>
+export type get_Get_users = typeof get_Get_users;
+export const get_Get_users = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/users"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: { 200: Schema.Array(Schema.String) },
+};
 
-export type post_Very_very_very_very_very_very_very_very_very_very_long = t.TypeOf<
-  typeof post_Very_very_very_very_very_very_very_very_very_very_long
->;
-export const post_Very_very_very_very_very_very_very_very_very_very_long = t.type({
-  method: t.literal("POST"),
-  path: t.literal("/users"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    body: t.type({
-      username: t.union([t.undefined, t.string]),
-    }),
-  }),
-  responses: t.type({
-    "201": t.unknown,
-  }),
-});
+export type post_Very_very_very_very_very_very_very_very_very_very_long =
+  typeof post_Very_very_very_very_very_very_very_very_very_very_long;
+export const post_Very_very_very_very_very_very_very_very_very_very_long = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/users"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { body: Schema.partial(Schema.Struct({ username: Schema.String })) },
+  responses: { 201: Schema.Unknown },
+};
 
-export type __ENDPOINTS_END__ = t.TypeOf<typeof __ENDPOINTS_END__>;
-export const __ENDPOINTS_END__ = t.type({});
+// </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
@@ -297,7 +288,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -328,7 +319,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -367,7 +358,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   request<
     TMethod extends keyof EndpointByMethod,
@@ -436,7 +427,7 @@ export class ApiClient {
         return withResponse ? typedResponse : data;
       });
 
-    return promise as Extract<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"];
+    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }

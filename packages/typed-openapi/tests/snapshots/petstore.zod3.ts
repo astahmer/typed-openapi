@@ -1,463 +1,279 @@
-import { Type, Static } from "@sinclair/typebox";
+import { z } from "zod";
 
-export type Order = Static<typeof Order>;
-export const Order = Type.Partial(
-  Type.Object({
-    id: Type.Number(),
-    petId: Type.Number(),
-    quantity: Type.Number(),
-    shipDate: Type.String(),
-    status: Type.Union([Type.Literal("placed"), Type.Literal("approved"), Type.Literal("delivered")]),
-    complete: Type.Boolean(),
-  }),
-);
+// <Schemas>
+export type Order = z.infer<typeof Order>;
+export const Order = z
+  .object({
+    id: z.number().int(),
+    petId: z.number().int(),
+    quantity: z.number().int(),
+    shipDate: z.string().datetime(),
+    status: z.enum(["placed", "approved", "delivered"]),
+    complete: z.boolean(),
+  })
+  .partial();
 
-export type Address = Static<typeof Address>;
-export const Address = Type.Partial(
-  Type.Object({
-    street: Type.String(),
-    city: Type.String(),
-    state: Type.String(),
-    zip: Type.String(),
-  }),
-);
+export type Address = z.infer<typeof Address>;
+export const Address = z.object({ street: z.string(), city: z.string(), state: z.string(), zip: z.string() }).partial();
 
-export type Customer = Static<typeof Customer>;
-export const Customer = Type.Partial(
-  Type.Object({
-    id: Type.Number(),
-    username: Type.String(),
-    address: Type.Array(Address),
-  }),
-);
+export type Customer = z.infer<typeof Customer>;
+export const Customer = z.object({ id: z.number().int(), username: z.string(), address: z.array(Address) }).partial();
 
-export type Category = Static<typeof Category>;
-export const Category = Type.Partial(
-  Type.Object({
-    id: Type.Number(),
-    name: Type.String(),
-  }),
-);
+export type Category = z.infer<typeof Category>;
+export const Category = z.object({ id: z.number().int(), name: z.string() }).partial();
 
-export type User = Static<typeof User>;
-export const User = Type.Partial(
-  Type.Object({
-    id: Type.Number(),
-    username: Type.String(),
-    firstName: Type.String(),
-    lastName: Type.String(),
-    email: Type.String(),
-    password: Type.String(),
-    phone: Type.String(),
-    userStatus: Type.Number(),
-  }),
-);
+export type User = z.infer<typeof User>;
+export const User = z
+  .object({
+    id: z.number().int(),
+    username: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
+    email: z.string(),
+    password: z.string(),
+    phone: z.string(),
+    userStatus: z.number().int(),
+  })
+  .partial();
 
-export type Tag = Static<typeof Tag>;
-export const Tag = Type.Partial(
-  Type.Object({
-    id: Type.Number(),
-    name: Type.String(),
-  }),
-);
+export type Tag = z.infer<typeof Tag>;
+export const Tag = z.object({ id: z.number().int(), name: z.string() }).partial();
 
-export type Pet = Static<typeof Pet>;
-export const Pet = Type.Object({
-  id: Type.Optional(Type.Union([Type.Number(), Type.Undefined()])),
-  name: Type.String(),
-  category: Type.Optional(Type.Union([Category, Type.Undefined()])),
-  photoUrls: Type.Array(Type.String()),
-  tags: Type.Optional(Type.Union([Type.Array(Tag), Type.Undefined()])),
-  status: Type.Optional(
-    Type.Union([
-      Type.Union([Type.Literal("available"), Type.Literal("pending"), Type.Literal("sold")]),
-      Type.Undefined(),
-    ]),
-  ),
+export type Pet = z.infer<typeof Pet>;
+export const Pet = z.object({
+  id: z.number().int().optional(),
+  name: z.string(),
+  category: Category.optional(),
+  photoUrls: z.array(z.string()),
+  tags: z.array(Tag).optional(),
+  status: z.enum(["available", "pending", "sold"]).optional(),
 });
 
-export type ApiResponse = Static<typeof ApiResponse>;
-export const ApiResponse = Type.Partial(
-  Type.Object({
-    code: Type.Number(),
-    type: Type.String(),
-    message: Type.String(),
-  }),
-);
+export type ApiResponse = z.infer<typeof ApiResponse>;
+export const ApiResponse = z.object({ code: z.number().int(), type: z.string(), message: z.string() }).partial();
 
-type __ENDPOINTS_START__ = Static<typeof __ENDPOINTS_START__>;
-const __ENDPOINTS_START__ = Type.Object({});
+// </Schemas>
 
-export type put_UpdatePet = Static<typeof put_UpdatePet>;
-export const put_UpdatePet = Type.Object({
-  method: Type.Literal("PUT"),
-  path: Type.Literal("/pet"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    body: Pet,
-  }),
-  responses: Type.Object({
+// <Endpoints>
+export type put_UpdatePet = typeof put_UpdatePet;
+export const put_UpdatePet = {
+  method: z.literal("PUT"),
+  path: z.literal("/pet"),
+  requestFormat: z.literal("json"),
+  parameters: { body: Pet },
+  responses: { 200: Pet, 400: z.unknown(), 404: z.unknown(), 405: z.unknown() },
+};
+
+export type post_AddPet = typeof post_AddPet;
+export const post_AddPet = {
+  method: z.literal("POST"),
+  path: z.literal("/pet"),
+  requestFormat: z.literal("json"),
+  parameters: { body: Pet },
+  responses: { 200: Pet, 405: z.unknown() },
+};
+
+export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
+export const get_FindPetsByStatus = {
+  method: z.literal("GET"),
+  path: z.literal("/pet/findByStatus"),
+  requestFormat: z.literal("json"),
+  parameters: { query: z.object({ status: z.enum(["available", "pending", "sold"]) }).partial() },
+  responses: { 200: z.array(Pet), 304: z.unknown(), 400: z.object({ code: z.number().int(), message: z.string() }) },
+};
+
+export type get_FindPetsByTags = typeof get_FindPetsByTags;
+export const get_FindPetsByTags = {
+  method: z.literal("GET"),
+  path: z.literal("/pet/findByTags"),
+  requestFormat: z.literal("json"),
+  parameters: { query: z.object({ tags: z.array(z.string()) }).partial() },
+  responses: { 200: z.union([z.array(Pet), z.array(User), z.array(Tag)]), 400: z.unknown() },
+};
+
+export type get_GetPetById = typeof get_GetPetById;
+export const get_GetPetById = {
+  method: z.literal("GET"),
+  path: z.literal("/pet/{petId}"),
+  requestFormat: z.literal("json"),
+  parameters: { path: z.object({ petId: z.number().int() }) },
+  responses: {
     200: Pet,
-    400: Type.Unknown(),
-    404: Type.Unknown(),
-    405: Type.Unknown(),
-  }),
-});
+    400: z.object({ code: z.number().int(), message: z.string() }),
+    404: z.object({ code: z.number().int(), message: z.string() }),
+  },
+};
 
-export type post_AddPet = Static<typeof post_AddPet>;
-export const post_AddPet = Type.Object({
-  method: Type.Literal("POST"),
-  path: Type.Literal("/pet"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    body: Pet,
-  }),
-  responses: Type.Object({
-    200: Pet,
-    405: Type.Unknown(),
-  }),
-});
+export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
+export const post_UpdatePetWithForm = {
+  method: z.literal("POST"),
+  path: z.literal("/pet/{petId}"),
+  requestFormat: z.literal("json"),
+  parameters: {
+    query: z.object({ name: z.string(), status: z.string() }).partial(),
+    path: z.object({ petId: z.number().int() }),
+  },
+  responses: { 405: z.unknown() },
+};
 
-export type get_FindPetsByStatus = Static<typeof get_FindPetsByStatus>;
-export const get_FindPetsByStatus = Type.Object({
-  method: Type.Literal("GET"),
-  path: Type.Literal("/pet/findByStatus"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    query: Type.Partial(
-      Type.Object({
-        status: Type.Union([Type.Literal("available"), Type.Literal("pending"), Type.Literal("sold")]),
-      }),
-    ),
-  }),
-  responses: Type.Object({
-    200: Type.Array(Pet),
-    304: Type.Unknown(),
-    400: Type.Object({
-      code: Type.Number(),
-      message: Type.String(),
-    }),
-  }),
-});
+export type delete_DeletePet = typeof delete_DeletePet;
+export const delete_DeletePet = {
+  method: z.literal("DELETE"),
+  path: z.literal("/pet/{petId}"),
+  requestFormat: z.literal("json"),
+  parameters: { path: z.object({ petId: z.number().int() }), header: z.object({ api_key: z.string() }).partial() },
+  responses: { 400: z.unknown() },
+};
 
-export type get_FindPetsByTags = Static<typeof get_FindPetsByTags>;
-export const get_FindPetsByTags = Type.Object({
-  method: Type.Literal("GET"),
-  path: Type.Literal("/pet/findByTags"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    query: Type.Partial(
-      Type.Object({
-        tags: Type.Array(Type.String()),
-      }),
-    ),
-  }),
-  responses: Type.Object({
-    200: Type.Union([Type.Array(Pet), Type.Array(User), Type.Array(Tag)]),
-    400: Type.Unknown(),
-  }),
-});
+export type post_UploadFile = typeof post_UploadFile;
+export const post_UploadFile = {
+  method: z.literal("POST"),
+  path: z.literal("/pet/{petId}/uploadImage"),
+  requestFormat: z.literal("binary"),
+  parameters: {
+    query: z.object({ additionalMetadata: z.string() }).partial(),
+    path: z.object({ petId: z.number().int() }),
+    body: z.string(),
+  },
+  responses: { 200: ApiResponse },
+};
 
-export type get_GetPetById = Static<typeof get_GetPetById>;
-export const get_GetPetById = Type.Object({
-  method: Type.Literal("GET"),
-  path: Type.Literal("/pet/{petId}"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    path: Type.Object({
-      petId: Type.Number(),
-    }),
-  }),
-  responses: Type.Object({
-    200: Pet,
-    400: Type.Object({
-      code: Type.Number(),
-      message: Type.String(),
-    }),
-    404: Type.Object({
-      code: Type.Number(),
-      message: Type.String(),
-    }),
-  }),
-});
+export type get_GetInventory = typeof get_GetInventory;
+export const get_GetInventory = {
+  method: z.literal("GET"),
+  path: z.literal("/store/inventory"),
+  requestFormat: z.literal("json"),
+  parameters: z.never(),
+  responses: { 200: z.record(z.record(z.string(), z.number().int()), z.number().int()) },
+};
 
-export type post_UpdatePetWithForm = Static<typeof post_UpdatePetWithForm>;
-export const post_UpdatePetWithForm = Type.Object({
-  method: Type.Literal("POST"),
-  path: Type.Literal("/pet/{petId}"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    query: Type.Partial(
-      Type.Object({
-        name: Type.String(),
-        status: Type.String(),
-      }),
-    ),
-    path: Type.Object({
-      petId: Type.Number(),
-    }),
-  }),
-  responses: Type.Object({
-    405: Type.Unknown(),
-  }),
-});
+export type post_PlaceOrder = typeof post_PlaceOrder;
+export const post_PlaceOrder = {
+  method: z.literal("POST"),
+  path: z.literal("/store/order"),
+  requestFormat: z.literal("json"),
+  parameters: { body: Order },
+  responses: { 200: Order, 405: z.unknown() },
+};
 
-export type delete_DeletePet = Static<typeof delete_DeletePet>;
-export const delete_DeletePet = Type.Object({
-  method: Type.Literal("DELETE"),
-  path: Type.Literal("/pet/{petId}"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    path: Type.Object({
-      petId: Type.Number(),
-    }),
-    header: Type.Partial(
-      Type.Object({
-        api_key: Type.String(),
-      }),
-    ),
-  }),
-  responses: Type.Object({
-    400: Type.Unknown(),
-  }),
-});
+export type get_GetOrderById = typeof get_GetOrderById;
+export const get_GetOrderById = {
+  method: z.literal("GET"),
+  path: z.literal("/store/order/{orderId}"),
+  requestFormat: z.literal("json"),
+  parameters: { path: z.object({ orderId: z.number().int() }) },
+  responses: { 200: Order, 400: z.unknown(), 404: z.unknown() },
+};
 
-export type post_UploadFile = Static<typeof post_UploadFile>;
-export const post_UploadFile = Type.Object({
-  method: Type.Literal("POST"),
-  path: Type.Literal("/pet/{petId}/uploadImage"),
-  requestFormat: Type.Literal("binary"),
-  parameters: Type.Object({
-    query: Type.Partial(
-      Type.Object({
-        additionalMetadata: Type.String(),
-      }),
-    ),
-    path: Type.Object({
-      petId: Type.Number(),
-    }),
-    body: Type.String(),
-  }),
-  responses: Type.Object({
-    200: ApiResponse,
-  }),
-});
+export type delete_DeleteOrder = typeof delete_DeleteOrder;
+export const delete_DeleteOrder = {
+  method: z.literal("DELETE"),
+  path: z.literal("/store/order/{orderId}"),
+  requestFormat: z.literal("json"),
+  parameters: { path: z.object({ orderId: z.number().int() }) },
+  responses: { 400: z.unknown(), 404: z.unknown() },
+};
 
-export type get_GetInventory = Static<typeof get_GetInventory>;
-export const get_GetInventory = Type.Object({
-  method: Type.Literal("GET"),
-  path: Type.Literal("/store/inventory"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Never(),
-  responses: Type.Object({
-    200: Type.Record(Type.String(), Type.Number()),
-  }),
-});
+export type post_CreateUser = typeof post_CreateUser;
+export const post_CreateUser = {
+  method: z.literal("POST"),
+  path: z.literal("/user"),
+  requestFormat: z.literal("json"),
+  parameters: { body: User },
+  responses: { default: User },
+};
 
-export type post_PlaceOrder = Static<typeof post_PlaceOrder>;
-export const post_PlaceOrder = Type.Object({
-  method: Type.Literal("POST"),
-  path: Type.Literal("/store/order"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    body: Order,
-  }),
-  responses: Type.Object({
-    200: Order,
-    405: Type.Unknown(),
-  }),
-});
+export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput;
+export const post_CreateUsersWithListInput = {
+  method: z.literal("POST"),
+  path: z.literal("/user/createWithList"),
+  requestFormat: z.literal("json"),
+  parameters: { body: z.array(User) },
+  responses: { 200: User, default: z.unknown() },
+};
 
-export type get_GetOrderById = Static<typeof get_GetOrderById>;
-export const get_GetOrderById = Type.Object({
-  method: Type.Literal("GET"),
-  path: Type.Literal("/store/order/{orderId}"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    path: Type.Object({
-      orderId: Type.Number(),
-    }),
-  }),
-  responses: Type.Object({
-    200: Order,
-    400: Type.Unknown(),
-    404: Type.Unknown(),
-  }),
-});
+export type get_LoginUser = typeof get_LoginUser;
+export const get_LoginUser = {
+  method: z.literal("GET"),
+  path: z.literal("/user/login"),
+  requestFormat: z.literal("json"),
+  parameters: { query: z.object({ username: z.string(), password: z.string() }).partial() },
+  responses: { 200: z.string(), 400: z.unknown() },
+  responseHeaders: {
+    200: z.object({ "X-Rate-Limit": z.unknown(), "X-Expires-After": z.unknown() }),
+    400: z.object({ "X-Error": z.unknown() }),
+  },
+};
 
-export type delete_DeleteOrder = Static<typeof delete_DeleteOrder>;
-export const delete_DeleteOrder = Type.Object({
-  method: Type.Literal("DELETE"),
-  path: Type.Literal("/store/order/{orderId}"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    path: Type.Object({
-      orderId: Type.Number(),
-    }),
-  }),
-  responses: Type.Object({
-    400: Type.Unknown(),
-    404: Type.Unknown(),
-  }),
-});
+export type get_LogoutUser = typeof get_LogoutUser;
+export const get_LogoutUser = {
+  method: z.literal("GET"),
+  path: z.literal("/user/logout"),
+  requestFormat: z.literal("json"),
+  parameters: z.never(),
+  responses: { default: z.unknown() },
+};
 
-export type post_CreateUser = Static<typeof post_CreateUser>;
-export const post_CreateUser = Type.Object({
-  method: Type.Literal("POST"),
-  path: Type.Literal("/user"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    body: User,
-  }),
-  responses: Type.Object({
-    default: User,
-  }),
-});
-
-export type post_CreateUsersWithListInput = Static<typeof post_CreateUsersWithListInput>;
-export const post_CreateUsersWithListInput = Type.Object({
-  method: Type.Literal("POST"),
-  path: Type.Literal("/user/createWithList"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    body: Type.Array(User),
-  }),
-  responses: Type.Object({
+export type get_GetUserByName = typeof get_GetUserByName;
+export const get_GetUserByName = {
+  method: z.literal("GET"),
+  path: z.literal("/user/{username}"),
+  requestFormat: z.literal("json"),
+  parameters: { path: z.object({ username: z.string() }) },
+  responses: {
     200: User,
-    default: Type.Unknown(),
-  }),
-});
+    201: z.object({ id: z.number().int(), username: z.string() }),
+    400: z.object({ code: z.number().int(), message: z.string() }),
+    404: z.unknown(),
+  },
+};
 
-export type get_LoginUser = Static<typeof get_LoginUser>;
-export const get_LoginUser = Type.Object({
-  method: Type.Literal("GET"),
-  path: Type.Literal("/user/login"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    query: Type.Partial(
-      Type.Object({
-        username: Type.String(),
-        password: Type.String(),
-      }),
-    ),
-  }),
-  responses: Type.Object({
-    200: Type.String(),
-    400: Type.Unknown(),
-  }),
-  responseHeaders: Type.Object({
-    200: Type.Object({
-      "X-Rate-Limit": Type.Number(),
-      "X-Expires-After": Type.String(),
-    }),
-    400: Type.Object({
-      "X-Error": Type.String(),
-    }),
-  }),
-});
+export type put_UpdateUser = typeof put_UpdateUser;
+export const put_UpdateUser = {
+  method: z.literal("PUT"),
+  path: z.literal("/user/{username}"),
+  requestFormat: z.literal("json"),
+  parameters: { path: z.object({ username: z.string() }), body: User },
+  responses: { default: z.unknown() },
+};
 
-export type get_LogoutUser = Static<typeof get_LogoutUser>;
-export const get_LogoutUser = Type.Object({
-  method: Type.Literal("GET"),
-  path: Type.Literal("/user/logout"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Never(),
-  responses: Type.Object({
-    default: Type.Unknown(),
-  }),
-});
+export type delete_DeleteUser = typeof delete_DeleteUser;
+export const delete_DeleteUser = {
+  method: z.literal("DELETE"),
+  path: z.literal("/user/{username}"),
+  requestFormat: z.literal("json"),
+  parameters: { path: z.object({ username: z.string() }) },
+  responses: { 400: z.unknown(), 404: z.unknown() },
+};
 
-export type get_GetUserByName = Static<typeof get_GetUserByName>;
-export const get_GetUserByName = Type.Object({
-  method: Type.Literal("GET"),
-  path: Type.Literal("/user/{username}"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    path: Type.Object({
-      username: Type.String(),
-    }),
-  }),
-  responses: Type.Object({
-    200: User,
-    201: Type.Object({
-      id: Type.Number(),
-      username: Type.String(),
-    }),
-    400: Type.Object({
-      code: Type.Number(),
-      message: Type.String(),
-    }),
-    404: Type.Unknown(),
-  }),
-});
+export type get_GetPetTextPlain = typeof get_GetPetTextPlain;
+export const get_GetPetTextPlain = {
+  method: z.literal("GET"),
+  path: z.literal("/pet/text"),
+  requestFormat: z.literal("json"),
+  parameters: z.never(),
+  responses: { 200: User },
+};
 
-export type put_UpdateUser = Static<typeof put_UpdateUser>;
-export const put_UpdateUser = Type.Object({
-  method: Type.Literal("PUT"),
-  path: Type.Literal("/user/{username}"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    path: Type.Object({
-      username: Type.String(),
-    }),
-    body: User,
-  }),
-  responses: Type.Object({
-    default: Type.Unknown(),
-  }),
-});
+export type get_GetPetEmpty = typeof get_GetPetEmpty;
+export const get_GetPetEmpty = {
+  method: z.literal("GET"),
+  path: z.literal("/pet/empty"),
+  requestFormat: z.literal("json"),
+  parameters: z.never(),
+  responses: { 204: z.unknown() },
+};
 
-export type delete_DeleteUser = Static<typeof delete_DeleteUser>;
-export const delete_DeleteUser = Type.Object({
-  method: Type.Literal("DELETE"),
-  path: Type.Literal("/user/{username}"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    path: Type.Object({
-      username: Type.String(),
-    }),
-  }),
-  responses: Type.Object({
-    400: Type.Unknown(),
-    404: Type.Unknown(),
-  }),
-});
+export type get_GetPetCustom = typeof get_GetPetCustom;
+export const get_GetPetCustom = {
+  method: z.literal("GET"),
+  path: z.literal("/pet/custom"),
+  requestFormat: z.literal("json"),
+  parameters: z.never(),
+  responses: { 200: Pet },
+};
 
-export type get_GetPetTextPlain = Static<typeof get_GetPetTextPlain>;
-export const get_GetPetTextPlain = Type.Object({
-  method: Type.Literal("GET"),
-  path: Type.Literal("/pet/text"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Never(),
-  responses: Type.Object({
-    200: User,
-  }),
-});
-
-export type get_GetPetEmpty = Static<typeof get_GetPetEmpty>;
-export const get_GetPetEmpty = Type.Object({
-  method: Type.Literal("GET"),
-  path: Type.Literal("/pet/empty"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Never(),
-  responses: Type.Object({
-    204: Type.Unknown(),
-  }),
-});
-
-export type get_GetPetCustom = Static<typeof get_GetPetCustom>;
-export const get_GetPetCustom = Type.Object({
-  method: Type.Literal("GET"),
-  path: Type.Literal("/pet/custom"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Never(),
-  responses: Type.Object({
-    200: Pet,
-  }),
-});
-
-type __ENDPOINTS_END__ = Static<typeof __ENDPOINTS_END__>;
-const __ENDPOINTS_END__ = Type.Object({});
+// </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
@@ -748,7 +564,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -779,7 +595,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -810,7 +626,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -841,7 +657,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -880,7 +696,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   request<
     TMethod extends keyof EndpointByMethod,
@@ -949,7 +765,7 @@ export class ApiClient {
         return withResponse ? typedResponse : data;
       });
 
-    return promise as Extract<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"];
+    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }

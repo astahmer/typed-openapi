@@ -1,31 +1,29 @@
-import y from "yup";
+import { Schema as S } from "@effect/schema";
 
+// <Schemas>
+// </Schemas>
+
+// <Endpoints>
 export type get_Get_users = typeof get_Get_users;
 export const get_Get_users = {
-  method: y.mixed((value): value is "GET" => value === "GET").required(),
-  path: y.mixed((value): value is "/users" => value === "/users").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.mixed((value): value is never => false).required(),
-  responses: y.object({
-    "200": y.array(y.string().required()),
-  }),
+  method: S.Literal("GET"),
+  path: S.Literal("/users"),
+  requestFormat: S.Literal("json"),
+  parameters: S.Never,
+  responses: { 200: S.Array(S.String) },
 };
 
 export type post_Very_very_very_very_very_very_very_very_very_very_long =
   typeof post_Very_very_very_very_very_very_very_very_very_very_long;
 export const post_Very_very_very_very_very_very_very_very_very_very_long = {
-  method: y.mixed((value): value is "POST" => value === "POST").required(),
-  path: y.mixed((value): value is "/users" => value === "/users").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    body: y.object({
-      username: y.string().required().optional(),
-    }),
-  }),
-  responses: y.object({
-    "201": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("POST"),
+  path: S.Literal("/users"),
+  requestFormat: S.Literal("json"),
+  parameters: { body: S.partial(S.Struct({ username: S.String })) },
+  responses: { 201: S.Unknown },
 };
+
+// </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
@@ -290,7 +288,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -321,7 +319,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -360,7 +358,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   request<
     TMethod extends keyof EndpointByMethod,
@@ -429,7 +427,7 @@ export class ApiClient {
         return withResponse ? typedResponse : data;
       });
 
-    return promise as Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"];
+    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }

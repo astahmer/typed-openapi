@@ -18,16 +18,16 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 - **withResponse & throwOnStatusError**: Get a union-style response object or throw on configured error status codes,
   with full type inference
 - **TanStack Query integration**: with `withResponse` and `selectFn` options for advanced success/error handling
-- Or you can also generate a client with runtime validation using one of the following runtimes:
-  - [zod](https://zod.dev/)
-  - [typebox](https://github.com/sinclairzx81/typebox)
-  - [arktype](https://arktype.io/)
-  - [valibot](https://valibot.dev/)
-  - [io-ts](https://gcanti.github.io/io-ts/)
-  - [yup](https://github.com/jquense/yup)
+- Or you can also generate a client with runtime validation using one of the following runtimes (first-party adapters):
+  - [zod](https://zod.dev/) v4 (`--runtime zod`) and v3 (`--runtime zod3`)
+  - [effect](https://effect.website/) Schema v4 (`--runtime effect`) and v3 / `@effect/schema` (`--runtime effect3`)
+  - [valibot](https://valibot.dev/) (`--runtime valibot`)
+  - [arktype](https://arktype.io/) (`--runtime arktype`)
 
-The generated client is a single file that can be used in the browser or in node. Runtime validation schemas are
-provided by the excellent [typebox-codegen](https://github.com/sinclairzx81/typebox-codegen)
+The generated client is a single file that can be used in the browser or in node. Runtime schemas are emitted by
+typed-openapi's own Schema IR + runtime adapters (no Sinclair codegen). Use `--validation loose|formats|strict` to
+control how deep OpenAPI constraints (`format`, `minLength`, …) are applied. Install the chosen runtime as a peer
+dependency in your app.
 
 ## Install & usage
 
@@ -45,7 +45,7 @@ npx typed-openapi -h
 ```
 
 ```sh
-typed-openapi/2.0.0
+typed-openapi/3.0.0
 
 Usage:
   $ typed-openapi <input>
@@ -58,7 +58,8 @@ For more info, run any command with the `--help` flag:
 
 Options:
   -o, --output <path>             Output path for the api client ts file (defaults to `<input>.<runtime>.ts`)
-  -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: Type<"arktype" | "io-ts" | "none" | "typebox" | "valibot" | "yup" | "zod"> (default: none)
+  -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: none | zod | zod3 | effect | effect3 | valibot | arktype (default: none)
+  --validation <level>            Validation depth: loose | formats | strict (default: strict when runtime ≠ none)
   --format                        Format generated files with oxfmt (defaults to false) (default: false)
   --schemas-only                  Only generate schemas, skipping client generation (defaults to false) (default: false)
   --include-client                Include API client types and implementation (defaults to true) (default: true)
@@ -73,14 +74,11 @@ Options:
 
 ## Non-goals
 
-- Caring too much about the runtime validation code. If that works (thanks to
-  [typebox-codegen](https://github.com/sinclairzx81/typebox-codegen)), that's great, otherwise I'm not really interested
-  in fixing it. If you are, feel free to open a PR.
+- Shipping every historical runtime (yup / io-ts / typebox). The adapter contract makes those easy to add later; v3
+  focuses on zod, effect, valibot, and arktype.
 
-- Supporting all the OpenAPI spec. Regex, dates, files, whatever, that's not the point here.
-  [openapi-zod-client](https://github.com/astahmer/openapi-zod-client) does a great job at that, but it's slow to
-  generate the client and the suggestions in the IDE are not instant. I'm only interested in supporting the subset of
-  the spec that makes the API client typesafe and fast to provide suggetions in the IDE.
+- Being a full JSON Schema validator suite for exotic media types. Constraints (`format`, bounds, patterns, …) are
+  supported via `--validation`, but the priority remains a fast, typesafe API client.
 
 - Splitting the generated client into multiple files. Nope. Been there, done that. Let's keep it simple.
 

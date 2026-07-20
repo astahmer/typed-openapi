@@ -1,14 +1,16 @@
 import { z } from "zod";
 
+// <Schemas>
+// </Schemas>
+
+// <Endpoints>
 export type get_Get_users = typeof get_Get_users;
 export const get_Get_users = {
   method: z.literal("GET"),
   path: z.literal("/users"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  responses: z.object({
-    "200": z.array(z.string()),
-  }),
+  responses: { 200: z.array(z.string()) },
 };
 
 export type post_Very_very_very_very_very_very_very_very_very_very_long =
@@ -17,15 +19,11 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   method: z.literal("POST"),
   path: z.literal("/users"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    body: z.object({
-      username: z.string().optional(),
-    }),
-  }),
-  responses: z.object({
-    "201": z.unknown(),
-  }),
+  parameters: { body: z.object({ username: z.string() }).partial() },
+  responses: { 201: z.unknown() },
 };
+
+// </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
@@ -290,7 +288,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -321,7 +319,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -360,7 +358,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   request<
     TMethod extends keyof EndpointByMethod,
@@ -429,7 +427,7 @@ export class ApiClient {
         return withResponse ? typedResponse : data;
       });
 
-    return promise as Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"];
+    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }

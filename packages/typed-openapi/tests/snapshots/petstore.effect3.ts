@@ -1,448 +1,278 @@
-import y from "yup";
+import { Schema as S } from "@effect/schema";
 
-export type Order = y.InferType<typeof Order>;
-export const Order = y.object({
-  id: y.number().required().optional(),
-  petId: y.number().required().optional(),
-  quantity: y.number().required().optional(),
-  shipDate: y.string().required().optional(),
-  status: y.mixed().oneOf(["placed", "approved", "delivered"]).required().optional(),
-  complete: y.boolean().required().optional(),
+// <Schemas>
+export const Order = S.partial(
+  S.Struct({
+    id: S.Int,
+    petId: S.Int,
+    quantity: S.Int,
+    shipDate: S.String,
+    status: S.Union(S.Literal("placed"), S.Literal("approved"), S.Literal("delivered")),
+    complete: S.Boolean,
+  }),
+);
+export type Order = S.Schema.Type<typeof Order>;
+
+export const Address = S.partial(S.Struct({ street: S.String, city: S.String, state: S.String, zip: S.String }));
+export type Address = S.Schema.Type<typeof Address>;
+
+export const Customer = S.partial(S.Struct({ id: S.Int, username: S.String, address: S.Array(Address) }));
+export type Customer = S.Schema.Type<typeof Customer>;
+
+export const Category = S.partial(S.Struct({ id: S.Int, name: S.String }));
+export type Category = S.Schema.Type<typeof Category>;
+
+export const User = S.partial(
+  S.Struct({
+    id: S.Int,
+    username: S.String,
+    firstName: S.String,
+    lastName: S.String,
+    email: S.String,
+    password: S.String,
+    phone: S.String,
+    userStatus: S.Int,
+  }),
+);
+export type User = S.Schema.Type<typeof User>;
+
+export const Tag = S.partial(S.Struct({ id: S.Int, name: S.String }));
+export type Tag = S.Schema.Type<typeof Tag>;
+
+export const Pet = S.Struct({
+  id: S.optional(S.Int),
+  name: S.String,
+  category: S.optional(Category),
+  photoUrls: S.Array(S.String),
+  tags: S.optional(S.Array(Tag)),
+  status: S.optional(S.Union(S.Literal("available"), S.Literal("pending"), S.Literal("sold"))),
 });
+export type Pet = S.Schema.Type<typeof Pet>;
 
-export type Address = y.InferType<typeof Address>;
-export const Address = y.object({
-  street: y.string().required().optional(),
-  city: y.string().required().optional(),
-  state: y.string().required().optional(),
-  zip: y.string().required().optional(),
-});
+export const ApiResponse = S.partial(S.Struct({ code: S.Int, type: S.String, message: S.String }));
+export type ApiResponse = S.Schema.Type<typeof ApiResponse>;
 
-export type Customer = y.InferType<typeof Customer>;
-export const Customer = y.object({
-  id: y.number().required().optional(),
-  username: y.string().required().optional(),
-  address: y.array(Address).optional(),
-});
+// </Schemas>
 
-export type Category = y.InferType<typeof Category>;
-export const Category = y.object({
-  id: y.number().required().optional(),
-  name: y.string().required().optional(),
-});
-
-export type User = y.InferType<typeof User>;
-export const User = y.object({
-  id: y.number().required().optional(),
-  username: y.string().required().optional(),
-  firstName: y.string().required().optional(),
-  lastName: y.string().required().optional(),
-  email: y.string().required().optional(),
-  password: y.string().required().optional(),
-  phone: y.string().required().optional(),
-  userStatus: y.number().required().optional(),
-});
-
-export type Tag = y.InferType<typeof Tag>;
-export const Tag = y.object({
-  id: y.number().required().optional(),
-  name: y.string().required().optional(),
-});
-
-export type Pet = y.InferType<typeof Pet>;
-export const Pet = y.object({
-  id: y
-    .mixed()
-    .oneOf([y.number().required(), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required()
-    .optional(),
-  name: y.string().required(),
-  category: y
-    .mixed()
-    .oneOf([Category, y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required()
-    .optional(),
-  photoUrls: y.array(y.string().required()),
-  tags: y
-    .mixed()
-    .oneOf([y.array(Tag), y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>])
-    .required()
-    .optional(),
-  status: y
-    .mixed()
-    .oneOf([
-      y.mixed().oneOf(["available", "pending", "sold"]).required(),
-      y.mixed((value): value is any => value === undefined) as y.MixedSchema<undefined>,
-    ])
-    .required()
-    .optional(),
-});
-
-export type ApiResponse = y.InferType<typeof ApiResponse>;
-export const ApiResponse = y.object({
-  code: y.number().required().optional(),
-  type: y.string().required().optional(),
-  message: y.string().required().optional(),
-});
-
+// <Endpoints>
 export type put_UpdatePet = typeof put_UpdatePet;
 export const put_UpdatePet = {
-  method: y.mixed((value): value is "PUT" => value === "PUT").required(),
-  path: y.mixed((value): value is "/pet" => value === "/pet").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    body: Pet,
-  }),
-  responses: y.object({
-    "200": Pet,
-    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-    "405": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("PUT"),
+  path: S.Literal("/pet"),
+  requestFormat: S.Literal("json"),
+  parameters: { body: Pet },
+  responses: { 200: Pet, 400: S.Unknown, 404: S.Unknown, 405: S.Unknown },
 };
 
 export type post_AddPet = typeof post_AddPet;
 export const post_AddPet = {
-  method: y.mixed((value): value is "POST" => value === "POST").required(),
-  path: y.mixed((value): value is "/pet" => value === "/pet").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    body: Pet,
-  }),
-  responses: y.object({
-    "200": Pet,
-    "405": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("POST"),
+  path: S.Literal("/pet"),
+  requestFormat: S.Literal("json"),
+  parameters: { body: Pet },
+  responses: { 200: Pet, 405: S.Unknown },
 };
 
 export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
 export const get_FindPetsByStatus = {
-  method: y.mixed((value): value is "GET" => value === "GET").required(),
-  path: y.mixed((value): value is "/pet/findByStatus" => value === "/pet/findByStatus").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    query: y.object({
-      status: y.mixed().oneOf(["available", "pending", "sold"]).required().optional(),
-    }),
-  }),
-  responses: y.object({
-    "200": y.array(Pet),
-    "304": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-    "400": y.object({
-      code: y.number().required(),
-      message: y.string().required(),
-    }),
-  }),
+  method: S.Literal("GET"),
+  path: S.Literal("/pet/findByStatus"),
+  requestFormat: S.Literal("json"),
+  parameters: {
+    query: S.partial(S.Struct({ status: S.Union(S.Literal("available"), S.Literal("pending"), S.Literal("sold")) })),
+  },
+  responses: { 200: S.Array(Pet), 304: S.Unknown, 400: S.Struct({ code: S.Int, message: S.String }) },
 };
 
 export type get_FindPetsByTags = typeof get_FindPetsByTags;
 export const get_FindPetsByTags = {
-  method: y.mixed((value): value is "GET" => value === "GET").required(),
-  path: y.mixed((value): value is "/pet/findByTags" => value === "/pet/findByTags").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    query: y.object({
-      tags: y.array(y.string().required()).optional(),
-    }),
-  }),
-  responses: y.object({
-    "200": y
-      .mixed()
-      .oneOf([y.array(Pet), y.array(User), y.array(Tag)])
-      .required(),
-    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("GET"),
+  path: S.Literal("/pet/findByTags"),
+  requestFormat: S.Literal("json"),
+  parameters: { query: S.partial(S.Struct({ tags: S.Array(S.String) })) },
+  responses: { 200: S.Union(S.Array(Pet), S.Array(User), S.Array(Tag)), 400: S.Unknown },
 };
 
 export type get_GetPetById = typeof get_GetPetById;
 export const get_GetPetById = {
-  method: y.mixed((value): value is "GET" => value === "GET").required(),
-  path: y.mixed((value): value is "/pet/{petId}" => value === "/pet/{petId}").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    path: y.object({
-      petId: y.number().required(),
-    }),
-  }),
-  responses: y.object({
-    "200": Pet,
-    "400": y.object({
-      code: y.number().required(),
-      message: y.string().required(),
-    }),
-    "404": y.object({
-      code: y.number().required(),
-      message: y.string().required(),
-    }),
-  }),
+  method: S.Literal("GET"),
+  path: S.Literal("/pet/{petId}"),
+  requestFormat: S.Literal("json"),
+  parameters: { path: S.Struct({ petId: S.Int }) },
+  responses: {
+    200: Pet,
+    400: S.Struct({ code: S.Int, message: S.String }),
+    404: S.Struct({ code: S.Int, message: S.String }),
+  },
 };
 
 export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
 export const post_UpdatePetWithForm = {
-  method: y.mixed((value): value is "POST" => value === "POST").required(),
-  path: y.mixed((value): value is "/pet/{petId}" => value === "/pet/{petId}").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    query: y.object({
-      name: y.string().required().optional(),
-      status: y.string().required().optional(),
-    }),
-    path: y.object({
-      petId: y.number().required(),
-    }),
-  }),
-  responses: y.object({
-    "405": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("POST"),
+  path: S.Literal("/pet/{petId}"),
+  requestFormat: S.Literal("json"),
+  parameters: { query: S.partial(S.Struct({ name: S.String, status: S.String })), path: S.Struct({ petId: S.Int }) },
+  responses: { 405: S.Unknown },
 };
 
 export type delete_DeletePet = typeof delete_DeletePet;
 export const delete_DeletePet = {
-  method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
-  path: y.mixed((value): value is "/pet/{petId}" => value === "/pet/{petId}").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    path: y.object({
-      petId: y.number().required(),
-    }),
-    header: y.object({
-      api_key: y.string().required().optional(),
-    }),
-  }),
-  responses: y.object({
-    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("DELETE"),
+  path: S.Literal("/pet/{petId}"),
+  requestFormat: S.Literal("json"),
+  parameters: { path: S.Struct({ petId: S.Int }), header: S.partial(S.Struct({ api_key: S.String })) },
+  responses: { 400: S.Unknown },
 };
 
 export type post_UploadFile = typeof post_UploadFile;
 export const post_UploadFile = {
-  method: y.mixed((value): value is "POST" => value === "POST").required(),
-  path: y.mixed((value): value is "/pet/{petId}/uploadImage" => value === "/pet/{petId}/uploadImage").required(),
-  requestFormat: y.mixed((value): value is "binary" => value === "binary").required(),
-  parameters: y.object({
-    query: y.object({
-      additionalMetadata: y.string().required().optional(),
-    }),
-    path: y.object({
-      petId: y.number().required(),
-    }),
-    body: y.string().required(),
-  }),
-  responses: y.object({
-    "200": ApiResponse,
-  }),
+  method: S.Literal("POST"),
+  path: S.Literal("/pet/{petId}/uploadImage"),
+  requestFormat: S.Literal("binary"),
+  parameters: {
+    query: S.partial(S.Struct({ additionalMetadata: S.String })),
+    path: S.Struct({ petId: S.Int }),
+    body: S.String,
+  },
+  responses: { 200: ApiResponse },
 };
 
 export type get_GetInventory = typeof get_GetInventory;
 export const get_GetInventory = {
-  method: y.mixed((value): value is "GET" => value === "GET").required(),
-  path: y.mixed((value): value is "/store/inventory" => value === "/store/inventory").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.mixed((value): value is never => false).required(),
-  responses: y.object({
-    "200": y.mixed(/* unsupported */),
-  }),
+  method: S.Literal("GET"),
+  path: S.Literal("/store/inventory"),
+  requestFormat: S.Literal("json"),
+  parameters: S.Never,
+  responses: { 200: S.Record({ key: S.Record({ key: S.String, value: S.Int }), value: S.Int }) },
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;
 export const post_PlaceOrder = {
-  method: y.mixed((value): value is "POST" => value === "POST").required(),
-  path: y.mixed((value): value is "/store/order" => value === "/store/order").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    body: Order,
-  }),
-  responses: y.object({
-    "200": Order,
-    "405": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("POST"),
+  path: S.Literal("/store/order"),
+  requestFormat: S.Literal("json"),
+  parameters: { body: Order },
+  responses: { 200: Order, 405: S.Unknown },
 };
 
 export type get_GetOrderById = typeof get_GetOrderById;
 export const get_GetOrderById = {
-  method: y.mixed((value): value is "GET" => value === "GET").required(),
-  path: y.mixed((value): value is "/store/order/{orderId}" => value === "/store/order/{orderId}").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    path: y.object({
-      orderId: y.number().required(),
-    }),
-  }),
-  responses: y.object({
-    "200": Order,
-    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("GET"),
+  path: S.Literal("/store/order/{orderId}"),
+  requestFormat: S.Literal("json"),
+  parameters: { path: S.Struct({ orderId: S.Int }) },
+  responses: { 200: Order, 400: S.Unknown, 404: S.Unknown },
 };
 
 export type delete_DeleteOrder = typeof delete_DeleteOrder;
 export const delete_DeleteOrder = {
-  method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
-  path: y.mixed((value): value is "/store/order/{orderId}" => value === "/store/order/{orderId}").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    path: y.object({
-      orderId: y.number().required(),
-    }),
-  }),
-  responses: y.object({
-    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("DELETE"),
+  path: S.Literal("/store/order/{orderId}"),
+  requestFormat: S.Literal("json"),
+  parameters: { path: S.Struct({ orderId: S.Int }) },
+  responses: { 400: S.Unknown, 404: S.Unknown },
 };
 
 export type post_CreateUser = typeof post_CreateUser;
 export const post_CreateUser = {
-  method: y.mixed((value): value is "POST" => value === "POST").required(),
-  path: y.mixed((value): value is "/user" => value === "/user").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    body: User,
-  }),
-  responses: y.object({
-    default: User,
-  }),
+  method: S.Literal("POST"),
+  path: S.Literal("/user"),
+  requestFormat: S.Literal("json"),
+  parameters: { body: User },
+  responses: { default: User },
 };
 
 export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput;
 export const post_CreateUsersWithListInput = {
-  method: y.mixed((value): value is "POST" => value === "POST").required(),
-  path: y.mixed((value): value is "/user/createWithList" => value === "/user/createWithList").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    body: y.array(User),
-  }),
-  responses: y.object({
-    "200": User,
-    default: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("POST"),
+  path: S.Literal("/user/createWithList"),
+  requestFormat: S.Literal("json"),
+  parameters: { body: S.Array(User) },
+  responses: { 200: User, default: S.Unknown },
 };
 
 export type get_LoginUser = typeof get_LoginUser;
 export const get_LoginUser = {
-  method: y.mixed((value): value is "GET" => value === "GET").required(),
-  path: y.mixed((value): value is "/user/login" => value === "/user/login").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    query: y.object({
-      username: y.string().required().optional(),
-      password: y.string().required().optional(),
-    }),
-  }),
-  responses: y.object({
-    "200": y.string().required(),
-    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
-  responseHeaders: y.object({
-    "200": y.object({
-      "X-Rate-Limit": y.number().required(),
-      "X-Expires-After": y.string().required(),
-    }),
-    "400": y.object({
-      "X-Error": y.string().required(),
-    }),
-  }),
+  method: S.Literal("GET"),
+  path: S.Literal("/user/login"),
+  requestFormat: S.Literal("json"),
+  parameters: { query: S.partial(S.Struct({ username: S.String, password: S.String })) },
+  responses: { 200: S.String, 400: S.Unknown },
+  responseHeaders: {
+    200: S.Struct({ "X-Rate-Limit": S.Unknown, "X-Expires-After": S.Unknown }),
+    400: S.Struct({ "X-Error": S.Unknown }),
+  },
 };
 
 export type get_LogoutUser = typeof get_LogoutUser;
 export const get_LogoutUser = {
-  method: y.mixed((value): value is "GET" => value === "GET").required(),
-  path: y.mixed((value): value is "/user/logout" => value === "/user/logout").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.mixed((value): value is never => false).required(),
-  responses: y.object({
-    default: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("GET"),
+  path: S.Literal("/user/logout"),
+  requestFormat: S.Literal("json"),
+  parameters: S.Never,
+  responses: { default: S.Unknown },
 };
 
 export type get_GetUserByName = typeof get_GetUserByName;
 export const get_GetUserByName = {
-  method: y.mixed((value): value is "GET" => value === "GET").required(),
-  path: y.mixed((value): value is "/user/{username}" => value === "/user/{username}").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    path: y.object({
-      username: y.string().required(),
-    }),
-  }),
-  responses: y.object({
-    "200": User,
-    "201": y.object({
-      id: y.number().required(),
-      username: y.string().required(),
-    }),
-    "400": y.object({
-      code: y.number().required(),
-      message: y.string().required(),
-    }),
-    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("GET"),
+  path: S.Literal("/user/{username}"),
+  requestFormat: S.Literal("json"),
+  parameters: { path: S.Struct({ username: S.String }) },
+  responses: {
+    200: User,
+    201: S.Struct({ id: S.Int, username: S.String }),
+    400: S.Struct({ code: S.Int, message: S.String }),
+    404: S.Unknown,
+  },
 };
 
 export type put_UpdateUser = typeof put_UpdateUser;
 export const put_UpdateUser = {
-  method: y.mixed((value): value is "PUT" => value === "PUT").required(),
-  path: y.mixed((value): value is "/user/{username}" => value === "/user/{username}").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    path: y.object({
-      username: y.string().required(),
-    }),
-    body: User,
-  }),
-  responses: y.object({
-    default: y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("PUT"),
+  path: S.Literal("/user/{username}"),
+  requestFormat: S.Literal("json"),
+  parameters: { path: S.Struct({ username: S.String }), body: User },
+  responses: { default: S.Unknown },
 };
 
 export type delete_DeleteUser = typeof delete_DeleteUser;
 export const delete_DeleteUser = {
-  method: y.mixed((value): value is "DELETE" => value === "DELETE").required(),
-  path: y.mixed((value): value is "/user/{username}" => value === "/user/{username}").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.object({
-    path: y.object({
-      username: y.string().required(),
-    }),
-  }),
-  responses: y.object({
-    "400": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-    "404": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("DELETE"),
+  path: S.Literal("/user/{username}"),
+  requestFormat: S.Literal("json"),
+  parameters: { path: S.Struct({ username: S.String }) },
+  responses: { 400: S.Unknown, 404: S.Unknown },
 };
 
 export type get_GetPetTextPlain = typeof get_GetPetTextPlain;
 export const get_GetPetTextPlain = {
-  method: y.mixed((value): value is "GET" => value === "GET").required(),
-  path: y.mixed((value): value is "/pet/text" => value === "/pet/text").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.mixed((value): value is never => false).required(),
-  responses: y.object({
-    "200": User,
-  }),
+  method: S.Literal("GET"),
+  path: S.Literal("/pet/text"),
+  requestFormat: S.Literal("json"),
+  parameters: S.Never,
+  responses: { 200: User },
 };
 
 export type get_GetPetEmpty = typeof get_GetPetEmpty;
 export const get_GetPetEmpty = {
-  method: y.mixed((value): value is "GET" => value === "GET").required(),
-  path: y.mixed((value): value is "/pet/empty" => value === "/pet/empty").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.mixed((value): value is never => false).required(),
-  responses: y.object({
-    "204": y.mixed((value): value is any => true).required() as y.MixedSchema<unknown>,
-  }),
+  method: S.Literal("GET"),
+  path: S.Literal("/pet/empty"),
+  requestFormat: S.Literal("json"),
+  parameters: S.Never,
+  responses: { 204: S.Unknown },
 };
 
 export type get_GetPetCustom = typeof get_GetPetCustom;
 export const get_GetPetCustom = {
-  method: y.mixed((value): value is "GET" => value === "GET").required(),
-  path: y.mixed((value): value is "/pet/custom" => value === "/pet/custom").required(),
-  requestFormat: y.mixed((value): value is "json" => value === "json").required(),
-  parameters: y.mixed((value): value is never => false).required(),
-  responses: y.object({
-    "200": Pet,
-  }),
+  method: S.Literal("GET"),
+  path: S.Literal("/pet/custom"),
+  requestFormat: S.Literal("json"),
+  parameters: S.Never,
+  responses: { 200: Pet },
 };
+
+// </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
@@ -733,7 +563,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -764,7 +594,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -795,7 +625,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -826,7 +656,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -865,7 +695,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   request<
     TMethod extends keyof EndpointByMethod,
@@ -934,7 +764,7 @@ export class ApiClient {
         return withResponse ? typedResponse : data;
       });
 
-    return promise as Extract<InferResponseByStatus<y.InferType<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"];
+    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }

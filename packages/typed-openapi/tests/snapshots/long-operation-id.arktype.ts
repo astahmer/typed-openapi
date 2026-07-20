@@ -1,42 +1,29 @@
-import { scope, type } from "arktype";
+import { type } from "arktype";
 
-export const types = scope({
-  __ENDPOINTS_START__: type({}),
-  get_Get_users: type({
-    method: '"GET"',
-    path: '"/users"',
-    requestFormat: '"json"',
-    parameters: "never",
-    responses: type({
-      "200": "string[]",
-    }),
-  }),
-  post_Very_very_very_very_very_very_very_very_very_very_long: type({
-    method: '"POST"',
-    path: '"/users"',
-    requestFormat: '"json"',
-    parameters: type({
-      body: type({
-        "username?": "string",
-      }),
-    }),
-    responses: type({
-      "201": "unknown",
-    }),
-  }),
-  __ENDPOINTS_END__: type({}),
-}).export();
+// <Schemas>
+// </Schemas>
 
-export type __ENDPOINTS_START__ = typeof __ENDPOINTS_START__.infer;
-export const __ENDPOINTS_START__ = types.__ENDPOINTS_START__;
-export type get_Get_users = typeof get_Get_users.infer;
-export const get_Get_users = types.get_Get_users;
+// <Endpoints>
+export type get_Get_users = typeof get_Get_users;
+export const get_Get_users = {
+  method: type("GET"),
+  path: type("/users"),
+  requestFormat: type("json"),
+  parameters: type("never"),
+  responses: { 200: type(type("string")).array() },
+};
+
 export type post_Very_very_very_very_very_very_very_very_very_very_long =
-  typeof post_Very_very_very_very_very_very_very_very_very_very_long.infer;
-export const post_Very_very_very_very_very_very_very_very_very_very_long =
-  types.post_Very_very_very_very_very_very_very_very_very_very_long;
-export type __ENDPOINTS_END__ = typeof __ENDPOINTS_END__.infer;
-export const __ENDPOINTS_END__ = types.__ENDPOINTS_END__;
+  typeof post_Very_very_very_very_very_very_very_very_very_very_long;
+export const post_Very_very_very_very_very_very_very_very_very_very_long = {
+  method: type("POST"),
+  path: type("/users"),
+  requestFormat: type("json"),
+  parameters: { body: type({ username: type("string") }).partial() },
+  responses: { 201: type("unknown") },
+};
+
+// </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
@@ -301,7 +288,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint["infer"], SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -332,7 +319,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint["infer"], SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -371,7 +358,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint["infer"], SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   request<
     TMethod extends keyof EndpointByMethod,
@@ -440,7 +427,7 @@ export class ApiClient {
         return withResponse ? typedResponse : data;
       });
 
-    return promise as Extract<InferResponseByStatus<TEndpoint["infer"], SuccessStatusCode>, { data: {} }>["data"];
+    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }

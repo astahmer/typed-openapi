@@ -3,12 +3,12 @@ import { HStack, styled } from "panda/jsx";
 
 const runtimeOptions = [
   { value: "none", label: "None (types only)" },
-  { value: "zod", label: "Zod" },
-  { value: "typebox", label: "Typebox" },
-  { value: "arktype", label: "Arktype" },
+  { value: "zod", label: "Zod (v4)" },
+  { value: "zod3", label: "Zod (v3)" },
+  { value: "effect", label: "Effect Schema (v4)" },
+  { value: "effect3", label: "Effect Schema (v3)" },
   { value: "valibot", label: "Valibot" },
-  { value: "yup", label: "Yup" },
-  { value: "io-ts", label: "io-ts" },
+  { value: "arktype", label: "Arktype" },
 ] as const;
 
 type RuntimeOption = (typeof runtimeOptions)[number];

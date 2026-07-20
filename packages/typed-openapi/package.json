@@ -1,13 +1,20 @@
 {
   "name": "typed-openapi",
   "type": "module",
-  "version": "2.2.7",
+  "version": "3.0.0",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
     "./node": "./dist/node.export.js",
-    "./pretty": "./dist/pretty.export.js"
+    "./pretty": "./dist/pretty.export.js",
+    "./runtimes": "./dist/runtimes.export.js",
+    "./runtimes/zod": "./dist/runtimes/zod.export.js",
+    "./runtimes/zod3": "./dist/runtimes/zod3.export.js",
+    "./runtimes/effect": "./dist/runtimes/effect.export.js",
+    "./runtimes/effect3": "./dist/runtimes/effect3.export.js",
+    "./runtimes/valibot": "./dist/runtimes/valibot.export.js",
+    "./runtimes/arktype": "./dist/runtimes/arktype.export.js"
   },
   "bin": {
     "typed-openapi": "bin.js"
@@ -31,7 +38,6 @@
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^12.1.0",
-    "@sinclair/typebox-codegen": "^0.11.1",
     "arktype": "2.2.0",
     "cac": "7.0.0",
     "openapi3-ts": "4.5.0",
@@ -40,14 +46,41 @@
     "pathe": "2.0.3",
     "ts-pattern": "^5.9.0"
   },
+  "peerDependencies": {
+    "zod": "^3.0.0 || ^4.0.0",
+    "effect": "^3.0.0",
+    "@effect/schema": "^0.75.0",
+    "valibot": "^1.0.0",
+    "arktype": "^2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    },
+    "effect": {
+      "optional": true
+    },
+    "@effect/schema": {
+      "optional": true
+    },
+    "valibot": {
+      "optional": true
+    },
+    "arktype": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
+    "@effect/schema": "^0.75.5",
     "@tanstack/react-query": "5.99.0",
     "@types/node": "^25.6.0",
+    "effect": "^3.16.0",
     "msw": "2.13.3",
     "tstyche": "7.0.0",
     "tsup": "^8.5.1",
     "typescript": "^6.0.2",
+    "valibot": "^1.1.0",
     "vite": "7.3.2",
     "vitest": "^4.1.4",
     "zod": "4.3.6"
@@ -65,11 +98,9 @@
     "runtime",
     "typesafe",
     "zod",
+    "effect",
     "arktype",
-    "typebox",
-    "valibot",
-    "yup",
-    "io-ts"
+    "valibot"
   ],
   "sideEffects": false,
   "publishConfig": {

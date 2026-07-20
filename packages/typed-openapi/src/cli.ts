@@ -14,6 +14,11 @@ cli
     `Runtime to use for validation; defaults to \`none\`; available: ${allowedRuntimes.toString()}`,
     { default: "none" },
   )
+  .option(
+    "--validation <level>",
+    "Validation depth for runtime schemas: `loose` (structure only), `formats` (+ email/uuid/…), `strict` (+ min/max/pattern/…). Default: `strict` when runtime ≠ none",
+    { default: undefined },
+  )
   .option("--format", "Format generated files with oxfmt (defaults to false)", { default: false })
   .option("--schemas-only", "Only generate schemas, skipping client generation (defaults to false)", { default: false })
   .option("--include-client", "Include API client types and implementation (defaults to true)", { default: true })

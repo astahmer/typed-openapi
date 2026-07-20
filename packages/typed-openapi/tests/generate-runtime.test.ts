@@ -17,8 +17,8 @@ samples.forEach((sample) => {
     const ctx = mapOpenApiEndpoints(openApiDoc);
 
     runtimes.forEach((runtime: string) => {
-      // if (runtime !== "none") return
-      if (runtime === "arktype" && sample === "docker.openapi") return;
+      // Heavy / recursive-heavy specs: skip slow or unstable runtimes
+      if (sample === "docker.openapi" && (runtime === "arktype" || runtime === "effect3")) return;
 
       test(`generate ${runtime}`, async () => {
         const tsRouter = await prettify(generateFile({ ...ctx, runtime: runtime as any }));

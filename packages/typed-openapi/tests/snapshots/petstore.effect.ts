@@ -1,435 +1,300 @@
-import t from "io-ts";
+import { Schema } from "effect";
 
-export type Order = t.TypeOf<typeof Order>;
-export const Order = t.type({
-  id: t.union([t.undefined, t.number]),
-  petId: t.union([t.undefined, t.number]),
-  quantity: t.union([t.undefined, t.number]),
-  shipDate: t.union([t.undefined, t.string]),
-  status: t.union([t.undefined, t.union([t.literal("placed"), t.literal("approved"), t.literal("delivered")])]),
-  complete: t.union([t.undefined, t.boolean]),
+// <Schemas>
+export const Order = Schema.partial(
+  Schema.Struct({
+    id: Schema.Int,
+    petId: Schema.Int,
+    quantity: Schema.Int,
+    shipDate: Schema.String,
+    status: Schema.Union([Schema.Literal("placed"), Schema.Literal("approved"), Schema.Literal("delivered")]),
+    complete: Schema.Boolean,
+  }),
+);
+export type Order = typeof Order.Type;
+
+export const Address = Schema.partial(
+  Schema.Struct({ street: Schema.String, city: Schema.String, state: Schema.String, zip: Schema.String }),
+);
+export type Address = typeof Address.Type;
+
+export const Customer = Schema.partial(
+  Schema.Struct({ id: Schema.Int, username: Schema.String, address: Schema.Array(Address) }),
+);
+export type Customer = typeof Customer.Type;
+
+export const Category = Schema.partial(Schema.Struct({ id: Schema.Int, name: Schema.String }));
+export type Category = typeof Category.Type;
+
+export const User = Schema.partial(
+  Schema.Struct({
+    id: Schema.Int,
+    username: Schema.String,
+    firstName: Schema.String,
+    lastName: Schema.String,
+    email: Schema.String,
+    password: Schema.String,
+    phone: Schema.String,
+    userStatus: Schema.Int,
+  }),
+);
+export type User = typeof User.Type;
+
+export const Tag = Schema.partial(Schema.Struct({ id: Schema.Int, name: Schema.String }));
+export type Tag = typeof Tag.Type;
+
+export const Pet = Schema.Struct({
+  id: Schema.optional(Schema.Int),
+  name: Schema.String,
+  category: Schema.optional(Category),
+  photoUrls: Schema.Array(Schema.String),
+  tags: Schema.optional(Schema.Array(Tag)),
+  status: Schema.optional(
+    Schema.Union([Schema.Literal("available"), Schema.Literal("pending"), Schema.Literal("sold")]),
+  ),
 });
+export type Pet = typeof Pet.Type;
 
-export type Address = t.TypeOf<typeof Address>;
-export const Address = t.type({
-  street: t.union([t.undefined, t.string]),
-  city: t.union([t.undefined, t.string]),
-  state: t.union([t.undefined, t.string]),
-  zip: t.union([t.undefined, t.string]),
-});
+export const ApiResponse = Schema.partial(
+  Schema.Struct({ code: Schema.Int, type: Schema.String, message: Schema.String }),
+);
+export type ApiResponse = typeof ApiResponse.Type;
 
-export type Customer = t.TypeOf<typeof Customer>;
-export const Customer = t.type({
-  id: t.union([t.undefined, t.number]),
-  username: t.union([t.undefined, t.string]),
-  address: t.union([t.undefined, t.array(Address)]),
-});
+// </Schemas>
 
-export type Category = t.TypeOf<typeof Category>;
-export const Category = t.type({
-  id: t.union([t.undefined, t.number]),
-  name: t.union([t.undefined, t.string]),
-});
+// <Endpoints>
+export type put_UpdatePet = typeof put_UpdatePet;
+export const put_UpdatePet = {
+  method: Schema.Literal("PUT"),
+  path: Schema.Literal("/pet"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { body: Pet },
+  responses: { 200: Pet, 400: Schema.Unknown, 404: Schema.Unknown, 405: Schema.Unknown },
+};
 
-export type User = t.TypeOf<typeof User>;
-export const User = t.type({
-  id: t.union([t.undefined, t.number]),
-  username: t.union([t.undefined, t.string]),
-  firstName: t.union([t.undefined, t.string]),
-  lastName: t.union([t.undefined, t.string]),
-  email: t.union([t.undefined, t.string]),
-  password: t.union([t.undefined, t.string]),
-  phone: t.union([t.undefined, t.string]),
-  userStatus: t.union([t.undefined, t.number]),
-});
+export type post_AddPet = typeof post_AddPet;
+export const post_AddPet = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/pet"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { body: Pet },
+  responses: { 200: Pet, 405: Schema.Unknown },
+};
 
-export type Tag = t.TypeOf<typeof Tag>;
-export const Tag = t.type({
-  id: t.union([t.undefined, t.number]),
-  name: t.union([t.undefined, t.string]),
-});
+export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
+export const get_FindPetsByStatus = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/pet/findByStatus"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        status: Schema.Union([Schema.Literal("available"), Schema.Literal("pending"), Schema.Literal("sold")]),
+      }),
+    ),
+  },
+  responses: {
+    200: Schema.Array(Pet),
+    304: Schema.Unknown,
+    400: Schema.Struct({ code: Schema.Int, message: Schema.String }),
+  },
+};
 
-export type Pet = t.TypeOf<typeof Pet>;
-export const Pet = t.type({
-  id: t.union([t.undefined, t.union([t.number, t.undefined])]),
-  name: t.string,
-  category: t.union([t.undefined, t.union([Category, t.undefined])]),
-  photoUrls: t.array(t.string),
-  tags: t.union([t.undefined, t.union([t.array(Tag), t.undefined])]),
-  status: t.union([
-    t.undefined,
-    t.union([t.union([t.literal("available"), t.literal("pending"), t.literal("sold")]), t.undefined]),
-  ]),
-});
+export type get_FindPetsByTags = typeof get_FindPetsByTags;
+export const get_FindPetsByTags = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/pet/findByTags"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ tags: Schema.Array(Schema.String) })) },
+  responses: { 200: Schema.Union([Schema.Array(Pet), Schema.Array(User), Schema.Array(Tag)]), 400: Schema.Unknown },
+};
 
-export type ApiResponse = t.TypeOf<typeof ApiResponse>;
-export const ApiResponse = t.type({
-  code: t.union([t.undefined, t.number]),
-  type: t.union([t.undefined, t.string]),
-  message: t.union([t.undefined, t.string]),
-});
+export type get_GetPetById = typeof get_GetPetById;
+export const get_GetPetById = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/pet/{petId}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ petId: Schema.Int }) },
+  responses: {
+    200: Pet,
+    400: Schema.Struct({ code: Schema.Int, message: Schema.String }),
+    404: Schema.Struct({ code: Schema.Int, message: Schema.String }),
+  },
+};
 
-export type __ENDPOINTS_START__ = t.TypeOf<typeof __ENDPOINTS_START__>;
-export const __ENDPOINTS_START__ = t.type({});
+export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
+export const post_UpdatePetWithForm = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/pet/{petId}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ name: Schema.String, status: Schema.String })),
+    path: Schema.Struct({ petId: Schema.Int }),
+  },
+  responses: { 405: Schema.Unknown },
+};
 
-export type put_UpdatePet = t.TypeOf<typeof put_UpdatePet>;
-export const put_UpdatePet = t.type({
-  method: t.literal("PUT"),
-  path: t.literal("/pet"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    body: Pet,
-  }),
-  responses: t.type({
-    "200": Pet,
-    "400": t.unknown,
-    "404": t.unknown,
-    "405": t.unknown,
-  }),
-});
+export type delete_DeletePet = typeof delete_DeletePet;
+export const delete_DeletePet = {
+  method: Schema.Literal("DELETE"),
+  path: Schema.Literal("/pet/{petId}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    path: Schema.Struct({ petId: Schema.Int }),
+    header: Schema.partial(Schema.Struct({ api_key: Schema.String })),
+  },
+  responses: { 400: Schema.Unknown },
+};
 
-export type post_AddPet = t.TypeOf<typeof post_AddPet>;
-export const post_AddPet = t.type({
-  method: t.literal("POST"),
-  path: t.literal("/pet"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    body: Pet,
-  }),
-  responses: t.type({
-    "200": Pet,
-    "405": t.unknown,
-  }),
-});
+export type post_UploadFile = typeof post_UploadFile;
+export const post_UploadFile = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/pet/{petId}/uploadImage"),
+  requestFormat: Schema.Literal("binary"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ additionalMetadata: Schema.String })),
+    path: Schema.Struct({ petId: Schema.Int }),
+    body: Schema.String,
+  },
+  responses: { 200: ApiResponse },
+};
 
-export type get_FindPetsByStatus = t.TypeOf<typeof get_FindPetsByStatus>;
-export const get_FindPetsByStatus = t.type({
-  method: t.literal("GET"),
-  path: t.literal("/pet/findByStatus"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    query: t.type({
-      status: t.union([t.undefined, t.union([t.literal("available"), t.literal("pending"), t.literal("sold")])]),
-    }),
-  }),
-  responses: t.type({
-    "200": t.array(Pet),
-    "304": t.unknown,
-    "400": t.type({
-      code: t.number,
-      message: t.string,
-    }),
-  }),
-});
+export type get_GetInventory = typeof get_GetInventory;
+export const get_GetInventory = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/store/inventory"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: { 200: Schema.Record(Schema.Record(Schema.String, Schema.Int), Schema.Int) },
+};
 
-export type get_FindPetsByTags = t.TypeOf<typeof get_FindPetsByTags>;
-export const get_FindPetsByTags = t.type({
-  method: t.literal("GET"),
-  path: t.literal("/pet/findByTags"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    query: t.type({
-      tags: t.union([t.undefined, t.array(t.string)]),
-    }),
-  }),
-  responses: t.type({
-    "200": t.union([t.array(Pet), t.array(User), t.array(Tag)]),
-    "400": t.unknown,
-  }),
-});
+export type post_PlaceOrder = typeof post_PlaceOrder;
+export const post_PlaceOrder = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/store/order"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { body: Order },
+  responses: { 200: Order, 405: Schema.Unknown },
+};
 
-export type get_GetPetById = t.TypeOf<typeof get_GetPetById>;
-export const get_GetPetById = t.type({
-  method: t.literal("GET"),
-  path: t.literal("/pet/{petId}"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    path: t.type({
-      petId: t.number,
-    }),
-  }),
-  responses: t.type({
-    "200": Pet,
-    "400": t.type({
-      code: t.number,
-      message: t.string,
-    }),
-    "404": t.type({
-      code: t.number,
-      message: t.string,
-    }),
-  }),
-});
+export type get_GetOrderById = typeof get_GetOrderById;
+export const get_GetOrderById = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/store/order/{orderId}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ orderId: Schema.Int }) },
+  responses: { 200: Order, 400: Schema.Unknown, 404: Schema.Unknown },
+};
 
-export type post_UpdatePetWithForm = t.TypeOf<typeof post_UpdatePetWithForm>;
-export const post_UpdatePetWithForm = t.type({
-  method: t.literal("POST"),
-  path: t.literal("/pet/{petId}"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    query: t.type({
-      name: t.union([t.undefined, t.string]),
-      status: t.union([t.undefined, t.string]),
-    }),
-    path: t.type({
-      petId: t.number,
-    }),
-  }),
-  responses: t.type({
-    "405": t.unknown,
-  }),
-});
+export type delete_DeleteOrder = typeof delete_DeleteOrder;
+export const delete_DeleteOrder = {
+  method: Schema.Literal("DELETE"),
+  path: Schema.Literal("/store/order/{orderId}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ orderId: Schema.Int }) },
+  responses: { 400: Schema.Unknown, 404: Schema.Unknown },
+};
 
-export type delete_DeletePet = t.TypeOf<typeof delete_DeletePet>;
-export const delete_DeletePet = t.type({
-  method: t.literal("DELETE"),
-  path: t.literal("/pet/{petId}"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    path: t.type({
-      petId: t.number,
-    }),
-    header: t.type({
-      api_key: t.union([t.undefined, t.string]),
-    }),
-  }),
-  responses: t.type({
-    "400": t.unknown,
-  }),
-});
+export type post_CreateUser = typeof post_CreateUser;
+export const post_CreateUser = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/user"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { body: User },
+  responses: { default: User },
+};
 
-export type post_UploadFile = t.TypeOf<typeof post_UploadFile>;
-export const post_UploadFile = t.type({
-  method: t.literal("POST"),
-  path: t.literal("/pet/{petId}/uploadImage"),
-  requestFormat: t.literal("binary"),
-  parameters: t.type({
-    query: t.type({
-      additionalMetadata: t.union([t.undefined, t.string]),
-    }),
-    path: t.type({
-      petId: t.number,
-    }),
-    body: t.string,
-  }),
-  responses: t.type({
-    "200": ApiResponse,
-  }),
-});
+export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput;
+export const post_CreateUsersWithListInput = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/user/createWithList"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { body: Schema.Array(User) },
+  responses: { 200: User, default: Schema.Unknown },
+};
 
-export type get_GetInventory = t.TypeOf<typeof get_GetInventory>;
-export const get_GetInventory = t.type({
-  method: t.literal("GET"),
-  path: t.literal("/store/inventory"),
-  requestFormat: t.literal("json"),
-  parameters: t.never,
-  responses: t.type({
-    "200": t.record(t.string, t.number),
-  }),
-});
+export type get_LoginUser = typeof get_LoginUser;
+export const get_LoginUser = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/user/login"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ username: Schema.String, password: Schema.String })) },
+  responses: { 200: Schema.String, 400: Schema.Unknown },
+  responseHeaders: {
+    200: Schema.Struct({ "X-Rate-Limit": Schema.Unknown, "X-Expires-After": Schema.Unknown }),
+    400: Schema.Struct({ "X-Error": Schema.Unknown }),
+  },
+};
 
-export type post_PlaceOrder = t.TypeOf<typeof post_PlaceOrder>;
-export const post_PlaceOrder = t.type({
-  method: t.literal("POST"),
-  path: t.literal("/store/order"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    body: Order,
-  }),
-  responses: t.type({
-    "200": Order,
-    "405": t.unknown,
-  }),
-});
+export type get_LogoutUser = typeof get_LogoutUser;
+export const get_LogoutUser = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/user/logout"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: { default: Schema.Unknown },
+};
 
-export type get_GetOrderById = t.TypeOf<typeof get_GetOrderById>;
-export const get_GetOrderById = t.type({
-  method: t.literal("GET"),
-  path: t.literal("/store/order/{orderId}"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    path: t.type({
-      orderId: t.number,
-    }),
-  }),
-  responses: t.type({
-    "200": Order,
-    "400": t.unknown,
-    "404": t.unknown,
-  }),
-});
+export type get_GetUserByName = typeof get_GetUserByName;
+export const get_GetUserByName = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/user/{username}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ username: Schema.String }) },
+  responses: {
+    200: User,
+    201: Schema.Struct({ id: Schema.Int, username: Schema.String }),
+    400: Schema.Struct({ code: Schema.Int, message: Schema.String }),
+    404: Schema.Unknown,
+  },
+};
 
-export type delete_DeleteOrder = t.TypeOf<typeof delete_DeleteOrder>;
-export const delete_DeleteOrder = t.type({
-  method: t.literal("DELETE"),
-  path: t.literal("/store/order/{orderId}"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    path: t.type({
-      orderId: t.number,
-    }),
-  }),
-  responses: t.type({
-    "400": t.unknown,
-    "404": t.unknown,
-  }),
-});
+export type put_UpdateUser = typeof put_UpdateUser;
+export const put_UpdateUser = {
+  method: Schema.Literal("PUT"),
+  path: Schema.Literal("/user/{username}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ username: Schema.String }), body: User },
+  responses: { default: Schema.Unknown },
+};
 
-export type post_CreateUser = t.TypeOf<typeof post_CreateUser>;
-export const post_CreateUser = t.type({
-  method: t.literal("POST"),
-  path: t.literal("/user"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    body: User,
-  }),
-  responses: t.type({
-    default: User,
-  }),
-});
+export type delete_DeleteUser = typeof delete_DeleteUser;
+export const delete_DeleteUser = {
+  method: Schema.Literal("DELETE"),
+  path: Schema.Literal("/user/{username}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ username: Schema.String }) },
+  responses: { 400: Schema.Unknown, 404: Schema.Unknown },
+};
 
-export type post_CreateUsersWithListInput = t.TypeOf<typeof post_CreateUsersWithListInput>;
-export const post_CreateUsersWithListInput = t.type({
-  method: t.literal("POST"),
-  path: t.literal("/user/createWithList"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    body: t.array(User),
-  }),
-  responses: t.type({
-    "200": User,
-    default: t.unknown,
-  }),
-});
+export type get_GetPetTextPlain = typeof get_GetPetTextPlain;
+export const get_GetPetTextPlain = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/pet/text"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: { 200: User },
+};
 
-export type get_LoginUser = t.TypeOf<typeof get_LoginUser>;
-export const get_LoginUser = t.type({
-  method: t.literal("GET"),
-  path: t.literal("/user/login"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    query: t.type({
-      username: t.union([t.undefined, t.string]),
-      password: t.union([t.undefined, t.string]),
-    }),
-  }),
-  responses: t.type({
-    "200": t.string,
-    "400": t.unknown,
-  }),
-  responseHeaders: t.type({
-    "200": t.type({
-      "X-Rate-Limit": t.number,
-      "X-Expires-After": t.string,
-    }),
-    "400": t.type({
-      "X-Error": t.string,
-    }),
-  }),
-});
+export type get_GetPetEmpty = typeof get_GetPetEmpty;
+export const get_GetPetEmpty = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/pet/empty"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: { 204: Schema.Unknown },
+};
 
-export type get_LogoutUser = t.TypeOf<typeof get_LogoutUser>;
-export const get_LogoutUser = t.type({
-  method: t.literal("GET"),
-  path: t.literal("/user/logout"),
-  requestFormat: t.literal("json"),
-  parameters: t.never,
-  responses: t.type({
-    default: t.unknown,
-  }),
-});
+export type get_GetPetCustom = typeof get_GetPetCustom;
+export const get_GetPetCustom = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/pet/custom"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: { 200: Pet },
+};
 
-export type get_GetUserByName = t.TypeOf<typeof get_GetUserByName>;
-export const get_GetUserByName = t.type({
-  method: t.literal("GET"),
-  path: t.literal("/user/{username}"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    path: t.type({
-      username: t.string,
-    }),
-  }),
-  responses: t.type({
-    "200": User,
-    "201": t.type({
-      id: t.number,
-      username: t.string,
-    }),
-    "400": t.type({
-      code: t.number,
-      message: t.string,
-    }),
-    "404": t.unknown,
-  }),
-});
-
-export type put_UpdateUser = t.TypeOf<typeof put_UpdateUser>;
-export const put_UpdateUser = t.type({
-  method: t.literal("PUT"),
-  path: t.literal("/user/{username}"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    path: t.type({
-      username: t.string,
-    }),
-    body: User,
-  }),
-  responses: t.type({
-    default: t.unknown,
-  }),
-});
-
-export type delete_DeleteUser = t.TypeOf<typeof delete_DeleteUser>;
-export const delete_DeleteUser = t.type({
-  method: t.literal("DELETE"),
-  path: t.literal("/user/{username}"),
-  requestFormat: t.literal("json"),
-  parameters: t.type({
-    path: t.type({
-      username: t.string,
-    }),
-  }),
-  responses: t.type({
-    "400": t.unknown,
-    "404": t.unknown,
-  }),
-});
-
-export type get_GetPetTextPlain = t.TypeOf<typeof get_GetPetTextPlain>;
-export const get_GetPetTextPlain = t.type({
-  method: t.literal("GET"),
-  path: t.literal("/pet/text"),
-  requestFormat: t.literal("json"),
-  parameters: t.never,
-  responses: t.type({
-    "200": User,
-  }),
-});
-
-export type get_GetPetEmpty = t.TypeOf<typeof get_GetPetEmpty>;
-export const get_GetPetEmpty = t.type({
-  method: t.literal("GET"),
-  path: t.literal("/pet/empty"),
-  requestFormat: t.literal("json"),
-  parameters: t.never,
-  responses: t.type({
-    "204": t.unknown,
-  }),
-});
-
-export type get_GetPetCustom = t.TypeOf<typeof get_GetPetCustom>;
-export const get_GetPetCustom = t.type({
-  method: t.literal("GET"),
-  path: t.literal("/pet/custom"),
-  requestFormat: t.literal("json"),
-  parameters: t.never,
-  responses: t.type({
-    "200": Pet,
-  }),
-});
-
-export type __ENDPOINTS_END__ = t.TypeOf<typeof __ENDPOINTS_END__>;
-export const __ENDPOINTS_END__ = t.type({});
+// </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
@@ -720,7 +585,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -751,7 +616,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -782,7 +647,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -813,7 +678,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -852,7 +717,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   request<
     TMethod extends keyof EndpointByMethod,
@@ -921,7 +786,7 @@ export class ApiClient {
         return withResponse ? typedResponse : data;
       });
 
-    return promise as Extract<InferResponseByStatus<t.TypeOf<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"];
+    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }

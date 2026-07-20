@@ -1,0 +1,3643 @@
+import { Schema } from "effect";
+
+// <Schemas>
+export const Port = Schema.Struct({
+  IP: Schema.optional(Schema.String),
+  PrivatePort: Schema.Int,
+  PublicPort: Schema.optional(Schema.Int),
+  Type: Schema.Union([Schema.Literal("tcp"), Schema.Literal("udp"), Schema.Literal("sctp")]),
+});
+export type Port = typeof Port.Type;
+
+export const MountPoint = Schema.partial(
+  Schema.Struct({
+    Type: Schema.Union([
+      Schema.Literal("bind"),
+      Schema.Literal("volume"),
+      Schema.Literal("tmpfs"),
+      Schema.Literal("npipe"),
+      Schema.Literal("cluster"),
+    ]),
+    Name: Schema.String,
+    Source: Schema.String,
+    Destination: Schema.String,
+    Driver: Schema.String,
+    Mode: Schema.String,
+    RW: Schema.Boolean,
+    Propagation: Schema.String,
+  }),
+);
+export type MountPoint = typeof MountPoint.Type;
+
+export const DeviceMapping = Schema.partial(
+  Schema.Struct({ PathOnHost: Schema.String, PathInContainer: Schema.String, CgroupPermissions: Schema.String }),
+);
+export type DeviceMapping = typeof DeviceMapping.Type;
+
+export const DeviceRequest = Schema.partial(
+  Schema.Struct({
+    Driver: Schema.String,
+    Count: Schema.Int,
+    DeviceIDs: Schema.Array(Schema.String),
+    Capabilities: Schema.Array(Schema.Array(Schema.String)),
+    Options: Schema.Record(Schema.String, Schema.String),
+  }),
+);
+export type DeviceRequest = typeof DeviceRequest.Type;
+
+export const ThrottleDevice = Schema.partial(
+  Schema.Struct({ Path: Schema.String, Rate: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)) }),
+);
+export type ThrottleDevice = typeof ThrottleDevice.Type;
+
+export const Mount = Schema.partial(
+  Schema.Struct({
+    Target: Schema.String,
+    Source: Schema.String,
+    Type: Schema.Union([
+      Schema.Literal("bind"),
+      Schema.Literal("volume"),
+      Schema.Literal("tmpfs"),
+      Schema.Literal("npipe"),
+      Schema.Literal("cluster"),
+    ]),
+    ReadOnly: Schema.Boolean,
+    Consistency: Schema.String,
+    BindOptions: Schema.partial(
+      Schema.Struct({
+        Propagation: Schema.Union([
+          Schema.Literal("private"),
+          Schema.Literal("rprivate"),
+          Schema.Literal("shared"),
+          Schema.Literal("rshared"),
+          Schema.Literal("slave"),
+          Schema.Literal("rslave"),
+        ]),
+        NonRecursive: Schema.Boolean,
+        CreateMountpoint: Schema.Boolean,
+      }),
+    ),
+    VolumeOptions: Schema.partial(
+      Schema.Struct({
+        NoCopy: Schema.Boolean,
+        Labels: Schema.Record(Schema.String, Schema.String),
+        DriverConfig: Schema.partial(
+          Schema.Struct({ Name: Schema.String, Options: Schema.Record(Schema.String, Schema.String) }),
+        ),
+      }),
+    ),
+    TmpfsOptions: Schema.partial(Schema.Struct({ SizeBytes: Schema.Int, Mode: Schema.Int })),
+  }),
+);
+export type Mount = typeof Mount.Type;
+
+export const RestartPolicy = Schema.partial(
+  Schema.Struct({
+    Name: Schema.Union([
+      Schema.Literal(""),
+      Schema.Literal("no"),
+      Schema.Literal("always"),
+      Schema.Literal("unless-stopped"),
+      Schema.Literal("on-failure"),
+    ]),
+    MaximumRetryCount: Schema.Int,
+  }),
+);
+export type RestartPolicy = typeof RestartPolicy.Type;
+
+export const Resources = Schema.partial(
+  Schema.Struct({
+    CpuShares: Schema.Int,
+    Memory: Schema.Int,
+    CgroupParent: Schema.String,
+    BlkioWeight: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0), Schema.isLessThanOrEqualTo(1000)),
+    BlkioWeightDevice: Schema.Array(
+      Schema.partial(
+        Schema.Struct({ Path: Schema.String, Weight: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)) }),
+      ),
+    ),
+    BlkioDeviceReadBps: Schema.Array(ThrottleDevice),
+    BlkioDeviceWriteBps: Schema.Array(ThrottleDevice),
+    BlkioDeviceReadIOps: Schema.Array(ThrottleDevice),
+    BlkioDeviceWriteIOps: Schema.Array(ThrottleDevice),
+    CpuPeriod: Schema.Int,
+    CpuQuota: Schema.Int,
+    CpuRealtimePeriod: Schema.Int,
+    CpuRealtimeRuntime: Schema.Int,
+    CpusetCpus: Schema.String,
+    CpusetMems: Schema.String,
+    Devices: Schema.Array(DeviceMapping),
+    DeviceCgroupRules: Schema.Array(Schema.String),
+    DeviceRequests: Schema.Array(DeviceRequest),
+    KernelMemoryTCP: Schema.Int,
+    MemoryReservation: Schema.Int,
+    MemorySwap: Schema.Int,
+    MemorySwappiness: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0), Schema.isLessThanOrEqualTo(100)),
+    NanoCpus: Schema.Int,
+    OomKillDisable: Schema.Boolean,
+    Init: Schema.NullOr(Schema.Boolean),
+    PidsLimit: Schema.NullOr(Schema.Int),
+    Ulimits: Schema.Array(Schema.partial(Schema.Struct({ Name: Schema.String, Soft: Schema.Int, Hard: Schema.Int }))),
+    CpuCount: Schema.Int,
+    CpuPercent: Schema.Int,
+    IOMaximumIOps: Schema.Int,
+    IOMaximumBandwidth: Schema.Int,
+  }),
+);
+export type Resources = typeof Resources.Type;
+
+export const Limit = Schema.partial(Schema.Struct({ NanoCPUs: Schema.Int, MemoryBytes: Schema.Int, Pids: Schema.Int }));
+export type Limit = typeof Limit.Type;
+
+export const GenericResources = Schema.Array(
+  Schema.partial(
+    Schema.Struct({
+      NamedResourceSpec: Schema.partial(Schema.Struct({ Kind: Schema.String, Value: Schema.String })),
+      DiscreteResourceSpec: Schema.partial(Schema.Struct({ Kind: Schema.String, Value: Schema.Int })),
+    }),
+  ),
+);
+export type GenericResources = typeof GenericResources.Type;
+
+export const ResourceObject = Schema.partial(
+  Schema.Struct({ NanoCPUs: Schema.Int, MemoryBytes: Schema.Int, GenericResources: GenericResources }),
+);
+export type ResourceObject = typeof ResourceObject.Type;
+
+export const HealthConfig = Schema.partial(
+  Schema.Struct({
+    Test: Schema.Array(Schema.String),
+    Interval: Schema.Int,
+    Timeout: Schema.Int,
+    Retries: Schema.Int,
+    StartPeriod: Schema.Int,
+  }),
+);
+export type HealthConfig = typeof HealthConfig.Type;
+
+export const HealthcheckResult = Schema.NullOr(
+  Schema.partial(
+    Schema.Struct({ Start: Schema.String, End: Schema.String, ExitCode: Schema.Int, Output: Schema.String }),
+  ),
+);
+export type HealthcheckResult = typeof HealthcheckResult.Type;
+
+export const Health = Schema.NullOr(
+  Schema.partial(
+    Schema.Struct({
+      Status: Schema.Union([
+        Schema.Literal("none"),
+        Schema.Literal("starting"),
+        Schema.Literal("healthy"),
+        Schema.Literal("unhealthy"),
+      ]),
+      FailingStreak: Schema.Int,
+      Log: Schema.Array(HealthcheckResult),
+    }),
+  ),
+);
+export type Health = typeof Health.Type;
+
+export const PortBinding = Schema.partial(Schema.Struct({ HostIp: Schema.String, HostPort: Schema.String }));
+export type PortBinding = typeof PortBinding.Type;
+
+export const PortMap = Schema.Record(Schema.String, Schema.NullOr(Schema.Array(PortBinding)));
+export type PortMap = typeof PortMap.Type;
+
+export const HostConfig = Schema.extend(
+  Resources,
+  Schema.partial(
+    Schema.Struct({
+      Binds: Schema.Array(Schema.String),
+      ContainerIDFile: Schema.String,
+      LogConfig: Schema.partial(
+        Schema.Struct({
+          Type: Schema.Union([
+            Schema.Literal("json-file"),
+            Schema.Literal("syslog"),
+            Schema.Literal("journald"),
+            Schema.Literal("gelf"),
+            Schema.Literal("fluentd"),
+            Schema.Literal("awslogs"),
+            Schema.Literal("splunk"),
+            Schema.Literal("etwlogs"),
+            Schema.Literal("none"),
+          ]),
+          Config: Schema.Record(Schema.String, Schema.String),
+        }),
+      ),
+      NetworkMode: Schema.String,
+      PortBindings: PortMap,
+      RestartPolicy: RestartPolicy,
+      AutoRemove: Schema.Boolean,
+      VolumeDriver: Schema.String,
+      VolumesFrom: Schema.Array(Schema.String),
+      Mounts: Schema.Array(Mount),
+      ConsoleSize: Schema.NullOr(
+        Schema.Array(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))).check(
+          Schema.isMinLength(2),
+          Schema.isMaxLength(2),
+        ),
+      ),
+      Annotations: Schema.Record(Schema.String, Schema.String),
+      CapAdd: Schema.Array(Schema.String),
+      CapDrop: Schema.Array(Schema.String),
+      CgroupnsMode: Schema.Union([Schema.Literal("private"), Schema.Literal("host")]),
+      Dns: Schema.Array(Schema.String),
+      DnsOptions: Schema.Array(Schema.String),
+      DnsSearch: Schema.Array(Schema.String),
+      ExtraHosts: Schema.Array(Schema.String),
+      GroupAdd: Schema.Array(Schema.String),
+      IpcMode: Schema.String,
+      Cgroup: Schema.String,
+      Links: Schema.Array(Schema.String),
+      OomScoreAdj: Schema.Int,
+      PidMode: Schema.String,
+      Privileged: Schema.Boolean,
+      PublishAllPorts: Schema.Boolean,
+      ReadonlyRootfs: Schema.Boolean,
+      SecurityOpt: Schema.Array(Schema.String),
+      StorageOpt: Schema.Record(Schema.String, Schema.String),
+      Tmpfs: Schema.Record(Schema.String, Schema.String),
+      UTSMode: Schema.String,
+      UsernsMode: Schema.String,
+      ShmSize: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)),
+      Sysctls: Schema.Record(Schema.String, Schema.String),
+      Runtime: Schema.String,
+      Isolation: Schema.Union([Schema.Literal("default"), Schema.Literal("process"), Schema.Literal("hyperv")]),
+      MaskedPaths: Schema.Array(Schema.String),
+      ReadonlyPaths: Schema.Array(Schema.String),
+    }),
+  ),
+);
+export type HostConfig = typeof HostConfig.Type;
+
+export const ContainerConfig = Schema.partial(
+  Schema.Struct({
+    Hostname: Schema.String,
+    Domainname: Schema.String,
+    User: Schema.String,
+    AttachStdin: Schema.Boolean,
+    AttachStdout: Schema.Boolean,
+    AttachStderr: Schema.Boolean,
+    ExposedPorts: Schema.NullOr(Schema.Record(Schema.String, Schema.partial(Schema.Struct({})))),
+    Tty: Schema.Boolean,
+    OpenStdin: Schema.Boolean,
+    StdinOnce: Schema.Boolean,
+    Env: Schema.Array(Schema.String),
+    Cmd: Schema.Array(Schema.String),
+    Healthcheck: HealthConfig,
+    ArgsEscaped: Schema.NullOr(Schema.Boolean),
+    Image: Schema.String,
+    Volumes: Schema.Record(Schema.String, Schema.partial(Schema.Struct({}))),
+    WorkingDir: Schema.String,
+    Entrypoint: Schema.Array(Schema.String),
+    NetworkDisabled: Schema.NullOr(Schema.Boolean),
+    MacAddress: Schema.NullOr(Schema.String),
+    OnBuild: Schema.NullOr(Schema.Array(Schema.String)),
+    Labels: Schema.Record(Schema.String, Schema.String),
+    StopSignal: Schema.NullOr(Schema.String),
+    StopTimeout: Schema.NullOr(Schema.Int),
+    Shell: Schema.NullOr(Schema.Array(Schema.String)),
+  }),
+);
+export type ContainerConfig = typeof ContainerConfig.Type;
+
+export const EndpointIPAMConfig = Schema.NullOr(
+  Schema.partial(
+    Schema.Struct({
+      IPv4Address: Schema.String,
+      IPv6Address: Schema.String,
+      LinkLocalIPs: Schema.Array(Schema.String),
+    }),
+  ),
+);
+export type EndpointIPAMConfig = typeof EndpointIPAMConfig.Type;
+
+export const EndpointSettings = Schema.partial(
+  Schema.Struct({
+    IPAMConfig: EndpointIPAMConfig,
+    Links: Schema.Array(Schema.String),
+    Aliases: Schema.Array(Schema.String),
+    NetworkID: Schema.String,
+    EndpointID: Schema.String,
+    Gateway: Schema.String,
+    IPAddress: Schema.String,
+    IPPrefixLen: Schema.Int,
+    IPv6Gateway: Schema.String,
+    GlobalIPv6Address: Schema.String,
+    GlobalIPv6PrefixLen: Schema.Int,
+    MacAddress: Schema.String,
+    DriverOpts: Schema.NullOr(Schema.Record(Schema.String, Schema.String)),
+  }),
+);
+export type EndpointSettings = typeof EndpointSettings.Type;
+
+export const NetworkingConfig = Schema.partial(
+  Schema.Struct({ EndpointsConfig: Schema.Record(Schema.String, EndpointSettings) }),
+);
+export type NetworkingConfig = typeof NetworkingConfig.Type;
+
+export const Address = Schema.partial(Schema.Struct({ Addr: Schema.String, PrefixLen: Schema.Int }));
+export type Address = typeof Address.Type;
+
+export const NetworkSettings = Schema.partial(
+  Schema.Struct({
+    Bridge: Schema.String,
+    SandboxID: Schema.String,
+    HairpinMode: Schema.Boolean,
+    LinkLocalIPv6Address: Schema.String,
+    LinkLocalIPv6PrefixLen: Schema.Int,
+    Ports: PortMap,
+    SandboxKey: Schema.String,
+    SecondaryIPAddresses: Schema.NullOr(Schema.Array(Address)),
+    SecondaryIPv6Addresses: Schema.NullOr(Schema.Array(Address)),
+    EndpointID: Schema.String,
+    Gateway: Schema.String,
+    GlobalIPv6Address: Schema.String,
+    GlobalIPv6PrefixLen: Schema.Int,
+    IPAddress: Schema.String,
+    IPPrefixLen: Schema.Int,
+    IPv6Gateway: Schema.String,
+    MacAddress: Schema.String,
+    Networks: Schema.Record(Schema.String, EndpointSettings),
+  }),
+);
+export type NetworkSettings = typeof NetworkSettings.Type;
+
+export const GraphDriverData = Schema.Struct({
+  Name: Schema.String,
+  Data: Schema.Record(Schema.String, Schema.String),
+});
+export type GraphDriverData = typeof GraphDriverData.Type;
+
+export const ChangeType = Schema.Union([Schema.Literal(0), Schema.Literal(1), Schema.Literal(2)]);
+export type ChangeType = typeof ChangeType.Type;
+
+export const FilesystemChange = Schema.Struct({ Path: Schema.String, Kind: ChangeType });
+export type FilesystemChange = typeof FilesystemChange.Type;
+
+export const ImageInspect = Schema.partial(
+  Schema.Struct({
+    Id: Schema.String,
+    RepoTags: Schema.Array(Schema.String),
+    RepoDigests: Schema.Array(Schema.String),
+    Parent: Schema.String,
+    Comment: Schema.String,
+    Created: Schema.String,
+    Container: Schema.String,
+    ContainerConfig: ContainerConfig,
+    DockerVersion: Schema.String,
+    Author: Schema.String,
+    Config: ContainerConfig,
+    Architecture: Schema.String,
+    Variant: Schema.NullOr(Schema.String),
+    Os: Schema.String,
+    OsVersion: Schema.NullOr(Schema.String),
+    Size: Schema.Int,
+    VirtualSize: Schema.Int,
+    GraphDriver: GraphDriverData,
+    RootFS: Schema.Struct({ Type: Schema.String, Layers: Schema.optional(Schema.Array(Schema.String)) }),
+    Metadata: Schema.partial(Schema.Struct({ LastTagTime: Schema.NullOr(Schema.String) })),
+  }),
+);
+export type ImageInspect = typeof ImageInspect.Type;
+
+export const ImageSummary = Schema.Struct({
+  Id: Schema.String,
+  ParentId: Schema.String,
+  RepoTags: Schema.Array(Schema.String),
+  RepoDigests: Schema.Array(Schema.String),
+  Created: Schema.Int,
+  Size: Schema.Int,
+  SharedSize: Schema.Int,
+  VirtualSize: Schema.optional(Schema.Int),
+  Labels: Schema.Record(Schema.String, Schema.String),
+  Containers: Schema.Int,
+});
+export type ImageSummary = typeof ImageSummary.Type;
+
+export const AuthConfig = Schema.partial(
+  Schema.Struct({
+    username: Schema.String,
+    password: Schema.String,
+    email: Schema.String,
+    serveraddress: Schema.String,
+  }),
+);
+export type AuthConfig = typeof AuthConfig.Type;
+
+export const ProcessConfig = Schema.partial(
+  Schema.Struct({
+    privileged: Schema.Boolean,
+    user: Schema.String,
+    tty: Schema.Boolean,
+    entrypoint: Schema.String,
+    arguments: Schema.Array(Schema.String),
+  }),
+);
+export type ProcessConfig = typeof ProcessConfig.Type;
+
+export const ObjectVersion = Schema.partial(Schema.Struct({ Index: Schema.Int }));
+export type ObjectVersion = typeof ObjectVersion.Type;
+
+export const Topology = Schema.Record(Schema.String, Schema.String);
+export type Topology = typeof Topology.Type;
+
+export const ClusterVolumeSpec = Schema.partial(
+  Schema.Struct({
+    Group: Schema.String,
+    AccessMode: Schema.partial(
+      Schema.Struct({
+        Scope: Schema.Union([Schema.Literal("single"), Schema.Literal("multi")]),
+        Sharing: Schema.Union([
+          Schema.Literal("none"),
+          Schema.Literal("readonly"),
+          Schema.Literal("onewriter"),
+          Schema.Literal("all"),
+        ]),
+        MountVolume: Schema.partial(Schema.Struct({})),
+        Secrets: Schema.Array(Schema.partial(Schema.Struct({ Key: Schema.String, Secret: Schema.String }))),
+        AccessibilityRequirements: Schema.partial(
+          Schema.Struct({ Requisite: Schema.Array(Topology), Preferred: Schema.Array(Topology) }),
+        ),
+        CapacityRange: Schema.partial(Schema.Struct({ RequiredBytes: Schema.Int, LimitBytes: Schema.Int })),
+        Availability: Schema.Union([Schema.Literal("active"), Schema.Literal("pause"), Schema.Literal("drain")]),
+      }),
+    ),
+  }),
+);
+export type ClusterVolumeSpec = typeof ClusterVolumeSpec.Type;
+
+export const ClusterVolume = Schema.partial(
+  Schema.Struct({
+    ID: Schema.String,
+    Version: ObjectVersion,
+    CreatedAt: Schema.String,
+    UpdatedAt: Schema.String,
+    Spec: ClusterVolumeSpec,
+    Info: Schema.partial(
+      Schema.Struct({
+        CapacityBytes: Schema.Int,
+        VolumeContext: Schema.Record(Schema.String, Schema.String),
+        VolumeID: Schema.String,
+        AccessibleTopology: Schema.Array(Topology),
+      }),
+    ),
+    PublishStatus: Schema.Array(
+      Schema.partial(
+        Schema.Struct({
+          NodeID: Schema.String,
+          State: Schema.Union([
+            Schema.Literal("pending-publish"),
+            Schema.Literal("published"),
+            Schema.Literal("pending-node-unpublish"),
+            Schema.Literal("pending-controller-unpublish"),
+          ]),
+          PublishContext: Schema.Record(Schema.String, Schema.String),
+        }),
+      ),
+    ),
+  }),
+);
+export type ClusterVolume = typeof ClusterVolume.Type;
+
+export const Volume = Schema.Struct({
+  Name: Schema.String,
+  Driver: Schema.String,
+  Mountpoint: Schema.String,
+  CreatedAt: Schema.optional(Schema.String),
+  Status: Schema.optional(Schema.Record(Schema.String, Schema.partial(Schema.Struct({})))),
+  Labels: Schema.Record(Schema.String, Schema.String),
+  Scope: Schema.Union([Schema.Literal("local"), Schema.Literal("global")]),
+  ClusterVolume: Schema.optional(ClusterVolume),
+  Options: Schema.Record(Schema.String, Schema.String),
+  UsageData: Schema.optional(Schema.NullOr(Schema.Struct({ Size: Schema.Int, RefCount: Schema.Int }))),
+});
+export type Volume = typeof Volume.Type;
+
+export const VolumeCreateOptions = Schema.partial(
+  Schema.Struct({
+    Name: Schema.String,
+    Driver: Schema.String,
+    DriverOpts: Schema.Record(Schema.String, Schema.String),
+    Labels: Schema.Record(Schema.String, Schema.String),
+    ClusterVolumeSpec: ClusterVolumeSpec,
+  }),
+);
+export type VolumeCreateOptions = typeof VolumeCreateOptions.Type;
+
+export const VolumeListResponse = Schema.partial(
+  Schema.Struct({ Volumes: Schema.Array(Volume), Warnings: Schema.Array(Schema.String) }),
+);
+export type VolumeListResponse = typeof VolumeListResponse.Type;
+
+export const IPAMConfig = Schema.partial(
+  Schema.Struct({
+    Subnet: Schema.String,
+    IPRange: Schema.String,
+    Gateway: Schema.String,
+    AuxiliaryAddresses: Schema.Record(Schema.String, Schema.String),
+  }),
+);
+export type IPAMConfig = typeof IPAMConfig.Type;
+
+export const IPAM = Schema.partial(
+  Schema.Struct({
+    Driver: Schema.String,
+    Config: Schema.Array(IPAMConfig),
+    Options: Schema.Record(Schema.String, Schema.String),
+  }),
+);
+export type IPAM = typeof IPAM.Type;
+
+export const NetworkContainer = Schema.partial(
+  Schema.Struct({
+    Name: Schema.String,
+    EndpointID: Schema.String,
+    MacAddress: Schema.String,
+    IPv4Address: Schema.String,
+    IPv6Address: Schema.String,
+  }),
+);
+export type NetworkContainer = typeof NetworkContainer.Type;
+
+export const Network = Schema.partial(
+  Schema.Struct({
+    Name: Schema.String,
+    Id: Schema.String,
+    Created: Schema.String,
+    Scope: Schema.String,
+    Driver: Schema.String,
+    EnableIPv6: Schema.Boolean,
+    IPAM: IPAM,
+    Internal: Schema.Boolean,
+    Attachable: Schema.Boolean,
+    Ingress: Schema.Boolean,
+    Containers: Schema.Record(Schema.String, NetworkContainer),
+    Options: Schema.Record(Schema.String, Schema.String),
+    Labels: Schema.Record(Schema.String, Schema.String),
+  }),
+);
+export type Network = typeof Network.Type;
+
+export const ErrorDetail = Schema.partial(Schema.Struct({ code: Schema.Int, message: Schema.String }));
+export type ErrorDetail = typeof ErrorDetail.Type;
+
+export const ProgressDetail = Schema.partial(Schema.Struct({ current: Schema.Int, total: Schema.Int }));
+export type ProgressDetail = typeof ProgressDetail.Type;
+
+export const ImageID = Schema.partial(Schema.Struct({ ID: Schema.String }));
+export type ImageID = typeof ImageID.Type;
+
+export const BuildInfo = Schema.partial(
+  Schema.Struct({
+    id: Schema.String,
+    stream: Schema.String,
+    error: Schema.String,
+    errorDetail: ErrorDetail,
+    status: Schema.String,
+    progress: Schema.String,
+    progressDetail: ProgressDetail,
+    aux: ImageID,
+  }),
+);
+export type BuildInfo = typeof BuildInfo.Type;
+
+export const BuildCache = Schema.partial(
+  Schema.Struct({
+    ID: Schema.String,
+    Parent: Schema.NullOr(Schema.String),
+    Parents: Schema.NullOr(Schema.Array(Schema.String)),
+    Type: Schema.Union([
+      Schema.Literal("internal"),
+      Schema.Literal("frontend"),
+      Schema.Literal("source.local"),
+      Schema.Literal("source.git.checkout"),
+      Schema.Literal("exec.cachemount"),
+      Schema.Literal("regular"),
+    ]),
+    Description: Schema.String,
+    InUse: Schema.Boolean,
+    Shared: Schema.Boolean,
+    Size: Schema.Int,
+    CreatedAt: Schema.String,
+    LastUsedAt: Schema.NullOr(Schema.String),
+    UsageCount: Schema.Int,
+  }),
+);
+export type BuildCache = typeof BuildCache.Type;
+
+export const CreateImageInfo = Schema.partial(
+  Schema.Struct({
+    id: Schema.String,
+    error: Schema.String,
+    errorDetail: ErrorDetail,
+    status: Schema.String,
+    progress: Schema.String,
+    progressDetail: ProgressDetail,
+  }),
+);
+export type CreateImageInfo = typeof CreateImageInfo.Type;
+
+export const PushImageInfo = Schema.partial(
+  Schema.Struct({
+    error: Schema.String,
+    status: Schema.String,
+    progress: Schema.String,
+    progressDetail: ProgressDetail,
+  }),
+);
+export type PushImageInfo = typeof PushImageInfo.Type;
+
+export const ErrorResponse = Schema.Struct({ message: Schema.String });
+export type ErrorResponse = typeof ErrorResponse.Type;
+
+export const IdResponse = Schema.Struct({ Id: Schema.String });
+export type IdResponse = typeof IdResponse.Type;
+
+export const PluginMount = Schema.Struct({
+  Name: Schema.String,
+  Description: Schema.String,
+  Settable: Schema.Array(Schema.String),
+  Source: Schema.String,
+  Destination: Schema.String,
+  Type: Schema.String,
+  Options: Schema.Array(Schema.String),
+});
+export type PluginMount = typeof PluginMount.Type;
+
+export const PluginDevice = Schema.Struct({
+  Name: Schema.String,
+  Description: Schema.String,
+  Settable: Schema.Array(Schema.String),
+  Path: Schema.String,
+});
+export type PluginDevice = typeof PluginDevice.Type;
+
+export const PluginEnv = Schema.Struct({
+  Name: Schema.String,
+  Description: Schema.String,
+  Settable: Schema.Array(Schema.String),
+  Value: Schema.String,
+});
+export type PluginEnv = typeof PluginEnv.Type;
+
+export const PluginInterfaceType = Schema.Struct({
+  Prefix: Schema.String,
+  Capability: Schema.String,
+  Version: Schema.String,
+});
+export type PluginInterfaceType = typeof PluginInterfaceType.Type;
+
+export const PluginPrivilege = Schema.partial(
+  Schema.Struct({ Name: Schema.String, Description: Schema.String, Value: Schema.Array(Schema.String) }),
+);
+export type PluginPrivilege = typeof PluginPrivilege.Type;
+
+export const Plugin = Schema.Struct({
+  Id: Schema.optional(Schema.String),
+  Name: Schema.String,
+  Enabled: Schema.Boolean,
+  Settings: Schema.Struct({
+    Mounts: Schema.Array(PluginMount),
+    Env: Schema.Array(Schema.String),
+    Args: Schema.Array(Schema.String),
+    Devices: Schema.Array(PluginDevice),
+  }),
+  PluginReference: Schema.optional(Schema.String),
+  Config: Schema.Struct({
+    DockerVersion: Schema.optional(Schema.String),
+    Description: Schema.String,
+    Documentation: Schema.String,
+    Interface: Schema.Struct({
+      Types: Schema.Array(PluginInterfaceType),
+      Socket: Schema.String,
+      ProtocolScheme: Schema.optional(Schema.Union([Schema.Literal(""), Schema.Literal("moby.plugins.http/v1")])),
+    }),
+    Entrypoint: Schema.Array(Schema.String),
+    WorkDir: Schema.String,
+    User: Schema.optional(Schema.partial(Schema.Struct({ UID: Schema.Int, GID: Schema.Int }))),
+    Network: Schema.Struct({ Type: Schema.String }),
+    Linux: Schema.Struct({
+      Capabilities: Schema.Array(Schema.String),
+      AllowAllDevices: Schema.Boolean,
+      Devices: Schema.Array(PluginDevice),
+    }),
+    PropagatedMount: Schema.String,
+    IpcHost: Schema.Boolean,
+    PidHost: Schema.Boolean,
+    Mounts: Schema.Array(PluginMount),
+    Env: Schema.Array(PluginEnv),
+    Args: Schema.Struct({
+      Name: Schema.String,
+      Description: Schema.String,
+      Settable: Schema.Array(Schema.String),
+      Value: Schema.Array(Schema.String),
+    }),
+    rootfs: Schema.optional(
+      Schema.partial(Schema.Struct({ type: Schema.String, diff_ids: Schema.Array(Schema.String) })),
+    ),
+  }),
+});
+export type Plugin = typeof Plugin.Type;
+
+export const NodeSpec = Schema.partial(
+  Schema.Struct({
+    Name: Schema.String,
+    Labels: Schema.Record(Schema.String, Schema.String),
+    Role: Schema.Union([Schema.Literal("worker"), Schema.Literal("manager")]),
+    Availability: Schema.Union([Schema.Literal("active"), Schema.Literal("pause"), Schema.Literal("drain")]),
+  }),
+);
+export type NodeSpec = typeof NodeSpec.Type;
+
+export const Platform = Schema.partial(Schema.Struct({ Architecture: Schema.String, OS: Schema.String }));
+export type Platform = typeof Platform.Type;
+
+export const EngineDescription = Schema.partial(
+  Schema.Struct({
+    EngineVersion: Schema.String,
+    Labels: Schema.Record(Schema.String, Schema.String),
+    Plugins: Schema.Array(Schema.partial(Schema.Struct({ Type: Schema.String, Name: Schema.String }))),
+  }),
+);
+export type EngineDescription = typeof EngineDescription.Type;
+
+export const TLSInfo = Schema.partial(
+  Schema.Struct({ TrustRoot: Schema.String, CertIssuerSubject: Schema.String, CertIssuerPublicKey: Schema.String }),
+);
+export type TLSInfo = typeof TLSInfo.Type;
+
+export const NodeDescription = Schema.partial(
+  Schema.Struct({
+    Hostname: Schema.String,
+    Platform: Platform,
+    Resources: ResourceObject,
+    Engine: EngineDescription,
+    TLSInfo: TLSInfo,
+  }),
+);
+export type NodeDescription = typeof NodeDescription.Type;
+
+export const NodeState = Schema.Union([
+  Schema.Literal("unknown"),
+  Schema.Literal("down"),
+  Schema.Literal("ready"),
+  Schema.Literal("disconnected"),
+]);
+export type NodeState = typeof NodeState.Type;
+
+export const NodeStatus = Schema.partial(
+  Schema.Struct({ State: NodeState, Message: Schema.String, Addr: Schema.String }),
+);
+export type NodeStatus = typeof NodeStatus.Type;
+
+export const Reachability = Schema.Union([
+  Schema.Literal("unknown"),
+  Schema.Literal("unreachable"),
+  Schema.Literal("reachable"),
+]);
+export type Reachability = typeof Reachability.Type;
+
+export const ManagerStatus = Schema.NullOr(
+  Schema.partial(Schema.Struct({ Leader: Schema.Boolean, Reachability: Reachability, Addr: Schema.String })),
+);
+export type ManagerStatus = typeof ManagerStatus.Type;
+
+export const Node = Schema.partial(
+  Schema.Struct({
+    ID: Schema.String,
+    Version: ObjectVersion,
+    CreatedAt: Schema.String,
+    UpdatedAt: Schema.String,
+    Spec: NodeSpec,
+    Description: NodeDescription,
+    Status: NodeStatus,
+    ManagerStatus: ManagerStatus,
+  }),
+);
+export type Node = typeof Node.Type;
+
+export const SwarmSpec = Schema.partial(
+  Schema.Struct({
+    Name: Schema.String,
+    Labels: Schema.Record(Schema.String, Schema.String),
+    Orchestration: Schema.NullOr(Schema.partial(Schema.Struct({ TaskHistoryRetentionLimit: Schema.Int }))),
+    Raft: Schema.partial(
+      Schema.Struct({
+        SnapshotInterval: Schema.Int,
+        KeepOldSnapshots: Schema.Int,
+        LogEntriesForSlowFollowers: Schema.Int,
+        ElectionTick: Schema.Int,
+        HeartbeatTick: Schema.Int,
+      }),
+    ),
+    Dispatcher: Schema.NullOr(Schema.partial(Schema.Struct({ HeartbeatPeriod: Schema.Int }))),
+    CAConfig: Schema.NullOr(
+      Schema.partial(
+        Schema.Struct({
+          NodeCertExpiry: Schema.Int,
+          ExternalCAs: Schema.Array(
+            Schema.partial(
+              Schema.Struct({
+                Protocol: Schema.Literal("cfssl"),
+                URL: Schema.String,
+                Options: Schema.Record(Schema.String, Schema.String),
+                CACert: Schema.String,
+              }),
+            ),
+          ),
+          SigningCACert: Schema.String,
+          SigningCAKey: Schema.String,
+          ForceRotate: Schema.Int,
+        }),
+      ),
+    ),
+    EncryptionConfig: Schema.partial(Schema.Struct({ AutoLockManagers: Schema.Boolean })),
+    TaskDefaults: Schema.partial(
+      Schema.Struct({
+        LogDriver: Schema.partial(
+          Schema.Struct({ Name: Schema.String, Options: Schema.Record(Schema.String, Schema.String) }),
+        ),
+      }),
+    ),
+  }),
+);
+export type SwarmSpec = typeof SwarmSpec.Type;
+
+export const ClusterInfo = Schema.NullOr(
+  Schema.partial(
+    Schema.Struct({
+      ID: Schema.String,
+      Version: ObjectVersion,
+      CreatedAt: Schema.String,
+      UpdatedAt: Schema.String,
+      Spec: SwarmSpec,
+      TLSInfo: TLSInfo,
+      RootRotationInProgress: Schema.Boolean,
+      DataPathPort: Schema.Int,
+      DefaultAddrPool: Schema.Array(Schema.String),
+      SubnetSize: Schema.Int.check(Schema.isLessThanOrEqualTo(29)),
+    }),
+  ),
+);
+export type ClusterInfo = typeof ClusterInfo.Type;
+
+export const JoinTokens = Schema.partial(Schema.Struct({ Worker: Schema.String, Manager: Schema.String }));
+export type JoinTokens = typeof JoinTokens.Type;
+
+export const Swarm = Schema.extend(ClusterInfo, Schema.partial(Schema.Struct({ JoinTokens: JoinTokens })));
+export type Swarm = typeof Swarm.Type;
+
+export const NetworkAttachmentConfig = Schema.partial(
+  Schema.Struct({
+    Target: Schema.String,
+    Aliases: Schema.Array(Schema.String),
+    DriverOpts: Schema.Record(Schema.String, Schema.String),
+  }),
+);
+export type NetworkAttachmentConfig = typeof NetworkAttachmentConfig.Type;
+
+export const TaskSpec = Schema.partial(
+  Schema.Struct({
+    PluginSpec: Schema.partial(
+      Schema.Struct({
+        Name: Schema.String,
+        Remote: Schema.String,
+        Disabled: Schema.Boolean,
+        PluginPrivilege: Schema.Array(PluginPrivilege),
+      }),
+    ),
+    ContainerSpec: Schema.partial(
+      Schema.Struct({
+        Image: Schema.String,
+        Labels: Schema.Record(Schema.String, Schema.String),
+        Command: Schema.Array(Schema.String),
+        Args: Schema.Array(Schema.String),
+        Hostname: Schema.String,
+        Env: Schema.Array(Schema.String),
+        Dir: Schema.String,
+        User: Schema.String,
+        Groups: Schema.Array(Schema.String),
+        Privileges: Schema.partial(
+          Schema.Struct({
+            CredentialSpec: Schema.partial(
+              Schema.Struct({ Config: Schema.String, File: Schema.String, Registry: Schema.String }),
+            ),
+            SELinuxContext: Schema.partial(
+              Schema.Struct({
+                Disable: Schema.Boolean,
+                User: Schema.String,
+                Role: Schema.String,
+                Type: Schema.String,
+                Level: Schema.String,
+              }),
+            ),
+          }),
+        ),
+        TTY: Schema.Boolean,
+        OpenStdin: Schema.Boolean,
+        ReadOnly: Schema.Boolean,
+        Mounts: Schema.Array(Mount),
+        StopSignal: Schema.String,
+        StopGracePeriod: Schema.Int,
+        HealthCheck: HealthConfig,
+        Hosts: Schema.Array(Schema.String),
+        DNSConfig: Schema.partial(
+          Schema.Struct({
+            Nameservers: Schema.Array(Schema.String),
+            Search: Schema.Array(Schema.String),
+            Options: Schema.Array(Schema.String),
+          }),
+        ),
+        Secrets: Schema.Array(
+          Schema.partial(
+            Schema.Struct({
+              File: Schema.partial(
+                Schema.Struct({ Name: Schema.String, UID: Schema.String, GID: Schema.String, Mode: Schema.Int }),
+              ),
+              SecretID: Schema.String,
+              SecretName: Schema.String,
+            }),
+          ),
+        ),
+        Configs: Schema.Array(
+          Schema.partial(
+            Schema.Struct({
+              File: Schema.partial(
+                Schema.Struct({ Name: Schema.String, UID: Schema.String, GID: Schema.String, Mode: Schema.Int }),
+              ),
+              Runtime: Schema.partial(Schema.Struct({})),
+              ConfigID: Schema.String,
+              ConfigName: Schema.String,
+            }),
+          ),
+        ),
+        Isolation: Schema.Union([Schema.Literal("default"), Schema.Literal("process"), Schema.Literal("hyperv")]),
+        Init: Schema.NullOr(Schema.Boolean),
+        Sysctls: Schema.Record(Schema.String, Schema.String),
+        CapabilityAdd: Schema.Array(Schema.String),
+        CapabilityDrop: Schema.Array(Schema.String),
+        Ulimits: Schema.Array(
+          Schema.partial(Schema.Struct({ Name: Schema.String, Soft: Schema.Int, Hard: Schema.Int })),
+        ),
+      }),
+    ),
+    NetworkAttachmentSpec: Schema.partial(Schema.Struct({ ContainerID: Schema.String })),
+    Resources: Schema.partial(Schema.Struct({ Limits: Limit, Reservations: ResourceObject })),
+    RestartPolicy: Schema.partial(
+      Schema.Struct({
+        Condition: Schema.Union([Schema.Literal("none"), Schema.Literal("on-failure"), Schema.Literal("any")]),
+        Delay: Schema.Int,
+        MaxAttempts: Schema.Int,
+        Window: Schema.Int,
+      }),
+    ),
+    Placement: Schema.partial(
+      Schema.Struct({
+        Constraints: Schema.Array(Schema.String),
+        Preferences: Schema.Array(
+          Schema.partial(Schema.Struct({ Spread: Schema.partial(Schema.Struct({ SpreadDescriptor: Schema.String })) })),
+        ),
+        MaxReplicas: Schema.Int,
+        Platforms: Schema.Array(Platform),
+      }),
+    ),
+    ForceUpdate: Schema.Int,
+    Runtime: Schema.String,
+    Networks: Schema.Array(NetworkAttachmentConfig),
+    LogDriver: Schema.partial(
+      Schema.Struct({ Name: Schema.String, Options: Schema.Record(Schema.String, Schema.String) }),
+    ),
+  }),
+);
+export type TaskSpec = typeof TaskSpec.Type;
+
+export const TaskState = Schema.Union([
+  Schema.Literal("new"),
+  Schema.Literal("allocated"),
+  Schema.Literal("pending"),
+  Schema.Literal("assigned"),
+  Schema.Literal("accepted"),
+  Schema.Literal("preparing"),
+  Schema.Literal("ready"),
+  Schema.Literal("starting"),
+  Schema.Literal("running"),
+  Schema.Literal("complete"),
+  Schema.Literal("shutdown"),
+  Schema.Literal("failed"),
+  Schema.Literal("rejected"),
+  Schema.Literal("remove"),
+  Schema.Literal("orphaned"),
+]);
+export type TaskState = typeof TaskState.Type;
+
+export const Task = Schema.partial(
+  Schema.Struct({
+    ID: Schema.String,
+    Version: ObjectVersion,
+    CreatedAt: Schema.String,
+    UpdatedAt: Schema.String,
+    Name: Schema.String,
+    Labels: Schema.Record(Schema.String, Schema.String),
+    Spec: TaskSpec,
+    ServiceID: Schema.String,
+    Slot: Schema.Int,
+    NodeID: Schema.String,
+    AssignedGenericResources: GenericResources,
+    Status: Schema.partial(
+      Schema.Struct({
+        Timestamp: Schema.String,
+        State: TaskState,
+        Message: Schema.String,
+        Err: Schema.String,
+        ContainerStatus: Schema.partial(
+          Schema.Struct({ ContainerID: Schema.String, PID: Schema.Int, ExitCode: Schema.Int }),
+        ),
+      }),
+    ),
+    DesiredState: TaskState,
+    JobIteration: ObjectVersion,
+  }),
+);
+export type Task = typeof Task.Type;
+
+export const EndpointPortConfig = Schema.partial(
+  Schema.Struct({
+    Name: Schema.String,
+    Protocol: Schema.Union([Schema.Literal("tcp"), Schema.Literal("udp"), Schema.Literal("sctp")]),
+    TargetPort: Schema.Int,
+    PublishedPort: Schema.Int,
+    PublishMode: Schema.Union([Schema.Literal("ingress"), Schema.Literal("host")]),
+  }),
+);
+export type EndpointPortConfig = typeof EndpointPortConfig.Type;
+
+export const EndpointSpec = Schema.partial(
+  Schema.Struct({
+    Mode: Schema.Union([Schema.Literal("vip"), Schema.Literal("dnsrr")]),
+    Ports: Schema.Array(EndpointPortConfig),
+  }),
+);
+export type EndpointSpec = typeof EndpointSpec.Type;
+
+export const ServiceSpec = Schema.partial(
+  Schema.Struct({
+    Name: Schema.String,
+    Labels: Schema.Record(Schema.String, Schema.String),
+    TaskTemplate: TaskSpec,
+    Mode: Schema.partial(
+      Schema.Struct({
+        Replicated: Schema.partial(Schema.Struct({ Replicas: Schema.Int })),
+        Global: Schema.partial(Schema.Struct({})),
+        ReplicatedJob: Schema.partial(Schema.Struct({ MaxConcurrent: Schema.Int, TotalCompletions: Schema.Int })),
+        GlobalJob: Schema.partial(Schema.Struct({})),
+      }),
+    ),
+    UpdateConfig: Schema.partial(
+      Schema.Struct({
+        Parallelism: Schema.Int,
+        Delay: Schema.Int,
+        FailureAction: Schema.Union([Schema.Literal("continue"), Schema.Literal("pause"), Schema.Literal("rollback")]),
+        Monitor: Schema.Int,
+        MaxFailureRatio: Schema.Number,
+        Order: Schema.Union([Schema.Literal("stop-first"), Schema.Literal("start-first")]),
+      }),
+    ),
+    RollbackConfig: Schema.partial(
+      Schema.Struct({
+        Parallelism: Schema.Int,
+        Delay: Schema.Int,
+        FailureAction: Schema.Union([Schema.Literal("continue"), Schema.Literal("pause")]),
+        Monitor: Schema.Int,
+        MaxFailureRatio: Schema.Number,
+        Order: Schema.Union([Schema.Literal("stop-first"), Schema.Literal("start-first")]),
+      }),
+    ),
+    Networks: Schema.Array(NetworkAttachmentConfig),
+    EndpointSpec: EndpointSpec,
+  }),
+);
+export type ServiceSpec = typeof ServiceSpec.Type;
+
+export const Service = Schema.partial(
+  Schema.Struct({
+    ID: Schema.String,
+    Version: ObjectVersion,
+    CreatedAt: Schema.String,
+    UpdatedAt: Schema.String,
+    Spec: ServiceSpec,
+    Endpoint: Schema.partial(
+      Schema.Struct({
+        Spec: EndpointSpec,
+        Ports: Schema.Array(EndpointPortConfig),
+        VirtualIPs: Schema.Array(Schema.partial(Schema.Struct({ NetworkID: Schema.String, Addr: Schema.String }))),
+      }),
+    ),
+    UpdateStatus: Schema.partial(
+      Schema.Struct({
+        State: Schema.Union([Schema.Literal("updating"), Schema.Literal("paused"), Schema.Literal("completed")]),
+        StartedAt: Schema.String,
+        CompletedAt: Schema.String,
+        Message: Schema.String,
+      }),
+    ),
+    ServiceStatus: Schema.partial(
+      Schema.Struct({ RunningTasks: Schema.Int, DesiredTasks: Schema.Int, CompletedTasks: Schema.Int }),
+    ),
+    JobStatus: Schema.partial(Schema.Struct({ JobIteration: ObjectVersion, LastExecution: Schema.String })),
+  }),
+);
+export type Service = typeof Service.Type;
+
+export const ImageDeleteResponseItem = Schema.partial(
+  Schema.Struct({ Untagged: Schema.String, Deleted: Schema.String }),
+);
+export type ImageDeleteResponseItem = typeof ImageDeleteResponseItem.Type;
+
+export const ServiceUpdateResponse = Schema.partial(Schema.Struct({ Warnings: Schema.Array(Schema.String) }));
+export type ServiceUpdateResponse = typeof ServiceUpdateResponse.Type;
+
+export const ContainerSummary = Schema.partial(
+  Schema.Struct({
+    Id: Schema.String,
+    Names: Schema.Array(Schema.String),
+    Image: Schema.String,
+    ImageID: Schema.String,
+    Command: Schema.String,
+    Created: Schema.Int,
+    Ports: Schema.Array(Port),
+    SizeRw: Schema.Int,
+    SizeRootFs: Schema.Int,
+    Labels: Schema.Record(Schema.String, Schema.String),
+    State: Schema.String,
+    Status: Schema.String,
+    HostConfig: Schema.partial(Schema.Struct({ NetworkMode: Schema.String })),
+    NetworkSettings: Schema.partial(Schema.Struct({ Networks: Schema.Record(Schema.String, EndpointSettings) })),
+    Mounts: Schema.Array(MountPoint),
+  }),
+);
+export type ContainerSummary = typeof ContainerSummary.Type;
+
+export const Driver = Schema.Struct({
+  Name: Schema.String,
+  Options: Schema.optional(Schema.Record(Schema.String, Schema.String)),
+});
+export type Driver = typeof Driver.Type;
+
+export const SecretSpec = Schema.partial(
+  Schema.Struct({
+    Name: Schema.String,
+    Labels: Schema.Record(Schema.String, Schema.String),
+    Data: Schema.String,
+    Driver: Driver,
+    Templating: Driver,
+  }),
+);
+export type SecretSpec = typeof SecretSpec.Type;
+
+export const Secret = Schema.partial(
+  Schema.Struct({
+    ID: Schema.String,
+    Version: ObjectVersion,
+    CreatedAt: Schema.String,
+    UpdatedAt: Schema.String,
+    Spec: SecretSpec,
+  }),
+);
+export type Secret = typeof Secret.Type;
+
+export const ConfigSpec = Schema.partial(
+  Schema.Struct({
+    Name: Schema.String,
+    Labels: Schema.Record(Schema.String, Schema.String),
+    Data: Schema.String,
+    Templating: Driver,
+  }),
+);
+export type ConfigSpec = typeof ConfigSpec.Type;
+
+export const Config = Schema.partial(
+  Schema.Struct({
+    ID: Schema.String,
+    Version: ObjectVersion,
+    CreatedAt: Schema.String,
+    UpdatedAt: Schema.String,
+    Spec: ConfigSpec,
+  }),
+);
+export type Config = typeof Config.Type;
+
+export const ContainerState = Schema.NullOr(
+  Schema.partial(
+    Schema.Struct({
+      Status: Schema.Union([
+        Schema.Literal("created"),
+        Schema.Literal("running"),
+        Schema.Literal("paused"),
+        Schema.Literal("restarting"),
+        Schema.Literal("removing"),
+        Schema.Literal("exited"),
+        Schema.Literal("dead"),
+      ]),
+      Running: Schema.Boolean,
+      Paused: Schema.Boolean,
+      Restarting: Schema.Boolean,
+      OOMKilled: Schema.Boolean,
+      Dead: Schema.Boolean,
+      Pid: Schema.Int,
+      ExitCode: Schema.Int,
+      Error: Schema.String,
+      StartedAt: Schema.String,
+      FinishedAt: Schema.String,
+      Health: Health,
+    }),
+  ),
+);
+export type ContainerState = typeof ContainerState.Type;
+
+export const ContainerCreateResponse = Schema.Struct({ Id: Schema.String, Warnings: Schema.Array(Schema.String) });
+export type ContainerCreateResponse = typeof ContainerCreateResponse.Type;
+
+export const ContainerWaitExitError = Schema.partial(Schema.Struct({ Message: Schema.String }));
+export type ContainerWaitExitError = typeof ContainerWaitExitError.Type;
+
+export const ContainerWaitResponse = Schema.Struct({
+  StatusCode: Schema.Int,
+  Error: Schema.optional(ContainerWaitExitError),
+});
+export type ContainerWaitResponse = typeof ContainerWaitResponse.Type;
+
+export const SystemVersion = Schema.partial(
+  Schema.Struct({
+    Platform: Schema.Struct({ Name: Schema.String }),
+    Components: Schema.Array(
+      Schema.Struct({
+        Name: Schema.String,
+        Version: Schema.String,
+        Details: Schema.optional(Schema.NullOr(Schema.partial(Schema.Struct({})))),
+      }),
+    ),
+    Version: Schema.String,
+    ApiVersion: Schema.String,
+    MinAPIVersion: Schema.String,
+    GitCommit: Schema.String,
+    GoVersion: Schema.String,
+    Os: Schema.String,
+    Arch: Schema.String,
+    KernelVersion: Schema.String,
+    Experimental: Schema.Boolean,
+    BuildTime: Schema.String,
+  }),
+);
+export type SystemVersion = typeof SystemVersion.Type;
+
+export const PluginsInfo = Schema.partial(
+  Schema.Struct({
+    Volume: Schema.Array(Schema.String),
+    Network: Schema.Array(Schema.String),
+    Authorization: Schema.Array(Schema.String),
+    Log: Schema.Array(Schema.String),
+  }),
+);
+export type PluginsInfo = typeof PluginsInfo.Type;
+
+export const IndexInfo = Schema.NullOr(
+  Schema.partial(
+    Schema.Struct({
+      Name: Schema.String,
+      Mirrors: Schema.Array(Schema.String),
+      Secure: Schema.Boolean,
+      Official: Schema.Boolean,
+    }),
+  ),
+);
+export type IndexInfo = typeof IndexInfo.Type;
+
+export const RegistryServiceConfig = Schema.NullOr(
+  Schema.partial(
+    Schema.Struct({
+      AllowNondistributableArtifactsCIDRs: Schema.Array(Schema.String),
+      AllowNondistributableArtifactsHostnames: Schema.Array(Schema.String),
+      InsecureRegistryCIDRs: Schema.Array(Schema.String),
+      IndexConfigs: Schema.Record(Schema.String, IndexInfo),
+      Mirrors: Schema.Array(Schema.String),
+    }),
+  ),
+);
+export type RegistryServiceConfig = typeof RegistryServiceConfig.Type;
+
+export const Runtime = Schema.partial(
+  Schema.Struct({ path: Schema.String, runtimeArgs: Schema.NullOr(Schema.Array(Schema.String)) }),
+);
+export type Runtime = typeof Runtime.Type;
+
+export const LocalNodeState = Schema.Union([
+  Schema.Literal(""),
+  Schema.Literal("inactive"),
+  Schema.Literal("pending"),
+  Schema.Literal("active"),
+  Schema.Literal("error"),
+  Schema.Literal("locked"),
+]);
+export type LocalNodeState = typeof LocalNodeState.Type;
+
+export const PeerNode = Schema.partial(Schema.Struct({ NodeID: Schema.String, Addr: Schema.String }));
+export type PeerNode = typeof PeerNode.Type;
+
+export const SwarmInfo = Schema.partial(
+  Schema.Struct({
+    NodeID: Schema.String,
+    NodeAddr: Schema.String,
+    LocalNodeState: LocalNodeState,
+    ControlAvailable: Schema.Boolean,
+    Error: Schema.String,
+    RemoteManagers: Schema.NullOr(Schema.Array(PeerNode)),
+    Nodes: Schema.NullOr(Schema.Int),
+    Managers: Schema.NullOr(Schema.Int),
+    Cluster: ClusterInfo,
+  }),
+);
+export type SwarmInfo = typeof SwarmInfo.Type;
+
+export const Commit = Schema.partial(Schema.Struct({ ID: Schema.String, Expected: Schema.String }));
+export type Commit = typeof Commit.Type;
+
+export const SystemInfo = Schema.partial(
+  Schema.Struct({
+    ID: Schema.String,
+    Containers: Schema.Int,
+    ContainersRunning: Schema.Int,
+    ContainersPaused: Schema.Int,
+    ContainersStopped: Schema.Int,
+    Images: Schema.Int,
+    Driver: Schema.String,
+    DriverStatus: Schema.Array(Schema.Array(Schema.String)),
+    DockerRootDir: Schema.String,
+    Plugins: PluginsInfo,
+    MemoryLimit: Schema.Boolean,
+    SwapLimit: Schema.Boolean,
+    KernelMemoryTCP: Schema.Boolean,
+    CpuCfsPeriod: Schema.Boolean,
+    CpuCfsQuota: Schema.Boolean,
+    CPUShares: Schema.Boolean,
+    CPUSet: Schema.Boolean,
+    PidsLimit: Schema.Boolean,
+    OomKillDisable: Schema.Boolean,
+    IPv4Forwarding: Schema.Boolean,
+    BridgeNfIptables: Schema.Boolean,
+    BridgeNfIp6tables: Schema.Boolean,
+    Debug: Schema.Boolean,
+    NFd: Schema.Int,
+    NGoroutines: Schema.Int,
+    SystemTime: Schema.String,
+    LoggingDriver: Schema.String,
+    CgroupDriver: Schema.Union([Schema.Literal("cgroupfs"), Schema.Literal("systemd"), Schema.Literal("none")]),
+    CgroupVersion: Schema.Union([Schema.Literal("1"), Schema.Literal("2")]),
+    NEventsListener: Schema.Int,
+    KernelVersion: Schema.String,
+    OperatingSystem: Schema.String,
+    OSVersion: Schema.String,
+    OSType: Schema.String,
+    Architecture: Schema.String,
+    NCPU: Schema.Int,
+    MemTotal: Schema.Int,
+    IndexServerAddress: Schema.String,
+    RegistryConfig: RegistryServiceConfig,
+    GenericResources: GenericResources,
+    HttpProxy: Schema.String,
+    HttpsProxy: Schema.String,
+    NoProxy: Schema.String,
+    Name: Schema.String,
+    Labels: Schema.Array(Schema.String),
+    ExperimentalBuild: Schema.Boolean,
+    ServerVersion: Schema.String,
+    Runtimes: Schema.Record(Schema.String, Runtime),
+    DefaultRuntime: Schema.String,
+    Swarm: SwarmInfo,
+    LiveRestoreEnabled: Schema.Boolean,
+    Isolation: Schema.Union([Schema.Literal("default"), Schema.Literal("hyperv"), Schema.Literal("process")]),
+    InitBinary: Schema.String,
+    ContainerdCommit: Commit,
+    RuncCommit: Commit,
+    InitCommit: Commit,
+    SecurityOptions: Schema.Array(Schema.String),
+    ProductLicense: Schema.String,
+    DefaultAddressPools: Schema.Array(Schema.partial(Schema.Struct({ Base: Schema.String, Size: Schema.Int }))),
+    Warnings: Schema.Array(Schema.String),
+  }),
+);
+export type SystemInfo = typeof SystemInfo.Type;
+
+export const EventActor = Schema.partial(
+  Schema.Struct({ ID: Schema.String, Attributes: Schema.Record(Schema.String, Schema.String) }),
+);
+export type EventActor = typeof EventActor.Type;
+
+export const EventMessage = Schema.partial(
+  Schema.Struct({
+    Type: Schema.Union([
+      Schema.Literal("builder"),
+      Schema.Literal("config"),
+      Schema.Literal("container"),
+      Schema.Literal("daemon"),
+      Schema.Literal("image"),
+      Schema.Literal("network"),
+      Schema.Literal("node"),
+      Schema.Literal("plugin"),
+      Schema.Literal("secret"),
+      Schema.Literal("service"),
+      Schema.Literal("volume"),
+    ]),
+    Action: Schema.String,
+    Actor: EventActor,
+    scope: Schema.Union([Schema.Literal("local"), Schema.Literal("swarm")]),
+    time: Schema.Int,
+    timeNano: Schema.Int,
+  }),
+);
+export type EventMessage = typeof EventMessage.Type;
+
+export const OCIDescriptor = Schema.partial(
+  Schema.Struct({ mediaType: Schema.String, digest: Schema.String, size: Schema.Int }),
+);
+export type OCIDescriptor = typeof OCIDescriptor.Type;
+
+export const OCIPlatform = Schema.partial(
+  Schema.Struct({
+    architecture: Schema.String,
+    os: Schema.String,
+    "os.version": Schema.String,
+    "os.features": Schema.Array(Schema.String),
+    variant: Schema.String,
+  }),
+);
+export type OCIPlatform = typeof OCIPlatform.Type;
+
+export const DistributionInspect = Schema.Struct({ Descriptor: OCIDescriptor, Platforms: Schema.Array(OCIPlatform) });
+export type DistributionInspect = typeof DistributionInspect.Type;
+
+// </Schemas>
+
+// <Endpoints>
+export type get_ContainerList = typeof get_ContainerList;
+export const get_ContainerList = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/containers/json"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({ all: Schema.Boolean, limit: Schema.Int, size: Schema.Boolean, filters: Schema.String }),
+    ),
+  },
+  responses: { 200: Schema.Array(ContainerSummary), 400: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_ContainerCreate = typeof post_ContainerCreate;
+export const post_ContainerCreate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/create"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        name: Schema.String.check(Schema.isPattern(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"))),
+        platform: Schema.String,
+      }),
+    ),
+    body: Schema.extend(
+      ContainerConfig,
+      Schema.partial(Schema.Struct({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig })),
+    ),
+  },
+  responses: {
+    201: ContainerCreateResponse,
+    400: ErrorResponse,
+    404: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
+
+export type get_ContainerInspect = typeof get_ContainerInspect;
+export const get_ContainerInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/containers/{id}/json"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ size: Schema.Boolean })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: {
+    200: Schema.partial(
+      Schema.Struct({
+        Id: Schema.String,
+        Created: Schema.String,
+        Path: Schema.String,
+        Args: Schema.Array(Schema.String),
+        State: ContainerState,
+        Image: Schema.String,
+        ResolvConfPath: Schema.String,
+        HostnamePath: Schema.String,
+        HostsPath: Schema.String,
+        LogPath: Schema.String,
+        Name: Schema.String,
+        RestartCount: Schema.Int,
+        Driver: Schema.String,
+        Platform: Schema.String,
+        MountLabel: Schema.String,
+        ProcessLabel: Schema.String,
+        AppArmorProfile: Schema.String,
+        ExecIDs: Schema.NullOr(Schema.Array(Schema.String)),
+        HostConfig: HostConfig,
+        GraphDriver: GraphDriverData,
+        SizeRw: Schema.Int,
+        SizeRootFs: Schema.Int,
+        Mounts: Schema.Array(MountPoint),
+        Config: ContainerConfig,
+        NetworkSettings: NetworkSettings,
+      }),
+    ),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
+
+export type get_ContainerTop = typeof get_ContainerTop;
+export const get_ContainerTop = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/containers/{id}/top"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ ps_args: Schema.String })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: {
+    200: Schema.partial(
+      Schema.Struct({ Titles: Schema.Array(Schema.String), Processes: Schema.Array(Schema.Array(Schema.String)) }),
+    ),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
+
+export type get_ContainerLogs = typeof get_ContainerLogs;
+export const get_ContainerLogs = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/containers/{id}/logs"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        follow: Schema.Boolean,
+        stdout: Schema.Boolean,
+        stderr: Schema.Boolean,
+        since: Schema.Int,
+        until: Schema.Int,
+        timestamps: Schema.Boolean,
+        tail: Schema.String,
+      }),
+    ),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 200: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown },
+};
+
+export type get_ContainerChanges = typeof get_ContainerChanges;
+export const get_ContainerChanges = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/containers/{id}/changes"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: { 200: Schema.Array(FilesystemChange), 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type get_ContainerExport = typeof get_ContainerExport;
+export const get_ContainerExport = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/containers/{id}/export"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: { 200: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown },
+};
+
+export type get_ContainerStats = typeof get_ContainerStats;
+export const get_ContainerStats = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/containers/{id}/stats"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ stream: Schema.Boolean, "one-shot": Schema.Boolean })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 200: Schema.Record(Schema.String, Schema.Unknown), 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_ContainerResize = typeof post_ContainerResize;
+export const post_ContainerResize = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/{id}/resize"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ h: Schema.Int, w: Schema.Int })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 200: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown },
+};
+
+export type post_ContainerStart = typeof post_ContainerStart;
+export const post_ContainerStart = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/{id}/start"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ detachKeys: Schema.String })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 204: Schema.Unknown, 304: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_ContainerStop = typeof post_ContainerStop;
+export const post_ContainerStop = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/{id}/stop"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ signal: Schema.String, t: Schema.Int })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 204: Schema.Unknown, 304: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_ContainerRestart = typeof post_ContainerRestart;
+export const post_ContainerRestart = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/{id}/restart"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ signal: Schema.String, t: Schema.Int })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_ContainerKill = typeof post_ContainerKill;
+export const post_ContainerKill = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/{id}/kill"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ signal: Schema.String })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_ContainerUpdate = typeof post_ContainerUpdate;
+export const post_ContainerUpdate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/{id}/update"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    path: Schema.Struct({ id: Schema.String }),
+    body: Schema.extend(Resources, Schema.partial(Schema.Struct({ RestartPolicy: RestartPolicy }))),
+  },
+  responses: {
+    200: Schema.partial(Schema.Struct({ Warnings: Schema.Array(Schema.String) })),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
+
+export type post_ContainerRename = typeof post_ContainerRename;
+export const post_ContainerRename = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/{id}/rename"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.Struct({ name: Schema.String }), path: Schema.Struct({ id: Schema.String }) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_ContainerPause = typeof post_ContainerPause;
+export const post_ContainerPause = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/{id}/pause"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_ContainerUnpause = typeof post_ContainerUnpause;
+export const post_ContainerUnpause = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/{id}/unpause"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_ContainerAttach = typeof post_ContainerAttach;
+export const post_ContainerAttach = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/{id}/attach"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        detachKeys: Schema.String,
+        logs: Schema.Boolean,
+        stream: Schema.Boolean,
+        stdin: Schema.Boolean,
+        stdout: Schema.Boolean,
+        stderr: Schema.Boolean,
+      }),
+    ),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: {
+    101: Schema.Unknown,
+    200: Schema.Unknown,
+    400: Schema.Unknown,
+    404: Schema.Unknown,
+    500: Schema.Unknown,
+  },
+};
+
+export type get_ContainerAttachWebsocket = typeof get_ContainerAttachWebsocket;
+export const get_ContainerAttachWebsocket = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/containers/{id}/attach/ws"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        detachKeys: Schema.String,
+        logs: Schema.Boolean,
+        stream: Schema.Boolean,
+        stdin: Schema.Boolean,
+        stdout: Schema.Boolean,
+        stderr: Schema.Boolean,
+      }),
+    ),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 101: Schema.Unknown, 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_ContainerWait = typeof post_ContainerWait;
+export const post_ContainerWait = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/{id}/wait"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        condition: Schema.Union([
+          Schema.Literal("not-running"),
+          Schema.Literal("next-exit"),
+          Schema.Literal("removed"),
+        ]),
+      }),
+    ),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 200: ContainerWaitResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type delete_ContainerDelete = typeof delete_ContainerDelete;
+export const delete_ContainerDelete = {
+  method: Schema.Literal("DELETE"),
+  path: Schema.Literal("/containers/{id}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ v: Schema.Boolean, force: Schema.Boolean, link: Schema.Boolean })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 204: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
+
+export type get_ContainerArchive = typeof get_ContainerArchive;
+export const get_ContainerArchive = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/containers/{id}/archive"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.Struct({ path: Schema.String }), path: Schema.Struct({ id: Schema.String }) },
+  responses: { 200: Schema.Unknown, 400: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown },
+};
+
+export type put_PutContainerArchive = typeof put_PutContainerArchive;
+export const put_PutContainerArchive = {
+  method: Schema.Literal("PUT"),
+  path: Schema.Literal("/containers/{id}/archive"),
+  requestFormat: Schema.Literal("binary"),
+  parameters: {
+    query: Schema.Struct({
+      path: Schema.String,
+      noOverwriteDirNonDir: Schema.optional(Schema.String),
+      copyUIDGID: Schema.optional(Schema.String),
+    }),
+    path: Schema.Struct({ id: Schema.String }),
+    body: Schema.String,
+  },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
+export const head_ContainerArchiveInfo = {
+  method: Schema.Literal("HEAD"),
+  path: Schema.Literal("/containers/{id}/archive"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.Struct({ path: Schema.String }), path: Schema.Struct({ id: Schema.String }) },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responseHeaders: { 200: Schema.Struct({ "X-Docker-Container-Path-Stat": Schema.Unknown }) },
+};
+
+export type post_ContainerPrune = typeof post_ContainerPrune;
+export const post_ContainerPrune = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/prune"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  responses: {
+    200: Schema.partial(Schema.Struct({ ContainersDeleted: Schema.Array(Schema.String), SpaceReclaimed: Schema.Int })),
+    500: ErrorResponse,
+  },
+};
+
+export type get_ImageList = typeof get_ImageList;
+export const get_ImageList = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/images/json"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        all: Schema.Boolean,
+        filters: Schema.String,
+        "shared-size": Schema.Boolean,
+        digests: Schema.Boolean,
+      }),
+    ),
+  },
+  responses: { 200: Schema.Array(ImageSummary), 500: ErrorResponse },
+};
+
+export type post_ImageBuild = typeof post_ImageBuild;
+export const post_ImageBuild = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/build"),
+  requestFormat: Schema.Literal("binary"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        dockerfile: Schema.String,
+        t: Schema.String,
+        extrahosts: Schema.String,
+        remote: Schema.String,
+        q: Schema.Boolean,
+        nocache: Schema.Boolean,
+        cachefrom: Schema.String,
+        pull: Schema.String,
+        rm: Schema.Boolean,
+        forcerm: Schema.Boolean,
+        memory: Schema.Int,
+        memswap: Schema.Int,
+        cpushares: Schema.Int,
+        cpusetcpus: Schema.String,
+        cpuperiod: Schema.Int,
+        cpuquota: Schema.Int,
+        buildargs: Schema.String,
+        shmsize: Schema.Int,
+        squash: Schema.Boolean,
+        labels: Schema.String,
+        networkmode: Schema.String,
+        platform: Schema.String,
+        target: Schema.String,
+        outputs: Schema.String,
+      }),
+    ),
+    header: Schema.partial(
+      Schema.Struct({ "Content-type": Schema.Literal("application/x-tar"), "X-Registry-Config": Schema.String }),
+    ),
+    body: Schema.String,
+  },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_BuildPrune = typeof post_BuildPrune;
+export const post_BuildPrune = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/build/prune"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ "keep-storage": Schema.Int, all: Schema.Boolean, filters: Schema.String })),
+  },
+  responses: {
+    200: Schema.partial(Schema.Struct({ CachesDeleted: Schema.Array(Schema.String), SpaceReclaimed: Schema.Int })),
+    500: ErrorResponse,
+  },
+};
+
+export type post_ImageCreate = typeof post_ImageCreate;
+export const post_ImageCreate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/images/create"),
+  requestFormat: Schema.Literal("text"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        fromImage: Schema.String,
+        fromSrc: Schema.String,
+        repo: Schema.String,
+        tag: Schema.String,
+        message: Schema.String,
+        changes: Schema.Array(Schema.String),
+        platform: Schema.String,
+      }),
+    ),
+    header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
+    body: Schema.String,
+  },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type get_ImageInspect = typeof get_ImageInspect;
+export const get_ImageInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/images/{name}/json"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  responses: { 200: ImageInspect, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type get_ImageHistory = typeof get_ImageHistory;
+export const get_ImageHistory = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/images/{name}/history"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  responses: {
+    200: Schema.Array(
+      Schema.Struct({
+        Id: Schema.String,
+        Created: Schema.Int,
+        CreatedBy: Schema.String,
+        Tags: Schema.Array(Schema.String),
+        Size: Schema.Int,
+        Comment: Schema.String,
+      }),
+    ),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
+
+export type post_ImagePush = typeof post_ImagePush;
+export const post_ImagePush = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/images/{name}/push"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ tag: Schema.String })),
+    path: Schema.Struct({ name: Schema.String }),
+    header: Schema.Struct({ "X-Registry-Auth": Schema.String }),
+  },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_ImageTag = typeof post_ImageTag;
+export const post_ImageTag = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/images/{name}/tag"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ repo: Schema.String, tag: Schema.String })),
+    path: Schema.Struct({ name: Schema.String }),
+  },
+  responses: { 201: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
+
+export type delete_ImageDelete = typeof delete_ImageDelete;
+export const delete_ImageDelete = {
+  method: Schema.Literal("DELETE"),
+  path: Schema.Literal("/images/{name}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ force: Schema.Boolean, noprune: Schema.Boolean })),
+    path: Schema.Struct({ name: Schema.String }),
+  },
+  responses: { 200: Schema.Array(ImageDeleteResponseItem), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
+
+export type get_ImageSearch = typeof get_ImageSearch;
+export const get_ImageSearch = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/images/search"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.Struct({
+      term: Schema.String,
+      limit: Schema.optional(Schema.Int),
+      filters: Schema.optional(Schema.String),
+    }),
+  },
+  responses: {
+    200: Schema.Array(
+      Schema.partial(
+        Schema.Struct({
+          description: Schema.String,
+          is_official: Schema.Boolean,
+          is_automated: Schema.Boolean,
+          name: Schema.String,
+          star_count: Schema.Int,
+        }),
+      ),
+    ),
+    500: ErrorResponse,
+  },
+};
+
+export type post_ImagePrune = typeof post_ImagePrune;
+export const post_ImagePrune = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/images/prune"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  responses: {
+    200: Schema.partial(
+      Schema.Struct({ ImagesDeleted: Schema.Array(ImageDeleteResponseItem), SpaceReclaimed: Schema.Int }),
+    ),
+    500: ErrorResponse,
+  },
+};
+
+export type post_SystemAuth = typeof post_SystemAuth;
+export const post_SystemAuth = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/auth"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { body: AuthConfig },
+  responses: {
+    200: Schema.Struct({ Status: Schema.String, IdentityToken: Schema.optional(Schema.String) }),
+    204: Schema.Unknown,
+    401: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
+
+export type get_SystemInfo = typeof get_SystemInfo;
+export const get_SystemInfo = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/info"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: { 200: SystemInfo, 500: ErrorResponse },
+};
+
+export type get_SystemVersion = typeof get_SystemVersion;
+export const get_SystemVersion = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/version"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: { 200: SystemVersion, 500: ErrorResponse },
+};
+
+export type get_SystemPing = typeof get_SystemPing;
+export const get_SystemPing = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/_ping"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: { 200: Schema.Unknown, 500: Schema.Unknown },
+  responseHeaders: {
+    200: Schema.Struct({
+      Swarm: Schema.Unknown,
+      "Docker-Experimental": Schema.Unknown,
+      "Cache-Control": Schema.Unknown,
+      Pragma: Schema.Unknown,
+      "API-Version": Schema.Unknown,
+      "Builder-Version": Schema.Unknown,
+    }),
+    500: Schema.Struct({ "Cache-Control": Schema.Unknown, Pragma: Schema.Unknown }),
+  },
+};
+
+export type head_SystemPingHead = typeof head_SystemPingHead;
+export const head_SystemPingHead = {
+  method: Schema.Literal("HEAD"),
+  path: Schema.Literal("/_ping"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: { 200: Schema.Unknown, 500: Schema.Unknown },
+  responseHeaders: {
+    200: Schema.Struct({
+      Swarm: Schema.Unknown,
+      "Docker-Experimental": Schema.Unknown,
+      "Cache-Control": Schema.Unknown,
+      Pragma: Schema.Unknown,
+      "API-Version": Schema.Unknown,
+      "Builder-Version": Schema.Unknown,
+    }),
+  },
+};
+
+export type post_ImageCommit = typeof post_ImageCommit;
+export const post_ImageCommit = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/commit"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        container: Schema.String,
+        repo: Schema.String,
+        tag: Schema.String,
+        comment: Schema.String,
+        author: Schema.String,
+        pause: Schema.Boolean,
+        changes: Schema.String,
+      }),
+    ),
+    body: ContainerConfig,
+  },
+  responses: { 201: IdResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type get_SystemEvents = typeof get_SystemEvents;
+export const get_SystemEvents = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/events"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ since: Schema.String, until: Schema.String, filters: Schema.String })),
+  },
+  responses: { 200: EventMessage, 400: ErrorResponse, 500: ErrorResponse },
+};
+
+export type get_SystemDataUsage = typeof get_SystemDataUsage;
+export const get_SystemDataUsage = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/system/df"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        type: Schema.Array(
+          Schema.Union([
+            Schema.Literal("container"),
+            Schema.Literal("image"),
+            Schema.Literal("volume"),
+            Schema.Literal("build-cache"),
+          ]),
+        ),
+      }),
+    ),
+  },
+  responses: {
+    200: Schema.partial(
+      Schema.Struct({
+        LayersSize: Schema.Int,
+        Images: Schema.Array(ImageSummary),
+        Containers: Schema.Array(ContainerSummary),
+        Volumes: Schema.Array(Volume),
+        BuildCache: Schema.Array(BuildCache),
+      }),
+    ),
+    500: ErrorResponse,
+  },
+};
+
+export type get_ImageGet = typeof get_ImageGet;
+export const get_ImageGet = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/images/{name}/get"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  responses: { 200: Schema.Unknown, 500: Schema.Unknown },
+};
+
+export type get_ImageGetAll = typeof get_ImageGetAll;
+export const get_ImageGetAll = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/images/get"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ names: Schema.Array(Schema.String) })) },
+  responses: { 200: Schema.Unknown, 500: Schema.Unknown },
+};
+
+export type post_ImageLoad = typeof post_ImageLoad;
+export const post_ImageLoad = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/images/load"),
+  requestFormat: Schema.Literal("text"),
+  parameters: { query: Schema.partial(Schema.Struct({ quiet: Schema.Boolean })) },
+  responses: { 200: Schema.Unknown, 500: ErrorResponse },
+};
+
+export type post_ContainerExec = typeof post_ContainerExec;
+export const post_ContainerExec = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/containers/{id}/exec"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    path: Schema.Struct({ id: Schema.String }),
+    body: Schema.partial(
+      Schema.Struct({
+        AttachStdin: Schema.Boolean,
+        AttachStdout: Schema.Boolean,
+        AttachStderr: Schema.Boolean,
+        ConsoleSize: Schema.NullOr(
+          Schema.Array(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))).check(
+            Schema.isMinLength(2),
+            Schema.isMaxLength(2),
+          ),
+        ),
+        DetachKeys: Schema.String,
+        Tty: Schema.Boolean,
+        Env: Schema.Array(Schema.String),
+        Cmd: Schema.Array(Schema.String),
+        Privileged: Schema.Boolean,
+        User: Schema.String,
+        WorkingDir: Schema.String,
+      }),
+    ),
+  },
+  responses: { 201: IdResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_ExecStart = typeof post_ExecStart;
+export const post_ExecStart = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/exec/{id}/start"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    path: Schema.Struct({ id: Schema.String }),
+    body: Schema.partial(
+      Schema.Struct({
+        Detach: Schema.Boolean,
+        Tty: Schema.Boolean,
+        ConsoleSize: Schema.NullOr(
+          Schema.Array(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))).check(
+            Schema.isMinLength(2),
+            Schema.isMaxLength(2),
+          ),
+        ),
+      }),
+    ),
+  },
+  responses: { 200: Schema.Unknown, 404: Schema.Unknown, 409: Schema.Unknown },
+};
+
+export type post_ExecResize = typeof post_ExecResize;
+export const post_ExecResize = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/exec/{id}/resize"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ h: Schema.Int, w: Schema.Int })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type get_ExecInspect = typeof get_ExecInspect;
+export const get_ExecInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/exec/{id}/json"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: {
+    200: Schema.partial(
+      Schema.Struct({
+        CanRemove: Schema.Boolean,
+        DetachKeys: Schema.String,
+        ID: Schema.String,
+        Running: Schema.Boolean,
+        ExitCode: Schema.Int,
+        ProcessConfig: ProcessConfig,
+        OpenStdin: Schema.Boolean,
+        OpenStderr: Schema.Boolean,
+        OpenStdout: Schema.Boolean,
+        ContainerID: Schema.String,
+        Pid: Schema.Int,
+      }),
+    ),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
+
+export type get_VolumeList = typeof get_VolumeList;
+export const get_VolumeList = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/volumes"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  responses: { 200: VolumeListResponse, 500: ErrorResponse },
+};
+
+export type post_VolumeCreate = typeof post_VolumeCreate;
+export const post_VolumeCreate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/volumes/create"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { body: VolumeCreateOptions },
+  responses: { 201: Volume, 500: ErrorResponse },
+};
+
+export type get_VolumeInspect = typeof get_VolumeInspect;
+export const get_VolumeInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/volumes/{name}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  responses: { 200: Volume, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type put_VolumeUpdate = typeof put_VolumeUpdate;
+export const put_VolumeUpdate = {
+  method: Schema.Literal("PUT"),
+  path: Schema.Literal("/volumes/{name}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.Struct({ version: Schema.Int }),
+    path: Schema.Struct({ name: Schema.String }),
+    body: Schema.partial(Schema.Struct({ Spec: ClusterVolumeSpec })),
+  },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type delete_VolumeDelete = typeof delete_VolumeDelete;
+export const delete_VolumeDelete = {
+  method: Schema.Literal("DELETE"),
+  path: Schema.Literal("/volumes/{name}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ force: Schema.Boolean })),
+    path: Schema.Struct({ name: Schema.String }),
+  },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_VolumePrune = typeof post_VolumePrune;
+export const post_VolumePrune = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/volumes/prune"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  responses: {
+    200: Schema.partial(Schema.Struct({ VolumesDeleted: Schema.Array(Schema.String), SpaceReclaimed: Schema.Int })),
+    500: ErrorResponse,
+  },
+};
+
+export type get_NetworkList = typeof get_NetworkList;
+export const get_NetworkList = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/networks"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  responses: { 200: Schema.Array(Network), 500: ErrorResponse },
+};
+
+export type get_NetworkInspect = typeof get_NetworkInspect;
+export const get_NetworkInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/networks/{id}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ verbose: Schema.Boolean, scope: Schema.String })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 200: Network, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type delete_NetworkDelete = typeof delete_NetworkDelete;
+export const delete_NetworkDelete = {
+  method: Schema.Literal("DELETE"),
+  path: Schema.Literal("/networks/{id}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: { 204: Schema.Unknown, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_NetworkCreate = typeof post_NetworkCreate;
+export const post_NetworkCreate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/networks/create"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    body: Schema.Struct({
+      Name: Schema.String,
+      CheckDuplicate: Schema.optional(Schema.Boolean),
+      Driver: Schema.optional(Schema.String),
+      Internal: Schema.optional(Schema.Boolean),
+      Attachable: Schema.optional(Schema.Boolean),
+      Ingress: Schema.optional(Schema.Boolean),
+      IPAM: Schema.optional(IPAM),
+      EnableIPv6: Schema.optional(Schema.Boolean),
+      Options: Schema.optional(Schema.Record(Schema.String, Schema.String)),
+      Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)),
+    }),
+  },
+  responses: {
+    201: Schema.partial(Schema.Struct({ Id: Schema.String, Warning: Schema.String })),
+    403: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
+
+export type post_NetworkConnect = typeof post_NetworkConnect;
+export const post_NetworkConnect = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/networks/{id}/connect"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    path: Schema.Struct({ id: Schema.String }),
+    body: Schema.partial(Schema.Struct({ Container: Schema.String, EndpointConfig: EndpointSettings })),
+  },
+  responses: { 200: Schema.Unknown, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
+export const post_NetworkDisconnect = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/networks/{id}/disconnect"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    path: Schema.Struct({ id: Schema.String }),
+    body: Schema.partial(Schema.Struct({ Container: Schema.String, Force: Schema.Boolean })),
+  },
+  responses: { 200: Schema.Unknown, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_NetworkPrune = typeof post_NetworkPrune;
+export const post_NetworkPrune = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/networks/prune"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  responses: {
+    200: Schema.partial(Schema.Struct({ NetworksDeleted: Schema.Array(Schema.String) })),
+    500: ErrorResponse,
+  },
+};
+
+export type get_PluginList = typeof get_PluginList;
+export const get_PluginList = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/plugins"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  responses: { 200: Schema.Array(Plugin), 500: ErrorResponse },
+};
+
+export type get_GetPluginPrivileges = typeof get_GetPluginPrivileges;
+export const get_GetPluginPrivileges = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/plugins/privileges"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.Struct({ remote: Schema.String }) },
+  responses: { 200: Schema.Array(PluginPrivilege), 500: ErrorResponse },
+};
+
+export type post_PluginPull = typeof post_PluginPull;
+export const post_PluginPull = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/plugins/pull"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.Struct({ remote: Schema.String, name: Schema.optional(Schema.String) }),
+    header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
+    body: Schema.Array(PluginPrivilege),
+  },
+  responses: { 204: Schema.Unknown, 500: ErrorResponse },
+};
+
+export type get_PluginInspect = typeof get_PluginInspect;
+export const get_PluginInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/plugins/{name}/json"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type delete_PluginDelete = typeof delete_PluginDelete;
+export const delete_PluginDelete = {
+  method: Schema.Literal("DELETE"),
+  path: Schema.Literal("/plugins/{name}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ force: Schema.Boolean })),
+    path: Schema.Struct({ name: Schema.String }),
+  },
+  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_PluginEnable = typeof post_PluginEnable;
+export const post_PluginEnable = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/plugins/{name}/enable"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ timeout: Schema.Int })),
+    path: Schema.Struct({ name: Schema.String }),
+  },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_PluginDisable = typeof post_PluginDisable;
+export const post_PluginDisable = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/plugins/{name}/disable"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ force: Schema.Boolean })),
+    path: Schema.Struct({ name: Schema.String }),
+  },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_PluginUpgrade = typeof post_PluginUpgrade;
+export const post_PluginUpgrade = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/plugins/{name}/upgrade"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.Struct({ remote: Schema.String }),
+    path: Schema.Struct({ name: Schema.String }),
+    header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
+    body: Schema.Array(PluginPrivilege),
+  },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_PluginCreate = typeof post_PluginCreate;
+export const post_PluginCreate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/plugins/create"),
+  requestFormat: Schema.Literal("text"),
+  parameters: { query: Schema.Struct({ name: Schema.String }) },
+  responses: { 204: Schema.Unknown, 500: ErrorResponse },
+};
+
+export type post_PluginPush = typeof post_PluginPush;
+export const post_PluginPush = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/plugins/{name}/push"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_PluginSet = typeof post_PluginSet;
+export const post_PluginSet = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/plugins/{name}/set"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ name: Schema.String }), body: Schema.Array(Schema.String) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+};
+
+export type get_NodeList = typeof get_NodeList;
+export const get_NodeList = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/nodes"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  responses: { 200: Schema.Array(Node), 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type get_NodeInspect = typeof get_NodeInspect;
+export const get_NodeInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/nodes/{id}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: { 200: Node, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type delete_NodeDelete = typeof delete_NodeDelete;
+export const delete_NodeDelete = {
+  method: Schema.Literal("DELETE"),
+  path: Schema.Literal("/nodes/{id}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ force: Schema.Boolean })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type post_NodeUpdate = typeof post_NodeUpdate;
+export const post_NodeUpdate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/nodes/{id}/update"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.Struct({ version: Schema.Int }),
+    path: Schema.Struct({ id: Schema.String }),
+    body: NodeSpec,
+  },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type get_SwarmInspect = typeof get_SwarmInspect;
+export const get_SwarmInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/swarm"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: { 200: Swarm, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type post_SwarmInit = typeof post_SwarmInit;
+export const post_SwarmInit = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/swarm/init"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    body: Schema.partial(
+      Schema.Struct({
+        ListenAddr: Schema.String,
+        AdvertiseAddr: Schema.String,
+        DataPathAddr: Schema.String,
+        DataPathPort: Schema.Int,
+        DefaultAddrPool: Schema.Array(Schema.String),
+        ForceNewCluster: Schema.Boolean,
+        SubnetSize: Schema.Int,
+        Spec: SwarmSpec,
+      }),
+    ),
+  },
+  responses: { 200: Schema.String, 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type post_SwarmJoin = typeof post_SwarmJoin;
+export const post_SwarmJoin = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/swarm/join"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    body: Schema.partial(
+      Schema.Struct({
+        ListenAddr: Schema.String,
+        AdvertiseAddr: Schema.String,
+        DataPathAddr: Schema.String,
+        RemoteAddrs: Schema.Array(Schema.String),
+        JoinToken: Schema.String,
+      }),
+    ),
+  },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type post_SwarmLeave = typeof post_SwarmLeave;
+export const post_SwarmLeave = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/swarm/leave"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ force: Schema.Boolean })) },
+  responses: { 200: Schema.Unknown, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type post_SwarmUpdate = typeof post_SwarmUpdate;
+export const post_SwarmUpdate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/swarm/update"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.Struct({
+      version: Schema.Int,
+      rotateWorkerToken: Schema.optional(Schema.Boolean),
+      rotateManagerToken: Schema.optional(Schema.Boolean),
+      rotateManagerUnlockKey: Schema.optional(Schema.Boolean),
+    }),
+    body: SwarmSpec,
+  },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
+export const get_SwarmUnlockkey = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/swarm/unlockkey"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: {
+    200: Schema.partial(Schema.Struct({ UnlockKey: Schema.String })),
+    500: ErrorResponse,
+    503: ErrorResponse,
+  },
+};
+
+export type post_SwarmUnlock = typeof post_SwarmUnlock;
+export const post_SwarmUnlock = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/swarm/unlock"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { body: Schema.partial(Schema.Struct({ UnlockKey: Schema.String })) },
+  responses: { 200: Schema.Unknown, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type get_ServiceList = typeof get_ServiceList;
+export const get_ServiceList = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/services"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String, status: Schema.Boolean })) },
+  responses: { 200: Schema.Array(Service), 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type post_ServiceCreate = typeof post_ServiceCreate;
+export const post_ServiceCreate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/services/create"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
+    body: Schema.extend(ServiceSpec, Schema.Record(Schema.String, Schema.Unknown)),
+  },
+  responses: {
+    201: Schema.partial(Schema.Struct({ ID: Schema.String, Warning: Schema.String })),
+    400: ErrorResponse,
+    403: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  },
+};
+
+export type get_ServiceInspect = typeof get_ServiceInspect;
+export const get_ServiceInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/services/{id}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(Schema.Struct({ insertDefaults: Schema.Boolean })),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 200: Service, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type delete_ServiceDelete = typeof delete_ServiceDelete;
+export const delete_ServiceDelete = {
+  method: Schema.Literal("DELETE"),
+  path: Schema.Literal("/services/{id}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type post_ServiceUpdate = typeof post_ServiceUpdate;
+export const post_ServiceUpdate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/services/{id}/update"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.Struct({
+      version: Schema.Int,
+      registryAuthFrom: Schema.optional(Schema.Union([Schema.Literal("spec"), Schema.Literal("previous-spec")])),
+      rollback: Schema.optional(Schema.String),
+    }),
+    path: Schema.Struct({ id: Schema.String }),
+    header: Schema.partial(Schema.Struct({ "X-Registry-Auth": Schema.String })),
+    body: Schema.extend(ServiceSpec, Schema.Record(Schema.String, Schema.Unknown)),
+  },
+  responses: {
+    200: ServiceUpdateResponse,
+    400: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  },
+};
+
+export type get_ServiceLogs = typeof get_ServiceLogs;
+export const get_ServiceLogs = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/services/{id}/logs"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        details: Schema.Boolean,
+        follow: Schema.Boolean,
+        stdout: Schema.Boolean,
+        stderr: Schema.Boolean,
+        since: Schema.Int,
+        timestamps: Schema.Boolean,
+        tail: Schema.String,
+      }),
+    ),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 200: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown, 503: Schema.Unknown },
+};
+
+export type get_TaskList = typeof get_TaskList;
+export const get_TaskList = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/tasks"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  responses: { 200: Schema.Array(Task), 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type get_TaskInspect = typeof get_TaskInspect;
+export const get_TaskInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/tasks/{id}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: { 200: Task, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type get_TaskLogs = typeof get_TaskLogs;
+export const get_TaskLogs = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/tasks/{id}/logs"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.partial(
+      Schema.Struct({
+        details: Schema.Boolean,
+        follow: Schema.Boolean,
+        stdout: Schema.Boolean,
+        stderr: Schema.Boolean,
+        since: Schema.Int,
+        timestamps: Schema.Boolean,
+        tail: Schema.String,
+      }),
+    ),
+    path: Schema.Struct({ id: Schema.String }),
+  },
+  responses: { 200: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown, 503: Schema.Unknown },
+};
+
+export type get_SecretList = typeof get_SecretList;
+export const get_SecretList = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/secrets"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  responses: { 200: Schema.Array(Secret), 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type post_SecretCreate = typeof post_SecretCreate;
+export const post_SecretCreate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/secrets/create"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { body: Schema.extend(SecretSpec, Schema.Record(Schema.String, Schema.Unknown)) },
+  responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type get_SecretInspect = typeof get_SecretInspect;
+export const get_SecretInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/secrets/{id}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: { 200: Secret, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type delete_SecretDelete = typeof delete_SecretDelete;
+export const delete_SecretDelete = {
+  method: Schema.Literal("DELETE"),
+  path: Schema.Literal("/secrets/{id}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type post_SecretUpdate = typeof post_SecretUpdate;
+export const post_SecretUpdate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/secrets/{id}/update"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.Struct({ version: Schema.Int }),
+    path: Schema.Struct({ id: Schema.String }),
+    body: SecretSpec,
+  },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type get_ConfigList = typeof get_ConfigList;
+export const get_ConfigList = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/configs"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { query: Schema.partial(Schema.Struct({ filters: Schema.String })) },
+  responses: { 200: Schema.Array(Config), 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type post_ConfigCreate = typeof post_ConfigCreate;
+export const post_ConfigCreate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/configs/create"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { body: Schema.extend(ConfigSpec, Schema.Record(Schema.String, Schema.Unknown)) },
+  responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type get_ConfigInspect = typeof get_ConfigInspect;
+export const get_ConfigInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/configs/{id}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: { 200: Config, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type delete_ConfigDelete = typeof delete_ConfigDelete;
+export const delete_ConfigDelete = {
+  method: Schema.Literal("DELETE"),
+  path: Schema.Literal("/configs/{id}"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type post_ConfigUpdate = typeof post_ConfigUpdate;
+export const post_ConfigUpdate = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/configs/{id}/update"),
+  requestFormat: Schema.Literal("json"),
+  parameters: {
+    query: Schema.Struct({ version: Schema.Int }),
+    path: Schema.Struct({ id: Schema.String }),
+    body: ConfigSpec,
+  },
+  responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
+
+export type get_DistributionInspect = typeof get_DistributionInspect;
+export const get_DistributionInspect = {
+  method: Schema.Literal("GET"),
+  path: Schema.Literal("/distribution/{name}/json"),
+  requestFormat: Schema.Literal("json"),
+  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  responses: { 200: DistributionInspect, 401: ErrorResponse, 500: ErrorResponse },
+};
+
+export type post_Session = typeof post_Session;
+export const post_Session = {
+  method: Schema.Literal("POST"),
+  path: Schema.Literal("/session"),
+  requestFormat: Schema.Literal("json"),
+  parameters: Schema.Never,
+  responses: { 101: Schema.Unknown, 400: Schema.Unknown, 500: Schema.Unknown },
+};
+
+// </Endpoints>
+
+// <EndpointByMethod>
+export const EndpointByMethod = {
+  get: {
+    "/containers/json": get_ContainerList,
+    "/containers/{id}/json": get_ContainerInspect,
+    "/containers/{id}/top": get_ContainerTop,
+    "/containers/{id}/logs": get_ContainerLogs,
+    "/containers/{id}/changes": get_ContainerChanges,
+    "/containers/{id}/export": get_ContainerExport,
+    "/containers/{id}/stats": get_ContainerStats,
+    "/containers/{id}/attach/ws": get_ContainerAttachWebsocket,
+    "/containers/{id}/archive": get_ContainerArchive,
+    "/images/json": get_ImageList,
+    "/images/{name}/json": get_ImageInspect,
+    "/images/{name}/history": get_ImageHistory,
+    "/images/search": get_ImageSearch,
+    "/info": get_SystemInfo,
+    "/version": get_SystemVersion,
+    "/_ping": get_SystemPing,
+    "/events": get_SystemEvents,
+    "/system/df": get_SystemDataUsage,
+    "/images/{name}/get": get_ImageGet,
+    "/images/get": get_ImageGetAll,
+    "/exec/{id}/json": get_ExecInspect,
+    "/volumes": get_VolumeList,
+    "/volumes/{name}": get_VolumeInspect,
+    "/networks": get_NetworkList,
+    "/networks/{id}": get_NetworkInspect,
+    "/plugins": get_PluginList,
+    "/plugins/privileges": get_GetPluginPrivileges,
+    "/plugins/{name}/json": get_PluginInspect,
+    "/nodes": get_NodeList,
+    "/nodes/{id}": get_NodeInspect,
+    "/swarm": get_SwarmInspect,
+    "/swarm/unlockkey": get_SwarmUnlockkey,
+    "/services": get_ServiceList,
+    "/services/{id}": get_ServiceInspect,
+    "/services/{id}/logs": get_ServiceLogs,
+    "/tasks": get_TaskList,
+    "/tasks/{id}": get_TaskInspect,
+    "/tasks/{id}/logs": get_TaskLogs,
+    "/secrets": get_SecretList,
+    "/secrets/{id}": get_SecretInspect,
+    "/configs": get_ConfigList,
+    "/configs/{id}": get_ConfigInspect,
+    "/distribution/{name}/json": get_DistributionInspect,
+  },
+  post: {
+    "/containers/create": post_ContainerCreate,
+    "/containers/{id}/resize": post_ContainerResize,
+    "/containers/{id}/start": post_ContainerStart,
+    "/containers/{id}/stop": post_ContainerStop,
+    "/containers/{id}/restart": post_ContainerRestart,
+    "/containers/{id}/kill": post_ContainerKill,
+    "/containers/{id}/update": post_ContainerUpdate,
+    "/containers/{id}/rename": post_ContainerRename,
+    "/containers/{id}/pause": post_ContainerPause,
+    "/containers/{id}/unpause": post_ContainerUnpause,
+    "/containers/{id}/attach": post_ContainerAttach,
+    "/containers/{id}/wait": post_ContainerWait,
+    "/containers/prune": post_ContainerPrune,
+    "/build": post_ImageBuild,
+    "/build/prune": post_BuildPrune,
+    "/images/create": post_ImageCreate,
+    "/images/{name}/push": post_ImagePush,
+    "/images/{name}/tag": post_ImageTag,
+    "/images/prune": post_ImagePrune,
+    "/auth": post_SystemAuth,
+    "/commit": post_ImageCommit,
+    "/images/load": post_ImageLoad,
+    "/containers/{id}/exec": post_ContainerExec,
+    "/exec/{id}/start": post_ExecStart,
+    "/exec/{id}/resize": post_ExecResize,
+    "/volumes/create": post_VolumeCreate,
+    "/volumes/prune": post_VolumePrune,
+    "/networks/create": post_NetworkCreate,
+    "/networks/{id}/connect": post_NetworkConnect,
+    "/networks/{id}/disconnect": post_NetworkDisconnect,
+    "/networks/prune": post_NetworkPrune,
+    "/plugins/pull": post_PluginPull,
+    "/plugins/{name}/enable": post_PluginEnable,
+    "/plugins/{name}/disable": post_PluginDisable,
+    "/plugins/{name}/upgrade": post_PluginUpgrade,
+    "/plugins/create": post_PluginCreate,
+    "/plugins/{name}/push": post_PluginPush,
+    "/plugins/{name}/set": post_PluginSet,
+    "/nodes/{id}/update": post_NodeUpdate,
+    "/swarm/init": post_SwarmInit,
+    "/swarm/join": post_SwarmJoin,
+    "/swarm/leave": post_SwarmLeave,
+    "/swarm/update": post_SwarmUpdate,
+    "/swarm/unlock": post_SwarmUnlock,
+    "/services/create": post_ServiceCreate,
+    "/services/{id}/update": post_ServiceUpdate,
+    "/secrets/create": post_SecretCreate,
+    "/secrets/{id}/update": post_SecretUpdate,
+    "/configs/create": post_ConfigCreate,
+    "/configs/{id}/update": post_ConfigUpdate,
+    "/session": post_Session,
+  },
+  delete: {
+    "/containers/{id}": delete_ContainerDelete,
+    "/images/{name}": delete_ImageDelete,
+    "/volumes/{name}": delete_VolumeDelete,
+    "/networks/{id}": delete_NetworkDelete,
+    "/plugins/{name}": delete_PluginDelete,
+    "/nodes/{id}": delete_NodeDelete,
+    "/services/{id}": delete_ServiceDelete,
+    "/secrets/{id}": delete_SecretDelete,
+    "/configs/{id}": delete_ConfigDelete,
+  },
+  put: {
+    "/containers/{id}/archive": put_PutContainerArchive,
+    "/volumes/{name}": put_VolumeUpdate,
+  },
+  head: {
+    "/containers/{id}/archive": head_ContainerArchiveInfo,
+    "/_ping": head_SystemPingHead,
+  },
+};
+export type EndpointByMethod = typeof EndpointByMethod;
+// </EndpointByMethod>
+
+// <EndpointByMethod.Shorthands>
+export type GetEndpoints = EndpointByMethod["get"];
+export type PostEndpoints = EndpointByMethod["post"];
+export type DeleteEndpoints = EndpointByMethod["delete"];
+export type PutEndpoints = EndpointByMethod["put"];
+export type HeadEndpoints = EndpointByMethod["head"];
+// </EndpointByMethod.Shorthands>
+
+// <ApiClientTypes>
+export type EndpointParameters = {
+  body?: unknown;
+  query?: Record<string, unknown>;
+  header?: Record<string, unknown>;
+  path?: Record<string, unknown>;
+};
+
+export type MutationMethod = "post" | "put" | "patch" | "delete";
+export type Method = "get" | "head" | "options" | MutationMethod;
+
+type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+
+export type DefaultEndpoint = {
+  parameters?: EndpointParameters | undefined;
+  responses?: Record<string, unknown>;
+  responseHeaders?: Record<string, unknown>;
+};
+
+export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
+  operationId: string;
+  method: Method;
+  path: string;
+  requestFormat: RequestFormat;
+  parameters?: TConfig["parameters"];
+  meta: {
+    alias: string;
+    hasParameters: boolean;
+    areParametersRequired: boolean;
+  };
+  responses?: TConfig["responses"];
+  responseHeaders?: TConfig["responseHeaders"];
+};
+
+export interface Fetcher {
+  decodePathParams?: (path: string, pathParams: Record<string, string>) => string;
+  encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+  //
+  fetch: (input: {
+    method: Method;
+    url: URL;
+    urlSearchParams?: URLSearchParams | undefined;
+    parameters?: EndpointParameters | undefined;
+    path: string;
+    overrides?: RequestInit;
+    throwOnStatusError?: boolean;
+  }) => Promise<Response>;
+  parseResponseData?: (response: Response) => Promise<unknown>;
+}
+
+export const successStatusCodes = [
+  200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308,
+] as const;
+export type SuccessStatusCode = (typeof successStatusCodes)[number];
+
+export const errorStatusCodes = [
+  400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 421, 422, 423, 424,
+  425, 426, 428, 429, 431, 451, 500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511,
+] as const;
+export type ErrorStatusCode = (typeof errorStatusCodes)[number];
+
+// Taken from https://github.com/unjs/fetchdts/blob/ec4eaeab5d287116171fc1efd61f4a1ad34e4609/src/fetch.ts#L3
+export interface TypedHeaders<TypedHeaderValues extends Record<string, string> | unknown> extends Omit<
+  Headers,
+  "append" | "delete" | "get" | "getSetCookie" | "has" | "set" | "forEach"
+> {
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/append) */
+  append: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(
+    name: Name,
+    value: Lowercase<Name> extends keyof TypedHeaderValues ? TypedHeaderValues[Lowercase<Name>] : string,
+  ) => void;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/delete) */
+  delete: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(name: Name) => void;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/get) */
+  get: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(
+    name: Name,
+  ) => (Lowercase<Name> extends keyof TypedHeaderValues ? TypedHeaderValues[Lowercase<Name>] : string) | null;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/getSetCookie) */
+  getSetCookie: () => string[];
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/has) */
+  has: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(name: Name) => boolean;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/set) */
+  set: <Name extends Extract<keyof TypedHeaderValues, string> | (string & {})>(
+    name: Name,
+    value: Lowercase<Name> extends keyof TypedHeaderValues ? TypedHeaderValues[Lowercase<Name>] : string,
+  ) => void;
+  forEach: (
+    callbackfn: (
+      value: TypedHeaderValues[keyof TypedHeaderValues] | (string & {}),
+      key: Extract<keyof TypedHeaderValues, string> | (string & {}),
+      parent: TypedHeaders<TypedHeaderValues>,
+    ) => void,
+    thisArg?: any,
+  ) => void;
+}
+
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<
+  Response,
+  "ok" | "status" | "json" | "headers"
+> {
+  ok: true;
+  status: TStatusCode;
+  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  data: TSuccess;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TSuccess>;
+}
+
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
+export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<
+  Response,
+  "ok" | "status" | "json" | "headers"
+> {
+  ok: false;
+  status: TStatusCode;
+  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  data: TData;
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
+  json: () => Promise<TData>;
+}
+
+export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}, THeaders = {}> = {
+  [K in keyof TAllResponses]: K extends string
+    ? K extends `${infer TStatusCode extends number}`
+      ? TStatusCode extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+        : TypedErrorResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+      : never
+    : K extends number
+      ? K extends SuccessStatusCode
+        ? TypedSuccessResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
+        : TypedErrorResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
+      : never;
+}[keyof TAllResponses];
+
+export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
+  ? TResponses extends Record<string, unknown>
+    ? TypedApiResponse<TResponses, TEndpoint extends { responseHeaders: infer THeaders } ? THeaders : never>
+    : never
+  : never;
+
+export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
+  SafeApiResponse<TEndpoint>,
+  { status: TStatusCode }
+>;
+
+type RequiredKeys<T> = {
+  [P in keyof T]-?: undefined extends T[P] ? never : P;
+}[keyof T];
+
+type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
+type NotNever<T> = [T] extends [never] ? false : true;
+
+// </ApiClientTypes>
+
+// <TypedStatusError>
+export class TypedStatusError<TData = unknown> extends Error {
+  response: TypedErrorResponse<TData, ErrorStatusCode, unknown>;
+  status: number;
+  constructor(response: TypedErrorResponse<TData, ErrorStatusCode, unknown>) {
+    super(`HTTP ${response.status}: ${response.statusText}`);
+    this.name = "TypedStatusError";
+    this.response = response;
+    this.status = response.status;
+  }
+}
+// </TypedStatusError>
+
+// <ApiClient>
+export class ApiClient {
+  baseUrl: string = "";
+  successStatusCodes = successStatusCodes;
+  errorStatusCodes = errorStatusCodes;
+
+  constructor(public fetcher: Fetcher) {}
+
+  setBaseUrl(baseUrl: string) {
+    this.baseUrl = baseUrl;
+    return this;
+  }
+
+  /**
+   * Replace path parameters in URL
+   * Supports both OpenAPI format {param} and Express format :param
+   */
+  defaultDecodePathParams = (url: string, params: Record<string, string>): string => {
+    return url
+      .replace(/{(\w+)}/g, (_, key: string) => params[key] || `{${key}}`)
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || `:${key}`);
+  };
+
+  /** Uses URLSearchParams, skips null/undefined values */
+  defaultEncodeSearchParams = (queryParams: Record<string, unknown> | undefined): URLSearchParams | undefined => {
+    if (!queryParams) return;
+
+    const searchParams = new URLSearchParams();
+    Object.entries(queryParams).forEach(([key, value]) => {
+      if (value != null) {
+        // Skip null/undefined values
+        if (Array.isArray(value)) {
+          value.forEach((val) => val != null && searchParams.append(key, String(val)));
+        } else {
+          searchParams.append(key, String(value));
+        }
+      }
+    });
+
+    return searchParams;
+  };
+
+  defaultParseResponseData = async (response: Response): Promise<unknown> => {
+    const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.startsWith("text/")) {
+      return await response.text();
+    }
+
+    if (contentType === "application/octet-stream") {
+      return await response.arrayBuffer();
+    }
+
+    if (
+      contentType.includes("application/json") ||
+      (contentType.includes("application/") && contentType.includes("json")) ||
+      contentType === "*/*"
+    ) {
+      try {
+        return await response.json();
+      } catch {
+        return undefined;
+      }
+    }
+
+    return;
+  };
+
+  // <ApiClient.get>
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
+
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  get<Path extends keyof GetEndpoints, _TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    return this.request("get", path, ...params);
+  }
+  // </ApiClient.get>
+
+  // <ApiClient.post>
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
+
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  post<Path extends keyof PostEndpoints, _TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    return this.request("post", path, ...params);
+  }
+  // </ApiClient.post>
+
+  // <ApiClient.delete>
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
+
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  delete<Path extends keyof DeleteEndpoints, _TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    return this.request("delete", path, ...params);
+  }
+  // </ApiClient.delete>
+
+  // <ApiClient.put>
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
+
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  put<Path extends keyof PutEndpoints, _TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    return this.request("put", path, ...params);
+  }
+  // </ApiClient.put>
+
+  // <ApiClient.head>
+  head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
+
+  head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  head<Path extends keyof HeadEndpoints, _TEndpoint extends HeadEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    return this.request("head", path, ...params);
+  }
+  // </ApiClient.head>
+
+  // <ApiClient.request>
+  /**
+   * Generic request method with full type-safety for any endpoint
+   */
+  request<
+    TMethod extends keyof EndpointByMethod,
+    TPath extends keyof EndpointByMethod[TMethod],
+    TEndpoint extends EndpointByMethod[TMethod][TPath],
+  >(
+    method: TMethod,
+    path: TPath,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
+
+  request<
+    TMethod extends keyof EndpointByMethod,
+    TPath extends keyof EndpointByMethod[TMethod],
+    TEndpoint extends EndpointByMethod[TMethod][TPath],
+  >(
+    method: TMethod,
+    path: TPath,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  request<
+    TMethod extends keyof EndpointByMethod,
+    TPath extends keyof EndpointByMethod[TMethod],
+    TEndpoint extends EndpointByMethod[TMethod][TPath],
+  >(method: TMethod, path: TPath, ...params: MaybeOptionalArg<any>): Promise<any> {
+    const requestParams = params[0];
+    const withResponse = requestParams?.withResponse;
+    const {
+      withResponse: _,
+      throwOnStatusError = withResponse ? false : true,
+      overrides,
+      ...fetchParams
+    } = requestParams || {};
+
+    const parametersToSend: EndpointParameters = {};
+    if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
+    if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
+    if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
+    if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
+
+    const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
+      this.baseUrl + (path as string),
+      (parametersToSend.path ?? {}) as Record<string, string>,
+    );
+    const url = new URL(resolvedPath);
+    const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(parametersToSend.query);
+
+    const promise = this.fetcher
+      .fetch({
+        method: method,
+        path: path as string,
+        url,
+        urlSearchParams,
+        parameters: Object.keys(fetchParams).length ? fetchParams : undefined,
+        overrides,
+        throwOnStatusError,
+      })
+      .then(async (response) => {
+        const data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+        const typedResponse = Object.assign(response, {
+          data: data,
+          json: () => Promise.resolve(data),
+        }) as SafeApiResponse<TEndpoint>;
+
+        if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+          throw new TypedStatusError(typedResponse as never);
+        }
+
+        return withResponse ? typedResponse : data;
+      });
+
+    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
+  }
+  // </ApiClient.request>
+}
+
+export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
+  return new ApiClient(fetcher).setBaseUrl(baseUrl ?? "");
+}
+
+/**
+ Example usage:
+ const api = createApiClient((method, url, params) =>
+   fetch(url, { method, body: JSON.stringify(params) }).then((res) => res.json()),
+ );
+ api.get("/users").then((users) => console.log(users));
+ api.post("/users", { body: { name: "John" } }).then((user) => console.log(user));
+ api.put("/users/:id", { path: { id: 1 }, body: { name: "John" } }).then((user) => console.log(user));
+
+ // With error handling
+ const result = await api.get("/users/{id}", { path: { id: "123" }, withResponse: true });
+ if (result.ok) {
+   // Access data directly
+   const user = result.data;
+   console.log(user);
+
+   // Or use the json() method for compatibility
+   const userFromJson = await result.json();
+   console.log(userFromJson);
+ } else {
+   const error = result.data;
+   console.error(`Error ${result.status}:`, error);
+ }
+*/
+
+// </ApiClient>

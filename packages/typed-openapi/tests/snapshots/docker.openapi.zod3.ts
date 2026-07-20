@@ -143,7 +143,7 @@ export const HealthConfig = z
 
 export type HealthcheckResult = z.infer<typeof HealthcheckResult>;
 export const HealthcheckResult = z
-  .object({ Start: z.iso.datetime(), End: z.string(), ExitCode: z.number().int(), Output: z.string() })
+  .object({ Start: z.string().datetime(), End: z.string(), ExitCode: z.number().int(), Output: z.string() })
   .partial()
   .nullable();
 

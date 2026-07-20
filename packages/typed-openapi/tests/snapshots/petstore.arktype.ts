@@ -1,436 +1,292 @@
-import { scope, type } from "arktype";
+import { type } from "arktype";
 
-export const types = scope({
-  Order: type({
-    "id?": "number",
-    "petId?": "number",
-    "quantity?": "number",
-    "shipDate?": "string",
-    "status?": '"placed" | "approved" | "delivered"',
-    "complete?": "boolean",
-  }),
-  Address: type({
-    "street?": "string",
-    "city?": "string",
-    "state?": "string",
-    "zip?": "string",
-  }),
-  Customer: type({
-    "id?": "number",
-    "username?": "string",
-    "address?": "Address[]",
-  }),
-  Category: type({
-    "id?": "number",
-    "name?": "string",
-  }),
-  User: type({
-    "id?": "number",
-    "username?": "string",
-    "firstName?": "string",
-    "lastName?": "string",
-    "email?": "string",
-    "password?": "string",
-    "phone?": "string",
-    "userStatus?": "number",
-  }),
-  Tag: type({
-    "id?": "number",
-    "name?": "string",
-  }),
-  Pet: type({
-    "id?": "number | undefined",
-    name: "string",
-    "category?": "Category | undefined",
-    photoUrls: "string[]",
-    "tags?": "Tag[] | undefined",
-    "status?": '"available" | "pending" | "sold" | undefined',
-  }),
-  ApiResponse: type({
-    "code?": "number",
-    "type?": "string",
-    "message?": "string",
-  }),
-  __ENDPOINTS_START__: type({}),
-  put_UpdatePet: type({
-    method: '"PUT"',
-    path: '"/pet"',
-    requestFormat: '"json"',
-    parameters: type({
-      body: "Pet",
-    }),
-    responses: type({
-      "200": "Pet",
-      "400": "unknown",
-      "404": "unknown",
-      "405": "unknown",
-    }),
-  }),
-  post_AddPet: type({
-    method: '"POST"',
-    path: '"/pet"',
-    requestFormat: '"json"',
-    parameters: type({
-      body: "Pet",
-    }),
-    responses: type({
-      "200": "Pet",
-      "405": "unknown",
-    }),
-  }),
-  get_FindPetsByStatus: type({
-    method: '"GET"',
-    path: '"/pet/findByStatus"',
-    requestFormat: '"json"',
-    parameters: type({
-      query: type({
-        "status?": '"available" | "pending" | "sold"',
-      }),
-    }),
-    responses: type({
-      "200": "Pet[]",
-      "304": "unknown",
-      "400": type({
-        code: "number",
-        message: "string",
-      }),
-    }),
-  }),
-  get_FindPetsByTags: type({
-    method: '"GET"',
-    path: '"/pet/findByTags"',
-    requestFormat: '"json"',
-    parameters: type({
-      query: type({
-        "tags?": "string[]",
-      }),
-    }),
-    responses: type({
-      "200": "Pet[] | User[] | Tag[]",
-      "400": "unknown",
-    }),
-  }),
-  get_GetPetById: type({
-    method: '"GET"',
-    path: '"/pet/{petId}"',
-    requestFormat: '"json"',
-    parameters: type({
-      path: type({
-        petId: "number",
-      }),
-    }),
-    responses: type({
-      "200": "Pet",
-      "400": type({
-        code: "number",
-        message: "string",
-      }),
-      "404": type({
-        code: "number",
-        message: "string",
-      }),
-    }),
-  }),
-  post_UpdatePetWithForm: type({
-    method: '"POST"',
-    path: '"/pet/{petId}"',
-    requestFormat: '"json"',
-    parameters: type({
-      query: type({
-        "name?": "string",
-        "status?": "string",
-      }),
-      path: type({
-        petId: "number",
-      }),
-    }),
-    responses: type({
-      "405": "unknown",
-    }),
-  }),
-  delete_DeletePet: type({
-    method: '"DELETE"',
-    path: '"/pet/{petId}"',
-    requestFormat: '"json"',
-    parameters: type({
-      path: type({
-        petId: "number",
-      }),
-      header: type({
-        "api_key?": "string",
-      }),
-    }),
-    responses: type({
-      "400": "unknown",
-    }),
-  }),
-  post_UploadFile: type({
-    method: '"POST"',
-    path: '"/pet/{petId}/uploadImage"',
-    requestFormat: '"binary"',
-    parameters: type({
-      query: type({
-        "additionalMetadata?": "string",
-      }),
-      path: type({
-        petId: "number",
-      }),
-      body: "string",
-    }),
-    responses: type({
-      "200": "ApiResponse",
-    }),
-  }),
-  get_GetInventory: type({
-    method: '"GET"',
-    path: '"/store/inventory"',
-    requestFormat: '"json"',
-    parameters: "never",
-    responses: type({
-      "200": "never",
-    }),
-  }),
-  post_PlaceOrder: type({
-    method: '"POST"',
-    path: '"/store/order"',
-    requestFormat: '"json"',
-    parameters: type({
-      body: "Order",
-    }),
-    responses: type({
-      "200": "Order",
-      "405": "unknown",
-    }),
-  }),
-  get_GetOrderById: type({
-    method: '"GET"',
-    path: '"/store/order/{orderId}"',
-    requestFormat: '"json"',
-    parameters: type({
-      path: type({
-        orderId: "number",
-      }),
-    }),
-    responses: type({
-      "200": "Order",
-      "400": "unknown",
-      "404": "unknown",
-    }),
-  }),
-  delete_DeleteOrder: type({
-    method: '"DELETE"',
-    path: '"/store/order/{orderId}"',
-    requestFormat: '"json"',
-    parameters: type({
-      path: type({
-        orderId: "number",
-      }),
-    }),
-    responses: type({
-      "400": "unknown",
-      "404": "unknown",
-    }),
-  }),
-  post_CreateUser: type({
-    method: '"POST"',
-    path: '"/user"',
-    requestFormat: '"json"',
-    parameters: type({
-      body: "User",
-    }),
-    responses: type({
-      default: "User",
-    }),
-  }),
-  post_CreateUsersWithListInput: type({
-    method: '"POST"',
-    path: '"/user/createWithList"',
-    requestFormat: '"json"',
-    parameters: type({
-      body: "User[]",
-    }),
-    responses: type({
-      "200": "User",
-      default: "unknown",
-    }),
-  }),
-  get_LoginUser: type({
-    method: '"GET"',
-    path: '"/user/login"',
-    requestFormat: '"json"',
-    parameters: type({
-      query: type({
-        "username?": "string",
-        "password?": "string",
-      }),
-    }),
-    responses: type({
-      "200": "string",
-      "400": "unknown",
-    }),
-    responseHeaders: type({
-      "200": type({
-        "X-Rate-Limit": "number",
-        "X-Expires-After": "string",
-      }),
-      "400": type({
-        "X-Error": "string",
-      }),
-    }),
-  }),
-  get_LogoutUser: type({
-    method: '"GET"',
-    path: '"/user/logout"',
-    requestFormat: '"json"',
-    parameters: "never",
-    responses: type({
-      default: "unknown",
-    }),
-  }),
-  get_GetUserByName: type({
-    method: '"GET"',
-    path: '"/user/{username}"',
-    requestFormat: '"json"',
-    parameters: type({
-      path: type({
-        username: "string",
-      }),
-    }),
-    responses: type({
-      "200": "User",
-      "201": type({
-        id: "number",
-        username: "string",
-      }),
-      "400": type({
-        code: "number",
-        message: "string",
-      }),
-      "404": "unknown",
-    }),
-  }),
-  put_UpdateUser: type({
-    method: '"PUT"',
-    path: '"/user/{username}"',
-    requestFormat: '"json"',
-    parameters: type({
-      path: type({
-        username: "string",
-      }),
-      body: "User",
-    }),
-    responses: type({
-      default: "unknown",
-    }),
-  }),
-  delete_DeleteUser: type({
-    method: '"DELETE"',
-    path: '"/user/{username}"',
-    requestFormat: '"json"',
-    parameters: type({
-      path: type({
-        username: "string",
-      }),
-    }),
-    responses: type({
-      "400": "unknown",
-      "404": "unknown",
-    }),
-  }),
-  get_GetPetTextPlain: type({
-    method: '"GET"',
-    path: '"/pet/text"',
-    requestFormat: '"json"',
-    parameters: "never",
-    responses: type({
-      "200": "User",
-    }),
-  }),
-  get_GetPetEmpty: type({
-    method: '"GET"',
-    path: '"/pet/empty"',
-    requestFormat: '"json"',
-    parameters: "never",
-    responses: type({
-      "204": "unknown",
-    }),
-  }),
-  get_GetPetCustom: type({
-    method: '"GET"',
-    path: '"/pet/custom"',
-    requestFormat: '"json"',
-    parameters: "never",
-    responses: type({
-      "200": "Pet",
-    }),
-  }),
-  __ENDPOINTS_END__: type({}),
-}).export();
-
+// <Schemas>
+export const Order = type({
+  id: type("number.integer"),
+  petId: type("number.integer"),
+  quantity: type("number.integer"),
+  shipDate: type("string.date"),
+  status: type("placed").or(type("approved")).or(type("delivered")),
+  complete: type("boolean"),
+}).partial();
 export type Order = typeof Order.infer;
-export const Order = types.Order;
+
+export const Address = type({
+  street: type("string"),
+  city: type("string"),
+  state: type("string"),
+  zip: type("string"),
+}).partial();
 export type Address = typeof Address.infer;
-export const Address = types.Address;
+
+export const Customer = type({
+  id: type("number.integer"),
+  username: type("string"),
+  address: type(Address).array(),
+}).partial();
 export type Customer = typeof Customer.infer;
-export const Customer = types.Customer;
+
+export const Category = type({ id: type("number.integer"), name: type("string") }).partial();
 export type Category = typeof Category.infer;
-export const Category = types.Category;
+
+export const User = type({
+  id: type("number.integer"),
+  username: type("string"),
+  firstName: type("string"),
+  lastName: type("string"),
+  email: type("string"),
+  password: type("string"),
+  phone: type("string"),
+  userStatus: type("number.integer"),
+}).partial();
 export type User = typeof User.infer;
-export const User = types.User;
+
+export const Tag = type({ id: type("number.integer"), name: type("string") }).partial();
 export type Tag = typeof Tag.infer;
-export const Tag = types.Tag;
+
+export const Pet = type({
+  "id?": type("number.integer"),
+  name: type("string"),
+  "category?": Category,
+  photoUrls: type(type("string")).array(),
+  "tags?": type(Tag).array(),
+  "status?": type("available").or(type("pending")).or(type("sold")),
+});
 export type Pet = typeof Pet.infer;
-export const Pet = types.Pet;
+
+export const ApiResponse = type({
+  code: type("number.integer"),
+  type: type("string"),
+  message: type("string"),
+}).partial();
 export type ApiResponse = typeof ApiResponse.infer;
-export const ApiResponse = types.ApiResponse;
-export type __ENDPOINTS_START__ = typeof __ENDPOINTS_START__.infer;
-export const __ENDPOINTS_START__ = types.__ENDPOINTS_START__;
-export type put_UpdatePet = typeof put_UpdatePet.infer;
-export const put_UpdatePet = types.put_UpdatePet;
-export type post_AddPet = typeof post_AddPet.infer;
-export const post_AddPet = types.post_AddPet;
-export type get_FindPetsByStatus = typeof get_FindPetsByStatus.infer;
-export const get_FindPetsByStatus = types.get_FindPetsByStatus;
-export type get_FindPetsByTags = typeof get_FindPetsByTags.infer;
-export const get_FindPetsByTags = types.get_FindPetsByTags;
-export type get_GetPetById = typeof get_GetPetById.infer;
-export const get_GetPetById = types.get_GetPetById;
-export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm.infer;
-export const post_UpdatePetWithForm = types.post_UpdatePetWithForm;
-export type delete_DeletePet = typeof delete_DeletePet.infer;
-export const delete_DeletePet = types.delete_DeletePet;
-export type post_UploadFile = typeof post_UploadFile.infer;
-export const post_UploadFile = types.post_UploadFile;
-export type get_GetInventory = typeof get_GetInventory.infer;
-export const get_GetInventory = types.get_GetInventory;
-export type post_PlaceOrder = typeof post_PlaceOrder.infer;
-export const post_PlaceOrder = types.post_PlaceOrder;
-export type get_GetOrderById = typeof get_GetOrderById.infer;
-export const get_GetOrderById = types.get_GetOrderById;
-export type delete_DeleteOrder = typeof delete_DeleteOrder.infer;
-export const delete_DeleteOrder = types.delete_DeleteOrder;
-export type post_CreateUser = typeof post_CreateUser.infer;
-export const post_CreateUser = types.post_CreateUser;
-export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput.infer;
-export const post_CreateUsersWithListInput = types.post_CreateUsersWithListInput;
-export type get_LoginUser = typeof get_LoginUser.infer;
-export const get_LoginUser = types.get_LoginUser;
-export type get_LogoutUser = typeof get_LogoutUser.infer;
-export const get_LogoutUser = types.get_LogoutUser;
-export type get_GetUserByName = typeof get_GetUserByName.infer;
-export const get_GetUserByName = types.get_GetUserByName;
-export type put_UpdateUser = typeof put_UpdateUser.infer;
-export const put_UpdateUser = types.put_UpdateUser;
-export type delete_DeleteUser = typeof delete_DeleteUser.infer;
-export const delete_DeleteUser = types.delete_DeleteUser;
-export type get_GetPetTextPlain = typeof get_GetPetTextPlain.infer;
-export const get_GetPetTextPlain = types.get_GetPetTextPlain;
-export type get_GetPetEmpty = typeof get_GetPetEmpty.infer;
-export const get_GetPetEmpty = types.get_GetPetEmpty;
-export type get_GetPetCustom = typeof get_GetPetCustom.infer;
-export const get_GetPetCustom = types.get_GetPetCustom;
-export type __ENDPOINTS_END__ = typeof __ENDPOINTS_END__.infer;
-export const __ENDPOINTS_END__ = types.__ENDPOINTS_END__;
+
+// </Schemas>
+
+// <Endpoints>
+export type put_UpdatePet = typeof put_UpdatePet;
+export const put_UpdatePet = {
+  method: type("PUT"),
+  path: type("/pet"),
+  requestFormat: type("json"),
+  parameters: { body: Pet },
+  responses: { 200: Pet, 400: type("unknown"), 404: type("unknown"), 405: type("unknown") },
+};
+
+export type post_AddPet = typeof post_AddPet;
+export const post_AddPet = {
+  method: type("POST"),
+  path: type("/pet"),
+  requestFormat: type("json"),
+  parameters: { body: Pet },
+  responses: { 200: Pet, 405: type("unknown") },
+};
+
+export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
+export const get_FindPetsByStatus = {
+  method: type("GET"),
+  path: type("/pet/findByStatus"),
+  requestFormat: type("json"),
+  parameters: { query: type({ status: type("available").or(type("pending")).or(type("sold")) }).partial() },
+  responses: {
+    200: type(Pet).array(),
+    304: type("unknown"),
+    400: type({ code: type("number.integer"), message: type("string") }),
+  },
+};
+
+export type get_FindPetsByTags = typeof get_FindPetsByTags;
+export const get_FindPetsByTags = {
+  method: type("GET"),
+  path: type("/pet/findByTags"),
+  requestFormat: type("json"),
+  parameters: { query: type({ tags: type(type("string")).array() }).partial() },
+  responses: { 200: type(Pet).array().or(type(User).array()).or(type(Tag).array()), 400: type("unknown") },
+};
+
+export type get_GetPetById = typeof get_GetPetById;
+export const get_GetPetById = {
+  method: type("GET"),
+  path: type("/pet/{petId}"),
+  requestFormat: type("json"),
+  parameters: { path: type({ petId: type("number.integer") }) },
+  responses: {
+    200: Pet,
+    400: type({ code: type("number.integer"), message: type("string") }),
+    404: type({ code: type("number.integer"), message: type("string") }),
+  },
+};
+
+export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
+export const post_UpdatePetWithForm = {
+  method: type("POST"),
+  path: type("/pet/{petId}"),
+  requestFormat: type("json"),
+  parameters: {
+    query: type({ name: type("string"), status: type("string") }).partial(),
+    path: type({ petId: type("number.integer") }),
+  },
+  responses: { 405: type("unknown") },
+};
+
+export type delete_DeletePet = typeof delete_DeletePet;
+export const delete_DeletePet = {
+  method: type("DELETE"),
+  path: type("/pet/{petId}"),
+  requestFormat: type("json"),
+  parameters: { path: type({ petId: type("number.integer") }), header: type({ api_key: type("string") }).partial() },
+  responses: { 400: type("unknown") },
+};
+
+export type post_UploadFile = typeof post_UploadFile;
+export const post_UploadFile = {
+  method: type("POST"),
+  path: type("/pet/{petId}/uploadImage"),
+  requestFormat: type("binary"),
+  parameters: {
+    query: type({ additionalMetadata: type("string") }).partial(),
+    path: type({ petId: type("number.integer") }),
+    body: type("string"),
+  },
+  responses: { 200: ApiResponse },
+};
+
+export type get_GetInventory = typeof get_GetInventory;
+export const get_GetInventory = {
+  method: type("GET"),
+  path: type("/store/inventory"),
+  requestFormat: type("json"),
+  parameters: type("never"),
+  responses: { 200: type("Record", "string", type("number.integer")) },
+};
+
+export type post_PlaceOrder = typeof post_PlaceOrder;
+export const post_PlaceOrder = {
+  method: type("POST"),
+  path: type("/store/order"),
+  requestFormat: type("json"),
+  parameters: { body: Order },
+  responses: { 200: Order, 405: type("unknown") },
+};
+
+export type get_GetOrderById = typeof get_GetOrderById;
+export const get_GetOrderById = {
+  method: type("GET"),
+  path: type("/store/order/{orderId}"),
+  requestFormat: type("json"),
+  parameters: { path: type({ orderId: type("number.integer") }) },
+  responses: { 200: Order, 400: type("unknown"), 404: type("unknown") },
+};
+
+export type delete_DeleteOrder = typeof delete_DeleteOrder;
+export const delete_DeleteOrder = {
+  method: type("DELETE"),
+  path: type("/store/order/{orderId}"),
+  requestFormat: type("json"),
+  parameters: { path: type({ orderId: type("number.integer") }) },
+  responses: { 400: type("unknown"), 404: type("unknown") },
+};
+
+export type post_CreateUser = typeof post_CreateUser;
+export const post_CreateUser = {
+  method: type("POST"),
+  path: type("/user"),
+  requestFormat: type("json"),
+  parameters: { body: User },
+  responses: { default: User },
+};
+
+export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput;
+export const post_CreateUsersWithListInput = {
+  method: type("POST"),
+  path: type("/user/createWithList"),
+  requestFormat: type("json"),
+  parameters: { body: type(User).array() },
+  responses: { 200: User, default: type("unknown") },
+};
+
+export type get_LoginUser = typeof get_LoginUser;
+export const get_LoginUser = {
+  method: type("GET"),
+  path: type("/user/login"),
+  requestFormat: type("json"),
+  parameters: { query: type({ username: type("string"), password: type("string") }).partial() },
+  responses: { 200: type("string"), 400: type("unknown") },
+  responseHeaders: {
+    200: type({ "X-Rate-Limit": type("unknown"), "X-Expires-After": type("unknown") }),
+    400: type({ "X-Error": type("unknown") }),
+  },
+};
+
+export type get_LogoutUser = typeof get_LogoutUser;
+export const get_LogoutUser = {
+  method: type("GET"),
+  path: type("/user/logout"),
+  requestFormat: type("json"),
+  parameters: type("never"),
+  responses: { default: type("unknown") },
+};
+
+export type get_GetUserByName = typeof get_GetUserByName;
+export const get_GetUserByName = {
+  method: type("GET"),
+  path: type("/user/{username}"),
+  requestFormat: type("json"),
+  parameters: { path: type({ username: type("string") }) },
+  responses: {
+    200: User,
+    201: type({ id: type("number.integer"), username: type("string") }),
+    400: type({ code: type("number.integer"), message: type("string") }),
+    404: type("unknown"),
+  },
+};
+
+export type put_UpdateUser = typeof put_UpdateUser;
+export const put_UpdateUser = {
+  method: type("PUT"),
+  path: type("/user/{username}"),
+  requestFormat: type("json"),
+  parameters: { path: type({ username: type("string") }), body: User },
+  responses: { default: type("unknown") },
+};
+
+export type delete_DeleteUser = typeof delete_DeleteUser;
+export const delete_DeleteUser = {
+  method: type("DELETE"),
+  path: type("/user/{username}"),
+  requestFormat: type("json"),
+  parameters: { path: type({ username: type("string") }) },
+  responses: { 400: type("unknown"), 404: type("unknown") },
+};
+
+export type get_GetPetTextPlain = typeof get_GetPetTextPlain;
+export const get_GetPetTextPlain = {
+  method: type("GET"),
+  path: type("/pet/text"),
+  requestFormat: type("json"),
+  parameters: type("never"),
+  responses: { 200: User },
+};
+
+export type get_GetPetEmpty = typeof get_GetPetEmpty;
+export const get_GetPetEmpty = {
+  method: type("GET"),
+  path: type("/pet/empty"),
+  requestFormat: type("json"),
+  parameters: type("never"),
+  responses: { 204: type("unknown") },
+};
+
+export type get_GetPetCustom = typeof get_GetPetCustom;
+export const get_GetPetCustom = {
+  method: type("GET"),
+  path: type("/pet/custom"),
+  requestFormat: type("json"),
+  parameters: type("never"),
+  responses: { 200: Pet },
+};
+
+// </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
@@ -721,7 +577,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint["infer"], SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -752,7 +608,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint["infer"], SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -783,7 +639,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint["infer"], SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -814,7 +670,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint["infer"], SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -853,7 +709,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<TEndpoint["infer"], SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   request<
     TMethod extends keyof EndpointByMethod,
@@ -922,7 +778,7 @@ export class ApiClient {
         return withResponse ? typedResponse : data;
       });
 
-    return promise as Extract<InferResponseByStatus<TEndpoint["infer"], SuccessStatusCode>, { data: {} }>["data"];
+    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }

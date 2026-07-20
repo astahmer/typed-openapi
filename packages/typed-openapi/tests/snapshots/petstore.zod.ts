@@ -1,87 +1,67 @@
 import { z } from "zod";
 
+// <Schemas>
 export type Order = z.infer<typeof Order>;
-export const Order = z.object({
-  id: z.number().optional(),
-  petId: z.number().optional(),
-  quantity: z.number().optional(),
-  shipDate: z.string().optional(),
-  status: z.union([z.literal("placed"), z.literal("approved"), z.literal("delivered")]).optional(),
-  complete: z.boolean().optional(),
-});
+export const Order = z
+  .object({
+    id: z.number().int(),
+    petId: z.number().int(),
+    quantity: z.number().int(),
+    shipDate: z.iso.datetime(),
+    status: z.enum(["placed", "approved", "delivered"]),
+    complete: z.boolean(),
+  })
+  .partial();
 
 export type Address = z.infer<typeof Address>;
-export const Address = z.object({
-  street: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  zip: z.string().optional(),
-});
+export const Address = z.object({ street: z.string(), city: z.string(), state: z.string(), zip: z.string() }).partial();
 
 export type Customer = z.infer<typeof Customer>;
-export const Customer = z.object({
-  id: z.number().optional(),
-  username: z.string().optional(),
-  address: z.array(Address).optional(),
-});
+export const Customer = z.object({ id: z.number().int(), username: z.string(), address: z.array(Address) }).partial();
 
 export type Category = z.infer<typeof Category>;
-export const Category = z.object({
-  id: z.number().optional(),
-  name: z.string().optional(),
-});
+export const Category = z.object({ id: z.number().int(), name: z.string() }).partial();
 
 export type User = z.infer<typeof User>;
-export const User = z.object({
-  id: z.number().optional(),
-  username: z.string().optional(),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-  email: z.string().optional(),
-  password: z.string().optional(),
-  phone: z.string().optional(),
-  userStatus: z.number().optional(),
-});
+export const User = z
+  .object({
+    id: z.number().int(),
+    username: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
+    email: z.string(),
+    password: z.string(),
+    phone: z.string(),
+    userStatus: z.number().int(),
+  })
+  .partial();
 
 export type Tag = z.infer<typeof Tag>;
-export const Tag = z.object({
-  id: z.number().optional(),
-  name: z.string().optional(),
-});
+export const Tag = z.object({ id: z.number().int(), name: z.string() }).partial();
 
 export type Pet = z.infer<typeof Pet>;
 export const Pet = z.object({
-  id: z.union([z.number(), z.undefined()]).optional(),
+  id: z.number().int().optional(),
   name: z.string(),
-  category: z.union([Category, z.undefined()]).optional(),
+  category: Category.optional(),
   photoUrls: z.array(z.string()),
-  tags: z.union([z.array(Tag), z.undefined()]).optional(),
-  status: z
-    .union([z.union([z.literal("available"), z.literal("pending"), z.literal("sold")]), z.undefined()])
-    .optional(),
+  tags: z.array(Tag).optional(),
+  status: z.enum(["available", "pending", "sold"]).optional(),
 });
 
 export type ApiResponse = z.infer<typeof ApiResponse>;
-export const ApiResponse = z.object({
-  code: z.number().optional(),
-  type: z.string().optional(),
-  message: z.string().optional(),
-});
+export const ApiResponse = z.object({ code: z.number().int(), type: z.string(), message: z.string() }).partial();
 
+// </Schemas>
+
+// <Endpoints>
 export type put_UpdatePet = typeof put_UpdatePet;
 export const put_UpdatePet = {
   method: z.literal("PUT"),
   path: z.literal("/pet"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    body: Pet,
-  }),
-  responses: z.object({
-    "200": Pet,
-    "400": z.unknown(),
-    "404": z.unknown(),
-    "405": z.unknown(),
-  }),
+  parameters: { body: Pet },
+  responses: { 200: Pet, 400: z.unknown(), 404: z.unknown(), 405: z.unknown() },
 };
 
 export type post_AddPet = typeof post_AddPet;
@@ -89,13 +69,8 @@ export const post_AddPet = {
   method: z.literal("POST"),
   path: z.literal("/pet"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    body: Pet,
-  }),
-  responses: z.object({
-    "200": Pet,
-    "405": z.unknown(),
-  }),
+  parameters: { body: Pet },
+  responses: { 200: Pet, 405: z.unknown() },
 };
 
 export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
@@ -103,19 +78,8 @@ export const get_FindPetsByStatus = {
   method: z.literal("GET"),
   path: z.literal("/pet/findByStatus"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    query: z.object({
-      status: z.union([z.literal("available"), z.literal("pending"), z.literal("sold")]).optional(),
-    }),
-  }),
-  responses: z.object({
-    "200": z.array(Pet),
-    "304": z.unknown(),
-    "400": z.object({
-      code: z.number(),
-      message: z.string(),
-    }),
-  }),
+  parameters: { query: z.object({ status: z.enum(["available", "pending", "sold"]) }).partial() },
+  responses: { 200: z.array(Pet), 304: z.unknown(), 400: z.object({ code: z.number().int(), message: z.string() }) },
 };
 
 export type get_FindPetsByTags = typeof get_FindPetsByTags;
@@ -123,15 +87,8 @@ export const get_FindPetsByTags = {
   method: z.literal("GET"),
   path: z.literal("/pet/findByTags"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    query: z.object({
-      tags: z.array(z.string()).optional(),
-    }),
-  }),
-  responses: z.object({
-    "200": z.union([z.array(Pet), z.array(User), z.array(Tag)]),
-    "400": z.unknown(),
-  }),
+  parameters: { query: z.object({ tags: z.array(z.string()) }).partial() },
+  responses: { 200: z.union([z.array(Pet), z.array(User), z.array(Tag)]), 400: z.unknown() },
 };
 
 export type get_GetPetById = typeof get_GetPetById;
@@ -139,22 +96,12 @@ export const get_GetPetById = {
   method: z.literal("GET"),
   path: z.literal("/pet/{petId}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      petId: z.number(),
-    }),
-  }),
-  responses: z.object({
-    "200": Pet,
-    "400": z.object({
-      code: z.number(),
-      message: z.string(),
-    }),
-    "404": z.object({
-      code: z.number(),
-      message: z.string(),
-    }),
-  }),
+  parameters: { path: z.object({ petId: z.number().int() }) },
+  responses: {
+    200: Pet,
+    400: z.object({ code: z.number().int(), message: z.string() }),
+    404: z.object({ code: z.number().int(), message: z.string() }),
+  },
 };
 
 export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
@@ -162,18 +109,11 @@ export const post_UpdatePetWithForm = {
   method: z.literal("POST"),
   path: z.literal("/pet/{petId}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    query: z.object({
-      name: z.string().optional(),
-      status: z.string().optional(),
-    }),
-    path: z.object({
-      petId: z.number(),
-    }),
-  }),
-  responses: z.object({
-    "405": z.unknown(),
-  }),
+  parameters: {
+    query: z.object({ name: z.string(), status: z.string() }).partial(),
+    path: z.object({ petId: z.number().int() }),
+  },
+  responses: { 405: z.unknown() },
 };
 
 export type delete_DeletePet = typeof delete_DeletePet;
@@ -181,17 +121,8 @@ export const delete_DeletePet = {
   method: z.literal("DELETE"),
   path: z.literal("/pet/{petId}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      petId: z.number(),
-    }),
-    header: z.object({
-      api_key: z.string().optional(),
-    }),
-  }),
-  responses: z.object({
-    "400": z.unknown(),
-  }),
+  parameters: { path: z.object({ petId: z.number().int() }), header: z.object({ api_key: z.string() }).partial() },
+  responses: { 400: z.unknown() },
 };
 
 export type post_UploadFile = typeof post_UploadFile;
@@ -199,18 +130,12 @@ export const post_UploadFile = {
   method: z.literal("POST"),
   path: z.literal("/pet/{petId}/uploadImage"),
   requestFormat: z.literal("binary"),
-  parameters: z.object({
-    query: z.object({
-      additionalMetadata: z.string().optional(),
-    }),
-    path: z.object({
-      petId: z.number(),
-    }),
+  parameters: {
+    query: z.object({ additionalMetadata: z.string() }).partial(),
+    path: z.object({ petId: z.number().int() }),
     body: z.string(),
-  }),
-  responses: z.object({
-    "200": ApiResponse,
-  }),
+  },
+  responses: { 200: ApiResponse },
 };
 
 export type get_GetInventory = typeof get_GetInventory;
@@ -219,9 +144,7 @@ export const get_GetInventory = {
   path: z.literal("/store/inventory"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  responses: z.object({
-    "200": z.record(z.number()),
-  }),
+  responses: { 200: z.record(z.record(z.string(), z.number().int()), z.number().int()) },
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;
@@ -229,13 +152,8 @@ export const post_PlaceOrder = {
   method: z.literal("POST"),
   path: z.literal("/store/order"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    body: Order,
-  }),
-  responses: z.object({
-    "200": Order,
-    "405": z.unknown(),
-  }),
+  parameters: { body: Order },
+  responses: { 200: Order, 405: z.unknown() },
 };
 
 export type get_GetOrderById = typeof get_GetOrderById;
@@ -243,16 +161,8 @@ export const get_GetOrderById = {
   method: z.literal("GET"),
   path: z.literal("/store/order/{orderId}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      orderId: z.number(),
-    }),
-  }),
-  responses: z.object({
-    "200": Order,
-    "400": z.unknown(),
-    "404": z.unknown(),
-  }),
+  parameters: { path: z.object({ orderId: z.number().int() }) },
+  responses: { 200: Order, 400: z.unknown(), 404: z.unknown() },
 };
 
 export type delete_DeleteOrder = typeof delete_DeleteOrder;
@@ -260,15 +170,8 @@ export const delete_DeleteOrder = {
   method: z.literal("DELETE"),
   path: z.literal("/store/order/{orderId}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      orderId: z.number(),
-    }),
-  }),
-  responses: z.object({
-    "400": z.unknown(),
-    "404": z.unknown(),
-  }),
+  parameters: { path: z.object({ orderId: z.number().int() }) },
+  responses: { 400: z.unknown(), 404: z.unknown() },
 };
 
 export type post_CreateUser = typeof post_CreateUser;
@@ -276,12 +179,8 @@ export const post_CreateUser = {
   method: z.literal("POST"),
   path: z.literal("/user"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    body: User,
-  }),
-  responses: z.object({
-    default: User,
-  }),
+  parameters: { body: User },
+  responses: { default: User },
 };
 
 export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput;
@@ -289,13 +188,8 @@ export const post_CreateUsersWithListInput = {
   method: z.literal("POST"),
   path: z.literal("/user/createWithList"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    body: z.array(User),
-  }),
-  responses: z.object({
-    "200": User,
-    default: z.unknown(),
-  }),
+  parameters: { body: z.array(User) },
+  responses: { 200: User, default: z.unknown() },
 };
 
 export type get_LoginUser = typeof get_LoginUser;
@@ -303,25 +197,12 @@ export const get_LoginUser = {
   method: z.literal("GET"),
   path: z.literal("/user/login"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    query: z.object({
-      username: z.string().optional(),
-      password: z.string().optional(),
-    }),
-  }),
-  responses: z.object({
-    "200": z.string(),
-    "400": z.unknown(),
-  }),
-  responseHeaders: z.object({
-    "200": z.object({
-      "X-Rate-Limit": z.number(),
-      "X-Expires-After": z.string(),
-    }),
-    "400": z.object({
-      "X-Error": z.string(),
-    }),
-  }),
+  parameters: { query: z.object({ username: z.string(), password: z.string() }).partial() },
+  responses: { 200: z.string(), 400: z.unknown() },
+  responseHeaders: {
+    200: z.object({ "X-Rate-Limit": z.unknown(), "X-Expires-After": z.unknown() }),
+    400: z.object({ "X-Error": z.unknown() }),
+  },
 };
 
 export type get_LogoutUser = typeof get_LogoutUser;
@@ -330,9 +211,7 @@ export const get_LogoutUser = {
   path: z.literal("/user/logout"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  responses: z.object({
-    default: z.unknown(),
-  }),
+  responses: { default: z.unknown() },
 };
 
 export type get_GetUserByName = typeof get_GetUserByName;
@@ -340,23 +219,13 @@ export const get_GetUserByName = {
   method: z.literal("GET"),
   path: z.literal("/user/{username}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      username: z.string(),
-    }),
-  }),
-  responses: z.object({
-    "200": User,
-    "201": z.object({
-      id: z.number(),
-      username: z.string(),
-    }),
-    "400": z.object({
-      code: z.number(),
-      message: z.string(),
-    }),
-    "404": z.unknown(),
-  }),
+  parameters: { path: z.object({ username: z.string() }) },
+  responses: {
+    200: User,
+    201: z.object({ id: z.number().int(), username: z.string() }),
+    400: z.object({ code: z.number().int(), message: z.string() }),
+    404: z.unknown(),
+  },
 };
 
 export type put_UpdateUser = typeof put_UpdateUser;
@@ -364,15 +233,8 @@ export const put_UpdateUser = {
   method: z.literal("PUT"),
   path: z.literal("/user/{username}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      username: z.string(),
-    }),
-    body: User,
-  }),
-  responses: z.object({
-    default: z.unknown(),
-  }),
+  parameters: { path: z.object({ username: z.string() }), body: User },
+  responses: { default: z.unknown() },
 };
 
 export type delete_DeleteUser = typeof delete_DeleteUser;
@@ -380,15 +242,8 @@ export const delete_DeleteUser = {
   method: z.literal("DELETE"),
   path: z.literal("/user/{username}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      username: z.string(),
-    }),
-  }),
-  responses: z.object({
-    "400": z.unknown(),
-    "404": z.unknown(),
-  }),
+  parameters: { path: z.object({ username: z.string() }) },
+  responses: { 400: z.unknown(), 404: z.unknown() },
 };
 
 export type get_GetPetTextPlain = typeof get_GetPetTextPlain;
@@ -397,9 +252,7 @@ export const get_GetPetTextPlain = {
   path: z.literal("/pet/text"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  responses: z.object({
-    "200": User,
-  }),
+  responses: { 200: User },
 };
 
 export type get_GetPetEmpty = typeof get_GetPetEmpty;
@@ -408,9 +261,7 @@ export const get_GetPetEmpty = {
   path: z.literal("/pet/empty"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  responses: z.object({
-    "204": z.unknown(),
-  }),
+  responses: { 204: z.unknown() },
 };
 
 export type get_GetPetCustom = typeof get_GetPetCustom;
@@ -419,10 +270,10 @@ export const get_GetPetCustom = {
   path: z.literal("/pet/custom"),
   requestFormat: z.literal("json"),
   parameters: z.never(),
-  responses: z.object({
-    "200": Pet,
-  }),
+  responses: { 200: Pet },
 };
+
+// </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
@@ -713,7 +564,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -744,7 +595,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -775,7 +626,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -806,7 +657,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -845,7 +696,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   request<
     TMethod extends keyof EndpointByMethod,
@@ -914,7 +765,7 @@ export class ApiClient {
         return withResponse ? typedResponse : data;
       });
 
-    return promise as Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"];
+    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }

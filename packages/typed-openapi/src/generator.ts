@@ -2,11 +2,13 @@ import { capitalize, groupBy } from "pastable/server";
 import { Box } from "./box.ts";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 import { AnyBox, AnyBoxDef } from "./types.ts";
-import * as Codegen from "@sinclair/typebox-codegen";
-import { match } from "ts-pattern";
 import { type } from "arktype";
 import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
 import type { BoxObject, NameTransformOptions } from "./types.ts";
+import { emitRuntimeFile } from "./runtimes/emit-runtime-file.ts";
+import { getRuntimeAdapter, type ShippedRuntime } from "./runtimes/registry.ts";
+import { resolveValidationPolicy, type ValidationPreset, type ValidationPolicy } from "./runtimes/validation.ts";
+import type { OutputRuntime as RuntimeName } from "./runtimes/types.ts";
 
 // Default success status codes (2xx and 3xx ranges)
 export const DEFAULT_SUCCESS_STATUS_CODES = [
@@ -22,7 +24,9 @@ export const DEFAULT_ERROR_STATUS_CODES = [
 export type ErrorStatusCode = (typeof DEFAULT_ERROR_STATUS_CODES)[number];
 
 export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
-  runtime?: "none" | keyof typeof runtimeValidationGenerator;
+  runtime?: RuntimeName;
+  /** Validation depth for runtime adapters (ignored when runtime is `none`) */
+  validation?: ValidationPreset | (Partial<ValidationPolicy> & { preset?: ValidationPreset });
   schemasOnly?: boolean;
   nameTransform?: NameTransformOptions | undefined;
   successStatusCodes?: readonly number[];
@@ -30,53 +34,12 @@ export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
   includeClient?: boolean;
   jsdoc?: boolean;
 };
-type GeneratorContext = Required<GeneratorOptions>;
+type GeneratorContext = Required<Omit<GeneratorOptions, "validation">> & {
+  validation: ValidationPolicy;
+};
 
-export const allowedRuntimes = type("'none' | 'arktype' | 'io-ts' | 'typebox' | 'valibot' | 'yup' | 'zod'");
+export const allowedRuntimes = type("'none' | 'zod' | 'zod3' | 'effect' | 'effect3' | 'valibot' | 'arktype'");
 export type OutputRuntime = typeof allowedRuntimes.infer;
-
-// TODO validate response schemas in sample fetch ApiClient
-// also, check that we can easily retrieve the response schema from the Fetcher
-
-const runtimeValidationGenerator = {
-  arktype: Codegen.ModelToArkType.Generate,
-  "io-ts": Codegen.ModelToIoTs.Generate,
-  typebox: Codegen.ModelToTypeBox.Generate,
-  valibot: Codegen.ModelToValibot.Generate,
-  yup: Codegen.ModelToYup.Generate,
-  zod: Codegen.ModelToZod.Generate,
-};
-
-const inferByRuntime = {
-  none: (input: string) => input,
-  arktype: (input: string) => `${input}["infer"]`,
-  "io-ts": (input: string) => `t.TypeOf<${input}>`,
-  typebox: (input: string) => `Static<${input}>`,
-  valibot: (input: string) => `v.InferOutput<${input}>`,
-  yup: (input: string) => `y.InferType<${input}>`,
-  zod: (input: string) => `z.infer<${input}>`,
-};
-
-const methods = ["get", "put", "post", "delete", "options", "head", "patch", "trace"] as const;
-const methodsRegex = new RegExp(`(?:${methods.join("|")})_`);
-const endpointExport = new RegExp(`export (?:type|const) (?:${methodsRegex.source})`);
-
-const replacerByRuntime = {
-  yup: (line: string) =>
-    line
-      .replace(/y\.InferType<\s*?typeof (.*?)\s*?>/g, "typeof $1")
-      .replace(
-        new RegExp(`(${endpointExport.source})` + new RegExp(/([\s\S]*? )(y\.object)(\()/).source, "g"),
-        "$1$2(",
-      ),
-  zod: (line: string) =>
-    line
-      .replace(/z\.infer<\s*?typeof (.*?)\s*?>/g, "typeof $1")
-      .replace(
-        new RegExp(`(${endpointExport.source})` + new RegExp(/([\s\S]*? )(z\.object)(\()/).source, "g"),
-        "$1$2(",
-      ),
-};
 
 const shouldRenderDescriptionComments = (ctx: GeneratorContext) => ctx.jsdoc && ctx.runtime === "none";
 
@@ -103,55 +66,45 @@ const indentMultiline = (value: string, indent = "  ") =>
     : value;
 
 export const generateFile = (options: GeneratorOptions) => {
+  const runtime = options.runtime ?? "none";
   const ctx = {
     ...options,
-    runtime: options.runtime ?? "none",
+    runtime,
+    validation: resolveValidationPolicy(options.validation ?? (runtime === "none" ? "loose" : "strict")),
     successStatusCodes: options.successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
     errorStatusCodes: options.errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES,
     includeClient: options.includeClient ?? true,
     jsdoc: options.jsdoc ?? false,
   } as GeneratorContext;
 
-  const schemaList = generateSchemaList(ctx);
-  const endpointSchemaList = options.schemasOnly ? "" : generateEndpointSchemaList(ctx);
   const endpointByMethod = options.schemasOnly ? "" : generateEndpointByMethod(ctx);
   const apiClient = options.schemasOnly || !ctx.includeClient ? "" : generateApiClient(ctx);
 
-  const transform =
-    ctx.runtime === "none"
-      ? (file: string) => file
-      : (file: string) => {
-          const model = Codegen.TypeScriptToModel.Generate(file);
-          const transformer = runtimeValidationGenerator[ctx.runtime as Exclude<typeof ctx.runtime, "none">];
-          // tmp fix for typebox, there's currently a "// todo" only with Codegen.ModelToTypeBox.Generate
-          // https://github.com/sinclairzx81/typebox-codegen/blob/44d44d55932371b69f349331b1c8a60f5d760d9e/src/model/model-to-typebox.ts#L31
-          const generated = ctx.runtime === "typebox" ? Codegen.TypeScriptToTypeBox.Generate(file) : transformer(model);
+  if (ctx.runtime !== "none") {
+    const adapter = getRuntimeAdapter(ctx.runtime as ShippedRuntime);
+    const runtimeSchemasAndEndpoints = emitRuntimeFile({
+      adapter,
+      refs: ctx.refs,
+      endpointList: ctx.endpointList,
+      validation: ctx.validation,
+      schemasOnly: options.schemasOnly ?? false,
+    });
 
-          let converted = "";
-          const match = generated.match(/(const __ENDPOINTS_START__ =)([\s\S]*?)(export type __ENDPOINTS_END__)/);
-          const content = match?.[2];
-
-          if (content && ctx.runtime in replacerByRuntime) {
-            const before = generated.slice(0, generated.indexOf("export type __ENDPOINTS_START"));
-            converted =
-              before +
-              replacerByRuntime[ctx.runtime as keyof typeof replacerByRuntime](
-                content.slice(content.indexOf("export")),
-              );
-          } else {
-            converted = generated;
-          }
-
-          return converted;
-        };
-
-  const file = `
-  ${transform(schemaList + endpointSchemaList)}
+    return `
+  ${runtimeSchemasAndEndpoints}
   ${endpointByMethod}
   ${apiClient}
   `;
+  }
 
-  return file;
+  const schemaList = generateSchemaList(ctx);
+  const endpointSchemaList = options.schemasOnly ? "" : generateEndpointSchemaList(ctx);
+
+  return `
+  ${schemaList + endpointSchemaList}
+  ${endpointByMethod}
+  ${apiClient}
+  `;
 };
 
 const generateSchemaList = (ctx: GeneratorContext) => {
@@ -506,11 +459,8 @@ type NotNever<T> = [T] extends [never] ? false : true;
 // </ApiClientTypes>
 `;
 
-  const infer = inferByRuntime[ctx.runtime];
-  const InferTEndpoint = match(ctx.runtime)
-    .with("zod", "yup", () => infer(`TEndpoint`))
-    .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`))
-    .otherwise(() => `TEndpoint`);
+  // Endpoint defs are structural (`typeof endpointConst`); response maps hang off that shape.
+  const InferTEndpoint = "TEndpoint";
 
   const apiClient = `
 // <TypedStatusError>

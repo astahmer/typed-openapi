@@ -1,40 +1,29 @@
-import { Type, Static } from "@sinclair/typebox";
+import { z } from "zod";
 
-type __ENDPOINTS_START__ = Static<typeof __ENDPOINTS_START__>;
-const __ENDPOINTS_START__ = Type.Object({});
+// <Schemas>
+// </Schemas>
 
-export type get_Get_users = Static<typeof get_Get_users>;
-export const get_Get_users = Type.Object({
-  method: Type.Literal("GET"),
-  path: Type.Literal("/users"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Never(),
-  responses: Type.Object({
-    200: Type.Array(Type.String()),
-  }),
-});
+// <Endpoints>
+export type get_Get_users = typeof get_Get_users;
+export const get_Get_users = {
+  method: z.literal("GET"),
+  path: z.literal("/users"),
+  requestFormat: z.literal("json"),
+  parameters: z.never(),
+  responses: { 200: z.array(z.string()) },
+};
 
-export type post_Very_very_very_very_very_very_very_very_very_very_long = Static<
-  typeof post_Very_very_very_very_very_very_very_very_very_very_long
->;
-export const post_Very_very_very_very_very_very_very_very_very_very_long = Type.Object({
-  method: Type.Literal("POST"),
-  path: Type.Literal("/users"),
-  requestFormat: Type.Literal("json"),
-  parameters: Type.Object({
-    body: Type.Partial(
-      Type.Object({
-        username: Type.String(),
-      }),
-    ),
-  }),
-  responses: Type.Object({
-    201: Type.Unknown(),
-  }),
-});
+export type post_Very_very_very_very_very_very_very_very_very_very_long =
+  typeof post_Very_very_very_very_very_very_very_very_very_very_long;
+export const post_Very_very_very_very_very_very_very_very_very_very_long = {
+  method: z.literal("POST"),
+  path: z.literal("/users"),
+  requestFormat: z.literal("json"),
+  parameters: { body: z.object({ username: z.string() }).partial() },
+  responses: { 201: z.unknown() },
+};
 
-type __ENDPOINTS_END__ = Static<typeof __ENDPOINTS_END__>;
-const __ENDPOINTS_END__ = Type.Object({});
+// </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
@@ -299,7 +288,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -330,7 +319,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -369,7 +358,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   request<
     TMethod extends keyof EndpointByMethod,
@@ -438,7 +427,7 @@ export class ApiClient {
         return withResponse ? typedResponse : data;
       });
 
-    return promise as Extract<InferResponseByStatus<Static<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"];
+    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }

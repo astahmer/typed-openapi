@@ -30,6 +30,7 @@ async function ensureDir(dirPath: string): Promise<void> {
 export const optionsSchema = type({
   "output?": "string",
   runtime: allowedRuntimes,
+  "validation?": "'loose' | 'formats' | 'strict'",
   "format?": "boolean | 'true' | 'false'",
   tanstack: "boolean | string",
   "defaultFetcher?": type({
@@ -86,6 +87,7 @@ export async function generateClientFiles(input: string, options: GenerateClient
   const generatorOptions: GeneratorOptions = {
     ...ctx,
     runtime: options.runtime,
+    ...(options.validation ? { validation: options.validation } : {}),
     schemasOnly: options.schemasOnly,
     nameTransform: options.nameTransform,
     includeClient: includeClient ?? true,

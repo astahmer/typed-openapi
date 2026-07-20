@@ -1,430 +1,375 @@
 import * as v from "valibot";
 
+// <Schemas>
 export type Port = v.InferOutput<typeof Port>;
 export const Port = v.object({
-  IP: v.optional(v.union([v.string(), v.undefined()])),
-  PrivatePort: v.number(),
-  PublicPort: v.optional(v.union([v.number(), v.undefined()])),
-  Type: v.union([v.literal("tcp"), v.literal("udp"), v.literal("sctp")]),
+  IP: v.optional(v.string()),
+  PrivatePort: v.pipe(v.number(), v.integer()),
+  PublicPort: v.optional(v.pipe(v.number(), v.integer())),
+  Type: v.picklist(["tcp", "udp", "sctp"]),
 });
 
 export type MountPoint = v.InferOutput<typeof MountPoint>;
-export const MountPoint = v.object({
-  Type: v.optional(
-    v.union([v.literal("bind"), v.literal("volume"), v.literal("tmpfs"), v.literal("npipe"), v.literal("cluster")]),
-  ),
-  Name: v.optional(v.string()),
-  Source: v.optional(v.string()),
-  Destination: v.optional(v.string()),
-  Driver: v.optional(v.string()),
-  Mode: v.optional(v.string()),
-  RW: v.optional(v.boolean()),
-  Propagation: v.optional(v.string()),
-});
+export const MountPoint = v.partial(
+  v.object({
+    Type: v.picklist(["bind", "volume", "tmpfs", "npipe", "cluster"]),
+    Name: v.string(),
+    Source: v.string(),
+    Destination: v.string(),
+    Driver: v.string(),
+    Mode: v.string(),
+    RW: v.boolean(),
+    Propagation: v.string(),
+  }),
+);
 
 export type DeviceMapping = v.InferOutput<typeof DeviceMapping>;
-export const DeviceMapping = v.object({
-  PathOnHost: v.optional(v.string()),
-  PathInContainer: v.optional(v.string()),
-  CgroupPermissions: v.optional(v.string()),
-});
+export const DeviceMapping = v.partial(
+  v.object({ PathOnHost: v.string(), PathInContainer: v.string(), CgroupPermissions: v.string() }),
+);
 
 export type DeviceRequest = v.InferOutput<typeof DeviceRequest>;
-export const DeviceRequest = v.object({
-  Driver: v.optional(v.string()),
-  Count: v.optional(v.number()),
-  DeviceIDs: v.optional(v.array(v.string())),
-  Capabilities: v.optional(v.array(v.array(v.string()))),
-  Options: v.optional(v.record(v.string(), v.string())),
-});
+export const DeviceRequest = v.partial(
+  v.object({
+    Driver: v.string(),
+    Count: v.pipe(v.number(), v.integer()),
+    DeviceIDs: v.array(v.string()),
+    Capabilities: v.array(v.array(v.string())),
+    Options: v.record(v.string(), v.string()),
+  }),
+);
 
 export type ThrottleDevice = v.InferOutput<typeof ThrottleDevice>;
-export const ThrottleDevice = v.object({
-  Path: v.optional(v.string()),
-  Rate: v.optional(v.number()),
-});
+export const ThrottleDevice = v.partial(
+  v.object({ Path: v.string(), Rate: v.pipe(v.number(), v.integer(), v.minValue(0)) }),
+);
 
 export type Mount = v.InferOutput<typeof Mount>;
-export const Mount = v.object({
-  Target: v.optional(v.string()),
-  Source: v.optional(v.string()),
-  Type: v.optional(
-    v.union([v.literal("bind"), v.literal("volume"), v.literal("tmpfs"), v.literal("npipe"), v.literal("cluster")]),
-  ),
-  ReadOnly: v.optional(v.boolean()),
-  Consistency: v.optional(v.string()),
-  BindOptions: v.optional(
-    v.object({
-      Propagation: v.optional(
-        v.union([
-          v.literal("private"),
-          v.literal("rprivate"),
-          v.literal("shared"),
-          v.literal("rshared"),
-          v.literal("slave"),
-          v.literal("rslave"),
-        ]),
-      ),
-      NonRecursive: v.optional(v.boolean()),
-      CreateMountpoint: v.optional(v.boolean()),
-    }),
-  ),
-  VolumeOptions: v.optional(
-    v.object({
-      NoCopy: v.optional(v.boolean()),
-      Labels: v.optional(v.record(v.string(), v.string())),
-      DriverConfig: v.optional(
-        v.object({
-          Name: v.optional(v.string()),
-          Options: v.optional(v.record(v.string(), v.string())),
-        }),
-      ),
-    }),
-  ),
-  TmpfsOptions: v.optional(
-    v.object({
-      SizeBytes: v.optional(v.number()),
-      Mode: v.optional(v.number()),
-    }),
-  ),
-});
-
-export type RestartPolicy = v.InferOutput<typeof RestartPolicy>;
-export const RestartPolicy = v.object({
-  Name: v.optional(
-    v.union([
-      v.literal(""),
-      v.literal("no"),
-      v.literal("always"),
-      v.literal("unless-stopped"),
-      v.literal("on-failure"),
-    ]),
-  ),
-  MaximumRetryCount: v.optional(v.number()),
-});
-
-export type Resources = v.InferOutput<typeof Resources>;
-export const Resources = v.object({
-  CpuShares: v.optional(v.number()),
-  Memory: v.optional(v.number()),
-  CgroupParent: v.optional(v.string()),
-  BlkioWeight: v.optional(v.number()),
-  BlkioWeightDevice: v.optional(
-    v.array(
-      v.object({
-        Path: v.optional(v.string()),
-        Weight: v.optional(v.number()),
-      }),
-    ),
-  ),
-  BlkioDeviceReadBps: v.optional(v.array(ThrottleDevice)),
-  BlkioDeviceWriteBps: v.optional(v.array(ThrottleDevice)),
-  BlkioDeviceReadIOps: v.optional(v.array(ThrottleDevice)),
-  BlkioDeviceWriteIOps: v.optional(v.array(ThrottleDevice)),
-  CpuPeriod: v.optional(v.number()),
-  CpuQuota: v.optional(v.number()),
-  CpuRealtimePeriod: v.optional(v.number()),
-  CpuRealtimeRuntime: v.optional(v.number()),
-  CpusetCpus: v.optional(v.string()),
-  CpusetMems: v.optional(v.string()),
-  Devices: v.optional(v.array(DeviceMapping)),
-  DeviceCgroupRules: v.optional(v.array(v.string())),
-  DeviceRequests: v.optional(v.array(DeviceRequest)),
-  KernelMemoryTCP: v.optional(v.number()),
-  MemoryReservation: v.optional(v.number()),
-  MemorySwap: v.optional(v.number()),
-  MemorySwappiness: v.optional(v.number()),
-  NanoCpus: v.optional(v.number()),
-  OomKillDisable: v.optional(v.boolean()),
-  Init: v.optional(v.union([v.boolean(), v.null()])),
-  PidsLimit: v.optional(v.union([v.number(), v.null()])),
-  Ulimits: v.optional(
-    v.array(
-      v.object({
-        Name: v.optional(v.string()),
-        Soft: v.optional(v.number()),
-        Hard: v.optional(v.number()),
-      }),
-    ),
-  ),
-  CpuCount: v.optional(v.number()),
-  CpuPercent: v.optional(v.number()),
-  IOMaximumIOps: v.optional(v.number()),
-  IOMaximumBandwidth: v.optional(v.number()),
-});
-
-export type Limit = v.InferOutput<typeof Limit>;
-export const Limit = v.object({
-  NanoCPUs: v.optional(v.number()),
-  MemoryBytes: v.optional(v.number()),
-  Pids: v.optional(v.number()),
-});
-
-export type GenericResources = v.InferOutput<typeof GenericResources>;
-export const GenericResources = v.array(
+export const Mount = v.partial(
   v.object({
-    NamedResourceSpec: v.optional(
+    Target: v.string(),
+    Source: v.string(),
+    Type: v.picklist(["bind", "volume", "tmpfs", "npipe", "cluster"]),
+    ReadOnly: v.boolean(),
+    Consistency: v.string(),
+    BindOptions: v.partial(
       v.object({
-        Kind: v.optional(v.string()),
-        Value: v.optional(v.string()),
+        Propagation: v.picklist(["private", "rprivate", "shared", "rshared", "slave", "rslave"]),
+        NonRecursive: v.boolean(),
+        CreateMountpoint: v.boolean(),
       }),
     ),
-    DiscreteResourceSpec: v.optional(
+    VolumeOptions: v.partial(
       v.object({
-        Kind: v.optional(v.string()),
-        Value: v.optional(v.number()),
+        NoCopy: v.boolean(),
+        Labels: v.record(v.string(), v.string()),
+        DriverConfig: v.partial(v.object({ Name: v.string(), Options: v.record(v.string(), v.string()) })),
       }),
+    ),
+    TmpfsOptions: v.partial(
+      v.object({ SizeBytes: v.pipe(v.number(), v.integer()), Mode: v.pipe(v.number(), v.integer()) }),
     ),
   }),
 );
 
+export type RestartPolicy = v.InferOutput<typeof RestartPolicy>;
+export const RestartPolicy = v.partial(
+  v.object({
+    Name: v.picklist(["", "no", "always", "unless-stopped", "on-failure"]),
+    MaximumRetryCount: v.pipe(v.number(), v.integer()),
+  }),
+);
+
+export type Resources = v.InferOutput<typeof Resources>;
+export const Resources = v.partial(
+  v.object({
+    CpuShares: v.pipe(v.number(), v.integer()),
+    Memory: v.pipe(v.number(), v.integer()),
+    CgroupParent: v.string(),
+    BlkioWeight: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(1000)),
+    BlkioWeightDevice: v.array(
+      v.partial(v.object({ Path: v.string(), Weight: v.pipe(v.number(), v.integer(), v.minValue(0)) })),
+    ),
+    BlkioDeviceReadBps: v.array(ThrottleDevice),
+    BlkioDeviceWriteBps: v.array(ThrottleDevice),
+    BlkioDeviceReadIOps: v.array(ThrottleDevice),
+    BlkioDeviceWriteIOps: v.array(ThrottleDevice),
+    CpuPeriod: v.pipe(v.number(), v.integer()),
+    CpuQuota: v.pipe(v.number(), v.integer()),
+    CpuRealtimePeriod: v.pipe(v.number(), v.integer()),
+    CpuRealtimeRuntime: v.pipe(v.number(), v.integer()),
+    CpusetCpus: v.string(),
+    CpusetMems: v.string(),
+    Devices: v.array(DeviceMapping),
+    DeviceCgroupRules: v.array(v.string()),
+    DeviceRequests: v.array(DeviceRequest),
+    KernelMemoryTCP: v.pipe(v.number(), v.integer()),
+    MemoryReservation: v.pipe(v.number(), v.integer()),
+    MemorySwap: v.pipe(v.number(), v.integer()),
+    MemorySwappiness: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(100)),
+    NanoCpus: v.pipe(v.number(), v.integer()),
+    OomKillDisable: v.boolean(),
+    Init: v.nullable(v.boolean()),
+    PidsLimit: v.nullable(v.pipe(v.number(), v.integer())),
+    Ulimits: v.array(
+      v.partial(
+        v.object({ Name: v.string(), Soft: v.pipe(v.number(), v.integer()), Hard: v.pipe(v.number(), v.integer()) }),
+      ),
+    ),
+    CpuCount: v.pipe(v.number(), v.integer()),
+    CpuPercent: v.pipe(v.number(), v.integer()),
+    IOMaximumIOps: v.pipe(v.number(), v.integer()),
+    IOMaximumBandwidth: v.pipe(v.number(), v.integer()),
+  }),
+);
+
+export type Limit = v.InferOutput<typeof Limit>;
+export const Limit = v.partial(
+  v.object({
+    NanoCPUs: v.pipe(v.number(), v.integer()),
+    MemoryBytes: v.pipe(v.number(), v.integer()),
+    Pids: v.pipe(v.number(), v.integer()),
+  }),
+);
+
+export type GenericResources = v.InferOutput<typeof GenericResources>;
+export const GenericResources = v.array(
+  v.partial(
+    v.object({
+      NamedResourceSpec: v.partial(v.object({ Kind: v.string(), Value: v.string() })),
+      DiscreteResourceSpec: v.partial(v.object({ Kind: v.string(), Value: v.pipe(v.number(), v.integer()) })),
+    }),
+  ),
+);
+
 export type ResourceObject = v.InferOutput<typeof ResourceObject>;
-export const ResourceObject = v.object({
-  NanoCPUs: v.optional(v.number()),
-  MemoryBytes: v.optional(v.number()),
-  GenericResources: v.optional(GenericResources),
-});
+export const ResourceObject = v.partial(
+  v.object({
+    NanoCPUs: v.pipe(v.number(), v.integer()),
+    MemoryBytes: v.pipe(v.number(), v.integer()),
+    GenericResources: GenericResources,
+  }),
+);
 
 export type HealthConfig = v.InferOutput<typeof HealthConfig>;
-export const HealthConfig = v.object({
-  Test: v.optional(v.array(v.string())),
-  Interval: v.optional(v.number()),
-  Timeout: v.optional(v.number()),
-  Retries: v.optional(v.number()),
-  StartPeriod: v.optional(v.number()),
-});
+export const HealthConfig = v.partial(
+  v.object({
+    Test: v.array(v.string()),
+    Interval: v.pipe(v.number(), v.integer()),
+    Timeout: v.pipe(v.number(), v.integer()),
+    Retries: v.pipe(v.number(), v.integer()),
+    StartPeriod: v.pipe(v.number(), v.integer()),
+  }),
+);
 
 export type HealthcheckResult = v.InferOutput<typeof HealthcheckResult>;
-export const HealthcheckResult = v.union([
-  v.object({
-    Start: v.optional(v.string()),
-    End: v.optional(v.string()),
-    ExitCode: v.optional(v.number()),
-    Output: v.optional(v.string()),
-  }),
-  v.null(),
-]);
+export const HealthcheckResult = v.nullable(
+  v.partial(
+    v.object({ Start: v.string(), End: v.string(), ExitCode: v.pipe(v.number(), v.integer()), Output: v.string() }),
+  ),
+);
 
 export type Health = v.InferOutput<typeof Health>;
-export const Health = v.union([
-  v.object({
-    Status: v.optional(
-      v.union([v.literal("none"), v.literal("starting"), v.literal("healthy"), v.literal("unhealthy")]),
-    ),
-    FailingStreak: v.optional(v.number()),
-    Log: v.optional(v.array(HealthcheckResult)),
-  }),
-  v.null(),
-]);
+export const Health = v.nullable(
+  v.partial(
+    v.object({
+      Status: v.picklist(["none", "starting", "healthy", "unhealthy"]),
+      FailingStreak: v.pipe(v.number(), v.integer()),
+      Log: v.array(HealthcheckResult),
+    }),
+  ),
+);
 
 export type PortBinding = v.InferOutput<typeof PortBinding>;
-export const PortBinding = v.object({
-  HostIp: v.optional(v.string()),
-  HostPort: v.optional(v.string()),
-});
+export const PortBinding = v.partial(v.object({ HostIp: v.string(), HostPort: v.string() }));
 
 export type PortMap = v.InferOutput<typeof PortMap>;
-export const PortMap = v.record(v.string(), v.union([v.array(PortBinding), v.null()]));
+export const PortMap = v.record(v.string(), v.nullable(v.array(PortBinding)));
 
 export type HostConfig = v.InferOutput<typeof HostConfig>;
 export const HostConfig = v.intersect([
   Resources,
-  v.object({
-    Binds: v.optional(v.array(v.string())),
-    ContainerIDFile: v.optional(v.string()),
-    LogConfig: v.optional(
-      v.object({
-        Type: v.optional(
-          v.union([
-            v.literal("json-file"),
-            v.literal("syslog"),
-            v.literal("journald"),
-            v.literal("gelf"),
-            v.literal("fluentd"),
-            v.literal("awslogs"),
-            v.literal("splunk"),
-            v.literal("etwlogs"),
-            v.literal("none"),
+  v.partial(
+    v.object({
+      Binds: v.array(v.string()),
+      ContainerIDFile: v.string(),
+      LogConfig: v.partial(
+        v.object({
+          Type: v.picklist([
+            "json-file",
+            "syslog",
+            "journald",
+            "gelf",
+            "fluentd",
+            "awslogs",
+            "splunk",
+            "etwlogs",
+            "none",
           ]),
-        ),
-        Config: v.optional(v.record(v.string(), v.string())),
-      }),
-    ),
-    NetworkMode: v.optional(v.string()),
-    PortBindings: v.optional(PortMap),
-    RestartPolicy: v.optional(RestartPolicy),
-    AutoRemove: v.optional(v.boolean()),
-    VolumeDriver: v.optional(v.string()),
-    VolumesFrom: v.optional(v.array(v.string())),
-    Mounts: v.optional(v.array(Mount)),
-    ConsoleSize: v.optional(v.union([v.array(v.number()), v.null()])),
-    Annotations: v.optional(v.record(v.string(), v.string())),
-    CapAdd: v.optional(v.array(v.string())),
-    CapDrop: v.optional(v.array(v.string())),
-    CgroupnsMode: v.optional(v.union([v.literal("private"), v.literal("host")])),
-    Dns: v.optional(v.array(v.string())),
-    DnsOptions: v.optional(v.array(v.string())),
-    DnsSearch: v.optional(v.array(v.string())),
-    ExtraHosts: v.optional(v.array(v.string())),
-    GroupAdd: v.optional(v.array(v.string())),
-    IpcMode: v.optional(v.string()),
-    Cgroup: v.optional(v.string()),
-    Links: v.optional(v.array(v.string())),
-    OomScoreAdj: v.optional(v.number()),
-    PidMode: v.optional(v.string()),
-    Privileged: v.optional(v.boolean()),
-    PublishAllPorts: v.optional(v.boolean()),
-    ReadonlyRootfs: v.optional(v.boolean()),
-    SecurityOpt: v.optional(v.array(v.string())),
-    StorageOpt: v.optional(v.record(v.string(), v.string())),
-    Tmpfs: v.optional(v.record(v.string(), v.string())),
-    UTSMode: v.optional(v.string()),
-    UsernsMode: v.optional(v.string()),
-    ShmSize: v.optional(v.number()),
-    Sysctls: v.optional(v.record(v.string(), v.string())),
-    Runtime: v.optional(v.string()),
-    Isolation: v.optional(v.union([v.literal("default"), v.literal("process"), v.literal("hyperv")])),
-    MaskedPaths: v.optional(v.array(v.string())),
-    ReadonlyPaths: v.optional(v.array(v.string())),
-  }),
+          Config: v.record(v.string(), v.string()),
+        }),
+      ),
+      NetworkMode: v.string(),
+      PortBindings: PortMap,
+      RestartPolicy: RestartPolicy,
+      AutoRemove: v.boolean(),
+      VolumeDriver: v.string(),
+      VolumesFrom: v.array(v.string()),
+      Mounts: v.array(Mount),
+      ConsoleSize: v.nullable(
+        v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2)),
+      ),
+      Annotations: v.record(v.string(), v.string()),
+      CapAdd: v.array(v.string()),
+      CapDrop: v.array(v.string()),
+      CgroupnsMode: v.picklist(["private", "host"]),
+      Dns: v.array(v.string()),
+      DnsOptions: v.array(v.string()),
+      DnsSearch: v.array(v.string()),
+      ExtraHosts: v.array(v.string()),
+      GroupAdd: v.array(v.string()),
+      IpcMode: v.string(),
+      Cgroup: v.string(),
+      Links: v.array(v.string()),
+      OomScoreAdj: v.pipe(v.number(), v.integer()),
+      PidMode: v.string(),
+      Privileged: v.boolean(),
+      PublishAllPorts: v.boolean(),
+      ReadonlyRootfs: v.boolean(),
+      SecurityOpt: v.array(v.string()),
+      StorageOpt: v.record(v.string(), v.string()),
+      Tmpfs: v.record(v.string(), v.string()),
+      UTSMode: v.string(),
+      UsernsMode: v.string(),
+      ShmSize: v.pipe(v.number(), v.integer(), v.minValue(0)),
+      Sysctls: v.record(v.string(), v.string()),
+      Runtime: v.string(),
+      Isolation: v.picklist(["default", "process", "hyperv"]),
+      MaskedPaths: v.array(v.string()),
+      ReadonlyPaths: v.array(v.string()),
+    }),
+  ),
 ]);
 
 export type ContainerConfig = v.InferOutput<typeof ContainerConfig>;
-export const ContainerConfig = v.object({
-  Hostname: v.optional(v.string()),
-  Domainname: v.optional(v.string()),
-  User: v.optional(v.string()),
-  AttachStdin: v.optional(v.boolean()),
-  AttachStdout: v.optional(v.boolean()),
-  AttachStderr: v.optional(v.boolean()),
-  ExposedPorts: v.optional(v.union([v.record(v.string(), v.object({})), v.null()])),
-  Tty: v.optional(v.boolean()),
-  OpenStdin: v.optional(v.boolean()),
-  StdinOnce: v.optional(v.boolean()),
-  Env: v.optional(v.array(v.string())),
-  Cmd: v.optional(v.array(v.string())),
-  Healthcheck: v.optional(HealthConfig),
-  ArgsEscaped: v.optional(v.union([v.boolean(), v.null()])),
-  Image: v.optional(v.string()),
-  Volumes: v.optional(v.record(v.string(), v.object({}))),
-  WorkingDir: v.optional(v.string()),
-  Entrypoint: v.optional(v.array(v.string())),
-  NetworkDisabled: v.optional(v.union([v.boolean(), v.null()])),
-  MacAddress: v.optional(v.union([v.string(), v.null()])),
-  OnBuild: v.optional(v.union([v.array(v.string()), v.null()])),
-  Labels: v.optional(v.record(v.string(), v.string())),
-  StopSignal: v.optional(v.union([v.string(), v.null()])),
-  StopTimeout: v.optional(v.union([v.number(), v.null()])),
-  Shell: v.optional(v.union([v.array(v.string()), v.null()])),
-});
+export const ContainerConfig = v.partial(
+  v.object({
+    Hostname: v.string(),
+    Domainname: v.string(),
+    User: v.string(),
+    AttachStdin: v.boolean(),
+    AttachStdout: v.boolean(),
+    AttachStderr: v.boolean(),
+    ExposedPorts: v.nullable(v.record(v.string(), v.partial(v.object({})))),
+    Tty: v.boolean(),
+    OpenStdin: v.boolean(),
+    StdinOnce: v.boolean(),
+    Env: v.array(v.string()),
+    Cmd: v.array(v.string()),
+    Healthcheck: HealthConfig,
+    ArgsEscaped: v.nullable(v.boolean()),
+    Image: v.string(),
+    Volumes: v.record(v.string(), v.partial(v.object({}))),
+    WorkingDir: v.string(),
+    Entrypoint: v.array(v.string()),
+    NetworkDisabled: v.nullable(v.boolean()),
+    MacAddress: v.nullable(v.string()),
+    OnBuild: v.nullable(v.array(v.string())),
+    Labels: v.record(v.string(), v.string()),
+    StopSignal: v.nullable(v.string()),
+    StopTimeout: v.nullable(v.pipe(v.number(), v.integer())),
+    Shell: v.nullable(v.array(v.string())),
+  }),
+);
 
 export type EndpointIPAMConfig = v.InferOutput<typeof EndpointIPAMConfig>;
-export const EndpointIPAMConfig = v.union([
-  v.object({
-    IPv4Address: v.optional(v.string()),
-    IPv6Address: v.optional(v.string()),
-    LinkLocalIPs: v.optional(v.array(v.string())),
-  }),
-  v.null(),
-]);
+export const EndpointIPAMConfig = v.nullable(
+  v.partial(v.object({ IPv4Address: v.string(), IPv6Address: v.string(), LinkLocalIPs: v.array(v.string()) })),
+);
 
 export type EndpointSettings = v.InferOutput<typeof EndpointSettings>;
-export const EndpointSettings = v.object({
-  IPAMConfig: v.optional(EndpointIPAMConfig),
-  Links: v.optional(v.array(v.string())),
-  Aliases: v.optional(v.array(v.string())),
-  NetworkID: v.optional(v.string()),
-  EndpointID: v.optional(v.string()),
-  Gateway: v.optional(v.string()),
-  IPAddress: v.optional(v.string()),
-  IPPrefixLen: v.optional(v.number()),
-  IPv6Gateway: v.optional(v.string()),
-  GlobalIPv6Address: v.optional(v.string()),
-  GlobalIPv6PrefixLen: v.optional(v.number()),
-  MacAddress: v.optional(v.string()),
-  DriverOpts: v.optional(v.union([v.record(v.string(), v.string()), v.null()])),
-});
+export const EndpointSettings = v.partial(
+  v.object({
+    IPAMConfig: EndpointIPAMConfig,
+    Links: v.array(v.string()),
+    Aliases: v.array(v.string()),
+    NetworkID: v.string(),
+    EndpointID: v.string(),
+    Gateway: v.string(),
+    IPAddress: v.string(),
+    IPPrefixLen: v.pipe(v.number(), v.integer()),
+    IPv6Gateway: v.string(),
+    GlobalIPv6Address: v.string(),
+    GlobalIPv6PrefixLen: v.pipe(v.number(), v.integer()),
+    MacAddress: v.string(),
+    DriverOpts: v.nullable(v.record(v.string(), v.string())),
+  }),
+);
 
 export type NetworkingConfig = v.InferOutput<typeof NetworkingConfig>;
-export const NetworkingConfig = v.object({
-  EndpointsConfig: v.optional(v.record(v.string(), EndpointSettings)),
-});
+export const NetworkingConfig = v.partial(v.object({ EndpointsConfig: v.record(v.string(), EndpointSettings) }));
 
 export type Address = v.InferOutput<typeof Address>;
-export const Address = v.object({
-  Addr: v.optional(v.string()),
-  PrefixLen: v.optional(v.number()),
-});
+export const Address = v.partial(v.object({ Addr: v.string(), PrefixLen: v.pipe(v.number(), v.integer()) }));
 
 export type NetworkSettings = v.InferOutput<typeof NetworkSettings>;
-export const NetworkSettings = v.object({
-  Bridge: v.optional(v.string()),
-  SandboxID: v.optional(v.string()),
-  HairpinMode: v.optional(v.boolean()),
-  LinkLocalIPv6Address: v.optional(v.string()),
-  LinkLocalIPv6PrefixLen: v.optional(v.number()),
-  Ports: v.optional(PortMap),
-  SandboxKey: v.optional(v.string()),
-  SecondaryIPAddresses: v.optional(v.union([v.array(Address), v.null()])),
-  SecondaryIPv6Addresses: v.optional(v.union([v.array(Address), v.null()])),
-  EndpointID: v.optional(v.string()),
-  Gateway: v.optional(v.string()),
-  GlobalIPv6Address: v.optional(v.string()),
-  GlobalIPv6PrefixLen: v.optional(v.number()),
-  IPAddress: v.optional(v.string()),
-  IPPrefixLen: v.optional(v.number()),
-  IPv6Gateway: v.optional(v.string()),
-  MacAddress: v.optional(v.string()),
-  Networks: v.optional(v.record(v.string(), EndpointSettings)),
-});
+export const NetworkSettings = v.partial(
+  v.object({
+    Bridge: v.string(),
+    SandboxID: v.string(),
+    HairpinMode: v.boolean(),
+    LinkLocalIPv6Address: v.string(),
+    LinkLocalIPv6PrefixLen: v.pipe(v.number(), v.integer()),
+    Ports: PortMap,
+    SandboxKey: v.string(),
+    SecondaryIPAddresses: v.nullable(v.array(Address)),
+    SecondaryIPv6Addresses: v.nullable(v.array(Address)),
+    EndpointID: v.string(),
+    Gateway: v.string(),
+    GlobalIPv6Address: v.string(),
+    GlobalIPv6PrefixLen: v.pipe(v.number(), v.integer()),
+    IPAddress: v.string(),
+    IPPrefixLen: v.pipe(v.number(), v.integer()),
+    IPv6Gateway: v.string(),
+    MacAddress: v.string(),
+    Networks: v.record(v.string(), EndpointSettings),
+  }),
+);
 
 export type GraphDriverData = v.InferOutput<typeof GraphDriverData>;
-export const GraphDriverData = v.object({
-  Name: v.string(),
-  Data: v.record(v.string(), v.string()),
-});
+export const GraphDriverData = v.object({ Name: v.string(), Data: v.record(v.string(), v.string()) });
 
 export type ChangeType = v.InferOutput<typeof ChangeType>;
 export const ChangeType = v.union([v.literal(0), v.literal(1), v.literal(2)]);
 
 export type FilesystemChange = v.InferOutput<typeof FilesystemChange>;
-export const FilesystemChange = v.object({
-  Path: v.string(),
-  Kind: ChangeType,
-});
+export const FilesystemChange = v.object({ Path: v.string(), Kind: ChangeType });
 
 export type ImageInspect = v.InferOutput<typeof ImageInspect>;
-export const ImageInspect = v.object({
-  Id: v.optional(v.string()),
-  RepoTags: v.optional(v.array(v.string())),
-  RepoDigests: v.optional(v.array(v.string())),
-  Parent: v.optional(v.string()),
-  Comment: v.optional(v.string()),
-  Created: v.optional(v.string()),
-  Container: v.optional(v.string()),
-  ContainerConfig: v.optional(ContainerConfig),
-  DockerVersion: v.optional(v.string()),
-  Author: v.optional(v.string()),
-  Config: v.optional(ContainerConfig),
-  Architecture: v.optional(v.string()),
-  Variant: v.optional(v.union([v.string(), v.null()])),
-  Os: v.optional(v.string()),
-  OsVersion: v.optional(v.union([v.string(), v.null()])),
-  Size: v.optional(v.number()),
-  VirtualSize: v.optional(v.number()),
-  GraphDriver: v.optional(GraphDriverData),
-  RootFS: v.optional(
-    v.object({
-      Type: v.string(),
-      Layers: v.optional(v.union([v.array(v.string()), v.undefined()])),
-    }),
-  ),
-  Metadata: v.optional(
-    v.object({
-      LastTagTime: v.optional(v.union([v.string(), v.null()])),
-    }),
-  ),
-});
+export const ImageInspect = v.partial(
+  v.object({
+    Id: v.string(),
+    RepoTags: v.array(v.string()),
+    RepoDigests: v.array(v.string()),
+    Parent: v.string(),
+    Comment: v.string(),
+    Created: v.string(),
+    Container: v.string(),
+    ContainerConfig: ContainerConfig,
+    DockerVersion: v.string(),
+    Author: v.string(),
+    Config: ContainerConfig,
+    Architecture: v.string(),
+    Variant: v.nullable(v.string()),
+    Os: v.string(),
+    OsVersion: v.nullable(v.string()),
+    Size: v.pipe(v.number(), v.integer()),
+    VirtualSize: v.pipe(v.number(), v.integer()),
+    GraphDriver: GraphDriverData,
+    RootFS: v.object({ Type: v.string(), Layers: v.optional(v.array(v.string())) }),
+    Metadata: v.partial(v.object({ LastTagTime: v.nullable(v.string()) })),
+  }),
+);
 
 export type ImageSummary = v.InferOutput<typeof ImageSummary>;
 export const ImageSummary = v.object({
@@ -432,268 +377,223 @@ export const ImageSummary = v.object({
   ParentId: v.string(),
   RepoTags: v.array(v.string()),
   RepoDigests: v.array(v.string()),
-  Created: v.number(),
-  Size: v.number(),
-  SharedSize: v.number(),
-  VirtualSize: v.optional(v.union([v.number(), v.undefined()])),
+  Created: v.pipe(v.number(), v.integer()),
+  Size: v.pipe(v.number(), v.integer()),
+  SharedSize: v.pipe(v.number(), v.integer()),
+  VirtualSize: v.optional(v.pipe(v.number(), v.integer())),
   Labels: v.record(v.string(), v.string()),
-  Containers: v.number(),
+  Containers: v.pipe(v.number(), v.integer()),
 });
 
 export type AuthConfig = v.InferOutput<typeof AuthConfig>;
-export const AuthConfig = v.object({
-  username: v.optional(v.string()),
-  password: v.optional(v.string()),
-  email: v.optional(v.string()),
-  serveraddress: v.optional(v.string()),
-});
+export const AuthConfig = v.partial(
+  v.object({ username: v.string(), password: v.string(), email: v.string(), serveraddress: v.string() }),
+);
 
 export type ProcessConfig = v.InferOutput<typeof ProcessConfig>;
-export const ProcessConfig = v.object({
-  privileged: v.optional(v.boolean()),
-  user: v.optional(v.string()),
-  tty: v.optional(v.boolean()),
-  entrypoint: v.optional(v.string()),
-  arguments: v.optional(v.array(v.string())),
-});
+export const ProcessConfig = v.partial(
+  v.object({
+    privileged: v.boolean(),
+    user: v.string(),
+    tty: v.boolean(),
+    entrypoint: v.string(),
+    arguments: v.array(v.string()),
+  }),
+);
 
 export type ObjectVersion = v.InferOutput<typeof ObjectVersion>;
-export const ObjectVersion = v.object({
-  Index: v.optional(v.number()),
-});
+export const ObjectVersion = v.partial(v.object({ Index: v.pipe(v.number(), v.integer()) }));
 
 export type Topology = v.InferOutput<typeof Topology>;
 export const Topology = v.record(v.string(), v.string());
 
 export type ClusterVolumeSpec = v.InferOutput<typeof ClusterVolumeSpec>;
-export const ClusterVolumeSpec = v.object({
-  Group: v.optional(v.string()),
-  AccessMode: v.optional(
-    v.object({
-      Scope: v.optional(v.union([v.literal("single"), v.literal("multi")])),
-      Sharing: v.optional(
-        v.union([v.literal("none"), v.literal("readonly"), v.literal("onewriter"), v.literal("all")]),
-      ),
-      MountVolume: v.optional(v.object({})),
-      Secrets: v.optional(
-        v.array(
-          v.object({
-            Key: v.optional(v.string()),
-            Secret: v.optional(v.string()),
-          }),
-        ),
-      ),
-      AccessibilityRequirements: v.optional(
-        v.object({
-          Requisite: v.optional(v.array(Topology)),
-          Preferred: v.optional(v.array(Topology)),
-        }),
-      ),
-      CapacityRange: v.optional(
-        v.object({
-          RequiredBytes: v.optional(v.number()),
-          LimitBytes: v.optional(v.number()),
-        }),
-      ),
-      Availability: v.optional(v.union([v.literal("active"), v.literal("pause"), v.literal("drain")])),
-    }),
-  ),
-});
-
-export type ClusterVolume = v.InferOutput<typeof ClusterVolume>;
-export const ClusterVolume = v.object({
-  ID: v.optional(v.string()),
-  Version: v.optional(ObjectVersion),
-  CreatedAt: v.optional(v.string()),
-  UpdatedAt: v.optional(v.string()),
-  Spec: v.optional(ClusterVolumeSpec),
-  Info: v.optional(
-    v.object({
-      CapacityBytes: v.optional(v.number()),
-      VolumeContext: v.optional(v.record(v.string(), v.string())),
-      VolumeID: v.optional(v.string()),
-      AccessibleTopology: v.optional(v.array(Topology)),
-    }),
-  ),
-  PublishStatus: v.optional(
-    v.array(
+export const ClusterVolumeSpec = v.partial(
+  v.object({
+    Group: v.string(),
+    AccessMode: v.partial(
       v.object({
-        NodeID: v.optional(v.string()),
-        State: v.optional(
-          v.union([
-            v.literal("pending-publish"),
-            v.literal("published"),
-            v.literal("pending-node-unpublish"),
-            v.literal("pending-controller-unpublish"),
-          ]),
+        Scope: v.picklist(["single", "multi"]),
+        Sharing: v.picklist(["none", "readonly", "onewriter", "all"]),
+        MountVolume: v.partial(v.object({})),
+        Secrets: v.array(v.partial(v.object({ Key: v.string(), Secret: v.string() }))),
+        AccessibilityRequirements: v.partial(v.object({ Requisite: v.array(Topology), Preferred: v.array(Topology) })),
+        CapacityRange: v.partial(
+          v.object({ RequiredBytes: v.pipe(v.number(), v.integer()), LimitBytes: v.pipe(v.number(), v.integer()) }),
         ),
-        PublishContext: v.optional(v.record(v.string(), v.string())),
+        Availability: v.picklist(["active", "pause", "drain"]),
       }),
     ),
-  ),
-});
+  }),
+);
+
+export type ClusterVolume = v.InferOutput<typeof ClusterVolume>;
+export const ClusterVolume = v.partial(
+  v.object({
+    ID: v.string(),
+    Version: ObjectVersion,
+    CreatedAt: v.string(),
+    UpdatedAt: v.string(),
+    Spec: ClusterVolumeSpec,
+    Info: v.partial(
+      v.object({
+        CapacityBytes: v.pipe(v.number(), v.integer()),
+        VolumeContext: v.record(v.string(), v.string()),
+        VolumeID: v.string(),
+        AccessibleTopology: v.array(Topology),
+      }),
+    ),
+    PublishStatus: v.array(
+      v.partial(
+        v.object({
+          NodeID: v.string(),
+          State: v.picklist(["pending-publish", "published", "pending-node-unpublish", "pending-controller-unpublish"]),
+          PublishContext: v.record(v.string(), v.string()),
+        }),
+      ),
+    ),
+  }),
+);
 
 export type Volume = v.InferOutput<typeof Volume>;
 export const Volume = v.object({
   Name: v.string(),
   Driver: v.string(),
   Mountpoint: v.string(),
-  CreatedAt: v.optional(v.union([v.string(), v.undefined()])),
-  Status: v.optional(v.union([v.record(v.string(), v.object({})), v.undefined()])),
+  CreatedAt: v.optional(v.string()),
+  Status: v.optional(v.record(v.string(), v.partial(v.object({})))),
   Labels: v.record(v.string(), v.string()),
-  Scope: v.union([v.literal("local"), v.literal("global")]),
-  ClusterVolume: v.optional(v.union([ClusterVolume, v.undefined()])),
+  Scope: v.picklist(["local", "global"]),
+  ClusterVolume: v.optional(ClusterVolume),
   Options: v.record(v.string(), v.string()),
   UsageData: v.optional(
-    v.union([
-      v.union([
-        v.object({
-          Size: v.number(),
-          RefCount: v.number(),
-        }),
-        v.null(),
-      ]),
-      v.undefined(),
-    ]),
+    v.nullable(v.object({ Size: v.pipe(v.number(), v.integer()), RefCount: v.pipe(v.number(), v.integer()) })),
   ),
 });
 
 export type VolumeCreateOptions = v.InferOutput<typeof VolumeCreateOptions>;
-export const VolumeCreateOptions = v.object({
-  Name: v.optional(v.string()),
-  Driver: v.optional(v.string()),
-  DriverOpts: v.optional(v.record(v.string(), v.string())),
-  Labels: v.optional(v.record(v.string(), v.string())),
-  ClusterVolumeSpec: v.optional(ClusterVolumeSpec),
-});
+export const VolumeCreateOptions = v.partial(
+  v.object({
+    Name: v.string(),
+    Driver: v.string(),
+    DriverOpts: v.record(v.string(), v.string()),
+    Labels: v.record(v.string(), v.string()),
+    ClusterVolumeSpec: ClusterVolumeSpec,
+  }),
+);
 
 export type VolumeListResponse = v.InferOutput<typeof VolumeListResponse>;
-export const VolumeListResponse = v.object({
-  Volumes: v.optional(v.array(Volume)),
-  Warnings: v.optional(v.array(v.string())),
-});
+export const VolumeListResponse = v.partial(v.object({ Volumes: v.array(Volume), Warnings: v.array(v.string()) }));
 
 export type IPAMConfig = v.InferOutput<typeof IPAMConfig>;
-export const IPAMConfig = v.object({
-  Subnet: v.optional(v.string()),
-  IPRange: v.optional(v.string()),
-  Gateway: v.optional(v.string()),
-  AuxiliaryAddresses: v.optional(v.record(v.string(), v.string())),
-});
+export const IPAMConfig = v.partial(
+  v.object({
+    Subnet: v.string(),
+    IPRange: v.string(),
+    Gateway: v.string(),
+    AuxiliaryAddresses: v.record(v.string(), v.string()),
+  }),
+);
 
 export type IPAM = v.InferOutput<typeof IPAM>;
-export const IPAM = v.object({
-  Driver: v.optional(v.string()),
-  Config: v.optional(v.array(IPAMConfig)),
-  Options: v.optional(v.record(v.string(), v.string())),
-});
+export const IPAM = v.partial(
+  v.object({ Driver: v.string(), Config: v.array(IPAMConfig), Options: v.record(v.string(), v.string()) }),
+);
 
 export type NetworkContainer = v.InferOutput<typeof NetworkContainer>;
-export const NetworkContainer = v.object({
-  Name: v.optional(v.string()),
-  EndpointID: v.optional(v.string()),
-  MacAddress: v.optional(v.string()),
-  IPv4Address: v.optional(v.string()),
-  IPv6Address: v.optional(v.string()),
-});
+export const NetworkContainer = v.partial(
+  v.object({
+    Name: v.string(),
+    EndpointID: v.string(),
+    MacAddress: v.string(),
+    IPv4Address: v.string(),
+    IPv6Address: v.string(),
+  }),
+);
 
 export type Network = v.InferOutput<typeof Network>;
-export const Network = v.object({
-  Name: v.optional(v.string()),
-  Id: v.optional(v.string()),
-  Created: v.optional(v.string()),
-  Scope: v.optional(v.string()),
-  Driver: v.optional(v.string()),
-  EnableIPv6: v.optional(v.boolean()),
-  IPAM: v.optional(IPAM),
-  Internal: v.optional(v.boolean()),
-  Attachable: v.optional(v.boolean()),
-  Ingress: v.optional(v.boolean()),
-  Containers: v.optional(v.record(v.string(), NetworkContainer)),
-  Options: v.optional(v.record(v.string(), v.string())),
-  Labels: v.optional(v.record(v.string(), v.string())),
-});
+export const Network = v.partial(
+  v.object({
+    Name: v.string(),
+    Id: v.string(),
+    Created: v.string(),
+    Scope: v.string(),
+    Driver: v.string(),
+    EnableIPv6: v.boolean(),
+    IPAM: IPAM,
+    Internal: v.boolean(),
+    Attachable: v.boolean(),
+    Ingress: v.boolean(),
+    Containers: v.record(v.string(), NetworkContainer),
+    Options: v.record(v.string(), v.string()),
+    Labels: v.record(v.string(), v.string()),
+  }),
+);
 
 export type ErrorDetail = v.InferOutput<typeof ErrorDetail>;
-export const ErrorDetail = v.object({
-  code: v.optional(v.number()),
-  message: v.optional(v.string()),
-});
+export const ErrorDetail = v.partial(v.object({ code: v.pipe(v.number(), v.integer()), message: v.string() }));
 
 export type ProgressDetail = v.InferOutput<typeof ProgressDetail>;
-export const ProgressDetail = v.object({
-  current: v.optional(v.number()),
-  total: v.optional(v.number()),
-});
+export const ProgressDetail = v.partial(
+  v.object({ current: v.pipe(v.number(), v.integer()), total: v.pipe(v.number(), v.integer()) }),
+);
 
 export type ImageID = v.InferOutput<typeof ImageID>;
-export const ImageID = v.object({
-  ID: v.optional(v.string()),
-});
+export const ImageID = v.partial(v.object({ ID: v.string() }));
 
 export type BuildInfo = v.InferOutput<typeof BuildInfo>;
-export const BuildInfo = v.object({
-  id: v.optional(v.string()),
-  stream: v.optional(v.string()),
-  error: v.optional(v.string()),
-  errorDetail: v.optional(ErrorDetail),
-  status: v.optional(v.string()),
-  progress: v.optional(v.string()),
-  progressDetail: v.optional(ProgressDetail),
-  aux: v.optional(ImageID),
-});
+export const BuildInfo = v.partial(
+  v.object({
+    id: v.string(),
+    stream: v.string(),
+    error: v.string(),
+    errorDetail: ErrorDetail,
+    status: v.string(),
+    progress: v.string(),
+    progressDetail: ProgressDetail,
+    aux: ImageID,
+  }),
+);
 
 export type BuildCache = v.InferOutput<typeof BuildCache>;
-export const BuildCache = v.object({
-  ID: v.optional(v.string()),
-  Parent: v.optional(v.union([v.string(), v.null()])),
-  Parents: v.optional(v.union([v.array(v.string()), v.null()])),
-  Type: v.optional(
-    v.union([
-      v.literal("internal"),
-      v.literal("frontend"),
-      v.literal("source.local"),
-      v.literal("source.git.checkout"),
-      v.literal("exec.cachemount"),
-      v.literal("regular"),
-    ]),
-  ),
-  Description: v.optional(v.string()),
-  InUse: v.optional(v.boolean()),
-  Shared: v.optional(v.boolean()),
-  Size: v.optional(v.number()),
-  CreatedAt: v.optional(v.string()),
-  LastUsedAt: v.optional(v.union([v.string(), v.null()])),
-  UsageCount: v.optional(v.number()),
-});
+export const BuildCache = v.partial(
+  v.object({
+    ID: v.string(),
+    Parent: v.nullable(v.string()),
+    Parents: v.nullable(v.array(v.string())),
+    Type: v.picklist(["internal", "frontend", "source.local", "source.git.checkout", "exec.cachemount", "regular"]),
+    Description: v.string(),
+    InUse: v.boolean(),
+    Shared: v.boolean(),
+    Size: v.pipe(v.number(), v.integer()),
+    CreatedAt: v.string(),
+    LastUsedAt: v.nullable(v.string()),
+    UsageCount: v.pipe(v.number(), v.integer()),
+  }),
+);
 
 export type CreateImageInfo = v.InferOutput<typeof CreateImageInfo>;
-export const CreateImageInfo = v.object({
-  id: v.optional(v.string()),
-  error: v.optional(v.string()),
-  errorDetail: v.optional(ErrorDetail),
-  status: v.optional(v.string()),
-  progress: v.optional(v.string()),
-  progressDetail: v.optional(ProgressDetail),
-});
+export const CreateImageInfo = v.partial(
+  v.object({
+    id: v.string(),
+    error: v.string(),
+    errorDetail: ErrorDetail,
+    status: v.string(),
+    progress: v.string(),
+    progressDetail: ProgressDetail,
+  }),
+);
 
 export type PushImageInfo = v.InferOutput<typeof PushImageInfo>;
-export const PushImageInfo = v.object({
-  error: v.optional(v.string()),
-  status: v.optional(v.string()),
-  progress: v.optional(v.string()),
-  progressDetail: v.optional(ProgressDetail),
-});
+export const PushImageInfo = v.partial(
+  v.object({ error: v.string(), status: v.string(), progress: v.string(), progressDetail: ProgressDetail }),
+);
 
 export type ErrorResponse = v.InferOutput<typeof ErrorResponse>;
-export const ErrorResponse = v.object({
-  message: v.string(),
-});
+export const ErrorResponse = v.object({ message: v.string() });
 
 export type IdResponse = v.InferOutput<typeof IdResponse>;
-export const IdResponse = v.object({
-  Id: v.string(),
-});
+export const IdResponse = v.object({ Id: v.string() });
 
 export type PluginMount = v.InferOutput<typeof PluginMount>;
 export const PluginMount = v.object({
@@ -723,22 +623,16 @@ export const PluginEnv = v.object({
 });
 
 export type PluginInterfaceType = v.InferOutput<typeof PluginInterfaceType>;
-export const PluginInterfaceType = v.object({
-  Prefix: v.string(),
-  Capability: v.string(),
-  Version: v.string(),
-});
+export const PluginInterfaceType = v.object({ Prefix: v.string(), Capability: v.string(), Version: v.string() });
 
 export type PluginPrivilege = v.InferOutput<typeof PluginPrivilege>;
-export const PluginPrivilege = v.object({
-  Name: v.optional(v.string()),
-  Description: v.optional(v.string()),
-  Value: v.optional(v.array(v.string())),
-});
+export const PluginPrivilege = v.partial(
+  v.object({ Name: v.string(), Description: v.string(), Value: v.array(v.string()) }),
+);
 
 export type Plugin = v.InferOutput<typeof Plugin>;
 export const Plugin = v.object({
-  Id: v.optional(v.union([v.string(), v.undefined()])),
+  Id: v.optional(v.string()),
   Name: v.string(),
   Enabled: v.boolean(),
   Settings: v.object({
@@ -747,30 +641,22 @@ export const Plugin = v.object({
     Args: v.array(v.string()),
     Devices: v.array(PluginDevice),
   }),
-  PluginReference: v.optional(v.union([v.string(), v.undefined()])),
+  PluginReference: v.optional(v.string()),
   Config: v.object({
-    DockerVersion: v.optional(v.union([v.string(), v.undefined()])),
+    DockerVersion: v.optional(v.string()),
     Description: v.string(),
     Documentation: v.string(),
     Interface: v.object({
       Types: v.array(PluginInterfaceType),
       Socket: v.string(),
-      ProtocolScheme: v.optional(v.union([v.union([v.literal(""), v.literal("moby.plugins.http/v1")]), v.undefined()])),
+      ProtocolScheme: v.optional(v.picklist(["", "moby.plugins.http/v1"])),
     }),
     Entrypoint: v.array(v.string()),
     WorkDir: v.string(),
     User: v.optional(
-      v.union([
-        v.object({
-          UID: v.optional(v.number()),
-          GID: v.optional(v.number()),
-        }),
-        v.undefined(),
-      ]),
+      v.partial(v.object({ UID: v.pipe(v.number(), v.integer()), GID: v.pipe(v.number(), v.integer()) })),
     ),
-    Network: v.object({
-      Type: v.string(),
-    }),
+    Network: v.object({ Type: v.string() }),
     Linux: v.object({
       Capabilities: v.array(v.string()),
       AllowAllDevices: v.boolean(),
@@ -787,3121 +673,2123 @@ export const Plugin = v.object({
       Settable: v.array(v.string()),
       Value: v.array(v.string()),
     }),
-    rootfs: v.optional(
-      v.union([
-        v.object({
-          type: v.optional(v.string()),
-          diff_ids: v.optional(v.array(v.string())),
-        }),
-        v.undefined(),
-      ]),
-    ),
+    rootfs: v.optional(v.partial(v.object({ type: v.string(), diff_ids: v.array(v.string()) }))),
   }),
 });
 
 export type NodeSpec = v.InferOutput<typeof NodeSpec>;
-export const NodeSpec = v.object({
-  Name: v.optional(v.string()),
-  Labels: v.optional(v.record(v.string(), v.string())),
-  Role: v.optional(v.union([v.literal("worker"), v.literal("manager")])),
-  Availability: v.optional(v.union([v.literal("active"), v.literal("pause"), v.literal("drain")])),
-});
+export const NodeSpec = v.partial(
+  v.object({
+    Name: v.string(),
+    Labels: v.record(v.string(), v.string()),
+    Role: v.picklist(["worker", "manager"]),
+    Availability: v.picklist(["active", "pause", "drain"]),
+  }),
+);
 
 export type Platform = v.InferOutput<typeof Platform>;
-export const Platform = v.object({
-  Architecture: v.optional(v.string()),
-  OS: v.optional(v.string()),
-});
+export const Platform = v.partial(v.object({ Architecture: v.string(), OS: v.string() }));
 
 export type EngineDescription = v.InferOutput<typeof EngineDescription>;
-export const EngineDescription = v.object({
-  EngineVersion: v.optional(v.string()),
-  Labels: v.optional(v.record(v.string(), v.string())),
-  Plugins: v.optional(
-    v.array(
-      v.object({
-        Type: v.optional(v.string()),
-        Name: v.optional(v.string()),
-      }),
-    ),
-  ),
-});
+export const EngineDescription = v.partial(
+  v.object({
+    EngineVersion: v.string(),
+    Labels: v.record(v.string(), v.string()),
+    Plugins: v.array(v.partial(v.object({ Type: v.string(), Name: v.string() }))),
+  }),
+);
 
 export type TLSInfo = v.InferOutput<typeof TLSInfo>;
-export const TLSInfo = v.object({
-  TrustRoot: v.optional(v.string()),
-  CertIssuerSubject: v.optional(v.string()),
-  CertIssuerPublicKey: v.optional(v.string()),
-});
+export const TLSInfo = v.partial(
+  v.object({ TrustRoot: v.string(), CertIssuerSubject: v.string(), CertIssuerPublicKey: v.string() }),
+);
 
 export type NodeDescription = v.InferOutput<typeof NodeDescription>;
-export const NodeDescription = v.object({
-  Hostname: v.optional(v.string()),
-  Platform: v.optional(Platform),
-  Resources: v.optional(ResourceObject),
-  Engine: v.optional(EngineDescription),
-  TLSInfo: v.optional(TLSInfo),
-});
+export const NodeDescription = v.partial(
+  v.object({
+    Hostname: v.string(),
+    Platform: Platform,
+    Resources: ResourceObject,
+    Engine: EngineDescription,
+    TLSInfo: TLSInfo,
+  }),
+);
 
 export type NodeState = v.InferOutput<typeof NodeState>;
-export const NodeState = v.union([
-  v.literal("unknown"),
-  v.literal("down"),
-  v.literal("ready"),
-  v.literal("disconnected"),
-]);
+export const NodeState = v.picklist(["unknown", "down", "ready", "disconnected"]);
 
 export type NodeStatus = v.InferOutput<typeof NodeStatus>;
-export const NodeStatus = v.object({
-  State: v.optional(NodeState),
-  Message: v.optional(v.string()),
-  Addr: v.optional(v.string()),
-});
+export const NodeStatus = v.partial(v.object({ State: NodeState, Message: v.string(), Addr: v.string() }));
 
 export type Reachability = v.InferOutput<typeof Reachability>;
-export const Reachability = v.union([v.literal("unknown"), v.literal("unreachable"), v.literal("reachable")]);
+export const Reachability = v.picklist(["unknown", "unreachable", "reachable"]);
 
 export type ManagerStatus = v.InferOutput<typeof ManagerStatus>;
-export const ManagerStatus = v.union([
-  v.object({
-    Leader: v.optional(v.boolean()),
-    Reachability: v.optional(Reachability),
-    Addr: v.optional(v.string()),
-  }),
-  v.null(),
-]);
+export const ManagerStatus = v.nullable(
+  v.partial(v.object({ Leader: v.boolean(), Reachability: Reachability, Addr: v.string() })),
+);
 
 export type Node = v.InferOutput<typeof Node>;
-export const Node = v.object({
-  ID: v.optional(v.string()),
-  Version: v.optional(ObjectVersion),
-  CreatedAt: v.optional(v.string()),
-  UpdatedAt: v.optional(v.string()),
-  Spec: v.optional(NodeSpec),
-  Description: v.optional(NodeDescription),
-  Status: v.optional(NodeStatus),
-  ManagerStatus: v.optional(ManagerStatus),
-});
+export const Node = v.partial(
+  v.object({
+    ID: v.string(),
+    Version: ObjectVersion,
+    CreatedAt: v.string(),
+    UpdatedAt: v.string(),
+    Spec: NodeSpec,
+    Description: NodeDescription,
+    Status: NodeStatus,
+    ManagerStatus: ManagerStatus,
+  }),
+);
 
 export type SwarmSpec = v.InferOutput<typeof SwarmSpec>;
-export const SwarmSpec = v.object({
-  Name: v.optional(v.string()),
-  Labels: v.optional(v.record(v.string(), v.string())),
-  Orchestration: v.optional(
-    v.union([
+export const SwarmSpec = v.partial(
+  v.object({
+    Name: v.string(),
+    Labels: v.record(v.string(), v.string()),
+    Orchestration: v.nullable(v.partial(v.object({ TaskHistoryRetentionLimit: v.pipe(v.number(), v.integer()) }))),
+    Raft: v.partial(
       v.object({
-        TaskHistoryRetentionLimit: v.optional(v.number()),
+        SnapshotInterval: v.pipe(v.number(), v.integer()),
+        KeepOldSnapshots: v.pipe(v.number(), v.integer()),
+        LogEntriesForSlowFollowers: v.pipe(v.number(), v.integer()),
+        ElectionTick: v.pipe(v.number(), v.integer()),
+        HeartbeatTick: v.pipe(v.number(), v.integer()),
       }),
-      v.null(),
-    ]),
-  ),
-  Raft: v.optional(
-    v.object({
-      SnapshotInterval: v.optional(v.number()),
-      KeepOldSnapshots: v.optional(v.number()),
-      LogEntriesForSlowFollowers: v.optional(v.number()),
-      ElectionTick: v.optional(v.number()),
-      HeartbeatTick: v.optional(v.number()),
-    }),
-  ),
-  Dispatcher: v.optional(
-    v.union([
-      v.object({
-        HeartbeatPeriod: v.optional(v.number()),
-      }),
-      v.null(),
-    ]),
-  ),
-  CAConfig: v.optional(
-    v.union([
-      v.object({
-        NodeCertExpiry: v.optional(v.number()),
-        ExternalCAs: v.optional(
-          v.array(
-            v.object({
-              Protocol: v.optional(v.literal("cfssl")),
-              URL: v.optional(v.string()),
-              Options: v.optional(v.record(v.string(), v.string())),
-              CACert: v.optional(v.string()),
-            }),
-          ),
-        ),
-        SigningCACert: v.optional(v.string()),
-        SigningCAKey: v.optional(v.string()),
-        ForceRotate: v.optional(v.number()),
-      }),
-      v.null(),
-    ]),
-  ),
-  EncryptionConfig: v.optional(
-    v.object({
-      AutoLockManagers: v.optional(v.boolean()),
-    }),
-  ),
-  TaskDefaults: v.optional(
-    v.object({
-      LogDriver: v.optional(
+    ),
+    Dispatcher: v.nullable(v.partial(v.object({ HeartbeatPeriod: v.pipe(v.number(), v.integer()) }))),
+    CAConfig: v.nullable(
+      v.partial(
         v.object({
-          Name: v.optional(v.string()),
-          Options: v.optional(v.record(v.string(), v.string())),
+          NodeCertExpiry: v.pipe(v.number(), v.integer()),
+          ExternalCAs: v.array(
+            v.partial(
+              v.object({
+                Protocol: v.literal("cfssl"),
+                URL: v.string(),
+                Options: v.record(v.string(), v.string()),
+                CACert: v.string(),
+              }),
+            ),
+          ),
+          SigningCACert: v.string(),
+          SigningCAKey: v.string(),
+          ForceRotate: v.pipe(v.number(), v.integer()),
         }),
       ),
-    }),
-  ),
-});
+    ),
+    EncryptionConfig: v.partial(v.object({ AutoLockManagers: v.boolean() })),
+    TaskDefaults: v.partial(
+      v.object({ LogDriver: v.partial(v.object({ Name: v.string(), Options: v.record(v.string(), v.string()) })) }),
+    ),
+  }),
+);
 
 export type ClusterInfo = v.InferOutput<typeof ClusterInfo>;
-export const ClusterInfo = v.union([
-  v.object({
-    ID: v.optional(v.string()),
-    Version: v.optional(ObjectVersion),
-    CreatedAt: v.optional(v.string()),
-    UpdatedAt: v.optional(v.string()),
-    Spec: v.optional(SwarmSpec),
-    TLSInfo: v.optional(TLSInfo),
-    RootRotationInProgress: v.optional(v.boolean()),
-    DataPathPort: v.optional(v.number()),
-    DefaultAddrPool: v.optional(v.array(v.string())),
-    SubnetSize: v.optional(v.number()),
-  }),
-  v.null(),
-]);
+export const ClusterInfo = v.nullable(
+  v.partial(
+    v.object({
+      ID: v.string(),
+      Version: ObjectVersion,
+      CreatedAt: v.string(),
+      UpdatedAt: v.string(),
+      Spec: SwarmSpec,
+      TLSInfo: TLSInfo,
+      RootRotationInProgress: v.boolean(),
+      DataPathPort: v.pipe(v.number(), v.integer()),
+      DefaultAddrPool: v.array(v.string()),
+      SubnetSize: v.pipe(v.number(), v.integer(), v.maxValue(29)),
+    }),
+  ),
+);
 
 export type JoinTokens = v.InferOutput<typeof JoinTokens>;
-export const JoinTokens = v.object({
-  Worker: v.optional(v.string()),
-  Manager: v.optional(v.string()),
-});
+export const JoinTokens = v.partial(v.object({ Worker: v.string(), Manager: v.string() }));
 
 export type Swarm = v.InferOutput<typeof Swarm>;
-export const Swarm = v.intersect([
-  ClusterInfo,
-  v.object({
-    JoinTokens: v.optional(JoinTokens),
-  }),
-]);
+export const Swarm = v.intersect([ClusterInfo, v.partial(v.object({ JoinTokens: JoinTokens }))]);
 
 export type NetworkAttachmentConfig = v.InferOutput<typeof NetworkAttachmentConfig>;
-export const NetworkAttachmentConfig = v.object({
-  Target: v.optional(v.string()),
-  Aliases: v.optional(v.array(v.string())),
-  DriverOpts: v.optional(v.record(v.string(), v.string())),
-});
+export const NetworkAttachmentConfig = v.partial(
+  v.object({ Target: v.string(), Aliases: v.array(v.string()), DriverOpts: v.record(v.string(), v.string()) }),
+);
 
 export type TaskSpec = v.InferOutput<typeof TaskSpec>;
-export const TaskSpec = v.object({
-  PluginSpec: v.optional(
-    v.object({
-      Name: v.optional(v.string()),
-      Remote: v.optional(v.string()),
-      Disabled: v.optional(v.boolean()),
-      PluginPrivilege: v.optional(v.array(PluginPrivilege)),
-    }),
-  ),
-  ContainerSpec: v.optional(
-    v.object({
-      Image: v.optional(v.string()),
-      Labels: v.optional(v.record(v.string(), v.string())),
-      Command: v.optional(v.array(v.string())),
-      Args: v.optional(v.array(v.string())),
-      Hostname: v.optional(v.string()),
-      Env: v.optional(v.array(v.string())),
-      Dir: v.optional(v.string()),
-      User: v.optional(v.string()),
-      Groups: v.optional(v.array(v.string())),
-      Privileges: v.optional(
-        v.object({
-          CredentialSpec: v.optional(
+export const TaskSpec = v.partial(
+  v.object({
+    PluginSpec: v.partial(
+      v.object({
+        Name: v.string(),
+        Remote: v.string(),
+        Disabled: v.boolean(),
+        PluginPrivilege: v.array(PluginPrivilege),
+      }),
+    ),
+    ContainerSpec: v.partial(
+      v.object({
+        Image: v.string(),
+        Labels: v.record(v.string(), v.string()),
+        Command: v.array(v.string()),
+        Args: v.array(v.string()),
+        Hostname: v.string(),
+        Env: v.array(v.string()),
+        Dir: v.string(),
+        User: v.string(),
+        Groups: v.array(v.string()),
+        Privileges: v.partial(
+          v.object({
+            CredentialSpec: v.partial(v.object({ Config: v.string(), File: v.string(), Registry: v.string() })),
+            SELinuxContext: v.partial(
+              v.object({
+                Disable: v.boolean(),
+                User: v.string(),
+                Role: v.string(),
+                Type: v.string(),
+                Level: v.string(),
+              }),
+            ),
+          }),
+        ),
+        TTY: v.boolean(),
+        OpenStdin: v.boolean(),
+        ReadOnly: v.boolean(),
+        Mounts: v.array(Mount),
+        StopSignal: v.string(),
+        StopGracePeriod: v.pipe(v.number(), v.integer()),
+        HealthCheck: HealthConfig,
+        Hosts: v.array(v.string()),
+        DNSConfig: v.partial(
+          v.object({ Nameservers: v.array(v.string()), Search: v.array(v.string()), Options: v.array(v.string()) }),
+        ),
+        Secrets: v.array(
+          v.partial(
             v.object({
-              Config: v.optional(v.string()),
-              File: v.optional(v.string()),
-              Registry: v.optional(v.string()),
+              File: v.partial(
+                v.object({ Name: v.string(), UID: v.string(), GID: v.string(), Mode: v.pipe(v.number(), v.integer()) }),
+              ),
+              SecretID: v.string(),
+              SecretName: v.string(),
             }),
           ),
-          SELinuxContext: v.optional(
+        ),
+        Configs: v.array(
+          v.partial(
             v.object({
-              Disable: v.optional(v.boolean()),
-              User: v.optional(v.string()),
-              Role: v.optional(v.string()),
-              Type: v.optional(v.string()),
-              Level: v.optional(v.string()),
+              File: v.partial(
+                v.object({ Name: v.string(), UID: v.string(), GID: v.string(), Mode: v.pipe(v.number(), v.integer()) }),
+              ),
+              Runtime: v.partial(v.object({})),
+              ConfigID: v.string(),
+              ConfigName: v.string(),
             }),
           ),
-        }),
-      ),
-      TTY: v.optional(v.boolean()),
-      OpenStdin: v.optional(v.boolean()),
-      ReadOnly: v.optional(v.boolean()),
-      Mounts: v.optional(v.array(Mount)),
-      StopSignal: v.optional(v.string()),
-      StopGracePeriod: v.optional(v.number()),
-      HealthCheck: v.optional(HealthConfig),
-      Hosts: v.optional(v.array(v.string())),
-      DNSConfig: v.optional(
-        v.object({
-          Nameservers: v.optional(v.array(v.string())),
-          Search: v.optional(v.array(v.string())),
-          Options: v.optional(v.array(v.string())),
-        }),
-      ),
-      Secrets: v.optional(
-        v.array(
-          v.object({
-            File: v.optional(
-              v.object({
-                Name: v.optional(v.string()),
-                UID: v.optional(v.string()),
-                GID: v.optional(v.string()),
-                Mode: v.optional(v.number()),
-              }),
-            ),
-            SecretID: v.optional(v.string()),
-            SecretName: v.optional(v.string()),
-          }),
         ),
-      ),
-      Configs: v.optional(
-        v.array(
-          v.object({
-            File: v.optional(
-              v.object({
-                Name: v.optional(v.string()),
-                UID: v.optional(v.string()),
-                GID: v.optional(v.string()),
-                Mode: v.optional(v.number()),
-              }),
-            ),
-            Runtime: v.optional(v.object({})),
-            ConfigID: v.optional(v.string()),
-            ConfigName: v.optional(v.string()),
-          }),
+        Isolation: v.picklist(["default", "process", "hyperv"]),
+        Init: v.nullable(v.boolean()),
+        Sysctls: v.record(v.string(), v.string()),
+        CapabilityAdd: v.array(v.string()),
+        CapabilityDrop: v.array(v.string()),
+        Ulimits: v.array(
+          v.partial(
+            v.object({
+              Name: v.string(),
+              Soft: v.pipe(v.number(), v.integer()),
+              Hard: v.pipe(v.number(), v.integer()),
+            }),
+          ),
         ),
-      ),
-      Isolation: v.optional(v.union([v.literal("default"), v.literal("process"), v.literal("hyperv")])),
-      Init: v.optional(v.union([v.boolean(), v.null()])),
-      Sysctls: v.optional(v.record(v.string(), v.string())),
-      CapabilityAdd: v.optional(v.array(v.string())),
-      CapabilityDrop: v.optional(v.array(v.string())),
-      Ulimits: v.optional(
-        v.array(
-          v.object({
-            Name: v.optional(v.string()),
-            Soft: v.optional(v.number()),
-            Hard: v.optional(v.number()),
-          }),
-        ),
-      ),
-    }),
-  ),
-  NetworkAttachmentSpec: v.optional(
-    v.object({
-      ContainerID: v.optional(v.string()),
-    }),
-  ),
-  Resources: v.optional(
-    v.object({
-      Limits: v.optional(Limit),
-      Reservations: v.optional(ResourceObject),
-    }),
-  ),
-  RestartPolicy: v.optional(
-    v.object({
-      Condition: v.optional(v.union([v.literal("none"), v.literal("on-failure"), v.literal("any")])),
-      Delay: v.optional(v.number()),
-      MaxAttempts: v.optional(v.number()),
-      Window: v.optional(v.number()),
-    }),
-  ),
-  Placement: v.optional(
-    v.object({
-      Constraints: v.optional(v.array(v.string())),
-      Preferences: v.optional(
-        v.array(
-          v.object({
-            Spread: v.optional(
-              v.object({
-                SpreadDescriptor: v.optional(v.string()),
-              }),
-            ),
-          }),
-        ),
-      ),
-      MaxReplicas: v.optional(v.number()),
-      Platforms: v.optional(v.array(Platform)),
-    }),
-  ),
-  ForceUpdate: v.optional(v.number()),
-  Runtime: v.optional(v.string()),
-  Networks: v.optional(v.array(NetworkAttachmentConfig)),
-  LogDriver: v.optional(
-    v.object({
-      Name: v.optional(v.string()),
-      Options: v.optional(v.record(v.string(), v.string())),
-    }),
-  ),
-});
+      }),
+    ),
+    NetworkAttachmentSpec: v.partial(v.object({ ContainerID: v.string() })),
+    Resources: v.partial(v.object({ Limits: Limit, Reservations: ResourceObject })),
+    RestartPolicy: v.partial(
+      v.object({
+        Condition: v.picklist(["none", "on-failure", "any"]),
+        Delay: v.pipe(v.number(), v.integer()),
+        MaxAttempts: v.pipe(v.number(), v.integer()),
+        Window: v.pipe(v.number(), v.integer()),
+      }),
+    ),
+    Placement: v.partial(
+      v.object({
+        Constraints: v.array(v.string()),
+        Preferences: v.array(v.partial(v.object({ Spread: v.partial(v.object({ SpreadDescriptor: v.string() })) }))),
+        MaxReplicas: v.pipe(v.number(), v.integer()),
+        Platforms: v.array(Platform),
+      }),
+    ),
+    ForceUpdate: v.pipe(v.number(), v.integer()),
+    Runtime: v.string(),
+    Networks: v.array(NetworkAttachmentConfig),
+    LogDriver: v.partial(v.object({ Name: v.string(), Options: v.record(v.string(), v.string()) })),
+  }),
+);
 
 export type TaskState = v.InferOutput<typeof TaskState>;
-export const TaskState = v.union([
-  v.literal("new"),
-  v.literal("allocated"),
-  v.literal("pending"),
-  v.literal("assigned"),
-  v.literal("accepted"),
-  v.literal("preparing"),
-  v.literal("ready"),
-  v.literal("starting"),
-  v.literal("running"),
-  v.literal("complete"),
-  v.literal("shutdown"),
-  v.literal("failed"),
-  v.literal("rejected"),
-  v.literal("remove"),
-  v.literal("orphaned"),
+export const TaskState = v.picklist([
+  "new",
+  "allocated",
+  "pending",
+  "assigned",
+  "accepted",
+  "preparing",
+  "ready",
+  "starting",
+  "running",
+  "complete",
+  "shutdown",
+  "failed",
+  "rejected",
+  "remove",
+  "orphaned",
 ]);
 
 export type Task = v.InferOutput<typeof Task>;
-export const Task = v.object({
-  ID: v.optional(v.string()),
-  Version: v.optional(ObjectVersion),
-  CreatedAt: v.optional(v.string()),
-  UpdatedAt: v.optional(v.string()),
-  Name: v.optional(v.string()),
-  Labels: v.optional(v.record(v.string(), v.string())),
-  Spec: v.optional(TaskSpec),
-  ServiceID: v.optional(v.string()),
-  Slot: v.optional(v.number()),
-  NodeID: v.optional(v.string()),
-  AssignedGenericResources: v.optional(GenericResources),
-  Status: v.optional(
-    v.object({
-      Timestamp: v.optional(v.string()),
-      State: v.optional(TaskState),
-      Message: v.optional(v.string()),
-      Err: v.optional(v.string()),
-      ContainerStatus: v.optional(
-        v.object({
-          ContainerID: v.optional(v.string()),
-          PID: v.optional(v.number()),
-          ExitCode: v.optional(v.number()),
-        }),
-      ),
-    }),
-  ),
-  DesiredState: v.optional(TaskState),
-  JobIteration: v.optional(ObjectVersion),
-});
-
-export type EndpointPortConfig = v.InferOutput<typeof EndpointPortConfig>;
-export const EndpointPortConfig = v.object({
-  Name: v.optional(v.string()),
-  Protocol: v.optional(v.union([v.literal("tcp"), v.literal("udp"), v.literal("sctp")])),
-  TargetPort: v.optional(v.number()),
-  PublishedPort: v.optional(v.number()),
-  PublishMode: v.optional(v.union([v.literal("ingress"), v.literal("host")])),
-});
-
-export type EndpointSpec = v.InferOutput<typeof EndpointSpec>;
-export const EndpointSpec = v.object({
-  Mode: v.optional(v.union([v.literal("vip"), v.literal("dnsrr")])),
-  Ports: v.optional(v.array(EndpointPortConfig)),
-});
-
-export type ServiceSpec = v.InferOutput<typeof ServiceSpec>;
-export const ServiceSpec = v.object({
-  Name: v.optional(v.string()),
-  Labels: v.optional(v.record(v.string(), v.string())),
-  TaskTemplate: v.optional(TaskSpec),
-  Mode: v.optional(
-    v.object({
-      Replicated: v.optional(
-        v.object({
-          Replicas: v.optional(v.number()),
-        }),
-      ),
-      Global: v.optional(v.object({})),
-      ReplicatedJob: v.optional(
-        v.object({
-          MaxConcurrent: v.optional(v.number()),
-          TotalCompletions: v.optional(v.number()),
-        }),
-      ),
-      GlobalJob: v.optional(v.object({})),
-    }),
-  ),
-  UpdateConfig: v.optional(
-    v.object({
-      Parallelism: v.optional(v.number()),
-      Delay: v.optional(v.number()),
-      FailureAction: v.optional(v.union([v.literal("continue"), v.literal("pause"), v.literal("rollback")])),
-      Monitor: v.optional(v.number()),
-      MaxFailureRatio: v.optional(v.number()),
-      Order: v.optional(v.union([v.literal("stop-first"), v.literal("start-first")])),
-    }),
-  ),
-  RollbackConfig: v.optional(
-    v.object({
-      Parallelism: v.optional(v.number()),
-      Delay: v.optional(v.number()),
-      FailureAction: v.optional(v.union([v.literal("continue"), v.literal("pause")])),
-      Monitor: v.optional(v.number()),
-      MaxFailureRatio: v.optional(v.number()),
-      Order: v.optional(v.union([v.literal("stop-first"), v.literal("start-first")])),
-    }),
-  ),
-  Networks: v.optional(v.array(NetworkAttachmentConfig)),
-  EndpointSpec: v.optional(EndpointSpec),
-});
-
-export type Service = v.InferOutput<typeof Service>;
-export const Service = v.object({
-  ID: v.optional(v.string()),
-  Version: v.optional(ObjectVersion),
-  CreatedAt: v.optional(v.string()),
-  UpdatedAt: v.optional(v.string()),
-  Spec: v.optional(ServiceSpec),
-  Endpoint: v.optional(
-    v.object({
-      Spec: v.optional(EndpointSpec),
-      Ports: v.optional(v.array(EndpointPortConfig)),
-      VirtualIPs: v.optional(
-        v.array(
+export const Task = v.partial(
+  v.object({
+    ID: v.string(),
+    Version: ObjectVersion,
+    CreatedAt: v.string(),
+    UpdatedAt: v.string(),
+    Name: v.string(),
+    Labels: v.record(v.string(), v.string()),
+    Spec: TaskSpec,
+    ServiceID: v.string(),
+    Slot: v.pipe(v.number(), v.integer()),
+    NodeID: v.string(),
+    AssignedGenericResources: GenericResources,
+    Status: v.partial(
+      v.object({
+        Timestamp: v.string(),
+        State: TaskState,
+        Message: v.string(),
+        Err: v.string(),
+        ContainerStatus: v.partial(
           v.object({
-            NetworkID: v.optional(v.string()),
-            Addr: v.optional(v.string()),
+            ContainerID: v.string(),
+            PID: v.pipe(v.number(), v.integer()),
+            ExitCode: v.pipe(v.number(), v.integer()),
           }),
         ),
-      ),
-    }),
-  ),
-  UpdateStatus: v.optional(
-    v.object({
-      State: v.optional(v.union([v.literal("updating"), v.literal("paused"), v.literal("completed")])),
-      StartedAt: v.optional(v.string()),
-      CompletedAt: v.optional(v.string()),
-      Message: v.optional(v.string()),
-    }),
-  ),
-  ServiceStatus: v.optional(
-    v.object({
-      RunningTasks: v.optional(v.number()),
-      DesiredTasks: v.optional(v.number()),
-      CompletedTasks: v.optional(v.number()),
-    }),
-  ),
-  JobStatus: v.optional(
-    v.object({
-      JobIteration: v.optional(ObjectVersion),
-      LastExecution: v.optional(v.string()),
-    }),
-  ),
-});
+      }),
+    ),
+    DesiredState: TaskState,
+    JobIteration: ObjectVersion,
+  }),
+);
+
+export type EndpointPortConfig = v.InferOutput<typeof EndpointPortConfig>;
+export const EndpointPortConfig = v.partial(
+  v.object({
+    Name: v.string(),
+    Protocol: v.picklist(["tcp", "udp", "sctp"]),
+    TargetPort: v.pipe(v.number(), v.integer()),
+    PublishedPort: v.pipe(v.number(), v.integer()),
+    PublishMode: v.picklist(["ingress", "host"]),
+  }),
+);
+
+export type EndpointSpec = v.InferOutput<typeof EndpointSpec>;
+export const EndpointSpec = v.partial(
+  v.object({ Mode: v.picklist(["vip", "dnsrr"]), Ports: v.array(EndpointPortConfig) }),
+);
+
+export type ServiceSpec = v.InferOutput<typeof ServiceSpec>;
+export const ServiceSpec = v.partial(
+  v.object({
+    Name: v.string(),
+    Labels: v.record(v.string(), v.string()),
+    TaskTemplate: TaskSpec,
+    Mode: v.partial(
+      v.object({
+        Replicated: v.partial(v.object({ Replicas: v.pipe(v.number(), v.integer()) })),
+        Global: v.partial(v.object({})),
+        ReplicatedJob: v.partial(
+          v.object({
+            MaxConcurrent: v.pipe(v.number(), v.integer()),
+            TotalCompletions: v.pipe(v.number(), v.integer()),
+          }),
+        ),
+        GlobalJob: v.partial(v.object({})),
+      }),
+    ),
+    UpdateConfig: v.partial(
+      v.object({
+        Parallelism: v.pipe(v.number(), v.integer()),
+        Delay: v.pipe(v.number(), v.integer()),
+        FailureAction: v.picklist(["continue", "pause", "rollback"]),
+        Monitor: v.pipe(v.number(), v.integer()),
+        MaxFailureRatio: v.number(),
+        Order: v.picklist(["stop-first", "start-first"]),
+      }),
+    ),
+    RollbackConfig: v.partial(
+      v.object({
+        Parallelism: v.pipe(v.number(), v.integer()),
+        Delay: v.pipe(v.number(), v.integer()),
+        FailureAction: v.picklist(["continue", "pause"]),
+        Monitor: v.pipe(v.number(), v.integer()),
+        MaxFailureRatio: v.number(),
+        Order: v.picklist(["stop-first", "start-first"]),
+      }),
+    ),
+    Networks: v.array(NetworkAttachmentConfig),
+    EndpointSpec: EndpointSpec,
+  }),
+);
+
+export type Service = v.InferOutput<typeof Service>;
+export const Service = v.partial(
+  v.object({
+    ID: v.string(),
+    Version: ObjectVersion,
+    CreatedAt: v.string(),
+    UpdatedAt: v.string(),
+    Spec: ServiceSpec,
+    Endpoint: v.partial(
+      v.object({
+        Spec: EndpointSpec,
+        Ports: v.array(EndpointPortConfig),
+        VirtualIPs: v.array(v.partial(v.object({ NetworkID: v.string(), Addr: v.string() }))),
+      }),
+    ),
+    UpdateStatus: v.partial(
+      v.object({
+        State: v.picklist(["updating", "paused", "completed"]),
+        StartedAt: v.string(),
+        CompletedAt: v.string(),
+        Message: v.string(),
+      }),
+    ),
+    ServiceStatus: v.partial(
+      v.object({
+        RunningTasks: v.pipe(v.number(), v.integer()),
+        DesiredTasks: v.pipe(v.number(), v.integer()),
+        CompletedTasks: v.pipe(v.number(), v.integer()),
+      }),
+    ),
+    JobStatus: v.partial(v.object({ JobIteration: ObjectVersion, LastExecution: v.string() })),
+  }),
+);
 
 export type ImageDeleteResponseItem = v.InferOutput<typeof ImageDeleteResponseItem>;
-export const ImageDeleteResponseItem = v.object({
-  Untagged: v.optional(v.string()),
-  Deleted: v.optional(v.string()),
-});
+export const ImageDeleteResponseItem = v.partial(v.object({ Untagged: v.string(), Deleted: v.string() }));
 
 export type ServiceUpdateResponse = v.InferOutput<typeof ServiceUpdateResponse>;
-export const ServiceUpdateResponse = v.object({
-  Warnings: v.optional(v.array(v.string())),
-});
+export const ServiceUpdateResponse = v.partial(v.object({ Warnings: v.array(v.string()) }));
 
 export type ContainerSummary = v.InferOutput<typeof ContainerSummary>;
-export const ContainerSummary = v.object({
-  Id: v.optional(v.string()),
-  Names: v.optional(v.array(v.string())),
-  Image: v.optional(v.string()),
-  ImageID: v.optional(v.string()),
-  Command: v.optional(v.string()),
-  Created: v.optional(v.number()),
-  Ports: v.optional(v.array(Port)),
-  SizeRw: v.optional(v.number()),
-  SizeRootFs: v.optional(v.number()),
-  Labels: v.optional(v.record(v.string(), v.string())),
-  State: v.optional(v.string()),
-  Status: v.optional(v.string()),
-  HostConfig: v.optional(
-    v.object({
-      NetworkMode: v.optional(v.string()),
-    }),
-  ),
-  NetworkSettings: v.optional(
-    v.object({
-      Networks: v.optional(v.record(v.string(), EndpointSettings)),
-    }),
-  ),
-  Mounts: v.optional(v.array(MountPoint)),
-});
+export const ContainerSummary = v.partial(
+  v.object({
+    Id: v.string(),
+    Names: v.array(v.string()),
+    Image: v.string(),
+    ImageID: v.string(),
+    Command: v.string(),
+    Created: v.pipe(v.number(), v.integer()),
+    Ports: v.array(Port),
+    SizeRw: v.pipe(v.number(), v.integer()),
+    SizeRootFs: v.pipe(v.number(), v.integer()),
+    Labels: v.record(v.string(), v.string()),
+    State: v.string(),
+    Status: v.string(),
+    HostConfig: v.partial(v.object({ NetworkMode: v.string() })),
+    NetworkSettings: v.partial(v.object({ Networks: v.record(v.string(), EndpointSettings) })),
+    Mounts: v.array(MountPoint),
+  }),
+);
 
 export type Driver = v.InferOutput<typeof Driver>;
-export const Driver = v.object({
-  Name: v.string(),
-  Options: v.optional(v.union([v.record(v.string(), v.string()), v.undefined()])),
-});
+export const Driver = v.object({ Name: v.string(), Options: v.optional(v.record(v.string(), v.string())) });
 
 export type SecretSpec = v.InferOutput<typeof SecretSpec>;
-export const SecretSpec = v.object({
-  Name: v.optional(v.string()),
-  Labels: v.optional(v.record(v.string(), v.string())),
-  Data: v.optional(v.string()),
-  Driver: v.optional(Driver),
-  Templating: v.optional(Driver),
-});
+export const SecretSpec = v.partial(
+  v.object({
+    Name: v.string(),
+    Labels: v.record(v.string(), v.string()),
+    Data: v.string(),
+    Driver: Driver,
+    Templating: Driver,
+  }),
+);
 
 export type Secret = v.InferOutput<typeof Secret>;
-export const Secret = v.object({
-  ID: v.optional(v.string()),
-  Version: v.optional(ObjectVersion),
-  CreatedAt: v.optional(v.string()),
-  UpdatedAt: v.optional(v.string()),
-  Spec: v.optional(SecretSpec),
-});
+export const Secret = v.partial(
+  v.object({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: SecretSpec }),
+);
 
 export type ConfigSpec = v.InferOutput<typeof ConfigSpec>;
-export const ConfigSpec = v.object({
-  Name: v.optional(v.string()),
-  Labels: v.optional(v.record(v.string(), v.string())),
-  Data: v.optional(v.string()),
-  Templating: v.optional(Driver),
-});
+export const ConfigSpec = v.partial(
+  v.object({ Name: v.string(), Labels: v.record(v.string(), v.string()), Data: v.string(), Templating: Driver }),
+);
 
 export type Config = v.InferOutput<typeof Config>;
-export const Config = v.object({
-  ID: v.optional(v.string()),
-  Version: v.optional(ObjectVersion),
-  CreatedAt: v.optional(v.string()),
-  UpdatedAt: v.optional(v.string()),
-  Spec: v.optional(ConfigSpec),
-});
+export const Config = v.partial(
+  v.object({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: ConfigSpec }),
+);
 
 export type ContainerState = v.InferOutput<typeof ContainerState>;
-export const ContainerState = v.union([
-  v.object({
-    Status: v.optional(
-      v.union([
-        v.literal("created"),
-        v.literal("running"),
-        v.literal("paused"),
-        v.literal("restarting"),
-        v.literal("removing"),
-        v.literal("exited"),
-        v.literal("dead"),
-      ]),
-    ),
-    Running: v.optional(v.boolean()),
-    Paused: v.optional(v.boolean()),
-    Restarting: v.optional(v.boolean()),
-    OOMKilled: v.optional(v.boolean()),
-    Dead: v.optional(v.boolean()),
-    Pid: v.optional(v.number()),
-    ExitCode: v.optional(v.number()),
-    Error: v.optional(v.string()),
-    StartedAt: v.optional(v.string()),
-    FinishedAt: v.optional(v.string()),
-    Health: v.optional(Health),
-  }),
-  v.null(),
-]);
+export const ContainerState = v.nullable(
+  v.partial(
+    v.object({
+      Status: v.picklist(["created", "running", "paused", "restarting", "removing", "exited", "dead"]),
+      Running: v.boolean(),
+      Paused: v.boolean(),
+      Restarting: v.boolean(),
+      OOMKilled: v.boolean(),
+      Dead: v.boolean(),
+      Pid: v.pipe(v.number(), v.integer()),
+      ExitCode: v.pipe(v.number(), v.integer()),
+      Error: v.string(),
+      StartedAt: v.string(),
+      FinishedAt: v.string(),
+      Health: Health,
+    }),
+  ),
+);
 
 export type ContainerCreateResponse = v.InferOutput<typeof ContainerCreateResponse>;
-export const ContainerCreateResponse = v.object({
-  Id: v.string(),
-  Warnings: v.array(v.string()),
-});
+export const ContainerCreateResponse = v.object({ Id: v.string(), Warnings: v.array(v.string()) });
 
 export type ContainerWaitExitError = v.InferOutput<typeof ContainerWaitExitError>;
-export const ContainerWaitExitError = v.object({
-  Message: v.optional(v.string()),
-});
+export const ContainerWaitExitError = v.partial(v.object({ Message: v.string() }));
 
 export type ContainerWaitResponse = v.InferOutput<typeof ContainerWaitResponse>;
 export const ContainerWaitResponse = v.object({
-  StatusCode: v.number(),
-  Error: v.optional(v.union([ContainerWaitExitError, v.undefined()])),
+  StatusCode: v.pipe(v.number(), v.integer()),
+  Error: v.optional(ContainerWaitExitError),
 });
 
 export type SystemVersion = v.InferOutput<typeof SystemVersion>;
-export const SystemVersion = v.object({
-  Platform: v.optional(
-    v.object({
-      Name: v.string(),
-    }),
-  ),
-  Components: v.optional(
-    v.array(
-      v.object({
-        Name: v.string(),
-        Version: v.string(),
-        Details: v.optional(v.union([v.union([v.object({}), v.null()]), v.undefined()])),
-      }),
+export const SystemVersion = v.partial(
+  v.object({
+    Platform: v.object({ Name: v.string() }),
+    Components: v.array(
+      v.object({ Name: v.string(), Version: v.string(), Details: v.optional(v.nullable(v.partial(v.object({})))) }),
     ),
-  ),
-  Version: v.optional(v.string()),
-  ApiVersion: v.optional(v.string()),
-  MinAPIVersion: v.optional(v.string()),
-  GitCommit: v.optional(v.string()),
-  GoVersion: v.optional(v.string()),
-  Os: v.optional(v.string()),
-  Arch: v.optional(v.string()),
-  KernelVersion: v.optional(v.string()),
-  Experimental: v.optional(v.boolean()),
-  BuildTime: v.optional(v.string()),
-});
+    Version: v.string(),
+    ApiVersion: v.string(),
+    MinAPIVersion: v.string(),
+    GitCommit: v.string(),
+    GoVersion: v.string(),
+    Os: v.string(),
+    Arch: v.string(),
+    KernelVersion: v.string(),
+    Experimental: v.boolean(),
+    BuildTime: v.string(),
+  }),
+);
 
 export type PluginsInfo = v.InferOutput<typeof PluginsInfo>;
-export const PluginsInfo = v.object({
-  Volume: v.optional(v.array(v.string())),
-  Network: v.optional(v.array(v.string())),
-  Authorization: v.optional(v.array(v.string())),
-  Log: v.optional(v.array(v.string())),
-});
+export const PluginsInfo = v.partial(
+  v.object({
+    Volume: v.array(v.string()),
+    Network: v.array(v.string()),
+    Authorization: v.array(v.string()),
+    Log: v.array(v.string()),
+  }),
+);
 
 export type IndexInfo = v.InferOutput<typeof IndexInfo>;
-export const IndexInfo = v.union([
-  v.object({
-    Name: v.optional(v.string()),
-    Mirrors: v.optional(v.array(v.string())),
-    Secure: v.optional(v.boolean()),
-    Official: v.optional(v.boolean()),
-  }),
-  v.null(),
-]);
+export const IndexInfo = v.nullable(
+  v.partial(v.object({ Name: v.string(), Mirrors: v.array(v.string()), Secure: v.boolean(), Official: v.boolean() })),
+);
 
 export type RegistryServiceConfig = v.InferOutput<typeof RegistryServiceConfig>;
-export const RegistryServiceConfig = v.union([
-  v.object({
-    AllowNondistributableArtifactsCIDRs: v.optional(v.array(v.string())),
-    AllowNondistributableArtifactsHostnames: v.optional(v.array(v.string())),
-    InsecureRegistryCIDRs: v.optional(v.array(v.string())),
-    IndexConfigs: v.optional(v.record(v.string(), IndexInfo)),
-    Mirrors: v.optional(v.array(v.string())),
-  }),
-  v.null(),
-]);
+export const RegistryServiceConfig = v.nullable(
+  v.partial(
+    v.object({
+      AllowNondistributableArtifactsCIDRs: v.array(v.string()),
+      AllowNondistributableArtifactsHostnames: v.array(v.string()),
+      InsecureRegistryCIDRs: v.array(v.string()),
+      IndexConfigs: v.record(v.string(), IndexInfo),
+      Mirrors: v.array(v.string()),
+    }),
+  ),
+);
 
 export type Runtime = v.InferOutput<typeof Runtime>;
-export const Runtime = v.object({
-  path: v.optional(v.string()),
-  runtimeArgs: v.optional(v.union([v.array(v.string()), v.null()])),
-});
+export const Runtime = v.partial(v.object({ path: v.string(), runtimeArgs: v.nullable(v.array(v.string())) }));
 
 export type LocalNodeState = v.InferOutput<typeof LocalNodeState>;
-export const LocalNodeState = v.union([
-  v.literal(""),
-  v.literal("inactive"),
-  v.literal("pending"),
-  v.literal("active"),
-  v.literal("error"),
-  v.literal("locked"),
-]);
+export const LocalNodeState = v.picklist(["", "inactive", "pending", "active", "error", "locked"]);
 
 export type PeerNode = v.InferOutput<typeof PeerNode>;
-export const PeerNode = v.object({
-  NodeID: v.optional(v.string()),
-  Addr: v.optional(v.string()),
-});
+export const PeerNode = v.partial(v.object({ NodeID: v.string(), Addr: v.string() }));
 
 export type SwarmInfo = v.InferOutput<typeof SwarmInfo>;
-export const SwarmInfo = v.object({
-  NodeID: v.optional(v.string()),
-  NodeAddr: v.optional(v.string()),
-  LocalNodeState: v.optional(LocalNodeState),
-  ControlAvailable: v.optional(v.boolean()),
-  Error: v.optional(v.string()),
-  RemoteManagers: v.optional(v.union([v.array(PeerNode), v.null()])),
-  Nodes: v.optional(v.union([v.number(), v.null()])),
-  Managers: v.optional(v.union([v.number(), v.null()])),
-  Cluster: v.optional(ClusterInfo),
-});
+export const SwarmInfo = v.partial(
+  v.object({
+    NodeID: v.string(),
+    NodeAddr: v.string(),
+    LocalNodeState: LocalNodeState,
+    ControlAvailable: v.boolean(),
+    Error: v.string(),
+    RemoteManagers: v.nullable(v.array(PeerNode)),
+    Nodes: v.nullable(v.pipe(v.number(), v.integer())),
+    Managers: v.nullable(v.pipe(v.number(), v.integer())),
+    Cluster: ClusterInfo,
+  }),
+);
 
 export type Commit = v.InferOutput<typeof Commit>;
-export const Commit = v.object({
-  ID: v.optional(v.string()),
-  Expected: v.optional(v.string()),
-});
+export const Commit = v.partial(v.object({ ID: v.string(), Expected: v.string() }));
 
 export type SystemInfo = v.InferOutput<typeof SystemInfo>;
-export const SystemInfo = v.object({
-  ID: v.optional(v.string()),
-  Containers: v.optional(v.number()),
-  ContainersRunning: v.optional(v.number()),
-  ContainersPaused: v.optional(v.number()),
-  ContainersStopped: v.optional(v.number()),
-  Images: v.optional(v.number()),
-  Driver: v.optional(v.string()),
-  DriverStatus: v.optional(v.array(v.array(v.string()))),
-  DockerRootDir: v.optional(v.string()),
-  Plugins: v.optional(PluginsInfo),
-  MemoryLimit: v.optional(v.boolean()),
-  SwapLimit: v.optional(v.boolean()),
-  KernelMemoryTCP: v.optional(v.boolean()),
-  CpuCfsPeriod: v.optional(v.boolean()),
-  CpuCfsQuota: v.optional(v.boolean()),
-  CPUShares: v.optional(v.boolean()),
-  CPUSet: v.optional(v.boolean()),
-  PidsLimit: v.optional(v.boolean()),
-  OomKillDisable: v.optional(v.boolean()),
-  IPv4Forwarding: v.optional(v.boolean()),
-  BridgeNfIptables: v.optional(v.boolean()),
-  BridgeNfIp6tables: v.optional(v.boolean()),
-  Debug: v.optional(v.boolean()),
-  NFd: v.optional(v.number()),
-  NGoroutines: v.optional(v.number()),
-  SystemTime: v.optional(v.string()),
-  LoggingDriver: v.optional(v.string()),
-  CgroupDriver: v.optional(v.union([v.literal("cgroupfs"), v.literal("systemd"), v.literal("none")])),
-  CgroupVersion: v.optional(v.union([v.literal("1"), v.literal("2")])),
-  NEventsListener: v.optional(v.number()),
-  KernelVersion: v.optional(v.string()),
-  OperatingSystem: v.optional(v.string()),
-  OSVersion: v.optional(v.string()),
-  OSType: v.optional(v.string()),
-  Architecture: v.optional(v.string()),
-  NCPU: v.optional(v.number()),
-  MemTotal: v.optional(v.number()),
-  IndexServerAddress: v.optional(v.string()),
-  RegistryConfig: v.optional(RegistryServiceConfig),
-  GenericResources: v.optional(GenericResources),
-  HttpProxy: v.optional(v.string()),
-  HttpsProxy: v.optional(v.string()),
-  NoProxy: v.optional(v.string()),
-  Name: v.optional(v.string()),
-  Labels: v.optional(v.array(v.string())),
-  ExperimentalBuild: v.optional(v.boolean()),
-  ServerVersion: v.optional(v.string()),
-  Runtimes: v.optional(v.record(v.string(), Runtime)),
-  DefaultRuntime: v.optional(v.string()),
-  Swarm: v.optional(SwarmInfo),
-  LiveRestoreEnabled: v.optional(v.boolean()),
-  Isolation: v.optional(v.union([v.literal("default"), v.literal("hyperv"), v.literal("process")])),
-  InitBinary: v.optional(v.string()),
-  ContainerdCommit: v.optional(Commit),
-  RuncCommit: v.optional(Commit),
-  InitCommit: v.optional(Commit),
-  SecurityOptions: v.optional(v.array(v.string())),
-  ProductLicense: v.optional(v.string()),
-  DefaultAddressPools: v.optional(
-    v.array(
-      v.object({
-        Base: v.optional(v.string()),
-        Size: v.optional(v.number()),
-      }),
-    ),
-  ),
-  Warnings: v.optional(v.array(v.string())),
-});
+export const SystemInfo = v.partial(
+  v.object({
+    ID: v.string(),
+    Containers: v.pipe(v.number(), v.integer()),
+    ContainersRunning: v.pipe(v.number(), v.integer()),
+    ContainersPaused: v.pipe(v.number(), v.integer()),
+    ContainersStopped: v.pipe(v.number(), v.integer()),
+    Images: v.pipe(v.number(), v.integer()),
+    Driver: v.string(),
+    DriverStatus: v.array(v.array(v.string())),
+    DockerRootDir: v.string(),
+    Plugins: PluginsInfo,
+    MemoryLimit: v.boolean(),
+    SwapLimit: v.boolean(),
+    KernelMemoryTCP: v.boolean(),
+    CpuCfsPeriod: v.boolean(),
+    CpuCfsQuota: v.boolean(),
+    CPUShares: v.boolean(),
+    CPUSet: v.boolean(),
+    PidsLimit: v.boolean(),
+    OomKillDisable: v.boolean(),
+    IPv4Forwarding: v.boolean(),
+    BridgeNfIptables: v.boolean(),
+    BridgeNfIp6tables: v.boolean(),
+    Debug: v.boolean(),
+    NFd: v.pipe(v.number(), v.integer()),
+    NGoroutines: v.pipe(v.number(), v.integer()),
+    SystemTime: v.string(),
+    LoggingDriver: v.string(),
+    CgroupDriver: v.picklist(["cgroupfs", "systemd", "none"]),
+    CgroupVersion: v.picklist(["1", "2"]),
+    NEventsListener: v.pipe(v.number(), v.integer()),
+    KernelVersion: v.string(),
+    OperatingSystem: v.string(),
+    OSVersion: v.string(),
+    OSType: v.string(),
+    Architecture: v.string(),
+    NCPU: v.pipe(v.number(), v.integer()),
+    MemTotal: v.pipe(v.number(), v.integer()),
+    IndexServerAddress: v.string(),
+    RegistryConfig: RegistryServiceConfig,
+    GenericResources: GenericResources,
+    HttpProxy: v.string(),
+    HttpsProxy: v.string(),
+    NoProxy: v.string(),
+    Name: v.string(),
+    Labels: v.array(v.string()),
+    ExperimentalBuild: v.boolean(),
+    ServerVersion: v.string(),
+    Runtimes: v.record(v.string(), Runtime),
+    DefaultRuntime: v.string(),
+    Swarm: SwarmInfo,
+    LiveRestoreEnabled: v.boolean(),
+    Isolation: v.picklist(["default", "hyperv", "process"]),
+    InitBinary: v.string(),
+    ContainerdCommit: Commit,
+    RuncCommit: Commit,
+    InitCommit: Commit,
+    SecurityOptions: v.array(v.string()),
+    ProductLicense: v.string(),
+    DefaultAddressPools: v.array(v.partial(v.object({ Base: v.string(), Size: v.pipe(v.number(), v.integer()) }))),
+    Warnings: v.array(v.string()),
+  }),
+);
 
 export type EventActor = v.InferOutput<typeof EventActor>;
-export const EventActor = v.object({
-  ID: v.optional(v.string()),
-  Attributes: v.optional(v.record(v.string(), v.string())),
-});
+export const EventActor = v.partial(v.object({ ID: v.string(), Attributes: v.record(v.string(), v.string()) }));
 
 export type EventMessage = v.InferOutput<typeof EventMessage>;
-export const EventMessage = v.object({
-  Type: v.optional(
-    v.union([
-      v.literal("builder"),
-      v.literal("config"),
-      v.literal("container"),
-      v.literal("daemon"),
-      v.literal("image"),
-      v.literal("network"),
-      v.literal("node"),
-      v.literal("plugin"),
-      v.literal("secret"),
-      v.literal("service"),
-      v.literal("volume"),
+export const EventMessage = v.partial(
+  v.object({
+    Type: v.picklist([
+      "builder",
+      "config",
+      "container",
+      "daemon",
+      "image",
+      "network",
+      "node",
+      "plugin",
+      "secret",
+      "service",
+      "volume",
     ]),
-  ),
-  Action: v.optional(v.string()),
-  Actor: v.optional(EventActor),
-  scope: v.optional(v.union([v.literal("local"), v.literal("swarm")])),
-  time: v.optional(v.number()),
-  timeNano: v.optional(v.number()),
-});
+    Action: v.string(),
+    Actor: EventActor,
+    scope: v.picklist(["local", "swarm"]),
+    time: v.pipe(v.number(), v.integer()),
+    timeNano: v.pipe(v.number(), v.integer()),
+  }),
+);
 
 export type OCIDescriptor = v.InferOutput<typeof OCIDescriptor>;
-export const OCIDescriptor = v.object({
-  mediaType: v.optional(v.string()),
-  digest: v.optional(v.string()),
-  size: v.optional(v.number()),
-});
+export const OCIDescriptor = v.partial(
+  v.object({ mediaType: v.string(), digest: v.string(), size: v.pipe(v.number(), v.integer()) }),
+);
 
 export type OCIPlatform = v.InferOutput<typeof OCIPlatform>;
-export const OCIPlatform = v.object({
-  architecture: v.optional(v.string()),
-  os: v.optional(v.string()),
-  "os.version": v.optional(v.string()),
-  "os.features": v.optional(v.array(v.string())),
-  variant: v.optional(v.string()),
-});
+export const OCIPlatform = v.partial(
+  v.object({
+    architecture: v.string(),
+    os: v.string(),
+    "os.version": v.string(),
+    "os.features": v.array(v.string()),
+    variant: v.string(),
+  }),
+);
 
 export type DistributionInspect = v.InferOutput<typeof DistributionInspect>;
-export const DistributionInspect = v.object({
-  Descriptor: OCIDescriptor,
-  Platforms: v.array(OCIPlatform),
-});
+export const DistributionInspect = v.object({ Descriptor: OCIDescriptor, Platforms: v.array(OCIPlatform) });
 
-export type __ENDPOINTS_START__ = v.InferOutput<typeof __ENDPOINTS_START__>;
-export const __ENDPOINTS_START__ = v.object({});
+// </Schemas>
 
-export type get_ContainerList = v.InferOutput<typeof get_ContainerList>;
-export const get_ContainerList = v.object({
+// <Endpoints>
+export type get_ContainerList = typeof get_ContainerList;
+export const get_ContainerList = {
   method: v.literal("GET"),
   path: v.literal("/containers/json"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      all: v.optional(v.boolean()),
-      limit: v.optional(v.number()),
-      size: v.optional(v.boolean()),
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(ContainerSummary),
-    "400": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(
+      v.object({ all: v.boolean(), limit: v.pipe(v.number(), v.integer()), size: v.boolean(), filters: v.string() }),
+    ),
+  },
+  responses: { 200: v.array(ContainerSummary), 400: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ContainerCreate = v.InferOutput<typeof post_ContainerCreate>;
-export const post_ContainerCreate = v.object({
+export type post_ContainerCreate = typeof post_ContainerCreate;
+export const post_ContainerCreate = {
   method: v.literal("POST"),
   path: v.literal("/containers/create"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      name: v.optional(v.string()),
-      platform: v.optional(v.string()),
-    }),
+  parameters: {
+    query: v.partial(
+      v.object({
+        name: v.pipe(v.string(), v.regex(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"))),
+        platform: v.string(),
+      }),
+    ),
     body: v.intersect([
       ContainerConfig,
-      v.object({
-        HostConfig: v.optional(HostConfig),
-        NetworkingConfig: v.optional(NetworkingConfig),
-      }),
+      v.partial(v.object({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig })),
     ]),
-  }),
-  responses: v.object({
-    "201": ContainerCreateResponse,
-    "400": ErrorResponse,
-    "404": ErrorResponse,
-    "409": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  },
+  responses: {
+    201: ContainerCreateResponse,
+    400: ErrorResponse,
+    404: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
 
-export type get_ContainerInspect = v.InferOutput<typeof get_ContainerInspect>;
-export const get_ContainerInspect = v.object({
+export type get_ContainerInspect = typeof get_ContainerInspect;
+export const get_ContainerInspect = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/json"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      size: v.optional(v.boolean()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.object({
-      Id: v.optional(v.string()),
-      Created: v.optional(v.string()),
-      Path: v.optional(v.string()),
-      Args: v.optional(v.array(v.string())),
-      State: v.optional(ContainerState),
-      Image: v.optional(v.string()),
-      ResolvConfPath: v.optional(v.string()),
-      HostnamePath: v.optional(v.string()),
-      HostsPath: v.optional(v.string()),
-      LogPath: v.optional(v.string()),
-      Name: v.optional(v.string()),
-      RestartCount: v.optional(v.number()),
-      Driver: v.optional(v.string()),
-      Platform: v.optional(v.string()),
-      MountLabel: v.optional(v.string()),
-      ProcessLabel: v.optional(v.string()),
-      AppArmorProfile: v.optional(v.string()),
-      ExecIDs: v.optional(v.union([v.array(v.string()), v.null()])),
-      HostConfig: v.optional(HostConfig),
-      GraphDriver: v.optional(GraphDriverData),
-      SizeRw: v.optional(v.number()),
-      SizeRootFs: v.optional(v.number()),
-      Mounts: v.optional(v.array(MountPoint)),
-      Config: v.optional(ContainerConfig),
-      NetworkSettings: v.optional(NetworkSettings),
-    }),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ size: v.boolean() })), path: v.object({ id: v.string() }) },
+  responses: {
+    200: v.partial(
+      v.object({
+        Id: v.string(),
+        Created: v.string(),
+        Path: v.string(),
+        Args: v.array(v.string()),
+        State: ContainerState,
+        Image: v.string(),
+        ResolvConfPath: v.string(),
+        HostnamePath: v.string(),
+        HostsPath: v.string(),
+        LogPath: v.string(),
+        Name: v.string(),
+        RestartCount: v.pipe(v.number(), v.integer()),
+        Driver: v.string(),
+        Platform: v.string(),
+        MountLabel: v.string(),
+        ProcessLabel: v.string(),
+        AppArmorProfile: v.string(),
+        ExecIDs: v.nullable(v.array(v.string())),
+        HostConfig: HostConfig,
+        GraphDriver: GraphDriverData,
+        SizeRw: v.pipe(v.number(), v.integer()),
+        SizeRootFs: v.pipe(v.number(), v.integer()),
+        Mounts: v.array(MountPoint),
+        Config: ContainerConfig,
+        NetworkSettings: NetworkSettings,
+      }),
+    ),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
 
-export type get_ContainerTop = v.InferOutput<typeof get_ContainerTop>;
-export const get_ContainerTop = v.object({
+export type get_ContainerTop = typeof get_ContainerTop;
+export const get_ContainerTop = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/top"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      ps_args: v.optional(v.string()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.object({
-      Titles: v.optional(v.array(v.string())),
-      Processes: v.optional(v.array(v.array(v.string()))),
-    }),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ ps_args: v.string() })), path: v.object({ id: v.string() }) },
+  responses: {
+    200: v.partial(v.object({ Titles: v.array(v.string()), Processes: v.array(v.array(v.string())) })),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
 
-export type get_ContainerLogs = v.InferOutput<typeof get_ContainerLogs>;
-export const get_ContainerLogs = v.object({
+export type get_ContainerLogs = typeof get_ContainerLogs;
+export const get_ContainerLogs = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/logs"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      follow: v.optional(v.boolean()),
-      stdout: v.optional(v.boolean()),
-      stderr: v.optional(v.boolean()),
-      since: v.optional(v.number()),
-      until: v.optional(v.number()),
-      timestamps: v.optional(v.boolean()),
-      tail: v.optional(v.string()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": v.unknown(),
-    "500": v.unknown(),
-  }),
-});
+  parameters: {
+    query: v.partial(
+      v.object({
+        follow: v.boolean(),
+        stdout: v.boolean(),
+        stderr: v.boolean(),
+        since: v.pipe(v.number(), v.integer()),
+        until: v.pipe(v.number(), v.integer()),
+        timestamps: v.boolean(),
+        tail: v.string(),
+      }),
+    ),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 200: v.unknown(), 404: v.unknown(), 500: v.unknown() },
+};
 
-export type get_ContainerChanges = v.InferOutput<typeof get_ContainerChanges>;
-export const get_ContainerChanges = v.object({
+export type get_ContainerChanges = typeof get_ContainerChanges;
+export const get_ContainerChanges = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/changes"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(FilesystemChange),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: { 200: v.array(FilesystemChange), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type get_ContainerExport = v.InferOutput<typeof get_ContainerExport>;
-export const get_ContainerExport = v.object({
+export type get_ContainerExport = typeof get_ContainerExport;
+export const get_ContainerExport = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/export"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": v.unknown(),
-    "500": v.unknown(),
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: { 200: v.unknown(), 404: v.unknown(), 500: v.unknown() },
+};
 
-export type get_ContainerStats = v.InferOutput<typeof get_ContainerStats>;
-export const get_ContainerStats = v.object({
+export type get_ContainerStats = typeof get_ContainerStats;
+export const get_ContainerStats = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/stats"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      stream: v.optional(v.boolean()),
-      "one-shot": v.optional(v.boolean()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.record(v.string(), v.unknown()),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ stream: v.boolean(), "one-shot": v.boolean() })),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 200: v.record(v.string(), v.unknown()), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ContainerResize = v.InferOutput<typeof post_ContainerResize>;
-export const post_ContainerResize = v.object({
+export type post_ContainerResize = typeof post_ContainerResize;
+export const post_ContainerResize = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/resize"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      h: v.optional(v.number()),
-      w: v.optional(v.number()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": v.unknown(),
-    "500": v.unknown(),
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ h: v.pipe(v.number(), v.integer()), w: v.pipe(v.number(), v.integer()) })),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 200: v.unknown(), 404: v.unknown(), 500: v.unknown() },
+};
 
-export type post_ContainerStart = v.InferOutput<typeof post_ContainerStart>;
-export const post_ContainerStart = v.object({
+export type post_ContainerStart = typeof post_ContainerStart;
+export const post_ContainerStart = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/start"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      detachKeys: v.optional(v.string()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "304": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ detachKeys: v.string() })), path: v.object({ id: v.string() }) },
+  responses: { 204: v.unknown(), 304: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ContainerStop = v.InferOutput<typeof post_ContainerStop>;
-export const post_ContainerStop = v.object({
+export type post_ContainerStop = typeof post_ContainerStop;
+export const post_ContainerStop = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/stop"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      signal: v.optional(v.string()),
-      t: v.optional(v.number()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "304": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ signal: v.string(), t: v.pipe(v.number(), v.integer()) })),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 204: v.unknown(), 304: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ContainerRestart = v.InferOutput<typeof post_ContainerRestart>;
-export const post_ContainerRestart = v.object({
+export type post_ContainerRestart = typeof post_ContainerRestart;
+export const post_ContainerRestart = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/restart"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      signal: v.optional(v.string()),
-      t: v.optional(v.number()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ signal: v.string(), t: v.pipe(v.number(), v.integer()) })),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ContainerKill = v.InferOutput<typeof post_ContainerKill>;
-export const post_ContainerKill = v.object({
+export type post_ContainerKill = typeof post_ContainerKill;
+export const post_ContainerKill = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/kill"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      signal: v.optional(v.string()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "404": ErrorResponse,
-    "409": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ signal: v.string() })), path: v.object({ id: v.string() }) },
+  responses: { 204: v.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ContainerUpdate = v.InferOutput<typeof post_ContainerUpdate>;
-export const post_ContainerUpdate = v.object({
+export type post_ContainerUpdate = typeof post_ContainerUpdate;
+export const post_ContainerUpdate = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/update"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-    body: v.intersect([
-      Resources,
-      v.object({
-        RestartPolicy: v.optional(RestartPolicy),
-      }),
-    ]),
-  }),
-  responses: v.object({
-    "200": v.object({
-      Warnings: v.optional(v.array(v.string())),
-    }),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    path: v.object({ id: v.string() }),
+    body: v.intersect([Resources, v.partial(v.object({ RestartPolicy: RestartPolicy }))]),
+  },
+  responses: { 200: v.partial(v.object({ Warnings: v.array(v.string()) })), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ContainerRename = v.InferOutput<typeof post_ContainerRename>;
-export const post_ContainerRename = v.object({
+export type post_ContainerRename = typeof post_ContainerRename;
+export const post_ContainerRename = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/rename"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      name: v.string(),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "404": ErrorResponse,
-    "409": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.object({ name: v.string() }), path: v.object({ id: v.string() }) },
+  responses: { 204: v.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ContainerPause = v.InferOutput<typeof post_ContainerPause>;
-export const post_ContainerPause = v.object({
+export type post_ContainerPause = typeof post_ContainerPause;
+export const post_ContainerPause = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/pause"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ContainerUnpause = v.InferOutput<typeof post_ContainerUnpause>;
-export const post_ContainerUnpause = v.object({
+export type post_ContainerUnpause = typeof post_ContainerUnpause;
+export const post_ContainerUnpause = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/unpause"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ContainerAttach = v.InferOutput<typeof post_ContainerAttach>;
-export const post_ContainerAttach = v.object({
+export type post_ContainerAttach = typeof post_ContainerAttach;
+export const post_ContainerAttach = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/attach"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      detachKeys: v.optional(v.string()),
-      logs: v.optional(v.boolean()),
-      stream: v.optional(v.boolean()),
-      stdin: v.optional(v.boolean()),
-      stdout: v.optional(v.boolean()),
-      stderr: v.optional(v.boolean()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "101": v.unknown(),
-    "200": v.unknown(),
-    "400": v.unknown(),
-    "404": v.unknown(),
-    "500": v.unknown(),
-  }),
-});
+  parameters: {
+    query: v.partial(
+      v.object({
+        detachKeys: v.string(),
+        logs: v.boolean(),
+        stream: v.boolean(),
+        stdin: v.boolean(),
+        stdout: v.boolean(),
+        stderr: v.boolean(),
+      }),
+    ),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 101: v.unknown(), 200: v.unknown(), 400: v.unknown(), 404: v.unknown(), 500: v.unknown() },
+};
 
-export type get_ContainerAttachWebsocket = v.InferOutput<typeof get_ContainerAttachWebsocket>;
-export const get_ContainerAttachWebsocket = v.object({
+export type get_ContainerAttachWebsocket = typeof get_ContainerAttachWebsocket;
+export const get_ContainerAttachWebsocket = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/attach/ws"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      detachKeys: v.optional(v.string()),
-      logs: v.optional(v.boolean()),
-      stream: v.optional(v.boolean()),
-      stdin: v.optional(v.boolean()),
-      stdout: v.optional(v.boolean()),
-      stderr: v.optional(v.boolean()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "101": v.unknown(),
-    "200": v.unknown(),
-    "400": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(
+      v.object({
+        detachKeys: v.string(),
+        logs: v.boolean(),
+        stream: v.boolean(),
+        stdin: v.boolean(),
+        stdout: v.boolean(),
+        stderr: v.boolean(),
+      }),
+    ),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 101: v.unknown(), 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ContainerWait = v.InferOutput<typeof post_ContainerWait>;
-export const post_ContainerWait = v.object({
+export type post_ContainerWait = typeof post_ContainerWait;
+export const post_ContainerWait = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/wait"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      condition: v.optional(v.union([v.literal("not-running"), v.literal("next-exit"), v.literal("removed")])),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": ContainerWaitResponse,
-    "400": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ condition: v.picklist(["not-running", "next-exit", "removed"]) })),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 200: ContainerWaitResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type delete_ContainerDelete = v.InferOutput<typeof delete_ContainerDelete>;
-export const delete_ContainerDelete = v.object({
+export type delete_ContainerDelete = typeof delete_ContainerDelete;
+export const delete_ContainerDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/containers/{id}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      v: v.optional(v.boolean()),
-      force: v.optional(v.boolean()),
-      link: v.optional(v.boolean()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "400": ErrorResponse,
-    "404": ErrorResponse,
-    "409": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ v: v.boolean(), force: v.boolean(), link: v.boolean() })),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 204: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
 
-export type get_ContainerArchive = v.InferOutput<typeof get_ContainerArchive>;
-export const get_ContainerArchive = v.object({
+export type get_ContainerArchive = typeof get_ContainerArchive;
+export const get_ContainerArchive = {
   method: v.literal("GET"),
   path: v.literal("/containers/{id}/archive"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      path: v.string(),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "400": v.unknown(),
-    "404": v.unknown(),
-    "500": v.unknown(),
-  }),
-});
+  parameters: { query: v.object({ path: v.string() }), path: v.object({ id: v.string() }) },
+  responses: { 200: v.unknown(), 400: v.unknown(), 404: v.unknown(), 500: v.unknown() },
+};
 
-export type put_PutContainerArchive = v.InferOutput<typeof put_PutContainerArchive>;
-export const put_PutContainerArchive = v.object({
+export type put_PutContainerArchive = typeof put_PutContainerArchive;
+export const put_PutContainerArchive = {
   method: v.literal("PUT"),
   path: v.literal("/containers/{id}/archive"),
   requestFormat: v.literal("binary"),
-  parameters: v.object({
+  parameters: {
     query: v.object({
       path: v.string(),
-      noOverwriteDirNonDir: v.optional(v.union([v.string(), v.undefined()])),
-      copyUIDGID: v.optional(v.union([v.string(), v.undefined()])),
+      noOverwriteDirNonDir: v.optional(v.string()),
+      copyUIDGID: v.optional(v.string()),
     }),
-    path: v.object({
-      id: v.string(),
-    }),
+    path: v.object({ id: v.string() }),
     body: v.string(),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "400": ErrorResponse,
-    "403": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  },
+  responses: { 200: v.unknown(), 400: ErrorResponse, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type head_ContainerArchiveInfo = v.InferOutput<typeof head_ContainerArchiveInfo>;
-export const head_ContainerArchiveInfo = v.object({
+export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
+export const head_ContainerArchiveInfo = {
   method: v.literal("HEAD"),
   path: v.literal("/containers/{id}/archive"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      path: v.string(),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "400": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-  responseHeaders: v.object({
-    "200": v.object({
-      "X-Docker-Container-Path-Stat": v.string(),
-    }),
-  }),
-});
+  parameters: { query: v.object({ path: v.string() }), path: v.object({ id: v.string() }) },
+  responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responseHeaders: { 200: v.object({ "X-Docker-Container-Path-Stat": v.unknown() }) },
+};
 
-export type post_ContainerPrune = v.InferOutput<typeof post_ContainerPrune>;
-export const post_ContainerPrune = v.object({
+export type post_ContainerPrune = typeof post_ContainerPrune;
+export const post_ContainerPrune = {
   method: v.literal("POST"),
   path: v.literal("/containers/prune"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.object({
-      ContainersDeleted: v.optional(v.array(v.string())),
-      SpaceReclaimed: v.optional(v.number()),
-    }),
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  responses: {
+    200: v.partial(
+      v.object({ ContainersDeleted: v.array(v.string()), SpaceReclaimed: v.pipe(v.number(), v.integer()) }),
+    ),
+    500: ErrorResponse,
+  },
+};
 
-export type get_ImageList = v.InferOutput<typeof get_ImageList>;
-export const get_ImageList = v.object({
+export type get_ImageList = typeof get_ImageList;
+export const get_ImageList = {
   method: v.literal("GET"),
   path: v.literal("/images/json"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      all: v.optional(v.boolean()),
-      filters: v.optional(v.string()),
-      "shared-size": v.optional(v.boolean()),
-      digests: v.optional(v.boolean()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(ImageSummary),
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(
+      v.object({ all: v.boolean(), filters: v.string(), "shared-size": v.boolean(), digests: v.boolean() }),
+    ),
+  },
+  responses: { 200: v.array(ImageSummary), 500: ErrorResponse },
+};
 
-export type post_ImageBuild = v.InferOutput<typeof post_ImageBuild>;
-export const post_ImageBuild = v.object({
+export type post_ImageBuild = typeof post_ImageBuild;
+export const post_ImageBuild = {
   method: v.literal("POST"),
   path: v.literal("/build"),
   requestFormat: v.literal("binary"),
-  parameters: v.object({
-    query: v.object({
-      dockerfile: v.optional(v.string()),
-      t: v.optional(v.string()),
-      extrahosts: v.optional(v.string()),
-      remote: v.optional(v.string()),
-      q: v.optional(v.boolean()),
-      nocache: v.optional(v.boolean()),
-      cachefrom: v.optional(v.string()),
-      pull: v.optional(v.string()),
-      rm: v.optional(v.boolean()),
-      forcerm: v.optional(v.boolean()),
-      memory: v.optional(v.number()),
-      memswap: v.optional(v.number()),
-      cpushares: v.optional(v.number()),
-      cpusetcpus: v.optional(v.string()),
-      cpuperiod: v.optional(v.number()),
-      cpuquota: v.optional(v.number()),
-      buildargs: v.optional(v.string()),
-      shmsize: v.optional(v.number()),
-      squash: v.optional(v.boolean()),
-      labels: v.optional(v.string()),
-      networkmode: v.optional(v.string()),
-      platform: v.optional(v.string()),
-      target: v.optional(v.string()),
-      outputs: v.optional(v.string()),
-    }),
-    header: v.object({
-      "Content-type": v.optional(v.literal("application/x-tar")),
-      "X-Registry-Config": v.optional(v.string()),
-    }),
+  parameters: {
+    query: v.partial(
+      v.object({
+        dockerfile: v.string(),
+        t: v.string(),
+        extrahosts: v.string(),
+        remote: v.string(),
+        q: v.boolean(),
+        nocache: v.boolean(),
+        cachefrom: v.string(),
+        pull: v.string(),
+        rm: v.boolean(),
+        forcerm: v.boolean(),
+        memory: v.pipe(v.number(), v.integer()),
+        memswap: v.pipe(v.number(), v.integer()),
+        cpushares: v.pipe(v.number(), v.integer()),
+        cpusetcpus: v.string(),
+        cpuperiod: v.pipe(v.number(), v.integer()),
+        cpuquota: v.pipe(v.number(), v.integer()),
+        buildargs: v.string(),
+        shmsize: v.pipe(v.number(), v.integer()),
+        squash: v.boolean(),
+        labels: v.string(),
+        networkmode: v.string(),
+        platform: v.string(),
+        target: v.string(),
+        outputs: v.string(),
+      }),
+    ),
+    header: v.partial(v.object({ "Content-type": v.literal("application/x-tar"), "X-Registry-Config": v.string() })),
     body: v.string(),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "400": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  },
+  responses: { 200: v.unknown(), 400: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_BuildPrune = v.InferOutput<typeof post_BuildPrune>;
-export const post_BuildPrune = v.object({
+export type post_BuildPrune = typeof post_BuildPrune;
+export const post_BuildPrune = {
   method: v.literal("POST"),
   path: v.literal("/build/prune"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      "keep-storage": v.optional(v.number()),
-      all: v.optional(v.boolean()),
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.object({
-      CachesDeleted: v.optional(v.array(v.string())),
-      SpaceReclaimed: v.optional(v.number()),
-    }),
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(
+      v.object({ "keep-storage": v.pipe(v.number(), v.integer()), all: v.boolean(), filters: v.string() }),
+    ),
+  },
+  responses: {
+    200: v.partial(v.object({ CachesDeleted: v.array(v.string()), SpaceReclaimed: v.pipe(v.number(), v.integer()) })),
+    500: ErrorResponse,
+  },
+};
 
-export type post_ImageCreate = v.InferOutput<typeof post_ImageCreate>;
-export const post_ImageCreate = v.object({
+export type post_ImageCreate = typeof post_ImageCreate;
+export const post_ImageCreate = {
   method: v.literal("POST"),
   path: v.literal("/images/create"),
   requestFormat: v.literal("text"),
-  parameters: v.object({
-    query: v.object({
-      fromImage: v.optional(v.string()),
-      fromSrc: v.optional(v.string()),
-      repo: v.optional(v.string()),
-      tag: v.optional(v.string()),
-      message: v.optional(v.string()),
-      changes: v.optional(v.array(v.string())),
-      platform: v.optional(v.string()),
-    }),
-    header: v.object({
-      "X-Registry-Auth": v.optional(v.string()),
-    }),
+  parameters: {
+    query: v.partial(
+      v.object({
+        fromImage: v.string(),
+        fromSrc: v.string(),
+        repo: v.string(),
+        tag: v.string(),
+        message: v.string(),
+        changes: v.array(v.string()),
+        platform: v.string(),
+      }),
+    ),
+    header: v.partial(v.object({ "X-Registry-Auth": v.string() })),
     body: v.string(),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  },
+  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type get_ImageInspect = v.InferOutput<typeof get_ImageInspect>;
-export const get_ImageInspect = v.object({
+export type get_ImageInspect = typeof get_ImageInspect;
+export const get_ImageInspect = {
   method: v.literal("GET"),
   path: v.literal("/images/{name}/json"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": ImageInspect,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ name: v.string() }) },
+  responses: { 200: ImageInspect, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type get_ImageHistory = v.InferOutput<typeof get_ImageHistory>;
-export const get_ImageHistory = v.object({
+export type get_ImageHistory = typeof get_ImageHistory;
+export const get_ImageHistory = {
   method: v.literal("GET"),
   path: v.literal("/images/{name}/history"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(
+  parameters: { path: v.object({ name: v.string() }) },
+  responses: {
+    200: v.array(
       v.object({
         Id: v.string(),
-        Created: v.number(),
+        Created: v.pipe(v.number(), v.integer()),
         CreatedBy: v.string(),
         Tags: v.array(v.string()),
-        Size: v.number(),
+        Size: v.pipe(v.number(), v.integer()),
         Comment: v.string(),
       }),
     ),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+    404: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
 
-export type post_ImagePush = v.InferOutput<typeof post_ImagePush>;
-export const post_ImagePush = v.object({
+export type post_ImagePush = typeof post_ImagePush;
+export const post_ImagePush = {
   method: v.literal("POST"),
   path: v.literal("/images/{name}/push"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      tag: v.optional(v.string()),
-    }),
-    path: v.object({
-      name: v.string(),
-    }),
-    header: v.object({
-      "X-Registry-Auth": v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ tag: v.string() })),
+    path: v.object({ name: v.string() }),
+    header: v.object({ "X-Registry-Auth": v.string() }),
+  },
+  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ImageTag = v.InferOutput<typeof post_ImageTag>;
-export const post_ImageTag = v.object({
+export type post_ImageTag = typeof post_ImageTag;
+export const post_ImageTag = {
   method: v.literal("POST"),
   path: v.literal("/images/{name}/tag"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      repo: v.optional(v.string()),
-      tag: v.optional(v.string()),
-    }),
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "201": v.unknown(),
-    "400": ErrorResponse,
-    "404": ErrorResponse,
-    "409": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ repo: v.string(), tag: v.string() })),
+    path: v.object({ name: v.string() }),
+  },
+  responses: { 201: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
 
-export type delete_ImageDelete = v.InferOutput<typeof delete_ImageDelete>;
-export const delete_ImageDelete = v.object({
+export type delete_ImageDelete = typeof delete_ImageDelete;
+export const delete_ImageDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/images/{name}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      force: v.optional(v.boolean()),
-      noprune: v.optional(v.boolean()),
-    }),
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(ImageDeleteResponseItem),
-    "404": ErrorResponse,
-    "409": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ force: v.boolean(), noprune: v.boolean() })),
+    path: v.object({ name: v.string() }),
+  },
+  responses: { 200: v.array(ImageDeleteResponseItem), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
 
-export type get_ImageSearch = v.InferOutput<typeof get_ImageSearch>;
-export const get_ImageSearch = v.object({
+export type get_ImageSearch = typeof get_ImageSearch;
+export const get_ImageSearch = {
   method: v.literal("GET"),
   path: v.literal("/images/search"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
+  parameters: {
     query: v.object({
       term: v.string(),
-      limit: v.optional(v.union([v.number(), v.undefined()])),
-      filters: v.optional(v.union([v.string(), v.undefined()])),
+      limit: v.optional(v.pipe(v.number(), v.integer())),
+      filters: v.optional(v.string()),
     }),
-  }),
-  responses: v.object({
-    "200": v.array(
-      v.object({
-        description: v.optional(v.string()),
-        is_official: v.optional(v.boolean()),
-        is_automated: v.optional(v.boolean()),
-        name: v.optional(v.string()),
-        star_count: v.optional(v.number()),
-      }),
+  },
+  responses: {
+    200: v.array(
+      v.partial(
+        v.object({
+          description: v.string(),
+          is_official: v.boolean(),
+          is_automated: v.boolean(),
+          name: v.string(),
+          star_count: v.pipe(v.number(), v.integer()),
+        }),
+      ),
     ),
-    "500": ErrorResponse,
-  }),
-});
+    500: ErrorResponse,
+  },
+};
 
-export type post_ImagePrune = v.InferOutput<typeof post_ImagePrune>;
-export const post_ImagePrune = v.object({
+export type post_ImagePrune = typeof post_ImagePrune;
+export const post_ImagePrune = {
   method: v.literal("POST"),
   path: v.literal("/images/prune"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.object({
-      ImagesDeleted: v.optional(v.array(ImageDeleteResponseItem)),
-      SpaceReclaimed: v.optional(v.number()),
-    }),
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  responses: {
+    200: v.partial(
+      v.object({ ImagesDeleted: v.array(ImageDeleteResponseItem), SpaceReclaimed: v.pipe(v.number(), v.integer()) }),
+    ),
+    500: ErrorResponse,
+  },
+};
 
-export type post_SystemAuth = v.InferOutput<typeof post_SystemAuth>;
-export const post_SystemAuth = v.object({
+export type post_SystemAuth = typeof post_SystemAuth;
+export const post_SystemAuth = {
   method: v.literal("POST"),
   path: v.literal("/auth"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    body: AuthConfig,
-  }),
-  responses: v.object({
-    "200": v.object({
-      Status: v.string(),
-      IdentityToken: v.optional(v.union([v.string(), v.undefined()])),
-    }),
-    "204": v.unknown(),
-    "401": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { body: AuthConfig },
+  responses: {
+    200: v.object({ Status: v.string(), IdentityToken: v.optional(v.string()) }),
+    204: v.unknown(),
+    401: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
 
-export type get_SystemInfo = v.InferOutput<typeof get_SystemInfo>;
-export const get_SystemInfo = v.object({
+export type get_SystemInfo = typeof get_SystemInfo;
+export const get_SystemInfo = {
   method: v.literal("GET"),
   path: v.literal("/info"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  responses: v.object({
-    "200": SystemInfo,
-    "500": ErrorResponse,
-  }),
-});
+  responses: { 200: SystemInfo, 500: ErrorResponse },
+};
 
-export type get_SystemVersion = v.InferOutput<typeof get_SystemVersion>;
-export const get_SystemVersion = v.object({
+export type get_SystemVersion = typeof get_SystemVersion;
+export const get_SystemVersion = {
   method: v.literal("GET"),
   path: v.literal("/version"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  responses: v.object({
-    "200": SystemVersion,
-    "500": ErrorResponse,
-  }),
-});
+  responses: { 200: SystemVersion, 500: ErrorResponse },
+};
 
-export type get_SystemPing = v.InferOutput<typeof get_SystemPing>;
-export const get_SystemPing = v.object({
+export type get_SystemPing = typeof get_SystemPing;
+export const get_SystemPing = {
   method: v.literal("GET"),
   path: v.literal("/_ping"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  responses: v.object({
-    "200": v.unknown(),
-    "500": v.unknown(),
-  }),
-  responseHeaders: v.object({
-    "200": v.object({
-      Swarm: v.union([
-        v.literal("inactive"),
-        v.literal("pending"),
-        v.literal("error"),
-        v.literal("locked"),
-        v.literal("active/worker"),
-        v.literal("active/manager"),
-      ]),
-      "Docker-Experimental": v.boolean(),
-      "Cache-Control": v.string(),
-      Pragma: v.string(),
-      "API-Version": v.string(),
-      "Builder-Version": v.string(),
+  responses: { 200: v.unknown(), 500: v.unknown() },
+  responseHeaders: {
+    200: v.object({
+      Swarm: v.unknown(),
+      "Docker-Experimental": v.unknown(),
+      "Cache-Control": v.unknown(),
+      Pragma: v.unknown(),
+      "API-Version": v.unknown(),
+      "Builder-Version": v.unknown(),
     }),
-    "500": v.object({
-      "Cache-Control": v.string(),
-      Pragma: v.string(),
-    }),
-  }),
-});
+    500: v.object({ "Cache-Control": v.unknown(), Pragma: v.unknown() }),
+  },
+};
 
-export type head_SystemPingHead = v.InferOutput<typeof head_SystemPingHead>;
-export const head_SystemPingHead = v.object({
+export type head_SystemPingHead = typeof head_SystemPingHead;
+export const head_SystemPingHead = {
   method: v.literal("HEAD"),
   path: v.literal("/_ping"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  responses: v.object({
-    "200": v.unknown(),
-    "500": v.unknown(),
-  }),
-  responseHeaders: v.object({
-    "200": v.object({
-      Swarm: v.union([
-        v.literal("inactive"),
-        v.literal("pending"),
-        v.literal("error"),
-        v.literal("locked"),
-        v.literal("active/worker"),
-        v.literal("active/manager"),
-      ]),
-      "Docker-Experimental": v.boolean(),
-      "Cache-Control": v.string(),
-      Pragma: v.string(),
-      "API-Version": v.string(),
-      "Builder-Version": v.string(),
+  responses: { 200: v.unknown(), 500: v.unknown() },
+  responseHeaders: {
+    200: v.object({
+      Swarm: v.unknown(),
+      "Docker-Experimental": v.unknown(),
+      "Cache-Control": v.unknown(),
+      Pragma: v.unknown(),
+      "API-Version": v.unknown(),
+      "Builder-Version": v.unknown(),
     }),
-  }),
-});
+  },
+};
 
-export type post_ImageCommit = v.InferOutput<typeof post_ImageCommit>;
-export const post_ImageCommit = v.object({
+export type post_ImageCommit = typeof post_ImageCommit;
+export const post_ImageCommit = {
   method: v.literal("POST"),
   path: v.literal("/commit"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      container: v.optional(v.string()),
-      repo: v.optional(v.string()),
-      tag: v.optional(v.string()),
-      comment: v.optional(v.string()),
-      author: v.optional(v.string()),
-      pause: v.optional(v.boolean()),
-      changes: v.optional(v.string()),
-    }),
+  parameters: {
+    query: v.partial(
+      v.object({
+        container: v.string(),
+        repo: v.string(),
+        tag: v.string(),
+        comment: v.string(),
+        author: v.string(),
+        pause: v.boolean(),
+        changes: v.string(),
+      }),
+    ),
     body: ContainerConfig,
-  }),
-  responses: v.object({
-    "201": IdResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  },
+  responses: { 201: IdResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type get_SystemEvents = v.InferOutput<typeof get_SystemEvents>;
-export const get_SystemEvents = v.object({
+export type get_SystemEvents = typeof get_SystemEvents;
+export const get_SystemEvents = {
   method: v.literal("GET"),
   path: v.literal("/events"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      since: v.optional(v.string()),
-      until: v.optional(v.string()),
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": EventMessage,
-    "400": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ since: v.string(), until: v.string(), filters: v.string() })) },
+  responses: { 200: EventMessage, 400: ErrorResponse, 500: ErrorResponse },
+};
 
-export type get_SystemDataUsage = v.InferOutput<typeof get_SystemDataUsage>;
-export const get_SystemDataUsage = v.object({
+export type get_SystemDataUsage = typeof get_SystemDataUsage;
+export const get_SystemDataUsage = {
   method: v.literal("GET"),
   path: v.literal("/system/df"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      type: v.optional(
-        v.array(v.union([v.literal("container"), v.literal("image"), v.literal("volume"), v.literal("build-cache")])),
-      ),
-    }),
-  }),
-  responses: v.object({
-    "200": v.object({
-      LayersSize: v.optional(v.number()),
-      Images: v.optional(v.array(ImageSummary)),
-      Containers: v.optional(v.array(ContainerSummary)),
-      Volumes: v.optional(v.array(Volume)),
-      BuildCache: v.optional(v.array(BuildCache)),
-    }),
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ type: v.array(v.picklist(["container", "image", "volume", "build-cache"])) })),
+  },
+  responses: {
+    200: v.partial(
+      v.object({
+        LayersSize: v.pipe(v.number(), v.integer()),
+        Images: v.array(ImageSummary),
+        Containers: v.array(ContainerSummary),
+        Volumes: v.array(Volume),
+        BuildCache: v.array(BuildCache),
+      }),
+    ),
+    500: ErrorResponse,
+  },
+};
 
-export type get_ImageGet = v.InferOutput<typeof get_ImageGet>;
-export const get_ImageGet = v.object({
+export type get_ImageGet = typeof get_ImageGet;
+export const get_ImageGet = {
   method: v.literal("GET"),
   path: v.literal("/images/{name}/get"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "500": v.unknown(),
-  }),
-});
+  parameters: { path: v.object({ name: v.string() }) },
+  responses: { 200: v.unknown(), 500: v.unknown() },
+};
 
-export type get_ImageGetAll = v.InferOutput<typeof get_ImageGetAll>;
-export const get_ImageGetAll = v.object({
+export type get_ImageGetAll = typeof get_ImageGetAll;
+export const get_ImageGetAll = {
   method: v.literal("GET"),
   path: v.literal("/images/get"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      names: v.optional(v.array(v.string())),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "500": v.unknown(),
-  }),
-});
+  parameters: { query: v.partial(v.object({ names: v.array(v.string()) })) },
+  responses: { 200: v.unknown(), 500: v.unknown() },
+};
 
-export type post_ImageLoad = v.InferOutput<typeof post_ImageLoad>;
-export const post_ImageLoad = v.object({
+export type post_ImageLoad = typeof post_ImageLoad;
+export const post_ImageLoad = {
   method: v.literal("POST"),
   path: v.literal("/images/load"),
   requestFormat: v.literal("text"),
-  parameters: v.object({
-    query: v.object({
-      quiet: v.optional(v.boolean()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ quiet: v.boolean() })) },
+  responses: { 200: v.unknown(), 500: ErrorResponse },
+};
 
-export type post_ContainerExec = v.InferOutput<typeof post_ContainerExec>;
-export const post_ContainerExec = v.object({
+export type post_ContainerExec = typeof post_ContainerExec;
+export const post_ContainerExec = {
   method: v.literal("POST"),
   path: v.literal("/containers/{id}/exec"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-    body: v.object({
-      AttachStdin: v.optional(v.boolean()),
-      AttachStdout: v.optional(v.boolean()),
-      AttachStderr: v.optional(v.boolean()),
-      ConsoleSize: v.optional(v.union([v.array(v.number()), v.null()])),
-      DetachKeys: v.optional(v.string()),
-      Tty: v.optional(v.boolean()),
-      Env: v.optional(v.array(v.string())),
-      Cmd: v.optional(v.array(v.string())),
-      Privileged: v.optional(v.boolean()),
-      User: v.optional(v.string()),
-      WorkingDir: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "201": IdResponse,
-    "404": ErrorResponse,
-    "409": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    path: v.object({ id: v.string() }),
+    body: v.partial(
+      v.object({
+        AttachStdin: v.boolean(),
+        AttachStdout: v.boolean(),
+        AttachStderr: v.boolean(),
+        ConsoleSize: v.nullable(
+          v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2)),
+        ),
+        DetachKeys: v.string(),
+        Tty: v.boolean(),
+        Env: v.array(v.string()),
+        Cmd: v.array(v.string()),
+        Privileged: v.boolean(),
+        User: v.string(),
+        WorkingDir: v.string(),
+      }),
+    ),
+  },
+  responses: { 201: IdResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_ExecStart = v.InferOutput<typeof post_ExecStart>;
-export const post_ExecStart = v.object({
+export type post_ExecStart = typeof post_ExecStart;
+export const post_ExecStart = {
   method: v.literal("POST"),
   path: v.literal("/exec/{id}/start"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-    body: v.object({
-      Detach: v.optional(v.boolean()),
-      Tty: v.optional(v.boolean()),
-      ConsoleSize: v.optional(v.union([v.array(v.number()), v.null()])),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": v.unknown(),
-    "409": v.unknown(),
-  }),
-});
+  parameters: {
+    path: v.object({ id: v.string() }),
+    body: v.partial(
+      v.object({
+        Detach: v.boolean(),
+        Tty: v.boolean(),
+        ConsoleSize: v.nullable(
+          v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2)),
+        ),
+      }),
+    ),
+  },
+  responses: { 200: v.unknown(), 404: v.unknown(), 409: v.unknown() },
+};
 
-export type post_ExecResize = v.InferOutput<typeof post_ExecResize>;
-export const post_ExecResize = v.object({
+export type post_ExecResize = typeof post_ExecResize;
+export const post_ExecResize = {
   method: v.literal("POST"),
   path: v.literal("/exec/{id}/resize"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      h: v.optional(v.number()),
-      w: v.optional(v.number()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "400": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ h: v.pipe(v.number(), v.integer()), w: v.pipe(v.number(), v.integer()) })),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type get_ExecInspect = v.InferOutput<typeof get_ExecInspect>;
-export const get_ExecInspect = v.object({
+export type get_ExecInspect = typeof get_ExecInspect;
+export const get_ExecInspect = {
   method: v.literal("GET"),
   path: v.literal("/exec/{id}/json"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.object({
-      CanRemove: v.optional(v.boolean()),
-      DetachKeys: v.optional(v.string()),
-      ID: v.optional(v.string()),
-      Running: v.optional(v.boolean()),
-      ExitCode: v.optional(v.number()),
-      ProcessConfig: v.optional(ProcessConfig),
-      OpenStdin: v.optional(v.boolean()),
-      OpenStderr: v.optional(v.boolean()),
-      OpenStdout: v.optional(v.boolean()),
-      ContainerID: v.optional(v.string()),
-      Pid: v.optional(v.number()),
-    }),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: {
+    200: v.partial(
+      v.object({
+        CanRemove: v.boolean(),
+        DetachKeys: v.string(),
+        ID: v.string(),
+        Running: v.boolean(),
+        ExitCode: v.pipe(v.number(), v.integer()),
+        ProcessConfig: ProcessConfig,
+        OpenStdin: v.boolean(),
+        OpenStderr: v.boolean(),
+        OpenStdout: v.boolean(),
+        ContainerID: v.string(),
+        Pid: v.pipe(v.number(), v.integer()),
+      }),
+    ),
+    404: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
 
-export type get_VolumeList = v.InferOutput<typeof get_VolumeList>;
-export const get_VolumeList = v.object({
+export type get_VolumeList = typeof get_VolumeList;
+export const get_VolumeList = {
   method: v.literal("GET"),
   path: v.literal("/volumes"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": VolumeListResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  responses: { 200: VolumeListResponse, 500: ErrorResponse },
+};
 
-export type post_VolumeCreate = v.InferOutput<typeof post_VolumeCreate>;
-export const post_VolumeCreate = v.object({
+export type post_VolumeCreate = typeof post_VolumeCreate;
+export const post_VolumeCreate = {
   method: v.literal("POST"),
   path: v.literal("/volumes/create"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    body: VolumeCreateOptions,
-  }),
-  responses: v.object({
-    "201": Volume,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { body: VolumeCreateOptions },
+  responses: { 201: Volume, 500: ErrorResponse },
+};
 
-export type get_VolumeInspect = v.InferOutput<typeof get_VolumeInspect>;
-export const get_VolumeInspect = v.object({
+export type get_VolumeInspect = typeof get_VolumeInspect;
+export const get_VolumeInspect = {
   method: v.literal("GET"),
   path: v.literal("/volumes/{name}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": Volume,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ name: v.string() }) },
+  responses: { 200: Volume, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type put_VolumeUpdate = v.InferOutput<typeof put_VolumeUpdate>;
-export const put_VolumeUpdate = v.object({
+export type put_VolumeUpdate = typeof put_VolumeUpdate;
+export const put_VolumeUpdate = {
   method: v.literal("PUT"),
   path: v.literal("/volumes/{name}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      version: v.number(),
-    }),
-    path: v.object({
-      name: v.string(),
-    }),
-    body: v.object({
-      Spec: v.optional(ClusterVolumeSpec),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "400": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.object({ version: v.pipe(v.number(), v.integer()) }),
+    path: v.object({ name: v.string() }),
+    body: v.partial(v.object({ Spec: ClusterVolumeSpec })),
+  },
+  responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type delete_VolumeDelete = v.InferOutput<typeof delete_VolumeDelete>;
-export const delete_VolumeDelete = v.object({
+export type delete_VolumeDelete = typeof delete_VolumeDelete;
+export const delete_VolumeDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/volumes/{name}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      force: v.optional(v.boolean()),
-    }),
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "404": ErrorResponse,
-    "409": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ force: v.boolean() })), path: v.object({ name: v.string() }) },
+  responses: { 204: v.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_VolumePrune = v.InferOutput<typeof post_VolumePrune>;
-export const post_VolumePrune = v.object({
+export type post_VolumePrune = typeof post_VolumePrune;
+export const post_VolumePrune = {
   method: v.literal("POST"),
   path: v.literal("/volumes/prune"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.object({
-      VolumesDeleted: v.optional(v.array(v.string())),
-      SpaceReclaimed: v.optional(v.number()),
-    }),
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  responses: {
+    200: v.partial(v.object({ VolumesDeleted: v.array(v.string()), SpaceReclaimed: v.pipe(v.number(), v.integer()) })),
+    500: ErrorResponse,
+  },
+};
 
-export type get_NetworkList = v.InferOutput<typeof get_NetworkList>;
-export const get_NetworkList = v.object({
+export type get_NetworkList = typeof get_NetworkList;
+export const get_NetworkList = {
   method: v.literal("GET"),
   path: v.literal("/networks"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(Network),
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  responses: { 200: v.array(Network), 500: ErrorResponse },
+};
 
-export type get_NetworkInspect = v.InferOutput<typeof get_NetworkInspect>;
-export const get_NetworkInspect = v.object({
+export type get_NetworkInspect = typeof get_NetworkInspect;
+export const get_NetworkInspect = {
   method: v.literal("GET"),
   path: v.literal("/networks/{id}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      verbose: v.optional(v.boolean()),
-      scope: v.optional(v.string()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": Network,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ verbose: v.boolean(), scope: v.string() })),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 200: Network, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type delete_NetworkDelete = v.InferOutput<typeof delete_NetworkDelete>;
-export const delete_NetworkDelete = v.object({
+export type delete_NetworkDelete = typeof delete_NetworkDelete;
+export const delete_NetworkDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/networks/{id}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "403": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: { 204: v.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_NetworkCreate = v.InferOutput<typeof post_NetworkCreate>;
-export const post_NetworkCreate = v.object({
+export type post_NetworkCreate = typeof post_NetworkCreate;
+export const post_NetworkCreate = {
   method: v.literal("POST"),
   path: v.literal("/networks/create"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
+  parameters: {
     body: v.object({
       Name: v.string(),
-      CheckDuplicate: v.optional(v.union([v.boolean(), v.undefined()])),
-      Driver: v.optional(v.union([v.string(), v.undefined()])),
-      Internal: v.optional(v.union([v.boolean(), v.undefined()])),
-      Attachable: v.optional(v.union([v.boolean(), v.undefined()])),
-      Ingress: v.optional(v.union([v.boolean(), v.undefined()])),
-      IPAM: v.optional(v.union([IPAM, v.undefined()])),
-      EnableIPv6: v.optional(v.union([v.boolean(), v.undefined()])),
-      Options: v.optional(v.union([v.record(v.string(), v.string()), v.undefined()])),
-      Labels: v.optional(v.union([v.record(v.string(), v.string()), v.undefined()])),
+      CheckDuplicate: v.optional(v.boolean()),
+      Driver: v.optional(v.string()),
+      Internal: v.optional(v.boolean()),
+      Attachable: v.optional(v.boolean()),
+      Ingress: v.optional(v.boolean()),
+      IPAM: v.optional(IPAM),
+      EnableIPv6: v.optional(v.boolean()),
+      Options: v.optional(v.record(v.string(), v.string())),
+      Labels: v.optional(v.record(v.string(), v.string())),
     }),
-  }),
-  responses: v.object({
-    "201": v.object({
-      Id: v.optional(v.string()),
-      Warning: v.optional(v.string()),
-    }),
-    "403": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  },
+  responses: {
+    201: v.partial(v.object({ Id: v.string(), Warning: v.string() })),
+    403: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+  },
+};
 
-export type post_NetworkConnect = v.InferOutput<typeof post_NetworkConnect>;
-export const post_NetworkConnect = v.object({
+export type post_NetworkConnect = typeof post_NetworkConnect;
+export const post_NetworkConnect = {
   method: v.literal("POST"),
   path: v.literal("/networks/{id}/connect"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-    body: v.object({
-      Container: v.optional(v.string()),
-      EndpointConfig: v.optional(EndpointSettings),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "403": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    path: v.object({ id: v.string() }),
+    body: v.partial(v.object({ Container: v.string(), EndpointConfig: EndpointSettings })),
+  },
+  responses: { 200: v.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_NetworkDisconnect = v.InferOutput<typeof post_NetworkDisconnect>;
-export const post_NetworkDisconnect = v.object({
+export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
+export const post_NetworkDisconnect = {
   method: v.literal("POST"),
   path: v.literal("/networks/{id}/disconnect"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-    body: v.object({
-      Container: v.optional(v.string()),
-      Force: v.optional(v.boolean()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "403": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    path: v.object({ id: v.string() }),
+    body: v.partial(v.object({ Container: v.string(), Force: v.boolean() })),
+  },
+  responses: { 200: v.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_NetworkPrune = v.InferOutput<typeof post_NetworkPrune>;
-export const post_NetworkPrune = v.object({
+export type post_NetworkPrune = typeof post_NetworkPrune;
+export const post_NetworkPrune = {
   method: v.literal("POST"),
   path: v.literal("/networks/prune"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.object({
-      NetworksDeleted: v.optional(v.array(v.string())),
-    }),
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  responses: { 200: v.partial(v.object({ NetworksDeleted: v.array(v.string()) })), 500: ErrorResponse },
+};
 
-export type get_PluginList = v.InferOutput<typeof get_PluginList>;
-export const get_PluginList = v.object({
+export type get_PluginList = typeof get_PluginList;
+export const get_PluginList = {
   method: v.literal("GET"),
   path: v.literal("/plugins"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(Plugin),
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  responses: { 200: v.array(Plugin), 500: ErrorResponse },
+};
 
-export type get_GetPluginPrivileges = v.InferOutput<typeof get_GetPluginPrivileges>;
-export const get_GetPluginPrivileges = v.object({
+export type get_GetPluginPrivileges = typeof get_GetPluginPrivileges;
+export const get_GetPluginPrivileges = {
   method: v.literal("GET"),
   path: v.literal("/plugins/privileges"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      remote: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(PluginPrivilege),
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.object({ remote: v.string() }) },
+  responses: { 200: v.array(PluginPrivilege), 500: ErrorResponse },
+};
 
-export type post_PluginPull = v.InferOutput<typeof post_PluginPull>;
-export const post_PluginPull = v.object({
+export type post_PluginPull = typeof post_PluginPull;
+export const post_PluginPull = {
   method: v.literal("POST"),
   path: v.literal("/plugins/pull"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      remote: v.string(),
-      name: v.optional(v.union([v.string(), v.undefined()])),
-    }),
-    header: v.object({
-      "X-Registry-Auth": v.optional(v.string()),
-    }),
+  parameters: {
+    query: v.object({ remote: v.string(), name: v.optional(v.string()) }),
+    header: v.partial(v.object({ "X-Registry-Auth": v.string() })),
     body: v.array(PluginPrivilege),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "500": ErrorResponse,
-  }),
-});
+  },
+  responses: { 204: v.unknown(), 500: ErrorResponse },
+};
 
-export type get_PluginInspect = v.InferOutput<typeof get_PluginInspect>;
-export const get_PluginInspect = v.object({
+export type get_PluginInspect = typeof get_PluginInspect;
+export const get_PluginInspect = {
   method: v.literal("GET"),
   path: v.literal("/plugins/{name}/json"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": Plugin,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ name: v.string() }) },
+  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type delete_PluginDelete = v.InferOutput<typeof delete_PluginDelete>;
-export const delete_PluginDelete = v.object({
+export type delete_PluginDelete = typeof delete_PluginDelete;
+export const delete_PluginDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/plugins/{name}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      force: v.optional(v.boolean()),
-    }),
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": Plugin,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ force: v.boolean() })), path: v.object({ name: v.string() }) },
+  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_PluginEnable = v.InferOutput<typeof post_PluginEnable>;
-export const post_PluginEnable = v.object({
+export type post_PluginEnable = typeof post_PluginEnable;
+export const post_PluginEnable = {
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/enable"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      timeout: v.optional(v.number()),
-    }),
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: {
+    query: v.partial(v.object({ timeout: v.pipe(v.number(), v.integer()) })),
+    path: v.object({ name: v.string() }),
+  },
+  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_PluginDisable = v.InferOutput<typeof post_PluginDisable>;
-export const post_PluginDisable = v.object({
+export type post_PluginDisable = typeof post_PluginDisable;
+export const post_PluginDisable = {
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/disable"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      force: v.optional(v.boolean()),
-    }),
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ force: v.boolean() })), path: v.object({ name: v.string() }) },
+  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_PluginUpgrade = v.InferOutput<typeof post_PluginUpgrade>;
-export const post_PluginUpgrade = v.object({
+export type post_PluginUpgrade = typeof post_PluginUpgrade;
+export const post_PluginUpgrade = {
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/upgrade"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      remote: v.string(),
-    }),
-    path: v.object({
-      name: v.string(),
-    }),
-    header: v.object({
-      "X-Registry-Auth": v.optional(v.string()),
-    }),
+  parameters: {
+    query: v.object({ remote: v.string() }),
+    path: v.object({ name: v.string() }),
+    header: v.partial(v.object({ "X-Registry-Auth": v.string() })),
     body: v.array(PluginPrivilege),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  },
+  responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_PluginCreate = v.InferOutput<typeof post_PluginCreate>;
-export const post_PluginCreate = v.object({
+export type post_PluginCreate = typeof post_PluginCreate;
+export const post_PluginCreate = {
   method: v.literal("POST"),
   path: v.literal("/plugins/create"),
   requestFormat: v.literal("text"),
-  parameters: v.object({
-    query: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { query: v.object({ name: v.string() }) },
+  responses: { 204: v.unknown(), 500: ErrorResponse },
+};
 
-export type post_PluginPush = v.InferOutput<typeof post_PluginPush>;
-export const post_PluginPush = v.object({
+export type post_PluginPush = typeof post_PluginPush;
+export const post_PluginPush = {
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/push"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ name: v.string() }) },
+  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_PluginSet = v.InferOutput<typeof post_PluginSet>;
-export const post_PluginSet = v.object({
+export type post_PluginSet = typeof post_PluginSet;
+export const post_PluginSet = {
   method: v.literal("POST"),
   path: v.literal("/plugins/{name}/set"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      name: v.string(),
-    }),
-    body: v.array(v.string()),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ name: v.string() }), body: v.array(v.string()) },
+  responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+};
 
-export type get_NodeList = v.InferOutput<typeof get_NodeList>;
-export const get_NodeList = v.object({
+export type get_NodeList = typeof get_NodeList;
+export const get_NodeList = {
   method: v.literal("GET"),
   path: v.literal("/nodes"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(Node),
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  responses: { 200: v.array(Node), 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type get_NodeInspect = v.InferOutput<typeof get_NodeInspect>;
-export const get_NodeInspect = v.object({
+export type get_NodeInspect = typeof get_NodeInspect;
+export const get_NodeInspect = {
   method: v.literal("GET"),
   path: v.literal("/nodes/{id}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": Node,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: { 200: Node, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type delete_NodeDelete = v.InferOutput<typeof delete_NodeDelete>;
-export const delete_NodeDelete = v.object({
+export type delete_NodeDelete = typeof delete_NodeDelete;
+export const delete_NodeDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/nodes/{id}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      force: v.optional(v.boolean()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ force: v.boolean() })), path: v.object({ id: v.string() }) },
+  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type post_NodeUpdate = v.InferOutput<typeof post_NodeUpdate>;
-export const post_NodeUpdate = v.object({
+export type post_NodeUpdate = typeof post_NodeUpdate;
+export const post_NodeUpdate = {
   method: v.literal("POST"),
   path: v.literal("/nodes/{id}/update"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      version: v.number(),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
+  parameters: {
+    query: v.object({ version: v.pipe(v.number(), v.integer()) }),
+    path: v.object({ id: v.string() }),
     body: NodeSpec,
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "400": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  },
+  responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type get_SwarmInspect = v.InferOutput<typeof get_SwarmInspect>;
-export const get_SwarmInspect = v.object({
+export type get_SwarmInspect = typeof get_SwarmInspect;
+export const get_SwarmInspect = {
   method: v.literal("GET"),
   path: v.literal("/swarm"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  responses: v.object({
-    "200": Swarm,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  responses: { 200: Swarm, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type post_SwarmInit = v.InferOutput<typeof post_SwarmInit>;
-export const post_SwarmInit = v.object({
+export type post_SwarmInit = typeof post_SwarmInit;
+export const post_SwarmInit = {
   method: v.literal("POST"),
   path: v.literal("/swarm/init"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    body: v.object({
-      ListenAddr: v.optional(v.string()),
-      AdvertiseAddr: v.optional(v.string()),
-      DataPathAddr: v.optional(v.string()),
-      DataPathPort: v.optional(v.number()),
-      DefaultAddrPool: v.optional(v.array(v.string())),
-      ForceNewCluster: v.optional(v.boolean()),
-      SubnetSize: v.optional(v.number()),
-      Spec: v.optional(SwarmSpec),
-    }),
-  }),
-  responses: v.object({
-    "200": v.string(),
-    "400": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: {
+    body: v.partial(
+      v.object({
+        ListenAddr: v.string(),
+        AdvertiseAddr: v.string(),
+        DataPathAddr: v.string(),
+        DataPathPort: v.pipe(v.number(), v.integer()),
+        DefaultAddrPool: v.array(v.string()),
+        ForceNewCluster: v.boolean(),
+        SubnetSize: v.pipe(v.number(), v.integer()),
+        Spec: SwarmSpec,
+      }),
+    ),
+  },
+  responses: { 200: v.string(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type post_SwarmJoin = v.InferOutput<typeof post_SwarmJoin>;
-export const post_SwarmJoin = v.object({
+export type post_SwarmJoin = typeof post_SwarmJoin;
+export const post_SwarmJoin = {
   method: v.literal("POST"),
   path: v.literal("/swarm/join"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    body: v.object({
-      ListenAddr: v.optional(v.string()),
-      AdvertiseAddr: v.optional(v.string()),
-      DataPathAddr: v.optional(v.string()),
-      RemoteAddrs: v.optional(v.array(v.string())),
-      JoinToken: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "400": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: {
+    body: v.partial(
+      v.object({
+        ListenAddr: v.string(),
+        AdvertiseAddr: v.string(),
+        DataPathAddr: v.string(),
+        RemoteAddrs: v.array(v.string()),
+        JoinToken: v.string(),
+      }),
+    ),
+  },
+  responses: { 200: v.unknown(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type post_SwarmLeave = v.InferOutput<typeof post_SwarmLeave>;
-export const post_SwarmLeave = v.object({
+export type post_SwarmLeave = typeof post_SwarmLeave;
+export const post_SwarmLeave = {
   method: v.literal("POST"),
   path: v.literal("/swarm/leave"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      force: v.optional(v.boolean()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ force: v.boolean() })) },
+  responses: { 200: v.unknown(), 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type post_SwarmUpdate = v.InferOutput<typeof post_SwarmUpdate>;
-export const post_SwarmUpdate = v.object({
+export type post_SwarmUpdate = typeof post_SwarmUpdate;
+export const post_SwarmUpdate = {
   method: v.literal("POST"),
   path: v.literal("/swarm/update"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
+  parameters: {
     query: v.object({
-      version: v.number(),
-      rotateWorkerToken: v.optional(v.union([v.boolean(), v.undefined()])),
-      rotateManagerToken: v.optional(v.union([v.boolean(), v.undefined()])),
-      rotateManagerUnlockKey: v.optional(v.union([v.boolean(), v.undefined()])),
+      version: v.pipe(v.number(), v.integer()),
+      rotateWorkerToken: v.optional(v.boolean()),
+      rotateManagerToken: v.optional(v.boolean()),
+      rotateManagerUnlockKey: v.optional(v.boolean()),
     }),
     body: SwarmSpec,
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "400": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  },
+  responses: { 200: v.unknown(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type get_SwarmUnlockkey = v.InferOutput<typeof get_SwarmUnlockkey>;
-export const get_SwarmUnlockkey = v.object({
+export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
+export const get_SwarmUnlockkey = {
   method: v.literal("GET"),
   path: v.literal("/swarm/unlockkey"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  responses: v.object({
-    "200": v.object({
-      UnlockKey: v.optional(v.string()),
-    }),
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  responses: { 200: v.partial(v.object({ UnlockKey: v.string() })), 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type post_SwarmUnlock = v.InferOutput<typeof post_SwarmUnlock>;
-export const post_SwarmUnlock = v.object({
+export type post_SwarmUnlock = typeof post_SwarmUnlock;
+export const post_SwarmUnlock = {
   method: v.literal("POST"),
   path: v.literal("/swarm/unlock"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    body: v.object({
-      UnlockKey: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { body: v.partial(v.object({ UnlockKey: v.string() })) },
+  responses: { 200: v.unknown(), 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type get_ServiceList = v.InferOutput<typeof get_ServiceList>;
-export const get_ServiceList = v.object({
+export type get_ServiceList = typeof get_ServiceList;
+export const get_ServiceList = {
   method: v.literal("GET"),
   path: v.literal("/services"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      filters: v.optional(v.string()),
-      status: v.optional(v.boolean()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(Service),
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ filters: v.string(), status: v.boolean() })) },
+  responses: { 200: v.array(Service), 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type post_ServiceCreate = v.InferOutput<typeof post_ServiceCreate>;
-export const post_ServiceCreate = v.object({
+export type post_ServiceCreate = typeof post_ServiceCreate;
+export const post_ServiceCreate = {
   method: v.literal("POST"),
   path: v.literal("/services/create"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    header: v.object({
-      "X-Registry-Auth": v.optional(v.string()),
-    }),
+  parameters: {
+    header: v.partial(v.object({ "X-Registry-Auth": v.string() })),
     body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]),
-  }),
-  responses: v.object({
-    "201": v.object({
-      ID: v.optional(v.string()),
-      Warning: v.optional(v.string()),
-    }),
-    "400": ErrorResponse,
-    "403": ErrorResponse,
-    "409": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  },
+  responses: {
+    201: v.partial(v.object({ ID: v.string(), Warning: v.string() })),
+    400: ErrorResponse,
+    403: ErrorResponse,
+    409: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  },
+};
 
-export type get_ServiceInspect = v.InferOutput<typeof get_ServiceInspect>;
-export const get_ServiceInspect = v.object({
+export type get_ServiceInspect = typeof get_ServiceInspect;
+export const get_ServiceInspect = {
   method: v.literal("GET"),
   path: v.literal("/services/{id}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      insertDefaults: v.optional(v.boolean()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": Service,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ insertDefaults: v.boolean() })), path: v.object({ id: v.string() }) },
+  responses: { 200: Service, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type delete_ServiceDelete = v.InferOutput<typeof delete_ServiceDelete>;
-export const delete_ServiceDelete = v.object({
+export type delete_ServiceDelete = typeof delete_ServiceDelete;
+export const delete_ServiceDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/services/{id}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type post_ServiceUpdate = v.InferOutput<typeof post_ServiceUpdate>;
-export const post_ServiceUpdate = v.object({
+export type post_ServiceUpdate = typeof post_ServiceUpdate;
+export const post_ServiceUpdate = {
   method: v.literal("POST"),
   path: v.literal("/services/{id}/update"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
+  parameters: {
     query: v.object({
-      version: v.number(),
-      registryAuthFrom: v.optional(v.union([v.union([v.literal("spec"), v.literal("previous-spec")]), v.undefined()])),
-      rollback: v.optional(v.union([v.string(), v.undefined()])),
+      version: v.pipe(v.number(), v.integer()),
+      registryAuthFrom: v.optional(v.picklist(["spec", "previous-spec"])),
+      rollback: v.optional(v.string()),
     }),
-    path: v.object({
-      id: v.string(),
-    }),
-    header: v.object({
-      "X-Registry-Auth": v.optional(v.string()),
-    }),
+    path: v.object({ id: v.string() }),
+    header: v.partial(v.object({ "X-Registry-Auth": v.string() })),
     body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]),
-  }),
-  responses: v.object({
-    "200": ServiceUpdateResponse,
-    "400": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  },
+  responses: {
+    200: ServiceUpdateResponse,
+    400: ErrorResponse,
+    404: ErrorResponse,
+    500: ErrorResponse,
+    503: ErrorResponse,
+  },
+};
 
-export type get_ServiceLogs = v.InferOutput<typeof get_ServiceLogs>;
-export const get_ServiceLogs = v.object({
+export type get_ServiceLogs = typeof get_ServiceLogs;
+export const get_ServiceLogs = {
   method: v.literal("GET"),
   path: v.literal("/services/{id}/logs"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      details: v.optional(v.boolean()),
-      follow: v.optional(v.boolean()),
-      stdout: v.optional(v.boolean()),
-      stderr: v.optional(v.boolean()),
-      since: v.optional(v.number()),
-      timestamps: v.optional(v.boolean()),
-      tail: v.optional(v.string()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": v.unknown(),
-    "500": v.unknown(),
-    "503": v.unknown(),
-  }),
-});
+  parameters: {
+    query: v.partial(
+      v.object({
+        details: v.boolean(),
+        follow: v.boolean(),
+        stdout: v.boolean(),
+        stderr: v.boolean(),
+        since: v.pipe(v.number(), v.integer()),
+        timestamps: v.boolean(),
+        tail: v.string(),
+      }),
+    ),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 200: v.unknown(), 404: v.unknown(), 500: v.unknown(), 503: v.unknown() },
+};
 
-export type get_TaskList = v.InferOutput<typeof get_TaskList>;
-export const get_TaskList = v.object({
+export type get_TaskList = typeof get_TaskList;
+export const get_TaskList = {
   method: v.literal("GET"),
   path: v.literal("/tasks"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(Task),
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  responses: { 200: v.array(Task), 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type get_TaskInspect = v.InferOutput<typeof get_TaskInspect>;
-export const get_TaskInspect = v.object({
+export type get_TaskInspect = typeof get_TaskInspect;
+export const get_TaskInspect = {
   method: v.literal("GET"),
   path: v.literal("/tasks/{id}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": Task,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: { 200: Task, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type get_TaskLogs = v.InferOutput<typeof get_TaskLogs>;
-export const get_TaskLogs = v.object({
+export type get_TaskLogs = typeof get_TaskLogs;
+export const get_TaskLogs = {
   method: v.literal("GET"),
   path: v.literal("/tasks/{id}/logs"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      details: v.optional(v.boolean()),
-      follow: v.optional(v.boolean()),
-      stdout: v.optional(v.boolean()),
-      stderr: v.optional(v.boolean()),
-      since: v.optional(v.number()),
-      timestamps: v.optional(v.boolean()),
-      tail: v.optional(v.string()),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "404": v.unknown(),
-    "500": v.unknown(),
-    "503": v.unknown(),
-  }),
-});
+  parameters: {
+    query: v.partial(
+      v.object({
+        details: v.boolean(),
+        follow: v.boolean(),
+        stdout: v.boolean(),
+        stderr: v.boolean(),
+        since: v.pipe(v.number(), v.integer()),
+        timestamps: v.boolean(),
+        tail: v.string(),
+      }),
+    ),
+    path: v.object({ id: v.string() }),
+  },
+  responses: { 200: v.unknown(), 404: v.unknown(), 500: v.unknown(), 503: v.unknown() },
+};
 
-export type get_SecretList = v.InferOutput<typeof get_SecretList>;
-export const get_SecretList = v.object({
+export type get_SecretList = typeof get_SecretList;
+export const get_SecretList = {
   method: v.literal("GET"),
   path: v.literal("/secrets"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(Secret),
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  responses: { 200: v.array(Secret), 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type post_SecretCreate = v.InferOutput<typeof post_SecretCreate>;
-export const post_SecretCreate = v.object({
+export type post_SecretCreate = typeof post_SecretCreate;
+export const post_SecretCreate = {
   method: v.literal("POST"),
   path: v.literal("/secrets/create"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    body: v.intersect([SecretSpec, v.record(v.string(), v.unknown())]),
-  }),
-  responses: v.object({
-    "201": IdResponse,
-    "409": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { body: v.intersect([SecretSpec, v.record(v.string(), v.unknown())]) },
+  responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type get_SecretInspect = v.InferOutput<typeof get_SecretInspect>;
-export const get_SecretInspect = v.object({
+export type get_SecretInspect = typeof get_SecretInspect;
+export const get_SecretInspect = {
   method: v.literal("GET"),
   path: v.literal("/secrets/{id}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": Secret,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: { 200: Secret, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type delete_SecretDelete = v.InferOutput<typeof delete_SecretDelete>;
-export const delete_SecretDelete = v.object({
+export type delete_SecretDelete = typeof delete_SecretDelete;
+export const delete_SecretDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/secrets/{id}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type post_SecretUpdate = v.InferOutput<typeof post_SecretUpdate>;
-export const post_SecretUpdate = v.object({
+export type post_SecretUpdate = typeof post_SecretUpdate;
+export const post_SecretUpdate = {
   method: v.literal("POST"),
   path: v.literal("/secrets/{id}/update"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      version: v.number(),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
+  parameters: {
+    query: v.object({ version: v.pipe(v.number(), v.integer()) }),
+    path: v.object({ id: v.string() }),
     body: SecretSpec,
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "400": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  },
+  responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type get_ConfigList = v.InferOutput<typeof get_ConfigList>;
-export const get_ConfigList = v.object({
+export type get_ConfigList = typeof get_ConfigList;
+export const get_ConfigList = {
   method: v.literal("GET"),
   path: v.literal("/configs"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      filters: v.optional(v.string()),
-    }),
-  }),
-  responses: v.object({
-    "200": v.array(Config),
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { query: v.partial(v.object({ filters: v.string() })) },
+  responses: { 200: v.array(Config), 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type post_ConfigCreate = v.InferOutput<typeof post_ConfigCreate>;
-export const post_ConfigCreate = v.object({
+export type post_ConfigCreate = typeof post_ConfigCreate;
+export const post_ConfigCreate = {
   method: v.literal("POST"),
   path: v.literal("/configs/create"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    body: v.intersect([ConfigSpec, v.record(v.string(), v.unknown())]),
-  }),
-  responses: v.object({
-    "201": IdResponse,
-    "409": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { body: v.intersect([ConfigSpec, v.record(v.string(), v.unknown())]) },
+  responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type get_ConfigInspect = v.InferOutput<typeof get_ConfigInspect>;
-export const get_ConfigInspect = v.object({
+export type get_ConfigInspect = typeof get_ConfigInspect;
+export const get_ConfigInspect = {
   method: v.literal("GET"),
   path: v.literal("/configs/{id}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": Config,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: { 200: Config, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type delete_ConfigDelete = v.InferOutput<typeof delete_ConfigDelete>;
-export const delete_ConfigDelete = v.object({
+export type delete_ConfigDelete = typeof delete_ConfigDelete;
+export const delete_ConfigDelete = {
   method: v.literal("DELETE"),
   path: v.literal("/configs/{id}"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      id: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "204": v.unknown(),
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ id: v.string() }) },
+  responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type post_ConfigUpdate = v.InferOutput<typeof post_ConfigUpdate>;
-export const post_ConfigUpdate = v.object({
+export type post_ConfigUpdate = typeof post_ConfigUpdate;
+export const post_ConfigUpdate = {
   method: v.literal("POST"),
   path: v.literal("/configs/{id}/update"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    query: v.object({
-      version: v.number(),
-    }),
-    path: v.object({
-      id: v.string(),
-    }),
+  parameters: {
+    query: v.object({ version: v.pipe(v.number(), v.integer()) }),
+    path: v.object({ id: v.string() }),
     body: ConfigSpec,
-  }),
-  responses: v.object({
-    "200": v.unknown(),
-    "400": ErrorResponse,
-    "404": ErrorResponse,
-    "500": ErrorResponse,
-    "503": ErrorResponse,
-  }),
-});
+  },
+  responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+};
 
-export type get_DistributionInspect = v.InferOutput<typeof get_DistributionInspect>;
-export const get_DistributionInspect = v.object({
+export type get_DistributionInspect = typeof get_DistributionInspect;
+export const get_DistributionInspect = {
   method: v.literal("GET"),
   path: v.literal("/distribution/{name}/json"),
   requestFormat: v.literal("json"),
-  parameters: v.object({
-    path: v.object({
-      name: v.string(),
-    }),
-  }),
-  responses: v.object({
-    "200": DistributionInspect,
-    "401": ErrorResponse,
-    "500": ErrorResponse,
-  }),
-});
+  parameters: { path: v.object({ name: v.string() }) },
+  responses: { 200: DistributionInspect, 401: ErrorResponse, 500: ErrorResponse },
+};
 
-export type post_Session = v.InferOutput<typeof post_Session>;
-export const post_Session = v.object({
+export type post_Session = typeof post_Session;
+export const post_Session = {
   method: v.literal("POST"),
   path: v.literal("/session"),
   requestFormat: v.literal("json"),
   parameters: v.never(),
-  responses: v.object({
-    "101": v.unknown(),
-    "400": v.unknown(),
-    "500": v.unknown(),
-  }),
-});
+  responses: { 101: v.unknown(), 400: v.unknown(), 500: v.unknown() },
+};
 
-export type __ENDPOINTS_END__ = v.InferOutput<typeof __ENDPOINTS_END__>;
-export const __ENDPOINTS_END__ = v.object({});
+// </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
@@ -4280,7 +3168,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -4311,7 +3199,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -4342,7 +3230,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -4373,7 +3261,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -4404,7 +3292,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
     path: Path,
@@ -4443,7 +3331,7 @@ export class ApiClient {
           : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
         : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
     >
-  ): Promise<Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
   request<
     TMethod extends keyof EndpointByMethod,
@@ -4512,7 +3400,7 @@ export class ApiClient {
         return withResponse ? typedResponse : data;
       });
 
-    return promise as Extract<InferResponseByStatus<v.InferOutput<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"];
+    return promise as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
   }
   // </ApiClient.request>
 }
