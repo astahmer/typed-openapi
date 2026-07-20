@@ -76,6 +76,7 @@ export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
   client?: GeneratorOptions["client"];
   validateSide?: GeneratorOptions["validateSide"];
   "validate-side"?: GeneratorOptions["validateSide"];
+  coerce?: boolean;
 };
 
 function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
@@ -153,6 +154,7 @@ export async function generateClientFiles(input: string, options: GenerateClient
     ...(options.validateSide || options["validate-side"] || merged.validateSide
       ? { validateSide: options.validateSide ?? options["validate-side"] ?? merged.validateSide }
       : {}),
+    ...(options.coerce !== undefined || merged.coerce !== undefined ? { coerce: options.coerce ?? merged.coerce } : {}),
   };
 
   const outputPath = join(

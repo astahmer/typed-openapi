@@ -60,7 +60,7 @@ import type { ParseError } from "effect/ParseResult";`
   const inputBlock = hasRuntime
     ? `const endpointSchema = (EndpointByMethod as any)[method]?.[path];
       if ((validateSide === "input" || validateSide === "both") && endpointSchema?.parameters) {
-        for (const key of ["body", "query", "header", "path"] as const) {
+        for (const key of ["body", "query", "header", "path", "cookie"] as const) {
           const schema = endpointSchema.parameters[key];
           const value = (parametersToSend as any)[key];
           if (schema && value !== undefined) {
@@ -96,9 +96,10 @@ export class HttpClientError extends Error {
 ${validateHelpers}
 
 export type EffectFetcher = {
-  decodePathParams?: (path: string, pathParams: Record<string, string>) => string;
+  decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
   encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
-  parseResponseData?: (response: Response) => Promise<unknown>;
+  encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
+  parseResponseData?: (response: ApiResponse) => Promise<unknown>;
   fetch: (input: {
     method: Method;
     url: URL;
@@ -107,12 +108,13 @@ export type EffectFetcher = {
     path: string;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
-  }) => Effect.Effect<Response, HttpClientError, never>;
+  }) => Effect.Effect<ApiResponse, HttpClientError, never>;
 };
 
 const wrapPromiseFetcher = (fetcher: Fetcher): EffectFetcher => ({
   decodePathParams: fetcher.decodePathParams,
   encodeSearchParams: fetcher.encodeSearchParams,
+  encodeCookies: fetcher.encodeCookies,
   parseResponseData: fetcher.parseResponseData,
   fetch: (input) =>
     Effect.tryPromise({
@@ -166,15 +168,16 @@ export class EffectApiClient {
       if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
       if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
       if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
+      if (requestParams?.cookie !== undefined) (parametersToSend as any).cookie = requestParams.cookie;
 
       ${inputBlock}
 
       const decodePath =
         self.effectFetcher.decodePathParams ??
-        ((url: string, p: Record<string, string>) =>
+        ((url: string, p: Record<string, string | number | boolean>) =>
           url
-            .replace(/{(\\w+)}/g, (_, key: string) => p[key] || \`{\${key}}\`)
-            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => p[key] || \`:\${key}\`));
+            .replace(/{(\\w+)}/g, (_, key: string) => (p[key] != null ? String(p[key]) : \`{\${key}}\`))
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (p[key] != null ? String(p[key]) : \`:\${key}\`)));
       const encodeSearch =
         self.effectFetcher.encodeSearchParams ??
         ((queryParams: Record<string, unknown> | undefined) => {
@@ -188,9 +191,20 @@ export class EffectApiClient {
           });
           return searchParams;
         });
+      const encodeCookies =
+        self.effectFetcher.encodeCookies ??
+        ((cookies: Record<string, unknown> | undefined, headers: Headers) => {
+          if (!cookies) return;
+          const parts = Object.entries(cookies)
+            .filter(([, value]) => value != null)
+            .map(([key, value]) => \`\${key}=\${String(value)}\`);
+          if (!parts.length) return;
+          const existing = headers.get("cookie");
+          headers.set("cookie", existing ? \`\${existing}; \${parts.join("; ")}\` : parts.join("; "));
+        });
       const parseData =
         self.effectFetcher.parseResponseData ??
-        (async (response: Response) => {
+        (async (response: ApiResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
           if (contentType.includes("json") || contentType === "*/*") {
             try {
@@ -205,10 +219,17 @@ export class EffectApiClient {
 
       const resolvedPath = decodePath(
         self.baseUrl + (path as string),
-        (parametersToSend.path ?? {}) as Record<string, string>,
+        (parametersToSend.path ?? {}) as Record<string, string | number | boolean>,
       );
       const url = new URL(resolvedPath);
       const urlSearchParams = encodeSearch(parametersToSend.query);
+
+      let overrides = requestParams?.overrides as RequestInit | undefined;
+      if (parametersToSend.cookie) {
+        const headers = new Headers(overrides?.headers);
+        encodeCookies(parametersToSend.cookie, headers);
+        overrides = { ...overrides, headers };
+      }
 
       const response = yield* self.effectFetcher.fetch({
         method: method as Method,
@@ -216,7 +237,7 @@ export class EffectApiClient {
         url,
         urlSearchParams,
         parameters: parametersToSend,
-        overrides: requestParams?.overrides,
+        overrides,
       });
 
       let data = yield* Effect.tryPromise({

@@ -54,6 +54,11 @@ cli
     "API client style: promise | effect (default: effect when runtime is effect/effect3, else promise)",
   )
   .option("--validate-side <side>", "When using a runtime: none | input | output | both (default: both)")
+  .option(
+    "--coerce",
+    "Coerce number/boolean path|query|cookie|header params from strings (default: on when runtime ≠ none)",
+  )
+  .option("--no-coerce", "Disable string coercion for path|query|cookie|header params")
   .action(async (input: string, _options: any) => {
     return generateClientFiles(input, _options);
   });
