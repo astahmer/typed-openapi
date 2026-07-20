@@ -45,6 +45,10 @@ cli
   .option("--schema <regex>", "When tree-shaking, also keep schemas matching regex (name/ref); repeatable")
   .option("--tree-shake-schemas", "Drop unused component schemas (default: on when --endpoint is set)")
   .option("--no-tree-shake-schemas", "Emit all component schemas even when filtering endpoints")
+  .option(
+    "--schema-naming <mode>",
+    "Component schema naming: auto | always-name | prefer-inline (inline single-use non-recursive schemas)",
+  )
   .action(async (input: string, _options: any) => {
     return generateClientFiles(input, _options);
   });

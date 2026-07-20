@@ -14,6 +14,8 @@ export type EmitRuntimeFileArgs = {
   validation: ValidationPolicy;
   schemasOnly?: boolean;
   keptSchemaNames?: Set<string>;
+  /** When set, use these instead of refs.getOrderedSchemas() (after naming/inline policy). */
+  namedSchemas?: Array<{ name: string; node: SchemaNode }>;
 };
 
 const emitParameters = (
@@ -64,12 +66,15 @@ export const emitRuntimeFile = ({
   validation,
   schemasOnly,
   keptSchemaNames,
+  namedSchemas: namedSchemasOption,
 }: EmitRuntimeFileArgs): string => {
-  const namedSchemas = refs
-    .getOrderedSchemas()
-    .filter(([, infos]) => infos?.name && infos.kind === "schemas")
-    .filter(([, infos]) => shouldEmitSchema(keptSchemaNames, infos.normalized))
-    .map(([node, infos]) => ({ name: infos.normalized, node }));
+  const namedSchemas =
+    namedSchemasOption ??
+    refs
+      .getOrderedSchemas()
+      .filter(([, infos]) => infos?.name && infos.kind === "schemas")
+      .filter(([, infos]) => shouldEmitSchema(keptSchemaNames, infos.normalized))
+      .map(([node, infos]) => ({ name: infos.normalized, node }));
 
   const recursiveNames = findRecursiveSchemaNames(namedSchemas);
   const ctx = createEmitCtx(validation, recursiveNames);

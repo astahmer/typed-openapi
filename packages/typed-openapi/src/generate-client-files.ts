@@ -70,6 +70,9 @@ export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
   filterSchemas?: GeneratorOptions["filterSchemas"];
   endpointPatterns?: string[];
   schemaPatterns?: string[];
+  schemaNaming?: GeneratorOptions["schemaNaming"];
+  shouldNameSchema?: GeneratorOptions["shouldNameSchema"];
+  "schema-naming"?: GeneratorOptions["schemaNaming"];
 };
 
 function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
@@ -139,6 +142,10 @@ export async function generateClientFiles(input: string, options: GenerateClient
     ...(treeShakeSchemas !== undefined ? { treeShakeSchemas } : {}),
     ...(options.filterEndpoints ? { filterEndpoints: options.filterEndpoints } : {}),
     ...(options.filterSchemas ? { filterSchemas: options.filterSchemas } : {}),
+    ...(options.schemaNaming || options["schema-naming"] || merged.schemaNaming
+      ? { schemaNaming: options.schemaNaming ?? options["schema-naming"] ?? merged.schemaNaming }
+      : {}),
+    ...(options.shouldNameSchema ? { shouldNameSchema: options.shouldNameSchema } : {}),
   };
 
   const outputPath = join(

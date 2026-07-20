@@ -10,6 +10,7 @@ import type { OutputRuntime as RuntimeName } from "./runtimes/types.ts";
 import { irToTs, renderSchemaJsdoc } from "./schema-ir/ir-to-ts.ts";
 import type { SchemaNode } from "./schema-ir/types.ts";
 import { applySpecFilters, shouldEmitSchema, type SpecFilterOptions } from "./filter-spec.ts";
+import { prepareSchemaNaming, type SchemaNamingOptions } from "./schema-naming.ts";
 
 // Default success status codes (2xx and 3xx ranges)
 export const DEFAULT_SUCCESS_STATUS_CODES = [
@@ -25,7 +26,8 @@ export const DEFAULT_ERROR_STATUS_CODES = [
 export type ErrorStatusCode = (typeof DEFAULT_ERROR_STATUS_CODES)[number];
 
 export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> &
-  SpecFilterOptions & {
+  SpecFilterOptions &
+  SchemaNamingOptions & {
     runtime?: RuntimeName;
     /** Validation depth for runtime adapters (ignored when runtime is `none`) */
     validation?: ValidationPreset | (Partial<ValidationPolicy> & { preset?: ValidationPreset });
@@ -39,11 +41,19 @@ export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> &
 type GeneratorContext = Required<
   Omit<
     GeneratorOptions,
-    "validation" | "filterEndpoints" | "filterSchemas" | "treeShakeSchemas" | "endpointPatterns" | "schemaPatterns"
+    | "validation"
+    | "filterEndpoints"
+    | "filterSchemas"
+    | "treeShakeSchemas"
+    | "endpointPatterns"
+    | "schemaPatterns"
+    | "schemaNaming"
+    | "shouldNameSchema"
   >
 > & {
   validation: ValidationPolicy;
   keptSchemaNames?: Set<string>;
+  namedSchemasForEmit?: Array<{ name: string; node: SchemaNode }>;
 };
 
 export const allowedRuntimes = type("'none' | 'zod' | 'zod3' | 'effect' | 'effect3' | 'valibot' | 'arktype'");
@@ -89,10 +99,12 @@ const indentMultiline = (value: string, indent = "  ") =>
 export const generateFile = (options: GeneratorOptions) => {
   const runtime = options.runtime ?? "none";
   const filtered = applySpecFilters(options.endpointList, options.refs, options);
+  const naming = prepareSchemaNaming(options.refs, filtered.endpointList, filtered.keptSchemaNames, options);
   const ctx = {
     ...options,
-    endpointList: filtered.endpointList,
+    endpointList: naming.endpointList,
     keptSchemaNames: filtered.keptSchemaNames,
+    namedSchemasForEmit: naming.namedSchemas.map(({ name, node }) => ({ name, node })),
     runtime,
     validation: resolveValidationPolicy(options.validation ?? (runtime === "none" ? "loose" : "strict")),
     successStatusCodes: options.successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
@@ -113,6 +125,7 @@ export const generateFile = (options: GeneratorOptions) => {
       validation: ctx.validation,
       schemasOnly: options.schemasOnly ?? false,
       keptSchemaNames: ctx.keptSchemaNames,
+      namedSchemas: ctx.namedSchemasForEmit,
     });
 
     return `
@@ -138,19 +151,23 @@ const generateSchemaList = (ctx: GeneratorContext) => {
   ${runtime === "none" ? "export namespace Schemas {" : ""}
     // <Schemas>
   `;
-  refs.getOrderedSchemas().forEach(([node, infos]) => {
-    if (!infos?.name) return;
-    if (infos.kind !== "schemas") return;
-    if (!shouldEmitSchema(ctx.keptSchemaNames, infos.normalized)) return;
+  const schemas =
+    ctx.namedSchemasForEmit ??
+    refs
+      .getOrderedSchemas()
+      .filter(([, infos]) => infos?.name && infos.kind === "schemas")
+      .filter(([, infos]) => shouldEmitSchema(ctx.keptSchemaNames, infos.normalized))
+      .map(([node, infos]) => ({ name: infos.normalized, node }));
 
+  for (const { name, node } of schemas) {
     const description = shouldRenderDescriptionComments(ctx) ? node.meta.description : undefined;
     const schemaValue = irToTs(node, {
       prefixRefsWithSchemas: false,
       jsdoc: shouldRenderDescriptionComments(ctx),
     });
 
-    file += `${renderSchemaJsdoc(description)}export type ${infos.normalized} = ${schemaValue}\n`;
-  });
+    file += `${renderSchemaJsdoc(description)}export type ${name} = ${schemaValue}\n`;
+  }
 
   return (
     file +
