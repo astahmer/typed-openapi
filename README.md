@@ -116,6 +116,23 @@ The generated client is headless - you need to provide your own fetcher. Here ar
 - **[Validating API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#validating-api-client-api-client-with-validationts)** -
   With request/response validation
 
+Or generate one with `--default-fetcher` (recommended).
+
+### Fetcher `requestFormat` contract
+
+`Fetcher.fetch` receives `requestFormat` so the body can be encoded from the OpenAPI requestBody content type. Missing
+entries in `endpointRequestFormats` default to `"json"`.
+
+| `requestFormat` | Body encoding (default fetcher)                                                   |
+| --------------- | --------------------------------------------------------------------------------- |
+| `json`          | `JSON.stringify` + `application/json`                                             |
+| `form-data`     | `FormData` (let fetch set the multipart boundary)                                 |
+| `form-url`      | `URLSearchParams` + `application/x-www-form-urlencoded`                           |
+| `binary`        | raw `Blob` / `ArrayBuffer` / `Uint8Array` / `string` + `application/octet-stream` |
+| `text`          | `String(body)` + `text/plain`                                                     |
+
+Custom fetchers should honor the same table (or document if they only support JSON).
+
 ### Type-Safe Error Handling & Response Modes
 
 You can choose between two response styles:

@@ -4,23 +4,35 @@ Notes for later work — not blocking the current feature set.
 
 ## Stale GitHub issue triage
 
-Confirm fixed / close / comment with current status (do in a dedicated pass):
+Regression tests: `packages/typed-openapi/tests/github-issues.regression.test.ts`.
 
-| Issue | Title                                           | Likely status after v3                                                        |
-| ----- | ----------------------------------------------- | ----------------------------------------------------------------------------- |
-| #93   | Support Zod V4                                  | **Done** (`--runtime zod`)                                                    |
-| #29   | Runtime validations not parsing response        | **Done** (`--validate-side` + client hooks)                                   |
-| #26   | Multi-file OpenAPI specs                        | **Likely done** (`SwaggerParser.bundle`) — verify with sample                 |
-| #61   | `@` in property key syntax error                | **Likely done** (`objectKey` quoting) — verify playground link                |
-| #114  | No infer UParams with Typebox                   | **Obsolete** (typebox adapter dropped; re-add via adapter contract if needed) |
-| #32   | Partial query params aren't optional            | Re-check against current `partial` object emit                                |
-| #27   | nested definitions `normalized` crash           | Repro against current IR/ref-resolver                                         |
-| #18   | Unsupported schema type: fhirprimitiveextension | Niche; decide keep-open vs wontfix                                            |
-| #62   | Export Typia types                              | Out of scope unless someone wants a typia adapter                             |
-| #121  | Coercing number/boolean for Zod                 | **Done** (`--coerce` / `--no-coerce`)                                         |
-| #34   | Default values from schema                      | **Done** (runtime `.default` / equivalents)                                   |
-| #46   | Cookie parameter support                        | **Done**                                                                      |
-| #91   | Do not rely on DOM `Response`                   | **Done** (`FetcherResponse` interface)                                        |
+**Do not comment on GitHub until shipping.** Close via PR description keywords (changesets are changelog-only — GitHub
+does **not** auto-close from `.changeset/*.md`).
+
+Suggested PR description block when ready:
+
+```md
+Closes #93 Closes #29 Closes #26 Closes #61 Closes #32 Closes #27 Closes #18 Closes #121 Closes #34 Closes #46 Closes
+#91
+
+#114 and #62 stay open (obsolete / out of scope) — close manually as wontfix if desired.
+```
+
+| Issue | Title                                           | Status                                                             |
+| ----- | ----------------------------------------------- | ------------------------------------------------------------------ |
+| #93   | Support Zod V4                                  | **Fixed** — `--runtime zod` emits `z.record(key, value)`           |
+| #29   | Runtime validations not parsing response        | **Fixed** — `--validate-side` + client `runValidate` on output     |
+| #26   | Multi-file OpenAPI specs                        | **Fixed** — CLI/`generateClientFiles` uses `SwaggerParser.bundle`  |
+| #61   | `@` in property key syntax error                | **Fixed** — `objectKey` quotes non-identifiers                     |
+| #114  | No infer UParams with Typebox                   | **Obsolete** — typebox adapter dropped; `test.todo`                |
+| #32   | Partial query params aren't optional            | **Fixed** — optional param groups (`query?:`) + InferSchemaInput   |
+| #27   | nested definitions `normalized` crash           | **Fixed** — ref-resolver registers `#/definitions/*`               |
+| #18   | Unsupported schema type: fhirprimitiveextension | **Fixed** — exotic types → `unknown` (no throw)                    |
+| #62   | Export Typia types                              | **Out of scope** — `test.todo` until someone wants a typia adapter |
+| #121  | Coercing number/boolean for Zod                 | **Fixed** — `--coerce` / `--no-coerce`                             |
+| #34   | Default values from schema                      | **Fixed** — runtime `.default` / equivalents                       |
+| #46   | Cookie parameter support                        | **Fixed**                                                          |
+| #91   | Do not rely on DOM `Response`                   | **Fixed** — `FetcherResponse` interface                            |
 
 ## Streaming / SSE / multipart upload DX (design notes)
 
@@ -30,9 +42,9 @@ Keep the **single-file client** non-goal; extend the fetcher/requestFormat surfa
 
 - **Done (default fetcher):** `Fetcher.fetch` receives `requestFormat`; `--default-fetcher` encodes `form-data` →
   `FormData`, `form-url` → `URLSearchParams`, `binary` → raw body, `text` / `json` as before. Client emits
-  `endpointRequestFormats` so this works for `runtime: none` too.
+  `endpointRequestFormats` (non-json overrides only; default `"json"`).
+- **Done (docs):** README “Fetcher `requestFormat` contract”.
 - Still open:
-  - Document fetcher contract for `requestFormat` in README (short section).
   - Types: file parts stay `string` / `Blob` via OAS `format: binary` → IR string/unknown (improve later with a
     dedicated `binary` SchemaNode if needed).
 
@@ -51,5 +63,5 @@ Keep the **single-file client** non-goal; extend the fetcher/requestFormat surfa
 ### Suggested order when picking this up
 
 1. ~~Default-fetcher `FormData` + binary body~~ (done).
-2. Document fetcher contract for `requestFormat`.
+2. ~~Document fetcher contract for `requestFormat`~~ (done).
 3. SSE as typed `ReadableStream` + skip output validation (only if someone asks).
