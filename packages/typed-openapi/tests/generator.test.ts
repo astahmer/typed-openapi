@@ -300,10 +300,10 @@ describe("generator", () => {
       // <ApiClientTypes>
       export type EndpointParameters = {
         body?: unknown;
-        query?: Record<string, unknown>;
-        header?: Record<string, unknown>;
-        path?: Record<string, unknown>;
-        cookie?: Record<string, unknown>;
+        query?: unknown;
+        header?: unknown;
+        path?: unknown;
+        cookie?: unknown;
       };
 
       export type MutationMethod = "post" | "put" | "patch" | "delete";
@@ -336,7 +336,7 @@ describe("generator", () => {
        * Minimal response surface used by ApiClient — avoids depending on the DOM \`Response\`
        * global (helpful for Node without DOM lib). Structural typing accepts fetch Response.
        */
-      export interface ApiResponse {
+      export interface FetcherResponse {
         ok: boolean;
         status: number;
         statusText: string;
@@ -347,14 +347,14 @@ describe("generator", () => {
         json(): Promise<unknown>;
         text(): Promise<string>;
         arrayBuffer(): Promise<ArrayBuffer>;
-        clone(): ApiResponse;
+        clone(): FetcherResponse;
       }
 
       export interface Fetcher {
-        decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
-        encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+        decodePathParams?: (path: string, pathParams: unknown) => string;
+        encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
         /** Merge cookie params into request headers (default: Cookie header). */
-        encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
+        encodeCookies?: (cookies: unknown, headers: Headers) => void;
         //
         fetch: (input: {
           method: Method;
@@ -364,8 +364,8 @@ describe("generator", () => {
           path: string;
           overrides?: RequestInit;
           throwOnStatusError?: boolean;
-        }) => Promise<ApiResponse>;
-        parseResponseData?: (response: ApiResponse) => Promise<unknown>;
+        }) => Promise<FetcherResponse>;
+        parseResponseData?: (response: FetcherResponse) => Promise<unknown>;
       }
 
       export const successStatusCodes = [
@@ -416,12 +416,12 @@ describe("generator", () => {
 
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
       export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<
-        ApiResponse,
+        FetcherResponse,
         "ok" | "status" | "json" | "headers"
       > {
         ok: true;
         status: TStatusCode;
-        headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
+        headers: never extends THeaders ? FetcherResponse["headers"] : TypedHeaders<THeaders>;
         data: TSuccess;
         /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
         json: () => Promise<TSuccess>;
@@ -429,18 +429,18 @@ describe("generator", () => {
 
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
       export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<
-        ApiResponse,
+        FetcherResponse,
         "ok" | "status" | "json" | "headers"
       > {
         ok: false;
         status: TStatusCode;
-        headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
+        headers: never extends THeaders ? FetcherResponse["headers"] : TypedHeaders<THeaders>;
         data: TData;
         /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
         json: () => Promise<TData>;
       }
 
-      export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}, THeaders = {}> = {
+      export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
         [K in keyof TAllResponses]: K extends string
           ? K extends \`\${infer TStatusCode extends number}\`
             ? TStatusCode extends SuccessStatusCode
@@ -537,18 +537,19 @@ describe("generator", () => {
          * Replace path parameters in URL
          * Supports both OpenAPI format {param} and Express format :param
          */
-        defaultDecodePathParams = (url: string, params: Record<string, string | number | boolean>): string => {
+        defaultDecodePathParams = (url: string, params: unknown): string => {
+          const record = (params ?? {}) as Record<string, unknown>;
           return url
-            .replace(/{(\\w+)}/g, (_, key: string) => (params[key] != null ? String(params[key]) : \`{\${key}}\`))
-            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (params[key] != null ? String(params[key]) : \`:\${key}\`));
+            .replace(/{(\\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : \`{\${key}}\`))
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : \`:\${key}\`));
         };
 
         /** Uses URLSearchParams, skips null/undefined values */
-        defaultEncodeSearchParams = (queryParams: Record<string, unknown> | undefined): URLSearchParams | undefined => {
-          if (!queryParams) return;
+        defaultEncodeSearchParams = (queryParams: unknown): URLSearchParams | undefined => {
+          if (!queryParams || typeof queryParams !== "object") return;
 
           const searchParams = new URLSearchParams();
-          Object.entries(queryParams).forEach(([key, value]) => {
+          Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
             if (value != null) {
               // Skip null/undefined values
               if (Array.isArray(value)) {
@@ -563,9 +564,9 @@ describe("generator", () => {
         };
 
         /** Append cookie params as a Cookie header (or merge into existing). */
-        defaultEncodeCookies = (cookies: Record<string, unknown> | undefined, headers: Headers): void => {
-          if (!cookies) return;
-          const parts = Object.entries(cookies)
+        defaultEncodeCookies = (cookies: unknown, headers: Headers): void => {
+          if (!cookies || typeof cookies !== "object") return;
+          const parts = Object.entries(cookies as Record<string, unknown>)
             .filter(([, value]) => value != null)
             .map(([key, value]) => \`\${key}=\${String(value)}\`);
           if (!parts.length) return;
@@ -573,7 +574,7 @@ describe("generator", () => {
           headers.set("cookie", existing ? \`\${existing}; \${parts.join("; ")}\` : parts.join("; "));
         };
 
-        defaultParseResponseData = async (response: ApiResponse): Promise<unknown> => {
+        defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
           const contentType = response.headers.get("content-type") ?? "";
           if (contentType.startsWith("text/")) {
             return await response.text();
@@ -777,17 +778,17 @@ describe("generator", () => {
             const validateSide: ValidateSide = validateOverride ?? this.validate;
 
             const parametersToSend: EndpointParameters = {};
-            if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
-            if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
-            if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
-            if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
-            if (requestParams?.cookie !== undefined) (parametersToSend as any).cookie = requestParams.cookie;
+            if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
+            if (requestParams?.query !== undefined) parametersToSend.query = requestParams.query;
+            if (requestParams?.header !== undefined) parametersToSend.header = requestParams.header;
+            if (requestParams?.path !== undefined) parametersToSend.path = requestParams.path;
+            if (requestParams?.cookie !== undefined) parametersToSend.cookie = requestParams.cookie;
 
             const endpointSchema = undefined;
 
             const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
               this.baseUrl + (path as string),
-              (parametersToSend.path ?? {}) as Record<string, string | number | boolean>,
+              parametersToSend.path ?? {},
             );
             const url = new URL(resolvedPath);
             const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
@@ -816,8 +817,8 @@ describe("generator", () => {
               json: () => Promise.resolve(data),
             }) as SafeApiResponse<TEndpoint>;
 
-            if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-              throw new TypedStatusError(typedResponse as never);
+            if (throwOnStatusError && (errorStatusCodes as readonly number[]).includes(response.status)) {
+              throw new TypedStatusError(typedResponse as TypedErrorResponse<unknown, ErrorStatusCode, unknown>);
             }
 
             return withResponse ? typedResponse : data;
@@ -1231,10 +1232,10 @@ describe("generator", () => {
       // <ApiClientTypes>
       export type EndpointParameters = {
         body?: unknown;
-        query?: Record<string, unknown>;
-        header?: Record<string, unknown>;
-        path?: Record<string, unknown>;
-        cookie?: Record<string, unknown>;
+        query?: unknown;
+        header?: unknown;
+        path?: unknown;
+        cookie?: unknown;
       };
 
       export type MutationMethod = "post" | "put" | "patch" | "delete";
@@ -1267,7 +1268,7 @@ describe("generator", () => {
        * Minimal response surface used by ApiClient — avoids depending on the DOM \`Response\`
        * global (helpful for Node without DOM lib). Structural typing accepts fetch Response.
        */
-      export interface ApiResponse {
+      export interface FetcherResponse {
         ok: boolean;
         status: number;
         statusText: string;
@@ -1278,14 +1279,14 @@ describe("generator", () => {
         json(): Promise<unknown>;
         text(): Promise<string>;
         arrayBuffer(): Promise<ArrayBuffer>;
-        clone(): ApiResponse;
+        clone(): FetcherResponse;
       }
 
       export interface Fetcher {
-        decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
-        encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+        decodePathParams?: (path: string, pathParams: unknown) => string;
+        encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
         /** Merge cookie params into request headers (default: Cookie header). */
-        encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
+        encodeCookies?: (cookies: unknown, headers: Headers) => void;
         //
         fetch: (input: {
           method: Method;
@@ -1295,8 +1296,8 @@ describe("generator", () => {
           path: string;
           overrides?: RequestInit;
           throwOnStatusError?: boolean;
-        }) => Promise<ApiResponse>;
-        parseResponseData?: (response: ApiResponse) => Promise<unknown>;
+        }) => Promise<FetcherResponse>;
+        parseResponseData?: (response: FetcherResponse) => Promise<unknown>;
       }
 
       export const successStatusCodes = [
@@ -1347,12 +1348,12 @@ describe("generator", () => {
 
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
       export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<
-        ApiResponse,
+        FetcherResponse,
         "ok" | "status" | "json" | "headers"
       > {
         ok: true;
         status: TStatusCode;
-        headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
+        headers: never extends THeaders ? FetcherResponse["headers"] : TypedHeaders<THeaders>;
         data: TSuccess;
         /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
         json: () => Promise<TSuccess>;
@@ -1360,18 +1361,18 @@ describe("generator", () => {
 
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
       export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<
-        ApiResponse,
+        FetcherResponse,
         "ok" | "status" | "json" | "headers"
       > {
         ok: false;
         status: TStatusCode;
-        headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
+        headers: never extends THeaders ? FetcherResponse["headers"] : TypedHeaders<THeaders>;
         data: TData;
         /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
         json: () => Promise<TData>;
       }
 
-      export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}, THeaders = {}> = {
+      export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
         [K in keyof TAllResponses]: K extends string
           ? K extends \`\${infer TStatusCode extends number}\`
             ? TStatusCode extends SuccessStatusCode
@@ -1468,18 +1469,19 @@ describe("generator", () => {
          * Replace path parameters in URL
          * Supports both OpenAPI format {param} and Express format :param
          */
-        defaultDecodePathParams = (url: string, params: Record<string, string | number | boolean>): string => {
+        defaultDecodePathParams = (url: string, params: unknown): string => {
+          const record = (params ?? {}) as Record<string, unknown>;
           return url
-            .replace(/{(\\w+)}/g, (_, key: string) => (params[key] != null ? String(params[key]) : \`{\${key}}\`))
-            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (params[key] != null ? String(params[key]) : \`:\${key}\`));
+            .replace(/{(\\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : \`{\${key}}\`))
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : \`:\${key}\`));
         };
 
         /** Uses URLSearchParams, skips null/undefined values */
-        defaultEncodeSearchParams = (queryParams: Record<string, unknown> | undefined): URLSearchParams | undefined => {
-          if (!queryParams) return;
+        defaultEncodeSearchParams = (queryParams: unknown): URLSearchParams | undefined => {
+          if (!queryParams || typeof queryParams !== "object") return;
 
           const searchParams = new URLSearchParams();
-          Object.entries(queryParams).forEach(([key, value]) => {
+          Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
             if (value != null) {
               // Skip null/undefined values
               if (Array.isArray(value)) {
@@ -1494,9 +1496,9 @@ describe("generator", () => {
         };
 
         /** Append cookie params as a Cookie header (or merge into existing). */
-        defaultEncodeCookies = (cookies: Record<string, unknown> | undefined, headers: Headers): void => {
-          if (!cookies) return;
-          const parts = Object.entries(cookies)
+        defaultEncodeCookies = (cookies: unknown, headers: Headers): void => {
+          if (!cookies || typeof cookies !== "object") return;
+          const parts = Object.entries(cookies as Record<string, unknown>)
             .filter(([, value]) => value != null)
             .map(([key, value]) => \`\${key}=\${String(value)}\`);
           if (!parts.length) return;
@@ -1504,7 +1506,7 @@ describe("generator", () => {
           headers.set("cookie", existing ? \`\${existing}; \${parts.join("; ")}\` : parts.join("; "));
         };
 
-        defaultParseResponseData = async (response: ApiResponse): Promise<unknown> => {
+        defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
           const contentType = response.headers.get("content-type") ?? "";
           if (contentType.startsWith("text/")) {
             return await response.text();
@@ -1615,17 +1617,17 @@ describe("generator", () => {
             const validateSide: ValidateSide = validateOverride ?? this.validate;
 
             const parametersToSend: EndpointParameters = {};
-            if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
-            if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
-            if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
-            if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
-            if (requestParams?.cookie !== undefined) (parametersToSend as any).cookie = requestParams.cookie;
+            if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
+            if (requestParams?.query !== undefined) parametersToSend.query = requestParams.query;
+            if (requestParams?.header !== undefined) parametersToSend.header = requestParams.header;
+            if (requestParams?.path !== undefined) parametersToSend.path = requestParams.path;
+            if (requestParams?.cookie !== undefined) parametersToSend.cookie = requestParams.cookie;
 
             const endpointSchema = undefined;
 
             const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
               this.baseUrl + (path as string),
-              (parametersToSend.path ?? {}) as Record<string, string | number | boolean>,
+              parametersToSend.path ?? {},
             );
             const url = new URL(resolvedPath);
             const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
@@ -1654,8 +1656,8 @@ describe("generator", () => {
               json: () => Promise.resolve(data),
             }) as SafeApiResponse<TEndpoint>;
 
-            if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-              throw new TypedStatusError(typedResponse as never);
+            if (throwOnStatusError && (errorStatusCodes as readonly number[]).includes(response.status)) {
+              throw new TypedStatusError(typedResponse as TypedErrorResponse<unknown, ErrorStatusCode, unknown>);
             }
 
             return withResponse ? typedResponse : data;
@@ -1807,10 +1809,10 @@ describe("generator", () => {
       // <ApiClientTypes>
       export type EndpointParameters = {
         body?: unknown;
-        query?: Record<string, unknown>;
-        header?: Record<string, unknown>;
-        path?: Record<string, unknown>;
-        cookie?: Record<string, unknown>;
+        query?: unknown;
+        header?: unknown;
+        path?: unknown;
+        cookie?: unknown;
       };
 
       export type MutationMethod = "post" | "put" | "patch" | "delete";
@@ -1843,7 +1845,7 @@ describe("generator", () => {
        * Minimal response surface used by ApiClient — avoids depending on the DOM \`Response\`
        * global (helpful for Node without DOM lib). Structural typing accepts fetch Response.
        */
-      export interface ApiResponse {
+      export interface FetcherResponse {
         ok: boolean;
         status: number;
         statusText: string;
@@ -1854,14 +1856,14 @@ describe("generator", () => {
         json(): Promise<unknown>;
         text(): Promise<string>;
         arrayBuffer(): Promise<ArrayBuffer>;
-        clone(): ApiResponse;
+        clone(): FetcherResponse;
       }
 
       export interface Fetcher {
-        decodePathParams?: (path: string, pathParams: Record<string, string | number | boolean>) => string;
-        encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+        decodePathParams?: (path: string, pathParams: unknown) => string;
+        encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
         /** Merge cookie params into request headers (default: Cookie header). */
-        encodeCookies?: (cookies: Record<string, unknown> | undefined, headers: Headers) => void;
+        encodeCookies?: (cookies: unknown, headers: Headers) => void;
         //
         fetch: (input: {
           method: Method;
@@ -1871,8 +1873,8 @@ describe("generator", () => {
           path: string;
           overrides?: RequestInit;
           throwOnStatusError?: boolean;
-        }) => Promise<ApiResponse>;
-        parseResponseData?: (response: ApiResponse) => Promise<unknown>;
+        }) => Promise<FetcherResponse>;
+        parseResponseData?: (response: FetcherResponse) => Promise<unknown>;
       }
 
       export const successStatusCodes = [
@@ -1923,12 +1925,12 @@ describe("generator", () => {
 
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
       export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<
-        ApiResponse,
+        FetcherResponse,
         "ok" | "status" | "json" | "headers"
       > {
         ok: true;
         status: TStatusCode;
-        headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
+        headers: never extends THeaders ? FetcherResponse["headers"] : TypedHeaders<THeaders>;
         data: TSuccess;
         /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
         json: () => Promise<TSuccess>;
@@ -1936,18 +1938,18 @@ describe("generator", () => {
 
       /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
       export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<
-        ApiResponse,
+        FetcherResponse,
         "ok" | "status" | "json" | "headers"
       > {
         ok: false;
         status: TStatusCode;
-        headers: never extends THeaders ? ApiResponse["headers"] : TypedHeaders<THeaders>;
+        headers: never extends THeaders ? FetcherResponse["headers"] : TypedHeaders<THeaders>;
         data: TData;
         /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
         json: () => Promise<TData>;
       }
 
-      export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}, THeaders = {}> = {
+      export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
         [K in keyof TAllResponses]: K extends string
           ? K extends \`\${infer TStatusCode extends number}\`
             ? TStatusCode extends SuccessStatusCode
@@ -2044,18 +2046,19 @@ describe("generator", () => {
          * Replace path parameters in URL
          * Supports both OpenAPI format {param} and Express format :param
          */
-        defaultDecodePathParams = (url: string, params: Record<string, string | number | boolean>): string => {
+        defaultDecodePathParams = (url: string, params: unknown): string => {
+          const record = (params ?? {}) as Record<string, unknown>;
           return url
-            .replace(/{(\\w+)}/g, (_, key: string) => (params[key] != null ? String(params[key]) : \`{\${key}}\`))
-            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (params[key] != null ? String(params[key]) : \`:\${key}\`));
+            .replace(/{(\\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : \`{\${key}}\`))
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : \`:\${key}\`));
         };
 
         /** Uses URLSearchParams, skips null/undefined values */
-        defaultEncodeSearchParams = (queryParams: Record<string, unknown> | undefined): URLSearchParams | undefined => {
-          if (!queryParams) return;
+        defaultEncodeSearchParams = (queryParams: unknown): URLSearchParams | undefined => {
+          if (!queryParams || typeof queryParams !== "object") return;
 
           const searchParams = new URLSearchParams();
-          Object.entries(queryParams).forEach(([key, value]) => {
+          Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
             if (value != null) {
               // Skip null/undefined values
               if (Array.isArray(value)) {
@@ -2070,9 +2073,9 @@ describe("generator", () => {
         };
 
         /** Append cookie params as a Cookie header (or merge into existing). */
-        defaultEncodeCookies = (cookies: Record<string, unknown> | undefined, headers: Headers): void => {
-          if (!cookies) return;
-          const parts = Object.entries(cookies)
+        defaultEncodeCookies = (cookies: unknown, headers: Headers): void => {
+          if (!cookies || typeof cookies !== "object") return;
+          const parts = Object.entries(cookies as Record<string, unknown>)
             .filter(([, value]) => value != null)
             .map(([key, value]) => \`\${key}=\${String(value)}\`);
           if (!parts.length) return;
@@ -2080,7 +2083,7 @@ describe("generator", () => {
           headers.set("cookie", existing ? \`\${existing}; \${parts.join("; ")}\` : parts.join("; "));
         };
 
-        defaultParseResponseData = async (response: ApiResponse): Promise<unknown> => {
+        defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
           const contentType = response.headers.get("content-type") ?? "";
           if (contentType.startsWith("text/")) {
             return await response.text();
@@ -2191,17 +2194,17 @@ describe("generator", () => {
             const validateSide: ValidateSide = validateOverride ?? this.validate;
 
             const parametersToSend: EndpointParameters = {};
-            if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
-            if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
-            if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
-            if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
-            if (requestParams?.cookie !== undefined) (parametersToSend as any).cookie = requestParams.cookie;
+            if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
+            if (requestParams?.query !== undefined) parametersToSend.query = requestParams.query;
+            if (requestParams?.header !== undefined) parametersToSend.header = requestParams.header;
+            if (requestParams?.path !== undefined) parametersToSend.path = requestParams.path;
+            if (requestParams?.cookie !== undefined) parametersToSend.cookie = requestParams.cookie;
 
             const endpointSchema = undefined;
 
             const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
               this.baseUrl + (path as string),
-              (parametersToSend.path ?? {}) as Record<string, string | number | boolean>,
+              parametersToSend.path ?? {},
             );
             const url = new URL(resolvedPath);
             const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
@@ -2230,8 +2233,8 @@ describe("generator", () => {
               json: () => Promise.resolve(data),
             }) as SafeApiResponse<TEndpoint>;
 
-            if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-              throw new TypedStatusError(typedResponse as never);
+            if (throwOnStatusError && (errorStatusCodes as readonly number[]).includes(response.status)) {
+              throw new TypedStatusError(typedResponse as TypedErrorResponse<unknown, ErrorStatusCode, unknown>);
             }
 
             return withResponse ? typedResponse : data;

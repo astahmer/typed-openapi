@@ -176,8 +176,8 @@ describe("readOnly / writeOnly", () => {
   });
 });
 
-describe("ApiResponse + InferSchemaInput", () => {
-  test("generated client exposes ApiResponse and InferSchemaInput", () => {
+describe("FetcherResponse + InferSchemaInput", () => {
+  test("generated client exposes FetcherResponse and InferSchemaInput", () => {
     const doc = {
       openapi: "3.0.3",
       info: { title: "t", version: "1" },
@@ -192,7 +192,7 @@ describe("ApiResponse + InferSchemaInput", () => {
     } as OpenAPIObject;
     const mapped = mapOpenApiEndpoints(doc);
     const file = generateFile({ ...mapped, runtime: "zod" });
-    expect(file).toContain("export interface ApiResponse");
+    expect(file).toContain("export interface FetcherResponse");
     expect(file).toContain("type InferSchemaInput<T>");
     expect(file).toContain("InferSchemaInput<UParams>");
     expect(file).not.toMatch(/extends Omit<Response,/);
