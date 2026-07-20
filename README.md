@@ -58,8 +58,9 @@ For more info, run any command with the `--help` flag:
 
 Options:
   -o, --output <path>             Output path for the api client ts file (defaults to `<input>.<runtime>.ts`)
-  -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: none | zod | zod3 | effect | effect3 | valibot | arktype (default: none)
+  -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: none | zod | zod3 | effect | effect3 | valibot | arktype
   --validation <level>            Validation depth: loose | formats | strict (default: strict when runtime ≠ none)
+  -c, --config <path>             JSON config (or auto-load typed-openapi.config.json); supports fine-grained validation overrides
   --format                        Format generated files with oxfmt (defaults to false) (default: false)
   --schemas-only                  Only generate schemas, skipping client generation (defaults to false) (default: false)
   --include-client                Include API client types and implementation (defaults to true) (default: true)

@@ -15,6 +15,7 @@ import { generateTanstackQueryFile } from "./tanstack-query.generator.ts";
 import { prettify } from "./format.ts";
 import type { NameTransformOptions } from "./types.ts";
 import { generateDefaultFetcher } from "./default-fetcher.generator.ts";
+import { findDefaultConfigPath, loadConfigFile, mergeConfigWithCli, validationFromConfig } from "./config.ts";
 
 const cwd = process.cwd();
 const now = new Date();
@@ -27,19 +28,31 @@ async function ensureDir(dirPath: string): Promise<void> {
   }
 }
 
+const validationOptionSchema = type("'loose' | 'formats' | 'strict'").or(
+  type({
+    "preset?": "'loose' | 'formats' | 'strict'",
+    "formats?": "boolean",
+    "stringConstraints?": "boolean",
+    "numberConstraints?": "boolean",
+    "arrayConstraints?": "boolean",
+    "objectConstraints?": "boolean",
+  }),
+);
+
 export const optionsSchema = type({
   "output?": "string",
-  runtime: allowedRuntimes,
-  "validation?": "'loose' | 'formats' | 'strict'",
+  "runtime?": allowedRuntimes,
+  "validation?": validationOptionSchema,
+  "config?": "string",
   "format?": "boolean | 'true' | 'false'",
-  tanstack: "boolean | string",
+  "tanstack?": "boolean | string",
   "defaultFetcher?": type({
     "envApiBaseUrl?": "string",
     "clientPath?": "string",
     "fetcherName?": "string",
     "apiName?": "string",
   }),
-  schemasOnly: "boolean",
+  "schemasOnly?": "boolean",
   "includeClient?": "boolean | 'true' | 'false'",
   "jsdoc?": "boolean | 'true' | 'false'",
   "successStatusCodes?": "string",
@@ -63,32 +76,41 @@ function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
 }
 
 export async function generateClientFiles(input: string, options: GenerateClientFilesOptions) {
+  const configPath = options.config ?? findDefaultConfigPath(cwd);
+  const fileConfig = configPath ? loadConfigFile(configPath) : undefined;
+  if (configPath) console.log(`Using config ${configPath}`);
+
+  const merged = mergeConfigWithCli(fileConfig, options as Record<string, unknown>) as GenerateClientFilesOptions;
+  const runtime = (merged.runtime ?? "none") as NonNullable<GenerateClientFilesOptions["runtime"]>;
+
   // TODO CLI option to save that file?
   const openApiDoc = (await SwaggerParser.bundle(input)) as OpenAPIObject;
 
-  const ctx = mapOpenApiEndpoints(openApiDoc, options);
+  const ctx = mapOpenApiEndpoints(openApiDoc, merged);
   console.log(`Found ${ctx.endpointList.length} endpoints`);
 
   // Parse success status codes if provided
-  const successStatusCodes = options.successStatusCodes
-    ? (options.successStatusCodes.split(",").map((code) => parseInt(code.trim(), 10)) as readonly number[])
+  const successStatusCodes = merged.successStatusCodes
+    ? (merged.successStatusCodes.split(",").map((code) => parseInt(code.trim(), 10)) as readonly number[])
     : undefined;
 
   // Parse error status codes if provided
-  const errorStatusCodes = options.errorStatusCodes
-    ? (options.errorStatusCodes.split(",").map((code) => parseInt(code.trim(), 10)) as readonly number[])
+  const errorStatusCodes = merged.errorStatusCodes
+    ? (merged.errorStatusCodes.split(",").map((code) => parseInt(code.trim(), 10)) as readonly number[])
     : undefined;
 
   // Convert string boolean to actual boolean
-  const includeClient = parseBooleanOption(options.includeClient);
-  const jsdoc = parseBooleanOption(options.jsdoc) ?? true;
-  const shouldFormat = parseBooleanOption(options.format) ?? false;
+  const includeClient = parseBooleanOption(merged.includeClient);
+  const jsdoc = parseBooleanOption(merged.jsdoc) ?? true;
+  const shouldFormat = parseBooleanOption(merged.format) ?? false;
+
+  const validation = validationFromConfig(merged.validation);
 
   const generatorOptions: GeneratorOptions = {
     ...ctx,
-    runtime: options.runtime,
-    ...(options.validation ? { validation: options.validation } : {}),
-    schemasOnly: options.schemasOnly,
+    runtime,
+    ...(validation ? { validation } : {}),
+    schemasOnly: merged.schemasOnly ?? false,
     nameTransform: options.nameTransform,
     includeClient: includeClient ?? true,
     jsdoc,
@@ -98,7 +120,7 @@ export async function generateClientFiles(input: string, options: GenerateClient
 
   const outputPath = join(
     cwd,
-    options.output ?? input + `.${options.runtime === "none" ? "client" : options.runtime}.ts`,
+    merged.output ?? options.output ?? input + `.${runtime === "none" ? "client" : runtime}.ts`,
   );
   const content = await prettify(generateFile(generatorOptions), { enabled: shouldFormat, filePath: outputPath });
 

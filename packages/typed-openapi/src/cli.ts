@@ -11,13 +11,16 @@ cli
   .option("-o, --output <path>", "Output path for the api client ts file (defaults to `<input>.<runtime>.ts`)")
   .option(
     "-r, --runtime <n>",
-    `Runtime to use for validation; defaults to \`none\`; available: ${allowedRuntimes.toString()}`,
-    { default: "none" },
+    `Runtime to use for validation; defaults to \`none\` (or config file); available: ${allowedRuntimes.toString()}`,
   )
   .option(
     "--validation <level>",
     "Validation depth for runtime schemas: `loose` (structure only), `formats` (+ email/uuid/…), `strict` (+ min/max/pattern/…). Default: `strict` when runtime ≠ none",
     { default: undefined },
+  )
+  .option(
+    "-c, --config <path>",
+    "Path to typed-openapi config JSON (defaults to typed-openapi.config.json / .typed-openapi.json when present)",
   )
   .option("--format", "Format generated files with oxfmt (defaults to false)", { default: false })
   .option("--schemas-only", "Only generate schemas, skipping client generation (defaults to false)", { default: false })
