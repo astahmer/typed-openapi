@@ -15,7 +15,7 @@ Suggested PR description block when ready:
 Closes #93 Closes #29 Closes #26 Closes #61 Closes #32 Closes #27 Closes #18 Closes #121 Closes #34 Closes #46 Closes
 #91
 
-#114 and #62 stay open (obsolete / out of scope) — close manually as wontfix if desired.
+#114 and #62 closed as not planned (obsolete / out of scope).
 ```
 
 | Issue | Title                                           | Status                                                             |
@@ -24,11 +24,11 @@ Closes #93 Closes #29 Closes #26 Closes #61 Closes #32 Closes #27 Closes #18 Clo
 | #29   | Runtime validations not parsing response        | **Fixed** — `--validate-side` + client `runValidate` on output     |
 | #26   | Multi-file OpenAPI specs                        | **Fixed** — CLI/`generateClientFiles` uses `SwaggerParser.bundle`  |
 | #61   | `@` in property key syntax error                | **Fixed** — `objectKey` quotes non-identifiers                     |
-| #114  | No infer UParams with Typebox                   | **Obsolete** — typebox adapter dropped; `test.todo`                |
+| #114  | No infer UParams with Typebox                   | **Closed (not planned)** — typebox adapter dropped; `test.todo`    |
 | #32   | Partial query params aren't optional            | **Fixed** — optional param groups (`query?:`) + InferSchemaInput   |
 | #27   | nested definitions `normalized` crash           | **Fixed** — ref-resolver registers `#/definitions/*`               |
 | #18   | Unsupported schema type: fhirprimitiveextension | **Fixed** — exotic types → `unknown` (no throw)                    |
-| #62   | Export Typia types                              | **Out of scope** — `test.todo` until someone wants a typia adapter |
+| #62   | Export Typia types                              | **Closed (not planned)** — no typia adapter; `test.todo`           |
 | #121  | Coercing number/boolean for Zod                 | **Fixed** — `--coerce` / `--no-coerce`                             |
 | #34   | Default values from schema                      | **Fixed** — runtime `.default` / equivalents                       |
 | #46   | Cookie parameter support                        | **Fixed**                                                          |
