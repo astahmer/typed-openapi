@@ -1,13 +1,5 @@
-import type { SchemaNode } from "../../schema-ir/types.ts";
-import {
-  applyNumberConstraints,
-  applyStringConstraints,
-  isNullOr,
-  literalValue,
-  objectKey,
-  objectProps,
-  quote,
-} from "../shared.ts";
+import type { LiteralValue, SchemaNode } from "../../schema-ir/types.ts";
+import { applyNumberConstraints, applyStringConstraints, isNullOr, objectKey, objectProps, quote } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
 const emitStringDef = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx): string => {
@@ -16,7 +8,6 @@ const emitStringDef = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitC
   if (c.format === "uuid") return quote("string.uuid");
   if (c.format === "uri" || c.format === "url") return quote("string.url");
   if (c.format === "date-time") return quote("string.date");
-  // pattern / length via narrowed string forms when possible
   if (c.pattern) return quote(`/${c.pattern}/`);
   if (c.minLength !== undefined && c.maxLength !== undefined) {
     return quote(`string >= ${c.minLength} <= ${c.maxLength}`);
@@ -38,9 +29,16 @@ const emitNumberDef = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitC
   return quote(parts.join(" "));
 };
 
+/** ArkType string defs for unit types: "'active'", "null", "true", "1" */
+const arkUnitDef = (value: LiteralValue): string => {
+  if (value === null) return quote("null");
+  if (typeof value === "string") return quote(`'${value.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`);
+  return quote(String(value));
+};
+
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
-  if (nullInner) return `type(${emitNode(nullInner, ctx)}).or(type("null"))`;
+  if (nullInner) return `${emitNode(nullInner, ctx)}.or(type("null"))`;
 
   switch (node.kind) {
     case "string":
@@ -58,11 +56,13 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "never":
       return `type("never")`;
     case "literal":
-      return `type(${literalValue(node.value)})`;
+      return `type(${arkUnitDef(node.value)})`;
     case "enum":
-      return node.values.map((v) => `type(${literalValue(v)})`).reduce((a, b) => `${a}.or(${b})`);
+      return `type.enumerated(${node.values
+        .map((v) => (typeof v === "string" ? quote(v) : v === null ? "null" : String(v)))
+        .join(", ")})`;
     case "array":
-      return `type(${emitNode(node.items, ctx)}).array()`;
+      return `${emitNode(node.items, ctx)}.array()`;
     case "tuple":
       return `type([${node.items.map((i) => emitNode(i, ctx)).join(", ")}])`;
     case "union":
@@ -71,7 +71,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       return node.members.map((m) => emitNode(m, ctx)).reduce((a, b) => `${a}.and(${b})`);
     case "ref": {
       if (node.name === "Partial" && node.generics?.[0]) {
-        return `type(${emitNode(node.generics[0], ctx)}).partial()`;
+        return `${emitNode(node.generics[0], ctx)}.partial()`;
       }
       if (node.name === "Record" && node.generics?.length === 2) {
         return `type("Record", ${emitNode(node.generics[0]!, ctx)}, ${emitNode(node.generics[1]!, ctx)})`;
@@ -79,12 +79,11 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       return node.name;
     }
     case "record":
-      return `type(${quote("Record")},"string", ${emitNode(node.value, ctx)})`;
+      return `type("Record", "string", ${emitNode(node.value, ctx)})`;
     case "object": {
       const props = objectProps(node, emitNode, ctx);
       const body = props
         .map(({ key, optional, expr }) => {
-          // arktype optional keys use trailing ?
           const keyLit = optional ? quote(`${key}?`) : objectKey(key);
           return `${keyLit}: ${expr}`;
         })
@@ -105,8 +104,8 @@ export const arktypeAdapter: RuntimeAdapter = {
   imports: () => `import { type } from "arktype";`,
   inferType: (expr) => `${expr}["infer"]`,
   emitNode,
-  wrapLazy: (_name, body) => body, // arktype resolves by const binding order / thunks less often needed
-  literalString: (value) => `type(${quote(value)})`,
+  wrapLazy: (_name, body) => body,
+  literalString: (value) => `type(${arkUnitDef(value)})`,
   unknown: () => `type("unknown")`,
   never: () => `type("never")`,
   emitNamedSchema: (name, node, ctx) => {

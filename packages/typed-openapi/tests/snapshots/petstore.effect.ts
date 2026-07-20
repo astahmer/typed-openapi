@@ -7,7 +7,7 @@ export const Order = Schema.partial(
     petId: Schema.Int,
     quantity: Schema.Int,
     shipDate: Schema.String,
-    status: Schema.Union([Schema.Literal("placed"), Schema.Literal("approved"), Schema.Literal("delivered")]),
+    status: Schema.Union(Schema.Literal("placed"), Schema.Literal("approved"), Schema.Literal("delivered")),
     complete: Schema.Boolean,
   }),
 );
@@ -49,9 +49,7 @@ export const Pet = Schema.Struct({
   category: Schema.optional(Category),
   photoUrls: Schema.Array(Schema.String),
   tags: Schema.optional(Schema.Array(Tag)),
-  status: Schema.optional(
-    Schema.Union([Schema.Literal("available"), Schema.Literal("pending"), Schema.Literal("sold")]),
-  ),
+  status: Schema.optional(Schema.Union(Schema.Literal("available"), Schema.Literal("pending"), Schema.Literal("sold"))),
 });
 export type Pet = typeof Pet.Type;
 
@@ -89,7 +87,7 @@ export const get_FindPetsByStatus = {
   parameters: {
     query: Schema.partial(
       Schema.Struct({
-        status: Schema.Union([Schema.Literal("available"), Schema.Literal("pending"), Schema.Literal("sold")]),
+        status: Schema.Union(Schema.Literal("available"), Schema.Literal("pending"), Schema.Literal("sold")),
       }),
     ),
   },
@@ -106,7 +104,7 @@ export const get_FindPetsByTags = {
   path: Schema.Literal("/pet/findByTags"),
   requestFormat: Schema.Literal("json"),
   parameters: { query: Schema.partial(Schema.Struct({ tags: Schema.Array(Schema.String) })) },
-  responses: { 200: Schema.Union([Schema.Array(Pet), Schema.Array(User), Schema.Array(Tag)]), 400: Schema.Unknown },
+  responses: { 200: Schema.Union(Schema.Array(Pet), Schema.Array(User), Schema.Array(Tag)), 400: Schema.Unknown },
 };
 
 export type get_GetPetById = typeof get_GetPetById;

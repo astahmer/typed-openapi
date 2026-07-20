@@ -5,19 +5,19 @@ export const Port = Schema.Struct({
   IP: Schema.optional(Schema.String),
   PrivatePort: Schema.Int,
   PublicPort: Schema.optional(Schema.Int),
-  Type: Schema.Union([Schema.Literal("tcp"), Schema.Literal("udp"), Schema.Literal("sctp")]),
+  Type: Schema.Union(Schema.Literal("tcp"), Schema.Literal("udp"), Schema.Literal("sctp")),
 });
 export type Port = typeof Port.Type;
 
 export const MountPoint = Schema.partial(
   Schema.Struct({
-    Type: Schema.Union([
+    Type: Schema.Union(
       Schema.Literal("bind"),
       Schema.Literal("volume"),
       Schema.Literal("tmpfs"),
       Schema.Literal("npipe"),
       Schema.Literal("cluster"),
-    ]),
+    ),
     Name: Schema.String,
     Source: Schema.String,
     Destination: Schema.String,
@@ -54,25 +54,25 @@ export const Mount = Schema.partial(
   Schema.Struct({
     Target: Schema.String,
     Source: Schema.String,
-    Type: Schema.Union([
+    Type: Schema.Union(
       Schema.Literal("bind"),
       Schema.Literal("volume"),
       Schema.Literal("tmpfs"),
       Schema.Literal("npipe"),
       Schema.Literal("cluster"),
-    ]),
+    ),
     ReadOnly: Schema.Boolean,
     Consistency: Schema.String,
     BindOptions: Schema.partial(
       Schema.Struct({
-        Propagation: Schema.Union([
+        Propagation: Schema.Union(
           Schema.Literal("private"),
           Schema.Literal("rprivate"),
           Schema.Literal("shared"),
           Schema.Literal("rshared"),
           Schema.Literal("slave"),
           Schema.Literal("rslave"),
-        ]),
+        ),
         NonRecursive: Schema.Boolean,
         CreateMountpoint: Schema.Boolean,
       }),
@@ -93,13 +93,13 @@ export type Mount = typeof Mount.Type;
 
 export const RestartPolicy = Schema.partial(
   Schema.Struct({
-    Name: Schema.Union([
+    Name: Schema.Union(
       Schema.Literal(""),
       Schema.Literal("no"),
       Schema.Literal("always"),
       Schema.Literal("unless-stopped"),
       Schema.Literal("on-failure"),
-    ]),
+    ),
     MaximumRetryCount: Schema.Int,
   }),
 );
@@ -183,12 +183,12 @@ export type HealthcheckResult = typeof HealthcheckResult.Type;
 export const Health = Schema.NullOr(
   Schema.partial(
     Schema.Struct({
-      Status: Schema.Union([
+      Status: Schema.Union(
         Schema.Literal("none"),
         Schema.Literal("starting"),
         Schema.Literal("healthy"),
         Schema.Literal("unhealthy"),
-      ]),
+      ),
       FailingStreak: Schema.Int,
       Log: Schema.Array(HealthcheckResult),
     }),
@@ -210,7 +210,7 @@ export const HostConfig = Schema.extend(
       ContainerIDFile: Schema.String,
       LogConfig: Schema.partial(
         Schema.Struct({
-          Type: Schema.Union([
+          Type: Schema.Union(
             Schema.Literal("json-file"),
             Schema.Literal("syslog"),
             Schema.Literal("journald"),
@@ -220,7 +220,7 @@ export const HostConfig = Schema.extend(
             Schema.Literal("splunk"),
             Schema.Literal("etwlogs"),
             Schema.Literal("none"),
-          ]),
+          ),
           Config: Schema.Record(Schema.String, Schema.String),
         }),
       ),
@@ -237,7 +237,7 @@ export const HostConfig = Schema.extend(
       Annotations: Schema.Record(Schema.String, Schema.String),
       CapAdd: Schema.Array(Schema.String),
       CapDrop: Schema.Array(Schema.String),
-      CgroupnsMode: Schema.Union([Schema.Literal("private"), Schema.Literal("host")]),
+      CgroupnsMode: Schema.Union(Schema.Literal("private"), Schema.Literal("host")),
       Dns: Schema.Array(Schema.String),
       DnsOptions: Schema.Array(Schema.String),
       DnsSearch: Schema.Array(Schema.String),
@@ -259,7 +259,7 @@ export const HostConfig = Schema.extend(
       ShmSize: Schema.Int.pipe(Schema.greaterThanOrEqualTo(0)),
       Sysctls: Schema.Record(Schema.String, Schema.String),
       Runtime: Schema.String,
-      Isolation: Schema.Union([Schema.Literal("default"), Schema.Literal("process"), Schema.Literal("hyperv")]),
+      Isolation: Schema.Union(Schema.Literal("default"), Schema.Literal("process"), Schema.Literal("hyperv")),
       MaskedPaths: Schema.Array(Schema.String),
       ReadonlyPaths: Schema.Array(Schema.String),
     }),
@@ -366,7 +366,7 @@ export const GraphDriverData = Schema.Struct({
 });
 export type GraphDriverData = typeof GraphDriverData.Type;
 
-export const ChangeType = Schema.Union([Schema.Literal(0), Schema.Literal(1), Schema.Literal(2)]);
+export const ChangeType = Schema.Union(Schema.Literal(0), Schema.Literal(1), Schema.Literal(2));
 export type ChangeType = typeof ChangeType.Type;
 
 export const FilesystemChange = Schema.Struct({ Path: Schema.String, Kind: ChangeType });
@@ -444,20 +444,20 @@ export const ClusterVolumeSpec = Schema.partial(
     Group: Schema.String,
     AccessMode: Schema.partial(
       Schema.Struct({
-        Scope: Schema.Union([Schema.Literal("single"), Schema.Literal("multi")]),
-        Sharing: Schema.Union([
+        Scope: Schema.Union(Schema.Literal("single"), Schema.Literal("multi")),
+        Sharing: Schema.Union(
           Schema.Literal("none"),
           Schema.Literal("readonly"),
           Schema.Literal("onewriter"),
           Schema.Literal("all"),
-        ]),
+        ),
         MountVolume: Schema.partial(Schema.Struct({})),
         Secrets: Schema.Array(Schema.partial(Schema.Struct({ Key: Schema.String, Secret: Schema.String }))),
         AccessibilityRequirements: Schema.partial(
           Schema.Struct({ Requisite: Schema.Array(Topology), Preferred: Schema.Array(Topology) }),
         ),
         CapacityRange: Schema.partial(Schema.Struct({ RequiredBytes: Schema.Int, LimitBytes: Schema.Int })),
-        Availability: Schema.Union([Schema.Literal("active"), Schema.Literal("pause"), Schema.Literal("drain")]),
+        Availability: Schema.Union(Schema.Literal("active"), Schema.Literal("pause"), Schema.Literal("drain")),
       }),
     ),
   }),
@@ -483,12 +483,12 @@ export const ClusterVolume = Schema.partial(
       Schema.partial(
         Schema.Struct({
           NodeID: Schema.String,
-          State: Schema.Union([
+          State: Schema.Union(
             Schema.Literal("pending-publish"),
             Schema.Literal("published"),
             Schema.Literal("pending-node-unpublish"),
             Schema.Literal("pending-controller-unpublish"),
-          ]),
+          ),
           PublishContext: Schema.Record(Schema.String, Schema.String),
         }),
       ),
@@ -504,7 +504,7 @@ export const Volume = Schema.Struct({
   CreatedAt: Schema.optional(Schema.String),
   Status: Schema.optional(Schema.Record(Schema.String, Schema.partial(Schema.Struct({})))),
   Labels: Schema.Record(Schema.String, Schema.String),
-  Scope: Schema.Union([Schema.Literal("local"), Schema.Literal("global")]),
+  Scope: Schema.Union(Schema.Literal("local"), Schema.Literal("global")),
   ClusterVolume: Schema.optional(ClusterVolume),
   Options: Schema.Record(Schema.String, Schema.String),
   UsageData: Schema.optional(Schema.NullOr(Schema.Struct({ Size: Schema.Int, RefCount: Schema.Int }))),
@@ -604,14 +604,14 @@ export const BuildCache = Schema.partial(
     ID: Schema.String,
     Parent: Schema.NullOr(Schema.String),
     Parents: Schema.NullOr(Schema.Array(Schema.String)),
-    Type: Schema.Union([
+    Type: Schema.Union(
       Schema.Literal("internal"),
       Schema.Literal("frontend"),
       Schema.Literal("source.local"),
       Schema.Literal("source.git.checkout"),
       Schema.Literal("exec.cachemount"),
       Schema.Literal("regular"),
-    ]),
+    ),
     Description: Schema.String,
     InUse: Schema.Boolean,
     Shared: Schema.Boolean,
@@ -708,7 +708,7 @@ export const Plugin = Schema.Struct({
     Interface: Schema.Struct({
       Types: Schema.Array(PluginInterfaceType),
       Socket: Schema.String,
-      ProtocolScheme: Schema.optional(Schema.Union([Schema.Literal(""), Schema.Literal("moby.plugins.http/v1")])),
+      ProtocolScheme: Schema.optional(Schema.Union(Schema.Literal(""), Schema.Literal("moby.plugins.http/v1"))),
     }),
     Entrypoint: Schema.Array(Schema.String),
     WorkDir: Schema.String,
@@ -741,8 +741,8 @@ export const NodeSpec = Schema.partial(
   Schema.Struct({
     Name: Schema.String,
     Labels: Schema.Record(Schema.String, Schema.String),
-    Role: Schema.Union([Schema.Literal("worker"), Schema.Literal("manager")]),
-    Availability: Schema.Union([Schema.Literal("active"), Schema.Literal("pause"), Schema.Literal("drain")]),
+    Role: Schema.Union(Schema.Literal("worker"), Schema.Literal("manager")),
+    Availability: Schema.Union(Schema.Literal("active"), Schema.Literal("pause"), Schema.Literal("drain")),
   }),
 );
 export type NodeSpec = typeof NodeSpec.Type;
@@ -775,12 +775,12 @@ export const NodeDescription = Schema.partial(
 );
 export type NodeDescription = typeof NodeDescription.Type;
 
-export const NodeState = Schema.Union([
+export const NodeState = Schema.Union(
   Schema.Literal("unknown"),
   Schema.Literal("down"),
   Schema.Literal("ready"),
   Schema.Literal("disconnected"),
-]);
+);
 export type NodeState = typeof NodeState.Type;
 
 export const NodeStatus = Schema.partial(
@@ -788,11 +788,11 @@ export const NodeStatus = Schema.partial(
 );
 export type NodeStatus = typeof NodeStatus.Type;
 
-export const Reachability = Schema.Union([
+export const Reachability = Schema.Union(
   Schema.Literal("unknown"),
   Schema.Literal("unreachable"),
   Schema.Literal("reachable"),
-]);
+);
 export type Reachability = typeof Reachability.Type;
 
 export const ManagerStatus = Schema.NullOr(
@@ -969,7 +969,7 @@ export const TaskSpec = Schema.partial(
             }),
           ),
         ),
-        Isolation: Schema.Union([Schema.Literal("default"), Schema.Literal("process"), Schema.Literal("hyperv")]),
+        Isolation: Schema.Union(Schema.Literal("default"), Schema.Literal("process"), Schema.Literal("hyperv")),
         Init: Schema.NullOr(Schema.Boolean),
         Sysctls: Schema.Record(Schema.String, Schema.String),
         CapabilityAdd: Schema.Array(Schema.String),
@@ -983,7 +983,7 @@ export const TaskSpec = Schema.partial(
     Resources: Schema.partial(Schema.Struct({ Limits: Limit, Reservations: ResourceObject })),
     RestartPolicy: Schema.partial(
       Schema.Struct({
-        Condition: Schema.Union([Schema.Literal("none"), Schema.Literal("on-failure"), Schema.Literal("any")]),
+        Condition: Schema.Union(Schema.Literal("none"), Schema.Literal("on-failure"), Schema.Literal("any")),
         Delay: Schema.Int,
         MaxAttempts: Schema.Int,
         Window: Schema.Int,
@@ -1009,7 +1009,7 @@ export const TaskSpec = Schema.partial(
 );
 export type TaskSpec = typeof TaskSpec.Type;
 
-export const TaskState = Schema.Union([
+export const TaskState = Schema.Union(
   Schema.Literal("new"),
   Schema.Literal("allocated"),
   Schema.Literal("pending"),
@@ -1025,7 +1025,7 @@ export const TaskState = Schema.Union([
   Schema.Literal("rejected"),
   Schema.Literal("remove"),
   Schema.Literal("orphaned"),
-]);
+);
 export type TaskState = typeof TaskState.Type;
 
 export const Task = Schema.partial(
@@ -1061,17 +1061,17 @@ export type Task = typeof Task.Type;
 export const EndpointPortConfig = Schema.partial(
   Schema.Struct({
     Name: Schema.String,
-    Protocol: Schema.Union([Schema.Literal("tcp"), Schema.Literal("udp"), Schema.Literal("sctp")]),
+    Protocol: Schema.Union(Schema.Literal("tcp"), Schema.Literal("udp"), Schema.Literal("sctp")),
     TargetPort: Schema.Int,
     PublishedPort: Schema.Int,
-    PublishMode: Schema.Union([Schema.Literal("ingress"), Schema.Literal("host")]),
+    PublishMode: Schema.Union(Schema.Literal("ingress"), Schema.Literal("host")),
   }),
 );
 export type EndpointPortConfig = typeof EndpointPortConfig.Type;
 
 export const EndpointSpec = Schema.partial(
   Schema.Struct({
-    Mode: Schema.Union([Schema.Literal("vip"), Schema.Literal("dnsrr")]),
+    Mode: Schema.Union(Schema.Literal("vip"), Schema.Literal("dnsrr")),
     Ports: Schema.Array(EndpointPortConfig),
   }),
 );
@@ -1094,20 +1094,20 @@ export const ServiceSpec = Schema.partial(
       Schema.Struct({
         Parallelism: Schema.Int,
         Delay: Schema.Int,
-        FailureAction: Schema.Union([Schema.Literal("continue"), Schema.Literal("pause"), Schema.Literal("rollback")]),
+        FailureAction: Schema.Union(Schema.Literal("continue"), Schema.Literal("pause"), Schema.Literal("rollback")),
         Monitor: Schema.Int,
         MaxFailureRatio: Schema.Number,
-        Order: Schema.Union([Schema.Literal("stop-first"), Schema.Literal("start-first")]),
+        Order: Schema.Union(Schema.Literal("stop-first"), Schema.Literal("start-first")),
       }),
     ),
     RollbackConfig: Schema.partial(
       Schema.Struct({
         Parallelism: Schema.Int,
         Delay: Schema.Int,
-        FailureAction: Schema.Union([Schema.Literal("continue"), Schema.Literal("pause")]),
+        FailureAction: Schema.Union(Schema.Literal("continue"), Schema.Literal("pause")),
         Monitor: Schema.Int,
         MaxFailureRatio: Schema.Number,
-        Order: Schema.Union([Schema.Literal("stop-first"), Schema.Literal("start-first")]),
+        Order: Schema.Union(Schema.Literal("stop-first"), Schema.Literal("start-first")),
       }),
     ),
     Networks: Schema.Array(NetworkAttachmentConfig),
@@ -1132,7 +1132,7 @@ export const Service = Schema.partial(
     ),
     UpdateStatus: Schema.partial(
       Schema.Struct({
-        State: Schema.Union([Schema.Literal("updating"), Schema.Literal("paused"), Schema.Literal("completed")]),
+        State: Schema.Union(Schema.Literal("updating"), Schema.Literal("paused"), Schema.Literal("completed")),
         StartedAt: Schema.String,
         CompletedAt: Schema.String,
         Message: Schema.String,
@@ -1227,7 +1227,7 @@ export type Config = typeof Config.Type;
 export const ContainerState = Schema.NullOr(
   Schema.partial(
     Schema.Struct({
-      Status: Schema.Union([
+      Status: Schema.Union(
         Schema.Literal("created"),
         Schema.Literal("running"),
         Schema.Literal("paused"),
@@ -1235,7 +1235,7 @@ export const ContainerState = Schema.NullOr(
         Schema.Literal("removing"),
         Schema.Literal("exited"),
         Schema.Literal("dead"),
-      ]),
+      ),
       Running: Schema.Boolean,
       Paused: Schema.Boolean,
       Restarting: Schema.Boolean,
@@ -1328,14 +1328,14 @@ export const Runtime = Schema.partial(
 );
 export type Runtime = typeof Runtime.Type;
 
-export const LocalNodeState = Schema.Union([
+export const LocalNodeState = Schema.Union(
   Schema.Literal(""),
   Schema.Literal("inactive"),
   Schema.Literal("pending"),
   Schema.Literal("active"),
   Schema.Literal("error"),
   Schema.Literal("locked"),
-]);
+);
 export type LocalNodeState = typeof LocalNodeState.Type;
 
 export const PeerNode = Schema.partial(Schema.Struct({ NodeID: Schema.String, Addr: Schema.String }));
@@ -1388,8 +1388,8 @@ export const SystemInfo = Schema.partial(
     NGoroutines: Schema.Int,
     SystemTime: Schema.String,
     LoggingDriver: Schema.String,
-    CgroupDriver: Schema.Union([Schema.Literal("cgroupfs"), Schema.Literal("systemd"), Schema.Literal("none")]),
-    CgroupVersion: Schema.Union([Schema.Literal("1"), Schema.Literal("2")]),
+    CgroupDriver: Schema.Union(Schema.Literal("cgroupfs"), Schema.Literal("systemd"), Schema.Literal("none")),
+    CgroupVersion: Schema.Union(Schema.Literal("1"), Schema.Literal("2")),
     NEventsListener: Schema.Int,
     KernelVersion: Schema.String,
     OperatingSystem: Schema.String,
@@ -1412,7 +1412,7 @@ export const SystemInfo = Schema.partial(
     DefaultRuntime: Schema.String,
     Swarm: SwarmInfo,
     LiveRestoreEnabled: Schema.Boolean,
-    Isolation: Schema.Union([Schema.Literal("default"), Schema.Literal("hyperv"), Schema.Literal("process")]),
+    Isolation: Schema.Union(Schema.Literal("default"), Schema.Literal("hyperv"), Schema.Literal("process")),
     InitBinary: Schema.String,
     ContainerdCommit: Commit,
     RuncCommit: Commit,
@@ -1432,7 +1432,7 @@ export type EventActor = typeof EventActor.Type;
 
 export const EventMessage = Schema.partial(
   Schema.Struct({
-    Type: Schema.Union([
+    Type: Schema.Union(
       Schema.Literal("builder"),
       Schema.Literal("config"),
       Schema.Literal("container"),
@@ -1444,10 +1444,10 @@ export const EventMessage = Schema.partial(
       Schema.Literal("secret"),
       Schema.Literal("service"),
       Schema.Literal("volume"),
-    ]),
+    ),
     Action: Schema.String,
     Actor: EventActor,
-    scope: Schema.Union([Schema.Literal("local"), Schema.Literal("swarm")]),
+    scope: Schema.Union(Schema.Literal("local"), Schema.Literal("swarm")),
     time: Schema.Int,
     timeNano: Schema.Int,
   }),
@@ -1788,11 +1788,7 @@ export const post_ContainerWait = {
   parameters: {
     query: Schema.partial(
       Schema.Struct({
-        condition: Schema.Union([
-          Schema.Literal("not-running"),
-          Schema.Literal("next-exit"),
-          Schema.Literal("removed"),
-        ]),
+        condition: Schema.Union(Schema.Literal("not-running"), Schema.Literal("next-exit"), Schema.Literal("removed")),
       }),
     ),
     path: Schema.Struct({ id: Schema.String }),
@@ -2180,12 +2176,12 @@ export const get_SystemDataUsage = {
     query: Schema.partial(
       Schema.Struct({
         type: Schema.Array(
-          Schema.Union([
+          Schema.Union(
             Schema.Literal("container"),
             Schema.Literal("image"),
             Schema.Literal("volume"),
             Schema.Literal("build-cache"),
-          ]),
+          ),
         ),
       }),
     ),
@@ -2790,7 +2786,7 @@ export const post_ServiceUpdate = {
   parameters: {
     query: Schema.Struct({
       version: Schema.Int,
-      registryAuthFrom: Schema.optional(Schema.Union([Schema.Literal("spec"), Schema.Literal("previous-spec")])),
+      registryAuthFrom: Schema.optional(Schema.Union(Schema.Literal("spec"), Schema.Literal("previous-spec"))),
       rollback: Schema.optional(Schema.String),
     }),
     path: Schema.Struct({ id: Schema.String }),

@@ -6,19 +6,19 @@ import { type } from "arktype";
 // <Endpoints>
 export type get_Get_users = typeof get_Get_users;
 export const get_Get_users = {
-  method: type("GET"),
-  path: type("/users"),
-  requestFormat: type("json"),
+  method: type("'GET'"),
+  path: type("'/users'"),
+  requestFormat: type("'json'"),
   parameters: type("never"),
-  responses: { 200: type(type("string")).array() },
+  responses: { 200: type("string").array() },
 };
 
 export type post_Very_very_very_very_very_very_very_very_very_very_long =
   typeof post_Very_very_very_very_very_very_very_very_very_very_long;
 export const post_Very_very_very_very_very_very_very_very_very_very_long = {
-  method: type("POST"),
-  path: type("/users"),
-  requestFormat: type("json"),
+  method: type("'POST'"),
+  path: type("'/users'"),
+  requestFormat: type("'json'"),
   parameters: { body: type({ username: type("string") }).partial() },
   responses: { 201: type("unknown") },
 };

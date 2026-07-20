@@ -69,7 +69,8 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "literal":
       return `${S}.Literal(${literalValue(node.value)})`;
     case "enum":
-      return `${S}.Union([${node.values.map((v) => `${S}.Literal(${literalValue(v)})`).join(", ")}])`;
+      // Effect overloads: prefer rest args for TS; array form is runtime-ok but poorly typed
+      return `${S}.Union(${node.values.map((v) => `${S}.Literal(${literalValue(v)})`).join(", ")})`;
     case "array": {
       const c = applyArrayConstraints(node.constraints, ctx.validation);
       let expr = `${S}.Array(${emitNode(node.items, ctx)})`;
@@ -84,7 +85,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       return `${S}.Tuple([${items}])`;
     }
     case "union":
-      return `${S}.Union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
+      return `${S}.Union(${node.members.map((m) => emitNode(m, ctx)).join(", ")})`;
     case "intersection":
       return node.members.map((m) => emitNode(m, ctx)).reduce((acc, cur) => `${S}.extend(${acc}, ${cur})`);
     case "ref": {

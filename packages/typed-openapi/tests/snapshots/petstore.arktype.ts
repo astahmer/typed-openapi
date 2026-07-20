@@ -6,7 +6,7 @@ export const Order = type({
   petId: type("number.integer"),
   quantity: type("number.integer"),
   shipDate: type("string.date"),
-  status: type("placed").or(type("approved")).or(type("delivered")),
+  status: type.enumerated("placed", "approved", "delivered"),
   complete: type("boolean"),
 }).partial();
 export type Order = typeof Order.infer;
@@ -22,7 +22,7 @@ export type Address = typeof Address.infer;
 export const Customer = type({
   id: type("number.integer"),
   username: type("string"),
-  address: type(Address).array(),
+  address: Address.array(),
 }).partial();
 export type Customer = typeof Customer.infer;
 
@@ -48,9 +48,9 @@ export const Pet = type({
   "id?": type("number.integer"),
   name: type("string"),
   "category?": Category,
-  photoUrls: type(type("string")).array(),
-  "tags?": type(Tag).array(),
-  "status?": type("available").or(type("pending")).or(type("sold")),
+  photoUrls: type("string").array(),
+  "tags?": Tag.array(),
+  "status?": type.enumerated("available", "pending", "sold"),
 });
 export type Pet = typeof Pet.infer;
 
@@ -66,30 +66,30 @@ export type ApiResponse = typeof ApiResponse.infer;
 // <Endpoints>
 export type put_UpdatePet = typeof put_UpdatePet;
 export const put_UpdatePet = {
-  method: type("PUT"),
-  path: type("/pet"),
-  requestFormat: type("json"),
+  method: type("'PUT'"),
+  path: type("'/pet'"),
+  requestFormat: type("'json'"),
   parameters: { body: Pet },
   responses: { 200: Pet, 400: type("unknown"), 404: type("unknown"), 405: type("unknown") },
 };
 
 export type post_AddPet = typeof post_AddPet;
 export const post_AddPet = {
-  method: type("POST"),
-  path: type("/pet"),
-  requestFormat: type("json"),
+  method: type("'POST'"),
+  path: type("'/pet'"),
+  requestFormat: type("'json'"),
   parameters: { body: Pet },
   responses: { 200: Pet, 405: type("unknown") },
 };
 
 export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
 export const get_FindPetsByStatus = {
-  method: type("GET"),
-  path: type("/pet/findByStatus"),
-  requestFormat: type("json"),
-  parameters: { query: type({ status: type("available").or(type("pending")).or(type("sold")) }).partial() },
+  method: type("'GET'"),
+  path: type("'/pet/findByStatus'"),
+  requestFormat: type("'json'"),
+  parameters: { query: type({ status: type.enumerated("available", "pending", "sold") }).partial() },
   responses: {
-    200: type(Pet).array(),
+    200: Pet.array(),
     304: type("unknown"),
     400: type({ code: type("number.integer"), message: type("string") }),
   },
@@ -97,18 +97,18 @@ export const get_FindPetsByStatus = {
 
 export type get_FindPetsByTags = typeof get_FindPetsByTags;
 export const get_FindPetsByTags = {
-  method: type("GET"),
-  path: type("/pet/findByTags"),
-  requestFormat: type("json"),
-  parameters: { query: type({ tags: type(type("string")).array() }).partial() },
-  responses: { 200: type(Pet).array().or(type(User).array()).or(type(Tag).array()), 400: type("unknown") },
+  method: type("'GET'"),
+  path: type("'/pet/findByTags'"),
+  requestFormat: type("'json'"),
+  parameters: { query: type({ tags: type("string").array() }).partial() },
+  responses: { 200: Pet.array().or(User.array()).or(Tag.array()), 400: type("unknown") },
 };
 
 export type get_GetPetById = typeof get_GetPetById;
 export const get_GetPetById = {
-  method: type("GET"),
-  path: type("/pet/{petId}"),
-  requestFormat: type("json"),
+  method: type("'GET'"),
+  path: type("'/pet/{petId}'"),
+  requestFormat: type("'json'"),
   parameters: { path: type({ petId: type("number.integer") }) },
   responses: {
     200: Pet,
@@ -119,9 +119,9 @@ export const get_GetPetById = {
 
 export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
 export const post_UpdatePetWithForm = {
-  method: type("POST"),
-  path: type("/pet/{petId}"),
-  requestFormat: type("json"),
+  method: type("'POST'"),
+  path: type("'/pet/{petId}'"),
+  requestFormat: type("'json'"),
   parameters: {
     query: type({ name: type("string"), status: type("string") }).partial(),
     path: type({ petId: type("number.integer") }),
@@ -131,18 +131,18 @@ export const post_UpdatePetWithForm = {
 
 export type delete_DeletePet = typeof delete_DeletePet;
 export const delete_DeletePet = {
-  method: type("DELETE"),
-  path: type("/pet/{petId}"),
-  requestFormat: type("json"),
+  method: type("'DELETE'"),
+  path: type("'/pet/{petId}'"),
+  requestFormat: type("'json'"),
   parameters: { path: type({ petId: type("number.integer") }), header: type({ api_key: type("string") }).partial() },
   responses: { 400: type("unknown") },
 };
 
 export type post_UploadFile = typeof post_UploadFile;
 export const post_UploadFile = {
-  method: type("POST"),
-  path: type("/pet/{petId}/uploadImage"),
-  requestFormat: type("binary"),
+  method: type("'POST'"),
+  path: type("'/pet/{petId}/uploadImage'"),
+  requestFormat: type("'binary'"),
   parameters: {
     query: type({ additionalMetadata: type("string") }).partial(),
     path: type({ petId: type("number.integer") }),
@@ -153,63 +153,63 @@ export const post_UploadFile = {
 
 export type get_GetInventory = typeof get_GetInventory;
 export const get_GetInventory = {
-  method: type("GET"),
-  path: type("/store/inventory"),
-  requestFormat: type("json"),
+  method: type("'GET'"),
+  path: type("'/store/inventory'"),
+  requestFormat: type("'json'"),
   parameters: type("never"),
   responses: { 200: type("Record", "string", type("number.integer")) },
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;
 export const post_PlaceOrder = {
-  method: type("POST"),
-  path: type("/store/order"),
-  requestFormat: type("json"),
+  method: type("'POST'"),
+  path: type("'/store/order'"),
+  requestFormat: type("'json'"),
   parameters: { body: Order },
   responses: { 200: Order, 405: type("unknown") },
 };
 
 export type get_GetOrderById = typeof get_GetOrderById;
 export const get_GetOrderById = {
-  method: type("GET"),
-  path: type("/store/order/{orderId}"),
-  requestFormat: type("json"),
+  method: type("'GET'"),
+  path: type("'/store/order/{orderId}'"),
+  requestFormat: type("'json'"),
   parameters: { path: type({ orderId: type("number.integer") }) },
   responses: { 200: Order, 400: type("unknown"), 404: type("unknown") },
 };
 
 export type delete_DeleteOrder = typeof delete_DeleteOrder;
 export const delete_DeleteOrder = {
-  method: type("DELETE"),
-  path: type("/store/order/{orderId}"),
-  requestFormat: type("json"),
+  method: type("'DELETE'"),
+  path: type("'/store/order/{orderId}'"),
+  requestFormat: type("'json'"),
   parameters: { path: type({ orderId: type("number.integer") }) },
   responses: { 400: type("unknown"), 404: type("unknown") },
 };
 
 export type post_CreateUser = typeof post_CreateUser;
 export const post_CreateUser = {
-  method: type("POST"),
-  path: type("/user"),
-  requestFormat: type("json"),
+  method: type("'POST'"),
+  path: type("'/user'"),
+  requestFormat: type("'json'"),
   parameters: { body: User },
   responses: { default: User },
 };
 
 export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput;
 export const post_CreateUsersWithListInput = {
-  method: type("POST"),
-  path: type("/user/createWithList"),
-  requestFormat: type("json"),
-  parameters: { body: type(User).array() },
+  method: type("'POST'"),
+  path: type("'/user/createWithList'"),
+  requestFormat: type("'json'"),
+  parameters: { body: User.array() },
   responses: { 200: User, default: type("unknown") },
 };
 
 export type get_LoginUser = typeof get_LoginUser;
 export const get_LoginUser = {
-  method: type("GET"),
-  path: type("/user/login"),
-  requestFormat: type("json"),
+  method: type("'GET'"),
+  path: type("'/user/login'"),
+  requestFormat: type("'json'"),
   parameters: { query: type({ username: type("string"), password: type("string") }).partial() },
   responses: { 200: type("string"), 400: type("unknown") },
   responseHeaders: {
@@ -220,18 +220,18 @@ export const get_LoginUser = {
 
 export type get_LogoutUser = typeof get_LogoutUser;
 export const get_LogoutUser = {
-  method: type("GET"),
-  path: type("/user/logout"),
-  requestFormat: type("json"),
+  method: type("'GET'"),
+  path: type("'/user/logout'"),
+  requestFormat: type("'json'"),
   parameters: type("never"),
   responses: { default: type("unknown") },
 };
 
 export type get_GetUserByName = typeof get_GetUserByName;
 export const get_GetUserByName = {
-  method: type("GET"),
-  path: type("/user/{username}"),
-  requestFormat: type("json"),
+  method: type("'GET'"),
+  path: type("'/user/{username}'"),
+  requestFormat: type("'json'"),
   parameters: { path: type({ username: type("string") }) },
   responses: {
     200: User,
@@ -243,45 +243,45 @@ export const get_GetUserByName = {
 
 export type put_UpdateUser = typeof put_UpdateUser;
 export const put_UpdateUser = {
-  method: type("PUT"),
-  path: type("/user/{username}"),
-  requestFormat: type("json"),
+  method: type("'PUT'"),
+  path: type("'/user/{username}'"),
+  requestFormat: type("'json'"),
   parameters: { path: type({ username: type("string") }), body: User },
   responses: { default: type("unknown") },
 };
 
 export type delete_DeleteUser = typeof delete_DeleteUser;
 export const delete_DeleteUser = {
-  method: type("DELETE"),
-  path: type("/user/{username}"),
-  requestFormat: type("json"),
+  method: type("'DELETE'"),
+  path: type("'/user/{username}'"),
+  requestFormat: type("'json'"),
   parameters: { path: type({ username: type("string") }) },
   responses: { 400: type("unknown"), 404: type("unknown") },
 };
 
 export type get_GetPetTextPlain = typeof get_GetPetTextPlain;
 export const get_GetPetTextPlain = {
-  method: type("GET"),
-  path: type("/pet/text"),
-  requestFormat: type("json"),
+  method: type("'GET'"),
+  path: type("'/pet/text'"),
+  requestFormat: type("'json'"),
   parameters: type("never"),
   responses: { 200: User },
 };
 
 export type get_GetPetEmpty = typeof get_GetPetEmpty;
 export const get_GetPetEmpty = {
-  method: type("GET"),
-  path: type("/pet/empty"),
-  requestFormat: type("json"),
+  method: type("'GET'"),
+  path: type("'/pet/empty'"),
+  requestFormat: type("'json'"),
   parameters: type("never"),
   responses: { 204: type("unknown") },
 };
 
 export type get_GetPetCustom = typeof get_GetPetCustom;
 export const get_GetPetCustom = {
-  method: type("GET"),
-  path: type("/pet/custom"),
-  requestFormat: type("json"),
+  method: type("'GET'"),
+  path: type("'/pet/custom'"),
+  requestFormat: type("'json'"),
   parameters: type("never"),
   responses: { 200: Pet },
 };
