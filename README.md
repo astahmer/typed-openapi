@@ -25,6 +25,9 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
   - [arktype](https://arktype.io/) (`--runtime arktype`)
 - **Effect-native client** (`--client effect`): methods return `Effect` with typed status / HTTP / parse errors
 - **Validate input and/or output** (`--validate-side`) with optional `onValidate` hook
+- **Coerce path/query/cookie/header primitives** from strings (`--coerce`, default on when runtime ≠ none)
+- **Cookie parameters**, OAS **defaults** on runtime schemas, **readOnly/writeOnly** stripping
+- **Node-friendly `ApiResponse`** (no DOM `Response` dependency) + **request input types** (`z.input` / encoded)
 - **Filter endpoints/schemas** (`--endpoint`, `--schema`, `--tree-shake-schemas`) and control naming (`--schema-naming`)
 
 The generated client is a single file that can be used in the browser or in node. Runtime schemas are emitted by
@@ -68,6 +71,8 @@ Options:
   --validation <level>            Validation depth: loose | formats | strict (default: strict when runtime ≠ none)
   --validate-side <side>          When using a runtime: none | input | output | both (default: both)
   --client <kind>                 API client style: promise | effect (default: effect when runtime is effect/effect3, else promise)
+  --coerce                        Coerce number/boolean path|query|cookie|header params from strings (default on when runtime ≠ none)
+  --no-coerce                     Disable string coercion for path|query|cookie|header params
   --endpoint <regex>              Keep endpoints matching regex (method/path/operationId/alias/tags); repeatable
   --schema <regex>                When tree-shaking, also keep schemas matching regex; repeatable
   --tree-shake-schemas            Drop unused component schemas (default: on when --endpoint is set)
