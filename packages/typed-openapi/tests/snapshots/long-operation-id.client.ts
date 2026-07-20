@@ -297,7 +297,11 @@ export class ApiClient {
   }
 
   setOnValidate(onValidate: OnValidate | undefined) {
-    this.onValidate = onValidate;
+    if (onValidate === undefined) {
+      delete this.onValidate;
+    } else {
+      this.onValidate = onValidate;
+    }
     return this;
   }
 
@@ -478,7 +482,6 @@ export class ApiClient {
       const withResponse = requestParams?.withResponse;
       const throwOnStatusError = requestParams?.throwOnStatusError ?? (withResponse ? false : true);
       let overrides = requestParams?.overrides;
-      const validateSide: ValidateSide = requestParams?.validate ?? this.validate;
 
       const parametersToSend: EndpointParameters = {};
       if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
@@ -486,8 +489,6 @@ export class ApiClient {
       if (requestParams?.header !== undefined) parametersToSend.header = requestParams.header;
       if (requestParams?.path !== undefined) parametersToSend.path = requestParams.path;
       if (requestParams?.cookie !== undefined) parametersToSend.cookie = requestParams.cookie;
-
-      const endpointSchema = undefined;
 
       const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
         this.baseUrl + (path as string),
@@ -508,10 +509,10 @@ export class ApiClient {
         method: method,
         path: path as string,
         url,
-        urlSearchParams,
-        parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
+        ...(urlSearchParams ? { urlSearchParams } : {}),
+        ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
-        overrides,
+        ...(overrides ? { overrides } : {}),
         throwOnStatusError,
       });
       const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";

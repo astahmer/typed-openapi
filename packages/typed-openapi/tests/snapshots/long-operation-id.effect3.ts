@@ -325,10 +325,10 @@ export type EffectFetcher = {
 };
 
 const wrapPromiseFetcher = (fetcher: Fetcher): EffectFetcher => ({
-  decodePathParams: fetcher.decodePathParams,
-  encodeSearchParams: fetcher.encodeSearchParams,
-  encodeCookies: fetcher.encodeCookies,
-  parseResponseData: fetcher.parseResponseData,
+  ...(fetcher.decodePathParams ? { decodePathParams: fetcher.decodePathParams } : {}),
+  ...(fetcher.encodeSearchParams ? { encodeSearchParams: fetcher.encodeSearchParams } : {}),
+  ...(fetcher.encodeCookies ? { encodeCookies: fetcher.encodeCookies } : {}),
+  ...(fetcher.parseResponseData ? { parseResponseData: fetcher.parseResponseData } : {}),
   fetch: (input) =>
     Effect.tryPromise({
       try: () => fetcher.fetch(input),
@@ -478,10 +478,10 @@ export class EffectApiClient {
         method: method as Method,
         path: path as string,
         url,
-        urlSearchParams,
-        parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
+        ...(urlSearchParams ? { urlSearchParams } : {}),
+        ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
-        overrides,
+        ...(overrides ? { overrides } : {}),
       });
 
       const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";

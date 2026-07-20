@@ -684,7 +684,11 @@ export class ApiClient {
   }
 
   setOnValidate(onValidate: OnValidate | undefined) {
-    this.onValidate = onValidate;
+    if (onValidate === undefined) {
+      delete this.onValidate;
+    } else {
+      this.onValidate = onValidate;
+    }
     return this;
   }
 
@@ -954,7 +958,7 @@ export class ApiClient {
               path: String(path),
               schema,
               value,
-              onValidate: this.onValidate,
+              ...(this.onValidate ? { onValidate: this.onValidate } : {}),
             });
           }
         }
@@ -979,10 +983,10 @@ export class ApiClient {
         method: method,
         path: path as string,
         url,
-        urlSearchParams,
-        parameters: Object.keys(parametersToSend).length ? parametersToSend : undefined,
+        ...(urlSearchParams ? { urlSearchParams } : {}),
+        ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
-        overrides,
+        ...(overrides ? { overrides } : {}),
         throwOnStatusError,
       });
       const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
@@ -1000,7 +1004,7 @@ export class ApiClient {
             path: String(path),
             schema: responseSchema,
             value: data,
-            onValidate: this.onValidate,
+            ...(this.onValidate ? { onValidate: this.onValidate } : {}),
           });
         }
       }
