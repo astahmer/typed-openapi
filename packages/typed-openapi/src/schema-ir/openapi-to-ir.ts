@@ -344,5 +344,6 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
     return withNullable({ kind: "unknown", meta }, schema);
   }
 
-  throw new Error(`Unsupported schema type: ${schemaType}`);
+  // Exotic / vendor types (e.g. FHIR `fhirprimitiveextension`) → unknown instead of failing codegen.
+  return withNullable({ kind: "unknown", meta }, schema);
 };
