@@ -34,15 +34,18 @@ const filterAuditNoise = (out: string, sample: string, runtime: string): string 
       if (!line.includes("error TS")) return true;
       if (sample.startsWith("kombo")) {
         return !(
-          line.includes("error TS2456") ||
-          line.includes("error TS7022") ||
-          line.includes("error TS7024") ||
-          line.includes("error TS2502") ||
-          line.includes("error TS2345") ||
-          (runtime === "arktype" && line.includes("error TS2322")) ||
-          line.includes("error TS2719") ||
-          line.includes("error TS2536") ||
-          line.includes("error TS2339")
+          // TS2456 (circular type alias) must surface — fixed via interfaces for none-runtime.
+          (
+            line.includes("error TS7022") ||
+            line.includes("error TS7024") ||
+            line.includes("error TS2502") ||
+            line.includes("error TS2345") ||
+            (runtime === "arktype" && line.includes("error TS2322")) ||
+            line.includes("error TS2719") ||
+            line.includes("error TS2536") ||
+            // ArkType InferSchemaValue indexing / property access noise on large Kombo schemas.
+            (runtime === "arktype" && line.includes("error TS2339"))
+          )
         );
       }
       if ((runtime === "typebox" || runtime === "typia") && line.includes("error TS2536")) return false;

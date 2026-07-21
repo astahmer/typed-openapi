@@ -78,12 +78,14 @@ const filterDiagnostics = (out: string, allowCircular: boolean): string => {
       // Drop generated-client-body noise (recursive OAS / InferSchemaValue edge cases).
       if (allowCircular) {
         return !(
-          line.includes("error TS2456") ||
-          line.includes("error TS7022") ||
-          line.includes("error TS7024") ||
-          line.includes("error TS2502") ||
-          // Zod discriminatedUnion rejects nullable members (Kombo oneOf+null).
-          line.includes("error TS2345")
+          // TS2456 must not be filtered — none-runtime uses interfaces for recursive records.
+          (
+            line.includes("error TS7022") ||
+            line.includes("error TS7024") ||
+            line.includes("error TS2502") ||
+            // Zod discriminatedUnion rejects nullable members (Kombo oneOf+null).
+            line.includes("error TS2345")
+          )
         );
       }
       // Docker typebox/typia: known InferSchemaValue indexing noise in generated ApiClient.

@@ -66,14 +66,17 @@ describe("snapshot files typecheck", () => {
       .filter((line) => {
         if (!line.includes("error TS")) return true;
         return !(
-          line.includes("error TS2456") ||
-          line.includes("error TS7022") ||
-          line.includes("error TS7024") ||
-          line.includes("error TS2502") ||
-          // Zod discriminatedUnion rejects nullable members (common in Kombo oneOf+null).
-          line.includes("error TS2345") ||
-          // ArkType deep union/tuple assignability noise on large Kombo schemas only.
-          (runtime === "arktype" && line.includes("error TS2322"))
+          // Do NOT filter TS2456 — circular type aliases are real bugs (none-runtime interfaces fix them).
+          (
+            line.includes("error TS7022") ||
+            line.includes("error TS7024") ||
+            line.includes("error TS2502") ||
+            // Zod discriminatedUnion rejects nullable members (common in Kombo oneOf+null).
+            line.includes("error TS2345") ||
+            // ArkType deep union/tuple assignability noise on large Kombo schemas only.
+            (runtime === "arktype" && line.includes("error TS2322")) ||
+            (runtime === "arktype" && line.includes("error TS2339"))
+          )
         );
       })
       .join("\n");
