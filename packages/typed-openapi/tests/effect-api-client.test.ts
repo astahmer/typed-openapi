@@ -23,7 +23,9 @@ describe("EffectApiClient", () => {
     });
     expect(src).toContain("class EffectApiClient");
     expect(src).toContain("createEffectApiClient");
-    expect(src).toContain("SchemaError");
+    expect(src).toContain("HttpClientError");
+    expect(src).toContain("TypedStatusError | HttpClientError");
+    expect(src).not.toContain("SchemaError");
     expect(src).toContain("Schema.decodeUnknownEffect");
     expect(src).not.toContain("class ApiClient {");
   });

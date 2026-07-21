@@ -11,19 +11,19 @@ export const effectApiClientBody = (args: {
   const { validateSide, runtime, endpointList, validateHelpers } = args;
   const hasRuntime = runtime !== "none";
   const isEffectSchema = runtime === "effect" || runtime === "effect3";
-  const errorChannel = isEffectSchema
-    ? runtime === "effect3"
-      ? "TypedStatusError | HttpClientError | ParseError | Error"
-      : "TypedStatusError | HttpClientError | SchemaError | Error"
-    : "TypedStatusError | HttpClientError | Error";
+  /** Status errors stay typed; everything else remaps to HttpClientError (cause holds original). */
+  const errorChannel = "TypedStatusError | HttpClientError";
 
+  // effect runtime already imports Effect with Schema; others need an Effect import.
   const effectImports =
     runtime === "effect"
-      ? `import type { SchemaError } from "effect/SchemaError";`
+      ? ""
       : runtime === "effect3"
-        ? `import { Effect } from "effect";
-import type { ParseError } from "@effect/schema/ParseResult";`
+        ? `import { Effect } from "effect";`
         : `import { Effect } from "effect";`;
+
+  const wrapAsHttpClientError = (message: string, causeExpr: string) =>
+    `new HttpClientError(${JSON.stringify(message)}, ${causeExpr})`;
 
   const validateValue = (side: "input" | "output", valueExpr: string, schemaExpr: string, assign: string) => {
     if (!hasRuntime) return "";
@@ -32,9 +32,11 @@ import type { ParseError } from "@effect/schema/ParseResult";`
         runtime === "effect3"
           ? `${assign} yield* Effect.try({
               try: () => S.decodeUnknownSync(${schemaExpr} as S.Schema<unknown, unknown, never>)(${valueExpr}),
-              catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+              catch: (cause) => ${wrapAsHttpClientError("decode failed", "cause")},
             });`
-          : `${assign} yield* Schema.decodeUnknownEffect(${schemaExpr} as Schema.Codec<unknown>)(${valueExpr});`;
+          : `${assign} yield* Schema.decodeUnknownEffect(${schemaExpr} as Schema.Codec<unknown>)(${valueExpr}).pipe(
+              Effect.mapError((cause) => ${wrapAsHttpClientError("decode failed", "cause")}),
+            );`;
       return `
           if (self.onValidate) {
             ${assign} yield* Effect.tryPromise({
@@ -47,7 +49,7 @@ import type { ParseError } from "@effect/schema/ParseResult";`
                   value: ${valueExpr},
                   onValidate: self.onValidate,
                 }),
-              catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+              catch: (cause) => ${wrapAsHttpClientError("validation failed", "cause")},
             });
           } else {
             ${decodeElse}
@@ -64,7 +66,7 @@ import type { ParseError } from "@effect/schema/ParseResult";`
                 value: ${valueExpr},
                 ...(self.onValidate ? { onValidate: self.onValidate } : {}),
               }),
-            catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+            catch: (cause) => ${wrapAsHttpClientError("validation failed", "cause")},
           });`;
   };
 
@@ -94,6 +96,13 @@ ${validateValue("output", "data", "responseSchema", "data =")}
         }
       }`
     : "";
+
+  const requestConfigExtras = hasRuntime ? "; validate?: ValidateSide" : "";
+  const effectRequestParams = `(TEndpoint extends { parameters: infer UParams }
+          ? NotNever<UParams> extends true
+            ? InferSchemaInput<UParams> & { overrides?: RequestInit${requestConfigExtras} }
+            : { overrides?: RequestInit${requestConfigExtras} }
+          : { overrides?: RequestInit${requestConfigExtras} })`;
 
   return `
 ${effectImports}
@@ -126,7 +135,7 @@ const wrapPromiseFetcher = (fetcher: Fetcher): EffectFetcher => ({
   fetch: (input) =>
     Effect.tryPromise({
       try: () => fetcher.fetch(input),
-      catch: (cause) => new HttpClientError("fetch failed", cause),
+      catch: (cause) => ${wrapAsHttpClientError("fetch failed", "cause")},
     }),
 });
 
@@ -160,7 +169,7 @@ export class EffectApiClient {
   >(
     method: TMethod,
     path: TPath,
-    ...params: MaybeOptionalArg<any>
+    ...params: MaybeOptionalArg<${effectRequestParams}>
   ): Effect.Effect<
     Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
     ${errorChannel},
@@ -169,7 +178,7 @@ export class EffectApiClient {
     const self = this;
     return Effect.gen(function* () {
       const requestParams = params[0];
-      const validateSide: ValidateSide = requestParams?.validate ?? self.validate;
+      const validateSide: ValidateSide = ${hasRuntime ? "requestParams?.validate ?? self.validate" : "self.validate"};
       const parametersToSend: EndpointParameters = {};
       if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
       if (requestParams?.query !== undefined) parametersToSend.query = requestParams.query;
@@ -256,7 +265,7 @@ export class EffectApiClient {
           ? (response.body ?? null)
           : yield* Effect.tryPromise({
               try: () => parseData(response),
-              catch: (cause) => new HttpClientError("parse failed", cause),
+              catch: (cause) => ${wrapAsHttpClientError("parse failed", "cause")},
             });
 
       ${outputBlock}
@@ -276,10 +285,14 @@ export class EffectApiClient {
     .map(([method, list]) => {
       const endpoints = `${capitalize(method)}Endpoints`;
       return list.length
-        ? `${method}<Path extends keyof ${endpoints}>(
+        ? `${method}<Path extends keyof ${endpoints}, TEndpoint extends ${endpoints}[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<any>
-  ) {
+    ...params: MaybeOptionalArg<${effectRequestParams}>
+  ): Effect.Effect<
+    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    ${errorChannel},
+    never
+  > {
     return this.request<"${method}", Path, ${endpoints}[Path]>("${method}", path, ...params);
   }`
         : "";
