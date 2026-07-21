@@ -909,7 +909,7 @@ const generateValidateHelpers = (ctx: GeneratorContext): string => {
       case "effect3":
         return `S.decodeUnknownSync(schema as S.Schema<unknown, unknown, never>)(value)`;
       case "arktype":
-        return `(() => { const out = (schema as { (data: unknown): unknown }).call(schema, value); if (out instanceof type.errors) throw out; return out; })()`;
+        return `(() => { const out = (schema as (data: unknown) => unknown)(value); if (out instanceof type.errors) throw out; return out; })()`;
       case "typebox":
         return `(() => { if (!Value.Check(schema as import("@sinclair/typebox").TSchema, value)) throw new Error("TypeBox validation failed"); return value; })()`;
       case "typia":

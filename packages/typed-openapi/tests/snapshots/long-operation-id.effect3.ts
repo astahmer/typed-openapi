@@ -21,7 +21,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   path: S.Literal("/users"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { body: S.optional(S.partial(S.Struct({ username: S.String }))) },
+  parameters: { body: S.optional(S.Struct({ username: S.optional(S.String) })) },
   responses: { 201: S.Unknown },
 };
 

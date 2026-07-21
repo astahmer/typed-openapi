@@ -104,6 +104,10 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (ctx.recursiveNames.has(node.name) && ctx.currentSchemaName === node.name) {
         return "This";
       }
+      // Forward refs to other recursive schemas: defer evaluation to avoid TDZ on mutual recursion.
+      if (ctx.recursiveNames.has(node.name) && ctx.currentSchemaName !== node.name) {
+        return `Type.Unsafe(() => ${node.name})`;
+      }
       return node.name;
     }
     case "record":

@@ -27,3 +27,4 @@ styled-system-static
 *.tsbuildinfo
 
 tmp
+.attest

@@ -9,46 +9,49 @@ const Union_default_available_prop = Schema.optionalWith(
 // </DefaultSchemas>
 
 // <Schemas>
-export const Order = Schema.partial(
-  Schema.Struct({
-    id: Schema.Int,
-    petId: Schema.Int,
-    quantity: Schema.Int,
-    shipDate: Schema.String,
-    status: Schema.Union(Schema.Literal("placed"), Schema.Literal("approved"), Schema.Literal("delivered")),
-    complete: Schema.Boolean,
-  }),
-);
+export const Order = Schema.Struct({
+  id: Schema.optional(Schema.Int),
+  petId: Schema.optional(Schema.Int),
+  quantity: Schema.optional(Schema.Int),
+  shipDate: Schema.optional(Schema.String),
+  status: Schema.optional(
+    Schema.Union(Schema.Literal("placed"), Schema.Literal("approved"), Schema.Literal("delivered")),
+  ),
+  complete: Schema.optional(Schema.Boolean),
+});
 export type Order = typeof Order.Type;
 
-export const Address = Schema.partial(
-  Schema.Struct({ street: Schema.String, city: Schema.String, state: Schema.String, zip: Schema.String }),
-);
+export const Address = Schema.Struct({
+  street: Schema.optional(Schema.String),
+  city: Schema.optional(Schema.String),
+  state: Schema.optional(Schema.String),
+  zip: Schema.optional(Schema.String),
+});
 export type Address = typeof Address.Type;
 
-export const Customer = Schema.partial(
-  Schema.Struct({ id: Schema.Int, username: Schema.String, address: Schema.Array(Address) }),
-);
+export const Customer = Schema.Struct({
+  id: Schema.optional(Schema.Int),
+  username: Schema.optional(Schema.String),
+  address: Schema.optional(Schema.Array(Address)),
+});
 export type Customer = typeof Customer.Type;
 
-export const Category = Schema.partial(Schema.Struct({ id: Schema.Int, name: Schema.String }));
+export const Category = Schema.Struct({ id: Schema.optional(Schema.Int), name: Schema.optional(Schema.String) });
 export type Category = typeof Category.Type;
 
-export const User = Schema.partial(
-  Schema.Struct({
-    id: Schema.Int,
-    username: Schema.String,
-    firstName: Schema.String,
-    lastName: Schema.String,
-    email: Schema.String,
-    password: Schema.String,
-    phone: Schema.String,
-    userStatus: Schema.Int,
-  }),
-);
+export const User = Schema.Struct({
+  id: Schema.optional(Schema.Int),
+  username: Schema.optional(Schema.String),
+  firstName: Schema.optional(Schema.String),
+  lastName: Schema.optional(Schema.String),
+  email: Schema.optional(Schema.String),
+  password: Schema.optional(Schema.String),
+  phone: Schema.optional(Schema.String),
+  userStatus: Schema.optional(Schema.Int),
+});
 export type User = typeof User.Type;
 
-export const Tag = Schema.partial(Schema.Struct({ id: Schema.Int, name: Schema.String }));
+export const Tag = Schema.Struct({ id: Schema.optional(Schema.Int), name: Schema.optional(Schema.String) });
 export type Tag = typeof Tag.Type;
 
 export const Pet = Schema.Struct({
@@ -61,9 +64,11 @@ export const Pet = Schema.Struct({
 });
 export type Pet = typeof Pet.Type;
 
-export const ApiResponse = Schema.partial(
-  Schema.Struct({ code: Schema.Int, type: Schema.String, message: Schema.String }),
-);
+export const ApiResponse = Schema.Struct({
+  code: Schema.optional(Schema.Int),
+  type: Schema.optional(Schema.String),
+  message: Schema.optional(Schema.String),
+});
 export type ApiResponse = typeof ApiResponse.Type;
 
 // </Schemas>
@@ -95,7 +100,7 @@ export const get_FindPetsByStatus = {
   path: Schema.Literal("/pet/findByStatus"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ status: Union_default_available_prop }))) },
+  parameters: { query: Schema.optional(Schema.Struct({ status: Union_default_available_prop })) },
   responses: {
     200: Schema.Array(Pet),
     304: Schema.Unknown,
@@ -109,7 +114,7 @@ export const get_FindPetsByTags = {
   path: Schema.Literal("/pet/findByTags"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.partial(Schema.Struct({ tags: Schema.Array(Schema.String) }))) },
+  parameters: { query: Schema.optional(Schema.Struct({ tags: Schema.optional(Schema.Array(Schema.String)) })) },
   responses: { 200: Schema.Union(Schema.Array(Pet), Schema.Array(User), Schema.Array(Tag)), 400: Schema.Unknown },
 };
 
@@ -134,7 +139,9 @@ export const post_UpdatePetWithForm = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.optional(Schema.partial(Schema.Struct({ name: Schema.String, status: Schema.String }))),
+    query: Schema.optional(
+      Schema.Struct({ name: Schema.optional(Schema.String), status: Schema.optional(Schema.String) }),
+    ),
     path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
   },
   responses: { 405: Schema.Unknown },
@@ -148,7 +155,7 @@ export const delete_DeletePet = {
   responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
-    header: Schema.optional(Schema.partial(Schema.Struct({ api_key: Schema.String }))),
+    header: Schema.optional(Schema.Struct({ api_key: Schema.optional(Schema.String) })),
   },
   responses: { 400: Schema.Unknown },
 };
@@ -160,7 +167,7 @@ export const post_UploadFile = {
   requestFormat: Schema.Literal("binary"),
   responseFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.optional(Schema.partial(Schema.Struct({ additionalMetadata: Schema.String }))),
+    query: Schema.optional(Schema.Struct({ additionalMetadata: Schema.optional(Schema.String) })),
     path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
     body: Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob),
   },
@@ -234,7 +241,9 @@ export const get_LoginUser = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.optional(Schema.partial(Schema.Struct({ username: Schema.String, password: Schema.String }))),
+    query: Schema.optional(
+      Schema.Struct({ username: Schema.optional(Schema.String), password: Schema.optional(Schema.String) }),
+    ),
   },
   responses: { 200: Schema.String, 400: Schema.Unknown },
   responseHeaders: {

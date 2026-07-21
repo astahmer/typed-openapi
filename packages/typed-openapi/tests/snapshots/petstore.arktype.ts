@@ -616,7 +616,7 @@ export class TypedStatusError<TData = unknown> extends Error {
 // <ValidateHelpers>
 const defaultParse = (schema: unknown, value: unknown): unknown => {
   return (() => {
-    const out = (schema as { (data: unknown): unknown }).call(schema, value);
+    const out = (schema as (data: unknown) => unknown)(value);
     if (out instanceof type.errors) throw out;
     return out;
   })();

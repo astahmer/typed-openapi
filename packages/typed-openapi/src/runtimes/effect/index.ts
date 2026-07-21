@@ -100,15 +100,58 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     }
     case "union":
       return `${S}.Union(${node.members.map((m) => emitNode(m, ctx)).join(", ")})`;
-    case "intersection":
-      return node.members.map((m) => emitNode(m, ctx)).reduce((acc, cur) => `${S}.extend(${acc}, ${cur})`);
+    case "intersection": {
+      const nonNull = node.members.filter((m) => m.kind !== "null").map((m) => isNullOr(m) ?? m);
+      // Schema.extend fails when both sides are Structs with overlapping keys whose
+      // property schemas cannot intersect (common OpenAPI allOf). Merge object shapes instead.
+      if (nonNull.length > 0 && nonNull.every((m) => m.kind === "object")) {
+        const objs = nonNull as Extract<SchemaNode, { kind: "object" }>[];
+        const properties: Record<string, SchemaNode> = {};
+        for (const obj of objs) {
+          for (const [key, prop] of Object.entries(obj.properties)) {
+            const existing = properties[key];
+            if (!existing) {
+              properties[key] = prop;
+            } else if (existing.kind === "object" && prop.kind === "object") {
+              properties[key] = {
+                kind: "intersection",
+                members: [existing, prop],
+                meta: prop.meta,
+              };
+            } else {
+              properties[key] = {
+                kind: "intersection",
+                members: [existing, prop],
+                meta: prop.meta,
+              };
+            }
+          }
+        }
+        return emitNode(
+          {
+            kind: "object",
+            properties,
+            partial: objs.every((o) => o.partial),
+            additionalProperties: objs.some((o) => o.additionalProperties === true)
+              ? true
+              : (objs.map((o) => o.additionalProperties).find((a) => typeof a === "object") ?? false),
+            constraints: {},
+            meta: node.meta,
+          },
+          ctx,
+        );
+      }
+      if (nonNull.length === 0) return `${S}.Null`;
+      return nonNull.map((m) => emitNode(m, ctx)).reduce((acc, cur) => `${S}.extend(${acc}, ${cur})`);
+    }
     case "not": {
       const inner = emitNode(node.schema, ctx);
       return `${S}.Unknown.pipe(${S}.filter((data) => !${S}.is(${inner})(data), { message: () => "not" }))`;
     }
     case "ref": {
       if (node.name === "Partial" && node.generics?.[0]) {
-        return `${S}.partial(${emitNode(node.generics[0], ctx)})`;
+        // Schema.partial cannot wrap Transformations (e.g. Int.pipe(...)); force optional props instead.
+        return emitNode(node.generics[0], { ...ctx, forceOptionalProps: true });
       }
       if (node.name === "Record" && node.generics?.length === 2) {
         return emitRecord(emitNode(node.generics[0]!, ctx), emitNode(node.generics[1]!, ctx));
@@ -119,6 +162,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       return emitRecord(emitNode(node.key, ctx), emitNode(node.value, ctx));
     case "object": {
       const omitCtx: EmitCtx = { ...ctx, omitDefaults: true };
+      const forceOptional = Boolean(node.partial || ctx.forceOptionalProps);
       const props = objectProps(node, emitNode, omitCtx);
       const body = props
         .map(({ key, optional, expr, meta }) => {
@@ -127,11 +171,10 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
             const named = internEffectDefault(expr, meta, S, ctx, "prop");
             return `${objectKey(key)}: ${named ?? `${S}.optionalWith(${expr}, { default: () => ${lit} })`}`;
           }
-          return `${objectKey(key)}: ${optional ? `${S}.optional(${expr})` : expr}`;
+          return `${objectKey(key)}: ${optional || forceOptional ? `${S}.optional(${expr})` : expr}`;
         })
         .join(", ");
       let expr = `${S}.Struct({ ${body} })`;
-      if (node.partial) expr = `${S}.partial(${expr})`;
       if (node.additionalProperties === true) {
         expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, `${S}.Unknown`)})`;
       } else if (typeof node.additionalProperties === "object") {
@@ -177,8 +220,12 @@ export const effectAdapter: RuntimeAdapter = {
   never: () => `${S}.Never`,
   emitNamedSchema: (name, node, ctx) => {
     const childCtx = { ...ctx, currentSchemaName: name };
-    let body = emitNode(node, childCtx);
+    // Named NullOr wrappers break Schema.extend($ref) — keep const as the inner schema and
+    // surface nullability on the exported TypeScript type instead.
+    const nullInner = isNullOr(node);
+    let body = emitNode(nullInner ?? node, childCtx);
     if (ctx.recursiveNames.has(name)) body = `${S}.suspend(() => ${body})`;
-    return `export const ${name} = ${body};\nexport type ${name} = typeof ${name}.Type;`;
+    const typeExpr = nullInner ? `typeof ${name}.Type | null` : `typeof ${name}.Type`;
+    return `export const ${name} = ${body};\nexport type ${name} = ${typeExpr};`;
   },
 };

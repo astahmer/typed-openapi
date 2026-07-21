@@ -40,6 +40,11 @@ export type EmitCtx = {
    */
   omitDefaults?: boolean;
   /**
+   * When true, emit every object property as optional (Effect/Effect3 substitute for
+   * `Schema.partial`, which cannot wrap Transformation schemas like `Int.pipe(...)`).
+   */
+  forceOptionalProps?: boolean;
+  /**
    * Mutable registry of reusable defaulted schemas shared for one file emit.
    * Keyed by `${kind}:${baseExpr}:${defaultLit}`.
    */

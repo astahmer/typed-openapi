@@ -1,52 +1,364 @@
-import { type } from "arktype";
+import typia from "typia";
 
 // <Schemas>
+export type Order = Partial<{
+  id: number;
+  petId: number;
+  quantity: number;
+  shipDate: string;
+  status: "placed" | "approved" | "delivered";
+  complete: boolean;
+}>;
+export const isOrder = typia.createIs<Order>();
+export const assertOrder = typia.createAssert<Order>();
+export const validateOrder = typia.createValidate<Order>();
+
+export type Address = Partial<{ street: string; city: string; state: string; zip: string }>;
+export const isAddress = typia.createIs<Address>();
+export const assertAddress = typia.createAssert<Address>();
+export const validateAddress = typia.createValidate<Address>();
+
+export type Customer = Partial<{ id: number; username: string; address: Array<Address> }>;
+export const isCustomer = typia.createIs<Customer>();
+export const assertCustomer = typia.createAssert<Customer>();
+export const validateCustomer = typia.createValidate<Customer>();
+
+export type Category = Partial<{ id: number; name: string }>;
+export const isCategory = typia.createIs<Category>();
+export const assertCategory = typia.createAssert<Category>();
+export const validateCategory = typia.createValidate<Category>();
+
+export type User = Partial<{
+  id: number;
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phone: string;
+  userStatus: number;
+}>;
+export const isUser = typia.createIs<User>();
+export const assertUser = typia.createAssert<User>();
+export const validateUser = typia.createValidate<User>();
+
+export type Tag = Partial<{ id: number; name: string }>;
+export const isTag = typia.createIs<Tag>();
+export const assertTag = typia.createAssert<Tag>();
+export const validateTag = typia.createValidate<Tag>();
+
+export type Pet = {
+  id?: number;
+  name: string;
+  category?: Category;
+  photoUrls: Array<string>;
+  tags?: Array<Tag>;
+  status?: "available" | "pending" | "sold";
+};
+export const isPet = typia.createIs<Pet>();
+export const assertPet = typia.createAssert<Pet>();
+export const validatePet = typia.createValidate<Pet>();
+
+export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
+export const isApiResponse = typia.createIs<ApiResponse>();
+export const assertApiResponse = typia.createAssert<ApiResponse>();
+export const validateApiResponse = typia.createValidate<ApiResponse>();
 
 // </Schemas>
 
 // <Endpoints>
-export type get_Get_users = typeof get_Get_users;
-export const get_Get_users = {
-  method: type("'GET'"),
-  path: type("'/users'"),
-  requestFormat: type("'json'"),
-  responseFormat: type("'json'"),
-  parameters: type("never"),
-  responses: { 200: type("string").array() },
+export type put_UpdatePet = typeof put_UpdatePet;
+export const put_UpdatePet = {
+  method: typia.createIs<"PUT">(),
+  path: typia.createIs<"/pet">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { body: isPet },
+  responses: {
+    200: isPet,
+    400: typia.createIs<unknown>(),
+    404: typia.createIs<unknown>(),
+    405: typia.createIs<unknown>(),
+  },
 };
 
-export type post_Very_very_very_very_very_very_very_very_very_very_long =
-  typeof post_Very_very_very_very_very_very_very_very_very_very_long;
-export const post_Very_very_very_very_very_very_very_very_very_very_long = {
-  method: type("'POST'"),
-  path: type("'/users'"),
-  requestFormat: type("'json'"),
-  responseFormat: type("'json'"),
-  parameters: {
-    body: type({ username: type("string") })
-      .partial()
-      .optional(),
+export type post_AddPet = typeof post_AddPet;
+export const post_AddPet = {
+  method: typia.createIs<"POST">(),
+  path: typia.createIs<"/pet">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { body: isPet },
+  responses: { 200: isPet, 405: typia.createIs<unknown>() },
+};
+
+export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
+export const get_FindPetsByStatus = {
+  method: typia.createIs<"GET">(),
+  path: typia.createIs<"/pet/findByStatus">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { query: typia.createIs<Partial<{ status: "available" | "pending" | "sold" }>>() },
+  responses: {
+    200: typia.createIs<Array<Pet>>(),
+    304: typia.createIs<unknown>(),
+    400: typia.createIs<{ code: number; message: string }>(),
   },
-  responses: { 201: type("unknown") },
+};
+
+export type get_FindPetsByTags = typeof get_FindPetsByTags;
+export const get_FindPetsByTags = {
+  method: typia.createIs<"GET">(),
+  path: typia.createIs<"/pet/findByTags">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { query: typia.createIs<Partial<{ tags: Array<string> }>>() },
+  responses: { 200: typia.createIs<Array<Pet> | Array<User> | Array<Tag>>(), 400: typia.createIs<unknown>() },
+};
+
+export type get_GetPetById = typeof get_GetPetById;
+export const get_GetPetById = {
+  method: typia.createIs<"GET">(),
+  path: typia.createIs<"/pet/{petId}">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { path: typia.createIs<{ petId: number }>() },
+  responses: {
+    200: isPet,
+    400: typia.createIs<{ code: number; message: string }>(),
+    404: typia.createIs<{ code: number; message: string }>(),
+  },
+};
+
+export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
+export const post_UpdatePetWithForm = {
+  method: typia.createIs<"POST">(),
+  path: typia.createIs<"/pet/{petId}">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: {
+    query: typia.createIs<Partial<{ name: string; status: string }>>(),
+    path: typia.createIs<{ petId: number }>(),
+  },
+  responses: { 405: typia.createIs<unknown>() },
+};
+
+export type delete_DeletePet = typeof delete_DeletePet;
+export const delete_DeletePet = {
+  method: typia.createIs<"DELETE">(),
+  path: typia.createIs<"/pet/{petId}">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { path: typia.createIs<{ petId: number }>(), header: typia.createIs<Partial<{ api_key: string }>>() },
+  responses: { 400: typia.createIs<unknown>() },
+};
+
+export type post_UploadFile = typeof post_UploadFile;
+export const post_UploadFile = {
+  method: typia.createIs<"POST">(),
+  path: typia.createIs<"/pet/{petId}/uploadImage">(),
+  requestFormat: typia.createIs<"binary">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: {
+    query: typia.createIs<Partial<{ additionalMetadata: string }>>(),
+    path: typia.createIs<{ petId: number }>(),
+    body: typia.createIs<Blob>(),
+  },
+  responses: { 200: isApiResponse },
+};
+
+export type get_GetInventory = typeof get_GetInventory;
+export const get_GetInventory = {
+  method: typia.createIs<"GET">(),
+  path: typia.createIs<"/store/inventory">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: typia.createIs<never>(),
+  responses: { 200: typia.createIs<Record<string, number>>() },
+};
+
+export type post_PlaceOrder = typeof post_PlaceOrder;
+export const post_PlaceOrder = {
+  method: typia.createIs<"POST">(),
+  path: typia.createIs<"/store/order">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { body: isOrder },
+  responses: { 200: isOrder, 405: typia.createIs<unknown>() },
+};
+
+export type get_GetOrderById = typeof get_GetOrderById;
+export const get_GetOrderById = {
+  method: typia.createIs<"GET">(),
+  path: typia.createIs<"/store/order/{orderId}">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { path: typia.createIs<{ orderId: number }>() },
+  responses: { 200: isOrder, 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>() },
+};
+
+export type delete_DeleteOrder = typeof delete_DeleteOrder;
+export const delete_DeleteOrder = {
+  method: typia.createIs<"DELETE">(),
+  path: typia.createIs<"/store/order/{orderId}">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { path: typia.createIs<{ orderId: number }>() },
+  responses: { 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>() },
+};
+
+export type post_CreateUser = typeof post_CreateUser;
+export const post_CreateUser = {
+  method: typia.createIs<"POST">(),
+  path: typia.createIs<"/user">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { body: isUser },
+  responses: { default: isUser },
+};
+
+export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput;
+export const post_CreateUsersWithListInput = {
+  method: typia.createIs<"POST">(),
+  path: typia.createIs<"/user/createWithList">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { body: typia.createIs<Array<User>>() },
+  responses: { 200: isUser, default: typia.createIs<unknown>() },
+};
+
+export type get_LoginUser = typeof get_LoginUser;
+export const get_LoginUser = {
+  method: typia.createIs<"GET">(),
+  path: typia.createIs<"/user/login">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { query: typia.createIs<Partial<{ username: string; password: string }>>() },
+  responses: { 200: typia.createIs<string>(), 400: typia.createIs<unknown>() },
+  responseHeaders: {
+    200: typia.createIs<{ "X-Rate-Limit": number; "X-Expires-After": string }>(),
+    400: typia.createIs<{ "X-Error": string }>(),
+  },
+};
+
+export type get_LogoutUser = typeof get_LogoutUser;
+export const get_LogoutUser = {
+  method: typia.createIs<"GET">(),
+  path: typia.createIs<"/user/logout">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: typia.createIs<never>(),
+  responses: { default: typia.createIs<unknown>() },
+};
+
+export type get_GetUserByName = typeof get_GetUserByName;
+export const get_GetUserByName = {
+  method: typia.createIs<"GET">(),
+  path: typia.createIs<"/user/{username}">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { path: typia.createIs<{ username: string }>() },
+  responses: {
+    200: isUser,
+    201: typia.createIs<{ id: number; username: string }>(),
+    400: typia.createIs<{ code: number; message: string }>(),
+    404: typia.createIs<unknown>(),
+  },
+};
+
+export type put_UpdateUser = typeof put_UpdateUser;
+export const put_UpdateUser = {
+  method: typia.createIs<"PUT">(),
+  path: typia.createIs<"/user/{username}">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { path: typia.createIs<{ username: string }>(), body: isUser },
+  responses: { default: typia.createIs<unknown>() },
+};
+
+export type delete_DeleteUser = typeof delete_DeleteUser;
+export const delete_DeleteUser = {
+  method: typia.createIs<"DELETE">(),
+  path: typia.createIs<"/user/{username}">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { path: typia.createIs<{ username: string }>() },
+  responses: { 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>() },
+};
+
+export type get_GetPetTextPlain = typeof get_GetPetTextPlain;
+export const get_GetPetTextPlain = {
+  method: typia.createIs<"GET">(),
+  path: typia.createIs<"/pet/text">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: typia.createIs<never>(),
+  responses: { 200: isUser },
+};
+
+export type get_GetPetEmpty = typeof get_GetPetEmpty;
+export const get_GetPetEmpty = {
+  method: typia.createIs<"GET">(),
+  path: typia.createIs<"/pet/empty">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: typia.createIs<never>(),
+  responses: { 204: typia.createIs<unknown>() },
+};
+
+export type get_GetPetCustom = typeof get_GetPetCustom;
+export const get_GetPetCustom = {
+  method: typia.createIs<"GET">(),
+  path: typia.createIs<"/pet/custom">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: typia.createIs<never>(),
+  responses: { 200: isPet },
 };
 
 // </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
-  get: {
-    "/users": get_Get_users,
+  put: {
+    "/pet": put_UpdatePet,
+    "/user/{username}": put_UpdateUser,
   },
   post: {
-    "/users": post_Very_very_very_very_very_very_very_very_very_very_long,
+    "/pet": post_AddPet,
+    "/pet/{petId}": post_UpdatePetWithForm,
+    "/pet/{petId}/uploadImage": post_UploadFile,
+    "/store/order": post_PlaceOrder,
+    "/user": post_CreateUser,
+    "/user/createWithList": post_CreateUsersWithListInput,
+  },
+  get: {
+    "/pet/findByStatus": get_FindPetsByStatus,
+    "/pet/findByTags": get_FindPetsByTags,
+    "/pet/{petId}": get_GetPetById,
+    "/store/inventory": get_GetInventory,
+    "/store/order/{orderId}": get_GetOrderById,
+    "/user/login": get_LoginUser,
+    "/user/logout": get_LogoutUser,
+    "/user/{username}": get_GetUserByName,
+    "/pet/text": get_GetPetTextPlain,
+    "/pet/empty": get_GetPetEmpty,
+    "/pet/custom": get_GetPetCustom,
+  },
+  delete: {
+    "/pet/{petId}": delete_DeletePet,
+    "/store/order/{orderId}": delete_DeleteOrder,
+    "/user/{username}": delete_DeleteUser,
   },
 };
 export type EndpointByMethod = typeof EndpointByMethod;
 // </EndpointByMethod>
 
 // <EndpointByMethod.Shorthands>
-export type GetEndpoints = EndpointByMethod["get"];
+export type PutEndpoints = EndpointByMethod["put"];
 export type PostEndpoints = EndpointByMethod["post"];
+export type GetEndpoints = EndpointByMethod["get"];
+export type DeleteEndpoints = EndpointByMethod["delete"];
 // </EndpointByMethod.Shorthands>
 
 // <ApiClientTypes>
@@ -66,9 +378,11 @@ export type ResponseFormat = "json" | "sse";
 
 // <EndpointRequestFormats>
 /** Non-json request body encodings; missing entries default to `"json"`. */
-export const endpointRequestFormats = {} as Partial<{
-  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }>;
-}>;
+export const endpointRequestFormats = {
+  post: {
+    "/pet/{petId}/uploadImage": "binary",
+  },
+} as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
 
 // <EndpointResponseFormats>
@@ -226,21 +540,17 @@ export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
       : never;
 }[keyof TAllResponses];
 
-type InferSchemaValue<T> = T extends { infer: infer O }
-  ? O
+type InferSchemaValue<T> = T extends ((input: unknown) => input is infer U)
+  ? U
   : T extends object
-    ? { [K in keyof T]: InferSchemaValue<T[K]> }
-    : T;
-type InferSchemaInput<T> = T extends { inferIn: infer I }
-  ? I
-  : T extends object
-    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
-        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
-          InferSchemaInput<T[K]>,
+    ? { [K in keyof T as undefined extends InferSchemaValue<T[K]> ? never : K]: InferSchemaValue<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaValue<T[K]> ? K : never]?: Exclude<
+          InferSchemaValue<T[K]>,
           undefined
         >;
       }
     : T;
+type InferSchemaInput<T> = InferSchemaValue<T>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
@@ -290,9 +600,9 @@ export class TypedStatusError<TData = unknown> extends Error {
 // <ValidateHelpers>
 const defaultParse = (schema: unknown, value: unknown): unknown => {
   return (() => {
-    const out = (schema as (data: unknown) => unknown)(value);
-    if (out instanceof type.errors) throw out;
-    return out;
+    const isValid = (schema as (input: unknown) => boolean)(value);
+    if (!isValid) throw new Error("typia validation failed");
+    return value;
   })();
 };
 
@@ -413,8 +723,8 @@ export class ApiClient {
     return;
   };
 
-  // <ApiClient.get>
-  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+  // <ApiClient.put>
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
@@ -425,7 +735,7 @@ export class ApiClient {
     >
   ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
 
-  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
@@ -436,13 +746,13 @@ export class ApiClient {
     >
   ): Promise<SafeApiResponse<TEndpoint>>;
 
-  get<Path extends keyof GetEndpoints, _TEndpoint extends GetEndpoints[Path]>(
+  put<Path extends keyof PutEndpoints, _TEndpoint extends PutEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<any>
   ): Promise<any> {
-    return this.request("get", path, ...params);
+    return this.request("put", path, ...params);
   }
-  // </ApiClient.get>
+  // </ApiClient.put>
 
   // <ApiClient.post>
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
@@ -474,6 +784,68 @@ export class ApiClient {
     return this.request("post", path, ...params);
   }
   // </ApiClient.post>
+
+  // <ApiClient.get>
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
+
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  get<Path extends keyof GetEndpoints, _TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    return this.request("get", path, ...params);
+  }
+  // </ApiClient.get>
+
+  // <ApiClient.delete>
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+    >
+  ): Promise<Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"]>;
+
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+    >
+  ): Promise<SafeApiResponse<TEndpoint>>;
+
+  delete<Path extends keyof DeleteEndpoints, _TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<any>
+  ): Promise<any> {
+    return this.request("delete", path, ...params);
+  }
+  // </ApiClient.delete>
 
   // <ApiClient.request>
   /**

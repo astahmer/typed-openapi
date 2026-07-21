@@ -1,33 +1,28 @@
-import { type } from "arktype";
+import typia from "typia";
 
 // <Schemas>
-
 // </Schemas>
 
 // <Endpoints>
 export type get_Get_users = typeof get_Get_users;
 export const get_Get_users = {
-  method: type("'GET'"),
-  path: type("'/users'"),
-  requestFormat: type("'json'"),
-  responseFormat: type("'json'"),
-  parameters: type("never"),
-  responses: { 200: type("string").array() },
+  method: typia.createIs<"GET">(),
+  path: typia.createIs<"/users">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: typia.createIs<never>(),
+  responses: { 200: typia.createIs<Array<string>>() },
 };
 
 export type post_Very_very_very_very_very_very_very_very_very_very_long =
   typeof post_Very_very_very_very_very_very_very_very_very_very_long;
 export const post_Very_very_very_very_very_very_very_very_very_very_long = {
-  method: type("'POST'"),
-  path: type("'/users'"),
-  requestFormat: type("'json'"),
-  responseFormat: type("'json'"),
-  parameters: {
-    body: type({ username: type("string") })
-      .partial()
-      .optional(),
-  },
-  responses: { 201: type("unknown") },
+  method: typia.createIs<"POST">(),
+  path: typia.createIs<"/users">(),
+  requestFormat: typia.createIs<"json">(),
+  responseFormat: typia.createIs<"json">(),
+  parameters: { body: typia.createIs<Partial<{ username: string }>>() },
+  responses: { 201: typia.createIs<unknown>() },
 };
 
 // </Endpoints>
@@ -226,21 +221,17 @@ export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
       : never;
 }[keyof TAllResponses];
 
-type InferSchemaValue<T> = T extends { infer: infer O }
-  ? O
+type InferSchemaValue<T> = T extends ((input: unknown) => input is infer U)
+  ? U
   : T extends object
-    ? { [K in keyof T]: InferSchemaValue<T[K]> }
-    : T;
-type InferSchemaInput<T> = T extends { inferIn: infer I }
-  ? I
-  : T extends object
-    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
-        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
-          InferSchemaInput<T[K]>,
+    ? { [K in keyof T as undefined extends InferSchemaValue<T[K]> ? never : K]: InferSchemaValue<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaValue<T[K]> ? K : never]?: Exclude<
+          InferSchemaValue<T[K]>,
           undefined
         >;
       }
     : T;
+type InferSchemaInput<T> = InferSchemaValue<T>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
@@ -290,9 +281,9 @@ export class TypedStatusError<TData = unknown> extends Error {
 // <ValidateHelpers>
 const defaultParse = (schema: unknown, value: unknown): unknown => {
   return (() => {
-    const out = (schema as (data: unknown) => unknown)(value);
-    if (out instanceof type.errors) throw out;
-    return out;
+    const isValid = (schema as (input: unknown) => boolean)(value);
+    if (!isValid) throw new Error("typia validation failed");
+    return value;
   })();
 };
 

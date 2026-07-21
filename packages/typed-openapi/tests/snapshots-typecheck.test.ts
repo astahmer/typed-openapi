@@ -63,7 +63,7 @@ describe("snapshot files typecheck", () => {
     const runtime = runtimeOf(file);
     const isZod3 = runtime === "zod3";
 
-    test(file, { timeout: file.includes("docker") ? 180_000 : 60_000 }, () => {
+    test(file, { timeout: file.includes("docker") || file.includes("kombo") ? 300_000 : 60_000 }, () => {
       if (isZod3 && !zod3Root) {
         expect.fail("zod@3 not found in pnpm store — needed to typecheck *.zod3.ts snapshots");
       }
@@ -71,6 +71,9 @@ describe("snapshot files typecheck", () => {
       const dir = join(outRoot, file.replace(/\.ts$/, ""));
       mkdirSync(dir, { recursive: true });
       copyFileSync(join(snapshotsDir, file), join(dir, "client.ts"));
+
+      const typeboxRoot = resolvePkgRoot("@sinclair/typebox");
+      const typiaRoot = resolvePkgRoot("typia");
 
       const paths: Record<string, string[]> = {
         effect: [effectRoot],
@@ -83,6 +86,10 @@ describe("snapshot files typecheck", () => {
         "zod/*": [join(isZod3 ? zod3Root! : zod4Root, "*")],
         "@effect/schema": [effectSchemaRoot],
         "@effect/schema/*": [join(effectSchemaRoot, "*")],
+        "@sinclair/typebox": [typeboxRoot],
+        "@sinclair/typebox/*": [join(typeboxRoot, "*")],
+        typia: [typiaRoot],
+        "typia/*": [join(typiaRoot, "*")],
       };
 
       writeFileSync(

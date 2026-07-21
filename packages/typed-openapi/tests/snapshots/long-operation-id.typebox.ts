@@ -1,33 +1,29 @@
-import { type } from "arktype";
+import { Type, type Static } from "@sinclair/typebox";
+import { Value } from "@sinclair/typebox/value";
 
 // <Schemas>
-
 // </Schemas>
 
 // <Endpoints>
 export type get_Get_users = typeof get_Get_users;
 export const get_Get_users = {
-  method: type("'GET'"),
-  path: type("'/users'"),
-  requestFormat: type("'json'"),
-  responseFormat: type("'json'"),
-  parameters: type("never"),
-  responses: { 200: type("string").array() },
+  method: Type.Literal("GET"),
+  path: Type.Literal("/users"),
+  requestFormat: Type.Literal("json"),
+  responseFormat: Type.Literal("json"),
+  parameters: Type.Never(),
+  responses: { 200: Type.Array(Type.String()) },
 };
 
 export type post_Very_very_very_very_very_very_very_very_very_very_long =
   typeof post_Very_very_very_very_very_very_very_very_very_very_long;
 export const post_Very_very_very_very_very_very_very_very_very_very_long = {
-  method: type("'POST'"),
-  path: type("'/users'"),
-  requestFormat: type("'json'"),
-  responseFormat: type("'json'"),
-  parameters: {
-    body: type({ username: type("string") })
-      .partial()
-      .optional(),
-  },
-  responses: { 201: type("unknown") },
+  method: Type.Literal("POST"),
+  path: Type.Literal("/users"),
+  requestFormat: Type.Literal("json"),
+  responseFormat: Type.Literal("json"),
+  parameters: { body: Type.Optional(Type.Partial(Type.Object({ username: Type.String() }))) },
+  responses: { 201: Type.Unknown() },
 };
 
 // </Endpoints>
@@ -226,21 +222,17 @@ export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
       : never;
 }[keyof TAllResponses];
 
-type InferSchemaValue<T> = T extends { infer: infer O }
-  ? O
+type InferSchemaValue<T> = T extends import("@sinclair/typebox").TSchema
+  ? import("@sinclair/typebox").Static<T>
   : T extends object
-    ? { [K in keyof T]: InferSchemaValue<T[K]> }
-    : T;
-type InferSchemaInput<T> = T extends { inferIn: infer I }
-  ? I
-  : T extends object
-    ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & {
-        [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<
-          InferSchemaInput<T[K]>,
+    ? { [K in keyof T as undefined extends InferSchemaValue<T[K]> ? never : K]: InferSchemaValue<T[K]> } & {
+        [K in keyof T as undefined extends InferSchemaValue<T[K]> ? K : never]?: Exclude<
+          InferSchemaValue<T[K]>,
           undefined
         >;
       }
     : T;
+type InferSchemaInput<T> = InferSchemaValue<T>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
@@ -290,9 +282,9 @@ export class TypedStatusError<TData = unknown> extends Error {
 // <ValidateHelpers>
 const defaultParse = (schema: unknown, value: unknown): unknown => {
   return (() => {
-    const out = (schema as (data: unknown) => unknown)(value);
-    if (out instanceof type.errors) throw out;
-    return out;
+    if (!Value.Check(schema as import("@sinclair/typebox").TSchema, value))
+      throw new Error("TypeBox validation failed");
+    return value;
   })();
 };
 

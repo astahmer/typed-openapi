@@ -9,42 +9,47 @@ const Union_default_available_prop = S.optionalWith(
 // </DefaultSchemas>
 
 // <Schemas>
-export const Order = S.partial(
-  S.Struct({
-    id: S.Int,
-    petId: S.Int,
-    quantity: S.Int,
-    shipDate: S.String,
-    status: S.Union(S.Literal("placed"), S.Literal("approved"), S.Literal("delivered")),
-    complete: S.Boolean,
-  }),
-);
+export const Order = S.Struct({
+  id: S.optional(S.Int),
+  petId: S.optional(S.Int),
+  quantity: S.optional(S.Int),
+  shipDate: S.optional(S.String),
+  status: S.optional(S.Union(S.Literal("placed"), S.Literal("approved"), S.Literal("delivered"))),
+  complete: S.optional(S.Boolean),
+});
 export type Order = S.Schema.Type<typeof Order>;
 
-export const Address = S.partial(S.Struct({ street: S.String, city: S.String, state: S.String, zip: S.String }));
+export const Address = S.Struct({
+  street: S.optional(S.String),
+  city: S.optional(S.String),
+  state: S.optional(S.String),
+  zip: S.optional(S.String),
+});
 export type Address = S.Schema.Type<typeof Address>;
 
-export const Customer = S.partial(S.Struct({ id: S.Int, username: S.String, address: S.Array(Address) }));
+export const Customer = S.Struct({
+  id: S.optional(S.Int),
+  username: S.optional(S.String),
+  address: S.optional(S.Array(Address)),
+});
 export type Customer = S.Schema.Type<typeof Customer>;
 
-export const Category = S.partial(S.Struct({ id: S.Int, name: S.String }));
+export const Category = S.Struct({ id: S.optional(S.Int), name: S.optional(S.String) });
 export type Category = S.Schema.Type<typeof Category>;
 
-export const User = S.partial(
-  S.Struct({
-    id: S.Int,
-    username: S.String,
-    firstName: S.String,
-    lastName: S.String,
-    email: S.String,
-    password: S.String,
-    phone: S.String,
-    userStatus: S.Int,
-  }),
-);
+export const User = S.Struct({
+  id: S.optional(S.Int),
+  username: S.optional(S.String),
+  firstName: S.optional(S.String),
+  lastName: S.optional(S.String),
+  email: S.optional(S.String),
+  password: S.optional(S.String),
+  phone: S.optional(S.String),
+  userStatus: S.optional(S.Int),
+});
 export type User = S.Schema.Type<typeof User>;
 
-export const Tag = S.partial(S.Struct({ id: S.Int, name: S.String }));
+export const Tag = S.Struct({ id: S.optional(S.Int), name: S.optional(S.String) });
 export type Tag = S.Schema.Type<typeof Tag>;
 
 export const Pet = S.Struct({
@@ -57,7 +62,11 @@ export const Pet = S.Struct({
 });
 export type Pet = S.Schema.Type<typeof Pet>;
 
-export const ApiResponse = S.partial(S.Struct({ code: S.Int, type: S.String, message: S.String }));
+export const ApiResponse = S.Struct({
+  code: S.optional(S.Int),
+  type: S.optional(S.String),
+  message: S.optional(S.String),
+});
 export type ApiResponse = S.Schema.Type<typeof ApiResponse>;
 
 // </Schemas>
@@ -89,7 +98,7 @@ export const get_FindPetsByStatus = {
   path: S.Literal("/pet/findByStatus"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.partial(S.Struct({ status: Union_default_available_prop }))) },
+  parameters: { query: S.optional(S.Struct({ status: Union_default_available_prop })) },
   responses: { 200: S.Array(Pet), 304: S.Unknown, 400: S.Struct({ code: S.Int, message: S.String }) },
 };
 
@@ -99,7 +108,7 @@ export const get_FindPetsByTags = {
   path: S.Literal("/pet/findByTags"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.partial(S.Struct({ tags: S.Array(S.String) }))) },
+  parameters: { query: S.optional(S.Struct({ tags: S.optional(S.Array(S.String)) })) },
   responses: { 200: S.Union(S.Array(Pet), S.Array(User), S.Array(Tag)), 400: S.Unknown },
 };
 
@@ -124,7 +133,7 @@ export const post_UpdatePetWithForm = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: {
-    query: S.optional(S.partial(S.Struct({ name: S.String, status: S.String }))),
+    query: S.optional(S.Struct({ name: S.optional(S.String), status: S.optional(S.String) })),
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }),
   },
   responses: { 405: S.Unknown },
@@ -138,7 +147,7 @@ export const delete_DeletePet = {
   responseFormat: S.Literal("json"),
   parameters: {
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }),
-    header: S.optional(S.partial(S.Struct({ api_key: S.String }))),
+    header: S.optional(S.Struct({ api_key: S.optional(S.String) })),
   },
   responses: { 400: S.Unknown },
 };
@@ -150,7 +159,7 @@ export const post_UploadFile = {
   requestFormat: S.Literal("binary"),
   responseFormat: S.Literal("json"),
   parameters: {
-    query: S.optional(S.partial(S.Struct({ additionalMetadata: S.String }))),
+    query: S.optional(S.Struct({ additionalMetadata: S.optional(S.String) })),
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }),
     body: S.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob),
   },
@@ -223,7 +232,7 @@ export const get_LoginUser = {
   path: S.Literal("/user/login"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.optional(S.partial(S.Struct({ username: S.String, password: S.String }))) },
+  parameters: { query: S.optional(S.Struct({ username: S.optional(S.String), password: S.optional(S.String) })) },
   responses: { 200: S.String, 400: S.Unknown },
   responseHeaders: {
     200: S.Struct({ "X-Rate-Limit": S.Int, "X-Expires-After": S.String }),

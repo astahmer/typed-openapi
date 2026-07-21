@@ -18,7 +18,7 @@ const emitStringDef = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitC
   if (c.format === "uuid") return quote("string.uuid");
   if (c.format === "uri" || c.format === "url") return quote("string.url");
   if (c.format === "date-time") return quote("string.date");
-  if (c.pattern) return quote(`/${c.pattern}/`);
+  // Patterns handled in emitNode via .narrow() — avoid `/[...]/` string-def pitfalls.
   if (c.minLength !== undefined && c.maxLength !== undefined) {
     return quote(`string >= ${c.minLength} <= ${c.maxLength}`);
   }
@@ -41,17 +41,38 @@ const emitNumberDef = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitC
   if (hasLo && hasHi) {
     const left = c.exclusiveMinimum !== undefined ? `${c.exclusiveMinimum} <` : `${c.minimum} <=`;
     const right = c.exclusiveMaximum !== undefined ? `< ${c.exclusiveMaximum}` : `<= ${c.maximum}`;
+    // ArkType rejects non-literal extremes like ±1.797e+308 in string defs.
+    if (
+      [c.minimum, c.maximum, c.exclusiveMinimum, c.exclusiveMaximum].some(
+        (n) => typeof n === "number" && !Number.isSafeInteger(n) && Math.abs(n) > 1e15,
+      )
+    ) {
+      return quote(base);
+    }
     return quote(`${left} ${base} ${right}`);
   }
-  if (c.exclusiveMinimum !== undefined) return quote(`${base} > ${c.exclusiveMinimum}`);
-  if (c.minimum !== undefined) return quote(`${base} >= ${c.minimum}`);
-  if (c.exclusiveMaximum !== undefined) return quote(`${base} < ${c.exclusiveMaximum}`);
-  if (c.maximum !== undefined) return quote(`${base} <= ${c.maximum}`);
+  if (c.exclusiveMinimum !== undefined) {
+    if (!Number.isSafeInteger(c.exclusiveMinimum) && Math.abs(c.exclusiveMinimum) > 1e15) return quote(base);
+    return quote(`${base} > ${c.exclusiveMinimum}`);
+  }
+  if (c.minimum !== undefined) {
+    if (!Number.isSafeInteger(c.minimum) && Math.abs(c.minimum) > 1e15) return quote(base);
+    return quote(`${base} >= ${c.minimum}`);
+  }
+  if (c.exclusiveMaximum !== undefined) {
+    if (!Number.isSafeInteger(c.exclusiveMaximum) && Math.abs(c.exclusiveMaximum) > 1e15) return quote(base);
+    return quote(`${base} < ${c.exclusiveMaximum}`);
+  }
+  if (c.maximum !== undefined) {
+    if (!Number.isSafeInteger(c.maximum) && Math.abs(c.maximum) > 1e15) return quote(base);
+    return quote(`${base} <= ${c.maximum}`);
+  }
   return quote(base);
 };
 
 /** Open maps: index signature. `type("Record", …)` is not a valid arity. */
-const emitRecord = (valueExpr: string) => `type({ "[string]": ${valueExpr} })`;
+const emitRecord = (valueExpr: string, ctx?: EmitCtx) =>
+  ctx?.moduleSchemaNames ? `{ "[string]": ${valueExpr} }` : `type({ "[string]": ${valueExpr} })`;
 
 /** ArkType string defs for unit types: "'active'", "null", "true", "1" */
 const arkUnitDef = (value: LiteralValue): string => {
@@ -66,6 +87,9 @@ const isModuleStringDef = (expr: string): boolean =>
 
 const unquote = (expr: string): string => expr.slice(1, -1);
 
+/** Ensure expr is an ArkType Type (has .or / .array), wrapping raw `{...}` module literals. */
+const asTypeExpr = (expr: string): string => (expr.trimStart().startsWith("{") ? `type(${expr})` : expr);
+
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
   if (nullInner) {
@@ -73,12 +97,18 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     if (ctx.moduleSchemaNames && isModuleStringDef(inner)) {
       return quote(`${unquote(inner)} | null`);
     }
-    return `${inner}.or(type("null"))`;
+    return `${asTypeExpr(inner)}.or(type("null"))`;
   }
 
   switch (node.kind) {
-    case "string":
+    case "string": {
+      const c = applyStringConstraints(node.constraints, ctx.validation);
+      // Character classes / optional-slash patterns break ArkType's `/regex/` string-def parser.
+      if (c.pattern) {
+        return `type("string").narrow((s): s is string => new RegExp(${JSON.stringify(c.pattern)}).test(s))`;
+      }
       return `type(${emitStringDef(node, ctx)})`;
+    }
     case "binary":
       return emitBinaryBlobCheck("arktype");
     case "stream":
@@ -108,14 +138,22 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       if (ctx.moduleSchemaNames && isModuleStringDef(items)) {
         return quote(`${unquote(items)}[]`);
       }
-      return `${items}.array()`;
+      return `${asTypeExpr(items)}.array()`;
     }
     case "tuple":
       return `type([${node.items.map((i) => emitNode(i, ctx)).join(", ")}])`;
-    case "union":
-      return node.members.map((m) => emitNode(m, ctx)).reduce((a, b) => `${a}.or(${b})`);
+    case "union": {
+      const members = node.members.map((m) => emitNode(m, ctx));
+      if (ctx.moduleSchemaNames) {
+        // Inside type.module, `type()` / `.or()` leave scope and break `"SchemaN"` refs.
+        // ArkType accepts `[A, "|", B, "|", C]` as a union definition.
+        if (members.length === 1) return members[0]!;
+        return `[${members.flatMap((m, i) => (i === 0 ? [m] : [`"|"`, m])).join(", ")}]`;
+      }
+      return members.map(asTypeExpr).reduce((a, b) => `${a}.or(${b})`);
+    }
     case "intersection":
-      return node.members.map((m) => emitNode(m, ctx)).reduce((a, b) => `${a}.and(${b})`);
+      return node.members.map((m) => asTypeExpr(emitNode(m, ctx))).reduce((a, b) => `${a}.and(${b})`);
     case "not":
       // ArkType negation is limited; fall back to unknown
       return `type("unknown")`;
@@ -124,7 +162,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         return `${emitNode(node.generics[0], ctx)}.partial()`;
       }
       if (node.name === "Record" && node.generics?.length === 2) {
-        return emitRecord(emitNode(node.generics[1]!, ctx));
+        return emitRecord(emitNode(node.generics[1]!, ctx), ctx);
       }
       if (ctx.moduleSchemaNames?.has(node.name)) {
         return quote(node.name);
@@ -132,7 +170,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       return node.name;
     }
     case "record":
-      return emitRecord(emitNode(node.value, ctx));
+      return emitRecord(emitNode(node.value, ctx), ctx);
     case "object": {
       const forceOptional = Boolean(node.partial && ctx.moduleSchemaNames);
       const props = objectProps(node, emitNode, ctx);
@@ -141,22 +179,24 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
           const hasDefault = meta.default !== undefined;
           const keyLit = (optional || forceOptional) && !hasDefault ? quote(`${key}?`) : objectKey(key);
           // ArkType defaults only valid on object/tuple properties as string defs.
-          if (hasDefault && expr.startsWith("type(") && expr.endsWith(")")) {
-            const innerArg = expr.slice("type(".length, -1);
-            const withDef = arktypeDefaultDef(innerArg, meta);
-            if (withDef) return `${keyLit}: ${withDef}`;
-          }
-          if (hasDefault && isModuleStringDef(expr)) {
-            const withDef = arktypeDefaultDef(expr, meta);
-            if (withDef) return `${keyLit}: ${withDef}`;
+          if (hasDefault) {
+            const plainTypeArg = expr.match(/^type\(("(?:\\.|[^"\\])*")\)$/);
+            if (plainTypeArg?.[1]) {
+              const withDef = arktypeDefaultDef(plainTypeArg[1], meta);
+              if (withDef) return `${keyLit}: ${withDef}`;
+            }
+            if (isModuleStringDef(expr)) {
+              const withDef = arktypeDefaultDef(expr, meta);
+              if (withDef) return `${keyLit}: ${withDef}`;
+            }
           }
           // Fallback: keep expr (defaults only attach to string defs in ArkType)
           return `${keyLit}: ${expr}`;
         })
         .join(", ");
-      // Root values inside type.module must be raw object literals (not type({...}))
-      // so sibling string refs like "Category[]" resolve.
-      if (ctx.moduleSchemaNames && ctx.currentSchemaName) {
+      // Inside type.module, always use raw object literals so sibling string refs resolve
+      // at any nesting depth (wrapping with type({...}) leaves the module scope).
+      if (ctx.moduleSchemaNames) {
         return `{ ${body} }`;
       }
       let expr = `type({ ${body} })`;
