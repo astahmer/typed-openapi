@@ -1,7 +1,8 @@
 import { describe, test } from "vitest";
-import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
+import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 
+// Minimal OpenAPI spec with '*/*' response content type
 const openApiDoc: OpenAPIObject = {
   openapi: "3.0.3",
   info: { title: "Test API Spec", version: "1.0.0" },
@@ -12,7 +13,7 @@ const openApiDoc: OpenAPIObject = {
         responses: {
           "200": {
             content: {
-              "application/vnd.github.v3.star+json": {
+              "*/*": {
                 schema: {
                   type: "array",
                   items: { $ref: "#/components/schemas/Response" },
@@ -37,13 +38,13 @@ const openApiDoc: OpenAPIObject = {
   },
 };
 
-describe("issue with custom mimetype json", () => {
+describe("issue-52: response of content type '*/*'", () => {
   test("should not resolve response as unknown", ({ expect }) => {
     const result = mapOpenApiEndpoints(openApiDoc);
     // Find the endpoint by alias (see getAlias logic: 'get_GetTest')
     const endpoint = result.endpointList.find((e) => e.meta.alias === "get_GetTest");
     expect(endpoint).toBeDefined();
-
+    // The bug: endpoint.response is 'unknown' instead of the correct type
     const response200 = endpoint?.responses?.["200"];
     expect(response200).not.toMatchObject({ kind: "unknown" });
     expect(response200).toMatchObject({

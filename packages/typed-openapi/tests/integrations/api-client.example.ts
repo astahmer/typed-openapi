@@ -17,8 +17,8 @@
  * Keep in sync with src/default-fetcher.generator.ts
  */
 
-import { type Fetcher, type RequestFormat, createApiClient } from "../tmp/generated-client.ts";
-import { encodeRequestBody } from "../src/encode-request-body.ts";
+import { type Fetcher, type RequestFormat, createApiClient } from "../../tmp/generated-client.ts";
+import { encodeRequestBody } from "../../src/encode-request-body.ts";
 
 // Basic configuration
 const API_BASE_URL = process.env["API_BASE_URL"] || "https://api.example.com";

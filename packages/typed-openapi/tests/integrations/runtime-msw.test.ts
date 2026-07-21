@@ -5,8 +5,8 @@ import { mutationOptions, QueryClient, queryOptions } from "@tanstack/react-quer
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { createApiClient, TypedStatusError } from "../tmp/generated-client.ts";
-import { TanstackQueryApiClient } from "../tmp/generated-tanstack.ts";
+import { createApiClient, TypedStatusError } from "../../tmp/generated-client.ts";
+import { TanstackQueryApiClient } from "../../tmp/generated-tanstack.ts";
 import { api } from "./api-client.example.js";
 
 // Mock handler for a real endpoint from petstore.yaml

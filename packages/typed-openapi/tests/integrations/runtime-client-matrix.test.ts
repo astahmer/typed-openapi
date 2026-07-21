@@ -6,8 +6,8 @@ import { describe, expect, test, vi } from "vitest";
 import { Effect } from "effect";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
-import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
-import { generateFile, type OutputRuntime } from "../src/generator.ts";
+import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
+import { generateFile, type OutputRuntime } from "../../src/generator.ts";
 
 /** typia needs an AOT transformer; mock so generated clients can load under vitest. */
 vi.mock("typia", () => {
@@ -76,8 +76,8 @@ const samples: SampleSpec[] = [
   },
 ];
 
-const samplePath = (file: string) => join(__dirname, "samples", file);
-const outRoot = join(__dirname, "../tmp/runtime-matrix");
+const samplePath = (file: string) => join(__dirname, "../samples", file);
+const outRoot = join(__dirname, "../../tmp/runtime-matrix");
 
 type PromiseMod = {
   createApiClient: (

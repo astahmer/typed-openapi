@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import type { OutputRuntime } from "../src/generator.ts";
 
 /**
- * Emit per-runtime tstyche suites mirroring integration-runtime-msw + none.types coverage.
+ * Emit per-runtime tstyche suites mirroring integrations/runtime-msw + none.types coverage.
  * Run via: pnpm gen:tstyche-fixtures (wired) or tsx scripts/gen-tstyche-suites.ts
  */
 

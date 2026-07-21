@@ -1,7 +1,7 @@
 import { describe, test } from "vitest";
-import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
-import { generateFile } from "../src/generator.ts";
-import { prettify } from "../src/format.ts";
+import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
+import { generateFile } from "../../src/generator.ts";
+import { prettify } from "../../src/format.ts";
 
 import type { OpenAPIObject, ParameterObject } from "openapi3-ts/oas31";
 

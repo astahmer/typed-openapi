@@ -1,8 +1,8 @@
 import { describe, test } from "vitest";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 
-import { generateFile } from "../src/generator.ts";
-import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
+import { generateFile } from "../../src/generator.ts";
+import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
 
 describe("issue with 4XX response status code keys", () => {
   test("quotes 4XX response keys in generated output", async ({ expect }) => {

@@ -1,8 +1,8 @@
 import { describe, test } from "vitest";
-import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
+import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
-import { generateFile } from "../src/generator.ts";
-import { prettify } from "../src/pretty.export.ts";
+import { generateFile } from "../../src/generator.ts";
+import { prettify } from "../../src/pretty.export.ts";
 
 const openApiDoc: OpenAPIObject = {
   openapi: "3.0.3",

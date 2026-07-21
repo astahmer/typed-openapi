@@ -166,8 +166,7 @@ describe("arktype promise ApiClient", () => {
   });
 
   it("infer response with typed headers / user/login", async () => {
-    const result = await api.get("/user/login", { withResponse: true } as any);
-    expect(result).type.toBeAssignableTo<
+    const result = await api.get("/user/login", { withResponse: true } as any);    expect(result).type.toBeAssignableTo<
       TypedApiResponse<
         { 200: string; 400: unknown },
         {

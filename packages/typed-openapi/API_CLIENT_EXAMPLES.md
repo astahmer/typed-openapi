@@ -4,10 +4,10 @@ These are production-ready API client wrappers for your generated typed-openapi 
 and customize it.
 
 > **Prefer `--default-fetcher`.** It matches the current `Fetcher` shape (`fetch(input)` with `requestFormat`, cookies,
-> etc.). The checked-in example at [`tests/api-client.example.ts`](./tests/api-client.example.ts) stays in sync with
+> etc.). The checked-in example at [`tests/integrations/api-client.example.ts`](./tests/integrations/api-client.example.ts) stays in sync with
 > `src/default-fetcher.generator.ts`.
 
-## Basic API Client ([api-client.example.ts](./tests/api-client.example.ts))
+## Basic API Client ([api-client.example.ts](./tests/integrations/api-client.example.ts))
 
 A simple, dependency-free client that handles:
 
@@ -75,7 +75,7 @@ export const api = createApiClient({ fetch: fetcher }, API_BASE_URL);
 
 ### Setup
 
-1. Generate with `--default-fetcher` **or** copy `tests/api-client.example.ts`
+1. Generate with `--default-fetcher` **or** copy `tests/integrations/api-client.example.ts`
 2. Point the import at your generated API file
 3. Set `API_BASE_URL`
 

@@ -1,5 +1,5 @@
 import { describe, test } from "vitest";
-import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
+import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 
 const openApiDoc: OpenAPIObject = {
@@ -12,26 +12,11 @@ const openApiDoc: OpenAPIObject = {
         responses: {
           "200": {
             content: {
-              "application/json": {
+              "application/vnd.github.v3.star+json": {
                 schema: {
                   type: "array",
                   items: { $ref: "#/components/schemas/Response" },
                 },
-              },
-              "application/vnd.github.v3.star+json": {
-                schema: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      starred_at: { type: "string", format: "date-time" },
-                      repo: { $ref: "#/components/schemas/Response" },
-                    },
-                  },
-                },
-              },
-              "application/idk-some-other+ignored": {
-                schema: { type: "boolean" },
               },
             },
           },
@@ -52,28 +37,18 @@ const openApiDoc: OpenAPIObject = {
   },
 };
 
-describe("issue with multiple valid response media types", () => {
+describe("issue with custom mimetype json", () => {
   test("should not resolve response as unknown", ({ expect }) => {
     const result = mapOpenApiEndpoints(openApiDoc);
+    // Find the endpoint by alias (see getAlias logic: 'get_GetTest')
     const endpoint = result.endpointList.find((e) => e.meta.alias === "get_GetTest");
     expect(endpoint).toBeDefined();
 
     const response200 = endpoint?.responses?.["200"];
+    expect(response200).not.toMatchObject({ kind: "unknown" });
     expect(response200).toMatchObject({
-      kind: "union",
-      members: [
-        {
-          kind: "array",
-          items: { kind: "ref", name: "Response" },
-        },
-        {
-          kind: "array",
-          items: {
-            kind: "object",
-            partial: true,
-          },
-        },
-      ],
+      kind: "array",
+      items: { kind: "ref", name: "Response" },
     });
   });
 });

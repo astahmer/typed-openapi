@@ -10,13 +10,13 @@ import { createRequire } from "node:module";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { z } from "zod";
-import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
-import { generateFile } from "../src/generator.ts";
-import { openApiToIr } from "../src/schema-ir/openapi-to-ir.ts";
-import { createEmitCtx } from "../src/runtimes/types.ts";
-import { resolveValidationPolicy } from "../src/runtimes/validation.ts";
-import { zodAdapter } from "../src/runtimes/zod/index.ts";
-import { objectKey } from "../src/runtimes/shared.ts";
+import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
+import { generateFile } from "../../src/generator.ts";
+import { openApiToIr } from "../../src/schema-ir/openapi-to-ir.ts";
+import { createEmitCtx } from "../../src/runtimes/types.ts";
+import { resolveValidationPolicy } from "../../src/runtimes/validation.ts";
+import { zodAdapter } from "../../src/runtimes/zod/index.ts";
+import { objectKey } from "../../src/runtimes/shared.ts";
 
 const require = createRequire(import.meta.url);
 const tscBin = require.resolve("typescript/bin/tsc");
@@ -307,7 +307,7 @@ describe("GitHub issue regressions", () => {
     const ctx = mapOpenApiEndpoints(doc);
     const file = generateFile({ ...ctx, runtime: "none", includeClient: true });
 
-    const dir = join(__dirname, "../tmp/github-issues-typecheck");
+    const dir = join(__dirname, "../../tmp/github-issues-typecheck");
     rmSync(dir, { recursive: true, force: true });
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, "client.ts"), file);

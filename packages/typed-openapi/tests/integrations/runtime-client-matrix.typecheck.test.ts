@@ -5,14 +5,14 @@ import { createRequire } from "node:module";
 import { describe, expect, test } from "vitest";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
-import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
-import { generateFile, type OutputRuntime } from "../src/generator.ts";
+import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
+import { generateFile, type OutputRuntime } from "../../src/generator.ts";
 
 const require = createRequire(import.meta.url);
 const tscBin = require.resolve("typescript/bin/tsc");
-const pkgRoot = join(__dirname, "..");
+const pkgRoot = join(__dirname, "../..");
 const pkgRequire = createRequire(join(pkgRoot, "package.json"));
-const outRoot = join(__dirname, "../tmp/runtime-matrix-typecheck");
+const outRoot = join(__dirname, "../../tmp/runtime-matrix-typecheck");
 
 const runtimes: OutputRuntime[] = [
   "none",
@@ -61,7 +61,7 @@ const resolvePkgRoot = (name: string): string => {
 };
 
 const resolveZod3 = (): string | undefined => {
-  const pnpmZod3 = join(__dirname, "../../../node_modules/.pnpm");
+  const pnpmZod3 = join(__dirname, "../../../../node_modules/.pnpm");
   if (!existsSync(pnpmZod3)) return;
   const entry = readdirSync(pnpmZod3).find((d) => d.startsWith("zod@3."));
   return entry ? join(pnpmZod3, entry, "node_modules/zod") : undefined;
@@ -120,7 +120,7 @@ describe("runtime×client typecheck matrix", () => {
             expect.fail("zod@3 not found in pnpm store");
           }
 
-          const doc = (await SwaggerParser.parse(join(__dirname, "samples", sample.file))) as OpenAPIObject;
+          const doc = (await SwaggerParser.parse(join(__dirname, "../samples", sample.file))) as OpenAPIObject;
           const ctx = mapOpenApiEndpoints(doc);
           const code = generateFile({
             ...ctx,
