@@ -156,6 +156,17 @@ if (result.ok) {
 }
 ```
 
+## Effect-native client (`--client effect`)
+
+Generate with `--runtime effect` (Schema v4) or `--runtime effect3` (`@effect/schema`), or pass `--client effect`
+explicitly. Methods return `Effect` whose error channel is:
+
+- `TypedStatusError` — OpenAPI error status (same shape as the promise client's thrown status errors)
+- `HttpClientError` — fetch / decode / validation / parse failures (`cause` holds the original)
+
+Request params use `InferSchemaInput` (encoded / input types), matching the promise client. See
+[`tests/integrations/effect-msw.test.ts`](./tests/integrations/effect-msw.test.ts) for MSW coverage.
+
 ## TanStack Query Integration
 
 - [TANSTACK_QUERY_EXAMPLES.md](./TANSTACK_QUERY_EXAMPLES.md)

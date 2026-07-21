@@ -24,13 +24,18 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
   - [effect](https://effect.website/) Schema v4 (`--runtime effect`) and v3 / `@effect/schema` (`--runtime effect3`)
   - [valibot](https://valibot.dev/) (`--runtime valibot`)
   - [arktype](https://arktype.io/) (`--runtime arktype`)
-- **Effect-native client** (`--client effect`): methods return `Effect` with typed status / HTTP / parse errors
+  - [TypeBox](https://github.com/sinclairzx81/typebox) (`--runtime typebox`) and [typia](https://typia.io/)
+    (`--runtime typia`)
+- **Effect-native client** (`--client effect`): methods return `Effect` with error channel
+  `TypedStatusError | HttpClientError` (non-status failures remapped; original in `cause`)
 - **Validate input and/or output** (`--validate-side`) with optional `onValidate` hook
 - **Coerce path/query/cookie/header primitives** from strings (`--coerce`, default on when runtime ≠ none)
 - **Cookie parameters**, OAS **defaults** on runtime schemas, **readOnly/writeOnly** stripping
+- **SSE** (`text/event-stream` → `ReadableStream`) and **binary** bodies/schemas (`Blob`)
 - **Node-friendly `FetcherResponse`** (no DOM `Response` dependency; avoids clash with OAS `ApiResponse` schemas) +
-  **request input types** (`z.input` / encoded)
+  **request input types** (`InferSchemaInput` / `z.input` / encoded)
 - **Filter endpoints/schemas** (`--endpoint`, `--schema`, `--tree-shake-schemas`) and control naming (`--schema-naming`)
+- **TanStack Query** wrappers work with both promise and Effect clients (`Effect.runPromise` when needed)
 
 The generated client is a single file that can be used in the browser or in node. Runtime schemas are emitted by
 typed-openapi's own Schema IR + runtime adapters (no Sinclair codegen). Use `--validation loose|formats|strict` to
@@ -38,7 +43,8 @@ control how deep OpenAPI constraints (`format`, `minLength`, …) are applied. I
 dependency in your app.
 
 With `--runtime effect` / `effect3`, the default API client is Effect-native (`--client effect`); other runtimes default
-to the promise `ApiClient`. Install `effect` whenever you use `--client effect` and/or `--runtime effect`.
+to the promise `ApiClient`. Install `effect` whenever you use `--client effect` and/or `--runtime effect`. Use
+`--runtime effect3` (+ `@effect/schema`) if you need the Effect Schema v3 adapter.
 
 ## Install & usage
 
@@ -69,7 +75,7 @@ For more info, run any command with the `--help` flag:
 
 Options:
   -o, --output <path>             Output path for the api client ts file (defaults to `<input>.<runtime>.ts`)
-  -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: none | zod | zod3 | effect | effect3 | valibot | arktype
+  -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: none | zod | zod3 | effect | effect3 | valibot | arktype | typebox | typia
   --validation <level>            Validation depth: loose | formats | strict (default: strict when runtime ≠ none)
   --validate-side <side>          When using a runtime: none | input | output | both (default: both)
   --client <kind>                 API client style: promise | effect (default: effect when runtime is effect/effect3, else promise)
@@ -96,8 +102,8 @@ Options:
 ## Non-goals
 
 - Shipping every historical runtime (yup / io-ts). TypeBox and Typia are available again via `--runtime typebox` /
-  `--runtime typia`; the adapter contract makes further runtimes easy to add. focuses on zod, effect, valibot, and
-  arktype.
+  `--runtime typia`; the adapter contract makes further runtimes easy to add. Primary focus remains zod, effect,
+  valibot, and arktype.
 
 - Being a full JSON Schema validator suite for exotic media types. Constraints (`format`, bounds, patterns, …) are
   supported via `--validation`, but the priority remains a fast, typesafe API client.
@@ -353,6 +359,17 @@ large. Also, you might not always want to use zod or even runtime validation, he
 - `pnpm i`
 - `pnpm build`
 - `pnpm test`
+
+Package tests live under `packages/typed-openapi/tests/`:
+
+| Folder           | What                                                  |
+| ---------------- | ----------------------------------------------------- |
+| `integrations/`  | MSW e2e + runtime client matrix                       |
+| `github-issues/` | Regression coverage for fixed GitHub issues           |
+| `tstyche/`       | Per-runtime + Effect client type suites               |
+| `samples/`       | OpenAPI fixtures (including `samples/github-issues/`) |
+
+Shipping checklist / PR body template: [`plans/FOLLOWUPS.md`](plans/FOLLOWUPS.md).
 
 When you're done with your changes, please run `pnpm changeset` in the root of the repo and follow the instructions
 described [here](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md).
