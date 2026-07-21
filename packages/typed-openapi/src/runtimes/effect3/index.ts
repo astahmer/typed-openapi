@@ -5,6 +5,7 @@ import {
   applyObjectConstraints,
   applyStringConstraints,
   emitBinaryBlobCheck,
+  emitExplicitSchemaTypeDecl,
   emitStreamCheck,
   findMappedUnionMember,
   internEffectDefault,
@@ -238,7 +239,13 @@ export const effect3Adapter: RuntimeAdapter = {
     const childCtx = { ...ctx, currentSchemaName: name };
     const nullInner = isNullOr(node);
     let body = emitNode(nullInner ?? node, childCtx);
-    if (ctx.recursiveNames.has(name)) body = `${S}.suspend(() => ${body})`;
+    if (ctx.recursiveNames.has(name)) {
+      body = `${S}.suspend(() => ${body})`;
+      if (!nullInner) {
+        const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx, { readonlyArrays: true });
+        return `${typeDecl}\nexport const ${name}: ${S}.Schema<${name}> = ${body};`;
+      }
+    }
     const typeExpr = nullInner ? `S.Schema.Type<typeof ${name}> | null` : `S.Schema.Type<typeof ${name}>`;
     return `export const ${name} = ${body};\nexport type ${name} = ${typeExpr};`;
   },

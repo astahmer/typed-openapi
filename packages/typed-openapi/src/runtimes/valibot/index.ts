@@ -5,6 +5,7 @@ import {
   applyObjectConstraints,
   applyStringConstraints,
   emitBinaryBlobCheck,
+  emitExplicitSchemaTypeDecl,
   emitStreamCheck,
   findMappedUnionMember,
   isNullOr,
@@ -179,7 +180,13 @@ export const valibotAdapter: RuntimeAdapter = {
   emitNamedSchema: (name, node, ctx) => {
     const childCtx = { ...ctx, currentSchemaName: name };
     let body = emitNode(node, childCtx);
-    if (ctx.recursiveNames.has(name)) body = `v.lazy(() => ${body})`;
+    if (ctx.recursiveNames.has(name)) {
+      body = `v.lazy(() => ${body})`;
+      if (!isNullOr(node)) {
+        const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
+        return `${typeDecl}\nexport const ${name}: v.GenericSchema<${name}> = ${body};`;
+      }
+    }
     return `export type ${name} = v.InferOutput<typeof ${name}>;\nexport const ${name} = ${body};`;
   },
 };

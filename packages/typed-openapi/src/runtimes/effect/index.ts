@@ -5,6 +5,7 @@ import {
   applyObjectConstraints,
   applyStringConstraints,
   emitBinaryBlobCheck,
+  emitExplicitSchemaTypeDecl,
   emitStreamCheck,
   findMappedUnionMember,
   internEffectDefault,
@@ -258,7 +259,13 @@ export const effectAdapter: RuntimeAdapter = {
     // inner schema and surface nullability on the exported TypeScript type instead.
     const nullInner = isNullOr(node);
     let body = emitNode(nullInner ?? node, childCtx);
-    if (ctx.recursiveNames.has(name)) body = `${S}.suspend(() => ${body})`;
+    if (ctx.recursiveNames.has(name)) {
+      body = `${S}.suspend(() => ${body})`;
+      if (!nullInner) {
+        const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx, { readonlyArrays: true });
+        return `${typeDecl}\nexport const ${name}: ${S}.Schema<${name}> = ${body};`;
+      }
+    }
     const typeExpr = nullInner ? `Schema.Schema.Type<typeof ${name}> | null` : `Schema.Schema.Type<typeof ${name}>`;
     return `export const ${name} = ${body};\nexport type ${name} = ${typeExpr};`;
   },

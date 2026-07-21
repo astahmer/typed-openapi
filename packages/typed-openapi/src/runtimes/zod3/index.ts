@@ -5,12 +5,14 @@ import {
   applyObjectConstraints,
   applyStringConstraints,
   emitBinaryBlobCheck,
+  emitExplicitSchemaTypeDecl,
   emitStreamCheck,
   findMappedUnionMember,
   isNullOr,
   literalValue,
   objectKey,
   objectProps,
+  partitionNullUnionMembers,
   quote,
   withZodDefault,
 } from "../shared.ts";
@@ -107,17 +109,19 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.discriminator?.propertyName) {
         const prop = node.discriminator.propertyName;
         const mapping = node.discriminator.mapping;
+        const { concrete, nullable } = partitionNullUnionMembers(node.members);
         const members =
           mapping && Object.keys(mapping).length > 0
             ? Object.entries(mapping).flatMap(([value, target]) => {
-                const member = findMappedUnionMember(node.members, target);
+                const member = findMappedUnionMember(concrete, target);
                 if (!member) return [];
                 const base = emitNode(member, ctx);
                 return [`${base}.extend({ ${objectKey(prop)}: z.literal(${quote(value)}) })`];
               })
-            : node.members.map((m) => emitNode(m, ctx));
+            : concrete.map((m) => emitNode(m, ctx));
         if (members.length > 0) {
-          return `z.discriminatedUnion(${quote(prop)}, [${members.join(", ")}])`;
+          const disc = `z.discriminatedUnion(${quote(prop)}, [${members.join(", ")}])`;
+          return nullable ? `z.union([${disc}, z.null()])` : disc;
         }
       }
       return `z.union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
@@ -181,7 +185,13 @@ export const zod3Adapter: RuntimeAdapter = {
   emitNamedSchema: (name, node, ctx) => {
     const childCtx = { ...ctx, currentSchemaName: name };
     let body = emitNode(node, childCtx);
-    if (ctx.recursiveNames.has(name)) body = `z.lazy(() => ${body})`;
+    if (ctx.recursiveNames.has(name)) {
+      body = `z.lazy(() => ${body})`;
+      if (!isNullOr(node)) {
+        const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
+        return `${typeDecl}\nexport const ${name}: z.ZodType<${name}> = ${body};`;
+      }
+    }
     return `export type ${name} = z.infer<typeof ${name}>;\nexport const ${name} = ${body};`;
   },
 };

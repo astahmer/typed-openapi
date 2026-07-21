@@ -6,6 +6,7 @@ import type {
   NumberConstraints,
   ArrayConstraints,
 } from "../schema-ir/types.ts";
+import { canEmitAsInterface, emitNamedInterface, irToTs } from "../schema-ir/ir-to-ts.ts";
 import type { EmitCtx } from "./types.ts";
 import type { ValidationPolicy } from "./validation.ts";
 
@@ -373,4 +374,52 @@ export const schemaNameFromRef = (refOrName: string): string => {
 export const findMappedUnionMember = (members: SchemaNode[], mappingTarget: string): SchemaNode | undefined => {
   const want = schemaNameFromRef(mappingTarget);
   return members.find((m) => m.kind === "ref" && m.name === want);
+};
+
+/**
+ * Peel `null` / `A | null` members out of a union so Zod `discriminatedUnion` (and similar)
+ * only sees object members. Caller wraps with `z.union([…, z.null()])` when nullable.
+ */
+export const partitionNullUnionMembers = (members: SchemaNode[]): { concrete: SchemaNode[]; nullable: boolean } => {
+  let nullable = false;
+  const concrete: SchemaNode[] = [];
+  for (const member of members) {
+    if (member.kind === "null") {
+      nullable = true;
+      continue;
+    }
+    const inner = isNullOr(member);
+    if (inner) {
+      nullable = true;
+      concrete.push(inner);
+      continue;
+    }
+    concrete.push(member);
+  }
+  return { concrete, nullable };
+};
+
+/**
+ * Explicit TS type/interface for a named schema.
+ * Used for recursive lazy/suspend schemas so infer is not circular `any` (TS7022/7024).
+ */
+export const emitExplicitSchemaTypeDecl = (
+  name: string,
+  node: SchemaNode,
+  ctx: Pick<EmitCtx, "transformDates" | "transformBigInt">,
+  options?: { readonlyArrays?: boolean },
+): string => {
+  const irOpts = {
+    prefixRefsWithSchemas: false as const,
+    transformDates: ctx.transformDates,
+    transformBigInt: ctx.transformBigInt,
+  };
+  let decl = canEmitAsInterface(node)
+    ? emitNamedInterface(name, node, irOpts)
+    : `export type ${name} = ${irToTs(node, irOpts)}`;
+  // Effect `Schema.Array` is readonly — annotate with ReadonlyArray to satisfy Schema.Schema<T>.
+  if (options?.readonlyArrays) {
+    decl = decl.replace(/\bArray</g, "ReadonlyArray<");
+  }
+  return decl;
 };
