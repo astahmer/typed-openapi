@@ -24,6 +24,7 @@ describe("generator", () => {
         ErrorStatusCode,
         InferResponseByStatus,
         TypedSuccessResponse,
+        ApiCallParams,
       } from "./api.client.ts";
       import { errorStatusCodes, TypedStatusError } from "./api.client.ts";
 
@@ -97,7 +98,7 @@ describe("generator", () => {
         // <ApiClient.put>
         put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
           path: Path,
-          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+          ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
         ) {
           const queryKey = createQueryKey(path as string, params[0]);
           const query = {
@@ -127,7 +128,7 @@ describe("generator", () => {
         // <ApiClient.post>
         post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
           path: Path,
-          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+          ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
         ) {
           const queryKey = createQueryKey(path as string, params[0]);
           const query = {
@@ -157,7 +158,7 @@ describe("generator", () => {
         // <ApiClient.get>
         get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
           path: Path,
-          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+          ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
         ) {
           const queryKey = createQueryKey(path as string, params[0]);
           const query = {
@@ -187,7 +188,7 @@ describe("generator", () => {
         // <ApiClient.delete>
         delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
           path: Path,
-          ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+          ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
         ) {
           const queryKey = createQueryKey(path as string, params[0]);
           const query = {
@@ -247,12 +248,7 @@ describe("generator", () => {
           },
         ) {
           const mutationKey = [{ method, path }] as const;
-          const mutationFn = async (
-            params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
-              throwOnStatusError?: boolean;
-              overrides?: RequestInit;
-            },
-          ): Promise<TSelection> => {
+          const mutationFn = async (params: ApiCallParams<TEndpoint>): Promise<TSelection> => {
             const withResponse = options?.withResponse ?? false;
             const throwOnStatusError =
               params.throwOnStatusError ?? options?.throwOnStatusError ?? (withResponse ? false : true);
@@ -281,14 +277,7 @@ describe("generator", () => {
               mutationKey: mutationKey,
               mutationFn: mutationFn,
             } as Omit<
-              import("@tanstack/react-query").UseMutationOptions<
-                TSelection,
-                TError,
-                (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
-                  withResponse?: boolean;
-                  throwOnStatusError?: boolean;
-                }
-              >,
+              import("@tanstack/react-query").UseMutationOptions<TSelection, TError, ApiCallParams<TEndpoint>>,
               "mutationFn"
             > & {
               mutationFn: typeof mutationFn;

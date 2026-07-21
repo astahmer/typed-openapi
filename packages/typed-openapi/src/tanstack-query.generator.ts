@@ -26,7 +26,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             TEndpoint extends ${capitalize(method)}Endpoints[Path]
         >(
             path: Path,
-            ...params: MaybeOptionalArg<TEndpoint["parameters"]>
+            ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
         ) {
             const queryKey = createQueryKey(path as string, params[0]);
             const query = {
@@ -82,7 +82,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
 
   return `
   ${effectImport}import { queryOptions } from "@tanstack/react-query"
-  import type { EndpointByMethod, ${apiClientType}, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, TypedSuccessResponse } from "${ctx.relativeApiClientPath}"
+  import type { EndpointByMethod, ${apiClientType}, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, TypedSuccessResponse, ApiCallParams } from "${ctx.relativeApiClientPath}"
   import { errorStatusCodes, TypedStatusError } from "${ctx.relativeApiClientPath}"
 
   type EndpointQueryKey<TOptions extends EndpointParameters> = [
@@ -181,10 +181,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
              throwOnError?: boolean | ((error: TError) => boolean)
         }) {
             const mutationKey = [{ method, path }] as const;
-            const mutationFn = async (params: (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
-                throwOnStatusError?: boolean;
-                overrides?: RequestInit;
-            }): Promise<TSelection> => {
+            const mutationFn = async (params: ApiCallParams<TEndpoint>): Promise<TSelection> => {
                 const withResponse = options?.withResponse ?? false;
                 const throwOnStatusError = params.throwOnStatusError ?? options?.throwOnStatusError ?? (withResponse ? false : true);
                 const selectFn = options?.selectFn;
@@ -202,10 +199,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             } as Omit<import("@tanstack/react-query").UseMutationOptions<
                 TSelection,
                 TError,
-                (TEndpoint extends { parameters: infer Parameters } ? Parameters : {}) & {
-                    withResponse?: boolean;
-                    throwOnStatusError?: boolean;
-                }
+                ApiCallParams<TEndpoint>
             >, "mutationFn"> & {
                 mutationFn: typeof mutationFn
             },
