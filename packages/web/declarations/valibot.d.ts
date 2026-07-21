@@ -288,7 +288,7 @@ type FlatErrors<TSchema extends BaseSchema<unknown, unknown, BaseIssue<unknown>>
 *
 * @returns A flat error object.
 */
-declare function flatten(issues: [BaseIssue<unknown>, ...BaseIssue<unknown>[]]): FlatErrors<undefined>;
+declare function flatten(issues: readonly [BaseIssue<unknown>, ...BaseIssue<unknown>[]]): FlatErrors<undefined>;
 /**
 * Flatten the error messages of issues.
 *
@@ -296,7 +296,7 @@ declare function flatten(issues: [BaseIssue<unknown>, ...BaseIssue<unknown>[]]):
 *
 * @returns A flat error object.
 */
-declare function flatten<TSchema extends BaseSchema<unknown, unknown, BaseIssue<unknown>> | BaseSchemaAsync<unknown, unknown, BaseIssue<unknown>>>(issues: [InferIssue<TSchema>, ...InferIssue<TSchema>[]]): FlatErrors<TSchema>;
+declare function flatten<TSchema extends BaseSchema<unknown, unknown, BaseIssue<unknown>> | BaseSchemaAsync<unknown, unknown, BaseIssue<unknown>>>(issues: readonly [InferIssue<TSchema>, ...InferIssue<TSchema>[]]): FlatErrors<TSchema>;
 //#endregion
 //#region src/methods/forward/types.d.ts
 /**
@@ -3460,11 +3460,13 @@ type OutputWithQuestionMarks<TEntries$1 extends ObjectEntries | ObjectEntriesAsy
 /**
 * Readonly output keys type.
 */
-type ReadonlyOutputKeys<TEntries$1 extends ObjectEntries | ObjectEntriesAsync> = { [TKey in keyof TEntries$1]: TEntries$1[TKey] extends SchemaWithPipe<infer TPipe> | SchemaWithPipeAsync<infer TPipe> ? ReadonlyAction<any> extends TPipe[number] ? TKey : never : never }[keyof TEntries$1];
+type ReadonlyOutputKeys<TEntries$1 extends ObjectEntries | ObjectEntriesAsync> = { [TKey in keyof TEntries$1]: TEntries$1[TKey] extends {
+  readonly pipe: readonly unknown[];
+} ? ReadonlyAction<any> extends TEntries$1[TKey]["pipe"][number] ? TKey : never : never }[keyof TEntries$1];
 /**
 * Output with readonly type.
 */
-type OutputWithReadonly<TEntries$1 extends ObjectEntries | ObjectEntriesAsync, TObject extends OutputWithQuestionMarks<TEntries$1, InferEntriesOutput<TEntries$1>>> = Readonly<TObject> & Pick<TObject, Exclude<keyof TObject, ReadonlyOutputKeys<TEntries$1>>>;
+type OutputWithReadonly<TEntries$1 extends ObjectEntries | ObjectEntriesAsync, TObject extends OutputWithQuestionMarks<TEntries$1, InferEntriesOutput<TEntries$1>>> = ReadonlyOutputKeys<TEntries$1> extends never ? TObject : Readonly<TObject> & Pick<TObject, Exclude<keyof TObject, ReadonlyOutputKeys<TEntries$1>>>;
 /**
 * Infer object input type.
 */
@@ -4587,11 +4589,11 @@ type InferOption<TInput$1, TOutput$1> = BaseSchema<TInput$1, TOutput$1, BaseIssu
 /**
 * Infer intersect input type.
 */
-type InferIntersectInput<TOptions$1 extends IntersectOptions | IntersectOptionsAsync> = TOptions$1 extends readonly [InferOption<infer TInput, unknown>, ...infer TRest] ? TRest extends readonly [InferOption<unknown, unknown>, ...InferOption<unknown, unknown>[]] ? TInput & InferIntersectInput<TRest> : TInput : never;
+type InferIntersectInput<TOptions$1 extends IntersectOptions | IntersectOptionsAsync> = TOptions$1 extends readonly [InferOption<infer TInput, unknown>, ...infer TRest] ? TRest extends readonly [InferOption<unknown, unknown>, ...InferOption<unknown, unknown>[]] ? TInput & InferIntersectInput<TRest> : TInput : IsNever<TOptions$1[number]> extends true ? never : UnionToIntersect<InferInput<TOptions$1[number]>>;
 /**
 * Infer intersect output type.
 */
-type InferIntersectOutput<TOptions$1 extends IntersectOptions | IntersectOptionsAsync> = TOptions$1 extends readonly [InferOption<unknown, infer TOutput>, ...infer TRest] ? TRest extends readonly [InferOption<unknown, unknown>, ...InferOption<unknown, unknown>[]] ? TOutput & InferIntersectOutput<TRest> : TOutput : never;
+type InferIntersectOutput<TOptions$1 extends IntersectOptions | IntersectOptionsAsync> = TOptions$1 extends readonly [InferOption<unknown, infer TOutput>, ...infer TRest] ? TRest extends readonly [InferOption<unknown, unknown>, ...InferOption<unknown, unknown>[]] ? TOutput & InferIntersectOutput<TRest> : TOutput : IsNever<TOptions$1[number]> extends true ? never : UnionToIntersect<InferOutput<TOptions$1[number]>>;
 //#endregion
 //#region src/schemas/intersect/intersect.d.ts
 /**
@@ -6534,7 +6536,9 @@ type WithQuestionMarks<TObject extends Record<string | number | symbol, unknown>
 /**
 * With readonly type.
 */
-type WithReadonly<TValue$1 extends BaseSchema<unknown, unknown, BaseIssue<unknown>> | BaseSchemaAsync<unknown, unknown, BaseIssue<unknown>>, TObject extends WithQuestionMarks<Record<string | number | symbol, unknown>>> = TValue$1 extends SchemaWithPipe<infer TPipe> | SchemaWithPipeAsync<infer TPipe> ? ReadonlyAction<any> extends TPipe[number] ? Readonly<TObject> : TObject : TObject;
+type WithReadonly<TValue$1 extends BaseSchema<unknown, unknown, BaseIssue<unknown>> | BaseSchemaAsync<unknown, unknown, BaseIssue<unknown>>, TObject extends WithQuestionMarks<Record<string | number | symbol, unknown>>> = TValue$1 extends {
+  readonly pipe: readonly unknown[];
+} ? ReadonlyAction<any> extends TValue$1["pipe"][number] ? Readonly<TObject> : TObject : TObject;
 /**
 * Infer record input type.
 */
@@ -8753,8 +8757,8 @@ interface EmailAction<TInput$1 extends string, TMessage extends ErrorMessage<Ema
 * action.
 *
 * Hint: This validation action intentionally only validates common email
-* addresses. If you are interested in an action that covers the entire
-* specification, please use the `rfcEmail` action instead.
+* addresses. If you are interested in an action that covers a broader
+* subset of RFC 5322 addresses, please use the `rfcEmail` action instead.
 *
 * @returns An email action.
 */
@@ -8764,8 +8768,8 @@ declare function email<TInput$1 extends string>(): EmailAction<TInput$1, undefin
 * action.
 *
 * Hint: This validation action intentionally only validates common email
-* addresses. If you are interested in an action that covers the entire
-* specification, please use the `rfcEmail` action instead.
+* addresses. If you are interested in an action that covers a broader
+* subset of RFC 5322 addresses, please use the `rfcEmail` action instead.
 *
 * @param message The error message.
 *
@@ -10541,6 +10545,90 @@ declare function isoDateTime<TInput$1 extends string>(): IsoDateTimeAction<TInpu
 * @returns An ISO date time action.
 */
 declare function isoDateTime<TInput$1 extends string, const TMessage extends ErrorMessage<IsoDateTimeIssue<TInput$1>> | undefined>(message: TMessage): IsoDateTimeAction<TInput$1, TMessage>;
+//#endregion
+//#region src/actions/isoDateTimeSecond/isoDateTimeSecond.d.ts
+/**
+* ISO date time second issue interface.
+*/
+interface IsoDateTimeSecondIssue<TInput$1 extends string> extends BaseIssue<TInput$1> {
+  /**
+  * The issue kind.
+  */
+  readonly kind: "validation";
+  /**
+  * The issue type.
+  */
+  readonly type: "iso_date_time_second";
+  /**
+  * The expected property.
+  */
+  readonly expected: null;
+  /**
+  * The received property.
+  */
+  readonly received: `"${string}"`;
+  /**
+  * The ISO date time with seconds regex.
+  */
+  readonly requirement: RegExp;
+}
+/**
+* ISO date time second action interface.
+*/
+interface IsoDateTimeSecondAction<TInput$1 extends string, TMessage extends ErrorMessage<IsoDateTimeSecondIssue<TInput$1>> | undefined> extends BaseValidation<TInput$1, TInput$1, IsoDateTimeSecondIssue<TInput$1>> {
+  /**
+  * The action type.
+  */
+  readonly type: "iso_date_time_second";
+  /**
+  * The action reference.
+  */
+  readonly reference: typeof isoDateTimeSecond;
+  /**
+  * The expected property.
+  */
+  readonly expects: null;
+  /**
+  * The ISO date time with seconds regex.
+  */
+  readonly requirement: RegExp;
+  /**
+  * The error message.
+  */
+  readonly message: TMessage;
+}
+/**
+* Creates an [ISO date time second](https://en.wikipedia.org/wiki/ISO_8601) validation action.
+*
+* Format: yyyy-mm-ddThh:mm:ss
+*
+* Hint: The regex used cannot validate the maximum number of days based on
+* year and month. For example, "2023-06-31T00:00:00" is valid although June has only
+* 30 days.
+*
+* Hint: The regex also allows a space as a separator between the date and time
+* parts instead of the "T" character.
+*
+* @returns An ISO date time second action.
+*/
+declare function isoDateTimeSecond<TInput$1 extends string>(): IsoDateTimeSecondAction<TInput$1, undefined>;
+/**
+* Creates an [ISO date time second](https://en.wikipedia.org/wiki/ISO_8601) validation action.
+*
+* Format: yyyy-mm-ddThh:mm:ss
+*
+* Hint: The regex used cannot validate the maximum number of days based on
+* year and month. For example, "2023-06-31T00:00:00" is valid although June has only
+* 30 days.
+*
+* Hint: The regex also allows a space as a separator between the date and time
+* parts instead of the "T" character.
+*
+* @param message The error message.
+*
+* @returns An ISO date time second action.
+*/
+declare function isoDateTimeSecond<TInput$1 extends string, const TMessage extends ErrorMessage<IsoDateTimeSecondIssue<TInput$1>> | undefined>(message: TMessage): IsoDateTimeSecondAction<TInput$1, TMessage>;
 //#endregion
 //#region src/actions/isoTime/isoTime.d.ts
 /**
@@ -14058,8 +14146,10 @@ interface RfcEmailAction<TInput$1 extends string, TMessage extends ErrorMessage<
 * Creates a [RFC email](https://datatracker.ietf.org/doc/html/rfc5322#section-3.4.1)
 * validation action.
 *
-* Hint: This validation action intentionally validates the entire RFC 5322
-* specification. If you are interested in an action that only covers common
+* Hint: This validation action uses the regex defined by the HTML Living
+* Standard for `<input type="email">`, which covers most of RFC 5322 but
+* not all of it. For example, quoted local parts and comments are not
+* supported. If you are interested in an action that only validates common
 * email addresses, please use the `email` action instead.
 *
 * @returns A RFC email action.
@@ -14069,8 +14159,10 @@ declare function rfcEmail<TInput$1 extends string>(): RfcEmailAction<TInput$1, u
 * Creates a [RFC email](https://datatracker.ietf.org/doc/html/rfc5322#section-3.4.1)
 * validation action.
 *
-* Hint: This validation action intentionally validates the entire RFC 5322
-* specification. If you are interested in an action that only covers common
+* Hint: This validation action uses the regex defined by the HTML Living
+* Standard for `<input type="email">`, which covers most of RFC 5322 but
+* not all of it. For example, quoted local parts and comments are not
+* supported. If you are interested in an action that only validates common
 * email addresses, please use the `email` action instead.
 *
 * @param message The error message.
@@ -14614,6 +14706,38 @@ interface ToBooleanAction<TInput$1> extends BaseTransformation<TInput$1, boolean
 */
 declare function toBoolean<TInput$1>(): ToBooleanAction<TInput$1>;
 //#endregion
+//#region src/actions/toCamelCase/toCamelCase.d.ts
+/**
+* To camel case action interface.
+*
+* @beta
+*/
+interface ToCamelCaseAction extends BaseTransformation<string, string, never> {
+  /**
+  * The action type.
+  */
+  readonly type: "to_camel_case";
+  /**
+  * The action reference.
+  */
+  readonly reference: typeof toCamelCase;
+}
+/**
+* Creates a to camel case transformation action.
+*
+* Words are separated by `_`, `-` and ASCII whitespace, as well as by case
+* and acronym boundaries.
+*
+* Hint: Acronym runs are normalized to lowercase (e.g. `parseURLValue` →
+* `parseUrlValue`) and digits stay attached to the preceding token (e.g.
+* `item2Name` → `item2Name`).
+*
+* @returns A to camel case action.
+*
+* @beta
+*/
+declare function toCamelCase(): ToCamelCaseAction;
+//#endregion
 //#region src/actions/toDate/toDate.d.ts
 /**
 * To date issue interface.
@@ -14667,6 +14791,38 @@ declare function toDate<TInput$1>(): ToDateAction<TInput$1, undefined>;
 * @beta
 */
 declare function toDate<TInput$1, const TMessage extends ErrorMessage<ToDateIssue<TInput$1>> | undefined>(message: TMessage): ToDateAction<TInput$1, TMessage>;
+//#endregion
+//#region src/actions/toKebabCase/toKebabCase.d.ts
+/**
+* To kebab case action interface.
+*
+* @beta
+*/
+interface ToKebabCaseAction extends BaseTransformation<string, string, never> {
+  /**
+  * The action type.
+  */
+  readonly type: "to_kebab_case";
+  /**
+  * The action reference.
+  */
+  readonly reference: typeof toKebabCase;
+}
+/**
+* Creates a to kebab case transformation action.
+*
+* Words are separated by `_`, `-` and ASCII whitespace, as well as by case
+* and acronym boundaries.
+*
+* Hint: Acronym runs are normalized to lowercase (e.g. `parseURLValue` →
+* `parse-url-value`) and digits stay attached to the preceding token (e.g.
+* `item2Name` → `item2-name`).
+*
+* @returns A to kebab case action.
+*
+* @beta
+*/
+declare function toKebabCase(): ToKebabCaseAction;
 //#endregion
 //#region src/actions/toLowerCase/toLowerCase.d.ts
 /**
@@ -14796,6 +14952,70 @@ declare function toNumber<TInput$1>(): ToNumberAction<TInput$1, undefined>;
 * @beta
 */
 declare function toNumber<TInput$1, const TMessage extends ErrorMessage<ToNumberIssue<TInput$1>> | undefined>(message: TMessage): ToNumberAction<TInput$1, TMessage>;
+//#endregion
+//#region src/actions/toPascalCase/toPascalCase.d.ts
+/**
+* To pascal case action interface.
+*
+* @beta
+*/
+interface ToPascalCaseAction extends BaseTransformation<string, string, never> {
+  /**
+  * The action type.
+  */
+  readonly type: "to_pascal_case";
+  /**
+  * The action reference.
+  */
+  readonly reference: typeof toPascalCase;
+}
+/**
+* Creates a to pascal case transformation action.
+*
+* Words are separated by `_`, `-` and ASCII whitespace, as well as by case
+* and acronym boundaries.
+*
+* Hint: Acronym runs are normalized to lowercase (e.g. `parseURLValue` →
+* `ParseUrlValue`) and digits stay attached to the preceding token (e.g.
+* `item2Name` → `Item2Name`).
+*
+* @returns A to pascal case action.
+*
+* @beta
+*/
+declare function toPascalCase(): ToPascalCaseAction;
+//#endregion
+//#region src/actions/toSnakeCase/toSnakeCase.d.ts
+/**
+* To snake case action interface.
+*
+* @beta
+*/
+interface ToSnakeCaseAction extends BaseTransformation<string, string, never> {
+  /**
+  * The action type.
+  */
+  readonly type: "to_snake_case";
+  /**
+  * The action reference.
+  */
+  readonly reference: typeof toSnakeCase;
+}
+/**
+* Creates a to snake case transformation action.
+*
+* Words are separated by `_`, `-` and ASCII whitespace, as well as by case
+* and acronym boundaries.
+*
+* Hint: Acronym runs are normalized to lowercase (e.g. `parseURLValue` →
+* `parse_url_value`) and digits stay attached to the preceding token (e.g.
+* `item2Name` → `item2_name`).
+*
+* @returns A to snake case action.
+*
+* @beta
+*/
+declare function toSnakeCase(): ToSnakeCaseAction;
 //#endregion
 //#region src/actions/toString/toString.d.ts
 /**
@@ -15475,6 +15695,10 @@ declare const ISO_DATE_REGEX: RegExp;
 */
 declare const ISO_DATE_TIME_REGEX: RegExp;
 /**
+* [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time with seconds regex.
+*/
+declare const ISO_DATE_TIME_SECOND_REGEX: RegExp;
+/**
 * [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) time regex.
 */
 declare const ISO_TIME_REGEX: RegExp;
@@ -15700,6 +15924,34 @@ declare function _addIssue<const TContext extends Context>(context: TContext & {
 * @returns The copied output dataset.
 */
 declare function _cloneDataset<TValue$1, TIssue extends BaseIssue<unknown>>(dataset: OutputDataset<TValue$1, TIssue>): OutputDataset<TValue$1, TIssue>;
+//#endregion
+//#region src/utils/_formatCase/_formatCase.d.ts
+/**
+* Splits a string into lowercase words and rejoins them with the given
+* separator and capitalization rules.
+*
+* Words are separated by `_`, `-` and ASCII whitespace, as well as by case
+* and acronym boundaries. Whether the first or subsequent words are
+* capitalized is controlled by `capFirst` and `capRest`.
+*
+* Hint: Implemented in a single pass that emits directly to the result
+* string to avoid an intermediate `string[]` allocation. ASCII chars are
+* classified via char codes to skip `.toLowerCase()` and `.toUpperCase()`
+* method calls in the common case.
+*
+* Hint: Digits are treated as a separate character class, so `item2Name`
+* yields `item2` and `name` rather than `item`, `2` and `name`.
+*
+* @param input The input string.
+* @param separator The string inserted between words.
+* @param capFirst Whether to capitalize the first word.
+* @param capRest Whether to capitalize subsequent words.
+*
+* @returns The formatted string.
+*
+* @internal
+*/
+declare function _formatCase(input: string, separator: string, capFirst: boolean, capRest: boolean): string;
 //#endregion
 //#region src/utils/_getByteCount/_getByteCount.d.ts
 /**
@@ -15929,5 +16181,5 @@ declare class ValiError<TSchema extends BaseSchema<unknown, unknown, BaseIssue<u
   constructor(issues: [InferIssue<TSchema>, ...InferIssue<TSchema>[]]);
 }
 
-export { BASE64_REGEX, BIC_REGEX, BrandSymbol, CUID2_REGEX, DECIMAL_REGEX, DIGITS_REGEX, DOMAIN_REGEX, EMAIL_REGEX, EMOJI_REGEX, FlavorSymbol, HEXADECIMAL_REGEX, HEX_COLOR_REGEX, IMEI_REGEX, IPV4_REGEX, IPV6_REGEX, IP_REGEX, ISO_DATE_REGEX, ISO_DATE_TIME_REGEX, ISO_TIMESTAMP_REGEX, ISO_TIME_REGEX, ISO_TIME_SECOND_REGEX, ISO_WEEK_REGEX, ISRC_REGEX, JWS_COMPACT_REGEX, MAC48_REGEX, MAC64_REGEX, MAC_REGEX, NANO_ID_REGEX, OCTAL_REGEX, RFC_EMAIL_REGEX, SLUG_REGEX, ULID_REGEX, UUID_REGEX, ValiError, _addIssue, _cloneDataset, _getByteCount, _getGraphemeCount, _getLastMetadata, _getStandardProps, _getWordCount, _isLuhnAlgo, _isValidObjectKey, _joinExpects, _stringify, any, args, argsAsync, array, arrayAsync, assert, awaitAsync, base64, bic, bigint, blob, boolean, brand, bytes, cache, cacheAsync, check, checkAsync, checkItems, checkItemsAsync, config, creditCard, cuid2, custom, customAsync, date, decimal, deleteGlobalConfig, deleteGlobalMessage, deleteSchemaMessage, deleteSpecificMessage, description, digits, domain, email, emoji, empty, endsWith, entries, entriesFromList, entriesFromObjects, enum_ as enum, enum_, everyItem, exactOptional, exactOptionalAsync, examples, excludes, fallback, fallbackAsync, file, filterItems, findItem, finite, flatten, flavor, forward, forwardAsync, function_ as function, function_, getDefault, getDefaults, getDefaultsAsync, getDescription, getDotPath, getExamples, getFallback, getFallbacks, getFallbacksAsync, getGlobalConfig, getGlobalMessage, getMetadata, getSchemaMessage, getSpecificMessage, getTitle, graphemes, gtValue, guard, hash, hexColor, hexadecimal, imei, includes, instance, integer, intersect, intersectAsync, ip, ipv4, ipv6, is, isOfKind, isOfType, isValiError, isbn, isoDate, isoDateTime, isoTime, isoTimeSecond, isoTimestamp, isoWeek, isrc, jwsCompact, keyof, lazy, lazyAsync, length, literal, looseObject, looseObjectAsync, looseTuple, looseTupleAsync, ltValue, mac, mac48, mac64, map, mapAsync, mapItems, maxBytes, maxEntries, maxGraphemes, maxLength, maxSize, maxValue, maxWords, message, metadata, mimeType, minBytes, minEntries, minGraphemes, minLength, minSize, minValue, minWords, multipleOf, nan, nanoid, never, nonEmpty, nonNullable, nonNullableAsync, nonNullish, nonNullishAsync, nonOptional, nonOptionalAsync, normalize, notBytes, notEntries, notGraphemes, notLength, notSize, notValue, notValues, notWords, null_ as null, null_, nullable, nullableAsync, nullish, nullishAsync, number, object, objectAsync, objectWithRest, objectWithRestAsync, octal, omit, optional, optionalAsync, parse, parseAsync, parseBoolean, parseJson, parser, parserAsync, partial, partialAsync, partialCheck, partialCheckAsync, pick, picklist, pipe, pipeAsync, promise, rawCheck, rawCheckAsync, rawTransform, rawTransformAsync, readonly, record, recordAsync, reduceItems, regex, required, requiredAsync, returns, returnsAsync, rfcEmail, safeInteger, safeParse, safeParseAsync, safeParser, safeParserAsync, set, setAsync, setGlobalConfig, setGlobalMessage, setSchemaMessage, setSpecificMessage, size, slug, someItem, sortItems, startsWith, strictObject, strictObjectAsync, strictTuple, strictTupleAsync, string, stringifyJson, summarize, symbol, title, toBigint, toBoolean, toDate, toLowerCase, toMaxValue, toMinValue, toNumber, toString, toUpperCase, transform, transformAsync, trim, trimEnd, trimStart, tuple, tupleAsync, tupleWithRest, tupleWithRestAsync, ulid, undefined_ as undefined, undefined_, undefinedable, undefinedableAsync, union, unionAsync, unknown, unwrap, url, uuid, value, values, variant, variantAsync, void_ as void, void_, words };
-export type { AnySchema, ArgsAction, ArgsActionAsync, ArrayInput, ArrayIssue, ArrayPathItem, ArrayRequirement, ArrayRequirementAsync, ArraySchema, ArraySchemaAsync, AwaitActionAsync, Base64Action, Base64Issue, BaseIssue, BaseMetadata, BaseSchema, BaseSchemaAsync, BaseTransformation, BaseTransformationAsync, BaseValidation, BaseValidationAsync, BicAction, BicIssue, BigintIssue, BigintSchema, BlobIssue, BlobSchema, BooleanIssue, BooleanSchema, Brand, BrandAction, BrandName, BytesAction, BytesIssue, Cache, CacheConfig, CheckAction, CheckActionAsync, CheckIssue, CheckItemsAction, CheckItemsActionAsync, CheckItemsIssue, Class, Config, ContentInput, ContentRequirement, CreditCardAction, CreditCardIssue, Cuid2Action, Cuid2Issue, CustomIssue, CustomSchema, CustomSchemaAsync, DateIssue, DateSchema, DecimalAction, DecimalIssue, Default, DefaultAsync, DefaultValue, DescriptionAction, DigitsAction, DigitsIssue, DomainAction, DomainIssue, EmailAction, EmailIssue, EmojiAction, EmojiIssue, EmptyAction, EmptyIssue, EndsWithAction, EndsWithIssue, EntriesAction, EntriesInput, EntriesIssue, Enum, EnumIssue, EnumSchema, EnumValues, ErrorMessage, EveryItemAction, EveryItemIssue, ExactOptionalSchema, ExactOptionalSchemaAsync, ExamplesAction, ExcludesAction, ExcludesIssue, FailureDataset, Fallback, FallbackAsync, FileIssue, FileSchema, FilterItemsAction, FindItemAction, FiniteAction, FiniteIssue, FlatErrors, Flavor, FlavorAction, FlavorName, FunctionIssue, FunctionSchema, GenericIssue, GenericMetadata, GenericPipeAction, GenericPipeActionAsync, GenericPipeItem, GenericPipeItemAsync, GenericSchema, GenericSchemaAsync, GenericTransformation, GenericTransformationAsync, GenericValidation, GenericValidationAsync, GlobalConfig, GraphemesAction, GraphemesIssue, GtValueAction, GtValueIssue, GuardAction, GuardFunction, GuardIssue, HashAction, HashIssue, HashType, HexColorAction, HexColorIssue, HexadecimalAction, HexadecimalIssue, ImeiAction, ImeiIssue, IncludesAction, IncludesIssue, InferDefault, InferDefaults, InferExamples, InferFallback, InferFallbacks, InferGuardOutput, InferInput, InferIssue, InferMetadata, InferOutput, InstanceIssue, InstanceSchema, IntegerAction, IntegerIssue, IntersectIssue, IntersectOptions, IntersectOptionsAsync, IntersectSchema, IntersectSchemaAsync, IpAction, IpIssue, Ipv4Action, Ipv4Issue, Ipv6Action, Ipv6Issue, IsbnAction, IsbnIssue, IsoDateAction, IsoDateIssue, IsoDateTimeAction, IsoDateTimeIssue, IsoTimeAction, IsoTimeIssue, IsoTimeSecondAction, IsoTimeSecondIssue, IsoTimestampAction, IsoTimestampIssue, IsoWeekAction, IsoWeekIssue, IsrcAction, IsrcIssue, IssueDotPath, IssuePathItem, JwsCompactAction, JwsCompactIssue, LazySchema, LazySchemaAsync, LengthAction, LengthInput, LengthIssue, Literal, LiteralIssue, LiteralSchema, LooseObjectIssue, LooseObjectSchema, LooseObjectSchemaAsync, LooseTupleIssue, LooseTupleSchema, LooseTupleSchemaAsync, LtValueAction, LtValueIssue, Mac48Action, Mac48Issue, Mac64Action, Mac64Issue, MacAction, MacIssue, MapIssue, MapItemsAction, MapPathItem, MapSchema, MapSchemaAsync, MaxBytesAction, MaxBytesIssue, MaxEntriesAction, MaxEntriesIssue, MaxGraphemesAction, MaxGraphemesIssue, MaxLengthAction, MaxLengthIssue, MaxSizeAction, MaxSizeIssue, MaxValueAction, MaxValueIssue, MaxWordsAction, MaxWordsIssue, MetadataAction, MimeTypeAction, MimeTypeIssue, MinBytesAction, MinBytesIssue, MinEntriesAction, MinEntriesIssue, MinGraphemesAction, MinGraphemesIssue, MinLengthAction, MinLengthIssue, MinSizeAction, MinSizeIssue, MinValueAction, MinValueIssue, MinWordsAction, MinWordsIssue, MultipleOfAction, MultipleOfIssue, NanIssue, NanSchema, NanoIDAction, NanoIDIssue, NanoIdAction, NanoIdIssue, NeverIssue, NeverSchema, NonEmptyAction, NonEmptyIssue, NonNullableIssue, NonNullableSchema, NonNullableSchemaAsync, NonNullishIssue, NonNullishSchema, NonNullishSchemaAsync, NonOptionalIssue, NonOptionalSchema, NonOptionalSchemaAsync, NormalizeAction, NormalizeForm, NotBytesAction, NotBytesIssue, NotEntriesAction, NotEntriesIssue, NotGraphemesAction, NotGraphemesIssue, NotLengthAction, NotLengthIssue, NotSizeAction, NotSizeIssue, NotValueAction, NotValueIssue, NotValuesAction, NotValuesIssue, NotWordsAction, NotWordsIssue, NullIssue, NullSchema, NullableSchema, NullableSchemaAsync, NullishSchema, NullishSchemaAsync, NumberIssue, NumberSchema, ObjectEntries, ObjectEntriesAsync, ObjectIssue, ObjectKeys, ObjectPathItem, ObjectSchema, ObjectSchemaAsync, ObjectWithRestIssue, ObjectWithRestSchema, ObjectWithRestSchemaAsync, OctalAction, OctalIssue, OptionalSchema, OptionalSchemaAsync, OutputDataset, ParseBooleanAction, ParseBooleanConfig, ParseBooleanIssue, ParseJsonAction, ParseJsonConfig, ParseJsonIssue, Parser, ParserAsync, PartialCheckAction, PartialCheckActionAsync, PartialCheckIssue, PartialDataset, PicklistIssue, PicklistOptions, PicklistSchema, PipeAction, PipeActionAsync, PipeItem, PipeItemAsync, PromiseIssue, PromiseSchema, RawCheckAction, RawCheckActionAsync, RawCheckAddIssue, RawCheckContext, RawCheckIssue, RawCheckIssueInfo, RawTransformAction, RawTransformActionAsync, RawTransformAddIssue, RawTransformContext, RawTransformIssue, RawTransformIssueInfo, ReadonlyAction, RecordIssue, RecordSchema, RecordSchemaAsync, ReduceItemsAction, RegexAction, RegexIssue, ReturnsAction, ReturnsActionAsync, RfcEmailAction, RfcEmailIssue, SafeIntegerAction, SafeIntegerIssue, SafeParseResult, SafeParser, SafeParserAsync, SchemaWithCache, SchemaWithCacheAsync, SchemaWithFallback, SchemaWithFallbackAsync, SchemaWithOmit, SchemaWithPartial, SchemaWithPartialAsync, SchemaWithPick, SchemaWithPipe, SchemaWithPipeAsync, SchemaWithRequired, SchemaWithRequiredAsync, SchemaWithoutPipe, SetIssue, SetPathItem, SetSchema, SetSchemaAsync, SizeAction, SizeInput, SizeIssue, SlugAction, SlugIssue, SomeItemAction, SomeItemIssue, SortItemsAction, StandardProps, StartsWithAction, StartsWithIssue, StrictObjectIssue, StrictObjectSchema, StrictObjectSchemaAsync, StrictTupleIssue, StrictTupleSchema, StrictTupleSchemaAsync, StringIssue, StringSchema, StringifyJsonAction, StringifyJsonConfig, StringifyJsonIssue, SuccessDataset, SymbolIssue, SymbolSchema, TitleAction, ToBigintAction, ToBigintIssue, ToBooleanAction, ToDateAction, ToDateIssue, ToLowerCaseAction, ToMaxValueAction, ToMinValueAction, ToNumberAction, ToNumberIssue, ToStringAction, ToStringIssue, ToUpperCaseAction, TransformAction, TransformActionAsync, TrimAction, TrimEndAction, TrimStartAction, TupleIssue, TupleItems, TupleItemsAsync, TupleSchema, TupleSchemaAsync, TupleWithRestIssue, TupleWithRestSchema, TupleWithRestSchemaAsync, UlidAction, UlidIssue, UndefinedIssue, UndefinedSchema, UndefinedableSchema, UndefinedableSchemaAsync, UnionIssue, UnionOptions, UnionOptionsAsync, UnionSchema, UnionSchemaAsync, UnknownDataset, UnknownPathItem, UnknownSchema, UrlAction, UrlIssue, UuidAction, UuidIssue, ValueAction, ValueInput, ValueIssue, ValuesAction, ValuesIssue, VariantIssue, VariantOptions, VariantOptionsAsync, VariantSchema, VariantSchemaAsync, VoidIssue, VoidSchema, WordsAction, WordsIssue };
+export { BASE64_REGEX, BIC_REGEX, BrandSymbol, CUID2_REGEX, DECIMAL_REGEX, DIGITS_REGEX, DOMAIN_REGEX, EMAIL_REGEX, EMOJI_REGEX, FlavorSymbol, HEXADECIMAL_REGEX, HEX_COLOR_REGEX, IMEI_REGEX, IPV4_REGEX, IPV6_REGEX, IP_REGEX, ISO_DATE_REGEX, ISO_DATE_TIME_REGEX, ISO_DATE_TIME_SECOND_REGEX, ISO_TIMESTAMP_REGEX, ISO_TIME_REGEX, ISO_TIME_SECOND_REGEX, ISO_WEEK_REGEX, ISRC_REGEX, JWS_COMPACT_REGEX, MAC48_REGEX, MAC64_REGEX, MAC_REGEX, NANO_ID_REGEX, OCTAL_REGEX, RFC_EMAIL_REGEX, SLUG_REGEX, ULID_REGEX, UUID_REGEX, ValiError, _addIssue, _cloneDataset, _formatCase, _getByteCount, _getGraphemeCount, _getLastMetadata, _getStandardProps, _getWordCount, _isLuhnAlgo, _isValidObjectKey, _joinExpects, _stringify, any, args, argsAsync, array, arrayAsync, assert, awaitAsync, base64, bic, bigint, blob, boolean, brand, bytes, cache, cacheAsync, check, checkAsync, checkItems, checkItemsAsync, config, creditCard, cuid2, custom, customAsync, date, decimal, deleteGlobalConfig, deleteGlobalMessage, deleteSchemaMessage, deleteSpecificMessage, description, digits, domain, email, emoji, empty, endsWith, entries, entriesFromList, entriesFromObjects, enum_ as enum, enum_, everyItem, exactOptional, exactOptionalAsync, examples, excludes, fallback, fallbackAsync, file, filterItems, findItem, finite, flatten, flavor, forward, forwardAsync, function_ as function, function_, getDefault, getDefaults, getDefaultsAsync, getDescription, getDotPath, getExamples, getFallback, getFallbacks, getFallbacksAsync, getGlobalConfig, getGlobalMessage, getMetadata, getSchemaMessage, getSpecificMessage, getTitle, graphemes, gtValue, guard, hash, hexColor, hexadecimal, imei, includes, instance, integer, intersect, intersectAsync, ip, ipv4, ipv6, is, isOfKind, isOfType, isValiError, isbn, isoDate, isoDateTime, isoDateTimeSecond, isoTime, isoTimeSecond, isoTimestamp, isoWeek, isrc, jwsCompact, keyof, lazy, lazyAsync, length, literal, looseObject, looseObjectAsync, looseTuple, looseTupleAsync, ltValue, mac, mac48, mac64, map, mapAsync, mapItems, maxBytes, maxEntries, maxGraphemes, maxLength, maxSize, maxValue, maxWords, message, metadata, mimeType, minBytes, minEntries, minGraphemes, minLength, minSize, minValue, minWords, multipleOf, nan, nanoid, never, nonEmpty, nonNullable, nonNullableAsync, nonNullish, nonNullishAsync, nonOptional, nonOptionalAsync, normalize, notBytes, notEntries, notGraphemes, notLength, notSize, notValue, notValues, notWords, null_ as null, null_, nullable, nullableAsync, nullish, nullishAsync, number, object, objectAsync, objectWithRest, objectWithRestAsync, octal, omit, optional, optionalAsync, parse, parseAsync, parseBoolean, parseJson, parser, parserAsync, partial, partialAsync, partialCheck, partialCheckAsync, pick, picklist, pipe, pipeAsync, promise, rawCheck, rawCheckAsync, rawTransform, rawTransformAsync, readonly, record, recordAsync, reduceItems, regex, required, requiredAsync, returns, returnsAsync, rfcEmail, safeInteger, safeParse, safeParseAsync, safeParser, safeParserAsync, set, setAsync, setGlobalConfig, setGlobalMessage, setSchemaMessage, setSpecificMessage, size, slug, someItem, sortItems, startsWith, strictObject, strictObjectAsync, strictTuple, strictTupleAsync, string, stringifyJson, summarize, symbol, title, toBigint, toBoolean, toCamelCase, toDate, toKebabCase, toLowerCase, toMaxValue, toMinValue, toNumber, toPascalCase, toSnakeCase, toString, toUpperCase, transform, transformAsync, trim, trimEnd, trimStart, tuple, tupleAsync, tupleWithRest, tupleWithRestAsync, ulid, undefined_ as undefined, undefined_, undefinedable, undefinedableAsync, union, unionAsync, unknown, unwrap, url, uuid, value, values, variant, variantAsync, void_ as void, void_, words };
+export type { AnySchema, ArgsAction, ArgsActionAsync, ArrayInput, ArrayIssue, ArrayPathItem, ArrayRequirement, ArrayRequirementAsync, ArraySchema, ArraySchemaAsync, AwaitActionAsync, Base64Action, Base64Issue, BaseIssue, BaseMetadata, BaseSchema, BaseSchemaAsync, BaseTransformation, BaseTransformationAsync, BaseValidation, BaseValidationAsync, BicAction, BicIssue, BigintIssue, BigintSchema, BlobIssue, BlobSchema, BooleanIssue, BooleanSchema, Brand, BrandAction, BrandName, BytesAction, BytesIssue, Cache, CacheConfig, CheckAction, CheckActionAsync, CheckIssue, CheckItemsAction, CheckItemsActionAsync, CheckItemsIssue, Class, Config, ContentInput, ContentRequirement, CreditCardAction, CreditCardIssue, Cuid2Action, Cuid2Issue, CustomIssue, CustomSchema, CustomSchemaAsync, DateIssue, DateSchema, DecimalAction, DecimalIssue, Default, DefaultAsync, DefaultValue, DescriptionAction, DigitsAction, DigitsIssue, DomainAction, DomainIssue, EmailAction, EmailIssue, EmojiAction, EmojiIssue, EmptyAction, EmptyIssue, EndsWithAction, EndsWithIssue, EntriesAction, EntriesInput, EntriesIssue, Enum, EnumIssue, EnumSchema, EnumValues, ErrorMessage, EveryItemAction, EveryItemIssue, ExactOptionalSchema, ExactOptionalSchemaAsync, ExamplesAction, ExcludesAction, ExcludesIssue, FailureDataset, Fallback, FallbackAsync, FileIssue, FileSchema, FilterItemsAction, FindItemAction, FiniteAction, FiniteIssue, FlatErrors, Flavor, FlavorAction, FlavorName, FunctionIssue, FunctionSchema, GenericIssue, GenericMetadata, GenericPipeAction, GenericPipeActionAsync, GenericPipeItem, GenericPipeItemAsync, GenericSchema, GenericSchemaAsync, GenericTransformation, GenericTransformationAsync, GenericValidation, GenericValidationAsync, GlobalConfig, GraphemesAction, GraphemesIssue, GtValueAction, GtValueIssue, GuardAction, GuardFunction, GuardIssue, HashAction, HashIssue, HashType, HexColorAction, HexColorIssue, HexadecimalAction, HexadecimalIssue, ImeiAction, ImeiIssue, IncludesAction, IncludesIssue, InferDefault, InferDefaults, InferExamples, InferFallback, InferFallbacks, InferGuardOutput, InferInput, InferIssue, InferMetadata, InferOutput, InstanceIssue, InstanceSchema, IntegerAction, IntegerIssue, IntersectIssue, IntersectOptions, IntersectOptionsAsync, IntersectSchema, IntersectSchemaAsync, IpAction, IpIssue, Ipv4Action, Ipv4Issue, Ipv6Action, Ipv6Issue, IsbnAction, IsbnIssue, IsoDateAction, IsoDateIssue, IsoDateTimeAction, IsoDateTimeIssue, IsoDateTimeSecondAction, IsoDateTimeSecondIssue, IsoTimeAction, IsoTimeIssue, IsoTimeSecondAction, IsoTimeSecondIssue, IsoTimestampAction, IsoTimestampIssue, IsoWeekAction, IsoWeekIssue, IsrcAction, IsrcIssue, IssueDotPath, IssuePathItem, JwsCompactAction, JwsCompactIssue, LazySchema, LazySchemaAsync, LengthAction, LengthInput, LengthIssue, Literal, LiteralIssue, LiteralSchema, LooseObjectIssue, LooseObjectSchema, LooseObjectSchemaAsync, LooseTupleIssue, LooseTupleSchema, LooseTupleSchemaAsync, LtValueAction, LtValueIssue, Mac48Action, Mac48Issue, Mac64Action, Mac64Issue, MacAction, MacIssue, MapIssue, MapItemsAction, MapPathItem, MapSchema, MapSchemaAsync, MaxBytesAction, MaxBytesIssue, MaxEntriesAction, MaxEntriesIssue, MaxGraphemesAction, MaxGraphemesIssue, MaxLengthAction, MaxLengthIssue, MaxSizeAction, MaxSizeIssue, MaxValueAction, MaxValueIssue, MaxWordsAction, MaxWordsIssue, MetadataAction, MimeTypeAction, MimeTypeIssue, MinBytesAction, MinBytesIssue, MinEntriesAction, MinEntriesIssue, MinGraphemesAction, MinGraphemesIssue, MinLengthAction, MinLengthIssue, MinSizeAction, MinSizeIssue, MinValueAction, MinValueIssue, MinWordsAction, MinWordsIssue, MultipleOfAction, MultipleOfIssue, NanIssue, NanSchema, NanoIDAction, NanoIDIssue, NanoIdAction, NanoIdIssue, NeverIssue, NeverSchema, NonEmptyAction, NonEmptyIssue, NonNullableIssue, NonNullableSchema, NonNullableSchemaAsync, NonNullishIssue, NonNullishSchema, NonNullishSchemaAsync, NonOptionalIssue, NonOptionalSchema, NonOptionalSchemaAsync, NormalizeAction, NormalizeForm, NotBytesAction, NotBytesIssue, NotEntriesAction, NotEntriesIssue, NotGraphemesAction, NotGraphemesIssue, NotLengthAction, NotLengthIssue, NotSizeAction, NotSizeIssue, NotValueAction, NotValueIssue, NotValuesAction, NotValuesIssue, NotWordsAction, NotWordsIssue, NullIssue, NullSchema, NullableSchema, NullableSchemaAsync, NullishSchema, NullishSchemaAsync, NumberIssue, NumberSchema, ObjectEntries, ObjectEntriesAsync, ObjectIssue, ObjectKeys, ObjectPathItem, ObjectSchema, ObjectSchemaAsync, ObjectWithRestIssue, ObjectWithRestSchema, ObjectWithRestSchemaAsync, OctalAction, OctalIssue, OptionalSchema, OptionalSchemaAsync, OutputDataset, ParseBooleanAction, ParseBooleanConfig, ParseBooleanIssue, ParseJsonAction, ParseJsonConfig, ParseJsonIssue, Parser, ParserAsync, PartialCheckAction, PartialCheckActionAsync, PartialCheckIssue, PartialDataset, PicklistIssue, PicklistOptions, PicklistSchema, PipeAction, PipeActionAsync, PipeItem, PipeItemAsync, PromiseIssue, PromiseSchema, RawCheckAction, RawCheckActionAsync, RawCheckAddIssue, RawCheckContext, RawCheckIssue, RawCheckIssueInfo, RawTransformAction, RawTransformActionAsync, RawTransformAddIssue, RawTransformContext, RawTransformIssue, RawTransformIssueInfo, ReadonlyAction, RecordIssue, RecordSchema, RecordSchemaAsync, ReduceItemsAction, RegexAction, RegexIssue, ReturnsAction, ReturnsActionAsync, RfcEmailAction, RfcEmailIssue, SafeIntegerAction, SafeIntegerIssue, SafeParseResult, SafeParser, SafeParserAsync, SchemaWithCache, SchemaWithCacheAsync, SchemaWithFallback, SchemaWithFallbackAsync, SchemaWithOmit, SchemaWithPartial, SchemaWithPartialAsync, SchemaWithPick, SchemaWithPipe, SchemaWithPipeAsync, SchemaWithRequired, SchemaWithRequiredAsync, SchemaWithoutPipe, SetIssue, SetPathItem, SetSchema, SetSchemaAsync, SizeAction, SizeInput, SizeIssue, SlugAction, SlugIssue, SomeItemAction, SomeItemIssue, SortItemsAction, StandardProps, StartsWithAction, StartsWithIssue, StrictObjectIssue, StrictObjectSchema, StrictObjectSchemaAsync, StrictTupleIssue, StrictTupleSchema, StrictTupleSchemaAsync, StringIssue, StringSchema, StringifyJsonAction, StringifyJsonConfig, StringifyJsonIssue, SuccessDataset, SymbolIssue, SymbolSchema, TitleAction, ToBigintAction, ToBigintIssue, ToBooleanAction, ToCamelCaseAction, ToDateAction, ToDateIssue, ToKebabCaseAction, ToLowerCaseAction, ToMaxValueAction, ToMinValueAction, ToNumberAction, ToNumberIssue, ToPascalCaseAction, ToSnakeCaseAction, ToStringAction, ToStringIssue, ToUpperCaseAction, TransformAction, TransformActionAsync, TrimAction, TrimEndAction, TrimStartAction, TupleIssue, TupleItems, TupleItemsAsync, TupleSchema, TupleSchemaAsync, TupleWithRestIssue, TupleWithRestSchema, TupleWithRestSchemaAsync, UlidAction, UlidIssue, UndefinedIssue, UndefinedSchema, UndefinedableSchema, UndefinedableSchemaAsync, UnionIssue, UnionOptions, UnionOptionsAsync, UnionSchema, UnionSchemaAsync, UnknownDataset, UnknownPathItem, UnknownSchema, UrlAction, UrlIssue, UuidAction, UuidIssue, ValueAction, ValueInput, ValueIssue, ValuesAction, ValuesIssue, VariantIssue, VariantOptions, VariantOptionsAsync, VariantSchema, VariantSchemaAsync, VoidIssue, VoidSchema, WordsAction, WordsIssue };

@@ -3,9 +3,9 @@
 These are production-ready API client wrappers for your generated typed-openapi code. Copy the one that fits your needs
 and customize it.
 
-> **Prefer `--default-fetcher`.** It matches the current `Fetcher` shape (`fetch(input)` with `requestFormat`,
-> cookies, etc.). The checked-in example at [`tests/api-client.example.ts`](./tests/api-client.example.ts) stays in sync
-> with `src/default-fetcher.generator.ts`.
+> **Prefer `--default-fetcher`.** It matches the current `Fetcher` shape (`fetch(input)` with `requestFormat`, cookies,
+> etc.). The checked-in example at [`tests/api-client.example.ts`](./tests/api-client.example.ts) stays in sync with
+> `src/default-fetcher.generator.ts`.
 
 ## Basic API Client ([api-client.example.ts](./tests/api-client.example.ts))
 
@@ -115,11 +115,7 @@ validates via `--validate-side` (`input` | `output` | `both`). Prefer that over 
 import { createApiClient, EndpointByMethod } from "./generated/api";
 import { z } from "zod"; // if runtime=zod
 
-const api = createApiClient(
-  { fetch: fetcher },
-  "https://api.example.com",
-  { validate: "both" },
-);
+const api = createApiClient({ fetch: fetcher }, "https://api.example.com", { validate: "both" });
 
 // Override per-call or globally:
 api.setValidate("input");
@@ -140,8 +136,8 @@ api.setOnValidate(async ({ side, schema, value }) => {
 - **Retries**: retry failed requests
 - **Caching**: response caching with TTL
 - **Logging**: request/response logging
-- **SSE**: read `ReadableStream` from SSE endpoints (`text/event-stream`) with your own event parser — output
-  validation is skipped for `responseFormat: "sse"`
+- **SSE**: read `ReadableStream` from SSE endpoints (`text/event-stream`) with your own event parser — output validation
+  is skipped for `responseFormat: "sse"`
 
 ## Error Handling with withResponse
 

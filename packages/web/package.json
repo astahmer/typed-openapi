@@ -20,7 +20,7 @@
     "lz-string": "1.5.0",
     "monaco-editor": "0.56.0",
     "pastable": "2.2.1",
-    "prettier": "3.9.5",
+    "prettier": "3.9.6",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "react-icons": "5.7.0",
@@ -30,14 +30,13 @@
     "yaml": "2.9.0"
   },
   "devDependencies": {
-    "@esbuild-plugins/node-globals-polyfill": "0.2.3",
     "@pandacss/postcss": "1.11.4",
     "@pandacss/preset-base": "1.11.4",
     "@pandacss/preset-panda": "1.11.4",
     "@park-ui/presets": "0.19.0",
-    "@types/node": "25.6.0",
+    "@types/node": "24.13.3",
     "@types/prettier": "3.0.0",
-    "@types/react": "19.2.14",
+    "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react-swc": "4.3.1",
     "arktype": "2.2.3",
@@ -51,9 +50,8 @@
     "typescript": "6.0.3",
     "util": "0.12.5",
     "valibot": "1.4.2",
-    "vite": "7.3.6",
-    "vite-plugin-react-click-to-component": "4.2.1",
-    "vite-tsconfig-paths": "6.1.1",
+    "vite": "8.1.5",
+    "vite-plugin-react-click-to-component": "4.2.2",
     "vitest": "4.1.10",
     "zod": "4.4.3"
   }

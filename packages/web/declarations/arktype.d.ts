@@ -2405,7 +2405,7 @@ type DeclarationParser<$> = <preinferred = unset, ctx extends DeclareContext = {
         preinferred
     ] extends [anyOrNever] ? validateDeclared<preinferred, def, $, ctx> : ErrorMessage<`declare<ExternalType>() requires a generic argument`> : validateDeclared<preinferred, def, $, ctx>) => Type<finalizePreinferred<preinferred, def, $, ctx>, $>;
 };
-type finalizePreinferred<preinferred, def, $, ctx extends DeclareContext> = ctx["side"] extends distill.Side ? ctx["side"] extends "in" ? (In: preinferred) => type.infer.Out<def, $> : (In: type.infer.In<def, $>) => preinferred : preinferred;
+type finalizePreinferred<preinferred, def, $, ctx extends DeclareContext> = ctx["side"] extends distill.Side ? ctx["side"] extends "in" ? (In: preinferred) => type.infer.Out<def, $> : (In: type.infer.In<def, $>) => Out<preinferred> : preinferred;
 type DeclareContext = {
     side?: "in" | "out";
 };

@@ -96,8 +96,8 @@ Options:
 ## Non-goals
 
 - Shipping every historical runtime (yup / io-ts). TypeBox and Typia are available again via `--runtime typebox` /
-  `--runtime typia`; the adapter contract makes further runtimes easy to add.
-  focuses on zod, effect, valibot, and arktype.
+  `--runtime typia`; the adapter contract makes further runtimes easy to add. focuses on zod, effect, valibot, and
+  arktype.
 
 - Being a full JSON Schema validator suite for exotic media types. Constraints (`format`, bounds, patterns, …) are
   supported via `--validation`, but the priority remains a fast, typesafe API client.
