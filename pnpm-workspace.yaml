@@ -1,2 +1,14 @@
 packages:
   - "packages/*"
+
+overrides:
+  "@effect/schema>effect": "3.22.0"
+
+packageExtensions:
+  "@effect/schema":
+    dependencies:
+      effect: "3.22.0"
+
+peerDependencyRules:
+  allowedVersions:
+    "@effect/schema>effect": "*"
