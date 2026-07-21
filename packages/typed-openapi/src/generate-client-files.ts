@@ -117,7 +117,7 @@ const asStringArray = (value: string | string[] | undefined): string[] | undefin
   return Array.isArray(value) ? value : [value];
 };
 
-export async function generateClientFiles(input: string, options: GenerateClientFilesOptions) {
+export async function generateClientFiles(input: string | undefined, options: GenerateClientFilesOptions) {
   const configPath = options.config ?? findDefaultConfigPath(cwd);
   const fileConfig = configPath ? await loadConfig(configPath) : undefined;
   if (configPath) console.log(`Using config ${configPath}`);
@@ -127,8 +127,12 @@ export async function generateClientFiles(input: string, options: GenerateClient
   ) as GenerateClientFilesOptions;
   const runtime = (merged.runtime ?? "none") as NonNullable<GenerateClientFilesOptions["runtime"]>;
 
-  // Config may supply input when CLI positional is a placeholder; prefer CLI input.
-  const openApiDoc = (await SwaggerParser.bundle(input)) as OpenAPIObject;
+  // Prefer CLI positional input; fall back to config `input`.
+  const resolvedInput = input || (merged as { input?: string }).input;
+  if (!resolvedInput) {
+    throw new Error("No OpenAPI input: pass a path argument or set `input` in typed-openapi.config.(ts|json)");
+  }
+  const openApiDoc = (await SwaggerParser.bundle(resolvedInput)) as OpenAPIObject;
 
   const ctx = mapOpenApiEndpoints(openApiDoc, merged);
   console.log(`Found ${ctx.endpointList.length} endpoints`);
@@ -201,7 +205,7 @@ export async function generateClientFiles(input: string, options: GenerateClient
 
   const outputPath = join(
     cwd,
-    merged.output ?? options.output ?? input + `.${runtime === "none" ? "client" : runtime}.ts`,
+    merged.output ?? options.output ?? resolvedInput + `.${runtime === "none" ? "client" : runtime}.ts`,
   );
   const content = await prettify(generateFile(generatorOptions), { enabled: shouldFormat, filePath: outputPath });
 
@@ -278,6 +282,9 @@ export async function generateClientFiles(input: string, options: GenerateClient
       generateMswFile({
         endpointList: generatorOptions.endpointList,
         doc: openApiDoc,
+        schemaByName: Object.fromEntries(
+          generatorOptions.refs.getOrderedSchemas().map(([node, infos]) => [infos.normalized, node]),
+        ),
         faker: Boolean(options.mswFaker ?? (merged as { mswFaker?: boolean }).mswFaker),
         baseUrl: options.mswBaseUrl ?? (merged as { mswBaseUrl?: string }).mswBaseUrl ?? "*",
       }),

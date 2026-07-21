@@ -76,7 +76,7 @@ describe("generateClientFiles + config file integration", () => {
     const client = readFileSync(join(tmp, "out.client.ts"), "utf8");
     expect(client).toContain("at: Date");
     expect(client).toContain("id: bigint");
-    expect(client).toContain("__reviveDates");
+    expect(client).toContain("__reviveTransforms");
 
     const msw = readFileSync(join(tmp, "msw.handlers.ts"), "utf8");
     expect(msw).toContain("https://mini.test");
@@ -87,7 +87,51 @@ describe("generateClientFiles + config file integration", () => {
     expect(tanstack).toContain("queryKeyFactory");
   });
 
-  test("config input key is ignored when CLI input is provided (CFG-2)", async () => {
+  test("config input alone drives generateClientFiles when CLI input omitted", async () => {
+    rmSync(tmp, { recursive: true, force: true });
+    mkdirSync(tmp, { recursive: true });
+
+    const realSpec = join(tmp, "only-config.json");
+    writeFileSync(
+      realSpec,
+      JSON.stringify({
+        openapi: "3.0.3",
+        info: { title: "cfg", version: "1" },
+        paths: {
+          "/from-config": {
+            get: {
+              operationId: "getFromConfig",
+              responses: { "200": { description: "ok" } },
+            },
+          },
+        },
+      }),
+    );
+
+    const outRel = relative(pkgRoot, join(tmp, "from-config.client.ts"));
+    const configPath = join(tmp, "typed-openapi.config.json");
+    writeFileSync(
+      configPath,
+      JSON.stringify({
+        input: relative(pkgRoot, realSpec),
+        output: outRel,
+        format: false,
+      }),
+    );
+
+    const prevCwd = process.cwd();
+    process.chdir(pkgRoot);
+    try {
+      await generateClientFiles(undefined, { config: configPath });
+    } finally {
+      process.chdir(prevCwd);
+    }
+
+    const out = readFileSync(join(tmp, "from-config.client.ts"), "utf8");
+    expect(out).toContain('"/from-config"');
+  });
+
+  test("CLI input wins over config input", async () => {
     rmSync(tmp, { recursive: true, force: true });
     mkdirSync(tmp, { recursive: true });
 
@@ -129,7 +173,7 @@ describe("generateClientFiles + config file integration", () => {
     writeFileSync(
       configPath,
       JSON.stringify({
-        input: fakeSpec,
+        input: relative(pkgRoot, fakeSpec),
         output: outRel,
         format: false,
       }),

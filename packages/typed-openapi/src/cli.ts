@@ -7,7 +7,7 @@ const { name, version } = JSON.parse(readFileSync(new URL("../package.json", imp
 const cli = cac(name);
 
 cli
-  .command("<input>", "Generate")
+  .command("[input]", "Generate (OpenAPI path; optional when `input` is set in config)")
   .option("-o, --output <path>", "Output path for the api client ts file (defaults to `<input>.<runtime>.ts`)")
   .option(
     "-r, --runtime <n>",
@@ -68,7 +68,7 @@ cli
     "Map format date-time/date to Date (types + runtime transforms; none-runtime revives ISO strings)",
   )
   .option("--transform-bigint", "Map format int64 to bigint (types + runtime transforms)")
-  .action(async (input: string, _options: any) => {
+  .action(async (input: string | undefined, _options: any) => {
     return generateClientFiles(input, _options);
   });
 

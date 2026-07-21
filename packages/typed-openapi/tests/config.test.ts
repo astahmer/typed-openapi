@@ -177,7 +177,7 @@ export default defineConfig({
     expect(cfg.msw).toBe(true);
   });
 
-  test("config schema accepts input key even though generate path unused (CFG-2)", () => {
+  test("config schema accepts input key used by generateClientFiles", () => {
     const path = join(tmp, "with-input.json");
     writeFileSync(path, JSON.stringify({ input: "./openapi.yaml", runtime: "zod" }));
     const cfg = loadConfigFile(path);

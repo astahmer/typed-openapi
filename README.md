@@ -72,6 +72,7 @@ It exports a bunch of functions that can be used to build your own tooling on to
 import { defineConfig } from "typed-openapi";
 
 export default defineConfig({
+  // input: "./openapi.yaml", // optional — CLI positional still preferred when passed
   runtime: "zod",
   tanstack: true,
   msw: true,
@@ -81,6 +82,7 @@ export default defineConfig({
 ```
 
 JSON (`typed-openapi.config.json`) still works. The CLI auto-loads the first matching config in the cwd.
+`typed-openapi.config.ts` is loaded via `tsx` (shipped as a dependency).
 
 ## CLI
 
