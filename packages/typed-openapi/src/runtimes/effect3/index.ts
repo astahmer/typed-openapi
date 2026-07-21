@@ -38,10 +38,7 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
   if (c.maxLength !== undefined) filters.push(`${S}.maxLength(${c.maxLength})`);
   if (c.pattern !== undefined) filters.push(`${S}.pattern(new RegExp(${quote(c.pattern)}))`);
   let expr = pipeFilters(base, filters);
-  if (
-    ctx.transformDates &&
-    (node.constraints.format === "date-time" || node.constraints.format === "date")
-  ) {
+  if (ctx.transformDates && (node.constraints.format === "date-time" || node.constraints.format === "date")) {
     expr = `${S}.transform(${expr}, ${S}.DateFromSelf, { decode: (s) => new Date(s), encode: (d) => d.toISOString() })`;
   }
   return expr;

@@ -53,9 +53,7 @@ describe("msw handlers e2e", () => {
   });
 
   test("manual http.get still works alongside generated style", async () => {
-    server.use(
-      http.get("https://example.test/ping", () => HttpResponse.json({ ok: true })),
-    );
+    server.use(http.get("https://example.test/ping", () => HttpResponse.json({ ok: true })));
     const res = await fetch("https://example.test/ping");
     expect(await res.json()).toEqual({ ok: true });
   });

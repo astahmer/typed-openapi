@@ -769,11 +769,10 @@ export class ApiClient {
       contentType === "*/*"
       ) {
       try {
-        const json = await response.json();
         ${
           ctx.runtime === "none" && ctx.transformDates
-            ? `return __reviveDates(json);`
-            : `return json;`
+            ? `const json = await response.json();\n        return __reviveDates(json);`
+            : `return await response.json();`
         }
       } catch {
         return undefined

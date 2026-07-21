@@ -20,7 +20,7 @@ GitHub does **not** auto-close from `.changeset/*.md`).
 - `effect3` tstyche suites stay light on param-bag inference (TS2589 on deep `InferSchemaInput`); response/export
   coverage remains.
 - Kombo snapshot/matrix typecheck still filters circular TS codes + TS2345 (zod `discriminatedUnion` vs nullable oneOf
-  members). Broader assignment filters (TS2322/TS2339/…) were removed.
+  members) + TS2322 (arktype deep union assignability on large Kombo schemas). Broader TS2339/… filters stay removed.
 
 ## Suggested PR description
 

@@ -15,7 +15,9 @@ describe("tanstack-query.generator", () => {
       }),
     );
 
-    expect(file).toContain('import { queryOptions, infiniteQueryOptions, type QueryClient } from "@tanstack/react-query"');
+    expect(file).toContain(
+      'import { queryOptions, infiniteQueryOptions, type QueryClient } from "@tanstack/react-query"',
+    );
     expect(file).toContain("export const queryKeyFactory");
     expect(file).toContain('all: ["typed-openapi"] as const');
     expect(file).toContain("export const invalidateEndpoint");
@@ -50,7 +52,9 @@ describe("tanstack-query.generator", () => {
       relativeApiClientPath: "./api.client.ts",
     });
 
-    expect(file).toMatch(/endpoint:\s*<TOptions extends EndpointParameters>\(id: string, options\?: TOptions, infinite\?: boolean\)/);
+    expect(file).toMatch(
+      /endpoint:\s*<TOptions extends EndpointParameters>\(id: string, options\?: TOptions, infinite\?: boolean\)/,
+    );
     expect(file).toContain("createQueryKey(id, options, infinite)");
   });
 });

@@ -2,19 +2,13 @@ import { describe, expect, test } from "vitest";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
-import {
-  generateMswFile,
-  openApiPathToMswPath,
-  stubFromSchema,
-} from "../src/msw.generator.ts";
+import { generateMswFile, openApiPathToMswPath, stubFromSchema } from "../src/msw.generator.ts";
 import type { SchemaNode } from "../src/schema-ir/types.ts";
 
 describe("msw.generator unit", () => {
   test("openApiPathToMswPath converts braces to colon params", () => {
     expect(openApiPathToMswPath("/pet/{petId}")).toBe("/pet/:petId");
-    expect(openApiPathToMswPath("/store/order/{orderId}/items/{itemId}")).toBe(
-      "/store/order/:orderId/items/:itemId",
-    );
+    expect(openApiPathToMswPath("/store/order/{orderId}/items/{itemId}")).toBe("/store/order/:orderId/items/:itemId");
   });
 
   test("stubFromSchema prefers examples then defaults", () => {

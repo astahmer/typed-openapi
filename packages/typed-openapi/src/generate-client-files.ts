@@ -233,7 +233,8 @@ export async function generateClientFiles(input: string, options: GenerateClient
     await writeFile(tanstackOutputPath, tanstackContent);
   }
 
-  const defaultFetcherOpt = options.defaultFetcher ?? (merged as { defaultFetcher?: typeof options.defaultFetcher }).defaultFetcher;
+  const defaultFetcherOpt =
+    options.defaultFetcher ?? (merged as { defaultFetcher?: typeof options.defaultFetcher }).defaultFetcher;
   if (defaultFetcherOpt) {
     const fetcherOpts =
       typeof defaultFetcherOpt === "object" && defaultFetcherOpt !== null

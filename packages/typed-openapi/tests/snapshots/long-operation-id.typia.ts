@@ -1,4 +1,4 @@
-import typia from "typia";
+import typia, { tags } from "typia";
 
 // <Schemas>
 // </Schemas>

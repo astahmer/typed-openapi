@@ -1,5 +1,5 @@
 
-  import typia from "typia";
+  import typia, { tags } from "typia";
 
 // <Schemas>
 export type GetCheckApiKeyPositiveResponse = { status: string, data: { environment_id: string, customer_id: string } };
@@ -117,7 +117,7 @@ export const isGetIntegrationsIntegrationIdIntegrationFieldsParameterCursor = ty
 export const assertGetIntegrationsIntegrationIdIntegrationFieldsParameterCursor = typia.createAssert<GetIntegrationsIntegrationIdIntegrationFieldsParameterCursor>();
 export const validateGetIntegrationsIntegrationIdIntegrationFieldsParameterCursor = typia.createValidate<GetIntegrationsIntegrationIdIntegrationFieldsParameterCursor>();
 
-export type GetIntegrationsIntegrationIdIntegrationFieldsParameterPageSize = number;
+export type GetIntegrationsIntegrationIdIntegrationFieldsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<2000>);
 export const isGetIntegrationsIntegrationIdIntegrationFieldsParameterPageSize = typia.createIs<GetIntegrationsIntegrationIdIntegrationFieldsParameterPageSize>();
 export const assertGetIntegrationsIntegrationIdIntegrationFieldsParameterPageSize = typia.createAssert<GetIntegrationsIntegrationIdIntegrationFieldsParameterPageSize>();
 export const validateGetIntegrationsIntegrationIdIntegrationFieldsParameterPageSize = typia.createValidate<GetIntegrationsIntegrationIdIntegrationFieldsParameterPageSize>();
@@ -157,7 +157,7 @@ export const isGetIntegrationsIntegrationIdCustomFieldsParameterCursor = typia.c
 export const assertGetIntegrationsIntegrationIdCustomFieldsParameterCursor = typia.createAssert<GetIntegrationsIntegrationIdCustomFieldsParameterCursor>();
 export const validateGetIntegrationsIntegrationIdCustomFieldsParameterCursor = typia.createValidate<GetIntegrationsIntegrationIdCustomFieldsParameterCursor>();
 
-export type GetIntegrationsIntegrationIdCustomFieldsParameterPageSize = number;
+export type GetIntegrationsIntegrationIdCustomFieldsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetIntegrationsIntegrationIdCustomFieldsParameterPageSize = typia.createIs<GetIntegrationsIntegrationIdCustomFieldsParameterPageSize>();
 export const assertGetIntegrationsIntegrationIdCustomFieldsParameterPageSize = typia.createAssert<GetIntegrationsIntegrationIdCustomFieldsParameterPageSize>();
 export const validateGetIntegrationsIntegrationIdCustomFieldsParameterPageSize = typia.createValidate<GetIntegrationsIntegrationIdCustomFieldsParameterPageSize>();
@@ -232,12 +232,12 @@ export const isGetHrisEmployeesParameterCursor = typia.createIs<GetHrisEmployees
 export const assertGetHrisEmployeesParameterCursor = typia.createAssert<GetHrisEmployeesParameterCursor>();
 export const validateGetHrisEmployeesParameterCursor = typia.createValidate<GetHrisEmployeesParameterCursor>();
 
-export type GetHrisEmployeesParameterPageSize = number;
+export type GetHrisEmployeesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisEmployeesParameterPageSize = typia.createIs<GetHrisEmployeesParameterPageSize>();
 export const assertGetHrisEmployeesParameterPageSize = typia.createAssert<GetHrisEmployeesParameterPageSize>();
 export const validateGetHrisEmployeesParameterPageSize = typia.createValidate<GetHrisEmployeesParameterPageSize>();
 
-export type GetHrisEmployeesParameterUpdatedAfter = string;
+export type GetHrisEmployeesParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisEmployeesParameterUpdatedAfter = typia.createIs<GetHrisEmployeesParameterUpdatedAfter>();
 export const assertGetHrisEmployeesParameterUpdatedAfter = typia.createAssert<GetHrisEmployeesParameterUpdatedAfter>();
 export const validateGetHrisEmployeesParameterUpdatedAfter = typia.createValidate<GetHrisEmployeesParameterUpdatedAfter>();
@@ -397,12 +397,12 @@ export const isGetHrisEmployeeDocumentCategoriesParameterCursor = typia.createIs
 export const assertGetHrisEmployeeDocumentCategoriesParameterCursor = typia.createAssert<GetHrisEmployeeDocumentCategoriesParameterCursor>();
 export const validateGetHrisEmployeeDocumentCategoriesParameterCursor = typia.createValidate<GetHrisEmployeeDocumentCategoriesParameterCursor>();
 
-export type GetHrisEmployeeDocumentCategoriesParameterPageSize = number;
+export type GetHrisEmployeeDocumentCategoriesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisEmployeeDocumentCategoriesParameterPageSize = typia.createIs<GetHrisEmployeeDocumentCategoriesParameterPageSize>();
 export const assertGetHrisEmployeeDocumentCategoriesParameterPageSize = typia.createAssert<GetHrisEmployeeDocumentCategoriesParameterPageSize>();
 export const validateGetHrisEmployeeDocumentCategoriesParameterPageSize = typia.createValidate<GetHrisEmployeeDocumentCategoriesParameterPageSize>();
 
-export type GetHrisEmployeeDocumentCategoriesParameterUpdatedAfter = string;
+export type GetHrisEmployeeDocumentCategoriesParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisEmployeeDocumentCategoriesParameterUpdatedAfter = typia.createIs<GetHrisEmployeeDocumentCategoriesParameterUpdatedAfter>();
 export const assertGetHrisEmployeeDocumentCategoriesParameterUpdatedAfter = typia.createAssert<GetHrisEmployeeDocumentCategoriesParameterUpdatedAfter>();
 export const validateGetHrisEmployeeDocumentCategoriesParameterUpdatedAfter = typia.createValidate<GetHrisEmployeeDocumentCategoriesParameterUpdatedAfter>();
@@ -437,12 +437,12 @@ export const isGetHrisTeamsParameterCursor = typia.createIs<GetHrisTeamsParamete
 export const assertGetHrisTeamsParameterCursor = typia.createAssert<GetHrisTeamsParameterCursor>();
 export const validateGetHrisTeamsParameterCursor = typia.createValidate<GetHrisTeamsParameterCursor>();
 
-export type GetHrisTeamsParameterPageSize = number;
+export type GetHrisTeamsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisTeamsParameterPageSize = typia.createIs<GetHrisTeamsParameterPageSize>();
 export const assertGetHrisTeamsParameterPageSize = typia.createAssert<GetHrisTeamsParameterPageSize>();
 export const validateGetHrisTeamsParameterPageSize = typia.createValidate<GetHrisTeamsParameterPageSize>();
 
-export type GetHrisTeamsParameterUpdatedAfter = string;
+export type GetHrisTeamsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisTeamsParameterUpdatedAfter = typia.createIs<GetHrisTeamsParameterUpdatedAfter>();
 export const assertGetHrisTeamsParameterUpdatedAfter = typia.createAssert<GetHrisTeamsParameterUpdatedAfter>();
 export const validateGetHrisTeamsParameterUpdatedAfter = typia.createValidate<GetHrisTeamsParameterUpdatedAfter>();
@@ -477,12 +477,12 @@ export const isGetHrisGroupsParameterCursor = typia.createIs<GetHrisGroupsParame
 export const assertGetHrisGroupsParameterCursor = typia.createAssert<GetHrisGroupsParameterCursor>();
 export const validateGetHrisGroupsParameterCursor = typia.createValidate<GetHrisGroupsParameterCursor>();
 
-export type GetHrisGroupsParameterPageSize = number;
+export type GetHrisGroupsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisGroupsParameterPageSize = typia.createIs<GetHrisGroupsParameterPageSize>();
 export const assertGetHrisGroupsParameterPageSize = typia.createAssert<GetHrisGroupsParameterPageSize>();
 export const validateGetHrisGroupsParameterPageSize = typia.createValidate<GetHrisGroupsParameterPageSize>();
 
-export type GetHrisGroupsParameterUpdatedAfter = string;
+export type GetHrisGroupsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisGroupsParameterUpdatedAfter = typia.createIs<GetHrisGroupsParameterUpdatedAfter>();
 export const assertGetHrisGroupsParameterUpdatedAfter = typia.createAssert<GetHrisGroupsParameterUpdatedAfter>();
 export const validateGetHrisGroupsParameterUpdatedAfter = typia.createValidate<GetHrisGroupsParameterUpdatedAfter>();
@@ -527,12 +527,12 @@ export const isGetHrisEmploymentsParameterCursor = typia.createIs<GetHrisEmploym
 export const assertGetHrisEmploymentsParameterCursor = typia.createAssert<GetHrisEmploymentsParameterCursor>();
 export const validateGetHrisEmploymentsParameterCursor = typia.createValidate<GetHrisEmploymentsParameterCursor>();
 
-export type GetHrisEmploymentsParameterPageSize = number;
+export type GetHrisEmploymentsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisEmploymentsParameterPageSize = typia.createIs<GetHrisEmploymentsParameterPageSize>();
 export const assertGetHrisEmploymentsParameterPageSize = typia.createAssert<GetHrisEmploymentsParameterPageSize>();
 export const validateGetHrisEmploymentsParameterPageSize = typia.createValidate<GetHrisEmploymentsParameterPageSize>();
 
-export type GetHrisEmploymentsParameterUpdatedAfter = string;
+export type GetHrisEmploymentsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisEmploymentsParameterUpdatedAfter = typia.createIs<GetHrisEmploymentsParameterUpdatedAfter>();
 export const assertGetHrisEmploymentsParameterUpdatedAfter = typia.createAssert<GetHrisEmploymentsParameterUpdatedAfter>();
 export const validateGetHrisEmploymentsParameterUpdatedAfter = typia.createValidate<GetHrisEmploymentsParameterUpdatedAfter>();
@@ -567,12 +567,12 @@ export const isGetHrisLocationsParameterCursor = typia.createIs<GetHrisLocations
 export const assertGetHrisLocationsParameterCursor = typia.createAssert<GetHrisLocationsParameterCursor>();
 export const validateGetHrisLocationsParameterCursor = typia.createValidate<GetHrisLocationsParameterCursor>();
 
-export type GetHrisLocationsParameterPageSize = number;
+export type GetHrisLocationsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisLocationsParameterPageSize = typia.createIs<GetHrisLocationsParameterPageSize>();
 export const assertGetHrisLocationsParameterPageSize = typia.createAssert<GetHrisLocationsParameterPageSize>();
 export const validateGetHrisLocationsParameterPageSize = typia.createValidate<GetHrisLocationsParameterPageSize>();
 
-export type GetHrisLocationsParameterUpdatedAfter = string;
+export type GetHrisLocationsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisLocationsParameterUpdatedAfter = typia.createIs<GetHrisLocationsParameterUpdatedAfter>();
 export const assertGetHrisLocationsParameterUpdatedAfter = typia.createAssert<GetHrisLocationsParameterUpdatedAfter>();
 export const validateGetHrisLocationsParameterUpdatedAfter = typia.createValidate<GetHrisLocationsParameterUpdatedAfter>();
@@ -612,12 +612,12 @@ export const isGetHrisAbsenceTypesParameterCursor = typia.createIs<GetHrisAbsenc
 export const assertGetHrisAbsenceTypesParameterCursor = typia.createAssert<GetHrisAbsenceTypesParameterCursor>();
 export const validateGetHrisAbsenceTypesParameterCursor = typia.createValidate<GetHrisAbsenceTypesParameterCursor>();
 
-export type GetHrisAbsenceTypesParameterPageSize = number;
+export type GetHrisAbsenceTypesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisAbsenceTypesParameterPageSize = typia.createIs<GetHrisAbsenceTypesParameterPageSize>();
 export const assertGetHrisAbsenceTypesParameterPageSize = typia.createAssert<GetHrisAbsenceTypesParameterPageSize>();
 export const validateGetHrisAbsenceTypesParameterPageSize = typia.createValidate<GetHrisAbsenceTypesParameterPageSize>();
 
-export type GetHrisAbsenceTypesParameterUpdatedAfter = string;
+export type GetHrisAbsenceTypesParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisAbsenceTypesParameterUpdatedAfter = typia.createIs<GetHrisAbsenceTypesParameterUpdatedAfter>();
 export const assertGetHrisAbsenceTypesParameterUpdatedAfter = typia.createAssert<GetHrisAbsenceTypesParameterUpdatedAfter>();
 export const validateGetHrisAbsenceTypesParameterUpdatedAfter = typia.createValidate<GetHrisAbsenceTypesParameterUpdatedAfter>();
@@ -652,12 +652,12 @@ export const isGetHrisTimeOffBalancesParameterCursor = typia.createIs<GetHrisTim
 export const assertGetHrisTimeOffBalancesParameterCursor = typia.createAssert<GetHrisTimeOffBalancesParameterCursor>();
 export const validateGetHrisTimeOffBalancesParameterCursor = typia.createValidate<GetHrisTimeOffBalancesParameterCursor>();
 
-export type GetHrisTimeOffBalancesParameterPageSize = number;
+export type GetHrisTimeOffBalancesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisTimeOffBalancesParameterPageSize = typia.createIs<GetHrisTimeOffBalancesParameterPageSize>();
 export const assertGetHrisTimeOffBalancesParameterPageSize = typia.createAssert<GetHrisTimeOffBalancesParameterPageSize>();
 export const validateGetHrisTimeOffBalancesParameterPageSize = typia.createValidate<GetHrisTimeOffBalancesParameterPageSize>();
 
-export type GetHrisTimeOffBalancesParameterUpdatedAfter = string;
+export type GetHrisTimeOffBalancesParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisTimeOffBalancesParameterUpdatedAfter = typia.createIs<GetHrisTimeOffBalancesParameterUpdatedAfter>();
 export const assertGetHrisTimeOffBalancesParameterUpdatedAfter = typia.createAssert<GetHrisTimeOffBalancesParameterUpdatedAfter>();
 export const validateGetHrisTimeOffBalancesParameterUpdatedAfter = typia.createValidate<GetHrisTimeOffBalancesParameterUpdatedAfter>();
@@ -697,12 +697,12 @@ export const isGetHrisAbsencesParameterCursor = typia.createIs<GetHrisAbsencesPa
 export const assertGetHrisAbsencesParameterCursor = typia.createAssert<GetHrisAbsencesParameterCursor>();
 export const validateGetHrisAbsencesParameterCursor = typia.createValidate<GetHrisAbsencesParameterCursor>();
 
-export type GetHrisAbsencesParameterPageSize = number;
+export type GetHrisAbsencesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisAbsencesParameterPageSize = typia.createIs<GetHrisAbsencesParameterPageSize>();
 export const assertGetHrisAbsencesParameterPageSize = typia.createAssert<GetHrisAbsencesParameterPageSize>();
 export const validateGetHrisAbsencesParameterPageSize = typia.createValidate<GetHrisAbsencesParameterPageSize>();
 
-export type GetHrisAbsencesParameterUpdatedAfter = string;
+export type GetHrisAbsencesParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisAbsencesParameterUpdatedAfter = typia.createIs<GetHrisAbsencesParameterUpdatedAfter>();
 export const assertGetHrisAbsencesParameterUpdatedAfter = typia.createAssert<GetHrisAbsencesParameterUpdatedAfter>();
 export const validateGetHrisAbsencesParameterUpdatedAfter = typia.createValidate<GetHrisAbsencesParameterUpdatedAfter>();
@@ -727,12 +727,12 @@ export const isGetHrisAbsencesParameterRemoteIds = typia.createIs<GetHrisAbsence
 export const assertGetHrisAbsencesParameterRemoteIds = typia.createAssert<GetHrisAbsencesParameterRemoteIds>();
 export const validateGetHrisAbsencesParameterRemoteIds = typia.createValidate<GetHrisAbsencesParameterRemoteIds>();
 
-export type GetHrisAbsencesParameterDateFrom = string;
+export type GetHrisAbsencesParameterDateFrom = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisAbsencesParameterDateFrom = typia.createIs<GetHrisAbsencesParameterDateFrom>();
 export const assertGetHrisAbsencesParameterDateFrom = typia.createAssert<GetHrisAbsencesParameterDateFrom>();
 export const validateGetHrisAbsencesParameterDateFrom = typia.createValidate<GetHrisAbsencesParameterDateFrom>();
 
-export type GetHrisAbsencesParameterDateUntil = string;
+export type GetHrisAbsencesParameterDateUntil = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisAbsencesParameterDateUntil = typia.createIs<GetHrisAbsencesParameterDateUntil>();
 export const assertGetHrisAbsencesParameterDateUntil = typia.createAssert<GetHrisAbsencesParameterDateUntil>();
 export const validateGetHrisAbsencesParameterDateUntil = typia.createValidate<GetHrisAbsencesParameterDateUntil>();
@@ -747,12 +747,12 @@ export const isGetHrisAbsencesParameterEmployeeId = typia.createIs<GetHrisAbsenc
 export const assertGetHrisAbsencesParameterEmployeeId = typia.createAssert<GetHrisAbsencesParameterEmployeeId>();
 export const validateGetHrisAbsencesParameterEmployeeId = typia.createValidate<GetHrisAbsencesParameterEmployeeId>();
 
-export type GetHrisAbsencesParameterTimeFrom = string;
+export type GetHrisAbsencesParameterTimeFrom = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisAbsencesParameterTimeFrom = typia.createIs<GetHrisAbsencesParameterTimeFrom>();
 export const assertGetHrisAbsencesParameterTimeFrom = typia.createAssert<GetHrisAbsencesParameterTimeFrom>();
 export const validateGetHrisAbsencesParameterTimeFrom = typia.createValidate<GetHrisAbsencesParameterTimeFrom>();
 
-export type GetHrisAbsencesParameterTimeUntil = string;
+export type GetHrisAbsencesParameterTimeUntil = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisAbsencesParameterTimeUntil = typia.createIs<GetHrisAbsencesParameterTimeUntil>();
 export const assertGetHrisAbsencesParameterTimeUntil = typia.createAssert<GetHrisAbsencesParameterTimeUntil>();
 export const validateGetHrisAbsencesParameterTimeUntil = typia.createValidate<GetHrisAbsencesParameterTimeUntil>();
@@ -792,12 +792,12 @@ export const isGetHrisLegalEntitiesParameterCursor = typia.createIs<GetHrisLegal
 export const assertGetHrisLegalEntitiesParameterCursor = typia.createAssert<GetHrisLegalEntitiesParameterCursor>();
 export const validateGetHrisLegalEntitiesParameterCursor = typia.createValidate<GetHrisLegalEntitiesParameterCursor>();
 
-export type GetHrisLegalEntitiesParameterPageSize = number;
+export type GetHrisLegalEntitiesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisLegalEntitiesParameterPageSize = typia.createIs<GetHrisLegalEntitiesParameterPageSize>();
 export const assertGetHrisLegalEntitiesParameterPageSize = typia.createAssert<GetHrisLegalEntitiesParameterPageSize>();
 export const validateGetHrisLegalEntitiesParameterPageSize = typia.createValidate<GetHrisLegalEntitiesParameterPageSize>();
 
-export type GetHrisLegalEntitiesParameterUpdatedAfter = string;
+export type GetHrisLegalEntitiesParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisLegalEntitiesParameterUpdatedAfter = typia.createIs<GetHrisLegalEntitiesParameterUpdatedAfter>();
 export const assertGetHrisLegalEntitiesParameterUpdatedAfter = typia.createAssert<GetHrisLegalEntitiesParameterUpdatedAfter>();
 export const validateGetHrisLegalEntitiesParameterUpdatedAfter = typia.createValidate<GetHrisLegalEntitiesParameterUpdatedAfter>();
@@ -837,12 +837,12 @@ export const isGetHrisTimesheetsParameterCursor = typia.createIs<GetHrisTimeshee
 export const assertGetHrisTimesheetsParameterCursor = typia.createAssert<GetHrisTimesheetsParameterCursor>();
 export const validateGetHrisTimesheetsParameterCursor = typia.createValidate<GetHrisTimesheetsParameterCursor>();
 
-export type GetHrisTimesheetsParameterPageSize = number;
+export type GetHrisTimesheetsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisTimesheetsParameterPageSize = typia.createIs<GetHrisTimesheetsParameterPageSize>();
 export const assertGetHrisTimesheetsParameterPageSize = typia.createAssert<GetHrisTimesheetsParameterPageSize>();
 export const validateGetHrisTimesheetsParameterPageSize = typia.createValidate<GetHrisTimesheetsParameterPageSize>();
 
-export type GetHrisTimesheetsParameterUpdatedAfter = string;
+export type GetHrisTimesheetsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisTimesheetsParameterUpdatedAfter = typia.createIs<GetHrisTimesheetsParameterUpdatedAfter>();
 export const assertGetHrisTimesheetsParameterUpdatedAfter = typia.createAssert<GetHrisTimesheetsParameterUpdatedAfter>();
 export const validateGetHrisTimesheetsParameterUpdatedAfter = typia.createValidate<GetHrisTimesheetsParameterUpdatedAfter>();
@@ -872,22 +872,22 @@ export const isGetHrisTimesheetsParameterEmployeeId = typia.createIs<GetHrisTime
 export const assertGetHrisTimesheetsParameterEmployeeId = typia.createAssert<GetHrisTimesheetsParameterEmployeeId>();
 export const validateGetHrisTimesheetsParameterEmployeeId = typia.createValidate<GetHrisTimesheetsParameterEmployeeId>();
 
-export type GetHrisTimesheetsParameterStartedBefore = string;
+export type GetHrisTimesheetsParameterStartedBefore = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisTimesheetsParameterStartedBefore = typia.createIs<GetHrisTimesheetsParameterStartedBefore>();
 export const assertGetHrisTimesheetsParameterStartedBefore = typia.createAssert<GetHrisTimesheetsParameterStartedBefore>();
 export const validateGetHrisTimesheetsParameterStartedBefore = typia.createValidate<GetHrisTimesheetsParameterStartedBefore>();
 
-export type GetHrisTimesheetsParameterStartedAfter = string;
+export type GetHrisTimesheetsParameterStartedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisTimesheetsParameterStartedAfter = typia.createIs<GetHrisTimesheetsParameterStartedAfter>();
 export const assertGetHrisTimesheetsParameterStartedAfter = typia.createAssert<GetHrisTimesheetsParameterStartedAfter>();
 export const validateGetHrisTimesheetsParameterStartedAfter = typia.createValidate<GetHrisTimesheetsParameterStartedAfter>();
 
-export type GetHrisTimesheetsParameterEndedBefore = string;
+export type GetHrisTimesheetsParameterEndedBefore = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisTimesheetsParameterEndedBefore = typia.createIs<GetHrisTimesheetsParameterEndedBefore>();
 export const assertGetHrisTimesheetsParameterEndedBefore = typia.createAssert<GetHrisTimesheetsParameterEndedBefore>();
 export const validateGetHrisTimesheetsParameterEndedBefore = typia.createValidate<GetHrisTimesheetsParameterEndedBefore>();
 
-export type GetHrisTimesheetsParameterEndedAfter = string;
+export type GetHrisTimesheetsParameterEndedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisTimesheetsParameterEndedAfter = typia.createIs<GetHrisTimesheetsParameterEndedAfter>();
 export const assertGetHrisTimesheetsParameterEndedAfter = typia.createAssert<GetHrisTimesheetsParameterEndedAfter>();
 export const validateGetHrisTimesheetsParameterEndedAfter = typia.createValidate<GetHrisTimesheetsParameterEndedAfter>();
@@ -902,12 +902,12 @@ export const isGetHrisPerformanceReviewCyclesParameterCursor = typia.createIs<Ge
 export const assertGetHrisPerformanceReviewCyclesParameterCursor = typia.createAssert<GetHrisPerformanceReviewCyclesParameterCursor>();
 export const validateGetHrisPerformanceReviewCyclesParameterCursor = typia.createValidate<GetHrisPerformanceReviewCyclesParameterCursor>();
 
-export type GetHrisPerformanceReviewCyclesParameterPageSize = number;
+export type GetHrisPerformanceReviewCyclesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisPerformanceReviewCyclesParameterPageSize = typia.createIs<GetHrisPerformanceReviewCyclesParameterPageSize>();
 export const assertGetHrisPerformanceReviewCyclesParameterPageSize = typia.createAssert<GetHrisPerformanceReviewCyclesParameterPageSize>();
 export const validateGetHrisPerformanceReviewCyclesParameterPageSize = typia.createValidate<GetHrisPerformanceReviewCyclesParameterPageSize>();
 
-export type GetHrisPerformanceReviewCyclesParameterUpdatedAfter = string;
+export type GetHrisPerformanceReviewCyclesParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisPerformanceReviewCyclesParameterUpdatedAfter = typia.createIs<GetHrisPerformanceReviewCyclesParameterUpdatedAfter>();
 export const assertGetHrisPerformanceReviewCyclesParameterUpdatedAfter = typia.createAssert<GetHrisPerformanceReviewCyclesParameterUpdatedAfter>();
 export const validateGetHrisPerformanceReviewCyclesParameterUpdatedAfter = typia.createValidate<GetHrisPerformanceReviewCyclesParameterUpdatedAfter>();
@@ -942,12 +942,12 @@ export const isGetHrisPerformanceReviewsParameterCursor = typia.createIs<GetHris
 export const assertGetHrisPerformanceReviewsParameterCursor = typia.createAssert<GetHrisPerformanceReviewsParameterCursor>();
 export const validateGetHrisPerformanceReviewsParameterCursor = typia.createValidate<GetHrisPerformanceReviewsParameterCursor>();
 
-export type GetHrisPerformanceReviewsParameterPageSize = number;
+export type GetHrisPerformanceReviewsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisPerformanceReviewsParameterPageSize = typia.createIs<GetHrisPerformanceReviewsParameterPageSize>();
 export const assertGetHrisPerformanceReviewsParameterPageSize = typia.createAssert<GetHrisPerformanceReviewsParameterPageSize>();
 export const validateGetHrisPerformanceReviewsParameterPageSize = typia.createValidate<GetHrisPerformanceReviewsParameterPageSize>();
 
-export type GetHrisPerformanceReviewsParameterUpdatedAfter = string;
+export type GetHrisPerformanceReviewsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisPerformanceReviewsParameterUpdatedAfter = typia.createIs<GetHrisPerformanceReviewsParameterUpdatedAfter>();
 export const assertGetHrisPerformanceReviewsParameterUpdatedAfter = typia.createAssert<GetHrisPerformanceReviewsParameterUpdatedAfter>();
 export const validateGetHrisPerformanceReviewsParameterUpdatedAfter = typia.createValidate<GetHrisPerformanceReviewsParameterUpdatedAfter>();
@@ -1122,12 +1122,12 @@ export const isGetHrisStaffingEntitiesParameterCursor = typia.createIs<GetHrisSt
 export const assertGetHrisStaffingEntitiesParameterCursor = typia.createAssert<GetHrisStaffingEntitiesParameterCursor>();
 export const validateGetHrisStaffingEntitiesParameterCursor = typia.createValidate<GetHrisStaffingEntitiesParameterCursor>();
 
-export type GetHrisStaffingEntitiesParameterPageSize = number;
+export type GetHrisStaffingEntitiesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetHrisStaffingEntitiesParameterPageSize = typia.createIs<GetHrisStaffingEntitiesParameterPageSize>();
 export const assertGetHrisStaffingEntitiesParameterPageSize = typia.createAssert<GetHrisStaffingEntitiesParameterPageSize>();
 export const validateGetHrisStaffingEntitiesParameterPageSize = typia.createValidate<GetHrisStaffingEntitiesParameterPageSize>();
 
-export type GetHrisStaffingEntitiesParameterUpdatedAfter = string;
+export type GetHrisStaffingEntitiesParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetHrisStaffingEntitiesParameterUpdatedAfter = typia.createIs<GetHrisStaffingEntitiesParameterUpdatedAfter>();
 export const assertGetHrisStaffingEntitiesParameterUpdatedAfter = typia.createAssert<GetHrisStaffingEntitiesParameterUpdatedAfter>();
 export const validateGetHrisStaffingEntitiesParameterUpdatedAfter = typia.createValidate<GetHrisStaffingEntitiesParameterUpdatedAfter>();
@@ -1172,12 +1172,12 @@ export const isGetAtsApplicationsParameterCursor = typia.createIs<GetAtsApplicat
 export const assertGetAtsApplicationsParameterCursor = typia.createAssert<GetAtsApplicationsParameterCursor>();
 export const validateGetAtsApplicationsParameterCursor = typia.createValidate<GetAtsApplicationsParameterCursor>();
 
-export type GetAtsApplicationsParameterPageSize = number;
+export type GetAtsApplicationsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAtsApplicationsParameterPageSize = typia.createIs<GetAtsApplicationsParameterPageSize>();
 export const assertGetAtsApplicationsParameterPageSize = typia.createAssert<GetAtsApplicationsParameterPageSize>();
 export const validateGetAtsApplicationsParameterPageSize = typia.createValidate<GetAtsApplicationsParameterPageSize>();
 
-export type GetAtsApplicationsParameterUpdatedAfter = string;
+export type GetAtsApplicationsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAtsApplicationsParameterUpdatedAfter = typia.createIs<GetAtsApplicationsParameterUpdatedAfter>();
 export const assertGetAtsApplicationsParameterUpdatedAfter = typia.createAssert<GetAtsApplicationsParameterUpdatedAfter>();
 export const validateGetAtsApplicationsParameterUpdatedAfter = typia.createValidate<GetAtsApplicationsParameterUpdatedAfter>();
@@ -1227,7 +1227,7 @@ export const isGetAtsApplicationsParameterCurrentStageIds = typia.createIs<GetAt
 export const assertGetAtsApplicationsParameterCurrentStageIds = typia.createAssert<GetAtsApplicationsParameterCurrentStageIds>();
 export const validateGetAtsApplicationsParameterCurrentStageIds = typia.createValidate<GetAtsApplicationsParameterCurrentStageIds>();
 
-export type GetAtsApplicationsParameterRemoteCreatedAfter = string;
+export type GetAtsApplicationsParameterRemoteCreatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAtsApplicationsParameterRemoteCreatedAfter = typia.createIs<GetAtsApplicationsParameterRemoteCreatedAfter>();
 export const assertGetAtsApplicationsParameterRemoteCreatedAfter = typia.createAssert<GetAtsApplicationsParameterRemoteCreatedAfter>();
 export const validateGetAtsApplicationsParameterRemoteCreatedAfter = typia.createValidate<GetAtsApplicationsParameterRemoteCreatedAfter>();
@@ -1357,12 +1357,12 @@ export const isGetAtsCandidatesParameterCursor = typia.createIs<GetAtsCandidates
 export const assertGetAtsCandidatesParameterCursor = typia.createAssert<GetAtsCandidatesParameterCursor>();
 export const validateGetAtsCandidatesParameterCursor = typia.createValidate<GetAtsCandidatesParameterCursor>();
 
-export type GetAtsCandidatesParameterPageSize = number;
+export type GetAtsCandidatesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAtsCandidatesParameterPageSize = typia.createIs<GetAtsCandidatesParameterPageSize>();
 export const assertGetAtsCandidatesParameterPageSize = typia.createAssert<GetAtsCandidatesParameterPageSize>();
 export const validateGetAtsCandidatesParameterPageSize = typia.createValidate<GetAtsCandidatesParameterPageSize>();
 
-export type GetAtsCandidatesParameterUpdatedAfter = string;
+export type GetAtsCandidatesParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAtsCandidatesParameterUpdatedAfter = typia.createIs<GetAtsCandidatesParameterUpdatedAfter>();
 export const assertGetAtsCandidatesParameterUpdatedAfter = typia.createAssert<GetAtsCandidatesParameterUpdatedAfter>();
 export const validateGetAtsCandidatesParameterUpdatedAfter = typia.createValidate<GetAtsCandidatesParameterUpdatedAfter>();
@@ -1387,7 +1387,7 @@ export const isGetAtsCandidatesParameterRemoteIds = typia.createIs<GetAtsCandida
 export const assertGetAtsCandidatesParameterRemoteIds = typia.createAssert<GetAtsCandidatesParameterRemoteIds>();
 export const validateGetAtsCandidatesParameterRemoteIds = typia.createValidate<GetAtsCandidatesParameterRemoteIds>();
 
-export type GetAtsCandidatesParameterEmail = string;
+export type GetAtsCandidatesParameterEmail = (string & tags.Format<"email">);
 export const isGetAtsCandidatesParameterEmail = typia.createIs<GetAtsCandidatesParameterEmail>();
 export const assertGetAtsCandidatesParameterEmail = typia.createAssert<GetAtsCandidatesParameterEmail>();
 export const validateGetAtsCandidatesParameterEmail = typia.createValidate<GetAtsCandidatesParameterEmail>();
@@ -1497,12 +1497,12 @@ export const isGetAtsTagsParameterCursor = typia.createIs<GetAtsTagsParameterCur
 export const assertGetAtsTagsParameterCursor = typia.createAssert<GetAtsTagsParameterCursor>();
 export const validateGetAtsTagsParameterCursor = typia.createValidate<GetAtsTagsParameterCursor>();
 
-export type GetAtsTagsParameterPageSize = number;
+export type GetAtsTagsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAtsTagsParameterPageSize = typia.createIs<GetAtsTagsParameterPageSize>();
 export const assertGetAtsTagsParameterPageSize = typia.createAssert<GetAtsTagsParameterPageSize>();
 export const validateGetAtsTagsParameterPageSize = typia.createValidate<GetAtsTagsParameterPageSize>();
 
-export type GetAtsTagsParameterUpdatedAfter = string;
+export type GetAtsTagsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAtsTagsParameterUpdatedAfter = typia.createIs<GetAtsTagsParameterUpdatedAfter>();
 export const assertGetAtsTagsParameterUpdatedAfter = typia.createAssert<GetAtsTagsParameterUpdatedAfter>();
 export const validateGetAtsTagsParameterUpdatedAfter = typia.createValidate<GetAtsTagsParameterUpdatedAfter>();
@@ -1537,12 +1537,12 @@ export const isGetAtsApplicationStagesParameterCursor = typia.createIs<GetAtsApp
 export const assertGetAtsApplicationStagesParameterCursor = typia.createAssert<GetAtsApplicationStagesParameterCursor>();
 export const validateGetAtsApplicationStagesParameterCursor = typia.createValidate<GetAtsApplicationStagesParameterCursor>();
 
-export type GetAtsApplicationStagesParameterPageSize = number;
+export type GetAtsApplicationStagesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAtsApplicationStagesParameterPageSize = typia.createIs<GetAtsApplicationStagesParameterPageSize>();
 export const assertGetAtsApplicationStagesParameterPageSize = typia.createAssert<GetAtsApplicationStagesParameterPageSize>();
 export const validateGetAtsApplicationStagesParameterPageSize = typia.createValidate<GetAtsApplicationStagesParameterPageSize>();
 
-export type GetAtsApplicationStagesParameterUpdatedAfter = string;
+export type GetAtsApplicationStagesParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAtsApplicationStagesParameterUpdatedAfter = typia.createIs<GetAtsApplicationStagesParameterUpdatedAfter>();
 export const assertGetAtsApplicationStagesParameterUpdatedAfter = typia.createAssert<GetAtsApplicationStagesParameterUpdatedAfter>();
 export const validateGetAtsApplicationStagesParameterUpdatedAfter = typia.createValidate<GetAtsApplicationStagesParameterUpdatedAfter>();
@@ -1577,12 +1577,12 @@ export const isGetAtsJobsParameterCursor = typia.createIs<GetAtsJobsParameterCur
 export const assertGetAtsJobsParameterCursor = typia.createAssert<GetAtsJobsParameterCursor>();
 export const validateGetAtsJobsParameterCursor = typia.createValidate<GetAtsJobsParameterCursor>();
 
-export type GetAtsJobsParameterPageSize = number;
+export type GetAtsJobsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAtsJobsParameterPageSize = typia.createIs<GetAtsJobsParameterPageSize>();
 export const assertGetAtsJobsParameterPageSize = typia.createAssert<GetAtsJobsParameterPageSize>();
 export const validateGetAtsJobsParameterPageSize = typia.createValidate<GetAtsJobsParameterPageSize>();
 
-export type GetAtsJobsParameterUpdatedAfter = string;
+export type GetAtsJobsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAtsJobsParameterUpdatedAfter = typia.createIs<GetAtsJobsParameterUpdatedAfter>();
 export const assertGetAtsJobsParameterUpdatedAfter = typia.createAssert<GetAtsJobsParameterUpdatedAfter>();
 export const validateGetAtsJobsParameterUpdatedAfter = typia.createValidate<GetAtsJobsParameterUpdatedAfter>();
@@ -1637,7 +1637,7 @@ export const isGetAtsJobsParameterVisibilities = typia.createIs<GetAtsJobsParame
 export const assertGetAtsJobsParameterVisibilities = typia.createAssert<GetAtsJobsParameterVisibilities>();
 export const validateGetAtsJobsParameterVisibilities = typia.createValidate<GetAtsJobsParameterVisibilities>();
 
-export type GetAtsJobsParameterRemoteCreatedAfter = string;
+export type GetAtsJobsParameterRemoteCreatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAtsJobsParameterRemoteCreatedAfter = typia.createIs<GetAtsJobsParameterRemoteCreatedAfter>();
 export const assertGetAtsJobsParameterRemoteCreatedAfter = typia.createAssert<GetAtsJobsParameterRemoteCreatedAfter>();
 export const validateGetAtsJobsParameterRemoteCreatedAfter = typia.createValidate<GetAtsJobsParameterRemoteCreatedAfter>();
@@ -1672,12 +1672,12 @@ export const isGetAtsUsersParameterCursor = typia.createIs<GetAtsUsersParameterC
 export const assertGetAtsUsersParameterCursor = typia.createAssert<GetAtsUsersParameterCursor>();
 export const validateGetAtsUsersParameterCursor = typia.createValidate<GetAtsUsersParameterCursor>();
 
-export type GetAtsUsersParameterPageSize = number;
+export type GetAtsUsersParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAtsUsersParameterPageSize = typia.createIs<GetAtsUsersParameterPageSize>();
 export const assertGetAtsUsersParameterPageSize = typia.createAssert<GetAtsUsersParameterPageSize>();
 export const validateGetAtsUsersParameterPageSize = typia.createValidate<GetAtsUsersParameterPageSize>();
 
-export type GetAtsUsersParameterUpdatedAfter = string;
+export type GetAtsUsersParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAtsUsersParameterUpdatedAfter = typia.createIs<GetAtsUsersParameterUpdatedAfter>();
 export const assertGetAtsUsersParameterUpdatedAfter = typia.createAssert<GetAtsUsersParameterUpdatedAfter>();
 export const validateGetAtsUsersParameterUpdatedAfter = typia.createValidate<GetAtsUsersParameterUpdatedAfter>();
@@ -1717,12 +1717,12 @@ export const isGetAtsRolesParameterCursor = typia.createIs<GetAtsRolesParameterC
 export const assertGetAtsRolesParameterCursor = typia.createAssert<GetAtsRolesParameterCursor>();
 export const validateGetAtsRolesParameterCursor = typia.createValidate<GetAtsRolesParameterCursor>();
 
-export type GetAtsRolesParameterPageSize = number;
+export type GetAtsRolesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAtsRolesParameterPageSize = typia.createIs<GetAtsRolesParameterPageSize>();
 export const assertGetAtsRolesParameterPageSize = typia.createAssert<GetAtsRolesParameterPageSize>();
 export const validateGetAtsRolesParameterPageSize = typia.createValidate<GetAtsRolesParameterPageSize>();
 
-export type GetAtsRolesParameterUpdatedAfter = string;
+export type GetAtsRolesParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAtsRolesParameterUpdatedAfter = typia.createIs<GetAtsRolesParameterUpdatedAfter>();
 export const assertGetAtsRolesParameterUpdatedAfter = typia.createAssert<GetAtsRolesParameterUpdatedAfter>();
 export const validateGetAtsRolesParameterUpdatedAfter = typia.createValidate<GetAtsRolesParameterUpdatedAfter>();
@@ -1762,12 +1762,12 @@ export const isGetAtsOffersParameterCursor = typia.createIs<GetAtsOffersParamete
 export const assertGetAtsOffersParameterCursor = typia.createAssert<GetAtsOffersParameterCursor>();
 export const validateGetAtsOffersParameterCursor = typia.createValidate<GetAtsOffersParameterCursor>();
 
-export type GetAtsOffersParameterPageSize = number;
+export type GetAtsOffersParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAtsOffersParameterPageSize = typia.createIs<GetAtsOffersParameterPageSize>();
 export const assertGetAtsOffersParameterPageSize = typia.createAssert<GetAtsOffersParameterPageSize>();
 export const validateGetAtsOffersParameterPageSize = typia.createValidate<GetAtsOffersParameterPageSize>();
 
-export type GetAtsOffersParameterUpdatedAfter = string;
+export type GetAtsOffersParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAtsOffersParameterUpdatedAfter = typia.createIs<GetAtsOffersParameterUpdatedAfter>();
 export const assertGetAtsOffersParameterUpdatedAfter = typia.createAssert<GetAtsOffersParameterUpdatedAfter>();
 export const validateGetAtsOffersParameterUpdatedAfter = typia.createValidate<GetAtsOffersParameterUpdatedAfter>();
@@ -1802,12 +1802,12 @@ export const isGetAtsRejectionReasonsParameterCursor = typia.createIs<GetAtsReje
 export const assertGetAtsRejectionReasonsParameterCursor = typia.createAssert<GetAtsRejectionReasonsParameterCursor>();
 export const validateGetAtsRejectionReasonsParameterCursor = typia.createValidate<GetAtsRejectionReasonsParameterCursor>();
 
-export type GetAtsRejectionReasonsParameterPageSize = number;
+export type GetAtsRejectionReasonsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAtsRejectionReasonsParameterPageSize = typia.createIs<GetAtsRejectionReasonsParameterPageSize>();
 export const assertGetAtsRejectionReasonsParameterPageSize = typia.createAssert<GetAtsRejectionReasonsParameterPageSize>();
 export const validateGetAtsRejectionReasonsParameterPageSize = typia.createValidate<GetAtsRejectionReasonsParameterPageSize>();
 
-export type GetAtsRejectionReasonsParameterUpdatedAfter = string;
+export type GetAtsRejectionReasonsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAtsRejectionReasonsParameterUpdatedAfter = typia.createIs<GetAtsRejectionReasonsParameterUpdatedAfter>();
 export const assertGetAtsRejectionReasonsParameterUpdatedAfter = typia.createAssert<GetAtsRejectionReasonsParameterUpdatedAfter>();
 export const validateGetAtsRejectionReasonsParameterUpdatedAfter = typia.createValidate<GetAtsRejectionReasonsParameterUpdatedAfter>();
@@ -1842,12 +1842,12 @@ export const isGetAtsInterviewsParameterCursor = typia.createIs<GetAtsInterviews
 export const assertGetAtsInterviewsParameterCursor = typia.createAssert<GetAtsInterviewsParameterCursor>();
 export const validateGetAtsInterviewsParameterCursor = typia.createValidate<GetAtsInterviewsParameterCursor>();
 
-export type GetAtsInterviewsParameterPageSize = number;
+export type GetAtsInterviewsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAtsInterviewsParameterPageSize = typia.createIs<GetAtsInterviewsParameterPageSize>();
 export const assertGetAtsInterviewsParameterPageSize = typia.createAssert<GetAtsInterviewsParameterPageSize>();
 export const validateGetAtsInterviewsParameterPageSize = typia.createValidate<GetAtsInterviewsParameterPageSize>();
 
-export type GetAtsInterviewsParameterUpdatedAfter = string;
+export type GetAtsInterviewsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAtsInterviewsParameterUpdatedAfter = typia.createIs<GetAtsInterviewsParameterUpdatedAfter>();
 export const assertGetAtsInterviewsParameterUpdatedAfter = typia.createAssert<GetAtsInterviewsParameterUpdatedAfter>();
 export const validateGetAtsInterviewsParameterUpdatedAfter = typia.createValidate<GetAtsInterviewsParameterUpdatedAfter>();
@@ -1957,7 +1957,7 @@ export const isGetAssessmentOrdersParameterCursor = typia.createIs<GetAssessment
 export const assertGetAssessmentOrdersParameterCursor = typia.createAssert<GetAssessmentOrdersParameterCursor>();
 export const validateGetAssessmentOrdersParameterCursor = typia.createValidate<GetAssessmentOrdersParameterCursor>();
 
-export type GetAssessmentOrdersParameterPageSize = number;
+export type GetAssessmentOrdersParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAssessmentOrdersParameterPageSize = typia.createIs<GetAssessmentOrdersParameterPageSize>();
 export const assertGetAssessmentOrdersParameterPageSize = typia.createAssert<GetAssessmentOrdersParameterPageSize>();
 export const validateGetAssessmentOrdersParameterPageSize = typia.createValidate<GetAssessmentOrdersParameterPageSize>();
@@ -1972,7 +1972,7 @@ export const isGetAssessmentOrdersParameterStatuses = typia.createIs<GetAssessme
 export const assertGetAssessmentOrdersParameterStatuses = typia.createAssert<GetAssessmentOrdersParameterStatuses>();
 export const validateGetAssessmentOrdersParameterStatuses = typia.createValidate<GetAssessmentOrdersParameterStatuses>();
 
-export type GetAssessmentOrdersParameterCreatedAfter = string;
+export type GetAssessmentOrdersParameterCreatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetAssessmentOrdersParameterCreatedAfter = typia.createIs<GetAssessmentOrdersParameterCreatedAfter>();
 export const assertGetAssessmentOrdersParameterCreatedAfter = typia.createAssert<GetAssessmentOrdersParameterCreatedAfter>();
 export const validateGetAssessmentOrdersParameterCreatedAfter = typia.createValidate<GetAssessmentOrdersParameterCreatedAfter>();
@@ -1987,7 +1987,7 @@ export const isGetAssessmentOrdersOpenParameterCursor = typia.createIs<GetAssess
 export const assertGetAssessmentOrdersOpenParameterCursor = typia.createAssert<GetAssessmentOrdersOpenParameterCursor>();
 export const validateGetAssessmentOrdersOpenParameterCursor = typia.createValidate<GetAssessmentOrdersOpenParameterCursor>();
 
-export type GetAssessmentOrdersOpenParameterPageSize = number;
+export type GetAssessmentOrdersOpenParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAssessmentOrdersOpenParameterPageSize = typia.createIs<GetAssessmentOrdersOpenParameterPageSize>();
 export const assertGetAssessmentOrdersOpenParameterPageSize = typia.createAssert<GetAssessmentOrdersOpenParameterPageSize>();
 export const validateGetAssessmentOrdersOpenParameterPageSize = typia.createValidate<GetAssessmentOrdersOpenParameterPageSize>();
@@ -2017,12 +2017,12 @@ export const isGetLmsUsersParameterCursor = typia.createIs<GetLmsUsersParameterC
 export const assertGetLmsUsersParameterCursor = typia.createAssert<GetLmsUsersParameterCursor>();
 export const validateGetLmsUsersParameterCursor = typia.createValidate<GetLmsUsersParameterCursor>();
 
-export type GetLmsUsersParameterPageSize = number;
+export type GetLmsUsersParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetLmsUsersParameterPageSize = typia.createIs<GetLmsUsersParameterPageSize>();
 export const assertGetLmsUsersParameterPageSize = typia.createAssert<GetLmsUsersParameterPageSize>();
 export const validateGetLmsUsersParameterPageSize = typia.createValidate<GetLmsUsersParameterPageSize>();
 
-export type GetLmsUsersParameterUpdatedAfter = string;
+export type GetLmsUsersParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetLmsUsersParameterUpdatedAfter = typia.createIs<GetLmsUsersParameterUpdatedAfter>();
 export const assertGetLmsUsersParameterUpdatedAfter = typia.createAssert<GetLmsUsersParameterUpdatedAfter>();
 export const validateGetLmsUsersParameterUpdatedAfter = typia.createValidate<GetLmsUsersParameterUpdatedAfter>();
@@ -2062,12 +2062,12 @@ export const isGetLmsCourseProgressionsParameterCursor = typia.createIs<GetLmsCo
 export const assertGetLmsCourseProgressionsParameterCursor = typia.createAssert<GetLmsCourseProgressionsParameterCursor>();
 export const validateGetLmsCourseProgressionsParameterCursor = typia.createValidate<GetLmsCourseProgressionsParameterCursor>();
 
-export type GetLmsCourseProgressionsParameterPageSize = number;
+export type GetLmsCourseProgressionsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetLmsCourseProgressionsParameterPageSize = typia.createIs<GetLmsCourseProgressionsParameterPageSize>();
 export const assertGetLmsCourseProgressionsParameterPageSize = typia.createAssert<GetLmsCourseProgressionsParameterPageSize>();
 export const validateGetLmsCourseProgressionsParameterPageSize = typia.createValidate<GetLmsCourseProgressionsParameterPageSize>();
 
-export type GetLmsCourseProgressionsParameterUpdatedAfter = string;
+export type GetLmsCourseProgressionsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetLmsCourseProgressionsParameterUpdatedAfter = typia.createIs<GetLmsCourseProgressionsParameterUpdatedAfter>();
 export const assertGetLmsCourseProgressionsParameterUpdatedAfter = typia.createAssert<GetLmsCourseProgressionsParameterUpdatedAfter>();
 export const validateGetLmsCourseProgressionsParameterUpdatedAfter = typia.createValidate<GetLmsCourseProgressionsParameterUpdatedAfter>();
@@ -2137,12 +2137,12 @@ export const isGetLmsCoursesParameterCursor = typia.createIs<GetLmsCoursesParame
 export const assertGetLmsCoursesParameterCursor = typia.createAssert<GetLmsCoursesParameterCursor>();
 export const validateGetLmsCoursesParameterCursor = typia.createValidate<GetLmsCoursesParameterCursor>();
 
-export type GetLmsCoursesParameterPageSize = number;
+export type GetLmsCoursesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetLmsCoursesParameterPageSize = typia.createIs<GetLmsCoursesParameterPageSize>();
 export const assertGetLmsCoursesParameterPageSize = typia.createAssert<GetLmsCoursesParameterPageSize>();
 export const validateGetLmsCoursesParameterPageSize = typia.createValidate<GetLmsCoursesParameterPageSize>();
 
-export type GetLmsCoursesParameterUpdatedAfter = string;
+export type GetLmsCoursesParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetLmsCoursesParameterUpdatedAfter = typia.createIs<GetLmsCoursesParameterUpdatedAfter>();
 export const assertGetLmsCoursesParameterUpdatedAfter = typia.createAssert<GetLmsCoursesParameterUpdatedAfter>();
 export const validateGetLmsCoursesParameterUpdatedAfter = typia.createValidate<GetLmsCoursesParameterUpdatedAfter>();
@@ -2212,12 +2212,12 @@ export const isGetLmsSkillsParameterCursor = typia.createIs<GetLmsSkillsParamete
 export const assertGetLmsSkillsParameterCursor = typia.createAssert<GetLmsSkillsParameterCursor>();
 export const validateGetLmsSkillsParameterCursor = typia.createValidate<GetLmsSkillsParameterCursor>();
 
-export type GetLmsSkillsParameterPageSize = number;
+export type GetLmsSkillsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetLmsSkillsParameterPageSize = typia.createIs<GetLmsSkillsParameterPageSize>();
 export const assertGetLmsSkillsParameterPageSize = typia.createAssert<GetLmsSkillsParameterPageSize>();
 export const validateGetLmsSkillsParameterPageSize = typia.createValidate<GetLmsSkillsParameterPageSize>();
 
-export type GetLmsSkillsParameterUpdatedAfter = string;
+export type GetLmsSkillsParameterUpdatedAfter = (string & tags.Pattern<"^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"> & tags.Format<"date-time">);
 export const isGetLmsSkillsParameterUpdatedAfter = typia.createIs<GetLmsSkillsParameterUpdatedAfter>();
 export const assertGetLmsSkillsParameterUpdatedAfter = typia.createAssert<GetLmsSkillsParameterUpdatedAfter>();
 export const validateGetLmsSkillsParameterUpdatedAfter = typia.createValidate<GetLmsSkillsParameterUpdatedAfter>();
@@ -2262,7 +2262,7 @@ export const isGetAiApplyCareerSitesParameterCursor = typia.createIs<GetAiApplyC
 export const assertGetAiApplyCareerSitesParameterCursor = typia.createAssert<GetAiApplyCareerSitesParameterCursor>();
 export const validateGetAiApplyCareerSitesParameterCursor = typia.createValidate<GetAiApplyCareerSitesParameterCursor>();
 
-export type GetAiApplyCareerSitesParameterPageSize = number;
+export type GetAiApplyCareerSitesParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAiApplyCareerSitesParameterPageSize = typia.createIs<GetAiApplyCareerSitesParameterPageSize>();
 export const assertGetAiApplyCareerSitesParameterPageSize = typia.createAssert<GetAiApplyCareerSitesParameterPageSize>();
 export const validateGetAiApplyCareerSitesParameterPageSize = typia.createValidate<GetAiApplyCareerSitesParameterPageSize>();
@@ -2282,7 +2282,7 @@ export const isGetAiApplyPostingsParameterCursor = typia.createIs<GetAiApplyPost
 export const assertGetAiApplyPostingsParameterCursor = typia.createAssert<GetAiApplyPostingsParameterCursor>();
 export const validateGetAiApplyPostingsParameterCursor = typia.createValidate<GetAiApplyPostingsParameterCursor>();
 
-export type GetAiApplyPostingsParameterPageSize = number;
+export type GetAiApplyPostingsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAiApplyPostingsParameterPageSize = typia.createIs<GetAiApplyPostingsParameterPageSize>();
 export const assertGetAiApplyPostingsParameterPageSize = typia.createAssert<GetAiApplyPostingsParameterPageSize>();
 export const validateGetAiApplyPostingsParameterPageSize = typia.createValidate<GetAiApplyPostingsParameterPageSize>();
@@ -2347,7 +2347,7 @@ export const isGetAiApplyApplicationsParameterCursor = typia.createIs<GetAiApply
 export const assertGetAiApplyApplicationsParameterCursor = typia.createAssert<GetAiApplyApplicationsParameterCursor>();
 export const validateGetAiApplyApplicationsParameterCursor = typia.createValidate<GetAiApplyApplicationsParameterCursor>();
 
-export type GetAiApplyApplicationsParameterPageSize = number;
+export type GetAiApplyApplicationsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAiApplyApplicationsParameterPageSize = typia.createIs<GetAiApplyApplicationsParameterPageSize>();
 export const assertGetAiApplyApplicationsParameterPageSize = typia.createAssert<GetAiApplyApplicationsParameterPageSize>();
 export const validateGetAiApplyApplicationsParameterPageSize = typia.createValidate<GetAiApplyApplicationsParameterPageSize>();
@@ -2372,7 +2372,7 @@ export const isGetAiApplyUnifiedApiJobsParameterCursor = typia.createIs<GetAiApp
 export const assertGetAiApplyUnifiedApiJobsParameterCursor = typia.createAssert<GetAiApplyUnifiedApiJobsParameterCursor>();
 export const validateGetAiApplyUnifiedApiJobsParameterCursor = typia.createValidate<GetAiApplyUnifiedApiJobsParameterCursor>();
 
-export type GetAiApplyUnifiedApiJobsParameterPageSize = number;
+export type GetAiApplyUnifiedApiJobsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<5>);
 export const isGetAiApplyUnifiedApiJobsParameterPageSize = typia.createIs<GetAiApplyUnifiedApiJobsParameterPageSize>();
 export const assertGetAiApplyUnifiedApiJobsParameterPageSize = typia.createAssert<GetAiApplyUnifiedApiJobsParameterPageSize>();
 export const validateGetAiApplyUnifiedApiJobsParameterPageSize = typia.createValidate<GetAiApplyUnifiedApiJobsParameterPageSize>();
@@ -2422,7 +2422,7 @@ export const isGetAiApplyJobFeedsParameterCursor = typia.createIs<GetAiApplyJobF
 export const assertGetAiApplyJobFeedsParameterCursor = typia.createAssert<GetAiApplyJobFeedsParameterCursor>();
 export const validateGetAiApplyJobFeedsParameterCursor = typia.createValidate<GetAiApplyJobFeedsParameterCursor>();
 
-export type GetAiApplyJobFeedsParameterPageSize = number;
+export type GetAiApplyJobFeedsParameterPageSize = ((number & tags.Type<'int32'>) & tags.Minimum<1> & tags.Maximum<250>);
 export const isGetAiApplyJobFeedsParameterPageSize = typia.createIs<GetAiApplyJobFeedsParameterPageSize>();
 export const assertGetAiApplyJobFeedsParameterPageSize = typia.createAssert<GetAiApplyJobFeedsParameterPageSize>();
 export const validateGetAiApplyJobFeedsParameterPageSize = typia.createValidate<GetAiApplyJobFeedsParameterPageSize>();
@@ -4330,6 +4330,7 @@ const runValidate = async (ctx: {
   return defaultParse(ctx.schema, ctx.value);
 };
 // </ValidateHelpers>
+
 
 
 // <ApiClient>

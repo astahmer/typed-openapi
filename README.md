@@ -18,7 +18,16 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 - **Type-safe error handling**: with discriminated unions and configurable success/error status codes
 - **withResponse & throwOnStatusError**: Get a union-style response object or throw on configured error status codes,
   with full type inference
-- **TanStack Query integration**: with `withResponse` and `selectFn` options for advanced success/error handling
+- **TanStack Query integration**: `queryOptions`, `suspenseQueryOptions`, `infiniteQueryOptions` (with `pageParamKey`),
+  `queryKeyFactory`, and `invalidate` / `invalidateEndpoint` helpers — works with promise and Effect clients
+  (`Effect.runPromise` when needed)
+- **MSW mocks** (`--msw`): request handlers + mock factories from schemas/examples; optional `--msw-faker` for
+  `@faker-js/faker`
+- **Auth from `securitySchemes`**: default fetcher emits `AuthCredentials` + `configureFetcher({ getAuth })` (apiKey /
+  http / oauth2 / openIdConnect)
+- **Date / bigint transforms** (`--transform-dates`, `--transform-bigint`): `format: date-time|date` → `Date`,
+  `format: int64` → `bigint` (types + runtime schema transforms; none-runtime revives ISO date strings)
+- **Typed config**: `defineConfig` + `typed-openapi.config.ts` (also JSON); auto-loaded when present
 - Or you can also generate a client with runtime validation using one of the following runtimes (first-party adapters):
   - [zod](https://zod.dev/) v4 (`--runtime zod`) and v3 (`--runtime zod3`)
   - [effect](https://effect.website/) Schema v4 (`--runtime effect`) and v3 / `@effect/schema` (`--runtime effect3`)
@@ -37,7 +46,6 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 - **Node-friendly `FetcherResponse`** (no DOM `Response` dependency; avoids clash with OAS `ApiResponse` schemas) +
   **request input types** (`InferSchemaInput` / `z.input` / encoded)
 - **Filter endpoints/schemas** (`--endpoint`, `--schema`, `--tree-shake-schemas`) and control naming (`--schema-naming`)
-- **TanStack Query** wrappers work with both promise and Effect clients (`Effect.runPromise` when needed)
 
 The generated client is a single file that can be used in the browser or in node. Runtime schemas are emitted by
 typed-openapi's own Schema IR + runtime adapters (no Sinclair codegen). Use `--validation loose|formats|strict` to
@@ -56,6 +64,23 @@ pnpm add typed-openapi
 
 It exports a bunch of functions that can be used to build your own tooling on top of it. You can look at the
 [CLI code](packages/typed-openapi/src/cli.ts) so see how to use them.
+
+### Config file (`defineConfig`)
+
+```ts
+// typed-openapi.config.ts
+import { defineConfig } from "typed-openapi";
+
+export default defineConfig({
+  runtime: "zod",
+  tanstack: true,
+  msw: true,
+  defaultFetcher: true,
+  transformDates: true,
+});
+```
+
+JSON (`typed-openapi.config.json`) still works. The CLI auto-loads the first matching config in the cwd.
 
 ## CLI
 
@@ -192,8 +217,32 @@ npx typed-openapi api.yaml --tanstack
 You get:
 
 - Type-safe queries and mutations with full error inference
+- `queryOptions` / `suspenseQueryOptions` for `useQuery` / `useSuspenseQuery`
+- `infiniteQueryOptions({ initialPageParam, getNextPageParam, pageParamKey? })` for pagination
+- `queryKeyFactory` + `invalidate` / `invalidateEndpoint` / `invalidateInfinite` for cache control
 - `withResponse` and `selectFn` for advanced error and response handling
 - All mutation errors are Response-like and type-safe, matching your OpenAPI error schemas
+
+### MSW mocks
+
+```sh
+npx typed-openapi api.yaml --msw
+# optional: --msw-faker --msw-base-url https://api.example.com
+```
+
+Emits `msw.handlers.ts` with `handlers` and per-endpoint `get…Mock()` factories (schema examples/defaults, or faker).
+
+### Auth (`securitySchemes`)
+
+With `--default-fetcher`, credentials from OAS `components.securitySchemes` are wired as:
+
+```ts
+import { configureFetcher } from "./api.client";
+
+configureFetcher({
+  getAuth: () => ({ petstore_auth: token, api_key: key }),
+});
+```
 
 ## useQuery / fetchQuery / ensureQueryData
 
@@ -352,9 +401,14 @@ const { mutate: login, isPending } = useMutation({
 
 ## Alternatives
 
-[openapi-zod-client](https://github.com/astahmer/openapi-zod-client), which generates a
-[zodios](https://github.com/ecyrbe/zodios) client but can be slow to provide IDE suggestions when the OpenAPI spec is
-large. Also, you might not always want to use zod or even runtime validation, hence this project.
+- [openapi-typescript](https://github.com/openapi-ts/openapi-typescript) + openapi-fetch — types-only + thin fetch
+- [Orval](https://github.com/orval-labs/orval) — React Query / MSW / mocks, multi-file output
+- [Hey API](https://github.com/hey-api/openapi-ts) — plugin SDK generator (clients, validators, hooks)
+- [Kubb](https://github.com/kubb-labs/kubb) — modular plugin codegen (TanStack, SWR, MSW, Zod)
+- [openapi-zod-client](https://github.com/astahmer/openapi-zod-client) — zodios client (can be slow for large specs)
+
+typed-openapi focuses on a **single-file**, headless client with **multi-runtime** validation (zod / effect / valibot /
+arktype / …), typed status errors, and optional TanStack / MSW extras — without splitting output by tags.
 
 ## Contributing
 

@@ -110,10 +110,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         return `type("string").narrow((s) => typeof s === "string" && new RegExp(${JSON.stringify(c.pattern)}).test(s))`;
       }
       const base = `type(${emitStringDef(node, ctx)})`;
-      if (
-        ctx.transformDates &&
-        (node.constraints.format === "date-time" || node.constraints.format === "date")
-      ) {
+      if (ctx.transformDates && (node.constraints.format === "date-time" || node.constraints.format === "date")) {
         return `${base}.pipe((s) => new Date(s as string))`;
       }
       return base;

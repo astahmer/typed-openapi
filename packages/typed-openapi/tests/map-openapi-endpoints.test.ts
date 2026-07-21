@@ -2045,7 +2045,9 @@ describe("map-openapi-endpoints", () => {
                 "partial": false,
                 "properties": {
                   "petId": {
-                    "constraints": {},
+                    "constraints": {
+                      "format": "int64",
+                    },
                     "integer": true,
                     "kind": "number",
                     "meta": {},
@@ -2196,7 +2198,9 @@ describe("map-openapi-endpoints", () => {
                 "partial": false,
                 "properties": {
                   "petId": {
-                    "constraints": {},
+                    "constraints": {
+                      "format": "int64",
+                    },
                     "integer": true,
                     "kind": "number",
                     "meta": {},
@@ -2310,7 +2314,9 @@ describe("map-openapi-endpoints", () => {
                 "partial": false,
                 "properties": {
                   "petId": {
-                    "constraints": {},
+                    "constraints": {
+                      "format": "int64",
+                    },
                     "integer": true,
                     "kind": "number",
                     "meta": {},
@@ -2410,7 +2416,9 @@ describe("map-openapi-endpoints", () => {
                 "partial": false,
                 "properties": {
                   "petId": {
-                    "constraints": {},
+                    "constraints": {
+                      "format": "int64",
+                    },
                     "integer": true,
                     "kind": "number",
                     "meta": {},
@@ -2496,7 +2504,9 @@ describe("map-openapi-endpoints", () => {
                 "kind": "record",
                 "meta": {},
                 "value": {
-                  "constraints": {},
+                  "constraints": {
+                    "format": "int32",
+                  },
                   "integer": true,
                   "kind": "number",
                   "meta": {},
@@ -2634,7 +2644,9 @@ describe("map-openapi-endpoints", () => {
                 "partial": false,
                 "properties": {
                   "orderId": {
-                    "constraints": {},
+                    "constraints": {
+                      "format": "int64",
+                    },
                     "integer": true,
                     "kind": "number",
                     "meta": {},
@@ -2708,7 +2720,9 @@ describe("map-openapi-endpoints", () => {
                 "partial": false,
                 "properties": {
                   "orderId": {
-                    "constraints": {},
+                    "constraints": {
+                      "format": "int64",
+                    },
                     "integer": true,
                     "kind": "number",
                     "meta": {},
@@ -2997,7 +3011,9 @@ describe("map-openapi-endpoints", () => {
                     "meta": {},
                   },
                   "X-Rate-Limit": {
-                    "constraints": {},
+                    "constraints": {
+                      "format": "int32",
+                    },
                     "integer": true,
                     "kind": "number",
                     "meta": {},

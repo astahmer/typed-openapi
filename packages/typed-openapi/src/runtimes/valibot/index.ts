@@ -32,10 +32,7 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
   if (c.minLength !== undefined) actions.push(`v.minLength(${c.minLength})`);
   if (c.maxLength !== undefined) actions.push(`v.maxLength(${c.maxLength})`);
   if (c.pattern !== undefined) actions.push(`v.regex(new RegExp(${quote(c.pattern)}))`);
-  if (
-    ctx.transformDates &&
-    (node.constraints.format === "date-time" || node.constraints.format === "date")
-  ) {
+  if (ctx.transformDates && (node.constraints.format === "date-time" || node.constraints.format === "date")) {
     actions.push("v.transform((s) => new Date(s))");
   }
   return pipe("v.string()", actions);

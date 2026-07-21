@@ -38,10 +38,7 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
 
   switch (node.kind) {
     case "string":
-      if (
-        options.transformDates &&
-        (node.constraints.format === "date-time" || node.constraints.format === "date")
-      ) {
+      if (options.transformDates && (node.constraints.format === "date-time" || node.constraints.format === "date")) {
         return "Date";
       }
       return "string";

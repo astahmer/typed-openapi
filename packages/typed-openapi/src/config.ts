@@ -139,9 +139,7 @@ export const loadConfig = async (path: string): Promise<TypedOpenapiConfigFile> 
         : candidate;
     return parseAndValidate(path, parsed);
   } catch (err) {
-    const hint = extname(path).match(/^\.m?ts$/)
-      ? " (ensure tsx is available — it ships with typed-openapi)"
-      : "";
+    const hint = extname(path).match(/^\.m?ts$/) ? " (ensure tsx is available — it ships with typed-openapi)" : "";
     throw new Error(`Failed to load config file ${path}${hint}: ${(err as Error).message}`);
   } finally {
     unregister?.();
