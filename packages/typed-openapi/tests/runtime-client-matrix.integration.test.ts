@@ -103,7 +103,6 @@ type EffectMod = {
 const loadDoc = async (file: string) => (await SwaggerParser.parse(samplePath(file))) as OpenAPIObject;
 
 describe("runtime×client integration matrix", () => {
-  rmSync(outRoot, { recursive: true, force: true });
   mkdirSync(outRoot, { recursive: true });
 
   for (const sample of samples) {
@@ -127,6 +126,7 @@ describe("runtime×client integration matrix", () => {
             });
 
             const dir = join(outRoot, sample.id, `${runtime}-${client}`);
+            rmSync(dir, { recursive: true, force: true });
             mkdirSync(dir, { recursive: true });
             const file = join(dir, "client.ts");
             writeFileSync(file, src);
@@ -225,6 +225,7 @@ describe("runtime×client integration matrix", () => {
               });
 
               const dir = join(outRoot, sample.id, `${runtime}-${client}-validate`);
+              rmSync(dir, { recursive: true, force: true });
               mkdirSync(dir, { recursive: true });
               const file = join(dir, "client.ts");
               writeFileSync(file, src);

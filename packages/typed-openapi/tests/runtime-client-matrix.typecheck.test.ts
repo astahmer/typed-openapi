@@ -101,7 +101,6 @@ const filterDiagnostics = (out: string, allowCircular: boolean): string => {
 const hasError = (out: string) => /\berror TS\d+:/.test(out);
 
 describe("runtime×client typecheck matrix", () => {
-  rmSync(outRoot, { recursive: true, force: true });
   mkdirSync(outRoot, { recursive: true });
 
   const effectRoot = resolvePkgRoot("effect");
@@ -133,6 +132,7 @@ describe("runtime×client typecheck matrix", () => {
           });
 
           const dir = join(outRoot, sample.id, `${runtime}-${client}`);
+          rmSync(dir, { recursive: true, force: true });
           mkdirSync(dir, { recursive: true });
           writeFileSync(join(dir, "client.ts"), code);
 

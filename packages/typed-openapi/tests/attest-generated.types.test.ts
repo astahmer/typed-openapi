@@ -74,8 +74,7 @@ describe("attest generated client types", () => {
     attest({} as Pet).type.toString.snap(`{
   readonly name: string
   readonly tag?:
-    | { readonly id?: string | undefined }
-    | undefined
+    { readonly id?: string | undefined } | undefined
 }`);
   });
   test("effect3 Pet", () => {
@@ -83,8 +82,7 @@ describe("attest generated client types", () => {
     attest({} as Pet).type.toString.snap(`{
   readonly name: string
   readonly tag?:
-    | { readonly id?: string | undefined }
-    | undefined
+    { readonly id?: string | undefined } | undefined
 }`);
   });
   test("valibot Pet", () => {

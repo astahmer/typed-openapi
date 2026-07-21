@@ -23,17 +23,11 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Run integration test (MSW)
-        run: pnpm -F typed-openapi test:runtime
-
       - name: Type check generated client and integration test
         run: pnpm --filter typed-openapi exec tsc -b ./tsconfig.ci.json
 
-      - name: Test
-        run: pnpm test
-
-      - name: Test types
-        run: pnpm --filter typed-openapi test:types
+      - name: Test all (unit, types, attest, matrix, runtime, bench)
+        run: pnpm --filter typed-openapi test:all
 
       - name: Release package
         run: pnpm dlx pkg-pr-new publish './packages/typed-openapi'

@@ -12,7 +12,8 @@
     "fmt": "oxfmt",
     "release": "changeset publish",
     "release-dev": "changeset version --snapshot dev && changeset publish --tag dev",
-    "test": "TEST_UNIT=true pnpm --filter typed-openapi test"
+    "test": "TEST_UNIT=true pnpm --filter typed-openapi test",
+    "test:all": "pnpm --filter typed-openapi test:all"
   },
   "devDependencies": {
     "@changesets/cli": "2.31.1",

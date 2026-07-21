@@ -26,8 +26,6 @@ describe("EffectApiClient", () => {
     expect(src).toContain("SchemaError");
     expect(src).toContain("Schema.decodeUnknownEffect");
     expect(src).not.toContain("class ApiClient {");
-    mkdirSync(join(__dirname, "../tmp"), { recursive: true });
-    writeFileSync(join(__dirname, "../tmp/generated-effect-client.ts"), src);
   });
 
   test("runtime none + client effect still emits EffectApiClient", async () => {
