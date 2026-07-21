@@ -282,8 +282,6 @@ export class TypedStatusError<TData = unknown> extends Error {
 }
 // </TypedStatusError>
 
-import type { SchemaError } from "effect/SchemaError";
-
 // <HttpClientError>
 export class HttpClientError extends Error {
   readonly _tag = "HttpClientError";
@@ -365,10 +363,16 @@ export class EffectApiClient {
   >(
     method: TMethod,
     path: TPath,
-    ...params: MaybeOptionalArg<any>
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
+          : { overrides?: RequestInit; validate?: ValidateSide }
+        : { overrides?: RequestInit; validate?: ValidateSide }
+    >
   ): Effect.Effect<
     Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
-    TypedStatusError | HttpClientError | SchemaError | Error,
+    TypedStatusError | HttpClientError,
     never
   > {
     const self = this;
@@ -403,10 +407,12 @@ export class EffectApiClient {
                     value: value,
                     onValidate: self.onValidate,
                   }),
-                catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+                catch: (cause) => new HttpClientError("validation failed", cause),
               });
             } else {
-              parametersToSend[key] = yield* Schema.decodeUnknownEffect(schema as Schema.Codec<unknown>)(value);
+              parametersToSend[key] = yield* Schema.decodeUnknownEffect(schema as Schema.Codec<unknown>)(value).pipe(
+                Effect.mapError((cause) => new HttpClientError("decode failed", cause)),
+              );
             }
           }
         }
@@ -511,10 +517,12 @@ export class EffectApiClient {
                   value: data,
                   onValidate: self.onValidate,
                 }),
-              catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+              catch: (cause) => new HttpClientError("validation failed", cause),
             });
           } else {
-            data = yield* Schema.decodeUnknownEffect(responseSchema as Schema.Codec<unknown>)(data);
+            data = yield* Schema.decodeUnknownEffect(responseSchema as Schema.Codec<unknown>)(data).pipe(
+              Effect.mapError((cause) => new HttpClientError("decode failed", cause)),
+            );
           }
         }
       }
@@ -530,10 +538,36 @@ export class EffectApiClient {
     });
   }
 
-  get<Path extends keyof GetEndpoints>(path: Path, ...params: MaybeOptionalArg<any>) {
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
+          : { overrides?: RequestInit; validate?: ValidateSide }
+        : { overrides?: RequestInit; validate?: ValidateSide }
+    >
+  ): Effect.Effect<
+    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    TypedStatusError | HttpClientError,
+    never
+  > {
     return this.request<"get", Path, GetEndpoints[Path]>("get", path, ...params);
   }
-  post<Path extends keyof PostEndpoints>(path: Path, ...params: MaybeOptionalArg<any>) {
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
+          : { overrides?: RequestInit; validate?: ValidateSide }
+        : { overrides?: RequestInit; validate?: ValidateSide }
+    >
+  ): Effect.Effect<
+    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    TypedStatusError | HttpClientError,
+    never
+  > {
     return this.request<"post", Path, PostEndpoints[Path]>("post", path, ...params);
   }
 }

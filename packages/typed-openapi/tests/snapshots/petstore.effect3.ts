@@ -601,7 +601,6 @@ export class TypedStatusError<TData = unknown> extends Error {
 // </TypedStatusError>
 
 import { Effect } from "effect";
-import type { ParseError } from "@effect/schema/ParseResult";
 
 // <HttpClientError>
 export class HttpClientError extends Error {
@@ -684,10 +683,16 @@ export class EffectApiClient {
   >(
     method: TMethod,
     path: TPath,
-    ...params: MaybeOptionalArg<any>
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
+          : { overrides?: RequestInit; validate?: ValidateSide }
+        : { overrides?: RequestInit; validate?: ValidateSide }
+    >
   ): Effect.Effect<
     Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
-    TypedStatusError | HttpClientError | ParseError | Error,
+    TypedStatusError | HttpClientError,
     never
   > {
     const self = this;
@@ -722,12 +727,12 @@ export class EffectApiClient {
                     value: value,
                     onValidate: self.onValidate,
                   }),
-                catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+                catch: (cause) => new HttpClientError("validation failed", cause),
               });
             } else {
               parametersToSend[key] = yield* Effect.try({
                 try: () => S.decodeUnknownSync(schema as S.Schema<unknown, unknown, never>)(value),
-                catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+                catch: (cause) => new HttpClientError("decode failed", cause),
               });
             }
           }
@@ -833,12 +838,12 @@ export class EffectApiClient {
                   value: data,
                   onValidate: self.onValidate,
                 }),
-              catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+              catch: (cause) => new HttpClientError("validation failed", cause),
             });
           } else {
             data = yield* Effect.try({
               try: () => S.decodeUnknownSync(responseSchema as S.Schema<unknown, unknown, never>)(data),
-              catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+              catch: (cause) => new HttpClientError("decode failed", cause),
             });
           }
         }
@@ -855,16 +860,68 @@ export class EffectApiClient {
     });
   }
 
-  put<Path extends keyof PutEndpoints>(path: Path, ...params: MaybeOptionalArg<any>) {
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
+          : { overrides?: RequestInit; validate?: ValidateSide }
+        : { overrides?: RequestInit; validate?: ValidateSide }
+    >
+  ): Effect.Effect<
+    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    TypedStatusError | HttpClientError,
+    never
+  > {
     return this.request<"put", Path, PutEndpoints[Path]>("put", path, ...params);
   }
-  post<Path extends keyof PostEndpoints>(path: Path, ...params: MaybeOptionalArg<any>) {
+  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
+          : { overrides?: RequestInit; validate?: ValidateSide }
+        : { overrides?: RequestInit; validate?: ValidateSide }
+    >
+  ): Effect.Effect<
+    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    TypedStatusError | HttpClientError,
+    never
+  > {
     return this.request<"post", Path, PostEndpoints[Path]>("post", path, ...params);
   }
-  get<Path extends keyof GetEndpoints>(path: Path, ...params: MaybeOptionalArg<any>) {
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
+          : { overrides?: RequestInit; validate?: ValidateSide }
+        : { overrides?: RequestInit; validate?: ValidateSide }
+    >
+  ): Effect.Effect<
+    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    TypedStatusError | HttpClientError,
+    never
+  > {
     return this.request<"get", Path, GetEndpoints[Path]>("get", path, ...params);
   }
-  delete<Path extends keyof DeleteEndpoints>(path: Path, ...params: MaybeOptionalArg<any>) {
+  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+    path: Path,
+    ...params: MaybeOptionalArg<
+      TEndpoint extends { parameters: infer UParams }
+        ? NotNever<UParams> extends true
+          ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
+          : { overrides?: RequestInit; validate?: ValidateSide }
+        : { overrides?: RequestInit; validate?: ValidateSide }
+    >
+  ): Effect.Effect<
+    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    TypedStatusError | HttpClientError,
+    never
+  > {
     return this.request<"delete", Path, DeleteEndpoints[Path]>("delete", path, ...params);
   }
 }
