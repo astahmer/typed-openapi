@@ -59,23 +59,20 @@ describe("snapshot files typecheck", () => {
     if (entry) zod3Root = join(pnpmZod3, entry, "node_modules/zod");
   }
 
-  /** Kombo recursive OAS triggers known TS circular/lazy + zod discriminatedUnion noise. */
+  /** Kombo recursive OAS triggers known InferSchemaValue / arktype noise (not circular aliases). */
   const filterKomboNoise = (out: string, runtime: string): string =>
     out
       .split("\n")
       .filter((line) => {
         if (!line.includes("error TS")) return true;
         return !(
-          // Do NOT filter TS2456 — circular type aliases are real bugs (none-runtime interfaces fix them).
+          // Do NOT filter TS2456 / TS7022 / TS7024 / TS2345 (zod disc+null) — those are real bugs.
           (
-            line.includes("error TS7022") ||
-            line.includes("error TS7024") ||
             line.includes("error TS2502") ||
-            // Zod discriminatedUnion rejects nullable members (common in Kombo oneOf+null).
-            line.includes("error TS2345") ||
-            // ArkType deep union/tuple assignability noise on large Kombo schemas only.
+            // ArkType deep union/tuple assignability + property access noise on large Kombo schemas.
             (runtime === "arktype" && line.includes("error TS2322")) ||
-            (runtime === "arktype" && line.includes("error TS2339"))
+            (runtime === "arktype" && line.includes("error TS2339")) ||
+            (runtime === "arktype" && line.includes("error TS2345"))
           )
         );
       })
