@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
 import * as v from "valibot";
-import { Schema, Either } from "effect";
+import { Schema, Exit } from "effect";
 import { type } from "arktype";
 import { openApiToIr } from "../src/schema-ir/openapi-to-ir.ts";
 import { createEmitCtx } from "../src/runtimes/types.ts";
@@ -74,8 +74,8 @@ describe("runtime parse smoke", () => {
     const schema = new Function("Schema", `return ${src}`)(Schema);
     expect(Schema.is(schema)(good)).toBe(true);
     expect(Schema.is(schema)(badEmail)).toBe(false);
-    const decoded = Schema.decodeUnknownEither(schema)(badAge);
-    expect(Either.isLeft(decoded)).toBe(true);
+    const decoded = Schema.decodeUnknownExit(schema)(badAge);
+    expect(Exit.isFailure(decoded)).toBe(true);
   });
 
   test("arktype: strict rejects bad email", () => {

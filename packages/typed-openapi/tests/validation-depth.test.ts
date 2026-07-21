@@ -46,9 +46,10 @@ describe("validation depth", async () => {
       }
 
       if (runtime === "effect" && validation === "strict") {
-        expect(out).toContain('import { Schema } from "effect"');
-        expect(out).toContain("Schema.minLength");
+        expect(out).toContain('from "effect"');
+        expect(out).toContain("Schema.isMinLength");
         expect(out).toContain("Schema.Int");
+        expect(out).toContain(".check(");
       }
 
       if (runtime === "valibot" && validation === "strict") {

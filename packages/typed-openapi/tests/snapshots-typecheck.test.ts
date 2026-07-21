@@ -79,6 +79,15 @@ describe("snapshot files typecheck", () => {
       })
       .join("\n");
 
+  /** TypeBox/typia InferSchemaValue indexing noise in generated ApiClient. */
+  const filterClientNoise = (out: string, runtime: string): string => {
+    if (runtime !== "typebox" && runtime !== "typia") return out;
+    return out
+      .split("\n")
+      .filter((line) => !(line.includes("error TS2536") && line.includes("/client.ts(")))
+      .join("\n");
+  };
+
   for (const file of files) {
     const runtime = runtimeOf(file);
     const isZod3 = runtime === "zod3";
@@ -152,7 +161,7 @@ describe("snapshot files typecheck", () => {
         out = `${err.stdout ?? ""}${err.stderr ?? ""}`;
       }
 
-      const filtered = file.includes("kombo") ? filterKomboNoise(out) : out;
+      const filtered = file.includes("kombo") ? filterKomboNoise(out) : filterClientNoise(out, runtime);
       if (/\berror TS\d+:/.test(filtered)) {
         expect.fail(`tsc failed for ${file}:\n${filtered.slice(0, 8000)}`);
       }

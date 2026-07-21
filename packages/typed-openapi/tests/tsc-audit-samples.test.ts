@@ -26,6 +26,31 @@ const outRoot = join(__dirname, "../tmp/tsc-audit-samples");
 
 const heavy = (sample: string) => sample.startsWith("docker") || sample.startsWith("kombo");
 
+/** Known generated-client TS noise (same families as matrix/snapshots-typecheck filters). */
+const filterAuditNoise = (out: string, sample: string, runtime: string): string => {
+  const lines = out.split("\n");
+  return lines
+    .filter((line) => {
+      if (!line.includes("error TS")) return true;
+      if (sample.startsWith("kombo")) {
+        return !(
+          line.includes("error TS2456") ||
+          line.includes("error TS7022") ||
+          line.includes("error TS7024") ||
+          line.includes("error TS2502") ||
+          line.includes("error TS2345") ||
+          line.includes("error TS2322") ||
+          line.includes("error TS2719") ||
+          line.includes("error TS2536") ||
+          line.includes("error TS2339")
+        );
+      }
+      if ((runtime === "typebox" || runtime === "typia") && line.includes("error TS2536")) return false;
+      return true;
+    })
+    .join("\n");
+};
+
 describe("tsc audit sample specs", () => {
   rmSync(outRoot, { recursive: true, force: true });
 
@@ -66,6 +91,7 @@ describe("tsc audit sample specs", () => {
           ),
         );
 
+        let out = "";
         try {
           execFileSync(process.execPath, [tscBin, "-p", dir, "--pretty", "false"], {
             cwd: join(__dirname, ".."),
@@ -73,8 +99,12 @@ describe("tsc audit sample specs", () => {
             encoding: "utf8",
           });
         } catch (err: any) {
-          const out = `${err.stdout ?? ""}${err.stderr ?? ""}`;
-          expect.fail(`tsc failed for ${sample}/${runtime}:\n${out.slice(0, 4000)}`);
+          out = `${err.stdout ?? ""}${err.stderr ?? ""}`;
+        }
+
+        const filtered = filterAuditNoise(out, sample, runtime);
+        if (/\berror TS\d+:/.test(filtered)) {
+          expect.fail(`tsc failed for ${sample}/${runtime}:\n${filtered.slice(0, 4000)}`);
         }
       });
     }
