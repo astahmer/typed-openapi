@@ -1,5 +1,6 @@
 export { generateFile, type OutputRuntime, type GeneratorOptions } from "./generator.ts";
 export * from "./tanstack-query.generator.ts";
+export * from "./msw.generator.ts";
 export * from "./map-openapi-endpoints.ts";
 export * from "./ref-resolver.ts";
 export * from "./types.ts";

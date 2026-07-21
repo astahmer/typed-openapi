@@ -36,6 +36,12 @@ cli
     "Generate tanstack client, defaults to false, can optionally specify a name (will be generated next to the main file) or absolute path for the generated file",
   )
   .option(
+    "--msw [name]",
+    "Generate MSW request handlers, defaults to false; optional output name/path next to the main file",
+  )
+  .option("--msw-faker", "Use @faker-js/faker in generated MSW mock factories (requires the package installed)")
+  .option("--msw-base-url <url>", 'Base URL/prefix for MSW handlers (default: "*")')
+  .option(
     "--default-fetcher [name]",
     "Generate default fetcher, defaults to false, can optionally specify a name (will be generated next to the main file) or absolute path for the generated file",
   )

@@ -15,6 +15,7 @@ import { generateTanstackQueryFile } from "./tanstack-query.generator.ts";
 import { prettify } from "./format.ts";
 import type { NameTransformOptions } from "./types.ts";
 import { generateDefaultFetcher } from "./default-fetcher.generator.ts";
+import { generateMswFile } from "./msw.generator.ts";
 import {
   findDefaultConfigPath,
   loadConfigFile,
@@ -52,6 +53,9 @@ export const optionsSchema = type({
   "config?": "string",
   "format?": "boolean | 'true' | 'false'",
   "tanstack?": "boolean | string",
+  "msw?": "boolean | string",
+  "mswFaker?": "boolean",
+  "mswBaseUrl?": "string",
   "defaultFetcher?": type({
     "envApiBaseUrl?": "string",
     "clientPath?": "string",
@@ -83,6 +87,9 @@ export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
   validateSide?: GeneratorOptions["validateSide"];
   "validate-side"?: GeneratorOptions["validateSide"];
   coerce?: boolean;
+  msw?: boolean | string;
+  mswFaker?: boolean;
+  mswBaseUrl?: string;
 };
 
 function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
@@ -229,6 +236,28 @@ export async function generateClientFiles(input: string, options: GenerateClient
     console.log("Generating default fetcher...", defaultFetcherOutputPath);
     await ensureDir(dirname(defaultFetcherOutputPath));
     await writeFile(defaultFetcherOutputPath, formattedDefaultFetcherContent);
+  }
+
+  const mswOpt = options.msw ?? (merged as { msw?: boolean | string }).msw;
+  if (mswOpt) {
+    let mswOutputPath: string;
+    if (typeof mswOpt === "string" && isAbsolute(mswOpt)) {
+      mswOutputPath = mswOpt;
+    } else {
+      mswOutputPath = join(dirname(outputPath), typeof mswOpt === "string" ? mswOpt : `msw.handlers.ts`);
+    }
+    const mswContent = await prettify(
+      generateMswFile({
+        endpointList: generatorOptions.endpointList,
+        doc: openApiDoc,
+        faker: Boolean(options.mswFaker ?? (merged as { mswFaker?: boolean }).mswFaker),
+        baseUrl: options.mswBaseUrl ?? (merged as { mswBaseUrl?: string }).mswBaseUrl ?? "*",
+      }),
+      { enabled: shouldFormat, filePath: mswOutputPath },
+    );
+    console.log("Generating MSW handlers...", mswOutputPath);
+    await ensureDir(dirname(mswOutputPath));
+    await writeFile(mswOutputPath, mswContent);
   }
 
   console.log(`Done in ${new Date().getTime() - now.getTime()}ms !`);
