@@ -66,7 +66,7 @@ Bad input yields `Invalid Date` instead of a parse error.
 Unit/e2e cover zod (+ revive helper copy). Missing runtime parse smoke for arktype / valibot bigint /
 effect / effect3 / zod3 / `format: date` (date-only).
 
-**Status:** open → addressed by follow-up tests (coverage)
+**Status:** resolved (multi-runtime parse e2e + XF-1 unit lock added)
 
 ---
 

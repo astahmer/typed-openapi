@@ -19,11 +19,11 @@ Optional faker markers + `mswBaseUrl`. Solid MVP for local mocks.
 
 **File:** `msw.generator.ts` `stubFromSchema` `case "ref"` (~L117–118) + `jsLiteral` (~L143–146)
 
-Refs become `{ /* $ref: Name */ }` / `{ __ref: name }` → useless JSON bodies for most real specs
-(Petstore arrays of `$ref: Pet`).
+Refs become `{ /* $ref: Name */ }` / `{ __ref: name }` → useless JSON bodies for most real specs (Petstore arrays of
+`$ref: Pet`).
 
-`generateMswFile` accepts `doc` but **never uses it** to resolve `components.schemas`. Wire ref resolution
-(or drop the unused `doc` param until then).
+`generateMswFile` accepts `doc` but **never uses it** to resolve `components.schemas`. Wire ref resolution (or drop the
+unused `doc` param until then).
 
 **Status:** open
 
@@ -43,8 +43,8 @@ Refs become `{ /* $ref: Name */ }` / `{ __ref: name }` → useless JSON bodies f
 
 **File:** `msw.generator.ts` (~L199–221)
 
-`` `${baseUrl}${mswPath}` `` with default `"*"` yields `*/pet/:petId`. This works for MSW path wildcards but is
-easy to misconfigure (trailing slash / missing origin). Document + maybe normalize (`*` vs full URL).
+`` `${baseUrl}${mswPath}` `` with default `"*"` yields `*/pet/:petId`. This works for MSW path wildcards but is easy to
+misconfigure (trailing slash / missing origin). Document + maybe normalize (`*` vs full URL).
 
 **Status:** open (docs / DX)
 
@@ -60,7 +60,7 @@ Unit tests cover path convert + simple stubs + petstore smoke. Missing coverage 
 - faker markers rewritten to `faker.*` in emitted source
 - `pickSuccessStatus` (200 vs other 2xx vs none)
 
-**Status:** open → addressed by follow-up tests (coverage)
+**Status:** resolved (unit coverage added in review follow-up tests)
 
 ---
 
@@ -74,7 +74,7 @@ Handlers always return one success stub. No hook to override per-test or emit 4x
 
 ## Later revisions
 
-`wqrtlnum` only reformatted comments in this file — **no MSW-* resolved**.
+`wqrtlnum` only reformatted comments in this file — _*no MSW-* resolved_*.
 
 ---
 

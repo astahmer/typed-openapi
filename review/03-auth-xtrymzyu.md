@@ -67,7 +67,7 @@ Cookie part is concatenated raw. Prefer `encodeURIComponent` for values (and may
 e2e covers `applyAuth` in isolation (good). Missing: generated default fetcher with `configureFetcher` actually
 attaching headers on a real `fetch` call (MSW or mock).
 
-**Status:** open → partially addressed by follow-up e2e tests
+**Status:** resolved (fetcher e2e + cookie/Bearer cases added; AUTH-1..4 remain open)
 
 ---
 

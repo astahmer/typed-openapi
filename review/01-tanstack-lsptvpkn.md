@@ -8,9 +8,9 @@
 
 ## Summary
 
-Adds TanStack Query v5 surface: `suspenseQueryOptions`, `infiniteQueryOptions` (with `pageParamKey`),
-`queryKeyFactory`, `invalidateEndpoint`, and per-query `invalidate` / `invalidateInfinite`. Effect client parity
-kept via `Effect.runPromise`.
+Adds TanStack Query v5 surface: `suspenseQueryOptions`, `infiniteQueryOptions` (with `pageParamKey`), `queryKeyFactory`,
+`invalidateEndpoint`, and per-query `invalidate` / `invalidateInfinite`. Effect client parity kept via
+`Effect.runPromise`.
 
 Overall direction is good and matches README claims. A few design/correctness nits remain.
 
@@ -22,8 +22,7 @@ Overall direction is good and matches README claims. A few design/correctness ni
 
 **File:** `packages/typed-openapi/src/tanstack-query.generator.ts` (~L201–205)
 
-`queryKeyFactory.all` is `["typed-openapi"]`, but endpoint keys are shaped as
-`[{ _id, query?, path?, …, _infinite? }]`.
+`queryKeyFactory.all` is `["typed-openapi"]`, but endpoint keys are shaped as `[{ _id, query?, path?, …, _infinite? }]`.
 
 TanStack partial matching is **array-prefix** based, so:
 
@@ -55,8 +54,8 @@ Both assign the same template string. Dead duplication — keep one.
 
 **File:** `tanstack-query.generator.ts` (~L41–67)
 
-Bodies are copy-pasted. Fine for API discoverability, but generated size grows per HTTP method.
-Consider sharing one `queryOptions(...)` result assigned to both fields, or document that they are aliases.
+Bodies are copy-pasted. Fine for API discoverability, but generated size grows per HTTP method. Consider sharing one
+`queryOptions(...)` result assigned to both fields, or document that they are aliases.
 
 **Status:** open (nit / optional)
 
@@ -66,8 +65,8 @@ Consider sharing one `queryOptions(...)` result assigned to both fields, or docu
 
 **File:** `tanstack-query.generator.ts` (~L299–301)
 
-`invalidateQueries({ queryKey: mutationKey })` rarely matches cached **queries**. Callers usually want to
-invalidate related endpoint query keys after a successful mutation. Rename or document as niche.
+`invalidateQueries({ queryKey: mutationKey })` rarely matches cached **queries**. Callers usually want to invalidate
+related endpoint query keys after a successful mutation. Rename or document as niche.
 
 **Status:** open
 
@@ -81,7 +80,7 @@ Existing e2e only checks `queryKeyFactory` + `invalidateEndpoint`. Missing:
 - `invalidate` / `invalidateInfinite` on method return values
 - `suspenseQueryOptions` / `queryOptions` via `QueryClient.fetchQuery`
 
-**Status:** open → addressed by follow-up tests in this review pass (coverage), behavior issues above remain
+**Status:** resolved (coverage added in review follow-up tests; product issues TS-1..TS-4 remain open)
 
 ---
 

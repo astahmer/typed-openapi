@@ -54,7 +54,7 @@ Cannot run `typed-openapi` with config-only `input`. Related to CFG-2.
 Unit tests cover load/merge/defineConfig well. Missing: end-to-end that a temp config enables
 `--msw` / transforms / tanstack without CLI flags when calling `generateClientFiles`.
 
-**Status:** open → addressed by follow-up integration tests
+**Status:** resolved (`config-generate.integration.test.ts` covers flags + CFG-2 behavior)
 
 ---
 

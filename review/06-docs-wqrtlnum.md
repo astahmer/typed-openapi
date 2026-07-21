@@ -8,8 +8,8 @@
 
 ## Summary
 
-Documents the five feature commits, refreshes runtime snapshots, tweaks typia import assertion, and widens
-Kombo typecheck allowlist with `TS2322`.
+Documents the five feature commits, refreshes runtime snapshots, tweaks typia import assertion, and widens Kombo
+typecheck allowlist with `TS2322`.
 
 ---
 
@@ -19,8 +19,8 @@ Kombo typecheck allowlist with `TS2322`.
 
 **File:** `packages/typed-openapi/tests/snapshots-typecheck.test.ts`
 
-Filtering **all** `TS2322` lines (justified as ArkType/Kombo noise) is wide. Prefer scoping to Kombo +
-arktype only (sample/runtime gate), not every snapshot.
+Filtering **all** `TS2322` lines (justified as ArkType/Kombo noise) is wide. Prefer scoping to Kombo + arktype only
+(sample/runtime gate), not every snapshot.
 
 **Status:** open
 
@@ -41,8 +41,8 @@ README shows `typed-openapi.config.ts` + `defineConfig` but does not mention:
 
 ### DOC-3 · resolved? · snapshot / parse-path refresh
 
-Snapshot + `map-openapi-endpoints` expectation updates (int64 format on path params) look like legitimate
-regenerations after IR/format plumbing — not a defect by themselves.
+Snapshot + `map-openapi-endpoints` expectation updates (int64 format on path params) look like legitimate regenerations
+after IR/format plumbing — not a defect by themselves.
 
 **Status:** resolved (expected churn)
 
@@ -50,8 +50,8 @@ regenerations after IR/format plumbing — not a defect by themselves.
 
 ## Cross-rev resolution check
 
-This rev does **not** resolve open items from prior feature reviews (TS-*, MSW-*, AUTH-*, XF-*, CFG-*).
-Formatting-only touchups on generators do not change behavior.
+This rev does **not** resolve open items from prior feature reviews (TS-_, MSW-_, AUTH-_, XF-_, CFG-*). Formatting-only
+touchups on generators do not change behavior.
 
 ---
 
