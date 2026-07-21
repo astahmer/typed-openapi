@@ -283,7 +283,7 @@ export class TypedStatusError<TData = unknown> extends Error {
 // </TypedStatusError>
 
 import { Effect } from "effect";
-import type { ParseError } from "effect/ParseResult";
+import type { ParseError } from "@effect/schema/ParseResult";
 
 // <HttpClientError>
 export class HttpClientError extends Error {
@@ -407,7 +407,10 @@ export class EffectApiClient {
                 catch: (e) => (e instanceof Error ? e : new Error(String(e))),
               });
             } else {
-              parametersToSend[key] = yield* S.decodeUnknown(schema as S.Schema<unknown, unknown, never>)(value);
+              parametersToSend[key] = yield* Effect.try({
+                try: () => S.decodeUnknownSync(schema as S.Schema<unknown, unknown, never>)(value),
+                catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+              });
             }
           }
         }
@@ -515,7 +518,10 @@ export class EffectApiClient {
               catch: (e) => (e instanceof Error ? e : new Error(String(e))),
             });
           } else {
-            data = yield* S.decodeUnknown(responseSchema as S.Schema<unknown, unknown, never>)(data);
+            data = yield* Effect.try({
+              try: () => S.decodeUnknownSync(responseSchema as S.Schema<unknown, unknown, never>)(data),
+              catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+            });
           }
         }
       }

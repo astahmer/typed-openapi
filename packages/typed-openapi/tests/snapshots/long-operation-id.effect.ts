@@ -1,4 +1,4 @@
-import { Schema } from "effect";
+import { Effect, Schema, SchemaTransformation, Struct } from "effect";
 
 // <Schemas>
 // </Schemas>
@@ -282,8 +282,7 @@ export class TypedStatusError<TData = unknown> extends Error {
 }
 // </TypedStatusError>
 
-import { Effect } from "effect";
-import type { ParseError } from "effect/ParseResult";
+import type { SchemaError } from "effect/SchemaError";
 
 // <HttpClientError>
 export class HttpClientError extends Error {
@@ -300,7 +299,7 @@ export class HttpClientError extends Error {
 
 // <ValidateHelpers>
 const defaultParse = (schema: unknown, value: unknown): unknown => {
-  return Schema.decodeUnknownSync(schema as Schema.Schema<unknown, unknown, never>)(value);
+  return Schema.decodeUnknownSync(schema as Schema.Codec<unknown>)(value);
 };
 
 const runValidate = async (ctx: {
@@ -369,7 +368,7 @@ export class EffectApiClient {
     ...params: MaybeOptionalArg<any>
   ): Effect.Effect<
     Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
-    TypedStatusError | HttpClientError | ParseError | Error,
+    TypedStatusError | HttpClientError | SchemaError | Error,
     never
   > {
     const self = this;
@@ -407,9 +406,7 @@ export class EffectApiClient {
                 catch: (e) => (e instanceof Error ? e : new Error(String(e))),
               });
             } else {
-              parametersToSend[key] = yield* Schema.decodeUnknown(schema as Schema.Schema<unknown, unknown, never>)(
-                value,
-              );
+              parametersToSend[key] = yield* Schema.decodeUnknownEffect(schema as Schema.Codec<unknown>)(value);
             }
           }
         }
@@ -517,7 +514,7 @@ export class EffectApiClient {
               catch: (e) => (e instanceof Error ? e : new Error(String(e))),
             });
           } else {
-            data = yield* Schema.decodeUnknown(responseSchema as Schema.Schema<unknown, unknown, never>)(data);
+            data = yield* Schema.decodeUnknownEffect(responseSchema as Schema.Codec<unknown>)(data);
           }
         }
       }

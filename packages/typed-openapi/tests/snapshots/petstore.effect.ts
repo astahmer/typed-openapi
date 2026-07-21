@@ -1,9 +1,8 @@
-import { Schema } from "effect";
+import { Effect, Schema, SchemaTransformation, Struct } from "effect";
 
 // <DefaultSchemas>
-const Union_default_available_prop = Schema.optionalWith(
-  Schema.Union(Schema.Literal("available"), Schema.Literal("pending"), Schema.Literal("sold")),
-  { default: () => "available" },
+const Schema_default_available_prop = Schema.Literals(["available", "pending", "sold"]).pipe(
+  Schema.withDecodingDefaultType(Effect.succeed("available")),
 );
 
 // </DefaultSchemas>
@@ -14,12 +13,10 @@ export const Order = Schema.Struct({
   petId: Schema.optional(Schema.Int),
   quantity: Schema.optional(Schema.Int),
   shipDate: Schema.optional(Schema.String),
-  status: Schema.optional(
-    Schema.Union(Schema.Literal("placed"), Schema.Literal("approved"), Schema.Literal("delivered")),
-  ),
+  status: Schema.optional(Schema.Literals(["placed", "approved", "delivered"])),
   complete: Schema.optional(Schema.Boolean),
 });
-export type Order = typeof Order.Type;
+export type Order = Schema.Schema.Type<typeof Order>;
 
 export const Address = Schema.Struct({
   street: Schema.optional(Schema.String),
@@ -27,17 +24,17 @@ export const Address = Schema.Struct({
   state: Schema.optional(Schema.String),
   zip: Schema.optional(Schema.String),
 });
-export type Address = typeof Address.Type;
+export type Address = Schema.Schema.Type<typeof Address>;
 
 export const Customer = Schema.Struct({
   id: Schema.optional(Schema.Int),
   username: Schema.optional(Schema.String),
   address: Schema.optional(Schema.Array(Address)),
 });
-export type Customer = typeof Customer.Type;
+export type Customer = Schema.Schema.Type<typeof Customer>;
 
 export const Category = Schema.Struct({ id: Schema.optional(Schema.Int), name: Schema.optional(Schema.String) });
-export type Category = typeof Category.Type;
+export type Category = Schema.Schema.Type<typeof Category>;
 
 export const User = Schema.Struct({
   id: Schema.optional(Schema.Int),
@@ -49,10 +46,10 @@ export const User = Schema.Struct({
   phone: Schema.optional(Schema.String),
   userStatus: Schema.optional(Schema.Int),
 });
-export type User = typeof User.Type;
+export type User = Schema.Schema.Type<typeof User>;
 
 export const Tag = Schema.Struct({ id: Schema.optional(Schema.Int), name: Schema.optional(Schema.String) });
-export type Tag = typeof Tag.Type;
+export type Tag = Schema.Schema.Type<typeof Tag>;
 
 export const Pet = Schema.Struct({
   id: Schema.optional(Schema.Int),
@@ -60,16 +57,16 @@ export const Pet = Schema.Struct({
   category: Schema.optional(Category),
   photoUrls: Schema.Array(Schema.String),
   tags: Schema.optional(Schema.Array(Tag)),
-  status: Schema.optional(Schema.Union(Schema.Literal("available"), Schema.Literal("pending"), Schema.Literal("sold"))),
+  status: Schema.optional(Schema.Literals(["available", "pending", "sold"])),
 });
-export type Pet = typeof Pet.Type;
+export type Pet = Schema.Schema.Type<typeof Pet>;
 
 export const ApiResponse = Schema.Struct({
   code: Schema.optional(Schema.Int),
   type: Schema.optional(Schema.String),
   message: Schema.optional(Schema.String),
 });
-export type ApiResponse = typeof ApiResponse.Type;
+export type ApiResponse = Schema.Schema.Type<typeof ApiResponse>;
 
 // </Schemas>
 
@@ -100,7 +97,7 @@ export const get_FindPetsByStatus = {
   path: Schema.Literal("/pet/findByStatus"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ status: Union_default_available_prop })) },
+  parameters: { query: Schema.optional(Schema.Struct({ status: Schema_default_available_prop })) },
   responses: {
     200: Schema.Array(Pet),
     304: Schema.Unknown,
@@ -115,7 +112,7 @@ export const get_FindPetsByTags = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { query: Schema.optional(Schema.Struct({ tags: Schema.optional(Schema.Array(Schema.String)) })) },
-  responses: { 200: Schema.Union(Schema.Array(Pet), Schema.Array(User), Schema.Array(Tag)), 400: Schema.Unknown },
+  responses: { 200: Schema.Union([Schema.Array(Pet), Schema.Array(User), Schema.Array(Tag)]), 400: Schema.Unknown },
 };
 
 export type get_GetPetById = typeof get_GetPetById;
@@ -124,7 +121,7 @@ export const get_GetPetById = {
   path: Schema.Literal("/pet/{petId}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }) },
+  parameters: { path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }) },
   responses: {
     200: Pet,
     400: Schema.Struct({ code: Schema.Int, message: Schema.String }),
@@ -142,7 +139,7 @@ export const post_UpdatePetWithForm = {
     query: Schema.optional(
       Schema.Struct({ name: Schema.optional(Schema.String), status: Schema.optional(Schema.String) }),
     ),
-    path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
+    path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }),
   },
   responses: { 405: Schema.Unknown },
 };
@@ -154,7 +151,7 @@ export const delete_DeletePet = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: {
-    path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
+    path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }),
     header: Schema.optional(Schema.Struct({ api_key: Schema.optional(Schema.String) })),
   },
   responses: { 400: Schema.Unknown },
@@ -168,7 +165,7 @@ export const post_UploadFile = {
   responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(Schema.Struct({ additionalMetadata: Schema.optional(Schema.String) })),
-    path: Schema.Struct({ petId: Schema.NumberFromString.pipe(Schema.int()) }),
+    path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }),
     body: Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: ApiResponse },
@@ -181,7 +178,7 @@ export const get_GetInventory = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
-  responses: { 200: Schema.Record({ key: Schema.String, value: Schema.Int }) },
+  responses: { 200: Schema.Record(Schema.String, Schema.Int) },
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;
@@ -200,7 +197,7 @@ export const get_GetOrderById = {
   path: Schema.Literal("/store/order/{orderId}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ orderId: Schema.NumberFromString.pipe(Schema.int()) }) },
+  parameters: { path: Schema.Struct({ orderId: Schema.NumberFromString.check(Schema.isInt()) }) },
   responses: { 200: Order, 400: Schema.Unknown, 404: Schema.Unknown },
 };
 
@@ -210,7 +207,7 @@ export const delete_DeleteOrder = {
   path: Schema.Literal("/store/order/{orderId}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ orderId: Schema.NumberFromString.pipe(Schema.int()) }) },
+  parameters: { path: Schema.Struct({ orderId: Schema.NumberFromString.check(Schema.isInt()) }) },
   responses: { 400: Schema.Unknown, 404: Schema.Unknown },
 };
 
@@ -612,8 +609,7 @@ export class TypedStatusError<TData = unknown> extends Error {
 }
 // </TypedStatusError>
 
-import { Effect } from "effect";
-import type { ParseError } from "effect/ParseResult";
+import type { SchemaError } from "effect/SchemaError";
 
 // <HttpClientError>
 export class HttpClientError extends Error {
@@ -630,7 +626,7 @@ export class HttpClientError extends Error {
 
 // <ValidateHelpers>
 const defaultParse = (schema: unknown, value: unknown): unknown => {
-  return Schema.decodeUnknownSync(schema as Schema.Schema<unknown, unknown, never>)(value);
+  return Schema.decodeUnknownSync(schema as Schema.Codec<unknown>)(value);
 };
 
 const runValidate = async (ctx: {
@@ -699,7 +695,7 @@ export class EffectApiClient {
     ...params: MaybeOptionalArg<any>
   ): Effect.Effect<
     Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
-    TypedStatusError | HttpClientError | ParseError | Error,
+    TypedStatusError | HttpClientError | SchemaError | Error,
     never
   > {
     const self = this;
@@ -737,9 +733,7 @@ export class EffectApiClient {
                 catch: (e) => (e instanceof Error ? e : new Error(String(e))),
               });
             } else {
-              parametersToSend[key] = yield* Schema.decodeUnknown(schema as Schema.Schema<unknown, unknown, never>)(
-                value,
-              );
+              parametersToSend[key] = yield* Schema.decodeUnknownEffect(schema as Schema.Codec<unknown>)(value);
             }
           }
         }
@@ -847,7 +841,7 @@ export class EffectApiClient {
               catch: (e) => (e instanceof Error ? e : new Error(String(e))),
             });
           } else {
-            data = yield* Schema.decodeUnknown(responseSchema as Schema.Schema<unknown, unknown, never>)(data);
+            data = yield* Schema.decodeUnknownEffect(responseSchema as Schema.Codec<unknown>)(data);
           }
         }
       }
