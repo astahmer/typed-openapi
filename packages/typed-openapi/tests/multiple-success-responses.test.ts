@@ -97,9 +97,9 @@ describe("multiple success responses", () => {
     // Check that the endpoint has proper response types
     expect(generated).toContain("post_CreateOrUpdateUser");
 
-    // Check that different success responses have different schemas
-    expect(generated).toContain("updated: boolean");
-    expect(generated).toContain("created: boolean");
+    // Check that different success responses have different schemas (const → literal)
+    expect(generated).toContain("updated: true");
+    expect(generated).toContain("created: true");
     expect(generated).toContain("Array<string>");
 
     // Verify the SafeApiResponse type is present for error handling
@@ -123,8 +123,8 @@ describe("multiple success responses", () => {
             body: { name: string; email: string };
           };
           responses: {
-            200: { id: string; name: string; email: string; updated: boolean; updatedAt: string };
-            201: { id: string; name: string; email: string; created: boolean; createdAt: string };
+            200: { id: string; name: string; email: string; updated: true; updatedAt: string };
+            201: { id: string; name: string; email: string; created: true; createdAt: string };
             400: { message: string; errors: Array<string> };
           };
         };
