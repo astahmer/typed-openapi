@@ -6,6 +6,7 @@ import {
   applyStringConstraints,
   emitBinaryBlobCheck,
   emitStreamCheck,
+  findMappedUnionMember,
   isNullOr,
   literalValue,
   objectKey,
@@ -96,8 +97,24 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     }
     case "tuple":
       return `v.tuple([${node.items.map((i) => emitNode(i, ctx)).join(", ")}])`;
-    case "union":
+    case "union": {
+      if (node.discriminator?.propertyName) {
+        const prop = node.discriminator.propertyName;
+        const mapping = node.discriminator.mapping;
+        if (mapping && Object.keys(mapping).length > 0) {
+          const members = Object.entries(mapping).flatMap(([value, target]) => {
+            const member = findMappedUnionMember(node.members, target);
+            if (!member) return [];
+            const base = emitNode(member, ctx);
+            return [`v.intersect([${base}, v.object({ ${objectKey(prop)}: v.literal(${quote(value)}) })])`];
+          });
+          if (members.length > 0) {
+            return `v.union([${members.join(", ")}])`;
+          }
+        }
+      }
       return `v.union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
+    }
     case "intersection":
       return `v.intersect([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
     case "not": {

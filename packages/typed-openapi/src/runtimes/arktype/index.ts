@@ -5,6 +5,7 @@ import {
   arktypeDefaultDef,
   emitBinaryBlobCheck,
   emitStreamCheck,
+  findMappedUnionMember,
   isNullOr,
   objectKey,
   objectProps,
@@ -144,6 +145,22 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "tuple":
       return `type([${node.items.map((i) => emitNode(i, ctx)).join(", ")}])`;
     case "union": {
+      if (node.discriminator?.propertyName) {
+        const prop = node.discriminator.propertyName;
+        const mapping = node.discriminator.mapping;
+        if (mapping && Object.keys(mapping).length > 0) {
+          const members = Object.entries(mapping).flatMap(([value, target]) => {
+            const member = findMappedUnionMember(node.members, target);
+            if (!member) return [];
+            const base = asTypeExpr(emitNode(member, ctx));
+            // Override discriminator prop with the wire mapping value.
+            return [`${base}.and(type({ ${objectKey(prop)}: ${quote(value)} }))`];
+          });
+          if (members.length > 0) {
+            return members.map(asTypeExpr).reduce((a, b) => `${a}.or(${b})`);
+          }
+        }
+      }
       const members = node.members.map((m) => emitNode(m, ctx));
       if (ctx.moduleSchemaNames) {
         // Inside type.module, `type()` / `.or()` leave scope and break `"SchemaN"` refs.
@@ -155,10 +172,10 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     }
     case "intersection":
       return node.members.map((m) => asTypeExpr(emitNode(m, ctx))).reduce((a, b) => `${a}.and(${b})`);
-    case "not":
-      // ArkType negation is limited; fall back to unknown
-      return `type("unknown")`;
-    case "ref": {
+    case "not": {
+      const inner = asTypeExpr(emitNode(node.schema, ctx));
+      return `type("unknown").narrow((data, ctx) => (${inner}.allows(data) ? ctx.mustBe("not") : true))`;
+    }    case "ref": {
       if (node.name === "Partial" && node.generics?.[0]) {
         return `${emitNode(node.generics[0], ctx)}.partial()`;
       }

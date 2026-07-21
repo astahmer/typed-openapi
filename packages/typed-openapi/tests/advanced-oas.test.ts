@@ -5,6 +5,10 @@ import { irToTs } from "../src/schema-ir/ir-to-ts.ts";
 import { createEmitCtx } from "../src/runtimes/types.ts";
 import { resolveValidationPolicy } from "../src/runtimes/validation.ts";
 import { zodAdapter } from "../src/runtimes/zod/index.ts";
+import { effectAdapter } from "../src/runtimes/effect/index.ts";
+import { valibotAdapter } from "../src/runtimes/valibot/index.ts";
+import { arktypeAdapter } from "../src/runtimes/arktype/index.ts";
+import { typiaAdapter } from "../src/runtimes/typia/index.ts";
 
 const irCtx = { getRefName: (r: string) => r };
 
@@ -88,6 +92,59 @@ describe("advanced OpenAPI keywords", () => {
     expect(schema.safeParse({ petType: "canine", bark: true }).success).toBe(true);
     expect(schema.safeParse({ petType: "feline", meow: true }).success).toBe(true);
     expect(schema.safeParse({ petType: "Dog", bark: true }).success).toBe(false);
+  });
+
+  test("discriminator.mapping emit for effect / valibot / arktype", () => {
+    const irCtxNamed = {
+      getRefName: (ref: string) => ref.replace("#/components/schemas/", ""),
+    };
+    const node = openApiToIr(
+      {
+        oneOf: [{ $ref: "#/components/schemas/Dog" }, { $ref: "#/components/schemas/Cat" }],
+        discriminator: {
+          propertyName: "petType",
+          mapping: {
+            canine: "#/components/schemas/Dog",
+            feline: "#/components/schemas/Cat",
+          },
+        },
+      },
+      irCtxNamed,
+    );
+    const ctx = createEmitCtx(resolveValidationPolicy("loose"));
+    const effectSrc = effectAdapter.emitNode(node, ctx);
+    expect(effectSrc).toContain('Schema.Literal("canine")');
+    expect(effectSrc).toContain("Schema.extend");
+    const valibotSrc = valibotAdapter.emitNode(node, ctx);
+    expect(valibotSrc).toContain('v.literal("canine")');
+    expect(valibotSrc).toContain("v.intersect");
+    const arkSrc = arktypeAdapter.emitNode(node, ctx);
+    expect(arkSrc).toContain('"canine"');
+    expect(arkSrc).toContain(".and(type(");
+  });
+
+  test("arktype not narrow rejects matching values", async () => {
+    const { type } = await import("arktype");
+    const node = openApiToIr({ not: { type: "string", enum: ["forbidden"] } }, irCtx);
+    const src = arktypeAdapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+    expect(src).toContain(".narrow(");
+    expect(src).toContain('mustBe("not")');
+    const schema = new Function("type", `return ${src}`)(type);
+    expect(schema.allows("ok")).toBe(true);
+    expect(schema.allows("forbidden")).toBe(false);
+  });
+
+  test("typia emit includes tags for string constraints", () => {
+    const node = openApiToIr({ type: "string", minLength: 2, maxLength: 8, format: "email" }, irCtx);
+    const src = typiaAdapter.emitNamedSchema(
+      "Email",
+      node,
+      createEmitCtx(resolveValidationPolicy("strict")),
+    );
+    expect(src).toContain("tags.MinLength<2>");
+    expect(src).toContain("tags.MaxLength<8>");
+    expect(src).toContain('tags.Format<"email">');
+    expect(typiaAdapter.imports()).toContain("{ tags }");
   });
 
   test("contentEncoding base64 maps like format byte under formats+", () => {

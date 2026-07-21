@@ -1,5 +1,4 @@
 import { describe, expect, test } from "vitest";
-import { Effect } from "effect";
 import { generateFile } from "../src/generator.ts";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import type { OpenAPIObject } from "openapi3-ts/oas31";

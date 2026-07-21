@@ -6,6 +6,7 @@ import {
   applyStringConstraints,
   emitBinaryBlobCheck,
   emitStreamCheck,
+  findMappedUnionMember,
   internEffectDefault,
   isNullOr,
   jsLiteral,
@@ -101,8 +102,26 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.rest) return `${S}.Tuple([${items}], ${emitNode(node.rest, ctx)})`;
       return `${S}.Tuple([${items}])`;
     }
-    case "union":
+    case "union": {
+      if (node.discriminator?.propertyName) {
+        const prop = node.discriminator.propertyName;
+        const mapping = node.discriminator.mapping;
+        if (mapping && Object.keys(mapping).length > 0) {
+          const members = Object.entries(mapping).flatMap(([value, target]) => {
+            const member = findMappedUnionMember(node.members, target);
+            if (!member) return [];
+            const base = emitNode(member, ctx);
+            return [
+              `${S}.extend(${base}, ${S}.Struct({ ${objectKey(prop)}: ${S}.Literal(${quote(value)}) }))`,
+            ];
+          });
+          if (members.length > 0) {
+            return `${S}.Union([${members.join(", ")}])`;
+          }
+        }
+      }
       return `${S}.Union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
+    }
     case "intersection": {
       const nonNull = node.members.filter((m) => m.kind !== "null").map((m) => isNullOr(m) ?? m);
       // mapFields(Struct.assign) fails on overlapping keys with incompatible property
