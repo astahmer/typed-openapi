@@ -64,10 +64,10 @@ export class ApiClient {
     expect(key[0]).toBe("typed-openapi");
     expect(key[1]).toBe("/pet/findByStatus");
     expect(key[2]?.query).toEqual({ status: "available" });
-    expect(key[2]?._infinite).toBeUndefined();
+    expect(key[2]?.["_infinite"]).toBeUndefined();
 
     const infiniteKey = mod.queryKeyFactory.endpoint("/pet/findByStatus", { query: { status: "available" } }, true);
-    expect(infiniteKey[2]?._infinite).toBe(true);
+    expect(infiniteKey[2]?.["_infinite"]).toBe(true);
 
     const qc = new QueryClient();
     const spy = vi.spyOn(qc, "invalidateQueries");
@@ -137,7 +137,7 @@ export class ApiClient {
     });
 
     expect(infiniteOpts.queryKey[0]).toBe("typed-openapi");
-    expect(infiniteOpts.queryKey[2]._infinite).toBe(true);
+    expect(infiniteOpts.queryKey[2]["_infinite"]).toBe(true);
     const page = await infiniteOpts.queryFn({ pageParam: 3, signal: new AbortController().signal } as never);
     expect(page).toEqual([{ id: 1, name: "dog" }]);
     expect(client.client).toBe(api);

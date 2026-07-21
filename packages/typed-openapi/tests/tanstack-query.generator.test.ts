@@ -27,7 +27,7 @@ describe("tanstack-query.generator", () => {
     expect(file).toContain("invalidate:");
     expect(file).toContain("invalidateInfinite:");
     expect(file).toContain("_infinite");
-    expect(file).toContain("createQueryKey(path as string, params[0], true)");
+    expect(file).toContain("createQueryKey(path as string, params[0] as EndpointParameters | undefined, true)");
     expect(file).toContain("queryOptions:");
     expect(file).toContain("mutationOptions:");
     expect(file).toContain("export class TanstackQueryApiClient");
@@ -97,5 +97,8 @@ describe("tanstack-query.generator", () => {
       expect(file).toContain(`if (options?.${field})`);
       expect(file).toContain(`params.${field} = options.${field}`);
     }
+    expect(file).toContain('params["_infinite"]');
+    expect(file).toContain('delete keyParams["_infinite"]');
+    expect(file).toContain("params[0] as EndpointParameters | undefined");
   });
 });

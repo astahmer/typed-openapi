@@ -28,11 +28,11 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             path: Path,
             ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
         ) {
-            const queryKey = createQueryKey(path as string, params[0]);
+            const queryKey = createQueryKey(path as string, params[0] as EndpointParameters | undefined);
             const sharedQueryOptions = queryOptions({
                 queryFn: async ({ queryKey, signal, }) => {
                     const keyParams = { ...(queryKey[2] || {}) } as Record<string, unknown>;
-                    delete keyParams._infinite;
+                    delete keyParams["_infinite"];
                     const requestParams = {
                         ...(params[0] || {}),
                         ...keyParams,
@@ -73,7 +73,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                     /** When set, \`pageParam\` is written into \`query[pageParamKey]\` before each fetch. */
                     pageParamKey?: string;
                 }) => {
-                    const infiniteKey = createQueryKey(path as string, params[0], true);
+                    const infiniteKey = createQueryKey(path as string, params[0] as EndpointParameters | undefined, true);
                     return infiniteQueryOptions({
                         queryKey: infiniteKey,
                         initialPageParam: infiniteOpts.initialPageParam,
@@ -105,7 +105,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                     queryClient.invalidateQueries({ queryKey }),
                 /** Invalidate this endpoint's infinite queries. */
                 invalidateInfinite: (queryClient: QueryClient) =>
-                    queryClient.invalidateQueries({ queryKey: createQueryKey(path as string, params[0], true) }),
+                    queryClient.invalidateQueries({ queryKey: createQueryKey(path as string, params[0] as EndpointParameters | undefined, true) }),
             };
 
             return query
@@ -166,7 +166,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
       const params: EndpointQueryKeyParams<TOptions> = {} as EndpointQueryKeyParams<TOptions>;
       let hasParams = false;
       if (infinite) {
-          params._infinite = infinite;
+          params["_infinite"] = infinite;
           hasParams = true;
       }
       if (options?.body) {
