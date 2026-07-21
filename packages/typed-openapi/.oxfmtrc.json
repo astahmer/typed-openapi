@@ -1,4 +1,5 @@
 {
+  "ignorePatterns": ["tests/snapshots/**", "tmp/**"],
   "singleQuote": false,
   "printWidth": 120,
   "bracketSpacing": true,
