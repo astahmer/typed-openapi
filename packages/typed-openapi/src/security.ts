@@ -26,54 +26,61 @@ export const parseSecuritySchemes = (doc: OpenAPIObject): ParsedSecurityScheme[]
     if (!raw || typeof raw !== "object" || "$ref" in raw) continue;
     const scheme = raw as SecuritySchemeObject;
     const prop = sanitizeName(name, "schema") || name.replace(/[^a-zA-Z0-9_]/g, "_");
+    const description = scheme.description;
 
     if (scheme.type === "apiKey") {
-      out.push({
+      const entry: ParsedSecurityScheme = {
         name,
         prop,
         type: "apiKey",
-        in: scheme.in as "header" | "query" | "cookie",
-        paramName: scheme.name,
-        description: scheme.description,
         supported: true,
-      });
+      };
+      if (scheme.in === "header" || scheme.in === "query" || scheme.in === "cookie") {
+        entry.in = scheme.in;
+      }
+      if (scheme.name !== undefined) entry.paramName = scheme.name;
+      if (description !== undefined) entry.description = description;
+      out.push(entry);
       continue;
     }
 
     if (scheme.type === "http") {
       const httpScheme = scheme.scheme?.toLowerCase();
       const supported = httpScheme === "basic" || httpScheme === "bearer" || !httpScheme;
-      out.push({
+      const entry: ParsedSecurityScheme = {
         name,
         prop,
         type: "http",
-        scheme: httpScheme,
-        description: scheme.description,
         supported,
-      });
+      };
+      if (httpScheme !== undefined) entry.scheme = httpScheme;
+      if (description !== undefined) entry.description = description;
+      out.push(entry);
       continue;
     }
 
     if (scheme.type === "oauth2" || scheme.type === "openIdConnect") {
-      out.push({
+      const entry: ParsedSecurityScheme = {
         name,
         prop,
         type: scheme.type,
         scheme: "bearer",
-        description: scheme.description,
         supported: true,
-      });
+      };
+      if (description !== undefined) entry.description = description;
+      out.push(entry);
       continue;
     }
 
     // mutualTLS and unknown types — keep in AuthCredentials for typing, but do not apply
-    out.push({
+    const entry: ParsedSecurityScheme = {
       name,
       prop,
       type: scheme.type,
-      description: scheme.description,
       supported: false,
-    });
+    };
+    if (description !== undefined) entry.description = description;
+    out.push(entry);
   }
 
   return out;
@@ -104,6 +111,11 @@ export const applyAuth = (_headers: Headers, _url: URL, _auth: AuthCredentials):
       return `${doc}${unsupported}  ${JSON.stringify(s.prop)}?: string;`;
     })
     .join("\n");
+
+  const needsUrl = schemes.some(
+    (s) => s.supported !== false && s.type === "apiKey" && (s.in === "query" || s.in === "cookie"),
+  );
+  const urlParam = needsUrl ? "url" : "_url";
 
   const applyBody = schemes
     .filter((s) => {
@@ -158,7 +170,7 @@ ${fields}
  * Pass tokens via \`getAuth\` on the default fetcher (or call manually).
  * Bearer tokens may be raw or already prefixed with \`Bearer \`.
  */
-export const applyAuth = (headers: Headers, url: URL, auth: AuthCredentials): void => {
+export const applyAuth = (headers: Headers, ${urlParam}: URL, auth: AuthCredentials): void => {
 ${applyBody}
 };
 `;

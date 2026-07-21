@@ -169,10 +169,10 @@ export const mergeConfigWithCli = <T extends Record<string, unknown>>(
 /** Defaults applied after config+CLI merge when still unset. */
 export const applyGeneratorOptionDefaults = <T extends Record<string, unknown>>(options: T): T => {
   const out = { ...options } as Record<string, unknown>;
-  if (out.format === undefined) out.format = false;
-  if (out.schemasOnly === undefined) out.schemasOnly = false;
-  if (out.includeClient === undefined) out.includeClient = true;
-  if (out.jsdoc === undefined) out.jsdoc = true;
+  if (out["format"] === undefined) out["format"] = false;
+  if (out["schemasOnly"] === undefined) out["schemasOnly"] = false;
+  if (out["includeClient"] === undefined) out["includeClient"] = true;
+  if (out["jsdoc"] === undefined) out["jsdoc"] = true;
   return out as T;
 };
 

@@ -44,6 +44,8 @@ describe("securitySchemes → auth helpers", () => {
     expect(src).toContain("configureFetcher");
     expect(src).toContain("getAuth");
     expect(src).toContain("applyAuth(headers, input.url, auth)");
+    // Petstore has no query/cookie apiKeys — generated applyAuth uses `_url` (unused).
+    expect(src).toContain("_url: URL");
   });
 
   test("default fetcher without doc has no auth helpers", () => {
@@ -98,5 +100,37 @@ describe("securitySchemes → auth helpers", () => {
       },
     ]);
     expect(src).toContain("secret *\\/ injection");
+  });
+
+  test("omits undefined optional fields (exactOptionalPropertyTypes)", () => {
+    const doc = {
+      openapi: "3.0.3",
+      info: { title: "t", version: "1" },
+      paths: {},
+      components: {
+        securitySchemes: {
+          bareHttp: { type: "http" },
+          keyNoDesc: { type: "apiKey", name: "X-Key", in: "header" },
+          mtls: { type: "mutualTLS" },
+        },
+      },
+    } as OpenAPIObject;
+
+    const schemes = parseSecuritySchemes(doc);
+    for (const s of schemes) {
+      expect(Object.prototype.hasOwnProperty.call(s, "description")).toBe(false);
+    }
+    const http = schemes.find((s) => s.name === "bareHttp")!;
+    expect(Object.prototype.hasOwnProperty.call(http, "scheme")).toBe(false);
+    expect(http.supported).toBe(true);
+  });
+
+  test("query/cookie apiKey keeps url param name (not _url)", () => {
+    const src = generateAuthHelpersSource([
+      { name: "q", prop: "q", type: "apiKey", in: "query", paramName: "token" },
+    ]);
+    expect(src).toContain("url: URL");
+    expect(src).not.toContain("_url: URL");
+    expect(src).toContain("url.searchParams.set");
   });
 });
