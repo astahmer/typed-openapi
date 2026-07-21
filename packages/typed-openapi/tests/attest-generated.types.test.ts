@@ -52,8 +52,8 @@ for (const runtime of runtimes) {
 
 describe("attest generated client types", () => {
   test("none Pet", () => {
-    type Pet = import("../tmp/attest-generated/none-promise/client.ts").Pet;
-    attest({} as Pet).type.toString.snap("any");
+    type Pet = import("../tmp/attest-generated/none-promise/client.ts").Schemas.Pet;
+    attest({} as Pet).type.toString.snap("Pet");
   });
   test("zod Pet", () => {
     type Pet = import("../tmp/attest-generated/zod-promise/client.ts").Pet;
