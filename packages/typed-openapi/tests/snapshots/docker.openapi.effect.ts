@@ -1727,8 +1727,14 @@ export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
         : never;
   }[keyof TAllResponses];
 
+type OptionalUndefinedKeys<T> = {
+  [K in keyof T as undefined extends T[K] ? never : K]: T[K];
+} & {
+  [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<T[K], undefined>;
+};
 type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInput<T> = T extends { Encoded: infer I } ? I : T extends object ? { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? never : K]: InferSchemaInput<T[K]> } & { [K in keyof T as undefined extends InferSchemaInput<T[K]> ? K : never]?: Exclude<InferSchemaInput<T[K]>, undefined> } : T;
+type InferSchemaInputRaw<T> = T extends { Encoded: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
@@ -1738,12 +1744,60 @@ export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TR
 
 export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<SafeApiResponse<TEndpoint>, { status: TStatusCode }>
 
+/**
+ * Success-body payload — InferSchemaValue only on success statuses.
+ * Filter with extends {} like the old Extract { data: {} } so unknown bodies (e.g. 304) drop out.
+ */
+export type InferSuccessData<TEndpoint> = TEndpoint extends { responses: infer TResponses }
+  ? {
+      [K in keyof TResponses]: K extends string
+        ? K extends `${infer TStatusCode extends number}`
+          ? TStatusCode extends SuccessStatusCode
+            ? InferSchemaValue<TResponses[K]> extends infer D
+              ? D extends {}
+                ? D
+                : never
+              : never
+            : never
+          : never
+        : K extends number
+          ? K extends SuccessStatusCode
+            ? InferSchemaValue<TResponses[K]> extends infer D
+              ? D extends {}
+                ? D
+                : never
+              : never
+            : never
+          : never;
+    }[keyof TResponses]
+  : never;
+
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
 }[keyof T];
 
 type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
 type NotNever<T> = [T] extends [never] ? false : true;
+
+/** Call options merged onto inferred endpoint parameters. */
+type ApiRequestOptions = {
+  overrides?: RequestInit;
+  withResponse?: boolean;
+  throwOnStatusError?: boolean;
+  validate?: ValidateSide;
+};
+
+/** Parameter bag for an endpoint + request options. */
+export type ApiCallParams<TEndpoint> = TEndpoint extends { parameters: infer UParams }
+  ? NotNever<UParams> extends true
+    ? InferSchemaInput<UParams> & ApiRequestOptions
+    : ApiRequestOptions
+  : ApiRequestOptions;
+
+/** Resolve response type from withResponse flag on the call config. */
+export type ApiCallResult<TEndpoint, TParams> = TParams extends { withResponse: true }
+  ? SafeApiResponse<TEndpoint>
+  : InferSuccessData<TEndpoint>;
 
 export type ValidateSide = "none" | "input" | "output" | "both";
 export type OnValidate = (ctx: {
@@ -1855,19 +1909,18 @@ export class EffectApiClient {
   >(
     method: TMethod,
     path: TPath,
-    ...params: MaybeOptionalArg<(TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true
-            ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
-            : { overrides?: RequestInit; validate?: ValidateSide }
-          : { overrides?: RequestInit; validate?: ValidateSide })>
+    ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
   ): Effect.Effect<
-    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    InferSuccessData<TEndpoint>,
     TypedStatusError | HttpClientError,
     never
   > {
     const self = this;
     return Effect.gen(function* () {
-      const requestParams = params[0];
+      // Implementation reads a loose param bag; call sites stay typed via MaybeOptionalArg<>.
+      const requestParams = params[0] as
+        | (EndpointParameters & { overrides?: RequestInit; validate?: ValidateSide })
+        | undefined;
       const validateSide: ValidateSide = requestParams?.validate ?? self.validate;
       const parametersToSend: EndpointParameters = {};
       if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
@@ -1888,6 +1941,7 @@ export class EffectApiClient {
           if (schema !== undefined && value !== undefined) {
 
           if (self.onValidate) {
+            const onValidate = self.onValidate;
             parametersToSend[key] = yield* Effect.tryPromise({
               try: () =>
                 runValidate({
@@ -1896,7 +1950,7 @@ export class EffectApiClient {
                   path: String(path),
                   schema: schema,
                   value: value,
-                  onValidate: self.onValidate,
+                  onValidate,
                 }),
               catch: (cause) => new HttpClientError("validation failed", cause),
             });
@@ -1995,6 +2049,7 @@ export class EffectApiClient {
         if (responseSchema) {
 
           if (self.onValidate) {
+            const onValidate = self.onValidate;
             data = yield* Effect.tryPromise({
               try: () =>
                 runValidate({
@@ -2003,7 +2058,7 @@ export class EffectApiClient {
                   path: String(path),
                   schema: responseSchema,
                   value: data,
-                  onValidate: self.onValidate,
+                  onValidate,
                 }),
               catch: (cause) => new HttpClientError("validation failed", cause),
             });
@@ -2022,19 +2077,15 @@ export class EffectApiClient {
         );
       }
 
-      return data as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
+      return data as InferSuccessData<TEndpoint>;
     });
   }
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<(TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true
-            ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
-            : { overrides?: RequestInit; validate?: ValidateSide }
-          : { overrides?: RequestInit; validate?: ValidateSide })>
+    ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
   ): Effect.Effect<
-    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    InferSuccessData<TEndpoint>,
     TypedStatusError | HttpClientError,
     never
   > {
@@ -2042,13 +2093,9 @@ export class EffectApiClient {
   }
 post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<(TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true
-            ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
-            : { overrides?: RequestInit; validate?: ValidateSide }
-          : { overrides?: RequestInit; validate?: ValidateSide })>
+    ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
   ): Effect.Effect<
-    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    InferSuccessData<TEndpoint>,
     TypedStatusError | HttpClientError,
     never
   > {
@@ -2056,13 +2103,9 @@ post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
   }
 delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<(TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true
-            ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
-            : { overrides?: RequestInit; validate?: ValidateSide }
-          : { overrides?: RequestInit; validate?: ValidateSide })>
+    ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
   ): Effect.Effect<
-    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    InferSuccessData<TEndpoint>,
     TypedStatusError | HttpClientError,
     never
   > {
@@ -2070,13 +2113,9 @@ delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Pat
   }
 put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<(TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true
-            ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
-            : { overrides?: RequestInit; validate?: ValidateSide }
-          : { overrides?: RequestInit; validate?: ValidateSide })>
+    ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
   ): Effect.Effect<
-    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    InferSuccessData<TEndpoint>,
     TypedStatusError | HttpClientError,
     never
   > {
@@ -2084,13 +2123,9 @@ put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
   }
 head<Path extends keyof HeadEndpoints, TEndpoint extends HeadEndpoints[Path]>(
     path: Path,
-    ...params: MaybeOptionalArg<(TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true
-            ? InferSchemaInput<UParams> & { overrides?: RequestInit; validate?: ValidateSide }
-            : { overrides?: RequestInit; validate?: ValidateSide }
-          : { overrides?: RequestInit; validate?: ValidateSide })>
+    ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
   ): Effect.Effect<
-    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    InferSuccessData<TEndpoint>,
     TypedStatusError | HttpClientError,
     never
   > {

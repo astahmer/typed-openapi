@@ -136,7 +136,7 @@ describe("typebox and typia runtimes", () => {
     });
 
     const file = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "typebox", includeClient: true });
-    expect(file).toContain("type InferSchemaInput<T> = InferSchemaValue<T>;");
+    expect(file).toContain("type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;");
     expect(file).toContain("Type.Optional(Type.Partial(Type.Object({ status: Type.Union(");
   });
 });

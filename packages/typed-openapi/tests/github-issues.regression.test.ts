@@ -123,7 +123,7 @@ describe("GitHub issue regressions", () => {
     });
     const ctx = mapOpenApiEndpoints(doc);
     const file = generateFile({ ...ctx, runtime: "typebox", includeClient: true });
-    expect(file).toContain("type InferSchemaInput<T> = InferSchemaValue<T>;");
+    expect(file).toContain("type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;");
     expect(file).toContain("parameters: { query: Type.Optional(Type.Partial(Type.Object(");
     expect(file).toContain("InferSchemaInput<UParams>");
   });
