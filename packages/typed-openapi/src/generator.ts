@@ -7,11 +7,12 @@ import { emitRuntimeFile } from "./runtimes/emit-runtime-file.ts";
 import { getRuntimeAdapter, type ShippedRuntime } from "./runtimes/registry.ts";
 import { resolveValidationPolicy, type ValidationPreset, type ValidationPolicy } from "./runtimes/validation.ts";
 import type { OutputRuntime as RuntimeName } from "./runtimes/types.ts";
-import { irToTs, renderSchemaJsdoc } from "./schema-ir/ir-to-ts.ts";
+import { canEmitAsInterface, emitNamedInterface, irToTs, renderSchemaJsdoc } from "./schema-ir/ir-to-ts.ts";
 import type { SchemaNode } from "./schema-ir/types.ts";
 import { applySpecFilters, shouldEmitSchema, type SpecFilterOptions } from "./filter-spec.ts";
 import { prepareSchemaNaming, type SchemaNamingOptions } from "./schema-naming.ts";
 import { effectApiClientBody } from "./effect-api-client.ts";
+import { findRecursiveSchemaNames } from "./runtimes/shared.ts";
 
 // Default success status codes (2xx and 3xx ranges)
 export const DEFAULT_SUCCESS_STATUS_CODES = [
@@ -231,16 +232,27 @@ const generateSchemaList = (ctx: GeneratorContext) => {
       .filter(([, infos]) => shouldEmitSchema(ctx.keptSchemaNames, infos.normalized))
       .map(([node, infos]) => ({ name: infos.normalized, node }));
 
+  const recursiveNames = findRecursiveSchemaNames(schemas);
+  const irOpts = {
+    prefixRefsWithSchemas: false as const,
+    jsdoc: shouldRenderDescriptionComments(ctx),
+    transformDates: ctx.transformDates,
+    transformBigInt: ctx.transformBigInt,
+  };
+
   for (const { name, node } of schemas) {
     const description = shouldRenderDescriptionComments(ctx) ? node.meta.description : undefined;
-    const schemaValue = irToTs(node, {
-      prefixRefsWithSchemas: false,
-      jsdoc: shouldRenderDescriptionComments(ctx),
-      transformDates: ctx.transformDates,
-      transformBigInt: ctx.transformBigInt,
-    });
+    const jsdoc = renderSchemaJsdoc(description);
 
-    file += `${renderSchemaJsdoc(description)}export type ${name} = ${schemaValue}\n`;
+    // Circular `type` aliases (e.g. Schema4 ↔ Record Schema5) are illegal in TS (TS2456).
+    // Emit recursive object/record schemas as interfaces so unions/arrays can alias through them.
+    if (runtime === "none" && recursiveNames.has(name) && canEmitAsInterface(node)) {
+      file += `${jsdoc}${emitNamedInterface(name, node, irOpts)}\n`;
+      continue;
+    }
+
+    const schemaValue = irToTs(node, irOpts);
+    file += `${jsdoc}export type ${name} = ${schemaValue}\n`;
   }
 
   return (

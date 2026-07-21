@@ -134,3 +134,34 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
 
 export const renderSchemaJsdoc = (description: string | undefined) =>
   description ? `${renderDescriptionComment(description)}\n` : "";
+
+/** Object/record shapes that can be declared as `interface` (breaks TS2456 cycles). */
+export const canEmitAsInterface = (node: SchemaNode): boolean => {
+  if (node.kind === "record") return true;
+  if (node.kind === "object" && !node.partial && node.additionalProperties === false) return true;
+  return false;
+};
+
+/**
+ * Emit a named schema as `interface` when possible so circular unions/arrays can
+ * reference it without illegal circular `type` aliases (TS2456).
+ */
+export const emitNamedInterface = (name: string, node: SchemaNode, options: IrToTsOptions = {}): string => {
+  if (node.kind === "record") {
+    const value = irToTs(node.value, options);
+    const keyTs = irToTs(node.key, { ...options, prefixRefsWithSchemas: false });
+    if (keyTs === "string") {
+      return `export interface ${name} { [key: string]: ${value} }`;
+    }
+    return `export type ${name} = Record<${keyTs}, ${value}>`;
+  }
+
+  if (node.kind === "object") {
+    const body = irToTs(node, options);
+    if (body.startsWith("{") || body.startsWith("Partial<")) {
+      return `export interface ${name} ${body}`;
+    }
+  }
+
+  return `export type ${name} = ${irToTs(node, options)}`;
+};

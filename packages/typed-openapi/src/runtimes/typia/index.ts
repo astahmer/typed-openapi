@@ -1,7 +1,7 @@
 import { applyArrayConstraints, applyNumberConstraints, applyStringConstraints } from "../shared.ts";
 import type { SchemaNode } from "../../schema-ir/types.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
-import { irToTs } from "../../schema-ir/ir-to-ts.ts";
+import { canEmitAsInterface, emitNamedInterface, irToTs } from "../../schema-ir/ir-to-ts.ts";
 
 const toTs = (node: SchemaNode, ctx?: EmitCtx) =>
   irToTs(node, {
@@ -81,9 +81,18 @@ export const typiaAdapter: RuntimeAdapter = {
   unknown: () => createIs("unknown"),
   never: () => createIs("never"),
   emitNamedSchema: (name, node, ctx) => {
-    const typeExpr = typiaTypeExpr(node, ctx);
+    const irOpts = {
+      prefixRefsWithSchemas: false as const,
+      transformDates: ctx.transformDates,
+      transformBigInt: ctx.transformBigInt,
+    };
+    // Recursive record/object as interface — same TS2456 fix as none-runtime.
+    const typeDecl =
+      ctx.recursiveNames.has(name) && canEmitAsInterface(node)
+        ? emitNamedInterface(name, node, irOpts)
+        : `export type ${name} = ${typiaTypeExpr(node, ctx)};`;
     return [
-      `export type ${name} = ${typeExpr};`,
+      typeDecl,
       `export const is${name} = typia.createIs<${name}>();`,
       `export const assert${name} = typia.createAssert<${name}>();`,
       `export const validate${name} = typia.createValidate<${name}>();`,
