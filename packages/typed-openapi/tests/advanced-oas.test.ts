@@ -75,7 +75,7 @@ describe("advanced OpenAPI keywords", () => {
     );
     expect(node.kind).toBe("union");
     if (node.kind === "union") {
-      expect(node.discriminator?.mapping?.canine).toBe("#/components/schemas/Dog");
+      expect(node.discriminator?.mapping?.["canine"]).toBe("#/components/schemas/Dog");
     }
 
     const Dog = z.object({ petType: z.literal("Dog"), bark: z.boolean() });

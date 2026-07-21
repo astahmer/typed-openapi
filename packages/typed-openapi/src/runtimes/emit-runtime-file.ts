@@ -116,9 +116,6 @@ export const emitRuntimeFile = ({
   const recursiveNames = findRecursiveSchemaNames(namedSchemas);
   const ctx = createEmitCtx(validation, recursiveNames);
 
-  let file = `${adapter.imports()}\n\n`;
-
-  // Emit schemas first so internedDefaults fills while walking component + endpoint trees.
   let schemasBlock = `// <Schemas>\n`;
   if (adapter.emitNamedSchemas) {
     schemasBlock += `${adapter.emitNamedSchemas(namedSchemas, ctx)}\n`;
@@ -152,10 +149,20 @@ export const emitRuntimeFile = ({
   }
 
   const helpers = renderInternedDefaults(ctx);
+  let body = "";
   if (helpers) {
-    file += `// <DefaultSchemas>\n${helpers}// </DefaultSchemas>\n\n`;
+    body += `// <DefaultSchemas>\n${helpers}// </DefaultSchemas>\n\n`;
   }
-  file += schemasBlock + endpointsBlock;
+  body += schemasBlock + endpointsBlock;
 
-  return file;
+  // Effect: only import SchemaTransformation/Struct when referenced.
+  // Always keep Effect + Schema — EffectApiClient (appended later) needs Effect.
+  if (adapter.name === "effect") {
+    const names = ["Effect", "Schema"];
+    if (body.includes("SchemaTransformation")) names.push("SchemaTransformation");
+    if (/\bStruct\./.test(body)) names.push("Struct");
+    return `import { ${names.join(", ")} } from "effect";\n\n${body}`;
+  }
+
+  return `${adapter.imports()}\n\n${body}`;
 };

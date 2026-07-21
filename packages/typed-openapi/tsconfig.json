@@ -10,5 +10,5 @@
     "allowImportingTsExtensions": true
   },
   "include": ["src", "tests"],
-  "exclude": ["node_modules", "samples"]
+  "exclude": ["node_modules", "samples", "tests/snapshots", "tests/tstyche", "tests/attest-generated.types.test.ts"]
 }
