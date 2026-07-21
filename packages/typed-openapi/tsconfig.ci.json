@@ -1,6 +1,11 @@
 {
   "extends": "./tsconfig.build.json",
-  "include": ["tmp/*", "tests/integrations/runtime-msw.test.ts"],
+  "include": [
+    "tmp/*",
+    "tmp/tstyche/effect-client/none/*",
+    "tests/integrations/runtime-msw.test.ts",
+    "tests/integrations/effect-msw.test.ts"
+  ],
   "compilerOptions": {
     "tsBuildInfoFile": null
   }

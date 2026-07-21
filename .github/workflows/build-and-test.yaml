@@ -23,11 +23,17 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Type check generated client and integration test
+      - name: Generate typed-openapi fixtures for CI typecheck
+        run: pnpm --filter typed-openapi run gen:fixtures
+
+      - name: Type check generated client and integration tests
         run: pnpm --filter typed-openapi exec tsc -b ./tsconfig.ci.json
 
       - name: Test all (unit, types, attest, matrix, runtime, bench)
         run: pnpm --filter typed-openapi test:all
+
+      - name: Test web package
+        run: pnpm --filter typed-openapi-web exec vitest run
 
       - name: Release package
         run: pnpm dlx pkg-pr-new publish './packages/typed-openapi'
