@@ -12,6 +12,7 @@ export default defineConfig({
           exclude: [
             ...configDefaults.exclude,
             "**/tests/integration-runtime-msw.test.ts",
+            "**/tests/integration-effect-msw.test.ts",
             "**/tests/runtime-client-matrix.integration.test.ts",
             "**/tests/runtime-client-matrix.typecheck.test.ts",
             "**/tests/attest-generated.types.test.ts",

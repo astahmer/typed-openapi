@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { generateFile, type OutputRuntime } from "../src/generator.ts";
+import { generateTanstackQueryFile } from "../src/tanstack-query.generator.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -46,6 +47,14 @@ for (const runtime of runtimes) {
       includeClient: true,
     }),
   );
+  writeFileSync(
+    join(promiseDir, "tanstack.ts"),
+    await generateTanstackQueryFile({
+      ...petstoreCtx,
+      relativeApiClientPath: "./client.ts",
+      client: "promise",
+    }),
+  );
 
   const effectDir = join(root, "tmp/tstyche/effect-client", runtime);
   mkdirSync(effectDir, { recursive: true });
@@ -56,6 +65,14 @@ for (const runtime of runtimes) {
       runtime,
       client: "effect",
       includeClient: true,
+    }),
+  );
+  writeFileSync(
+    join(effectDir, "tanstack.ts"),
+    await generateTanstackQueryFile({
+      ...petstoreCtx,
+      relativeApiClientPath: "./client.ts",
+      client: "effect",
     }),
   );
 }

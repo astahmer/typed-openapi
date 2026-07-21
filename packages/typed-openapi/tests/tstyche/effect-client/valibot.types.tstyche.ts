@@ -1,5 +1,6 @@
 /**
- * Shared EffectApiClient type assertions per runtime.
+ * valibot EffectApiClient — MSW / integration type parity (Effect success + error channel).
+ * Fixtures: pnpm gen:tstyche-fixtures → tmp/tstyche/effect-client/valibot/
  */
 import { Effect } from "effect";
 import { describe, expect, it } from "tstyche";
@@ -8,10 +9,13 @@ import {
   type Pet,
   type HttpClientError,
   type TypedStatusError,
+  type InferResponseByStatus,
   type delete_DeletePet,
   type get_FindPetsByStatus,
   type get_GetPetById,
   type post_AddPet,
+  type post_UpdatePetWithForm,
+  type get_LoginUser,
 } from "../../../tmp/tstyche/effect-client/valibot/client.ts";
 
 const api = createEffectApiClient({
@@ -26,6 +30,11 @@ describe("valibot EffectApiClient", () => {
     expect<HttpClientError>().type.toBeAssignableTo<Err>();
     expect<Error>().type.not.toBeAssignableTo<Err>();
     expect<string>().type.not.toBeAssignableTo<Err>();
+  });
+
+  it("has successStatusCodes and errorStatusCodes", () => {
+    expect(api.successStatusCodes).type.toBeAssignableTo<readonly number[]>();
+    expect(api.errorStatusCodes).type.toBeAssignableTo<readonly number[]>();
   });
 
   it("path params object is present and not any", () => {
@@ -54,5 +63,42 @@ describe("valibot EffectApiClient", () => {
     expect({} as Params).type.not.toBeAssignableTo<string>();
     type HasPath = Params extends { path: unknown } ? true : false;
     expect<HasPath>().type.toBe<true>();
+  });
+
+  it("form update has path params", () => {
+    const endpointRequest = api.post<"/pet/{petId}", post_UpdatePetWithForm>;
+    type Params = NonNullable<Parameters<typeof endpointRequest>[1]>;
+    type HasPath = Params extends { path: unknown } ? true : false;
+    expect<HasPath>().type.toBe<true>();
+  });
+
+  it("request() success data matches get()", () => {
+    const viaGet = api.get<"/pet/findByStatus", get_FindPetsByStatus>;
+    const viaRequest = api.request<"get", "/pet/findByStatus", get_FindPetsByStatus>;
+    type GetOk = Effect.Success<ReturnType<typeof viaGet>>;
+    type ReqOk = Effect.Success<ReturnType<typeof viaRequest>>;
+    expect<GetOk>().type.toBeAssignableTo<ReqOk>();
+    expect<ReqOk>().type.toBeAssignableTo<GetOk>();
+  });
+
+  it("InferResponseByStatus aligns with Effect success for findByStatus 200", () => {
+    type FromEndpoint = InferResponseByStatus<get_FindPetsByStatus, 200>["data"];
+    const endpointRequest = api.get<"/pet/findByStatus", get_FindPetsByStatus>;
+    type FromCall = Effect.Success<ReturnType<typeof endpointRequest>>;
+    expect<FromCall>().type.toBeAssignableTo<FromEndpoint>();
+  });
+
+  it("login endpoint exists and accepts optional query", () => {
+    const endpointRequest = api.get<"/user/login", get_LoginUser>;
+    type Params = Parameters<typeof endpointRequest>[1];
+    expect({} as Params).type.toBeAssignableTo<undefined | { query?: unknown; overrides?: RequestInit }>();
+  });
+
+  it("overrides are accepted on get-by-id", () => {
+    const endpointRequest = api.get<"/pet/{petId}", get_GetPetById>;
+    type Params = NonNullable<Parameters<typeof endpointRequest>[1]>;
+    type HasOverrides = Params extends { overrides?: RequestInit } ? true : false;
+    expect<HasOverrides>().type.toBe<true>();
+    void 42;
   });
 });
