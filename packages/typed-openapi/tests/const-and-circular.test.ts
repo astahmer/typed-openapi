@@ -5,7 +5,7 @@ import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { openApiToIr } from "../src/schema-ir/openapi-to-ir.ts";
-import { irToTs } from "../src/schema-ir/ir-to-ts.ts";
+import { buildIrToTsOptions, irToTs } from "../src/schema-ir/ir-to-ts.ts";
 import { generateFile } from "../src/generator.ts";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { getRuntimeAdapter } from "../src/runtimes/registry.ts";
@@ -18,6 +18,19 @@ const tscBin = require.resolve("typescript/bin/tsc");
 const tmp = join(__dirname, "../tmp/const-circular-tests");
 
 describe("JSON Schema const → literal", () => {
+  test("buildIrToTsOptions omits undefined transform flags", () => {
+    expect(buildIrToTsOptions({ prefixRefsWithSchemas: false })).toEqual({
+      prefixRefsWithSchemas: false,
+    });
+    expect(
+      buildIrToTsOptions({
+        prefixRefsWithSchemas: false,
+        transformDates: undefined,
+        transformBigInt: true,
+      }),
+    ).toEqual({ prefixRefsWithSchemas: false, transformBigInt: true });
+  });
+
   test("openApiToIr maps const to literal kind", () => {
     const node = openApiToIr({ type: "string", const: "success" }, irCtx);
     expect(node).toEqual({ kind: "literal", value: "success", meta: {} });

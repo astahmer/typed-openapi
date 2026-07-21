@@ -6,7 +6,7 @@ import type {
   NumberConstraints,
   ArrayConstraints,
 } from "../schema-ir/types.ts";
-import { canEmitAsInterface, emitNamedInterface, irToTs } from "../schema-ir/ir-to-ts.ts";
+import { canEmitAsInterface, emitNamedInterface, irToTs, buildIrToTsOptions } from "../schema-ir/ir-to-ts.ts";
 import type { EmitCtx } from "./types.ts";
 import type { ValidationPolicy } from "./validation.ts";
 
@@ -409,11 +409,11 @@ export const emitExplicitSchemaTypeDecl = (
   ctx: Pick<EmitCtx, "transformDates" | "transformBigInt">,
   options?: { readonlyArrays?: boolean },
 ): string => {
-  const irOpts = {
-    prefixRefsWithSchemas: false as const,
+  const irOpts = buildIrToTsOptions({
+    prefixRefsWithSchemas: false,
     transformDates: ctx.transformDates,
     transformBigInt: ctx.transformBigInt,
-  };
+  });
   let decl = canEmitAsInterface(node)
     ? emitNamedInterface(name, node, irOpts)
     : `export type ${name} = ${irToTs(node, irOpts)}`;

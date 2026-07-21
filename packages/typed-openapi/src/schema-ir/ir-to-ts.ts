@@ -12,6 +12,21 @@ export type IrToTsOptions = {
   transformBigInt?: boolean;
 };
 
+/** Build IrToTsOptions without assigning explicit `undefined` (exactOptionalPropertyTypes). */
+export const buildIrToTsOptions = (
+  options: {
+    prefixRefsWithSchemas?: boolean;
+    jsdoc?: boolean;
+    transformDates?: boolean | undefined;
+    transformBigInt?: boolean | undefined;
+  } = {},
+): IrToTsOptions => ({
+  ...(options.prefixRefsWithSchemas !== undefined ? { prefixRefsWithSchemas: options.prefixRefsWithSchemas } : {}),
+  ...(options.jsdoc !== undefined ? { jsdoc: options.jsdoc } : {}),
+  ...(options.transformDates !== undefined ? { transformDates: options.transformDates } : {}),
+  ...(options.transformBigInt !== undefined ? { transformBigInt: options.transformBigInt } : {}),
+});
+
 const escapeCommentText = (text: string) => text.replace(/\*\//g, "*\\/");
 
 const renderDescriptionComment = (description: string, indent = "") => {

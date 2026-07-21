@@ -7,7 +7,7 @@ import { emitRuntimeFile } from "./runtimes/emit-runtime-file.ts";
 import { getRuntimeAdapter, type ShippedRuntime } from "./runtimes/registry.ts";
 import { resolveValidationPolicy, type ValidationPreset, type ValidationPolicy } from "./runtimes/validation.ts";
 import type { OutputRuntime as RuntimeName } from "./runtimes/types.ts";
-import { canEmitAsInterface, emitNamedInterface, irToTs, renderSchemaJsdoc } from "./schema-ir/ir-to-ts.ts";
+import { canEmitAsInterface, emitNamedInterface, irToTs, renderSchemaJsdoc, buildIrToTsOptions } from "./schema-ir/ir-to-ts.ts";
 import type { SchemaNode } from "./schema-ir/types.ts";
 import { applySpecFilters, shouldEmitSchema, type SpecFilterOptions } from "./filter-spec.ts";
 import { prepareSchemaNaming, type SchemaNamingOptions } from "./schema-naming.ts";
@@ -233,12 +233,12 @@ const generateSchemaList = (ctx: GeneratorContext) => {
       .map(([node, infos]) => ({ name: infos.normalized, node }));
 
   const recursiveNames = findRecursiveSchemaNames(schemas);
-  const irOpts = {
-    prefixRefsWithSchemas: false as const,
+  const irOpts = buildIrToTsOptions({
+    prefixRefsWithSchemas: false,
     jsdoc: shouldRenderDescriptionComments(ctx),
     transformDates: ctx.transformDates,
     transformBigInt: ctx.transformBigInt,
-  };
+  });
 
   for (const { name, node } of schemas) {
     const description = shouldRenderDescriptionComments(ctx) ? node.meta.description : undefined;
@@ -270,12 +270,15 @@ const nodeToString = (
   ctx: GeneratorContext,
   options: { prefixRefsWithSchemas?: boolean } = {},
 ): string => {
-  return irToTs(node, {
-    prefixRefsWithSchemas: options.prefixRefsWithSchemas ?? true,
-    jsdoc: shouldRenderDescriptionComments(ctx),
-    transformDates: ctx.transformDates,
-    transformBigInt: ctx.transformBigInt,
-  });
+  return irToTs(
+    node,
+    buildIrToTsOptions({
+      prefixRefsWithSchemas: options.prefixRefsWithSchemas ?? true,
+      jsdoc: shouldRenderDescriptionComments(ctx),
+      transformDates: ctx.transformDates,
+      transformBigInt: ctx.transformBigInt,
+    }),
+  );
 };
 
 const parameterObjectToString = (parameters: SchemaNode, ctx: GeneratorContext) => nodeToString(parameters, ctx);
