@@ -58,7 +58,7 @@ describe("tanstack-query.generator", () => {
     expect(file).toContain("createQueryKey(id, options, infinite)");
   });
 
-  test("queryKeyFactory.all is typed-openapi prefix (TS-1: does not match endpoint key shape)", async () => {
+  test("queryKeyFactory.all prefixes hierarchical endpoint keys", async () => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
     const file = await generateTanstackQueryFile({
       ...mapOpenApiEndpoints(openApiDoc),
@@ -66,9 +66,10 @@ describe("tanstack-query.generator", () => {
     });
 
     expect(file).toContain('all: ["typed-openapi"] as const');
-    // Endpoint keys are objects with _id — not prefixed by "typed-openapi"
-    expect(file).toContain("const params: EndpointQueryKey<TOptions>[0] = { _id: id, }");
-    expect(file).not.toContain('["typed-openapi", id');
+    expect(file).toContain('return ["typed-openapi", id, params] as const');
+    expect(file).toContain('return ["typed-openapi", id] as const');
+    expect(file).toContain("invalidateQueries:");
+    expect(file).not.toContain("_id: id");
   });
 
   test("effect client wraps queryFns with Effect.runPromise", async () => {

@@ -19,10 +19,6 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
         ? `await Effect.runPromise(this.client.${method}(path, requestParams as never) as Effect.Effect<InferResponseData<TEndpoint, SuccessStatusCode>, unknown>)`
         : `await this.client.${method}(path, requestParams as never)`;
 
-      const infiniteCallExpr = isEffectClient
-        ? `await Effect.runPromise(this.client.${method}(path, requestParams as never) as Effect.Effect<InferResponseData<TEndpoint, SuccessStatusCode>, unknown>)`
-        : `await this.client.${method}(path, requestParams as never)`;
-
       return `
         // <ApiClient.${method}>
         ${method}<
@@ -33,38 +29,29 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
         ) {
             const queryKey = createQueryKey(path as string, params[0]);
+            const sharedQueryOptions = queryOptions({
+                queryFn: async ({ queryKey, signal, }) => {
+                    const keyParams = { ...(queryKey[2] || {}) } as Record<string, unknown>;
+                    delete keyParams._infinite;
+                    const requestParams = {
+                        ...(params[0] || {}),
+                        ...keyParams,
+                        overrides: { signal },
+                        withResponse: false as const
+                    };
+                    const res = ${callExpr};
+                    return res as InferResponseData<TEndpoint, SuccessStatusCode>;
+                },
+                queryKey: queryKey
+            });
             const query = {
                 /** type-only property if you need easy access to the endpoint params */
                 "~endpoint": {} as TEndpoint,
                 queryKey,
                 queryFn: {} as "You need to pass .queryOptions to the useQuery hook",
-                queryOptions: queryOptions({
-                    queryFn: async ({ queryKey, signal, }) => {
-                        const requestParams = {
-                            ...(params[0] || {}),
-                            ...(queryKey[0] || {}),
-                            overrides: { signal },
-                            withResponse: false as const
-                        };
-                        const res = ${callExpr};
-                        return res as InferResponseData<TEndpoint, SuccessStatusCode>;
-                    },
-                    queryKey: queryKey
-                }),
+                queryOptions: sharedQueryOptions,
                 /** Same options for \`useSuspenseQuery\` / \`prefetchQuery\` (TanStack v5). */
-                suspenseQueryOptions: queryOptions({
-                    queryFn: async ({ queryKey, signal, }) => {
-                        const requestParams = {
-                            ...(params[0] || {}),
-                            ...(queryKey[0] || {}),
-                            overrides: { signal },
-                            withResponse: false as const
-                        };
-                        const res = ${callExpr};
-                        return res as InferResponseData<TEndpoint, SuccessStatusCode>;
-                    },
-                    queryKey: queryKey
-                }),
+                suspenseQueryOptions: sharedQueryOptions,
                 /**
                  * Infinite query options. Pass \`pageParamKey\` to merge \`pageParam\` into \`query[pageParamKey]\`.
                  * Query key is tagged with \`_infinite: true\` so it does not collide with regular queries.
@@ -108,7 +95,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                                 overrides: { signal },
                                 withResponse: false as const,
                             };
-                            const res = ${infiniteCallExpr};
+                            const res = ${callExpr};
                             return res as InferResponseData<TEndpoint, SuccessStatusCode>;
                         },
                     });
@@ -163,38 +150,49 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   import type { EndpointByMethod, ${apiClientType}, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, TypedSuccessResponse, ApiCallParams } from "${ctx.relativeApiClientPath}"
   import { errorStatusCodes, TypedStatusError } from "${ctx.relativeApiClientPath}"
 
-  type EndpointQueryKey<TOptions extends EndpointParameters> = [
-      TOptions & {
-          _id: string;
-          _infinite?: boolean;
-      }
-  ];
+  type EndpointQueryKeyParams<TOptions extends EndpointParameters> = TOptions & {
+      _infinite?: boolean;
+  };
 
-  const createQueryKey = <TOptions extends EndpointParameters>(id: string, options?: TOptions, infinite?: boolean): [
-      EndpointQueryKey<TOptions>[0]
-  ] => {
-      const params: EndpointQueryKey<TOptions>[0] = { _id: id, } as EndpointQueryKey<TOptions>[0];
+  /**
+   * Hierarchical keys: \`["typed-openapi"]\` → \`["typed-openapi", path]\` → \`["typed-openapi", path, params]\`
+   * so \`queryKeyFactory.all\` / path prefixes work with TanStack partial matching.
+   */
+  const createQueryKey = <TOptions extends EndpointParameters>(
+      id: string,
+      options?: TOptions,
+      infinite?: boolean,
+  ): readonly ["typed-openapi", string, EndpointQueryKeyParams<TOptions>?] => {
+      const params: EndpointQueryKeyParams<TOptions> = {} as EndpointQueryKeyParams<TOptions>;
+      let hasParams = false;
       if (infinite) {
           params._infinite = infinite;
+          hasParams = true;
       }
       if (options?.body) {
           params.body = options.body;
+          hasParams = true;
       }
       if (options?.header) {
           params.header = options.header;
+          hasParams = true;
       }
       if (options?.path) {
           params.path = options.path;
+          hasParams = true;
       }
       if (options?.query) {
           params.query = options.query;
+          hasParams = true;
       }
       if (options?.cookie) {
           params.cookie = options.cookie;
+          hasParams = true;
       }
-      return [
-          params
-      ];
+      if (hasParams) {
+          return ["typed-openapi", id, params] as const;
+      }
+      return ["typed-openapi", id] as const;
   };
 
   /** Stable query-key factory for cache reads / invalidation outside of \`TanstackQueryApiClient\` methods. */
@@ -296,9 +294,9 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             >, "mutationFn"> & {
                 mutationFn: typeof mutationFn
             },
-            /** Invalidate all mutations keyed by this method+path (rarely needed). */
-            invalidate: (queryClient: QueryClient) =>
-                queryClient.invalidateQueries({ queryKey: mutationKey }),
+            /** Invalidate cached queries for this endpoint path (not the mutation cache). */
+            invalidateQueries: (queryClient: QueryClient) =>
+                queryClient.invalidateQueries({ queryKey: createQueryKey(path as string) }),
         }
     }
         // </ApiClient.request>
