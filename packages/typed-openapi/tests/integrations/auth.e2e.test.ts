@@ -57,4 +57,35 @@ describe("applyAuth e2e", () => {
     mod.applyAuth(headers, url, { basic: "user:secret" });
     expect(headers.get("Authorization")).toBe("Basic " + btoa("user:secret"));
   });
+
+  test("cookie apiKey is set on Cookie header", async () => {
+    rmSync(tmp, { recursive: true, force: true });
+    mkdirSync(tmp, { recursive: true });
+
+    const src = await prettify(
+      generateAuthHelpersSource([{ name: "session", prop: "session", type: "apiKey", in: "cookie", paramName: "sid" }]),
+    );
+    writeFileSync(join(tmp, "cookie.ts"), src);
+    const mod = await import(pathToFileURL(join(tmp, "cookie.ts")).href + `?t=${Date.now()}`);
+    const headers = new Headers();
+    headers.set("cookie", "other=1");
+    const url = new URL("https://api.example.com/");
+    mod.applyAuth(headers, url, { session: "abc" });
+    expect(headers.get("cookie")).toBe("other=1; sid=abc");
+  });
+
+  test("double Bearer when token already prefixed (AUTH-1)", async () => {
+    rmSync(tmp, { recursive: true, force: true });
+    mkdirSync(tmp, { recursive: true });
+
+    const src = await prettify(
+      generateAuthHelpersSource([{ name: "oauth", prop: "oauth", type: "oauth2", scheme: "bearer" }]),
+    );
+    writeFileSync(join(tmp, "bearer.ts"), src);
+    const mod = await import(pathToFileURL(join(tmp, "bearer.ts")).href + `?t=${Date.now()}`);
+    const headers = new Headers();
+    const url = new URL("https://api.example.com/");
+    mod.applyAuth(headers, url, { oauth: "Bearer already" });
+    expect(headers.get("Authorization")).toBe("Bearer Bearer already");
+  });
 });

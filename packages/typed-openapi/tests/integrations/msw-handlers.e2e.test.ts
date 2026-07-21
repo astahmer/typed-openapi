@@ -57,4 +57,85 @@ describe("msw handlers e2e", () => {
     const res = await fetch("https://example.test/ping");
     expect(await res.json()).toEqual({ ok: true });
   });
+
+  test("mock factory body is returned by handler", async () => {
+    rmSync(tmp, { recursive: true, force: true });
+    mkdirSync(tmp, { recursive: true });
+
+    const endpoint = {
+      method: "get" as const,
+      path: "/echo",
+      meta: { alias: "getEcho", operationId: "getEcho", tags: [] as string[] },
+      operation: {
+        responses: {
+          "200": {
+            description: "ok",
+            content: {
+              "application/json": { example: { msg: "hello-msw" } },
+            },
+          },
+        },
+      },
+      parameters: {},
+      requestFormat: "json" as const,
+      responseFormat: "json" as const,
+      responses: {
+        "200": {
+          kind: "object" as const,
+          required: ["msg"],
+          partial: false,
+          additionalProperties: false,
+          properties: { msg: { kind: "string" as const, constraints: {}, meta: {} } },
+          constraints: {},
+          meta: {},
+        },
+      },
+    };
+
+    const src = await prettify(
+      generateMswFile({
+        endpointList: [endpoint as never],
+        doc: { openapi: "3.0.3", info: { title: "t", version: "1" }, paths: {} },
+        baseUrl: "https://example.test",
+      }),
+    );
+    writeFileSync(join(tmp, "echo-handlers.ts"), src);
+    const mod = await import(pathToFileURL(join(tmp, "echo-handlers.ts")).href + `?t=${Date.now()}`);
+
+    expect(mod.getGetEchoMock()).toEqual({ msg: "hello-msw" });
+    server.use(...mod.handlers);
+    const res = await fetch("https://example.test/echo");
+    expect(await res.json()).toEqual({ msg: "hello-msw" });
+  });
+
+  test("SSE handler returns event-stream content type", async () => {
+    rmSync(tmp, { recursive: true, force: true });
+    mkdirSync(tmp, { recursive: true });
+
+    const endpoint = {
+      method: "get" as const,
+      path: "/stream",
+      meta: { alias: "getStream", operationId: "getStream", tags: [] as string[] },
+      operation: { responses: { "200": { description: "ok" } } },
+      parameters: {},
+      requestFormat: "json" as const,
+      responseFormat: "sse" as const,
+      responses: { "200": { kind: "unknown" as const, meta: {} } },
+    };
+
+    const src = await prettify(
+      generateMswFile({
+        endpointList: [endpoint as never],
+        doc: { openapi: "3.0.3", info: { title: "t", version: "1" }, paths: {} },
+        baseUrl: "https://example.test",
+      }),
+    );
+    writeFileSync(join(tmp, "sse-handlers.ts"), src);
+    const mod = await import(pathToFileURL(join(tmp, "sse-handlers.ts")).href + `?t=${Date.now()}`);
+    server.use(...mod.handlers);
+
+    const res = await fetch("https://example.test/stream");
+    expect(res.headers.get("content-type")).toContain("text/event-stream");
+    expect(await res.text()).toContain("data:");
+  });
 });
