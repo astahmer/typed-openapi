@@ -105,7 +105,8 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       const c = applyStringConstraints(node.constraints, ctx.validation);
       // Character classes / optional-slash patterns break ArkType's `/regex/` string-def parser.
       if (c.pattern) {
-        return `type("string").narrow((s): s is string => new RegExp(${JSON.stringify(c.pattern)}).test(s))`;
+        // Pure JS predicate (no TS type-predicate syntax) so emitted code also evals under smoke tests.
+        return `type("string").narrow((s) => typeof s === "string" && new RegExp(${JSON.stringify(c.pattern)}).test(s))`;
       }
       return `type(${emitStringDef(node, ctx)})`;
     }

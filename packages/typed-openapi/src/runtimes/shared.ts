@@ -173,7 +173,10 @@ export const arktypeDefaultDef = (stringDef: string, meta: SchemaMeta): string |
   if (!(stringDef.startsWith('"') && stringDef.endsWith('"'))) return undefined;
   const inner = stringDef.slice(1, -1);
   // Reject morphs / pipes / nested quotes — defaults only on plain keyword defs.
-  if (inner.includes(")") || inner.includes(".pipe") || inner.includes('"')) return undefined;
+  // `.parse` morphs encode as string, so a numeric default fails typecheck.
+  if (inner.includes(")") || inner.includes(".pipe") || inner.includes(".parse") || inner.includes('"')) {
+    return undefined;
+  }
   return quote(`${inner} = ${lit}`);
 };
 
