@@ -78,17 +78,12 @@ const filterDiagnostics = (out: string, allowCircular: boolean): string => {
       // Drop generated-client-body noise (recursive OAS / InferSchemaValue edge cases).
       if (allowCircular) {
         return !(
-          (
-            line.includes("error TS2456") ||
-            line.includes("error TS7022") ||
-            line.includes("error TS7024") ||
-            line.includes("error TS2502") ||
-            line.includes("error TS2345") ||
-            line.includes("error TS2322") ||
-            line.includes("error TS2719") ||
-            line.includes("error TS2536") ||
-            line.includes("error TS2339")
-          ) // arktype module union array `.array` typing on Kombo
+          line.includes("error TS2456") ||
+          line.includes("error TS7022") ||
+          line.includes("error TS7024") ||
+          line.includes("error TS2502") ||
+          // Zod discriminatedUnion rejects nullable members (Kombo oneOf+null).
+          line.includes("error TS2345")
         );
       }
       // Docker typebox/typia: known InferSchemaValue indexing noise in generated ApiClient.

@@ -1,3 +1,5 @@
+// Dual-major Effect: keep effect@3.22.0 nested under @effect/schema.
+// Keep this version in sync with pnpm-workspace.yaml overrides and typed-openapi's effect3 devDep.
 function readPackage(pkg) {
   if (pkg.name === "@effect/schema") {
     pkg.dependencies = {

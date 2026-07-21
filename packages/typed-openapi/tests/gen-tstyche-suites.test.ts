@@ -47,4 +47,17 @@ describe("gen-tstyche-suites output", () => {
       expect(zod).toContain(needle);
     }
   });
+
+  it("docker-archive hand suite stays wired to the docker-effect fixture", () => {
+    const archive = readFileSync(join(root, "tests/tstyche/effect-client/docker-archive.types.tstyche.ts"), "utf8");
+    expect(archive).toContain("tmp/tstyche/docker-effect/client");
+    expect(archive).toContain("TypedStatusError");
+    expect(archive).toContain("HttpClientError");
+    expect(archive).toContain("/containers/{id}/archive");
+  });
+
+  it("effect3 suites document the intentional InferSchemaInput gap (TS2589)", () => {
+    const effect3 = readFileSync(join(root, "tests/tstyche/effect-client/effect3.types.tstyche.ts"), "utf8");
+    expect(effect3).toMatch(/TS2589|param InferSchemaInput|light/);
+  });
 });

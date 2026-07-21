@@ -1,8 +1,4 @@
-import {
-  applyArrayConstraints,
-  applyNumberConstraints,
-  applyStringConstraints,
-} from "../shared.ts";
+import { applyArrayConstraints, applyNumberConstraints, applyStringConstraints } from "../shared.ts";
 import type { SchemaNode } from "../../schema-ir/types.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 import { irToTs } from "../../schema-ir/ir-to-ts.ts";

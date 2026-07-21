@@ -15,7 +15,13 @@ import { generateTanstackQueryFile } from "./tanstack-query.generator.ts";
 import { prettify } from "./format.ts";
 import type { NameTransformOptions } from "./types.ts";
 import { generateDefaultFetcher } from "./default-fetcher.generator.ts";
-import { findDefaultConfigPath, loadConfigFile, mergeConfigWithCli, applyGeneratorOptionDefaults, validationFromConfig } from "./config.ts";
+import {
+  findDefaultConfigPath,
+  loadConfigFile,
+  mergeConfigWithCli,
+  applyGeneratorOptionDefaults,
+  validationFromConfig,
+} from "./config.ts";
 
 const cwd = process.cwd();
 const now = new Date();

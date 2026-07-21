@@ -144,16 +144,21 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
         const mediaTypes = Object.keys(content ?? {}).filter(isResponseMediaType);
         const sseMedia = mediaTypes.find(isSseMediaType);
         if (sseMedia) {
+          // Prefer SSE for responseFormat (client reads body as stream); still union JSON/other
+          // schemas when co-declared for content negotiation typing.
           endpoint.responseFormat = "sse";
           const streamNode: SchemaNode = { kind: "stream", meta: emptyMeta() };
           allResponses[status] = mergeUnion(allResponses[status], streamNode);
-        } else if (content && mediaTypes.length) {
-          mediaTypes.forEach((mediaType) => {
-            const schema = content[mediaType] ? (content[mediaType].schema ?? {}) : {};
-            const node = stripReadWrite(openApiToIr(schema, irCtx), "response");
-            allResponses[status] = mergeUnion(allResponses[status], node);
-          });
-        } else {
+        }
+        if (content && mediaTypes.length) {
+          mediaTypes
+            .filter((mediaType) => !isSseMediaType(mediaType))
+            .forEach((mediaType) => {
+              const schema = content[mediaType] ? (content[mediaType].schema ?? {}) : {};
+              const node = stripReadWrite(openApiToIr(schema, irCtx), "response");
+              allResponses[status] = mergeUnion(allResponses[status], node);
+            });
+        } else if (!sseMedia) {
           // If no content defined, use unknown type
           const unknown: SchemaNode = { kind: "unknown", meta: emptyMeta() };
           allResponses[status] = mergeUnion(allResponses[status], unknown);

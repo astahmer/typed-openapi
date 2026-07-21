@@ -111,9 +111,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
             const member = findMappedUnionMember(node.members, target);
             if (!member) return [];
             const base = emitNode(member, ctx);
-            return [
-              `${S}.extend(${base}, ${S}.Struct({ ${objectKey(prop)}: ${S}.Literal(${quote(value)}) }))`,
-            ];
+            return [`${S}.extend(${base}, ${S}.Struct({ ${objectKey(prop)}: ${S}.Literal(${quote(value)}) }))`];
           });
           if (members.length > 0) {
             return `${S}.Union([${members.join(", ")}])`;

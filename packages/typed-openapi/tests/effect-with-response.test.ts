@@ -19,7 +19,9 @@ describe("EffectApiClient withResponse", () => {
               },
               "400": {
                 description: "bad",
-                content: { "application/json": { schema: { type: "object", properties: { message: { type: "string" } } } } },
+                content: {
+                  "application/json": { schema: { type: "object", properties: { message: { type: "string" } } } },
+                },
               },
             },
           },

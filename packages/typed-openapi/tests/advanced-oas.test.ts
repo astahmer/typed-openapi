@@ -136,11 +136,7 @@ describe("advanced OpenAPI keywords", () => {
 
   test("typia emit includes tags for string constraints", () => {
     const node = openApiToIr({ type: "string", minLength: 2, maxLength: 8, format: "email" }, irCtx);
-    const src = typiaAdapter.emitNamedSchema(
-      "Email",
-      node,
-      createEmitCtx(resolveValidationPolicy("strict")),
-    );
+    const src = typiaAdapter.emitNamedSchema("Email", node, createEmitCtx(resolveValidationPolicy("strict")));
     expect(src).toContain("tags.MinLength<2>");
     expect(src).toContain("tags.MaxLength<8>");
     expect(src).toContain('tags.Format<"email">');

@@ -175,7 +175,8 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     case "not": {
       const inner = asTypeExpr(emitNode(node.schema, ctx));
       return `type("unknown").narrow((data, ctx) => (${inner}.allows(data) ? ctx.mustBe("not") : true))`;
-    }    case "ref": {
+    }
+    case "ref": {
       if (node.name === "Partial" && node.generics?.[0]) {
         return `${emitNode(node.generics[0], ctx)}.partial()`;
       }

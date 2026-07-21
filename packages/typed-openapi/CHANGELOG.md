@@ -5,11 +5,16 @@
 ### Major Changes
 
 - Replace `@sinclair/typebox-codegen` with a first-party Schema IR and pluggable runtime adapters.
-  - Runtimes: `none` | `zod` (v4) | `zod3` | `effect` (`effect` Schema) | `effect3` (`@effect/schema`) | `valibot` |
-    `arktype`
+  - Runtimes: `none` | `zod` (v4) | `zod3` | `effect` (Effect Schema v4) | `effect3` (`@effect/schema`) | `valibot` |
+    `arktype` | `typebox` | `typia`
   - New CLI `--validation loose|formats|strict` controls how deep OpenAPI constraints are applied
-  - Subpath exports: `typed-openapi/runtimes`, `typed-openapi/runtimes/{zod,zod3,effect,effect3,valibot,arktype}`
-  - Dropped shipped yup / io-ts / typebox emitters (re-add via the adapter contract if needed)
+  - Subpath exports: `typed-openapi/runtimes`, `typed-openapi/runtimes/*`
+  - Dropped shipped yup / io-ts emitters (re-add via the adapter contract if needed); TypeBox/Typia ship again
+
+  **Removed public exports** (use Schema IR + `generateFile` / runtime adapters instead):
+
+  - `Box` / `createBoxFactory` / `box-factory`
+  - `openApiSchemaToTs` / `ts-factory` / Sinclair TypeBox bridge helpers
 
   **Peer dependencies (all optional):** install only the runtime you generate for.
 
@@ -17,10 +22,12 @@
   | --------- | ------------------------------------------------- |
   | `zod`     | `zod` ^4                                          |
   | `zod3`    | `zod` ^3                                          |
-  | `effect`  | `effect` ^3 (built-in `Schema`)                   |
-  | `effect3` | `@effect/schema` ^0.75                            |
+  | `effect`  | `effect` ^4 (built-in Schema)                     |
+  | `effect3` | `@effect/schema` (+ nested `effect` ^3)           |
   | `valibot` | `valibot` ^1                                      |
   | `arktype` | `arktype` ^2 (also a hard dep for CLI validation) |
+  | `typebox` | `@sinclair/typebox`                               |
+  | `typia`   | `typia`                                           |
 
 ## 2.2.7
 

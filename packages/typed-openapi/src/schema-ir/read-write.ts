@@ -4,7 +4,9 @@ export type ReadWriteMode = "request" | "response";
 
 /**
  * Strip OAS readOnly (request) / writeOnly (response) properties from object trees.
- * Refs are left as-is (named schemas may be shared across request/response).
+ * Named `$ref` schemas are left as-is (shared components may appear on both sides); strip only
+ * applies to inlined object shapes. Prefer separate request/response component schemas when
+ * readOnly/writeOnly fields must differ on named types.
  */
 export const stripReadWrite = (node: SchemaNode, mode: ReadWriteMode): SchemaNode => {
   const drop = mode === "request" ? "readOnly" : "writeOnly";

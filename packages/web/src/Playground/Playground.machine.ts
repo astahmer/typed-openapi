@@ -15,6 +15,13 @@ const initialOutputList = { "petstore.client.ts": "" };
 
 export type ValidationLevel = "loose" | "formats" | "strict";
 export type ClientKind = "promise" | "effect";
+
+/** Match CLI: effect/effect3 default to Effect-native client; other runtimes → promise. */
+export const clientForRuntime = (runtime: OutputRuntime, previousClient: ClientKind): ClientKind => {
+  if (runtime === "effect" || runtime === "effect3") return "effect";
+  if (previousClient === "effect") return "promise";
+  return previousClient;
+};
 export type ValidateSide = "none" | "input" | "output" | "both";
 
 type GenerateInput = {
@@ -157,12 +164,13 @@ export const playgroundMachine = setup({
     updateUrl: ({ context }) => {
       urlSaver.setValue("input", context.inputList[context.selectedInput]);
     },
-    updateRuntime: assign(({ event }) => {
+    updateRuntime: assign(({ event, context }) => {
       if (event.type !== "Update runtime") {
         return {};
       }
 
-      return { runtime: event.runtime };
+      const runtime = event.runtime;
+      return { runtime, client: clientForRuntime(runtime, context.client) };
     }),
     updateValidation: assign(({ event }) => {
       if (event.type !== "Update validation") return {};

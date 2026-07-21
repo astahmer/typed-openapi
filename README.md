@@ -30,8 +30,10 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
   `TypedStatusError | HttpClientError` (non-status failures remapped; original in `cause`)
 - **Validate input and/or output** (`--validate-side`) with optional `onValidate` hook
 - **Coerce path/query/cookie/header primitives** from strings (`--coerce`, default on when runtime ≠ none)
-- **Cookie parameters**, OAS **defaults** on runtime schemas, **readOnly/writeOnly** stripping
-- **SSE** (`text/event-stream` → `ReadableStream`) and **binary** bodies/schemas (`Blob`)
+- **Cookie parameters**, OAS **defaults** on runtime schemas, **readOnly/writeOnly** stripping (inlined objects; named
+  `$ref` components stay shared — see `stripReadWrite`)
+- **SSE** (`text/event-stream` → `ReadableStream`; co-declared JSON is unioned into response types) and **binary**
+  bodies/schemas (`Blob`)
 - **Node-friendly `FetcherResponse`** (no DOM `Response` dependency; avoids clash with OAS `ApiResponse` schemas) +
   **request input types** (`InferSchemaInput` / `z.input` / encoded)
 - **Filter endpoints/schemas** (`--endpoint`, `--schema`, `--tree-shake-schemas`) and control naming (`--schema-naming`)

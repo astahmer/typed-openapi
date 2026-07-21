@@ -59,7 +59,7 @@ describe("snapshot files typecheck", () => {
     if (entry) zod3Root = join(pnpmZod3, entry, "node_modules/zod");
   }
 
-  /** Kombo recursive OAS triggers known TS circular/lazy noise (same as matrix typecheck). */
+  /** Kombo recursive OAS triggers known TS circular/lazy + zod discriminatedUnion noise. */
   const filterKomboNoise = (out: string): string =>
     out
       .split("\n")
@@ -70,11 +70,8 @@ describe("snapshot files typecheck", () => {
           line.includes("error TS7022") ||
           line.includes("error TS7024") ||
           line.includes("error TS2502") ||
-          line.includes("error TS2345") ||
-          line.includes("error TS2322") ||
-          line.includes("error TS2719") ||
-          line.includes("error TS2536") ||
-          line.includes("error TS2339")
+          // Zod discriminatedUnion rejects nullable members (common in Kombo oneOf+null).
+          line.includes("error TS2345")
         );
       })
       .join("\n");

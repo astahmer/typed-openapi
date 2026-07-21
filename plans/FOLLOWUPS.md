@@ -11,6 +11,17 @@ Regression suites:
 **Do not comment on GitHub until the PR merges.** Close via PR description keywords (changesets are changelog-only —
 GitHub does **not** auto-close from `.changeset/*.md`).
 
+## Known limitations (documented)
+
+- `stripReadWrite` only strips readOnly/writeOnly on **inlined** object shapes; named `$ref` components are shared
+  across request/response (see `schema-ir/read-write.ts`).
+- Co-declared `text/event-stream` + JSON on one status: types union stream with JSON; `responseFormat` stays `"sse"`
+  (client reads `response.body`). Negotiate `Accept` in the fetcher if you need the JSON branch at runtime.
+- `effect3` tstyche suites stay light on param-bag inference (TS2589 on deep `InferSchemaInput`); response/export
+  coverage remains.
+- Kombo snapshot/matrix typecheck still filters circular TS codes + TS2345 (zod `discriminatedUnion` vs nullable oneOf
+  members). Broader assignment filters (TS2322/TS2339/…) were removed.
+
 ## Suggested PR description
 
 ```md

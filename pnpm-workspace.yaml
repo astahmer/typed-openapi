@@ -1,6 +1,7 @@
 packages:
   - "packages/*"
 
+# effect@3.22.0 for @effect/schema — keep in sync with .pnpmfile.cjs + typed-openapi effect3 devDep
 overrides:
   "@effect/schema>effect": "3.22.0"
 

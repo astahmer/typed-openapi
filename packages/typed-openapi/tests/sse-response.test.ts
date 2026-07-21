@@ -19,6 +19,42 @@ describe("SSE / text/event-stream responses", () => {
     expect(json?.responseFormat).toBe("json");
   });
 
+  test("co-declared JSON + SSE unions stream with JSON schema", () => {
+    const doc = {
+      openapi: "3.0.3",
+      info: { title: "t", version: "1" },
+      paths: {
+        "/feed": {
+          get: {
+            operationId: "feed",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "text/event-stream": { schema: { type: "string" } },
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      properties: { items: { type: "array", items: { type: "string" } } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    } satisfies OpenAPIObject;
+    const mapped = mapOpenApiEndpoints(doc);
+    const ep = mapped.endpointList[0]!;
+    expect(ep.responseFormat).toBe("sse");
+    expect(ep.responses?.["200"]?.kind).toBe("union");
+    if (ep.responses?.["200"]?.kind === "union") {
+      expect(ep.responses["200"].members.some((m) => m.kind === "stream")).toBe(true);
+      expect(ep.responses["200"].members.some((m) => m.kind === "object")).toBe(true);
+    }
+  });
+
   test("generated client types ReadableStream and sparse endpointResponseFormats", async () => {
     const doc = await load();
     const mapped = mapOpenApiEndpoints(doc);
