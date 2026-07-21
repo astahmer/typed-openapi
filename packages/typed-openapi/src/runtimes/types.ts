@@ -44,6 +44,10 @@ export type EmitCtx = {
    * partial/mapFields, which cannot wrap Transformation schemas like `Int.check(...)`).
    */
   forceOptionalProps?: boolean;
+  /** Map date-time/date string schemas to Date (runtime transform + TS types). */
+  transformDates?: boolean;
+  /** Map int64 number schemas to bigint (runtime transform + TS types). */
+  transformBigInt?: boolean;
   /**
    * Mutable registry of reusable defaulted schemas shared for one file emit.
    * Keyed by `${kind}:${baseExpr}:${defaultLit}`.
@@ -80,11 +84,13 @@ export type RuntimeAdapter = {
 export const createEmitCtx = (
   validation: ValidationPolicy,
   recursiveNames: Set<string> = new Set(),
-  options?: { coercePrimitives?: boolean },
+  options?: { coercePrimitives?: boolean; transformDates?: boolean; transformBigInt?: boolean },
 ): EmitCtx => ({
   validation,
   recursiveNames,
   indent: "  ",
   internedDefaults: new Map(),
   ...(options?.coercePrimitives ? { coercePrimitives: true } : {}),
+  ...(options?.transformDates ? { transformDates: true } : {}),
+  ...(options?.transformBigInt ? { transformBigInt: true } : {}),
 });

@@ -90,6 +90,10 @@ export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
   msw?: boolean | string;
   mswFaker?: boolean;
   mswBaseUrl?: string;
+  transformDates?: boolean;
+  transformBigInt?: boolean;
+  "transform-dates"?: boolean;
+  "transform-bigint"?: boolean;
 };
 
 function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
@@ -177,6 +181,18 @@ export async function generateClientFiles(input: string, options: GenerateClient
     ...(options.coerce !== undefined || merged.coerce !== undefined
       ? { coerce: (options.coerce ?? merged.coerce)! }
       : {}),
+    ...(() => {
+      const transformDates =
+        options.transformDates ?? options["transform-dates"] ?? (merged as { transformDates?: boolean }).transformDates;
+      return transformDates ? { transformDates: true } : {};
+    })(),
+    ...(() => {
+      const transformBigInt =
+        options.transformBigInt ??
+        options["transform-bigint"] ??
+        (merged as { transformBigInt?: boolean }).transformBigInt;
+      return transformBigInt ? { transformBigInt: true } : {};
+    })(),
   };
 
   const outputPath = join(

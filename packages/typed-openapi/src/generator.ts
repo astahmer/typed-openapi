@@ -47,6 +47,10 @@ export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> &
      * Default true when runtime ≠ none.
      */
     coerce?: boolean;
+    /** Map `format: date-time|date` to `Date` (types + runtime transforms). */
+    transformDates?: boolean;
+    /** Map `format: int64` to `bigint` (types + runtime transforms). */
+    transformBigInt?: boolean;
   };
 type GeneratorContext = Required<
   Omit<
@@ -62,6 +66,8 @@ type GeneratorContext = Required<
     | "validateSide"
     | "client"
     | "coerce"
+    | "transformDates"
+    | "transformBigInt"
   >
 > & {
   validation: ValidationPolicy;
@@ -70,6 +76,8 @@ type GeneratorContext = Required<
   validateSide: "none" | "input" | "output" | "both";
   client: "promise" | "effect";
   coerce: boolean;
+  transformDates: boolean;
+  transformBigInt: boolean;
 };
 
 export const allowedRuntimes = type(
@@ -165,6 +173,8 @@ export const generateFile = (options: GeneratorOptions) => {
     validateSide: options.validateSide ?? (runtime === "none" ? "none" : "both"),
     client: options.client ?? (runtime === "effect" || runtime === "effect3" ? "effect" : "promise"),
     coerce: options.coerce ?? runtime !== "none",
+    transformDates: options.transformDates ?? false,
+    transformBigInt: options.transformBigInt ?? false,
   } as GeneratorContext;
 
   const endpointByMethod = options.schemasOnly ? "" : generateEndpointByMethod(ctx);
@@ -184,6 +194,8 @@ export const generateFile = (options: GeneratorOptions) => {
       validation: ctx.validation,
       schemasOnly: options.schemasOnly ?? false,
       coerce: ctx.coerce,
+      transformDates: ctx.transformDates,
+      transformBigInt: ctx.transformBigInt,
       ...(ctx.keptSchemaNames ? { keptSchemaNames: ctx.keptSchemaNames } : {}),
       ...(ctx.namedSchemasForEmit ? { namedSchemas: ctx.namedSchemasForEmit } : {}),
     });
@@ -224,6 +236,8 @@ const generateSchemaList = (ctx: GeneratorContext) => {
     const schemaValue = irToTs(node, {
       prefixRefsWithSchemas: false,
       jsdoc: shouldRenderDescriptionComments(ctx),
+      transformDates: ctx.transformDates,
+      transformBigInt: ctx.transformBigInt,
     });
 
     file += `${renderSchemaJsdoc(description)}export type ${name} = ${schemaValue}\n`;
@@ -247,6 +261,8 @@ const nodeToString = (
   return irToTs(node, {
     prefixRefsWithSchemas: options.prefixRefsWithSchemas ?? true,
     jsdoc: shouldRenderDescriptionComments(ctx),
+    transformDates: ctx.transformDates,
+    transformBigInt: ctx.transformBigInt,
   });
 };
 
@@ -635,6 +651,28 @@ export class TypedStatusError<TData = unknown> extends Error {
 // </TypedStatusError>
 
 ${ctx.runtime !== "none" ? generateValidateHelpers(ctx) : ""}
+${
+  ctx.runtime === "none" && ctx.transformDates
+    ? `
+// <ReviveDates>
+const __ISO_DATE_RE = /^\\d{4}-\\d{2}-\\d{2}(T[\\d:.]+(Z|[+-]\\d{2}:?\\d{2})?)?$/;
+const __reviveDates = (value: unknown): unknown => {
+  if (Array.isArray(value)) return value.map(__reviveDates);
+  if (value && typeof value === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) out[k] = __reviveDates(v);
+    return out;
+  }
+  if (typeof value === "string" && __ISO_DATE_RE.test(value)) {
+    const d = new Date(value);
+    if (!Number.isNaN(d.getTime())) return d;
+  }
+  return value;
+};
+// </ReviveDates>
+`
+    : ""
+}
 
 // <ApiClient>
 export class ApiClient {
@@ -731,7 +769,12 @@ export class ApiClient {
       contentType === "*/*"
       ) {
       try {
-        return await response.json();
+        const json = await response.json();
+        ${
+          ctx.runtime === "none" && ctx.transformDates
+            ? `return __reviveDates(json);`
+            : `return json;`
+        }
       } catch {
         return undefined
       }

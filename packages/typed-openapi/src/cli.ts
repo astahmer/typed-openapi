@@ -63,6 +63,11 @@ cli
     "Coerce number/boolean path|query|cookie|header params from strings (default: on when runtime ≠ none)",
   )
   .option("--no-coerce", "Disable string coercion for path|query|cookie|header params")
+  .option(
+    "--transform-dates",
+    "Map format date-time/date to Date (types + runtime transforms; none-runtime revives ISO strings)",
+  )
+  .option("--transform-bigint", "Map format int64 to bigint (types + runtime transforms)")
   .action(async (input: string, _options: any) => {
     return generateClientFiles(input, _options);
   });

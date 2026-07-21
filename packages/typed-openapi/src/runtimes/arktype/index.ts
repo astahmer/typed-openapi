@@ -109,13 +109,23 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         // Pure JS predicate (no TS type-predicate syntax) so emitted code also evals under smoke tests.
         return `type("string").narrow((s) => typeof s === "string" && new RegExp(${JSON.stringify(c.pattern)}).test(s))`;
       }
-      return `type(${emitStringDef(node, ctx)})`;
+      const base = `type(${emitStringDef(node, ctx)})`;
+      if (
+        ctx.transformDates &&
+        (node.constraints.format === "date-time" || node.constraints.format === "date")
+      ) {
+        return `${base}.pipe((s) => new Date(s as string))`;
+      }
+      return base;
     }
     case "binary":
       return emitBinaryBlobCheck("arktype");
     case "stream":
       return emitStreamCheck("arktype");
     case "number":
+      if (ctx.transformBigInt && node.constraints.format === "int64") {
+        return `type("string | number | bigint").pipe((x) => BigInt(x as string | number | bigint))`;
+      }
       return `type(${emitNumberDef(node, ctx)})`;
     case "boolean":
       return ctx.coercePrimitives

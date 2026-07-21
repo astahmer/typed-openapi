@@ -21,6 +21,8 @@ export type EmitRuntimeFileArgs = {
    * Default true for runtime adapters.
    */
   coerce?: boolean;
+  transformDates?: boolean;
+  transformBigInt?: boolean;
 };
 
 const coerceParamKeys = new Set(["query", "path", "header", "cookie"]);
@@ -104,6 +106,8 @@ export const emitRuntimeFile = ({
   keptSchemaNames,
   namedSchemas: namedSchemasOption,
   coerce = true,
+  transformDates = false,
+  transformBigInt = false,
 }: EmitRuntimeFileArgs): string => {
   const namedSchemas =
     namedSchemasOption ??
@@ -114,7 +118,10 @@ export const emitRuntimeFile = ({
       .map(([node, infos]) => ({ name: infos.normalized, node }));
 
   const recursiveNames = findRecursiveSchemaNames(namedSchemas);
-  const ctx = createEmitCtx(validation, recursiveNames);
+  const ctx = createEmitCtx(validation, recursiveNames, {
+    transformDates,
+    transformBigInt,
+  });
 
   let schemasBlock = `// <Schemas>\n`;
   if (adapter.emitNamedSchemas) {

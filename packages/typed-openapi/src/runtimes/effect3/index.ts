@@ -37,10 +37,20 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
   if (c.minLength !== undefined) filters.push(`${S}.minLength(${c.minLength})`);
   if (c.maxLength !== undefined) filters.push(`${S}.maxLength(${c.maxLength})`);
   if (c.pattern !== undefined) filters.push(`${S}.pattern(new RegExp(${quote(c.pattern)}))`);
-  return pipeFilters(base, filters);
+  let expr = pipeFilters(base, filters);
+  if (
+    ctx.transformDates &&
+    (node.constraints.format === "date-time" || node.constraints.format === "date")
+  ) {
+    expr = `${S}.transform(${expr}, ${S}.DateFromSelf, { decode: (s) => new Date(s), encode: (d) => d.toISOString() })`;
+  }
+  return expr;
 };
 
 const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
+  if (ctx.transformBigInt && node.constraints.format === "int64") {
+    return `${S}.transform(${S}.Union(${S}.BigIntFromSelf, ${S}.Number, ${S}.String), ${S}.BigIntFromSelf, { decode: (x) => BigInt(x as string | number | bigint), encode: (a) => a })`;
+  }
   const c = applyNumberConstraints(node.constraints, ctx.validation);
   const filters: string[] = [];
   if (node.integer && ctx.coercePrimitives) filters.push(`${S}.int()`);

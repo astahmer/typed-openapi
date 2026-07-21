@@ -46,6 +46,7 @@ const numberConstraints = (schema: LibSchemaObject): NumberConstraints => {
   if (schema.exclusiveMinimum !== undefined) c.exclusiveMinimum = schema.exclusiveMinimum as number | boolean;
   if (schema.exclusiveMaximum !== undefined) c.exclusiveMaximum = schema.exclusiveMaximum as number | boolean;
   if (typeof schema.multipleOf === "number") c.multipleOf = schema.multipleOf;
+  if (typeof schema.format === "string") c.format = schema.format;
   return c;
 };
 

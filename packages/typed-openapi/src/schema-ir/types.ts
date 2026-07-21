@@ -26,6 +26,8 @@ export type NumberConstraints = {
   exclusiveMinimum?: number | boolean;
   exclusiveMaximum?: number | boolean;
   multipleOf?: number;
+  /** OAS format e.g. int32 / int64 */
+  format?: string;
 };
 
 export type ArrayConstraints = {

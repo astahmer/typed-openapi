@@ -30,10 +30,19 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
   if (c.minLength !== undefined) expr += `.min(${c.minLength})`;
   if (c.maxLength !== undefined) expr += `.max(${c.maxLength})`;
   if (c.pattern !== undefined) expr += `.regex(new RegExp(${quote(c.pattern)}))`;
+  if (
+    ctx.transformDates &&
+    (node.constraints.format === "date-time" || node.constraints.format === "date")
+  ) {
+    expr += ".transform((s) => new Date(s))";
+  }
   return expr;
 };
 
 const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
+  if (ctx.transformBigInt && node.constraints.format === "int64") {
+    return "z.coerce.bigint()";
+  }
   const c = applyNumberConstraints(node.constraints, ctx.validation);
   let expr = ctx.coercePrimitives
     ? node.integer

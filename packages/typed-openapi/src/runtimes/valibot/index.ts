@@ -32,10 +32,19 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
   if (c.minLength !== undefined) actions.push(`v.minLength(${c.minLength})`);
   if (c.maxLength !== undefined) actions.push(`v.maxLength(${c.maxLength})`);
   if (c.pattern !== undefined) actions.push(`v.regex(new RegExp(${quote(c.pattern)}))`);
+  if (
+    ctx.transformDates &&
+    (node.constraints.format === "date-time" || node.constraints.format === "date")
+  ) {
+    actions.push("v.transform((s) => new Date(s))");
+  }
   return pipe("v.string()", actions);
 };
 
 const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
+  if (ctx.transformBigInt && node.constraints.format === "int64") {
+    return "v.pipe(v.union([v.bigint(), v.number(), v.string()]), v.transform((x) => BigInt(x)))";
+  }
   const c = applyNumberConstraints(node.constraints, ctx.validation);
   const actions: string[] = [];
   if (node.integer) actions.push("v.integer()");

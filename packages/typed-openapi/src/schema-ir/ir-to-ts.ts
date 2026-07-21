@@ -6,6 +6,10 @@ export type IrToTsOptions = {
   prefixRefsWithSchemas?: boolean;
   /** Render property/schema descriptions as JSDoc */
   jsdoc?: boolean;
+  /** Map `format: date-time|date` strings to `Date` */
+  transformDates?: boolean;
+  /** Map `format: int64` integers to `bigint` */
+  transformBigInt?: boolean;
 };
 
 const escapeCommentText = (text: string) => text.replace(/\*\//g, "*\\/");
@@ -34,12 +38,21 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
 
   switch (node.kind) {
     case "string":
+      if (
+        options.transformDates &&
+        (node.constraints.format === "date-time" || node.constraints.format === "date")
+      ) {
+        return "Date";
+      }
       return "string";
     case "binary":
       return "Blob";
     case "stream":
       return "ReadableStream<Uint8Array>";
     case "number":
+      if (options.transformBigInt && node.constraints.format === "int64") {
+        return "bigint";
+      }
       return "number";
     case "boolean":
       return "boolean";
