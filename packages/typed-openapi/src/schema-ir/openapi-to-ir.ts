@@ -105,6 +105,11 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
   const schema = input as LibSchemaObject;
   const meta = extractMeta(schema);
 
+  // JSON Schema `const` (OAS 3.1) — single allowed value → literal (before type/enum branches).
+  if (Object.prototype.hasOwnProperty.call(schema, "const")) {
+    return withNullable(literalFromEnumValue((schema as { const: unknown }).const), schema);
+  }
+
   if (Array.isArray(schema.type)) {
     if (schema.type.length === 1) {
       return openApiToIr({ ...schema, type: schema.type[0]! }, ctx);
