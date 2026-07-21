@@ -23,8 +23,8 @@ describe("EffectApiClient", () => {
     });
     expect(src).toContain("class EffectApiClient");
     expect(src).toContain("createEffectApiClient");
-    expect(src).toContain("ParseError");
-    expect(src).toContain("Schema.decodeUnknown");
+    expect(src).toContain("SchemaError");
+    expect(src).toContain("Schema.decodeUnknownEffect");
     expect(src).not.toContain("class ApiClient {");
     mkdirSync(join(__dirname, "../tmp"), { recursive: true });
     writeFileSync(join(__dirname, "../tmp/generated-effect-client.ts"), src);
