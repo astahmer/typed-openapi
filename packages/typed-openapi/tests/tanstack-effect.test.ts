@@ -25,5 +25,8 @@ describe("tanstack + EffectApiClient", () => {
     expect(file).not.toContain("status: 200");
     expect(file).not.toContain("await this.client.get(path, requestParams as never)");
     expect(file).toContain("cookie?: Record<string, unknown>");
+    expect(file).toContain("infiniteQueryOptions");
+    expect(file).toContain("queryKeyFactory");
+    expect(file).toContain("infiniteQueryOptions, type QueryClient");
   });
 });

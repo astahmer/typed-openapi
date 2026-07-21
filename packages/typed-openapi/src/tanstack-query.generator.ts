@@ -19,6 +19,10 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
         ? `await Effect.runPromise(this.client.${method}(path, requestParams as never) as Effect.Effect<InferResponseData<TEndpoint, SuccessStatusCode>, unknown>)`
         : `await this.client.${method}(path, requestParams as never)`;
 
+      const infiniteCallExpr = isEffectClient
+        ? `await Effect.runPromise(this.client.${method}(path, requestParams as never) as Effect.Effect<InferResponseData<TEndpoint, SuccessStatusCode>, unknown>)`
+        : `await this.client.${method}(path, requestParams as never)`;
+
       return `
         // <ApiClient.${method}>
         ${method}<
@@ -47,6 +51,74 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                     },
                     queryKey: queryKey
                 }),
+                /** Same options for \`useSuspenseQuery\` / \`prefetchQuery\` (TanStack v5). */
+                suspenseQueryOptions: queryOptions({
+                    queryFn: async ({ queryKey, signal, }) => {
+                        const requestParams = {
+                            ...(params[0] || {}),
+                            ...(queryKey[0] || {}),
+                            overrides: { signal },
+                            withResponse: false as const
+                        };
+                        const res = ${callExpr};
+                        return res as InferResponseData<TEndpoint, SuccessStatusCode>;
+                    },
+                    queryKey: queryKey
+                }),
+                /**
+                 * Infinite query options. Pass \`pageParamKey\` to merge \`pageParam\` into \`query[pageParamKey]\`.
+                 * Query key is tagged with \`_infinite: true\` so it does not collide with regular queries.
+                 */
+                infiniteQueryOptions: <TPageParam = unknown>(infiniteOpts: {
+                    initialPageParam: TPageParam;
+                    getNextPageParam: (
+                        lastPage: InferResponseData<TEndpoint, SuccessStatusCode>,
+                        allPages: InferResponseData<TEndpoint, SuccessStatusCode>[],
+                        lastPageParam: TPageParam,
+                        allPageParams: TPageParam[],
+                    ) => TPageParam | undefined | null;
+                    getPreviousPageParam?: (
+                        firstPage: InferResponseData<TEndpoint, SuccessStatusCode>,
+                        allPages: InferResponseData<TEndpoint, SuccessStatusCode>[],
+                        firstPageParam: TPageParam,
+                        allPageParams: TPageParam[],
+                    ) => TPageParam | undefined | null;
+                    /** When set, \`pageParam\` is written into \`query[pageParamKey]\` before each fetch. */
+                    pageParamKey?: string;
+                }) => {
+                    const infiniteKey = createQueryKey(path as string, params[0], true);
+                    return infiniteQueryOptions({
+                        queryKey: infiniteKey,
+                        initialPageParam: infiniteOpts.initialPageParam,
+                        getNextPageParam: infiniteOpts.getNextPageParam,
+                        ...(infiniteOpts.getPreviousPageParam
+                            ? { getPreviousPageParam: infiniteOpts.getPreviousPageParam }
+                            : {}),
+                        queryFn: async ({ pageParam, signal }) => {
+                            const base = { ...(params[0] || {}) } as Record<string, unknown>;
+                            const query = {
+                                ...((base["query"] as Record<string, unknown> | undefined) || {}),
+                            };
+                            if (infiniteOpts.pageParamKey) {
+                                query[infiniteOpts.pageParamKey] = pageParam;
+                            }
+                            const requestParams = {
+                                ...base,
+                                ...(Object.keys(query).length ? { query } : {}),
+                                overrides: { signal },
+                                withResponse: false as const,
+                            };
+                            const res = ${infiniteCallExpr};
+                            return res as InferResponseData<TEndpoint, SuccessStatusCode>;
+                        },
+                    });
+                },
+                /** Invalidate this endpoint's regular (non-infinite) queries. */
+                invalidate: (queryClient: QueryClient) =>
+                    queryClient.invalidateQueries({ queryKey }),
+                /** Invalidate this endpoint's infinite queries. */
+                invalidateInfinite: (queryClient: QueryClient) =>
+                    queryClient.invalidateQueries({ queryKey: createQueryKey(path as string, params[0], true) }),
             };
 
             return query
@@ -87,7 +159,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   const effectImport = isEffectClient ? `import { Effect } from "effect"\n` : "";
 
   return `
-  ${effectImport}import { queryOptions } from "@tanstack/react-query"
+  ${effectImport}import { queryOptions, infiniteQueryOptions, type QueryClient } from "@tanstack/react-query"
   import type { EndpointByMethod, ${apiClientType}, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, TypedSuccessResponse, ApiCallParams } from "${ctx.relativeApiClientPath}"
   import { errorStatusCodes, TypedStatusError } from "${ctx.relativeApiClientPath}"
 
@@ -124,6 +196,21 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
           params
       ];
   };
+
+  /** Stable query-key factory for cache reads / invalidation outside of \`TanstackQueryApiClient\` methods. */
+  export const queryKeyFactory = {
+      all: ["typed-openapi"] as const,
+      endpoint: <TOptions extends EndpointParameters>(id: string, options?: TOptions, infinite?: boolean) =>
+          createQueryKey(id, options, infinite),
+  };
+
+  /** Invalidate queries by endpoint path (and optional params). */
+  export const invalidateEndpoint = (
+      queryClient: QueryClient,
+      path: string,
+      options?: EndpointParameters,
+      infinite?: boolean,
+  ) => queryClient.invalidateQueries({ queryKey: createQueryKey(path, options, infinite) });
 
   // <EndpointByMethod.Shorthands>
   ${Array.from(endpointMethods)
@@ -209,6 +296,9 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             >, "mutationFn"> & {
                 mutationFn: typeof mutationFn
             },
+            /** Invalidate all mutations keyed by this method+path (rarely needed). */
+            invalidate: (queryClient: QueryClient) =>
+                queryClient.invalidateQueries({ queryKey: mutationKey }),
         }
     }
         // </ApiClient.request>
