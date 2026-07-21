@@ -60,6 +60,44 @@ describe("advanced OpenAPI keywords", () => {
     expect(schema.safeParse({ kind: "dog", bark: true }).success).toBe(true);
   });
 
+  test("discriminator + null member peels null out of discriminatedUnion", () => {
+    const node = openApiToIr(
+      {
+        oneOf: [
+          {
+            type: "object",
+            required: ["kind", "meow"],
+            properties: {
+              kind: { type: "string", enum: ["cat"] },
+              meow: { type: "boolean" },
+            },
+          },
+          {
+            type: "object",
+            required: ["kind", "bark"],
+            properties: {
+              kind: { type: "string", enum: ["dog"] },
+              bark: { type: "boolean" },
+            },
+          },
+          { type: "null" },
+        ],
+        discriminator: { propertyName: "kind" },
+      },
+      irCtx,
+    );
+    const src = zodAdapter.emitNode(node, createEmitCtx(resolveValidationPolicy("loose")));
+    expect(src).toContain('z.discriminatedUnion("kind"');
+    expect(src).toContain("z.union([");
+    expect(src).toContain("z.null()");
+    // null must not be a discUnion member
+    expect(src).not.toMatch(/discriminatedUnion\([^)]*z\.null\(\)/);
+    const schema = new Function("z", `return ${src}`)(z) as z.ZodType;
+    expect(schema.safeParse({ kind: "cat", meow: true }).success).toBe(true);
+    expect(schema.safeParse(null).success).toBe(true);
+    expect(schema.safeParse({ kind: "bird" }).success).toBe(false);
+  });
+
   test("discriminator.mapping remaps wire values via .extend", () => {
     const irCtxNamed = {
       getRefName: (ref: string) => ref.replace("#/components/schemas/", ""),

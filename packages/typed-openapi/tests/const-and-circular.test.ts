@@ -36,6 +36,34 @@ describe("JSON Schema const → literal", () => {
     expect(openApiToIr({ const: null }, irCtx)).toMatchObject({ kind: "null" });
   });
 
+  test("const object/array become tuple/object literals", () => {
+    const obj = openApiToIr({ const: { a: 1, b: "x" } }, irCtx);
+    expect(obj.kind).toBe("object");
+    if (obj.kind === "object") {
+      expect(irToTs(obj)).toContain("a: 1");
+      expect(irToTs(obj)).toContain('b: "x"');
+    }
+    const arr = openApiToIr({ const: ["a", 2] }, irCtx);
+    expect(arr.kind).toBe("tuple");
+    expect(irToTs(arr)).toBe('["a", 2]');
+  });
+
+  test("mixed enum preserves literal types (no String coerce / never)", () => {
+    const mixed = openApiToIr({ type: "string", enum: ["a", 1] }, irCtx);
+    expect(mixed.kind).toBe("enum");
+    if (mixed.kind === "enum") {
+      expect(mixed.values).toEqual(["a", 1]);
+    }
+    expect(irToTs(mixed)).toBe('("a" | 1)');
+
+    const numMixed = openApiToIr({ type: "number", enum: [1, "x"] }, irCtx);
+    expect(numMixed.kind).toBe("enum");
+    if (numMixed.kind === "enum") {
+      expect(numMixed.values).toEqual([1, "x"]);
+    }
+    expect(irToTs(numMixed)).toBe('(1 | "x")');
+  });
+
   test("const wins over plain type:string in generated client types", () => {
     const doc = {
       openapi: "3.1.0",
@@ -202,4 +230,62 @@ describe("recursive JSON Schema types", () => {
     expect(file).toContain("export type Json =");
     expect(file).toContain("export const isJsonObject");
   });
+
+  test.each(["zod", "zod3", "valibot", "effect", "effect3"] as const)(
+    "%s: recursive schemas use explicit types (no z.infer circular any)",
+    (runtime) => {
+      const doc = {
+        openapi: "3.0.3",
+        info: { title: "circular", version: "1" },
+        components: {
+          schemas: {
+            Json: {
+              oneOf: [
+                { type: "string" },
+                { type: "number" },
+                { type: "boolean" },
+                { $ref: "#/components/schemas/JsonObject" },
+                { $ref: "#/components/schemas/JsonArray" },
+              ],
+            },
+            JsonObject: {
+              type: "object",
+              additionalProperties: { $ref: "#/components/schemas/Json" },
+            },
+            JsonArray: {
+              type: "array",
+              items: { $ref: "#/components/schemas/Json" },
+            },
+          },
+        },
+        paths: {},
+      } as OpenAPIObject;
+
+      const file = generateFile({
+        ...mapOpenApiEndpoints(doc),
+        runtime,
+        schemasOnly: true,
+      });
+      expect(file).toMatch(/export interface JsonObject/);
+      expect(file).toContain("export type Json =");
+      expect(file).not.toMatch(/export type Json = z\.infer/);
+      expect(file).not.toMatch(/export type Json = v\.InferOutput/);
+      expect(file).not.toMatch(/export type Json = Schema\.Schema\.Type/);
+      expect(file).not.toMatch(/export type Json = S\.Schema\.Type/);
+      if (runtime === "zod" || runtime === "zod3") {
+        expect(file).toContain("z.ZodType<Json>");
+      }
+      if (runtime === "valibot") {
+        expect(file).toContain("v.GenericSchema<Json>");
+      }
+      if (runtime === "effect") {
+        expect(file).toContain("Schema.Schema<Json>");
+        expect(file).toContain("ReadonlyArray<Json>");
+      }
+      if (runtime === "effect3") {
+        expect(file).toContain("S.Schema<Json>");
+        expect(file).toContain("ReadonlyArray<Json>");
+      }
+    },
+  );
 });
