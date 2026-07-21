@@ -219,6 +219,7 @@ export async function generateClientFiles(input: string, options: GenerateClient
       fetcherName: options.defaultFetcher.fetcherName,
       apiName: options.defaultFetcher.apiName,
       client: generatorOptions.client ?? (runtime === "effect" || runtime === "effect3" ? "effect" : "promise"),
+      doc: openApiDoc,
     });
     let defaultFetcherOutputPath: string;
     if (typeof options.defaultFetcher === "string" && isAbsolute(options.defaultFetcher)) {

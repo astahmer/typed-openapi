@@ -1,4 +1,6 @@
+import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { encodeRequestBody } from "./encode-request-body.ts";
+import { generateAuthHelpersSource, parseSecuritySchemes } from "./security.ts";
 
 // The contents of api-client.example.ts (kept in sync with the file)
 export const generateDefaultFetcher = (options: {
@@ -8,6 +10,8 @@ export const generateDefaultFetcher = (options: {
   apiName?: string | undefined;
   /** When the generated client uses EffectApiClient */
   client?: "promise" | "effect";
+  /** OpenAPI doc — when provided, emit AuthCredentials + applyAuth from securitySchemes */
+  doc?: OpenAPIObject;
 }) => {
   const {
     envApiBaseUrl = "API_BASE_URL",
@@ -15,7 +19,12 @@ export const generateDefaultFetcher = (options: {
     fetcherName = "defaultFetcher",
     apiName = "api",
     client = "promise",
+    doc,
   } = options;
+
+  const schemes = doc ? parseSecuritySchemes(doc) : [];
+  const hasAuth = schemes.length > 0;
+  const authSource = hasAuth ? generateAuthHelpersSource(schemes) : "";
 
   const isEffect = client === "effect";
   const importLine = isEffect
@@ -31,6 +40,29 @@ export const generateDefaultFetcher = (options: {
   body: unknown,
 ) => { body?: BodyInit; contentType?: string };`;
 
+  const authConfigBlock = hasAuth
+    ? `
+export type DefaultFetcherConfig = {
+  /** Return credentials for OpenAPI securitySchemes (sync or async). */
+  getAuth?: () => AuthCredentials | Promise<AuthCredentials>;
+};
+
+let fetcherConfig: DefaultFetcherConfig = {};
+
+/** Configure auth (and future fetcher options). Call before requests. */
+export const configureFetcher = (config: DefaultFetcherConfig) => {
+  fetcherConfig = { ...fetcherConfig, ...config };
+};
+`
+    : "";
+
+  const authApplyBlock = hasAuth
+    ? `
+  const auth = await fetcherConfig.getAuth?.();
+  if (auth) applyAuth(headers, input.url, auth);
+`
+    : "";
+
   return `/**
  * Generic API Client for typed-openapi generated code
  *
@@ -40,12 +72,12 @@ export const generateDefaultFetcher = (options: {
  * - Query parameter serialization
  * - Cookie header encoding
  * - Body encoding by \`requestFormat\` (json / form-data / form-url / binary / text)
- * - Basic error handling
+${hasAuth ? " * - OpenAPI securitySchemes via \`configureFetcher({ getAuth })\`\n" : ""} * - Basic error handling
  *
  * Usage:
  * 1. Replace './${clientPath}' with your actual generated file path
  * 2. Set your ${envApiBaseUrl}
- * 3. Customize error handling and headers as needed
+${hasAuth ? " * 3. Call configureFetcher({ getAuth: () => ({ ... }) })\n" : ""} * ${hasAuth ? "4" : "3"}. Customize error handling and headers as needed
  */
 
 ${importLine}
@@ -57,14 +89,14 @@ const isMutationMethod = (method: string) => ["post", "put", "patch", "delete"].
 
 /** Encode body according to OpenAPI requestBody content type (\`requestFormat\`). */
 ${encodeRequestBodySource}
-
+${hasAuth ? `\n${authSource}\n${authConfigBlock}` : ""}
 /**
  * Simple fetcher implementation without external dependencies.
  * Compatible with both ApiClient and EffectApiClient (promise fetcher is wrapped).
  */
 const ${fetcherName}: Fetcher["fetch"] = async (input) => {
   const headers = new Headers(input.overrides?.headers);
-
+${authApplyBlock}
   // Handle query parameters
   if (input.urlSearchParams) {
     input.url.search = input.urlSearchParams.toString();
