@@ -20,7 +20,7 @@ cli
   )
   .option(
     "-c, --config <path>",
-    "Path to typed-openapi config JSON (defaults to typed-openapi.config.json / .typed-openapi.json when present)",
+    "Path to typed-openapi config (JSON or TS/JS with defineConfig); defaults to typed-openapi.config.ts / .json when present",
   )
   .option("--format", "Format generated files with oxfmt (defaults to false)")
   .option("--schemas-only", "Only generate schemas, skipping client generation (defaults to false)")

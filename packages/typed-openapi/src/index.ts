@@ -5,6 +5,7 @@ export * from "./security.ts";
 export * from "./map-openapi-endpoints.ts";
 export * from "./ref-resolver.ts";
 export * from "./types.ts";
+export { defineConfig, type TypedOpenapiConfig, type TypedOpenapiConfigFile } from "./config.ts";
 export type { ValidationPreset, ValidationPolicy } from "./runtimes/validation.ts";
 export type { RuntimeAdapter, EmitCtx } from "./runtimes/types.ts";
 export {

@@ -18,7 +18,7 @@ import { generateDefaultFetcher } from "./default-fetcher.generator.ts";
 import { generateMswFile } from "./msw.generator.ts";
 import {
   findDefaultConfigPath,
-  loadConfigFile,
+  loadConfig,
   mergeConfigWithCli,
   applyGeneratorOptionDefaults,
   validationFromConfig,
@@ -56,17 +56,21 @@ export const optionsSchema = type({
   "msw?": "boolean | string",
   "mswFaker?": "boolean",
   "mswBaseUrl?": "string",
-  "defaultFetcher?": type({
-    "envApiBaseUrl?": "string",
-    "clientPath?": "string",
-    "fetcherName?": "string",
-    "apiName?": "string",
-  }),
+  "defaultFetcher?": type("boolean | string").or(
+    type({
+      "envApiBaseUrl?": "string",
+      "clientPath?": "string",
+      "fetcherName?": "string",
+      "apiName?": "string",
+    }),
+  ),
   "schemasOnly?": "boolean",
   "includeClient?": "boolean | 'true' | 'false'",
   "jsdoc?": "boolean | 'true' | 'false'",
   "successStatusCodes?": "string",
   "errorStatusCodes?": "string",
+  "transformDates?": "boolean",
+  "transformBigInt?": "boolean",
 });
 
 export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
@@ -115,7 +119,7 @@ const asStringArray = (value: string | string[] | undefined): string[] | undefin
 
 export async function generateClientFiles(input: string, options: GenerateClientFilesOptions) {
   const configPath = options.config ?? findDefaultConfigPath(cwd);
-  const fileConfig = configPath ? loadConfigFile(configPath) : undefined;
+  const fileConfig = configPath ? await loadConfig(configPath) : undefined;
   if (configPath) console.log(`Using config ${configPath}`);
 
   const merged = applyGeneratorOptionDefaults(
@@ -123,7 +127,7 @@ export async function generateClientFiles(input: string, options: GenerateClient
   ) as GenerateClientFilesOptions;
   const runtime = (merged.runtime ?? "none") as NonNullable<GenerateClientFilesOptions["runtime"]>;
 
-  // TODO CLI option to save that file?
+  // Config may supply input when CLI positional is a placeholder; prefer CLI input.
   const openApiDoc = (await SwaggerParser.bundle(input)) as OpenAPIObject;
 
   const ctx = mapOpenApiEndpoints(openApiDoc, merged);
@@ -205,14 +209,15 @@ export async function generateClientFiles(input: string, options: GenerateClient
   await ensureDir(dirname(outputPath));
   await writeFile(outputPath, content);
 
-  if (options.tanstack) {
+  if (options.tanstack || merged.tanstack) {
+    const tanstackOpt = options.tanstack ?? merged.tanstack;
     let tanstackOutputPath: string;
-    if (typeof options.tanstack === "string" && isAbsolute(options.tanstack)) {
-      tanstackOutputPath = options.tanstack;
+    if (typeof tanstackOpt === "string" && isAbsolute(tanstackOpt)) {
+      tanstackOutputPath = tanstackOpt;
     } else {
       tanstackOutputPath = join(
         dirname(outputPath),
-        typeof options.tanstack === "string" ? options.tanstack : `tanstack.client.ts`,
+        typeof tanstackOpt === "string" ? tanstackOpt : `tanstack.client.ts`,
       );
     }
     const tanstackContent = await prettify(
@@ -228,22 +233,27 @@ export async function generateClientFiles(input: string, options: GenerateClient
     await writeFile(tanstackOutputPath, tanstackContent);
   }
 
-  if (options.defaultFetcher) {
+  const defaultFetcherOpt = options.defaultFetcher ?? (merged as { defaultFetcher?: typeof options.defaultFetcher }).defaultFetcher;
+  if (defaultFetcherOpt) {
+    const fetcherOpts =
+      typeof defaultFetcherOpt === "object" && defaultFetcherOpt !== null
+        ? defaultFetcherOpt
+        : ({} as { envApiBaseUrl?: string; clientPath?: string; fetcherName?: string; apiName?: string });
     const defaultFetcherContent = generateDefaultFetcher({
-      envApiBaseUrl: options.defaultFetcher.envApiBaseUrl,
-      clientPath: options.defaultFetcher.clientPath ?? `./${basename(outputPath)}`,
-      fetcherName: options.defaultFetcher.fetcherName,
-      apiName: options.defaultFetcher.apiName,
+      envApiBaseUrl: fetcherOpts.envApiBaseUrl,
+      clientPath: fetcherOpts.clientPath ?? `./${basename(outputPath)}`,
+      fetcherName: fetcherOpts.fetcherName,
+      apiName: fetcherOpts.apiName,
       client: generatorOptions.client ?? (runtime === "effect" || runtime === "effect3" ? "effect" : "promise"),
       doc: openApiDoc,
     });
     let defaultFetcherOutputPath: string;
-    if (typeof options.defaultFetcher === "string" && isAbsolute(options.defaultFetcher)) {
-      defaultFetcherOutputPath = options.defaultFetcher;
+    if (typeof defaultFetcherOpt === "string" && isAbsolute(defaultFetcherOpt)) {
+      defaultFetcherOutputPath = defaultFetcherOpt;
     } else {
       defaultFetcherOutputPath = join(
         dirname(outputPath),
-        typeof options.defaultFetcher === "string" ? options.defaultFetcher : `api.client.ts`,
+        typeof defaultFetcherOpt === "string" ? defaultFetcherOpt : `api.client.ts`,
       );
     }
     const formattedDefaultFetcherContent = await prettify(defaultFetcherContent, {

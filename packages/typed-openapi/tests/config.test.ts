@@ -3,10 +3,13 @@ import { writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import {
   loadConfigFile,
+  loadConfig,
   mergeConfigWithCli,
   applyGeneratorOptionDefaults,
   resolveValidationFromOptions,
   validationFromConfig,
+  defineConfig,
+  findDefaultConfigPath,
 } from "../src/config.ts";
 import { resolveValidationPolicy } from "../src/runtimes/validation.ts";
 
@@ -15,6 +18,13 @@ const tmp = join(__dirname, "../tmp/config-tests");
 describe("typed-openapi config file", () => {
   rmSync(tmp, { recursive: true, force: true });
   mkdirSync(tmp, { recursive: true });
+
+  test("defineConfig is identity", () => {
+    const cfg = defineConfig({ runtime: "zod", transformDates: true, tanstack: true });
+    expect(cfg.runtime).toBe("zod");
+    expect(cfg.transformDates).toBe(true);
+    expect(cfg.tanstack).toBe(true);
+  });
 
   test("loads fine-grained validation overrides", () => {
     const path = join(tmp, "typed-openapi.config.json");
@@ -52,7 +62,6 @@ describe("typed-openapi config file", () => {
     const fromFile = mergeConfigWithCli(
       { jsdoc: false, format: true, includeClient: false, schemasOnly: true },
       {
-        // Mimic cac after removing parser defaults: unset flags are undefined
         jsdoc: undefined,
         format: undefined,
         includeClient: undefined,
@@ -89,5 +98,62 @@ describe("typed-openapi config file", () => {
     });
     expect(policy?.formats).toBe(true);
     expect(policy?.objectConstraints).toBe(false);
+  });
+
+  test("loadConfig reads typed-openapi.config.ts via defineConfig", async () => {
+    const dir = join(tmp, "ts-config");
+    mkdirSync(dir, { recursive: true });
+    const path = join(dir, "typed-openapi.config.ts");
+    writeFileSync(
+      path,
+      `
+import { defineConfig } from ${JSON.stringify(join(__dirname, "../src/config.ts"))};
+
+export default defineConfig({
+  runtime: "zod",
+  tanstack: true,
+  msw: true,
+  transformDates: true,
+  transformBigInt: true,
+});
+`,
+    );
+
+    const cfg = await loadConfig(path);
+    expect(cfg.runtime).toBe("zod");
+    expect(cfg.tanstack).toBe(true);
+    expect(cfg.msw).toBe(true);
+    expect(cfg.transformDates).toBe(true);
+    expect(cfg.transformBigInt).toBe(true);
+  });
+
+  test("findDefaultConfigPath prefers .ts over .json", () => {
+    const dir = join(tmp, "prefer-ts");
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, "typed-openapi.config.json"), JSON.stringify({ runtime: "none" }));
+    writeFileSync(join(dir, "typed-openapi.config.ts"), `export default { runtime: "zod" };`);
+    expect(findDefaultConfigPath(dir)?.endsWith("typed-openapi.config.ts")).toBe(true);
+  });
+
+  test("JSON config accepts new feature keys", () => {
+    const path = join(tmp, "features.json");
+    writeFileSync(
+      path,
+      JSON.stringify({
+        runtime: "valibot",
+        tanstack: "tanstack.ts",
+        msw: true,
+        mswFaker: false,
+        mswBaseUrl: "https://api.example.com",
+        defaultFetcher: true,
+        transformDates: true,
+        transformBigInt: false,
+      }),
+    );
+    const cfg = loadConfigFile(path);
+    expect(cfg.tanstack).toBe("tanstack.ts");
+    expect(cfg.msw).toBe(true);
+    expect(cfg.defaultFetcher).toBe(true);
+    expect(cfg.transformDates).toBe(true);
   });
 });
