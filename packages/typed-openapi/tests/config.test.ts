@@ -156,4 +156,41 @@ export default defineConfig({
     expect(cfg.defaultFetcher).toBe(true);
     expect(cfg.transformDates).toBe(true);
   });
+
+  test("loadConfigFile rejects non-JSON paths", () => {
+    expect(() => loadConfigFile(join(tmp, "typed-openapi.config.ts"))).toThrow(/only supports JSON/);
+  });
+
+  test("loadConfig rejects invalid schema", async () => {
+    const path = join(tmp, "bad.json");
+    writeFileSync(path, JSON.stringify({ runtime: 123 }));
+    await expect(loadConfig(path)).rejects.toThrow(/Invalid config file/);
+  });
+
+  test("loadConfig accepts named config export", async () => {
+    const dir = join(tmp, "named-export");
+    mkdirSync(dir, { recursive: true });
+    const path = join(dir, "cfg.mjs");
+    writeFileSync(path, `export const config = { runtime: "none", msw: true };\n`);
+    const cfg = await loadConfig(path);
+    expect(cfg.runtime).toBe("none");
+    expect(cfg.msw).toBe(true);
+  });
+
+  test("config schema accepts input key even though generate path unused (CFG-2)", () => {
+    const path = join(tmp, "with-input.json");
+    writeFileSync(path, JSON.stringify({ input: "./openapi.yaml", runtime: "zod" }));
+    const cfg = loadConfigFile(path);
+    expect(cfg.input).toBe("./openapi.yaml");
+  });
+
+  test("mergeConfigWithCli prefers CLI transform/msw flags", () => {
+    const merged = mergeConfigWithCli(
+      { transformDates: false, msw: false, mswBaseUrl: "http://a" },
+      { transformDates: true, msw: "handlers.ts", mswBaseUrl: undefined },
+    );
+    expect(merged.transformDates).toBe(true);
+    expect(merged.msw).toBe("handlers.ts");
+    expect(merged.mswBaseUrl).toBe("http://a");
+  });
 });

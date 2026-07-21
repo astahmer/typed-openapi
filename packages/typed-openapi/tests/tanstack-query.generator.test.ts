@@ -57,4 +57,44 @@ describe("tanstack-query.generator", () => {
     );
     expect(file).toContain("createQueryKey(id, options, infinite)");
   });
+
+  test("queryKeyFactory.all is typed-openapi prefix (TS-1: does not match endpoint key shape)", async () => {
+    const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
+    const file = await generateTanstackQueryFile({
+      ...mapOpenApiEndpoints(openApiDoc),
+      relativeApiClientPath: "./api.client.ts",
+    });
+
+    expect(file).toContain('all: ["typed-openapi"] as const');
+    // Endpoint keys are objects with _id — not prefixed by "typed-openapi"
+    expect(file).toContain("const params: EndpointQueryKey<TOptions>[0] = { _id: id, }");
+    expect(file).not.toContain('["typed-openapi", id');
+  });
+
+  test("effect client wraps queryFns with Effect.runPromise", async () => {
+    const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
+    const file = await generateTanstackQueryFile({
+      ...mapOpenApiEndpoints(openApiDoc),
+      relativeApiClientPath: "./api.client.ts",
+      client: "effect",
+    });
+
+    expect(file).toContain('import { Effect } from "effect"');
+    expect(file).toContain("EffectApiClient");
+    expect(file).toContain("Effect.runPromise");
+    expect(file).toContain("infiniteQueryOptions:");
+  });
+
+  test("createQueryKey copies body header path query cookie", async () => {
+    const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
+    const file = await generateTanstackQueryFile({
+      ...mapOpenApiEndpoints(openApiDoc),
+      relativeApiClientPath: "./api.client.ts",
+    });
+
+    for (const field of ["body", "header", "path", "query", "cookie"] as const) {
+      expect(file).toContain(`if (options?.${field})`);
+      expect(file).toContain(`params.${field} = options.${field}`);
+    }
+  });
 });

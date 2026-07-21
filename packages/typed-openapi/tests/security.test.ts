@@ -51,4 +51,52 @@ describe("securitySchemes → auth helpers", () => {
     expect(src).not.toContain("AuthCredentials");
     expect(src).not.toContain("configureFetcher");
   });
+
+  test("cookie apiKey emits cookie header merge (AUTH-3 encoding gap)", () => {
+    const src = generateAuthHelpersSource([
+      { name: "session", prop: "session", type: "apiKey", in: "cookie", paramName: "sid" },
+    ]);
+    expect(src).toContain('headers.get("cookie")');
+    expect(src).toContain('"sid="');
+    // Current behavior: raw concat, no encodeURIComponent (see AUTH-3)
+    expect(src).not.toContain("encodeURIComponent");
+  });
+
+  test("mutualTLS still emits AuthCredentials field and Bearer apply (AUTH-2)", () => {
+    const src = generateAuthHelpersSource([{ name: "mtls", prop: "mtls", type: "mutualTLS" }]);
+    expect(src).toContain('"mtls"?: string');
+    expect(src).toContain('headers.set("Authorization", "Bearer "');
+  });
+
+  test("Bearer is always prefixed (AUTH-1 current behavior)", () => {
+    const src = generateAuthHelpersSource([{ name: "oauth", prop: "oauth", type: "oauth2", scheme: "bearer" }]);
+    expect(src).toMatch(/"Bearer " \+ auth\[/);
+    expect(src).not.toContain("startsWith");
+  });
+
+  test("http digest falls through to Bearer (AUTH-4)", () => {
+    const src = generateAuthHelpersSource([{ name: "digest", prop: "digest", type: "http", scheme: "digest" }]);
+    expect(src).toContain('headers.set("Authorization", "Bearer "');
+    expect(src).not.toContain("Digest");
+  });
+
+  test("empty schemes emit no-op AuthCredentials", () => {
+    const src = generateAuthHelpersSource([]);
+    expect(src).toContain("Record<string, never>");
+    expect(src).toContain("applyAuth = (_headers: Headers, _url: URL, _auth: AuthCredentials): void => {}");
+  });
+
+  test("description is escaped in JSDoc", () => {
+    const src = generateAuthHelpersSource([
+      {
+        name: "k",
+        prop: "k",
+        type: "apiKey",
+        in: "header",
+        paramName: "X-Key",
+        description: "secret */ injection",
+      },
+    ]);
+    expect(src).toContain("secret *\\/ injection");
+  });
 });

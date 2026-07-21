@@ -82,4 +82,86 @@ describe("transform dates / bigint", () => {
     const dateNode = openApiToIr({ type: "string", format: "date-time" }, irCtx);
     expect(adapter.emitNode(dateNode, ctx)).toContain("v.transform((s) => new Date(s))");
   });
+
+  test("valibot emit transforms int64 to bigint", () => {
+    const adapter = getRuntimeAdapter("valibot");
+    const ctx = createEmitCtx(resolveValidationPolicy("strict"), new Set(), { transformBigInt: true });
+    const int64Node = openApiToIr({ type: "integer", format: "int64" }, irCtx);
+    expect(adapter.emitNode(int64Node, ctx)).toContain("BigInt(x)");
+  });
+
+  test("arktype emit pipes date-time and int64", () => {
+    const adapter = getRuntimeAdapter("arktype");
+    const ctx = createEmitCtx(resolveValidationPolicy("formats"), new Set(), {
+      transformDates: true,
+      transformBigInt: true,
+    });
+    const dateNode = openApiToIr({ type: "string", format: "date-time" }, irCtx);
+    const int64Node = openApiToIr({ type: "integer", format: "int64" }, irCtx);
+    expect(adapter.emitNode(dateNode, ctx)).toContain(".pipe((s) => new Date(s as string))");
+    expect(adapter.emitNode(int64Node, ctx)).toContain("BigInt(");
+  });
+
+  test("zod3 emit transforms date and int64", () => {
+    const adapter = getRuntimeAdapter("zod3");
+    const ctx = createEmitCtx(resolveValidationPolicy("formats"), new Set(), {
+      transformDates: true,
+      transformBigInt: true,
+    });
+    const dateOnly = openApiToIr({ type: "string", format: "date" }, irCtx);
+    const int64Node = openApiToIr({ type: "integer", format: "int64" }, irCtx);
+    expect(adapter.emitNode(dateOnly, ctx)).toContain(".transform((s) => new Date(s))");
+    expect(adapter.emitNode(int64Node, ctx)).toContain("bigint");
+  });
+
+  test("none runtime with transformBigInt types bigint but has no bigint revive (XF-1)", () => {
+    const doc = {
+      openapi: "3.0.3",
+      info: { title: "t", version: "1" },
+      paths: {
+        "/x": {
+          get: {
+            operationId: "getX",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      required: ["id"],
+                      properties: { id: { type: "integer", format: "int64" } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    } as OpenAPIObject;
+
+    const file = generateFile({
+      ...mapOpenApiEndpoints(doc),
+      transformBigInt: true,
+    });
+
+    expect(file).toContain("id: bigint");
+    expect(file).not.toContain("__reviveBigInt");
+    expect(file).not.toContain("BigInt(");
+    // revive helper only when transformDates
+    expect(file).not.toContain("__reviveDates");
+  });
+
+  test("irToTs maps format date to Date when transformDates", () => {
+    const dateOnly = openApiToIr({ type: "string", format: "date" }, irCtx);
+    expect(irToTs(dateOnly, { transformDates: true })).toBe("Date");
+  });
+
+  test("flags off leave string/number types", () => {
+    const dateNode = openApiToIr({ type: "string", format: "date-time" }, irCtx);
+    const int64Node = openApiToIr({ type: "integer", format: "int64" }, irCtx);
+    expect(irToTs(dateNode, { transformDates: false })).toBe("string");
+    expect(irToTs(int64Node, { transformBigInt: false })).toBe("number");
+  });
 });
