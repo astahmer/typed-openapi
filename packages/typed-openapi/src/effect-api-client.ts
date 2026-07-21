@@ -39,6 +39,7 @@ export const effectApiClientBody = (args: {
             );`;
       return `
           if (self.onValidate) {
+            const onValidate = self.onValidate;
             ${assign} yield* Effect.tryPromise({
               try: () =>
                 runValidate({
@@ -47,7 +48,7 @@ export const effectApiClientBody = (args: {
                   path: String(path),
                   schema: ${schemaExpr},
                   value: ${valueExpr},
-                  onValidate: self.onValidate,
+                  onValidate,
                 }),
               catch: (cause) => ${wrapAsHttpClientError("validation failed", "cause")},
             });
@@ -85,7 +86,7 @@ ${validateValue("input", "value", "schema", "parametersToSend[key] =")}
           }
         }
       }`
-    : "const endpointSchema = undefined;";
+    : "";
 
   const outputBlock = hasRuntime
     ? `if (responseFormat !== "sse" && (validateSide === "output" || validateSide === "both") && response.ok && endpointSchema?.responses) {
@@ -97,12 +98,7 @@ ${validateValue("output", "data", "responseSchema", "data =")}
       }`
     : "";
 
-  const requestConfigExtras = hasRuntime ? "; validate?: ValidateSide" : "";
-  const effectRequestParams = `(TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true
-            ? InferSchemaInput<UParams> & { overrides?: RequestInit${requestConfigExtras} }
-            : { overrides?: RequestInit${requestConfigExtras} }
-          : { overrides?: RequestInit${requestConfigExtras} })`;
+  const effectRequestParams = `ApiCallParams<TEndpoint>`;
 
   return `
 ${effectImports}
@@ -171,14 +167,19 @@ export class EffectApiClient {
     path: TPath,
     ...params: MaybeOptionalArg<${effectRequestParams}>
   ): Effect.Effect<
-    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    InferSuccessData<TEndpoint>,
     ${errorChannel},
     never
   > {
     const self = this;
     return Effect.gen(function* () {
-      const requestParams = params[0];
-      const validateSide: ValidateSide = ${hasRuntime ? "requestParams?.validate ?? self.validate" : "self.validate"};
+      // Implementation reads a loose param bag; call sites stay typed via MaybeOptionalArg<>.
+      const requestParams = params[0] as
+        | (EndpointParameters & { overrides?: RequestInit; validate?: ValidateSide })
+        | undefined;
+      ${
+        hasRuntime
+          ? `const validateSide: ValidateSide = requestParams?.validate ?? self.validate;
       const parametersToSend: EndpointParameters = {};
       if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
       if (requestParams?.query !== undefined) parametersToSend.query = requestParams.query;
@@ -186,7 +187,14 @@ export class EffectApiClient {
       if (requestParams?.path !== undefined) parametersToSend.path = requestParams.path;
       if (requestParams?.cookie !== undefined) parametersToSend.cookie = requestParams.cookie;
 
-      ${inputBlock}
+      ${inputBlock}`
+          : `const parametersToSend: EndpointParameters = {};
+      if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
+      if (requestParams?.query !== undefined) parametersToSend.query = requestParams.query;
+      if (requestParams?.header !== undefined) parametersToSend.header = requestParams.header;
+      if (requestParams?.path !== undefined) parametersToSend.path = requestParams.path;
+      if (requestParams?.cookie !== undefined) parametersToSend.cookie = requestParams.cookie;`
+      }
 
       const decodePath =
         self.effectFetcher.decodePathParams ??
@@ -277,7 +285,7 @@ export class EffectApiClient {
         );
       }
 
-      return data as Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"];
+      return data as InferSuccessData<TEndpoint>;
     });
   }
 
@@ -289,7 +297,7 @@ export class EffectApiClient {
     path: Path,
     ...params: MaybeOptionalArg<${effectRequestParams}>
   ): Effect.Effect<
-    Extract<InferResponseByStatus<TEndpoint, SuccessStatusCode>, { data: {} }>["data"],
+    InferSuccessData<TEndpoint>,
     ${errorChannel},
     never
   > {

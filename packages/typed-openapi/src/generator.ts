@@ -81,38 +81,53 @@ const shouldRenderDescriptionComments = (ctx: GeneratorContext) => ctx.jsdoc && 
 
 /** Deep-infer runtime schema values hanging off endpoint const objects. */
 const runtimeInferHelper = (runtime: OutputRuntime): string => {
+  // OptionalUndefinedKeys runs once at the top of InferSchemaInput (param bags), not at every
+  // nested object — cuts mapped-type instantiations vs recursive key remapping.
+  const optionalUndefinedKeys = `type OptionalUndefinedKeys<T> = {
+  [K in keyof T as undefined extends T[K] ? never : K]: T[K];
+} & {
+  [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<T[K], undefined>;
+};`;
+
   if (runtime === "none") {
     return `type InferSchemaValue<T> = T;\ntype InferSchemaInput<T> = T;`;
   }
-  // Object maps: when a nested schema input includes `undefined` (e.g. `.optional()` param group),
-  // make that key optional so all-optional query endpoints don't require `{ query: {} }`.
-  const optionalKeyObjectMap = (value: string) =>
-    `T extends object ? { [K in keyof T as undefined extends ${value} ? never : K]: ${value} } & { [K in keyof T as undefined extends ${value} ? K : never]?: Exclude<${value}, undefined> } : T`;
 
   if (runtime === "zod" || runtime === "zod3") {
-    return `type InferSchemaValue<T> = T extends z.ZodType ? z.infer<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInput<T> = T extends z.ZodType ? z.input<T> : ${optionalKeyObjectMap("InferSchemaInput<T[K]>")};`;
+    return `${optionalUndefinedKeys}
+type InferSchemaValue<T> = T extends z.ZodType ? z.infer<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = T extends z.ZodType ? z.input<T> : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "valibot") {
-    return `type InferSchemaValue<T> = T extends v.GenericSchema ? v.InferOutput<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInput<T> = T extends v.GenericSchema ? v.InferInput<T> : ${optionalKeyObjectMap("InferSchemaInput<T[K]>")};`;
+    return `${optionalUndefinedKeys}
+type InferSchemaValue<T> = T extends v.GenericSchema ? v.InferOutput<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = T extends v.GenericSchema ? v.InferInput<T> : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "effect" || runtime === "effect3") {
-    // Effect: Type = decoded output, Encoded = input to decode
-    return `type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInput<T> = T extends { Encoded: infer I } ? I : ${optionalKeyObjectMap("InferSchemaInput<T[K]>")};`;
+    return `${optionalUndefinedKeys}
+type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = T extends { Encoded: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "arktype") {
-    return `type InferSchemaValue<T> = T extends { infer: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInput<T> = T extends { inferIn: infer I } ? I : ${optionalKeyObjectMap("InferSchemaInput<T[K]>")};`;
+    return `${optionalUndefinedKeys}
+type InferSchemaValue<T> = T extends { infer: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = T extends { inferIn: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "typebox") {
-    return `type InferSchemaValue<T> = T extends import("@sinclair/typebox").TSchema ? import("@sinclair/typebox").Static<T> : ${optionalKeyObjectMap("InferSchemaValue<T[K]>")};
-type InferSchemaInput<T> = InferSchemaValue<T>;`;
+    return `${optionalUndefinedKeys}
+type InferSchemaValueRaw<T> = T extends import("@sinclair/typebox").TSchema ? import("@sinclair/typebox").Static<T> : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
+type InferSchemaValue<T> = InferSchemaValueRaw<T>;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;`;
   }
   if (runtime === "typia") {
-    return `type InferSchemaValue<T> = T extends (input: unknown) => input is infer U ? U : ${optionalKeyObjectMap("InferSchemaValue<T[K]>")};
-type InferSchemaInput<T> = InferSchemaValue<T>;`;
+    return `${optionalUndefinedKeys}
+type InferSchemaValueRaw<T> = T extends (input: unknown) => input is infer U ? U : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
+type InferSchemaValue<T> = InferSchemaValueRaw<T>;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;`;
   }
   return `type InferSchemaValue<T> = T;\ntype InferSchemaInput<T> = T;`;
 };
@@ -537,12 +552,60 @@ export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TR
 
 export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<SafeApiResponse<TEndpoint>, { status: TStatusCode }>
 
+/**
+ * Success-body payload — InferSchemaValue only on success statuses.
+ * Filter with extends {} like the old Extract { data: {} } so unknown bodies (e.g. 304) drop out.
+ */
+export type InferSuccessData<TEndpoint> = TEndpoint extends { responses: infer TResponses }
+  ? {
+      [K in keyof TResponses]: K extends string
+        ? K extends \`\${infer TStatusCode extends number}\`
+          ? TStatusCode extends SuccessStatusCode
+            ? InferSchemaValue<TResponses[K]> extends infer D
+              ? D extends {}
+                ? D
+                : never
+              : never
+            : never
+          : never
+        : K extends number
+          ? K extends SuccessStatusCode
+            ? InferSchemaValue<TResponses[K]> extends infer D
+              ? D extends {}
+                ? D
+                : never
+              : never
+            : never
+          : never;
+    }[keyof TResponses]
+  : never;
+
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
 }[keyof T];
 
 type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
 type NotNever<T> = [T] extends [never] ? false : true;
+
+/** Call options merged onto inferred endpoint parameters. */
+type ApiRequestOptions = {
+  overrides?: RequestInit;
+  withResponse?: boolean;
+  throwOnStatusError?: boolean;
+  validate?: ValidateSide;
+};
+
+/** Parameter bag for an endpoint + request options. */
+export type ApiCallParams<TEndpoint> = TEndpoint extends { parameters: infer UParams }
+  ? NotNever<UParams> extends true
+    ? InferSchemaInput<UParams> & ApiRequestOptions
+    : ApiRequestOptions
+  : ApiRequestOptions;
+
+/** Resolve response type from withResponse flag on the call config. */
+export type ApiCallResult<TEndpoint, TParams> = TParams extends { withResponse: true }
+  ? SafeApiResponse<TEndpoint>
+  : InferSuccessData<TEndpoint>;
 
 export type ValidateSide = "none" | "input" | "output" | "both";
 export type OnValidate = (ctx: {
@@ -557,8 +620,6 @@ export type OnValidate = (ctx: {
 `;
 
   // Endpoint defs are structural (`typeof endpointConst`); DeepInfer via InferSchemaValue.
-  const InferTEndpoint = "TEndpoint";
-
   const apiClient = `
 // <TypedStatusError>
 export class TypedStatusError<TData = unknown> extends Error {
@@ -689,19 +750,19 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean })
+          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
-    ): Promise<Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]>;
+    ): Promise<SafeApiResponse<TEndpoint>>;
 
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean })
+          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
-    ): Promise<SafeApiResponse<TEndpoint>>;
+    ): Promise<InferSuccessData<TEndpoint>>;
 
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, _TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
@@ -728,10 +789,10 @@ export class ApiClient {
       path: TPath,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean })
+          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
-    ): Promise<Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]>
+    ): Promise<SafeApiResponse<TEndpoint>>;
 
     request<
       TMethod extends keyof EndpointByMethod,
@@ -742,10 +803,10 @@ export class ApiClient {
       path: TPath,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean })
+          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
-    ): Promise<SafeApiResponse<TEndpoint>>;
+    ): Promise<InferSuccessData<TEndpoint>>;
 
     request<
       TMethod extends keyof EndpointByMethod,
@@ -851,7 +912,7 @@ export class ApiClient {
           }
 
           return withResponse ? typedResponse : data;
-      })() as Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]
+      })() as Promise<any>
     }
     // </ApiClient.request>
 }
