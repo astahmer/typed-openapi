@@ -9,9 +9,9 @@ import {
   type TypedApiResponse,
   type TypedStatusError,
   type TypedSuccessResponse,
-} from "../tmp/generated-client.ts";
-import { type TanstackQueryApiClient } from "../tmp/generated-tanstack.ts";
-import { api } from "./api-client.example.ts";
+} from "../../../tmp/generated-client.ts";
+import { type TanstackQueryApiClient } from "../../../tmp/generated-tanstack.ts";
+import { api } from "../../api-client.example.ts";
 
 describe("Example API Client", () => {
   it("infer response with multiple status and one schema unknown / withResponse: undefined", async () => {
