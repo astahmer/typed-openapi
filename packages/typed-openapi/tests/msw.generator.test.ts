@@ -138,9 +138,31 @@ describe("msw.generator unit", () => {
     expect(stubFromSchema(intersectionNode)).toEqual({ a: 1, b: 2 });
   });
 
-  test("stubFromSchema ref remains placeholder (MSW-1)", () => {
+  test("stubFromSchema resolves $ref via schemaByName", () => {
+    const pet: SchemaNode = {
+      kind: "object",
+      required: ["name"],
+      partial: false,
+      additionalProperties: false,
+      properties: {
+        name: { kind: "string", constraints: {}, meta: {} },
+      },
+      constraints: {},
+      meta: {},
+    };
+    const refNode: SchemaNode = { kind: "ref", name: "Pet", meta: {} };
+    expect(stubFromSchema(refNode, false, 0, { Pet: pet })).toEqual({ name: "string" });
+  });
+
+  test("stubFromSchema ref remains placeholder without schemaByName", () => {
     const refNode: SchemaNode = { kind: "ref", name: "Pet", meta: {} };
     expect(stubFromSchema(refNode)).toEqual({ __ref: "Pet" });
+  });
+
+  test("joinMswBasePath normalizes wildcard and trailing slash", async () => {
+    const { joinMswBasePath } = await import("../src/msw.generator.ts");
+    expect(joinMswBasePath("*", "/pet/:id")).toBe("*/pet/:id");
+    expect(joinMswBasePath("https://api.example.com/", "/pet/:id")).toBe("https://api.example.com/pet/:id");
   });
 
   test("faker markers rewrite to faker.* in emitted source", () => {
