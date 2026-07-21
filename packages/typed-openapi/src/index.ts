@@ -6,13 +6,6 @@ export * from "./types.ts";
 export type { ValidationPreset, ValidationPolicy } from "./runtimes/validation.ts";
 export type { RuntimeAdapter, EmitCtx } from "./runtimes/types.ts";
 export {
-  loadConfigFile,
-  findDefaultConfigPath,
-  mergeConfigWithCli,
-  resolveValidationFromOptions,
-  type TypedOpenapiConfigFile,
-} from "./config.ts";
-export {
   applySpecFilters,
   collectRefNamesFromEndpoints,
   type EndpointFilterCtx,
