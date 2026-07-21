@@ -90,6 +90,28 @@ const literalFromEnumValue = (value: unknown): SchemaNode => {
   if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
     return { kind: "literal", value, meta: emptyMeta() };
   }
+  if (Array.isArray(value)) {
+    return {
+      kind: "tuple",
+      items: value.map((item) => literalFromEnumValue(item)),
+      meta: emptyMeta(),
+    };
+  }
+  if (typeof value === "object") {
+    const properties: Record<string, SchemaNode> = {};
+    for (const [key, item] of Object.entries(value as Record<string, unknown>)) {
+      properties[key] = literalFromEnumValue(item);
+    }
+    return {
+      kind: "object",
+      properties,
+      required: Object.keys(properties),
+      additionalProperties: false,
+      constraints: {},
+      meta: emptyMeta(),
+      partial: false,
+    };
+  }
   return { kind: "unknown", meta: emptyMeta() };
 };
 
@@ -199,19 +221,7 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
       if (schema.enum.length === 1) {
         return withNullable(literalFromEnumValue(schema.enum[0]), schema);
       }
-      if (schemaType === "string") {
-        return withNullable(
-          {
-            kind: "enum",
-            values: schema.enum.map((v: unknown) => (v === null ? null : String(v))),
-            meta,
-          },
-          schema,
-        );
-      }
-      if (schema.enum.some((e: unknown) => typeof e === "string")) {
-        return { kind: "never", meta };
-      }
+      // Preserve literal value types — never String() numbers into a string enum.
       return withNullable(
         {
           kind: "enum",
