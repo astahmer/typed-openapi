@@ -166,7 +166,8 @@ describe("zod promise ApiClient", () => {
   });
 
   it("infer response with typed headers / user/login", async () => {
-    const result = await api.get("/user/login", { query: {}, withResponse: true });    expect(result).type.toBeAssignableTo<
+    const result = await api.get("/user/login", { query: {}, withResponse: true });
+    expect(result).type.toBeAssignableTo<
       TypedApiResponse<
         { 200: string; 400: unknown },
         {

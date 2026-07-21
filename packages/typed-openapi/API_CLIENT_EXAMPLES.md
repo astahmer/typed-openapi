@@ -4,7 +4,8 @@ These are production-ready API client wrappers for your generated typed-openapi 
 and customize it.
 
 > **Prefer `--default-fetcher`.** It matches the current `Fetcher` shape (`fetch(input)` with `requestFormat`, cookies,
-> etc.). The checked-in example at [`tests/integrations/api-client.example.ts`](./tests/integrations/api-client.example.ts) stays in sync with
+> etc.). The checked-in example at
+> [`tests/integrations/api-client.example.ts`](./tests/integrations/api-client.example.ts) stays in sync with
 > `src/default-fetcher.generator.ts`.
 
 ## Basic API Client ([api-client.example.ts](./tests/integrations/api-client.example.ts))
