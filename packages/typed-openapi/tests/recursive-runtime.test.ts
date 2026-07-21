@@ -15,6 +15,11 @@ const stripModuleNoise = (src: string) =>
   src
     .replace(/import[\s\S]*?from\s+["'][^"']+["'];?\s*/g, "")
     .replace(/export type [\s\S]*?;\s*/g, "")
+    .replace(/export interface [\s\S]*?\}\s*/g, "")
+    .replace(/: z\.ZodType<[^>]+>/g, "")
+    .replace(/: v\.GenericSchema<[^>]+>/g, "")
+    .replace(/: Schema\.Schema<[^>]+>/g, "")
+    .replace(/: S\.Schema<[^>]+>/g, "")
     .replace(/\bexport\s+/g, "");
 
 describe("recursive runtime schemas", async () => {
@@ -38,7 +43,7 @@ describe("recursive runtime schemas", async () => {
   test("zod emits z.lazy and parses nested trees", () => {
     const src = generateFile({ ...ctx, runtime: "zod", schemasOnly: true, validation: "loose" });
     expect(src).toContain("z.lazy(() =>");
-    expect(src).toMatch(/export const Category = z\.lazy/);
+    expect(src).toMatch(/export const Category(?:: z\.ZodType<Category>)? = z\.lazy/);
 
     const body = stripModuleNoise(src);
     const Category = new Function("z", `${body}\nreturn Category;`)(z) as z.ZodType;

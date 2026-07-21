@@ -34,8 +34,8 @@ describe("schemaNaming prefer-inline", () => {
       schemasOnly: true,
       includeClient: false,
     });
-    expect(src).toContain("export type Category");
-    expect(src).toContain("export type Node");
+    expect(src).toMatch(/export (?:type|interface) Category/);
+    expect(src).toMatch(/export (?:type|interface) Node/);
   });
 
   test("shouldNameSchema can force naming a single-use schema", async () => {

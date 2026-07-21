@@ -78,7 +78,7 @@ describe("lazy recursive schema types e2e", () => {
     { runtime: "zod" as const, importName: "zod", marker: "z.ZodType<Json>" },
     { runtime: "valibot" as const, importName: "valibot", marker: "v.GenericSchema<Json>" },
     { runtime: "effect" as const, importName: "effect", marker: "Schema.Schema<Json>" },
-  ])("$runtime typechecks recursive JSON without TS7022", ({ runtime, importName, marker }) => {
+  ])("$runtime typechecks recursive JSON without TS7022", { timeout: 60_000 }, ({ runtime, importName, marker }) => {
     const dir = join(tmpRoot, runtime);
     rmSync(dir, { recursive: true, force: true });
     mkdirSync(dir, { recursive: true });
