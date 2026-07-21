@@ -22,12 +22,10 @@ cli
     "-c, --config <path>",
     "Path to typed-openapi config JSON (defaults to typed-openapi.config.json / .typed-openapi.json when present)",
   )
-  .option("--format", "Format generated files with oxfmt (defaults to false)", { default: false })
-  .option("--schemas-only", "Only generate schemas, skipping client generation (defaults to false)", { default: false })
-  .option("--include-client", "Include API client types and implementation (defaults to true)", { default: true })
-  .option("--jsdoc", "Emit OpenAPI descriptions as JSDoc comments (defaults to false)", {
-    default: true,
-  })
+  .option("--format", "Format generated files with oxfmt (defaults to false)")
+  .option("--schemas-only", "Only generate schemas, skipping client generation (defaults to false)")
+  .option("--include-client", "Include API client types and implementation (defaults to true)")
+  .option("--jsdoc", "Emit OpenAPI descriptions as JSDoc comments (defaults to true)")
   .option(
     "--success-status-codes <codes>",
     "Comma-separated list of success status codes (defaults to 2xx and 3xx ranges)",

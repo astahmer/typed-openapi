@@ -190,29 +190,26 @@ const setSchemaDependencies = (schema: LibSchemaObject, deps: Set<string>) => {
       for (const allOf of schema.allOf) {
         visit(allOf);
       }
-
-      return;
     }
 
     if (schema.oneOf) {
       for (const oneOf of schema.oneOf) {
         visit(oneOf);
       }
-
-      return;
     }
 
     if (schema.anyOf) {
       for (const anyOf of schema.anyOf) {
         visit(anyOf);
       }
+    }
 
-      return;
+    if ("not" in schema && schema.not) {
+      visit(schema.not as LibSchemaObject | ReferenceObject);
     }
 
     if (schema.type === "array") {
-      if (!schema.items) return;
-      return void visit(schema.items);
+      if (schema.items) visit(schema.items);
     }
 
     if (schema.type === "object" || schema.properties || schema.additionalProperties) {

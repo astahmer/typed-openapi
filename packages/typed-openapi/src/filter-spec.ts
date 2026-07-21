@@ -77,7 +77,14 @@ export const collectRefNamesFromEndpoints = (endpoints: Endpoint[]): Set<string>
   return into;
 };
 
-const compilePatterns = (patterns: string[] | undefined): RegExp[] => (patterns ?? []).map((p) => new RegExp(p));
+const compilePatterns = (patterns: string[] | undefined, label: string): RegExp[] =>
+  (patterns ?? []).map((p, index) => {
+    try {
+      return new RegExp(p);
+    } catch (err) {
+      throw new Error(`Invalid ${label}[${index}] regex ${JSON.stringify(p)}: ${(err as Error).message}`);
+    }
+  });
 
 const matchesAny = (candidates: string[], patterns: RegExp[]): boolean => {
   if (!patterns.length) return false;
@@ -87,7 +94,7 @@ const matchesAny = (candidates: string[], patterns: RegExp[]): boolean => {
 export const makeEndpointPredicate = (
   options: SpecFilterOptions,
 ): ((ctx: EndpointFilterCtx) => boolean) | undefined => {
-  const patterns = compilePatterns(options.endpointPatterns);
+  const patterns = compilePatterns(options.endpointPatterns, "endpointPatterns");
   if (!options.filterEndpoints && !patterns.length) return undefined;
 
   return (ctx) => {
@@ -155,7 +162,7 @@ export const applySpecFilters = (
   };
   [...kept].forEach(expand);
 
-  const schemaPatterns = compilePatterns(options.schemaPatterns);
+  const schemaPatterns = compilePatterns(options.schemaPatterns, "schemaPatterns");
   for (const [ref, infos] of refs.infos) {
     if (infos.kind !== "schemas") continue;
     const allowByPattern = schemaPatterns.length

@@ -4,6 +4,7 @@ import { join } from "node:path";
 import {
   loadConfigFile,
   mergeConfigWithCli,
+  applyGeneratorOptionDefaults,
   resolveValidationFromOptions,
   validationFromConfig,
 } from "../src/config.ts";
@@ -45,6 +46,40 @@ describe("typed-openapi config file", () => {
     );
     expect(merged.runtime).toBe("valibot");
     expect(merged.validation).toBe("loose");
+  });
+
+  test("cac-style undefined flags do not stomp config booleans", () => {
+    const fromFile = mergeConfigWithCli(
+      { jsdoc: false, format: true, includeClient: false, schemasOnly: true },
+      {
+        // Mimic cac after removing parser defaults: unset flags are undefined
+        jsdoc: undefined,
+        format: undefined,
+        includeClient: undefined,
+        schemasOnly: undefined,
+        runtime: "zod",
+      },
+    );
+    expect(fromFile.jsdoc).toBe(false);
+    expect(fromFile.format).toBe(true);
+    expect(fromFile.includeClient).toBe(false);
+    expect(fromFile.schemasOnly).toBe(true);
+
+    const withDefaults = applyGeneratorOptionDefaults(fromFile);
+    expect(withDefaults.jsdoc).toBe(false);
+    expect(withDefaults.format).toBe(true);
+    expect(withDefaults.includeClient).toBe(false);
+    expect(withDefaults.schemasOnly).toBe(true);
+  });
+
+  test("applyGeneratorOptionDefaults fills only missing booleans", () => {
+    const defaults = applyGeneratorOptionDefaults({});
+    expect(defaults).toEqual({
+      format: false,
+      schemasOnly: false,
+      includeClient: true,
+      jsdoc: true,
+    });
   });
 
   test("resolveValidationFromOptions accepts object form", () => {

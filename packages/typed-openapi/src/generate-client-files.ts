@@ -15,7 +15,7 @@ import { generateTanstackQueryFile } from "./tanstack-query.generator.ts";
 import { prettify } from "./format.ts";
 import type { NameTransformOptions } from "./types.ts";
 import { generateDefaultFetcher } from "./default-fetcher.generator.ts";
-import { findDefaultConfigPath, loadConfigFile, mergeConfigWithCli, validationFromConfig } from "./config.ts";
+import { findDefaultConfigPath, loadConfigFile, mergeConfigWithCli, applyGeneratorOptionDefaults, validationFromConfig } from "./config.ts";
 
 const cwd = process.cwd();
 const now = new Date();
@@ -101,7 +101,9 @@ export async function generateClientFiles(input: string, options: GenerateClient
   const fileConfig = configPath ? loadConfigFile(configPath) : undefined;
   if (configPath) console.log(`Using config ${configPath}`);
 
-  const merged = mergeConfigWithCli(fileConfig, options as Record<string, unknown>) as GenerateClientFilesOptions;
+  const merged = applyGeneratorOptionDefaults(
+    mergeConfigWithCli(fileConfig, options as Record<string, unknown>) as GenerateClientFilesOptions,
+  ) as GenerateClientFilesOptions;
   const runtime = (merged.runtime ?? "none") as NonNullable<GenerateClientFilesOptions["runtime"]>;
 
   // TODO CLI option to save that file?

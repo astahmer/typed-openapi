@@ -70,4 +70,67 @@ describe("spec filters + treeShakeSchemas", () => {
     expect(src).not.toContain("/orders");
     expect(src).not.toContain("export type User");
   });
+
+  test("invalid endpointPatterns regex throws a clear config error", async () => {
+    const doc = (await SwaggerParser.parse(fixturePath)) as OpenAPIObject;
+    const ctx = mapOpenApiEndpoints(doc);
+    expect(() =>
+      applySpecFilters(ctx.endpointList, ctx.refs, {
+        endpointPatterns: ["[unterminated"],
+      }),
+    ).toThrow(/Invalid endpointPatterns\[0\] regex/);
+  });
+
+  test("tree-shake keeps schemas only referenced via OAS not", async () => {
+    const doc = {
+      openapi: "3.0.3",
+      info: { title: "not-deps", version: "1.0.0" },
+      paths: {
+        "/item": {
+          get: {
+            operationId: "getItem",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "application/json": {
+                    schema: { $ref: "#/components/schemas/Item" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      components: {
+        schemas: {
+          Forbidden: { type: "string", enum: ["nope"] },
+          Item: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+            },
+            not: { $ref: "#/components/schemas/Forbidden" },
+          },
+          Unused: { type: "string" },
+        },
+      },
+    } as OpenAPIObject;
+
+    const ctx = mapOpenApiEndpoints(doc);
+    const filtered = applySpecFilters(ctx.endpointList, ctx.refs, {
+      endpointPatterns: ["/item"],
+    });
+    expect([...filtered.keptSchemaNames!].sort()).toEqual(["Forbidden", "Item"]);
+
+    const src = generateFile({
+      ...ctx,
+      endpointPatterns: ["/item"],
+      schemasOnly: true,
+      includeClient: false,
+    });
+    expect(src).toContain("export type Item");
+    expect(src).toContain("export type Forbidden");
+    expect(src).not.toContain("export type Unused");
+  });
 });
