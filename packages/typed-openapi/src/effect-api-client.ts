@@ -11,19 +11,30 @@ export const effectApiClientBody = (args: {
   const { validateSide, runtime, endpointList, validateHelpers } = args;
   const hasRuntime = runtime !== "none";
   const isEffectSchema = runtime === "effect" || runtime === "effect3";
-  const decodeFn = runtime === "effect3" ? "S.decodeUnknown" : "Schema.decodeUnknown";
   const errorChannel = isEffectSchema
-    ? "TypedStatusError | HttpClientError | ParseError | Error"
+    ? runtime === "effect3"
+      ? "TypedStatusError | HttpClientError | ParseError | Error"
+      : "TypedStatusError | HttpClientError | SchemaError | Error"
     : "TypedStatusError | HttpClientError | Error";
 
-  const effectImports = isEffectSchema
-    ? `import { Effect } from "effect";
-import type { ParseError } from "effect/ParseResult";`
-    : `import { Effect } from "effect";`;
+  const effectImports =
+    runtime === "effect"
+      ? `import type { SchemaError } from "effect/SchemaError";`
+      : runtime === "effect3"
+        ? `import { Effect } from "effect";
+import type { ParseError } from "@effect/schema/ParseResult";`
+        : `import { Effect } from "effect";`;
 
   const validateValue = (side: "input" | "output", valueExpr: string, schemaExpr: string, assign: string) => {
     if (!hasRuntime) return "";
     if (isEffectSchema) {
+      const decodeElse =
+        runtime === "effect3"
+          ? `${assign} yield* Effect.try({
+              try: () => S.decodeUnknownSync(${schemaExpr} as S.Schema<unknown, unknown, never>)(${valueExpr}),
+              catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+            });`
+          : `${assign} yield* Schema.decodeUnknownEffect(${schemaExpr} as Schema.Codec<unknown>)(${valueExpr});`;
       return `
           if (self.onValidate) {
             ${assign} yield* Effect.tryPromise({
@@ -39,7 +50,7 @@ import type { ParseError } from "effect/ParseResult";`
               catch: (e) => (e instanceof Error ? e : new Error(String(e))),
             });
           } else {
-            ${assign} yield* ${decodeFn}(${schemaExpr} as ${runtime === "effect3" ? "S.Schema<unknown, unknown, never>" : "Schema.Schema<unknown, unknown, never>"})(${valueExpr});
+            ${decodeElse}
           }`;
     }
     return `

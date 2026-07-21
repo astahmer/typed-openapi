@@ -122,8 +122,8 @@ export const effectDefaultHelperName = (baseExpr: string, lit: string): string =
 
 /**
  * Effect Schema: intern a reusable defaulted schema and return its name.
- * - `optionalWith` for Struct fields (kind: "prop")
- * - `transform(UndefinedOr)` for standalone values (kind: "value")
+ * - v3 (`effect3`): `optionalWith` (prop) / `transform(UndefinedOr)` (value)
+ * - v4 (`effect`): `withDecodingDefaultType(Effect.succeed(...))` for both
  */
 export const internEffectDefault = (
   baseExpr: string,
@@ -131,11 +131,12 @@ export const internEffectDefault = (
   schemaNs: string,
   ctx: EmitCtx,
   kind: "prop" | "value",
+  api: "v3" | "v4" = "v3",
 ): string | undefined => {
   const lit = jsLiteral(meta.default);
   if (lit === undefined) return undefined;
   const map = ctx.internedDefaults ?? (ctx.internedDefaults = new Map());
-  const key = `${kind}:${baseExpr}:${lit}`;
+  const key = `${api}:${kind}:${baseExpr}:${lit}`;
   const existing = map.get(key);
   if (existing) return existing.name;
 
@@ -147,9 +148,11 @@ export const internEffectDefault = (
   }
 
   const decl =
-    kind === "prop"
-      ? `const ${name} = ${schemaNs}.optionalWith(${baseExpr}, { default: () => ${lit} });`
-      : `const ${name} = ${schemaNs}.transform(${schemaNs}.UndefinedOr(${baseExpr}), ${baseExpr}, { strict: true, decode: (i) => (i === undefined ? ${lit} : i), encode: (a) => a });`;
+    api === "v4"
+      ? `const ${name} = ${baseExpr}.pipe(${schemaNs}.withDecodingDefaultType(Effect.succeed(${lit})));`
+      : kind === "prop"
+        ? `const ${name} = ${schemaNs}.optionalWith(${baseExpr}, { default: () => ${lit} });`
+        : `const ${name} = ${schemaNs}.transform(${schemaNs}.UndefinedOr(${baseExpr}), ${baseExpr}, { strict: true, decode: (i) => (i === undefined ? ${lit} : i), encode: (a) => a });`;
 
   map.set(key, { name, decl });
   return name;

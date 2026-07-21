@@ -127,6 +127,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           {
             kind: "object",
             properties,
+            required: [...new Set(objs.flatMap((o) => o.required))],
             partial: objs.every((o) => o.partial),
             additionalProperties: objs.some((o) => o.additionalProperties === true)
               ? true

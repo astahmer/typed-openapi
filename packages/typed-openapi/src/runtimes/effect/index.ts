@@ -18,42 +18,47 @@ import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
 const S = "Schema";
 
-/** Effect Schema refinements use `.pipe(Schema.minLength(...))`, not `.check(is*)`. */
-const pipeFilters = (base: string, filters: string[]): string => {
+/** Effect Schema v4 refinements use `.check(Schema.is*)`. */
+const checkFilters = (base: string, filters: string[]): string => {
   if (!filters.length) return base;
-  return `${base}.pipe(${filters.join(", ")})`;
+  return `${base}.check(${filters.join(", ")})`;
 };
 
 const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx): string => {
   const c = applyStringConstraints(node.constraints, ctx.validation);
   const filters: string[] = [];
   let base = `${S}.String`;
-  if (c.format === "uuid") base = `${S}.UUID`;
-  else if (c.format === "uri" || c.format === "url") base = `${S}.URL`;
-  else if (c.format === "email") {
-    filters.push(`${S}.pattern(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/)`);
+  if (c.format === "uuid") {
+    filters.push(`${S}.isUUID()`);
+  } else if (c.format === "email") {
+    filters.push(`${S}.isPattern(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/)`);
   }
-  if (c.minLength !== undefined) filters.push(`${S}.minLength(${c.minLength})`);
-  if (c.maxLength !== undefined) filters.push(`${S}.maxLength(${c.maxLength})`);
-  if (c.pattern !== undefined) filters.push(`${S}.pattern(new RegExp(${quote(c.pattern)}))`);
-  return pipeFilters(base, filters);
+  // uri/url stay as String so OpenAPI patterns/lengths still typecheck (URLFromString is URL).
+  if (c.minLength !== undefined) filters.push(`${S}.isMinLength(${c.minLength})`);
+  if (c.maxLength !== undefined) filters.push(`${S}.isMaxLength(${c.maxLength})`);
+  if (c.pattern !== undefined) filters.push(`${S}.isPattern(new RegExp(${quote(c.pattern)}))`);
+  return checkFilters(base, filters);
 };
 
 const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
   const c = applyNumberConstraints(node.constraints, ctx.validation);
   const filters: string[] = [];
-  if (node.integer && ctx.coercePrimitives) filters.push(`${S}.int()`);
-  if (c.minimum !== undefined) filters.push(`${S}.greaterThanOrEqualTo(${c.minimum})`);
-  if (c.maximum !== undefined) filters.push(`${S}.lessThanOrEqualTo(${c.maximum})`);
-  if (c.exclusiveMinimum !== undefined) filters.push(`${S}.greaterThan(${c.exclusiveMinimum})`);
-  if (c.exclusiveMaximum !== undefined) filters.push(`${S}.lessThan(${c.exclusiveMaximum})`);
-  if (c.multipleOf !== undefined) filters.push(`${S}.multipleOf(${c.multipleOf})`);
+  if (node.integer && ctx.coercePrimitives) filters.push(`${S}.isInt()`);
+  if (c.minimum !== undefined) filters.push(`${S}.isGreaterThanOrEqualTo(${c.minimum})`);
+  if (c.maximum !== undefined) filters.push(`${S}.isLessThanOrEqualTo(${c.maximum})`);
+  if (c.exclusiveMinimum !== undefined) filters.push(`${S}.isGreaterThan(${c.exclusiveMinimum})`);
+  if (c.exclusiveMaximum !== undefined) filters.push(`${S}.isLessThan(${c.exclusiveMaximum})`);
+  if (c.multipleOf !== undefined) filters.push(`${S}.isMultipleOf(${c.multipleOf})`);
   const base = ctx.coercePrimitives ? `${S}.NumberFromString` : node.integer ? `${S}.Int` : `${S}.Number`;
-  return pipeFilters(base, filters);
+  return checkFilters(base, filters);
 };
 
-/** Effect Schema.Record requires `{ key, value }` (2-arg form fails at runtime/types). */
-const emitRecord = (key: string, value: string) => `${S}.Record({ key: ${key}, value: ${value} })`;
+/** Effect Schema v4 Record is positional `(key, value)`. */
+const emitRecord = (key: string, value: string) => `${S}.Record(${key}, ${value})`;
+
+/** Coerce query/path booleans from string/number (BooleanFromString removed in v4). */
+const emitBooleanCoerce = () =>
+  `${S}.Union([${S}.Boolean, ${S}.String, ${S}.Number]).pipe(${S}.decodeTo(${S}.Boolean, SchemaTransformation.transform({ decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })))`;
 
 const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
@@ -69,7 +74,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     case "number":
       return emitNumber(node, ctx);
     case "boolean":
-      return ctx.coercePrimitives ? `${S}.BooleanFromString` : `${S}.Boolean`;
+      return ctx.coercePrimitives ? emitBooleanCoerce() : `${S}.Boolean`;
     case "null":
       return `${S}.Null`;
     case "unknown":
@@ -81,17 +86,15 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     case "literal":
       return `${S}.Literal(${literalValue(node.value)})`;
     case "enum":
-      return `${S}.Union(${node.values.map((v) => `${S}.Literal(${literalValue(v)})`).join(", ")})`;
+      return `${S}.Literals([${node.values.map((v) => literalValue(v)).join(", ")}])`;
     case "array": {
       const c = applyArrayConstraints(node.constraints, ctx.validation);
       let expr = `${S}.Array(${emitNode(node.items, ctx)})`;
       const filters: string[] = [];
-      if (c.minItems !== undefined) filters.push(`${S}.minItems(${c.minItems})`);
-      if (c.maxItems !== undefined) filters.push(`${S}.maxItems(${c.maxItems})`);
-      if (c.uniqueItems) {
-        filters.push(`${S}.filter((arr) => new Set(arr).size === arr.length, { message: () => "uniqueItems" })`);
-      }
-      return pipeFilters(expr, filters);
+      if (c.minItems !== undefined) filters.push(`${S}.isMinLength(${c.minItems})`);
+      if (c.maxItems !== undefined) filters.push(`${S}.isMaxLength(${c.maxItems})`);
+      if (c.uniqueItems) filters.push(`${S}.isUnique()`);
+      return checkFilters(expr, filters);
     }
     case "tuple": {
       const items = node.items.map((i) => emitNode(i, ctx)).join(", ");
@@ -99,11 +102,11 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       return `${S}.Tuple([${items}])`;
     }
     case "union":
-      return `${S}.Union(${node.members.map((m) => emitNode(m, ctx)).join(", ")})`;
+      return `${S}.Union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
     case "intersection": {
       const nonNull = node.members.filter((m) => m.kind !== "null").map((m) => isNullOr(m) ?? m);
-      // Schema.extend fails when both sides are Structs with overlapping keys whose
-      // property schemas cannot intersect (common OpenAPI allOf). Merge object shapes instead.
+      // mapFields(Struct.assign) fails on overlapping keys with incompatible property
+      // schemas (common OpenAPI allOf). Merge object shapes instead.
       if (nonNull.length > 0 && nonNull.every((m) => m.kind === "object")) {
         const objs = nonNull as Extract<SchemaNode, { kind: "object" }>[];
         const properties: Record<string, SchemaNode> = {};
@@ -131,6 +134,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           {
             kind: "object",
             properties,
+            required: [...new Set(objs.flatMap((o) => o.required))],
             partial: objs.every((o) => o.partial),
             additionalProperties: objs.some((o) => o.additionalProperties === true)
               ? true
@@ -142,15 +146,29 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         );
       }
       if (nonNull.length === 0) return `${S}.Null`;
-      return nonNull.map((m) => emitNode(m, ctx)).reduce((acc, cur) => `${S}.extend(${acc}, ${cur})`);
+      return nonNull.slice(1).reduce(
+        (acc, member) => {
+          if (member.kind === "record") {
+            return `${S}.StructWithRest(${acc}, [${emitRecord(emitNode(member.key, ctx), emitNode(member.value, ctx))}])`;
+          }
+          if (member.kind === "object" && member.additionalProperties && Object.keys(member.properties).length === 0) {
+            const value =
+              member.additionalProperties === true ? `${S}.Unknown` : emitNode(member.additionalProperties, ctx);
+            return `${S}.StructWithRest(${acc}, [${emitRecord(`${S}.String`, value)}])`;
+          }
+          const cur = emitNode(member, ctx);
+          return `${acc}.mapFields(Struct.assign((${cur}).fields))`;
+        },
+        emitNode(nonNull[0]!, ctx),
+      );
     }
     case "not": {
       const inner = emitNode(node.schema, ctx);
-      return `${S}.Unknown.pipe(${S}.filter((data) => !${S}.is(${inner})(data), { message: () => "not" }))`;
+      return `${S}.Unknown.check(${S}.makeFilter((data) => !${S}.is(${inner})(data)))`;
     }
     case "ref": {
       if (node.name === "Partial" && node.generics?.[0]) {
-        // Schema.partial cannot wrap Transformations (e.g. Int.pipe(...)); force optional props instead.
+        // Schema.partial → force optional props (avoids wrapping Transformations).
         return emitNode(node.generics[0], { ...ctx, forceOptionalProps: true });
       }
       if (node.name === "Record" && node.generics?.length === 2) {
@@ -168,31 +186,23 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         .map(({ key, optional, expr, meta }) => {
           const lit = jsLiteral(meta.default);
           if (lit !== undefined) {
-            const named = internEffectDefault(expr, meta, S, ctx, "prop");
-            return `${objectKey(key)}: ${named ?? `${S}.optionalWith(${expr}, { default: () => ${lit} })`}`;
+            const named = internEffectDefault(expr, meta, S, ctx, "prop", "v4");
+            return `${objectKey(key)}: ${named ?? `${expr}.pipe(${S}.withDecodingDefaultType(Effect.succeed(${lit})))`}`;
           }
           return `${objectKey(key)}: ${optional || forceOptional ? `${S}.optional(${expr})` : expr}`;
         })
         .join(", ");
       let expr = `${S}.Struct({ ${body} })`;
       if (node.additionalProperties === true) {
-        expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, `${S}.Unknown`)})`;
+        expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, `${S}.Unknown`)}])`;
       } else if (typeof node.additionalProperties === "object") {
-        expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, emitNode(node.additionalProperties, ctx))})`;
+        expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, emitNode(node.additionalProperties, ctx))}])`;
       }
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       const filters: string[] = [];
-      if (oc.minProperties !== undefined) {
-        filters.push(
-          `${S}.filter((obj) => Object.keys(obj).length >= ${oc.minProperties}, { message: () => "minProperties" })`,
-        );
-      }
-      if (oc.maxProperties !== undefined) {
-        filters.push(
-          `${S}.filter((obj) => Object.keys(obj).length <= ${oc.maxProperties}, { message: () => "maxProperties" })`,
-        );
-      }
-      return pipeFilters(expr, filters);
+      if (oc.minProperties !== undefined) filters.push(`${S}.isMinProperties(${oc.minProperties})`);
+      if (oc.maxProperties !== undefined) filters.push(`${S}.isMaxProperties(${oc.maxProperties})`);
+      return checkFilters(expr, filters);
     }
     default: {
       const _e: never = node;
@@ -204,15 +214,15 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const inner = emitNodeInner(node, ctx);
   if (ctx.omitDefaults || node.meta.default === undefined) return inner;
-  // Object/struct defaults are applied per-property via optionalWith.
+  // Object/struct defaults are applied per-property via withDecodingDefaultType.
   if (node.kind === "object") return inner;
-  return internEffectDefault(inner, node.meta, S, ctx, "value") ?? inner;
+  return internEffectDefault(inner, node.meta, S, ctx, "value", "v4") ?? inner;
 };
 
 export const effectAdapter: RuntimeAdapter = {
   name: "effect",
-  imports: () => `import { Schema } from "effect";`,
-  inferType: (expr) => `typeof ${expr}.Type`,
+  imports: () => `import { Effect, Schema, SchemaTransformation, Struct } from "effect";`,
+  inferType: (expr) => `Schema.Schema.Type<typeof ${expr}>`,
   emitNode,
   wrapLazy: (_name, body) => `${S}.suspend(() => ${body})`,
   literalString: (value) => `${S}.Literal(${quote(value)})`,
@@ -220,12 +230,12 @@ export const effectAdapter: RuntimeAdapter = {
   never: () => `${S}.Never`,
   emitNamedSchema: (name, node, ctx) => {
     const childCtx = { ...ctx, currentSchemaName: name };
-    // Named NullOr wrappers break Schema.extend($ref) — keep const as the inner schema and
-    // surface nullability on the exported TypeScript type instead.
+    // Named NullOr wrappers break struct field assign on $ref — keep const as the
+    // inner schema and surface nullability on the exported TypeScript type instead.
     const nullInner = isNullOr(node);
     let body = emitNode(nullInner ?? node, childCtx);
     if (ctx.recursiveNames.has(name)) body = `${S}.suspend(() => ${body})`;
-    const typeExpr = nullInner ? `typeof ${name}.Type | null` : `typeof ${name}.Type`;
+    const typeExpr = nullInner ? `Schema.Schema.Type<typeof ${name}> | null` : `Schema.Schema.Type<typeof ${name}>`;
     return `export const ${name} = ${body};\nexport type ${name} = ${typeExpr};`;
   },
 };

@@ -905,7 +905,7 @@ const generateValidateHelpers = (ctx: GeneratorContext): string => {
       case "valibot":
         return `v.parse(schema as v.GenericSchema, value)`;
       case "effect":
-        return `Schema.decodeUnknownSync(schema as Schema.Schema<unknown, unknown, never>)(value)`;
+        return `Schema.decodeUnknownSync(schema as Schema.Codec<unknown>)(value)`;
       case "effect3":
         return `S.decodeUnknownSync(schema as S.Schema<unknown, unknown, never>)(value)`;
       case "arktype":

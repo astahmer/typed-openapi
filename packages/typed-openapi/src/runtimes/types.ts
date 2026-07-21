@@ -36,12 +36,12 @@ export type EmitCtx = {
    */
   coercePrimitives?: boolean;
   /**
-   * When true, do not wrap with defaults (caller applies `optionalWith` / `.default` itself).
+   * When true, do not wrap with defaults (caller applies default helpers / `.default` itself).
    */
   omitDefaults?: boolean;
   /**
    * When true, emit every object property as optional (Effect/Effect3 substitute for
-   * `Schema.partial`, which cannot wrap Transformation schemas like `Int.pipe(...)`).
+   * partial/mapFields, which cannot wrap Transformation schemas like `Int.check(...)`).
    */
   forceOptionalProps?: boolean;
   /**
