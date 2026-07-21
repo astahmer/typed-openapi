@@ -175,8 +175,15 @@ export class EffectApiClient {
     return Effect.gen(function* () {
       // Implementation reads a loose param bag; call sites stay typed via MaybeOptionalArg<>.
       const requestParams = params[0] as
-        | (EndpointParameters & { overrides?: RequestInit; validate?: ValidateSide })
+        | (EndpointParameters & {
+            overrides?: RequestInit;
+            validate?: ValidateSide;
+            withResponse?: boolean;
+            throwOnStatusError?: boolean;
+          })
         | undefined;
+      const withResponse = Boolean(requestParams?.withResponse);
+      const throwOnStatusError = requestParams?.throwOnStatusError ?? (withResponse ? false : true);
       ${
         hasRuntime
           ? `const validateSide: ValidateSide = requestParams?.validate ?? self.validate;
@@ -278,14 +285,21 @@ export class EffectApiClient {
 
       ${outputBlock}
 
+      const typedResponse = Object.assign(response, {
+        data,
+        json: () => Promise.resolve(data),
+      });
+
       if ((errorStatusCodes as readonly number[]).includes(response.status)) {
-        const typedResponse = Object.assign(response, { data, json: () => Promise.resolve(data) });
-        return yield* Effect.fail(
-          new TypedStatusError(typedResponse as TypedErrorResponse<unknown, ErrorStatusCode, unknown>),
-        );
+        if (throwOnStatusError) {
+          return yield* Effect.fail(
+            new TypedStatusError(typedResponse as TypedErrorResponse<unknown, ErrorStatusCode, unknown>),
+          );
+        }
+        return (withResponse ? typedResponse : data) as InferSuccessData<TEndpoint>;
       }
 
-      return data as InferSuccessData<TEndpoint>;
+      return (withResponse ? typedResponse : data) as InferSuccessData<TEndpoint>;
     });
   }
 

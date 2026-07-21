@@ -51,6 +51,10 @@ describe("encodeRequestBody", () => {
     expect(encodeRequestBody("binary", bytes).body).toBe(bytes);
   });
 
+  test("binary rejects plain objects instead of String(obj)", () => {
+    expect(() => encodeRequestBody("binary", { nope: true })).toThrow(/requestFormat "binary"/);
+  });
+
   test("text stringifies", () => {
     expect(encodeRequestBody("text", 42)).toEqual({ body: "42", contentType: "text/plain" });
   });
@@ -63,6 +67,8 @@ describe("default fetcher + client requestFormat wiring", () => {
     expect(src).toContain('case "form-data"');
     expect(src).toContain('case "binary"');
     expect(src).toContain("type RequestFormat");
+    expect(src).toContain('typeof input.parameters.cookie === "object"');
+    expect(src).toContain('typeof input.parameters.header === "object"');
   });
 
   test("generated client passes requestFormat from endpointRequestFormats", () => {

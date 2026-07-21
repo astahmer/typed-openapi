@@ -19,6 +19,10 @@ describe("tanstack + EffectApiClient", () => {
     expect(file).toContain('import { Effect } from "effect"');
     expect(file).toContain("EffectApiClient");
     expect(file).toContain("Effect.runPromise");
+    expect(file).toContain("withResponse: true");
+    expect(file).toContain("throwOnStatusError: false");
+    expect(file).toContain("response.status");
+    expect(file).not.toContain("status: 200");
     expect(file).not.toContain("await this.client.get(path, requestParams as never)");
     expect(file).toContain("cookie?: Record<string, unknown>");
   });

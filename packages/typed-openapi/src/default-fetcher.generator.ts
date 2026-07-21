@@ -71,7 +71,7 @@ const ${fetcherName}: Fetcher["fetch"] = async (input) => {
   }
 
   // Cookie params (OpenAPI \`in: cookie\`)
-  if (input.parameters?.cookie) {
+  if (input.parameters?.cookie && typeof input.parameters.cookie === "object") {
     const parts = Object.entries(input.parameters.cookie)
       .filter(([, value]) => value != null)
       .map(([key, value]) => \`\${key}=\${String(value)}\`);
@@ -91,7 +91,7 @@ const ${fetcherName}: Fetcher["fetch"] = async (input) => {
   }
 
   // Add custom headers
-  if (input.parameters?.header) {
+  if (input.parameters?.header && typeof input.parameters.header === "object") {
     Object.entries(input.parameters.header).forEach(([key, value]) => {
       if (value != null) {
         headers.set(key, String(value));

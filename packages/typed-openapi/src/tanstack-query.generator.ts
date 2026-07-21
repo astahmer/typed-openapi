@@ -57,11 +57,17 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
     .join("\n");
 
   const mutationFnBody = isEffectClient
-    ? `const data = await Effect.runPromise((this.client as any)[method](path, {
+    ? `const response = await Effect.runPromise((this.client as any)[method](path, {
                 ...params as any,
+                withResponse: true,
+                throwOnStatusError: false,
             }) as Effect.Effect<any, unknown>);
-                // EffectApiClient fails the Effect on error statuses — no Response envelope.
-                const finalResponse = withResponse ? ({ ok: true as const, status: 200, data } as never) : data;
+
+                if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+                    throw new TypedStatusError(response as never);
+                }
+
+                const finalResponse = withResponse ? response : response.data;
                 const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
                 return res as never;`
     : `const response = await (this.client as any)[method](path, {

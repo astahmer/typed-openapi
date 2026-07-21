@@ -8,8 +8,8 @@ import { setupServer } from "msw/node";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   createEffectApiClient,
+  HttpClientError,
   TypedStatusError,
-  type HttpClientError,
 } from "../../tmp/tstyche/effect-client/none/client.ts";
 
 const mockPets = [{ id: 1, name: "Fluffy", photoUrls: [] as string[], status: "available" as const }];
@@ -143,8 +143,6 @@ describe("EffectApiClient MSW", () => {
       }),
     );
     controller.abort();
-    await expect(fiber).rejects.toSatisfy(
-      (e: unknown) => e instanceof Error || (e as HttpClientError)?.name === "HttpClientError",
-    );
+    await expect(fiber).rejects.toBeInstanceOf(HttpClientError);
   });
 });

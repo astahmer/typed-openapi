@@ -55,7 +55,9 @@ export const encodeRequestBody = (
       if (typeof body === "string" || body instanceof Blob || body instanceof ArrayBuffer || ArrayBuffer.isView(body)) {
         return { body: body as BodyInit, contentType: "application/octet-stream" };
       }
-      return { body: String(body), contentType: "application/octet-stream" };
+      throw new TypeError(
+        `requestFormat "binary" expects string | Blob | ArrayBuffer | ArrayBufferView, got ${Object.prototype.toString.call(body)}`,
+      );
     }
     case "text":
       return { body: String(body), contentType: "text/plain" };
