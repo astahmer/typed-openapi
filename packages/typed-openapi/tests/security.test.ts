@@ -52,31 +52,31 @@ describe("securitySchemes → auth helpers", () => {
     expect(src).not.toContain("configureFetcher");
   });
 
-  test("cookie apiKey emits cookie header merge (AUTH-3 encoding gap)", () => {
+  test("cookie apiKey emits cookie header merge with encodeURIComponent", () => {
     const src = generateAuthHelpersSource([
       { name: "session", prop: "session", type: "apiKey", in: "cookie", paramName: "sid" },
     ]);
     expect(src).toContain('headers.get("cookie")');
     expect(src).toContain('"sid="');
-    // Current behavior: raw concat, no encodeURIComponent (see AUTH-3)
-    expect(src).not.toContain("encodeURIComponent");
+    expect(src).toContain("encodeURIComponent");
   });
 
-  test("mutualTLS still emits AuthCredentials field and Bearer apply (AUTH-2)", () => {
+  test("mutualTLS emits credentials field but does not apply Bearer", () => {
     const src = generateAuthHelpersSource([{ name: "mtls", prop: "mtls", type: "mutualTLS" }]);
     expect(src).toContain('"mtls"?: string');
-    expect(src).toContain('headers.set("Authorization", "Bearer "');
+    expect(src).not.toContain('headers.set("Authorization"');
   });
 
-  test("Bearer is always prefixed (AUTH-1 current behavior)", () => {
+  test("Bearer tokens already prefixed are not double-prefixed", () => {
     const src = generateAuthHelpersSource([{ name: "oauth", prop: "oauth", type: "oauth2", scheme: "bearer" }]);
-    expect(src).toMatch(/"Bearer " \+ auth\[/);
-    expect(src).not.toContain("startsWith");
+    expect(src).toContain("/^bearer\\s+/i");
+    expect(src).toContain('"Bearer " + token');
   });
 
-  test("http digest falls through to Bearer (AUTH-4)", () => {
+  test("http digest is unsupported and skipped in applyAuth", () => {
     const src = generateAuthHelpersSource([{ name: "digest", prop: "digest", type: "http", scheme: "digest" }]);
-    expect(src).toContain('headers.set("Authorization", "Bearer "');
+    expect(src).toContain('"digest"?: string');
+    expect(src).not.toContain('headers.set("Authorization"');
     expect(src).not.toContain("Digest");
   });
 

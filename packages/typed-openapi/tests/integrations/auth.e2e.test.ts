@@ -70,11 +70,11 @@ describe("applyAuth e2e", () => {
     const headers = new Headers();
     headers.set("cookie", "other=1");
     const url = new URL("https://api.example.com/");
-    mod.applyAuth(headers, url, { session: "abc" });
-    expect(headers.get("cookie")).toBe("other=1; sid=abc");
+    mod.applyAuth(headers, url, { session: "a b;c" });
+    expect(headers.get("cookie")).toBe("other=1; sid=" + encodeURIComponent("a b;c"));
   });
 
-  test("double Bearer when token already prefixed (AUTH-1)", async () => {
+  test("prefixed Bearer token is not doubled", async () => {
     rmSync(tmp, { recursive: true, force: true });
     mkdirSync(tmp, { recursive: true });
 
@@ -86,6 +86,6 @@ describe("applyAuth e2e", () => {
     const headers = new Headers();
     const url = new URL("https://api.example.com/");
     mod.applyAuth(headers, url, { oauth: "Bearer already" });
-    expect(headers.get("Authorization")).toBe("Bearer Bearer already");
+    expect(headers.get("Authorization")).toBe("Bearer already");
   });
 });

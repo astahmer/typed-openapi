@@ -13,6 +13,8 @@ export type ParsedSecurityScheme = {
   /** http scheme: bearer | basic | … */
   scheme?: string;
   description?: string;
+  /** When false, scheme is parsed but applyAuth skips it (e.g. mutualTLS). */
+  supported?: boolean;
 };
 
 export const parseSecuritySchemes = (doc: OpenAPIObject): ParsedSecurityScheme[] => {
@@ -33,17 +35,21 @@ export const parseSecuritySchemes = (doc: OpenAPIObject): ParsedSecurityScheme[]
         in: scheme.in as "header" | "query" | "cookie",
         paramName: scheme.name,
         description: scheme.description,
+        supported: true,
       });
       continue;
     }
 
     if (scheme.type === "http") {
+      const httpScheme = scheme.scheme?.toLowerCase();
+      const supported = httpScheme === "basic" || httpScheme === "bearer" || !httpScheme;
       out.push({
         name,
         prop,
         type: "http",
-        scheme: scheme.scheme?.toLowerCase(),
+        scheme: httpScheme,
         description: scheme.description,
+        supported,
       });
       continue;
     }
@@ -55,14 +61,28 @@ export const parseSecuritySchemes = (doc: OpenAPIObject): ParsedSecurityScheme[]
         type: scheme.type,
         scheme: "bearer",
         description: scheme.description,
+        supported: true,
       });
       continue;
     }
 
-    out.push({ name, prop, type: scheme.type, description: scheme.description });
+    // mutualTLS and unknown types — keep in AuthCredentials for typing, but do not apply
+    out.push({
+      name,
+      prop,
+      type: scheme.type,
+      description: scheme.description,
+      supported: false,
+    });
   }
 
   return out;
+};
+
+/** Normalize bearer tokens so we never emit `Bearer Bearer …`. */
+export const normalizeBearerToken = (token: string): string => {
+  const trimmed = token.trim();
+  return /^bearer\s+/i.test(trimmed) ? trimmed.replace(/^bearer\s+/i, "").trim() : trimmed;
 };
 
 /** Emit AuthCredentials type + applyAuth helper source (no imports). */
@@ -77,11 +97,22 @@ export const applyAuth = (_headers: Headers, _url: URL, _auth: AuthCredentials):
   const fields = schemes
     .map((s) => {
       const doc = s.description ? `  /** ${s.description.replace(/\*\//g, "*\\/")} */\n` : "";
-      return `${doc}  ${JSON.stringify(s.prop)}?: string;`;
+      const unsupported =
+        s.supported === false
+          ? `  /** OpenAPI security scheme \`${s.type}\` is not applied automatically — handle outside the fetcher. */\n`
+          : "";
+      return `${doc}${unsupported}  ${JSON.stringify(s.prop)}?: string;`;
     })
     .join("\n");
 
   const applyBody = schemes
+    .filter((s) => {
+      if (s.supported === false) return false;
+      if (s.type === "apiKey") return true;
+      if (s.type === "http") return s.scheme === "basic" || s.scheme === "bearer" || !s.scheme;
+      if (s.type === "oauth2" || s.type === "openIdConnect") return true;
+      return false;
+    })
     .map((s) => {
       const key = JSON.stringify(s.prop);
       if (s.type === "apiKey") {
@@ -92,7 +123,7 @@ export const applyAuth = (_headers: Headers, _url: URL, _auth: AuthCredentials):
         if (s.in === "cookie") {
           return `  if (auth[${key}]) {
     const existing = headers.get("cookie");
-    const part = ${JSON.stringify(param + "=")} + auth[${key}];
+    const part = ${JSON.stringify(param + "=")} + encodeURIComponent(auth[${key}]!);
     headers.set("cookie", existing ? existing + "; " + part : part);
   }`;
         }
@@ -109,8 +140,12 @@ export const applyAuth = (_headers: Headers, _url: URL, _auth: AuthCredentials):
   }`;
       }
 
-      // oauth2 / openIdConnect / http bearer (default)
-      return `  if (auth[${key}]) headers.set("Authorization", "Bearer " + auth[${key}]);`;
+      // oauth2 / openIdConnect / http bearer
+      return `  if (auth[${key}]) {
+    const raw = auth[${key}]!.trim();
+    const token = /^bearer\\s+/i.test(raw) ? raw.replace(/^bearer\\s+/i, "").trim() : raw;
+    headers.set("Authorization", "Bearer " + token);
+  }`;
     })
     .join("\n");
 
@@ -121,6 +156,7 @@ ${fields}
 /**
  * Apply OpenAPI securitySchemes credentials to the outgoing request.
  * Pass tokens via \`getAuth\` on the default fetcher (or call manually).
+ * Bearer tokens may be raw or already prefixed with \`Bearer \`.
  */
 export const applyAuth = (headers: Headers, url: URL, auth: AuthCredentials): void => {
 ${applyBody}
