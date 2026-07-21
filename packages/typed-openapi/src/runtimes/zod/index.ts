@@ -34,7 +34,8 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
   if (c.pattern !== undefined) expr += `.regex(new RegExp(${quote(c.pattern)}))`;
 
   if (ctx.transformDates && (node.constraints.format === "date-time" || node.constraints.format === "date")) {
-    expr += ".transform((s) => new Date(s))";
+    expr +=
+      '.transform((s) => { const d = new Date(s); if (Number.isNaN(d.getTime())) throw new Error("Invalid Date"); return d; })';
   }
   return expr;
 };

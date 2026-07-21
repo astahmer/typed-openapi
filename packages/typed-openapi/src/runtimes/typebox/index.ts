@@ -28,10 +28,17 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
     maxLength: c.maxLength,
     pattern: c.pattern ? quote(c.pattern) : undefined,
   });
-  return opts ? `Type.String(${opts})` : `Type.String()`;
+  const base = opts ? `Type.String(${opts})` : `Type.String()`;
+  if (ctx.transformDates && (node.constraints.format === "date-time" || node.constraints.format === "date")) {
+    return `Type.Transform(${base}).Decode((s) => { const d = new Date(s); if (Number.isNaN(d.getTime())) throw new Error("Invalid Date"); return d; }).Encode((d) => d.toISOString())`;
+  }
+  return base;
 };
 
 const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx): string => {
+  if (ctx.transformBigInt && node.constraints.format === "int64") {
+    return `Type.Transform(Type.Union([Type.String(), Type.Number(), Type.BigInt()])).Decode((x) => BigInt(x as string | number | bigint)).Encode((n) => n.toString())`;
+  }
   const c = applyNumberConstraints(node.constraints, ctx.validation);
   const factory = node.integer ? "Type.Integer" : "Type.Number";
   const opts = renderOptions({

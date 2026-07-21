@@ -412,6 +412,134 @@ const generateEndpointResponseFormats = (ctx: GeneratorContext) => {
     `;
 };
 
+const collectTransformFieldKeys = (
+  node: SchemaNode,
+  dateKeys: Set<string>,
+  bigintKeys: Set<string>,
+  schemaByName: Record<string, SchemaNode>,
+  resolving: Set<string> = new Set(),
+  currentKey?: string,
+): void => {
+  switch (node.kind) {
+    case "string":
+      if (currentKey && (node.constraints.format === "date-time" || node.constraints.format === "date")) {
+        dateKeys.add(currentKey);
+      }
+      return;
+    case "number":
+      if (currentKey && node.constraints.format === "int64") bigintKeys.add(currentKey);
+      return;
+    case "object":
+      for (const [key, prop] of Object.entries(node.properties)) {
+        collectTransformFieldKeys(prop, dateKeys, bigintKeys, schemaByName, resolving, key);
+      }
+      if (typeof node.additionalProperties === "object") {
+        collectTransformFieldKeys(node.additionalProperties, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      }
+      return;
+    case "array":
+      collectTransformFieldKeys(node.items, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      return;
+    case "tuple":
+      for (const item of node.items) {
+        collectTransformFieldKeys(item, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      }
+      if (node.rest) collectTransformFieldKeys(node.rest, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      return;
+    case "union":
+    case "intersection":
+      for (const member of node.members) {
+        collectTransformFieldKeys(member, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      }
+      return;
+    case "not":
+      collectTransformFieldKeys(node.schema, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      return;
+    case "record":
+      collectTransformFieldKeys(node.value, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      return;
+    case "ref": {
+      if (resolving.has(node.name)) return;
+      const resolved = schemaByName[node.name];
+      if (!resolved) return;
+      const next = new Set(resolving);
+      next.add(node.name);
+      collectTransformFieldKeys(resolved, dateKeys, bigintKeys, schemaByName, next, currentKey);
+      return;
+    }
+    default:
+      return;
+  }
+};
+
+/** none-runtime JSON revive for date/bigint fields (key-aware; datetime-with-T always). */
+const generateNoneRuntimeReviveHelpers = (ctx: GeneratorContext): string => {
+  const schemaByName: Record<string, SchemaNode> = {};
+  for (const [node, infos] of ctx.refs.getOrderedSchemas()) {
+    if (infos.normalized) schemaByName[infos.normalized] = node;
+  }
+  for (const entry of ctx.namedSchemasForEmit ?? []) {
+    schemaByName[entry.name] = entry.node;
+  }
+
+  const dateKeys = new Set<string>();
+  const bigintKeys = new Set<string>();
+  for (const node of Object.values(schemaByName)) {
+    collectTransformFieldKeys(node, dateKeys, bigintKeys, schemaByName);
+  }
+  for (const endpoint of ctx.endpointList) {
+    for (const response of Object.values(endpoint.responses ?? {})) {
+      collectTransformFieldKeys(response, dateKeys, bigintKeys, schemaByName);
+    }
+  }
+
+  const dateKeysLit = JSON.stringify([...dateKeys].sort());
+  const bigintKeysLit = JSON.stringify([...bigintKeys].sort());
+
+  return `
+// <ReviveTransforms>
+const __DATE_KEYS = new Set<string>(${dateKeysLit});
+const __BIGINT_KEYS = new Set<string>(${bigintKeysLit});
+/** Full ISO date-time (requires \`T\`) — safe to revive without a known field name. */
+const __DATE_TIME_RE = /^\\d{4}-\\d{2}-\\d{2}T[\\d:.]+(Z|[+-]\\d{2}:?\\d{2})?$/;
+/** Date-only; only applied when the property name is in __DATE_KEYS. */
+const __DATE_ONLY_RE = /^\\d{4}-\\d{2}-\\d{2}$/;
+
+const __reviveTransforms = (value: unknown, key?: string): unknown => {
+  if (Array.isArray(value)) return value.map((item) => __reviveTransforms(item, key));
+  if (value && typeof value === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      out[k] = __reviveTransforms(v, k);
+    }
+    return out;
+  }
+  ${
+    ctx.transformDates
+      ? `if (typeof value === "string") {
+    if (__DATE_TIME_RE.test(value)) {
+      const d = new Date(value);
+      if (!Number.isNaN(d.getTime())) return d;
+    } else if (key && __DATE_KEYS.has(key) && __DATE_ONLY_RE.test(value)) {
+      const d = new Date(value);
+      if (!Number.isNaN(d.getTime())) return d;
+    }
+  }`
+      : ""
+  }
+  ${
+    ctx.transformBigInt
+      ? `if (key && __BIGINT_KEYS.has(key) && (typeof value === "number" || typeof value === "string")) {
+    try { return BigInt(value); } catch { /* keep original */ }
+  }`
+      : ""
+  }
+  return value;
+};
+// </ReviveTransforms>
+`;
+};
+
 const generateApiClient = (ctx: GeneratorContext) => {
   if (!ctx.includeClient) {
     return "";
@@ -651,28 +779,7 @@ export class TypedStatusError<TData = unknown> extends Error {
 // </TypedStatusError>
 
 ${ctx.runtime !== "none" ? generateValidateHelpers(ctx) : ""}
-${
-  ctx.runtime === "none" && ctx.transformDates
-    ? `
-// <ReviveDates>
-const __ISO_DATE_RE = /^\\d{4}-\\d{2}-\\d{2}(T[\\d:.]+(Z|[+-]\\d{2}:?\\d{2})?)?$/;
-const __reviveDates = (value: unknown): unknown => {
-  if (Array.isArray(value)) return value.map(__reviveDates);
-  if (value && typeof value === "object") {
-    const out: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(value as Record<string, unknown>)) out[k] = __reviveDates(v);
-    return out;
-  }
-  if (typeof value === "string" && __ISO_DATE_RE.test(value)) {
-    const d = new Date(value);
-    if (!Number.isNaN(d.getTime())) return d;
-  }
-  return value;
-};
-// </ReviveDates>
-`
-    : ""
-}
+${ctx.runtime === "none" && (ctx.transformDates || ctx.transformBigInt) ? generateNoneRuntimeReviveHelpers(ctx) : ""}
 
 // <ApiClient>
 export class ApiClient {
@@ -770,8 +877,8 @@ export class ApiClient {
       ) {
       try {
         ${
-          ctx.runtime === "none" && ctx.transformDates
-            ? `const json = await response.json();\n        return __reviveDates(json);`
+          ctx.runtime === "none" && (ctx.transformDates || ctx.transformBigInt)
+            ? `const json = await response.json();\n        return __reviveTransforms(json);`
             : `return await response.json();`
         }
       } catch {

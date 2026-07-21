@@ -3,7 +3,12 @@ import type { SchemaNode } from "../../schema-ir/types.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 import { irToTs } from "../../schema-ir/ir-to-ts.ts";
 
-const toTs = (node: SchemaNode) => irToTs(node, { prefixRefsWithSchemas: false });
+const toTs = (node: SchemaNode, ctx?: EmitCtx) =>
+  irToTs(node, {
+    prefixRefsWithSchemas: false,
+    transformDates: ctx?.transformDates,
+    transformBigInt: ctx?.transformBigInt,
+  });
 
 const createIs = (typeExpr: string) => `typia.createIs<${typeExpr}>()`;
 
@@ -11,6 +16,9 @@ const createIs = (typeExpr: string) => `typia.createIs<${typeExpr}>()`;
 const typiaTypeExpr = (node: SchemaNode, ctx: EmitCtx): string => {
   switch (node.kind) {
     case "string": {
+      if (ctx.transformDates && (node.constraints.format === "date-time" || node.constraints.format === "date")) {
+        return "Date";
+      }
       const c = applyStringConstraints(node.constraints, ctx.validation);
       const parts: string[] = ["string"];
       if (c.minLength !== undefined) parts.push(`tags.MinLength<${c.minLength}>`);
@@ -23,6 +31,9 @@ const typiaTypeExpr = (node: SchemaNode, ctx: EmitCtx): string => {
       return parts.length === 1 ? "string" : `(${parts.join(" & ")})`;
     }
     case "number": {
+      if (ctx.transformBigInt && node.constraints.format === "int64") {
+        return "bigint";
+      }
       const c = applyNumberConstraints(node.constraints, ctx.validation);
       const parts: string[] = [node.integer ? "(number & tags.Type<'int32'>)" : "number"];
       if (c.minimum !== undefined) parts.push(`tags.Minimum<${c.minimum}>`);
@@ -42,15 +53,15 @@ const typiaTypeExpr = (node: SchemaNode, ctx: EmitCtx): string => {
     }
     case "object": {
       // Object-level min/maxProperties lack portable typia tags; keep structural IR type.
-      return toTs(node);
+      return toTs(node, ctx);
     }
     case "ref":
       if (!node.generics?.length && node.name !== "Partial" && node.name !== "Record") {
         return node.name;
       }
-      return toTs(node);
+      return toTs(node, ctx);
     default:
-      return toTs(node);
+      return toTs(node, ctx);
   }
 };
 

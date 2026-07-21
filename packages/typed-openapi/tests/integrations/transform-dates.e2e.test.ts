@@ -21,7 +21,6 @@ describe("transform dates/bigint runtime e2e", () => {
     const dateExpr = adapter.emitNode(openApiToIr({ type: "string", format: "date-time" }, irCtx), ctx);
     const bigExpr = adapter.emitNode(openApiToIr({ type: "integer", format: "int64" }, irCtx), ctx);
 
-    // Evaluate emitted expressions against real zod
     const dateSchema = new Function("z", `return ${dateExpr}`)(z) as z.ZodType;
     const bigSchema = new Function("z", `return ${bigExpr}`)(z) as z.ZodType;
 
@@ -35,22 +34,30 @@ describe("transform dates/bigint runtime e2e", () => {
   });
 
   test("none-runtime revive helper turns ISO strings into Date", () => {
-    const __ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}(T[\d:.]+(Z|[+-]\d{2}:?\d{2})?)?$/;
-    const __reviveDates = (value: unknown): unknown => {
-      if (Array.isArray(value)) return value.map(__reviveDates);
+    // Mirrors generated __reviveTransforms: datetime-with-T always; date-only only for known keys.
+    const __DATE_KEYS = new Set(["at", "shipDate"]);
+    const __DATE_TIME_RE = /^\d{4}-\d{2}-\d{2}T[\d:.]+(Z|[+-]\d{2}:?\d{2})?$/;
+    const __DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
+    const __reviveTransforms = (value: unknown, key?: string): unknown => {
+      if (Array.isArray(value)) return value.map((item) => __reviveTransforms(item, key));
       if (value && typeof value === "object") {
         const out: Record<string, unknown> = {};
-        for (const [k, v] of Object.entries(value as Record<string, unknown>)) out[k] = __reviveDates(v);
+        for (const [k, v] of Object.entries(value as Record<string, unknown>)) out[k] = __reviveTransforms(v, k);
         return out;
       }
-      if (typeof value === "string" && __ISO_DATE_RE.test(value)) {
-        const d = new Date(value);
-        if (!Number.isNaN(d.getTime())) return d;
+      if (typeof value === "string") {
+        if (__DATE_TIME_RE.test(value)) {
+          const d = new Date(value);
+          if (!Number.isNaN(d.getTime())) return d;
+        } else if (key && __DATE_KEYS.has(key) && __DATE_ONLY_RE.test(value)) {
+          const d = new Date(value);
+          if (!Number.isNaN(d.getTime())) return d;
+        }
       }
       return value;
     };
 
-    const revived = __reviveDates({
+    const revived = __reviveTransforms({
       shipDate: "2020-01-01T00:00:00.000Z",
       name: "not-a-date",
       nested: { at: "2021-06-15" },
@@ -109,23 +116,39 @@ describe("transform dates/bigint runtime e2e", () => {
     expect(d).toBeInstanceOf(Date);
   });
 
-  test("heuristic revive also converts date-looking label strings (XF-2)", () => {
-    const __ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}(T[\d:.]+(Z|[+-]\d{2}:?\d{2})?)?$/;
-    const __reviveDates = (value: unknown): unknown => {
-      if (Array.isArray(value)) return value.map(__reviveDates);
+  test("zod invalid date string throws", async () => {
+    const adapter = getRuntimeAdapter("zod");
+    // loose validation skips iso.datetime format check so transform runs
+    const ctx = createEmitCtx(resolveValidationPolicy("loose"), new Set(), { transformDates: true });
+    const dateExpr = adapter.emitNode(openApiToIr({ type: "string", format: "date-time" }, irCtx), ctx);
+    const dateSchema = new Function("z", `return ${dateExpr}`)(z) as z.ZodType;
+    expect(() => dateSchema.parse("not-a-date")).toThrow(/Invalid Date/);
+  });
+
+  test("date-only label strings are not revived without known date keys", () => {
+    const __DATE_KEYS = new Set<string>();
+    const __DATE_TIME_RE = /^\d{4}-\d{2}-\d{2}T[\d:.]+(Z|[+-]\d{2}:?\d{2})?$/;
+    const __DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
+    const __reviveTransforms = (value: unknown, key?: string): unknown => {
+      if (Array.isArray(value)) return value.map((item) => __reviveTransforms(item, key));
       if (value && typeof value === "object") {
         const out: Record<string, unknown> = {};
-        for (const [k, v] of Object.entries(value as Record<string, unknown>)) out[k] = __reviveDates(v);
+        for (const [k, v] of Object.entries(value as Record<string, unknown>)) out[k] = __reviveTransforms(v, k);
         return out;
       }
-      if (typeof value === "string" && __ISO_DATE_RE.test(value)) {
-        const d = new Date(value);
-        if (!Number.isNaN(d.getTime())) return d;
+      if (typeof value === "string") {
+        if (__DATE_TIME_RE.test(value)) {
+          const d = new Date(value);
+          if (!Number.isNaN(d.getTime())) return d;
+        } else if (key && __DATE_KEYS.has(key) && __DATE_ONLY_RE.test(value)) {
+          const d = new Date(value);
+          if (!Number.isNaN(d.getTime())) return d;
+        }
       }
       return value;
     };
 
-    const revived = __reviveDates({ label: "2020-01-01" }) as { label: Date };
-    expect(revived.label).toBeInstanceOf(Date);
+    const revived = __reviveTransforms({ label: "2020-01-01" }) as { label: string };
+    expect(revived.label).toBe("2020-01-01");
   });
 });

@@ -59,8 +59,10 @@ describe("transform dates / bigint", () => {
 
     expect(file).toContain("shipDate: Date");
     expect(file).toContain("id: bigint");
-    expect(file).toContain("__reviveDates");
-    expect(file).toContain("return __reviveDates(json)");
+    expect(file).toContain("__reviveTransforms");
+    expect(file).toContain("return __reviveTransforms(json)");
+    expect(file).toContain("__BIGINT_KEYS");
+    expect(file).toContain("__DATE_KEYS");
   });
 
   test("zod emit transforms date-time and int64", () => {
@@ -72,7 +74,8 @@ describe("transform dates / bigint", () => {
     const dateNode = openApiToIr({ type: "string", format: "date-time" }, irCtx);
     const int64Node = openApiToIr({ type: "integer", format: "int64" }, irCtx);
 
-    expect(adapter.emitNode(dateNode, ctx)).toContain(".transform((s) => new Date(s))");
+    expect(adapter.emitNode(dateNode, ctx)).toContain("Invalid Date");
+    expect(adapter.emitNode(dateNode, ctx)).toContain("new Date(s)");
     expect(adapter.emitNode(int64Node, ctx)).toContain("z.coerce.bigint()");
   });
 
@@ -80,7 +83,8 @@ describe("transform dates / bigint", () => {
     const adapter = getRuntimeAdapter("valibot");
     const ctx = createEmitCtx(resolveValidationPolicy("strict"), new Set(), { transformDates: true });
     const dateNode = openApiToIr({ type: "string", format: "date-time" }, irCtx);
-    expect(adapter.emitNode(dateNode, ctx)).toContain("v.transform((s) => new Date(s))");
+    expect(adapter.emitNode(dateNode, ctx)).toContain("Invalid Date");
+    expect(adapter.emitNode(dateNode, ctx)).toContain("new Date(s)");
   });
 
   test("valibot emit transforms int64 to bigint", () => {
@@ -98,7 +102,8 @@ describe("transform dates / bigint", () => {
     });
     const dateNode = openApiToIr({ type: "string", format: "date-time" }, irCtx);
     const int64Node = openApiToIr({ type: "integer", format: "int64" }, irCtx);
-    expect(adapter.emitNode(dateNode, ctx)).toContain(".pipe((s) => new Date(s as string))");
+    expect(adapter.emitNode(dateNode, ctx)).toContain("Invalid Date");
+    expect(adapter.emitNode(dateNode, ctx)).toContain("new Date(s as string)");
     expect(adapter.emitNode(int64Node, ctx)).toContain("BigInt(");
   });
 
@@ -110,11 +115,36 @@ describe("transform dates / bigint", () => {
     });
     const dateOnly = openApiToIr({ type: "string", format: "date" }, irCtx);
     const int64Node = openApiToIr({ type: "integer", format: "int64" }, irCtx);
-    expect(adapter.emitNode(dateOnly, ctx)).toContain(".transform((s) => new Date(s))");
+    expect(adapter.emitNode(dateOnly, ctx)).toContain("Invalid Date");
     expect(adapter.emitNode(int64Node, ctx)).toContain("bigint");
   });
 
-  test("none runtime with transformBigInt types bigint but has no bigint revive (XF-1)", () => {
+  test("typebox emit transforms date-time and int64", () => {
+    const adapter = getRuntimeAdapter("typebox");
+    const ctx = createEmitCtx(resolveValidationPolicy("formats"), new Set(), {
+      transformDates: true,
+      transformBigInt: true,
+    });
+    const dateNode = openApiToIr({ type: "string", format: "date-time" }, irCtx);
+    const int64Node = openApiToIr({ type: "integer", format: "int64" }, irCtx);
+    expect(adapter.emitNode(dateNode, ctx)).toContain("Type.Transform");
+    expect(adapter.emitNode(dateNode, ctx)).toContain("Invalid Date");
+    expect(adapter.emitNode(int64Node, ctx)).toContain("BigInt");
+  });
+
+  test("typia types become Date/bigint when flags on", () => {
+    const adapter = getRuntimeAdapter("typia");
+    const ctx = createEmitCtx(resolveValidationPolicy("formats"), new Set(), {
+      transformDates: true,
+      transformBigInt: true,
+    });
+    const dateNode = openApiToIr({ type: "string", format: "date-time" }, irCtx);
+    const int64Node = openApiToIr({ type: "integer", format: "int64" }, irCtx);
+    expect(adapter.emitNode(dateNode, ctx)).toContain("Date");
+    expect(adapter.emitNode(int64Node, ctx)).toContain("bigint");
+  });
+
+  test("none runtime with transformBigInt emits bigint revive helpers", () => {
     const doc = {
       openapi: "3.0.3",
       info: { title: "t", version: "1" },
@@ -147,10 +177,9 @@ describe("transform dates / bigint", () => {
     });
 
     expect(file).toContain("id: bigint");
-    expect(file).not.toContain("__reviveBigInt");
-    expect(file).not.toContain("BigInt(");
-    // revive helper only when transformDates
-    expect(file).not.toContain("__reviveDates");
+    expect(file).toContain("__reviveTransforms");
+    expect(file).toContain("__BIGINT_KEYS");
+    expect(file).toContain("BigInt(value)");
   });
 
   test("irToTs maps format date to Date when transformDates", () => {

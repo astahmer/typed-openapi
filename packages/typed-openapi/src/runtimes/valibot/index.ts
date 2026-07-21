@@ -33,7 +33,9 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
   if (c.maxLength !== undefined) actions.push(`v.maxLength(${c.maxLength})`);
   if (c.pattern !== undefined) actions.push(`v.regex(new RegExp(${quote(c.pattern)}))`);
   if (ctx.transformDates && (node.constraints.format === "date-time" || node.constraints.format === "date")) {
-    actions.push("v.transform((s) => new Date(s))");
+    actions.push(
+      'v.transform((s) => { const d = new Date(s); if (Number.isNaN(d.getTime())) throw new Error("Invalid Date"); return d; })',
+    );
   }
   return pipe("v.string()", actions);
 };

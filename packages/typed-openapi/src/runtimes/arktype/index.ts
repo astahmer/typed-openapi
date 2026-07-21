@@ -111,7 +111,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       }
       const base = `type(${emitStringDef(node, ctx)})`;
       if (ctx.transformDates && (node.constraints.format === "date-time" || node.constraints.format === "date")) {
-        return `${base}.pipe((s) => new Date(s as string))`;
+        return `${base}.pipe((s) => { const d = new Date(s as string); if (Number.isNaN(d.getTime())) throw new Error("Invalid Date"); return d; })`;
       }
       return base;
     }

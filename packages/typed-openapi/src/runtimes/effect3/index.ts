@@ -39,7 +39,7 @@ const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx)
   if (c.pattern !== undefined) filters.push(`${S}.pattern(new RegExp(${quote(c.pattern)}))`);
   let expr = pipeFilters(base, filters);
   if (ctx.transformDates && (node.constraints.format === "date-time" || node.constraints.format === "date")) {
-    expr = `${S}.transform(${expr}, ${S}.DateFromSelf, { decode: (s) => new Date(s), encode: (d) => d.toISOString() })`;
+    expr = `${S}.transform(${expr}, ${S}.DateFromSelf, { decode: (s) => { const d = new Date(s); if (Number.isNaN(d.getTime())) throw new Error("Invalid Date"); return d; }, encode: (d) => d.toISOString() })`;
   }
   return expr;
 };
