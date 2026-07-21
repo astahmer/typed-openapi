@@ -39,7 +39,7 @@ const filterAuditNoise = (out: string, sample: string, runtime: string): string 
           line.includes("error TS7024") ||
           line.includes("error TS2502") ||
           line.includes("error TS2345") ||
-          line.includes("error TS2322") ||
+          (runtime === "arktype" && line.includes("error TS2322")) ||
           line.includes("error TS2719") ||
           line.includes("error TS2536") ||
           line.includes("error TS2339")

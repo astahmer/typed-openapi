@@ -60,7 +60,7 @@ describe("snapshot files typecheck", () => {
   }
 
   /** Kombo recursive OAS triggers known TS circular/lazy + zod discriminatedUnion noise. */
-  const filterKomboNoise = (out: string): string =>
+  const filterKomboNoise = (out: string, runtime: string): string =>
     out
       .split("\n")
       .filter((line) => {
@@ -72,8 +72,8 @@ describe("snapshot files typecheck", () => {
           line.includes("error TS2502") ||
           // Zod discriminatedUnion rejects nullable members (common in Kombo oneOf+null).
           line.includes("error TS2345") ||
-          // ArkType deep union/tuple assignability noise on large Kombo schemas.
-          line.includes("error TS2322")
+          // ArkType deep union/tuple assignability noise on large Kombo schemas only.
+          (runtime === "arktype" && line.includes("error TS2322"))
         );
       })
       .join("\n");
@@ -160,7 +160,7 @@ describe("snapshot files typecheck", () => {
         out = `${err.stdout ?? ""}${err.stderr ?? ""}`;
       }
 
-      const filtered = file.includes("kombo") ? filterKomboNoise(out) : filterClientNoise(out, runtime);
+      const filtered = file.includes("kombo") ? filterKomboNoise(out, runtime) : filterClientNoise(out, runtime);
       if (/\berror TS\d+:/.test(filtered)) {
         expect.fail(`tsc failed for ${file}:\n${filtered.slice(0, 8000)}`);
       }
