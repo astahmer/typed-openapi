@@ -1,5 +1,5 @@
 ---
-title: Filter endpoints and schemas
+title: Filter endpoints
 description: Generate a small client for one API domain and keep only the schemas it needs.
 sidebar:
   label: Filter your client
@@ -8,7 +8,7 @@ sidebar:
 
 One large OpenAPI document does not need to produce one large client. Generate a client per product area—catalog, billing, or internal admin—and import only the one your app owns.
 
-## Make a focused client from config
+## The config
 
 Put the selection in `typed-openapi.config.ts`, not in a one-off command. This example emits a catalog-only client, its fetcher, and TanStack Query companion:
 
@@ -83,19 +83,3 @@ pnpm exec typed-openapi openapi.yaml --tree-shake-schemas
 ```
 
 Keep tree-shaking on for application clients. Turn it off only when consumers rely on arbitrary component schemas that are not referenced by the selected operations.
-
-## Choose a naming strategy
-
-`--schema-naming` controls when a component schema receives its own exported name.
-
-```sh
-# Keep stable names for every component.
-pnpm exec typed-openapi openapi.yaml --schema-naming always-name
-
-# Inline a single-use, non-recursive component when it improves readability.
-pnpm exec typed-openapi openapi.yaml --schema-naming prefer-inline
-```
-
-`auto` is the default. Recursive schemas remain safely named so their generated types can refer to themselves.
-
-Use `always-name` when consumers import schemas directly or generated output is part of a public SDK. Use `prefer-inline` for application-local code where shorter output is easier to read.

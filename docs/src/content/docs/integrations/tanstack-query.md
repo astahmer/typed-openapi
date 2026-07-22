@@ -27,7 +27,7 @@ pnpm add @tanstack/react-query
 pnpm exec typed-openapi openapi.yaml \
   --output src/api/openapi.ts \
   --default-fetcher \
-  --tanstack src/api/query.ts
+  --tanstack query.ts
 ```
 
 The generated module is intentionally framework-light: it creates typed query and mutation *options*. You still own your `QueryClient`, hooks, cache policy, and component boundaries.

@@ -49,7 +49,7 @@ export default defineConfig({
         },
         {
           label: "Advanced generation",
-          items: ["advanced/output-shape", "advanced/openapi-support", "advanced/library-api"],
+          items: ["advanced/output-shape", "advanced/openapi-support", "advanced/schema-naming", "advanced/library-api"],
         },
         {
           label: "Reference",

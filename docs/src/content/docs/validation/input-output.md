@@ -24,6 +24,33 @@ pnpm exec typed-openapi openapi.yaml --runtime zod --validation formats
 
 `strict` is the default for a runtime adapter. Use `loose` for a structurally reliable but less opinionated boundary.
 
+## Tune a preset
+
+Every preset resolves to the following policy. A policy object can override any field without losing the rest of its preset:
+
+| Field | `loose` | `formats` | `strict` |
+| --- | --- | --- | --- |
+| `formats` | off | on | on |
+| `stringConstraints` | off | off | on |
+| `numberConstraints` | off | off | on |
+| `arrayConstraints` | off | off | on |
+| `objectConstraints` | off | off | on |
+
+```ts
+import { defineConfig } from "typed-openapi";
+
+export default defineConfig({
+  runtime: "zod",
+  validation: {
+    preset: "strict",
+    stringConstraints: false,
+    numberConstraints: false,
+  },
+});
+```
+
+Use this for a deliberate compatibility exception. Prefer a named preset when it already matches the API boundary you want.
+
 ## Validate only the side you need
 
 Generated clients validate both outgoing parameters and successful response data by default.

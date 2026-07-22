@@ -20,29 +20,13 @@ import { ContainerSection } from "lucode-starlight/components";
 <ContainerSection width="lg">
   <div class="home-command">
     <div>
-      <h2>Generate a client.</h2>
+      <h2>Generate a request-ready client.</h2>
       <p>
-        Start with types and endpoint methods. Add a fetcher, runtime schemas, or framework output
-        when your app needs them.
+        Generate typed operations and a small Fetch transport. Add validation or an integration when
+        your app needs them.
       </p>
     </div>
-    <code>pnpm exec typed-openapi ./openapi.yaml --output src/api/client.ts</code>
-  </div>
-
-  <h2>Common app setups</h2>
-  <div class="home-grid home-grid--three">
-    <a class="home-card" href="/integrations/tanstack-query/">
-      <strong>TanStack Query</strong>
-      <p>Generated query keys, query options, mutations, and invalidation helpers.</p>
-    </a>
-    <a class="home-card" href="/clients/effect-client/">
-      <strong>Effect client</strong>
-      <p>Keep operations in Effect and handle typed HTTP errors in the error channel.</p>
-    </a>
-    <a class="home-card" href="/advanced/filtering-and-schema-naming/">
-      <strong>Generate less</strong>
-      <p>Make a small, domain-specific client from a large OpenAPI document.</p>
-    </a>
+    <code>pnpm exec typed-openapi ./openapi.yaml --output src/api/openapi.ts --default-fetcher --format</code>
   </div>
 
   <h2>Start here</h2>
@@ -62,6 +46,22 @@ import { ContainerSection } from "lucode-starlight/components";
     <a class="home-card" href="/ai/">
       <strong>Use with an AI agent</strong>
       <p>Add the repository skill and paste a focused integration prompt.</p>
+    </a>
+  </div>
+
+  <h2>Optional integrations</h2>
+  <div class="home-grid home-grid--three">
+    <a class="home-card" href="/integrations/tanstack-query/">
+      <strong>TanStack Query</strong>
+      <p>Generated query keys, query options, mutations, and invalidation helpers.</p>
+    </a>
+    <a class="home-card" href="/clients/effect-client/">
+      <strong>Effect client</strong>
+      <p>Keep operations in Effect and handle typed HTTP errors in the error channel.</p>
+    </a>
+    <a class="home-card" href="/advanced/filtering-and-schema-naming/">
+      <strong>Generate less</strong>
+      <p>Make a small, domain-specific client from a large OpenAPI document.</p>
     </a>
   </div>
 </ContainerSection>

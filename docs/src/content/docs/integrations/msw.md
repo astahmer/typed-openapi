@@ -11,7 +11,7 @@ Generate MSW 2 handlers directly from the endpoints that are in your OpenAPI doc
 pnpm add -D msw
 pnpm exec typed-openapi openapi.yaml \
   --output src/api/openapi.ts \
-  --msw src/mocks/handlers.ts \
+  --msw ../mocks/handlers.ts \
   --msw-base-url https://api.example.com
 ```
 

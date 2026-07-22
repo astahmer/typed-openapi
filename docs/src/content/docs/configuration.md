@@ -18,8 +18,8 @@ export default defineConfig({
   validation: "strict",
   validateSide: "both",
   defaultFetcher: true,
-  tanstack: "./src/api/query.ts",
-  msw: "./src/api/msw.ts",
+  tanstack: "query.ts",
+  msw: "msw.ts",
   transformDates: true,
   format: true,
 });
@@ -79,18 +79,13 @@ Use a named preset for most projects. A policy object is available when a spec n
 export default defineConfig({
   input: "./openapi.yaml",
   runtime: "zod",
-  validation: {
-    preset: "strict",
-    numberConstraints: false,
-  },
+  validation: { preset: "strict", stringConstraints: false, numberConstraints: false },
 });
 ```
 
-The `clientPath` is resolved from the generated output. Keep it relative and checked in alongside the main file so imports remain stable when the project moves.
+See [validation depth and transforms](/validation/input-output/) for every policy field and preset default.
 
-See [validation depth and transforms](/validation/input-output/) for the behavior behind these settings.
-
-## Name the generated fetcher artifacts
+## Configure the generated fetcher
 
 `defaultFetcher` can be a simple boolean or a small object when an application has its own file and environment conventions.
 
@@ -106,3 +101,22 @@ export default defineConfig({
   },
 });
 ```
+
+| Field | What it changes |
+| --- | --- |
+| `clientPath` | The import specifier written into the generated fetcher. It is emitted verbatim; make it correct from the fetcher file. |
+| `envApiBaseUrl` | The `globalThis.process?.env` key used by the generated default client. It does not read Vite or other bundler env objects. |
+| `fetcherName` | The exported fetch function name. |
+| `apiName` | The default exported client name and `create…()` factory name. |
+
+In a browser app, do not edit generated code or expect `envApiBaseUrl` to read `import.meta.env`. Create a client with the bundler value instead:
+
+```ts
+import { createApi } from "./api/api.client";
+
+export const api = createApi(import.meta.env.VITE_API_URL);
+```
+
+## Companion output paths
+
+`tanstack`, `msw`, and a string `defaultFetcher` output name are resolved relative to the main `output` file's directory. With `output: "./src/api/openapi.ts"`, use `"query.ts"` for `src/api/query.ts` or `"../mocks/handlers.ts"` for `src/mocks/handlers.ts`—not `"./src/api/query.ts"`.

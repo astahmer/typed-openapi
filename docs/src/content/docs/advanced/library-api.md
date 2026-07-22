@@ -40,3 +40,5 @@ export function generateClient(document: OpenAPIObject) {
 | `applySpecFilters()` | Reuse endpoint/schema filtering in custom workflows. |
 
 For Node-only file generation, import the package’s `typed-openapi/node` export. Runtime adapter exports are also available from `typed-openapi/runtimes` and their individual subpaths.
+
+For custom schema and endpoint identifiers, see [schema naming](/advanced/schema-naming/).

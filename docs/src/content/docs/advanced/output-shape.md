@@ -61,6 +61,6 @@ Use `--format` so generated files are formatted with oxfmt before a diff or comm
 pnpm exec typed-openapi openapi.yaml --format --output src/api/openapi.ts
 ```
 
-`--tanstack`, `--msw`, and `--default-fetcher` each write a nearby companion file unless you pass an explicit relative or absolute output path.
+`--tanstack`, `--msw`, and `--default-fetcher` each write a nearby companion file unless you pass an explicit relative or absolute output path. A relative companion name is resolved from the main output's directory: with `--output src/api/openapi.ts`, `--tanstack query.ts` writes `src/api/query.ts`, while `--msw ../mocks/handlers.ts` writes `src/mocks/handlers.ts`.
 
 Keep companion paths explicit in shared configs. It makes imports and code-review diffs predictable when a project has more than one generated client.
