@@ -1,7 +1,11 @@
 #!/usr/bin/env node
-/** Type-check generated snapshots in isolation and publish a comparable report. */
+/**
+ * Measure generated OpenAPI type-checking in two complementary modes:
+ * - generated: compile the generated module itself
+ * - usage: compile a realistic API-client call site against that module
+ */
 import { spawnSync } from "node:child_process";
-import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -10,6 +14,8 @@ const snapshotsDir = join(packageRoot, "tests/snapshots");
 const docsDir = join(packageRoot, "docs");
 const usageDir = join(packageRoot, "tmp/typecheck-benchmarks");
 const runs = Number.parseInt(process.env.BENCH_RUNS ?? "5", 10);
+const requestedMode = process.env.BENCH_MODE ?? "both";
+const modes = requestedMode === "both" ? ["generated", "usage"] : [requestedMode];
 const snapshotPattern = /^(?<schema>.+)\.(?<runtime>arktype|client|effect3?|typebox|typia|valibot|zod3?)\.ts$/;
 const tsc = [
   "exec",
@@ -31,6 +37,9 @@ const tsc = [
 ];
 
 if (!Number.isSafeInteger(runs) || runs < 1) throw new Error("BENCH_RUNS must be a positive integer.");
+if (!modes.every((mode) => mode === "generated" || mode === "usage")) {
+  throw new Error("BENCH_MODE must be 'generated', 'usage', or 'both'.");
+}
 
 const names = {
   arktype: "ArkType",
@@ -53,18 +62,14 @@ const standardDeviation = (values) => {
   const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
   return Math.sqrt(values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / values.length);
 };
-const metric = (output, label, suffix = "") => {
-  const match = output.match(new RegExp(`^${label}:\\s+([\\d.]+)${suffix}\\s*$`, "m"));
-  if (!match) throw new Error(`Missing '${label}' in TypeScript diagnostics.`);
-  return Number(match[1]);
-};
 const formatSeconds = (value) => `${value.toFixed(3)} s`;
 const formatNumber = (value) => Math.round(value).toLocaleString();
 const formatKb = (value) => `${formatNumber(value)} KB`;
+const formatMultiplier = (value) => `${value.toFixed(2)}×`;
+const resultKey = (result) => `${result.schema}:${result.runtime}`;
 
 const inputValue = (runtime, value) => (runtime === "effect3" ? `${value} as never` : value);
 const optionalQuery = (runtime, value) => (runtime === "arktype" ? `[${value}, "?"]` : inputValue(runtime, value));
-
 const usageBySchema = {
   "docker.openapi": {
     calls: (runtime) => [
@@ -122,8 +127,13 @@ function writeUsageProbe(snapshot) {
       "",
     ].join("\n"),
   );
-
   return join("tmp/typecheck-benchmarks", snapshot.file);
+}
+
+function parseMetric(output, label, suffix = "") {
+  const match = output.match(new RegExp(`^${label}:\\s+([\\d.]+)${suffix}\\s*$`, "m"));
+  if (!match) throw new Error(`Missing '${label}' in TypeScript diagnostics.`);
+  return Number(match[1]);
 }
 
 function measure(file) {
@@ -135,10 +145,10 @@ function measure(file) {
   const output = `${result.stdout ?? ""}${result.stderr ?? ""}`;
   if (result.status !== 0) throw new Error(`Type-check failed for ${file}:\n${output}`);
   return {
-    checkTime: metric(output, "Check time", "s"),
-    totalTime: metric(output, "Total time", "s"),
-    instantiations: metric(output, "Instantiations"),
-    memoryUsed: metric(output, "Memory used", "K"),
+    checkTime: parseMetric(output, "Check time", "s"),
+    totalTime: parseMetric(output, "Total time", "s"),
+    instantiations: parseMetric(output, "Instantiations"),
+    memoryUsed: parseMetric(output, "Memory used", "K"),
   };
 }
 
@@ -163,34 +173,51 @@ function summarizeByRuntime(rows) {
   );
 }
 
-function renderReport(results, typescriptVersion) {
+function renderReport({ mode, results, typescriptVersion }) {
+  const isUsage = mode === "usage";
   const summary = summarizeByRuntime(results);
   const schemas = [...new Set(results.map((result) => result.schema))].sort((a, b) => a.localeCompare(b));
   const winner = (key) => [...summary].sort((a, b) => a[key] - b[key])[0];
   const lines = [
-    "# Generated snapshot type-check benchmarks",
+    `# ${isUsage ? "API-client usage" : "Generated snapshot"} type-check benchmarks`,
     "",
-    "This report compares TypeScript cost of type-checking realistic generated API-client usage. Lower values are better.",
+    isUsage
+      ? "This report measures TypeScript cost of type-checking realistic generated API-client usage. Lower values are better."
+      : "This report measures TypeScript cost of compiling generated OpenAPI modules without API-client calls. Lower values are better.",
     "",
     "## Method",
     "",
     `- ${runs} cold compiler processes per snapshot; check time, instantiations, and memory use are each reported as a median.`,
-    "- Every Docker, Kombo, and Petstore runtime snapshot is compiled through a generated usage probe; long-operation-id is intentionally excluded.",
-    "- Probes create a client, pass schema-specific request params, then consume typed response fields. Effect clients use `Effect.map`; other clients use `Promise.then`.",
-    "- Effect 3 snapshots currently need `as never` for parameter objects because their generated input type exposes schema internals; their request call and response consumption are still measured.",
+    "- Docker, Kombo, and Petstore runtime snapshots are included; long-operation-id is intentionally excluded.",
+    isUsage
+      ? "- Probes create a client, pass schema-specific request params, then consume typed response fields. Effect clients use `Effect.map`; other clients use `Promise.then`."
+      : "- Each generated snapshot is compiled directly, establishing the declaration and schema baseline before application code invokes the client.",
+    ...(isUsage
+      ? [
+          "- Effect 3 snapshots currently need `as never` for parameter objects because their generated input type exposes schema internals; their request call and response consumption are still measured.",
+        ]
+      : []),
     "- Compiler settings: `strict`, `noEmit`, `skipLibCheck`, `NodeNext`, and TypeScript extended diagnostics.",
-    "- The existing `test:bench:attest` suite remains the focused Petstore instantiation regression check; this report adds broader compiler diagnostics.",
+    "- The existing `test:bench:attest` suite remains the focused Petstore instantiation regression check.",
     "- **Balanced rank** is equal-weight mean of each snapshot's rank for check time, instantiations, and memory. It is a consistency signal, not a substitute for individual metrics.",
     `- TypeScript: ${typescriptVersion}; Node: ${process.version}; platform: ${process.platform}/${process.arch}.`,
     "",
-    "## Usage probes",
-    "",
-    "| Schema | Typed requests | Response use |",
-    "| --- | --- | --- |",
-    "| Docker | `GET /services/{id}` with `path.id` and `query.insertDefaults` | `Endpoint.Ports[0].PublishMode` |",
-    "| Petstore | `GET /pet/{petId}` and `GET /pet/findByStatus` with path and query params | pet tag name and status |",
-    "| Kombo | `GET /hris/employees` with integration header and paging query | first employee work email or cursor |",
-    "",
+  ];
+
+  if (isUsage) {
+    lines.push(
+      "## Usage probes",
+      "",
+      "| Schema | Typed requests | Response use |",
+      "| --- | --- | --- |",
+      "| Docker | `GET /services/{id}` with `path.id` and `query.insertDefaults` | `Endpoint.Ports[0].PublishMode` |",
+      "| Petstore | `GET /pet/{petId}` and `GET /pet/findByStatus` with path and query params | pet tag name and status |",
+      "| Kombo | `GET /hris/employees` with integration header and paging query | first employee work email or cursor |",
+      "",
+    );
+  }
+
+  lines.push(
     "## Overall runtime ranking",
     "",
     "| Overall rank | Runtime | Balanced rank | Time rank | Instantiation rank | Memory rank | Median check time | Median instantiations | Median memory |",
@@ -207,7 +234,8 @@ function renderReport(results, typescriptVersion) {
     `| Median check time | ${name(winner("checkTime").runtime)} | ${formatSeconds(winner("checkTime").checkTime)} |`,
     `| Median instantiations | ${name(winner("instantiations").runtime)} | ${formatNumber(winner("instantiations").instantiations)} |`,
     `| Median memory | ${name(winner("memoryUsed").runtime)} | ${formatKb(winner("memoryUsed").memoryUsed)} |`,
-  ];
+  );
+
   for (const schema of schemas) {
     const rows = results
       .filter((result) => result.schema === schema)
@@ -221,24 +249,71 @@ function renderReport(results, typescriptVersion) {
       "| ---: | --- | ---: | ---: | ---: | ---: | ---: |",
       ...rows.map(
         (row) =>
-          `| ${row.checkTimeRank} | ${name(row.runtime)} | ${formatSeconds(row.checkTime)} | ${(row.checkTime / fastest).toFixed(2)}× | ${formatNumber(row.instantiations)} | ${formatKb(row.memoryUsed)} | ${formatSeconds(row.checkTimeStandardDeviation)} |`,
+          `| ${row.checkTimeRank} | ${name(row.runtime)} | ${formatSeconds(row.checkTime)} | ${formatMultiplier(row.checkTime / fastest)} | ${formatNumber(row.instantiations)} | ${formatKb(row.memoryUsed)} | ${formatSeconds(row.checkTimeStandardDeviation)} |`,
       ),
     );
   }
+
   lines.push(
     "",
     "## Reproduce",
     "",
     "```sh",
     "pnpm --filter typed-openapi run bench:typecheck",
-    "# Raise sample count when comparing a change",
+    "pnpm --filter typed-openapi run bench:typecheck:generated",
+    "pnpm --filter typed-openapi run bench:typecheck:usage",
     "BENCH_RUNS=9 pnpm --filter typed-openapi run bench:typecheck",
     "```",
     "",
-    "Raw measurements are stored beside this report in `typecheck-benchmarks.json`.",
-    "",
   );
   return lines.join("\n");
+}
+
+function writeComparison(baseline, usage) {
+  const baselineByKey = new Map(baseline.results.map((result) => [resultKey(result), result]));
+  const rows = usage.results
+    .map((usageResult) => ({ baseline: baselineByKey.get(resultKey(usageResult)), usage: usageResult }))
+    .filter((row) => row.baseline)
+    .sort((a, b) => a.usage.schema.localeCompare(b.usage.schema) || a.usage.runtime.localeCompare(b.usage.runtime));
+  const runtimeRows = [...Map.groupBy(rows, (row) => row.usage.runtime)]
+    .map(([runtime, values]) => ({
+      runtime,
+      instantiations: median(values.map((row) => row.usage.instantiations / row.baseline.instantiations)),
+      checkTime: median(values.map((row) => row.usage.checkTime / row.baseline.checkTime)),
+      memoryUsed: median(values.map((row) => row.usage.memoryUsed / row.baseline.memoryUsed)),
+    }))
+    .sort((a, b) => a.runtime.localeCompare(b.runtime));
+  const lines = [
+    "# Type-check benchmark comparison",
+    "",
+    "Usage-to-baseline multipliers isolate the additional compiler work caused by typed API-client calls. Higher values mean application usage adds more work beyond importing generated declarations.",
+    "",
+    "## Median multiplier by runtime",
+    "",
+    "| Runtime | Instantiations | Check time | Memory |",
+    "| --- | ---: | ---: | ---: |",
+    ...runtimeRows.map(
+      (row) =>
+        `| ${name(row.runtime)} | ${formatMultiplier(row.instantiations)} | ${formatMultiplier(row.checkTime)} | ${formatMultiplier(row.memoryUsed)} |`,
+    ),
+    "",
+    "## Per-schema comparison",
+    "",
+    "| Schema | Runtime | Baseline instantiations | Usage instantiations | Usage / baseline | Baseline check time | Usage check time | Usage / baseline | Baseline memory | Usage memory | Usage / baseline |",
+    "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ...rows.map(
+      ({ baseline: base, usage: used }) =>
+        `| ${used.schema} | ${name(used.runtime)} | ${formatNumber(base.instantiations)} | ${formatNumber(used.instantiations)} | ${formatMultiplier(used.instantiations / base.instantiations)} | ${formatSeconds(base.checkTime)} | ${formatSeconds(used.checkTime)} | ${formatMultiplier(used.checkTime / base.checkTime)} | ${formatKb(base.memoryUsed)} | ${formatKb(used.memoryUsed)} | ${formatMultiplier(used.memoryUsed / base.memoryUsed)} |`,
+    ),
+    "",
+    "Check-time ratios are more sensitive to machine noise than instantiations; use the five-run medians and prioritize instantiation trends when evaluating changes.",
+    "",
+    "- [Generated snapshot baseline](typecheck-benchmarks.generated.md)",
+    "- [API-client usage benchmark](typecheck-benchmarks.usage.md)",
+    "",
+  ];
+  writeFileSync(join(docsDir, "typecheck-benchmarks.md"), lines.join("\n"));
+  writeFileSync(join(docsDir, "typecheck-benchmarks.json"), JSON.stringify({ baseline, usage }, null, 2) + "\n");
 }
 
 const snapshots = readdirSync(snapshotsDir)
@@ -248,33 +323,43 @@ const snapshots = readdirSync(snapshotsDir)
   .sort((a, b) => a.file.localeCompare(b.file));
 if (!snapshots.length) throw new Error("No generated snapshot files found.");
 
-console.log(`Benchmarking ${snapshots.length} snapshots with ${runs} runs each...`);
-const measured = snapshots.map((snapshot) => {
-  const probe = writeUsageProbe(snapshot);
-  const samples = Array.from({ length: runs }, () => measure(probe));
-  const result = {
-    ...snapshot,
-    checkTime: median(samples.map((sample) => sample.checkTime)),
-    checkTimeStandardDeviation: standardDeviation(samples.map((sample) => sample.checkTime)),
-    totalTime: median(samples.map((sample) => sample.totalTime)),
-    instantiations: median(samples.map((sample) => sample.instantiations)),
-    memoryUsed: median(samples.map((sample) => sample.memoryUsed)),
-    samples,
-  };
-  console.log(
-    `${snapshot.file}: ${formatSeconds(result.checkTime)}, ${formatNumber(result.instantiations)} instantiations`,
+function runMode(mode) {
+  console.log(`Benchmarking ${snapshots.length} ${mode} snapshots with ${runs} runs each...`);
+  const measured = snapshots.map((snapshot) => {
+    const target = mode === "usage" ? writeUsageProbe(snapshot) : join("tests/snapshots", snapshot.file);
+    const samples = Array.from({ length: runs }, () => measure(target));
+    const result = {
+      ...snapshot,
+      checkTime: median(samples.map((sample) => sample.checkTime)),
+      checkTimeStandardDeviation: standardDeviation(samples.map((sample) => sample.checkTime)),
+      totalTime: median(samples.map((sample) => sample.totalTime)),
+      instantiations: median(samples.map((sample) => sample.instantiations)),
+      memoryUsed: median(samples.map((sample) => sample.memoryUsed)),
+      samples,
+    };
+    console.log(
+      `${snapshot.file}: ${formatSeconds(result.checkTime)}, ${formatNumber(result.instantiations)} instantiations`,
+    );
+    return result;
+  });
+  const results = [...Map.groupBy(measured, (result) => result.schema).values()].flatMap((rows) =>
+    ["checkTime", "instantiations", "memoryUsed"].reduce((current, metricName) => rank(current, metricName), rows),
   );
-  return result;
-});
-const ranked = [...Map.groupBy(measured, (result) => result.schema).values()].flatMap((rows) =>
-  ["checkTime", "instantiations", "memoryUsed"].reduce((current, metricName) => rank(current, metricName), rows),
-);
-const version = spawnSync("pnpm", ["exec", "tsc", "--version"], { cwd: packageRoot, encoding: "utf8" });
-const typescriptVersion = `${version.stdout}${version.stderr}`.match(/Version\s+(.+)/)?.[1]?.trim() ?? "unknown";
+  const version = spawnSync("pnpm", ["exec", "tsc", "--version"], { cwd: packageRoot, encoding: "utf8" });
+  const typescriptVersion = `${version.stdout}${version.stderr}`.match(/Version\s+(.+)/)?.[1]?.trim() ?? "unknown";
+  const report = { mode, runs, typescriptVersion, results };
+  writeFileSync(join(docsDir, `typecheck-benchmarks.${mode}.json`), JSON.stringify(report, null, 2) + "\n");
+  writeFileSync(join(docsDir, `typecheck-benchmarks.${mode}.md`), renderReport(report));
+  return report;
+}
+
+function readReport(mode) {
+  const file = join(docsDir, `typecheck-benchmarks.${mode}.json`);
+  return existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : undefined;
+}
+
 mkdirSync(docsDir, { recursive: true });
-writeFileSync(
-  join(docsDir, "typecheck-benchmarks.json"),
-  JSON.stringify({ runs, typescriptVersion, results: ranked }, null, 2) + "\n",
-);
-writeFileSync(join(docsDir, "typecheck-benchmarks.md"), renderReport(ranked, typescriptVersion));
-console.log(`Wrote ${join(docsDir, "typecheck-benchmarks.md")}`);
+const reports = Object.fromEntries(modes.map((mode) => [mode, runMode(mode)]));
+const baseline = reports.generated ?? readReport("generated");
+const usage = reports.usage ?? readReport("usage");
+if (baseline && usage) writeComparison(baseline, usage);

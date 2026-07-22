@@ -1,96 +1,54 @@
-# Generated snapshot type-check benchmarks
+# Type-check benchmark comparison
 
-This report compares TypeScript cost of type-checking realistic generated API-client usage. Lower values are better.
+Usage-to-baseline multipliers isolate the additional compiler work caused by typed API-client calls. Higher values mean application usage adds more work beyond importing generated declarations.
 
-## Method
+## Median multiplier by runtime
 
-- 5 cold compiler processes per snapshot; check time, instantiations, and memory use are each reported as a median.
-- Every Docker, Kombo, and Petstore runtime snapshot is compiled through a generated usage probe; long-operation-id is intentionally excluded.
-- Probes create a client, pass schema-specific request params, then consume typed response fields. Effect clients use `Effect.map`; other clients use `Promise.then`.
-- Effect 3 snapshots currently need `as never` for parameter objects because their generated input type exposes schema internals; their request call and response consumption are still measured.
-- Compiler settings: `strict`, `noEmit`, `skipLibCheck`, `NodeNext`, and TypeScript extended diagnostics.
-- The existing `test:bench:attest` suite remains the focused Petstore instantiation regression check; this report adds broader compiler diagnostics.
-- **Balanced rank** is equal-weight mean of each snapshot's rank for check time, instantiations, and memory. It is a consistency signal, not a substitute for individual metrics.
-- TypeScript: 6.0.3; Node: v24.18.0; platform: darwin/arm64.
+| Runtime | Instantiations | Check time | Memory |
+| --- | ---: | ---: | ---: |
+| ArkType | 1.08× | 1.50× | 1.03× |
+| Client only | 1.56× | 1.38× | 0.98× |
+| Effect | 1.37× | 1.15× | 1.02× |
+| Effect 3 | 1.06× | 1.08× | 1.00× |
+| TypeBox | 1.38× | 1.15× | 1.09× |
+| Typia | 3.03× | 0.94× | 1.04× |
+| Valibot | 1.07× | 1.02× | 1.05× |
+| Zod 4 | 3.26× | 2.90× | 1.51× |
+| Zod 3 | 3.26× | 2.12× | 1.46× |
 
-## Usage probes
+## Per-schema comparison
 
-| Schema | Typed requests | Response use |
-| --- | --- | --- |
-| Docker | `GET /services/{id}` with `path.id` and `query.insertDefaults` | `Endpoint.Ports[0].PublishMode` |
-| Petstore | `GET /pet/{petId}` and `GET /pet/findByStatus` with path and query params | pet tag name and status |
-| Kombo | `GET /hris/employees` with integration header and paging query | first employee work email or cursor |
+| Schema | Runtime | Baseline instantiations | Usage instantiations | Usage / baseline | Baseline check time | Usage check time | Usage / baseline | Baseline memory | Usage memory | Usage / baseline |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| docker.openapi | ArkType | 507,949 | 548,406 | 1.08× | 0.720 s | 1.080 s | 1.50× | 213,370 KB | 203,213 KB | 0.95× |
+| docker.openapi | Client only | 4,270 | 6,665 | 1.56× | 0.130 s | 0.090 s | 0.69× | 84,054 KB | 75,957 KB | 0.90× |
+| docker.openapi | Effect | 66,066 | 91,577 | 1.39× | 0.600 s | 0.620 s | 1.03× | 212,766 KB | 236,210 KB | 1.11× |
+| docker.openapi | Effect 3 | 234,110 | 248,672 | 1.06× | 0.720 s | 0.780 s | 1.08× | 344,728 KB | 355,705 KB | 1.03× |
+| docker.openapi | TypeBox | 111,527 | 155,704 | 1.40× | 0.310 s | 0.580 s | 1.87× | 154,406 KB | 152,153 KB | 0.99× |
+| docker.openapi | Typia | 5,636 | 17,092 | 3.03× | 0.180 s | 0.170 s | 0.94× | 98,448 KB | 89,381 KB | 0.91× |
+| docker.openapi | Valibot | 277,637 | 297,370 | 1.07× | 0.900 s | 0.730 s | 0.81× | 157,513 KB | 174,224 KB | 1.11× |
+| docker.openapi | Zod 4 | 65,155 | 212,479 | 3.26× | 0.290 s | 1.370 s | 4.72× | 124,940 KB | 188,053 KB | 1.51× |
+| docker.openapi | Zod 3 | 65,110 | 212,434 | 3.26× | 0.260 s | 0.550 s | 2.12× | 124,945 KB | 207,255 KB | 1.66× |
+| kombo.openapi | ArkType | 1,770,505 | 1,841,469 | 1.04× | 2.060 s | 4.400 s | 2.14× | 427,830 KB | 438,596 KB | 1.03× |
+| kombo.openapi | Client only | 4,680 | 8,843 | 1.89× | 0.080 s | 0.110 s | 1.38× | 110,257 KB | 119,057 KB | 1.08× |
+| kombo.openapi | Effect | 124,980 | 164,858 | 1.32× | 2.610 s | 3.000 s | 1.15× | 307,208 KB | 280,879 KB | 0.91× |
+| kombo.openapi | Effect 3 | 984,437 | 1,017,522 | 1.03× | 3.420 s | 2.990 s | 0.87× | 555,078 KB | 542,458 KB | 0.98× |
+| kombo.openapi | TypeBox | 151,509 | 208,360 | 1.38× | 0.960 s | 0.850 s | 0.89× | 152,946 KB | 208,574 KB | 1.36× |
+| kombo.openapi | Typia | 7,597 | 33,919 | 4.46× | 0.280 s | 0.300 s | 1.07× | 113,320 KB | 131,874 KB | 1.16× |
+| kombo.openapi | Valibot | 646,803 | 680,712 | 1.05× | 1.980 s | 2.010 s | 1.02× | 285,230 KB | 252,607 KB | 0.89× |
+| kombo.openapi | Zod 4 | 273,911 | 411,455 | 1.50× | 0.840 s | 1.470 s | 1.75× | 305,790 KB | 330,595 KB | 1.08× |
+| kombo.openapi | Zod 3 | 273,663 | 411,202 | 1.50× | 0.750 s | 1.110 s | 1.48× | 291,399 KB | 360,240 KB | 1.24× |
+| petstore | ArkType | 45,911 | 52,163 | 1.14× | 0.170 s | 0.210 s | 1.24× | 133,538 KB | 141,597 KB | 1.06× |
+| petstore | Client only | 3,034 | 4,245 | 1.40× | 0.060 s | 0.100 s | 1.67× | 77,793 KB | 76,419 KB | 0.98× |
+| petstore | Effect | 9,926 | 13,564 | 1.37× | 0.130 s | 0.160 s | 1.23× | 164,647 KB | 168,292 KB | 1.02× |
+| petstore | Effect 3 | 18,772 | 21,901 | 1.17× | 0.150 s | 0.170 s | 1.13× | 266,305 KB | 265,614 KB | 1.00× |
+| petstore | TypeBox | 15,365 | 20,304 | 1.32× | 0.130 s | 0.150 s | 1.15× | 105,039 KB | 114,383 KB | 1.09× |
+| petstore | Typia | 3,532 | 6,418 | 1.82× | 0.120 s | 0.110 s | 0.92× | 76,884 KB | 79,886 KB | 1.04× |
+| petstore | Valibot | 28,603 | 33,042 | 1.16× | 0.180 s | 0.210 s | 1.17× | 113,461 KB | 119,476 KB | 1.05× |
+| petstore | Zod 4 | 6,676 | 96,792 | 14.50× | 0.100 s | 0.290 s | 2.90× | 86,671 KB | 157,234 KB | 1.81× |
+| petstore | Zod 3 | 6,631 | 96,747 | 14.59× | 0.110 s | 0.280 s | 2.55× | 84,867 KB | 123,708 KB | 1.46× |
 
-## Overall runtime ranking
+Check-time ratios are more sensitive to machine noise than instantiations; use the five-run medians and prioritize instantiation trends when evaluating changes.
 
-| Overall rank | Runtime | Balanced rank | Time rank | Instantiation rank | Memory rank | Median check time | Median instantiations | Median memory |
-| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 1 | Client only | 1.00 | 1 | 1 | 1 | 0.090 s | 6,665 | 76,339 KB |
-| 2 | Typia | 2.00 | 2 | 2 | 2 | 0.250 s | 17,092 | 91,395 KB |
-| 3 | TypeBox | 3.89 | 6 | 4 | 3 | 0.710 s | 155,704 | 153,016 KB |
-| 4 | Effect | 5.33 | 7 | 3 | 8 | 0.840 s | 91,577 | 235,974 KB |
-| 5 | Valibot | 5.67 | 5 | 8 | 4 | 0.630 s | 297,370 | 175,747 KB |
-| 6 | Zod 3 | 5.67 | 3 | 5 | 5 | 0.490 s | 212,434 | 188,217 KB |
-| 7 | Zod 4 | 6.22 | 4 | 6 | 6 | 0.520 s | 212,479 | 188,552 KB |
-| 8 | ArkType | 7.44 | 8 | 9 | 7 | 1.340 s | 548,406 | 203,248 KB |
-| 9 | Effect 3 | 7.78 | 9 | 7 | 9 | 1.430 s | 248,672 | 358,570 KB |
-
-## Metric leaders
-
-| Metric | Winner | Result |
-| --- | --- | ---: |
-| Median check time | Client only | 0.090 s |
-| Median instantiations | Client only | 6,665 |
-| Median memory | Client only | 76,339 KB |
-
-## docker.openapi
-
-| Check rank | Runtime | Median check time | vs. fastest | Instantiations | Memory | Time σ |
-| ---: | --- | ---: | ---: | ---: | ---: | ---: |
-| 1 | Client only | 0.150 s | 1.00× | 6,665 | 76,136 KB | 0.021 s |
-| 2 | Typia | 0.250 s | 1.67× | 17,092 | 91,395 KB | 0.033 s |
-| 3 | Zod 3 | 0.490 s | 3.27× | 212,434 | 188,217 KB | 0.014 s |
-| 4 | Zod 4 | 0.520 s | 3.47× | 212,479 | 188,552 KB | 0.358 s |
-| 5 | Valibot | 0.630 s | 4.20× | 297,370 | 175,747 KB | 0.023 s |
-| 6 | TypeBox | 0.710 s | 4.73× | 155,704 | 153,016 KB | 0.085 s |
-| 7 | Effect | 0.840 s | 5.60× | 91,577 | 235,974 KB | 0.178 s |
-| 8 | ArkType | 1.340 s | 8.93× | 548,406 | 203,248 KB | 0.268 s |
-| 9 | Effect 3 | 1.430 s | 9.53× | 248,672 | 358,570 KB | 0.193 s |
-
-## kombo.openapi
-
-| Check rank | Runtime | Median check time | vs. fastest | Instantiations | Memory | Time σ |
-| ---: | --- | ---: | ---: | ---: | ---: | ---: |
-| 1 | Client only | 0.090 s | 1.00× | 8,843 | 119,115 KB | 0.004 s |
-| 2 | Typia | 0.290 s | 3.22× | 33,919 | 132,269 KB | 0.010 s |
-| 3 | Zod 4 | 0.760 s | 8.44× | 411,455 | 330,066 KB | 0.100 s |
-| 4 | Zod 3 | 0.880 s | 9.78× | 411,202 | 329,968 KB | 0.043 s |
-| 5 | TypeBox | 0.900 s | 10.00× | 208,360 | 208,766 KB | 0.137 s |
-| 6 | Valibot | 1.410 s | 15.67× | 680,712 | 250,960 KB | 0.068 s |
-| 7 | Effect | 1.440 s | 16.00× | 164,858 | 280,583 KB | 0.237 s |
-| 8 | ArkType | 2.230 s | 24.78× | 1,841,469 | 437,964 KB | 0.169 s |
-| 9 | Effect 3 | 3.230 s | 35.89× | 1,017,522 | 573,337 KB | 0.211 s |
-
-## petstore
-
-| Check rank | Runtime | Median check time | vs. fastest | Instantiations | Memory | Time σ |
-| ---: | --- | ---: | ---: | ---: | ---: | ---: |
-| 1 | Client only | 0.070 s | 1.00× | 4,245 | 76,339 KB | 0.012 s |
-| 2 | Typia | 0.080 s | 1.14× | 6,418 | 80,206 KB | 0.005 s |
-| 3 | TypeBox | 0.110 s | 1.57× | 20,304 | 109,558 KB | 0.024 s |
-| 4 | Effect | 0.120 s | 1.71× | 13,564 | 169,392 KB | 0.023 s |
-| 5 | Effect 3 | 0.140 s | 2.00× | 21,901 | 264,106 KB | 0.010 s |
-| 6 | ArkType | 0.160 s | 2.29× | 52,163 | 141,647 KB | 0.007 s |
-| 7 | Valibot | 0.170 s | 2.43× | 33,042 | 118,349 KB | 0.021 s |
-| 8 | Zod 4 | 0.240 s | 3.43× | 96,792 | 158,084 KB | 0.045 s |
-| 9 | Zod 3 | 0.250 s | 3.57× | 96,747 | 147,894 KB | 0.126 s |
-
-## Reproduce
-
-```sh
-pnpm --filter typed-openapi run bench:typecheck
-# Raise sample count when comparing a change
-BENCH_RUNS=9 pnpm --filter typed-openapi run bench:typecheck
-```
-
-Raw measurements are stored beside this report in `typecheck-benchmarks.json`.
+- [Generated snapshot baseline](typecheck-benchmarks.generated.md)
+- [API-client usage benchmark](typecheck-benchmarks.usage.md)

@@ -1,0 +1,1222 @@
+{
+  "mode": "usage",
+  "runs": 5,
+  "typescriptVersion": "6.0.3",
+  "results": [
+    {
+      "file": "docker.openapi.client.ts",
+      "schema": "docker.openapi",
+      "runtime": "client",
+      "checkTime": 0.09,
+      "checkTimeStandardDeviation": 0.0040000000000000036,
+      "totalTime": 0.21,
+      "instantiations": 6665,
+      "memoryUsed": 75957,
+      "samples": [
+        {
+          "checkTime": 0.09,
+          "totalTime": 0.21,
+          "instantiations": 6665,
+          "memoryUsed": 75957
+        },
+        {
+          "checkTime": 0.09,
+          "totalTime": 0.21,
+          "instantiations": 6665,
+          "memoryUsed": 76399
+        },
+        {
+          "checkTime": 0.09,
+          "totalTime": 0.22,
+          "instantiations": 6665,
+          "memoryUsed": 74043
+        },
+        {
+          "checkTime": 0.1,
+          "totalTime": 0.22,
+          "instantiations": 6665,
+          "memoryUsed": 75914
+        },
+        {
+          "checkTime": 0.09,
+          "totalTime": 0.21,
+          "instantiations": 6665,
+          "memoryUsed": 91542
+        }
+      ],
+      "checkTimeRank": 1,
+      "instantiationsRank": 1,
+      "memoryUsedRank": 1
+    },
+    {
+      "file": "docker.openapi.typia.ts",
+      "schema": "docker.openapi",
+      "runtime": "typia",
+      "checkTime": 0.17,
+      "checkTimeStandardDeviation": 0.03429285639896449,
+      "totalTime": 0.43,
+      "instantiations": 17092,
+      "memoryUsed": 89381,
+      "samples": [
+        {
+          "checkTime": 0.25,
+          "totalTime": 0.51,
+          "instantiations": 17092,
+          "memoryUsed": 91488
+        },
+        {
+          "checkTime": 0.17,
+          "totalTime": 0.43,
+          "instantiations": 17092,
+          "memoryUsed": 102341
+        },
+        {
+          "checkTime": 0.16,
+          "totalTime": 0.44,
+          "instantiations": 17092,
+          "memoryUsed": 88706
+        },
+        {
+          "checkTime": 0.16,
+          "totalTime": 0.37,
+          "instantiations": 17092,
+          "memoryUsed": 88137
+        },
+        {
+          "checkTime": 0.17,
+          "totalTime": 0.38,
+          "instantiations": 17092,
+          "memoryUsed": 89381
+        }
+      ],
+      "checkTimeRank": 2,
+      "instantiationsRank": 2,
+      "memoryUsedRank": 2
+    },
+    {
+      "file": "docker.openapi.typebox.ts",
+      "schema": "docker.openapi",
+      "runtime": "typebox",
+      "checkTime": 0.58,
+      "checkTimeStandardDeviation": 0.17713271860387622,
+      "totalTime": 1.02,
+      "instantiations": 155704,
+      "memoryUsed": 152153,
+      "samples": [
+        {
+          "checkTime": 0.51,
+          "totalTime": 1.11,
+          "instantiations": 155704,
+          "memoryUsed": 146560
+        },
+        {
+          "checkTime": 0.37,
+          "totalTime": 0.55,
+          "instantiations": 155704,
+          "memoryUsed": 157417
+        },
+        {
+          "checkTime": 0.89,
+          "totalTime": 1.49,
+          "instantiations": 155704,
+          "memoryUsed": 152153
+        },
+        {
+          "checkTime": 0.71,
+          "totalTime": 1.02,
+          "instantiations": 155704,
+          "memoryUsed": 149130
+        },
+        {
+          "checkTime": 0.58,
+          "totalTime": 0.86,
+          "instantiations": 155704,
+          "memoryUsed": 158173
+        }
+      ],
+      "checkTimeRank": 4,
+      "instantiationsRank": 4,
+      "memoryUsedRank": 3
+    },
+    {
+      "file": "docker.openapi.valibot.ts",
+      "schema": "docker.openapi",
+      "runtime": "valibot",
+      "checkTime": 0.73,
+      "checkTimeStandardDeviation": 0.15727682601070003,
+      "totalTime": 0.93,
+      "instantiations": 297370,
+      "memoryUsed": 174224,
+      "samples": [
+        {
+          "checkTime": 0.73,
+          "totalTime": 0.93,
+          "instantiations": 297370,
+          "memoryUsed": 174160
+        },
+        {
+          "checkTime": 0.69,
+          "totalTime": 0.88,
+          "instantiations": 297370,
+          "memoryUsed": 174588
+        },
+        {
+          "checkTime": 1.07,
+          "totalTime": 1.25,
+          "instantiations": 297370,
+          "memoryUsed": 174224
+        },
+        {
+          "checkTime": 0.69,
+          "totalTime": 0.88,
+          "instantiations": 297370,
+          "memoryUsed": 173022
+        },
+        {
+          "checkTime": 0.96,
+          "totalTime": 1.12,
+          "instantiations": 297370,
+          "memoryUsed": 176163
+        }
+      ],
+      "checkTimeRank": 6,
+      "instantiationsRank": 8,
+      "memoryUsedRank": 4
+    },
+    {
+      "file": "docker.openapi.zod.ts",
+      "schema": "docker.openapi",
+      "runtime": "zod",
+      "checkTime": 1.37,
+      "checkTimeStandardDeviation": 0.4372916646815944,
+      "totalTime": 1.78,
+      "instantiations": 212479,
+      "memoryUsed": 188053,
+      "samples": [
+        {
+          "checkTime": 1.37,
+          "totalTime": 1.78,
+          "instantiations": 212479,
+          "memoryUsed": 189143
+        },
+        {
+          "checkTime": 1.58,
+          "totalTime": 1.98,
+          "instantiations": 212479,
+          "memoryUsed": 185899
+        },
+        {
+          "checkTime": 1.58,
+          "totalTime": 2.24,
+          "instantiations": 212479,
+          "memoryUsed": 187758
+        },
+        {
+          "checkTime": 0.79,
+          "totalTime": 1.2,
+          "instantiations": 212479,
+          "memoryUsed": 188053
+        },
+        {
+          "checkTime": 0.51,
+          "totalTime": 0.69,
+          "instantiations": 212479,
+          "memoryUsed": 188248
+        }
+      ],
+      "checkTimeRank": 9,
+      "instantiationsRank": 6,
+      "memoryUsedRank": 5
+    },
+    {
+      "file": "docker.openapi.arktype.ts",
+      "schema": "docker.openapi",
+      "runtime": "arktype",
+      "checkTime": 1.08,
+      "checkTimeStandardDeviation": 0.2957701810527897,
+      "totalTime": 1.45,
+      "instantiations": 548406,
+      "memoryUsed": 203213,
+      "samples": [
+        {
+          "checkTime": 1.08,
+          "totalTime": 1.45,
+          "instantiations": 548406,
+          "memoryUsed": 203213
+        },
+        {
+          "checkTime": 1.17,
+          "totalTime": 1.46,
+          "instantiations": 548406,
+          "memoryUsed": 210101
+        },
+        {
+          "checkTime": 0.76,
+          "totalTime": 1.01,
+          "instantiations": 548406,
+          "memoryUsed": 210516
+        },
+        {
+          "checkTime": 1.63,
+          "totalTime": 2.2,
+          "instantiations": 548406,
+          "memoryUsed": 203059
+        },
+        {
+          "checkTime": 0.91,
+          "totalTime": 1.17,
+          "instantiations": 548406,
+          "memoryUsed": 202633
+        }
+      ],
+      "checkTimeRank": 8,
+      "instantiationsRank": 9,
+      "memoryUsedRank": 6
+    },
+    {
+      "file": "docker.openapi.zod3.ts",
+      "schema": "docker.openapi",
+      "runtime": "zod3",
+      "checkTime": 0.55,
+      "checkTimeStandardDeviation": 0.05462600113499065,
+      "totalTime": 0.75,
+      "instantiations": 212434,
+      "memoryUsed": 207255,
+      "samples": [
+        {
+          "checkTime": 0.63,
+          "totalTime": 0.82,
+          "instantiations": 212434,
+          "memoryUsed": 218661
+        },
+        {
+          "checkTime": 0.63,
+          "totalTime": 0.84,
+          "instantiations": 212434,
+          "memoryUsed": 186366
+        },
+        {
+          "checkTime": 0.55,
+          "totalTime": 0.75,
+          "instantiations": 212434,
+          "memoryUsed": 207255
+        },
+        {
+          "checkTime": 0.5,
+          "totalTime": 0.73,
+          "instantiations": 212434,
+          "memoryUsed": 218999
+        },
+        {
+          "checkTime": 0.52,
+          "totalTime": 0.73,
+          "instantiations": 212434,
+          "memoryUsed": 187794
+        }
+      ],
+      "checkTimeRank": 3,
+      "instantiationsRank": 5,
+      "memoryUsedRank": 7
+    },
+    {
+      "file": "docker.openapi.effect.ts",
+      "schema": "docker.openapi",
+      "runtime": "effect",
+      "checkTime": 0.62,
+      "checkTimeStandardDeviation": 0.2847174037532655,
+      "totalTime": 1.13,
+      "instantiations": 91577,
+      "memoryUsed": 236210,
+      "samples": [
+        {
+          "checkTime": 0.51,
+          "totalTime": 0.95,
+          "instantiations": 91577,
+          "memoryUsed": 233359
+        },
+        {
+          "checkTime": 0.53,
+          "totalTime": 1.09,
+          "instantiations": 91577,
+          "memoryUsed": 235145
+        },
+        {
+          "checkTime": 0.79,
+          "totalTime": 1.13,
+          "instantiations": 91577,
+          "memoryUsed": 236210
+        },
+        {
+          "checkTime": 1.28,
+          "totalTime": 1.89,
+          "instantiations": 91577,
+          "memoryUsed": 236651
+        },
+        {
+          "checkTime": 0.62,
+          "totalTime": 1.6,
+          "instantiations": 91577,
+          "memoryUsed": 237031
+        }
+      ],
+      "checkTimeRank": 5,
+      "instantiationsRank": 3,
+      "memoryUsedRank": 8
+    },
+    {
+      "file": "docker.openapi.effect3.ts",
+      "schema": "docker.openapi",
+      "runtime": "effect3",
+      "checkTime": 0.78,
+      "checkTimeStandardDeviation": 0.22301569451498254,
+      "totalTime": 1.28,
+      "instantiations": 248672,
+      "memoryUsed": 355705,
+      "samples": [
+        {
+          "checkTime": 0.73,
+          "totalTime": 1.28,
+          "instantiations": 248672,
+          "memoryUsed": 356479
+        },
+        {
+          "checkTime": 0.78,
+          "totalTime": 1.27,
+          "instantiations": 248672,
+          "memoryUsed": 354667
+        },
+        {
+          "checkTime": 0.72,
+          "totalTime": 1.28,
+          "instantiations": 248672,
+          "memoryUsed": 356399
+        },
+        {
+          "checkTime": 0.8,
+          "totalTime": 1.36,
+          "instantiations": 248672,
+          "memoryUsed": 355705
+        },
+        {
+          "checkTime": 1.31,
+          "totalTime": 1.83,
+          "instantiations": 248672,
+          "memoryUsed": 342963
+        }
+      ],
+      "checkTimeRank": 7,
+      "instantiationsRank": 7,
+      "memoryUsedRank": 9
+    },
+    {
+      "file": "kombo.openapi.client.ts",
+      "schema": "kombo.openapi",
+      "runtime": "client",
+      "checkTime": 0.11,
+      "checkTimeStandardDeviation": 0.0535163526410386,
+      "totalTime": 0.26,
+      "instantiations": 8843,
+      "memoryUsed": 119057,
+      "samples": [
+        {
+          "checkTime": 0.12,
+          "totalTime": 0.31,
+          "instantiations": 8843,
+          "memoryUsed": 119101
+        },
+        {
+          "checkTime": 0.11,
+          "totalTime": 0.26,
+          "instantiations": 8843,
+          "memoryUsed": 118236
+        },
+        {
+          "checkTime": 0.1,
+          "totalTime": 0.25,
+          "instantiations": 8843,
+          "memoryUsed": 119027
+        },
+        {
+          "checkTime": 0.1,
+          "totalTime": 0.25,
+          "instantiations": 8843,
+          "memoryUsed": 119057
+        },
+        {
+          "checkTime": 0.24,
+          "totalTime": 0.48,
+          "instantiations": 8843,
+          "memoryUsed": 119157
+        }
+      ],
+      "checkTimeRank": 1,
+      "instantiationsRank": 1,
+      "memoryUsedRank": 1
+    },
+    {
+      "file": "kombo.openapi.typia.ts",
+      "schema": "kombo.openapi",
+      "runtime": "typia",
+      "checkTime": 0.3,
+      "checkTimeStandardDeviation": 0.10855413396089532,
+      "totalTime": 0.51,
+      "instantiations": 33919,
+      "memoryUsed": 131874,
+      "samples": [
+        {
+          "checkTime": 0.29,
+          "totalTime": 0.51,
+          "instantiations": 33919,
+          "memoryUsed": 130615
+        },
+        {
+          "checkTime": 0.3,
+          "totalTime": 0.51,
+          "instantiations": 33919,
+          "memoryUsed": 148248
+        },
+        {
+          "checkTime": 0.27,
+          "totalTime": 0.45,
+          "instantiations": 33919,
+          "memoryUsed": 124635
+        },
+        {
+          "checkTime": 0.56,
+          "totalTime": 0.72,
+          "instantiations": 33919,
+          "memoryUsed": 131874
+        },
+        {
+          "checkTime": 0.3,
+          "totalTime": 0.49,
+          "instantiations": 33919,
+          "memoryUsed": 148153
+        }
+      ],
+      "checkTimeRank": 2,
+      "instantiationsRank": 2,
+      "memoryUsedRank": 2
+    },
+    {
+      "file": "kombo.openapi.typebox.ts",
+      "schema": "kombo.openapi",
+      "runtime": "typebox",
+      "checkTime": 0.85,
+      "checkTimeStandardDeviation": 0.24041630560342614,
+      "totalTime": 1.05,
+      "instantiations": 208360,
+      "memoryUsed": 208574,
+      "samples": [
+        {
+          "checkTime": 1.02,
+          "totalTime": 1.3,
+          "instantiations": 208360,
+          "memoryUsed": 208975
+        },
+        {
+          "checkTime": 0.83,
+          "totalTime": 1.04,
+          "instantiations": 208360,
+          "memoryUsed": 208574
+        },
+        {
+          "checkTime": 0.84,
+          "totalTime": 1.03,
+          "instantiations": 208360,
+          "memoryUsed": 208558
+        },
+        {
+          "checkTime": 0.85,
+          "totalTime": 1.05,
+          "instantiations": 208360,
+          "memoryUsed": 209762
+        },
+        {
+          "checkTime": 1.46,
+          "totalTime": 1.72,
+          "instantiations": 208360,
+          "memoryUsed": 197064
+        }
+      ],
+      "checkTimeRank": 3,
+      "instantiationsRank": 4,
+      "memoryUsedRank": 3
+    },
+    {
+      "file": "kombo.openapi.valibot.ts",
+      "schema": "kombo.openapi",
+      "runtime": "valibot",
+      "checkTime": 2.01,
+      "checkTimeStandardDeviation": 0.27000740730579964,
+      "totalTime": 2.19,
+      "instantiations": 680712,
+      "memoryUsed": 252607,
+      "samples": [
+        {
+          "checkTime": 2.01,
+          "totalTime": 2.19,
+          "instantiations": 680712,
+          "memoryUsed": 251543
+        },
+        {
+          "checkTime": 2.24,
+          "totalTime": 2.43,
+          "instantiations": 680712,
+          "memoryUsed": 252607
+        },
+        {
+          "checkTime": 2.07,
+          "totalTime": 2.25,
+          "instantiations": 680712,
+          "memoryUsed": 249665
+        },
+        {
+          "checkTime": 1.62,
+          "totalTime": 1.83,
+          "instantiations": 680712,
+          "memoryUsed": 291677
+        },
+        {
+          "checkTime": 1.54,
+          "totalTime": 1.74,
+          "instantiations": 680712,
+          "memoryUsed": 290342
+        }
+      ],
+      "checkTimeRank": 6,
+      "instantiationsRank": 7,
+      "memoryUsedRank": 4
+    },
+    {
+      "file": "kombo.openapi.effect.ts",
+      "schema": "kombo.openapi",
+      "runtime": "effect",
+      "checkTime": 3,
+      "checkTimeStandardDeviation": 1.2307948651176603,
+      "totalTime": 4.03,
+      "instantiations": 164858,
+      "memoryUsed": 280879,
+      "samples": [
+        {
+          "checkTime": 1.54,
+          "totalTime": 2.02,
+          "instantiations": 164858,
+          "memoryUsed": 282716
+        },
+        {
+          "checkTime": 4.81,
+          "totalTime": 6.04,
+          "instantiations": 164858,
+          "memoryUsed": 279791
+        },
+        {
+          "checkTime": 3.63,
+          "totalTime": 4.5,
+          "instantiations": 164858,
+          "memoryUsed": 292279
+        },
+        {
+          "checkTime": 3,
+          "totalTime": 4.03,
+          "instantiations": 164858,
+          "memoryUsed": 279357
+        },
+        {
+          "checkTime": 1.66,
+          "totalTime": 2.13,
+          "instantiations": 164858,
+          "memoryUsed": 280879
+        }
+      ],
+      "checkTimeRank": 8,
+      "instantiationsRank": 3,
+      "memoryUsedRank": 5
+    },
+    {
+      "file": "kombo.openapi.zod.ts",
+      "schema": "kombo.openapi",
+      "runtime": "zod",
+      "checkTime": 1.47,
+      "checkTimeStandardDeviation": 0.32307274722576035,
+      "totalTime": 1.74,
+      "instantiations": 411455,
+      "memoryUsed": 330595,
+      "samples": [
+        {
+          "checkTime": 1.11,
+          "totalTime": 1.34,
+          "instantiations": 411455,
+          "memoryUsed": 330073
+        },
+        {
+          "checkTime": 1.86,
+          "totalTime": 2.05,
+          "instantiations": 411455,
+          "memoryUsed": 330595
+        },
+        {
+          "checkTime": 1.51,
+          "totalTime": 1.74,
+          "instantiations": 411455,
+          "memoryUsed": 330658
+        },
+        {
+          "checkTime": 1.47,
+          "totalTime": 1.76,
+          "instantiations": 411455,
+          "memoryUsed": 330511
+        },
+        {
+          "checkTime": 0.94,
+          "totalTime": 1.14,
+          "instantiations": 411455,
+          "memoryUsed": 330674
+        }
+      ],
+      "checkTimeRank": 5,
+      "instantiationsRank": 6,
+      "memoryUsedRank": 6
+    },
+    {
+      "file": "kombo.openapi.zod3.ts",
+      "schema": "kombo.openapi",
+      "runtime": "zod3",
+      "checkTime": 1.11,
+      "checkTimeStandardDeviation": 0.18249383551232626,
+      "totalTime": 1.35,
+      "instantiations": 411202,
+      "memoryUsed": 360240,
+      "samples": [
+        {
+          "checkTime": 1.04,
+          "totalTime": 1.24,
+          "instantiations": 411202,
+          "memoryUsed": 360409
+        },
+        {
+          "checkTime": 1.24,
+          "totalTime": 1.45,
+          "instantiations": 411202,
+          "memoryUsed": 329821
+        },
+        {
+          "checkTime": 1.11,
+          "totalTime": 1.35,
+          "instantiations": 411202,
+          "memoryUsed": 360240
+        },
+        {
+          "checkTime": 1.05,
+          "totalTime": 1.31,
+          "instantiations": 411202,
+          "memoryUsed": 360158
+        },
+        {
+          "checkTime": 1.53,
+          "totalTime": 1.8,
+          "instantiations": 411202,
+          "memoryUsed": 360371
+        }
+      ],
+      "checkTimeRank": 4,
+      "instantiationsRank": 5,
+      "memoryUsedRank": 7
+    },
+    {
+      "file": "kombo.openapi.arktype.ts",
+      "schema": "kombo.openapi",
+      "runtime": "arktype",
+      "checkTime": 4.4,
+      "checkTimeStandardDeviation": 1.056984389667132,
+      "totalTime": 4.66,
+      "instantiations": 1841469,
+      "memoryUsed": 438596,
+      "samples": [
+        {
+          "checkTime": 3.16,
+          "totalTime": 3.48,
+          "instantiations": 1841469,
+          "memoryUsed": 440570
+        },
+        {
+          "checkTime": 4.4,
+          "totalTime": 4.66,
+          "instantiations": 1841469,
+          "memoryUsed": 432759
+        },
+        {
+          "checkTime": 3.11,
+          "totalTime": 3.4,
+          "instantiations": 1841469,
+          "memoryUsed": 438596
+        },
+        {
+          "checkTime": 5.72,
+          "totalTime": 6.21,
+          "instantiations": 1841469,
+          "memoryUsed": 461686
+        },
+        {
+          "checkTime": 5.22,
+          "totalTime": 5.78,
+          "instantiations": 1841469,
+          "memoryUsed": 433349
+        }
+      ],
+      "checkTimeRank": 9,
+      "instantiationsRank": 9,
+      "memoryUsedRank": 8
+    },
+    {
+      "file": "kombo.openapi.effect3.ts",
+      "schema": "kombo.openapi",
+      "runtime": "effect3",
+      "checkTime": 2.99,
+      "checkTimeStandardDeviation": 0.43811414037896573,
+      "totalTime": 3.61,
+      "instantiations": 1017522,
+      "memoryUsed": 542458,
+      "samples": [
+        {
+          "checkTime": 4.07,
+          "totalTime": 4.89,
+          "instantiations": 1017522,
+          "memoryUsed": 557586
+        },
+        {
+          "checkTime": 2.88,
+          "totalTime": 3.61,
+          "instantiations": 1017522,
+          "memoryUsed": 540599
+        },
+        {
+          "checkTime": 3.11,
+          "totalTime": 3.64,
+          "instantiations": 1017522,
+          "memoryUsed": 542458
+        },
+        {
+          "checkTime": 2.98,
+          "totalTime": 3.49,
+          "instantiations": 1017522,
+          "memoryUsed": 541331
+        },
+        {
+          "checkTime": 2.99,
+          "totalTime": 3.51,
+          "instantiations": 1017522,
+          "memoryUsed": 570058
+        }
+      ],
+      "checkTimeRank": 7,
+      "instantiationsRank": 8,
+      "memoryUsedRank": 9
+    },
+    {
+      "file": "petstore.client.ts",
+      "schema": "petstore",
+      "runtime": "client",
+      "checkTime": 0.1,
+      "checkTimeStandardDeviation": 0.02039607805437114,
+      "totalTime": 0.28,
+      "instantiations": 4245,
+      "memoryUsed": 76419,
+      "samples": [
+        {
+          "checkTime": 0.08,
+          "totalTime": 0.22,
+          "instantiations": 4245,
+          "memoryUsed": 76425
+        },
+        {
+          "checkTime": 0.12,
+          "totalTime": 0.26,
+          "instantiations": 4245,
+          "memoryUsed": 75893
+        },
+        {
+          "checkTime": 0.1,
+          "totalTime": 0.29,
+          "instantiations": 4245,
+          "memoryUsed": 76419
+        },
+        {
+          "checkTime": 0.08,
+          "totalTime": 0.3,
+          "instantiations": 4245,
+          "memoryUsed": 77057
+        },
+        {
+          "checkTime": 0.13,
+          "totalTime": 0.28,
+          "instantiations": 4245,
+          "memoryUsed": 75758
+        }
+      ],
+      "checkTimeRank": 1,
+      "instantiationsRank": 1,
+      "memoryUsedRank": 1
+    },
+    {
+      "file": "petstore.typia.ts",
+      "schema": "petstore",
+      "runtime": "typia",
+      "checkTime": 0.11,
+      "checkTimeStandardDeviation": 0.018330302779823365,
+      "totalTime": 0.32,
+      "instantiations": 6418,
+      "memoryUsed": 79886,
+      "samples": [
+        {
+          "checkTime": 0.09,
+          "totalTime": 0.25,
+          "instantiations": 6418,
+          "memoryUsed": 78307
+        },
+        {
+          "checkTime": 0.14,
+          "totalTime": 0.37,
+          "instantiations": 6418,
+          "memoryUsed": 77253
+        },
+        {
+          "checkTime": 0.11,
+          "totalTime": 0.32,
+          "instantiations": 6418,
+          "memoryUsed": 81107
+        },
+        {
+          "checkTime": 0.11,
+          "totalTime": 0.33,
+          "instantiations": 6418,
+          "memoryUsed": 79886
+        },
+        {
+          "checkTime": 0.09,
+          "totalTime": 0.26,
+          "instantiations": 6418,
+          "memoryUsed": 81087
+        }
+      ],
+      "checkTimeRank": 2,
+      "instantiationsRank": 2,
+      "memoryUsedRank": 2
+    },
+    {
+      "file": "petstore.typebox.ts",
+      "schema": "petstore",
+      "runtime": "typebox",
+      "checkTime": 0.15,
+      "checkTimeStandardDeviation": 0.044452221541785734,
+      "totalTime": 0.31,
+      "instantiations": 20304,
+      "memoryUsed": 114383,
+      "samples": [
+        {
+          "checkTime": 0.16,
+          "totalTime": 0.37,
+          "instantiations": 20304,
+          "memoryUsed": 112104
+        },
+        {
+          "checkTime": 0.13,
+          "totalTime": 0.31,
+          "instantiations": 20304,
+          "memoryUsed": 114404
+        },
+        {
+          "checkTime": 0.15,
+          "totalTime": 0.31,
+          "instantiations": 20304,
+          "memoryUsed": 114383
+        },
+        {
+          "checkTime": 0.24,
+          "totalTime": 0.62,
+          "instantiations": 20304,
+          "memoryUsed": 113683
+        },
+        {
+          "checkTime": 0.11,
+          "totalTime": 0.29,
+          "instantiations": 20304,
+          "memoryUsed": 114404
+        }
+      ],
+      "checkTimeRank": 3,
+      "instantiationsRank": 4,
+      "memoryUsedRank": 3
+    },
+    {
+      "file": "petstore.valibot.ts",
+      "schema": "petstore",
+      "runtime": "valibot",
+      "checkTime": 0.21,
+      "checkTimeStandardDeviation": 0.05344155686354955,
+      "totalTime": 0.37,
+      "instantiations": 33042,
+      "memoryUsed": 119476,
+      "samples": [
+        {
+          "checkTime": 0.28,
+          "totalTime": 0.5,
+          "instantiations": 33042,
+          "memoryUsed": 120176
+        },
+        {
+          "checkTime": 0.18,
+          "totalTime": 0.37,
+          "instantiations": 33042,
+          "memoryUsed": 118503
+        },
+        {
+          "checkTime": 0.21,
+          "totalTime": 0.36,
+          "instantiations": 33042,
+          "memoryUsed": 129398
+        },
+        {
+          "checkTime": 0.31,
+          "totalTime": 0.48,
+          "instantiations": 33042,
+          "memoryUsed": 117683
+        },
+        {
+          "checkTime": 0.18,
+          "totalTime": 0.35,
+          "instantiations": 33042,
+          "memoryUsed": 119476
+        }
+      ],
+      "checkTimeRank": 7,
+      "instantiationsRank": 6,
+      "memoryUsedRank": 4
+    },
+    {
+      "file": "petstore.zod3.ts",
+      "schema": "petstore",
+      "runtime": "zod3",
+      "checkTime": 0.28,
+      "checkTimeStandardDeviation": 0.019390719429665314,
+      "totalTime": 0.43,
+      "instantiations": 96747,
+      "memoryUsed": 123708,
+      "samples": [
+        {
+          "checkTime": 0.25,
+          "totalTime": 0.4,
+          "instantiations": 96747,
+          "memoryUsed": 124472
+        },
+        {
+          "checkTime": 0.28,
+          "totalTime": 0.44,
+          "instantiations": 96747,
+          "memoryUsed": 123462
+        },
+        {
+          "checkTime": 0.31,
+          "totalTime": 0.48,
+          "instantiations": 96747,
+          "memoryUsed": 156947
+        },
+        {
+          "checkTime": 0.28,
+          "totalTime": 0.43,
+          "instantiations": 96747,
+          "memoryUsed": 123708
+        },
+        {
+          "checkTime": 0.27,
+          "totalTime": 0.42,
+          "instantiations": 96747,
+          "memoryUsed": 123318
+        }
+      ],
+      "checkTimeRank": 8,
+      "instantiationsRank": 8,
+      "memoryUsedRank": 5
+    },
+    {
+      "file": "petstore.arktype.ts",
+      "schema": "petstore",
+      "runtime": "arktype",
+      "checkTime": 0.21,
+      "checkTimeStandardDeviation": 0.027999999999999997,
+      "totalTime": 0.45,
+      "instantiations": 52163,
+      "memoryUsed": 141597,
+      "samples": [
+        {
+          "checkTime": 0.21,
+          "totalTime": 0.51,
+          "instantiations": 52163,
+          "memoryUsed": 141953
+        },
+        {
+          "checkTime": 0.25,
+          "totalTime": 0.68,
+          "instantiations": 52163,
+          "memoryUsed": 145241
+        },
+        {
+          "checkTime": 0.18,
+          "totalTime": 0.41,
+          "instantiations": 52163,
+          "memoryUsed": 141503
+        },
+        {
+          "checkTime": 0.17,
+          "totalTime": 0.36,
+          "instantiations": 52163,
+          "memoryUsed": 141597
+        },
+        {
+          "checkTime": 0.21,
+          "totalTime": 0.45,
+          "instantiations": 52163,
+          "memoryUsed": 141521
+        }
+      ],
+      "checkTimeRank": 6,
+      "instantiationsRank": 7,
+      "memoryUsedRank": 6
+    },
+    {
+      "file": "petstore.zod.ts",
+      "schema": "petstore",
+      "runtime": "zod",
+      "checkTime": 0.29,
+      "checkTimeStandardDeviation": 0.033105890714493685,
+      "totalTime": 0.43,
+      "instantiations": 96792,
+      "memoryUsed": 157234,
+      "samples": [
+        {
+          "checkTime": 0.35,
+          "totalTime": 0.56,
+          "instantiations": 96792,
+          "memoryUsed": 157234
+        },
+        {
+          "checkTime": 0.32,
+          "totalTime": 0.46,
+          "instantiations": 96792,
+          "memoryUsed": 123407
+        },
+        {
+          "checkTime": 0.27,
+          "totalTime": 0.41,
+          "instantiations": 96792,
+          "memoryUsed": 158133
+        },
+        {
+          "checkTime": 0.26,
+          "totalTime": 0.39,
+          "instantiations": 96792,
+          "memoryUsed": 156755
+        },
+        {
+          "checkTime": 0.29,
+          "totalTime": 0.43,
+          "instantiations": 96792,
+          "memoryUsed": 158227
+        }
+      ],
+      "checkTimeRank": 9,
+      "instantiationsRank": 9,
+      "memoryUsedRank": 7
+    },
+    {
+      "file": "petstore.effect.ts",
+      "schema": "petstore",
+      "runtime": "effect",
+      "checkTime": 0.16,
+      "checkTimeStandardDeviation": 0.013266499161421596,
+      "totalTime": 0.52,
+      "instantiations": 13564,
+      "memoryUsed": 168292,
+      "samples": [
+        {
+          "checkTime": 0.16,
+          "totalTime": 0.83,
+          "instantiations": 13564,
+          "memoryUsed": 168292
+        },
+        {
+          "checkTime": 0.18,
+          "totalTime": 0.61,
+          "instantiations": 13564,
+          "memoryUsed": 167849
+        },
+        {
+          "checkTime": 0.15,
+          "totalTime": 0.52,
+          "instantiations": 13564,
+          "memoryUsed": 169950
+        },
+        {
+          "checkTime": 0.14,
+          "totalTime": 0.46,
+          "instantiations": 13564,
+          "memoryUsed": 168418
+        },
+        {
+          "checkTime": 0.16,
+          "totalTime": 0.51,
+          "instantiations": 13564,
+          "memoryUsed": 168161
+        }
+      ],
+      "checkTimeRank": 4,
+      "instantiationsRank": 3,
+      "memoryUsedRank": 8
+    },
+    {
+      "file": "petstore.effect3.ts",
+      "schema": "petstore",
+      "runtime": "effect3",
+      "checkTime": 0.17,
+      "checkTimeStandardDeviation": 0.11842297074469971,
+      "totalTime": 0.74,
+      "instantiations": 21901,
+      "memoryUsed": 265614,
+      "samples": [
+        {
+          "checkTime": 0.17,
+          "totalTime": 0.73,
+          "instantiations": 21901,
+          "memoryUsed": 265614
+        },
+        {
+          "checkTime": 0.16,
+          "totalTime": 0.74,
+          "instantiations": 21901,
+          "memoryUsed": 266147
+        },
+        {
+          "checkTime": 0.46,
+          "totalTime": 1.05,
+          "instantiations": 21901,
+          "memoryUsed": 254902
+        },
+        {
+          "checkTime": 0.15,
+          "totalTime": 0.63,
+          "instantiations": 21901,
+          "memoryUsed": 266447
+        },
+        {
+          "checkTime": 0.18,
+          "totalTime": 0.78,
+          "instantiations": 21901,
+          "memoryUsed": 255670
+        }
+      ],
+      "checkTimeRank": 5,
+      "instantiationsRank": 5,
+      "memoryUsedRank": 9
+    }
+  ]
+}
