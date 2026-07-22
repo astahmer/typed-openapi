@@ -2,7 +2,7 @@
 title: Promise client and default fetcher
 description: See what `--default-fetcher` writes, what it handles, and when to keep your own transport.
 sidebar:
-  label: Promise client
+  label: Client & fetcher
   order: 1
 ---
 
@@ -25,28 +25,26 @@ The generated fetcher:
 
 - receives a `URL` with path parameters already substituted;
 - writes serialized query parameters to that URL;
-- merges operation headers and OpenAPI cookie parameters;
+- receives operation headers and cookies already prepared by the generated client;
 - encodes JSON, multipart, URL-encoded, binary, and text bodies from `requestFormat`;
 - forwards `overrides` to native `fetch` and returns the native `Response`.
 
-This is the implementation shape it writes (the auth block is added only when the OpenAPI document has `securitySchemes`):
+This is the implementation shape it writes. The auth block is added only when the OpenAPI document has `securitySchemes`:
 
 ```ts
-const API_BASE_URL = process.env["API_BASE_URL"] || "https://api.example.com";
+const API_BASE_URL =
+  (globalThis as { process?: { env?: Record<string, string | undefined> } })
+    .process?.env?.["API_BASE_URL"] ?? "https://api.example.com";
 
-const defaultFetcher: Fetcher["fetch"] = async (input) => {
+export const defaultFetcher: Fetcher["fetch"] = async (input) => {
   const headers = new Headers(input.overrides?.headers);
 
   if (input.urlSearchParams) {
     input.url.search = input.urlSearchParams.toString();
   }
 
-  if (input.parameters?.cookie && typeof input.parameters.cookie === "object") {
-    const cookies = Object.entries(input.parameters.cookie)
-      .filter(([, value]) => value != null)
-      .map(([key, value]) => `${key}=${String(value)}`);
-    if (cookies.length) headers.set("cookie", cookies.join("; "));
-  }
+  // When the spec has security schemes, the generated file then calls:
+  // applyAuth(headers, input.url, auth, input.security ?? []);
 
   let body: BodyInit | undefined;
   if (["post", "put", "patch", "delete"].includes(input.method.toLowerCase())) {
@@ -69,14 +67,23 @@ const defaultFetcher: Fetcher["fetch"] = async (input) => {
   });
 };
 
-export const api = createApiClient({ fetch: defaultFetcher }, API_BASE_URL);
+export const createApi = (baseUrl = API_BASE_URL) =>
+  createApiClient({ fetch: defaultFetcher }, baseUrl);
+
+export const api = createApi();
 ```
 
 `encodeRequestBody()` is also written into that file. It uses `JSON.stringify()` for JSON, lets `fetch` provide the multipart boundary for `FormData`, uses `URLSearchParams` for form posts, and rejects an invalid binary body before making a request.
 
 ## Configure the generated file
 
-The generated base URL line uses `process.env["API_BASE_URL"]`. Keep it in Node projects. Change it in browser-only projects to the environment mechanism your bundler exposes, for example `import.meta.env` in Vite. The generator cannot safely guess that policy.
+The generated default reads `globalThis.process?.env?.API_BASE_URL` when it exists. For a browser app, keep the generated file unchanged and create the client with the base URL your bundler exposes:
+
+```ts
+import { createApi } from "./api/api.client";
+
+export const api = createApi(import.meta.env.VITE_API_URL);
+```
 
 If your OpenAPI document has security schemes, configure the generated fetcher once before requests:
 
@@ -88,7 +95,7 @@ configureFetcher({
 });
 ```
 
-Credential keys come from OpenAPI security-scheme names. Read [bodies, cookies, and auth](/clients/requests-auth-and-bodies/) for every supported placement.
+Credential keys come from OpenAPI security-scheme names. The fetcher only applies the first security requirement that the returned credentials satisfy for that operation; it sends no credential for an operation that declares none. Read [bodies, cookies, and auth](/clients/requests-auth-and-bodies/) for every supported placement.
 
 ## Call the client
 
@@ -120,18 +127,15 @@ const pet = await response.json();
 
 ## Bring your own fetcher
 
-Create the client with an adapter around `fetch`, Axios, Ky, or an existing transport. The important part is honoring `requestFormat`, query parameters, headers, and cookies.
+Wrap the exported generated fetcher when you only need tracing, retry, or logging. This preserves body encoding, cookies, headers, query parameters, and security behavior.
 
 ```ts
 import { createApiClient, type Fetcher } from "./openapi";
+import { defaultFetcher } from "./api.client";
 
 const fetcher: Fetcher["fetch"] = async (input) => {
-  if (input.urlSearchParams) input.url.search = input.urlSearchParams.toString();
-
-  return fetch(input.url, {
-    method: input.method.toUpperCase(),
-    headers: input.overrides?.headers,
-  });
+  console.info("API request", input.method, input.path);
+  return defaultFetcher(input);
 };
 
 export const api = createApiClient({ fetch: fetcher }, "https://api.example.com");
@@ -139,4 +143,4 @@ export const api = createApiClient({ fetch: fetcher }, "https://api.example.com"
 
 ## When not to use it
 
-Keep your own fetcher when the application already has a transport that owns retry, tracing, auth refresh, request signing, or environment access. Implement the generated `Fetcher["fetch"]` contract and preserve `input.urlSearchParams`, `input.parameters`, and `input.requestFormat`. The client types work in Node because the response contract is smaller than the DOM `Response` type.
+Keep your own fetcher when the application already has a transport that owns retry, tracing, auth refresh, request signing, or environment access. Implement the generated `Fetcher["fetch"]` contract and preserve `input.urlSearchParams`, `input.parameters`, `input.requestFormat`, and `input.security`. The client types work in Node because the response contract is smaller than the DOM `Response` type.

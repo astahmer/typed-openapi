@@ -1,4 +1,5 @@
 import type { OpenAPIObject } from "openapi3-ts/oas31";
+import { capitalize } from "pastable/server";
 import { encodeRequestBody } from "./encode-request-body.ts";
 import { generateAuthHelpersSource, parseSecuritySchemes } from "./security.ts";
 
@@ -30,9 +31,13 @@ export const generateDefaultFetcher = (options: {
   const importLine = isEffect
     ? `import { type Fetcher, type RequestFormat, createEffectApiClient } from "${clientPath}";`
     : `import { type Fetcher, type RequestFormat, createApiClient } from "${clientPath}";`;
-  const exportLine = isEffect
-    ? `export const ${apiName} = createEffectApiClient({ fetch: ${fetcherName} }, ${envApiBaseUrl});`
-    : `export const ${apiName} = createApiClient({ fetch: ${fetcherName} }, ${envApiBaseUrl});`;
+  const createLine = isEffect
+    ? `createEffectApiClient({ fetch: ${fetcherName} }, baseUrl)`
+    : `createApiClient({ fetch: ${fetcherName} }, baseUrl)`;
+  const exportLine = `/** Create a client with an explicit base URL when your runtime owns environment access. */
+export const create${capitalize(apiName)} = (baseUrl = ${envApiBaseUrl}) => ${createLine};
+
+export const ${apiName} = create${capitalize(apiName)}();`;
 
   // Inline the real helper (types erased; re-annotate for the generated file).
   const encodeRequestBodySource = `const encodeRequestBody = (${encodeRequestBody.toString()}) as (
@@ -59,31 +64,32 @@ export const configureFetcher = (config: DefaultFetcherConfig) => {
   const authApplyBlock = hasAuth
     ? `
   const auth = await fetcherConfig.getAuth?.();
-  if (auth) applyAuth(headers, input.url, auth);
+  if (auth) applyAuth(headers, input.url, auth, input.security ?? []);
 `
     : "";
 
   return `/**
  * Generic API Client for typed-openapi generated code
  *
- * This is a simple, production-ready wrapper that you can copy and customize.
+ * Generated transport for a typed-openapi client.
  * It handles:
- * - Path parameter replacement
  * - Query parameter serialization
- * - Cookie header encoding
  * - Body encoding by \`requestFormat\` (json / form-data / form-url / binary / text)
-${hasAuth ? " * - OpenAPI securitySchemes via \`configureFetcher({ getAuth })\`\n" : ""} * - Basic error handling
+ * - Operation headers and request overrides
+${hasAuth ? " * - OpenAPI securitySchemes via \`configureFetcher({ getAuth })\`" : ""}
  *
  * Usage:
- * 1. Replace './${clientPath}' with your actual generated file path
- * 2. Set your ${envApiBaseUrl}
+ * 1. Import create${capitalize(apiName)}() or ${apiName} from this file
+ * 2. Pass a base URL to create${capitalize(apiName)}() when your runtime owns environment access
 ${hasAuth ? " * 3. Call configureFetcher({ getAuth: () => ({ ... }) })\n" : ""} * ${hasAuth ? "4" : "3"}. Customize error handling and headers as needed
  */
 
 ${importLine}
 
-// Basic configuration
-const ${envApiBaseUrl} = process.env["${envApiBaseUrl}"] || "https://api.example.com";
+// Basic configuration. Pass an explicit URL to create${capitalize(apiName)}() in browser-only runtimes.
+const ${envApiBaseUrl} =
+  (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env?.["${envApiBaseUrl}"] ??
+  "https://api.example.com";
 
 const isMutationMethod = (method: string) => ["post", "put", "patch", "delete"].includes(method.toLowerCase());
 
@@ -94,24 +100,13 @@ ${hasAuth ? `\n${authSource}\n${authConfigBlock}` : ""}
  * Simple fetcher implementation without external dependencies.
  * Compatible with both ApiClient and EffectApiClient (promise fetcher is wrapped).
  */
-const ${fetcherName}: Fetcher["fetch"] = async (input) => {
+export const ${fetcherName}: Fetcher["fetch"] = async (input) => {
   const headers = new Headers(input.overrides?.headers);
-${authApplyBlock}
   // Handle query parameters
   if (input.urlSearchParams) {
     input.url.search = input.urlSearchParams.toString();
   }
-
-  // Cookie params (OpenAPI \`in: cookie\`)
-  if (input.parameters?.cookie && typeof input.parameters.cookie === "object") {
-    const parts = Object.entries(input.parameters.cookie)
-      .filter(([, value]) => value != null)
-      .map(([key, value]) => \`\${key}=\${String(value)}\`);
-    if (parts.length) {
-      const existing = headers.get("cookie");
-      headers.set("cookie", existing ? \`\${existing}; \${parts.join("; ")}\` : parts.join("; "));
-    }
-  }
+${authApplyBlock}
 
   let body: BodyInit | undefined;
   if (isMutationMethod(input.method)) {

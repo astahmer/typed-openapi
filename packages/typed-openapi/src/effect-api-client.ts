@@ -271,6 +271,7 @@ export class EffectApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+        security: endpointSecurityRequirements[method]?.[path] ?? [],
         ...(overrides ? { overrides } : {}),
       });
 

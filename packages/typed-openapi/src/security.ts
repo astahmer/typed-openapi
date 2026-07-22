@@ -133,21 +133,21 @@ export const applyAuth = (_headers: Headers, _url: URL, _auth: AuthCredentials):
       if (s.type === "apiKey") {
         const param = s.paramName ?? s.name;
         if (s.in === "query") {
-          return `  if (auth[${key}]) url.searchParams.set(${JSON.stringify(param)}, auth[${key}]!);`;
+          return `  if (allowed.has(${key}) && auth[${key}]) url.searchParams.set(${JSON.stringify(param)}, auth[${key}]!);`;
         }
         if (s.in === "cookie") {
-          return `  if (auth[${key}]) {
+          return `  if (allowed.has(${key}) && auth[${key}]) {
     const existing = headers.get("cookie");
     const part = ${JSON.stringify(param + "=")} + encodeURIComponent(auth[${key}]!);
     headers.set("cookie", existing ? existing + "; " + part : part);
   }`;
         }
         // header (default)
-        return `  if (auth[${key}]) headers.set(${JSON.stringify(param)}, auth[${key}]!);`;
+        return `  if (allowed.has(${key}) && auth[${key}]) headers.set(${JSON.stringify(param)}, auth[${key}]!);`;
       }
 
       if (s.type === "http" && s.scheme === "basic") {
-        return `  if (auth[${key}]) {
+        return `  if (allowed.has(${key}) && auth[${key}]) {
     const token = auth[${key}]!.includes(":")
       ? btoa(auth[${key}]!)
       : auth[${key}]!;
@@ -156,7 +156,7 @@ export const applyAuth = (_headers: Headers, _url: URL, _auth: AuthCredentials):
       }
 
       // oauth2 / openIdConnect / http bearer
-      return `  if (auth[${key}]) {
+      return `  if (allowed.has(${key}) && auth[${key}]) {
     const raw = auth[${key}]!.trim();
     const token = /^bearer\\s+/i.test(raw) ? raw.replace(/^bearer\\s+/i, "").trim() : raw;
     headers.set("Authorization", "Bearer " + token);
@@ -168,12 +168,30 @@ export const applyAuth = (_headers: Headers, _url: URL, _auth: AuthCredentials):
 ${fields}
 };
 
+export type SecurityRequirements = readonly (readonly string[])[];
+
+const securitySchemeProperties: Record<string, keyof AuthCredentials> = {
+${schemes.map((s) => `  ${JSON.stringify(s.name)}: ${JSON.stringify(s.prop)},`).join("\n")}
+};
+
+/** Pick the first OpenAPI security requirement satisfied by the available credentials. */
+const selectSecuritySchemes = (auth: AuthCredentials, requirements: SecurityRequirements): Set<keyof AuthCredentials> => {
+  for (const requirement of requirements) {
+    const properties = requirement.map((name) => securitySchemeProperties[name]).filter(Boolean);
+    if (properties.length === requirement.length && properties.every((property) => Boolean(auth[property]))) {
+      return new Set(properties);
+    }
+  }
+  return new Set();
+};
+
 /**
- * Apply OpenAPI securitySchemes credentials to the outgoing request.
- * Pass tokens via \`getAuth\` on the default fetcher (or call manually).
+ * Apply credentials for the first satisfied OpenAPI security requirement.
+ * Pass tokens via \`getAuth\` on the default fetcher.
  * Bearer tokens may be raw or already prefixed with \`Bearer \`.
  */
-export const applyAuth = (headers: Headers, ${urlParam}: URL, auth: AuthCredentials): void => {
+export const applyAuth = (headers: Headers, ${urlParam}: URL, auth: AuthCredentials, requirements: SecurityRequirements): void => {
+  const allowed = selectSecuritySchemes(auth, requirements);
 ${applyBody}
 };
 `;

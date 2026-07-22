@@ -468,6 +468,34 @@ const generateEndpointRequestFormats = (ctx: GeneratorContext) => {
     `;
 };
 
+/** Effective OpenAPI security requirements for each operation. */
+const generateEndpointSecurityRequirements = (ctx: GeneratorContext) => {
+  const byMethods = groupBy(ctx.endpointList, "method");
+  const entries = Object.entries(byMethods)
+    .map(([method, list]) => {
+      const secured = list
+        .map((endpoint) => {
+          const requirements = endpoint.operation.security ?? ctx.doc.security ?? [];
+          if (!requirements.length) return "";
+          const names = requirements.map((requirement) => Object.keys(requirement));
+          return `"${endpoint.path}": ${JSON.stringify(names)}`;
+        })
+        .filter(Boolean);
+      return secured.length ? `${method}: { ${secured.join(",\n")} }` : "";
+    })
+    .filter(Boolean)
+    .join(",\n");
+
+  return `
+    // <EndpointSecurityRequirements>
+    /** OpenAPI security requirements. Missing entries require no credentials. */
+    export const endpointSecurityRequirements = {
+    ${entries}
+    } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: SecurityRequirements }> }>;
+    // </EndpointSecurityRequirements>
+    `;
+};
+
 /** Sparse map of non-json responseFormat overrides (default `"json"`). */
 const generateEndpointResponseFormats = (ctx: GeneratorContext) => {
   const byMethods = groupBy(ctx.endpointList, "method");
@@ -643,9 +671,11 @@ export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type ResponseFormat = "json" | "sse";
+export type SecurityRequirements = readonly (readonly string[])[];
 
 ${generateEndpointRequestFormats(ctx)}
 ${generateEndpointResponseFormats(ctx)}
+${generateEndpointSecurityRequirements(ctx)}
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -703,6 +733,8 @@ export interface Fetcher {
       path: string;
       /** How to encode \`parameters.body\` (from OpenAPI requestBody content type). */
       requestFormat: RequestFormat;
+      /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
+      security?: SecurityRequirements;
       overrides?: RequestInit;
       throwOnStatusError?: boolean
     }) => Promise<FetcherResponse>;
@@ -1105,6 +1137,7 @@ export class ApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+        security: endpointSecurityRequirements[method]?.[path] ?? [],
         ...(overrides ? { overrides } : {}),
         throwOnStatusError
       });

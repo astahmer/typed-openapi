@@ -38,7 +38,7 @@ await api.get("/session", {
 
 ## Use OpenAPI `securitySchemes`
 
-When the document declares security schemes, `--default-fetcher` emits `AuthCredentials` and `configureFetcher()`. Bearer, Basic, OAuth2/OpenID Connect, and API keys in headers, queries, or cookies are applied automatically.
+When the document declares security schemes, `--default-fetcher` emits `AuthCredentials` and `configureFetcher()`. For each request, it applies only the first OpenAPI security requirement that the credentials returned by `getAuth()` satisfy. An endpoint with no security requirement receives no credential.
 
 ```ts
 import { configureFetcher } from "./api/api.client";
@@ -54,3 +54,5 @@ configureFetcher({
 `mutualTLS` and unknown schemes remain represented in the credentials type but are not applied by the default fetcher; configure those at the transport or platform layer.
 
 Call `configureFetcher()` in your application's API bootstrap. Credential keys are generated from the security-scheme names in the OpenAPI document, so changing a scheme name is a compile-time prompt to update this code.
+
+An operation can declare alternatives such as bearer **or** API key. Return both only when they are both safe to expose; the fetcher selects the first satisfied alternative in the order written in OpenAPI.

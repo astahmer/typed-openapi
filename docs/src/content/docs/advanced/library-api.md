@@ -38,6 +38,5 @@ export function generateClient(document: OpenAPIObject) {
 | `generateMswFile()` | Generate MSW handlers and mock factories. |
 | `defineConfig()` | Type a TS/JS config file. |
 | `applySpecFilters()` | Reuse endpoint/schema filtering in custom workflows. |
-| `getRuntimeAdapter()` | Inspect a shipped runtime adapter. |
 
 For Node-only file generation, import the package’s `typed-openapi/node` export. Runtime adapter exports are also available from `typed-openapi/runtimes` and their individual subpaths.

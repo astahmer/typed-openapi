@@ -7,6 +7,8 @@ sidebar:
 
 This guide gets a useful client into an application without making you choose a validation library or framework up front. By the end, you will have one generated module, a Fetch client, and a typed request.
 
+Generation runs in Node. Running a generated Fetch client needs the platform Fetch APIs (`fetch`, `URL`, `Headers`, `FormData`, and `Blob`): browsers provide them; use Node 18+ or provide compatible polyfills.
+
 ## 1. Generate the contract
 
 Install the generator and point it at the root OpenAPI YAML or JSON file:

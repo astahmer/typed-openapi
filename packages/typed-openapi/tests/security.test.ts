@@ -2,6 +2,8 @@ import { describe, expect, test } from "vitest";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { generateDefaultFetcher } from "../src/default-fetcher.generator.ts";
+import { generateFile } from "../src/generator.ts";
+import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { generateAuthHelpersSource, parseSecuritySchemes } from "../src/security.ts";
 
 describe("securitySchemes → auth helpers", () => {
@@ -43,7 +45,8 @@ describe("securitySchemes → auth helpers", () => {
     expect(src).toContain("export const applyAuth");
     expect(src).toContain("configureFetcher");
     expect(src).toContain("getAuth");
-    expect(src).toContain("applyAuth(headers, input.url, auth)");
+    expect(src).toContain("applyAuth(headers, input.url, auth, input.security ?? [])");
+    expect(src).toContain("selectSecuritySchemes");
     // Petstore has no query/cookie apiKeys — generated applyAuth uses `_url` (unused).
     expect(src).toContain("_url: URL");
   });
@@ -130,5 +133,32 @@ describe("securitySchemes → auth helpers", () => {
     expect(src).toContain("url: URL");
     expect(src).not.toContain("_url: URL");
     expect(src).toContain("url.searchParams.set");
+    expect(src).toContain("allowed.has");
+  });
+
+  test("generated clients pass each operation's effective security requirements", () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "security", version: "1" },
+      security: [{ bearerAuth: [] }],
+      paths: {
+        "/private": {
+          get: { responses: { 200: { description: "ok" } } },
+        },
+        "/public": {
+          get: { security: [], responses: { 200: { description: "ok" } } },
+        },
+      },
+      components: {
+        securitySchemes: {
+          bearerAuth: { type: "http", scheme: "bearer" },
+        },
+      },
+    } as OpenAPIObject;
+
+    const src = generateFile(mapOpenApiEndpoints(doc));
+    expect(src).toContain('"/private": [["bearerAuth"]]');
+    expect(src).not.toContain('"/public": []');
+    expect(src).toContain("security: endpointSecurityRequirements[method]?.[path] ?? []");
   });
 });

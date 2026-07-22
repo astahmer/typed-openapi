@@ -20,9 +20,11 @@ First inspect the existing typed-openapi config and generated files. Do not hand
 
 Choose the smallest setup that fits this app:
 - keep types-only output unless runtime validation is already needed;
-- use the generated default fetcher only after showing how its base URL and auth are configured;
+- use the generated default fetcher only after checking each operation's OpenAPI security requirements and showing its base-URL design;
 - reuse the app's existing HTTP layer when it already owns retry, auth, tracing, or environment access;
 - generate TanStack Query or MSW output only when this app uses those libraries.
+
+For browser apps, use the generated `createApi(baseUrl)` factory instead of editing generated code. Do not use query API-key auth unless the generated fetcher version supports operation-level security requirements.
 
 Show the exact config and command before changing files. Then regenerate, run the relevant typecheck/tests, and summarize the generated files and any OpenAPI gaps you found.
 ```

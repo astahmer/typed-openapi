@@ -10,6 +10,26 @@
   font-variant-ligatures: none;
 }
 
+body .container-section .container-wrapper {
+  margin-inline: auto;
+  width: 100%;
+}
+
+body [data-slot='doc-title-header'] h1 {
+  font-size: clamp(2.1rem, 4vw, 2.7rem);
+  line-height: 1.1;
+}
+
+body .sl-markdown-content h2 {
+  font-size: clamp(1.55rem, 2.5vw, 1.9rem);
+  line-height: 1.2;
+}
+
+body .sl-markdown-content h2 code {
+  font-size: 0.82em;
+  padding: 0.05em 0.25em;
+}
+
 .sidebar .entry-link {
   align-items: stretch;
   height: auto;
