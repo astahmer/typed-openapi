@@ -51,6 +51,4 @@ pnpm exec typed-openapi openapi.yaml --schema-naming prefer-inline
 
 `auto` is the default. Recursive schemas remain safely named so their generated types can refer to themselves.
 
-:::tip[Prefer stable names in published packages]
 Use `always-name` when consumers import schemas directly or generated output is part of a public SDK. Use `prefer-inline` for application-local code where shorter output is easier to read.
-:::

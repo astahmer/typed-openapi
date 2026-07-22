@@ -4,13 +4,10 @@ description: Generate a type-safe TypeScript API client from an OpenAPI document
 template: splash
 hero:
   title: typed-openapi
-  tagline: Type-safe OpenAPI clients. One generated file. Your runtime, your fetcher, your stack.
+  tagline: OpenAPI client generator for TypeScript.
   layout: centered
-  announcement:
-    text: Open-source TypeScript API generation
-    link: /getting-started/
   actions:
-    - text: Generate your first client
+    - text: Quick start
       link: /getting-started/
       icon: right-arrow
     - text: Open playground
@@ -21,76 +18,34 @@ hero:
 import { ContainerSection } from "lucode-starlight/components";
 
 <ContainerSection width="lg">
-  <div class="home-intro">
-    <p class="home-eyebrow">OpenAPI in. Useful TypeScript out.</p>
-    <p>
-      <strong>typed-openapi</strong> turns an OpenAPI 3 document into a client that fits the
-      application you already have: plain promises, Effect, a generated Fetch transport, or your
-      own fetcher. Start with types. Add runtime validation and integrations only when they earn
-      their place.
-    </p>
-  </div>
-
-  <div class="home-proof" aria-label="Core properties">
-    <div><strong>One spec</strong><span>OpenAPI 3 in YAML or JSON</span></div>
-    <div><strong>One output</strong><span>Types, schemas, and operations together</span></div>
-    <div><strong>Zero lock-in</strong><span>Bring your own runtime and transport</span></div>
-  </div>
-
   <div class="home-command">
     <div>
-      <p class="home-eyebrow">The 30-second start</p>
-      <h2>Generate first. Decide later.</h2>
+      <h2>Generate a client.</h2>
       <p>
-        The default is a headless, types-only client. It is the fastest way to verify that your
-        spec maps cleanly before choosing validation, fetch behavior, or framework helpers.
+        Start with types and endpoint methods. Add a fetcher, runtime schemas, or framework output
+        when your app needs them.
       </p>
     </div>
     <code>pnpm exec typed-openapi ./openapi.yaml --output src/api/client.ts</code>
   </div>
 
-  <h2>Choose your path</h2>
+  <h2>Start here</h2>
   <div class="home-grid">
     <a class="home-card" href="/getting-started/">
-      <span>01</span>
-      <strong>Generate a client</strong>
-      <p>Install the CLI, generate one file, and make the first typed call.</p>
+      <strong>Quick start</strong>
+      <p>Generate types, add the fetch client, and make a request.</p>
     </a>
     <a class="home-card" href="/clients/promise-client/">
-      <span>02</span>
-      <strong>Connect your app</strong>
-      <p>Use the built-in Fetch client or plug in the transport your app already trusts.</p>
+      <strong>Default fetcher</strong>
+      <p>See the generated implementation before deciding whether to use it.</p>
     </a>
     <a class="home-card" href="/validation/runtimes/">
-      <span>03</span>
-      <strong>Harden the boundary</strong>
-      <p>Add Zod, Effect, Valibot, ArkType, TypeBox, or Typia validation when needed.</p>
+      <strong>Runtime validation</strong>
+      <p>Pick Zod, Effect, Valibot, ArkType, TypeBox, or Typia.</p>
     </a>
-  </div>
-
-  <div class="home-grid home-grid-secondary">
-    <a class="home-card" href="/integrations/tanstack-query/">
-      <strong>React Query</strong>
-      <p>Generated query options, mutations, invalidation, and infinite queries.</p>
+    <a class="home-card" href="/ai/">
+      <strong>Use with an AI agent</strong>
+      <p>Add the repository skill and paste a focused integration prompt.</p>
     </a>
-    <a class="home-card" href="/integrations/msw/">
-      <strong>MSW mocks</strong>
-      <p>Typed request handlers and optional Faker-backed fixtures from the same spec.</p>
-    </a>
-    <a class="home-card" href="/playground/">
-      <strong>Try before installing</strong>
-      <p>Explore generation settings in the playground, then keep its URL as a shareable recipe.</p>
-    </a>
-  </div>
-
-  <div class="home-next">
-    <p class="home-eyebrow">Already generating in CI?</p>
-    <h2>Make generation repeatable.</h2>
-    <p>Move flags into a typed config, name generated artifacts, and keep the command small.</p>
-    <a href="/configuration/">Configure typed-openapi →</a>
   </div>
 </ContainerSection>
-
-:::tip[The recommended order]
-Generate types first. Then choose transport. Add validation only at boundaries you do not control. The docs follow that same path.
-:::

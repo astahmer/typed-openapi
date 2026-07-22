@@ -69,6 +69,4 @@ Use [validation controls](/validation/input-output/) to choose depth, input/outp
 - **Effect application:** use `effect`; it also defaults to the Effect-native client.
 - **Supporting an older ecosystem:** use `zod3` or `effect3` deliberately, then plan a migration separately.
 
-:::tip[Stay consistent]
 Pick the validation library your application already runs. The generated file only needs that chosen runtime as a dependency.
-:::

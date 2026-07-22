@@ -53,6 +53,4 @@ configureFetcher({
 
 `mutualTLS` and unknown schemes remain represented in the credentials type but are not applied by the default fetcher; configure those at the transport or platform layer.
 
-:::caution[Configure once, before the first request]
 Call `configureFetcher()` in your application's API bootstrap. Credential keys are generated from the security-scheme names in the OpenAPI document, so changing a scheme name is a compile-time prompt to update this code.
-:::

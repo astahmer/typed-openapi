@@ -60,6 +60,4 @@ The generated default fetcher also accepts `Blob`, `ArrayBuffer`, `Uint8Array`, 
 - Inline request objects omit `readOnly` fields; inline response objects omit `writeOnly` fields.
 - Named `$ref` schemas stay shared across endpoint contexts.
 
-:::note[When the spec is ambiguous]
 Generation preserves the declared OpenAPI contract. If an endpoint omits a response schema or uses an overly broad `object`, improve the specification first; no generator can recover type detail that is not present in the input.
-:::

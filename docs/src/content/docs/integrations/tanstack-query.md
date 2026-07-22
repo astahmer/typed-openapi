@@ -96,6 +96,4 @@ const key = queryKeyFactory.endpoint("/pet/findByStatus", {
 
 Effect-native clients work here too: the generated wrapper executes their operations with `Effect.runPromise`.
 
-:::tip[Invalidate the endpoint shape, not a guessed string]
 Use `invalidateEndpoint()` or `queryKeyFactory` after a mutation. They encode the same path and parameter shape as the query, which prevents cache misses caused by manually assembled keys.
-:::

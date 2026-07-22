@@ -93,6 +93,4 @@ pnpm exec typed-openapi openapi.yaml \
 
 OpenAPI `default` values are emitted in runtime schemas. For inline request objects, `readOnly` properties are removed from input schemas; for inline response objects, `writeOnly` properties are removed from output schemas. Named `$ref` components remain shared so a component’s public shape does not silently differ between endpoints.
 
-:::tip[Default policy for browser apps]
-Start with `strict`, `both`, and coercion enabled. If outgoing values are already validated by your form or transport layer, move to `output` validation rather than disabling runtime checks entirely.
-:::
+For browser apps, start with `strict`, `both`, and coercion enabled. If forms or the transport already validate outgoing values, move to `output` validation rather than disabling runtime checks entirely.

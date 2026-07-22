@@ -66,6 +66,4 @@ pnpm exec typed-openapi openapi.yaml --msw --msw-faker
 
 SSE endpoints get an MSW response with `text/event-stream`; standard responses use `HttpResponse.json()`.
 
-:::tip[Make the base URL match production]
 Set `--msw-base-url` to the API origin your client uses. Generated handlers then catch only intended requests, which is safer than a global wildcard when a page talks to multiple services.
-:::

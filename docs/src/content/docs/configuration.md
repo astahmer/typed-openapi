@@ -31,9 +31,7 @@ Now one short command regenerates every configured output:
 pnpm exec typed-openapi
 ```
 
-:::tip[Commit the config and the generated output]
 Treat the OpenAPI file, config, and generated TypeScript as one reviewed change. That makes API drift visible in a normal pull request instead of at runtime.
-:::
 
 ## Override one setting from CI or a script
 

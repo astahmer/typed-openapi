@@ -41,9 +41,7 @@ const pet = await api.get("/pet/{petId}", {
 console.log(pet.name);
 ```
 
-:::tip[Keep the generated transport boring]
-Use `--default-fetcher` unless your app already has a mature HTTP layer. It is easier to review generated code than to reimplement multipart bodies, auth headers, cookies, and server-sent events by hand.
-:::
+The generated fetcher is a regular TypeScript file. Read [the implementation and its behavior](/clients/promise-client/) before using it; keep an existing transport when it already owns retry, auth, tracing, or environment configuration.
 
 ## 3. Add runtime validation at the boundary
 
@@ -63,12 +61,10 @@ Generated input and output validators run by default. See [runtime selection](/v
 
 [Open the playground with Zod selected](https://typed-openapi-astahmer.vercel.app/?runtime=zod&validation=strict&client=promise&validateSide=both&coerce=true). It starts with a Petstore document; paste your own OpenAPI YAML or JSON into the left editor.
 
-:::note[CLI input can come from config]
 If your project has `typed-openapi.config.ts`, the positional input becomes optional. [Configure a repeatable generation command.](/configuration/)
-:::
 
 ## Where to go next
 
 - Need request bodies, headers, cookies, or auth? Read [Bodies, cookies & auth](/clients/requests-auth-and-bodies/).
 - Need predictable non-2xx handling? Read [Errors & responses](/clients/errors-and-responses/).
-- Generating in a team or CI? Start from a [production recipe](/recipes/), then put stable flags in [configuration](/configuration/).
+- Generating in a team or CI? Put stable flags in [configuration](/configuration/).

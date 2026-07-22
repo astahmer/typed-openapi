@@ -62,8 +62,6 @@ const response = await api.get("/pet/{petId}", {
 });
 ```
 
-:::tip[Keep status policy close to the API contract]
 Use global status-code flags only when the whole API has a nonstandard convention. For ordinary endpoints, declare responses in OpenAPI and let `withResponse` narrow the body by status.
-:::
 
 For React mutation ergonomics, see [TanStack Query](/integrations/tanstack-query/).
