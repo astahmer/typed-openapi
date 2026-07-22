@@ -9,6 +9,7 @@ const cli = cac(name);
 cli
   .command("[input]", "Generate (OpenAPI path; optional when `input` is set in config)")
   .option("-o, --output <path>", "Output path for the api client ts file (defaults to `<input>.<runtime>.ts`)")
+  .option("--input-dir <path>", "Directory for the default output when the OpenAPI input is an HTTP(S) URL")
   .option(
     "-r, --runtime <n>",
     `Runtime to use for validation; defaults to \`none\` (or config file); available: ${allowedRuntimes.toString()}`,

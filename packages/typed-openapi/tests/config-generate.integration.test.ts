@@ -1,12 +1,40 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
+import SwaggerParser from "@apidevtools/swagger-parser";
 import { generateClientFiles } from "../src/generate-client-files.ts";
 
 const tmp = join(__dirname, "../tmp/config-generate-integration");
 const pkgRoot = join(__dirname, "..");
 
 describe("generateClientFiles + config file integration", () => {
+  test("writes HTTP input output to inputDir when no output is specified", async () => {
+    rmSync(tmp, { recursive: true, force: true });
+    mkdirSync(tmp, { recursive: true });
+
+    const bundle = vi.spyOn(SwaggerParser, "bundle").mockResolvedValue({
+      openapi: "3.0.3",
+      info: { title: "remote", version: "1" },
+      paths: {},
+    } as never);
+
+    try {
+      const input = "https://schemas.example.test/openapi.json";
+      const inputDir = relative(pkgRoot, join(tmp, "remote-output"));
+
+      await generateClientFiles(input, { inputDir });
+
+      expect(existsSync(join(tmp, "remote-output", "openapi.json.client.ts"))).toBe(true);
+      expect(existsSync(join(pkgRoot, "https:/schemas.example.test"))).toBe(false);
+
+      const output = relative(pkgRoot, join(tmp, "explicit-output.ts"));
+      await generateClientFiles(input, { inputDir, output });
+      expect(existsSync(join(tmp, "explicit-output.ts"))).toBe(true);
+    } finally {
+      bundle.mockRestore();
+    }
+  });
+
   test("config enables msw, tanstack, transformDates without CLI flags", async () => {
     rmSync(tmp, { recursive: true, force: true });
     mkdirSync(tmp, { recursive: true });

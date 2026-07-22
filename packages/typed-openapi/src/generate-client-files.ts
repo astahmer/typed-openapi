@@ -48,6 +48,7 @@ const validationOptionSchema = type("'loose' | 'formats' | 'strict'").or(
 
 export const optionsSchema = type({
   "output?": "string",
+  "inputDir?": "string",
   "runtime?": allowedRuntimes,
   "validation?": validationOptionSchema,
   "config?": "string",
@@ -115,6 +116,17 @@ function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
 const asStringArray = (value: string | string[] | undefined): string[] | undefined => {
   if (value === undefined) return undefined;
   return Array.isArray(value) ? value : [value];
+};
+
+const getHttpInputFilename = (input: string): string | undefined => {
+  try {
+    const url = new URL(input);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return undefined;
+    const segments = url.pathname.split("/").filter(Boolean);
+    return segments[segments.length - 1] ?? "openapi";
+  } catch {
+    return undefined;
+  }
 };
 
 export async function generateClientFiles(input: string | undefined, options: GenerateClientFilesOptions) {
@@ -203,10 +215,12 @@ export async function generateClientFiles(input: string | undefined, options: Ge
     })(),
   };
 
-  const outputPath = join(
-    cwd,
-    merged.output ?? options.output ?? resolvedInput + `.${runtime === "none" ? "client" : runtime}.ts`,
-  );
+  const suffix = `.${runtime === "none" ? "client" : runtime}.ts`;
+  const httpInputFilename = getHttpInputFilename(resolvedInput);
+  const defaultOutput =
+    httpInputFilename && merged.inputDir ? join(merged.inputDir, httpInputFilename + suffix) : resolvedInput + suffix;
+  const output = merged.output ?? defaultOutput;
+  const outputPath = isAbsolute(output) ? output : join(cwd, output);
   const content = await prettify(generateFile(generatorOptions), { enabled: shouldFormat, filePath: outputPath });
 
   console.log("Generating client...", outputPath);

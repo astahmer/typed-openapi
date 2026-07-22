@@ -16,6 +16,7 @@ const validationOverrideSchema = type({
 
 export const configFileSchema = type({
   "input?": "string",
+  "inputDir?": "string",
   "runtime?": "string",
   "validation?": type("'loose' | 'formats' | 'strict'").or(validationOverrideSchema),
   "output?": "string",
