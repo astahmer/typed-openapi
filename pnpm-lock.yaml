@@ -27,9 +27,6 @@ importers:
       '@apidevtools/swagger-parser':
         specifier: 12.1.0
         version: 12.1.0(openapi-types@12.1.3)
-      arktype:
-        specifier: 2.2.3
-        version: 2.2.3
       cac:
         specifier: 7.0.0
         version: 7.0.0
@@ -70,6 +67,9 @@ importers:
       '@types/node':
         specifier: 24.13.3
         version: 24.13.3
+      arktype:
+        specifier: 2.2.3
+        version: 2.2.3
       effect:
         specifier: 4.0.0-beta.100
         version: 4.0.0-beta.100

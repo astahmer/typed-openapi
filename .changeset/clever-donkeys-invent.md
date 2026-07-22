@@ -2,4 +2,4 @@
 "typed-openapi": patch
 ---
 
-Remove optional runtime peer dependencies so npm can execute the CLI without resolving incompatible runtime versions.
+Stop installing runtime packages with the CLI; generated clients require only their selected runtime.
