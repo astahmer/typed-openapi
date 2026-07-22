@@ -1,452 +1,337 @@
 {
   "mode": "usage",
-  "runs": 5,
+  "runs": 1,
   "typescriptVersion": "6.0.3",
   "results": [
     {
-      "file": "docker.openapi.client.ts",
-      "schema": "docker.openapi",
-      "runtime": "client",
-      "checkTime": 0.09,
-      "checkTimeStandardDeviation": 0.0040000000000000036,
-      "totalTime": 0.21,
-      "instantiations": 6665,
-      "memoryUsed": 75957,
+      "file": "cloudflare.zod.nocheck.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tmp/typecheck-benchmark-snapshots/cloudflare.zod.nocheck.ts",
+      "schema": "cloudflare",
+      "runtime": "zod-nocheck",
+      "strategy": "nocheck",
+      "checkTime": 0.06,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 1.19,
+      "instantiations": 1924,
+      "memoryUsed": 353843,
       "samples": [
         {
-          "checkTime": 0.09,
-          "totalTime": 0.21,
-          "instantiations": 6665,
-          "memoryUsed": 75957
-        },
+          "checkTime": 0.06,
+          "totalTime": 1.19,
+          "instantiations": 1924,
+          "memoryUsed": 353843
+        }
+      ],
+      "checkTimeRank": 3,
+      "instantiationsRank": 3,
+      "memoryUsedRank": 1
+    },
+    {
+      "file": "cloudflare.zod.direct-any-nocheck.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tmp/typecheck-benchmark-snapshots/cloudflare.zod.direct-any-nocheck.ts",
+      "schema": "cloudflare",
+      "runtime": "zod-direct-any-nocheck",
+      "strategy": "direct-any-nocheck",
+      "checkTime": 0.06,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 1.13,
+      "instantiations": 1924,
+      "memoryUsed": 356789,
+      "samples": [
         {
-          "checkTime": 0.09,
-          "totalTime": 0.21,
-          "instantiations": 6665,
-          "memoryUsed": 76399
-        },
-        {
-          "checkTime": 0.09,
-          "totalTime": 0.22,
-          "instantiations": 6665,
-          "memoryUsed": 74043
-        },
-        {
-          "checkTime": 0.1,
-          "totalTime": 0.22,
-          "instantiations": 6665,
-          "memoryUsed": 75914
-        },
-        {
-          "checkTime": 0.09,
-          "totalTime": 0.21,
-          "instantiations": 6665,
-          "memoryUsed": 91542
+          "checkTime": 0.06,
+          "totalTime": 1.13,
+          "instantiations": 1924,
+          "memoryUsed": 356789
         }
       ],
       "checkTimeRank": 1,
+      "instantiationsRank": 1,
+      "memoryUsedRank": 2
+    },
+    {
+      "file": "cloudflare.zod.forced-cast-nocheck.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tmp/typecheck-benchmark-snapshots/cloudflare.zod.forced-cast-nocheck.ts",
+      "schema": "cloudflare",
+      "runtime": "zod-forced-cast-nocheck",
+      "strategy": "forced-cast-nocheck",
+      "checkTime": 0.06,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.86,
+      "instantiations": 1924,
+      "memoryUsed": 404477,
+      "samples": [
+        {
+          "checkTime": 0.06,
+          "totalTime": 0.86,
+          "instantiations": 1924,
+          "memoryUsed": 404477
+        }
+      ],
+      "checkTimeRank": 2,
+      "instantiationsRank": 2,
+      "memoryUsedRank": 3
+    },
+    {
+      "file": "cloudflare.zod.direct-any.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tmp/typecheck-benchmark-snapshots/cloudflare.zod.direct-any.ts",
+      "schema": "cloudflare",
+      "runtime": "zod-direct-any",
+      "strategy": "direct-any",
+      "checkTime": 31.05,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 31.78,
+      "instantiations": 550386,
+      "memoryUsed": 1086366,
+      "samples": [
+        {
+          "checkTime": 31.05,
+          "totalTime": 31.78,
+          "instantiations": 550386,
+          "memoryUsed": 1086366
+        }
+      ],
+      "checkTimeRank": 4,
+      "instantiationsRank": 4,
+      "memoryUsedRank": 4
+    },
+    {
+      "file": "cloudflare.zod.forced-cast.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tmp/typecheck-benchmark-snapshots/cloudflare.zod.forced-cast.ts",
+      "schema": "cloudflare",
+      "runtime": "zod-forced-cast",
+      "strategy": "forced-cast",
+      "checkTime": 68.24,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 68.89,
+      "instantiations": 10185385,
+      "memoryUsed": 3800902,
+      "samples": [
+        {
+          "checkTime": 68.24,
+          "totalTime": 68.89,
+          "instantiations": 10185385,
+          "memoryUsed": 3800902
+        }
+      ],
+      "checkTimeRank": 5,
+      "instantiationsRank": 5,
+      "memoryUsedRank": 5
+    },
+    {
+      "file": "docker.openapi.client.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/docker.openapi.client.ts",
+      "schema": "docker.openapi",
+      "runtime": "client",
+      "checkTime": 0.25,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.48,
+      "instantiations": 6665,
+      "memoryUsed": 75097,
+      "samples": [
+        {
+          "checkTime": 0.25,
+          "totalTime": 0.48,
+          "instantiations": 6665,
+          "memoryUsed": 75097
+        }
+      ],
+      "checkTimeRank": 2,
       "instantiationsRank": 1,
       "memoryUsedRank": 1
     },
     {
       "file": "docker.openapi.typia.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/docker.openapi.typia.ts",
       "schema": "docker.openapi",
       "runtime": "typia",
-      "checkTime": 0.17,
-      "checkTimeStandardDeviation": 0.03429285639896449,
-      "totalTime": 0.43,
+      "checkTime": 0.2,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.59,
       "instantiations": 17092,
-      "memoryUsed": 89381,
+      "memoryUsed": 90790,
       "samples": [
         {
-          "checkTime": 0.25,
-          "totalTime": 0.51,
+          "checkTime": 0.2,
+          "totalTime": 0.59,
           "instantiations": 17092,
-          "memoryUsed": 91488
-        },
-        {
-          "checkTime": 0.17,
-          "totalTime": 0.43,
-          "instantiations": 17092,
-          "memoryUsed": 102341
-        },
-        {
-          "checkTime": 0.16,
-          "totalTime": 0.44,
-          "instantiations": 17092,
-          "memoryUsed": 88706
-        },
-        {
-          "checkTime": 0.16,
-          "totalTime": 0.37,
-          "instantiations": 17092,
-          "memoryUsed": 88137
-        },
-        {
-          "checkTime": 0.17,
-          "totalTime": 0.38,
-          "instantiations": 17092,
-          "memoryUsed": 89381
+          "memoryUsed": 90790
         }
       ],
-      "checkTimeRank": 2,
+      "checkTimeRank": 1,
       "instantiationsRank": 2,
       "memoryUsedRank": 2
     },
     {
       "file": "docker.openapi.typebox.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/docker.openapi.typebox.ts",
       "schema": "docker.openapi",
       "runtime": "typebox",
-      "checkTime": 0.58,
-      "checkTimeStandardDeviation": 0.17713271860387622,
-      "totalTime": 1.02,
+      "checkTime": 0.44,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 1,
       "instantiations": 155704,
-      "memoryUsed": 152153,
+      "memoryUsed": 157067,
       "samples": [
         {
-          "checkTime": 0.51,
-          "totalTime": 1.11,
+          "checkTime": 0.44,
+          "totalTime": 1,
           "instantiations": 155704,
-          "memoryUsed": 146560
-        },
-        {
-          "checkTime": 0.37,
-          "totalTime": 0.55,
-          "instantiations": 155704,
-          "memoryUsed": 157417
-        },
-        {
-          "checkTime": 0.89,
-          "totalTime": 1.49,
-          "instantiations": 155704,
-          "memoryUsed": 152153
-        },
-        {
-          "checkTime": 0.71,
-          "totalTime": 1.02,
-          "instantiations": 155704,
-          "memoryUsed": 149130
-        },
-        {
-          "checkTime": 0.58,
-          "totalTime": 0.86,
-          "instantiations": 155704,
-          "memoryUsed": 158173
+          "memoryUsed": 157067
         }
       ],
-      "checkTimeRank": 4,
+      "checkTimeRank": 3,
       "instantiationsRank": 4,
       "memoryUsedRank": 3
     },
     {
       "file": "docker.openapi.valibot.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/docker.openapi.valibot.ts",
       "schema": "docker.openapi",
       "runtime": "valibot",
-      "checkTime": 0.73,
-      "checkTimeStandardDeviation": 0.15727682601070003,
-      "totalTime": 0.93,
+      "checkTime": 0.84,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 1.1,
       "instantiations": 297370,
-      "memoryUsed": 174224,
+      "memoryUsed": 176492,
       "samples": [
         {
-          "checkTime": 0.73,
-          "totalTime": 0.93,
+          "checkTime": 0.84,
+          "totalTime": 1.1,
           "instantiations": 297370,
-          "memoryUsed": 174160
-        },
-        {
-          "checkTime": 0.69,
-          "totalTime": 0.88,
-          "instantiations": 297370,
-          "memoryUsed": 174588
-        },
-        {
-          "checkTime": 1.07,
-          "totalTime": 1.25,
-          "instantiations": 297370,
-          "memoryUsed": 174224
-        },
-        {
-          "checkTime": 0.69,
-          "totalTime": 0.88,
-          "instantiations": 297370,
-          "memoryUsed": 173022
-        },
-        {
-          "checkTime": 0.96,
-          "totalTime": 1.12,
-          "instantiations": 297370,
-          "memoryUsed": 176163
+          "memoryUsed": 176492
         }
       ],
-      "checkTimeRank": 6,
+      "checkTimeRank": 7,
       "instantiationsRank": 8,
       "memoryUsedRank": 4
     },
     {
       "file": "docker.openapi.zod.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/docker.openapi.zod.ts",
       "schema": "docker.openapi",
       "runtime": "zod",
-      "checkTime": 1.37,
-      "checkTimeStandardDeviation": 0.4372916646815944,
-      "totalTime": 1.78,
+      "checkTime": 0.59,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.89,
       "instantiations": 212479,
-      "memoryUsed": 188053,
+      "memoryUsed": 186653,
       "samples": [
         {
-          "checkTime": 1.37,
-          "totalTime": 1.78,
+          "checkTime": 0.59,
+          "totalTime": 0.89,
           "instantiations": 212479,
-          "memoryUsed": 189143
-        },
-        {
-          "checkTime": 1.58,
-          "totalTime": 1.98,
-          "instantiations": 212479,
-          "memoryUsed": 185899
-        },
-        {
-          "checkTime": 1.58,
-          "totalTime": 2.24,
-          "instantiations": 212479,
-          "memoryUsed": 187758
-        },
-        {
-          "checkTime": 0.79,
-          "totalTime": 1.2,
-          "instantiations": 212479,
-          "memoryUsed": 188053
-        },
-        {
-          "checkTime": 0.51,
-          "totalTime": 0.69,
-          "instantiations": 212479,
-          "memoryUsed": 188248
+          "memoryUsed": 186653
         }
       ],
-      "checkTimeRank": 9,
+      "checkTimeRank": 4,
       "instantiationsRank": 6,
       "memoryUsedRank": 5
     },
     {
       "file": "docker.openapi.arktype.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/docker.openapi.arktype.ts",
       "schema": "docker.openapi",
       "runtime": "arktype",
-      "checkTime": 1.08,
-      "checkTimeStandardDeviation": 0.2957701810527897,
-      "totalTime": 1.45,
+      "checkTime": 0.66,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.92,
       "instantiations": 548406,
-      "memoryUsed": 203213,
+      "memoryUsed": 203045,
       "samples": [
         {
-          "checkTime": 1.08,
-          "totalTime": 1.45,
+          "checkTime": 0.66,
+          "totalTime": 0.92,
           "instantiations": 548406,
-          "memoryUsed": 203213
-        },
-        {
-          "checkTime": 1.17,
-          "totalTime": 1.46,
-          "instantiations": 548406,
-          "memoryUsed": 210101
-        },
-        {
-          "checkTime": 0.76,
-          "totalTime": 1.01,
-          "instantiations": 548406,
-          "memoryUsed": 210516
-        },
-        {
-          "checkTime": 1.63,
-          "totalTime": 2.2,
-          "instantiations": 548406,
-          "memoryUsed": 203059
-        },
-        {
-          "checkTime": 0.91,
-          "totalTime": 1.17,
-          "instantiations": 548406,
-          "memoryUsed": 202633
+          "memoryUsed": 203045
         }
       ],
-      "checkTimeRank": 8,
+      "checkTimeRank": 5,
       "instantiationsRank": 9,
       "memoryUsedRank": 6
     },
     {
       "file": "docker.openapi.zod3.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/docker.openapi.zod3.ts",
       "schema": "docker.openapi",
       "runtime": "zod3",
-      "checkTime": 0.55,
-      "checkTimeStandardDeviation": 0.05462600113499065,
-      "totalTime": 0.75,
+      "checkTime": 1.1,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 1.5,
       "instantiations": 212434,
-      "memoryUsed": 207255,
+      "memoryUsed": 217981,
       "samples": [
         {
-          "checkTime": 0.63,
-          "totalTime": 0.82,
+          "checkTime": 1.1,
+          "totalTime": 1.5,
           "instantiations": 212434,
-          "memoryUsed": 218661
-        },
-        {
-          "checkTime": 0.63,
-          "totalTime": 0.84,
-          "instantiations": 212434,
-          "memoryUsed": 186366
-        },
-        {
-          "checkTime": 0.55,
-          "totalTime": 0.75,
-          "instantiations": 212434,
-          "memoryUsed": 207255
-        },
-        {
-          "checkTime": 0.5,
-          "totalTime": 0.73,
-          "instantiations": 212434,
-          "memoryUsed": 218999
-        },
-        {
-          "checkTime": 0.52,
-          "totalTime": 0.73,
-          "instantiations": 212434,
-          "memoryUsed": 187794
+          "memoryUsed": 217981
         }
       ],
-      "checkTimeRank": 3,
+      "checkTimeRank": 9,
       "instantiationsRank": 5,
       "memoryUsedRank": 7
     },
     {
       "file": "docker.openapi.effect.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/docker.openapi.effect.ts",
       "schema": "docker.openapi",
       "runtime": "effect",
-      "checkTime": 0.62,
-      "checkTimeStandardDeviation": 0.2847174037532655,
-      "totalTime": 1.13,
+      "checkTime": 0.77,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 1.47,
       "instantiations": 91577,
-      "memoryUsed": 236210,
+      "memoryUsed": 235153,
       "samples": [
         {
-          "checkTime": 0.51,
-          "totalTime": 0.95,
+          "checkTime": 0.77,
+          "totalTime": 1.47,
           "instantiations": 91577,
-          "memoryUsed": 233359
-        },
-        {
-          "checkTime": 0.53,
-          "totalTime": 1.09,
-          "instantiations": 91577,
-          "memoryUsed": 235145
-        },
-        {
-          "checkTime": 0.79,
-          "totalTime": 1.13,
-          "instantiations": 91577,
-          "memoryUsed": 236210
-        },
-        {
-          "checkTime": 1.28,
-          "totalTime": 1.89,
-          "instantiations": 91577,
-          "memoryUsed": 236651
-        },
-        {
-          "checkTime": 0.62,
-          "totalTime": 1.6,
-          "instantiations": 91577,
-          "memoryUsed": 237031
+          "memoryUsed": 235153
         }
       ],
-      "checkTimeRank": 5,
+      "checkTimeRank": 6,
       "instantiationsRank": 3,
       "memoryUsedRank": 8
     },
     {
       "file": "docker.openapi.effect3.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/docker.openapi.effect3.ts",
       "schema": "docker.openapi",
       "runtime": "effect3",
-      "checkTime": 0.78,
-      "checkTimeStandardDeviation": 0.22301569451498254,
-      "totalTime": 1.28,
+      "checkTime": 0.97,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 2.22,
       "instantiations": 248672,
-      "memoryUsed": 355705,
+      "memoryUsed": 361086,
       "samples": [
         {
-          "checkTime": 0.73,
-          "totalTime": 1.28,
+          "checkTime": 0.97,
+          "totalTime": 2.22,
           "instantiations": 248672,
-          "memoryUsed": 356479
-        },
-        {
-          "checkTime": 0.78,
-          "totalTime": 1.27,
-          "instantiations": 248672,
-          "memoryUsed": 354667
-        },
-        {
-          "checkTime": 0.72,
-          "totalTime": 1.28,
-          "instantiations": 248672,
-          "memoryUsed": 356399
-        },
-        {
-          "checkTime": 0.8,
-          "totalTime": 1.36,
-          "instantiations": 248672,
-          "memoryUsed": 355705
-        },
-        {
-          "checkTime": 1.31,
-          "totalTime": 1.83,
-          "instantiations": 248672,
-          "memoryUsed": 342963
+          "memoryUsed": 361086
         }
       ],
-      "checkTimeRank": 7,
+      "checkTimeRank": 8,
       "instantiationsRank": 7,
       "memoryUsedRank": 9
     },
     {
       "file": "kombo.openapi.client.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/kombo.openapi.client.ts",
       "schema": "kombo.openapi",
       "runtime": "client",
-      "checkTime": 0.11,
-      "checkTimeStandardDeviation": 0.0535163526410386,
-      "totalTime": 0.26,
+      "checkTime": 0.14,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.33,
       "instantiations": 8843,
-      "memoryUsed": 119057,
+      "memoryUsed": 119102,
       "samples": [
         {
-          "checkTime": 0.12,
-          "totalTime": 0.31,
+          "checkTime": 0.14,
+          "totalTime": 0.33,
           "instantiations": 8843,
-          "memoryUsed": 119101
-        },
-        {
-          "checkTime": 0.11,
-          "totalTime": 0.26,
-          "instantiations": 8843,
-          "memoryUsed": 118236
-        },
-        {
-          "checkTime": 0.1,
-          "totalTime": 0.25,
-          "instantiations": 8843,
-          "memoryUsed": 119027
-        },
-        {
-          "checkTime": 0.1,
-          "totalTime": 0.25,
-          "instantiations": 8843,
-          "memoryUsed": 119057
-        },
-        {
-          "checkTime": 0.24,
-          "totalTime": 0.48,
-          "instantiations": 8843,
-          "memoryUsed": 119157
+          "memoryUsed": 119102
         }
       ],
       "checkTimeRank": 1,
@@ -455,43 +340,20 @@
     },
     {
       "file": "kombo.openapi.typia.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/kombo.openapi.typia.ts",
       "schema": "kombo.openapi",
       "runtime": "typia",
-      "checkTime": 0.3,
-      "checkTimeStandardDeviation": 0.10855413396089532,
-      "totalTime": 0.51,
+      "checkTime": 0.33,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.59,
       "instantiations": 33919,
-      "memoryUsed": 131874,
+      "memoryUsed": 147674,
       "samples": [
         {
-          "checkTime": 0.29,
-          "totalTime": 0.51,
+          "checkTime": 0.33,
+          "totalTime": 0.59,
           "instantiations": 33919,
-          "memoryUsed": 130615
-        },
-        {
-          "checkTime": 0.3,
-          "totalTime": 0.51,
-          "instantiations": 33919,
-          "memoryUsed": 148248
-        },
-        {
-          "checkTime": 0.27,
-          "totalTime": 0.45,
-          "instantiations": 33919,
-          "memoryUsed": 124635
-        },
-        {
-          "checkTime": 0.56,
-          "totalTime": 0.72,
-          "instantiations": 33919,
-          "memoryUsed": 131874
-        },
-        {
-          "checkTime": 0.3,
-          "totalTime": 0.49,
-          "instantiations": 33919,
-          "memoryUsed": 148153
+          "memoryUsed": 147674
         }
       ],
       "checkTimeRank": 2,
@@ -500,88 +362,42 @@
     },
     {
       "file": "kombo.openapi.typebox.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/kombo.openapi.typebox.ts",
       "schema": "kombo.openapi",
       "runtime": "typebox",
-      "checkTime": 0.85,
-      "checkTimeStandardDeviation": 0.24041630560342614,
-      "totalTime": 1.05,
+      "checkTime": 0.86,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 1.17,
       "instantiations": 208360,
-      "memoryUsed": 208574,
+      "memoryUsed": 192987,
       "samples": [
         {
-          "checkTime": 1.02,
-          "totalTime": 1.3,
+          "checkTime": 0.86,
+          "totalTime": 1.17,
           "instantiations": 208360,
-          "memoryUsed": 208975
-        },
-        {
-          "checkTime": 0.83,
-          "totalTime": 1.04,
-          "instantiations": 208360,
-          "memoryUsed": 208574
-        },
-        {
-          "checkTime": 0.84,
-          "totalTime": 1.03,
-          "instantiations": 208360,
-          "memoryUsed": 208558
-        },
-        {
-          "checkTime": 0.85,
-          "totalTime": 1.05,
-          "instantiations": 208360,
-          "memoryUsed": 209762
-        },
-        {
-          "checkTime": 1.46,
-          "totalTime": 1.72,
-          "instantiations": 208360,
-          "memoryUsed": 197064
+          "memoryUsed": 192987
         }
       ],
-      "checkTimeRank": 3,
+      "checkTimeRank": 4,
       "instantiationsRank": 4,
       "memoryUsedRank": 3
     },
     {
       "file": "kombo.openapi.valibot.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/kombo.openapi.valibot.ts",
       "schema": "kombo.openapi",
       "runtime": "valibot",
-      "checkTime": 2.01,
-      "checkTimeStandardDeviation": 0.27000740730579964,
-      "totalTime": 2.19,
+      "checkTime": 1.52,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 1.71,
       "instantiations": 680712,
-      "memoryUsed": 252607,
+      "memoryUsed": 252189,
       "samples": [
         {
-          "checkTime": 2.01,
-          "totalTime": 2.19,
+          "checkTime": 1.52,
+          "totalTime": 1.71,
           "instantiations": 680712,
-          "memoryUsed": 251543
-        },
-        {
-          "checkTime": 2.24,
-          "totalTime": 2.43,
-          "instantiations": 680712,
-          "memoryUsed": 252607
-        },
-        {
-          "checkTime": 2.07,
-          "totalTime": 2.25,
-          "instantiations": 680712,
-          "memoryUsed": 249665
-        },
-        {
-          "checkTime": 1.62,
-          "totalTime": 1.83,
-          "instantiations": 680712,
-          "memoryUsed": 291677
-        },
-        {
-          "checkTime": 1.54,
-          "totalTime": 1.74,
-          "instantiations": 680712,
-          "memoryUsed": 290342
+          "memoryUsed": 252189
         }
       ],
       "checkTimeRank": 6,
@@ -590,268 +406,130 @@
     },
     {
       "file": "kombo.openapi.effect.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/kombo.openapi.effect.ts",
       "schema": "kombo.openapi",
       "runtime": "effect",
-      "checkTime": 3,
-      "checkTimeStandardDeviation": 1.2307948651176603,
-      "totalTime": 4.03,
+      "checkTime": 2.2,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 2.7,
       "instantiations": 164858,
-      "memoryUsed": 280879,
+      "memoryUsed": 280367,
       "samples": [
         {
-          "checkTime": 1.54,
-          "totalTime": 2.02,
+          "checkTime": 2.2,
+          "totalTime": 2.7,
           "instantiations": 164858,
-          "memoryUsed": 282716
-        },
-        {
-          "checkTime": 4.81,
-          "totalTime": 6.04,
-          "instantiations": 164858,
-          "memoryUsed": 279791
-        },
-        {
-          "checkTime": 3.63,
-          "totalTime": 4.5,
-          "instantiations": 164858,
-          "memoryUsed": 292279
-        },
-        {
-          "checkTime": 3,
-          "totalTime": 4.03,
-          "instantiations": 164858,
-          "memoryUsed": 279357
-        },
-        {
-          "checkTime": 1.66,
-          "totalTime": 2.13,
-          "instantiations": 164858,
-          "memoryUsed": 280879
+          "memoryUsed": 280367
         }
       ],
-      "checkTimeRank": 8,
+      "checkTimeRank": 7,
       "instantiationsRank": 3,
       "memoryUsedRank": 5
     },
     {
-      "file": "kombo.openapi.zod.ts",
+      "file": "kombo.openapi.zod3.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/kombo.openapi.zod3.ts",
       "schema": "kombo.openapi",
-      "runtime": "zod",
-      "checkTime": 1.47,
-      "checkTimeStandardDeviation": 0.32307274722576035,
-      "totalTime": 1.74,
-      "instantiations": 411455,
-      "memoryUsed": 330595,
+      "runtime": "zod3",
+      "checkTime": 1.07,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 1.25,
+      "instantiations": 411202,
+      "memoryUsed": 317951,
       "samples": [
         {
-          "checkTime": 1.11,
-          "totalTime": 1.34,
-          "instantiations": 411455,
-          "memoryUsed": 330073
-        },
-        {
-          "checkTime": 1.86,
-          "totalTime": 2.05,
-          "instantiations": 411455,
-          "memoryUsed": 330595
-        },
-        {
-          "checkTime": 1.51,
-          "totalTime": 1.74,
-          "instantiations": 411455,
-          "memoryUsed": 330658
-        },
-        {
-          "checkTime": 1.47,
-          "totalTime": 1.76,
-          "instantiations": 411455,
-          "memoryUsed": 330511
-        },
-        {
-          "checkTime": 0.94,
-          "totalTime": 1.14,
-          "instantiations": 411455,
-          "memoryUsed": 330674
+          "checkTime": 1.07,
+          "totalTime": 1.25,
+          "instantiations": 411202,
+          "memoryUsed": 317951
         }
       ],
       "checkTimeRank": 5,
-      "instantiationsRank": 6,
+      "instantiationsRank": 5,
       "memoryUsedRank": 6
     },
     {
-      "file": "kombo.openapi.zod3.ts",
+      "file": "kombo.openapi.zod.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/kombo.openapi.zod.ts",
       "schema": "kombo.openapi",
-      "runtime": "zod3",
-      "checkTime": 1.11,
-      "checkTimeStandardDeviation": 0.18249383551232626,
-      "totalTime": 1.35,
-      "instantiations": 411202,
-      "memoryUsed": 360240,
+      "runtime": "zod",
+      "checkTime": 0.84,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 1.01,
+      "instantiations": 411455,
+      "memoryUsed": 330312,
       "samples": [
         {
-          "checkTime": 1.04,
-          "totalTime": 1.24,
-          "instantiations": 411202,
-          "memoryUsed": 360409
-        },
-        {
-          "checkTime": 1.24,
-          "totalTime": 1.45,
-          "instantiations": 411202,
-          "memoryUsed": 329821
-        },
-        {
-          "checkTime": 1.11,
-          "totalTime": 1.35,
-          "instantiations": 411202,
-          "memoryUsed": 360240
-        },
-        {
-          "checkTime": 1.05,
-          "totalTime": 1.31,
-          "instantiations": 411202,
-          "memoryUsed": 360158
-        },
-        {
-          "checkTime": 1.53,
-          "totalTime": 1.8,
-          "instantiations": 411202,
-          "memoryUsed": 360371
+          "checkTime": 0.84,
+          "totalTime": 1.01,
+          "instantiations": 411455,
+          "memoryUsed": 330312
         }
       ],
-      "checkTimeRank": 4,
-      "instantiationsRank": 5,
+      "checkTimeRank": 3,
+      "instantiationsRank": 6,
       "memoryUsedRank": 7
     },
     {
       "file": "kombo.openapi.arktype.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/kombo.openapi.arktype.ts",
       "schema": "kombo.openapi",
       "runtime": "arktype",
-      "checkTime": 4.4,
-      "checkTimeStandardDeviation": 1.056984389667132,
-      "totalTime": 4.66,
+      "checkTime": 2.75,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 3.11,
       "instantiations": 1841469,
-      "memoryUsed": 438596,
+      "memoryUsed": 477897,
       "samples": [
         {
-          "checkTime": 3.16,
-          "totalTime": 3.48,
+          "checkTime": 2.75,
+          "totalTime": 3.11,
           "instantiations": 1841469,
-          "memoryUsed": 440570
-        },
-        {
-          "checkTime": 4.4,
-          "totalTime": 4.66,
-          "instantiations": 1841469,
-          "memoryUsed": 432759
-        },
-        {
-          "checkTime": 3.11,
-          "totalTime": 3.4,
-          "instantiations": 1841469,
-          "memoryUsed": 438596
-        },
-        {
-          "checkTime": 5.72,
-          "totalTime": 6.21,
-          "instantiations": 1841469,
-          "memoryUsed": 461686
-        },
-        {
-          "checkTime": 5.22,
-          "totalTime": 5.78,
-          "instantiations": 1841469,
-          "memoryUsed": 433349
+          "memoryUsed": 477897
         }
       ],
-      "checkTimeRank": 9,
+      "checkTimeRank": 8,
       "instantiationsRank": 9,
       "memoryUsedRank": 8
     },
     {
       "file": "kombo.openapi.effect3.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/kombo.openapi.effect3.ts",
       "schema": "kombo.openapi",
       "runtime": "effect3",
-      "checkTime": 2.99,
-      "checkTimeStandardDeviation": 0.43811414037896573,
-      "totalTime": 3.61,
+      "checkTime": 3.19,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 4.06,
       "instantiations": 1017522,
-      "memoryUsed": 542458,
+      "memoryUsed": 553277,
       "samples": [
         {
-          "checkTime": 4.07,
-          "totalTime": 4.89,
+          "checkTime": 3.19,
+          "totalTime": 4.06,
           "instantiations": 1017522,
-          "memoryUsed": 557586
-        },
-        {
-          "checkTime": 2.88,
-          "totalTime": 3.61,
-          "instantiations": 1017522,
-          "memoryUsed": 540599
-        },
-        {
-          "checkTime": 3.11,
-          "totalTime": 3.64,
-          "instantiations": 1017522,
-          "memoryUsed": 542458
-        },
-        {
-          "checkTime": 2.98,
-          "totalTime": 3.49,
-          "instantiations": 1017522,
-          "memoryUsed": 541331
-        },
-        {
-          "checkTime": 2.99,
-          "totalTime": 3.51,
-          "instantiations": 1017522,
-          "memoryUsed": 570058
+          "memoryUsed": 553277
         }
       ],
-      "checkTimeRank": 7,
+      "checkTimeRank": 9,
       "instantiationsRank": 8,
       "memoryUsedRank": 9
     },
     {
       "file": "petstore.client.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/petstore.client.ts",
       "schema": "petstore",
       "runtime": "client",
-      "checkTime": 0.1,
-      "checkTimeStandardDeviation": 0.02039607805437114,
-      "totalTime": 0.28,
+      "checkTime": 0.06,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.16,
       "instantiations": 4245,
-      "memoryUsed": 76419,
+      "memoryUsed": 76472,
       "samples": [
         {
-          "checkTime": 0.08,
-          "totalTime": 0.22,
+          "checkTime": 0.06,
+          "totalTime": 0.16,
           "instantiations": 4245,
-          "memoryUsed": 76425
-        },
-        {
-          "checkTime": 0.12,
-          "totalTime": 0.26,
-          "instantiations": 4245,
-          "memoryUsed": 75893
-        },
-        {
-          "checkTime": 0.1,
-          "totalTime": 0.29,
-          "instantiations": 4245,
-          "memoryUsed": 76419
-        },
-        {
-          "checkTime": 0.08,
-          "totalTime": 0.3,
-          "instantiations": 4245,
-          "memoryUsed": 77057
-        },
-        {
-          "checkTime": 0.13,
-          "totalTime": 0.28,
-          "instantiations": 4245,
-          "memoryUsed": 75758
+          "memoryUsed": 76472
         }
       ],
       "checkTimeRank": 1,
@@ -860,43 +538,20 @@
     },
     {
       "file": "petstore.typia.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/petstore.typia.ts",
       "schema": "petstore",
       "runtime": "typia",
-      "checkTime": 0.11,
-      "checkTimeStandardDeviation": 0.018330302779823365,
-      "totalTime": 0.32,
+      "checkTime": 0.1,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.26,
       "instantiations": 6418,
-      "memoryUsed": 79886,
+      "memoryUsed": 78339,
       "samples": [
         {
-          "checkTime": 0.09,
-          "totalTime": 0.25,
-          "instantiations": 6418,
-          "memoryUsed": 78307
-        },
-        {
-          "checkTime": 0.14,
-          "totalTime": 0.37,
-          "instantiations": 6418,
-          "memoryUsed": 77253
-        },
-        {
-          "checkTime": 0.11,
-          "totalTime": 0.32,
-          "instantiations": 6418,
-          "memoryUsed": 81107
-        },
-        {
-          "checkTime": 0.11,
-          "totalTime": 0.33,
-          "instantiations": 6418,
-          "memoryUsed": 79886
-        },
-        {
-          "checkTime": 0.09,
+          "checkTime": 0.1,
           "totalTime": 0.26,
           "instantiations": 6418,
-          "memoryUsed": 81087
+          "memoryUsed": 78339
         }
       ],
       "checkTimeRank": 2,
@@ -905,133 +560,64 @@
     },
     {
       "file": "petstore.typebox.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/petstore.typebox.ts",
       "schema": "petstore",
       "runtime": "typebox",
       "checkTime": 0.15,
-      "checkTimeStandardDeviation": 0.044452221541785734,
-      "totalTime": 0.31,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.48,
       "instantiations": 20304,
-      "memoryUsed": 114383,
+      "memoryUsed": 109897,
       "samples": [
         {
-          "checkTime": 0.16,
-          "totalTime": 0.37,
-          "instantiations": 20304,
-          "memoryUsed": 112104
-        },
-        {
-          "checkTime": 0.13,
-          "totalTime": 0.31,
-          "instantiations": 20304,
-          "memoryUsed": 114404
-        },
-        {
           "checkTime": 0.15,
-          "totalTime": 0.31,
+          "totalTime": 0.48,
           "instantiations": 20304,
-          "memoryUsed": 114383
-        },
-        {
-          "checkTime": 0.24,
-          "totalTime": 0.62,
-          "instantiations": 20304,
-          "memoryUsed": 113683
-        },
-        {
-          "checkTime": 0.11,
-          "totalTime": 0.29,
-          "instantiations": 20304,
-          "memoryUsed": 114404
+          "memoryUsed": 109897
         }
       ],
-      "checkTimeRank": 3,
+      "checkTimeRank": 5,
       "instantiationsRank": 4,
       "memoryUsedRank": 3
     },
     {
       "file": "petstore.valibot.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/petstore.valibot.ts",
       "schema": "petstore",
       "runtime": "valibot",
-      "checkTime": 0.21,
-      "checkTimeStandardDeviation": 0.05344155686354955,
-      "totalTime": 0.37,
+      "checkTime": 0.15,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.32,
       "instantiations": 33042,
-      "memoryUsed": 119476,
+      "memoryUsed": 119433,
       "samples": [
         {
-          "checkTime": 0.28,
-          "totalTime": 0.5,
+          "checkTime": 0.15,
+          "totalTime": 0.32,
           "instantiations": 33042,
-          "memoryUsed": 120176
-        },
-        {
-          "checkTime": 0.18,
-          "totalTime": 0.37,
-          "instantiations": 33042,
-          "memoryUsed": 118503
-        },
-        {
-          "checkTime": 0.21,
-          "totalTime": 0.36,
-          "instantiations": 33042,
-          "memoryUsed": 129398
-        },
-        {
-          "checkTime": 0.31,
-          "totalTime": 0.48,
-          "instantiations": 33042,
-          "memoryUsed": 117683
-        },
-        {
-          "checkTime": 0.18,
-          "totalTime": 0.35,
-          "instantiations": 33042,
-          "memoryUsed": 119476
+          "memoryUsed": 119433
         }
       ],
-      "checkTimeRank": 7,
+      "checkTimeRank": 6,
       "instantiationsRank": 6,
       "memoryUsedRank": 4
     },
     {
       "file": "petstore.zod3.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/petstore.zod3.ts",
       "schema": "petstore",
       "runtime": "zod3",
-      "checkTime": 0.28,
-      "checkTimeStandardDeviation": 0.019390719429665314,
-      "totalTime": 0.43,
+      "checkTime": 0.25,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.38,
       "instantiations": 96747,
-      "memoryUsed": 123708,
+      "memoryUsed": 123084,
       "samples": [
         {
           "checkTime": 0.25,
-          "totalTime": 0.4,
+          "totalTime": 0.38,
           "instantiations": 96747,
-          "memoryUsed": 124472
-        },
-        {
-          "checkTime": 0.28,
-          "totalTime": 0.44,
-          "instantiations": 96747,
-          "memoryUsed": 123462
-        },
-        {
-          "checkTime": 0.31,
-          "totalTime": 0.48,
-          "instantiations": 96747,
-          "memoryUsed": 156947
-        },
-        {
-          "checkTime": 0.28,
-          "totalTime": 0.43,
-          "instantiations": 96747,
-          "memoryUsed": 123708
-        },
-        {
-          "checkTime": 0.27,
-          "totalTime": 0.42,
-          "instantiations": 96747,
-          "memoryUsed": 123318
+          "memoryUsed": 123084
         }
       ],
       "checkTimeRank": 8,
@@ -1040,88 +626,42 @@
     },
     {
       "file": "petstore.arktype.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/petstore.arktype.ts",
       "schema": "petstore",
       "runtime": "arktype",
-      "checkTime": 0.21,
-      "checkTimeStandardDeviation": 0.027999999999999997,
-      "totalTime": 0.45,
+      "checkTime": 0.18,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.47,
       "instantiations": 52163,
-      "memoryUsed": 141597,
+      "memoryUsed": 141720,
       "samples": [
         {
-          "checkTime": 0.21,
-          "totalTime": 0.51,
-          "instantiations": 52163,
-          "memoryUsed": 141953
-        },
-        {
-          "checkTime": 0.25,
-          "totalTime": 0.68,
-          "instantiations": 52163,
-          "memoryUsed": 145241
-        },
-        {
           "checkTime": 0.18,
-          "totalTime": 0.41,
+          "totalTime": 0.47,
           "instantiations": 52163,
-          "memoryUsed": 141503
-        },
-        {
-          "checkTime": 0.17,
-          "totalTime": 0.36,
-          "instantiations": 52163,
-          "memoryUsed": 141597
-        },
-        {
-          "checkTime": 0.21,
-          "totalTime": 0.45,
-          "instantiations": 52163,
-          "memoryUsed": 141521
+          "memoryUsed": 141720
         }
       ],
-      "checkTimeRank": 6,
+      "checkTimeRank": 7,
       "instantiationsRank": 7,
       "memoryUsedRank": 6
     },
     {
       "file": "petstore.zod.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/petstore.zod.ts",
       "schema": "petstore",
       "runtime": "zod",
-      "checkTime": 0.29,
-      "checkTimeStandardDeviation": 0.033105890714493685,
-      "totalTime": 0.43,
+      "checkTime": 0.28,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.41,
       "instantiations": 96792,
-      "memoryUsed": 157234,
+      "memoryUsed": 152863,
       "samples": [
         {
-          "checkTime": 0.35,
-          "totalTime": 0.56,
-          "instantiations": 96792,
-          "memoryUsed": 157234
-        },
-        {
-          "checkTime": 0.32,
-          "totalTime": 0.46,
-          "instantiations": 96792,
-          "memoryUsed": 123407
-        },
-        {
-          "checkTime": 0.27,
+          "checkTime": 0.28,
           "totalTime": 0.41,
           "instantiations": 96792,
-          "memoryUsed": 158133
-        },
-        {
-          "checkTime": 0.26,
-          "totalTime": 0.39,
-          "instantiations": 96792,
-          "memoryUsed": 156755
-        },
-        {
-          "checkTime": 0.29,
-          "totalTime": 0.43,
-          "instantiations": 96792,
-          "memoryUsed": 158227
+          "memoryUsed": 152863
         }
       ],
       "checkTimeRank": 9,
@@ -1130,91 +670,45 @@
     },
     {
       "file": "petstore.effect.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/petstore.effect.ts",
       "schema": "petstore",
       "runtime": "effect",
-      "checkTime": 0.16,
-      "checkTimeStandardDeviation": 0.013266499161421596,
-      "totalTime": 0.52,
+      "checkTime": 0.14,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.55,
       "instantiations": 13564,
-      "memoryUsed": 168292,
+      "memoryUsed": 169331,
       "samples": [
         {
-          "checkTime": 0.16,
-          "totalTime": 0.83,
-          "instantiations": 13564,
-          "memoryUsed": 168292
-        },
-        {
-          "checkTime": 0.18,
-          "totalTime": 0.61,
-          "instantiations": 13564,
-          "memoryUsed": 167849
-        },
-        {
-          "checkTime": 0.15,
-          "totalTime": 0.52,
-          "instantiations": 13564,
-          "memoryUsed": 169950
-        },
-        {
           "checkTime": 0.14,
-          "totalTime": 0.46,
+          "totalTime": 0.55,
           "instantiations": 13564,
-          "memoryUsed": 168418
-        },
-        {
-          "checkTime": 0.16,
-          "totalTime": 0.51,
-          "instantiations": 13564,
-          "memoryUsed": 168161
+          "memoryUsed": 169331
         }
       ],
-      "checkTimeRank": 4,
+      "checkTimeRank": 3,
       "instantiationsRank": 3,
       "memoryUsedRank": 8
     },
     {
       "file": "petstore.effect3.ts",
+      "path": "/Users/astahmer/dev/typed-openapi/packages/typed-openapi/tests/snapshots/petstore.effect3.ts",
       "schema": "petstore",
       "runtime": "effect3",
-      "checkTime": 0.17,
-      "checkTimeStandardDeviation": 0.11842297074469971,
-      "totalTime": 0.74,
+      "checkTime": 0.15,
+      "checkTimeStandardDeviation": 0,
+      "totalTime": 0.72,
       "instantiations": 21901,
-      "memoryUsed": 265614,
+      "memoryUsed": 265718,
       "samples": [
         {
-          "checkTime": 0.17,
-          "totalTime": 0.73,
-          "instantiations": 21901,
-          "memoryUsed": 265614
-        },
-        {
-          "checkTime": 0.16,
-          "totalTime": 0.74,
-          "instantiations": 21901,
-          "memoryUsed": 266147
-        },
-        {
-          "checkTime": 0.46,
-          "totalTime": 1.05,
-          "instantiations": 21901,
-          "memoryUsed": 254902
-        },
-        {
           "checkTime": 0.15,
-          "totalTime": 0.63,
+          "totalTime": 0.72,
           "instantiations": 21901,
-          "memoryUsed": 266447
-        },
-        {
-          "checkTime": 0.18,
-          "totalTime": 0.78,
-          "instantiations": 21901,
-          "memoryUsed": 255670
+          "memoryUsed": 265718
         }
       ],
-      "checkTimeRank": 5,
+      "checkTimeRank": 4,
       "instantiationsRank": 5,
       "memoryUsedRank": 9
     }

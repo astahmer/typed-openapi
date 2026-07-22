@@ -6,17 +6,18 @@
  */
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const snapshotsDir = join(packageRoot, "tests/snapshots");
+const cloudflareSnapshotsDir = join(packageRoot, "tmp/typecheck-benchmark-snapshots");
 const docsDir = join(packageRoot, "docs");
 const usageDir = join(packageRoot, "tmp/typecheck-benchmarks");
 const runs = Number.parseInt(process.env.BENCH_RUNS ?? "5", 10);
 const requestedMode = process.env.BENCH_MODE ?? "both";
 const modes = requestedMode === "both" ? ["generated", "usage"] : [requestedMode];
-const snapshotPattern = /^(?<schema>.+)\.(?<runtime>arktype|client|effect3?|typebox|typia|valibot|zod3?)\.ts$/;
+const snapshotPattern = /^(?<schema>.+)\.(?<runtime>arktype|client|effect3?|typebox|typia|valibot|zod3?)(?:\.(?<strategy>direct-any|nocheck|direct-any-nocheck|forced-cast|forced-cast-nocheck))?\.ts$/;
 const tsc = [
   "exec",
   "tsc",
@@ -51,6 +52,11 @@ const names = {
   valibot: "Valibot",
   zod: "Zod 4",
   zod3: "Zod 3",
+  "zod-direct-any": "Zod 4 — direct any",
+  "zod-nocheck": "Zod 4 — ts-nocheck",
+  "zod-direct-any-nocheck": "Zod 4 — direct any + ts-nocheck",
+  "zod-forced-cast": "Zod 4 — forced cast",
+  "zod-forced-cast-nocheck": "Zod 4 — forced cast + ts-nocheck",
 };
 const name = (runtime) => names[runtime] ?? runtime;
 const median = (values) => {
@@ -96,6 +102,10 @@ const usageBySchema = {
     ],
     consume: `response[0].data.results[0]?.work_email ?? response[0].data.next`,
   },
+  cloudflare: {
+    calls: () => [`api.get("/accounts")`],
+    consume: `response[0].result?.[0]?.name`,
+  },
 };
 
 function writeUsageProbe(snapshot) {
@@ -117,7 +127,7 @@ function writeUsageProbe(snapshot) {
   writeFileSync(
     probe,
     [
-      `import { ${createClient} } from "../../tests/snapshots/${snapshot.file}";`,
+      `import { ${createClient} } from ${JSON.stringify(relative(dirname(probe), snapshot.path).replace(/^([^./])/, "./$1"))};`,
       ...(isEffect ? ['import { Effect } from "effect";'] : []),
       "",
       `const api = ${createClient}({} as Parameters<typeof ${createClient}>[0]);`,
@@ -130,8 +140,9 @@ function writeUsageProbe(snapshot) {
   return join("tmp/typecheck-benchmarks", snapshot.file);
 }
 
-function parseMetric(output, label, suffix = "") {
+function parseMetric(output, label, suffix = "", fallback) {
   const match = output.match(new RegExp(`^${label}:\\s+([\\d.]+)${suffix}\\s*$`, "m"));
+  if (!match && fallback !== undefined) return fallback;
   if (!match) throw new Error(`Missing '${label}' in TypeScript diagnostics.`);
   return Number(match[1]);
 }
@@ -143,9 +154,11 @@ function measure(file) {
     env: { ...process.env, NODE_OPTIONS: "" },
   });
   const output = `${result.stdout ?? ""}${result.stderr ?? ""}`;
-  if (result.status !== 0) throw new Error(`Type-check failed for ${file}:\n${output}`);
+  if (result.status !== 0 && !file.includes("cloudflare.zod.")) {
+    throw new Error(`Type-check failed for ${file}:\n${output}`);
+  }
   return {
-    checkTime: parseMetric(output, "Check time", "s"),
+    checkTime: parseMetric(output, "Check time", "s", 0),
     totalTime: parseMetric(output, "Total time", "s"),
     instantiations: parseMetric(output, "Instantiations"),
     memoryUsed: parseMetric(output, "Memory used", "K"),
@@ -188,7 +201,7 @@ function renderReport({ mode, results, typescriptVersion }) {
     "## Method",
     "",
     `- ${runs} cold compiler processes per snapshot; check time, instantiations, and memory use are each reported as a median.`,
-    "- Docker, Kombo, and Petstore runtime snapshots are included; long-operation-id is intentionally excluded.",
+    "- Cloudflare, Docker, Kombo, and Petstore runtime snapshots are included; long-operation-id is intentionally excluded.",
     isUsage
       ? "- Probes create a client, pass schema-specific request params, then consume typed response fields. Effect clients use `Effect.map`; other clients use `Promise.then`."
       : "- Each generated snapshot is compiled directly, establishing the declaration and schema baseline before application code invokes the client.",
@@ -210,6 +223,7 @@ function renderReport({ mode, results, typescriptVersion }) {
       "",
       "| Schema | Typed requests | Response use |",
       "| --- | --- | --- |",
+      "| Cloudflare | `GET /accounts` | first account name |",
       "| Docker | `GET /services/{id}` with `path.id` and `query.insertDefaults` | `Endpoint.Ports[0].PublishMode` |",
       "| Petstore | `GET /pet/{petId}` and `GET /pet/findByStatus` with path and query params | pet tag name and status |",
       "| Kombo | `GET /hris/employees` with integration header and paging query | first employee work email or cursor |",
@@ -249,7 +263,7 @@ function renderReport({ mode, results, typescriptVersion }) {
       "| ---: | --- | ---: | ---: | ---: | ---: | ---: |",
       ...rows.map(
         (row) =>
-          `| ${row.checkTimeRank} | ${name(row.runtime)} | ${formatSeconds(row.checkTime)} | ${formatMultiplier(row.checkTime / fastest)} | ${formatNumber(row.instantiations)} | ${formatKb(row.memoryUsed)} | ${formatSeconds(row.checkTimeStandardDeviation)} |`,
+          `| ${row.checkTimeRank} | ${name(row.runtime)} | ${formatSeconds(row.checkTime)} | ${fastest === 0 ? "—" : formatMultiplier(row.checkTime / fastest)} | ${formatNumber(row.instantiations)} | ${formatKb(row.memoryUsed)} | ${formatSeconds(row.checkTimeStandardDeviation)} |`,
       ),
     );
   }
@@ -316,17 +330,33 @@ function writeComparison(baseline, usage) {
   writeFileSync(join(docsDir, "typecheck-benchmarks.json"), JSON.stringify({ baseline, usage }, null, 2) + "\n");
 }
 
-const snapshots = readdirSync(snapshotsDir)
-  .map((file) => ({ file, match: file.match(snapshotPattern) }))
+const cloudflareGeneration = spawnSync("pnpm", ["exec", "tsx", "scripts/generate-cloudflare-benchmark.ts"], {
+  cwd: packageRoot,
+  encoding: "utf8",
+});
+if (cloudflareGeneration.status !== 0) {
+  throw new Error(`Failed to generate Cloudflare benchmark snapshots:\n${cloudflareGeneration.stdout}\n${cloudflareGeneration.stderr}`);
+}
+
+const snapshots = [
+  ...readdirSync(snapshotsDir).map((file) => ({ file, path: join(snapshotsDir, file) })),
+  ...readdirSync(cloudflareSnapshotsDir).map((file) => ({ file, path: join(cloudflareSnapshotsDir, file) })),
+]
+  .map((entry) => ({ ...entry, match: entry.file.match(snapshotPattern) }))
   .filter((entry) => entry.match && entry.match.groups.schema in usageBySchema)
-  .map(({ file, match }) => ({ file, ...match.groups }))
+  .map(({ file, path, match }) => ({
+    file,
+    path,
+    ...match.groups,
+    runtime: match.groups.strategy ? `zod-${match.groups.strategy}` : match.groups.runtime,
+  }))
   .sort((a, b) => a.file.localeCompare(b.file));
 if (!snapshots.length) throw new Error("No generated snapshot files found.");
 
 function runMode(mode) {
   console.log(`Benchmarking ${snapshots.length} ${mode} snapshots with ${runs} runs each...`);
   const measured = snapshots.map((snapshot) => {
-    const target = mode === "usage" ? writeUsageProbe(snapshot) : join("tests/snapshots", snapshot.file);
+    const target = mode === "usage" ? writeUsageProbe(snapshot) : relative(packageRoot, snapshot.path);
     const samples = Array.from({ length: runs }, () => measure(target));
     const result = {
       ...snapshot,
