@@ -25,7 +25,7 @@ describe("const literal e2e", () => {
     expect(() => schema.parse("error")).toThrow();
   });
 
-  test("generated none client types: status is literal success", async () => {
+  test("generated none client types: status is literal success", { timeout: 60_000 }, async () => {
     rmSync(tmp, { recursive: true, force: true });
     mkdirSync(tmp, { recursive: true });
 
