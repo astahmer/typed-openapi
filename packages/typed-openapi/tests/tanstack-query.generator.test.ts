@@ -27,7 +27,9 @@ describe("tanstack-query.generator", () => {
     expect(file).toContain("invalidate:");
     expect(file).toContain("invalidateInfinite:");
     expect(file).toContain("_infinite");
-    expect(file).toContain("createQueryKey(path as string, params[0] as EndpointParameters | undefined, true)");
+    expect(file).toContain("createQueryKey(path, params[0], true)");
+    expect(file).not.toContain("as EndpointParameters");
+    expect(file).not.toContain("path as string");
     expect(file).toContain("queryOptions:");
     expect(file).toContain("mutationOptions:");
     expect(file).toContain("export class TanstackQueryApiClient");
@@ -52,10 +54,10 @@ describe("tanstack-query.generator", () => {
       relativeApiClientPath: "./api.client.ts",
     });
 
-    expect(file).toMatch(
-      /endpoint:\s*<TOptions extends EndpointParameters>\(id: string, options\?: TOptions, infinite\?: boolean\)/,
-    );
+    expect(file).toMatch(/endpoint:\s*\(id: string, options\?: EndpointParameters, infinite\?: boolean\)/);
     expect(file).toContain("createQueryKey(id, options, infinite)");
+    expect(file).toContain("const createQueryKey = (");
+    expect(file).not.toMatch(/createQueryKey = <TOptions extends EndpointParameters>/);
   });
 
   test("queryKeyFactory.all prefixes hierarchical endpoint keys", async () => {
@@ -99,6 +101,7 @@ describe("tanstack-query.generator", () => {
     }
     expect(file).toContain('params["_infinite"]');
     expect(file).toContain('delete keyParams["_infinite"]');
-    expect(file).toContain("params[0] as EndpointParameters | undefined");
+    expect(file).toContain("createQueryKey(path, params[0])");
+    expect(file).not.toContain("as EndpointParameters");
   });
 });

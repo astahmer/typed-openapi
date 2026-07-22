@@ -28,7 +28,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             path: Path,
             ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
         ) {
-            const queryKey = createQueryKey(path as string, params[0] as EndpointParameters | undefined);
+            const queryKey = createQueryKey(path, params[0]);
             const sharedQueryOptions = queryOptions({
                 queryFn: async ({ queryKey, signal, }) => {
                     const keyParams = { ...(queryKey[2] || {}) } as Record<string, unknown>;
@@ -73,7 +73,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                     /** When set, \`pageParam\` is written into \`query[pageParamKey]\` before each fetch. */
                     pageParamKey?: string;
                 }) => {
-                    const infiniteKey = createQueryKey(path as string, params[0] as EndpointParameters | undefined, true);
+                    const infiniteKey = createQueryKey(path, params[0], true);
                     return infiniteQueryOptions({
                         queryKey: infiniteKey,
                         initialPageParam: infiniteOpts.initialPageParam,
@@ -105,7 +105,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                     queryClient.invalidateQueries({ queryKey }),
                 /** Invalidate this endpoint's infinite queries. */
                 invalidateInfinite: (queryClient: QueryClient) =>
-                    queryClient.invalidateQueries({ queryKey: createQueryKey(path as string, params[0] as EndpointParameters | undefined, true) }),
+                    queryClient.invalidateQueries({ queryKey: createQueryKey(path, params[0], true) }),
             };
 
             return query
@@ -150,20 +150,21 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   import type { EndpointByMethod, ${apiClientType}, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, TypedSuccessResponse, ApiCallParams } from "${ctx.relativeApiClientPath}"
   import { errorStatusCodes, TypedStatusError } from "${ctx.relativeApiClientPath}"
 
-  type EndpointQueryKeyParams<TOptions extends EndpointParameters> = TOptions & {
+  type EndpointQueryKeyParams = EndpointParameters & {
       _infinite?: boolean;
   };
 
   /**
    * Hierarchical keys: \`["typed-openapi"]\` → \`["typed-openapi", path]\` → \`["typed-openapi", path, params]\`
    * so \`queryKeyFactory.all\` / path prefixes work with TanStack partial matching.
+   * Accepts \`EndpointParameters\` (and structurally compatible \`ApiCallParams\`) without casts.
    */
-  const createQueryKey = <TOptions extends EndpointParameters>(
+  const createQueryKey = (
       id: string,
-      options?: TOptions,
+      options?: EndpointParameters,
       infinite?: boolean,
-  ): readonly ["typed-openapi", string, EndpointQueryKeyParams<TOptions>?] => {
-      const params: EndpointQueryKeyParams<TOptions> = {} as EndpointQueryKeyParams<TOptions>;
+  ): readonly ["typed-openapi", string, EndpointQueryKeyParams?] => {
+      const params: EndpointQueryKeyParams = {};
       let hasParams = false;
       if (infinite) {
           params["_infinite"] = infinite;
@@ -198,7 +199,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   /** Stable query-key factory for cache reads / invalidation outside of \`TanstackQueryApiClient\` methods. */
   export const queryKeyFactory = {
       all: ["typed-openapi"] as const,
-      endpoint: <TOptions extends EndpointParameters>(id: string, options?: TOptions, infinite?: boolean) =>
+      endpoint: (id: string, options?: EndpointParameters, infinite?: boolean) =>
           createQueryKey(id, options, infinite),
   };
 
@@ -296,7 +297,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             },
             /** Invalidate cached queries for this endpoint path (not the mutation cache). */
             invalidateQueries: (queryClient: QueryClient) =>
-                queryClient.invalidateQueries({ queryKey: createQueryKey(path as string) }),
+                queryClient.invalidateQueries({ queryKey: createQueryKey(path) }),
         }
     }
         // </ApiClient.request>
