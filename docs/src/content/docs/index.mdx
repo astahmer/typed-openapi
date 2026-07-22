@@ -20,28 +20,39 @@ import { ContainerSection } from "lucode-starlight/components";
 <ContainerSection width="lg">
   <div class="home-command">
     <div>
-      <h2>Generate a request-ready client.</h2>
+      <h2>Generate types and a Fetch client.</h2>
       <p>
-        Generate typed operations and a small Fetch transport. Add validation or an integration when
-        your app needs them.
+        This writes typed operations plus a small Fetch transport. Give it a real base URL before
+        making a request.
       </p>
     </div>
-    <code>pnpm exec typed-openapi ./openapi.yaml --output src/api/openapi.ts --default-fetcher --format</code>
+    <div class="home-command-output">
+      <code>`pnpm exec typed-openapi ./openapi.yaml --output src/api/openapi.ts --default-fetcher --format`</code>
+      <p>Writes <code>src/api/openapi.ts</code> and <code>src/api/api.client.ts</code>.</p>
+    </div>
   </div>
 
   <h2>Start here</h2>
-  <div class="home-grid">
+  <div class="home-grid home-grid--three">
     <a class="home-card" href="/getting-started/">
-      <strong>Quick start</strong>
-      <p>Generate types, add the fetch client, and make a request.</p>
+      <strong>Types only</strong>
+      <p>Generate contracts and endpoint methods without choosing a transport.</p>
     </a>
     <a class="home-card" href="/clients/promise-client/">
-      <strong>Default fetcher</strong>
-      <p>See the generated implementation before deciding whether to use it.</p>
+      <strong>Generated Fetch</strong>
+      <p>Use the default fetcher when the app does not already own transport policy.</p>
     </a>
     <a class="home-card" href="/validation/runtimes/">
       <strong>Runtime validation</strong>
       <p>Pick Zod, Effect, Valibot, ArkType, TypeBox, or Typia.</p>
+    </a>
+  </div>
+
+  <h2>Other workflows</h2>
+  <div class="home-grid">
+    <a class="home-card" href="/advanced/filtering-and-schema-naming/">
+      <strong>Filter a large specification</strong>
+      <p>Generate a small, domain-specific client from one large OpenAPI document.</p>
     </a>
     <a class="home-card" href="/ai/">
       <strong>Use with an AI agent</strong>
@@ -59,9 +70,9 @@ import { ContainerSection } from "lucode-starlight/components";
       <strong>Effect client</strong>
       <p>Keep operations in Effect and handle typed HTTP errors in the error channel.</p>
     </a>
-    <a class="home-card" href="/advanced/filtering-and-schema-naming/">
-      <strong>Generate less</strong>
-      <p>Make a small, domain-specific client from a large OpenAPI document.</p>
+    <a class="home-card" href="/integrations/msw/">
+      <strong>MSW mocks</strong>
+      <p>Generate handlers and typed mock factories from the same OpenAPI document.</p>
     </a>
   </div>
 </ContainerSection>

@@ -59,15 +59,18 @@ Use JSON when TypeScript configuration is not desirable:
 
 The CLI auto-loads `typed-openapi.config.ts`, `.mts`, `.js`, `.mjs`, `.json`, `.typed-openapi.json`, or `typed-openapi.json` from the current working directory. Pass `--config ./path/to/config.ts` to select another file.
 
+`input` and the main `output` are resolved from the command's working directory, not from the config file's directory. Companion names such as `tanstack: "query.ts"` are the exception: they resolve from the main output file's directory.
+
 ## Use it from a monorepo or CI
 
-Run the command from the package that owns the config, or point to it explicitly. CLI flags still override the checked-in defaults, so the same config can generate a focused client for a one-off job.
+Run the command from the package that owns the config when its `input` and `output` are package-relative. CLI flags still override the checked-in defaults, so the same config can generate a focused client for a one-off job.
 
 ```sh
 # Run from the package that owns typed-openapi.config.ts.
 pnpm --dir packages/web exec typed-openapi
 
-# Or keep the current directory and select the config explicitly.
+# Or invoke from the repository root. In that case, paths inside the config must also be root-relative.
+# For example: input: "./packages/web/openapi.yaml", output: "./packages/web/src/api/openapi.ts".
 pnpm exec typed-openapi --config packages/web/typed-openapi.config.ts
 ```
 

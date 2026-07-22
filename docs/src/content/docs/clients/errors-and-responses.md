@@ -19,7 +19,7 @@ const pet = await api.get("/pet/{petId}", { path: { petId: 7 } });
 | --- | --- | --- |
 | A straightforward call where failure stops the flow | default | data on success; a `TypedStatusError` for configured error statuses |
 | An expected business failure such as `409` or `422` | `withResponse: true` | a discriminated `{ ok, status, data }` result |
-| Access to the raw response during a migration | `throwOnStatusError: false` | the response contract without throwing on status |
+| Keep parsed data for configured error statuses | `throwOnStatusError: false` | suppresses `TypedStatusError`; still returns parsed data |
 
 Network, parsing, and validation failures remain failures in every mode. `withResponse` is for declared HTTP outcomes, not a blanket `Result` wrapper around every possible error.
 
@@ -53,13 +53,15 @@ pnpm exec typed-openapi ./openapi.yaml \
   --error-status-codes 400,404,409,422
 ```
 
-`throwOnStatusError: false` is available per request when you want response access without opting into the complete `withResponse` shape.
+`throwOnStatusError: false` is available per request when a configured error status should return parsed data instead of throwing. Use `withResponse: true` when the caller needs status, headers, or response metadata.
 
 ```ts
-const response = await api.get("/pet/{petId}", {
+const pet = await api.get("/pet/{petId}", {
   path: { petId: 7 },
   throwOnStatusError: false,
 });
+
+// `pet` is parsed response data, even for a configured error status.
 ```
 
 Use global status-code flags only when the whole API has a nonstandard convention. For ordinary endpoints, declare responses in OpenAPI and let `withResponse` narrow the body by status.

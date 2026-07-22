@@ -978,8 +978,8 @@ export class ApiClient {
       return (await response.text())
     }
 
-    if (contentType === "application/octet-stream") {
-      return (await response.arrayBuffer())
+    if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+      return new Blob([await response.arrayBuffer()])
     }
 
     if (

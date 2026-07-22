@@ -30,7 +30,15 @@ pnpm exec typed-openapi ./openapi.yaml \
   --default-fetcher
 ```
 
-That writes `src/api/client.ts` and a nearby `src/api/api.client.ts` fetcher. The generated fetcher owns URL construction, query encoding, request bodies, cookies, and the response contract. Set its API base URL, then call an operation by the documented OpenAPI path template.
+That writes `src/api/client.ts` and a nearby `src/api/api.client.ts` fetcher. The generated fetcher owns URL construction, query encoding, request bodies, and cookies; the generated API client parses responses. Before a browser app makes a request, create its client with an absolute base URL:
+
+```ts
+import { createApi } from "./api/api.client";
+
+export const api = createApi(import.meta.env.VITE_API_URL);
+```
+
+Then call an operation by the documented OpenAPI path template:
 
 ```ts
 import { api } from "./api/api.client";

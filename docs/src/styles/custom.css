@@ -78,7 +78,7 @@ body .sl-markdown-content h2 code {
   line-height: 1.6;
 }
 
-.home-command > code {
+.home-command-output > code {
   display: block;
   overflow-x: auto;
   padding: 1.25rem;
@@ -88,6 +88,12 @@ body .sl-markdown-content h2 code {
   color: var(--foreground);
   font-size: 0.85rem;
   line-height: 1.55;
+}
+
+.home-command-output > p {
+  margin: 0.75rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
 }
 
 .home-grid {

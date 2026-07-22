@@ -105,4 +105,29 @@ describe("SSE / text/event-stream responses", () => {
     const file = generateFile({ ...mapped, runtime: "none" });
     expect(file).toContain("Blob");
   });
+
+  test("default response parser returns Blob for octet-stream content types with parameters", () => {
+    const doc = {
+      openapi: "3.0.3",
+      info: { title: "bin-response", version: "1" },
+      paths: {
+        "/download": {
+          get: {
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "application/octet-stream": { schema: { type: "string", format: "binary" } },
+                },
+              },
+            },
+          },
+        },
+      },
+    } as OpenAPIObject;
+
+    const file = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "none" });
+    expect(file).toContain('contentType.toLowerCase().startsWith("application/octet-stream")');
+    expect(file).toContain("new Blob([await response.arrayBuffer()])");
+  });
 });

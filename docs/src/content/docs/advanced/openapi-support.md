@@ -44,7 +44,7 @@ const reader = stream.getReader();
 
 ## Work with binary responses and bodies
 
-Binary schemas and request bodies use `Blob`. For an endpoint that returns `application/octet-stream`:
+Binary schemas and request bodies use `Blob`. The generated default response parser returns a `Blob` for `application/octet-stream` (including content-type parameters):
 
 ```ts
 const archive = await api.get("/exports/{id}/archive", { path: { id: "exp_123" } });

@@ -24,7 +24,7 @@ description: Generate and integrate typed OpenAPI clients in this repository. Us
 
 ## Default fetcher facts
 
-`--default-fetcher` writes a second TypeScript file. It replaces path parameters before the fetcher runs, serializes query parameters, adds OpenAPI cookie/header parameters, encodes the request body from `requestFormat`, forwards request overrides, and returns the native `Response`. It exports `createApi(baseUrl)` so browser applications can provide their bundler-specific URL without editing generated code.
+`--default-fetcher` writes a second TypeScript file. It replaces path parameters before the fetcher runs, serializes query parameters, adds OpenAPI cookie/header parameters, encodes `POST`/`PUT`/`PATCH`/`DELETE` bodies from `requestFormat`, forwards request overrides, and returns the native `Response`. The generated API client parses the response. It exports `createApi(baseUrl)` so browser applications can provide their bundler-specific URL without editing generated code.
 
 The generated file reads `globalThis.process?.env?.API_BASE_URL` by default and falls back to `https://api.example.com`. If OpenAPI defines `securitySchemes`, call `configureFetcher({ getAuth })` before the first request. Verify every operation's `security` requirements: the fetcher selects only the first satisfied requirement and sends no credentials to operations that declare none. Confirm query API keys survive alongside ordinary query parameters with a focused test.
 

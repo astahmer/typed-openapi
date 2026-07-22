@@ -24,7 +24,7 @@ Choose the smallest setup that fits this app:
 - reuse the app's existing HTTP layer when it already owns retry, auth, tracing, or environment access;
 - generate TanStack Query or MSW output only when this app uses those libraries.
 
-For browser apps, use the generated `createApi(baseUrl)` factory instead of editing generated code. Do not use query API-key auth unless the generated fetcher version supports operation-level security requirements.
+For browser apps, use the generated `createApi(baseUrl)` factory instead of editing generated code. For query API keys, verify each operation's security requirements and add a focused test that confirms the key and ordinary query parameters both reach the server.
 
 Show the exact config and command before changing files. Then regenerate, run the relevant typecheck/tests, and summarize the generated files and any OpenAPI gaps you found.
 ```

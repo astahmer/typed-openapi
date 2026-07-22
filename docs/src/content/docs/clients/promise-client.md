@@ -12,7 +12,7 @@ Use it for ordinary `async`/`await` code. It does not require React, a runtime s
 
 ## What `--default-fetcher` writes
 
-The flag writes a second TypeScript file next to the generated client. It exports `api`, created with the generated `defaultFetcher`.
+The flag writes a second TypeScript file next to the generated client. With the command below, it writes `src/api/openapi.ts` and `src/api/api.client.ts`; the latter exports `api`, created with the generated `defaultFetcher`.
 
 ```sh
 pnpm exec typed-openapi ./openapi.yaml \
@@ -26,7 +26,7 @@ The generated fetcher:
 - receives a `URL` with path parameters already substituted;
 - writes serialized query parameters to that URL;
 - receives operation headers and cookies already prepared by the generated client;
-- encodes JSON, multipart, URL-encoded, binary, and text bodies from `requestFormat`;
+- encodes JSON, multipart, URL-encoded, binary, and text bodies from `requestFormat` for `POST`, `PUT`, `PATCH`, and `DELETE`;
 - forwards `overrides` to native `fetch` and returns the native `Response`.
 
 This is the implementation shape it writes. The auth block is added only when the OpenAPI document has `securitySchemes`:
@@ -75,7 +75,28 @@ export const api = createApi();
 
 `encodeRequestBody()` is also written into that file. It uses `JSON.stringify()` for JSON, lets `fetch` provide the multipart boundary for `FormData`, uses `URLSearchParams` for form posts, and rejects an invalid binary body before making a request.
 
-## Configure the generated file
+## Request flow and limits
+
+| Step | Generated behavior |
+| --- | --- |
+| Base URL + path | The client concatenates them and constructs `new URL(...)`; together they must be an absolute URL. |
+| Query | The serialized operation query replaces any query string already present in the base URL. |
+| Cookies | The client serializes OpenAPI cookie parameters into the `Cookie` header before calling the fetcher. |
+| Headers | `overrides.headers` start the request; operation header parameters are then applied and win on the same header name. |
+| Body | The default fetcher encodes bodies only for `POST`, `PUT`, `PATCH`, and `DELETE`. |
+| Response | The generated API client—not the fetcher—parses SSE as a stream, `text/*` as text, `application/octet-stream` as `Blob`, and JSON-like content types as JSON. |
+
+Pass browser cookie-session options through the request as usual:
+
+```ts
+await api.get("/session", {
+  overrides: { credentials: "include" },
+});
+```
+
+Keep your own transport for GET/HEAD/OPTIONS bodies, signed requests, a base URL whose query string must survive, or an existing layer that owns retry, auth refresh, tracing, or environment access.
+
+## Configure base URL and auth
 
 The generated default reads `globalThis.process?.env?.API_BASE_URL` when it exists. For a browser app, keep the generated file unchanged and create the client with the base URL your bundler exposes:
 
@@ -118,11 +139,11 @@ Every path, query, header, cookie, body, success response, and declared error bo
 `request()` is useful when the HTTP verb is data-driven but the endpoint is still known to TypeScript:
 
 ```ts
-const response = await api.request("GET", "/pet/{petId}", {
+const pet = await api.request("GET", "/pet/{petId}", {
   path: { petId: 7 },
 });
 
-const pet = await response.json();
+console.log(pet.name);
 ```
 
 ## Bring your own fetcher
