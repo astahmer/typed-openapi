@@ -9,7 +9,8 @@ const require = createRequire(import.meta.url);
 const tscBin = require.resolve("typescript/bin/tsc");
 
 const snapshotsDir = join(__dirname, "snapshots");
-const outRoot = join(__dirname, "../tmp/snapshots-typecheck");
+// Per-process root so parallel vitest workers / duplicate suites cannot rmSync each other mid-run.
+const outRoot = join(__dirname, "../tmp/snapshots-typecheck", `w${process.pid}`);
 const pkgRoot = join(__dirname, "..");
 const pkgRequire = createRequire(join(pkgRoot, "package.json"));
 
@@ -77,6 +78,7 @@ describe("snapshot files typecheck", () => {
       }
 
       const dir = join(outRoot, file.replace(/\.ts$/, ""));
+      rmSync(dir, { recursive: true, force: true });
       mkdirSync(dir, { recursive: true });
       copyFileSync(join(snapshotsDir, file), join(dir, "client.ts"));
 
