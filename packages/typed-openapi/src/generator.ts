@@ -60,10 +60,6 @@ export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> &
     transformBigInt?: boolean;
     /** Import path for a generated `.d.ts` sidecar used to type runtime validators. */
     runtimeTypeDeclarations?: string;
-    /** Benchmark-only runtime value annotation used with `runtimeTypeDeclarations`. */
-    runtimeTypeStrategy?: "raw" | "any" | "cast";
-    /** Benchmark-only pragma that skips type-checking the generated runtime implementation. */
-    runtimeNoCheck?: boolean;
   };
 type GeneratorContext = Required<
   Omit<
@@ -82,8 +78,6 @@ type GeneratorContext = Required<
     | "transformDates"
     | "transformBigInt"
     | "runtimeTypeDeclarations"
-    | "runtimeTypeStrategy"
-    | "runtimeNoCheck"
   >
 > & {
   validation: ValidationPolicy;
@@ -95,8 +89,6 @@ type GeneratorContext = Required<
   transformDates: boolean;
   transformBigInt: boolean;
   usesRuntimeTypeDeclarations: boolean;
-  runtimeTypeStrategy: "raw" | "any" | "cast";
-  runtimeNoCheck: boolean;
 };
 
 export const allowedRuntimes = type(
@@ -203,8 +195,6 @@ const createGeneratorContext = (options: GeneratorOptions): GeneratorContext => 
     transformDates: options.transformDates ?? false,
     transformBigInt: options.transformBigInt ?? false,
     usesRuntimeTypeDeclarations: Boolean(options.runtimeTypeDeclarations),
-    runtimeTypeStrategy: options.runtimeTypeStrategy ?? "raw",
-    runtimeNoCheck: options.runtimeNoCheck ?? false,
   } as GeneratorContext;
 };
 
@@ -237,15 +227,14 @@ export const generateFile = (options: GeneratorOptions) => {
       coerce: ctx.coerce,
       transformDates: ctx.transformDates,
       transformBigInt: ctx.transformBigInt,
-      ...(options.runtimeTypeDeclarations ? { typeNamespace: "__TypedOpenapiTypes" } : {}),
-      ...(options.runtimeTypeDeclarations ? { runtimeTypeStrategy: ctx.runtimeTypeStrategy } : {}),
+      ...(options.runtimeTypeDeclarations ? { typeNamespace: "__TypedOpenapi" } : {}),
       ...(ctx.keptSchemaNames ? { keptSchemaNames: ctx.keptSchemaNames } : {}),
       ...(ctx.namedSchemasForEmit ? { namedSchemas: ctx.namedSchemasForEmit } : {}),
     });
 
-    return `${ctx.runtimeNoCheck ? "// @ts-nocheck\n" : ""}${
+    return `${options.runtimeTypeDeclarations ? "// @ts-nocheck\n" : ""}${
       options.runtimeTypeDeclarations
-        ? `import type * as __TypedOpenapiTypes from ${JSON.stringify(options.runtimeTypeDeclarations)};\n`
+        ? `import type * as __TypedOpenapi from ${JSON.stringify(options.runtimeTypeDeclarations)};\n`
         : ""
     }
   ${runtimeSchemasAndEndpoints}
@@ -397,7 +386,7 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
   const endpointByMethod = `
      // <EndpointByMethod>
      export ${ctx.runtime === "none" ? "type" : "const"} EndpointByMethod${
-       ctx.runtime !== "none" && ctx.usesRuntimeTypeDeclarations ? ": __TypedOpenapiTypes.EndpointByMethod" : ""
+       ctx.runtime !== "none" && ctx.usesRuntimeTypeDeclarations ? ": __TypedOpenapi.EndpointByMethod" : ""
      } = {
      ${Object.entries(byMethods)
        .map(([method, list]) => {
@@ -418,7 +407,7 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
        ctx.runtime === "none"
          ? ""
          : ctx.usesRuntimeTypeDeclarations
-           ? "export type EndpointByMethod = __TypedOpenapiTypes.EndpointByMethod;"
+           ? "export type EndpointByMethod = __TypedOpenapi.EndpointByMethod;"
            : "export type EndpointByMethod = typeof EndpointByMethod;"
      }
      // </EndpointByMethod>

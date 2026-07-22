@@ -71,9 +71,9 @@ cli
   .option("--transform-bigint", "Map format int64 to bigint (types + runtime transforms)")
   .option(
     "--runtime-types",
-    "Generate and use an experimental .d.ts sidecar for runtime validator types",
+    "Generate and use a .types.d.ts sidecar for runtime client types",
   )
-  .option("--no-runtime-types", "Inline runtime validator types instead of generating a .d.ts sidecar")
+  .option("--no-runtime-types", "Do not generate a runtime type declaration sidecar")
   .action(async (input: string | undefined, _options: any) => {
     return generateClientFiles(input, _options);
   });

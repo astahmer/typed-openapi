@@ -167,7 +167,7 @@ export const typeboxAdapter: RuntimeAdapter = {
       body = `Type.Recursive((This) => ${body})`;
     }
     if (typeReference) {
-      return `export type ${name} = ${typeReference};\nexport const ${name}: any = ${body};`;
+      return `export type ${name} = ${typeReference};\nexport const ${name} = ${body};`;
     }
     return `export type ${name} = Static<typeof ${name}>;\nexport const ${name} = ${body};`;
   },

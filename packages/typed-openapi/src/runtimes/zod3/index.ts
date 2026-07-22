@@ -189,7 +189,7 @@ export const zod3Adapter: RuntimeAdapter = {
     const childCtx = { ...ctx, currentSchemaName: name };
     let body = emitNode(node, childCtx);
     if (typeReference) {
-      return `export type ${name} = ${typeReference};\nexport const ${name}: any = ${body};`;
+      return `export type ${name} = ${typeReference};\nexport const ${name} = ${body};`;
     }
     if (ctx.recursiveNames.has(name)) {
       body = `z.lazy(() => ${body})`;

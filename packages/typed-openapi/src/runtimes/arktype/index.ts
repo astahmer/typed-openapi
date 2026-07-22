@@ -246,7 +246,7 @@ const emitNamedSchema = (name: string, node: SchemaNode, ctx: EmitCtx, typeRefer
   const childCtx = { ...ctx, currentSchemaName: name };
   const body = emitNode(node, childCtx);
   if (typeReference) {
-    return `export type ${name} = ${typeReference};\nexport const ${name}: any = ${body};`;
+    return `export type ${name} = ${typeReference};\nexport const ${name} = ${body};`;
   }
   return `export const ${name} = ${body};\nexport type ${name} = typeof ${name}.infer;`;
 };
@@ -274,7 +274,7 @@ const emitNamedSchemas = (
   for (const { name } of schemas) {
     const typeReference = typeReferenceForName?.(name);
     out += typeReference
-      ? `export type ${name} = ${typeReference};\nexport const ${name}: any = __schemas.${name};\n\n`
+      ? `export type ${name} = ${typeReference};\nexport const ${name} = __schemas.${name};\n\n`
       : `export const ${name} = __schemas.${name};\nexport type ${name} = typeof ${name}.infer;\n\n`;
   }
   return out.trimEnd();
