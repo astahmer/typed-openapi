@@ -29,15 +29,15 @@ export const parseSecuritySchemes = (doc: OpenAPIObject): ParsedSecurityScheme[]
     const description = scheme.description;
 
     if (scheme.type === "apiKey") {
+      const validIn = scheme.in === "header" || scheme.in === "query" || scheme.in === "cookie";
       const entry: ParsedSecurityScheme = {
         name,
         prop,
         type: "apiKey",
-        supported: true,
+        // OAS requires `name` + `in`; incomplete schemes are typed but not applied.
+        supported: validIn && typeof scheme.name === "string" && scheme.name.length > 0,
       };
-      if (scheme.in === "header" || scheme.in === "query" || scheme.in === "cookie") {
-        entry.in = scheme.in;
-      }
+      if (validIn) entry.in = scheme.in;
       if (scheme.name !== undefined) entry.paramName = scheme.name;
       if (description !== undefined) entry.description = description;
       out.push(entry);
