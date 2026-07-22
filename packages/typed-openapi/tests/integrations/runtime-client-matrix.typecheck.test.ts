@@ -79,11 +79,13 @@ export const filterDiagnostics = (out: string, allowCircular: boolean, runtime?:
       if (allowCircular) {
         return !(
           // Do NOT filter TS2456 / TS7022 / TS7024 / zod TS2345 — recursive + disc+null are fixed.
-          line.includes("error TS2502") ||
-          // ArkType deep union/tuple assignability + property access noise on large Kombo schemas.
-          (runtime === "arktype" && line.includes("error TS2322")) ||
-          (runtime === "arktype" && line.includes("error TS2339")) ||
-          (runtime === "arktype" && line.includes("error TS2345"))
+          (
+            line.includes("error TS2502") ||
+            // ArkType deep union/tuple assignability + property access noise on large Kombo schemas.
+            (runtime === "arktype" && line.includes("error TS2322")) ||
+            (runtime === "arktype" && line.includes("error TS2339")) ||
+            (runtime === "arktype" && line.includes("error TS2345"))
+          )
         );
       }
       // Docker typebox/typia: known InferSchemaValue indexing noise in generated ApiClient.

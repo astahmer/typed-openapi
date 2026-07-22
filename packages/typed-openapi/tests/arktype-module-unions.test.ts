@@ -31,14 +31,12 @@ describe("arktype type.module unions", () => {
     const ctx = createEmitCtx("loose", new Set(["Gender"]));
     const src = arktype.emitNamedSchemas!([{ name: "Gender", node: ternaryUnion }], ctx);
     // Nested: [enum, "|", [string, "|", null]] — avoids TS2322 flat 5-elem vs 3-elem.
-    expect(src).toContain('type.module({');
+    expect(src).toContain("type.module({");
     expect(src).toContain('"|", [type("string"), "|", type("null")]');
-    expect(src).not.toMatch(
-      /type\.enumerated\([^)]+\), "\|", type\("string"\), "\|", type\("null"\)/,
-    );
+    expect(src).not.toMatch(/type\.enumerated\([^)]+\), "\|", type\("string"\), "\|", type\("null"\)/);
   });
 
-  test("binary unions stay a single [A, \"|\", B] tuple", () => {
+  test('binary unions stay a single [A, "|", B] tuple', () => {
     const ctx = createEmitCtx("loose", new Set(["OpenGender"]));
     const src = arktype.emitNamedSchemas!([{ name: "OpenGender", node: binaryUnion }], ctx);
     expect(src).toMatch(/\[type\.enumerated\([^)]+\), "\|", type\("string"\)\]/);

@@ -126,9 +126,7 @@ describe("securitySchemes → auth helpers", () => {
   });
 
   test("query/cookie apiKey keeps url param name (not _url)", () => {
-    const src = generateAuthHelpersSource([
-      { name: "q", prop: "q", type: "apiKey", in: "query", paramName: "token" },
-    ]);
+    const src = generateAuthHelpersSource([{ name: "q", prop: "q", type: "apiKey", in: "query", paramName: "token" }]);
     expect(src).toContain("url: URL");
     expect(src).not.toContain("_url: URL");
     expect(src).toContain("url.searchParams.set");

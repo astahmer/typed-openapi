@@ -7,7 +7,13 @@ import { emitRuntimeFile } from "./runtimes/emit-runtime-file.ts";
 import { getRuntimeAdapter, type ShippedRuntime } from "./runtimes/registry.ts";
 import { resolveValidationPolicy, type ValidationPreset, type ValidationPolicy } from "./runtimes/validation.ts";
 import type { OutputRuntime as RuntimeName } from "./runtimes/types.ts";
-import { canEmitAsInterface, emitNamedInterface, irToTs, renderSchemaJsdoc, buildIrToTsOptions } from "./schema-ir/ir-to-ts.ts";
+import {
+  canEmitAsInterface,
+  emitNamedInterface,
+  irToTs,
+  renderSchemaJsdoc,
+  buildIrToTsOptions,
+} from "./schema-ir/ir-to-ts.ts";
 import type { SchemaNode } from "./schema-ir/types.ts";
 import { applySpecFilters, shouldEmitSchema, type SpecFilterOptions } from "./filter-spec.ts";
 import { prepareSchemaNaming, type SchemaNamingOptions } from "./schema-naming.ts";
