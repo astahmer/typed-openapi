@@ -1,15 +1,9 @@
-:root {
-  --sl-color-accent-low: #152b50;
-  --sl-color-accent: #58a6ff;
-  --sl-color-accent-high: #b8d7ff;
-  --sl-font: Inter, ui-sans-serif, system-ui, sans-serif;
-  --sl-content-width: 48rem;
-}
-
-:root[data-theme="light"] {
-  --sl-color-accent-low: #dcecff;
-  --sl-color-accent: #0969da;
-  --sl-color-accent-high: #053b7b;
+@layer lucode {
+  :root {
+    --radius: 0.7rem;
+    --sidebar-width: 17rem;
+    --container-max-width: 1440px;
+  }
 }
 
 .sl-markdown-content :is(pre, code) {

@@ -30,6 +30,9 @@ importers:
       astro:
         specifier: ^6.0.0
         version: 6.4.8
+      lucode-starlight:
+        specifier: 0.1.6
+        version: 0.1.6(@astrojs/starlight@0.39.3(astro@6.4.8)(typescript@6.0.3))
     devDependencies:
       '@astrojs/check':
         specifier: 0.9.9
@@ -4820,6 +4823,11 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
+  lucode-starlight@0.1.6:
+    resolution: {integrity: sha512-rLHcTNQmN1dmk170QyxyZoCs5TWHDZyEQsTU2uT0+RNaFhj8PaWm9huKVNPCRcEXvrOYWD27Z6EsxsHaeNhKqg==}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.38.3'
+
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
@@ -4847,6 +4855,11 @@ packages:
   marked@14.0.0:
     resolution: {integrity: sha512-uIj4+faQ+MgHgwUW1l2PsPglZLOLOT1uErt06dAPtx2kjteLAkbsd/0FiYg/MGS+i7ZKLb7w2WClxHkzOOuryQ==}
     engines: {node: '>= 18'}
+    hasBin: true
+
+  marked@18.0.7:
+    resolution: {integrity: sha512-iDVQ5ldaiKXn6b2JroX5kgRfmwgqolW7NpaEzTl1k/2Zh1njIEN9yniyLV/mOvWwtsE8OGgkjsCYvijuPk1dtA==}
+    engines: {node: '>= 20'}
     hasBin: true
 
   math-intrinsics@1.1.0:
@@ -13138,6 +13151,12 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
+  lucode-starlight@0.1.6(@astrojs/starlight@0.39.3(astro@6.4.8)(typescript@6.0.3)):
+    dependencies:
+      '@astrojs/starlight': 0.39.3(astro@6.4.8)(typescript@6.0.3)
+      '@pagefind/default-ui': 1.5.2
+      marked: 18.0.7
+
   lz-string@1.5.0: {}
 
   magic-string@0.27.0:
@@ -13161,6 +13180,8 @@ snapshots:
   markdown-table@3.0.4: {}
 
   marked@14.0.0: {}
+
+  marked@18.0.7: {}
 
   math-intrinsics@1.1.0: {}
 

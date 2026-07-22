@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import lucode from "lucode-starlight";
 
 export default defineConfig({
   integrations: [
@@ -17,6 +18,17 @@ export default defineConfig({
         baseUrl: "https://github.com/astahmer/typed-openapi/edit/main/docs/",
       },
       customCss: ["./src/styles/custom.css"],
+      plugins: [
+        lucode({
+          navLinks: [
+            { label: "Docs", link: "/getting-started/" },
+            { label: "Playground", link: "/playground/" },
+            { label: "GitHub", link: "https://github.com/astahmer/typed-openapi" },
+          ],
+          footerText:
+            "Open-source, type-safe OpenAPI clients for TypeScript.",
+        }),
+      ],
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
       sidebar: [
         {
