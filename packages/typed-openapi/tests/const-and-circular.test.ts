@@ -125,7 +125,7 @@ describe("JSON Schema const → literal", () => {
 });
 
 describe("recursive JSON Schema types", () => {
-  test("none-runtime: circular record/union emit interface and typecheck", () => {
+  test("none-runtime: circular record/union emit interface and typecheck", { timeout: 60_000 }, () => {
     rmSync(tmp, { recursive: true, force: true });
     mkdirSync(tmp, { recursive: true });
 

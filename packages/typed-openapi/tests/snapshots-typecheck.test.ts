@@ -3,6 +3,7 @@ import { readdirSync, mkdirSync, writeFileSync, rmSync, copyFileSync, readFileSy
 import { join, dirname, basename } from "node:path";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
+import { filterTypecheckDiagnostics } from "./helpers/typecheck-filters.ts";
 
 const require = createRequire(import.meta.url);
 const tscBin = require.resolve("typescript/bin/tsc");
@@ -61,31 +62,11 @@ describe("snapshot files typecheck", () => {
 
   /** Kombo recursive OAS triggers known InferSchemaValue / arktype noise (not circular aliases). */
   const filterKomboNoise = (out: string, runtime: string): string =>
-    out
-      .split("\n")
-      .filter((line) => {
-        if (!line.includes("error TS")) return true;
-        return !(
-          // Do NOT filter TS2456 / TS7022 / TS7024 / TS2345 (zod disc+null) — those are real bugs.
-          (
-            line.includes("error TS2502") ||
-            // ArkType deep union/tuple assignability + property access noise on large Kombo schemas.
-            (runtime === "arktype" && line.includes("error TS2322")) ||
-            (runtime === "arktype" && line.includes("error TS2339")) ||
-            (runtime === "arktype" && line.includes("error TS2345"))
-          )
-        );
-      })
-      .join("\n");
+    filterTypecheckDiagnostics(out, { allowCircular: true, runtime });
 
   /** TypeBox/typia InferSchemaValue indexing noise in generated ApiClient. */
-  const filterClientNoise = (out: string, runtime: string): string => {
-    if (runtime !== "typebox" && runtime !== "typia") return out;
-    return out
-      .split("\n")
-      .filter((line) => !(line.includes("error TS2536") && line.includes("/client.ts(")))
-      .join("\n");
-  };
+  const filterClientNoise = (out: string, runtime: string): string =>
+    filterTypecheckDiagnostics(out, { runtime });
 
   for (const file of files) {
     const runtime = runtimeOf(file);

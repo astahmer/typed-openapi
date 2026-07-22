@@ -7,6 +7,7 @@ import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { generateFile, type OutputRuntime } from "../src/generator.ts";
+import { filterTypecheckDiagnostics } from "./helpers/typecheck-filters.ts";
 
 const require = createRequire(import.meta.url);
 const tscBin = require.resolve("typescript/bin/tsc");
@@ -26,30 +27,11 @@ const outRoot = join(__dirname, "../tmp/tsc-audit-samples");
 
 const heavy = (sample: string) => sample.startsWith("docker") || sample.startsWith("kombo");
 
-/** Known generated-client TS noise (same families as matrix/snapshots-typecheck filters). */
-const filterAuditNoise = (out: string, sample: string, runtime: string): string => {
-  const lines = out.split("\n");
-  return lines
-    .filter((line) => {
-      if (!line.includes("error TS")) return true;
-      if (sample.startsWith("kombo")) {
-        return !(
-          // Do NOT filter TS2456 / TS7022 / TS7024 / zod TS2345 — fixed via interfaces + ZodType + null peel.
-          (
-            line.includes("error TS2502") ||
-            (runtime === "arktype" && line.includes("error TS2322")) ||
-            line.includes("error TS2719") ||
-            line.includes("error TS2536") ||
-            (runtime === "arktype" && line.includes("error TS2339")) ||
-            (runtime === "arktype" && line.includes("error TS2345"))
-          )
-        );
-      }
-      if ((runtime === "typebox" || runtime === "typia") && line.includes("error TS2536")) return false;
-      return true;
-    })
-    .join("\n");
-};
+const filterAuditNoise = (out: string, sample: string, runtime: string): string =>
+  filterTypecheckDiagnostics(out, {
+    allowCircular: sample.startsWith("kombo"),
+    runtime,
+  });
 
 describe("tsc audit sample specs", () => {
   rmSync(outRoot, { recursive: true, force: true });

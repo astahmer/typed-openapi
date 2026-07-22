@@ -7,6 +7,7 @@ import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
 import { generateFile, type OutputRuntime } from "../../src/generator.ts";
+import { filterTypecheckDiagnostics } from "../helpers/typecheck-filters.ts";
 
 const require = createRequire(import.meta.url);
 const tscBin = require.resolve("typescript/bin/tsc");
@@ -68,32 +69,12 @@ const resolveZod3 = (): string | undefined => {
 };
 
 /** Keep diagnostics that affect usage.ts (the matrix assertion). Exported for unit coverage. */
-export const filterDiagnostics = (out: string, allowCircular: boolean, runtime?: string): string => {
-  const lines = out.split("\n");
-  return lines
-    .filter((line) => {
-      if (!line.includes("error TS")) return true;
-      // Matrix assertion lives in usage.ts — always keep those.
-      if (line.includes("/usage.ts(")) return true;
-      // Drop generated-client-body noise (InferSchemaValue edge cases).
-      if (allowCircular) {
-        return !(
-          // Do NOT filter TS2456 / TS7022 / TS7024 / zod TS2345 — recursive + disc+null are fixed.
-          (
-            line.includes("error TS2502") ||
-            // ArkType deep union/tuple assignability + property access noise on large Kombo schemas.
-            (runtime === "arktype" && line.includes("error TS2322")) ||
-            (runtime === "arktype" && line.includes("error TS2339")) ||
-            (runtime === "arktype" && line.includes("error TS2345"))
-          )
-        );
-      }
-      // Docker typebox/typia: known InferSchemaValue indexing noise in generated ApiClient.
-      if (line.includes("error TS2536") && line.includes("/client.ts(")) return false;
-      return true;
-    })
-    .join("\n");
-};
+export const filterDiagnostics = (out: string, allowCircular: boolean, runtime?: string): string =>
+  filterTypecheckDiagnostics(out, {
+    allowCircular,
+    runtime,
+    alwaysKeepPathSubstring: "/usage.ts(",
+  });
 
 const hasError = (out: string) => /\berror TS\d+:/.test(out);
 
