@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
@@ -79,9 +79,8 @@ describe("lazy recursive schema types e2e", () => {
     { runtime: "valibot" as const, importName: "valibot", marker: "v.GenericSchema<Json>" },
     { runtime: "effect" as const, importName: "effect", marker: "Schema.Schema<Json>" },
   ])("$runtime typechecks recursive JSON without TS7022", { timeout: 60_000 }, ({ runtime, importName, marker }) => {
-    const dir = join(tmpRoot, runtime);
-    rmSync(dir, { recursive: true, force: true });
-    mkdirSync(dir, { recursive: true });
+    mkdirSync(tmpRoot, { recursive: true });
+    const dir = mkdtempSync(join(tmpRoot, `${runtime}-`));
 
     const code = generateFile({
       ...mapOpenApiEndpoints(circularDoc),
@@ -90,7 +89,9 @@ describe("lazy recursive schema types e2e", () => {
     });
     expect(code).toContain(marker);
     expect(code).toMatch(/export interface JsonObject/);
-    writeFileSync(join(dir, "schemas.ts"), code);
+    const schemasPath = join(dir, "schemas.ts");
+    const usagePath = join(dir, "usage.ts");
+    writeFileSync(schemasPath, code);
 
     const pkgRoot = resolvePkgRoot(importName);
     writeFileSync(
@@ -121,7 +122,7 @@ describe("lazy recursive schema types e2e", () => {
     );
 
     writeFileSync(
-      join(dir, "usage.ts"),
+      usagePath,
       `
 import type { Json, JsonObject } from "./schemas.ts";
 const value: Json = { nested: ["ok", 1, true, { deep: "x" }] };
@@ -132,6 +133,9 @@ void fromString;
 `,
     );
 
+    expect(existsSync(schemasPath)).toBe(true);
+    expect(existsSync(usagePath)).toBe(true);
+
     let out = "";
     try {
       execFileSync(process.execPath, [tscBin, "-p", dir, "--pretty", "false"], {
@@ -140,6 +144,8 @@ void fromString;
       });
     } catch (err: any) {
       out = `${err.stdout ?? ""}${err.stderr ?? ""}`;
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
     }
     expect(out).not.toContain("error TS7022");
     expect(out).not.toContain("error TS7024");

@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeAll, describe, expect, test } from "vitest";
-import { mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import SwaggerParser from "@apidevtools/swagger-parser";
@@ -10,18 +10,30 @@ import { prettify } from "../../src/format.ts";
 import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
 import { generateMswFile } from "../../src/msw.generator.ts";
 
-const tmp = join(__dirname, "../../tmp/msw-e2e");
+const tmpRoot = join(__dirname, "../../tmp/msw-e2e");
+
+const scratchDir = (label: string) => {
+  mkdirSync(tmpRoot, { recursive: true });
+  return mkdtempSync(join(tmpRoot, `${label}-`));
+};
+
+const importGenerated = async (filePath: string) => {
+  expect(existsSync(filePath), `expected generated file at ${filePath}`).toBe(true);
+  return import(pathToFileURL(filePath).href + `?t=${Date.now()}`);
+};
 
 describe("msw handlers e2e", () => {
   const server = setupServer();
 
   beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
   afterEach(() => server.resetHandlers());
-  afterAll(() => server.close());
+  afterAll(() => {
+    server.close();
+    rmSync(tmpRoot, { recursive: true, force: true });
+  });
 
   test("generated handlers intercept fetch", async () => {
-    rmSync(tmp, { recursive: true, force: true });
-    mkdirSync(tmp, { recursive: true });
+    const tmp = scratchDir("handlers");
 
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
     const ctx = mapOpenApiEndpoints(openApiDoc);
@@ -37,9 +49,10 @@ describe("msw handlers e2e", () => {
         baseUrl: "https://petstore3.swagger.io/api/v3",
       }),
     );
-    writeFileSync(join(tmp, "handlers.ts"), src);
+    const filePath = join(tmp, "handlers.ts");
+    writeFileSync(filePath, src);
 
-    const mod = await import(pathToFileURL(join(tmp, "handlers.ts")).href + `?t=${Date.now()}`);
+    const mod = await importGenerated(filePath);
     expect(Array.isArray(mod.handlers)).toBe(true);
     expect(mod.handlers.length).toBe(1);
 
@@ -59,8 +72,7 @@ describe("msw handlers e2e", () => {
   });
 
   test("mock factory body is returned by handler", async () => {
-    rmSync(tmp, { recursive: true, force: true });
-    mkdirSync(tmp, { recursive: true });
+    const tmp = scratchDir("echo");
 
     const endpoint = {
       method: "get" as const,
@@ -99,8 +111,9 @@ describe("msw handlers e2e", () => {
         baseUrl: "https://example.test",
       }),
     );
-    writeFileSync(join(tmp, "echo-handlers.ts"), src);
-    const mod = await import(pathToFileURL(join(tmp, "echo-handlers.ts")).href + `?t=${Date.now()}`);
+    const filePath = join(tmp, "echo-handlers.ts");
+    writeFileSync(filePath, src);
+    const mod = await importGenerated(filePath);
 
     expect(mod.getGetEchoMock()).toEqual({ msg: "hello-msw" });
     server.use(...mod.handlers);
@@ -109,8 +122,7 @@ describe("msw handlers e2e", () => {
   });
 
   test("SSE handler returns event-stream content type", async () => {
-    rmSync(tmp, { recursive: true, force: true });
-    mkdirSync(tmp, { recursive: true });
+    const tmp = scratchDir("sse");
 
     const endpoint = {
       method: "get" as const,
@@ -130,8 +142,9 @@ describe("msw handlers e2e", () => {
         baseUrl: "https://example.test",
       }),
     );
-    writeFileSync(join(tmp, "sse-handlers.ts"), src);
-    const mod = await import(pathToFileURL(join(tmp, "sse-handlers.ts")).href + `?t=${Date.now()}`);
+    const filePath = join(tmp, "sse-handlers.ts");
+    writeFileSync(filePath, src);
+    const mod = await importGenerated(filePath);
     server.use(...mod.handlers);
 
     const res = await fetch("https://example.test/stream");

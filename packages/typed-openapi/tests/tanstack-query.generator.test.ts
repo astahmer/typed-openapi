@@ -28,8 +28,10 @@ describe("tanstack-query.generator", () => {
     expect(file).toContain("invalidateInfinite:");
     expect(file).toContain("_infinite");
     expect(file).toContain("createQueryKey(path, params[0], true)");
-    expect(file).not.toContain("as EndpointParameters");
-    expect(file).not.toContain("path as string");
+    // Internal cast in createQueryKey only — call sites stay cast-free (C007).
+    expect(file).toContain("as EndpointParameters");
+    expect(file).not.toMatch(/path as string/);
+    expect(file).not.toMatch(/params\[0\] as /);
     expect(file).toContain("queryOptions:");
     expect(file).toContain("mutationOptions:");
     expect(file).toContain("export class TanstackQueryApiClient");
@@ -69,8 +71,9 @@ describe("tanstack-query.generator", () => {
     });
 
     expect(file).toContain('all: ["typed-openapi"] as const');
-    expect(file).toContain('return ["typed-openapi", id, params] as const');
-    expect(file).toContain('return ["typed-openapi", id] as const');
+    expect(file).toContain("const keyId = String(id)");
+    expect(file).toContain('return ["typed-openapi", keyId, params] as const');
+    expect(file).toContain('return ["typed-openapi", keyId] as const');
     expect(file).toContain("invalidateQueries:");
     expect(file).not.toContain("_id: id");
   });
@@ -97,12 +100,12 @@ describe("tanstack-query.generator", () => {
     });
 
     for (const field of ["body", "header", "path", "query", "cookie"] as const) {
-      expect(file).toContain(`if (options?.${field})`);
-      expect(file).toContain(`params.${field} = options.${field}`);
+      expect(file).toContain(`if (src.${field})`);
+      expect(file).toContain(`params.${field} = src.${field}`);
     }
     expect(file).toContain('params["_infinite"]');
     expect(file).toContain('delete keyParams["_infinite"]');
     expect(file).toContain("createQueryKey(path, params[0])");
-    expect(file).not.toContain("as EndpointParameters");
+    expect(file).toContain("(options ?? {}) as EndpointParameters");
   });
 });

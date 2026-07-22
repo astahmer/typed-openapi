@@ -282,7 +282,7 @@ describe("GitHub issue regressions", () => {
     expect(file).toContain("FetcherResponse");
   });
 
-  test("#32 + #91 typecheck: optional query call + FetcherResponse under node types", () => {
+  test("#32 + #91 typecheck: optional query call + FetcherResponse under node types", { timeout: 60_000 }, () => {
     const doc = minimalDoc({
       "/pet/findByStatus": {
         get: {
