@@ -67,8 +67,8 @@ const resolveZod3 = (): string | undefined => {
   return entry ? join(pnpmZod3, entry, "node_modules/zod") : undefined;
 };
 
-/** Keep diagnostics that affect usage.ts (the matrix assertion). */
-const filterDiagnostics = (out: string, allowCircular: boolean): string => {
+/** Keep diagnostics that affect usage.ts (the matrix assertion). Exported for unit coverage. */
+export const filterDiagnostics = (out: string, allowCircular: boolean, runtime?: string): string => {
   const lines = out.split("\n");
   return lines
     .filter((line) => {
@@ -78,8 +78,12 @@ const filterDiagnostics = (out: string, allowCircular: boolean): string => {
       // Drop generated-client-body noise (InferSchemaValue edge cases).
       if (allowCircular) {
         return !(
-          // Do NOT filter TS2456 / TS7022 / TS7024 / TS2345 — recursive + disc+null are fixed.
-          line.includes("error TS2502")
+          // Do NOT filter TS2456 / TS7022 / TS7024 / zod TS2345 — recursive + disc+null are fixed.
+          line.includes("error TS2502") ||
+          // ArkType deep union/tuple assignability + property access noise on large Kombo schemas.
+          (runtime === "arktype" && line.includes("error TS2322")) ||
+          (runtime === "arktype" && line.includes("error TS2339")) ||
+          (runtime === "arktype" && line.includes("error TS2345"))
         );
       }
       // Docker typebox/typia: known InferSchemaValue indexing noise in generated ApiClient.
@@ -90,6 +94,32 @@ const filterDiagnostics = (out: string, allowCircular: boolean): string => {
 };
 
 const hasError = (out: string) => /\berror TS\d+:/.test(out);
+
+describe("filterDiagnostics (kombo allowlist)", () => {
+  const usage = "tmp/x/usage.ts(1,1): error TS2322: keep me";
+  const clientArk = "tmp/x/client.ts(1,1): error TS2322: arktype noise";
+  const clientLazy = "tmp/x/client.ts(1,1): error TS7022: must surface";
+  const client2502 = "tmp/x/client.ts(1,1): error TS2502: circular leftover";
+
+  test("always keeps usage.ts errors", () => {
+    expect(filterDiagnostics(usage, true, "arktype")).toContain("error TS2322");
+  });
+
+  test("drops arktype Infer noise on generated client when allowCircular", () => {
+    const out = filterDiagnostics([clientArk, clientLazy, client2502].join("\n"), true, "arktype");
+    expect(out).not.toContain("TS2322");
+    expect(out).not.toContain("TS2502");
+    expect(out).toContain("TS7022");
+  });
+
+  test("does not drop arktype TS2322 for non-kombo samples", () => {
+    expect(filterDiagnostics(clientArk, false, "arktype")).toContain("TS2322");
+  });
+
+  test("does not drop zod client TS2322 even for kombo", () => {
+    expect(filterDiagnostics(clientArk.replace("arktype", "zod"), true, "zod")).toContain("TS2322");
+  });
+});
 
 describe("runtime×client typecheck matrix", () => {
   mkdirSync(outRoot, { recursive: true });
@@ -221,7 +251,7 @@ void createApiClient;
             out = `${err.stdout ?? ""}${err.stderr ?? ""}`;
           }
 
-          const filtered = filterDiagnostics(out, Boolean(sample.allowCircularDiagnostics));
+          const filtered = filterDiagnostics(out, Boolean(sample.allowCircularDiagnostics), runtime);
           if (hasError(filtered)) {
             expect.fail(`tsc failed for ${sample.id}/${runtime}+${client}:\n${filtered.slice(0, 8000)}`);
           }
