@@ -182,10 +182,8 @@ export const valibotAdapter: RuntimeAdapter = {
     let body = emitNode(node, childCtx);
     if (ctx.recursiveNames.has(name)) {
       body = `v.lazy(() => ${body})`;
-      if (!isNullOr(node)) {
-        const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
-        return `${typeDecl}\nexport const ${name}: v.GenericSchema<${name}> = ${body};`;
-      }
+      const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
+      return `${typeDecl}\nexport const ${name}: v.GenericSchema<${name}> = ${body};`;
     }
     return `export type ${name} = v.InferOutput<typeof ${name}>;\nexport const ${name} = ${body};`;
   },

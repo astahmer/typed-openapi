@@ -199,11 +199,10 @@ export const zodAdapter: RuntimeAdapter = {
     let body = emitNode(node, childCtx);
     if (ctx.recursiveNames.has(name)) {
       body = `z.lazy(() => ${body})`;
-      // Explicit TS type + ZodType annotation — avoids circular infer `any` (TS7022/7024).
-      if (!isNullOr(node)) {
-        const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
-        return `${typeDecl}\nexport const ${name}: z.ZodType<${name}> = ${body};`;
-      }
+      // Explicit TS type + ZodType annotation — avoids circular infer `any` (TS7022/7024),
+      // including nullable recursive schemas.
+      const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
+      return `${typeDecl}\nexport const ${name}: z.ZodType<${name}> = ${body};`;
     }
     return `export type ${name} = z.infer<typeof ${name}>;\nexport const ${name} = ${body};`;
   },

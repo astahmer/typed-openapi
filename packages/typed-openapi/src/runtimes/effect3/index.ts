@@ -241,10 +241,15 @@ export const effect3Adapter: RuntimeAdapter = {
     let body = emitNode(nullInner ?? node, childCtx);
     if (ctx.recursiveNames.has(name)) {
       body = `${S}.suspend(() => ${body})`;
-      if (!nullInner) {
-        const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx, { readonlyArrays: true });
-        return `${typeDecl}\nexport const ${name}: ${S}.Schema<${name}> = ${body};`;
+      if (nullInner) {
+        const typeDecl = emitExplicitSchemaTypeDecl(name, nullInner, ctx, { readonlyArrays: true });
+        const widened = typeDecl
+          .replace(`export type ${name} = `, `export type ${name}Core = `)
+          .replace(`export interface ${name} `, `export interface ${name}Core `);
+        return `${widened}\nexport type ${name} = ${name}Core | null;\nexport const ${name}: ${S}.Schema<${name}Core> = ${body};`;
       }
+      const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx, { readonlyArrays: true });
+      return `${typeDecl}\nexport const ${name}: ${S}.Schema<${name}> = ${body};`;
     }
     const typeExpr = nullInner ? `S.Schema.Type<typeof ${name}> | null` : `S.Schema.Type<typeof ${name}>`;
     return `export const ${name} = ${body};\nexport type ${name} = ${typeExpr};`;
