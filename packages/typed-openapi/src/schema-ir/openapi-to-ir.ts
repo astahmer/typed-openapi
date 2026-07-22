@@ -85,6 +85,9 @@ const withNullable = (node: SchemaNode, schema: LibSchemaObject): SchemaNode => 
   return node;
 };
 
+const isLiteralEnumValue = (value: unknown): value is string | number | boolean | null =>
+  value === null || typeof value === "string" || typeof value === "number" || typeof value === "boolean";
+
 const literalFromEnumValue = (value: unknown): SchemaNode => {
   if (value === null) return { kind: "null", meta: emptyMeta() };
   if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
@@ -113,6 +116,15 @@ const literalFromEnumValue = (value: unknown): SchemaNode => {
     };
   }
   return { kind: "unknown", meta: emptyMeta() };
+};
+
+/** Primitive enums stay `kind: "enum"`; object/array members become a union of literals. */
+const enumToIr = (values: unknown[], meta: SchemaMeta): SchemaNode => {
+  if (values.length === 1) return literalFromEnumValue(values[0]);
+  if (values.every(isLiteralEnumValue)) {
+    return { kind: "enum", values: values as Array<string | number | boolean | null>, meta };
+  }
+  return { kind: "union", members: values.map(literalFromEnumValue), meta };
 };
 
 export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): SchemaNode => {
@@ -218,20 +230,7 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
 
   if (schemaType && isPrimitiveType(schemaType)) {
     if (schema.enum) {
-      if (schema.enum.length === 1) {
-        return withNullable(literalFromEnumValue(schema.enum[0]), schema);
-      }
-      // Preserve literal value types — never String() numbers into a string enum.
-      return withNullable(
-        {
-          kind: "enum",
-          values: schema.enum.map((v: unknown) =>
-            v === null || typeof v === "string" || typeof v === "number" || typeof v === "boolean" ? v : null,
-          ),
-          meta,
-        },
-        schema,
-      );
+      return withNullable(enumToIr(schema.enum, meta), schema);
     }
 
     if (schemaType === "string") {
@@ -261,16 +260,7 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
   }
 
   if (!schemaType && schema.enum) {
-    return withNullable(
-      {
-        kind: "enum",
-        values: schema.enum.map((v: unknown) =>
-          v === null || typeof v === "string" || typeof v === "number" || typeof v === "boolean" ? v : null,
-        ),
-        meta,
-      },
-      schema,
-    );
+    return withNullable(enumToIr(schema.enum, meta), schema);
   }
 
   if (schemaType === "array") {
