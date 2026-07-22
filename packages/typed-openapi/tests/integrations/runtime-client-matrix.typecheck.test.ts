@@ -79,28 +79,24 @@ export const filterDiagnostics = (out: string, allowCircular: boolean, runtime?:
 const hasError = (out: string) => /\berror TS\d+:/.test(out);
 
 describe("filterDiagnostics (kombo allowlist)", () => {
-  const usage = "tmp/x/usage.ts(1,1): error TS2322: keep me";
-  const clientArk = "tmp/x/client.ts(1,1): error TS2322: arktype noise";
-  const clientLazy = "tmp/x/client.ts(1,1): error TS7022: must surface";
+  const usage = "tmp/x/usage.ts(1,1): error TS2502: keep me";
   const client2502 = "tmp/x/client.ts(1,1): error TS2502: circular leftover";
+  const clientLazy = "tmp/x/client.ts(1,1): error TS7022: must surface";
+  const clientArk = "tmp/x/client.ts(1,1): error TS2322: arktype must surface now";
 
   test("always keeps usage.ts errors", () => {
-    expect(filterDiagnostics(usage, true, "arktype")).toContain("error TS2322");
+    expect(filterDiagnostics(usage, true, "arktype")).toContain("error TS2502");
   });
 
-  test("drops arktype Infer noise on generated client when allowCircular", () => {
+  test("drops TS2502 on generated client when allowCircular; keeps arktype TS2322", () => {
     const out = filterDiagnostics([clientArk, clientLazy, client2502].join("\n"), true, "arktype");
-    expect(out).not.toContain("TS2322");
+    expect(out).toContain("TS2322");
     expect(out).not.toContain("TS2502");
     expect(out).toContain("TS7022");
   });
 
-  test("does not drop arktype TS2322 for non-kombo samples", () => {
-    expect(filterDiagnostics(clientArk, false, "arktype")).toContain("TS2322");
-  });
-
-  test("does not drop zod client TS2322 even for kombo", () => {
-    expect(filterDiagnostics(clientArk.replace("arktype", "zod"), true, "zod")).toContain("TS2322");
+  test("does not drop client errors for non-kombo samples", () => {
+    expect(filterDiagnostics(client2502, false, "arktype")).toContain("TS2502");
   });
 });
 

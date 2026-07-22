@@ -96,22 +96,23 @@ describe("apiKey missing in (C006)", () => {
 });
 
 describe("shared typecheck filters (C011)", () => {
-  test("kombo arktype drops TS2322 but keeps TS7022", () => {
-    const out = filterTypecheckDiagnostics(["a.ts(1,1): error TS2322: x", "a.ts(2,1): error TS7022: y"].join("\n"), {
-      allowCircular: true,
-      runtime: "arktype",
-    });
-    expect(out).not.toContain("TS2322");
+  test("kombo drops TS2502 but keeps TS7022 and arktype TS2322", () => {
+    const out = filterTypecheckDiagnostics(
+      ["a.ts(1,1): error TS2322: x", "a.ts(2,1): error TS7022: y", "a.ts(3,1): error TS2502: z"].join("\n"),
+      { allowCircular: true, runtime: "arktype" },
+    );
+    expect(out).toContain("TS2322");
     expect(out).toContain("TS7022");
+    expect(out).not.toContain("TS2502");
   });
 
   test("alwaysKeepPathSubstring wins over allowlist", () => {
-    const out = filterTypecheckDiagnostics("tmp/usage.ts(1,1): error TS2322: keep", {
+    const out = filterTypecheckDiagnostics("tmp/usage.ts(1,1): error TS2502: keep", {
       allowCircular: true,
       runtime: "arktype",
       alwaysKeepPathSubstring: "/usage.ts(",
     });
-    expect(out).toContain("TS2322");
+    expect(out).toContain("TS2502");
   });
 });
 

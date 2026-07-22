@@ -20,8 +20,9 @@ const emitStringDef = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitC
   if (c.format === "uri" || c.format === "url") return quote("string.url");
   if (c.format === "date-time") return quote("string.date");
   // Patterns handled in emitNode via .narrow() — avoid `/[...]/` string-def pitfalls.
+  // Both bounds: `0 <= string <= 30` (ArkType rejects `string >= 0 <= 30` — one right bound max).
   if (c.minLength !== undefined && c.maxLength !== undefined) {
-    return quote(`string >= ${c.minLength} <= ${c.maxLength}`);
+    return quote(`${c.minLength} <= string <= ${c.maxLength}`);
   }
   if (c.minLength !== undefined) return quote(`string >= ${c.minLength}`);
   if (c.maxLength !== undefined) return quote(`string <= ${c.maxLength}`);
@@ -88,8 +89,12 @@ const isModuleStringDef = (expr: string): boolean =>
 
 const unquote = (expr: string): string => expr.slice(1, -1);
 
-/** Ensure expr is an ArkType Type (has .or / .array), wrapping raw `{...}` module literals. */
-const asTypeExpr = (expr: string): string => (expr.trimStart().startsWith("{") ? `type(${expr})` : expr);
+/** Ensure expr is an ArkType Type (has .or / .array), wrapping raw `{...}` / `[...]` module literals. */
+const asTypeExpr = (expr: string): string => {
+  const trimmed = expr.trimStart();
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) return `type(${expr})`;
+  return expr;
+};
 
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
