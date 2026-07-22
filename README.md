@@ -49,7 +49,7 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 
 The generated client is a single file that can be used in the browser or in node. Runtime schemas are emitted by
 typed-openapi's own Schema IR + runtime adapters (no Sinclair codegen). Use `--validation loose|formats|strict` to
-control how deep OpenAPI constraints (`format`, `minLength`, …) are applied. Install the chosen runtime as a peer
+control how deep OpenAPI constraints (`format`, `minLength`, …) are applied. Install the chosen runtime as a
 dependency in your app.
 
 With `--runtime effect` / `effect3`, the default API client is Effect-native (`--client effect`); other runtimes default
