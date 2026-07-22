@@ -1,54 +1,14 @@
-import { mkdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 import { describe, test } from "vitest";
 import { attest } from "@ark/attest";
-import SwaggerParser from "@apidevtools/swagger-parser";
-import type { OpenAPIObject } from "openapi3-ts/oas31";
-import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
-import { generateFile, type OutputRuntime } from "../src/generator.ts";
 
 /**
  * Attest type snapshots for generated clients (filter-fixture /pets).
+ * Fixtures: vitest globalSetup → scripts/gen-attest-fixtures.ts
  * Run: ATTEST_skipTypes=0 pnpm test:types:attest
  * Update: ATTEST_updateSnapshots=1 ATTEST_skipTypes=0 pnpm test:types:attest
  *
  * Uses `import type` only — typia createIs needs a transformer at runtime.
  */
-
-const runtimes: OutputRuntime[] = [
-  "none",
-  "zod",
-  "zod3",
-  "effect",
-  "effect3",
-  "valibot",
-  "arktype",
-  "typebox",
-  "typia",
-];
-
-const fixturePath = join(__dirname, "samples/filter-fixture.openapi.yaml");
-const outRoot = join(__dirname, "../tmp/attest-generated");
-
-const doc = (await SwaggerParser.parse(fixturePath)) as OpenAPIObject;
-const ctx = mapOpenApiEndpoints(doc);
-mkdirSync(outRoot, { recursive: true });
-for (const runtime of runtimes) {
-  for (const client of ["promise", "effect"] as const) {
-    const dir = join(outRoot, `${runtime}-${client}`);
-    mkdirSync(dir, { recursive: true });
-    writeFileSync(
-      join(dir, "client.ts"),
-      generateFile({
-        ...ctx,
-        runtime,
-        client,
-        includeClient: true,
-        endpointPatterns: ["/pets"],
-      }),
-    );
-  }
-}
 
 describe("attest generated client types", () => {
   test("none Pet", () => {
