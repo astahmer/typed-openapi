@@ -60,6 +60,10 @@ export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> &
     transformBigInt?: boolean;
     /** Import path for a generated `.d.ts` sidecar used to type runtime validators. */
     runtimeTypeDeclarations?: string;
+    /** Benchmark-only runtime value annotation used with `runtimeTypeDeclarations`. */
+    runtimeTypeStrategy?: "raw" | "any" | "cast";
+    /** Benchmark-only pragma that skips type-checking the generated runtime implementation. */
+    runtimeNoCheck?: boolean;
   };
 type GeneratorContext = Required<
   Omit<
@@ -78,6 +82,8 @@ type GeneratorContext = Required<
     | "transformDates"
     | "transformBigInt"
     | "runtimeTypeDeclarations"
+    | "runtimeTypeStrategy"
+    | "runtimeNoCheck"
   >
 > & {
   validation: ValidationPolicy;
@@ -89,6 +95,8 @@ type GeneratorContext = Required<
   transformDates: boolean;
   transformBigInt: boolean;
   usesRuntimeTypeDeclarations: boolean;
+  runtimeTypeStrategy: "raw" | "any" | "cast";
+  runtimeNoCheck: boolean;
 };
 
 export const allowedRuntimes = type(
@@ -195,6 +203,8 @@ const createGeneratorContext = (options: GeneratorOptions): GeneratorContext => 
     transformDates: options.transformDates ?? false,
     transformBigInt: options.transformBigInt ?? false,
     usesRuntimeTypeDeclarations: Boolean(options.runtimeTypeDeclarations),
+    runtimeTypeStrategy: options.runtimeTypeStrategy ?? "raw",
+    runtimeNoCheck: options.runtimeNoCheck ?? false,
   } as GeneratorContext;
 };
 
@@ -228,11 +238,12 @@ export const generateFile = (options: GeneratorOptions) => {
       transformDates: ctx.transformDates,
       transformBigInt: ctx.transformBigInt,
       ...(options.runtimeTypeDeclarations ? { typeNamespace: "__TypedOpenapiTypes" } : {}),
+      ...(options.runtimeTypeDeclarations ? { runtimeTypeStrategy: ctx.runtimeTypeStrategy } : {}),
       ...(ctx.keptSchemaNames ? { keptSchemaNames: ctx.keptSchemaNames } : {}),
       ...(ctx.namedSchemasForEmit ? { namedSchemas: ctx.namedSchemasForEmit } : {}),
     });
 
-    return `${options.runtimeTypeDeclarations ? "// @ts-nocheck\n" : ""}${
+    return `${ctx.runtimeNoCheck ? "// @ts-nocheck\n" : ""}${
       options.runtimeTypeDeclarations
         ? `import type * as __TypedOpenapiTypes from ${JSON.stringify(options.runtimeTypeDeclarations)};\n`
         : ""

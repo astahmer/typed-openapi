@@ -25,6 +25,8 @@ export type EmitRuntimeFileArgs = {
   transformBigInt?: boolean;
   /** Namespace imported from the generated declaration sidecar. */
   typeNamespace?: string;
+  /** Benchmark-only sidecar value annotation strategy. */
+  runtimeTypeStrategy?: "raw" | "any" | "cast";
 };
 
 const coerceParamKeys = new Set(["query", "path", "header", "cookie"]);
@@ -70,7 +72,12 @@ const emitParameters = (
     if (node.kind === "object" && node.partial) {
       expr = wrapOptionalParamGroup(adapter, expr);
     }
-    if (typeReference) expr = `(${expr}) as any`;
+    if (typeReference && ctx.runtimeTypeStrategy !== "raw") {
+      expr =
+        ctx.runtimeTypeStrategy === "cast"
+          ? adapter.annotateSchema(expr, `${typeReference}[${JSON.stringify(key)}]`)
+          : `(${expr}) as any`;
+    }
     parts.push(`${key}: ${expr}`);
   }
 
@@ -86,7 +93,11 @@ const emitResponses = (
   if (!responses) return `{ }`;
   const parts = Object.entries(responses).map(([status, node]) => {
     const expr = adapter.emitNode(node, ctx);
-    const typedExpr = typeReference ? `(${expr}) as any` : expr;
+    const typedExpr = typeReference && ctx.runtimeTypeStrategy !== "raw"
+      ? ctx.runtimeTypeStrategy === "cast"
+        ? adapter.annotateSchema(expr, `${typeReference}[${JSON.stringify(status)}]`)
+        : `(${expr}) as any`
+      : expr;
     return `${wrapWithQuotesIfNeeded(status)}: ${typedExpr}`;
   });
   return `{ ${parts.join(", ")} }`;
@@ -101,7 +112,11 @@ const emitResponseHeaders = (
   if (!headers) return "";
   const parts = Object.entries(headers).map(([status, node]) => {
     const expr = adapter.emitNode(node, ctx);
-    const typedExpr = typeReference ? `(${expr}) as any` : expr;
+    const typedExpr = typeReference && ctx.runtimeTypeStrategy !== "raw"
+      ? ctx.runtimeTypeStrategy === "cast"
+        ? adapter.annotateSchema(expr, `${typeReference}[${JSON.stringify(status.toLowerCase())}]`)
+        : `(${expr}) as any`
+      : expr;
     return `${wrapWithQuotesIfNeeded(status.toLowerCase())}: ${typedExpr}`;
   });
   return `responseHeaders: { ${parts.join(", ")} },`;
@@ -119,6 +134,7 @@ export const emitRuntimeFile = ({
   transformDates = false,
   transformBigInt = false,
   typeNamespace,
+  runtimeTypeStrategy,
 }: EmitRuntimeFileArgs): string => {
   const namedSchemas =
     namedSchemasOption ??
@@ -132,6 +148,7 @@ export const emitRuntimeFile = ({
   const ctx = createEmitCtx(validation, recursiveNames, {
     transformDates,
     transformBigInt,
+    ...(runtimeTypeStrategy ? { runtimeTypeStrategy } : {}),
   });
 
   let schemasBlock = `// <Schemas>\n`;
@@ -179,7 +196,9 @@ export const emitRuntimeFile = ({
       );
 
       endpointsBlock += typeNamespace
-        ? `export type ${endpoint.meta.alias} = ${endpointType};\nexport const ${endpoint.meta.alias}: any = {\n`
+        ? ctx.runtimeTypeStrategy === "raw"
+          ? `export type ${endpoint.meta.alias} = ${endpointType};\nexport const ${endpoint.meta.alias} = {\n`
+          : `export type ${endpoint.meta.alias} = ${endpointType};\nexport const ${endpoint.meta.alias}: any = {\n`
         : `export type ${endpoint.meta.alias} = typeof ${endpoint.meta.alias};\nexport const ${endpoint.meta.alias} = {\n`;
       endpointsBlock += `  method: ${adapter.literalString(endpoint.method.toUpperCase())},\n`;
       endpointsBlock += `  path: ${adapter.literalString(endpoint.path)},\n`;

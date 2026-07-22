@@ -48,6 +48,8 @@ export type EmitCtx = {
   transformDates?: boolean;
   /** Map int64 number schemas to bigint (runtime transform + TS types). */
   transformBigInt?: boolean;
+  /** Benchmark-only sidecar value annotation strategy. */
+  runtimeTypeStrategy?: "raw" | "any" | "cast";
   /**
    * Mutable registry of reusable defaulted schemas shared for one file emit.
    * Keyed by `${kind}:${baseExpr}:${defaultLit}`.
@@ -96,6 +98,7 @@ export const createEmitCtx = (
     coercePrimitives?: boolean;
     transformDates?: boolean;
     transformBigInt?: boolean;
+    runtimeTypeStrategy?: "raw" | "any" | "cast";
   },
 ): EmitCtx => ({
   validation,
@@ -105,4 +108,5 @@ export const createEmitCtx = (
   ...(options?.coercePrimitives ? { coercePrimitives: true } : {}),
   ...(options?.transformDates ? { transformDates: true } : {}),
   ...(options?.transformBigInt ? { transformBigInt: true } : {}),
+  ...(options?.runtimeTypeStrategy ? { runtimeTypeStrategy: options.runtimeTypeStrategy } : {}),
 });
