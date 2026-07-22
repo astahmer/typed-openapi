@@ -413,13 +413,9 @@ export const emitExplicitSchemaTypeDecl = (
     prefixRefsWithSchemas: false,
     transformDates: ctx.transformDates,
     transformBigInt: ctx.transformBigInt,
+    readonlyArrays: options?.readonlyArrays,
   });
-  let decl = canEmitAsInterface(node)
+  return canEmitAsInterface(node)
     ? emitNamedInterface(name, node, irOpts)
     : `export type ${name} = ${irToTs(node, irOpts)}`;
-  // Effect `Schema.Array` is readonly — annotate with ReadonlyArray to satisfy Schema.Schema<T>.
-  if (options?.readonlyArrays) {
-    decl = decl.replace(/\bArray</g, "ReadonlyArray<");
-  }
-  return decl;
 };

@@ -10,6 +10,8 @@ export type IrToTsOptions = {
   transformDates?: boolean;
   /** Map `format: int64` integers to `bigint` */
   transformBigInt?: boolean;
+  /** Emit `ReadonlyArray<…>` instead of `Array<…>` (Effect Schema compatibility). */
+  readonlyArrays?: boolean;
 };
 
 /** Build IrToTsOptions without assigning explicit `undefined` (exactOptionalPropertyTypes). */
@@ -19,12 +21,14 @@ export const buildIrToTsOptions = (
     jsdoc?: boolean;
     transformDates?: boolean | undefined;
     transformBigInt?: boolean | undefined;
+    readonlyArrays?: boolean | undefined;
   } = {},
 ): IrToTsOptions => ({
   ...(options.prefixRefsWithSchemas !== undefined ? { prefixRefsWithSchemas: options.prefixRefsWithSchemas } : {}),
   ...(options.jsdoc !== undefined ? { jsdoc: options.jsdoc } : {}),
   ...(options.transformDates !== undefined ? { transformDates: options.transformDates } : {}),
   ...(options.transformBigInt !== undefined ? { transformBigInt: options.transformBigInt } : {}),
+  ...(options.readonlyArrays !== undefined ? { readonlyArrays: options.readonlyArrays } : {}),
 });
 
 const escapeCommentText = (text: string) => text.replace(/\*\//g, "*\\/");
@@ -81,10 +85,17 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
     case "enum":
       return `(${node.values.map(literalToTs).join(" | ")})`;
     case "array":
-      return `Array<${irToTs(node.items, options)}>`;
+      return options?.readonlyArrays
+        ? `ReadonlyArray<${irToTs(node.items, options)}>`
+        : `Array<${irToTs(node.items, options)}>`;
     case "tuple": {
       const head = node.items.map((item) => irToTs(item, options)).join(", ");
-      if (node.rest) return `[${head}, ...Array<${irToTs(node.rest, options)}>]`;
+      if (node.rest) {
+        const rest = options?.readonlyArrays
+          ? `ReadonlyArray<${irToTs(node.rest, options)}>`
+          : `Array<${irToTs(node.rest, options)}>`;
+        return `[${head}, ...${rest}]`;
+      }
       return `[${head}]`;
     }
     case "union":
