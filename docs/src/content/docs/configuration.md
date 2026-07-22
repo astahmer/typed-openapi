@@ -38,8 +38,10 @@ Treat the OpenAPI file, config, and generated TypeScript as one reviewed change.
 CLI flags win over config values. Keep the shared config checked in, then narrow a temporary build without copying it.
 
 ```sh
-pnpm exec typed-openapi --endpoint '^GET /public' --output src/api/public.ts
+pnpm exec typed-openapi --endpoint '^/public(?:/|$)' --output src/api/public.ts
 ```
+
+For a checked-in, domain-specific client, use `endpointPatterns` in the config. See [filter endpoints and schemas](/advanced/filtering-and-schema-naming/) for a complete catalog-client example.
 
 ## JSON is supported too
 

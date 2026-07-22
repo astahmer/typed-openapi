@@ -2,10 +2,26 @@
 title: Effect-native client
 description: Generate methods that return Effect with a typed error channel.
 sidebar:
-  order: 3
+  order: 2
 ---
 
-Choose the Effect client when your app already uses Effect for retries, dependencies, tracing, or error handling.
+Choose the Effect client when your application already uses Effect for retries, dependencies, tracing, or error handling. Operations stay in `Effect`; no Promise boundary is introduced until you decide to run one.
+
+Keep that choice in config so every regeneration uses the same client style:
+
+```ts
+import { defineConfig } from "typed-openapi";
+
+export default defineConfig({
+  input: "./openapi.yaml",
+  output: "./src/api/openapi.ts",
+  runtime: "effect",
+  client: "effect",
+  defaultFetcher: "api.client.ts",
+});
+```
+
+Or make the same client from the command line:
 
 ```sh
 pnpm add effect

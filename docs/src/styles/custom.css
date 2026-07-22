@@ -98,6 +98,12 @@ body .sl-markdown-content h2 code {
   max-width: 1080px;
 }
 
+@media (min-width: 801px) {
+  .home-grid--three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .home-card {
   padding: 1.15rem 1.25rem;
   border: 1px solid var(--border);

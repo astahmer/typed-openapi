@@ -33,7 +33,7 @@ export default defineConfig({
       sidebar: [
         {
           label: "Start here",
-          items: ["getting-started", "configuration", "playground", "ai"],
+          items: ["getting-started", "configuration", "advanced/filtering-and-schema-naming", "playground", "ai"],
         },
         {
           label: "Clients",
@@ -49,7 +49,7 @@ export default defineConfig({
         },
         {
           label: "Advanced generation",
-          items: [{ autogenerate: { directory: "advanced" } }],
+          items: ["advanced/output-shape", "advanced/openapi-support", "advanced/library-api"],
         },
         {
           label: "Reference",

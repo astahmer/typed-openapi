@@ -5,7 +5,22 @@ sidebar:
   order: 1
 ---
 
-Generate a TanStack Query companion file beside your API client:
+Use this when React Query owns your server-state cache. The generated companion gives every operation a typed query key and fetch function, so components do not recreate either by hand.
+
+Keep the three generated files together in config:
+
+```ts
+import { defineConfig } from "typed-openapi";
+
+export default defineConfig({
+  input: "./openapi.yaml",
+  output: "./src/api/openapi.ts",
+  defaultFetcher: "api.client.ts",
+  tanstack: "query.ts",
+});
+```
+
+Or generate the companion from the command line:
 
 ```sh
 pnpm add @tanstack/react-query

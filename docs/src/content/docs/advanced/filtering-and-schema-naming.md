@@ -1,41 +1,88 @@
 ---
 title: Filter endpoints and schemas
-description: Generate a focused client from a large specification without keeping unrelated schemas.
+description: Generate a small client for one API domain and keep only the schemas it needs.
 sidebar:
-  label: Filters & naming
+  label: Filter your client
   order: 1
 ---
 
-Use repeatable `--endpoint` patterns to include only operations that match their method, path, operation ID, alias, or tags.
+One large OpenAPI document does not need to produce one large client. Generate a client per product area—catalog, billing, or internal admin—and import only the one your app owns.
 
-Start broad and inspect the generated diff before tightening a pattern. Each repeated flag is an additional inclusion rule, so the example below keeps the union of public `GET` operations and catalog-tagged operations.
+## Make a focused client from config
 
-```sh
-# Keep public GET operations and any operation tagged `catalog`.
-pnpm exec typed-openapi openapi.yaml \
-  --endpoint '^GET /public' \
-  --endpoint 'catalog' \
-  --output src/api/public.ts
+Put the selection in `typed-openapi.config.ts`, not in a one-off command. This example emits a catalog-only client, its fetcher, and TanStack Query companion:
+
+```ts
+import { defineConfig } from "typed-openapi";
+
+export default defineConfig({
+  input: "./openapi.yaml",
+  output: "./src/api/catalog.ts",
+  defaultFetcher: "catalog.client.ts",
+  tanstack: "catalog.query.ts",
+  endpointPatterns: [
+    "^/catalog(?:/|$)",
+    "^/search$",
+  ],
+  format: true,
+});
 ```
 
-When endpoint filtering is active, unused component schemas are removed by default. Keep a schema that is only needed by your application code with `--schema`.
+Run the same command every time the specification changes:
+
+```sh
+pnpm exec typed-openapi
+```
+
+With endpoint filtering enabled, component schemas not reachable from those operations are removed automatically. The generated `catalog.ts` contains only matching endpoints and the types they need.
+
+## Write patterns that match what the generator sees
+
+Each regular expression is tested independently against an operation's method (`get`), path, operation ID, generated alias, and tags. Repeated patterns are **OR** rules. A path pattern is usually the clearest way to split a client:
+
+```sh
+# Keep everything under /catalog and every operation tagged `search`.
+pnpm exec typed-openapi openapi.yaml \
+  --endpoint '^/catalog(?:/|$)' \
+  --endpoint '^search$' \
+  --output src/api/catalog.ts
+```
+
+Do not write `^GET /catalog`: method and path are separate match targets, so that expression matches neither. If you need an exact method-and-path rule, use the library API's `filterEndpoints` callback; config files support the portable pattern-based split shown above.
+
+## Keep an extra shared schema
+
+`schemaPatterns` adds schemas that are not reachable from the selected endpoints—for example, a pagination type imported elsewhere in your app:
+
+```ts
+export default defineConfig({
+  input: "./openapi.yaml",
+  output: "./src/api/catalog.ts",
+  endpointPatterns: ["^/catalog(?:/|$)"],
+  schemaPatterns: ["^Pagination$", "^SortDirection$"],
+});
+```
+
+The CLI equivalent is `--schema`. It is an allowlist addition, not an endpoint filter:
 
 ```sh
 pnpm exec typed-openapi openapi.yaml \
-  --endpoint '^GET /pets' \
+  --endpoint '^/catalog(?:/|$)' \
   --schema 'PetSearchFilters|Pagination' \
-  --output src/api/pets.ts
+  --output src/api/catalog.ts
 ```
 
 ## Control schema tree-shaking
 
 ```sh
 # Keep all components even when an endpoint filter is set.
-pnpm exec typed-openapi openapi.yaml --endpoint '^GET /pets' --no-tree-shake-schemas
+pnpm exec typed-openapi openapi.yaml --endpoint '^/catalog' --no-tree-shake-schemas
 
 # Explicitly remove unreferenced components.
 pnpm exec typed-openapi openapi.yaml --tree-shake-schemas
 ```
+
+Keep tree-shaking on for application clients. Turn it off only when consumers rely on arbitrary component schemas that are not referenced by the selected operations.
 
 ## Choose a naming strategy
 

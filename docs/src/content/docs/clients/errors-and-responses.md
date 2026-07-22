@@ -3,7 +3,7 @@ title: Errors and response modes
 description: Choose throwing calls or a discriminated response union with typed error bodies.
 sidebar:
   label: Errors & responses
-  order: 2
+  order: 3
 ---
 
 By default, a successful call returns its response data. A configured error status throws a `TypedStatusError` containing the parsed, status-specific body.
