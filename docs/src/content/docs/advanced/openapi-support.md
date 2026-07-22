@@ -2,6 +2,7 @@
 title: OpenAPI details that matter
 description: Handle external refs, response formats, default values, multiple success responses, and recursive schemas.
 sidebar:
+  label: OpenAPI edge cases
   order: 3
 ---
 
@@ -18,6 +19,8 @@ openapi/
 ```sh
 pnpm exec typed-openapi ./openapi/main.yaml --output src/api/openapi.ts
 ```
+
+Run the command from a consistent working directory in CI. Relative `$ref` values resolve from the root document, not from the generated output path.
 
 ## Handle multiple success responses
 
@@ -56,3 +59,7 @@ The generated default fetcher also accepts `Blob`, `ArrayBuffer`, `Uint8Array`, 
 - Recursive component schemas use each adapter’s lazy/suspend strategy.
 - Inline request objects omit `readOnly` fields; inline response objects omit `writeOnly` fields.
 - Named `$ref` schemas stay shared across endpoint contexts.
+
+:::note[When the spec is ambiguous]
+Generation preserves the declared OpenAPI contract. If an endpoint omits a response schema or uses an overly broad `object`, improve the specification first; no generator can recover type detail that is not present in the input.
+:::

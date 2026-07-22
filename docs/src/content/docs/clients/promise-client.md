@@ -2,10 +2,13 @@
 title: Promise client and generated fetcher
 description: Call endpoints with type inference, or bring your own fetch implementation.
 sidebar:
+  label: Promise client
   order: 1
 ---
 
 The default client type is `promise`. It is intentionally headless: generation describes endpoints, while a fetcher decides how your app sends HTTP requests.
+
+Choose this client for ordinary `async`/`await` code. It does not force React, a runtime schema library, or a particular HTTP package into your application.
 
 ## Use the generated Fetch client
 
@@ -31,6 +34,8 @@ const created = await api.post("/pet", {
   body: { id: 7, name: "Mochi", status: "available" },
 });
 ```
+
+Every path, query, header, cookie, body, success response, and declared error body is inferred from the selected OpenAPI operation. The path string is checked too, so a typo does not silently turn into an untyped request.
 
 ## Use the generic request method
 
@@ -64,6 +69,10 @@ export const api = createApiClient({ fetch: fetcher }, "https://api.example.com"
 ```
 
 For a complete Fetch implementation—including body encoding, cookies, and SSE support—prefer `--default-fetcher` and edit the generated file.
+
+## Keep transport policy in one place
+
+The generated Fetch client is the right place for a base URL and OpenAPI-driven authentication. Keep cross-cutting policy—retry, tracing, correlation IDs, or a custom `fetch` implementation—inside the fetcher rather than repeating it at every operation call. See [bodies, cookies, and auth](/clients/requests-auth-and-bodies/) for the request contract it must preserve.
 
 :::note[Browser and Node]
 The client uses a small `FetcherResponse` contract instead of requiring the DOM `Response` type, so generated types stay usable in Node projects too.

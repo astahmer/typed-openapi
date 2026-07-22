@@ -33,7 +33,7 @@ export default defineConfig({
       sidebar: [
         {
           label: "Start here",
-          items: ["getting-started", "configuration", "playground"],
+          items: ["getting-started", "configuration", "playground", "recipes"],
         },
         {
           label: "Clients",

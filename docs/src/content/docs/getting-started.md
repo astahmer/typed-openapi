@@ -5,16 +5,20 @@ sidebar:
   order: 1
 ---
 
-Install the package, point it at an OpenAPI document, and import the generated file.
+This guide gets a useful client into an application without making you choose a validation library or framework up front. By the end, you will have one generated module, a Fetch client, and a typed request.
+
+## 1. Generate the contract
+
+Install the generator and point it at the root OpenAPI YAML or JSON file:
 
 ```sh
 pnpm add typed-openapi
 pnpm exec typed-openapi ./openapi.yaml --output src/api/client.ts
 ```
 
-The default runtime is `none`: you get TypeScript types and a headless client without a validation-library dependency.
+The default runtime is `none`: you get TypeScript types, endpoint definitions, and a headless client without a validation-library dependency. This is the lowest-cost way to confirm your specification maps cleanly.
 
-## Make a useful first client
+## 2. Add a Fetch transport
 
 Most applications want the generated Fetch client too:
 
@@ -24,7 +28,7 @@ pnpm exec typed-openapi ./openapi.yaml \
   --default-fetcher
 ```
 
-That writes `src/api/client.ts` and a nearby `src/api/api.client.ts` fetcher. Set the API base URL and call an operation using its OpenAPI path.
+That writes `src/api/client.ts` and a nearby `src/api/api.client.ts` fetcher. The generated fetcher owns URL construction, query encoding, request bodies, cookies, and the response contract. Set its API base URL, then call an operation by the documented OpenAPI path template.
 
 ```ts
 import { api } from "./api/api.client";
@@ -37,7 +41,11 @@ const pet = await api.get("/pet/{petId}", {
 console.log(pet.name);
 ```
 
-## Add validation when ready
+:::tip[Keep the generated transport boring]
+Use `--default-fetcher` unless your app already has a mature HTTP layer. It is easier to review generated code than to reimplement multipart bodies, auth headers, cookies, and server-sent events by hand.
+:::
+
+## 3. Add runtime validation at the boundary
 
 Use Zod v4 for a common, batteries-included starting point:
 
@@ -49,12 +57,18 @@ pnpm exec typed-openapi ./openapi.yaml \
   --output src/api/client.ts
 ```
 
-Generated input and output validators run by default. See [runtime selection](/validation/runtimes/) before choosing a different adapter.
+Generated input and output validators run by default. See [runtime selection](/validation/runtimes/) before choosing a different adapter, or [validation controls](/validation/input-output/) to validate only the response side.
 
-## Try it before installing
+## 4. Prove the shape in the playground
 
 [Open the playground with Zod selected](https://typed-openapi-astahmer.vercel.app/?runtime=zod&validation=strict&client=promise&validateSide=both&coerce=true). It starts with a Petstore document; paste your own OpenAPI YAML or JSON into the left editor.
 
 :::note[CLI input can come from config]
 If your project has `typed-openapi.config.ts`, the positional input becomes optional. [Configure a repeatable generation command.](/configuration/)
 :::
+
+## Where to go next
+
+- Need request bodies, headers, cookies, or auth? Read [Bodies, cookies & auth](/clients/requests-auth-and-bodies/).
+- Need predictable non-2xx handling? Read [Errors & responses](/clients/errors-and-responses/).
+- Generating in a team or CI? Start from a [production recipe](/recipes/), then put stable flags in [configuration](/configuration/).

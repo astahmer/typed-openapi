@@ -2,6 +2,7 @@
 title: Request bodies, cookies, and auth
 description: Let the OpenAPI request body and security scheme drive the emitted Fetch behavior.
 sidebar:
+  label: Bodies, cookies & auth
   order: 4
 ---
 
@@ -14,6 +15,8 @@ The generated client tells a fetcher how to encode each operation with `requestF
 | `application/x-www-form-urlencoded` | `form-url` | `URLSearchParams` |
 | `application/octet-stream` | `binary` | raw `Blob`, buffer, bytes, or string |
 | `text/plain` | `text` | `String(body)` |
+
+Use the generated fetcher when possible. A custom fetcher must preserve this `requestFormat` signal; otherwise a type-correct request can still arrive at the server with the wrong body encoding.
 
 ## Post JSON, multipart, and cookies
 
@@ -49,3 +52,7 @@ configureFetcher({
 ```
 
 `mutualTLS` and unknown schemes remain represented in the credentials type but are not applied by the default fetcher; configure those at the transport or platform layer.
+
+:::caution[Configure once, before the first request]
+Call `configureFetcher()` in your application's API bootstrap. Credential keys are generated from the security-scheme names in the OpenAPI document, so changing a scheme name is a compile-time prompt to update this code.
+:::

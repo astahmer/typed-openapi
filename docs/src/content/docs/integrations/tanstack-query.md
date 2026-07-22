@@ -15,6 +15,8 @@ pnpm exec typed-openapi openapi.yaml \
   --tanstack src/api/query.ts
 ```
 
+The generated module is intentionally framework-light: it creates typed query and mutation *options*. You still own your `QueryClient`, hooks, cache policy, and component boundaries.
+
 ## Create a typed query
 
 ```tsx
@@ -25,13 +27,15 @@ import { api } from "../api/api.client";
 const queryApi = new TanstackQueryApiClient(api);
 
 export function Pet({ petId }: { petId: number }) {
-const query = useQuery(
+  const query = useQuery(
     queryApi.get("/pet/{petId}", { path: { petId } }).queryOptions,
   );
 
   return <pre>{JSON.stringify(query.data, null, 2)}</pre>;
 }
 ```
+
+Construct `TanstackQueryApiClient` once per API client instance. The endpoint call returns a stable options object; pass that object to `useQuery`, server prefetching, or `ensureQueryData` instead of hand-writing keys and fetch functions.
 
 The same generated call exposes `suspenseQueryOptions` for Suspense-based routes and works with `fetchQuery()` or `ensureQueryData()` outside React.
 
@@ -91,3 +95,7 @@ const key = queryKeyFactory.endpoint("/pet/findByStatus", {
 ```
 
 Effect-native clients work here too: the generated wrapper executes their operations with `Effect.runPromise`.
+
+:::tip[Invalidate the endpoint shape, not a guessed string]
+Use `invalidateEndpoint()` or `queryKeyFactory` after a mutation. They encode the same path and parameter shape as the query, which prevents cache misses caused by manually assembled keys.
+:::

@@ -7,6 +7,8 @@ sidebar:
 
 Without `--runtime`, typed-openapi emits TypeScript types and a client only. Add one runtime adapter when generated schemas should validate input or output at runtime.
 
+Pick the library already present in your application. The OpenAPI mapping and client API stay the same; only the emitted schema expressions and their inference source change.
+
 ## Choose an adapter
 
 | Runtime | Install | Generate |
@@ -59,6 +61,13 @@ export type Pet = z.infer<typeof Pet>;
 ```
 
 Use [validation controls](/validation/input-output/) to choose depth, input/output sides, primitive coercion, and domain transforms.
+
+## A practical decision rule
+
+- **No untrusted boundary or server validates already:** start with `none`.
+- **Existing Zod, Valibot, ArkType, TypeBox, or Typia codebase:** use that runtime so generated schemas compose with your own.
+- **Effect application:** use `effect`; it also defaults to the Effect-native client.
+- **Supporting an older ecosystem:** use `zod3` or `effect3` deliberately, then plan a migration separately.
 
 :::tip[Stay consistent]
 Pick the validation library your application already runs. The generated file only needs that chosen runtime as a dependency.

@@ -5,7 +5,7 @@ sidebar:
   order: 2
 ---
 
-Put stable generation settings in `typed-openapi.config.ts`. `defineConfig()` gives editor completion and checks the configuration shape.
+Put stable generation settings in `typed-openapi.config.ts`. `defineConfig()` gives editor completion, checks the configuration shape, and turns a long generation command into a reviewable project contract.
 
 ```ts
 // typed-openapi.config.ts
@@ -31,6 +31,10 @@ Now one short command regenerates every configured output:
 pnpm exec typed-openapi
 ```
 
+:::tip[Commit the config and the generated output]
+Treat the OpenAPI file, config, and generated TypeScript as one reviewed change. That makes API drift visible in a normal pull request instead of at runtime.
+:::
+
 ## Override one setting from CI or a script
 
 CLI flags win over config values. Keep the shared config checked in, then narrow a temporary build without copying it.
@@ -55,6 +59,18 @@ Use JSON when TypeScript configuration is not desirable:
 
 The CLI auto-loads `typed-openapi.config.ts`, `.mts`, `.js`, `.mjs`, `.json`, `.typed-openapi.json`, or `typed-openapi.json` from the current working directory. Pass `--config ./path/to/config.ts` to select another file.
 
+## Use it from a monorepo or CI
+
+Run the command from the package that owns the config, or point to it explicitly. CLI flags still override the checked-in defaults, so the same config can generate a focused client for a one-off job.
+
+```sh
+# Run from the package that owns typed-openapi.config.ts.
+pnpm --dir packages/web exec typed-openapi
+
+# Or keep the current directory and select the config explicitly.
+pnpm exec typed-openapi --config packages/web/typed-openapi.config.ts
+```
+
 ## Fine-tune validation policy
 
 Use a named preset for most projects. A policy object is available when a spec needs a deliberate exception:
@@ -69,6 +85,8 @@ export default defineConfig({
   },
 });
 ```
+
+The `clientPath` is resolved from the generated output. Keep it relative and checked in alongside the main file so imports remain stable when the project moves.
 
 See [validation depth and transforms](/validation/input-output/) for the behavior behind these settings.
 

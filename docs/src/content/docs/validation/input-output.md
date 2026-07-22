@@ -2,10 +2,13 @@
 title: Validation, coercion, and transforms
 description: Control runtime validation depth, input/output boundaries, and generated domain types.
 sidebar:
+  label: Validation & transforms
   order: 2
 ---
 
 These options apply when `--runtime` is not `none`.
+
+Think of these controls as a boundary policy: **depth** decides how strict a schema is, **side** decides where it runs, and **transforms** decide the values application code receives.
 
 ## Choose validation depth
 
@@ -45,6 +48,8 @@ await api.post("/pet", {
   validate: "input",
 });
 ```
+
+For trusted internal calls, `validate: "none"` can be a useful escape hatch. Keep that exception local and documented; a global `validateSide: "none"` removes the runtime boundary for every endpoint.
 
 ## Plug in your own validator call
 
@@ -87,3 +92,7 @@ pnpm exec typed-openapi openapi.yaml \
 ## Defaults and read/write fields
 
 OpenAPI `default` values are emitted in runtime schemas. For inline request objects, `readOnly` properties are removed from input schemas; for inline response objects, `writeOnly` properties are removed from output schemas. Named `$ref` components remain shared so a component’s public shape does not silently differ between endpoints.
+
+:::tip[Default policy for browser apps]
+Start with `strict`, `both`, and coercion enabled. If outgoing values are already validated by your form or transport layer, move to `output` validation rather than disabling runtime checks entirely.
+:::

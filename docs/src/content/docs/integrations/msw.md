@@ -17,6 +17,8 @@ pnpm exec typed-openapi openapi.yaml \
 
 The generated file exports `handlers`, a `get…Mock()` factory for each endpoint, and `mswWorkerOptions`.
 
+Keep generated handlers deterministic in source control. They are the contract baseline; individual tests and stories can layer realistic scenarios on top without forking the full API mock.
+
 ## Start the browser worker
 
 ```ts
@@ -26,6 +28,16 @@ import { handlers, mswWorkerOptions } from "./handlers";
 
 export const worker = setupWorker(...handlers);
 worker.start(mswWorkerOptions);
+```
+
+For Node tests, use the same handlers with `setupServer`:
+
+```ts
+// src/mocks/server.ts
+import { setupServer } from "msw/node";
+import { handlers } from "./handlers";
+
+export const server = setupServer(...handlers);
 ```
 
 ## Override one endpoint in a test
@@ -53,3 +65,7 @@ pnpm exec typed-openapi openapi.yaml --msw --msw-faker
 ```
 
 SSE endpoints get an MSW response with `text/event-stream`; standard responses use `HttpResponse.json()`.
+
+:::tip[Make the base URL match production]
+Set `--msw-base-url` to the API origin your client uses. Generated handlers then catch only intended requests, which is safer than a global wildcard when a page talks to multiple services.
+:::
