@@ -13,31 +13,55 @@ const urlSaver = new UrlSaver();
 const initialInputList = { "petstore.yaml": urlSaver.getValue("input") || petstoreYaml };
 const initialOutputList = { "petstore.client.ts": "" };
 
+export type ValidationLevel = "loose" | "formats" | "strict";
+export type ClientKind = "promise" | "effect";
+
+/** Match CLI: effect/effect3 default to Effect-native client; other runtimes → promise. */
+export const clientForRuntime = (runtime: OutputRuntime, previousClient: ClientKind): ClientKind => {
+  if (runtime === "effect" || runtime === "effect3") return "effect";
+  if (previousClient === "effect") return "promise";
+  return previousClient;
+};
+export type ValidateSide = "none" | "input" | "output" | "both";
+
 type GenerateInput = {
   inputValue: string;
   runtime: OutputRuntime;
+  validation: ValidationLevel;
+  client: ClientKind;
+  validateSide: ValidateSide;
+  coerce: boolean;
 };
 
-const generateOutputActor = fromPromise(
-  async ({ input: { inputValue, runtime } }: { input: GenerateInput }) => {
-    const now = new Date();
-    console.log("Generating...");
+const generateOutputActor = fromPromise(async ({ input }: { input: GenerateInput }) => {
+  const now = new Date();
+  console.log("Generating...");
 
-    const openApiDoc = inputValue.startsWith("{") ? safeJSONParse(inputValue) : safeYAMLParse(inputValue);
-    console.log({ inputValue, openApiDoc });
-    if (!openApiDoc) {
-      return { content: "" };
-    }
-
-    const mappedContext = mapOpenApiEndpoints(openApiDoc);
-    console.log(`Found ${mappedContext.endpointList.length} endpoints`);
-
-    const content = await prettify(generateFile({ ...mappedContext, runtime }));
-    console.log(`Done in ${new Date().getTime() - now.getTime()}ms !`);
-
-    return { content };
+  const openApiDoc = input.inputValue.startsWith("{")
+    ? safeJSONParse(input.inputValue)
+    : safeYAMLParse(input.inputValue);
+  console.log({ inputValue: input.inputValue, openApiDoc });
+  if (!openApiDoc) {
+    return { content: "" };
   }
-);
+
+  const mappedContext = mapOpenApiEndpoints(openApiDoc);
+  console.log(`Found ${mappedContext.endpointList.length} endpoints`);
+
+  const content = await prettify(
+    generateFile({
+      ...mappedContext,
+      runtime: input.runtime,
+      validation: input.validation,
+      client: input.client,
+      validateSide: input.validateSide,
+      coerce: input.coerce,
+    }),
+  );
+  console.log(`Done in ${new Date().getTime() - now.getTime()}ms !`);
+
+  return { content };
+});
 
 type PlaygroundContext = {
   monaco: Monaco | null;
@@ -48,20 +72,27 @@ type PlaygroundContext = {
   outputList: Record<string, string>;
   selectedOutput: string;
   decorations: string[];
-  //
   runtime: OutputRuntime;
+  validation: ValidationLevel;
+  client: ClientKind;
+  validateSide: ValidateSide;
+  coerce: boolean;
 };
 
 type PlaygroundEvent =
   | {
-    type: "Editor Loaded";
-    editor: editor.IStandaloneCodeEditor;
-    monaco: Monaco;
-    kind: "input" | "output";
-  }
+      type: "Editor Loaded";
+      editor: editor.IStandaloneCodeEditor;
+      monaco: Monaco;
+      kind: "input" | "output";
+    }
   | { type: "Select input tab"; name: string }
   | { type: "Select output tab"; name: string }
   | { type: "Update runtime"; runtime: OutputRuntime }
+  | { type: "Update validation"; validation: ValidationLevel }
+  | { type: "Update client"; client: ClientKind }
+  | { type: "Update validateSide"; validateSide: ValidateSide }
+  | { type: "Update coerce"; coerce: boolean }
   | { type: "Update input"; value: string }
   | { type: "Generate output" };
 
@@ -74,8 +105,11 @@ const initialContext: PlaygroundContext = {
   outputList: initialOutputList,
   selectedOutput: Object.keys(initialOutputList)[0],
   decorations: [],
-  //
   runtime: "none",
+  validation: "strict",
+  client: "promise",
+  validateSide: "both",
+  coerce: true,
 };
 
 // @ts-ignore
@@ -130,15 +164,32 @@ export const playgroundMachine = setup({
     updateUrl: ({ context }) => {
       urlSaver.setValue("input", context.inputList[context.selectedInput]);
     },
-    updateRuntime: assign(({ event }) => {
+    updateRuntime: assign(({ event, context }) => {
       if (event.type !== "Update runtime") {
         return {};
       }
 
-      return { runtime: event.runtime };
+      const runtime = event.runtime;
+      return { runtime, client: clientForRuntime(runtime, context.client) };
+    }),
+    updateValidation: assign(({ event }) => {
+      if (event.type !== "Update validation") return {};
+      return { validation: event.validation };
+    }),
+    updateClient: assign(({ event }) => {
+      if (event.type !== "Update client") return {};
+      return { client: event.client };
+    }),
+    updateValidateSide: assign(({ event }) => {
+      if (event.type !== "Update validateSide") return {};
+      return { validateSide: event.validateSide };
+    }),
+    updateCoerce: assign(({ event }) => {
+      if (event.type !== "Update coerce") return {};
+      return { coerce: event.coerce };
     }),
     assignGeneratedOutput: assign((args) => {
-      if ("output" in  args.event) {
+      if ("output" in args.event) {
         const output = args.event.output as { content: string };
         return {
           outputList: {
@@ -147,7 +198,7 @@ export const playgroundMachine = setup({
         };
       }
 
-      return args.context
+      return args.context;
     }),
   },
   guards: {
@@ -187,6 +238,10 @@ export const playgroundMachine = setup({
                 input: ({ context }) => ({
                   inputValue: context.inputList[context.selectedInput] ?? "",
                   runtime: context.runtime,
+                  validation: context.validation,
+                  client: context.client,
+                  validateSide: context.validateSide,
+                  coerce: context.coerce,
                 }),
                 onDone: {
                   target: "idle",
@@ -215,6 +270,22 @@ export const playgroundMachine = setup({
       on: {
         "Update runtime": {
           actions: ["updateRuntime"],
+          target: ".Playing.generating",
+        },
+        "Update validation": {
+          actions: ["updateValidation"],
+          target: ".Playing.generating",
+        },
+        "Update client": {
+          actions: ["updateClient"],
+          target: ".Playing.generating",
+        },
+        "Update validateSide": {
+          actions: ["updateValidateSide"],
+          target: ".Playing.generating",
+        },
+        "Update coerce": {
+          actions: ["updateCoerce"],
           target: ".Playing.generating",
         },
       },

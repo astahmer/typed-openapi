@@ -1,5 +1,5 @@
 {
-  "name": "typed-openapi",
+  "name": "typed-openapi-monorepo",
   "private": true,
   "repository": {
     "type": "git",
@@ -12,11 +12,12 @@
     "fmt": "oxfmt",
     "release": "changeset publish",
     "release-dev": "changeset version --snapshot dev && changeset publish --tag dev",
-    "test": "TEST_UNIT=true pnpm --filter typed-openapi test"
+    "test": "TEST_UNIT=true pnpm --filter typed-openapi test",
+    "test:all": "pnpm --filter typed-openapi test:all"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.30.0",
-    "oxfmt": "0.45.0"
+    "@changesets/cli": "2.31.1",
+    "oxfmt": "0.59.0"
   },
-  "packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35"
+  "packageManager": "pnpm@11.15.1+sha512.81350b07e53c9538a02f1f2303b4290fa2d7be04e56e2a970c4cc4b417dc761de196edabd49d55c7dc9580db81007c44143e4e3d7e462b3000d23c255122d065"
 }

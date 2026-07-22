@@ -5,6 +5,7 @@ dist/
 
 # dependencies
 node_modules/
+.pnpm-store/
 
 # logs
 npm-debug.log*
@@ -27,3 +28,4 @@ styled-system-static
 *.tsbuildinfo
 
 tmp
+.attest

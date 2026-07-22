@@ -1,12 +1,12 @@
 import type { OpenAPIObject, ReferenceObject } from "openapi3-ts/oas31";
 import { get } from "pastable/server";
 
-import { Box } from "./box.ts";
 import { isReferenceObject } from "./is-reference-object.ts";
-import { openApiSchemaToTs } from "./openapi-schema-to-ts.ts";
+import { openApiToIr } from "./schema-ir/openapi-to-ir.ts";
+import type { SchemaIrConvertContext, SchemaNode } from "./schema-ir/types.ts";
 import { normalizeString } from "./string-utils.ts";
 import { NameTransformOptions } from "./types.ts";
-import { AnyBoxDef, GenericFactory, type LibSchemaObject } from "./types.ts";
+import { type LibSchemaObject } from "./types.ts";
 import { topologicalSort } from "./topological-sort.ts";
 import { sanitizeName } from "./sanitize-name.ts";
 
@@ -28,11 +28,7 @@ export type RefInfo = {
   kind: "schemas" | "responses" | "parameters" | "requestBodies" | "headers";
 };
 
-export const createRefResolver = (
-  doc: OpenAPIObject,
-  factory: GenericFactory,
-  nameTransform?: NameTransformOptions,
-) => {
+export const createRefResolver = (doc: OpenAPIObject, nameTransform?: NameTransformOptions) => {
   // both used for debugging purpose
   const nameByRef = new Map<string, string>();
   const refByName = new Map<string, string>();
@@ -40,7 +36,7 @@ export const createRefResolver = (
   const byRef = new Map<string, RefInfo>();
   const byNormalized = new Map<string, RefInfo>();
 
-  const boxByRef = new Map<string, Box<AnyBoxDef>>();
+  const nodeByRef = new Map<string, SchemaNode>();
 
   const getSchemaByRef = <T = LibSchemaObject>(ref: string) => {
     // #components -> #/components
@@ -59,7 +55,14 @@ export const createRefResolver = (
 
     // "#/components/schemas/Something.jsonld" -> "Something.jsonld"
     const name = split[split.length - 1]!;
-    const kind = normalizedPath.split(".")[1] as RefInfo["kind"];
+    // `#/definitions/Foo` (Swagger 2 / hybrid) has no `components.*` segment — treat as schemas.
+    const kind = (
+      normalizedPath.startsWith("components.")
+        ? normalizedPath.split(".")[1]
+        : normalizedPath === "definitions"
+          ? "schemas"
+          : normalizedPath.split(".")[1]
+    ) as RefInfo["kind"];
     const baseNormalized = sanitizeName(
       nameTransform?.transformSchemaName
         ? nameTransform.transformSchemaName(normalizeString(name))
@@ -93,7 +96,14 @@ export const createRefResolver = (
     return schema;
   };
 
-  const getInfosByRef = (ref: string) => byRef.get(autocorrectRef(ref))!;
+  const getInfosByRef = (ref: string) => {
+    const correctRef = autocorrectRef(ref);
+    if (!byRef.has(correctRef)) {
+      // Lazy register (e.g. `#/definitions/*` or refs not under components)
+      getSchemaByRef(correctRef);
+    }
+    return byRef.get(correctRef)!;
+  };
 
   const schemaEntries = Object.entries(doc.components ?? {}).filter(([key]) => componentsWithSchemas.includes(key));
 
@@ -104,21 +114,40 @@ export const createRefResolver = (
     });
   });
 
+  // Swagger 2 / hybrid OAS docs may still expose schemas under `definitions`
+  const definitions = (doc as OpenAPIObject & { definitions?: Record<string, LibSchemaObject> }).definitions;
+  if (definitions) {
+    Object.keys(definitions).forEach((name) => {
+      getSchemaByRef(`#/definitions/${name}`);
+    });
+  }
+
   const directDependencies = new Map<string, Set<string>>();
+
+  const irCtx: SchemaIrConvertContext = { getRefName: (ref) => getInfosByRef(ref).normalized };
+
+  const registerSchemaNode = (ref: string) => {
+    const schema = getSchemaByRef(ref);
+    nodeByRef.set(ref, openApiToIr(schema, irCtx));
+
+    if (!directDependencies.has(ref)) {
+      directDependencies.set(ref, new Set<string>());
+    }
+    setSchemaDependencies(schema, directDependencies.get(ref)!);
+  };
 
   // need to be done after all refs are resolved
   schemaEntries.forEach(([key, component]) => {
     Object.keys(component).map((name) => {
-      const ref = `#/components/${key}/${name}`;
-      const schema = getSchemaByRef(ref);
-      boxByRef.set(ref, openApiSchemaToTs({ schema, ctx: { factory, refs: { getInfosByRef } as any } }));
-
-      if (!directDependencies.has(ref)) {
-        directDependencies.set(ref, new Set<string>());
-      }
-      setSchemaDependencies(schema, directDependencies.get(ref)!);
+      registerSchemaNode(`#/components/${key}/${name}`);
     });
   });
+
+  if (definitions) {
+    Object.keys(definitions).forEach((name) => {
+      registerSchemaNode(`#/definitions/${name}`);
+    });
+  }
 
   const transitiveDependencies = getTransitiveDependencies(directDependencies);
 
@@ -136,7 +165,7 @@ export const createRefResolver = (
     getOrderedSchemas: () => {
       const schemaOrderedByDependencies = topologicalSort(transitiveDependencies).map((ref) => {
         const infos = getInfosByRef(ref);
-        return [boxByRef.get(infos.ref)!, infos] as [schema: Box<AnyBoxDef>, infos: RefInfo];
+        return [nodeByRef.get(infos.ref)!, infos] as [node: SchemaNode, infos: RefInfo];
       });
 
       return schemaOrderedByDependencies;
@@ -161,29 +190,26 @@ const setSchemaDependencies = (schema: LibSchemaObject, deps: Set<string>) => {
       for (const allOf of schema.allOf) {
         visit(allOf);
       }
-
-      return;
     }
 
     if (schema.oneOf) {
       for (const oneOf of schema.oneOf) {
         visit(oneOf);
       }
-
-      return;
     }
 
     if (schema.anyOf) {
       for (const anyOf of schema.anyOf) {
         visit(anyOf);
       }
+    }
 
-      return;
+    if ("not" in schema && schema.not) {
+      visit(schema.not as LibSchemaObject | ReferenceObject);
     }
 
     if (schema.type === "array") {
-      if (!schema.items) return;
-      return void visit(schema.items);
+      if (schema.items) visit(schema.items);
     }
 
     if (schema.type === "object" || schema.properties || schema.additionalProperties) {

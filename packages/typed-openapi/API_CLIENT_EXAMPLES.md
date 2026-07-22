@@ -3,296 +3,180 @@
 These are production-ready API client wrappers for your generated typed-openapi code. Copy the one that fits your needs
 and customize it.
 
-## Basic API Client ([api-client-example.ts](./tests/api-client.example.ts))
+> **Prefer `--default-fetcher`.** It matches the current `Fetcher` shape (`fetch(input)` with `requestFormat`, cookies,
+> etc.). The checked-in example at
+> [`tests/integrations/api-client.example.ts`](./tests/integrations/api-client.example.ts) stays in sync with
+> `src/default-fetcher.generator.ts`.
+
+## Basic API Client ([api-client.example.ts](./tests/integrations/api-client.example.ts))
 
 A simple, dependency-free client that handles:
 
 - Path parameter replacement (`{id}` and `:id` formats)
 - Query parameter serialization (including arrays)
-- JSON request/response handling
+- Cookie header encoding (`parameters.cookie` → `Cookie`)
+- Body encoding by `requestFormat` (`json` / `form-data` / `form-url` / `binary` / `text`)
+- SSE responses (`responseFormat: "sse"` → `ReadableStream` via `response.body`, no JSON parse)
 - Custom headers
 - Basic error handling
 
 ```typescript
 /**
- * Generic API Client for typed-openapi generated code
- *
- * This is a simple, production-ready wrapper that you can copy and customize.
- * It handles:
- * - Path parameter replacement
- * - Query parameter serialization
- * - JSON request/response handling
- * - Basic error handling
- *
- * Usage:
- * 1. Replace './generated/api' with your actual generated file path
- * 2. Set your API_BASE_URL
- * 3. Customize error handling and headers as needed
+ * Keep in sync with src/default-fetcher.generator.ts
  */
+import { type Fetcher, type RequestFormat, createApiClient } from "../tmp/generated-client.ts";
+import { encodeRequestBody } from "../src/encode-request-body.ts";
 
-import { type Fetcher, createApiClient } from "../tmp/generated-client.ts";
-
-// Basic configuration
 const API_BASE_URL = process.env["API_BASE_URL"] || "https://api.example.com";
 
-/**
- * Simple fetcher implementation without external dependencies
- */
-const fetcher: Fetcher = async (method, apiUrl, params) => {
-  const headers = new Headers();
+const isMutationMethod = (method: string) => ["post", "put", "patch", "delete"].includes(method.toLowerCase());
 
-  // Replace path parameters (supports both {param} and :param formats)
-  const actualUrl = replacePathParams(apiUrl, (params?.path ?? {}) as Record<string, string>);
-  const url = new URL(actualUrl);
+const fetcher: Fetcher["fetch"] = async (input) => {
+  const headers = new Headers(input.overrides?.headers);
 
-  // Handle query parameters
-  if (params?.query) {
-    const searchParams = new URLSearchParams();
-    Object.entries(params.query).forEach(([key, value]) => {
-      if (value != null) {
-        // Skip null/undefined values
-        if (Array.isArray(value)) {
-          value.forEach((val) => val != null && searchParams.append(key, String(val)));
-        } else {
-          searchParams.append(key, String(value));
-        }
-      }
-    });
-    url.search = searchParams.toString();
+  if (input.urlSearchParams) {
+    input.url.search = input.urlSearchParams.toString();
   }
 
-  // Handle request body for mutation methods
-  const body = ["post", "put", "patch", "delete"].includes(method.toLowerCase())
-    ? JSON.stringify(params?.body)
-    : undefined;
-
-  if (body) {
-    headers.set("Content-Type", "application/json");
+  if (input.parameters?.cookie) {
+    const parts = Object.entries(input.parameters.cookie)
+      .filter(([, value]) => value != null)
+      .map(([key, value]) => `${key}=${String(value)}`);
+    if (parts.length) {
+      const existing = headers.get("cookie");
+      headers.set("cookie", existing ? `${existing}; ${parts.join("; ")}` : parts.join("; "));
+    }
   }
 
-  // Add custom headers
-  if (params?.header) {
-    Object.entries(params.header).forEach(([key, value]) => {
-      if (value != null) {
-        headers.set(key, String(value));
-      }
+  let body: BodyInit | undefined;
+  if (isMutationMethod(input.method)) {
+    const encoded = encodeRequestBody(input.requestFormat as RequestFormat, input.parameters?.body);
+    body = encoded.body;
+    if (encoded.contentType && !headers.has("content-type")) {
+      headers.set("Content-Type", encoded.contentType);
+    }
+  }
+
+  if (input.parameters?.header) {
+    Object.entries(input.parameters.header).forEach(([key, value]) => {
+      if (value != null) headers.set(key, String(value));
     });
   }
 
-  const response = await fetch(url, {
-    method: method.toUpperCase(),
-    ...(body && { body }),
+  return fetch(input.url, {
+    method: input.method.toUpperCase(),
+    ...(body !== undefined && { body }),
+    ...input.overrides,
     headers,
   });
-
-  return response;
 };
 
-/**
- * Replace path parameters in URL
- * Supports both OpenAPI format {param} and Express format :param
- */
-function replacePathParams(url: string, params: Record<string, string>): string {
-  return url
-    .replace(/{(\w+)}/g, (_, key: string) => params[key] || `{${key}}`)
-    .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || `:${key}`);
-}
-
-export const api = createApiClient(fetcher, API_BASE_URL);
+export const api = createApiClient({ fetch: fetcher }, API_BASE_URL);
 ```
 
 ### Setup
 
-1. Copy the file to your project
-2. Update the import path to your generated API file:
-   ```typescript
-   import { type EndpointParameters, type Fetcher, createApiClient } from "./generated/api";
-   ```
-3. Set your API base URL:
-   ```typescript
-   const API_BASE_URL = process.env["API_BASE_URL"] || "https://your-api.com";
-   ```
-4. Uncomment the client creation:
-   ```typescript
-   export const api = createApiClient(fetcher, API_BASE_URL);
-   ```
+1. Generate with `--default-fetcher` **or** copy `tests/integrations/api-client.example.ts`
+2. Point the import at your generated API file
+3. Set `API_BASE_URL`
 
 ### Usage
 
 ```typescript
-// GET request with query params
 const users = await api.get("/users", {
   query: { page: 1, limit: 10, tags: ["admin", "user"] },
 });
 
-// POST request with body
 const newUser = await api.post("/users", {
   body: { name: "John", email: "john@example.com" },
 });
 
-// With path parameters
 const user = await api.get("/users/{id}", {
   path: { id: "123" },
 });
 
-// With custom headers
-const result = await api.get("/protected", {
-  header: { Authorization: "Bearer your-token" },
+// Cookies (OpenAPI `in: cookie`)
+await api.get("/session", {
+  cookie: { sessionId: "abc" },
+});
+
+// Multipart / binary — requestFormat comes from the OpenAPI requestBody content type
+await api.post("/pet/{petId}/uploadImage", {
+  path: { petId: 1 },
+  body: formDataOrBlob,
 });
 ```
 
-## Validating API Client ([api-client-with-validation.ts](./tests/api-client-with-validation.example.ts))
+## Validating API Client
 
-Extends the basic client with schema validation for:
-
-- Request body validation before sending
-- Response validation after receiving
-- Type-safe validation error handling
-
-### Setup
-
-1. Follow the basic client setup steps above
-2. Import your validation library and schemas:
-
-   ```typescript
-   // For Zod
-   import { z } from "zod";
-   import { EndpointByMethod } from "./generated/api";
-
-   // For Yup
-   import * as yup from "yup";
-   import { EndpointByMethod } from "./generated/api";
-   ```
-
-3. Implement the validation logic in the marked TODO sections
-4. Configure validation settings:
-   ```typescript
-   const VALIDATE_REQUESTS = true; // Validate request bodies
-   const VALIDATE_RESPONSES = true; // Validate response data
-   ```
-
-### Validation Implementation Example (Zod)
+When generating with `--runtime zod` (or valibot / effect / typebox / typia / …), the built-in `ApiClient` already
+validates via `--validate-side` (`input` | `output` | `both`). Prefer that over a hand-rolled wrapper.
 
 ```typescript
-// Request validation
-if (VALIDATE_REQUESTS && params?.body) {
-  const endpoint = EndpointByMethod[method as keyof typeof EndpointByMethod];
-  const pathSchema = endpoint?.[actualUrl as keyof typeof endpoint];
-  if (pathSchema?.body) {
-    pathSchema.body.parse(params.body); // Throws if invalid
-  }
-}
+import { createApiClient, EndpointByMethod } from "./generated/api";
+import { z } from "zod"; // if runtime=zod
 
-// Response validation
-const responseData = await responseClone.json();
-const endpoint = EndpointByMethod[method as keyof typeof EndpointByMethod];
-const pathSchema = endpoint?.[actualUrl as keyof typeof endpoint];
-const statusSchema = pathSchema?.responses?.[response.status];
-if (statusSchema) {
-  statusSchema.parse(responseData); // Throws if invalid
-}
+const api = createApiClient({ fetch: fetcher }, "https://api.example.com", { validate: "both" });
+
+// Override per-call or globally:
+api.setValidate("input");
 ```
 
-### Error Handling
+Custom `onValidate` hook (swap Zod parse for your own):
 
 ```typescript
-try {
-  const result = await api.post("/users", {
-    body: { name: "John", email: "invalid-email" },
-  });
-} catch (error) {
-  if (error instanceof ValidationError) {
-    if (error.type === "request") {
-      console.error("Invalid request data:", error.validationErrors);
-    } else {
-      console.error("Invalid response data:", error.validationErrors);
-    }
-  } else {
-    console.error("Network or HTTP error:", error);
-  }
-}
+api.setOnValidate(async ({ side, schema, value }) => {
+  // schema is the emitted runtime schema for that param group / response
+  return (schema as z.ZodType).parse(value);
+});
 ```
 
 ## Customization Ideas
 
-- **Authentication**: Add token handling, refresh logic, or auth headers
-- **Retries**: Implement retry logic for failed requests
-- **Caching**: Add response caching with TTL
-- **Logging**: Add request/response logging for debugging
-- **Rate limiting**: Implement client-side rate limiting
-- **Metrics**: Add performance monitoring and error tracking
-- **Base URL per environment**: Different URLs for dev/staging/prod
-
-## Error Handling Enhancement
-
-You can enhance error handling by creating custom error classes:
-
-```typescript
-class ApiError extends Error {
-  constructor(
-    public readonly status: number,
-    public readonly statusText: string,
-    public readonly response: Response,
-  ) {
-    super(`HTTP ${status}: ${statusText}`);
-    this.name = "ApiError";
-  }
-}
-
-// In your fetcher:
-if (!response.ok) {
-  throw new ApiError(response.status, response.statusText, response);
-}
-```
+- **Authentication**: token handling, refresh, auth headers
+- **Retries**: retry failed requests
+- **Caching**: response caching with TTL
+- **Logging**: request/response logging
+- **SSE**: read `ReadableStream` from SSE endpoints (`text/event-stream`) with your own event parser — output validation
+  is skipped for `responseFormat: "sse"`
 
 ## Error Handling with withResponse
 
-For type-safe error handling without exceptions, use the `withResponse: true` option:
-
 ```typescript
-// Example with both data access methods
 const result = await api.get("/users/{id}", {
   path: { id: "123" },
   withResponse: true,
 });
 
 if (result.ok) {
-  // Access data directly (already parsed)
-  const user = result.data; // Type: User
-  console.log("User:", user.name);
-
-  // Or use json() method for compatibility
-  const userFromJson = await result.json(); // Same as result.data
-  console.log("Same user:", userFromJson.name);
-
-  // Access other Response properties
+  const user = result.data;
   console.log("Status:", result.status);
-  console.log("Headers:", result.headers.get("content-type"));
 } else {
-  // Handle errors with proper typing
-  const error = result.data; // Type based on status code
-
-  if (result.status === 404) {
-    console.error("Not found:", error.message);
-  } else if (result.status === 401) {
-    console.error("Unauthorized:", error.details);
-  } else {
-    console.error("Unknown error:", error);
-  }
+  console.error(`Error ${result.status}:`, result.data);
 }
 ```
 
+## Effect-native client (`--client effect`)
+
+Generate with `--runtime effect` (Schema v4) or `--runtime effect3` (`@effect/schema`), or pass `--client effect`
+explicitly. Methods return `Effect` whose error channel is:
+
+- `TypedStatusError` — OpenAPI error status (same shape as the promise client's thrown status errors)
+- `HttpClientError` — fetch / decode / validation / parse failures (`cause` holds the original)
+
+Request params use `InferSchemaInput` (encoded / input types), matching the promise client. See
+[`tests/integrations/effect-msw.test.ts`](./tests/integrations/effect-msw.test.ts) for MSW coverage.
+
 ## TanStack Query Integration
 
-For React applications using TanStack Query, see:
+- [TANSTACK_QUERY_EXAMPLES.md](./TANSTACK_QUERY_EXAMPLES.md)
+- [TANSTACK_QUERY_ERROR_HANDLING.md](./TANSTACK_QUERY_ERROR_HANDLING.md)
 
-- [TANSTACK_QUERY_EXAMPLES.md](./TANSTACK_QUERY_EXAMPLES.md) for usage patterns with `withResponse` and `selectFn`
-- [TANSTACK_QUERY_ERROR_HANDLING.md](./TANSTACK_QUERY_ERROR_HANDLING.md) for type-safe error handling based on OpenAPI
-  error schemas
+Works with both promise `ApiClient` and Effect `EffectApiClient` (`--client effect`): the generated TanStack wrapper
+uses `Effect.runPromise` when needed.
 
 Key features:
 
-- Type-safe mutations with `withResponse` option
-- Custom response transformation with `selectFn`
+- Type-safe mutations with `withResponse` / `selectFn`
 - Automatic error type inference from OpenAPI specs
-- Full type inference for all scenarios
+- Cookie params in query keys when present

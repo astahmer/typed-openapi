@@ -12,22 +12,49 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
 
 - Headless API client,
   [bring your own fetcher](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets) (fetch,
-  axios, ky, etc...) ! (You can generate that file with `--default-fetcher`)
+  axios, ky, etc...) ! (You can generate that file with `--default-fetcher` — honors `requestFormat` for json /
+  form-data / form-url / binary / text bodies)
 - Generates a fully typesafe API client with just types by default (instant suggestions)
 - **Type-safe error handling**: with discriminated unions and configurable success/error status codes
 - **withResponse & throwOnStatusError**: Get a union-style response object or throw on configured error status codes,
   with full type inference
-- **TanStack Query integration**: with `withResponse` and `selectFn` options for advanced success/error handling
-- Or you can also generate a client with runtime validation using one of the following runtimes:
-  - [zod](https://zod.dev/)
-  - [typebox](https://github.com/sinclairzx81/typebox)
-  - [arktype](https://arktype.io/)
-  - [valibot](https://valibot.dev/)
-  - [io-ts](https://gcanti.github.io/io-ts/)
-  - [yup](https://github.com/jquense/yup)
+- **TanStack Query integration**: `queryOptions`, `suspenseQueryOptions`, `infiniteQueryOptions` (with `pageParamKey`),
+  `queryKeyFactory`, and `invalidate` / `invalidateEndpoint` helpers — works with promise and Effect clients
+  (`Effect.runPromise` when needed)
+- **MSW mocks** (`--msw`): request handlers + mock factories from schemas/examples; optional `--msw-faker` for
+  `@faker-js/faker`
+- **Auth from `securitySchemes`**: default fetcher emits `AuthCredentials` + `configureFetcher({ getAuth })` (apiKey /
+  http / oauth2 / openIdConnect)
+- **Date / bigint transforms** (`--transform-dates`, `--transform-bigint`): `format: date-time|date` → `Date`,
+  `format: int64` → `bigint` (types + runtime schema transforms; none-runtime revives ISO date strings)
+- **Typed config**: `defineConfig` + `typed-openapi.config.ts` (also JSON); auto-loaded when present
+- Or you can also generate a client with runtime validation using one of the following runtimes (first-party adapters):
+  - [zod](https://zod.dev/) v4 (`--runtime zod`) and v3 (`--runtime zod3`)
+  - [effect](https://effect.website/) Schema v4 (`--runtime effect`) and v3 / `@effect/schema` (`--runtime effect3`)
+  - [valibot](https://valibot.dev/) (`--runtime valibot`)
+  - [arktype](https://arktype.io/) (`--runtime arktype`)
+  - [TypeBox](https://github.com/sinclairzx81/typebox) (`--runtime typebox`) and [typia](https://typia.io/)
+    (`--runtime typia`)
+- **Effect-native client** (`--client effect`): methods return `Effect` with error channel
+  `TypedStatusError | HttpClientError` (non-status failures remapped; original in `cause`)
+- **Validate input and/or output** (`--validate-side`) with optional `onValidate` hook
+- **Coerce path/query/cookie/header primitives** from strings (`--coerce`, default on when runtime ≠ none)
+- **Cookie parameters**, OAS **defaults** on runtime schemas, **readOnly/writeOnly** stripping (inlined objects; named
+  `$ref` components stay shared — see `stripReadWrite`)
+- **SSE** (`text/event-stream` → `ReadableStream`; co-declared JSON is unioned into response types) and **binary**
+  bodies/schemas (`Blob`)
+- **Node-friendly `FetcherResponse`** (no DOM `Response` dependency; avoids clash with OAS `ApiResponse` schemas) +
+  **request input types** (`InferSchemaInput` / `z.input` / encoded)
+- **Filter endpoints/schemas** (`--endpoint`, `--schema`, `--tree-shake-schemas`) and control naming (`--schema-naming`)
 
-The generated client is a single file that can be used in the browser or in node. Runtime validation schemas are
-provided by the excellent [typebox-codegen](https://github.com/sinclairzx81/typebox-codegen)
+The generated client is a single file that can be used in the browser or in node. Runtime schemas are emitted by
+typed-openapi's own Schema IR + runtime adapters (no Sinclair codegen). Use `--validation loose|formats|strict` to
+control how deep OpenAPI constraints (`format`, `minLength`, …) are applied. Install the chosen runtime as a peer
+dependency in your app.
+
+With `--runtime effect` / `effect3`, the default API client is Effect-native (`--client effect`); other runtimes default
+to the promise `ApiClient`. Install `effect` whenever you use `--client effect` and/or `--runtime effect`. Use
+`--runtime effect3` (+ `@effect/schema`) if you need the Effect Schema v3 adapter.
 
 ## Install & usage
 
@@ -38,6 +65,25 @@ pnpm add typed-openapi
 It exports a bunch of functions that can be used to build your own tooling on top of it. You can look at the
 [CLI code](packages/typed-openapi/src/cli.ts) so see how to use them.
 
+### Config file (`defineConfig`)
+
+```ts
+// typed-openapi.config.ts
+import { defineConfig } from "typed-openapi";
+
+export default defineConfig({
+  // input: "./openapi.yaml", // optional — CLI positional still preferred when passed
+  runtime: "zod",
+  tanstack: true,
+  msw: true,
+  defaultFetcher: true,
+  transformDates: true,
+});
+```
+
+JSON (`typed-openapi.config.json`) still works. The CLI auto-loads the first matching config in the cwd.
+`typed-openapi.config.ts` is loaded via `tsx` (shipped as a dependency).
+
 ## CLI
 
 ```sh
@@ -45,7 +91,7 @@ npx typed-openapi -h
 ```
 
 ```sh
-typed-openapi/2.0.0
+typed-openapi/3.0.0
 
 Usage:
   $ typed-openapi <input>
@@ -58,7 +104,18 @@ For more info, run any command with the `--help` flag:
 
 Options:
   -o, --output <path>             Output path for the api client ts file (defaults to `<input>.<runtime>.ts`)
-  -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: Type<"arktype" | "io-ts" | "none" | "typebox" | "valibot" | "yup" | "zod"> (default: none)
+  -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: none | zod | zod3 | effect | effect3 | valibot | arktype | typebox | typia
+  --validation <level>            Validation depth: loose | formats | strict (default: strict when runtime ≠ none)
+  --validate-side <side>          When using a runtime: none | input | output | both (default: both)
+  --client <kind>                 API client style: promise | effect (default: effect when runtime is effect/effect3, else promise)
+  --coerce                        Coerce number/boolean path|query|cookie|header params from strings (default on when runtime ≠ none)
+  --no-coerce                     Disable string coercion for path|query|cookie|header params
+  --endpoint <regex>              Keep endpoints matching regex (method/path/operationId/alias/tags); repeatable
+  --schema <regex>                When tree-shaking, also keep schemas matching regex; repeatable
+  --tree-shake-schemas            Drop unused component schemas (default: on when --endpoint is set)
+  --no-tree-shake-schemas         Emit all component schemas even when filtering endpoints
+  --schema-naming <mode>          Component schema naming: auto | always-name | prefer-inline
+  -c, --config <path>             JSON config (or auto-load typed-openapi.config.json); supports fine-grained validation overrides
   --format                        Format generated files with oxfmt (defaults to false) (default: false)
   --schemas-only                  Only generate schemas, skipping client generation (defaults to false) (default: false)
   --include-client                Include API client types and implementation (defaults to true) (default: true)
@@ -73,14 +130,12 @@ Options:
 
 ## Non-goals
 
-- Caring too much about the runtime validation code. If that works (thanks to
-  [typebox-codegen](https://github.com/sinclairzx81/typebox-codegen)), that's great, otherwise I'm not really interested
-  in fixing it. If you are, feel free to open a PR.
+- Shipping every historical runtime (yup / io-ts). TypeBox and Typia are available again via `--runtime typebox` /
+  `--runtime typia`; the adapter contract makes further runtimes easy to add. Primary focus remains zod, effect,
+  valibot, and arktype.
 
-- Supporting all the OpenAPI spec. Regex, dates, files, whatever, that's not the point here.
-  [openapi-zod-client](https://github.com/astahmer/openapi-zod-client) does a great job at that, but it's slow to
-  generate the client and the suggestions in the IDE are not instant. I'm only interested in supporting the subset of
-  the spec that makes the API client typesafe and fast to provide suggetions in the IDE.
+- Being a full JSON Schema validator suite for exotic media types. Constraints (`format`, bounds, patterns, …) are
+  supported via `--validation`, but the priority remains a fast, typesafe API client.
 
 - Splitting the generated client into multiple files. Nope. Been there, done that. Let's keep it simple.
 
@@ -96,6 +151,23 @@ The generated client is headless - you need to provide your own fetcher. Here ar
   dependency-free wrapper
 - **[Validating API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#validating-api-client-api-client-with-validationts)** -
   With request/response validation
+
+Or generate one with `--default-fetcher` (recommended).
+
+### Fetcher `requestFormat` contract
+
+`Fetcher.fetch` receives `requestFormat` so the body can be encoded from the OpenAPI requestBody content type. Missing
+entries in `endpointRequestFormats` default to `"json"`.
+
+| `requestFormat` | Body encoding (default fetcher)                                                   |
+| --------------- | --------------------------------------------------------------------------------- |
+| `json`          | `JSON.stringify` + `application/json`                                             |
+| `form-data`     | `FormData` (let fetch set the multipart boundary)                                 |
+| `form-url`      | `URLSearchParams` + `application/x-www-form-urlencoded`                           |
+| `binary`        | raw `Blob` / `ArrayBuffer` / `Uint8Array` / `string` + `application/octet-stream` |
+| `text`          | `String(body)` + `text/plain`                                                     |
+
+Custom fetchers should honor the same table (or document if they only support JSON).
 
 ### Type-Safe Error Handling & Response Modes
 
@@ -147,8 +219,32 @@ npx typed-openapi api.yaml --tanstack
 You get:
 
 - Type-safe queries and mutations with full error inference
+- `queryOptions` / `suspenseQueryOptions` for `useQuery` / `useSuspenseQuery`
+- `infiniteQueryOptions({ initialPageParam, getNextPageParam, pageParamKey? })` for pagination
+- `queryKeyFactory` + `invalidate` / `invalidateEndpoint` / `invalidateInfinite` for cache control
 - `withResponse` and `selectFn` for advanced error and response handling
 - All mutation errors are Response-like and type-safe, matching your OpenAPI error schemas
+
+### MSW mocks
+
+```sh
+npx typed-openapi api.yaml --msw
+# optional: --msw-faker --msw-base-url https://api.example.com
+```
+
+Emits `msw.handlers.ts` with `handlers` and per-endpoint `get…Mock()` factories (schema examples/defaults, or faker).
+
+### Auth (`securitySchemes`)
+
+With `--default-fetcher`, credentials from OAS `components.securitySchemes` are wired as:
+
+```ts
+import { configureFetcher } from "./api.client";
+
+configureFetcher({
+  getAuth: () => ({ petstore_auth: token, api_key: key }),
+});
+```
 
 ## useQuery / fetchQuery / ensureQueryData
 
@@ -307,15 +403,31 @@ const { mutate: login, isPending } = useMutation({
 
 ## Alternatives
 
-[openapi-zod-client](https://github.com/astahmer/openapi-zod-client), which generates a
-[zodios](https://github.com/ecyrbe/zodios) client but can be slow to provide IDE suggestions when the OpenAPI spec is
-large. Also, you might not always want to use zod or even runtime validation, hence this project.
+- [openapi-typescript](https://github.com/openapi-ts/openapi-typescript) + openapi-fetch — types-only + thin fetch
+- [Orval](https://github.com/orval-labs/orval) — React Query / MSW / mocks, multi-file output
+- [Hey API](https://github.com/hey-api/openapi-ts) — plugin SDK generator (clients, validators, hooks)
+- [Kubb](https://github.com/kubb-labs/kubb) — modular plugin codegen (TanStack, SWR, MSW, Zod)
+- [openapi-zod-client](https://github.com/astahmer/openapi-zod-client) — zodios client (can be slow for large specs)
+
+typed-openapi focuses on a **single-file**, headless client with **multi-runtime** validation (zod / effect / valibot /
+arktype / …), typed status errors, and optional TanStack / MSW extras — without splitting output by tags.
 
 ## Contributing
 
 - `pnpm i`
 - `pnpm build`
 - `pnpm test`
+
+Package tests live under `packages/typed-openapi/tests/`:
+
+| Folder           | What                                                  |
+| ---------------- | ----------------------------------------------------- |
+| `integrations/`  | MSW e2e + runtime client matrix                       |
+| `github-issues/` | Regression coverage for fixed GitHub issues           |
+| `tstyche/`       | Per-runtime + Effect client type suites               |
+| `samples/`       | OpenAPI fixtures (including `samples/github-issues/`) |
+
+Shipping checklist / PR body template: [`plans/FOLLOWUPS.md`](plans/FOLLOWUPS.md).
 
 When you're done with your changes, please run `pnpm changeset` in the root of the repo and follow the instructions
 described [here](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md).

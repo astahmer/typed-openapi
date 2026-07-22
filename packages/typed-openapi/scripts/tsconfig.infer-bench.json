@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["./infer-bench.ts"],
+  "exclude": [],
+  "compilerOptions": {
+    "noEmit": true,
+    "tsBuildInfoFile": null,
+    "skipLibCheck": true
+  }
+}

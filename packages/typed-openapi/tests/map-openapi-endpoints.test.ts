@@ -1505,28 +1505,31 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "body": {
-                "type": "ref",
-                "value": "Pet",
+                "kind": "ref",
+                "meta": {},
+                "name": "Pet",
               },
             },
             "path": "/pet",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "ref",
-                "value": "Pet",
+                "kind": "ref",
+                "meta": {},
+                "name": "Pet",
               },
               "400": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
               "404": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
               "405": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -1596,20 +1599,23 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "body": {
-                "type": "ref",
-                "value": "Pet",
+                "kind": "ref",
+                "meta": {},
+                "name": "Pet",
               },
             },
             "path": "/pet",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "ref",
-                "value": "Pet",
+                "kind": "ref",
+                "meta": {},
+                "name": "Pet",
               },
               "405": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -1706,24 +1712,76 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "query": {
-                "type": "ref",
-                "value": "Partial<{ status: ("available" | "pending" | "sold") }>",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": true,
+                "properties": {
+                  "status": {
+                    "kind": "enum",
+                    "meta": {
+                      "default": "available",
+                    },
+                    "values": [
+                      "available",
+                      "pending",
+                      "sold",
+                    ],
+                  },
+                },
+                "required": [],
               },
             },
             "path": "/pet/findByStatus",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "array",
-                "value": "Array<Pet>",
+                "constraints": {},
+                "items": {
+                  "kind": "ref",
+                  "meta": {},
+                  "name": "Pet",
+                },
+                "kind": "array",
+                "meta": {},
               },
               "304": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
               "400": {
-                "type": "object",
-                "value": "{ code: number, message: string }",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "code": {
+                    "constraints": {},
+                    "integer": true,
+                    "kind": "number",
+                    "meta": {
+                      "examples": [
+                        400,
+                      ],
+                    },
+                  },
+                  "message": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {
+                      "examples": [
+                        "Invalid status value",
+                      ],
+                    },
+                  },
+                },
+                "required": [
+                  "code",
+                  "message",
+                ],
               },
             },
           },
@@ -1809,20 +1867,69 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "query": {
-                "type": "ref",
-                "value": "Partial<{ tags: Array<string> }>",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": true,
+                "properties": {
+                  "tags": {
+                    "constraints": {},
+                    "items": {
+                      "constraints": {},
+                      "kind": "string",
+                      "meta": {},
+                    },
+                    "kind": "array",
+                    "meta": {},
+                  },
+                },
+                "required": [],
               },
             },
             "path": "/pet/findByTags",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "union",
-                "value": "(Array<Pet> | Array<User> | Array<Tag>)",
+                "kind": "union",
+                "members": [
+                  {
+                    "constraints": {},
+                    "items": {
+                      "kind": "ref",
+                      "meta": {},
+                      "name": "Pet",
+                    },
+                    "kind": "array",
+                    "meta": {},
+                  },
+                  {
+                    "constraints": {},
+                    "items": {
+                      "kind": "ref",
+                      "meta": {},
+                      "name": "User",
+                    },
+                    "kind": "array",
+                    "meta": {},
+                  },
+                  {
+                    "constraints": {},
+                    "items": {
+                      "kind": "ref",
+                      "meta": {},
+                      "name": "Tag",
+                    },
+                    "kind": "array",
+                    "meta": {},
+                  },
+                ],
+                "meta": {},
               },
               "400": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -1931,26 +2038,98 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "path": {
-                "petId": {
-                  "type": "keyword",
-                  "value": "number",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "petId": {
+                    "constraints": {
+                      "format": "int64",
+                    },
+                    "integer": true,
+                    "kind": "number",
+                    "meta": {},
+                  },
                 },
+                "required": [
+                  "petId",
+                ],
               },
             },
             "path": "/pet/{petId}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "ref",
-                "value": "Pet",
+                "kind": "ref",
+                "meta": {},
+                "name": "Pet",
               },
               "400": {
-                "type": "object",
-                "value": "{ code: number, message: string }",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "code": {
+                    "constraints": {},
+                    "integer": true,
+                    "kind": "number",
+                    "meta": {
+                      "examples": [
+                        400,
+                      ],
+                    },
+                  },
+                  "message": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {
+                      "examples": [
+                        "Invalid pet ID",
+                      ],
+                    },
+                  },
+                },
+                "required": [
+                  "code",
+                  "message",
+                ],
               },
               "404": {
-                "type": "object",
-                "value": "{ code: number, message: string }",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "code": {
+                    "constraints": {},
+                    "integer": true,
+                    "kind": "number",
+                    "meta": {
+                      "examples": [
+                        404,
+                      ],
+                    },
+                  },
+                  "message": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {
+                      "examples": [
+                        "Pet not found",
+                      ],
+                    },
+                  },
+                },
+                "required": [
+                  "code",
+                  "message",
+                ],
               },
             },
           },
@@ -2012,22 +2191,53 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "path": {
-                "petId": {
-                  "type": "keyword",
-                  "value": "number",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "petId": {
+                    "constraints": {
+                      "format": "int64",
+                    },
+                    "integer": true,
+                    "kind": "number",
+                    "meta": {},
+                  },
                 },
+                "required": [
+                  "petId",
+                ],
               },
               "query": {
-                "type": "ref",
-                "value": "Partial<{ name: string, status: string }>",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": true,
+                "properties": {
+                  "name": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {},
+                  },
+                  "status": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {},
+                  },
+                },
+                "required": [],
               },
             },
             "path": "/pet/{petId}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "405": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -2082,22 +2292,48 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "header": {
-                "type": "ref",
-                "value": "Partial<{ api_key: string }>",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": true,
+                "properties": {
+                  "api_key": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {},
+                  },
+                },
+                "required": [],
               },
               "path": {
-                "petId": {
-                  "type": "keyword",
-                  "value": "number",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "petId": {
+                    "constraints": {
+                      "format": "int64",
+                    },
+                    "integer": true,
+                    "kind": "number",
+                    "meta": {},
+                  },
                 },
+                "required": [
+                  "petId",
+                ],
               },
             },
             "path": "/pet/{petId}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "400": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -2169,26 +2405,53 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "body": {
-                "type": "keyword",
-                "value": "string",
+                "kind": "binary",
+                "meta": {},
               },
               "path": {
-                "petId": {
-                  "type": "keyword",
-                  "value": "number",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "petId": {
+                    "constraints": {
+                      "format": "int64",
+                    },
+                    "integer": true,
+                    "kind": "number",
+                    "meta": {},
+                  },
                 },
+                "required": [
+                  "petId",
+                ],
               },
               "query": {
-                "type": "ref",
-                "value": "Partial<{ additionalMetadata: string }>",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": true,
+                "properties": {
+                  "additionalMetadata": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {},
+                  },
+                },
+                "required": [],
               },
             },
             "path": "/pet/{petId}/uploadImage",
             "requestFormat": "binary",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "ref",
-                "value": "ApiResponse",
+                "kind": "ref",
+                "meta": {},
+                "name": "ApiResponse",
               },
             },
           },
@@ -2228,13 +2491,26 @@ describe("map-openapi-endpoints", () => {
                 "store",
               ],
             },
-            "parameters": undefined,
             "path": "/store/inventory",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "ref",
-                "value": "Record<string, number>",
+                "key": {
+                  "constraints": {},
+                  "kind": "string",
+                  "meta": {},
+                },
+                "kind": "record",
+                "meta": {},
+                "value": {
+                  "constraints": {
+                    "format": "int32",
+                  },
+                  "integer": true,
+                  "kind": "number",
+                  "meta": {},
+                },
               },
             },
           },
@@ -2289,20 +2565,23 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "body": {
-                "type": "ref",
-                "value": "Order",
+                "kind": "ref",
+                "meta": {},
+                "name": "Order",
               },
             },
             "path": "/store/order",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "ref",
-                "value": "Order",
+                "kind": "ref",
+                "meta": {},
+                "name": "Order",
               },
               "405": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -2358,26 +2637,42 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "path": {
-                "orderId": {
-                  "type": "keyword",
-                  "value": "number",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "orderId": {
+                    "constraints": {
+                      "format": "int64",
+                    },
+                    "integer": true,
+                    "kind": "number",
+                    "meta": {},
+                  },
                 },
+                "required": [
+                  "orderId",
+                ],
               },
             },
             "path": "/store/order/{orderId}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "ref",
-                "value": "Order",
+                "kind": "ref",
+                "meta": {},
+                "name": "Order",
               },
               "400": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
               "404": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -2418,22 +2713,37 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "path": {
-                "orderId": {
-                  "type": "keyword",
-                  "value": "number",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "orderId": {
+                    "constraints": {
+                      "format": "int64",
+                    },
+                    "integer": true,
+                    "kind": "number",
+                    "meta": {},
+                  },
                 },
+                "required": [
+                  "orderId",
+                ],
               },
             },
             "path": "/store/order/{orderId}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "400": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
               "404": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -2491,16 +2801,19 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "body": {
-                "type": "ref",
-                "value": "User",
+                "kind": "ref",
+                "meta": {},
+                "name": "User",
               },
             },
             "path": "/user",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "default": {
-                "type": "ref",
-                "value": "User",
+                "kind": "ref",
+                "meta": {},
+                "name": "User",
               },
             },
           },
@@ -2553,20 +2866,28 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "body": {
-                "type": "array",
-                "value": "Array<User>",
+                "constraints": {},
+                "items": {
+                  "kind": "ref",
+                  "meta": {},
+                  "name": "User",
+                },
+                "kind": "array",
+                "meta": {},
               },
             },
             "path": "/user/createWithList",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "ref",
-                "value": "User",
+                "kind": "ref",
+                "meta": {},
+                "name": "User",
               },
               "default": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -2651,30 +2972,85 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "query": {
-                "type": "ref",
-                "value": "Partial<{ username: string, password: string }>",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": true,
+                "properties": {
+                  "password": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {},
+                  },
+                  "username": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {},
+                  },
+                },
+                "required": [],
               },
             },
             "path": "/user/login",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responseHeaders": {
               "200": {
-                "type": "object",
-                "value": "{ "X-Rate-Limit": number, "X-Expires-After": string }",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "X-Expires-After": {
+                    "constraints": {
+                      "format": "date-time",
+                    },
+                    "kind": "string",
+                    "meta": {},
+                  },
+                  "X-Rate-Limit": {
+                    "constraints": {
+                      "format": "int32",
+                    },
+                    "integer": true,
+                    "kind": "number",
+                    "meta": {},
+                  },
+                },
+                "required": [
+                  "X-Rate-Limit",
+                  "X-Expires-After",
+                ],
               },
               "400": {
-                "type": "object",
-                "value": "{ "X-Error": string }",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "X-Error": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {},
+                  },
+                },
+                "required": [
+                  "X-Error",
+                ],
               },
             },
             "responses": {
               "200": {
-                "type": "keyword",
-                "value": "string",
+                "constraints": {},
+                "kind": "string",
+                "meta": {},
               },
               "400": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -2699,13 +3075,13 @@ describe("map-openapi-endpoints", () => {
                 "user",
               ],
             },
-            "parameters": undefined,
             "path": "/user/logout",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "default": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -2801,30 +3177,83 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "path": {
-                "username": {
-                  "type": "keyword",
-                  "value": "string",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "username": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {},
+                  },
                 },
+                "required": [
+                  "username",
+                ],
               },
             },
             "path": "/user/{username}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "ref",
-                "value": "User",
+                "kind": "ref",
+                "meta": {},
+                "name": "User",
               },
               "201": {
-                "type": "object",
-                "value": "{ id: number, username: string }",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "id": {
+                    "constraints": {},
+                    "integer": true,
+                    "kind": "number",
+                    "meta": {},
+                  },
+                  "username": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {},
+                  },
+                },
+                "required": [
+                  "id",
+                  "username",
+                ],
               },
               "400": {
-                "type": "object",
-                "value": "{ code: number, message: string }",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "code": {
+                    "constraints": {},
+                    "integer": true,
+                    "kind": "number",
+                    "meta": {},
+                  },
+                  "message": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {},
+                  },
+                },
+                "required": [
+                  "code",
+                  "message",
+                ],
               },
               "404": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -2881,22 +3310,35 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "body": {
-                "type": "ref",
-                "value": "User",
+                "kind": "ref",
+                "meta": {},
+                "name": "User",
               },
               "path": {
-                "username": {
-                  "type": "keyword",
-                  "value": "string",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "username": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {},
+                  },
                 },
+                "required": [
+                  "username",
+                ],
               },
             },
             "path": "/user/{username}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "default": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -2936,22 +3378,34 @@ describe("map-openapi-endpoints", () => {
             },
             "parameters": {
               "path": {
-                "username": {
-                  "type": "keyword",
-                  "value": "string",
+                "additionalProperties": false,
+                "constraints": {},
+                "kind": "object",
+                "meta": {},
+                "partial": false,
+                "properties": {
+                  "username": {
+                    "constraints": {},
+                    "kind": "string",
+                    "meta": {},
+                  },
                 },
+                "required": [
+                  "username",
+                ],
               },
             },
             "path": "/user/{username}",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "400": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
               "404": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -2982,13 +3436,14 @@ describe("map-openapi-endpoints", () => {
                 "user",
               ],
             },
-            "parameters": undefined,
             "path": "/pet/text",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "ref",
-                "value": "User",
+                "kind": "ref",
+                "meta": {},
+                "name": "User",
               },
             },
           },
@@ -3012,13 +3467,13 @@ describe("map-openapi-endpoints", () => {
                 "user",
               ],
             },
-            "parameters": undefined,
             "path": "/pet/empty",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "204": {
-                "type": "keyword",
-                "value": "unknown",
+                "kind": "unknown",
+                "meta": {},
               },
             },
           },
@@ -3049,32 +3504,18 @@ describe("map-openapi-endpoints", () => {
                 "user",
               ],
             },
-            "parameters": undefined,
             "path": "/pet/custom",
             "requestFormat": "json",
+            "responseFormat": "json",
             "responses": {
               "200": {
-                "type": "ref",
-                "value": "Pet",
+                "kind": "ref",
+                "meta": {},
+                "name": "Pet",
               },
             },
           },
         ],
-        "factory": {
-          "any": [Function],
-          "array": [Function],
-          "boolean": [Function],
-          "intersection": [Function],
-          "literal": [Function],
-          "never": [Function],
-          "number": [Function],
-          "object": [Function],
-          "optional": [Function],
-          "reference": [Function],
-          "string": [Function],
-          "union": [Function],
-          "unknown": [Function],
-        },
         "refs": {
           "directDependencies": Map {
             "#/components/schemas/Order" => Set {},
@@ -3213,22 +3654,45 @@ describe("map-openapi-endpoints", () => {
           },
           "parameters": {
             "path": {
-              "id": {
-                "type": "keyword",
-                "value": "number",
+              "additionalProperties": false,
+              "constraints": {},
+              "kind": "object",
+              "meta": {},
+              "partial": false,
+              "properties": {
+                "id": {
+                  "constraints": {},
+                  "integer": true,
+                  "kind": "number",
+                  "meta": {},
+                },
               },
+              "required": [
+                "id",
+              ],
             },
             "query": {
-              "type": "ref",
-              "value": "Partial<{ metadata: boolean }>",
+              "additionalProperties": false,
+              "constraints": {},
+              "kind": "object",
+              "meta": {},
+              "partial": true,
+              "properties": {
+                "metadata": {
+                  "kind": "boolean",
+                  "meta": {},
+                },
+              },
+              "required": [],
             },
           },
           "path": "/users/{id}",
           "requestFormat": "json",
+          "responseFormat": "json",
           "responses": {
             "200": {
-              "type": "keyword",
-              "value": "unknown",
+              "kind": "unknown",
+              "meta": {},
             },
           },
         },
@@ -3432,24 +3896,51 @@ describe("map-openapi-endpoints", () => {
           },
           "parameters": {
             "body": {
-              "type": "object",
-              "value": "{ accessToken: string, refreshToken: string }",
+              "additionalProperties": false,
+              "constraints": {},
+              "kind": "object",
+              "meta": {},
+              "partial": false,
+              "properties": {
+                "accessToken": {
+                  "constraints": {
+                    "pattern": "^\\w+ [A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$",
+                  },
+                  "kind": "string",
+                  "meta": {},
+                },
+                "refreshToken": {
+                  "constraints": {
+                    "format": "uuid",
+                  },
+                  "kind": "string",
+                  "meta": {},
+                },
+              },
+              "required": [
+                "accessToken",
+                "refreshToken",
+              ],
             },
           },
           "path": "/authentication/refresh",
           "requestFormat": "json",
+          "responseFormat": "json",
           "responses": {
             "200": {
-              "type": "ref",
-              "value": "SerializedUserSession",
+              "kind": "ref",
+              "meta": {},
+              "name": "SerializedUserSession",
             },
             "401": {
-              "type": "keyword",
-              "value": "string",
+              "constraints": {},
+              "kind": "string",
+              "meta": {},
             },
             "500": {
-              "type": "keyword",
-              "value": "string",
+              "constraints": {},
+              "kind": "string",
+              "meta": {},
             },
           },
         },
@@ -3467,20 +3958,24 @@ describe("map-openapi-endpoints", () => {
     expect(getUserEndpoint?.responses).toMatchInlineSnapshot(`
       {
         "200": {
-          "type": "ref",
-          "value": "User",
+          "kind": "ref",
+          "meta": {},
+          "name": "User",
         },
         "401": {
-          "type": "ref",
-          "value": "AuthError",
+          "kind": "ref",
+          "meta": {},
+          "name": "AuthError",
         },
         "404": {
-          "type": "ref",
-          "value": "NotFoundError",
+          "kind": "ref",
+          "meta": {},
+          "name": "NotFoundError",
         },
         "500": {
-          "type": "ref",
-          "value": "ServerError",
+          "kind": "ref",
+          "meta": {},
+          "name": "ServerError",
         },
       }
     `);
@@ -3491,16 +3986,19 @@ describe("map-openapi-endpoints", () => {
     expect(createPostEndpoint?.responses).toMatchInlineSnapshot(`
       {
         "201": {
-          "type": "ref",
-          "value": "Post",
+          "kind": "ref",
+          "meta": {},
+          "name": "Post",
         },
         "400": {
-          "type": "ref",
-          "value": "ValidationError",
+          "kind": "ref",
+          "meta": {},
+          "name": "ValidationError",
         },
         "403": {
-          "type": "ref",
-          "value": "ForbiddenError",
+          "kind": "ref",
+          "meta": {},
+          "name": "ForbiddenError",
         },
       }
     `);

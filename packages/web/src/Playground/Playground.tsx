@@ -14,11 +14,9 @@ import ArktypeDeclaration from "../../declarations/arktype.d.ts?raw";
 // @ts-ignore
 import ValibotDeclaration from "../../declarations/valibot.d.ts?raw";
 // @ts-ignore
-import TypeboxDeclaration from "../../declarations/typebox.d.ts?raw";
+import EffectDeclaration from "../../declarations/effect.d.ts?raw";
 // @ts-ignore
-import IoTsDeclaration from "../../declarations/io-ts.d.ts?raw";
-// @ts-ignore
-import YupDeclaration from "../../declarations/yup.d.ts?raw";
+import Effect3Declaration from "../../declarations/effect3.d.ts?raw";
 
 export const Playground = () => {
   const service = usePlaygroundContext();
@@ -93,11 +91,11 @@ export const Playground = () => {
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(ZodDeclaration, getDtsPath("zod"));
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(ArktypeDeclaration, getDtsPath("arktype"));
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(ValibotDeclaration, getDtsPath("valibot"));
+                monaco.languages.typescript.typescriptDefaults.addExtraLib(EffectDeclaration, getDtsPath("effect"));
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(
-                  TypeboxDeclaration,
-                  getDtsPath("@sinclair/typebox"),
+                  Effect3Declaration,
+                  getDtsPath("@effect/schema"),
                 );
-                monaco.languages.typescript.typescriptDefaults.addExtraLib(IoTsDeclaration, getDtsPath("io-ts"));
 
                 monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
                   noSemanticValidation: true,

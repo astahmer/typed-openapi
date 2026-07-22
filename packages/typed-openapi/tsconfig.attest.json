@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src",
+    "tests/attest-generated.types.test.ts",
+    "tests/attest-generated.bench.ts",
+    "tmp/attest-generated/**/*.ts"
+  ],
+  "exclude": ["node_modules", "tests/snapshots", "tests/tstyche"]
+}

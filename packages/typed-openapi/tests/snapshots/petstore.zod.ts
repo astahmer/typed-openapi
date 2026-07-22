@@ -1,87 +1,68 @@
 import { z } from "zod";
 
+// <Schemas>
 export type Order = z.infer<typeof Order>;
-export const Order = z.object({
-  id: z.number().optional(),
-  petId: z.number().optional(),
-  quantity: z.number().optional(),
-  shipDate: z.string().optional(),
-  status: z.union([z.literal("placed"), z.literal("approved"), z.literal("delivered")]).optional(),
-  complete: z.boolean().optional(),
-});
+export const Order = z
+  .object({
+    id: z.number().int(),
+    petId: z.number().int(),
+    quantity: z.number().int(),
+    shipDate: z.iso.datetime(),
+    status: z.enum(["placed", "approved", "delivered"]),
+    complete: z.boolean(),
+  })
+  .partial();
 
 export type Address = z.infer<typeof Address>;
-export const Address = z.object({
-  street: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  zip: z.string().optional(),
-});
+export const Address = z.object({ street: z.string(), city: z.string(), state: z.string(), zip: z.string() }).partial();
 
 export type Customer = z.infer<typeof Customer>;
-export const Customer = z.object({
-  id: z.number().optional(),
-  username: z.string().optional(),
-  address: z.array(Address).optional(),
-});
+export const Customer = z.object({ id: z.number().int(), username: z.string(), address: z.array(Address) }).partial();
 
 export type Category = z.infer<typeof Category>;
-export const Category = z.object({
-  id: z.number().optional(),
-  name: z.string().optional(),
-});
+export const Category = z.object({ id: z.number().int(), name: z.string() }).partial();
 
 export type User = z.infer<typeof User>;
-export const User = z.object({
-  id: z.number().optional(),
-  username: z.string().optional(),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-  email: z.string().optional(),
-  password: z.string().optional(),
-  phone: z.string().optional(),
-  userStatus: z.number().optional(),
-});
+export const User = z
+  .object({
+    id: z.number().int(),
+    username: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
+    email: z.string(),
+    password: z.string(),
+    phone: z.string(),
+    userStatus: z.number().int(),
+  })
+  .partial();
 
 export type Tag = z.infer<typeof Tag>;
-export const Tag = z.object({
-  id: z.number().optional(),
-  name: z.string().optional(),
-});
+export const Tag = z.object({ id: z.number().int(), name: z.string() }).partial();
 
 export type Pet = z.infer<typeof Pet>;
 export const Pet = z.object({
-  id: z.union([z.number(), z.undefined()]).optional(),
+  id: z.number().int().optional(),
   name: z.string(),
-  category: z.union([Category, z.undefined()]).optional(),
+  category: Category.optional(),
   photoUrls: z.array(z.string()),
-  tags: z.union([z.array(Tag), z.undefined()]).optional(),
-  status: z
-    .union([z.union([z.literal("available"), z.literal("pending"), z.literal("sold")]), z.undefined()])
-    .optional(),
+  tags: z.array(Tag).optional(),
+  status: z.enum(["available", "pending", "sold"]).optional(),
 });
 
 export type ApiResponse = z.infer<typeof ApiResponse>;
-export const ApiResponse = z.object({
-  code: z.number().optional(),
-  type: z.string().optional(),
-  message: z.string().optional(),
-});
+export const ApiResponse = z.object({ code: z.number().int(), type: z.string(), message: z.string() }).partial();
 
+// </Schemas>
+
+// <Endpoints>
 export type put_UpdatePet = typeof put_UpdatePet;
 export const put_UpdatePet = {
   method: z.literal("PUT"),
   path: z.literal("/pet"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    body: Pet,
-  }),
-  responses: z.object({
-    "200": Pet,
-    "400": z.unknown(),
-    "404": z.unknown(),
-    "405": z.unknown(),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: { body: Pet },
+  responses: { 200: Pet, 400: z.unknown(), 404: z.unknown(), 405: z.unknown() },
 };
 
 export type post_AddPet = typeof post_AddPet;
@@ -89,13 +70,9 @@ export const post_AddPet = {
   method: z.literal("POST"),
   path: z.literal("/pet"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    body: Pet,
-  }),
-  responses: z.object({
-    "200": Pet,
-    "405": z.unknown(),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: { body: Pet },
+  responses: { 200: Pet, 405: z.unknown() },
 };
 
 export type get_FindPetsByStatus = typeof get_FindPetsByStatus;
@@ -103,19 +80,14 @@ export const get_FindPetsByStatus = {
   method: z.literal("GET"),
   path: z.literal("/pet/findByStatus"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    query: z.object({
-      status: z.union([z.literal("available"), z.literal("pending"), z.literal("sold")]).optional(),
-    }),
-  }),
-  responses: z.object({
-    "200": z.array(Pet),
-    "304": z.unknown(),
-    "400": z.object({
-      code: z.number(),
-      message: z.string(),
-    }),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: {
+    query: z
+      .object({ status: z.enum(["available", "pending", "sold"]).default("available") })
+      .partial()
+      .optional(),
+  },
+  responses: { 200: z.array(Pet), 304: z.unknown(), 400: z.object({ code: z.number().int(), message: z.string() }) },
 };
 
 export type get_FindPetsByTags = typeof get_FindPetsByTags;
@@ -123,15 +95,14 @@ export const get_FindPetsByTags = {
   method: z.literal("GET"),
   path: z.literal("/pet/findByTags"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    query: z.object({
-      tags: z.array(z.string()).optional(),
-    }),
-  }),
-  responses: z.object({
-    "200": z.union([z.array(Pet), z.array(User), z.array(Tag)]),
-    "400": z.unknown(),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: {
+    query: z
+      .object({ tags: z.array(z.string()) })
+      .partial()
+      .optional(),
+  },
+  responses: { 200: z.union([z.array(Pet), z.array(User), z.array(Tag)]), 400: z.unknown() },
 };
 
 export type get_GetPetById = typeof get_GetPetById;
@@ -139,22 +110,13 @@ export const get_GetPetById = {
   method: z.literal("GET"),
   path: z.literal("/pet/{petId}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      petId: z.number(),
-    }),
-  }),
-  responses: z.object({
-    "200": Pet,
-    "400": z.object({
-      code: z.number(),
-      message: z.string(),
-    }),
-    "404": z.object({
-      code: z.number(),
-      message: z.string(),
-    }),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: { path: z.object({ petId: z.coerce.number().int() }) },
+  responses: {
+    200: Pet,
+    400: z.object({ code: z.number().int(), message: z.string() }),
+    404: z.object({ code: z.number().int(), message: z.string() }),
+  },
 };
 
 export type post_UpdatePetWithForm = typeof post_UpdatePetWithForm;
@@ -162,18 +124,12 @@ export const post_UpdatePetWithForm = {
   method: z.literal("POST"),
   path: z.literal("/pet/{petId}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    query: z.object({
-      name: z.string().optional(),
-      status: z.string().optional(),
-    }),
-    path: z.object({
-      petId: z.number(),
-    }),
-  }),
-  responses: z.object({
-    "405": z.unknown(),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: {
+    query: z.object({ name: z.string(), status: z.string() }).partial().optional(),
+    path: z.object({ petId: z.coerce.number().int() }),
+  },
+  responses: { 405: z.unknown() },
 };
 
 export type delete_DeletePet = typeof delete_DeletePet;
@@ -181,17 +137,12 @@ export const delete_DeletePet = {
   method: z.literal("DELETE"),
   path: z.literal("/pet/{petId}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      petId: z.number(),
-    }),
-    header: z.object({
-      api_key: z.string().optional(),
-    }),
-  }),
-  responses: z.object({
-    "400": z.unknown(),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: {
+    path: z.object({ petId: z.coerce.number().int() }),
+    header: z.object({ api_key: z.string() }).partial().optional(),
+  },
+  responses: { 400: z.unknown() },
 };
 
 export type post_UploadFile = typeof post_UploadFile;
@@ -199,18 +150,13 @@ export const post_UploadFile = {
   method: z.literal("POST"),
   path: z.literal("/pet/{petId}/uploadImage"),
   requestFormat: z.literal("binary"),
-  parameters: z.object({
-    query: z.object({
-      additionalMetadata: z.string().optional(),
-    }),
-    path: z.object({
-      petId: z.number(),
-    }),
-    body: z.string(),
-  }),
-  responses: z.object({
-    "200": ApiResponse,
-  }),
+  responseFormat: z.literal("json"),
+  parameters: {
+    query: z.object({ additionalMetadata: z.string() }).partial().optional(),
+    path: z.object({ petId: z.coerce.number().int() }),
+    body: z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob),
+  },
+  responses: { 200: ApiResponse },
 };
 
 export type get_GetInventory = typeof get_GetInventory;
@@ -218,10 +164,9 @@ export const get_GetInventory = {
   method: z.literal("GET"),
   path: z.literal("/store/inventory"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
-  responses: z.object({
-    "200": z.record(z.number()),
-  }),
+  responses: { 200: z.record(z.string(), z.number().int()) },
 };
 
 export type post_PlaceOrder = typeof post_PlaceOrder;
@@ -229,13 +174,9 @@ export const post_PlaceOrder = {
   method: z.literal("POST"),
   path: z.literal("/store/order"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    body: Order,
-  }),
-  responses: z.object({
-    "200": Order,
-    "405": z.unknown(),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: { body: Order },
+  responses: { 200: Order, 405: z.unknown() },
 };
 
 export type get_GetOrderById = typeof get_GetOrderById;
@@ -243,16 +184,9 @@ export const get_GetOrderById = {
   method: z.literal("GET"),
   path: z.literal("/store/order/{orderId}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      orderId: z.number(),
-    }),
-  }),
-  responses: z.object({
-    "200": Order,
-    "400": z.unknown(),
-    "404": z.unknown(),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: { path: z.object({ orderId: z.coerce.number().int() }) },
+  responses: { 200: Order, 400: z.unknown(), 404: z.unknown() },
 };
 
 export type delete_DeleteOrder = typeof delete_DeleteOrder;
@@ -260,15 +194,9 @@ export const delete_DeleteOrder = {
   method: z.literal("DELETE"),
   path: z.literal("/store/order/{orderId}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      orderId: z.number(),
-    }),
-  }),
-  responses: z.object({
-    "400": z.unknown(),
-    "404": z.unknown(),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: { path: z.object({ orderId: z.coerce.number().int() }) },
+  responses: { 400: z.unknown(), 404: z.unknown() },
 };
 
 export type post_CreateUser = typeof post_CreateUser;
@@ -276,12 +204,9 @@ export const post_CreateUser = {
   method: z.literal("POST"),
   path: z.literal("/user"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    body: User,
-  }),
-  responses: z.object({
-    default: User,
-  }),
+  responseFormat: z.literal("json"),
+  parameters: { body: User },
+  responses: { default: User },
 };
 
 export type post_CreateUsersWithListInput = typeof post_CreateUsersWithListInput;
@@ -289,13 +214,9 @@ export const post_CreateUsersWithListInput = {
   method: z.literal("POST"),
   path: z.literal("/user/createWithList"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    body: z.array(User),
-  }),
-  responses: z.object({
-    "200": User,
-    default: z.unknown(),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: { body: z.array(User) },
+  responses: { 200: User, default: z.unknown() },
 };
 
 export type get_LoginUser = typeof get_LoginUser;
@@ -303,25 +224,13 @@ export const get_LoginUser = {
   method: z.literal("GET"),
   path: z.literal("/user/login"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    query: z.object({
-      username: z.string().optional(),
-      password: z.string().optional(),
-    }),
-  }),
-  responses: z.object({
-    "200": z.string(),
-    "400": z.unknown(),
-  }),
-  responseHeaders: z.object({
-    "200": z.object({
-      "X-Rate-Limit": z.number(),
-      "X-Expires-After": z.string(),
-    }),
-    "400": z.object({
-      "X-Error": z.string(),
-    }),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: { query: z.object({ username: z.string(), password: z.string() }).partial().optional() },
+  responses: { 200: z.string(), 400: z.unknown() },
+  responseHeaders: {
+    200: z.object({ "X-Rate-Limit": z.number().int(), "X-Expires-After": z.iso.datetime() }),
+    400: z.object({ "X-Error": z.string() }),
+  },
 };
 
 export type get_LogoutUser = typeof get_LogoutUser;
@@ -329,10 +238,9 @@ export const get_LogoutUser = {
   method: z.literal("GET"),
   path: z.literal("/user/logout"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
-  responses: z.object({
-    default: z.unknown(),
-  }),
+  responses: { default: z.unknown() },
 };
 
 export type get_GetUserByName = typeof get_GetUserByName;
@@ -340,23 +248,14 @@ export const get_GetUserByName = {
   method: z.literal("GET"),
   path: z.literal("/user/{username}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      username: z.string(),
-    }),
-  }),
-  responses: z.object({
-    "200": User,
-    "201": z.object({
-      id: z.number(),
-      username: z.string(),
-    }),
-    "400": z.object({
-      code: z.number(),
-      message: z.string(),
-    }),
-    "404": z.unknown(),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: { path: z.object({ username: z.string() }) },
+  responses: {
+    200: User,
+    201: z.object({ id: z.number().int(), username: z.string() }),
+    400: z.object({ code: z.number().int(), message: z.string() }),
+    404: z.unknown(),
+  },
 };
 
 export type put_UpdateUser = typeof put_UpdateUser;
@@ -364,15 +263,9 @@ export const put_UpdateUser = {
   method: z.literal("PUT"),
   path: z.literal("/user/{username}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      username: z.string(),
-    }),
-    body: User,
-  }),
-  responses: z.object({
-    default: z.unknown(),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: { path: z.object({ username: z.string() }), body: User },
+  responses: { default: z.unknown() },
 };
 
 export type delete_DeleteUser = typeof delete_DeleteUser;
@@ -380,15 +273,9 @@ export const delete_DeleteUser = {
   method: z.literal("DELETE"),
   path: z.literal("/user/{username}"),
   requestFormat: z.literal("json"),
-  parameters: z.object({
-    path: z.object({
-      username: z.string(),
-    }),
-  }),
-  responses: z.object({
-    "400": z.unknown(),
-    "404": z.unknown(),
-  }),
+  responseFormat: z.literal("json"),
+  parameters: { path: z.object({ username: z.string() }) },
+  responses: { 400: z.unknown(), 404: z.unknown() },
 };
 
 export type get_GetPetTextPlain = typeof get_GetPetTextPlain;
@@ -396,10 +283,9 @@ export const get_GetPetTextPlain = {
   method: z.literal("GET"),
   path: z.literal("/pet/text"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
-  responses: z.object({
-    "200": User,
-  }),
+  responses: { 200: User },
 };
 
 export type get_GetPetEmpty = typeof get_GetPetEmpty;
@@ -407,10 +293,9 @@ export const get_GetPetEmpty = {
   method: z.literal("GET"),
   path: z.literal("/pet/empty"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
-  responses: z.object({
-    "204": z.unknown(),
-  }),
+  responses: { 204: z.unknown() },
 };
 
 export type get_GetPetCustom = typeof get_GetPetCustom;
@@ -418,11 +303,12 @@ export const get_GetPetCustom = {
   method: z.literal("GET"),
   path: z.literal("/pet/custom"),
   requestFormat: z.literal("json"),
+  responseFormat: z.literal("json"),
   parameters: z.never(),
-  responses: z.object({
-    "200": Pet,
-  }),
+  responses: { 200: Pet },
 };
+
+// </Endpoints>
 
 // <EndpointByMethod>
 export const EndpointByMethod = {
@@ -470,15 +356,33 @@ export type DeleteEndpoints = EndpointByMethod["delete"];
 // <ApiClientTypes>
 export type EndpointParameters = {
   body?: unknown;
-  query?: Record<string, unknown>;
-  header?: Record<string, unknown>;
-  path?: Record<string, unknown>;
+  query?: unknown;
+  header?: unknown;
+  path?: unknown;
+  cookie?: unknown;
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
-type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
+
+// <EndpointRequestFormats>
+/** Non-json request body encodings; missing entries default to `"json"`. */
+export const endpointRequestFormats = {
+  post: {
+    "/pet/{petId}/uploadImage": "binary",
+  },
+} as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
+// </EndpointRequestFormats>
+
+// <EndpointResponseFormats>
+/** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
+export const endpointResponseFormats = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
+}>;
+// </EndpointResponseFormats>
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -491,6 +395,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -501,9 +406,31 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   responseHeaders?: TConfig["responseHeaders"];
 };
 
+/**
+ * Minimal response surface used by ApiClient — avoids depending on the DOM `Response`
+ * global (helpful for Node without DOM lib). Structural typing accepts fetch Response.
+ */
+export interface FetcherResponse {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  headers: {
+    get(name: string): string | null;
+    getSetCookie?: () => string[];
+  };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
+  json(): Promise<unknown>;
+  text(): Promise<string>;
+  arrayBuffer(): Promise<ArrayBuffer>;
+  clone(): FetcherResponse;
+}
+
 export interface Fetcher {
-  decodePathParams?: (path: string, pathParams: Record<string, string>) => string;
-  encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams;
+  decodePathParams?: (path: string, pathParams: unknown) => string;
+  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
+  /** Merge cookie params into request headers (default: Cookie header). */
+  encodeCookies?: (cookies: unknown, headers: Headers) => void;
   //
   fetch: (input: {
     method: Method;
@@ -511,10 +438,12 @@ export interface Fetcher {
     urlSearchParams?: URLSearchParams | undefined;
     parameters?: EndpointParameters | undefined;
     path: string;
+    /** How to encode `parameters.body` (from OpenAPI requestBody content type). */
+    requestFormat: RequestFormat;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
-  }) => Promise<Response>;
-  parseResponseData?: (response: Response) => Promise<unknown>;
+  }) => Promise<FetcherResponse>;
+  parseResponseData?: (response: FetcherResponse) => Promise<unknown>;
 }
 
 export const successStatusCodes = [
@@ -565,12 +494,12 @@ export interface TypedHeaders<TypedHeaderValues extends Record<string, string> |
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<
-  Response,
+  FetcherResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: true;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? FetcherResponse["headers"] : TypedHeaders<THeaders>;
   data: TSuccess;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TSuccess>;
@@ -578,18 +507,18 @@ export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends O
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
 export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<
-  Response,
+  FetcherResponse,
   "ok" | "status" | "json" | "headers"
 > {
   ok: false;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers : TypedHeaders<THeaders>;
+  headers: never extends THeaders ? FetcherResponse["headers"] : TypedHeaders<THeaders>;
   data: TData;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TData>;
 }
 
-export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}, THeaders = {}> = {
+export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
   [K in keyof TAllResponses]: K extends string
     ? K extends `${infer TStatusCode extends number}`
       ? TStatusCode extends SuccessStatusCode
@@ -603,9 +532,29 @@ export type TypedApiResponse<TAllResponses extends Record<string | number, unkno
       : never;
 }[keyof TAllResponses];
 
+type OptionalUndefinedKeys<T> = {
+  [K in keyof T as undefined extends T[K] ? never : K]: T[K];
+} & {
+  [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<T[K], undefined>;
+};
+type InferSchemaValue<T> = T extends z.ZodType
+  ? z.infer<T>
+  : T extends object
+    ? { [K in keyof T]: InferSchemaValue<T[K]> }
+    : T;
+type InferSchemaInputRaw<T> = T extends z.ZodType
+  ? z.input<T>
+  : T extends object
+    ? { [K in keyof T]: InferSchemaInputRaw<T[K]> }
+    : T;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
+
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TResponses, TEndpoint extends { responseHeaders: infer THeaders } ? THeaders : never>
+    ? TypedApiResponse<
+        InferSchemaValue<TResponses>,
+        TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never
+      >
     : never
   : never;
 
@@ -614,12 +563,69 @@ export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<
   { status: TStatusCode }
 >;
 
+/**
+ * Success-body payload — InferSchemaValue only on success statuses.
+ * Filter with extends {} like the old Extract { data: {} } so unknown bodies (e.g. 304) drop out.
+ */
+export type InferSuccessData<TEndpoint> = TEndpoint extends { responses: infer TResponses }
+  ? {
+      [K in keyof TResponses]: K extends string
+        ? K extends `${infer TStatusCode extends number}`
+          ? TStatusCode extends SuccessStatusCode
+            ? InferSchemaValue<TResponses[K]> extends infer D
+              ? D extends {}
+                ? D
+                : never
+              : never
+            : never
+          : never
+        : K extends number
+          ? K extends SuccessStatusCode
+            ? InferSchemaValue<TResponses[K]> extends infer D
+              ? D extends {}
+                ? D
+                : never
+              : never
+            : never
+          : never;
+    }[keyof TResponses]
+  : never;
+
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
 }[keyof T];
 
 type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
 type NotNever<T> = [T] extends [never] ? false : true;
+
+/** Call options merged onto inferred endpoint parameters. */
+type ApiRequestOptions = {
+  overrides?: RequestInit;
+  withResponse?: boolean;
+  throwOnStatusError?: boolean;
+  validate?: ValidateSide;
+};
+
+/** Parameter bag for an endpoint + request options. */
+export type ApiCallParams<TEndpoint> = TEndpoint extends { parameters: infer UParams }
+  ? NotNever<UParams> extends true
+    ? InferSchemaInput<UParams> & ApiRequestOptions
+    : ApiRequestOptions
+  : ApiRequestOptions;
+
+/** Resolve response type from withResponse flag on the call config. */
+export type ApiCallResult<TEndpoint, TParams> = TParams extends { withResponse: true }
+  ? SafeApiResponse<TEndpoint>
+  : InferSuccessData<TEndpoint>;
+
+export type ValidateSide = "none" | "input" | "output" | "both";
+export type OnValidate = (ctx: {
+  side: "input" | "output";
+  method: string;
+  path: string;
+  schema: unknown;
+  value: unknown;
+}) => unknown | Promise<unknown>;
 
 // </ApiClientTypes>
 
@@ -636,16 +642,56 @@ export class TypedStatusError<TData = unknown> extends Error {
 }
 // </TypedStatusError>
 
+// <ValidateHelpers>
+const defaultParse = (schema: unknown, value: unknown): unknown => {
+  return (schema as { parse: (v: unknown) => unknown }).parse(value);
+};
+
+const runValidate = async (ctx: {
+  side: "input" | "output";
+  method: string;
+  path: string;
+  schema: unknown;
+  value: unknown;
+  onValidate?: OnValidate;
+}): Promise<unknown> => {
+  if (ctx.onValidate) return ctx.onValidate(ctx);
+  return defaultParse(ctx.schema, ctx.value);
+};
+// </ValidateHelpers>
+
 // <ApiClient>
 export class ApiClient {
   baseUrl: string = "";
   successStatusCodes = successStatusCodes;
   errorStatusCodes = errorStatusCodes;
+  validate: ValidateSide = "both";
+  onValidate?: OnValidate;
 
-  constructor(public fetcher: Fetcher) {}
+  constructor(
+    public fetcher: Fetcher,
+    options?: { validate?: ValidateSide; onValidate?: OnValidate },
+  ) {
+    if (options?.validate !== undefined) this.validate = options.validate;
+    if (options?.onValidate) this.onValidate = options.onValidate;
+  }
 
   setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
+    return this;
+  }
+
+  setValidate(validate: ValidateSide) {
+    this.validate = validate;
+    return this;
+  }
+
+  setOnValidate(onValidate: OnValidate | undefined) {
+    if (onValidate === undefined) {
+      delete this.onValidate;
+    } else {
+      this.onValidate = onValidate;
+    }
     return this;
   }
 
@@ -653,18 +699,19 @@ export class ApiClient {
    * Replace path parameters in URL
    * Supports both OpenAPI format {param} and Express format :param
    */
-  defaultDecodePathParams = (url: string, params: Record<string, string>): string => {
+  defaultDecodePathParams = (url: string, params: unknown): string => {
+    const record = (params ?? {}) as Record<string, unknown>;
     return url
-      .replace(/{(\w+)}/g, (_, key: string) => params[key] || `{${key}}`)
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || `:${key}`);
+      .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
   };
 
   /** Uses URLSearchParams, skips null/undefined values */
-  defaultEncodeSearchParams = (queryParams: Record<string, unknown> | undefined): URLSearchParams | undefined => {
-    if (!queryParams) return;
+  defaultEncodeSearchParams = (queryParams: unknown): URLSearchParams | undefined => {
+    if (!queryParams || typeof queryParams !== "object") return;
 
     const searchParams = new URLSearchParams();
-    Object.entries(queryParams).forEach(([key, value]) => {
+    Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
       if (value != null) {
         // Skip null/undefined values
         if (Array.isArray(value)) {
@@ -678,8 +725,22 @@ export class ApiClient {
     return searchParams;
   };
 
-  defaultParseResponseData = async (response: Response): Promise<unknown> => {
+  /** Append cookie params as a Cookie header (or merge into existing). */
+  defaultEncodeCookies = (cookies: unknown, headers: Headers): void => {
+    if (!cookies || typeof cookies !== "object") return;
+    const parts = Object.entries(cookies as Record<string, unknown>)
+      .filter(([, value]) => value != null)
+      .map(([key, value]) => `${key}=${String(value)}`);
+    if (!parts.length) return;
+    const existing = headers.get("cookie");
+    headers.set("cookie", existing ? `${existing}; ${parts.join("; ")}` : parts.join("; "));
+  };
+
+  defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.includes("text/event-stream")) {
+      return response.body ?? null;
+    }
     if (contentType.startsWith("text/")) {
       return await response.text();
     }
@@ -709,22 +770,32 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & {
+              overrides?: RequestInit;
+              withResponse: true;
+              throwOnStatusError?: boolean;
+              validate?: ValidateSide;
+            }
+          : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+        : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<SafeApiResponse<TEndpoint>>;
 
   put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & {
+              overrides?: RequestInit;
+              withResponse?: false;
+              throwOnStatusError?: boolean;
+              validate?: ValidateSide;
+            }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
     >
-  ): Promise<SafeApiResponse<TEndpoint>>;
+  ): Promise<InferSuccessData<TEndpoint>>;
 
   put<Path extends keyof PutEndpoints, _TEndpoint extends PutEndpoints[Path]>(
     path: Path,
@@ -740,22 +811,32 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & {
+              overrides?: RequestInit;
+              withResponse: true;
+              throwOnStatusError?: boolean;
+              validate?: ValidateSide;
+            }
+          : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+        : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<SafeApiResponse<TEndpoint>>;
 
   post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & {
+              overrides?: RequestInit;
+              withResponse?: false;
+              throwOnStatusError?: boolean;
+              validate?: ValidateSide;
+            }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
     >
-  ): Promise<SafeApiResponse<TEndpoint>>;
+  ): Promise<InferSuccessData<TEndpoint>>;
 
   post<Path extends keyof PostEndpoints, _TEndpoint extends PostEndpoints[Path]>(
     path: Path,
@@ -771,22 +852,32 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & {
+              overrides?: RequestInit;
+              withResponse: true;
+              throwOnStatusError?: boolean;
+              validate?: ValidateSide;
+            }
+          : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+        : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<SafeApiResponse<TEndpoint>>;
 
   get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & {
+              overrides?: RequestInit;
+              withResponse?: false;
+              throwOnStatusError?: boolean;
+              validate?: ValidateSide;
+            }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
     >
-  ): Promise<SafeApiResponse<TEndpoint>>;
+  ): Promise<InferSuccessData<TEndpoint>>;
 
   get<Path extends keyof GetEndpoints, _TEndpoint extends GetEndpoints[Path]>(
     path: Path,
@@ -802,22 +893,32 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & {
+              overrides?: RequestInit;
+              withResponse: true;
+              throwOnStatusError?: boolean;
+              validate?: ValidateSide;
+            }
+          : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+        : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<SafeApiResponse<TEndpoint>>;
 
   delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & {
+              overrides?: RequestInit;
+              withResponse?: false;
+              throwOnStatusError?: boolean;
+              validate?: ValidateSide;
+            }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
     >
-  ): Promise<SafeApiResponse<TEndpoint>>;
+  ): Promise<InferSuccessData<TEndpoint>>;
 
   delete<Path extends keyof DeleteEndpoints, _TEndpoint extends DeleteEndpoints[Path]>(
     path: Path,
@@ -841,11 +942,16 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & {
+              overrides?: RequestInit;
+              withResponse: true;
+              throwOnStatusError?: boolean;
+              validate?: ValidateSide;
+            }
+          : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+        : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
     >
-  ): Promise<Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"]>;
+  ): Promise<SafeApiResponse<TEndpoint>>;
 
   request<
     TMethod extends keyof EndpointByMethod,
@@ -857,70 +963,125 @@ export class ApiClient {
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
         ? NotNever<UParams> extends true
-          ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-        : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
+          ? InferSchemaInput<UParams> & {
+              overrides?: RequestInit;
+              withResponse?: false;
+              throwOnStatusError?: boolean;
+              validate?: ValidateSide;
+            }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+        : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
     >
-  ): Promise<SafeApiResponse<TEndpoint>>;
+  ): Promise<InferSuccessData<TEndpoint>>;
 
   request<
     TMethod extends keyof EndpointByMethod,
     TPath extends keyof EndpointByMethod[TMethod],
     TEndpoint extends EndpointByMethod[TMethod][TPath],
   >(method: TMethod, path: TPath, ...params: MaybeOptionalArg<any>): Promise<any> {
-    const requestParams = params[0];
-    const withResponse = requestParams?.withResponse;
-    const {
-      withResponse: _,
-      throwOnStatusError = withResponse ? false : true,
-      overrides,
-      ...fetchParams
-    } = requestParams || {};
+    return (async () => {
+      const requestParams = params[0];
+      const withResponse = requestParams?.withResponse;
+      const throwOnStatusError = requestParams?.throwOnStatusError ?? (withResponse ? false : true);
+      let overrides = requestParams?.overrides;
+      const validateSide: ValidateSide = requestParams?.validate ?? this.validate;
 
-    const parametersToSend: EndpointParameters = {};
-    if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
-    if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
-    if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
-    if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
+      const parametersToSend: EndpointParameters = {};
+      if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
+      if (requestParams?.query !== undefined) parametersToSend.query = requestParams.query;
+      if (requestParams?.header !== undefined) parametersToSend.header = requestParams.header;
+      if (requestParams?.path !== undefined) parametersToSend.path = requestParams.path;
+      if (requestParams?.cookie !== undefined) parametersToSend.cookie = requestParams.cookie;
 
-    const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
-      this.baseUrl + (path as string),
-      (parametersToSend.path ?? {}) as Record<string, string>,
-    );
-    const url = new URL(resolvedPath);
-    const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(parametersToSend.query);
+      type RuntimeEndpoint = {
+        parameters?: Partial<Record<"body" | "query" | "header" | "path" | "cookie", unknown>>;
+        responses?: Record<string, unknown>;
+      };
+      const endpointSchema = EndpointByMethod[method][path] as RuntimeEndpoint;
+      const shouldValidateInput = validateSide === "input" || validateSide === "both";
+      if (shouldValidateInput && endpointSchema.parameters) {
+        const paramSchema = endpointSchema.parameters;
+        for (const key of ["body", "query", "header", "path", "cookie"] as const) {
+          const schema = paramSchema[key];
+          const value = parametersToSend[key];
+          if (schema !== undefined && value !== undefined) {
+            parametersToSend[key] = await runValidate({
+              side: "input",
+              method: String(method),
+              path: String(path),
+              schema,
+              value,
+              ...(this.onValidate ? { onValidate: this.onValidate } : {}),
+            });
+          }
+        }
+      }
 
-    const promise = this.fetcher
-      .fetch({
+      const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
+        this.baseUrl + (path as string),
+        parametersToSend.path ?? {},
+      );
+      const url = new URL(resolvedPath);
+      const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
+        parametersToSend.query,
+      );
+
+      if (parametersToSend.cookie) {
+        const headers = new Headers((overrides as RequestInit | undefined)?.headers);
+        (this.fetcher.encodeCookies ?? this.defaultEncodeCookies)(parametersToSend.cookie, headers);
+        overrides = { ...overrides, headers };
+      }
+
+      const response = await this.fetcher.fetch({
         method: method,
         path: path as string,
         url,
-        urlSearchParams,
-        parameters: Object.keys(fetchParams).length ? fetchParams : undefined,
-        overrides,
+        ...(urlSearchParams ? { urlSearchParams } : {}),
+        ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
+        requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+        ...(overrides ? { overrides } : {}),
         throwOnStatusError,
-      })
-      .then(async (response) => {
-        const data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
-        const typedResponse = Object.assign(response, {
-          data: data,
-          json: () => Promise.resolve(data),
-        }) as SafeApiResponse<TEndpoint>;
-
-        if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-          throw new TypedStatusError(typedResponse as never);
-        }
-
-        return withResponse ? typedResponse : data;
       });
+      const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+      let data =
+        responseFormat === "sse"
+          ? (response.body ?? null)
+          : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+      const shouldValidateOutput = validateSide === "output" || validateSide === "both";
+      if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
+        const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+        if (responseSchema) {
+          data = await runValidate({
+            side: "output",
+            method: String(method),
+            path: String(path),
+            schema: responseSchema,
+            value: data,
+            ...(this.onValidate ? { onValidate: this.onValidate } : {}),
+          });
+        }
+      }
+      const typedResponse = Object.assign(response, {
+        data: data,
+        json: () => Promise.resolve(data),
+      }) as SafeApiResponse<TEndpoint>;
 
-    return promise as Extract<InferResponseByStatus<z.infer<TEndpoint>, SuccessStatusCode>, { data: {} }>["data"];
+      if (throwOnStatusError && (errorStatusCodes as readonly number[]).includes(response.status)) {
+        throw new TypedStatusError(typedResponse as TypedErrorResponse<unknown, ErrorStatusCode, unknown>);
+      }
+
+      return withResponse ? typedResponse : data;
+    })() as Promise<any>;
   }
   // </ApiClient.request>
 }
 
-export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
-  return new ApiClient(fetcher).setBaseUrl(baseUrl ?? "");
+export function createApiClient(
+  fetcher: Fetcher,
+  baseUrl?: string,
+  options?: { validate?: ValidateSide; onValidate?: OnValidate },
+) {
+  return new ApiClient(fetcher, options).setBaseUrl(baseUrl ?? "");
 }
 
 /**

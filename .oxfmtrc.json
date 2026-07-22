@@ -1,5 +1,5 @@
 {
-  "ignorePatterns": ["packages/web/**"],
+  "ignorePatterns": ["packages/web/**", "**/tests/snapshots/**", "**/tmp/**"],
   "singleQuote": false,
   "printWidth": 120,
   "bracketSpacing": true,

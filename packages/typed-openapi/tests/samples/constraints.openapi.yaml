@@ -1,0 +1,46 @@
+openapi: 3.0.3
+info:
+  title: Constraints fixture
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    Constrained:
+      type: object
+      required:
+        - email
+        - age
+        - tags
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 3
+          maxLength: 100
+        age:
+          type: integer
+          minimum: 0
+          maximum: 150
+          exclusiveMaximum: true
+          multipleOf: 1
+        score:
+          type: number
+          exclusiveMinimum: 0
+          exclusiveMaximum: 1
+        tags:
+          type: array
+          items:
+            type: string
+            pattern: "^[a-z]+$"
+          minItems: 1
+          maxItems: 10
+          uniqueItems: true
+        website:
+          type: string
+          format: uri
+        id:
+          type: string
+          format: uuid
+        nickname:
+          type: string
+          nullable: true

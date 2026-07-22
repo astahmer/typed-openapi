@@ -1,12 +1,24 @@
 import { capitalize, groupBy } from "pastable/server";
-import { Box } from "./box.ts";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
-import { AnyBox, AnyBoxDef } from "./types.ts";
-import * as Codegen from "@sinclair/typebox-codegen";
-import { match } from "ts-pattern";
 import { type } from "arktype";
 import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
-import type { BoxObject, NameTransformOptions } from "./types.ts";
+import type { NameTransformOptions } from "./types.ts";
+import { emitRuntimeFile } from "./runtimes/emit-runtime-file.ts";
+import { getRuntimeAdapter, type ShippedRuntime } from "./runtimes/registry.ts";
+import { resolveValidationPolicy, type ValidationPreset, type ValidationPolicy } from "./runtimes/validation.ts";
+import type { OutputRuntime as RuntimeName } from "./runtimes/types.ts";
+import {
+  canEmitAsInterface,
+  emitNamedInterface,
+  irToTs,
+  renderSchemaJsdoc,
+  buildIrToTsOptions,
+} from "./schema-ir/ir-to-ts.ts";
+import type { SchemaNode } from "./schema-ir/types.ts";
+import { applySpecFilters, shouldEmitSchema, type SpecFilterOptions } from "./filter-spec.ts";
+import { prepareSchemaNaming, type SchemaNamingOptions } from "./schema-naming.ts";
+import { effectApiClientBody } from "./effect-api-client.ts";
+import { findRecursiveSchemaNames } from "./runtimes/shared.ts";
 
 // Default success status codes (2xx and 3xx ranges)
 export const DEFAULT_SUCCESS_STATUS_CODES = [
@@ -21,77 +33,125 @@ export const DEFAULT_ERROR_STATUS_CODES = [
 
 export type ErrorStatusCode = (typeof DEFAULT_ERROR_STATUS_CODES)[number];
 
-export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> & {
-  runtime?: "none" | keyof typeof runtimeValidationGenerator;
-  schemasOnly?: boolean;
-  nameTransform?: NameTransformOptions | undefined;
-  successStatusCodes?: readonly number[];
-  errorStatusCodes?: readonly number[];
-  includeClient?: boolean;
-  jsdoc?: boolean;
+export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> &
+  SpecFilterOptions &
+  SchemaNamingOptions & {
+    runtime?: RuntimeName;
+    /** Validation depth for runtime adapters (ignored when runtime is `none`) */
+    validation?: ValidationPreset | (Partial<ValidationPolicy> & { preset?: ValidationPreset });
+    /** When runtime ≠ none: which side(s) to validate (default both) */
+    validateSide?: "none" | "input" | "output" | "both";
+    schemasOnly?: boolean;
+    nameTransform?: NameTransformOptions | undefined;
+    successStatusCodes?: readonly number[];
+    errorStatusCodes?: readonly number[];
+    includeClient?: boolean;
+    jsdoc?: boolean;
+    /** promise (default) or effect-native client */
+    client?: "promise" | "effect";
+    /**
+     * Coerce number/boolean path|query|cookie|header params from strings.
+     * Default true when runtime ≠ none.
+     */
+    coerce?: boolean;
+    /** Map `format: date-time|date` to `Date` (types + runtime transforms). */
+    transformDates?: boolean;
+    /** Map `format: int64` to `bigint` (types + runtime transforms). */
+    transformBigInt?: boolean;
+  };
+type GeneratorContext = Required<
+  Omit<
+    GeneratorOptions,
+    | "validation"
+    | "filterEndpoints"
+    | "filterSchemas"
+    | "treeShakeSchemas"
+    | "endpointPatterns"
+    | "schemaPatterns"
+    | "schemaNaming"
+    | "shouldNameSchema"
+    | "validateSide"
+    | "client"
+    | "coerce"
+    | "transformDates"
+    | "transformBigInt"
+  >
+> & {
+  validation: ValidationPolicy;
+  keptSchemaNames?: Set<string>;
+  namedSchemasForEmit?: Array<{ name: string; node: SchemaNode }>;
+  validateSide: "none" | "input" | "output" | "both";
+  client: "promise" | "effect";
+  coerce: boolean;
+  transformDates: boolean;
+  transformBigInt: boolean;
 };
-type GeneratorContext = Required<GeneratorOptions>;
 
-export const allowedRuntimes = type("'none' | 'arktype' | 'io-ts' | 'typebox' | 'valibot' | 'yup' | 'zod'");
+export const allowedRuntimes = type(
+  "'none' | 'zod' | 'zod3' | 'effect' | 'effect3' | 'valibot' | 'arktype' | 'typebox' | 'typia'",
+);
 export type OutputRuntime = typeof allowedRuntimes.infer;
 
-// TODO validate response schemas in sample fetch ApiClient
-// also, check that we can easily retrieve the response schema from the Fetcher
-
-const runtimeValidationGenerator = {
-  arktype: Codegen.ModelToArkType.Generate,
-  "io-ts": Codegen.ModelToIoTs.Generate,
-  typebox: Codegen.ModelToTypeBox.Generate,
-  valibot: Codegen.ModelToValibot.Generate,
-  yup: Codegen.ModelToYup.Generate,
-  zod: Codegen.ModelToZod.Generate,
-};
-
-const inferByRuntime = {
-  none: (input: string) => input,
-  arktype: (input: string) => `${input}["infer"]`,
-  "io-ts": (input: string) => `t.TypeOf<${input}>`,
-  typebox: (input: string) => `Static<${input}>`,
-  valibot: (input: string) => `v.InferOutput<${input}>`,
-  yup: (input: string) => `y.InferType<${input}>`,
-  zod: (input: string) => `z.infer<${input}>`,
-};
-
-const methods = ["get", "put", "post", "delete", "options", "head", "patch", "trace"] as const;
-const methodsRegex = new RegExp(`(?:${methods.join("|")})_`);
-const endpointExport = new RegExp(`export (?:type|const) (?:${methodsRegex.source})`);
-
-const replacerByRuntime = {
-  yup: (line: string) =>
-    line
-      .replace(/y\.InferType<\s*?typeof (.*?)\s*?>/g, "typeof $1")
-      .replace(
-        new RegExp(`(${endpointExport.source})` + new RegExp(/([\s\S]*? )(y\.object)(\()/).source, "g"),
-        "$1$2(",
-      ),
-  zod: (line: string) =>
-    line
-      .replace(/z\.infer<\s*?typeof (.*?)\s*?>/g, "typeof $1")
-      .replace(
-        new RegExp(`(${endpointExport.source})` + new RegExp(/([\s\S]*? )(z\.object)(\()/).source, "g"),
-        "$1$2(",
-      ),
-};
-
 const shouldRenderDescriptionComments = (ctx: GeneratorContext) => ctx.jsdoc && ctx.runtime === "none";
+
+/** Deep-infer runtime schema values hanging off endpoint const objects. */
+const runtimeInferHelper = (runtime: OutputRuntime): string => {
+  // OptionalUndefinedKeys runs once at the top of InferSchemaInput (param bags), not at every
+  // nested object — cuts mapped-type instantiations vs recursive key remapping.
+  const optionalUndefinedKeys = `type OptionalUndefinedKeys<T> = {
+  [K in keyof T as undefined extends T[K] ? never : K]: T[K];
+} & {
+  [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<T[K], undefined>;
+};`;
+
+  if (runtime === "none") {
+    return `type InferSchemaValue<T> = T;\ntype InferSchemaInput<T> = T;`;
+  }
+
+  if (runtime === "zod" || runtime === "zod3") {
+    return `${optionalUndefinedKeys}
+type InferSchemaValue<T> = T extends z.ZodType ? z.infer<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = T extends z.ZodType ? z.input<T> : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
+  }
+  if (runtime === "valibot") {
+    return `${optionalUndefinedKeys}
+type InferSchemaValue<T> = T extends v.GenericSchema ? v.InferOutput<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = T extends v.GenericSchema ? v.InferInput<T> : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
+  }
+  if (runtime === "effect" || runtime === "effect3") {
+    return `${optionalUndefinedKeys}
+type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = T extends { Encoded: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
+  }
+  if (runtime === "arktype") {
+    return `${optionalUndefinedKeys}
+type InferSchemaValue<T> = T extends { infer: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = T extends { inferIn: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
+  }
+  if (runtime === "typebox") {
+    return `${optionalUndefinedKeys}
+type InferSchemaValueRaw<T> = T extends import("@sinclair/typebox").TSchema ? import("@sinclair/typebox").Static<T> : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
+type InferSchemaValue<T> = InferSchemaValueRaw<T>;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;`;
+  }
+  if (runtime === "typia") {
+    return `${optionalUndefinedKeys}
+type InferSchemaValueRaw<T> = T extends (input: unknown) => input is infer U ? U : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
+type InferSchemaValue<T> = InferSchemaValueRaw<T>;
+type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;`;
+  }
+  return `type InferSchemaValue<T> = T;\ntype InferSchemaInput<T> = T;`;
+};
 
 const escapeCommentText = (text: string) => text.replace(/\*\//g, "*\\/");
 
 const renderDescriptionComment = (description: string, indent = "") => {
   const lines = description.trim().split(/\r?\n/);
-
   return `${indent}/**\n${lines.map((line) => `${indent} * ${escapeCommentText(line)}`).join("\n")}\n${indent} */`;
-};
-
-const getSchemaDescription = (schema: Box<AnyBoxDef>["schema"]) => {
-  if (!schema || typeof schema !== "object") return undefined;
-  if ("description" in schema && typeof schema.description === "string") return schema.description;
-  return undefined;
 };
 
 const indentMultiline = (value: string, indent = "  ") =>
@@ -103,55 +163,65 @@ const indentMultiline = (value: string, indent = "  ") =>
     : value;
 
 export const generateFile = (options: GeneratorOptions) => {
+  const runtime = options.runtime ?? "none";
+  const filtered = applySpecFilters(options.endpointList, options.refs, options);
+  const naming = prepareSchemaNaming(options.refs, filtered.endpointList, filtered.keptSchemaNames, options);
   const ctx = {
     ...options,
-    runtime: options.runtime ?? "none",
+    endpointList: naming.endpointList,
+    keptSchemaNames: filtered.keptSchemaNames,
+    namedSchemasForEmit: naming.namedSchemas.map(({ name, node }) => ({ name, node })),
+    runtime,
+    validation: resolveValidationPolicy(options.validation ?? (runtime === "none" ? "loose" : "strict")),
     successStatusCodes: options.successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
     errorStatusCodes: options.errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES,
     includeClient: options.includeClient ?? true,
     jsdoc: options.jsdoc ?? false,
+    validateSide: options.validateSide ?? (runtime === "none" ? "none" : "both"),
+    client: options.client ?? (runtime === "effect" || runtime === "effect3" ? "effect" : "promise"),
+    coerce: options.coerce ?? runtime !== "none",
+    transformDates: options.transformDates ?? false,
+    transformBigInt: options.transformBigInt ?? false,
   } as GeneratorContext;
 
-  const schemaList = generateSchemaList(ctx);
-  const endpointSchemaList = options.schemasOnly ? "" : generateEndpointSchemaList(ctx);
   const endpointByMethod = options.schemasOnly ? "" : generateEndpointByMethod(ctx);
-  const apiClient = options.schemasOnly || !ctx.includeClient ? "" : generateApiClient(ctx);
+  const apiClient =
+    options.schemasOnly || !ctx.includeClient
+      ? ""
+      : ctx.client === "effect"
+        ? generateEffectApiClient(ctx)
+        : generateApiClient(ctx);
 
-  const transform =
-    ctx.runtime === "none"
-      ? (file: string) => file
-      : (file: string) => {
-          const model = Codegen.TypeScriptToModel.Generate(file);
-          const transformer = runtimeValidationGenerator[ctx.runtime as Exclude<typeof ctx.runtime, "none">];
-          // tmp fix for typebox, there's currently a "// todo" only with Codegen.ModelToTypeBox.Generate
-          // https://github.com/sinclairzx81/typebox-codegen/blob/44d44d55932371b69f349331b1c8a60f5d760d9e/src/model/model-to-typebox.ts#L31
-          const generated = ctx.runtime === "typebox" ? Codegen.TypeScriptToTypeBox.Generate(file) : transformer(model);
+  if (ctx.runtime !== "none") {
+    const adapter = getRuntimeAdapter(ctx.runtime as ShippedRuntime);
+    const runtimeSchemasAndEndpoints = emitRuntimeFile({
+      adapter,
+      refs: ctx.refs,
+      endpointList: ctx.endpointList,
+      validation: ctx.validation,
+      schemasOnly: options.schemasOnly ?? false,
+      coerce: ctx.coerce,
+      transformDates: ctx.transformDates,
+      transformBigInt: ctx.transformBigInt,
+      ...(ctx.keptSchemaNames ? { keptSchemaNames: ctx.keptSchemaNames } : {}),
+      ...(ctx.namedSchemasForEmit ? { namedSchemas: ctx.namedSchemasForEmit } : {}),
+    });
 
-          let converted = "";
-          const match = generated.match(/(const __ENDPOINTS_START__ =)([\s\S]*?)(export type __ENDPOINTS_END__)/);
-          const content = match?.[2];
-
-          if (content && ctx.runtime in replacerByRuntime) {
-            const before = generated.slice(0, generated.indexOf("export type __ENDPOINTS_START"));
-            converted =
-              before +
-              replacerByRuntime[ctx.runtime as keyof typeof replacerByRuntime](
-                content.slice(content.indexOf("export")),
-              );
-          } else {
-            converted = generated;
-          }
-
-          return converted;
-        };
-
-  const file = `
-  ${transform(schemaList + endpointSchemaList)}
+    return `
+  ${runtimeSchemasAndEndpoints}
   ${endpointByMethod}
   ${apiClient}
   `;
+  }
 
-  return file;
+  const schemaList = generateSchemaList(ctx);
+  const endpointSchemaList = options.schemasOnly ? "" : generateEndpointSchemaList(ctx);
+
+  return `
+  ${schemaList + endpointSchemaList}
+  ${endpointByMethod}
+  ${apiClient}
+  `;
 };
 
 const generateSchemaList = (ctx: GeneratorContext) => {
@@ -160,18 +230,36 @@ const generateSchemaList = (ctx: GeneratorContext) => {
   ${runtime === "none" ? "export namespace Schemas {" : ""}
     // <Schemas>
   `;
-  refs.getOrderedSchemas().forEach(([schema, infos]) => {
-    if (!infos?.name) return;
-    if (infos.kind !== "schemas") return;
+  const schemas =
+    ctx.namedSchemasForEmit ??
+    refs
+      .getOrderedSchemas()
+      .filter(([, infos]) => infos?.name && infos.kind === "schemas")
+      .filter(([, infos]) => shouldEmitSchema(ctx.keptSchemaNames, infos.normalized))
+      .map(([node, infos]) => ({ name: infos.normalized, node }));
 
-    const description = shouldRenderDescriptionComments(ctx) ? getSchemaDescription(schema.schema) : undefined;
-    const schemaValue =
-      shouldRenderDescriptionComments(ctx) && !Box.isReference(schema)
-        ? boxToString(schema, ctx, { prefixRefsWithSchemas: false })
-        : schema.value;
-
-    file += `${description ? `${renderDescriptionComment(description)}\n` : ""}export type ${infos.normalized} = ${schemaValue}\n`;
+  const recursiveNames = findRecursiveSchemaNames(schemas);
+  const irOpts = buildIrToTsOptions({
+    prefixRefsWithSchemas: false,
+    jsdoc: shouldRenderDescriptionComments(ctx),
+    transformDates: ctx.transformDates,
+    transformBigInt: ctx.transformBigInt,
   });
+
+  for (const { name, node } of schemas) {
+    const description = shouldRenderDescriptionComments(ctx) ? node.meta.description : undefined;
+    const jsdoc = renderSchemaJsdoc(description);
+
+    // Circular `type` aliases (e.g. Schema4 ↔ Record Schema5) are illegal in TS (TS2456).
+    // Emit recursive object/record schemas as interfaces so unions/arrays can alias through them.
+    if (runtime === "none" && recursiveNames.has(name) && canEmitAsInterface(node)) {
+      file += `${jsdoc}${emitNamedInterface(name, node, irOpts)}\n`;
+      continue;
+    }
+
+    const schemaValue = irToTs(node, irOpts);
+    file += `${jsdoc}export type ${name} = ${schemaValue}\n`;
+  }
 
   return (
     file +
@@ -182,116 +270,40 @@ const generateSchemaList = (ctx: GeneratorContext) => {
   );
 };
 
-const boxToString = (
-  box: Box<AnyBoxDef>,
+/** Types-only: Schema IR → TS string (single source of truth with runtimes). */
+const nodeToString = (
+  node: SchemaNode,
   ctx: GeneratorContext,
   options: { prefixRefsWithSchemas?: boolean } = {},
 ): string => {
-  const prefixRefsWithSchemas = options.prefixRefsWithSchemas ?? true;
-
-  if (ctx.runtime !== "none") {
-    return box.value;
-  }
-
-  const renderValue = (value: any): string => {
-    if (typeof value === "string") {
-      return value;
-    }
-
-    if (Box.isBox(value)) {
-      return boxToString(value, ctx, options);
-    }
-
-    return value.value;
-  };
-
-  if (Box.isUnion(box)) {
-    return `(${box.params.types.map((type) => renderValue(type)).join(" | ")})`;
-  }
-
-  if (Box.isIntersection(box)) {
-    return `(${box.params.types.map((type) => renderValue(type)).join(" & ")})`;
-  }
-
-  if (Box.isArray(box)) {
-    return `Array<${renderValue(box.params.type)}>`;
-  }
-
-  if (Box.isOptional(box)) {
-    return `${renderValue(box.params.type)} | undefined`;
-  }
-
-  if (Box.isObject(box)) {
-    const renderedProps = Object.entries(box.params.props).map(([prop, type]) => {
-      const isOptional = typeof type !== "string" && Box.isBox(type) && Box.isOptional(type);
-      const renderedValue = indentMultiline(renderValue(type));
-      const description =
-        shouldRenderDescriptionComments(ctx) && typeof type !== "string" && Box.isBox(type)
-          ? getSchemaDescription(type.schema)
-          : undefined;
-
-      return {
-        description,
-        line: `${wrapWithQuotesIfNeeded(prop)}${isOptional ? "?" : ""}: ${renderedValue};`,
-      };
-    });
-
-    const shouldRenderMultiline =
-      shouldRenderDescriptionComments(ctx) &&
-      renderedProps.some(({ description, line }) => description || line.includes("\n"));
-
-    if (!shouldRenderMultiline) {
-      const propsString = renderedProps.map(({ line }) => line.slice(0, -1)).join(", ");
-      return `{ ${propsString} }`;
-    }
-
-    const propsString = renderedProps
-      .map(({ description, line }) => {
-        const comment = description ? `${renderDescriptionComment(description, "  ")}\n` : "";
-        return `${comment}  ${line}`;
-      })
-      .join("\n");
-
-    return `{
-${propsString}
-}`;
-  }
-
-  if (Box.isReference(box)) {
-    if (!box.params.generics) {
-      return box.value === "null" ? box.value : prefixRefsWithSchemas ? `Schemas.${box.value}` : box.value;
-    }
-
-    return `${box.params.name}<${box.params.generics.map((type) => renderValue(type)).join(", ")}>`;
-  }
-
-  return box.value;
+  return irToTs(
+    node,
+    buildIrToTsOptions({
+      prefixRefsWithSchemas: options.prefixRefsWithSchemas ?? true,
+      jsdoc: shouldRenderDescriptionComments(ctx),
+      transformDates: ctx.transformDates,
+      transformBigInt: ctx.transformBigInt,
+    }),
+  );
 };
 
-const parameterObjectToString = (parameters: Box<AnyBoxDef> | Record<string, AnyBox>, ctx: GeneratorContext) => {
-  if (parameters instanceof Box) {
-    return boxToString(parameters, ctx);
-  }
+const parameterObjectToString = (parameters: SchemaNode, ctx: GeneratorContext) => nodeToString(parameters, ctx);
 
+/** Optional param groups (all fields optional / `partial`) so `api.get(path)` needs no `{ query: {} }`. */
+const paramGroupKey = (key: string, node: SchemaNode) => (node.kind === "object" && node.partial ? `${key}?` : key);
+
+const responseHeadersObjectToString = (responseHeaders: Record<string, SchemaNode>, ctx: GeneratorContext) => {
   let str = "{";
-  for (const [key, box] of Object.entries(parameters)) {
-    str += `${wrapWithQuotesIfNeeded(key)}${box.type === "optional" ? "?" : ""}: ${indentMultiline(boxToString(box, ctx))},\n`;
+  for (const [key, node] of Object.entries(responseHeaders)) {
+    str += `${wrapWithQuotesIfNeeded(key.toLowerCase())}: ${indentMultiline(nodeToString(node, ctx))},\n`;
   }
   return str + "}";
 };
 
-const responseHeadersObjectToString = (responseHeaders: Record<string, Box<BoxObject>>, ctx: GeneratorContext) => {
+const generateResponsesObject = (responses: Record<string, SchemaNode>, ctx: GeneratorContext) => {
   let str = "{";
-  for (const [key, responseHeader] of Object.entries(responseHeaders)) {
-    str += `${wrapWithQuotesIfNeeded(key.toLowerCase())}: ${indentMultiline(boxToString(responseHeader, ctx))},\n`;
-  }
-  return str + "}";
-};
-
-const generateResponsesObject = (responses: Record<string, AnyBox>, ctx: GeneratorContext) => {
-  let str = "{";
-  for (const [statusCode, responseType] of Object.entries(responses)) {
-    const value = indentMultiline(boxToString(responseType, ctx));
+  for (const [statusCode, node] of Object.entries(responses)) {
+    const value = indentMultiline(nodeToString(node, ctx));
     str += `${wrapWithQuotesIfNeeded(statusCode)}: ${value},\n`;
   }
   return str + "}";
@@ -311,13 +323,15 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
       method: "${endpoint.method.toUpperCase()}",
       path: "${endpoint.path}",
       requestFormat: "${endpoint.requestFormat}",
+      responseFormat: "${endpoint.responseFormat}",
       ${
         endpoint.meta.hasParameters
           ? `parameters: {
-            ${parameters.query ? `query:  ${parameterObjectToString(parameters.query, ctx)},` : ""}
-        ${parameters.path ? `path:  ${parameterObjectToString(parameters.path, ctx)},` : ""}
-        ${parameters.header ? `header:  ${parameterObjectToString(parameters.header, ctx)},` : ""}
-        ${parameters.body ? `body:  ${parameterObjectToString(parameters.body, ctx)},` : ""}
+            ${parameters.query ? `${paramGroupKey("query", parameters.query)}:  ${parameterObjectToString(parameters.query, ctx)},` : ""}
+        ${parameters.path ? `${paramGroupKey("path", parameters.path)}:  ${parameterObjectToString(parameters.path, ctx)},` : ""}
+        ${parameters.header ? `${paramGroupKey("header", parameters.header)}:  ${parameterObjectToString(parameters.header, ctx)},` : ""}
+        ${parameters.cookie ? `${paramGroupKey("cookie", parameters.cookie)}:  ${parameterObjectToString(parameters.cookie, ctx)},` : ""}
+        ${parameters.body ? `${paramGroupKey("body", parameters.body)}:  ${parameterObjectToString(parameters.body, ctx)},` : ""}
           }`
           : "parameters: never,"
       }
@@ -371,6 +385,182 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
   return endpointByMethod + shorthands;
 };
 
+/** Runtime overrides for non-json requestFormat (default is `"json"`). */
+const generateEndpointRequestFormats = (ctx: GeneratorContext) => {
+  const byMethods = groupBy(ctx.endpointList, "method");
+  const nonJsonEntries = Object.entries(byMethods)
+    .map(([method, list]) => {
+      const overrides = list.filter((endpoint) => endpoint.requestFormat !== "json");
+      if (!overrides.length) return "";
+      return `${method}: {
+          ${overrides.map((endpoint) => `"${endpoint.path}": "${endpoint.requestFormat}"`).join(",\n")}
+        }`;
+    })
+    .filter(Boolean)
+    .join(",\n");
+
+  return `
+    // <EndpointRequestFormats>
+    /** Non-json request body encodings; missing entries default to \`"json"\`. */
+    export const endpointRequestFormats = {
+    ${nonJsonEntries}
+    } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
+    // </EndpointRequestFormats>
+    `;
+};
+
+/** Sparse map of non-json responseFormat overrides (default `"json"`). */
+const generateEndpointResponseFormats = (ctx: GeneratorContext) => {
+  const byMethods = groupBy(ctx.endpointList, "method");
+  const nonJsonEntries = Object.entries(byMethods)
+    .map(([method, list]) => {
+      const overrides = list.filter((endpoint) => endpoint.responseFormat !== "json");
+      if (!overrides.length) return "";
+      return `${method}: {
+          ${overrides.map((endpoint) => `"${endpoint.path}": "${endpoint.responseFormat}"`).join(",\n")}
+        }`;
+    })
+    .filter(Boolean)
+    .join(",\n");
+
+  return `
+    // <EndpointResponseFormats>
+    /** Non-json response body modes; missing entries default to \`"json"\`. SSE skips JSON parse + output validation. */
+    export const endpointResponseFormats = {
+    ${nonJsonEntries}
+    } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }> }>;
+    // </EndpointResponseFormats>
+    `;
+};
+
+const collectTransformFieldKeys = (
+  node: SchemaNode,
+  dateKeys: Set<string>,
+  bigintKeys: Set<string>,
+  schemaByName: Record<string, SchemaNode>,
+  resolving: Set<string> = new Set(),
+  currentKey?: string,
+): void => {
+  switch (node.kind) {
+    case "string":
+      if (currentKey && (node.constraints.format === "date-time" || node.constraints.format === "date")) {
+        dateKeys.add(currentKey);
+      }
+      return;
+    case "number":
+      if (currentKey && node.constraints.format === "int64") bigintKeys.add(currentKey);
+      return;
+    case "object":
+      for (const [key, prop] of Object.entries(node.properties)) {
+        collectTransformFieldKeys(prop, dateKeys, bigintKeys, schemaByName, resolving, key);
+      }
+      if (typeof node.additionalProperties === "object") {
+        collectTransformFieldKeys(node.additionalProperties, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      }
+      return;
+    case "array":
+      collectTransformFieldKeys(node.items, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      return;
+    case "tuple":
+      for (const item of node.items) {
+        collectTransformFieldKeys(item, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      }
+      if (node.rest) collectTransformFieldKeys(node.rest, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      return;
+    case "union":
+    case "intersection":
+      for (const member of node.members) {
+        collectTransformFieldKeys(member, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      }
+      return;
+    case "not":
+      collectTransformFieldKeys(node.schema, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      return;
+    case "record":
+      collectTransformFieldKeys(node.value, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      return;
+    case "ref": {
+      if (resolving.has(node.name)) return;
+      const resolved = schemaByName[node.name];
+      if (!resolved) return;
+      const next = new Set(resolving);
+      next.add(node.name);
+      collectTransformFieldKeys(resolved, dateKeys, bigintKeys, schemaByName, next, currentKey);
+      return;
+    }
+    default:
+      return;
+  }
+};
+
+/** none-runtime JSON revive for date/bigint fields (key-aware; datetime-with-T always). */
+const generateNoneRuntimeReviveHelpers = (ctx: GeneratorContext): string => {
+  const schemaByName: Record<string, SchemaNode> = {};
+  for (const [node, infos] of ctx.refs.getOrderedSchemas()) {
+    if (infos.normalized) schemaByName[infos.normalized] = node;
+  }
+  for (const entry of ctx.namedSchemasForEmit ?? []) {
+    schemaByName[entry.name] = entry.node;
+  }
+
+  const dateKeys = new Set<string>();
+  const bigintKeys = new Set<string>();
+  for (const node of Object.values(schemaByName)) {
+    collectTransformFieldKeys(node, dateKeys, bigintKeys, schemaByName);
+  }
+  for (const endpoint of ctx.endpointList) {
+    for (const response of Object.values(endpoint.responses ?? {})) {
+      collectTransformFieldKeys(response, dateKeys, bigintKeys, schemaByName);
+    }
+  }
+
+  const dateKeysLit = JSON.stringify([...dateKeys].sort());
+  const bigintKeysLit = JSON.stringify([...bigintKeys].sort());
+
+  return `
+// <ReviveTransforms>
+const __DATE_KEYS = new Set<string>(${dateKeysLit});
+const __BIGINT_KEYS = new Set<string>(${bigintKeysLit});
+/** Full ISO date-time (requires \`T\`) — safe to revive without a known field name. */
+const __DATE_TIME_RE = /^\\d{4}-\\d{2}-\\d{2}T[\\d:.]+(Z|[+-]\\d{2}:?\\d{2})?$/;
+/** Date-only; only applied when the property name is in __DATE_KEYS. */
+const __DATE_ONLY_RE = /^\\d{4}-\\d{2}-\\d{2}$/;
+
+const __reviveTransforms = (value: unknown, key?: string): unknown => {
+  if (Array.isArray(value)) return value.map((item) => __reviveTransforms(item, key));
+  if (value && typeof value === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      out[k] = __reviveTransforms(v, k);
+    }
+    return out;
+  }
+  ${
+    ctx.transformDates
+      ? `if (typeof value === "string") {
+    if (__DATE_TIME_RE.test(value)) {
+      const d = new Date(value);
+      if (!Number.isNaN(d.getTime())) return d;
+    } else if (key && __DATE_KEYS.has(key) && __DATE_ONLY_RE.test(value)) {
+      const d = new Date(value);
+      if (!Number.isNaN(d.getTime())) return d;
+    }
+  }`
+      : ""
+  }
+  ${
+    ctx.transformBigInt
+      ? `if (key && __BIGINT_KEYS.has(key) && (typeof value === "number" || typeof value === "string")) {
+    try { return BigInt(value); } catch { /* keep original */ }
+  }`
+      : ""
+  }
+  return value;
+};
+// </ReviveTransforms>
+`;
+};
+
 const generateApiClient = (ctx: GeneratorContext) => {
   if (!ctx.includeClient) {
     return "";
@@ -383,15 +573,20 @@ const generateApiClient = (ctx: GeneratorContext) => {
 // <ApiClientTypes>
 export type EndpointParameters = {
   body?: unknown;
-  query?: Record<string, unknown>;
-  header?: Record<string, unknown>;
-  path?: Record<string, unknown>;
+  query?: unknown;
+  header?: unknown;
+  path?: unknown;
+  cookie?: unknown;
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
 export type Method = "get" | "head" | "options" | MutationMethod;
 
-type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type ResponseFormat = "json" | "sse";
+
+${generateEndpointRequestFormats(ctx)}
+${generateEndpointResponseFormats(ctx)}
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -404,6 +599,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   requestFormat: RequestFormat;
+  responseFormat: ResponseFormat;
   parameters?: TConfig["parameters"];
   meta: {
     alias: string;
@@ -414,9 +610,31 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   responseHeaders?: TConfig["responseHeaders"]
 };
 
+/**
+ * Minimal response surface used by ApiClient — avoids depending on the DOM \`Response\`
+ * global (helpful for Node without DOM lib). Structural typing accepts fetch Response.
+ */
+export interface FetcherResponse {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  headers: {
+    get(name: string): string | null;
+    getSetCookie?: () => string[];
+  };
+  /** Present on fetch Response; used for SSE / streaming bodies. */
+  body?: ReadableStream<Uint8Array> | null;
+  json(): Promise<unknown>;
+  text(): Promise<string>;
+  arrayBuffer(): Promise<ArrayBuffer>;
+  clone(): FetcherResponse;
+}
+
 export interface Fetcher {
-    decodePathParams?: (path: string, pathParams: Record<string, string>) => string
-  encodeSearchParams?: (searchParams: Record<string, unknown> | undefined) => URLSearchParams
+    decodePathParams?: (path: string, pathParams: unknown) => string
+  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined
+  /** Merge cookie params into request headers (default: Cookie header). */
+  encodeCookies?: (cookies: unknown, headers: Headers) => void
     //
     fetch: (input: {
       method: Method;
@@ -424,10 +642,12 @@ export interface Fetcher {
       urlSearchParams?: URLSearchParams | undefined;
       parameters?: EndpointParameters | undefined;
       path: string;
+      /** How to encode \`parameters.body\` (from OpenAPI requestBody content type). */
+      requestFormat: RequestFormat;
       overrides?: RequestInit;
       throwOnStatusError?: boolean
-    }) => Promise<Response>;
-    parseResponseData?: (response: Response) => Promise<unknown>
+    }) => Promise<FetcherResponse>;
+    parseResponseData?: (response: FetcherResponse) => Promise<unknown>
 }
 
 export const successStatusCodes = [${ctx.successStatusCodes.join(",")}] as const;
@@ -454,27 +674,26 @@ export interface TypedHeaders<TypedHeaderValues extends Record<string, string> |
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<Response, "ok" | "status" | "json" | "headers"> {
+export interface TypedSuccessResponse<TSuccess, TStatusCode, THeaders> extends Omit<FetcherResponse, "ok" | "status" | "json" | "headers"> {
   ok: true;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers :  TypedHeaders<THeaders>;
+  headers: never extends THeaders ? FetcherResponse["headers"] : TypedHeaders<THeaders>;
   data: TSuccess;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TSuccess>;
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
-export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<Response, "ok" | "status" | "json" | "headers"> {
+export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<FetcherResponse, "ok" | "status" | "json" | "headers"> {
   ok: false;
   status: TStatusCode;
-  headers: never extends THeaders ? Headers :  TypedHeaders<THeaders>;
+  headers: never extends THeaders ? FetcherResponse["headers"] : TypedHeaders<THeaders>;
   data: TData;
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) */
   json: () => Promise<TData>;
 }
 
-export type TypedApiResponse<TAllResponses extends Record<string | number, unknown> = {}, THeaders = {}> =
-  ({
+export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
     [K in keyof TAllResponses]: K extends string
       ? K extends \`\${infer TStatusCode extends number}\`
         ? TStatusCode extends SuccessStatusCode
@@ -486,15 +705,45 @@ export type TypedApiResponse<TAllResponses extends Record<string | number, unkno
           ? TypedSuccessResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
           : TypedErrorResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
         : never;
-  }[keyof TAllResponses]);
+  }[keyof TAllResponses];
+
+${runtimeInferHelper(ctx.runtime)}
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? TResponses extends Record<string, unknown>
-    ? TypedApiResponse<TResponses, TEndpoint extends { responseHeaders: infer THeaders } ? THeaders : never>
+    ? TypedApiResponse<InferSchemaValue<TResponses>, TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never>
     : never
   : never
 
 export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<SafeApiResponse<TEndpoint>, { status: TStatusCode }>
+
+/**
+ * Success-body payload — InferSchemaValue only on success statuses.
+ * Filter with extends {} like the old Extract { data: {} } so unknown bodies (e.g. 304) drop out.
+ */
+export type InferSuccessData<TEndpoint> = TEndpoint extends { responses: infer TResponses }
+  ? {
+      [K in keyof TResponses]: K extends string
+        ? K extends \`\${infer TStatusCode extends number}\`
+          ? TStatusCode extends SuccessStatusCode
+            ? InferSchemaValue<TResponses[K]> extends infer D
+              ? D extends {}
+                ? D
+                : never
+              : never
+            : never
+          : never
+        : K extends number
+          ? K extends SuccessStatusCode
+            ? InferSchemaValue<TResponses[K]> extends infer D
+              ? D extends {}
+                ? D
+                : never
+              : never
+            : never
+          : never;
+    }[keyof TResponses]
+  : never;
 
 type RequiredKeys<T> = {
   [P in keyof T]-?: undefined extends T[P] ? never : P;
@@ -503,15 +752,39 @@ type RequiredKeys<T> = {
 type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
 type NotNever<T> = [T] extends [never] ? false : true;
 
+/** Call options merged onto inferred endpoint parameters. */
+type ApiRequestOptions = {
+  overrides?: RequestInit;
+  withResponse?: boolean;
+  throwOnStatusError?: boolean;
+  validate?: ValidateSide;
+};
+
+/** Parameter bag for an endpoint + request options. */
+export type ApiCallParams<TEndpoint> = TEndpoint extends { parameters: infer UParams }
+  ? NotNever<UParams> extends true
+    ? InferSchemaInput<UParams> & ApiRequestOptions
+    : ApiRequestOptions
+  : ApiRequestOptions;
+
+/** Resolve response type from withResponse flag on the call config. */
+export type ApiCallResult<TEndpoint, TParams> = TParams extends { withResponse: true }
+  ? SafeApiResponse<TEndpoint>
+  : InferSuccessData<TEndpoint>;
+
+export type ValidateSide = "none" | "input" | "output" | "both";
+export type OnValidate = (ctx: {
+  side: "input" | "output";
+  method: string;
+  path: string;
+  schema: unknown;
+  value: unknown;
+}) => unknown | Promise<unknown>;
+
 // </ApiClientTypes>
 `;
 
-  const infer = inferByRuntime[ctx.runtime];
-  const InferTEndpoint = match(ctx.runtime)
-    .with("zod", "yup", () => infer(`TEndpoint`))
-    .with("arktype", "io-ts", "typebox", "valibot", () => infer(`TEndpoint`))
-    .otherwise(() => `TEndpoint`);
-
+  // Endpoint defs are structural (`typeof endpointConst`); DeepInfer via InferSchemaValue.
   const apiClient = `
 // <TypedStatusError>
 export class TypedStatusError<TData = unknown> extends Error {
@@ -526,16 +799,41 @@ export class TypedStatusError<TData = unknown> extends Error {
 }
 // </TypedStatusError>
 
+${ctx.runtime !== "none" ? generateValidateHelpers(ctx) : ""}
+${ctx.runtime === "none" && (ctx.transformDates || ctx.transformBigInt) ? generateNoneRuntimeReviveHelpers(ctx) : ""}
+
 // <ApiClient>
 export class ApiClient {
   baseUrl: string = "";
   successStatusCodes = successStatusCodes;
   errorStatusCodes = errorStatusCodes;
+  validate: ValidateSide = ${JSON.stringify(ctx.validateSide)};
+  onValidate?: OnValidate;
 
-  constructor(public fetcher: Fetcher) {}
+  constructor(
+    public fetcher: Fetcher,
+    options?: { validate?: ValidateSide; onValidate?: OnValidate },
+  ) {
+    if (options?.validate !== undefined) this.validate = options.validate;
+    if (options?.onValidate) this.onValidate = options.onValidate;
+  }
 
   setBaseUrl(baseUrl: string) {
     this.baseUrl = baseUrl;
+    return this;
+  }
+
+  setValidate(validate: ValidateSide) {
+    this.validate = validate;
+    return this;
+  }
+
+  setOnValidate(onValidate: OnValidate | undefined) {
+    if (onValidate === undefined) {
+      delete this.onValidate;
+    } else {
+      this.onValidate = onValidate;
+    }
     return this;
   }
 
@@ -543,18 +841,19 @@ export class ApiClient {
    * Replace path parameters in URL
    * Supports both OpenAPI format {param} and Express format :param
    */
-  defaultDecodePathParams = (url: string, params: Record<string, string>): string => {
+  defaultDecodePathParams = (url: string, params: unknown): string => {
+    const record = (params ?? {}) as Record<string, unknown>;
     return url
-      .replace(/{(\\w+)}/g, (_, key: string) => params[key] || \`{\${key}}\`)
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => params[key] || \`:\${key}\`);
+      .replace(/{(\\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : \`{\${key}}\`))
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : \`:\${key}\`));
   }
 
   /** Uses URLSearchParams, skips null/undefined values */
-  defaultEncodeSearchParams = (queryParams: Record<string, unknown> | undefined): URLSearchParams | undefined => {
-    if (!queryParams) return;
+  defaultEncodeSearchParams = (queryParams: unknown): URLSearchParams | undefined => {
+    if (!queryParams || typeof queryParams !== "object") return;
 
     const searchParams = new URLSearchParams();
-    Object.entries(queryParams).forEach(([key, value]) => {
+    Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
       if (value != null) {
         // Skip null/undefined values
         if (Array.isArray(value)) {
@@ -568,8 +867,22 @@ export class ApiClient {
     return searchParams;
   }
 
-  defaultParseResponseData = async (response: Response): Promise<unknown> => {
+  /** Append cookie params as a Cookie header (or merge into existing). */
+  defaultEncodeCookies = (cookies: unknown, headers: Headers): void => {
+    if (!cookies || typeof cookies !== "object") return;
+    const parts = Object.entries(cookies as Record<string, unknown>)
+      .filter(([, value]) => value != null)
+      .map(([key, value]) => \`\${key}=\${String(value)}\`);
+    if (!parts.length) return;
+    const existing = headers.get("cookie");
+    headers.set("cookie", existing ? \`\${existing}; \${parts.join("; ")}\` : parts.join("; "));
+  }
+
+  defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.includes("text/event-stream")) {
+      return response.body ?? null;
+    }
     if (contentType.startsWith("text/")) {
       return (await response.text())
     }
@@ -584,7 +897,11 @@ export class ApiClient {
       contentType === "*/*"
       ) {
       try {
-        return await response.json();
+        ${
+          ctx.runtime === "none" && (ctx.transformDates || ctx.transformBigInt)
+            ? `const json = await response.json();\n        return __reviveTransforms(json);`
+            : `return await response.json();`
+        }
       } catch {
         return undefined
       }
@@ -603,19 +920,19 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean })
+          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
-    ): Promise<Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]>;
+    ): Promise<SafeApiResponse<TEndpoint>>;
 
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean })
+          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
-    ): Promise<SafeApiResponse<TEndpoint>>;
+    ): Promise<InferSuccessData<TEndpoint>>;
 
     ${method}<Path extends keyof ${capitalizedMethod}Endpoints, _TEndpoint extends ${capitalizedMethod}Endpoints[Path]>(
       path: Path,
@@ -642,22 +959,8 @@ export class ApiClient {
       path: TPath,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? UParams & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean })
-      >
-    ): Promise<Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]>
-
-    request<
-      TMethod extends keyof EndpointByMethod,
-      TPath extends keyof EndpointByMethod[TMethod],
-      TEndpoint extends EndpointByMethod[TMethod][TPath]
-    >(
-      method: TMethod,
-      path: TPath,
-      ...params: MaybeOptionalArg<
-        (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? UParams & { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean } : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean }
-          : { overrides?: RequestInit; withResponse?: true; throwOnStatusError?: boolean })
+          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          : { overrides?: RequestInit; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
 
@@ -668,52 +971,128 @@ export class ApiClient {
     >(
       method: TMethod,
       path: TPath,
+      ...params: MaybeOptionalArg<
+        (TEndpoint extends { parameters: infer UParams }
+          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          : { overrides?: RequestInit; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
+      >
+    ): Promise<InferSuccessData<TEndpoint>>;
+
+    request<
+      TMethod extends keyof EndpointByMethod,
+      TPath extends keyof EndpointByMethod[TMethod],
+      TEndpoint extends EndpointByMethod[TMethod][TPath]
+    >(
+      method: TMethod,
+      path: TPath,
       ...params: MaybeOptionalArg<any>
     ): Promise<any> {
+      return (async () => {
       const requestParams = params[0];
       const withResponse = requestParams?.withResponse;
-      const { withResponse: _, throwOnStatusError = withResponse ? false : true, overrides, ...fetchParams } = requestParams || {};
+      const throwOnStatusError = requestParams?.throwOnStatusError ?? (withResponse ? false : true);
+      let overrides = requestParams?.overrides;
+      ${ctx.runtime !== "none" ? `const validateSide: ValidateSide = requestParams?.validate ?? this.validate;` : ""}
 
       const parametersToSend: EndpointParameters = {};
-      if (requestParams?.body !== undefined) (parametersToSend as any).body = requestParams.body;
-      if (requestParams?.query !== undefined) (parametersToSend as any).query = requestParams.query;
-      if (requestParams?.header !== undefined) (parametersToSend as any).header = requestParams.header;
-      if (requestParams?.path !== undefined) (parametersToSend as any).path = requestParams.path;
+      if (requestParams?.body !== undefined) parametersToSend.body = requestParams.body;
+      if (requestParams?.query !== undefined) parametersToSend.query = requestParams.query;
+      if (requestParams?.header !== undefined) parametersToSend.header = requestParams.header;
+      if (requestParams?.path !== undefined) parametersToSend.path = requestParams.path;
+      if (requestParams?.cookie !== undefined) parametersToSend.cookie = requestParams.cookie;
 
-      const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(this.baseUrl + (path as string), (parametersToSend.path ?? {}) as Record<string, string>);
+      ${
+        ctx.runtime !== "none"
+          ? `type RuntimeEndpoint = {
+        parameters?: Partial<Record<"body" | "query" | "header" | "path" | "cookie", unknown>>;
+        responses?: Record<string, unknown>;
+      };
+      const endpointSchema = EndpointByMethod[method][path] as RuntimeEndpoint;
+      const shouldValidateInput = validateSide === "input" || validateSide === "both";
+      if (shouldValidateInput && endpointSchema.parameters) {
+        const paramSchema = endpointSchema.parameters;
+        for (const key of ["body", "query", "header", "path", "cookie"] as const) {
+          const schema = paramSchema[key];
+          const value = parametersToSend[key];
+          if (schema !== undefined && value !== undefined) {
+            parametersToSend[key] = await runValidate({
+              side: "input",
+              method: String(method),
+              path: String(path),
+              schema,
+              value,
+              ...(this.onValidate ? { onValidate: this.onValidate } : {}),
+            });
+          }
+        }
+      }`
+          : ""
+      }
+
+      const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(this.baseUrl + (path as string), parametersToSend.path ?? {});
       const url = new URL(resolvedPath);
       const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(parametersToSend.query);
 
-      const promise = this.fetcher.fetch({
+      if (parametersToSend.cookie) {
+        const headers = new Headers((overrides as RequestInit | undefined)?.headers);
+        (this.fetcher.encodeCookies ?? this.defaultEncodeCookies)(parametersToSend.cookie, headers);
+        overrides = { ...overrides, headers };
+      }
+
+      const response = await this.fetcher.fetch({
         method: method,
         path: (path as string),
         url,
-        urlSearchParams,
-        parameters: Object.keys(fetchParams).length ? fetchParams : undefined,
-        overrides,
+        ...(urlSearchParams ? { urlSearchParams } : {}),
+        ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
+        requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+        ...(overrides ? { overrides } : {}),
         throwOnStatusError
-      })
-        .then(async (response) => {
-          const data = await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+      });
+          const responseFormat = endpointResponseFormats[method]?.[path] ?? "json";
+          let data =
+            responseFormat === "sse"
+              ? (response.body ?? null)
+              : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
+          ${
+            ctx.runtime !== "none"
+              ? `const shouldValidateOutput = validateSide === "output" || validateSide === "both";
+          if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
+            const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+            if (responseSchema) {
+              data = await runValidate({
+                side: "output",
+                method: String(method),
+                path: String(path),
+                schema: responseSchema,
+                value: data,
+                ...(this.onValidate ? { onValidate: this.onValidate } : {}),
+              });
+            }
+          }`
+              : ""
+          }
           const typedResponse = Object.assign(response, {
             data: data,
             json: () => Promise.resolve(data)
           }) as SafeApiResponse<TEndpoint>;
 
-          if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
-            throw new TypedStatusError(typedResponse as never);
+          if (throwOnStatusError && (errorStatusCodes as readonly number[]).includes(response.status)) {
+            throw new TypedStatusError(typedResponse as TypedErrorResponse<unknown, ErrorStatusCode, unknown>);
           }
 
           return withResponse ? typedResponse : data;
-        });
-
-        return promise as Extract<InferResponseByStatus<${InferTEndpoint}, SuccessStatusCode>, { data: {} }>["data"]
+      })() as Promise<any>
     }
     // </ApiClient.request>
 }
 
-export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
-  return new ApiClient(fetcher).setBaseUrl(baseUrl ?? "");
+export function createApiClient(
+  fetcher: Fetcher,
+  baseUrl?: string,
+  options?: { validate?: ValidateSide; onValidate?: OnValidate },
+) {
+  return new ApiClient(fetcher, options).setBaseUrl(baseUrl ?? "");
 }
 
 
@@ -746,4 +1125,65 @@ export function createApiClient(fetcher: Fetcher, baseUrl?: string) {
 `;
 
   return apiClientTypes + apiClient;
+};
+
+const generateValidateHelpers = (ctx: GeneratorContext): string => {
+  const parseExpr = (() => {
+    switch (ctx.runtime) {
+      case "zod":
+      case "zod3":
+        return `(schema as { parse: (v: unknown) => unknown }).parse(value)`;
+      case "valibot":
+        return `v.parse(schema as v.GenericSchema, value)`;
+      case "effect":
+        return `Schema.decodeUnknownSync(schema as Schema.Codec<unknown>)(value)`;
+      case "effect3":
+        return `S.decodeUnknownSync(schema as S.Schema<unknown, unknown, never>)(value)`;
+      case "arktype":
+        return `(() => { const out = (schema as (data: unknown) => unknown)(value); if (out instanceof type.errors) throw out; return out; })()`;
+      case "typebox":
+        return `(() => { if (!Value.Check(schema as import("@sinclair/typebox").TSchema, value)) throw new Error("TypeBox validation failed"); return value; })()`;
+      case "typia":
+        return `(() => { const isValid = (schema as (input: unknown) => boolean)(value); if (!isValid) throw new Error("typia validation failed"); return value; })()`;
+      default:
+        return `value`;
+    }
+  })();
+
+  return `
+// <ValidateHelpers>
+const defaultParse = (schema: unknown, value: unknown): unknown => {
+  return ${parseExpr};
+};
+
+const runValidate = async (ctx: {
+  side: "input" | "output";
+  method: string;
+  path: string;
+  schema: unknown;
+  value: unknown;
+  onValidate?: OnValidate;
+}): Promise<unknown> => {
+  if (ctx.onValidate) return ctx.onValidate(ctx);
+  return defaultParse(ctx.schema, ctx.value);
+};
+// </ValidateHelpers>
+`;
+};
+
+/** Effect-native client — returns Effect with typed errors in the channel. */
+const generateEffectApiClient = (ctx: GeneratorContext): string => {
+  const typesOnly = generateApiClient({ ...ctx, client: "promise" });
+  const typesPart = (typesOnly.split("// <ApiClient>")[0] ?? typesOnly).replace(
+    /\/\/ <ValidateHelpers>[\s\S]*?\/\/ <\/ValidateHelpers>\n?/g,
+    "",
+  );
+  const validateHelpers = ctx.runtime !== "none" ? generateValidateHelpers(ctx) : "";
+  const body = effectApiClientBody({
+    validateSide: ctx.validateSide,
+    runtime: ctx.runtime,
+    endpointList: ctx.endpointList,
+    validateHelpers,
+  });
+  return typesPart + body;
 };

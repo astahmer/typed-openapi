@@ -1,2 +1,32 @@
 packages:
   - "packages/*"
+
+# pnpm 11 — build scripts (replaces onlyBuiltDependencies / neverBuiltDependencies)
+allowBuilds:
+  "@swc/core": true
+  esbuild: true
+  msgpackr-extract: true
+  msw: true
+
+# Migrated from .npmrc (pnpm 11 only reads auth/registry from .npmrc)
+saveExact: true
+preferOffline: true
+strictPeerDependencies: false
+resolvePeersFromWorkspaceRoot: true
+enablePrePostScripts: true
+autoInstallPeers: false
+# Dual-major effect: keep effect@3 nested under @effect/schema (see .pnpmfile.cjs).
+dedupePeerDependents: false
+
+# effect@3.22.0 for @effect/schema — keep in sync with .pnpmfile.cjs + typed-openapi effect3 devDep
+overrides:
+  "@effect/schema>effect": "3.22.0"
+
+packageExtensions:
+  "@effect/schema":
+    dependencies:
+      effect: "3.22.0"
+
+peerDependencyRules:
+  allowedVersions:
+    "@effect/schema>effect": "*"

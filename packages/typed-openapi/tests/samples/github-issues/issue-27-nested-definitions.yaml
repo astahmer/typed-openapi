@@ -1,0 +1,33 @@
+# Repro for #27 — OAS 3.0 doc using Swagger2-style `#/definitions` + nested refs
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: nested definitions
+paths:
+  /example:
+    post:
+      parameters:
+        - name: example
+          in: query
+          schema:
+            $ref: "#/definitions/DefinitionA"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+definitions:
+  DefinitionA:
+    type: object
+    properties:
+      example:
+        type: array
+        items:
+          $ref: "#/definitions/DefinitionB"
+  DefinitionB:
+    type: object
+    properties:
+      example:
+        type: string
