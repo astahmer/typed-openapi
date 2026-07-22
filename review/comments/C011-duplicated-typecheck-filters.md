@@ -1,17 +1,15 @@
 # C011 — Kombo/typecheck diagnostic filters duplicated in three places
 
-- **Status:** open
+- **Status:** resolved
 - **Severity:** medium
 - **Introduced in:** visible across `snwootwz` / `wmpxtssu` / `pxqupsry`
-- **Files:**
-  - `tests/integrations/runtime-client-matrix.typecheck.test.ts`
-  - `tests/snapshots-typecheck.test.ts`
-  - `tests/tsc-audit-samples.test.ts`
+- **Resolved in:** review follow-up — `test: shared typecheck diagnostic filters`
+- **Files:** `tests/helpers/typecheck-filters.ts` (+ matrix / snapshots / audit consumers)
 
 ## Comment
 
-Nearly identical allowlists diverged (`wmpxtssu` vs snapshots/audit), causing C005. Export one helper (e.g. `tests/helpers/typecheck-filters.ts`) used by all three, with unit tests for keep/drop rules.
+Nearly identical allowlists diverged (`wmpxtssu` vs snapshots/audit), causing C005.
 
-## Suggested fix
+## Resolution
 
-Shared `filterKomboClientDiagnostics(out, { runtime, allowCircular })` + matrix usage.ts pass-through.
+Single `filterTypecheckDiagnostics` helper; matrix/snapshots/audit delegate to it. Unit coverage in helper consumers + `tests/review-fixes.test.ts`.

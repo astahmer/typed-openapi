@@ -1,31 +1,15 @@
 # C003 — Nullable recursive schemas skip explicit runtime type annotations
 
-- **Status:** open
+- **Status:** resolved
 - **Severity:** high
 - **Introduced in:** `lumokwqm` — `fix(runtimes): explicit types for recursive lazy schemas`
+- **Resolved in:** review follow-up — `fix(runtimes): explicit types for nullable recursive schemas`
 - **Files:** `packages/typed-openapi/src/runtimes/zod/index.ts`, `zod3/`, `valibot/`, `effect/`, `effect3/`
 
 ## Comment
 
-Explicit `z.ZodType<T>` / `Schema.Schema<T>` / `v.GenericSchema<T>` is gated on `!isNullOr(node)` / `!nullInner`:
+Explicit annotations were gated on `!isNullOr(node)`, so nullable recursive schemas fell back to circular `infer` / `typeof` (TS7022/7024 class).
 
-```ts
-if (ctx.recursiveNames.has(name)) {
-  body = z.lazy(() => body);
-  if (!isNullOr(node)) {
-    const typeDecl = emitExplicitSchemaTypeDecl(...);
-    return `${typeDecl}\nexport const ${name}: z.ZodType<${name}> = ${body}`;
-  }
-}
-```
+## Resolution
 
-Nullable recursive schemas fall back to `z.infer<typeof name>`-style circular inference — the exact TS7022/7024 class this revision meant to eliminate. Kombo may not hit this path often, but any `nullable: true` recursive component will.
-
-## Suggested fix
-
-Always emit `emitExplicitSchemaTypeDecl` for recursive names. Prefer declaring the full schema type (including null) or `Core | null` consistently with the emitted value.
-
-## Tests needed
-
-- Unit: generated zod/effect/valibot source for recursive+nullable contains explicit type + annotation
-- E2E: tsc of that fixture has no TS7022/7024
+Zod/valibot always emit explicit type + annotation for recursive names. Effect/effect3 emit `NameCore` + `Name = NameCore | null` with `Schema.Schema<NameCore>` when nullable. Covered by `tests/review-fixes.test.ts` and `tests/integrations/nullable-recursive.e2e.test.ts`.

@@ -1,18 +1,15 @@
 # C004 — `ReadonlyArray` rewrite via global `Array<` replace is brittle
 
-- **Status:** open
+- **Status:** resolved
 - **Severity:** low
 - **Introduced in:** `lumokwqm` — `fix(runtimes): explicit types for recursive lazy schemas`
-- **Files:** `packages/typed-openapi/src/runtimes/shared.ts` (`emitExplicitSchemaTypeDecl`)
+- **Resolved in:** review follow-up — `fix(types): readonlyArrays IrToTs option`
+- **Files:** `packages/typed-openapi/src/schema-ir/ir-to-ts.ts`, `packages/typed-openapi/src/runtimes/shared.ts`
 
 ## Comment
 
-```ts
-decl = decl.replace(/\bArray</g, "ReadonlyArray<");
-```
+`decl.replace(/\bArray</g, "ReadonlyArray<")` was fragile.
 
-This can rewrite unrelated identifiers that merely contain `Array<` in generated type text (unlikely but fragile). Prefer an `irToTs` / `buildIrToTsOptions` flag (`readonlyArrays: true`) so emission is intentional.
+## Resolution
 
-## Suggested fix
-
-Thread `readonlyArrays` through `IrToTsOptions` and emit `ReadonlyArray<…>` at the array case.
+`IrToTsOptions.readonlyArrays` emits `ReadonlyArray` at the array/tuple cases; `emitExplicitSchemaTypeDecl` passes the flag through (no string replace).
