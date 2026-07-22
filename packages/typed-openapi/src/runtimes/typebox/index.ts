@@ -167,8 +167,7 @@ export const typeboxAdapter: RuntimeAdapter = {
       body = `Type.Recursive((This) => ${body})`;
     }
     if (typeReference) {
-      const runtimeBody = ctx.runtimeExpression ? ctx.runtimeExpression(body) : body;
-      return `export type ${name} = ${typeReference};\nexport const ${name} = ${runtimeBody} as unknown as import("@sinclair/typebox").TSchema & __TypedOpenapiSchema<${typeReference}>;`;
+      return `export type ${name} = ${typeReference};\nexport const ${name}: any = ${body};`;
     }
     return `export type ${name} = Static<typeof ${name}>;\nexport const ${name} = ${body};`;
   },

@@ -264,8 +264,7 @@ export const effectAdapter: RuntimeAdapter = {
     let body = emitNode(nullInner ?? node, childCtx);
     if (typeReference) {
       if (ctx.recursiveNames.has(name)) body = `${S}.suspend(() => ${body})`;
-      const runtimeBody = ctx.runtimeExpression ? ctx.runtimeExpression(body) : body;
-      return `export type ${name} = ${typeReference};\nexport const ${name} = ${runtimeBody} as unknown as Schema.Schema<${typeReference}, unknown>;`;
+      return `export type ${name} = ${typeReference};\nexport const ${name}: any = ${body};`;
     }
     if (ctx.recursiveNames.has(name)) {
       body = `${S}.suspend(() => ${body})`;

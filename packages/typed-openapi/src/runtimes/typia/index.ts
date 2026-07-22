@@ -95,9 +95,9 @@ export const typiaAdapter: RuntimeAdapter = {
     if (typeReference) {
       return [
         `export type ${name} = ${typeReference};`,
-        `export const is${name} = typia.createIs<${typeReference}>();`,
-        `export const assert${name} = typia.createAssert<${typeReference}>();`,
-        `export const validate${name} = typia.createValidate<${typeReference}>();`,
+        `export const is${name}: any = typia.createIs<${typeReference}>();`,
+        `export const assert${name}: any = typia.createAssert<${typeReference}>();`,
+        `export const validate${name}: any = typia.createValidate<${typeReference}>();`,
       ].join("\n");
     }
     // Recursive record/object as interface — same TS2456 fix as none-runtime.

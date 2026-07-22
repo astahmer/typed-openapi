@@ -202,7 +202,7 @@ const createGeneratorContext = (options: GeneratorOptions): GeneratorContext => 
 export const generateRuntimeTypeDeclarations = (options: GeneratorOptions): string => {
   const ctx = createGeneratorContext(options);
   const typeContext = { ...ctx, runtime: "none" as const } as GeneratorContext;
-  return `${generateSchemaList(typeContext)}${generateEndpointSchemaList(typeContext)}`;
+  return `${generateSchemaList(typeContext)}${generateEndpointSchemaList(typeContext)}${generateEndpointByMethod(typeContext)}`;
 };
 
 export const generateFile = (options: GeneratorOptions) => {
@@ -232,7 +232,7 @@ export const generateFile = (options: GeneratorOptions) => {
       ...(ctx.namedSchemasForEmit ? { namedSchemas: ctx.namedSchemasForEmit } : {}),
     });
 
-    return `${
+    return `${options.runtimeTypeDeclarations ? "// @ts-nocheck\n" : ""}${
       options.runtimeTypeDeclarations
         ? `import type * as __TypedOpenapiTypes from ${JSON.stringify(options.runtimeTypeDeclarations)};\n`
         : ""
@@ -385,20 +385,31 @@ const generateEndpointByMethod = (ctx: GeneratorContext) => {
 
   const endpointByMethod = `
      // <EndpointByMethod>
-     export ${ctx.runtime === "none" ? "type" : "const"} EndpointByMethod = {
+     export ${ctx.runtime === "none" ? "type" : "const"} EndpointByMethod${
+       ctx.runtime !== "none" && ctx.usesRuntimeTypeDeclarations ? ": __TypedOpenapiTypes.EndpointByMethod" : ""
+     } = {
      ${Object.entries(byMethods)
        .map(([method, list]) => {
          return `${method}: {
            ${list
              .map(
-               (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
+               (endpoint) =>
+                 `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}${
+                   ctx.runtime !== "none" && ctx.usesRuntimeTypeDeclarations ? " as any" : ""
+                 }`,
              )
              .join(",\n")}
          }`;
        })
        .join(",\n")}
      }
-     ${ctx.runtime === "none" ? "" : "export type EndpointByMethod = typeof EndpointByMethod;"}
+     ${
+       ctx.runtime === "none"
+         ? ""
+         : ctx.usesRuntimeTypeDeclarations
+           ? "export type EndpointByMethod = __TypedOpenapiTypes.EndpointByMethod;"
+           : "export type EndpointByMethod = typeof EndpointByMethod;"
+     }
      // </EndpointByMethod>
      `;
 

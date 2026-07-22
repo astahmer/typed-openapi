@@ -48,8 +48,6 @@ export type EmitCtx = {
   transformDates?: boolean;
   /** Map int64 number schemas to bigint (runtime transform + TS types). */
   transformBigInt?: boolean;
-  /** Defers a generated runtime expression so TypeScript does not infer its implementation type. */
-  runtimeExpression?: (expression: string) => string;
   /**
    * Mutable registry of reusable defaulted schemas shared for one file emit.
    * Keyed by `${kind}:${baseExpr}:${defaultLit}`.
@@ -98,7 +96,6 @@ export const createEmitCtx = (
     coercePrimitives?: boolean;
     transformDates?: boolean;
     transformBigInt?: boolean;
-    runtimeExpression?: (expression: string) => string;
   },
 ): EmitCtx => ({
   validation,
@@ -108,5 +105,4 @@ export const createEmitCtx = (
   ...(options?.coercePrimitives ? { coercePrimitives: true } : {}),
   ...(options?.transformDates ? { transformDates: true } : {}),
   ...(options?.transformBigInt ? { transformBigInt: true } : {}),
-  ...(options?.runtimeExpression ? { runtimeExpression: options.runtimeExpression } : {}),
 });

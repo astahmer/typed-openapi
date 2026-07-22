@@ -224,7 +224,7 @@ export async function generateClientFiles(input: string | undefined, options: Ge
     httpInputFilename && merged.inputDir ? join(merged.inputDir, httpInputFilename + suffix) : resolvedInput + suffix;
   const output = merged.output ?? defaultOutput;
   const outputPath = isAbsolute(output) ? output : join(cwd, output);
-  const runtimeTypes = merged.runtimeTypes ?? false;
+  const runtimeTypes = runtime !== "none" && (merged.runtimeTypes ?? false);
   const runtimeTypesPath = outputPath.endsWith(".ts")
     ? `${outputPath.slice(0, -3)}.types.d.ts`
     : `${outputPath}.types.d.ts`;

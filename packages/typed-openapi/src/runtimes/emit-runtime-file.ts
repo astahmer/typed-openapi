@@ -67,11 +67,10 @@ const emitParameters = (
     if (!node) continue;
     const paramCtx = coerce && coerceParamKeys.has(key) ? { ...ctx, coercePrimitives: true } : ctx;
     let expr = adapter.emitNode(node, paramCtx);
-    if (ctx.runtimeExpression) expr = ctx.runtimeExpression(expr);
     if (node.kind === "object" && node.partial) {
       expr = wrapOptionalParamGroup(adapter, expr);
     }
-    if (typeReference) expr = adapter.annotateSchema(expr, `${typeReference}[${JSON.stringify(key)}]`);
+    if (typeReference) expr = `(${expr}) as any`;
     parts.push(`${key}: ${expr}`);
   }
 
@@ -86,9 +85,8 @@ const emitResponses = (
 ): string => {
   if (!responses) return `{ }`;
   const parts = Object.entries(responses).map(([status, node]) => {
-    const rawExpr = adapter.emitNode(node, ctx);
-    const expr = ctx.runtimeExpression ? ctx.runtimeExpression(rawExpr) : rawExpr;
-    const typedExpr = typeReference ? adapter.annotateSchema(expr, `${typeReference}[${JSON.stringify(status)}]`) : expr;
+    const expr = adapter.emitNode(node, ctx);
+    const typedExpr = typeReference ? `(${expr}) as any` : expr;
     return `${wrapWithQuotesIfNeeded(status)}: ${typedExpr}`;
   });
   return `{ ${parts.join(", ")} }`;
@@ -102,9 +100,8 @@ const emitResponseHeaders = (
 ): string => {
   if (!headers) return "";
   const parts = Object.entries(headers).map(([status, node]) => {
-    const rawExpr = adapter.emitNode(node, ctx);
-    const expr = ctx.runtimeExpression ? ctx.runtimeExpression(rawExpr) : rawExpr;
-    const typedExpr = typeReference ? adapter.annotateSchema(expr, `${typeReference}[${JSON.stringify(status)}]`) : expr;
+    const expr = adapter.emitNode(node, ctx);
+    const typedExpr = typeReference ? `(${expr}) as any` : expr;
     return `${wrapWithQuotesIfNeeded(status.toLowerCase())}: ${typedExpr}`;
   });
   return `responseHeaders: { ${parts.join(", ")} },`;
@@ -135,9 +132,6 @@ export const emitRuntimeFile = ({
   const ctx = createEmitCtx(validation, recursiveNames, {
     transformDates,
     transformBigInt,
-    ...(typeNamespace
-      ? { runtimeExpression: (expression: string) => `__typedOpenapiRuntime(${JSON.stringify(expression)})` }
-      : {}),
   });
 
   let schemasBlock = `// <Schemas>\n`;
@@ -184,8 +178,9 @@ export const emitRuntimeFile = ({
         endpointType ? `${endpointType}["responseHeaders"]` : undefined,
       );
 
-      endpointsBlock += `export type ${endpoint.meta.alias} = typeof ${endpoint.meta.alias};\n`;
-      endpointsBlock += `export const ${endpoint.meta.alias} = {\n`;
+      endpointsBlock += typeNamespace
+        ? `export type ${endpoint.meta.alias} = ${endpointType};\nexport const ${endpoint.meta.alias}: any = {\n`
+        : `export type ${endpoint.meta.alias} = typeof ${endpoint.meta.alias};\nexport const ${endpoint.meta.alias} = {\n`;
       endpointsBlock += `  method: ${adapter.literalString(endpoint.method.toUpperCase())},\n`;
       endpointsBlock += `  path: ${adapter.literalString(endpoint.path)},\n`;
       endpointsBlock += `  requestFormat: ${adapter.literalString(endpoint.requestFormat)},\n`;
@@ -214,8 +209,5 @@ export const emitRuntimeFile = ({
     return `import { ${names.join(", ")} } from "effect";\n\n${body}`;
   }
 
-  const runtimeExpressionHelper = typeNamespace
-    ? `const __typedOpenapiRuntime = (source: string): any => eval(source);\n\n`
-    : "";
-  return `${adapter.imports()}\n\n${runtimeExpressionHelper}${body}`;
+  return `${adapter.imports()}\n\n${body}`;
 };

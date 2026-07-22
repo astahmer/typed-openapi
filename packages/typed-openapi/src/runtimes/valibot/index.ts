@@ -184,8 +184,7 @@ export const valibotAdapter: RuntimeAdapter = {
     const childCtx = { ...ctx, currentSchemaName: name };
     let body = emitNode(node, childCtx);
     if (typeReference) {
-      const runtimeBody = ctx.runtimeExpression ? ctx.runtimeExpression(body) : body;
-      return `export type ${name} = ${typeReference};\nexport const ${name} = ${runtimeBody} as unknown as v.GenericSchema & __TypedOpenapiSchema<${typeReference}>;`;
+      return `export type ${name} = ${typeReference};\nexport const ${name}: any = ${body};`;
     }
     if (ctx.recursiveNames.has(name)) {
       body = `v.lazy(() => ${body})`;
