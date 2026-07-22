@@ -7,6 +7,8 @@ import { reactClickToComponent } from "vite-plugin-react-click-to-component";
 
 const dirname = url.fileURLToPath(new URL(".", import.meta.url));
 const fsShim = path.join(dirname, "./fs.shim.ts");
+const fsPromisesShim = path.join(dirname, "./fs.promises.shim.ts");
+const tsxShim = path.join(dirname, "./tsx.shim.ts");
 
 export type ViteAppConfigOptions = {
   /** Browser playground needs fs stubs; Vitest must use real node:fs. Default true. */
@@ -28,10 +30,15 @@ export const createViteAppConfig = (options: ViteAppConfigOptions = {}) => {
       alias: {
         module: path.join(dirname, "./module.shim.ts"),
         path: "path-browserify",
+        // typed-openapi main chunk may touch tsx (config loader); stub for browser.
+        "tsx/esm/api": tsxShim,
         ...(shimFs
           ? {
               fs: fsShim,
               "node:fs": fsShim,
+              // `fs` → file shim makes `fs/promises` resolve as `fs.shim.ts/promises`.
+              "fs/promises": fsPromisesShim,
+              "node:fs/promises": fsPromisesShim,
             }
           : {}),
         process: "process/browser",
