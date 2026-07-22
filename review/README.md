@@ -1,14 +1,16 @@
 # PR review — `snwootwz` → tip
 
-Professional review of jj revisions from `snwootwz` (`test: stop filtering TS2456…`) through `kpovwyyt` / tip (`style: oxfmt…`).
+Professional review of jj revisions from `snwootwz` (`test: stop filtering TS2456…`) through `kpovwyyt` / tip
+(`style: oxfmt…`).
 
 ## Scope
 
-| Oldest | Newest (at review start) |
-|--------|--------------------------|
-| `snwootwz` / `4127caec` | `kpovwyyt` / `e7b64bb4` |
+| Oldest                  | Newest (at review start) |
+| ----------------------- | ------------------------ |
+| `snwootwz` / `4127caec` | `kpovwyyt` / `e7b64bb4`  |
 
-**Out of range (context only):** `mtnswwoy` (JSON Schema `const` → literal) and `wmnmwstk` (recursive interfaces). Those enable the TS2456 unfilter; not re-reviewed here.
+**Out of range (context only):** `mtnswwoy` (JSON Schema `const` → literal) and `wmnmwstk` (recursive interfaces). Those
+enable the TS2456 unfilter; not re-reviewed here.
 
 ## How to read
 

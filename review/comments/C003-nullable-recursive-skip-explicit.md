@@ -8,8 +8,11 @@
 
 ## Comment
 
-Explicit annotations were gated on `!isNullOr(node)`, so nullable recursive schemas fell back to circular `infer` / `typeof` (TS7022/7024 class).
+Explicit annotations were gated on `!isNullOr(node)`, so nullable recursive schemas fell back to circular `infer` /
+`typeof` (TS7022/7024 class).
 
 ## Resolution
 
-Zod/valibot always emit explicit type + annotation for recursive names. Effect/effect3 emit `NameCore` + `Name = NameCore | null` with `Schema.Schema<NameCore>` when nullable. Covered by `tests/review-fixes.test.ts` and `tests/integrations/nullable-recursive.e2e.test.ts`.
+Zod/valibot always emit explicit type + annotation for recursive names. Effect/effect3 emit `NameCore` +
+`Name = NameCore | null` with `Schema.Schema<NameCore>` when nullable. Covered by `tests/review-fixes.test.ts` and
+`tests/integrations/nullable-recursive.e2e.test.ts`.

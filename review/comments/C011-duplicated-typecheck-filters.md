@@ -12,4 +12,5 @@ Nearly identical allowlists diverged (`wmpxtssu` vs snapshots/audit), causing C0
 
 ## Resolution
 
-Single `filterTypecheckDiagnostics` helper; matrix/snapshots/audit delegate to it. Unit coverage in helper consumers + `tests/review-fixes.test.ts`.
+Single `filterTypecheckDiagnostics` helper; matrix/snapshots/audit delegate to it. Unit coverage in helper consumers +
+`tests/review-fixes.test.ts`.

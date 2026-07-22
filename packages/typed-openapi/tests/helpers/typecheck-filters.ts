@@ -25,16 +25,22 @@ export const filterTypecheckDiagnostics = (out: string, options: TypecheckFilter
       if (allowCircular) {
         return !(
           // Do NOT filter TS2456 / TS7022 / TS7024 / zod TS2345 — those are fixed.
-          line.includes("error TS2502") ||
-          // ArkType deep union/tuple assignability + property access on large Kombo schemas.
-          (runtime === "arktype" && line.includes("error TS2322")) ||
-          (runtime === "arktype" && line.includes("error TS2339")) ||
-          (runtime === "arktype" && line.includes("error TS2345")) ||
-          line.includes("error TS2719") ||
-          line.includes("error TS2536")
+          (
+            line.includes("error TS2502") ||
+            // ArkType deep union/tuple assignability + property access on large Kombo schemas.
+            (runtime === "arktype" && line.includes("error TS2322")) ||
+            (runtime === "arktype" && line.includes("error TS2339")) ||
+            (runtime === "arktype" && line.includes("error TS2345")) ||
+            line.includes("error TS2719") ||
+            line.includes("error TS2536")
+          )
         );
       }
-      if ((runtime === "typebox" || runtime === "typia") && line.includes("error TS2536") && line.includes("/client.ts(")) {
+      if (
+        (runtime === "typebox" || runtime === "typia") &&
+        line.includes("error TS2536") &&
+        line.includes("/client.ts(")
+      ) {
         return false;
       }
       return true;

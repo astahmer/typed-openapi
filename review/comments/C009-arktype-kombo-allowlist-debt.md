@@ -7,7 +7,9 @@
 
 ## Comment
 
-Nested binary module unions (`pmosvyqp`) improve emit shape, but large Kombo schemas still need arktype Infer noise filtered. That is acceptable technical debt if documented and scoped (runtime === arktype + kombo only). Do not broaden filters back to TS2456/7022/7024/zod TS2345.
+Nested binary module unions (`pmosvyqp`) improve emit shape, but large Kombo schemas still need arktype Infer noise
+filtered. That is acceptable technical debt if documented and scoped (runtime === arktype + kombo only). Do not broaden
+filters back to TS2456/7022/7024/zod TS2345.
 
 ## Follow-up
 

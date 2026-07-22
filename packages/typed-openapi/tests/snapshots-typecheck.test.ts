@@ -65,8 +65,7 @@ describe("snapshot files typecheck", () => {
     filterTypecheckDiagnostics(out, { allowCircular: true, runtime });
 
   /** TypeBox/typia InferSchemaValue indexing noise in generated ApiClient. */
-  const filterClientNoise = (out: string, runtime: string): string =>
-    filterTypecheckDiagnostics(out, { runtime });
+  const filterClientNoise = (out: string, runtime: string): string => filterTypecheckDiagnostics(out, { runtime });
 
   for (const file of files) {
     const runtime = runtimeOf(file);

@@ -97,10 +97,10 @@ describe("apiKey missing in (C006)", () => {
 
 describe("shared typecheck filters (C011)", () => {
   test("kombo arktype drops TS2322 but keeps TS7022", () => {
-    const out = filterTypecheckDiagnostics(
-      ["a.ts(1,1): error TS2322: x", "a.ts(2,1): error TS7022: y"].join("\n"),
-      { allowCircular: true, runtime: "arktype" },
-    );
+    const out = filterTypecheckDiagnostics(["a.ts(1,1): error TS2322: x", "a.ts(2,1): error TS7022: y"].join("\n"), {
+      allowCircular: true,
+      runtime: "arktype",
+    });
     expect(out).not.toContain("TS2322");
     expect(out).toContain("TS7022");
   });
@@ -147,21 +147,24 @@ describe("nullable recursive explicit types (C003)", () => {
     },
   } as OpenAPIObject;
 
-  test.each(["zod", "zod3", "valibot"] as const)("%s emits explicit type + annotation for nullable recursive", (runtime) => {
-    const src = generateFile({
-      ...mapOpenApiEndpoints(doc),
-      runtime,
-      schemasOnly: true,
-      includeClient: false,
-    });
-    expect(src).toMatch(/export (?:type|interface) Node/);
-    if (runtime === "valibot") {
-      expect(src).toMatch(/export const Node: v\.GenericSchema<Node> =/);
-    } else {
-      expect(src).toMatch(/export const Node: z\.ZodType<Node> =/);
-    }
-    expect(src).toMatch(/\.lazy\(/);
-  });
+  test.each(["zod", "zod3", "valibot"] as const)(
+    "%s emits explicit type + annotation for nullable recursive",
+    (runtime) => {
+      const src = generateFile({
+        ...mapOpenApiEndpoints(doc),
+        runtime,
+        schemasOnly: true,
+        includeClient: false,
+      });
+      expect(src).toMatch(/export (?:type|interface) Node/);
+      if (runtime === "valibot") {
+        expect(src).toMatch(/export const Node: v\.GenericSchema<Node> =/);
+      } else {
+        expect(src).toMatch(/export const Node: z\.ZodType<Node> =/);
+      }
+      expect(src).toMatch(/\.lazy\(/);
+    },
+  );
 
   test("effect emits NameCore + Name | null for nullable recursive", () => {
     const src = generateFile({

@@ -12,4 +12,5 @@
 
 ## Resolution
 
-`IrToTsOptions.readonlyArrays` emits `ReadonlyArray` at the array/tuple cases; `emitExplicitSchemaTypeDecl` passes the flag through (no string replace).
+`IrToTsOptions.readonlyArrays` emits `ReadonlyArray` at the array/tuple cases; `emitExplicitSchemaTypeDecl` passes the
+flag through (no string replace).

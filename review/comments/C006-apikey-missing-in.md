@@ -8,8 +8,10 @@
 
 ## Comment
 
-Incomplete apiKey (`in` missing/invalid or empty `name`) stayed `supported: true`, so credentials looked usable while `applyAuth` could only guess header.
+Incomplete apiKey (`in` missing/invalid or empty `name`) stayed `supported: true`, so credentials looked usable while
+`applyAuth` could only guess header.
 
 ## Resolution
 
-`supported` requires valid `in` (`header|query|cookie`) and non-empty `name`. Still present on `AuthCredentials` with “not applied automatically” docs; omitted from `applyAuth` body. Tests in `tests/review-fixes.test.ts`.
+`supported` requires valid `in` (`header|query|cookie`) and non-empty `name`. Still present on `AuthCredentials` with
+“not applied automatically” docs; omitted from `applyAuth` body. Tests in `tests/review-fixes.test.ts`.
