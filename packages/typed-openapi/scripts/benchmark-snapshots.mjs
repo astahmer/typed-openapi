@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const snapshotsDir = join(packageRoot, "tests/snapshots");
 const docsDir = join(packageRoot, "docs");
+const usageDir = join(packageRoot, "tmp/typecheck-benchmarks");
 const runs = Number.parseInt(process.env.BENCH_RUNS ?? "5", 10);
 const snapshotPattern = /^(?<schema>.+)\.(?<runtime>arktype|client|effect3?|typebox|typia|valibot|zod3?)\.ts$/;
 const tsc = [
@@ -61,6 +62,70 @@ const formatSeconds = (value) => `${value.toFixed(3)} s`;
 const formatNumber = (value) => Math.round(value).toLocaleString();
 const formatKb = (value) => `${formatNumber(value)} KB`;
 
+const inputValue = (runtime, value) => (runtime === "effect3" ? `${value} as never` : value);
+const optionalQuery = (runtime, value) => (runtime === "arktype" ? `[${value}, "?"]` : inputValue(runtime, value));
+
+const usageBySchema = {
+  "docker.openapi": {
+    calls: (runtime) => [
+      `api.get("/services/{id}", {
+  query: ${optionalQuery(runtime, "{ insertDefaults: true }")},
+  path: ${inputValue(runtime, '{ id: "abc" }')},
+})`,
+    ],
+    consume: `response[0].Endpoint?.Ports?.[0]?.PublishMode === "host"`,
+  },
+  petstore: {
+    calls: (runtime) => [
+      `api.get("/pet/{petId}", { path: ${inputValue(runtime, `{ petId: ${["arktype", "effect", "effect3"].includes(runtime) ? '"1"' : "1"} }`)} })`,
+      `api.get("/pet/findByStatus", { query: ${optionalQuery(runtime, '{ status: "available" }')} })`,
+    ],
+    consume: `response[0]?.tags?.[0]?.name ?? response[1]?.[0]?.status`,
+  },
+  "kombo.openapi": {
+    calls: (runtime) => [
+      `api.get("/hris/employees", {
+  header: ${inputValue(runtime, '{ "X-Integration-Id": "integration" }')},
+  query: ${optionalQuery(runtime, '{ include_deleted: "false", page_size: 1 }')},
+})`,
+    ],
+    consume: `response[0].data.results[0]?.work_email ?? response[0].data.next`,
+  },
+};
+
+function writeUsageProbe(snapshot) {
+  const usage = usageBySchema[snapshot.schema];
+  if (!usage) throw new Error(`No usage probe defined for ${snapshot.schema}.`);
+
+  const isEffect = snapshot.runtime === "effect" || snapshot.runtime === "effect3";
+  const createClient = isEffect ? "createEffectApiClient" : "createApiClient";
+  const calls = usage
+    .calls(snapshot.runtime)
+    .map((call) => `  ${call}`)
+    .join(",\n");
+  const consume = isEffect
+    ? `Effect.all([\n${calls}\n]).pipe(Effect.map((response) => ${usage.consume}))`
+    : `Promise.all([\n${calls}\n]).then((response) => ${usage.consume})`;
+  const probe = join(usageDir, snapshot.file);
+
+  mkdirSync(dirname(probe), { recursive: true });
+  writeFileSync(
+    probe,
+    [
+      `import { ${createClient} } from "../../tests/snapshots/${snapshot.file}";`,
+      ...(isEffect ? ['import { Effect } from "effect";'] : []),
+      "",
+      `const api = ${createClient}({} as Parameters<typeof ${createClient}>[0]);`,
+      "",
+      "// Keep request-parameter inference and response-property access in the compiler workload.",
+      `export const usage = ${consume};`,
+      "",
+    ].join("\n"),
+  );
+
+  return join("tmp/typecheck-benchmarks", snapshot.file);
+}
+
 function measure(file) {
   const result = spawnSync("pnpm", [...tsc, file], {
     cwd: packageRoot,
@@ -105,16 +170,26 @@ function renderReport(results, typescriptVersion) {
   const lines = [
     "# Generated snapshot type-check benchmarks",
     "",
-    "This report compares TypeScript cost of compiling each generated OpenAPI snapshot in isolation. Lower values are better.",
+    "This report compares TypeScript cost of type-checking realistic generated API-client usage. Lower values are better.",
     "",
     "## Method",
     "",
     `- ${runs} cold compiler processes per snapshot; check time, instantiations, and memory use are each reported as a median.`,
-    "- Every `tests/snapshots/<schema>.<runtime>.ts` file is included; this currently covers Docker, Kombo, Petstore, and long-operation-id snapshots.",
+    "- Every Docker, Kombo, and Petstore runtime snapshot is compiled through a generated usage probe; long-operation-id is intentionally excluded.",
+    "- Probes create a client, pass schema-specific request params, then consume typed response fields. Effect clients use `Effect.map`; other clients use `Promise.then`.",
+    "- Effect 3 snapshots currently need `as never` for parameter objects because their generated input type exposes schema internals; their request call and response consumption are still measured.",
     "- Compiler settings: `strict`, `noEmit`, `skipLibCheck`, `NodeNext`, and TypeScript extended diagnostics.",
     "- The existing `test:bench:attest` suite remains the focused Petstore instantiation regression check; this report adds broader compiler diagnostics.",
     "- **Balanced rank** is equal-weight mean of each snapshot's rank for check time, instantiations, and memory. It is a consistency signal, not a substitute for individual metrics.",
     `- TypeScript: ${typescriptVersion}; Node: ${process.version}; platform: ${process.platform}/${process.arch}.`,
+    "",
+    "## Usage probes",
+    "",
+    "| Schema | Typed requests | Response use |",
+    "| --- | --- | --- |",
+    "| Docker | `GET /services/{id}` with `path.id` and `query.insertDefaults` | `Endpoint.Ports[0].PublishMode` |",
+    "| Petstore | `GET /pet/{petId}` and `GET /pet/findByStatus` with path and query params | pet tag name and status |",
+    "| Kombo | `GET /hris/employees` with integration header and paging query | first employee work email or cursor |",
     "",
     "## Overall runtime ranking",
     "",
@@ -168,14 +243,15 @@ function renderReport(results, typescriptVersion) {
 
 const snapshots = readdirSync(snapshotsDir)
   .map((file) => ({ file, match: file.match(snapshotPattern) }))
-  .filter((entry) => entry.match)
+  .filter((entry) => entry.match && entry.match.groups.schema in usageBySchema)
   .map(({ file, match }) => ({ file, ...match.groups }))
   .sort((a, b) => a.file.localeCompare(b.file));
 if (!snapshots.length) throw new Error("No generated snapshot files found.");
 
 console.log(`Benchmarking ${snapshots.length} snapshots with ${runs} runs each...`);
 const measured = snapshots.map((snapshot) => {
-  const samples = Array.from({ length: runs }, () => measure(join("tests/snapshots", snapshot.file)));
+  const probe = writeUsageProbe(snapshot);
+  const samples = Array.from({ length: runs }, () => measure(probe));
   const result = {
     ...snapshot,
     checkTime: median(samples.map((sample) => sample.checkTime)),
