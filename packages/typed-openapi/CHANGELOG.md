@@ -1,10 +1,104 @@
 # typed-openapi
 
+## 4.0.0
+
+### Major Changes
+
+- 20a4436: Replace `@sinclair/typebox-codegen` with a first-party Schema IR and pluggable runtime adapters.
+
+  - Runtimes: `zod`, `zod3`, `effect`, `effect3`, `valibot`, `arktype`, `typebox`, `typia` (plus `none`)
+  - New `--validation loose|formats|strict` for constraint depth
+  - Subpath exports: `typed-openapi/runtimes`, `typed-openapi/runtimes/*`
+  - Dropped shipped adapters for yup / io-ts (re-add via the adapter contract; typebox/typia ship again)
+  - **Removed exports:** `Box` / `createBoxFactory` / `openApiSchemaToTs` / `ts-factory` — use Schema IR + `generateFile`
+  - Optional peers: `zod`, `effect`, `@effect/schema`, `valibot`, `arktype`, `@sinclair/typebox`, `typia` — install only
+    what you emit
+
+### Minor Changes
+
+- 20a4436: Defaults, coerce, cookies, ApiResponse, and readOnly/writeOnly.
+
+  - Emit OAS `default` on runtime schemas (zod `.default`, valibot/effect equivalents)
+  - `--coerce` / `--no-coerce` for path|query|cookie|header number/boolean string coercion (default on when runtime ≠
+    none)
+  - Cookie parameters (`in: cookie`, including `content` schemas) + Cookie header encoding
+  - `FetcherResponse` replaces DOM `Response` on the generated client (avoids clashing with OAS `ApiResponse` schemas);
+    request params use `InferSchemaInput` (`z.input` / Encoded)
+  - Strip `readOnly` from request bodies and `writeOnly` from responses
+
+- 20a4436: EffectApiClient error channel + leaner generated TypeScript inference.
+
+  - Remap non-status failures to `HttpClientError` (original in `cause`); status errors stay `TypedStatusError`
+  - Type Effect request params with `InferSchemaInput` (same encoded/input types as the promise client)
+  - Speed up IDE/tsc on large clients: `OptionalUndefinedKeys` once on `InferSchemaInput`, direct `InferSuccessData`,
+    overload order for `withResponse`
+  - TanStack Query wrappers take `ApiCallParams` so path/query/body stay typed with both clients
+
+- 20a4436: Effect-native client, validation sides, filters, and exact dependency pins.
+
+  - `--client promise|effect` (default `effect` when `--runtime` is `effect`/`effect3`)
+  - `--validate-side none|input|output|both` plus `onValidate` on generated clients
+  - Endpoint/schema filters (`--endpoint`, `--schema`) with configurable `--tree-shake-schemas`
+  - `--schema-naming auto|always-name|prefer-inline`
+  - Install peer `effect` for `--client effect` and/or `--runtime effect` / `effect3`
+
+- 20a4436: `--runtime effect` targets Effect Schema v4; keep v3 via `--runtime effect3`.
+
+  - Emit Effect Schema v4 APIs (`Schema.check`, `Schema.suspend`, …) for `--runtime effect` (peer `effect` ≥ 4)
+  - Nest the Effect 3 / `@effect/schema` adapter under `--runtime effect3`
+  - Arktype: safer pattern narrow + skip defaults on `.parse` model paths that broke smoke/typecheck
+
+- 20a4436: SSE responses, binary SchemaNode, typebox/typia adapters, TanStack+Effect.
+
+  - Recognize `text/event-stream` → `responseFormat: "sse"` (`ReadableStream`, skip output validation)
+  - OAS `format: binary|byte` → IR `binary` typed as `Blob`
+  - Re-add `--runtime typebox` and `--runtime typia`
+  - TanStack Query wrappers call `Effect.runPromise` when `--client effect`
+  - Sync API_CLIENT_EXAMPLES with requestFormat / cookies / SSE
+
+- 20a4436: TanStack infinite/suspense/queryKey/invalidate helpers; MSW mock generation; defineConfig + TS config; securitySchemes
+  auth on default fetcher; date/bigint transforms.
+
+### Patch Changes
+
+- 20a4436: Deduplicate Effect defaulted schemas, tighten generated client types, typecheck snapshots.
+
+  - Intern reusable Effect `optionalWith` / default helpers (`Boolean_default_false_prop`, …) instead of inlining
+    transforms
+  - Avoid double-defaults on nullable schemas (IR keeps default on the outer union only)
+  - Rename client surface to `FetcherResponse` (petstore has an OAS schema named `ApiResponse`)
+  - Reduce `as any` / `as never` in generated clients; widen `EndpointParameters` for assignability
+  - `--default-fetcher` uses `createEffectApiClient` when `--client effect`
+  - Snapshot files are typechecked in CI via `snapshots-typecheck.test.ts`
+
+- 20a4436: Issue triage: fix/verify GitHub regressions (#93, #29, #26, #61, #32, #27, #18, #121, #34, #46, #91, #114, #62).
+
+  - Optional all-optional param groups (`query?:`) so calls like `api.get("/pet/findByStatus")` typecheck (#32)
+  - Ref-resolver supports `#/definitions/*` nested refs (#27)
+  - Exotic schema types (e.g. FHIR) map to `unknown` instead of throwing (#18)
+  - TypeBox / Typia runtimes address #114 / #62 (`--runtime typebox` / `--runtime typia` + `InferSchemaInput`)
+  - README documents Fetcher `requestFormat` contract
+  - Regression suite: `tests/github-issues/` (`regression.test.ts` + `issue-*.test.ts`)
+
+  Note: put `Closes #N` in the **PR description** for GitHub auto-close (changesets do not close issues).
+
+- 20a4436: Honor OpenAPI `requestFormat` in the client and default fetcher.
+
+  - Pass `requestFormat` into `Fetcher.fetch` (from generated `endpointRequestFormats`; only non-json overrides, default
+    `"json"`)
+  - `--default-fetcher` encodes form-data / form-url / binary / text (not only JSON)
+
+- 20a4436: Keep the browser playground build free of Node `fs` config helpers.
+
+  - Stop re-exporting config loaders from the main `typed-openapi` entry (use `typed-openapi/node`)
+  - Expand the web `fs` shim with `existsSync` / `readFileSync` for any residual Node imports
+
 ## 3.0.0
 
 ### Major Changes
 
 - Replace `@sinclair/typebox-codegen` with a first-party Schema IR and pluggable runtime adapters.
+
   - Runtimes: `none` | `zod` (v4) | `zod3` | `effect` (Effect Schema v4) | `effect3` (`@effect/schema`) | `valibot` |
     `arktype` | `typebox` | `typia`
   - New CLI `--validation loose|formats|strict` controls how deep OpenAPI constraints are applied
@@ -170,6 +264,7 @@
 ### Major Changes
 
 - 8f1eaa5: Add comprehensive type-safe error handling and configurable status codes
+
   - **Type-safe error handling**: Added discriminated unions for API responses with `SafeApiResponse` and
     `InferResponseByStatus` types that distinguish between success and error responses based on HTTP status codes
   - **TypedResponseError class**: Introduced `TypedResponseError` that extends the native Error class to include typed
