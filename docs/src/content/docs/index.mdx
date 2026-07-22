@@ -1,0 +1,46 @@
+---
+title: typed-openapi
+description: Generate a type-safe TypeScript API client from an OpenAPI document.
+template: splash
+hero:
+  title: typed-openapi
+  tagline: Type-safe OpenAPI clients. One generated file. Your runtime, your fetcher, your stack.
+  actions:
+    - text: Generate your first client
+      link: /getting-started/
+      icon: right-arrow
+    - text: Open playground
+      link: https://typed-openapi-astahmer.vercel.app/
+      icon: external
+---
+
+**typed-openapi** turns an OpenAPI 3 document into a type-safe TypeScript client. Start types-only for minimal output, or add runtime validation, an Effect client, TanStack Query helpers, MSW mocks, and a production-ready fetcher as needed.
+
+## Pick a path
+
+- **New project:** follow [Generate your first client](/getting-started/).
+- **Team setup:** put repeatable options in [a typed config](/configuration/).
+- **Need a browser sandbox:** open the [playground](/playground/).
+- **Need runtime validation:** choose an adapter in [Validation runtimes](/validation/runtimes/).
+
+## What ships
+
+| Need | Add |
+| --- | --- |
+| Typed API client | default generation |
+| Zod, Effect, Valibot, ArkType, TypeBox, or Typia schemas | `--runtime` |
+| A Fetch-based client with auth and body encoding | `--default-fetcher` |
+| Typed React Query options, invalidation, and infinite queries | `--tanstack` |
+| MSW handlers and mock factories | `--msw` |
+| Date and bigint domain types | `--transform-dates --transform-bigint` |
+
+## Design principles
+
+- **One file by default.** The generated API client works in browsers and Node.
+- **Headless by default.** Bring your own fetcher—or generate one that follows the project’s request-body contract.
+- **Strong errors.** Error bodies narrow by status code, rather than becoming `unknown`.
+- **Opt-in runtime cost.** Install only the runtime adapter your generated client uses.
+
+:::tip[Start small]
+Generate a types-only client first. Add a runtime, fetcher, or integration only where your app benefits from it.
+:::

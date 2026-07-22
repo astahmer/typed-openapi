@@ -49,8 +49,18 @@ const deletingParamInUrl = (name: string) => {
 }
 
 export class UrlSaver {
+  getParam(name: string) {
+    if (typeof window === 'undefined') return
+
+    return new URLSearchParams(window.location.search).get(name) ?? undefined
+  }
+
   getValue(name: string) {
     return getDecompressedStringFromUrl(name)
+  }
+
+  setParam(name: string, value: string | number | boolean) {
+    updateUrlWithParam(name, value)
   }
 
   setValue(name: string, value: string) {

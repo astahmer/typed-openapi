@@ -1,5 +1,6 @@
 packages:
   - "packages/*"
+  - "docs"
 
 # pnpm 11 — build scripts (replaces onlyBuiltDependencies / neverBuiltDependencies)
 allowBuilds:
@@ -7,6 +8,7 @@ allowBuilds:
   esbuild: true
   msgpackr-extract: true
   msw: true
+  sharp: true
 
 # Migrated from .npmrc (pnpm 11 only reads auth/registry from .npmrc)
 saveExact: true

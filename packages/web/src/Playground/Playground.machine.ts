@@ -16,6 +16,18 @@ const initialOutputList = { "petstore.client.ts": "" };
 export type ValidationLevel = "loose" | "formats" | "strict";
 export type ClientKind = "promise" | "effect";
 
+const runtimeValues = ["none", "zod", "zod3", "effect", "effect3", "valibot", "arktype", "typebox", "typia"] as const;
+const validationValues = ["loose", "formats", "strict"] as const;
+const clientValues = ["promise", "effect"] as const;
+const validateSideValues = ["none", "input", "output", "both"] as const;
+
+const urlChoice = <T extends string>(name: string, values: readonly T[], fallback: T): T => {
+  const value = urlSaver.getParam(name);
+  return value && values.includes(value as T) ? (value as T) : fallback;
+};
+
+const initialRuntime = urlChoice<OutputRuntime>("runtime", runtimeValues, "none");
+
 /** Match CLI: effect/effect3 default to Effect-native client; other runtimes → promise. */
 export const clientForRuntime = (runtime: OutputRuntime, previousClient: ClientKind): ClientKind => {
   if (runtime === "effect" || runtime === "effect3") return "effect";
@@ -105,11 +117,11 @@ const initialContext: PlaygroundContext = {
   outputList: initialOutputList,
   selectedOutput: Object.keys(initialOutputList)[0],
   decorations: [],
-  runtime: "none",
-  validation: "strict",
-  client: "promise",
-  validateSide: "both",
-  coerce: true,
+  runtime: initialRuntime,
+  validation: urlChoice<ValidationLevel>("validation", validationValues, "strict"),
+  client: clientForRuntime(initialRuntime, urlChoice<ClientKind>("client", clientValues, "promise")),
+  validateSide: urlChoice<ValidateSide>("validateSide", validateSideValues, "both"),
+  coerce: urlSaver.getParam("coerce") !== "false",
 };
 
 // @ts-ignore
@@ -163,6 +175,13 @@ export const playgroundMachine = setup({
     }),
     updateUrl: ({ context }) => {
       urlSaver.setValue("input", context.inputList[context.selectedInput]);
+    },
+    updateUrlOptions: ({ context }) => {
+      urlSaver.setParam("runtime", context.runtime);
+      urlSaver.setParam("validation", context.validation);
+      urlSaver.setParam("client", context.client);
+      urlSaver.setParam("validateSide", context.validateSide);
+      urlSaver.setParam("coerce", context.coerce);
     },
     updateRuntime: assign(({ event, context }) => {
       if (event.type !== "Update runtime") {
@@ -224,7 +243,7 @@ export const playgroundMachine = setup({
       },
     },
     ready: {
-      entry: ["updateUrl"],
+      entry: ["updateUrl", "updateUrlOptions"],
       states: {
         Playing: {
           initial: "generating",
@@ -269,23 +288,23 @@ export const playgroundMachine = setup({
       initial: "Playing",
       on: {
         "Update runtime": {
-          actions: ["updateRuntime"],
+          actions: ["updateRuntime", "updateUrlOptions"],
           target: ".Playing.generating",
         },
         "Update validation": {
-          actions: ["updateValidation"],
+          actions: ["updateValidation", "updateUrlOptions"],
           target: ".Playing.generating",
         },
         "Update client": {
-          actions: ["updateClient"],
+          actions: ["updateClient", "updateUrlOptions"],
           target: ".Playing.generating",
         },
         "Update validateSide": {
-          actions: ["updateValidateSide"],
+          actions: ["updateValidateSide", "updateUrlOptions"],
           target: ".Playing.generating",
         },
         "Update coerce": {
-          actions: ["updateCoerce"],
+          actions: ["updateCoerce", "updateUrlOptions"],
           target: ".Playing.generating",
         },
       },
