@@ -172,14 +172,21 @@ export const valibotAdapter: RuntimeAdapter = {
   name: "valibot",
   imports: () => `import * as v from "valibot";`,
   inferType: (expr) => `v.InferOutput<typeof ${expr}>`,
+  schemaType: (typeReference) => `v.GenericSchema & __TypedOpenapiSchema<${typeReference}>`,
+  annotateSchema: (schemaExpr, typeReference) =>
+    `${schemaExpr} as unknown as v.GenericSchema & __TypedOpenapiSchema<${typeReference}>`,
   emitNode,
   wrapLazy: (_name, body) => `v.lazy(() => ${body})`,
   literalString: (value) => `v.literal(${quote(value)})`,
   unknown: () => "v.unknown()",
   never: () => "v.never()",
-  emitNamedSchema: (name, node, ctx) => {
+  emitNamedSchema: (name, node, ctx, typeReference) => {
     const childCtx = { ...ctx, currentSchemaName: name };
     let body = emitNode(node, childCtx);
+    if (typeReference) {
+      const runtimeBody = ctx.runtimeExpression ? ctx.runtimeExpression(body) : body;
+      return `export type ${name} = ${typeReference};\nexport const ${name} = ${runtimeBody} as unknown as v.GenericSchema & __TypedOpenapiSchema<${typeReference}>;`;
+    }
     if (ctx.recursiveNames.has(name)) {
       body = `v.lazy(() => ${body})`;
       const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);

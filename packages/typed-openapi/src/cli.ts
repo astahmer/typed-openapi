@@ -69,6 +69,11 @@ cli
     "Map format date-time/date to Date (types + runtime transforms; none-runtime revives ISO strings)",
   )
   .option("--transform-bigint", "Map format int64 to bigint (types + runtime transforms)")
+  .option(
+    "--runtime-types",
+    "Generate and use an experimental .d.ts sidecar for runtime validator types",
+  )
+  .option("--no-runtime-types", "Inline runtime validator types instead of generating a .d.ts sidecar")
   .action(async (input: string | undefined, _options: any) => {
     return generateClientFiles(input, _options);
   });

@@ -23,6 +23,8 @@ export type EmitRuntimeFileArgs = {
   coerce?: boolean;
   transformDates?: boolean;
   transformBigInt?: boolean;
+  /** Namespace imported from the generated declaration sidecar. */
+  typeNamespace?: string;
 };
 
 const coerceParamKeys = new Set(["query", "path", "header", "cookie"]);
@@ -55,6 +57,7 @@ const emitParameters = (
   parameters: Endpoint["parameters"],
   ctx: ReturnType<typeof createEmitCtx>,
   coerce: boolean,
+  typeReference?: string,
 ): string => {
   if (!parameters) return adapter.never();
 
@@ -64,9 +67,11 @@ const emitParameters = (
     if (!node) continue;
     const paramCtx = coerce && coerceParamKeys.has(key) ? { ...ctx, coercePrimitives: true } : ctx;
     let expr = adapter.emitNode(node, paramCtx);
+    if (ctx.runtimeExpression) expr = ctx.runtimeExpression(expr);
     if (node.kind === "object" && node.partial) {
       expr = wrapOptionalParamGroup(adapter, expr);
     }
+    if (typeReference) expr = adapter.annotateSchema(expr, `${typeReference}[${JSON.stringify(key)}]`);
     parts.push(`${key}: ${expr}`);
   }
 
@@ -77,10 +82,14 @@ const emitResponses = (
   adapter: RuntimeAdapter,
   responses: Record<string, SchemaNode> | undefined,
   ctx: ReturnType<typeof createEmitCtx>,
+  typeReference?: string,
 ): string => {
   if (!responses) return `{ }`;
   const parts = Object.entries(responses).map(([status, node]) => {
-    return `${wrapWithQuotesIfNeeded(status)}: ${adapter.emitNode(node, ctx)}`;
+    const rawExpr = adapter.emitNode(node, ctx);
+    const expr = ctx.runtimeExpression ? ctx.runtimeExpression(rawExpr) : rawExpr;
+    const typedExpr = typeReference ? adapter.annotateSchema(expr, `${typeReference}[${JSON.stringify(status)}]`) : expr;
+    return `${wrapWithQuotesIfNeeded(status)}: ${typedExpr}`;
   });
   return `{ ${parts.join(", ")} }`;
 };
@@ -89,10 +98,14 @@ const emitResponseHeaders = (
   adapter: RuntimeAdapter,
   headers: Record<string, SchemaNode> | undefined,
   ctx: ReturnType<typeof createEmitCtx>,
+  typeReference?: string,
 ): string => {
   if (!headers) return "";
   const parts = Object.entries(headers).map(([status, node]) => {
-    return `${wrapWithQuotesIfNeeded(status.toLowerCase())}: ${adapter.emitNode(node, ctx)}`;
+    const rawExpr = adapter.emitNode(node, ctx);
+    const expr = ctx.runtimeExpression ? ctx.runtimeExpression(rawExpr) : rawExpr;
+    const typedExpr = typeReference ? adapter.annotateSchema(expr, `${typeReference}[${JSON.stringify(status)}]`) : expr;
+    return `${wrapWithQuotesIfNeeded(status.toLowerCase())}: ${typedExpr}`;
   });
   return `responseHeaders: { ${parts.join(", ")} },`;
 };
@@ -108,6 +121,7 @@ export const emitRuntimeFile = ({
   coerce = true,
   transformDates = false,
   transformBigInt = false,
+  typeNamespace,
 }: EmitRuntimeFileArgs): string => {
   const namedSchemas =
     namedSchemasOption ??
@@ -121,14 +135,26 @@ export const emitRuntimeFile = ({
   const ctx = createEmitCtx(validation, recursiveNames, {
     transformDates,
     transformBigInt,
+    ...(typeNamespace
+      ? { runtimeExpression: (expression: string) => `__typedOpenapiRuntime(${JSON.stringify(expression)})` }
+      : {}),
   });
 
   let schemasBlock = `// <Schemas>\n`;
   if (adapter.emitNamedSchemas) {
-    schemasBlock += `${adapter.emitNamedSchemas(namedSchemas, ctx)}\n`;
+    schemasBlock += `${adapter.emitNamedSchemas(
+      namedSchemas,
+      ctx,
+      typeNamespace ? (name) => `${typeNamespace}.Schemas.${name}` : undefined,
+    )}\n`;
   } else {
     for (const { name, node } of namedSchemas) {
-      schemasBlock += `${adapter.emitNamedSchema(name, node, ctx)}\n\n`;
+      schemasBlock += `${adapter.emitNamedSchema(
+        name,
+        node,
+        ctx,
+        typeNamespace ? `${typeNamespace}.Schemas.${name}` : undefined,
+      )}\n\n`;
     }
   }
   schemasBlock += `// </Schemas>\n`;
@@ -137,9 +163,26 @@ export const emitRuntimeFile = ({
   if (!schemasOnly) {
     endpointsBlock += `\n// <Endpoints>\n`;
     for (const endpoint of endpointList) {
-      const parameters = emitParameters(adapter, endpoint.parameters, ctx, coerce);
-      const responses = emitResponses(adapter, endpoint.responses, ctx);
-      const responseHeaders = emitResponseHeaders(adapter, endpoint.responseHeaders, ctx);
+      const endpointType = typeNamespace ? `${typeNamespace}.Endpoints.${endpoint.meta.alias}` : undefined;
+      const parameters = emitParameters(
+        adapter,
+        endpoint.parameters,
+        ctx,
+        coerce,
+        endpointType ? `${endpointType}["parameters"]` : undefined,
+      );
+      const responses = emitResponses(
+        adapter,
+        endpoint.responses,
+        ctx,
+        endpointType ? `${endpointType}["responses"]` : undefined,
+      );
+      const responseHeaders = emitResponseHeaders(
+        adapter,
+        endpoint.responseHeaders,
+        ctx,
+        endpointType ? `${endpointType}["responseHeaders"]` : undefined,
+      );
 
       endpointsBlock += `export type ${endpoint.meta.alias} = typeof ${endpoint.meta.alias};\n`;
       endpointsBlock += `export const ${endpoint.meta.alias} = {\n`;
@@ -171,5 +214,8 @@ export const emitRuntimeFile = ({
     return `import { ${names.join(", ")} } from "effect";\n\n${body}`;
   }
 
-  return `${adapter.imports()}\n\n${body}`;
+  const runtimeExpressionHelper = typeNamespace
+    ? `const __typedOpenapiRuntime = (source: string): any => eval(source);\n\n`
+    : "";
+  return `${adapter.imports()}\n\n${runtimeExpressionHelper}${body}`;
 };

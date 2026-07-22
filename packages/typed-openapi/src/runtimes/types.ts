@@ -48,6 +48,8 @@ export type EmitCtx = {
   transformDates?: boolean;
   /** Map int64 number schemas to bigint (runtime transform + TS types). */
   transformBigInt?: boolean;
+  /** Defers a generated runtime expression so TypeScript does not infer its implementation type. */
+  runtimeExpression?: (expression: string) => string;
   /**
    * Mutable registry of reusable defaulted schemas shared for one file emit.
    * Keyed by `${kind}:${baseExpr}:${defaultLit}`.
@@ -64,17 +66,25 @@ export type RuntimeAdapter = {
   imports: () => string;
   /** Wrap a schema expression for type inference export */
   inferType: (schemaExpr: string) => string;
+  /** Broad runtime schema type whose output comes from a generated declaration sidecar. */
+  schemaType: (typeReference: string) => string;
+  /** Prevent TypeScript from inferring a validator's full implementation type. */
+  annotateSchema: (schemaExpr: string, typeReference: string) => string;
   /** Emit a schema expression for a node (inline, no export) */
   emitNode: (node: SchemaNode, ctx: EmitCtx) => string;
   /** How to wrap a named recursive schema definition */
   wrapLazy?: (name: string, bodyExpr: string) => string;
   /** Emit `export const Name = ...` (+ optional type) for a top-level schema */
-  emitNamedSchema: (name: string, node: SchemaNode, ctx: EmitCtx) => string;
+  emitNamedSchema: (name: string, node: SchemaNode, ctx: EmitCtx, typeReference?: string) => string;
   /**
    * Optional batch emit for all component schemas (e.g. ArkType `type.module` for recursion).
    * When present, used instead of looping `emitNamedSchema`.
    */
-  emitNamedSchemas?: (schemas: NamedSchema[], ctx: EmitCtx) => string;
+  emitNamedSchemas?: (
+    schemas: NamedSchema[],
+    ctx: EmitCtx,
+    typeReferenceForName?: (name: string) => string,
+  ) => string;
   /** Emit endpoint const object body fields using emitNode */
   literalString: (value: string) => string;
   unknown: () => string;
@@ -84,7 +94,12 @@ export type RuntimeAdapter = {
 export const createEmitCtx = (
   validation: ValidationPolicy,
   recursiveNames: Set<string> = new Set(),
-  options?: { coercePrimitives?: boolean; transformDates?: boolean; transformBigInt?: boolean },
+  options?: {
+    coercePrimitives?: boolean;
+    transformDates?: boolean;
+    transformBigInt?: boolean;
+    runtimeExpression?: (expression: string) => string;
+  },
 ): EmitCtx => ({
   validation,
   recursiveNames,
@@ -93,4 +108,5 @@ export const createEmitCtx = (
   ...(options?.coercePrimitives ? { coercePrimitives: true } : {}),
   ...(options?.transformDates ? { transformDates: true } : {}),
   ...(options?.transformBigInt ? { transformBigInt: true } : {}),
+  ...(options?.runtimeExpression ? { runtimeExpression: options.runtimeExpression } : {}),
 });

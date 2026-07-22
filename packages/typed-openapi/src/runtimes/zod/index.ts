@@ -189,14 +189,21 @@ export const zodAdapter: RuntimeAdapter = {
   name: "zod",
   imports: () => `import { z } from "zod";`,
   inferType: (expr) => `z.infer<typeof ${expr}>`,
+  schemaType: (typeReference) => `z.ZodType & __TypedOpenapiSchema<${typeReference}>`,
+  annotateSchema: (schemaExpr, typeReference) =>
+    `${schemaExpr} as unknown as z.ZodType & __TypedOpenapiSchema<${typeReference}>`,
   emitNode,
   wrapLazy: (_name, body) => `z.lazy(() => ${body})`,
   literalString: (value) => `z.literal(${quote(value)})`,
   unknown: () => "z.unknown()",
   never: () => "z.never()",
-  emitNamedSchema: (name, node, ctx) => {
+  emitNamedSchema: (name, node, ctx, typeReference) => {
     const childCtx = { ...ctx, currentSchemaName: name };
     let body = emitNode(node, childCtx);
+    if (typeReference) {
+      const runtimeBody = ctx.runtimeExpression ? ctx.runtimeExpression(body) : body;
+      return `export type ${name} = ${typeReference};\nexport const ${name} = ${runtimeBody} as unknown as z.ZodType & __TypedOpenapiSchema<${typeReference}>;`;
+    }
     if (ctx.recursiveNames.has(name)) {
       body = `z.lazy(() => ${body})`;
       // Explicit TS type + ZodType annotation — avoids circular infer `any` (TS7022/7024),

@@ -242,15 +242,22 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   }
 };
 
-const emitNamedSchema = (name: string, node: SchemaNode, ctx: EmitCtx): string => {
+const emitNamedSchema = (name: string, node: SchemaNode, ctx: EmitCtx, typeReference?: string): string => {
   const childCtx = { ...ctx, currentSchemaName: name };
   const body = emitNode(node, childCtx);
+  if (typeReference) {
+    return `export type ${name} = ${typeReference};\nexport const ${name} = ${body} as unknown as import("arktype").Type<${typeReference}>;`;
+  }
   return `export const ${name} = ${body};\nexport type ${name} = typeof ${name}.infer;`;
 };
 
-const emitNamedSchemas = (schemas: NamedSchema[], ctx: EmitCtx): string => {
+const emitNamedSchemas = (
+  schemas: NamedSchema[],
+  ctx: EmitCtx,
+  typeReferenceForName?: (name: string) => string,
+): string => {
   if (ctx.recursiveNames.size === 0 || schemas.length === 0) {
-    return schemas.map(({ name, node }) => emitNamedSchema(name, node, ctx)).join("\n\n");
+    return schemas.map(({ name, node }) => emitNamedSchema(name, node, ctx, typeReferenceForName?.(name))).join("\n\n");
   }
 
   const moduleSchemaNames = new Set(schemas.map((s) => s.name));
@@ -265,7 +272,10 @@ const emitNamedSchemas = (schemas: NamedSchema[], ctx: EmitCtx): string => {
 
   let out = `const __schemas = type.module({\n${entries}\n});\n\n`;
   for (const { name } of schemas) {
-    out += `export const ${name} = __schemas.${name};\nexport type ${name} = typeof ${name}.infer;\n\n`;
+    const typeReference = typeReferenceForName?.(name);
+    out += typeReference
+      ? `export type ${name} = ${typeReference};\nexport const ${name} = __schemas.${name} as unknown as import("arktype").Type<${typeReference}>;\n\n`
+      : `export const ${name} = __schemas.${name};\nexport type ${name} = typeof ${name}.infer;\n\n`;
   }
   return out.trimEnd();
 };
@@ -274,6 +284,9 @@ export const arktypeAdapter: RuntimeAdapter = {
   name: "arktype",
   imports: () => `import { type } from "arktype";`,
   inferType: (expr) => `${expr}["infer"]`,
+  schemaType: (typeReference) => `import("arktype").Type<${typeReference}>`,
+  annotateSchema: (schemaExpr, typeReference) =>
+    `${schemaExpr} as unknown as import("arktype").Type<${typeReference}>`,
   emitNode,
   wrapLazy: (_name, body) => body,
   literalString: (value) => `type(${arkUnitDef(value)})`,

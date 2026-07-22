@@ -248,17 +248,25 @@ export const effectAdapter: RuntimeAdapter = {
   name: "effect",
   imports: () => `import { Effect, Schema, SchemaTransformation, Struct } from "effect";`,
   inferType: (expr) => `Schema.Schema.Type<typeof ${expr}>`,
+  schemaType: (typeReference) => `Schema.Schema<${typeReference}, unknown>`,
+  annotateSchema: (schemaExpr, typeReference) =>
+    `${schemaExpr} as unknown as Schema.Schema<${typeReference}, unknown>`,
   emitNode,
   wrapLazy: (_name, body) => `${S}.suspend(() => ${body})`,
   literalString: (value) => `${S}.Literal(${quote(value)})`,
   unknown: () => `${S}.Unknown`,
   never: () => `${S}.Never`,
-  emitNamedSchema: (name, node, ctx) => {
+  emitNamedSchema: (name, node, ctx, typeReference) => {
     const childCtx = { ...ctx, currentSchemaName: name };
     // Named NullOr wrappers break struct field assign on $ref — keep const as the
     // inner schema and surface nullability on the exported TypeScript type instead.
     const nullInner = isNullOr(node);
     let body = emitNode(nullInner ?? node, childCtx);
+    if (typeReference) {
+      if (ctx.recursiveNames.has(name)) body = `${S}.suspend(() => ${body})`;
+      const runtimeBody = ctx.runtimeExpression ? ctx.runtimeExpression(body) : body;
+      return `export type ${name} = ${typeReference};\nexport const ${name} = ${runtimeBody} as unknown as Schema.Schema<${typeReference}, unknown>;`;
+    }
     if (ctx.recursiveNames.has(name)) {
       body = `${S}.suspend(() => ${body})`;
       if (nullInner) {

@@ -47,6 +47,7 @@ export const configFileSchema = type({
   "errorStatusCodes?": "string",
   "transformDates?": "boolean",
   "transformBigInt?": "boolean",
+  "runtimeTypes?": "boolean",
 });
 
 export type TypedOpenapiConfigFile = typeof configFileSchema.infer;

@@ -153,15 +153,22 @@ export const typeboxAdapter: RuntimeAdapter = {
   imports: () =>
     `import { Type, type Static } from "@sinclair/typebox";\nimport { Value } from "@sinclair/typebox/value";`,
   inferType: (expr) => `Static<typeof ${expr}>`,
+  schemaType: (typeReference) => `import("@sinclair/typebox").TSchema & __TypedOpenapiSchema<${typeReference}>`,
+  annotateSchema: (schemaExpr, typeReference) =>
+    `${schemaExpr} as unknown as import("@sinclair/typebox").TSchema & __TypedOpenapiSchema<${typeReference}>`,
   emitNode,
   literalString: (value) => `Type.Literal(${quote(value)})`,
   unknown: () => "Type.Unknown()",
   never: () => "Type.Never()",
-  emitNamedSchema: (name, node, ctx) => {
+  emitNamedSchema: (name, node, ctx, typeReference) => {
     const childCtx = { ...ctx, currentSchemaName: name };
     let body = emitNode(node, childCtx);
     if (ctx.recursiveNames.has(name)) {
       body = `Type.Recursive((This) => ${body})`;
+    }
+    if (typeReference) {
+      const runtimeBody = ctx.runtimeExpression ? ctx.runtimeExpression(body) : body;
+      return `export type ${name} = ${typeReference};\nexport const ${name} = ${runtimeBody} as unknown as import("@sinclair/typebox").TSchema & __TypedOpenapiSchema<${typeReference}>;`;
     }
     return `export type ${name} = Static<typeof ${name}>;\nexport const ${name} = ${body};`;
   },

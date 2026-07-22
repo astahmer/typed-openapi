@@ -79,16 +79,27 @@ export const typiaAdapter: RuntimeAdapter = {
   name: "typia",
   imports: () => `import typia, { tags } from "typia";`,
   inferType: (expr) => `typeof ${expr} extends (input: unknown) => input is infer U ? U : never`,
+  schemaType: (typeReference) => `(input: unknown) => input is ${typeReference}`,
+  annotateSchema: (schemaExpr, typeReference) =>
+    `${schemaExpr} as unknown as (input: unknown) => input is ${typeReference}`,
   emitNode,
   literalString: (value) => createIs(JSON.stringify(value)),
   unknown: () => createIs("unknown"),
   never: () => createIs("never"),
-  emitNamedSchema: (name, node, ctx) => {
+  emitNamedSchema: (name, node, ctx, typeReference) => {
     const irOpts = buildIrToTsOptions({
       prefixRefsWithSchemas: false,
       transformDates: ctx.transformDates,
       transformBigInt: ctx.transformBigInt,
     });
+    if (typeReference) {
+      return [
+        `export type ${name} = ${typeReference};`,
+        `export const is${name} = typia.createIs<${typeReference}>();`,
+        `export const assert${name} = typia.createAssert<${typeReference}>();`,
+        `export const validate${name} = typia.createValidate<${typeReference}>();`,
+      ].join("\n");
+    }
     // Recursive record/object as interface — same TS2456 fix as none-runtime.
     const typeDecl =
       ctx.recursiveNames.has(name) && canEmitAsInterface(node)

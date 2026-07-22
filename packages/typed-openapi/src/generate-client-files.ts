@@ -6,6 +6,7 @@ import { mkdir, writeFile } from "fs/promises";
 import {
   allowedRuntimes,
   generateFile,
+  generateRuntimeTypeDeclarations,
   DEFAULT_SUCCESS_STATUS_CODES,
   DEFAULT_ERROR_STATUS_CODES,
   type GeneratorOptions,
@@ -72,6 +73,7 @@ export const optionsSchema = type({
   "errorStatusCodes?": "string",
   "transformDates?": "boolean",
   "transformBigInt?": "boolean",
+  "runtimeTypes?": "boolean",
 });
 
 export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
@@ -99,6 +101,7 @@ export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
   transformBigInt?: boolean;
   "transform-dates"?: boolean;
   "transform-bigint"?: boolean;
+  runtimeTypes?: boolean;
 };
 
 function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
@@ -221,11 +224,31 @@ export async function generateClientFiles(input: string | undefined, options: Ge
     httpInputFilename && merged.inputDir ? join(merged.inputDir, httpInputFilename + suffix) : resolvedInput + suffix;
   const output = merged.output ?? defaultOutput;
   const outputPath = isAbsolute(output) ? output : join(cwd, output);
-  const content = await prettify(generateFile(generatorOptions), { enabled: shouldFormat, filePath: outputPath });
+  const runtimeTypes = merged.runtimeTypes ?? false;
+  const runtimeTypesPath = outputPath.endsWith(".ts")
+    ? `${outputPath.slice(0, -3)}.types.d.ts`
+    : `${outputPath}.types.d.ts`;
+  const runtimeTypesImport = `./${basename(runtimeTypesPath)}`;
+  const content = await prettify(
+    generateFile({
+      ...generatorOptions,
+      ...(runtimeTypes ? { runtimeTypeDeclarations: runtimeTypesImport } : {}),
+    }),
+    { enabled: shouldFormat, filePath: outputPath },
+  );
 
   console.log("Generating client...", outputPath);
   await ensureDir(dirname(outputPath));
   await writeFile(outputPath, content);
+
+  if (runtimeTypes) {
+    const declarationContent = await prettify(generateRuntimeTypeDeclarations(generatorOptions), {
+      enabled: shouldFormat,
+      filePath: runtimeTypesPath,
+    });
+    console.log("Generating runtime declarations...", runtimeTypesPath);
+    await writeFile(runtimeTypesPath, declarationContent);
+  }
 
   if (options.tanstack || merged.tanstack) {
     const tanstackOpt = options.tanstack ?? merged.tanstack;

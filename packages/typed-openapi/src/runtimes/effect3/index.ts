@@ -230,15 +230,23 @@ export const effect3Adapter: RuntimeAdapter = {
   name: "effect3",
   imports: () => `import { Schema as S } from "@effect/schema";`,
   inferType: (expr) => `S.Schema.Type<typeof ${expr}>`,
+  schemaType: (typeReference) => `S.Schema<${typeReference}, unknown>`,
+  annotateSchema: (schemaExpr, typeReference) =>
+    `${schemaExpr} as unknown as S.Schema<${typeReference}, unknown>`,
   emitNode,
   wrapLazy: (_name, body) => `${S}.suspend(() => ${body})`,
   literalString: (value) => `${S}.Literal(${quote(value)})`,
   unknown: () => `${S}.Unknown`,
   never: () => `${S}.Never`,
-  emitNamedSchema: (name, node, ctx) => {
+  emitNamedSchema: (name, node, ctx, typeReference) => {
     const childCtx = { ...ctx, currentSchemaName: name };
     const nullInner = isNullOr(node);
     let body = emitNode(nullInner ?? node, childCtx);
+    if (typeReference) {
+      if (ctx.recursiveNames.has(name)) body = `${S}.suspend(() => ${body})`;
+      const runtimeBody = ctx.runtimeExpression ? ctx.runtimeExpression(body) : body;
+      return `export type ${name} = ${typeReference};\nexport const ${name} = ${runtimeBody} as unknown as S.Schema<${typeReference}, unknown>;`;
+    }
     if (ctx.recursiveNames.has(name)) {
       body = `${S}.suspend(() => ${body})`;
       if (nullInner) {
