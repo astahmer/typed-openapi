@@ -54,9 +54,10 @@ describe("tanstack-query.generator", () => {
       relativeApiClientPath: "./api.client.ts",
     });
 
-    expect(file).toMatch(/endpoint:\s*\(id: string, options\?: EndpointParameters, infinite\?: boolean\)/);
+    expect(file).toMatch(/endpoint:\s*\(id: PropertyKey, options\?: object, infinite\?: boolean\)/);
     expect(file).toContain("createQueryKey(id, options, infinite)");
     expect(file).toContain("const createQueryKey = (");
+    expect(file).toContain("id: PropertyKey");
     expect(file).not.toMatch(/createQueryKey = <TOptions extends EndpointParameters>/);
   });
 

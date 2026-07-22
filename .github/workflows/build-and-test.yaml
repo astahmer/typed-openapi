@@ -27,7 +27,7 @@ jobs:
         run: pnpm --filter typed-openapi run gen:fixtures
 
       - name: Type check generated client and integration tests
-        run: pnpm --filter typed-openapi exec tsc -b ./tsconfig.ci.json
+        run: pnpm --filter typed-openapi run typecheck:ci
 
       - name: Test all (unit, types, attest, matrix, runtime, bench)
         run: pnpm --filter typed-openapi test:all

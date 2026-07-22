@@ -45,7 +45,8 @@
     "test:runtime": "pnpm run gen:runtime && pnpm run test:runtime:run",
     "test:all": "node scripts/test-all.mjs",
     "fmt": "oxfmt --write src tests",
-    "typecheck": "tsc -b ./tsconfig.build.json"
+    "typecheck": "tsc -b ./tsconfig.build.json",
+    "typecheck:ci": "tsc -b ./tsconfig.ci.json"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "12.1.0",

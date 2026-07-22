@@ -157,57 +157,61 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   /**
    * Hierarchical keys: \`["typed-openapi"]\` → \`["typed-openapi", path]\` → \`["typed-openapi", path, params]\`
    * so \`queryKeyFactory.all\` / path prefixes work with TanStack partial matching.
-   * Accepts \`EndpointParameters\` (and structurally compatible \`ApiCallParams\`) without casts.
+   *
+   * \`options\` is \`object\` so \`ApiCallParams\` / \`ApiRequestOptions\` assign without call-site casts
+   * (weak-type check would reject empty request bags that only have overrides/withResponse).
    */
   const createQueryKey = (
-      id: string,
-      options?: EndpointParameters,
+      id: PropertyKey,
+      options?: object,
       infinite?: boolean,
   ): readonly ["typed-openapi", string, EndpointQueryKeyParams?] => {
+      const keyId = String(id);
+      const src = (options ?? {}) as EndpointParameters;
       const params: EndpointQueryKeyParams = {};
       let hasParams = false;
       if (infinite) {
           params["_infinite"] = infinite;
           hasParams = true;
       }
-      if (options?.body) {
-          params.body = options.body;
+      if (src.body) {
+          params.body = src.body;
           hasParams = true;
       }
-      if (options?.header) {
-          params.header = options.header;
+      if (src.header) {
+          params.header = src.header;
           hasParams = true;
       }
-      if (options?.path) {
-          params.path = options.path;
+      if (src.path) {
+          params.path = src.path;
           hasParams = true;
       }
-      if (options?.query) {
-          params.query = options.query;
+      if (src.query) {
+          params.query = src.query;
           hasParams = true;
       }
-      if (options?.cookie) {
-          params.cookie = options.cookie;
+      if (src.cookie) {
+          params.cookie = src.cookie;
           hasParams = true;
       }
       if (hasParams) {
-          return ["typed-openapi", id, params] as const;
+          return ["typed-openapi", keyId, params] as const;
       }
-      return ["typed-openapi", id] as const;
+      return ["typed-openapi", keyId] as const;
   };
 
   /** Stable query-key factory for cache reads / invalidation outside of \`TanstackQueryApiClient\` methods. */
   export const queryKeyFactory = {
       all: ["typed-openapi"] as const,
-      endpoint: (id: string, options?: EndpointParameters, infinite?: boolean) =>
+      endpoint: (id: PropertyKey, options?: object, infinite?: boolean) =>
           createQueryKey(id, options, infinite),
   };
 
   /** Invalidate queries by endpoint path (and optional params). */
   export const invalidateEndpoint = (
       queryClient: QueryClient,
-      path: string,
-      options?: EndpointParameters,
+      path: PropertyKey,
+      options?: object,
       infinite?: boolean,
   ) => queryClient.invalidateQueries({ queryKey: createQueryKey(path, options, infinite) });
 
