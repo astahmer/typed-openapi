@@ -33,6 +33,7 @@ Flags use kebab-case; the equivalent config keys use camelCase. For example, `--
 | `--validate-side <side>` | `none`, `input`, `output`, or `both`; defaults to both with a runtime. |
 | `--client <kind>` | `promise` or `effect`; Effect runtimes default to effect. |
 | `--coerce` / `--no-coerce` | Control string-to-number/boolean coercion for HTTP primitives. |
+| `--runtime-types` / `--no-runtime-types` | Runtime clients create a `.types.d.ts` type sidecar by default. Opt out to keep one checked generated file. Types-only clients never create a sidecar. |
 | `--transform-dates` | Map `date` and `date-time` formats to `Date`. |
 | `--transform-bigint` | Map `int64` to `bigint`. |
 

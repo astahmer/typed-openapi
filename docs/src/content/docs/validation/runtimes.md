@@ -25,6 +25,38 @@ Pick the library already present in your application. The OpenAPI mapping and cl
 
 All adapters use the same input OpenAPI document and client API. They only change the emitted schema code and its type inference.
 
+## Runtime type sidecar
+
+Every runtime client writes two sibling files by default:
+
+```text
+src/api/openapi.zod.ts
+src/api/openapi.zod.types.d.ts
+```
+
+The runtime module contains executable validators. The declaration sidecar is the type surface used by the generated client and by your application. This keeps TypeScript from semantically checking a huge validator implementation every time it checks your project—a material difference for APIs as large as Cloudflare's OpenAPI document—while preserving strict exported schema aliases and `schema.parse()` inference.
+
+The runtime module deliberately starts with `// @ts-nocheck`; validation still runs normally at runtime. The trade-off is limited to the generated implementation: TypeScript does not report internal diagnostics in that file. Keep both files together when you commit, publish, or copy generated output, and use `skipLibCheck` to get the intended compiler-speed benefit.
+
+Use `--no-runtime-types` when you need one checked generated file instead:
+
+```sh
+pnpm exec typed-openapi openapi.yaml --runtime zod --no-runtime-types
+```
+
+```ts
+// typed-openapi.config.ts
+import { defineConfig } from "typed-openapi";
+
+export default defineConfig({
+  input: "./openapi.yaml",
+  runtime: "zod",
+  runtimeTypes: false,
+});
+```
+
+`runtime: none` never creates a sidecar. The generated import uses a `.types.js` specifier so the sibling `.types.d.ts` works in NodeNext projects without TypeScript extension-import options.
+
 ## Copy one command
 
 ```sh

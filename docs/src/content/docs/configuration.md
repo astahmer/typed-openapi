@@ -33,6 +33,8 @@ pnpm exec typed-openapi
 
 Treat the OpenAPI file, config, and generated TypeScript as one reviewed change. That makes API drift visible in a normal pull request instead of at runtime.
 
+When `runtime` is set, generation also writes a sibling `.types.d.ts` file by default. Commit or publish it with the runtime module. See [runtime type sidecars](/validation/runtimes/#runtime-type-sidecar) for why this keeps large generated clients fast and how to opt out.
+
 ## Override one setting from CI or a script
 
 CLI flags win over config values. Keep the shared config checked in, then narrow a temporary build without copying it.
