@@ -174,6 +174,23 @@ const indentMultiline = (value: string, indent = "  ") =>
         .join("\n")
     : value;
 
+/** Break recursive aliases through generic containers, which TypeScript rejects as TS2456. */
+const breakRecursiveContainerAliases = (name: string, schemaValue: string) => {
+  const record = `Record<string, ${name}>`;
+  const array = `Array<${name}>`;
+  const bridges: string[] = [];
+  let value = schemaValue;
+  if (value.includes(record)) {
+    value = value.replaceAll(record, `${name}Record`);
+    bridges.push(`export interface ${name}Record { [key: string]: ${name} }`);
+  }
+  if (value.includes(array)) {
+    value = value.replaceAll(array, `${name}Array`);
+    bridges.push(`export interface ${name}Array extends Array<${name}> {}`);
+  }
+  return { value, bridges };
+};
+
 const createGeneratorContext = (options: GeneratorOptions): GeneratorContext => {
   const runtime = options.runtime ?? "none";
   const filtered = applySpecFilters(options.endpointList, options.refs, options);
@@ -287,7 +304,9 @@ const generateSchemaList = (ctx: GeneratorContext) => {
     }
 
     const schemaValue = irToTs(node, irOpts);
-    file += `${jsdoc}export type ${name} = ${schemaValue}\n`;
+    const recursive = recursiveNames.has(name) ? breakRecursiveContainerAliases(name, schemaValue) : undefined;
+    file += `${jsdoc}export type ${name} = ${recursive?.value ?? schemaValue}\n`;
+    if (recursive?.bridges.length) file += `${recursive.bridges.join("\n")}\n`;
   }
 
   return (

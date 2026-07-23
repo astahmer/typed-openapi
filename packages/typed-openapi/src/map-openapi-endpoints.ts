@@ -37,6 +37,7 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
   const refs = createRefResolver(doc, options?.nameTransform);
   const irCtx: SchemaIrConvertContext = { getRefName: (ref) => refs.getInfosByRef(ref).normalized };
   const endpointList = [] as Array<Endpoint>;
+  const endpointAliases = new Set<string>();
 
   Object.entries(doc.paths ?? {}).forEach(([path, pathItemObj]) => {
     const pathItem = pick(pathItemObj, ["get", "put", "post", "delete", "options", "head", "patch", "trace"]);
@@ -47,6 +48,10 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
       if (options?.nameTransform?.transformEndpointName) {
         alias = options.nameTransform.transformEndpointName({ alias, path, method: method as Method, operation });
       }
+      const aliasBase = alias;
+      let suffix = 2;
+      while (endpointAliases.has(alias)) alias = `${aliasBase}_${suffix++}`;
+      endpointAliases.add(alias);
       const endpoint = {
         operation,
         method: method as Method,
