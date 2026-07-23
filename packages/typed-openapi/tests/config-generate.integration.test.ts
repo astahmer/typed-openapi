@@ -8,6 +8,32 @@ const tmp = join(__dirname, "../tmp/config-generate-integration");
 const pkgRoot = join(__dirname, "..");
 
 describe("generateClientFiles + config file integration", () => {
+  test("runtime clients emit declaration sidecars by default and allow opting out", async () => {
+    rmSync(tmp, { recursive: true, force: true });
+    mkdirSync(tmp, { recursive: true });
+    const specPath = join(tmp, "runtime-types.openapi.json");
+    writeFileSync(
+      specPath,
+      JSON.stringify({
+        openapi: "3.0.3",
+        info: { title: "runtime types", version: "1" },
+        paths: { "/hello": { get: { operationId: "getHello", responses: { "200": { description: "ok" } } } } },
+      }),
+    );
+
+    const runtimeOutput = join(tmp, "runtime.ts");
+    await generateClientFiles(specPath, { output: runtimeOutput, runtime: "zod", format: false });
+    expect(existsSync(join(tmp, "runtime.types.d.ts"))).toBe(true);
+
+    const optOutOutput = join(tmp, "runtime-opt-out.ts");
+    await generateClientFiles(specPath, { output: optOutOutput, runtime: "zod", runtimeTypes: false, format: false });
+    expect(existsSync(join(tmp, "runtime-opt-out.types.d.ts"))).toBe(false);
+
+    const typesOnlyOutput = join(tmp, "types-only.ts");
+    await generateClientFiles(specPath, { output: typesOnlyOutput, runtime: "none", format: false });
+    expect(existsSync(join(tmp, "types-only.types.d.ts"))).toBe(false);
+  });
+
   test("writes HTTP input output to inputDir when no output is specified", async () => {
     rmSync(tmp, { recursive: true, force: true });
     mkdirSync(tmp, { recursive: true });

@@ -1,6 +1,6 @@
 # Runtime declaration sidecar
 
-Enable `runtimeTypes` (or pass `--runtime-types`) for a runtime client to generate a sibling `.types.d.ts` file. The generated runtime module imports that sidecar for its public schema and API-client types, and starts with `// @ts-nocheck` so TypeScript does not spend time checking the large validator implementation.
+Runtime clients generate a sibling `.types.d.ts` file by default. Set `runtimeTypes: false` or pass `--no-runtime-types` to opt out. The generated runtime module imports that sidecar for its public schema and API-client types, and starts with `// @ts-nocheck` so TypeScript does not spend time checking the large validator implementation.
 
 This option is ignored for `runtime: "none"`: types-only clients already have no runtime validator implementation to skip.
 

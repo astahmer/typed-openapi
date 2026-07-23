@@ -71,7 +71,7 @@ cli
   .option("--transform-bigint", "Map format int64 to bigint (types + runtime transforms)")
   .option(
     "--runtime-types",
-    "Generate and use a .types.d.ts sidecar for runtime client types",
+    "Generate a .types.d.ts sidecar for runtime client types (default for runtime clients)",
   )
   .option("--no-runtime-types", "Do not generate a runtime type declaration sidecar")
   .action(async (input: string | undefined, _options: any) => {
