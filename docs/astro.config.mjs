@@ -2,7 +2,15 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import lucode from "lucode-starlight";
 
+const normalizeBase = (value) => {
+  const path = value ?? "/";
+  return `/${path}`.replace(/\/+/g, "/").replace(/([^/])$/, "$1/");
+};
+
+const base = normalizeBase(process.env.DOCS_BASE ?? process.env.ASTRO_BASE);
+
 export default defineConfig({
+  base,
   integrations: [
     starlight({
       title: "typed-openapi",

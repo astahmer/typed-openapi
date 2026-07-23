@@ -97,7 +97,8 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
   const tanstack = useSelector(service, (state) => state.context.tanstack);
   const msw = useSelector(service, (state) => state.context.msw);
   const showRuntimeOptions = runtime !== "none";
-  const fullscreenHref = typeof window === "undefined" ? "/playground/app/" : window.location.href;
+  const docsBase = import.meta.env.VITE_DOCS_BASE ?? "/";
+  const fullscreenHref = typeof window === "undefined" ? `${docsBase}playground/app/` : window.location.href;
   const runtimeLabel = runtimeOptions.find((option) => option.value === runtime)?.label ?? runtime;
   const configurationSummary = [
     runtimeLabel,
@@ -159,7 +160,7 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
   return (
     <header className="playground-header">
       <div className="playground-brand-row">
-        <a className="playground-brand" href="/" target="_top">
+        <a className="playground-brand" href={docsBase} target="_top">
           typed-openapi
         </a>
         <span className="playground-badge">Playground</span>
@@ -171,20 +172,14 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
             </a>
           ) : (
             <>
-              <a href="https://github.com/astahmer/typed-openapi" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub">
+              <a href="https://github.com/astahmer/typed-openapi" target="_blank" rel="noreferrer" aria-label="typed-openapi on GitHub" title="typed-openapi on GitHub">
                 <GitHubIcon aria-hidden="true" />
-                <span>GitHub</span>
               </a>
-              <a className="playground-nav-site" href="https://www.astahmer.dev/" target="_blank" rel="noreferrer">
-                <span>astahmer.dev</span>
-              </a>
-              <a href="https://x.com/astahmer_dev" target="_blank" rel="noreferrer" aria-label="Twitter" title="Twitter">
+              <a href="https://x.com/astahmer_dev" target="_blank" rel="noreferrer" aria-label="astahmer on Twitter" title="astahmer on Twitter">
                 <TwitterIcon aria-hidden="true" />
-                <span>Twitter</span>
               </a>
-              <a href="https://bsky.app/profile/astahmer.dev" target="_blank" rel="noreferrer" aria-label="Bluesky" title="Bluesky">
+              <a href="https://bsky.app/profile/astahmer.dev" target="_blank" rel="noreferrer" aria-label="astahmer on Bluesky" title="astahmer on Bluesky">
                 <BlueskyIcon aria-hidden="true" />
-                <span>Bluesky</span>
               </a>
             </>
           )}

@@ -1,18 +1,19 @@
 ---
+const playgroundUrl = `${import.meta.env.BASE_URL}playground/app/index.html`;
 ---
 
 <div class="playground-frame">
   <iframe
     data-playground-frame
     title="typed-openapi playground"
-    src="/playground/app/index.html"
+    src={playgroundUrl}
     loading="eager"
     allow="clipboard-read; clipboard-write"
   ></iframe>
 </div>
 
 <p class="playground-frame-actions">
-  <a data-playground-fullscreen href="/playground/app/index.html" target="_blank" rel="noreferrer">Open the playground full screen ↗</a>
+  <a data-playground-fullscreen href={playgroundUrl} target="_blank" rel="noreferrer">Open the playground full screen ↗</a>
 </p>
 
 <script>
