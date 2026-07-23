@@ -23,41 +23,46 @@ import CommandBuilder from "../../components/CommandBuilder.astro";
 
 <section class="home-section">
   <div class="home-section-heading">
-    <p class="home-eyebrow">Choose your boundary</p>
-    <h2>Start small. Add the pieces you need.</h2>
-    <p>Every path begins with the same OpenAPI contract. Choose the code that should exist in your application.</p>
+    <p class="home-eyebrow">From one OpenAPI document</p>
+    <h2>Keep the contract. Choose the boundary.</h2>
+    <p>Generate only types, add runtime validation, or plug the same endpoint map into your client and data layer.</p>
   </div>
-  <div class="home-grid home-grid--three">
-    <a class="home-card home-card--choice" href="/getting-started/">
-      <span>01</span>
-      <strong>Types and endpoint contracts</strong>
-      <p>Generate paths, parameters, responses, and a typed client surface. Keep your current HTTP layer.</p>
+  <div class="home-feature-grid">
+    <a class="home-feature home-feature--speed" href="/validation/runtimes/#runtime-type-sidecar">
+      <span>Fast TypeScript, even for huge specs</span>
+      <strong>Runtime validation without slow editor inference.</strong>
+      <p>Runtime output keeps its public types in a sibling declaration file, so large validator implementations stay out of TypeScript’s hot path.</p>
     </a>
-    <a class="home-card home-card--choice" href="/validation/runtimes/">
-      <span>02</span>
-      <strong>Runtime validation</strong>
-      <p>Use Zod, Effect, Valibot, ArkType, TypeBox, or Typia when inputs and responses need a runtime boundary.</p>
+    <a class="home-feature home-feature--single" href="/getting-started/">
+      <span>Types-only, one file</span>
+      <strong>Keep your existing HTTP layer.</strong>
+      <p>Generate paths, parameters, responses, and endpoint contracts without introducing a runtime dependency.</p>
     </a>
-    <a class="home-card home-card--choice" href="/clients/promise-client/#bring-your-own-fetcher">
-      <span>03</span>
-      <strong>Generated Fetch or your own</strong>
-      <p>Generate a Fetch transport, or keep retries, tracing, and auth in the fetcher you already own.</p>
+    <a class="home-feature home-feature--runtime" href="/validation/runtimes/">
+      <span>Runtime of your choice</span>
+      <strong>Zod, Effect, Valibot, ArkType, TypeBox, or Typia.</strong>
+      <p>Validate input, output, or both with the runtime already used by your application.</p>
+    </a>
+    <a class="home-feature home-feature--integrations" href="/integrations/tanstack-query/">
+      <span>Clients and data layers</span>
+      <strong>Promise, Effect, and TanStack Query.</strong>
+      <p>Generate Fetch when it fits. Bring your own transport when it does not. Add typed queries, mutations, and invalidation helpers.</p>
     </a>
   </div>
 </section>
 
 <section class="home-section home-section--compact">
   <div class="home-section-heading">
-    <p class="home-eyebrow">When the basic client is not enough</p>
-    <h2>Common next steps</h2>
+    <p class="home-eyebrow">Work with the spec you actually have</p>
+    <h2>Large API? Existing app? Agent workflow?</h2>
   </div>
-  <div class="home-grid home-grid--three">
+  <div class="home-grid home-grid--three home-grid--compact-cards">
     <a class="home-card" href="/advanced/filtering-and-schema-naming/">
       <strong>Filter a large specification</strong>
       <p>Generate a small, domain-specific client from one large OpenAPI document.</p>
     </a>
     <a class="home-card" href="/integrations/tanstack-query/">
-      <strong>TanStack Query</strong>
+      <strong>Wire up TanStack Query</strong>
       <p>Generate query keys, query options, mutations, and invalidation helpers.</p>
     </a>
     <a class="home-card" href="/ai/">

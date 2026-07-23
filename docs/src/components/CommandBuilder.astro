@@ -1,8 +1,7 @@
 <section class="snippet-builder" data-command-builder aria-labelledby="snippet-builder-title">
   <div class="snippet-builder-copy">
-    <p class="home-eyebrow">Generate a starting point</p>
-    <h2 id="snippet-builder-title">Pick the files you want to own.</h2>
-    <p>Start with a local spec or a pinned public URL. The command below is ready to paste, then keep the generated files in your repository.</p>
+    <h2 id="snippet-builder-title">Choose a runtime and transport.</h2>
+    <p>Start with a local spec or a pinned public URL. Copy the command, then keep generated files in your repository.</p>
   </div>
 
   <div class="snippet-builder-controls">
@@ -37,7 +36,6 @@
     <code data-command></code>
     <button type="button" data-copy>Copy</button>
   </div>
-  <p class="snippet-builder-output">Writes <span data-files></span>. The Cloudflare option uses its raw, pinned GitHub file.</p>
 </section>
 
 <script>
@@ -47,19 +45,14 @@
     const transport = builder.querySelector("[data-transport]");
     const command = builder.querySelector("[data-command]");
     const copy = builder.querySelector("[data-copy]");
-    const files = builder.querySelector("[data-files]");
 
-    if (!(input instanceof HTMLSelectElement) || !(runtime instanceof HTMLSelectElement) || !(transport instanceof HTMLSelectElement) || !(command instanceof HTMLElement) || !(copy instanceof HTMLButtonElement) || !(files instanceof HTMLElement)) continue;
+    if (!(input instanceof HTMLSelectElement) || !(runtime instanceof HTMLSelectElement) || !(transport instanceof HTMLSelectElement) || !(command instanceof HTMLElement) || !(copy instanceof HTMLButtonElement)) continue;
 
     const update = () => {
       const runtimeFlag = runtime.value === "none" ? "" : ` --runtime ${runtime.value}`;
       const name = runtime.value === "none" ? "openapi.client" : `openapi.${runtime.value}`;
       const fetcherFlag = transport.value === "fetch" ? " --default-fetcher" : "";
-      const outputFiles = [`src/api/${name}.ts`];
-      if (runtime.value !== "none") outputFiles.push(`src/api/${name}.types.d.ts`);
-      if (transport.value === "fetch") outputFiles.push("src/api/api.client.ts");
       command.textContent = `pnpm exec typed-openapi ${input.value} --output src/api/${name}.ts${runtimeFlag}${fetcherFlag} --format`;
-      files.textContent = outputFiles.join(" · ");
     };
 
     input.addEventListener("change", update);

@@ -48,15 +48,15 @@ body .sl-markdown-content h2 code {
 
 /* Lucode's splash hero is intentionally roomy. The docs home has no hero media. */
 .hero[data-layout] {
-  padding-block: 3.5rem 2.5rem;
+  padding-block: 2.5rem 1.5rem;
 }
 
 .snippet-builder {
   display: grid;
-  gap: 1.25rem;
-  margin: 0 auto 3rem;
+  gap: 0.9rem;
+  margin: 0 auto 2rem;
   max-width: 1080px;
-  padding: 1.5rem;
+  padding: 1.15rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--card);
@@ -75,13 +75,13 @@ body .sl-markdown-content h2 code {
 .snippet-builder h2 {
   margin: 0;
   color: var(--foreground);
-  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
   line-height: 1.1;
   letter-spacing: var(--tracking-tight);
 }
 
 .snippet-builder-copy > p {
-  margin: 0.75rem 0 0;
+  margin: 0.4rem 0 0;
   color: var(--muted-foreground);
   line-height: 1.6;
 }
@@ -89,19 +89,19 @@ body .sl-markdown-content h2 code {
 .snippet-builder-controls {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
+  gap: 0.55rem;
 }
 
 .snippet-builder-controls label {
   display: grid;
-  gap: 0.4rem;
+  gap: 0.25rem;
   color: var(--muted-foreground);
   font-size: 0.82rem;
 }
 
 .snippet-builder-controls select,
 .snippet-builder-command button {
-  min-height: 2.5rem;
+  min-height: 2.15rem;
   border: 1px solid var(--border);
   border-radius: calc(var(--radius) - 0.15rem);
   background: var(--background);
@@ -110,19 +110,19 @@ body .sl-markdown-content h2 code {
 }
 
 .snippet-builder-controls select {
-  padding-inline: 0.7rem;
+  padding-inline: 0.55rem;
 }
 
 .snippet-builder-command {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.75rem;
+  gap: 0.55rem;
 }
 
 .snippet-builder-command > code {
   display: block;
   overflow-x: auto;
-  padding: 1.25rem;
+  padding: 0.8rem;
   border: 1px solid var(--border);
   border-radius: calc(var(--radius) - 0.1rem);
   background: var(--code-background);
@@ -140,17 +140,6 @@ body .sl-markdown-content h2 code {
 .snippet-builder-command button:hover {
   border-color: var(--ring);
   background: var(--secondary);
-}
-
-.snippet-builder-output {
-  margin: 0.75rem 0 0;
-  color: var(--muted-foreground);
-  font-size: 0.82rem;
-}
-
-.snippet-builder-output span {
-  color: var(--foreground);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 .playground-frame {
@@ -183,16 +172,16 @@ body .sl-markdown-content h2 code {
   display: grid;
   gap: 0.75rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin: 1.25rem auto 3rem;
+  margin: 0.85rem auto 1.5rem;
   max-width: 1080px;
 }
 
 .home-section {
-  margin: 3.5rem auto;
+  margin: 2.25rem auto;
   max-width: 1080px;
 }
 
-.home-section--compact { margin-top: 4.5rem; }
+.home-section--compact { margin-top: 3rem; }
 .home-section-heading { max-width: 40rem; }
 .home-section-heading h2 { margin: 0.4rem 0 0; }
 .home-section-heading > p:not(.home-eyebrow) { margin: 0.7rem 0 0; color: var(--muted-foreground); line-height: 1.6; }
@@ -204,7 +193,7 @@ body .sl-markdown-content h2 code {
 }
 
 .home-card {
-  padding: 1.15rem 1.25rem;
+  padding: 1rem 1.1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--card);
@@ -224,21 +213,6 @@ body .sl-markdown-content h2 code {
   font-size: 0.95rem;
 }
 
-.home-card--choice {
-  min-height: 13rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.home-card--choice > span {
-  margin-bottom: auto;
-  color: var(--muted-foreground);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.72rem;
-}
-
-.home-card--choice strong { margin-top: 2.25rem; }
-
 .home-card p {
   margin: 0.45rem 0 0;
   color: var(--muted-foreground);
@@ -246,13 +220,46 @@ body .sl-markdown-content h2 code {
   line-height: 1.5;
 }
 
+.home-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+
+.home-feature {
+  min-height: 11rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid color-mix(in oklab, var(--feature-color) 45%, var(--border));
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, color-mix(in oklab, var(--feature-color) 11%, var(--card)), var(--card) 65%);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 150ms ease, transform 150ms ease;
+}
+
+.home-feature:hover { border-color: var(--feature-color); transform: translateY(-2px); }
+.home-feature > span { color: var(--feature-color); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem; font-weight: 650; }
+.home-feature strong { display: block; margin-top: 1rem; color: var(--foreground); font-size: 1.08rem; line-height: 1.25; }
+.home-feature p { margin: 0.5rem 0 0; color: var(--muted-foreground); font-size: 0.88rem; line-height: 1.5; }
+.home-feature--speed { --feature-color: #0d9488; }
+.home-feature--single { --feature-color: #2563eb; }
+.home-feature--runtime { --feature-color: #9333ea; }
+.home-feature--integrations { --feature-color: #d97706; }
+
+@media (min-width: 801px) {
+  .home-feature--speed { grid-row: span 2; min-height: 100%; }
+  .home-feature--speed strong { font-size: clamp(1.35rem, 2vw, 1.7rem); }
+}
+
 @media (max-width: 800px) {
   .hero[data-layout] {
-    padding-block: 2.5rem 1.5rem;
+    padding-block: 1.75rem 1rem;
   }
 
   .snippet-builder-controls,
-  .home-grid {
+  .home-grid,
+  .home-feature-grid {
     grid-template-columns: 1fr;
   }
 
