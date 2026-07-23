@@ -167,11 +167,19 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
         <p>Try a spec. Inspect the generated client.</p>
         <nav className="playground-nav" aria-label="Playground navigation">
           {embedded ? (
-            <a href={fullscreenHref} target="_blank" rel="noreferrer">
-              Full screen
-            </a>
+            <>
+              <a className="playground-docs-link" href="https://typed-openapi-docs.vercel.app/" target="_blank" rel="noreferrer">
+                Docs
+              </a>
+              <a href={fullscreenHref} target="_blank" rel="noreferrer">
+                Full screen
+              </a>
+            </>
           ) : (
             <>
+              <a className="playground-docs-link" href="https://typed-openapi-docs.vercel.app/" target="_blank" rel="noreferrer">
+                Docs
+              </a>
               <a href="https://github.com/astahmer/typed-openapi" target="_blank" rel="noreferrer" aria-label="typed-openapi on GitHub" title="typed-openapi on GitHub">
                 <GitHubIcon aria-hidden="true" />
               </a>
