@@ -97,6 +97,55 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
   const msw = useSelector(service, (state) => state.context.msw);
   const showRuntimeOptions = runtime !== "none";
   const fullscreenHref = typeof window === "undefined" ? "/playground/app/" : window.location.href;
+  const advancedControls = (
+    <>
+      {showRuntimeOptions ? (
+        <>
+          <SelectControl<ValidationLevel>
+            label="Validation"
+            value={validation}
+            options={[
+              { value: "loose", label: "Loose" },
+              { value: "formats", label: "Formats" },
+              { value: "strict", label: "Strict" },
+            ]}
+            onChange={(nextValidation) => service.send({ type: "Update validation", validation: nextValidation })}
+          />
+          <SelectControl<ClientKind>
+            label="Client"
+            value={client}
+            options={[
+              { value: "promise", label: "Promise" },
+              { value: "effect", label: "Effect" },
+            ]}
+            onChange={(nextClient) => service.send({ type: "Update client", client: nextClient })}
+          />
+          <SelectControl<ValidateSide>
+            label="Validate"
+            value={validateSide}
+            options={[
+              { value: "none", label: "None" },
+              { value: "input", label: "Input" },
+              { value: "output", label: "Output" },
+              { value: "both", label: "Both" },
+            ]}
+            onChange={(nextValidateSide) => service.send({ type: "Update validateSide", validateSide: nextValidateSide })}
+          />
+          <ToggleControl
+            label="Coerce input"
+            checked={coerce}
+            onChange={(nextCoerce) => service.send({ type: "Update coerce", coerce: nextCoerce })}
+          />
+          <ToggleControl
+            label="Runtime types"
+            checked={runtimeTypes}
+            onChange={(nextRuntimeTypes) => service.send({ type: "Update runtime types", runtimeTypes: nextRuntimeTypes })}
+          />
+        </>
+      ) : null}
+      <ToggleControl label="MSW handlers" checked={msw} onChange={(nextMsw) => service.send({ type: "Update msw", msw: nextMsw })} />
+    </>
+  );
 
   return (
     <header className="playground-header">
@@ -140,50 +189,6 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
           options={runtimeOptions}
           onChange={(nextRuntime) => service.send({ type: "Update runtime", runtime: nextRuntime })}
         />
-        {showRuntimeOptions ? (
-          <>
-            <SelectControl<ValidationLevel>
-              label="Validation"
-              value={validation}
-              options={[
-                { value: "loose", label: "Loose" },
-                { value: "formats", label: "Formats" },
-                { value: "strict", label: "Strict" },
-              ]}
-              onChange={(nextValidation) => service.send({ type: "Update validation", validation: nextValidation })}
-            />
-            <SelectControl<ClientKind>
-              label="Client"
-              value={client}
-              options={[
-                { value: "promise", label: "Promise" },
-                { value: "effect", label: "Effect" },
-              ]}
-              onChange={(nextClient) => service.send({ type: "Update client", client: nextClient })}
-            />
-            <SelectControl<ValidateSide>
-              label="Validate"
-              value={validateSide}
-              options={[
-                { value: "none", label: "None" },
-                { value: "input", label: "Input" },
-                { value: "output", label: "Output" },
-                { value: "both", label: "Both" },
-              ]}
-              onChange={(nextValidateSide) => service.send({ type: "Update validateSide", validateSide: nextValidateSide })}
-            />
-            <ToggleControl
-              label="Coerce input"
-              checked={coerce}
-              onChange={(nextCoerce) => service.send({ type: "Update coerce", coerce: nextCoerce })}
-            />
-            <ToggleControl
-              label="Runtime types"
-              checked={runtimeTypes}
-              onChange={(nextRuntimeTypes) => service.send({ type: "Update runtime types", runtimeTypes: nextRuntimeTypes })}
-            />
-          </>
-        ) : null}
         <ToggleControl
           label="Default fetcher"
           checked={defaultFetcher}
@@ -192,7 +197,14 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
           }
         />
         <ToggleControl label="TanStack Query" checked={tanstack} onChange={(nextTanstack) => service.send({ type: "Update tanstack", tanstack: nextTanstack })} />
-        <ToggleControl label="MSW handlers" checked={msw} onChange={(nextMsw) => service.send({ type: "Update msw", msw: nextMsw })} />
+        {embedded ? (
+          <details className="playground-options">
+            <summary>More options</summary>
+            <div className="playground-options-content">{advancedControls}</div>
+          </details>
+        ) : (
+          advancedControls
+        )}
       </div>
       <RemoteInput service={service} />
       <GeneratedSetup

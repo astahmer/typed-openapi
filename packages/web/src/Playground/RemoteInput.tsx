@@ -14,6 +14,21 @@ const isRemoteUrl = (value: string) => {
   }
 };
 
+const examples = [
+  {
+    label: "Petstore",
+    url: "https://petstore3.swagger.io/api/v3/openapi.json",
+  },
+  {
+    label: "GitHub REST",
+    url: "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
+  },
+  {
+    label: "Cloudflare",
+    url: "https://raw.githubusercontent.com/cloudflare/api-schemas/82dba40b10f6b6db23b2ea57bb370bdbfceeaa1a/openapi.json",
+  },
+];
+
 export const RemoteInput = ({ service }: { service: PlaygroundService }) => {
   const sourceUrl = useSelector(service, (state) => state.context.sourceUrl);
   const [url, setUrl] = useState(sourceUrl ?? "");
@@ -73,6 +88,19 @@ export const RemoteInput = ({ service }: { service: PlaygroundService }) => {
       <button type="submit" disabled={status === "loading"}>
         {status === "loading" ? "Loading…" : "Load URL"}
       </button>
+      <div className="playground-source-examples" aria-label="Example OpenAPI documents">
+        <span>Try:</span>
+        {examples.map((example) => (
+          <button
+            key={example.label}
+            type="button"
+            disabled={status === "loading"}
+            onClick={() => void load(example.url)}
+          >
+            {example.label}
+          </button>
+        ))}
+      </div>
       {status === "error" ? <p role="alert">{error}</p> : null}
     </form>
   );
