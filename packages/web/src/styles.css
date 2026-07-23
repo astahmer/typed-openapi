@@ -89,6 +89,7 @@ button, select { font: inherit; }
 .playground-nav {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.1rem;
   margin-left: auto;
 }
@@ -107,22 +108,25 @@ button, select { font: inherit; }
   text-decoration: none;
 }
 
+.playground-nav a svg { width: 0.9rem; height: 0.9rem; }
 .playground-nav a:hover, .playground-icon-button:hover { background: var(--pg-muted); color: var(--pg-foreground); }
 .playground-icon-button { cursor: pointer; font-size: 0.95rem; }
 
 .playground-controls {
-  min-height: 4.75rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.25rem, 1fr));
   gap: 0.65rem;
-  overflow-x: auto;
+  padding-block: 0.65rem;
   border-top: 1px solid var(--pg-border);
   background: var(--pg-card);
 }
 
-.playground-control { display: grid; gap: 0.3rem; flex: 0 0 auto; }
+.playground-control { display: grid; min-width: 0; gap: 0.3rem; }
 .playground-control > span { color: var(--pg-muted-foreground); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
 
 .playground-control select {
-  min-width: 8.25rem;
+  width: 100%;
+  min-width: 0;
   height: 2rem;
   padding-inline: 0.55rem 1.7rem;
   border: 1px solid var(--pg-border);
@@ -134,7 +138,6 @@ button, select { font: inherit; }
   font-size: 0.8rem;
 }
 
-.playground-control:first-child select { min-width: 10rem; }
 .playground-control select:focus, .playground-icon-button:focus-visible, .playground-nav a:focus-visible, .playground-tab:focus-visible { outline: 2px solid var(--pg-ring); outline-offset: 2px; }
 
 .playground-check-control {
@@ -144,9 +147,9 @@ button, select { font: inherit; }
   gap: 0.4rem;
   height: 2rem;
   margin-bottom: 0;
+  min-width: 0;
   color: var(--pg-muted-foreground);
   font-size: 0.8rem;
-  white-space: nowrap;
 }
 
 .playground-check-control input { accent-color: var(--pg-foreground); }
@@ -213,9 +216,9 @@ button, select { font: inherit; }
 .playground-resize-handle--vertical::before { inset: 0.28rem 0.65rem; }
 
 @media (max-width: 720px) {
-  .playground-brand-row { min-height: 3.25rem; }
+  .playground-brand-row { min-height: 3.25rem; flex-wrap: wrap; padding-block: 0.5rem; }
   .playground-brand-row > p, .playground-nav a[href*="github"] { display: none; }
-  .playground-controls { min-height: 4.25rem; padding-block: 0.45rem; }
+  .playground-controls { grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); padding-block: 0.45rem; }
   .playground-panel-heading { min-height: 2.75rem; padding-inline: 0.7rem; }
   .playground-panel-copy small { display: none; }
   .playground-tab { max-width: 8.5rem; }

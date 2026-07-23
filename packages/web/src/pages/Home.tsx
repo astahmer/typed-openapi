@@ -8,6 +8,7 @@ import {
   type ValidateSide,
   type ValidationLevel,
 } from "../Playground/Playground.machine";
+import { TwitterIcon } from "../components/twitter-icon";
 import { ThemeProvider, useTheme } from "../vite-themes/provider";
 
 import "../styles.css";
@@ -66,12 +67,31 @@ const ThemeToggle = () => {
   );
 };
 
-const PlaygroundToolbar = ({ service }: { service: PlaygroundService }) => {
+const ToggleControl = ({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) => (
+  <label className="playground-check-control">
+    <input type="checkbox" checked={checked} onChange={(event) => onChange(event.currentTarget.checked)} />
+    {label}
+  </label>
+);
+
+const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; embedded: boolean }) => {
   const runtime = useSelector(service, (state) => state.context.runtime);
   const validation = useSelector(service, (state) => state.context.validation);
   const client = useSelector(service, (state) => state.context.client);
   const validateSide = useSelector(service, (state) => state.context.validateSide);
   const coerce = useSelector(service, (state) => state.context.coerce);
+  const runtimeTypes = useSelector(service, (state) => state.context.runtimeTypes);
+  const defaultFetcher = useSelector(service, (state) => state.context.defaultFetcher);
+  const tanstack = useSelector(service, (state) => state.context.tanstack);
+  const msw = useSelector(service, (state) => state.context.msw);
   const showRuntimeOptions = runtime !== "none";
   const fullscreenHref = typeof window === "undefined" ? "/playground/app/" : window.location.href;
 
@@ -84,15 +104,27 @@ const PlaygroundToolbar = ({ service }: { service: PlaygroundService }) => {
         <span className="playground-badge">Playground</span>
         <p>Try a spec. Inspect the generated client.</p>
         <nav className="playground-nav" aria-label="Playground navigation">
-          <a href="/" target="_top">
-            Docs
-          </a>
-          <a href={fullscreenHref} target="_top">
-            Full screen
-          </a>
-          <a href="https://github.com/astahmer/typed-openapi" target="_blank" rel="noreferrer">
-            GitHub
-          </a>
+          {embedded ? (
+            <a href={fullscreenHref} target="_blank" rel="noreferrer">
+              Full screen
+            </a>
+          ) : (
+            <>
+              <a href="https://github.com/astahmer/typed-openapi" target="_blank" rel="noreferrer">
+                GitHub
+              </a>
+              <a href="https://www.astahmer.dev/" target="_blank" rel="noreferrer">
+                astahmer.dev
+              </a>
+              <a href="https://x.com/astahmer_dev" target="_blank" rel="noreferrer">
+                <TwitterIcon aria-hidden="true" />
+                Twitter
+              </a>
+              <a href="https://bsky.app/profile/astahmer.dev" target="_blank" rel="noreferrer">
+                Bluesky
+              </a>
+            </>
+          )}
           <ThemeToggle />
         </nav>
       </div>
@@ -136,25 +168,40 @@ const PlaygroundToolbar = ({ service }: { service: PlaygroundService }) => {
               ]}
               onChange={(nextValidateSide) => service.send({ type: "Update validateSide", validateSide: nextValidateSide })}
             />
-            <label className="playground-check-control">
-              <input
-                type="checkbox"
-                checked={coerce}
-                onChange={(event) => service.send({ type: "Update coerce", coerce: event.currentTarget.checked })}
-              />
-              Coerce input
-            </label>
+            <ToggleControl
+              label="Coerce input"
+              checked={coerce}
+              onChange={(nextCoerce) => service.send({ type: "Update coerce", coerce: nextCoerce })}
+            />
+            <ToggleControl
+              label="Runtime types"
+              checked={runtimeTypes}
+              onChange={(nextRuntimeTypes) => service.send({ type: "Update runtime types", runtimeTypes: nextRuntimeTypes })}
+            />
           </>
         ) : null}
+        <ToggleControl
+          label="Default fetcher"
+          checked={defaultFetcher}
+          onChange={(nextDefaultFetcher) =>
+            service.send({ type: "Update default fetcher", defaultFetcher: nextDefaultFetcher })
+          }
+        />
+        <ToggleControl label="TanStack Query" checked={tanstack} onChange={(nextTanstack) => service.send({ type: "Update tanstack", tanstack: nextTanstack })} />
+        <ToggleControl label="MSW handlers" checked={msw} onChange={(nextMsw) => service.send({ type: "Update msw", msw: nextMsw })} />
       </div>
     </header>
   );
 };
 
-export const Home = () => (
-  <ThemeProvider storageKey="typed-openapi-playground-theme">
-    <main className="playground-app">
-      <PlaygroundWithMachine>{(service) => <PlaygroundToolbar service={service} />}</PlaygroundWithMachine>
-    </main>
-  </ThemeProvider>
-);
+export const Home = () => {
+  const embedded = typeof window !== "undefined" && window.self !== window.top;
+
+  return (
+    <ThemeProvider storageKey="typed-openapi-playground-theme">
+      <main className={`playground-app${embedded ? " playground-app--embedded" : ""}`}>
+        <PlaygroundWithMachine>{(service) => <PlaygroundToolbar service={service} embedded={embedded} />}</PlaygroundWithMachine>
+      </main>
+    </ThemeProvider>
+  );
+};

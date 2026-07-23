@@ -7,11 +7,27 @@ export default defineConfig({
     starlight({
       title: "typed-openapi",
       description: "Generate a type-safe TypeScript API client from an OpenAPI document.",
+      favicon: "/favicon.png",
       social: [
         {
           icon: "github",
           label: "typed-openapi on GitHub",
           href: "https://github.com/astahmer/typed-openapi",
+        },
+        {
+          icon: "external",
+          label: "astahmer.dev",
+          href: "https://www.astahmer.dev/",
+        },
+        {
+          icon: "twitter",
+          label: "astahmer on Twitter",
+          href: "https://x.com/astahmer_dev",
+        },
+        {
+          icon: "blueSky",
+          label: "astahmer on Bluesky",
+          href: "https://bsky.app/profile/astahmer.dev",
         },
       ],
       editLink: {
@@ -25,8 +41,7 @@ export default defineConfig({
             { label: "Playground", link: "/playground/" },
             { label: "GitHub", link: "https://github.com/astahmer/typed-openapi" },
           ],
-          footerText:
-            "Open-source, type-safe OpenAPI clients for TypeScript.",
+          footerText: "Open-source, type-safe OpenAPI clients for TypeScript.",
         }),
       ],
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
@@ -49,7 +64,12 @@ export default defineConfig({
         },
         {
           label: "Advanced generation",
-          items: ["advanced/output-shape", "advanced/openapi-support", "advanced/schema-naming", "advanced/library-api"],
+          items: [
+            "advanced/output-shape",
+            "advanced/openapi-support",
+            "advanced/schema-naming",
+            "advanced/library-api",
+          ],
         },
         {
           label: "Reference",

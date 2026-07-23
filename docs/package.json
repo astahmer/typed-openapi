@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:playground": "VITE_BASE=/playground/app/ pnpm --filter typed-openapi-web build && node ./scripts/embed-playground.mjs",
+    "build:playground": "pnpm --filter typed-openapi build && VITE_BASE=/playground/app/ pnpm --filter typed-openapi-web build && node ./scripts/embed-playground.mjs",
     "predev": "pnpm run build:playground",
     "prebuild": "pnpm run build:playground",
     "dev": "astro dev",

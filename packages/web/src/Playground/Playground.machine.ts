@@ -1,7 +1,15 @@
 import type { Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { safeJSONParse } from "pastable/utils";
-import { generateFile, mapOpenApiEndpoints, type OutputRuntime } from "typed-openapi";
+import {
+  generateDefaultFetcher,
+  generateFile,
+  generateMswFile,
+  generateRuntimeTypeDeclarations,
+  generateTanstackQueryFile,
+  mapOpenApiEndpoints,
+  type OutputRuntime,
+} from "typed-openapi";
 import { assign, fromPromise, setup } from "xstate";
 import { parse } from "yaml";
 
@@ -11,7 +19,7 @@ import { UrlSaver } from "./url-saver";
 
 const urlSaver = new UrlSaver();
 const initialInputList = { "petstore.yaml": urlSaver.getValue("input") || petstoreYaml };
-const initialOutputList = { "petstore.client.ts": "" };
+const initialOutputList = { "openapi.client.ts": "" };
 
 export type ValidationLevel = "loose" | "formats" | "strict";
 export type ClientKind = "promise" | "effect";
@@ -43,6 +51,10 @@ type GenerateInput = {
   client: ClientKind;
   validateSide: ValidateSide;
   coerce: boolean;
+  runtimeTypes: boolean;
+  defaultFetcher: boolean;
+  tanstack: boolean;
+  msw: boolean;
 };
 
 const generateOutputActor = fromPromise(async ({ input }: { input: GenerateInput }) => {
@@ -53,26 +65,67 @@ const generateOutputActor = fromPromise(async ({ input }: { input: GenerateInput
     ? safeJSONParse(input.inputValue)
     : safeYAMLParse(input.inputValue);
   console.log({ inputValue: input.inputValue, openApiDoc });
-  if (!openApiDoc) {
-    return { content: "" };
-  }
+  const mainOutputName = `openapi.${input.runtime === "none" ? "client" : input.runtime}.ts`;
+  if (!openApiDoc) return { outputList: { [mainOutputName]: "" }, selectedOutput: mainOutputName };
 
   const mappedContext = mapOpenApiEndpoints(openApiDoc);
   console.log(`Found ${mappedContext.endpointList.length} endpoints`);
 
-  const content = await prettify(
+  const generatorOptions = {
+    ...mappedContext,
+    runtime: input.runtime,
+    validation: input.validation,
+    client: input.client,
+    validateSide: input.validateSide,
+    coerce: input.coerce,
+  };
+  const outputList: Record<string, string> = {};
+  const runtimeTypesName = mainOutputName.replace(/\.ts$/, ".types.d.ts");
+  const emitRuntimeTypes = input.runtime !== "none" && input.runtimeTypes;
+
+  outputList[mainOutputName] = await prettify(
     generateFile({
-      ...mappedContext,
-      runtime: input.runtime,
-      validation: input.validation,
-      client: input.client,
-      validateSide: input.validateSide,
-      coerce: input.coerce,
+      ...generatorOptions,
+      ...(emitRuntimeTypes ? { runtimeTypeDeclarations: `./${runtimeTypesName.replace(/\.d\.ts$/, ".js")}` } : {}),
     }),
   );
+
+  if (emitRuntimeTypes) {
+    outputList[runtimeTypesName] = await prettify(generateRuntimeTypeDeclarations(generatorOptions));
+  }
+
+  if (input.defaultFetcher) {
+    outputList["api.client.ts"] = await prettify(
+      generateDefaultFetcher({
+        clientPath: `./${mainOutputName}`,
+        client: input.client,
+        doc: openApiDoc,
+      }),
+    );
+  }
+
+  if (input.tanstack) {
+    outputList["tanstack.client.ts"] = await prettify(
+      await generateTanstackQueryFile({
+        ...generatorOptions,
+        relativeApiClientPath: `./${mainOutputName}`,
+      }),
+    );
+  }
+
+  if (input.msw) {
+    outputList["msw.handlers.ts"] = await prettify(
+      generateMswFile({
+        endpointList: mappedContext.endpointList,
+        doc: openApiDoc,
+        schemaByName: Object.fromEntries(mappedContext.refs.getOrderedSchemas().map(([node, infos]) => [infos.normalized, node])),
+        baseUrl: "*",
+      }),
+    );
+  }
   console.log(`Done in ${new Date().getTime() - now.getTime()}ms !`);
 
-  return { content };
+  return { outputList, selectedOutput: mainOutputName };
 });
 
 type PlaygroundContext = {
@@ -89,6 +142,10 @@ type PlaygroundContext = {
   client: ClientKind;
   validateSide: ValidateSide;
   coerce: boolean;
+  runtimeTypes: boolean;
+  defaultFetcher: boolean;
+  tanstack: boolean;
+  msw: boolean;
 };
 
 type PlaygroundEvent =
@@ -105,6 +162,10 @@ type PlaygroundEvent =
   | { type: "Update client"; client: ClientKind }
   | { type: "Update validateSide"; validateSide: ValidateSide }
   | { type: "Update coerce"; coerce: boolean }
+  | { type: "Update runtime types"; runtimeTypes: boolean }
+  | { type: "Update default fetcher"; defaultFetcher: boolean }
+  | { type: "Update tanstack"; tanstack: boolean }
+  | { type: "Update msw"; msw: boolean }
   | { type: "Update input"; value: string }
   | { type: "Generate output" };
 
@@ -122,6 +183,10 @@ const initialContext: PlaygroundContext = {
   client: clientForRuntime(initialRuntime, urlChoice<ClientKind>("client", clientValues, "promise")),
   validateSide: urlChoice<ValidateSide>("validateSide", validateSideValues, "both"),
   coerce: urlSaver.getParam("coerce") !== "false",
+  runtimeTypes: urlSaver.getParam("runtimeTypes") !== "false",
+  defaultFetcher: urlSaver.getParam("defaultFetcher") === "true",
+  tanstack: urlSaver.getParam("tanstack") === "true",
+  msw: urlSaver.getParam("msw") === "true",
 };
 
 // @ts-ignore
@@ -182,6 +247,10 @@ export const playgroundMachine = setup({
       urlSaver.setParam("client", context.client);
       urlSaver.setParam("validateSide", context.validateSide);
       urlSaver.setParam("coerce", context.coerce);
+      urlSaver.setParam("runtimeTypes", context.runtimeTypes);
+      urlSaver.setParam("defaultFetcher", context.defaultFetcher);
+      urlSaver.setParam("tanstack", context.tanstack);
+      urlSaver.setParam("msw", context.msw);
     },
     updateRuntime: assign(({ event, context }) => {
       if (event.type !== "Update runtime") {
@@ -207,13 +276,28 @@ export const playgroundMachine = setup({
       if (event.type !== "Update coerce") return {};
       return { coerce: event.coerce };
     }),
+    updateRuntimeTypes: assign(({ event }) => {
+      if (event.type !== "Update runtime types") return {};
+      return { runtimeTypes: event.runtimeTypes };
+    }),
+    updateDefaultFetcher: assign(({ event }) => {
+      if (event.type !== "Update default fetcher") return {};
+      return { defaultFetcher: event.defaultFetcher };
+    }),
+    updateTanstack: assign(({ event }) => {
+      if (event.type !== "Update tanstack") return {};
+      return { tanstack: event.tanstack };
+    }),
+    updateMsw: assign(({ event }) => {
+      if (event.type !== "Update msw") return {};
+      return { msw: event.msw };
+    }),
     assignGeneratedOutput: assign((args) => {
       if ("output" in args.event) {
-        const output = args.event.output as { content: string };
+        const output = args.event.output as { outputList: Record<string, string>; selectedOutput: string };
         return {
-          outputList: {
-            ["petstore.client.ts"]: output?.content ?? "",
-          },
+          outputList: output.outputList,
+          selectedOutput: output.selectedOutput,
         };
       }
 
@@ -261,6 +345,10 @@ export const playgroundMachine = setup({
                   client: context.client,
                   validateSide: context.validateSide,
                   coerce: context.coerce,
+                  runtimeTypes: context.runtimeTypes,
+                  defaultFetcher: context.defaultFetcher,
+                  tanstack: context.tanstack,
+                  msw: context.msw,
                 }),
                 onDone: {
                   target: "idle",
@@ -305,6 +393,22 @@ export const playgroundMachine = setup({
         },
         "Update coerce": {
           actions: ["updateCoerce", "updateUrlOptions"],
+          target: ".Playing.generating",
+        },
+        "Update runtime types": {
+          actions: ["updateRuntimeTypes", "updateUrlOptions"],
+          target: ".Playing.generating",
+        },
+        "Update default fetcher": {
+          actions: ["updateDefaultFetcher", "updateUrlOptions"],
+          target: ".Playing.generating",
+        },
+        "Update tanstack": {
+          actions: ["updateTanstack", "updateUrlOptions"],
+          target: ".Playing.generating",
+        },
+        "Update msw": {
+          actions: ["updateMsw", "updateUrlOptions"],
           target: ".Playing.generating",
         },
       },
