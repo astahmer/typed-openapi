@@ -45,16 +45,24 @@ See [the online playground](https://typed-openapi-astahmer.vercel.app/)
   bodies/schemas (`Blob`)
 - **Node-friendly `FetcherResponse`** (no DOM `Response` dependency; avoids clash with OAS `ApiResponse` schemas) +
   **request input types** (`InferSchemaInput` / `z.input` / encoded)
-- **Filter endpoints/schemas** (`--endpoint`, `--schema`, `--tree-shake-schemas`) and control naming (`--schema-naming`)
+- **Runtime type sidecar** (default for runtime clients): emitted validators live in one module while their public types
+  live in a sibling `.types.d.ts` file, keeping TypeScript responsive for large specs; opt out with `--no-runtime-types`
+- **Filter endpoints/schemas** (`--endpoint` / `--schema`, or `endpointPatterns` / `schemaPatterns` in config) and control
+  naming (`--schema-naming`)
 
-The generated client is a single file that can be used in the browser or in node. Runtime schemas are emitted by
-typed-openapi's own Schema IR + runtime adapters (no Sinclair codegen). Use `--validation loose|formats|strict` to
-control how deep OpenAPI constraints (`format`, `minLength`, …) are applied. Install only the runtime selected for
-your generated client as a dependency in your app.
+The main generated client is one file that can be used in the browser or in node. When a runtime is selected, a sibling
+`.types.d.ts` sidecar is emitted by default so TypeScript stays responsive for large specs. Keep the sidecar with the
+runtime module when committing, publishing, or copying generated output. Use `--no-runtime-types` when you need a single
+checked file instead. Runtime schemas are emitted by typed-openapi's own Schema IR + runtime adapters (no Sinclair codegen).
+Use `--validation loose|formats|strict` (or a fine-grained policy object) to control how deep OpenAPI constraints
+(`format`, `minLength`, …) are applied. Install only the runtime selected for your generated client as a dependency in your
+app.
 
 With `--runtime effect` / `effect3`, the default API client is Effect-native (`--client effect`); other runtimes default
 to the promise `ApiClient`. Install `effect` whenever you use `--client effect` and/or `--runtime effect`. Use
 `--runtime effect3` (+ `@effect/schema`) if you need the Effect Schema v3 adapter.
+
+HTTP(S) OpenAPI inputs are supported; use `--input-dir <dir>` to choose where the default output file is written.
 
 ## Install & usage
 
@@ -73,16 +81,46 @@ import { defineConfig } from "typed-openapi";
 
 export default defineConfig({
   // input: "./openapi.yaml", // optional — CLI positional still preferred when passed
+  output: "./src/api/client.ts",
   runtime: "zod",
-  tanstack: true,
-  msw: true,
+  validation: "strict",
+  validateSide: "both",
   defaultFetcher: true,
+  tanstack: "query.ts",
+  msw: "msw.ts",
   transformDates: true,
+  format: true,
 });
 ```
 
-JSON (`typed-openapi.config.json`) still works. The CLI auto-loads the first matching config in the cwd.
-`typed-openapi.config.ts` is loaded via `tsx` (shipped as a dependency).
+`defaultFetcher` can also be an object to customize the generated fetcher:
+
+```ts
+export default defineConfig({
+  input: "./openapi.yaml",
+  output: "./src/api/openapi.ts",
+  defaultFetcher: {
+    clientPath: "./openapi.ts",
+    envApiBaseUrl: "VITE_API_URL",
+    fetcherName: "fetchApi",
+    apiName: "api",
+  },
+});
+```
+
+Use a fine-grained validation policy when a preset needs an exception:
+
+```ts
+export default defineConfig({
+  input: "./openapi.yaml",
+  runtime: "zod",
+  validation: { preset: "strict", stringConstraints: false, numberConstraints: false },
+});
+```
+
+JSON (`typed-openapi.config.json`) still works. The CLI auto-loads `typed-openapi.config.ts`, `.mts`, `.js`, `.mjs`,
+`.json`, `.typed-openapi.json`, or `typed-openapi.json` from the cwd. `typed-openapi.config.ts` is loaded via `tsx`
+(shipped as a dependency).
 
 ## CLI
 
@@ -94,35 +132,44 @@ npx typed-openapi -h
 typed-openapi/3.0.0
 
 Usage:
-  $ typed-openapi <input>
+  $ typed-openapi [input]
 
 Commands:
-  <input>  Generate
+  [input]  Generate (OpenAPI path; optional when `input` is set in config)
 
 For more info, run any command with the `--help` flag:
   $ typed-openapi --help
 
 Options:
   -o, --output <path>             Output path for the api client ts file (defaults to `<input>.<runtime>.ts`)
-  -r, --runtime <n>               Runtime to use for validation; defaults to `none`; available: none | zod | zod3 | effect | effect3 | valibot | arktype | typebox | typia
-  --validation <level>            Validation depth: loose | formats | strict (default: strict when runtime ≠ none)
-  --validate-side <side>          When using a runtime: none | input | output | both (default: both)
-  --client <kind>                 API client style: promise | effect (default: effect when runtime is effect/effect3, else promise)
-  --coerce                        Coerce number/boolean path|query|cookie|header params from strings (default on when runtime ≠ none)
-  --no-coerce                     Disable string coercion for path|query|cookie|header params
-  --endpoint <regex>              Keep endpoints matching regex (method/path/operationId/alias/tags); repeatable
-  --schema <regex>                When tree-shaking, also keep schemas matching regex; repeatable
-  --tree-shake-schemas            Drop unused component schemas (default: on when --endpoint is set)
-  --no-tree-shake-schemas         Emit all component schemas even when filtering endpoints
-  --schema-naming <mode>          Component schema naming: auto | always-name | prefer-inline
-  -c, --config <path>             JSON config (or auto-load typed-openapi.config.json); supports fine-grained validation overrides
-  --format                        Format generated files with oxfmt (defaults to false) (default: false)
-  --schemas-only                  Only generate schemas, skipping client generation (defaults to false) (default: false)
-  --include-client                Include API client types and implementation (defaults to true) (default: true)
+  --input-dir <path>              Directory for the default output when the OpenAPI input is an HTTP(S) URL
+  -r, --runtime <n>               Runtime to use for validation; defaults to `none` (or config file); available: Type<"arktype" | "effect" | "effect3" | "none" | "typebox" | "typia" | "valibot" | "zod" | "zod3">
+  --validation <level>            Validation depth for runtime schemas: `loose` (structure only), `formats` (+ email/uuid/…), `strict` (+ min/max/pattern/…). Default: `strict` when runtime ≠ none
+  -c, --config <path>             Path to typed-openapi config (JSON or TS/JS with defineConfig); defaults to typed-openapi.config.ts / .json when present
+  --format                        Format generated files with oxfmt (defaults to false)
+  --schemas-only                  Only generate schemas, skipping client generation (defaults to false)
+  --include-client                Include API client types and implementation (defaults to true)
+  --jsdoc                         Emit OpenAPI descriptions as JSDoc comments (defaults to true)
   --success-status-codes <codes>  Comma-separated list of success status codes (defaults to 2xx and 3xx ranges)
   --error-status-codes <codes>    Comma-separated list of error status codes (defaults to 4xx and 5xx ranges)
   --tanstack [name]               Generate tanstack client, defaults to false, can optionally specify a name (will be generated next to the main file) or absolute path for the generated file
+  --msw [name]                    Generate MSW request handlers, defaults to false; optional output name/path next to the main file
+  --msw-faker                     Use @faker-js/faker in generated MSW mock factories (requires the package installed)
+  --msw-base-url <url>            Base URL/prefix for MSW handlers (default: "*")
   --default-fetcher [name]        Generate default fetcher, defaults to false, can optionally specify a name (will be generated next to the main file) or absolute path for the generated file
+  --endpoint <regex>              Keep endpoints matching regex (method/path/operationId/alias/tags); repeatable
+  --schema <regex>                When tree-shaking, also keep schemas matching regex (name/ref); repeatable
+  --tree-shake-schemas            Drop unused component schemas (default: on when --endpoint is set)
+  --no-tree-shake-schemas         Emit all component schemas even when filtering endpoints (default: true)
+  --schema-naming <mode>          Component schema naming: auto | always-name | prefer-inline (inline single-use non-recursive schemas)
+  --client <kind>                 API client style: promise | effect (default: effect when runtime is effect/effect3, else promise)
+  --validate-side <side>          When using a runtime: none | input | output | both (default: both)
+  --coerce                        Coerce number/boolean path|query|cookie|header params from strings (default: on when runtime ≠ none)
+  --no-coerce                     Disable string coercion for path|query|cookie|header params
+  --transform-dates               Map format date-time/date to Date (types + runtime transforms; none-runtime revives ISO strings)
+  --transform-bigint              Map format int64 to bigint (types + runtime transforms)
+  --runtime-types                 Generate a .types.d.ts sidecar for runtime client types (default for runtime clients)
+  --no-runtime-types              Do not generate a runtime type declaration sidecar
   -h, --help                      Display this message
   -v, --version                   Display version number
 
@@ -147,10 +194,9 @@ Basically, let's focus on having a fast and typesafe API client generation inste
 
 The generated client is headless - you need to provide your own fetcher. Here are ready-to-use examples:
 
-- **[Basic API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client-api-client-examplets)** - Simple,
-  dependency-free wrapper
-- **[Validating API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#validating-api-client-api-client-with-validationts)** -
-  With request/response validation
+- **[Basic API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#basic-api-client)** - Simple, dependency-free wrapper
+- **[Validating API Client](packages/typed-openapi/API_CLIENT_EXAMPLES.md#validating-api-client)** - With request/response
+  validation
 
 Or generate one with `--default-fetcher` (recommended).
 
@@ -177,7 +223,7 @@ You can choose between two response styles:
 
   ```ts
   const user = await api.get("/users/{id}", { path: { id: "123" } });
-  // Throws TypedResponseError on error status (default)
+  // Throws TypedStatusError on error status (default)
   ```
 
 - **Union-style response** (withResponse):
@@ -192,7 +238,7 @@ You can choose between two response styles:
 
 You can also control error throwing with `throwOnStatusError`.
 
-**All errors thrown by the client are instances of `TypedResponseError` and include the parsed error data.**
+**All errors thrown by the client are instances of `TypedStatusError` and include the parsed error data.**
 
 ### Generic Request Method
 
@@ -293,7 +339,7 @@ OpenAPI error schemas.
 ```ts
 // Basic mutation (returns data only)
 const basicMutation = useMutation({
-  // Will throws TypedResponseError on error status
+  // Will throw TypedStatusError on error status
   ...tanstackApi.mutation("post", "/authorization/organizations/:organizationId/invitations").mutationOptions,
   onError: (error) => {
     // error is a Response-like object with typed data based on OpenAPI spec
@@ -426,8 +472,6 @@ Package tests live under `packages/typed-openapi/tests/`:
 | `github-issues/` | Regression coverage for fixed GitHub issues           |
 | `tstyche/`       | Per-runtime + Effect client type suites               |
 | `samples/`       | OpenAPI fixtures (including `samples/github-issues/`) |
-
-Shipping checklist / PR body template: [`plans/FOLLOWUPS.md`](plans/FOLLOWUPS.md).
 
 When you're done with your changes, please run `pnpm changeset` in the root of the repo and follow the instructions
 described [here](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md).
