@@ -6,7 +6,7 @@ import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { allowedRuntimes, generateFile } from "../src/generator.ts";
 import { prettify } from "../src/format.ts";
 
-const samples = ["petstore", "docker.openapi", "long-operation-id", "kombo.openapi"] as const;
+const samples = ["petstore", "docker.openapi", "long-operation-id", "kombo.openapi", "cloudflare.openapi"] as const;
 // @ts-expect-error arktype enum inference
 const runtimes = allowedRuntimes.toJsonSchema().enum as string[];
 
@@ -16,7 +16,8 @@ const samplePath = (sample: string) => {
   return `${__dirname}/samples/${sample}.yaml`;
 };
 
-const heavySample = (sample: string) => sample === "docker.openapi" || sample === "kombo.openapi";
+const heavySample = (sample: string) =>
+  sample === "docker.openapi" || sample === "kombo.openapi" || sample === "cloudflare.openapi";
 
 samples.forEach((sample) => {
   describe(`generate-runtime-${sample}`, () => {

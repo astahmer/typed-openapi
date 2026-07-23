@@ -33,7 +33,7 @@ describe("mapOpenApiEndpoints with NameTransformOptions for endpoints", () => {
         "get_Import",
         "post_Record",
         "get_User_profile",
-        "get_Import",
+        "get_Import_2",
         "get_Set",
         "get_Normal",
       ]
@@ -50,7 +50,7 @@ describe("mapOpenApiEndpoints with NameTransformOptions for endpoints", () => {
         "E_get_Import_E",
         "E_post_Record_E",
         "E_get_User_profile_E",
-        "E_get_Import_E",
+        "E_get_Import_E_2",
         "E_get_Set_E",
         "E_get_Normal_E",
       ]

@@ -46,7 +46,13 @@ describe("snapshot files typecheck", () => {
   rmSync(outRoot, { recursive: true, force: true });
   mkdirSync(outRoot, { recursive: true });
 
-  const files = readdirSync(snapshotsDir).filter((f) => f.endsWith(".ts") && !f.endsWith(".d.ts"));
+  const files = readdirSync(snapshotsDir).filter(
+    (file) =>
+      file.endsWith(".ts") &&
+      !file.endsWith(".d.ts") &&
+      // Cloudflare runtime validators are benchmarked separately; keep this regression gate focused on the fixed types-only client.
+      (!file.startsWith("cloudflare.openapi.") || file === "cloudflare.openapi.client.ts"),
+  );
 
   const effectRoot = resolvePkgRoot("effect");
   const valibotRoot = resolvePkgRoot("valibot");

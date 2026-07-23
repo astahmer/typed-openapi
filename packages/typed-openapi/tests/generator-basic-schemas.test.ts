@@ -391,7 +391,7 @@ describe("getSchemaBox with context", () => {
     } satisfies SchemasObject;
 
     expect(await getSchemaOutputFor(schemas, "Root4")).toMatchInlineSnapshot(
-      `"export type Root4 = Partial<{ str: string; nb: number; self: Root4; nested: Nested4; arrayOfSelf: Array<Root4> }>;"`,
+      `"export type Root4 = Partial<{ str: string; nb: number; self: Root4; nested: Nested4; arrayOfSelf: Root4Array }>;"`,
     );
   });
 
