@@ -15,11 +15,6 @@ export default defineConfig({
           href: "https://github.com/astahmer/typed-openapi",
         },
         {
-          icon: "external",
-          label: "astahmer.dev",
-          href: "https://www.astahmer.dev/",
-        },
-        {
           icon: "twitter",
           label: "astahmer on Twitter",
           href: "https://x.com/astahmer_dev",
@@ -40,6 +35,7 @@ export default defineConfig({
             { label: "Docs", link: "/getting-started/" },
             { label: "Playground", link: "/playground/" },
             { label: "GitHub", link: "https://github.com/astahmer/typed-openapi" },
+            { label: "astahmer.dev", link: "https://www.astahmer.dev/" },
           ],
           footerText: "Open-source, type-safe OpenAPI clients for TypeScript.",
         }),

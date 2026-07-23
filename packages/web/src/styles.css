@@ -170,11 +170,27 @@ button, select { font: inherit; }
   min-height: 2.75rem;
   display: flex;
   align-items: center;
-  color: var(--pg-muted-foreground);
+  border-bottom: 1px solid var(--pg-border);
+  background: var(--pg-muted);
+  color: var(--pg-foreground);
   cursor: pointer;
   font-size: 0.78rem;
   font-weight: 600;
+  list-style: none;
 }
+
+.playground-setup > summary::-webkit-details-marker { display: none; }
+
+.playground-setup > summary::after {
+  margin-left: auto;
+  color: var(--pg-muted-foreground);
+  content: "⌄";
+  font-size: 1.1rem;
+  transition: transform 150ms ease;
+}
+
+.playground-setup[open] > summary::after { transform: rotate(180deg); }
+.playground-setup > summary:hover { background: var(--pg-background); }
 
 .playground-setup-content { padding-bottom: 0.85rem; }
 .playground-setup-actions { display: flex; gap: 0.3rem; }

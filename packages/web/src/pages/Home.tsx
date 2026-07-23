@@ -9,6 +9,7 @@ import {
   type ValidationLevel,
 } from "../Playground/Playground.machine";
 import { TwitterIcon } from "../components/twitter-icon";
+import { BlueskyIcon } from "../components/bluesky-icon";
 import { ThemeProvider, useTheme } from "../vite-themes/provider";
 import { GeneratedSetup } from "../Playground/GeneratedSetup";
 
@@ -122,6 +123,7 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
                 Twitter
               </a>
               <a href="https://bsky.app/profile/astahmer.dev" target="_blank" rel="noreferrer">
+                <BlueskyIcon aria-hidden="true" />
                 Bluesky
               </a>
             </>

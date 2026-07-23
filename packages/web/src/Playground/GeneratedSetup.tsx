@@ -70,7 +70,7 @@ export const GeneratedSetup = (options: SetupOptions) => {
 
   return (
     <details className="playground-setup">
-      <summary>Use this setup in your project</summary>
+      <summary>Copy a CLI command or config file</summary>
       <div className="playground-setup-content">
         <div className="playground-setup-actions" role="tablist" aria-label="Setup format">
           <button data-active={format === "cli" || undefined} type="button" role="tab" onClick={() => setFormat("cli")}>
