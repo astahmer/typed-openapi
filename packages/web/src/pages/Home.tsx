@@ -1,135 +1,160 @@
-import { Flex, HStack, Stack } from "panda/jsx";
-import { styled } from "panda/jsx";
-import PlaygroundWithMachine from "../Playground/PlaygroundWithMachine";
-
-import "../styles.css";
-import "@fontsource/inter"; // Defaults to weight 400
-import { ThemeProvider } from "../vite-themes/provider";
-import { ColorModeSwitch } from "../components/color-mode-switch";
-import { GithubIcon } from "../components/github-icon";
-import { IconButton } from "../components/icon-button";
-import { SelectRuntime } from "../components/select-demo";
-import { SelectOptions } from "../components/select-options";
-import { OutputRuntime } from "typed-openapi";
-import { TwitterIcon } from "../components/twitter-icon";
 import { useSelector } from "@xstate/react";
 import type { ActorRefFrom } from "xstate";
+import type { OutputRuntime } from "typed-openapi";
+import PlaygroundWithMachine from "../Playground/PlaygroundWithMachine";
 import {
   playgroundMachine,
   type ClientKind,
   type ValidateSide,
   type ValidationLevel,
 } from "../Playground/Playground.machine";
+import { ThemeProvider, useTheme } from "../vite-themes/provider";
+
+import "../styles.css";
 
 type PlaygroundService = ActorRefFrom<typeof playgroundMachine>;
 
-const PlaygroundToolbar = ({ service }: { service: PlaygroundService }) => {
-  const runtime = useSelector(service, (s) => s.context.runtime);
-  const validation = useSelector(service, (s) => s.context.validation);
-  const client = useSelector(service, (s) => s.context.client);
-  const validateSide = useSelector(service, (s) => s.context.validateSide);
-  const coerce = useSelector(service, (s) => s.context.coerce);
-  const showRuntimeOpts = runtime !== "none";
+const runtimeOptions: Array<{ value: OutputRuntime; label: string }> = [
+  { value: "none", label: "Types only" },
+  { value: "zod", label: "Zod" },
+  { value: "zod3", label: "Zod v3" },
+  { value: "effect", label: "Effect Schema" },
+  { value: "effect3", label: "Effect Schema v3" },
+  { value: "valibot", label: "Valibot" },
+  { value: "arktype", label: "ArkType" },
+  { value: "typebox", label: "TypeBox" },
+  { value: "typia", label: "Typia" },
+];
+
+const SelectControl = <T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: T;
+  options: ReadonlyArray<{ value: T; label: string }>;
+  onChange: (value: T) => void;
+}) => (
+  <label className="playground-control">
+    <span>{label}</span>
+    <select value={value} onChange={(event) => onChange(event.currentTarget.value as T)}>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  </label>
+);
+
+const ThemeToggle = () => {
+  const { resolvedTheme, setTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   return (
-    <Flex pt="2" gap="2" flexWrap="wrap" alignItems="center">
-      <styled.h1 textStyle="panda.h4" fontWeight="bold">
-        typed-openapi
-      </styled.h1>
-      <HStack alignItems="center" ml="auto" flexWrap="wrap" gap="2">
-        <SelectRuntime
-          defaultValue={{ label: "None (types only)", value: "none" }}
-          onChange={(option) =>
-            service.send({ type: "Update runtime", runtime: (option?.value ?? "none") as OutputRuntime })
-          }
+    <button
+      className="playground-icon-button"
+      type="button"
+      title={`Switch to ${isDark ? "light" : "dark"} mode`}
+      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+    >
+      {isDark ? "☀" : "◐"}
+    </button>
+  );
+};
+
+const PlaygroundToolbar = ({ service }: { service: PlaygroundService }) => {
+  const runtime = useSelector(service, (state) => state.context.runtime);
+  const validation = useSelector(service, (state) => state.context.validation);
+  const client = useSelector(service, (state) => state.context.client);
+  const validateSide = useSelector(service, (state) => state.context.validateSide);
+  const coerce = useSelector(service, (state) => state.context.coerce);
+  const showRuntimeOptions = runtime !== "none";
+  const fullscreenHref = typeof window === "undefined" ? "/playground/app/" : window.location.href;
+
+  return (
+    <header className="playground-header">
+      <div className="playground-brand-row">
+        <a className="playground-brand" href="/" target="_top">
+          typed-openapi
+        </a>
+        <span className="playground-badge">Playground</span>
+        <p>Try a spec. Inspect the generated client.</p>
+        <nav className="playground-nav" aria-label="Playground navigation">
+          <a href="/" target="_top">
+            Docs
+          </a>
+          <a href={fullscreenHref} target="_top">
+            Full screen
+          </a>
+          <a href="https://github.com/astahmer/typed-openapi" target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+          <ThemeToggle />
+        </nav>
+      </div>
+
+      <div className="playground-controls" aria-label="Generation options">
+        <SelectControl
+          label="Runtime"
+          value={runtime}
+          options={runtimeOptions}
+          onChange={(nextRuntime) => service.send({ type: "Update runtime", runtime: nextRuntime })}
         />
-        {showRuntimeOpts ? (
+        {showRuntimeOptions ? (
           <>
-            <SelectOptions<ValidationLevel>
-              minW="140px"
+            <SelectControl<ValidationLevel>
+              label="Validation"
               value={validation}
-              onChange={(v) => service.send({ type: "Update validation", validation: v })}
               options={[
-                { value: "loose", label: "validation: loose" },
-                { value: "formats", label: "validation: formats" },
-                { value: "strict", label: "validation: strict" },
+                { value: "loose", label: "Loose" },
+                { value: "formats", label: "Formats" },
+                { value: "strict", label: "Strict" },
               ]}
+              onChange={(nextValidation) => service.send({ type: "Update validation", validation: nextValidation })}
             />
-            <SelectOptions<ClientKind>
-              minW="150px"
+            <SelectControl<ClientKind>
+              label="Client"
               value={client}
-              onChange={(v) => service.send({ type: "Update client", client: v })}
               options={[
-                { value: "promise", label: "client: promise" },
-                { value: "effect", label: "client: effect" },
+                { value: "promise", label: "Promise" },
+                { value: "effect", label: "Effect" },
               ]}
+              onChange={(nextClient) => service.send({ type: "Update client", client: nextClient })}
             />
-            <SelectOptions<ValidateSide>
-              minW="160px"
+            <SelectControl<ValidateSide>
+              label="Validate"
               value={validateSide}
-              onChange={(v) => service.send({ type: "Update validateSide", validateSide: v })}
               options={[
-                { value: "none", label: "validate: none" },
-                { value: "input", label: "validate: input" },
-                { value: "output", label: "validate: output" },
-                { value: "both", label: "validate: both" },
+                { value: "none", label: "None" },
+                { value: "input", label: "Input" },
+                { value: "output", label: "Output" },
+                { value: "both", label: "Both" },
               ]}
+              onChange={(nextValidateSide) => service.send({ type: "Update validateSide", validateSide: nextValidateSide })}
             />
-            <styled.label
-              display="flex"
-              alignItems="center"
-              gap="1"
-              fontSize="sm"
-              cursor="pointer"
-              whiteSpace="nowrap"
-            >
+            <label className="playground-check-control">
               <input
                 type="checkbox"
                 checked={coerce}
-                onChange={(e) => service.send({ type: "Update coerce", coerce: e.currentTarget.checked })}
+                onChange={(event) => service.send({ type: "Update coerce", coerce: event.currentTarget.checked })}
               />
-              coerce
-            </styled.label>
+              Coerce input
+            </label>
           </>
         ) : null}
-        <styled.a target="blank" href="https://github.com/astahmer/typed-openapi">
-          <IconButton title="Github">
-            <GithubIcon />
-          </IconButton>
-        </styled.a>
-        <styled.a target="blank" href="https://twitter.com/astahmer_dev">
-          <IconButton title="Twitter" css={{ color: { base: "colorPalette.500", _dark: "colorPalette.200" } }}>
-            <TwitterIcon />
-          </IconButton>
-        </styled.a>
-        <styled.a
-          target="blank"
-          href="https://openapi-zod-client.vercel.app/"
-          css={{ color: { base: "colorPalette.500", _dark: "colorPalette.200" } }}
-        >
-          openapi-zod-client
-        </styled.a>
-        <ColorModeSwitch />
-      </HStack>
-    </Flex>
+      </div>
+    </header>
   );
 };
 
-export const Home = () => {
-  return (
-    <ThemeProvider>
-      <Flex
-        w="100%"
-        height="100vh"
-        color={{ base: "cyan.600", _dark: "cyan.200" }}
-        bg={{ base: "whiteAlpha.100", _dark: "whiteAlpha.200" }}
-        fontFamily="Inter"
-        p="3"
-      >
-        <Stack w="100%" h="100%">
-          <PlaygroundWithMachine>{(service) => <PlaygroundToolbar service={service} />}</PlaygroundWithMachine>
-        </Stack>
-      </Flex>
-    </ThemeProvider>
-  );
-};
+export const Home = () => (
+  <ThemeProvider storageKey="typed-openapi-playground-theme">
+    <main className="playground-app">
+      <PlaygroundWithMachine>{(service) => <PlaygroundToolbar service={service} />}</PlaygroundWithMachine>
+    </main>
+  </ThemeProvider>
+);

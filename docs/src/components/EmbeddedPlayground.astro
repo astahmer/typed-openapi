@@ -11,12 +11,19 @@
   ></iframe>
 </div>
 
+<p class="playground-frame-actions">
+  <a data-playground-fullscreen href="/playground/app/index.html" target="_blank" rel="noreferrer">Open the playground full screen ↗</a>
+</p>
+
 <script>
   const frame = document.querySelector<HTMLIFrameElement>("[data-playground-frame]");
+  const fullscreen = document.querySelector<HTMLAnchorElement>("[data-playground-fullscreen]");
 
   if (frame && window.location.search) {
     const url = new URL(frame.src);
     url.search = window.location.search;
     frame.src = url.href;
+
+    if (fullscreen) fullscreen.href = url.href;
   }
 </script>
