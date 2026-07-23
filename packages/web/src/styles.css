@@ -154,6 +154,36 @@ button, select { font: inherit; }
 
 .playground-check-control input { accent-color: var(--pg-foreground); }
 
+.playground-source {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.55rem;
+  width: min(100%, 1600px);
+  margin-inline: auto;
+  padding: 0.65rem clamp(1rem, 2vw, 2rem);
+  border-top: 1px solid var(--pg-border);
+  background: var(--pg-card);
+}
+
+.playground-source label { display: grid; min-width: 0; gap: 0.3rem; }
+.playground-source label > span { color: var(--pg-muted-foreground); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+
+.playground-source input,
+.playground-source button {
+  min-height: 2rem;
+  border: 1px solid var(--pg-border);
+  border-radius: 0.35rem;
+  background: var(--pg-background);
+  color: var(--pg-foreground);
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+.playground-source input { width: 100%; padding-inline: 0.55rem; }
+.playground-source button { align-self: end; padding-inline: 0.7rem; cursor: pointer; }
+.playground-source button:disabled { cursor: wait; opacity: 0.7; }
+.playground-source p { grid-column: 1 / -1; margin: 0; color: #dc2626; font-size: 0.72rem; }
+
 .playground-setup {
   border-top: 1px solid var(--pg-border);
   background: var(--pg-card);
@@ -297,6 +327,8 @@ button, select { font: inherit; }
   .playground-brand-row { min-height: 3.25rem; flex-wrap: wrap; padding-block: 0.5rem; }
   .playground-brand-row > p, .playground-nav a[href*="github"] { display: none; }
   .playground-controls { grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); padding-block: 0.45rem; }
+  .playground-source { grid-template-columns: 1fr; }
+  .playground-source button { justify-self: start; }
   .playground-panel-heading { min-height: 2.75rem; padding-inline: 0.7rem; }
   .playground-panel-copy small { display: none; }
   .playground-tab { max-width: 8.5rem; }

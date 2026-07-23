@@ -12,6 +12,7 @@ import { TwitterIcon } from "../components/twitter-icon";
 import { BlueskyIcon } from "../components/bluesky-icon";
 import { ThemeProvider, useTheme } from "../vite-themes/provider";
 import { GeneratedSetup } from "../Playground/GeneratedSetup";
+import { RemoteInput } from "../Playground/RemoteInput";
 
 import "../styles.css";
 
@@ -193,6 +194,7 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
         <ToggleControl label="TanStack Query" checked={tanstack} onChange={(nextTanstack) => service.send({ type: "Update tanstack", tanstack: nextTanstack })} />
         <ToggleControl label="MSW handlers" checked={msw} onChange={(nextMsw) => service.send({ type: "Update msw", msw: nextMsw })} />
       </div>
+      <RemoteInput service={service} />
       <GeneratedSetup
         runtime={runtime}
         validation={validation}

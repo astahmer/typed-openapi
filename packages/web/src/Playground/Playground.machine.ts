@@ -134,6 +134,7 @@ type PlaygroundContext = {
   outputEditor: editor.IStandaloneCodeEditor | null;
   inputList: Record<string, string>;
   selectedInput: string;
+  sourceUrl?: string;
   outputList: Record<string, string>;
   selectedOutput: string;
   decorations: string[];
@@ -166,6 +167,7 @@ type PlaygroundEvent =
   | { type: "Update default fetcher"; defaultFetcher: boolean }
   | { type: "Update tanstack"; tanstack: boolean }
   | { type: "Update msw"; msw: boolean }
+  | { type: "Set remote input"; url: string; value: string }
   | { type: "Update input"; value: string }
   | { type: "Generate output" };
 
@@ -175,6 +177,7 @@ const initialContext: PlaygroundContext = {
   outputEditor: null,
   inputList: initialInputList,
   selectedInput: Object.keys(initialInputList)[0],
+  sourceUrl: urlSaver.getParam("source"),
   outputList: initialOutputList,
   selectedOutput: Object.keys(initialOutputList)[0],
   decorations: [],
@@ -236,10 +239,26 @@ export const playgroundMachine = setup({
           ...context.inputList,
           [context.selectedInput]: event.value,
         },
+        sourceUrl: undefined,
+      };
+    }),
+    setRemoteInput: assign(({ context, event }) => {
+      if (event.type !== "Set remote input") return {};
+      return {
+        inputList: {
+          ...context.inputList,
+          [context.selectedInput]: event.value,
+        },
+        sourceUrl: event.url,
       };
     }),
     updateUrl: ({ context }) => {
+      urlSaver.reset("source");
       urlSaver.setValue("input", context.inputList[context.selectedInput]);
+    },
+    updateSourceUrl: ({ context }) => {
+      urlSaver.reset("input");
+      if (context.sourceUrl) urlSaver.setParam("source", context.sourceUrl);
     },
     updateUrlOptions: ({ context }) => {
       urlSaver.setParam("runtime", context.runtime);
@@ -368,6 +387,10 @@ export const playgroundMachine = setup({
             "Select output tab": { actions: ["selectOutputTab"] },
             "Update input": {
               actions: ["updateSelectedInput", "updateUrl"],
+              target: ".generating",
+            },
+            "Set remote input": {
+              actions: ["setRemoteInput", "updateSourceUrl"],
               target: ".generating",
             },
           },
