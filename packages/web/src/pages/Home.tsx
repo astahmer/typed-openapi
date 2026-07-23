@@ -10,6 +10,7 @@ import {
 } from "../Playground/Playground.machine";
 import { TwitterIcon } from "../components/twitter-icon";
 import { BlueskyIcon } from "../components/bluesky-icon";
+import { GitHubIcon } from "../components/github-icon";
 import { ThemeProvider, useTheme } from "../vite-themes/provider";
 import { GeneratedSetup } from "../Playground/GeneratedSetup";
 import { RemoteInput } from "../Playground/RemoteInput";
@@ -170,19 +171,20 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
             </a>
           ) : (
             <>
-              <a href="https://github.com/astahmer/typed-openapi" target="_blank" rel="noreferrer">
-                GitHub
+              <a href="https://github.com/astahmer/typed-openapi" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub">
+                <GitHubIcon aria-hidden="true" />
+                <span>GitHub</span>
               </a>
-              <a href="https://www.astahmer.dev/" target="_blank" rel="noreferrer">
-                astahmer.dev
+              <a className="playground-nav-site" href="https://www.astahmer.dev/" target="_blank" rel="noreferrer">
+                <span>astahmer.dev</span>
               </a>
-              <a href="https://x.com/astahmer_dev" target="_blank" rel="noreferrer">
+              <a href="https://x.com/astahmer_dev" target="_blank" rel="noreferrer" aria-label="Twitter" title="Twitter">
                 <TwitterIcon aria-hidden="true" />
-                Twitter
+                <span>Twitter</span>
               </a>
-              <a href="https://bsky.app/profile/astahmer.dev" target="_blank" rel="noreferrer">
+              <a href="https://bsky.app/profile/astahmer.dev" target="_blank" rel="noreferrer" aria-label="Bluesky" title="Bluesky">
                 <BlueskyIcon aria-hidden="true" />
-                Bluesky
+                <span>Bluesky</span>
               </a>
             </>
           )}
