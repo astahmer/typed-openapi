@@ -155,6 +155,13 @@ button, select { font: inherit; }
 .playground-check-control input { accent-color: var(--pg-foreground); }
 
 .playground-workspace { min-height: 0; background: var(--pg-code); }
+.playground-loading {
+  display: grid;
+  min-height: 20rem;
+  place-items: center;
+  color: var(--pg-muted-foreground);
+  font-size: 0.85rem;
+}
 .playground-panels { height: 100%; }
 .playground-panel { display: flex; min-width: 0; flex-direction: column; background: var(--pg-background); }
 
