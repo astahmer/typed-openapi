@@ -32,11 +32,16 @@ describe("applyAuth e2e", () => {
     const headers = new Headers();
     const url = new URL("https://api.example.com/pet");
 
-    mod.applyAuth(headers, url, {
-      petstore_auth: "tok-123",
-      api_key: "key-abc",
-      query_key: "q-value",
-    });
+    mod.applyAuth(
+      headers,
+      url,
+      {
+        petstore_auth: "tok-123",
+        api_key: "key-abc",
+        query_key: "q-value",
+      },
+      [["petstore_auth", "api_key", "query_key"]],
+    );
 
     expect(headers.get("Authorization")).toBe("Bearer tok-123");
     expect(headers.get("api_key")).toBe("key-abc");
@@ -54,7 +59,7 @@ describe("applyAuth e2e", () => {
     const mod = await import(pathToFileURL(join(tmp, "basic.ts")).href + `?t=${Date.now()}`);
     const headers = new Headers();
     const url = new URL("https://api.example.com/");
-    mod.applyAuth(headers, url, { basic: "user:secret" });
+    mod.applyAuth(headers, url, { basic: "user:secret" }, [["basic"]]);
     expect(headers.get("Authorization")).toBe("Basic " + btoa("user:secret"));
   });
 
@@ -70,7 +75,7 @@ describe("applyAuth e2e", () => {
     const headers = new Headers();
     headers.set("cookie", "other=1");
     const url = new URL("https://api.example.com/");
-    mod.applyAuth(headers, url, { session: "a b;c" });
+    mod.applyAuth(headers, url, { session: "a b;c" }, [["session"]]);
     expect(headers.get("cookie")).toBe("other=1; sid=" + encodeURIComponent("a b;c"));
   });
 
@@ -85,7 +90,7 @@ describe("applyAuth e2e", () => {
     const mod = await import(pathToFileURL(join(tmp, "bearer.ts")).href + `?t=${Date.now()}`);
     const headers = new Headers();
     const url = new URL("https://api.example.com/");
-    mod.applyAuth(headers, url, { oauth: "Bearer already" });
+    mod.applyAuth(headers, url, { oauth: "Bearer already" }, [["oauth"]]);
     expect(headers.get("Authorization")).toBe("Bearer already");
   });
 });

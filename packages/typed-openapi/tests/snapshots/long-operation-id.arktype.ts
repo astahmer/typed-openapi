@@ -63,6 +63,7 @@ export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type ResponseFormat = "json" | "sse";
+export type SecurityRequirements = readonly (readonly string[])[];
 
 // <EndpointRequestFormats>
 /** Non-json request body encodings; missing entries default to `"json"`. */
@@ -77,6 +78,13 @@ export const endpointResponseFormats = {} as Partial<{
   [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
 }>;
 // </EndpointResponseFormats>
+
+// <EndpointSecurityRequirements>
+/** OpenAPI security requirements. Missing entries require no credentials. */
+export const endpointSecurityRequirements = {} as Partial<{
+  [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: SecurityRequirements }>;
+}>;
+// </EndpointSecurityRequirements>
 
 export type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
@@ -134,6 +142,8 @@ export interface Fetcher {
     path: string;
     /** How to encode `parameters.body` (from OpenAPI requestBody content type). */
     requestFormat: RequestFormat;
+    /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
+    security?: SecurityRequirements;
     overrides?: RequestInit;
     throwOnStatusError?: boolean;
   }) => Promise<FetcherResponse>;
@@ -443,8 +453,8 @@ export class ApiClient {
       return await response.text();
     }
 
-    if (contentType === "application/octet-stream") {
-      return await response.arrayBuffer();
+    if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+      return new Blob([await response.arrayBuffer()]);
     }
 
     if (
@@ -655,6 +665,7 @@ export class ApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+        security: endpointSecurityRequirements[method]?.[path] ?? [],
         ...(overrides ? { overrides } : {}),
         throwOnStatusError,
       });

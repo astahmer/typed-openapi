@@ -2999,6 +2999,7 @@ export type Method = "get" | "head" | "options" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type ResponseFormat = "json" | "sse";
+export type SecurityRequirements = readonly (readonly string[])[];
 
 
     // <EndpointRequestFormats>
@@ -3015,6 +3016,134 @@ export type ResponseFormat = "json" | "sse";
     
     } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }> }>;
     // </EndpointResponseFormats>
+    
+
+    // <EndpointSecurityRequirements>
+    /** OpenAPI security requirements. Missing entries require no credentials. */
+    export const endpointSecurityRequirements = {
+    get: { "/check-api-key": [["ApiKey"]],
+"/integrations/{integration_id}": [["ApiKey"]],
+"/integrations/{integration_id}/integration-fields": [["ApiKey"]],
+"/integrations/{integration_id}/custom-fields": [["ApiKey"]],
+"/tools/{category}": [["ApiKey"]],
+"/hris/employees": [["ApiKey"]],
+"/hris/employees/form": [["ApiKey"]],
+"/hris/employee-document-categories": [["ApiKey"]],
+"/hris/teams": [["ApiKey"]],
+"/hris/groups": [["ApiKey"]],
+"/hris/employments": [["ApiKey"]],
+"/hris/locations": [["ApiKey"]],
+"/hris/absence-types": [["ApiKey"]],
+"/hris/time-off-balances": [["ApiKey"]],
+"/hris/absences": [["ApiKey"]],
+"/hris/legal-entities": [["ApiKey"]],
+"/hris/timesheets": [["ApiKey"]],
+"/hris/performance-review-cycles": [["ApiKey"]],
+"/hris/performance-reviews": [["ApiKey"]],
+"/hris/skills": [["ApiKey"]],
+"/hris/employee-skill-assignments": [["ApiKey"]],
+"/hris/staffing-entities": [["ApiKey"]],
+"/ats/applications": [["ApiKey"]],
+"/ats/applications/{application_id}/attachments": [["ApiKey"]],
+"/ats/candidates": [["ApiKey"]],
+"/ats/candidates/{candidate_id}/attachments": [["ApiKey"]],
+"/ats/tags": [["ApiKey"]],
+"/ats/application-stages": [["ApiKey"]],
+"/ats/jobs": [["ApiKey"]],
+"/ats/users": [["ApiKey"]],
+"/ats/roles": [["ApiKey"]],
+"/ats/offers": [["ApiKey"]],
+"/ats/rejection-reasons": [["ApiKey"]],
+"/ats/interviews": [["ApiKey"]],
+"/ats/actions/ats_create_candidate": [["ApiKey"]],
+"/ats/actions/ats_create_application": [["ApiKey"]],
+"/ats/actions/ats_add_application_attachment": [["ApiKey"]],
+"/ats/actions/ats_add_candidate_attachment": [["ApiKey"]],
+"/assessment/packages": [["ApiKey"]],
+"/assessment/orders": [["ApiKey"]],
+"/assessment/orders/open": [["ApiKey"]],
+"/lms/users": [["ApiKey"]],
+"/lms/course-progressions": [["ApiKey"]],
+"/lms/courses": [["ApiKey"]],
+"/lms/courses/bulk/{task_id}": [["ApiKey"]],
+"/lms/skills": [["ApiKey"]],
+"/ai-apply/career-sites": [["ApiKey"]],
+"/ai-apply/postings": [["ApiKey"]],
+"/ai-apply/applications": [["ApiKey"]],
+"/ai-apply/unified-api/jobs": [["ApiKey"]],
+"/ai-apply/job-feeds": [["ApiKey"]],
+"/connect/integration-by-token/{token}": [["ApiKey"]],
+"/custom/datev/system-information": [["ApiKey"]],
+"/custom/datev/check-eau-permission": [["ApiKey"]],
+"/custom/datev/eau-requests/{eau_id}": [["ApiKey"]],
+"/custom/datev/check-document-permission": [["ApiKey"]],
+"/custom/datev/available-documents": [["ApiKey"]],
+"/custom/datev/check-write-permission": [["ApiKey"]],
+"/custom/datev/data-pushes": [["ApiKey"]] },
+post: { "/force-sync": [["ApiKey"]],
+"/passthrough/{tool}/{api}": [["ApiKey"]],
+"/integrations/{integration_id}/relink": [["ApiKey"]],
+"/integrations/{integration_id}/setup-link": [["ApiKey"]],
+"/hris/provisioning-groups/{group_id}/diff": [["ApiKey"]],
+"/hris/provisioning-groups/{group_id}/setup-links": [["ApiKey"]],
+"/hris/employees": [["ApiKey"]],
+"/hris/employees/form": [["ApiKey"]],
+"/hris/employees/{employee_id}/documents": [["ApiKey"]],
+"/hris/absences": [["ApiKey"]],
+"/hris/skills": [["ApiKey"]],
+"/hris/employee-skill-assignments": [["ApiKey"]],
+"/ats/applications/{application_id}/result-links": [["ApiKey"]],
+"/ats/applications/{application_id}/notes": [["ApiKey"]],
+"/ats/applications/{application_id}/attachments": [["ApiKey"]],
+"/ats/applications/{application_id}/reject": [["ApiKey"]],
+"/ats/applications/{application_id}/interviews": [["ApiKey"]],
+"/ats/candidates": [["ApiKey"]],
+"/ats/candidates/{candidate_id}/attachments": [["ApiKey"]],
+"/ats/candidates/{candidate_id}/result-links": [["ApiKey"]],
+"/ats/candidates/{candidate_id}/tags": [["ApiKey"]],
+"/ats/jobs/{job_id}/applications": [["ApiKey"]],
+"/ats/import-tracked-application": [["ApiKey"]],
+"/ats/custom/avionte/synced-jobs": [["ApiKey"]],
+"/lms/course-progressions": [["ApiKey"]],
+"/lms/course-progressions/{course_progression_id}/complete": [["ApiKey"]],
+"/lms/courses/bulk": [["ApiKey"]],
+"/lms/courses/{course_id}/deactivate": [["ApiKey"]],
+"/ai-apply/career-sites": [["ApiKey"]],
+"/ai-apply/postings": [["ApiKey"]],
+"/ai-apply/postings/{posting_id}/inquire": [["ApiKey"]],
+"/ai-apply/apply": [["ApiKey"]],
+"/ai-apply/unified-api/jobs/{job_id}/applications": [["ApiKey"]],
+"/ai-apply/job-feeds": [["ApiKey"]],
+"/connect/create-link": [["ApiKey"]],
+"/connect/activate-integration": [["ApiKey"]],
+"/custom/datev/passthrough": [["ApiKey"]],
+"/custom/datev/download-document": [["ApiKey"]],
+"/custom/datev/employees/{employee_id}/download-document": [["ApiKey"]],
+"/custom/datev/employees/{employee_id}/eau-requests": [["ApiKey"]],
+"/custom/datev/push-data/general": [["ApiKey"]],
+"/custom/datev/push-data/payroll": [["ApiKey"]],
+"/custom/silae/employees/{employee_id}/payroll-supplements": [["ApiKey"]],
+"/ai-apply/job-feeds/{job_feed_id}/bulk-import": [["ApiKey"]] },
+delete: { "/integrations/{integration_id}": [["ApiKey"]],
+"/hris/absences/{absence_id}": [["ApiKey"]],
+"/hris/skills/{skill_id}": [["ApiKey"]],
+"/hris/employee-skill-assignments/{employee_skill_assignment_id}": [["ApiKey"]],
+"/ats/candidates/{candidate_id}/tags": [["ApiKey"]],
+"/ats/custom/avionte/synced-jobs/{job_remote_id}": [["ApiKey"]] },
+put: { "/integrations/{integration_id}/enabled": [["ApiKey"]],
+"/integrations/{integration_id}/custom-fields/{custom_field_id}": [["ApiKey"]],
+"/ats/applications/{application_id}/stage": [["ApiKey"]],
+"/assessment/packages": [["ApiKey"]],
+"/assessment/orders/{assessment_order_id}/result": [["ApiKey"]],
+"/custom/datev/employees/{employee_id}/prepare-payroll": [["ApiKey"]],
+"/custom/datev/employees/{employee_id}/compensations": [["ApiKey"]] },
+patch: { "/integrations/{integration_id}/integration-fields/{integration_field_id}": [["ApiKey"]],
+"/hris/employees/{employee_id}": [["ApiKey"]],
+"/hris/skills/{skill_id}": [["ApiKey"]],
+"/hris/employee-skill-assignments/{employee_skill_assignment_id}": [["ApiKey"]],
+"/ats/applications/{application_id}/interviews": [["ApiKey"]] }
+    } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: SecurityRequirements }> }>;
+    // </EndpointSecurityRequirements>
     
 
 export type DefaultEndpoint = {
@@ -3073,6 +3202,8 @@ export interface Fetcher {
       path: string;
       /** How to encode `parameters.body` (from OpenAPI requestBody content type). */
       requestFormat: RequestFormat;
+      /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
+      security?: SecurityRequirements;
       overrides?: RequestInit;
       throwOnStatusError?: boolean
     }) => Promise<FetcherResponse>;
@@ -3338,8 +3469,8 @@ export class ApiClient {
       return (await response.text())
     }
 
-    if (contentType === "application/octet-stream") {
-      return (await response.arrayBuffer())
+    if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+      return new Blob([await response.arrayBuffer()])
     }
 
     if (
@@ -3589,6 +3720,7 @@ export class ApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+        security: endpointSecurityRequirements[method]?.[path] ?? [],
         ...(overrides ? { overrides } : {}),
         throwOnStatusError
       });

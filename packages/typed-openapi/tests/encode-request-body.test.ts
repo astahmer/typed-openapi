@@ -67,7 +67,6 @@ describe("default fetcher + client requestFormat wiring", () => {
     expect(src).toContain('case "form-data"');
     expect(src).toContain('case "binary"');
     expect(src).toContain("type RequestFormat");
-    expect(src).toContain('typeof input.parameters.cookie === "object"');
     expect(src).toContain('typeof input.parameters.header === "object"');
   });
 

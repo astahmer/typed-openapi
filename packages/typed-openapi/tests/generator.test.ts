@@ -333,6 +333,7 @@ describe("generator", () => {
 
       export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
       export type ResponseFormat = "json" | "sse";
+      export type SecurityRequirements = readonly (readonly string[])[];
 
       // <EndpointRequestFormats>
       /** Non-json request body encodings; missing entries default to \`"json"\`. */
@@ -349,6 +350,25 @@ describe("generator", () => {
         [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
       }>;
       // </EndpointResponseFormats>
+
+      // <EndpointSecurityRequirements>
+      /** OpenAPI security requirements. Missing entries require no credentials. */
+      export const endpointSecurityRequirements = {
+        put: { "/pet": [["petstore_auth"]] },
+        post: {
+          "/pet": [["petstore_auth"]],
+          "/pet/{petId}": [["petstore_auth"]],
+          "/pet/{petId}/uploadImage": [["petstore_auth"]],
+        },
+        get: {
+          "/pet/findByStatus": [["petstore_auth"]],
+          "/pet/findByTags": [["petstore_auth"]],
+          "/pet/{petId}": [["api_key"], ["petstore_auth"]],
+          "/store/inventory": [["api_key"]],
+        },
+        delete: { "/pet/{petId}": [["petstore_auth"]] },
+      } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: SecurityRequirements }> }>;
+      // </EndpointSecurityRequirements>
 
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
@@ -406,6 +426,8 @@ describe("generator", () => {
           path: string;
           /** How to encode \`parameters.body\` (from OpenAPI requestBody content type). */
           requestFormat: RequestFormat;
+          /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
+          security?: SecurityRequirements;
           overrides?: RequestInit;
           throwOnStatusError?: boolean;
         }) => Promise<FetcherResponse>;
@@ -679,8 +701,8 @@ describe("generator", () => {
             return await response.text();
           }
 
-          if (contentType === "application/octet-stream") {
-            return await response.arrayBuffer();
+          if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+            return new Blob([await response.arrayBuffer()]);
           }
 
           if (
@@ -948,6 +970,7 @@ describe("generator", () => {
               ...(urlSearchParams ? { urlSearchParams } : {}),
               ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
               requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+              security: endpointSecurityRequirements[method]?.[path] ?? [],
               ...(overrides ? { overrides } : {}),
               throwOnStatusError,
             });
@@ -1389,6 +1412,7 @@ describe("generator", () => {
 
       export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
       export type ResponseFormat = "json" | "sse";
+      export type SecurityRequirements = readonly (readonly string[])[];
 
       // <EndpointRequestFormats>
       /** Non-json request body encodings; missing entries default to \`"json"\`. */
@@ -1403,6 +1427,13 @@ describe("generator", () => {
         [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
       }>;
       // </EndpointResponseFormats>
+
+      // <EndpointSecurityRequirements>
+      /** OpenAPI security requirements. Missing entries require no credentials. */
+      export const endpointSecurityRequirements = {} as Partial<{
+        [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: SecurityRequirements }>;
+      }>;
+      // </EndpointSecurityRequirements>
 
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
@@ -1460,6 +1491,8 @@ describe("generator", () => {
           path: string;
           /** How to encode \`parameters.body\` (from OpenAPI requestBody content type). */
           requestFormat: RequestFormat;
+          /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
+          security?: SecurityRequirements;
           overrides?: RequestInit;
           throwOnStatusError?: boolean;
         }) => Promise<FetcherResponse>;
@@ -1733,8 +1766,8 @@ describe("generator", () => {
             return await response.text();
           }
 
-          if (contentType === "application/octet-stream") {
-            return await response.arrayBuffer();
+          if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+            return new Blob([await response.arrayBuffer()]);
           }
 
           if (
@@ -1879,6 +1912,7 @@ describe("generator", () => {
               ...(urlSearchParams ? { urlSearchParams } : {}),
               ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
               requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+              security: endpointSecurityRequirements[method]?.[path] ?? [],
               ...(overrides ? { overrides } : {}),
               throwOnStatusError,
             });
@@ -2058,6 +2092,7 @@ describe("generator", () => {
 
       export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
       export type ResponseFormat = "json" | "sse";
+      export type SecurityRequirements = readonly (readonly string[])[];
 
       // <EndpointRequestFormats>
       /** Non-json request body encodings; missing entries default to \`"json"\`. */
@@ -2072,6 +2107,13 @@ describe("generator", () => {
         [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: ResponseFormat }>;
       }>;
       // </EndpointResponseFormats>
+
+      // <EndpointSecurityRequirements>
+      /** OpenAPI security requirements. Missing entries require no credentials. */
+      export const endpointSecurityRequirements = {} as Partial<{
+        [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: SecurityRequirements }>;
+      }>;
+      // </EndpointSecurityRequirements>
 
       export type DefaultEndpoint = {
         parameters?: EndpointParameters | undefined;
@@ -2129,6 +2171,8 @@ describe("generator", () => {
           path: string;
           /** How to encode \`parameters.body\` (from OpenAPI requestBody content type). */
           requestFormat: RequestFormat;
+          /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
+          security?: SecurityRequirements;
           overrides?: RequestInit;
           throwOnStatusError?: boolean;
         }) => Promise<FetcherResponse>;
@@ -2402,8 +2446,8 @@ describe("generator", () => {
             return await response.text();
           }
 
-          if (contentType === "application/octet-stream") {
-            return await response.arrayBuffer();
+          if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+            return new Blob([await response.arrayBuffer()]);
           }
 
           if (
@@ -2548,6 +2592,7 @@ describe("generator", () => {
               ...(urlSearchParams ? { urlSearchParams } : {}),
               ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
               requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+              security: endpointSecurityRequirements[method]?.[path] ?? [],
               ...(overrides ? { overrides } : {}),
               throwOnStatusError,
             });
