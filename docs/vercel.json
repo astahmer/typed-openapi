@@ -1,0 +1,6 @@
+{
+  "installCommand": "npx pnpm@11.15.1 --dir .. install --frozen-lockfile",
+  "buildCommand": "npx pnpm@11.15.1 --dir .. --filter typed-openapi-docs run build",
+  "outputDirectory": "dist",
+  "framework": null
+}
