@@ -33,6 +33,8 @@ button, select { font: inherit; }
   overflow: hidden;
   background: var(--pg-background);
   color: var(--pg-foreground);
+  max-width: 100vw;
+  width: 100%;
 }
 
 :root[data-theme="dark"] .playground-app {
@@ -101,6 +103,7 @@ button, select { font: inherit; }
   flex-wrap: nowrap;
   gap: 0.15rem;
   min-width: 0;
+  margin-left: auto;
 }
 
 .playground-nav a, .playground-icon-button {
@@ -385,6 +388,7 @@ button, select { font: inherit; }
 @media (max-width: 720px) {
   .playground-brand-row { min-height: 3.25rem; padding-block: 0.5rem; }
   .playground-brand-row > p { display: none; }
+  .playground-nav { margin-left: auto; }
   .playground-controls { grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); padding-block: 0.45rem; }
   .playground-configuration > summary { min-height: 2.4rem; }
   .playground-configuration > summary > small { display: none; }

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">typed-openapi playground</title>
+  <desc id="desc">Paste OpenAPI and inspect generated TypeScript.</desc>
+  <rect width="1200" height="630" fill="#09090b"/>
+  <rect x="42" y="36" width="1116" height="558" rx="14" fill="#111113" stroke="#3f3f46"/>
+  <rect x="42" y="36" width="1116" height="68" rx="14" fill="#09090b"/>
+  <path d="M42 90h1116v14H42z" fill="#09090b"/>
+  <text x="72" y="78" fill="#fafafa" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700">typed-openapi</text>
+  <rect x="257" y="54" width="142" height="31" rx="7" fill="#111113" stroke="#3f3f46"/>
+  <text x="328" y="76" fill="#a1a1aa" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15" text-anchor="middle">PLAYGROUND</text>
+  <text x="1118" y="78" fill="#a1a1aa" font-family="Arial, sans-serif" font-size="25" text-anchor="end">◐</text>
+  <text x="72" y="144" fill="#fafafa" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="700">Configure output or load a spec</text>
+  <text x="402" y="144" fill="#a1a1aa" font-family="Inter, Arial, sans-serif" font-size="17">Types only · own fetcher</text>
+  <path d="M72 167h1056" stroke="#27272a"/>
+  <text x="72" y="212" fill="#fafafa" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">Input</text>
+  <text x="624" y="212" fill="#fafafa" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">Output</text>
+  <text x="72" y="237" fill="#a1a1aa" font-family="Inter, Arial, sans-serif" font-size="15">OpenAPI YAML or JSON</text>
+  <text x="624" y="237" fill="#a1a1aa" font-family="Inter, Arial, sans-serif" font-size="15">Generated TypeScript</text>
+  <rect x="72" y="257" width="520" height="285" rx="8" fill="#18181b" stroke="#27272a"/>
+  <rect x="608" y="257" width="520" height="285" rx="8" fill="#18181b" stroke="#27272a"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20">
+    <text x="101" y="304" fill="#2dd4bf">openapi</text><text x="191" y="304" fill="#d4d4d8">: 3.0.3</text>
+    <text x="101" y="342" fill="#2dd4bf">info</text><text x="151" y="342" fill="#d4d4d8">:</text>
+    <text x="130" y="380" fill="#2dd4bf">title</text><text x="190" y="380" fill="#d4d4d8">: Petstore</text>
+    <text x="101" y="456" fill="#60a5fa">paths</text><text x="164" y="456" fill="#d4d4d8">:</text>
+    <text x="130" y="494" fill="#d4d4d8">/pets:</text>
+    <text x="637" y="304" fill="#60a5fa">export</text><text x="716" y="304" fill="#d4d4d8"> namespace </text><text x="850" y="304" fill="#2dd4bf">Schemas</text>
+    <text x="637" y="342" fill="#60a5fa">export</text><text x="716" y="342" fill="#d4d4d8"> type </text><text x="787" y="342" fill="#2dd4bf">Pet</text><text x="825" y="342" fill="#d4d4d8"> = {</text>
+    <text x="667" y="380" fill="#d4d4d8">id?: </text><text x="734" y="380" fill="#60a5fa">number</text><text x="812" y="380" fill="#d4d4d8">;</text>
+    <text x="667" y="418" fill="#d4d4d8">name?: </text><text x="751" y="418" fill="#60a5fa">string</text><text x="825" y="418" fill="#d4d4d8">;</text>
+    <text x="637" y="456" fill="#d4d4d8">};</text>
+  </g>
+  <text x="72" y="572" fill="#a1a1aa" font-family="Inter, Arial, sans-serif" font-size="18">Paste an OpenAPI document. Inspect every generated file.</text>
+</svg>

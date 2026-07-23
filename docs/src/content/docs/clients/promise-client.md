@@ -116,7 +116,7 @@ configureFetcher({
 });
 ```
 
-Credential keys come from OpenAPI security-scheme names. The fetcher only applies the first security requirement that the returned credentials satisfy for that operation; it sends no credential for an operation that declares none. Read [bodies, cookies, and auth](/clients/requests-auth-and-bodies/) for every supported placement.
+Credential keys come from OpenAPI security-scheme names. The fetcher only applies the first security requirement that the returned credentials satisfy for that operation; it sends no credential for an operation that declares none. Read [bodies, cookies, and auth](../requests-auth-and-bodies/) for every supported placement.
 
 ## Call the client
 

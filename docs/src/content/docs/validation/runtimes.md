@@ -92,7 +92,7 @@ export const Pet = z.object({
 export type Pet = z.infer<typeof Pet>;
 ```
 
-Use [validation controls](/validation/input-output/) to choose depth, input/output sides, primitive coercion, and domain transforms.
+Use [validation controls](../input-output/) to choose depth, input/output sides, primitive coercion, and domain transforms.
 
 ## A practical decision rule
 

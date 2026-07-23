@@ -51,7 +51,7 @@ const pet = await api.get("/pet/{petId}", {
 console.log(pet.name);
 ```
 
-The generated fetcher is a regular TypeScript file. Read [the implementation and its behavior](/clients/promise-client/) before using it; keep an existing transport when it already owns retry, auth, tracing, or environment configuration.
+The generated fetcher is a regular TypeScript file. Read [the implementation and its behavior](../clients/promise-client/) before using it; keep an existing transport when it already owns retry, auth, tracing, or environment configuration.
 
 ## 3. Add runtime validation at the boundary
 
@@ -65,16 +65,16 @@ pnpm exec typed-openapi ./openapi.yaml \
   --output src/api/client.ts
 ```
 
-Generated input and output validators run by default. See [runtime selection](/validation/runtimes/) before choosing a different adapter, or [validation controls](/validation/input-output/) to validate only the response side.
+Generated input and output validators run by default. See [runtime selection](../validation/runtimes/) before choosing a different adapter, or [validation controls](../validation/input-output/) to validate only the response side.
 
 ## 4. Prove the shape in the playground
 
-[Open the playground with Zod selected](/playground/?runtime=zod&validation=strict&client=promise&validateSide=both&coerce=true). It starts with a Petstore document; paste your own OpenAPI YAML or JSON into the left editor.
+[Open the playground with Zod selected](../playground/app/index.html?runtime=zod&validation=strict&client=promise&validateSide=both&coerce=true). It starts with a Petstore document; paste your own OpenAPI YAML or JSON into the left editor.
 
-If your project has `typed-openapi.config.ts`, the positional input becomes optional. [Configure a repeatable generation command.](/configuration/)
+If your project has `typed-openapi.config.ts`, the positional input becomes optional. [Configure a repeatable generation command.](../configuration/)
 
 ## Where to go next
 
-- Need request bodies, headers, cookies, or auth? Read [Bodies, cookies & auth](/clients/requests-auth-and-bodies/).
-- Need predictable non-2xx handling? Read [Errors & responses](/clients/errors-and-responses/).
-- Generating in a team or CI? Put stable flags in [configuration](/configuration/).
+- Need request bodies, headers, cookies, or auth? Read [Bodies, cookies & auth](../clients/requests-auth-and-bodies/).
+- Need predictable non-2xx handling? Read [Errors & responses](../clients/errors-and-responses/).
+- Generating in a team or CI? Put stable flags in [configuration](../configuration/).

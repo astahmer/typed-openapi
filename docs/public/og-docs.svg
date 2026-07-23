@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">typed-openapi documentation</title>
+  <desc id="desc">Generate TypeScript clients from OpenAPI documents.</desc>
+  <rect width="1200" height="630" fill="#09090b"/>
+  <rect x="42" y="36" width="1116" height="56" rx="12" fill="#111113" stroke="#27272a"/>
+  <text x="72" y="71" fill="#fafafa" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">typed-openapi</text>
+  <text x="277" y="71" fill="#a1a1aa" font-family="Inter, Arial, sans-serif" font-size="18">Docs</text>
+  <text x="338" y="71" fill="#a1a1aa" font-family="Inter, Arial, sans-serif" font-size="18">Playground</text>
+  <text x="1130" y="71" fill="#a1a1aa" font-family="Arial, sans-serif" font-size="26" text-anchor="end">◐</text>
+  <text x="74" y="175" fill="#a1a1aa" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" font-weight="700" letter-spacing="2">OPENAPI → TYPESCRIPT</text>
+  <text x="72" y="245" fill="#fafafa" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="700">One API contract.</text>
+  <text x="72" y="310" fill="#fafafa" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="700">The client your app needs.</text>
+  <text x="74" y="360" fill="#a1a1aa" font-family="Inter, Arial, sans-serif" font-size="24">Types, runtime validators, and typed clients from OpenAPI.</text>
+  <rect x="72" y="410" width="1056" height="76" rx="12" fill="#111113" stroke="#27272a"/>
+  <text x="102" y="457" fill="#d4d4d8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22">pnpm exec typed-openapi openapi.yaml --runtime zod</text>
+  <g font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600">
+    <rect x="72" y="520" width="224" height="54" rx="9" fill="#18181b" stroke="#3f3f46"/>
+    <text x="184" y="554" fill="#e4e4e7" text-anchor="middle">Types-only</text>
+    <rect x="316" y="520" width="260" height="54" rx="9" fill="#18181b" stroke="#3f3f46"/>
+    <text x="446" y="554" fill="#e4e4e7" text-anchor="middle">Runtime validators</text>
+    <rect x="596" y="520" width="272" height="54" rx="9" fill="#18181b" stroke="#3f3f46"/>
+    <text x="732" y="554" fill="#e4e4e7" text-anchor="middle">Effect + TanStack</text>
+  </g>
+</svg>

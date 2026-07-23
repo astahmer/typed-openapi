@@ -11,7 +11,7 @@ pnpm exec typed-openapi <input> [options]
 
 `<input>` is an OpenAPI JSON or YAML path. It is optional when a loaded config supplies `input`.
 
-Flags use kebab-case; the equivalent config keys use camelCase. For example, `--transform-dates` becomes `transformDates: true` in `typed-openapi.config.ts`. Start from [configuration](/configuration/) once a command has more than a few stable options.
+Flags use kebab-case; the equivalent config keys use camelCase. For example, `--transform-dates` becomes `transformDates: true` in `typed-openapi.config.ts`. Start from [configuration](../../configuration/) once a command has more than a few stable options.
 
 ## Input and output
 

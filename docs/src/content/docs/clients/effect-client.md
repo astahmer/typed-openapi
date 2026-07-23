@@ -64,4 +64,4 @@ const program = api.get("/pet/{petId}", { path: { petId: 7 } }).pipe(
 );
 ```
 
-The generated [TanStack helpers](/integrations/tanstack-query/) automatically use `Effect.runPromise` when the API client is Effect-native.
+The generated [TanStack helpers](../../integrations/tanstack-query/) automatically use `Effect.runPromise` when the API client is Effect-native.

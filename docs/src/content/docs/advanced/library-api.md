@@ -71,4 +71,4 @@ await generateClientFiles(undefined, {
 
 The Node entry point also exports `findDefaultConfigPath()`, `loadConfigFile()`, `mergeConfigWithCli()`, and `resolveValidationFromOptions()` for tooling that needs to inspect or compose configuration. Runtime adapter exports are available from `typed-openapi/runtimes` and their individual subpaths.
 
-For custom schema and endpoint identifiers, see [schema naming](/advanced/schema-naming/).
+For custom schema and endpoint identifiers, see [schema naming](../schema-naming/).

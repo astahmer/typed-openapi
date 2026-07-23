@@ -8,14 +8,24 @@ const normalizeBase = (value) => {
 };
 
 const base = normalizeBase(process.env.DOCS_BASE ?? process.env.ASTRO_BASE);
+const site = process.env.SITE_URL;
+const withBase = (path) => `${base}${path.replace(/^\//, "")}`;
+const socialAsset = (path) => (site ? new URL(withBase(path), site).href : withBase(path));
 
 export default defineConfig({
   base,
+  site,
   integrations: [
     starlight({
       title: "typed-openapi",
       description: "Generate a type-safe TypeScript API client from an OpenAPI document.",
-      favicon: "/favicon.png",
+      favicon: "favicon.png",
+      head: [
+        { tag: "meta", attrs: { property: "og:image", content: socialAsset("og-docs.png") } },
+        { tag: "meta", attrs: { property: "og:image:width", content: "1200" } },
+        { tag: "meta", attrs: { property: "og:image:height", content: "630" } },
+        { tag: "meta", attrs: { name: "twitter:image", content: socialAsset("og-docs.png") } },
+      ],
       social: [
         {
           icon: "github",
@@ -40,8 +50,8 @@ export default defineConfig({
       plugins: [
         lucode({
           navLinks: [
-            { label: "Docs", link: "/getting-started/" },
-            { label: "Playground", link: "/playground/" },
+            { label: "Docs", link: withBase("getting-started/") },
+            { label: "Playground", link: withBase("playground/") },
             { label: "GitHub", link: "https://github.com/astahmer/typed-openapi" },
             { label: "astahmer.dev", link: "https://www.astahmer.dev/" },
           ],

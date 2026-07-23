@@ -33,7 +33,7 @@ pnpm exec typed-openapi
 
 Treat the OpenAPI file, config, and generated TypeScript as one reviewed change. That makes API drift visible in a normal pull request instead of at runtime.
 
-When `runtime` is set, generation also writes a sibling `.types.d.ts` file by default. Commit or publish it with the runtime module. See [runtime type sidecars](/validation/runtimes/#runtime-type-sidecar) for why this keeps large generated clients fast and how to opt out.
+When `runtime` is set, generation also writes a sibling `.types.d.ts` file by default. Commit or publish it with the runtime module. See [runtime type sidecars](../validation/runtimes/#runtime-type-sidecar) for why this keeps large generated clients fast and how to opt out.
 
 ## Override one setting from CI or a script
 
@@ -43,7 +43,7 @@ CLI flags win over config values. Keep the shared config checked in, then narrow
 pnpm exec typed-openapi --endpoint '^/public(?:/|$)' --output src/api/public.ts
 ```
 
-For a checked-in, domain-specific client, use `endpointPatterns` in the config. See [filter endpoints and schemas](/advanced/filtering-and-schema-naming/) for a complete catalog-client example.
+For a checked-in, domain-specific client, use `endpointPatterns` in the config. See [filter endpoints and schemas](../advanced/filtering-and-schema-naming/) for a complete catalog-client example.
 
 ## JSON is supported too
 
@@ -88,7 +88,7 @@ export default defineConfig({
 });
 ```
 
-See [validation depth and transforms](/validation/input-output/) for every policy field and preset default.
+See [validation depth and transforms](../validation/input-output/) for every policy field and preset default.
 
 ## Configure the generated fetcher
 
