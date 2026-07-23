@@ -4,7 +4,7 @@ description: Generate a type-safe TypeScript API client from an OpenAPI document
 template: splash
 hero:
   title: typed-openapi
-  tagline: Generate a headless Typescript API client from an OpenAPI spec
+  tagline: Generate TypeScript types, runtime validators, and an API client from an OpenAPI file.
   layout: centered
   actions:
     - text: Quick start
@@ -21,47 +21,49 @@ import CommandBuilder from "../../components/CommandBuilder.astro";
 <ContainerSection width="lg">
   <CommandBuilder />
 
-<h2>Start here</h2>
-<div class="home-grid home-grid--three">
-  <a class="home-card" href="/getting-started/">
-    <strong>Types only</strong>
-    <p>Generate contracts and endpoint methods without choosing a transport.</p>
-  </a>
-  <a class="home-card" href="/validation/runtimes/">
-    <strong>Runtime validation</strong>
-    <p>Pick Zod, Effect, Valibot, ArkType, TypeBox, or Typia.</p>
-  </a>
-  <a class="home-card" href="/clients/promise-client/#bring-your-own-fetcher">
-    <strong>Bring your own Fetcher</strong>
-    <p>Keep the app's transport and use generated endpoint types and response handling.</p>
-  </a>
-</div>
-
-<h2>Other workflows</h2>
-<div class="home-grid">
-  <a class="home-card" href="/advanced/filtering-and-schema-naming/">
-    <strong>Filter a large specification</strong>
-    <p>Generate a small, domain-specific client from one large OpenAPI document.</p>
-  </a>
-  <a class="home-card" href="/ai/">
-    <strong>Use with an AI agent</strong>
-    <p>Add the repository skill and paste a focused integration prompt.</p>
-  </a>
-</div>
-
-  <h2>Optional integrations</h2>
+<section class="home-section">
+  <div class="home-section-heading">
+    <p class="home-eyebrow">Choose your boundary</p>
+    <h2>Start small. Add the pieces you need.</h2>
+    <p>Every path begins with the same OpenAPI contract. Choose the code that should exist in your application.</p>
+  </div>
   <div class="home-grid home-grid--three">
-    <a class="home-card" href="/integrations/tanstack-query/">
-      <strong>TanStack Query</strong>
-      <p>Generated query keys, query options, mutations, and invalidation helpers.</p>
+    <a class="home-card home-card--choice" href="/getting-started/">
+      <span>01</span>
+      <strong>Types and endpoint contracts</strong>
+      <p>Generate paths, parameters, responses, and a typed client surface. Keep your current HTTP layer.</p>
     </a>
-    <a class="home-card" href="/clients/effect-client/">
-      <strong>Effect client</strong>
-      <p>Keep operations in Effect and handle typed HTTP errors in the error channel.</p>
+    <a class="home-card home-card--choice" href="/validation/runtimes/">
+      <span>02</span>
+      <strong>Runtime validation</strong>
+      <p>Use Zod, Effect, Valibot, ArkType, TypeBox, or Typia when inputs and responses need a runtime boundary.</p>
     </a>
-    <a class="home-card" href="/integrations/msw/">
-      <strong>MSW mocks</strong>
-      <p>Generate handlers and typed mock factories from the same OpenAPI document.</p>
+    <a class="home-card home-card--choice" href="/clients/promise-client/#bring-your-own-fetcher">
+      <span>03</span>
+      <strong>Generated Fetch or your own</strong>
+      <p>Generate a Fetch transport, or keep retries, tracing, and auth in the fetcher you already own.</p>
     </a>
   </div>
+</section>
+
+<section class="home-section home-section--compact">
+  <div class="home-section-heading">
+    <p class="home-eyebrow">When the basic client is not enough</p>
+    <h2>Common next steps</h2>
+  </div>
+  <div class="home-grid home-grid--three">
+    <a class="home-card" href="/advanced/filtering-and-schema-naming/">
+      <strong>Filter a large specification</strong>
+      <p>Generate a small, domain-specific client from one large OpenAPI document.</p>
+    </a>
+    <a class="home-card" href="/integrations/tanstack-query/">
+      <strong>TanStack Query</strong>
+      <p>Generate query keys, query options, mutations, and invalidation helpers.</p>
+    </a>
+    <a class="home-card" href="/ai/">
+      <strong>Use with an AI agent</strong>
+      <p>Give an agent the repository skill and a focused integration prompt.</p>
+    </a>
+  </div>
+</section>
 </ContainerSection>

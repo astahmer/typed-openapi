@@ -1,7 +1,8 @@
 <section class="snippet-builder" data-command-builder aria-labelledby="snippet-builder-title">
   <div class="snippet-builder-copy">
-    <h2 id="snippet-builder-title">Build your command</h2>
-    <p>Choose an input and runtime. The command always writes a Fetch client; change the base URL before using it.</p>
+    <p class="home-eyebrow">Generate a starting point</p>
+    <h2 id="snippet-builder-title">Pick the files you want to own.</h2>
+    <p>Start with a local spec or a pinned public URL. The command below is ready to paste, then keep the generated files in your repository.</p>
   </div>
 
   <div class="snippet-builder-controls">
@@ -23,31 +24,47 @@
         <option value="effect">Effect</option>
       </select>
     </label>
+    <label>
+      <span>Transport</span>
+      <select data-transport aria-label="Transport">
+        <option value="fetch">Generated Fetch client</option>
+        <option value="headless">Bring your own fetcher</option>
+      </select>
+    </label>
   </div>
 
   <div class="snippet-builder-command">
     <code data-command></code>
     <button type="button" data-copy>Copy</button>
   </div>
-  <p class="snippet-builder-output">Writes <code>src/api/openapi.ts</code> and <code>src/api/api.client.ts</code>. The Cloudflare option uses its raw, pinned GitHub file.</p>
+  <p class="snippet-builder-output">Writes <span data-files></span>. The Cloudflare option uses its raw, pinned GitHub file.</p>
 </section>
 
 <script>
   for (const builder of document.querySelectorAll("[data-command-builder]")) {
     const input = builder.querySelector("[data-input]");
     const runtime = builder.querySelector("[data-runtime]");
+    const transport = builder.querySelector("[data-transport]");
     const command = builder.querySelector("[data-command]");
     const copy = builder.querySelector("[data-copy]");
+    const files = builder.querySelector("[data-files]");
 
-    if (!(input instanceof HTMLSelectElement) || !(runtime instanceof HTMLSelectElement) || !(command instanceof HTMLElement) || !(copy instanceof HTMLButtonElement)) continue;
+    if (!(input instanceof HTMLSelectElement) || !(runtime instanceof HTMLSelectElement) || !(transport instanceof HTMLSelectElement) || !(command instanceof HTMLElement) || !(copy instanceof HTMLButtonElement) || !(files instanceof HTMLElement)) continue;
 
     const update = () => {
       const runtimeFlag = runtime.value === "none" ? "" : ` --runtime ${runtime.value}`;
-      command.textContent = `pnpm exec typed-openapi ${input.value} --output src/api/openapi.ts --default-fetcher${runtimeFlag} --format`;
+      const name = runtime.value === "none" ? "openapi.client" : `openapi.${runtime.value}`;
+      const fetcherFlag = transport.value === "fetch" ? " --default-fetcher" : "";
+      const outputFiles = [`src/api/${name}.ts`];
+      if (runtime.value !== "none") outputFiles.push(`src/api/${name}.types.d.ts`);
+      if (transport.value === "fetch") outputFiles.push("src/api/api.client.ts");
+      command.textContent = `pnpm exec typed-openapi ${input.value} --output src/api/${name}.ts${runtimeFlag}${fetcherFlag} --format`;
+      files.textContent = outputFiles.join(" · ");
     };
 
     input.addEventListener("change", update);
     runtime.addEventListener("change", update);
+    transport.addEventListener("change", update);
     copy.addEventListener("click", async () => {
       await navigator.clipboard.writeText(command.textContent ?? "");
       copy.textContent = "Copied";

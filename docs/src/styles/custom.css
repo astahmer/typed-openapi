@@ -62,6 +62,16 @@ body .sl-markdown-content h2 code {
   background: var(--card);
 }
 
+.home-eyebrow {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .snippet-builder h2 {
   margin: 0;
   color: var(--foreground);
@@ -78,7 +88,7 @@ body .sl-markdown-content h2 code {
 
 .snippet-builder-controls {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
 }
 
@@ -138,6 +148,11 @@ body .sl-markdown-content h2 code {
   font-size: 0.82rem;
 }
 
+.snippet-builder-output span {
+  color: var(--foreground);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
 .playground-frame {
   height: min(72vh, 52rem);
   min-height: 36rem;
@@ -172,6 +187,16 @@ body .sl-markdown-content h2 code {
   max-width: 1080px;
 }
 
+.home-section {
+  margin: 3.5rem auto;
+  max-width: 1080px;
+}
+
+.home-section--compact { margin-top: 4.5rem; }
+.home-section-heading { max-width: 40rem; }
+.home-section-heading h2 { margin: 0.4rem 0 0; }
+.home-section-heading > p:not(.home-eyebrow) { margin: 0.7rem 0 0; color: var(--muted-foreground); line-height: 1.6; }
+
 @media (min-width: 801px) {
   .home-grid--three {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -198,6 +223,21 @@ body .sl-markdown-content h2 code {
   color: var(--foreground);
   font-size: 0.95rem;
 }
+
+.home-card--choice {
+  min-height: 13rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-card--choice > span {
+  margin-bottom: auto;
+  color: var(--muted-foreground);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+}
+
+.home-card--choice strong { margin-top: 2.25rem; }
 
 .home-card p {
   margin: 0.45rem 0 0;
