@@ -97,6 +97,14 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
   const msw = useSelector(service, (state) => state.context.msw);
   const showRuntimeOptions = runtime !== "none";
   const fullscreenHref = typeof window === "undefined" ? "/playground/app/" : window.location.href;
+  const runtimeLabel = runtimeOptions.find((option) => option.value === runtime)?.label ?? runtime;
+  const configurationSummary = [
+    runtimeLabel,
+    defaultFetcher ? "Fetch client" : "own fetcher",
+    tanstack ? "TanStack Query" : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
   const advancedControls = (
     <>
       {showRuntimeOptions ? (
@@ -182,42 +190,43 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
         </nav>
       </div>
 
-      <div className="playground-controls" aria-label="Generation options">
-        <SelectControl
-          label="Runtime"
-          value={runtime}
-          options={runtimeOptions}
-          onChange={(nextRuntime) => service.send({ type: "Update runtime", runtime: nextRuntime })}
-        />
-        <ToggleControl
-          label="Default fetcher"
-          checked={defaultFetcher}
-          onChange={(nextDefaultFetcher) =>
-            service.send({ type: "Update default fetcher", defaultFetcher: nextDefaultFetcher })
-          }
-        />
-        <ToggleControl label="TanStack Query" checked={tanstack} onChange={(nextTanstack) => service.send({ type: "Update tanstack", tanstack: nextTanstack })} />
-        {embedded ? (
-          <details className="playground-options">
-            <summary>More options</summary>
-            <div className="playground-options-content">{advancedControls}</div>
-          </details>
-        ) : (
-          advancedControls
-        )}
-      </div>
-      <RemoteInput service={service} />
-      <GeneratedSetup
-        runtime={runtime}
-        validation={validation}
-        client={client}
-        validateSide={validateSide}
-        coerce={coerce}
-        runtimeTypes={runtimeTypes}
-        defaultFetcher={defaultFetcher}
-        tanstack={tanstack}
-        msw={msw}
-      />
+      <details className="playground-configuration">
+        <summary>
+          <span>Configure output or load a spec</span>
+          <small>{configurationSummary}</small>
+        </summary>
+        <div className="playground-configuration-content">
+          <div className="playground-controls" aria-label="Generation options">
+            <SelectControl
+              label="Runtime"
+              value={runtime}
+              options={runtimeOptions}
+              onChange={(nextRuntime) => service.send({ type: "Update runtime", runtime: nextRuntime })}
+            />
+            <ToggleControl
+              label="Default fetcher"
+              checked={defaultFetcher}
+              onChange={(nextDefaultFetcher) =>
+                service.send({ type: "Update default fetcher", defaultFetcher: nextDefaultFetcher })
+              }
+            />
+            <ToggleControl label="TanStack Query" checked={tanstack} onChange={(nextTanstack) => service.send({ type: "Update tanstack", tanstack: nextTanstack })} />
+            {advancedControls}
+          </div>
+          <RemoteInput service={service} />
+          <GeneratedSetup
+            runtime={runtime}
+            validation={validation}
+            client={client}
+            validateSide={validateSide}
+            coerce={coerce}
+            runtimeTypes={runtimeTypes}
+            defaultFetcher={defaultFetcher}
+            tanstack={tanstack}
+            msw={msw}
+          />
+        </div>
+      </details>
     </header>
   );
 };
