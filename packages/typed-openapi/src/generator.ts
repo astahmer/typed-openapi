@@ -470,25 +470,46 @@ const generateEndpointRequestFormats = (ctx: GeneratorContext) => {
 
 /** Effective OpenAPI security requirements for each operation. */
 const generateEndpointSecurityRequirements = (ctx: GeneratorContext) => {
-  const byMethods = groupBy(ctx.endpointList, "method");
+  const endpointRequirements = ctx.endpointList.map((endpoint) => ({
+    endpoint,
+    names: (endpoint.operation.security ?? ctx.doc.security ?? []).map((requirement) => Object.keys(requirement)),
+  }));
+
+  // Find the most common requirement so we can emit it once as a default and only list exceptions.
+  const frequencies = new Map<string, { names: string[][]; count: number }>();
+  for (const { names } of endpointRequirements) {
+    const key = JSON.stringify(names);
+    const existing = frequencies.get(key);
+    if (existing) {
+      existing.count++;
+    } else {
+      frequencies.set(key, { names, count: 1 });
+    }
+  }
+  let defaultEntry = { names: [] as string[][], count: 0 };
+  for (const entry of frequencies.values()) {
+    if (entry.count > defaultEntry.count) {
+      defaultEntry = entry;
+    }
+  }
+
+  const byMethods = groupBy(
+    endpointRequirements.filter(({ names }) => JSON.stringify(names) !== JSON.stringify(defaultEntry.names)),
+    ({ endpoint }) => endpoint.method,
+  );
   const entries = Object.entries(byMethods)
     .map(([method, list]) => {
-      const secured = list
-        .map((endpoint) => {
-          const requirements = endpoint.operation.security ?? ctx.doc.security ?? [];
-          if (!requirements.length) return "";
-          const names = requirements.map((requirement) => Object.keys(requirement));
-          return `"${endpoint.path}": ${JSON.stringify(names)}`;
-        })
-        .filter(Boolean);
-      return secured.length ? `${method}: { ${secured.join(",\n")} }` : "";
+      const secured = list.map(({ endpoint, names }) => `"${endpoint.path}": ${JSON.stringify(names)}`);
+      return `${method}: { ${secured.join(",\n")} }`;
     })
     .filter(Boolean)
     .join(",\n");
 
   return `
     // <EndpointSecurityRequirements>
-    /** OpenAPI security requirements. Missing entries require no credentials. */
+    /** OpenAPI security requirements applied when an endpoint has no explicit entry. */
+    export const defaultSecurityRequirements = ${JSON.stringify(defaultEntry.names)} as SecurityRequirements;
+    /** Endpoint-specific security requirements that differ from the default. */
     export const endpointSecurityRequirements = {
     ${entries}
     } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: SecurityRequirements }> }>;
@@ -1137,7 +1158,7 @@ export class ApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
-        security: endpointSecurityRequirements[method]?.[path] ?? [],
+        security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements,
         ...(overrides ? { overrides } : {}),
         throwOnStatusError
       });

@@ -80,7 +80,9 @@ export const endpointResponseFormats = {} as Partial<{
 // </EndpointResponseFormats>
 
 // <EndpointSecurityRequirements>
-/** OpenAPI security requirements. Missing entries require no credentials. */
+/** OpenAPI security requirements applied when an endpoint has no explicit entry. */
+export const defaultSecurityRequirements = [] as SecurityRequirements;
+/** Endpoint-specific security requirements that differ from the default. */
 export const endpointSecurityRequirements = {} as Partial<{
   [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: SecurityRequirements }>;
 }>;
@@ -665,7 +667,7 @@ export class ApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
-        security: endpointSecurityRequirements[method]?.[path] ?? [],
+        security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements,
         ...(overrides ? { overrides } : {}),
         throwOnStatusError,
       });

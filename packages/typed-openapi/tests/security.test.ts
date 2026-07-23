@@ -157,8 +157,8 @@ describe("securitySchemes → auth helpers", () => {
     } as OpenAPIObject;
 
     const src = generateFile(mapOpenApiEndpoints(doc));
-    expect(src).toContain('"/private": [["bearerAuth"]]');
-    expect(src).not.toContain('"/public": []');
-    expect(src).toContain("security: endpointSecurityRequirements[method]?.[path] ?? []");
+    expect(src).toContain("defaultSecurityRequirements = [[\"bearerAuth\"]]");
+    expect(src).toContain('"/public": []');
+    expect(src).toContain("security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements");
   });
 });
