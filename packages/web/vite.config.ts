@@ -19,6 +19,7 @@ export type ViteAppConfigOptions = {
 export const createViteAppConfig = (options: ViteAppConfigOptions = {}) => {
   const shimFs = options.shimFs !== false;
   return defineConfig({
+    base: process.env.VITE_BASE ?? "/",
     css: {
       postcss: {
         plugins: [pandacss()],

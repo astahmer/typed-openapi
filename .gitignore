@@ -3,6 +3,9 @@ dist/
 # generated types
 .astro/
 
+# Built from packages/web by the documentation prebuild step.
+docs/public/playground/
+
 # dependencies
 node_modules/
 .pnpm-store/

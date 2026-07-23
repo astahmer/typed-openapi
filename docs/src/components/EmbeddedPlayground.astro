@@ -1,0 +1,22 @@
+---
+---
+
+<div class="playground-frame">
+  <iframe
+    data-playground-frame
+    title="typed-openapi playground"
+    src="/playground/app/index.html"
+    loading="eager"
+    allow="clipboard-read; clipboard-write"
+  ></iframe>
+</div>
+
+<script>
+  const frame = document.querySelector<HTMLIFrameElement>("[data-playground-frame]");
+
+  if (frame && window.location.search) {
+    const url = new URL(frame.src);
+    url.search = window.location.search;
+    frame.src = url.href;
+  }
+</script>

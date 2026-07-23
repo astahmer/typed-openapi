@@ -69,7 +69,7 @@ Generated input and output validators run by default. See [runtime selection](/v
 
 ## 4. Prove the shape in the playground
 
-[Open the playground with Zod selected](https://typed-openapi-astahmer.vercel.app/?runtime=zod&validation=strict&client=promise&validateSide=both&coerce=true). It starts with a Petstore document; paste your own OpenAPI YAML or JSON into the left editor.
+[Open the playground with Zod selected](/playground/?runtime=zod&validation=strict&client=promise&validateSide=both&coerce=true). It starts with a Petstore document; paste your own OpenAPI YAML or JSON into the left editor.
 
 If your project has `typed-openapi.config.ts`, the positional input becomes optional. [Configure a repeatable generation command.](/configuration/)
 

@@ -1,0 +1,60 @@
+<section class="snippet-builder" data-command-builder aria-labelledby="snippet-builder-title">
+  <div class="snippet-builder-copy">
+    <h2 id="snippet-builder-title">Build your command</h2>
+    <p>Choose an input and runtime. The command always writes a Fetch client; change the base URL before using it.</p>
+  </div>
+
+  <div class="snippet-builder-controls">
+    <label>
+      <span>OpenAPI input</span>
+      <select data-input aria-label="OpenAPI input">
+        <option value="./openapi.yaml">Local file</option>
+        <option value="https://raw.githubusercontent.com/cloudflare/api-schemas/82dba40b10f6b6db23b2ea57bb370bdbfceeaa1a/openapi.json">
+          Cloudflare OpenAPI URL
+        </option>
+      </select>
+    </label>
+    <label>
+      <span>Runtime</span>
+      <select data-runtime aria-label="Runtime">
+        <option value="none">Types only</option>
+        <option value="zod">Zod</option>
+        <option value="valibot">Valibot</option>
+        <option value="effect">Effect</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="snippet-builder-command">
+    <code data-command></code>
+    <button type="button" data-copy>Copy</button>
+  </div>
+  <p class="snippet-builder-output">Writes <code>src/api/openapi.ts</code> and <code>src/api/api.client.ts</code>. The Cloudflare option uses its raw, pinned GitHub file.</p>
+</section>
+
+<script>
+  for (const builder of document.querySelectorAll("[data-command-builder]")) {
+    const input = builder.querySelector("[data-input]");
+    const runtime = builder.querySelector("[data-runtime]");
+    const command = builder.querySelector("[data-command]");
+    const copy = builder.querySelector("[data-copy]");
+
+    if (!(input instanceof HTMLSelectElement) || !(runtime instanceof HTMLSelectElement) || !(command instanceof HTMLElement) || !(copy instanceof HTMLButtonElement)) continue;
+
+    const update = () => {
+      const runtimeFlag = runtime.value === "none" ? "" : ` --runtime ${runtime.value}`;
+      command.textContent = `pnpm exec typed-openapi ${input.value} --output src/api/openapi.ts --default-fetcher${runtimeFlag} --format`;
+    };
+
+    input.addEventListener("change", update);
+    runtime.addEventListener("change", update);
+    copy.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(command.textContent ?? "");
+      copy.textContent = "Copied";
+      window.setTimeout(() => {
+        copy.textContent = "Copy";
+      }, 1_200);
+    });
+    update();
+  }
+</script>

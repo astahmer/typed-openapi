@@ -11,26 +11,15 @@ hero:
       link: /getting-started/
       icon: right-arrow
     - text: Open playground
-      link: https://typed-openapi-astahmer.vercel.app/
-      icon: external
+      link: /playground/
+      icon: right-arrow
 ---
 
 import { ContainerSection } from "lucode-starlight/components";
+import CommandBuilder from "../../components/CommandBuilder.astro";
 
 <ContainerSection width="lg">
-  <div class="home-command">
-    <div>
-      <h2>Generate types and a Fetch client.</h2>
-      <p>
-        This writes typed operations plus a small Fetch transport. Give it a real base URL before
-        making a request.
-      </p>
-    </div>
-    <div class="home-command-output">
-      <code>`pnpm exec typed-openapi ./openapi.yaml --output src/api/openapi.ts --default-fetcher --format`</code>
-      <p>Writes <code>src/api/openapi.ts</code> and <code>src/api/api.client.ts</code>.</p>
-    </div>
-  </div>
+  <CommandBuilder />
 
   <h2>Start here</h2>
   <div class="home-grid home-grid--three">
@@ -38,13 +27,13 @@ import { ContainerSection } from "lucode-starlight/components";
       <strong>Types only</strong>
       <p>Generate contracts and endpoint methods without choosing a transport.</p>
     </a>
-    <a class="home-card" href="/clients/promise-client/">
-      <strong>Generated Fetch</strong>
-      <p>Use the default fetcher when the app does not already own transport policy.</p>
-    </a>
     <a class="home-card" href="/validation/runtimes/">
       <strong>Runtime validation</strong>
       <p>Pick Zod, Effect, Valibot, ArkType, TypeBox, or Typia.</p>
+    </a>
+    <a class="home-card" href="/clients/promise-client/#bring-your-own-fetcher">
+      <strong>Bring your own Fetcher</strong>
+      <p>Keep the app's transport and use generated endpoint types and response handling.</p>
     </a>
   </div>
 

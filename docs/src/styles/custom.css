@@ -51,11 +51,9 @@ body .sl-markdown-content h2 code {
   padding-block: 3.5rem 2.5rem;
 }
 
-.home-command {
+.snippet-builder {
   display: grid;
-  gap: 2rem;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  align-items: center;
+  gap: 1.25rem;
   margin: 0 auto 3rem;
   max-width: 1080px;
   padding: 1.5rem;
@@ -64,7 +62,7 @@ body .sl-markdown-content h2 code {
   background: var(--card);
 }
 
-.home-command h2 {
+.snippet-builder h2 {
   margin: 0;
   color: var(--foreground);
   font-size: clamp(1.6rem, 3vw, 2.25rem);
@@ -72,13 +70,46 @@ body .sl-markdown-content h2 code {
   letter-spacing: var(--tracking-tight);
 }
 
-.home-command p {
+.snippet-builder-copy > p {
   margin: 0.75rem 0 0;
   color: var(--muted-foreground);
   line-height: 1.6;
 }
 
-.home-command-output > code {
+.snippet-builder-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.snippet-builder-controls label {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
+}
+
+.snippet-builder-controls select,
+.snippet-builder-command button {
+  min-height: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 0.15rem);
+  background: var(--background);
+  color: var(--foreground);
+  font: inherit;
+}
+
+.snippet-builder-controls select {
+  padding-inline: 0.7rem;
+}
+
+.snippet-builder-command {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+}
+
+.snippet-builder-command > code {
   display: block;
   overflow-x: auto;
   padding: 1.25rem;
@@ -90,10 +121,37 @@ body .sl-markdown-content h2 code {
   line-height: 1.55;
 }
 
-.home-command-output > p {
+.snippet-builder-command button {
+  align-self: center;
+  padding-inline: 0.9rem;
+  cursor: pointer;
+}
+
+.snippet-builder-command button:hover {
+  border-color: var(--ring);
+  background: var(--secondary);
+}
+
+.snippet-builder-output {
   margin: 0.75rem 0 0;
   color: var(--muted-foreground);
   font-size: 0.82rem;
+}
+
+.playground-frame {
+  height: min(72vh, 52rem);
+  min-height: 36rem;
+  margin-block: 1.5rem 2rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.playground-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .home-grid {
@@ -143,13 +201,21 @@ body .sl-markdown-content h2 code {
     padding-block: 2.5rem 1.5rem;
   }
 
-  .home-command,
+  .snippet-builder-controls,
   .home-grid {
     grid-template-columns: 1fr;
   }
 
-  .home-command {
-    gap: 1.25rem;
+  .snippet-builder {
     padding: 1.25rem;
+  }
+
+  .snippet-builder-command {
+    grid-template-columns: 1fr;
+  }
+
+  .playground-frame {
+    height: 42rem;
+    min-height: 0;
   }
 }
