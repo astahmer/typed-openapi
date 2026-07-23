@@ -154,6 +154,61 @@ button, select { font: inherit; }
 
 .playground-check-control input { accent-color: var(--pg-foreground); }
 
+.playground-setup {
+  border-top: 1px solid var(--pg-border);
+  background: var(--pg-card);
+}
+
+.playground-setup > summary,
+.playground-setup-content {
+  width: min(100%, 1600px);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 2vw, 2rem);
+}
+
+.playground-setup > summary {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  color: var(--pg-muted-foreground);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.playground-setup-content { padding-bottom: 0.85rem; }
+.playground-setup-actions { display: flex; gap: 0.3rem; }
+
+.playground-setup-actions button {
+  min-height: 1.9rem;
+  padding-inline: 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 0.3rem;
+  background: transparent;
+  color: var(--pg-muted-foreground);
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.playground-setup-actions button:hover,
+.playground-setup-actions button[data-active] { border-color: var(--pg-border); background: var(--pg-background); color: var(--pg-foreground); }
+.playground-setup-actions .playground-copy-button { margin-left: auto; }
+
+.playground-setup pre {
+  max-height: 13rem;
+  overflow: auto;
+  margin: 0.55rem 0 0;
+  padding: 0.8rem;
+  border: 1px solid var(--pg-border);
+  border-radius: 0.35rem;
+  background: var(--pg-code);
+  color: var(--pg-foreground);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.playground-setup p { margin: 0.55rem 0 0; color: var(--pg-muted-foreground); font-size: 0.72rem; }
+
 .playground-workspace { min-height: 0; background: var(--pg-code); }
 .playground-loading {
   display: grid;

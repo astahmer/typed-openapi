@@ -10,6 +10,7 @@ import {
 } from "../Playground/Playground.machine";
 import { TwitterIcon } from "../components/twitter-icon";
 import { ThemeProvider, useTheme } from "../vite-themes/provider";
+import { GeneratedSetup } from "../Playground/GeneratedSetup";
 
 import "../styles.css";
 
@@ -190,6 +191,17 @@ const PlaygroundToolbar = ({ service, embedded }: { service: PlaygroundService; 
         <ToggleControl label="TanStack Query" checked={tanstack} onChange={(nextTanstack) => service.send({ type: "Update tanstack", tanstack: nextTanstack })} />
         <ToggleControl label="MSW handlers" checked={msw} onChange={(nextMsw) => service.send({ type: "Update msw", msw: nextMsw })} />
       </div>
+      <GeneratedSetup
+        runtime={runtime}
+        validation={validation}
+        client={client}
+        validateSide={validateSide}
+        coerce={coerce}
+        runtimeTypes={runtimeTypes}
+        defaultFetcher={defaultFetcher}
+        tanstack={tanstack}
+        msw={msw}
+      />
     </header>
   );
 };
