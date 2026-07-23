@@ -52,7 +52,7 @@
       const runtimeFlag = runtime.value === "none" ? "" : ` --runtime ${runtime.value}`;
       const name = runtime.value === "none" ? "openapi.client" : `openapi.${runtime.value}`;
       const fetcherFlag = transport.value === "fetch" ? " --default-fetcher" : "";
-      command.textContent = `pnpm exec typed-openapi ${input.value} --output src/api/${name}.ts${runtimeFlag}${fetcherFlag} --format`;
+      command.textContent = `pnpm exec typed-openapi ${input.value} --output src/api/${name}.ts${runtimeFlag}${fetcherFlag}`;
     };
 
     input.addEventListener("change", update);
