@@ -177,7 +177,9 @@ ${schemes.map((s) => `  ${JSON.stringify(s.name)}: ${JSON.stringify(s.prop)},`).
 /** Pick the first OpenAPI security requirement satisfied by the available credentials. */
 const selectSecuritySchemes = (auth: AuthCredentials, requirements: SecurityRequirements): Set<keyof AuthCredentials> => {
   for (const requirement of requirements) {
-    const properties = requirement.map((name) => securitySchemeProperties[name]).filter(Boolean);
+    const properties = requirement
+      .map((name) => securitySchemeProperties[name])
+      .filter((property): property is keyof AuthCredentials => Boolean(property));
     if (properties.length === requirement.length && properties.every((property) => Boolean(auth[property]))) {
       return new Set(properties);
     }
