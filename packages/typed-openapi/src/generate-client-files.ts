@@ -228,7 +228,9 @@ export async function generateClientFiles(input: string | undefined, options: Ge
   const runtimeTypesPath = outputPath.endsWith(".ts")
     ? `${outputPath.slice(0, -3)}.types.d.ts`
     : `${outputPath}.types.d.ts`;
-  const runtimeTypesImport = `./${basename(runtimeTypesPath)}`;
+  // Use the runtime `.js` specifier so NodeNext consumers resolve the sibling `.d.ts`
+  // without needing `allowImportingTsExtensions`. The import is type-only and erased from JS.
+  const runtimeTypesImport = `./${basename(runtimeTypesPath, ".d.ts")}.js`;
   const content = await prettify(
     generateFile({
       ...generatorOptions,

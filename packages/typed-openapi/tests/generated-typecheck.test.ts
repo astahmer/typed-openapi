@@ -68,6 +68,55 @@ describe("generated schema typecheck", async () => {
     });
   }
 
+  for (const runtime of runtimes) {
+    test(`runtime sidecar keeps ${runtime} exported schema aliases strict`, { timeout: 30_000 }, () => {
+      const dir = join(outRoot, `runtime-sidecar-${runtime}`);
+      mkdirSync(dir, { recursive: true });
+      const options = { ...ctx, runtime, runtimeTypeDeclarations: "./schema.types.js" };
+      writeFileSync(join(dir, "schema.ts"), generateFile(options));
+      writeFileSync(join(dir, "schema.types.d.ts"), generateRuntimeTypeDeclarations(options));
+      writeFileSync(
+        join(dir, "consumer.ts"),
+        `import type { Person } from "./schema.ts";
+const person: Person = { name: "Ada", email: "ada@example.com", age: 37, status: "active" };
+// @ts-expect-error Sidecar aliases remain strict for every runtime.
+const invalidPerson: Person = { name: "Ada", email: "ada@example.com", age: "37", status: "active" };
+void person;
+void invalidPerson;
+`,
+      );
+      writeFileSync(
+        join(dir, "tsconfig.json"),
+        JSON.stringify(
+          {
+            compilerOptions: {
+              strict: true,
+              noEmit: true,
+              skipLibCheck: true,
+              module: "ESNext",
+              moduleResolution: "bundler",
+              target: "ES2022",
+              allowImportingTsExtensions: true,
+              types: [],
+            },
+            include: ["schema.ts", "consumer.ts"],
+          },
+          null,
+          2,
+        ),
+      );
+      try {
+        execFileSync(process.execPath, [tscBin, "-p", dir, "--pretty", "false"], {
+          cwd: join(__dirname, ".."),
+          stdio: ["ignore", "pipe", "pipe"],
+          encoding: "utf8",
+        });
+      } catch (err: any) {
+        expect.fail(`tsc failed for ${runtime} runtime sidecar consumer:\n${err.stdout ?? ""}${err.stderr ?? ""}`);
+      }
+    });
+  }
+
   test("runtime sidecar keeps exported schema types strict for consumers", { timeout: 30_000 }, () => {
     const dir = join(outRoot, "runtime-sidecar");
     mkdirSync(dir, { recursive: true });
@@ -121,6 +170,32 @@ void invalidAge;
     } catch (err: any) {
       const out = `${err.stdout ?? ""}${err.stderr ?? ""}`;
       expect.fail(`tsc failed for runtime sidecar consumer:\n${out}`);
+    }
+  });
+
+  test("runtime sidecar works for a NodeNext consumer without extension-import opt-in", { timeout: 30_000 }, () => {
+    const dir = join(outRoot, "runtime-sidecar-nodenext");
+    mkdirSync(dir, { recursive: true });
+    const options = { ...ctx, runtime: "zod" as const, runtimeTypeDeclarations: "./schema.types.js" };
+    writeFileSync(join(dir, "schema.ts"), generateFile(options));
+    writeFileSync(join(dir, "schema.types.d.ts"), generateRuntimeTypeDeclarations(options));
+    writeFileSync(join(dir, "consumer.ts"), `import type { Person } from "./schema.js";\nconst person: Person = { name: "Ada", email: "ada@example.com", age: 37, status: "active" };\nvoid person;\n`);
+    writeFileSync(join(dir, "package.json"), JSON.stringify({ type: "module" }));
+    writeFileSync(
+      join(dir, "tsconfig.json"),
+      JSON.stringify(
+        {
+          compilerOptions: { strict: true, noEmit: true, skipLibCheck: true, module: "NodeNext", moduleResolution: "NodeNext", target: "ES2022", types: [] },
+          include: ["schema.ts", "consumer.ts"],
+        },
+        null,
+        2,
+      ),
+    );
+    try {
+      execFileSync(process.execPath, [tscBin, "-p", dir, "--pretty", "false"], { cwd: join(__dirname, ".."), stdio: ["ignore", "pipe", "pipe"], encoding: "utf8" });
+    } catch (err: any) {
+      expect.fail(`tsc failed for NodeNext runtime sidecar consumer:\n${err.stdout ?? ""}${err.stderr ?? ""}`);
     }
   });
 });
