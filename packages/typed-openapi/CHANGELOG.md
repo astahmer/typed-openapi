@@ -1,5 +1,16 @@
 # typed-openapi
 
+## 3.1.0
+
+### Minor Changes
+
+- 95f9867: Runtime clients now emit a sibling `.types.d.ts` declaration sidecar by default, keeping generated clients responsive in TypeScript. Publish or copy that file together with its runtime module; pass `--no-runtime-types` to opt out.
+
+### Patch Changes
+
+- ea96f79: Allow HTTP(S) OpenAPI inputs to use `--input-dir` for the default generated client output.
+- 9b52524: Fix generated auth helper type narrowing so `selectSecuritySchemes` produces a `Set<keyof AuthCredentials>` without TypeScript index errors.
+
 ## 3.0.1
 
 ### Patch Changes
