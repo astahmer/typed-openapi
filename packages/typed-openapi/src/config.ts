@@ -130,7 +130,7 @@ export const loadConfig = async (path: string): Promise<TypedOpenapiConfigFile> 
   }
 
   try {
-    const mod = (await import(`${url}?t=${Date.now()}`)) as {
+    const mod = (await import(/* @vite-ignore */ `${url}?t=${Date.now()}`)) as {
       default?: TypedOpenapiConfigFile | { default?: TypedOpenapiConfigFile };
       config?: TypedOpenapiConfigFile;
     };

@@ -9,6 +9,7 @@ const dirname = url.fileURLToPath(new URL(".", import.meta.url));
 const fsShim = path.join(dirname, "./fs.shim.ts");
 const fsPromisesShim = path.join(dirname, "./fs.promises.shim.ts");
 const tsxShim = path.join(dirname, "./tsx.shim.ts");
+const urlShim = path.join(dirname, "./url.shim.ts");
 
 export type ViteAppConfigOptions = {
   /** Browser playground needs fs stubs; Vitest must use real node:fs. Default true. */
@@ -25,14 +26,20 @@ export const createViteAppConfig = (options: ViteAppConfigOptions = {}) => {
         plugins: [pandacss()],
       },
     },
+    define: {
+      global: "globalThis",
+    },
     plugins: [react(), reactClickToComponent()],
     resolve: {
       tsconfigPaths: true,
       alias: {
         module: path.join(dirname, "./module.shim.ts"),
         path: "path-browserify",
+        "node:path": "path-browserify",
         // typed-openapi main chunk may touch tsx (config loader); stub for browser.
         "tsx/esm/api": tsxShim,
+        url: urlShim,
+        "node:url": urlShim,
         ...(shimFs
           ? {
               fs: fsShim,
@@ -48,12 +55,7 @@ export const createViteAppConfig = (options: ViteAppConfigOptions = {}) => {
       },
     },
     optimizeDeps: {
-      include: ["escalade"],
-      rolldownOptions: {
-        define: {
-          global: "globalThis",
-        },
-      },
+      include: [],
     },
     build: {
       rolldownOptions: {
