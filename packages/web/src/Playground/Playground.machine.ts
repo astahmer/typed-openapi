@@ -253,6 +253,12 @@ export const playgroundMachine = setup({
       };
     }),
     updateUrl: ({ context }) => {
+      if (context.sourceUrl) {
+        urlSaver.reset("input");
+        urlSaver.setParam("source", context.sourceUrl);
+        return;
+      }
+
       urlSaver.reset("source");
       urlSaver.setValue("input", context.inputList[context.selectedInput]);
     },

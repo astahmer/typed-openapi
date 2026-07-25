@@ -19,7 +19,8 @@ function updateUrlWithCompressedString(name: string, value: string) {
 
     // completely arbitrary limit of characters, but it appears to not work anymore around that
     if (url.toString().length >= 14_500) {
-      throw new Error('The compressed string is too large to be stored in the URL.')
+      console.warn('The compressed string is too large to be stored in the URL.')
+      deletingParamInUrl(name)
     } else {
       updateUrlWithParam(name, compressed)
     }
@@ -60,7 +61,7 @@ export class UrlSaver {
   }
 
   setParam(name: string, value: string | number | boolean) {
-    updateUrlWithParam(name, value)
+    updateUrlWithParam(name, String(value))
   }
 
   setValue(name: string, value: string) {

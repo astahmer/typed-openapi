@@ -34,7 +34,7 @@ export const RemoteInput = ({ service }: { service: PlaygroundService }) => {
   const [url, setUrl] = useState(sourceUrl ?? "");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState("");
-  const loadedUrl = useRef<string | undefined>();
+  const loadedUrl = useRef<string | undefined>(undefined);
 
   const load = async (nextUrl: string) => {
     const normalizedUrl = nextUrl.trim();

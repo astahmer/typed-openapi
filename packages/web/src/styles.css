@@ -51,6 +51,7 @@ button, select { font: inherit; }
 .playground-header {
   border-bottom: 1px solid var(--pg-border);
   background: var(--pg-background);
+  max-width: 100vw;
 }
 
 .playground-brand-row, .playground-controls {
@@ -66,6 +67,7 @@ button, select { font: inherit; }
   grid-template-columns: auto auto minmax(0, 1fr) auto;
   min-height: 3.75rem;
   gap: 0.75rem;
+  margin: 0;
 }
 
 .playground-brand {
@@ -133,6 +135,7 @@ button, select { font: inherit; }
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 .playground-docs-link:hover { background: var(--pg-muted); border-color: var(--pg-muted); }
 
@@ -328,7 +331,7 @@ button, select { font: inherit; }
 
 .playground-setup p { margin: 0.55rem 0 0; color: var(--pg-muted-foreground); font-size: 0.72rem; }
 
-.playground-workspace { min-height: 0; background: var(--pg-code); }
+.playground-workspace { min-height: 0; background: var(--pg-code); max-width: 100vw; }
 .playground-loading {
   display: grid;
   min-height: 20rem;
@@ -396,10 +399,19 @@ button, select { font: inherit; }
 .playground-resize-handle--vertical { cursor: row-resize; }
 .playground-resize-handle--vertical::before { inset: 0.28rem 0.65rem; }
 
+@media (max-width: 980px) {
+  .playground-brand-row { grid-template-columns: auto auto minmax(0, 1fr) auto; }
+  .playground-brand-row > p { display: none; }
+}
+
 @media (max-width: 720px) {
   .playground-brand-row { min-height: 3.25rem; padding-block: 0.5rem; }
-  .playground-brand-row > p { display: none; }
-  .playground-nav { margin-left: auto; }
+  .playground-nav {
+    margin-left: auto;
+    gap: 0;
+  }
+  .playground-nav a, .playground-icon-button { width: 2rem; height: 2rem; }
+  .playground-nav .playground-docs-link { width: auto; padding-inline: 0.55rem; }
   .playground-controls { grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); padding-block: 0.45rem; }
   .playground-configuration > summary { min-height: 2.4rem; }
   .playground-configuration > summary > small { display: none; }
@@ -410,7 +422,8 @@ button, select { font: inherit; }
   .playground-tab { max-width: 8.5rem; }
 }
 
-@media (max-width: 980px) {
-  .playground-brand-row { grid-template-columns: auto auto minmax(0, 1fr) auto; }
-  .playground-brand-row > p { display: none; }
+@media (max-width: 420px) {
+  .playground-brand-row { grid-template-columns: auto auto auto; gap: 0.45rem; }
+  .playground-badge { display: none; }
+  .playground-docs-link span { display: none; }
 }
