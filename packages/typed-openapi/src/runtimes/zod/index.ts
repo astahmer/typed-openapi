@@ -15,6 +15,7 @@ import {
   partitionNullUnionMembers,
   quote,
   withZodDefault,
+  withZodDescription,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
@@ -183,7 +184,8 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
   }
 };
 
-const emitNode = (node: SchemaNode, ctx: EmitCtx): string => withZodDefault(emitNodeInner(node, ctx), node.meta);
+const emitNode = (node: SchemaNode, ctx: EmitCtx): string =>
+  withZodDescription(withZodDefault(emitNodeInner(node, ctx), node.meta), node.meta, ctx.includeDescriptions);
 
 export const zodAdapter: RuntimeAdapter = {
   name: "zod",

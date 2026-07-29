@@ -47,6 +47,7 @@ export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> &
     errorStatusCodes?: readonly number[];
     includeClient?: boolean;
     jsdoc?: boolean;
+    includeDescriptions?: boolean;
     /** promise (default) or effect-native client */
     client?: "promise" | "effect";
     /**
@@ -206,6 +207,7 @@ const createGeneratorContext = (options: GeneratorOptions): GeneratorContext => 
     errorStatusCodes: options.errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES,
     includeClient: options.includeClient ?? true,
     jsdoc: options.jsdoc ?? false,
+    includeDescriptions: options.includeDescriptions ?? false,
     validateSide: options.validateSide ?? (runtime === "none" ? "none" : "both"),
     client: options.client ?? (runtime === "effect" || runtime === "effect3" ? "effect" : "promise"),
     coerce: options.coerce ?? runtime !== "none",
@@ -244,6 +246,7 @@ export const generateFile = (options: GeneratorOptions) => {
       coerce: ctx.coerce,
       transformDates: ctx.transformDates,
       transformBigInt: ctx.transformBigInt,
+      includeDescriptions: ctx.includeDescriptions,
       ...(options.runtimeTypeDeclarations ? { typeNamespace: "__TypedOpenapi" } : {}),
       ...(ctx.keptSchemaNames ? { keptSchemaNames: ctx.keptSchemaNames } : {}),
       ...(ctx.namedSchemasForEmit ? { namedSchemas: ctx.namedSchemasForEmit } : {}),

@@ -23,6 +23,7 @@ export type EmitRuntimeFileArgs = {
   coerce?: boolean;
   transformDates?: boolean;
   transformBigInt?: boolean;
+  includeDescriptions?: boolean;
   /** Namespace imported from the generated declaration sidecar. */
   typeNamespace?: string;
 };
@@ -112,6 +113,7 @@ export const emitRuntimeFile = ({
   coerce = true,
   transformDates = false,
   transformBigInt = false,
+  includeDescriptions = false,
   typeNamespace,
 }: EmitRuntimeFileArgs): string => {
   const namedSchemas =
@@ -126,6 +128,7 @@ export const emitRuntimeFile = ({
   const ctx = createEmitCtx(validation, recursiveNames, {
     transformDates,
     transformBigInt,
+    includeDescriptions,
   });
 
   let schemasBlock = `// <Schemas>\n`;

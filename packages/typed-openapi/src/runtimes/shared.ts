@@ -94,6 +94,12 @@ export const withZodDefault = (expr: string, meta: SchemaMeta): string => {
   return `${expr}.default(${lit})`;
 };
 
+/** Zod / Zod3: append `.describe(...)` when enabled and a description is present. */
+export const withZodDescription = (expr: string, meta: SchemaMeta, enabled?: boolean): string => {
+  if (!enabled || meta.description === undefined) return expr;
+  return `${expr}.describe(${quote(meta.description)})`;
+};
+
 /** Valibot: wrap with `v.optional(schema, default)` when meta has a default. */
 export const withValibotDefault = (expr: string, meta: SchemaMeta): string => {
   const lit = jsLiteral(meta.default);

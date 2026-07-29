@@ -69,6 +69,7 @@ export const optionsSchema = type({
   "schemasOnly?": "boolean",
   "includeClient?": "boolean | 'true' | 'false'",
   "jsdoc?": "boolean | 'true' | 'false'",
+  "includeDescriptions?": "boolean | 'true' | 'false'",
   "successStatusCodes?": "string",
   "errorStatusCodes?": "string",
   "transformDates?": "boolean",
@@ -102,6 +103,7 @@ export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
   "transform-dates"?: boolean;
   "transform-bigint"?: boolean;
   runtimeTypes?: boolean;
+  includeDescriptions?: boolean | "true" | "false";
 };
 
 function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
@@ -165,6 +167,7 @@ export async function generateClientFiles(input: string | undefined, options: Ge
   // Convert string boolean to actual boolean
   const includeClient = parseBooleanOption(merged.includeClient);
   const jsdoc = parseBooleanOption(merged.jsdoc) ?? true;
+  const includeDescriptions = parseBooleanOption(merged.includeDescriptions) ?? false;
   const shouldFormat = parseBooleanOption(merged.format) ?? false;
 
   const validation = validationFromConfig(merged.validation);
@@ -181,6 +184,7 @@ export async function generateClientFiles(input: string | undefined, options: Ge
     ...(options.nameTransform ? { nameTransform: options.nameTransform } : {}),
     includeClient: includeClient ?? true,
     jsdoc,
+    includeDescriptions,
     successStatusCodes: successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
     errorStatusCodes: errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES,
     ...(endpointPatterns ? { endpointPatterns } : {}),

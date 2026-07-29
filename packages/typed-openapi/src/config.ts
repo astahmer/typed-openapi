@@ -23,6 +23,7 @@ export const configFileSchema = type({
   "schemasOnly?": "boolean",
   "includeClient?": "boolean",
   "jsdoc?": "boolean",
+  "includeDescriptions?": "boolean",
   "format?": "boolean",
   "endpointPatterns?": "string[]",
   "schemaPatterns?": "string[]",

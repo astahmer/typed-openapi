@@ -11,6 +11,7 @@ export default defineConfig({
       ? {
           exclude: [
             ...configDefaults.exclude,
+            "**/tmp/**",
             "**/tests/integrations/runtime-msw.test.ts",
             "**/tests/integrations/effect-msw.test.ts",
             "**/tests/integrations/runtime-client-matrix.test.ts",
