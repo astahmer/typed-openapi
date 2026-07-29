@@ -72,9 +72,14 @@ export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransfor
         header: [] as ParameterObject[],
         cookie: [] as ParameterObject[],
       };
-      const paramNodes = [...(pathItemObj.parameters ?? []), ...(operation.parameters ?? [])].reduce(
-        (acc, paramOrRef) => {
-          const param = refs.unwrap(paramOrRef);
+      const parametersByLocationAndName = new Map<string, ParameterObject>();
+      for (const paramOrRef of [...(pathItemObj.parameters ?? []), ...(operation.parameters ?? [])]) {
+        const param = refs.unwrap(paramOrRef);
+        parametersByLocationAndName.set(`${param.in}:${param.name}`, param);
+      }
+
+      const paramNodes = [...parametersByLocationAndName.values()].reduce(
+        (acc, param) => {
           const node = openApiToIr(schemaFromParameter(param), irCtx);
 
           if (param.required) endpoint.meta.areParametersRequired = true;

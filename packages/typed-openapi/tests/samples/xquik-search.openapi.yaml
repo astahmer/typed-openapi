@@ -1,0 +1,75 @@
+openapi: 3.1.0
+info:
+  title: Xquik API
+  version: "1.0"
+  description: >-
+    Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.
+servers:
+  - url: https://xquik.com/api/v1
+paths:
+  /x/tweets/search:
+    get:
+      operationId: searchTweets
+      summary: Search tweets
+      security:
+        - apiKey: []
+        - oauthBearer: []
+        - {}
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: queryType
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [Latest, Top]
+            default: Latest
+        - name: cursor
+          in: query
+          schema:
+            type: string
+        - name: sinceTime
+          in: query
+          schema:
+            type: string
+        - name: untilTime
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 200
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tweets:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                  has_next_page:
+                    type: boolean
+                  next_cursor:
+                    type: string
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: x-api-key
+    oauthBearer:
+      type: http
+      scheme: bearer
