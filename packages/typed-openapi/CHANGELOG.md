@@ -1,5 +1,15 @@
 # typed-openapi
 
+## 3.2.0
+
+### Minor Changes
+
+- 2f8ed78: Add `includeDescriptions` option to emit `z.describe()` calls from OpenAPI descriptions for the `zod` and `zod3` runtimes.
+
+### Patch Changes
+
+- 476f789: fix: honor operation parameter overrides
+
 ## 3.1.0
 
 ### Minor Changes
