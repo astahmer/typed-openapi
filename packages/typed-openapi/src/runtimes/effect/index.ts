@@ -171,7 +171,12 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         );
       }
       if (nonNull.length === 0) return `${S}.Null`;
-      return nonNull.slice(1).reduce(
+      // `mapFields(Struct.assign(...))` can only merge object-like schemas (only structs expose
+      // `.fields`). Enum/literal/scalar members (e.g. `allOf: [$ref]` with a sibling inline
+      // `enum`) have no `.fields`, so skip them — they are redundant narrowing next to an object.
+      const objectLike = nonNull.filter((m) => m.kind === "object" || m.kind === "record" || m.kind === "ref");
+      if (objectLike.length === 0) return emitNode(nonNull[0]!, ctx);
+      return objectLike.slice(1).reduce(
         (acc, member) => {
           if (member.kind === "record") {
             return `${S}.StructWithRest(${acc}, [${emitRecord(emitNode(member.key, ctx), emitNode(member.value, ctx))}])`;
@@ -184,7 +189,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           const cur = emitNode(member, ctx);
           return `${acc}.mapFields(Struct.assign((${cur}).fields))`;
         },
-        emitNode(nonNull[0]!, ctx),
+        emitNode(objectLike[0]!, ctx),
       );
     }
     case "not": {
@@ -211,7 +216,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         .map(({ key, optional, expr, meta }) => {
           const lit = jsLiteral(meta.default);
           if (lit !== undefined) {
-            const named = internEffectDefault(expr, meta, S, ctx, "prop", "v4");
+            const named = internEffectDefault(expr, meta, S, ctx, "prop", "v4", node.properties[key]);
             return `${objectKey(key)}: ${named ?? `${expr}.pipe(${S}.withDecodingDefaultType(Effect.succeed(${lit})))`}`;
           }
           return `${objectKey(key)}: ${optional || forceOptional ? `${S}.optional(${expr})` : expr}`;
@@ -241,7 +246,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   if (ctx.omitDefaults || node.meta.default === undefined) return inner;
   // Object/struct defaults are applied per-property via withDecodingDefaultType.
   if (node.kind === "object") return inner;
-  return internEffectDefault(inner, node.meta, S, ctx, "value", "v4") ?? inner;
+  return internEffectDefault(inner, node.meta, S, ctx, "value", "v4", node) ?? inner;
 };
 
 export const effectAdapter: RuntimeAdapter = {
