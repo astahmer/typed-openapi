@@ -26,6 +26,41 @@ const checkFilters = (base: string, filters: string[]): string => {
   return `${base}.check(${filters.join(", ")})`;
 };
 
+/** True only when the emitted schema is a plain Effect Struct with `.fields`/`.mapFields`. */
+const canUseStruct = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()): boolean => {
+  const inner = isNullOr(node);
+  if (inner) return canUseStruct(inner, ctx, seen);
+  if (node.kind === "object") {
+    return (
+      node.additionalProperties === false &&
+      Object.keys(applyObjectConstraints(node.constraints, ctx.validation)).length === 0
+    );
+  }
+  if (node.kind === "ref") {
+    if (node.generics?.length || ctx.recursiveNames.has(node.name) || seen.has(node.name)) return false;
+    const target = ctx.schemaNodes?.get(node.name);
+    return target ? canUseStruct(target, ctx, new Set(seen).add(node.name)) : false;
+  }
+  if (node.kind !== "intersection") return false;
+  const members = node.members
+    .filter((member) => member.kind !== "null" && member.kind !== "unknown" && member.kind !== "any")
+    .map((member) => isNullOr(member) ?? member);
+  return members.length > 0 && members.every((member) => canUseStruct(member, ctx, seen));
+};
+
+function canMergeableMember(node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()): boolean {
+  if (node.kind === "record") return true;
+  if (node.kind === "object") {
+    const hasNoChecks = Object.keys(applyObjectConstraints(node.constraints, ctx.validation)).length === 0;
+    return (
+      hasNoChecks &&
+      (node.additionalProperties === false ||
+        (Boolean(node.additionalProperties) && Object.keys(node.properties).length === 0))
+    );
+  }
+  return canUseStruct(node, ctx, seen);
+}
+
 const emitString = (node: Extract<SchemaNode, { kind: "string" }>, ctx: EmitCtx): string => {
   const c = applyStringConstraints(node.constraints, ctx.validation);
   const filters: string[] = [];
@@ -130,10 +165,23 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     }
     case "intersection": {
       const nonNull = node.members.filter((m) => m.kind !== "null").map((m) => isNullOr(m) ?? m);
+      const constrained = nonNull.filter((m) => m.kind !== "unknown" && m.kind !== "any");
       // mapFields(Struct.assign) fails on overlapping keys with incompatible property
       // schemas (common OpenAPI allOf). Merge object shapes instead.
-      if (nonNull.length > 0 && nonNull.every((m) => m.kind === "object")) {
-        const objs = nonNull as Extract<SchemaNode, { kind: "object" }>[];
+      const objectMembers = constrained.filter(
+        (m): m is Extract<SchemaNode, { kind: "object" }> => m.kind === "object",
+      );
+      const objectAdditionalProperties = new Set(objectMembers.map((member) => member.additionalProperties));
+      const canMergeObjectShapes =
+        objectMembers.length > 0 &&
+        objectMembers.length === constrained.length &&
+        objectMembers.every(
+          (member) => Object.keys(applyObjectConstraints(member.constraints, ctx.validation)).length === 0,
+        ) &&
+        objectAdditionalProperties.size === 1 &&
+        [...objectAdditionalProperties].every((value) => typeof value === "boolean");
+      if (canMergeObjectShapes) {
+        const objs = objectMembers;
         const properties: Record<string, SchemaNode> = {};
         for (const obj of objs) {
           for (const [key, prop] of Object.entries(obj.properties)) {
@@ -171,26 +219,44 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         );
       }
       if (nonNull.length === 0) return `${S}.Null`;
-      // `mapFields(Struct.assign(...))` can only merge object-like schemas (only structs expose
-      // `.fields`). Enum/literal/scalar members (e.g. `allOf: [$ref]` with a sibling inline
-      // `enum`) have no `.fields`, so skip them — they are redundant narrowing next to an object.
-      const objectLike = nonNull.filter((m) => m.kind === "object" || m.kind === "record" || m.kind === "ref");
-      if (objectLike.length === 0) return emitNode(nonNull[0]!, ctx);
-      return objectLike.slice(1).reduce(
-        (acc, member) => {
-          if (member.kind === "record") {
-            return `${S}.StructWithRest(${acc}, [${emitRecord(emitNode(member.key, ctx), emitNode(member.value, ctx))}])`;
-          }
-          if (member.kind === "object" && member.additionalProperties && Object.keys(member.properties).length === 0) {
-            const value =
-              member.additionalProperties === true ? `${S}.Unknown` : emitNode(member.additionalProperties, ctx);
-            return `${S}.StructWithRest(${acc}, [${emitRecord(`${S}.String`, value)}])`;
-          }
-          const cur = emitNode(member, ctx);
-          return `${acc}.mapFields(Struct.assign((${cur}).fields))`;
-        },
-        emitNode(objectLike[0]!, ctx),
+      if (constrained.length === 0) return emitNode(nonNull[0]!, ctx);
+      // `mapFields`/`StructWithRest` are safe only when IR proves that the base is struct-like
+      // and every mapped member exposes fields. Scalar and enum refs must use filter fallback.
+      if (
+        canUseStruct(constrained[0]!, ctx) &&
+        constrained.slice(1).every((member) => canMergeableMember(member, ctx))
+      ) {
+        return constrained.slice(1).reduce(
+          (acc, member) => {
+            if (member.kind === "record") {
+              return `${S}.StructWithRest(${acc}, [${emitRecord(emitNode(member.key, ctx), emitNode(member.value, ctx))}])`;
+            }
+            if (
+              member.kind === "object" &&
+              member.additionalProperties &&
+              Object.keys(member.properties).length === 0
+            ) {
+              const value =
+                member.additionalProperties === true ? `${S}.Unknown` : emitNode(member.additionalProperties, ctx);
+              return `${S}.StructWithRest(${acc}, [${emitRecord(`${S}.String`, value)}])`;
+            }
+            const cur = emitNode(member, ctx);
+            return `${acc}.mapFields(Struct.assign((${cur}).fields))`;
+          },
+          emitNode(constrained[0]!, ctx),
+        );
+      }
+
+      // Effect v4 has no generic intersection constructor. Keep the first member as the base
+      // schema and validate every remaining member with a runtime filter. This preserves scalar,
+      // enum, and referenced-schema constraints instead of dropping them or assuming `.fields`.
+      const [baseNode, ...constraintNodes] = constrained;
+      const baseExpr = emitNode(baseNode!, ctx);
+      if (constraintNodes.length === 0) return baseExpr;
+      const checks = constraintNodes.map(
+        (member) => `${S}.makeFilter((value) => ${S}.is(${emitNode(member, ctx)})(value))`,
       );
+      return `${baseExpr}.check(${checks.join(", ")})`;
     }
     case "not": {
       const inner = emitNode(node.schema, ctx);
@@ -254,8 +320,7 @@ export const effectAdapter: RuntimeAdapter = {
   imports: () => `import { Effect, Schema, SchemaTransformation, Struct } from "effect";`,
   inferType: (expr) => `Schema.Schema.Type<typeof ${expr}>`,
   schemaType: (typeReference) => `Schema.Schema<${typeReference}, unknown>`,
-  annotateSchema: (schemaExpr, typeReference) =>
-    `${schemaExpr} as unknown as Schema.Schema<${typeReference}, unknown>`,
+  annotateSchema: (schemaExpr, typeReference) => `${schemaExpr} as unknown as Schema.Schema<${typeReference}, unknown>`,
   emitNode,
   wrapLazy: (_name, body) => `${S}.suspend(() => ${body})`,
   literalString: (value) => `${S}.Literal(${quote(value)})`,

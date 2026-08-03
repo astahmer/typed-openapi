@@ -8,11 +8,13 @@ import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
 import { generateFile } from "../../src/generator.ts";
 import { prettify } from "../../src/format.ts";
 
-// https://github.com/astahmer/typed-openapi/issues/137 — two effect-runtime codegen bugs:
+// https://github.com/astahmer/typed-openapi/issues/137 — effect-runtime codegen regressions:
 //   Bug 1: `allOf: [$ref]` + sibling inline `enum` emitted `.mapFields(Struct.assign(...))`
 //          on a `Schema.Literals` (which has no `.fields` / `.mapFields`).
 //   Bug 2: interned default schemas were hoisted above component schemas, so referencing a
 //          component in a default threw a temporal-dead-zone `ReferenceError` at module load.
+//   Bugs 3–4: scalar and enum constraints in referenced `allOf` members were silently dropped.
+//   Bug 5: object `allOf` members resolved through `StructWithRest` were treated as plain Structs.
 
 const bug1Spec: OpenAPIObject = {
   openapi: "3.0.3",
@@ -62,6 +64,63 @@ const bug2Spec: OpenAPIObject = {
   },
 };
 
+const bug3Spec: OpenAPIObject = {
+  openapi: "3.0.3",
+  info: { title: "Bug 3 — narrowed allOf enum", version: "1.0.0" },
+  paths: {},
+  components: {
+    schemas: {
+      DayOfWeek: { type: "string", enum: ["Monday", "Tuesday"] },
+      NarrowSchedule: {
+        type: "object",
+        properties: {
+          day: {
+            enum: ["Monday"],
+            allOf: [{ $ref: "#/components/schemas/DayOfWeek" }],
+          },
+        },
+      },
+    },
+  },
+};
+
+const bug4Spec: OpenAPIObject = {
+  openapi: "3.0.3",
+  info: { title: "Bug 4 — scalar allOf refs", version: "1.0.0" },
+  paths: {},
+  components: {
+    schemas: {
+      AnyString: { type: "string" },
+      LongString: { type: "string", minLength: 2 },
+      Combined: {
+        allOf: [{ $ref: "#/components/schemas/AnyString" }, { $ref: "#/components/schemas/LongString" }],
+      },
+    },
+  },
+};
+
+const bug5Spec: OpenAPIObject = {
+  openapi: "3.0.3",
+  info: { title: "Bug 5 — StructWithRest allOf", version: "1.0.0" },
+  paths: {},
+  components: {
+    schemas: {
+      OpenPayload: {
+        type: "object",
+        properties: { id: { type: "string" } },
+        required: ["id"],
+        additionalProperties: { type: "string" },
+      },
+      ExtendedPayload: {
+        allOf: [
+          { $ref: "#/components/schemas/OpenPayload" },
+          { type: "object", properties: { extra: { type: "string" } }, required: ["extra"] },
+        ],
+      },
+    },
+  },
+};
+
 const outRoot = join(__dirname, "../tmp/issue-137");
 
 /** Write a generated file to tmp and import it, so module-load errors (TDZ) surface. */
@@ -82,7 +141,7 @@ describe("issue #137 — effect runtime codegen bugs", () => {
     expect(output).not.toContain("mapFields");
     expect(output).not.toContain("Struct.assign");
     expect(output).not.toContain(".fields");
-    expect(output).toContain("day: Schema.optional(DayOfWeek)");
+    expect(output).toContain("DayOfWeek.check");
 
     const mod = await loadGenerated("bug1", src);
     const schedule = mod.Schedule as Schema.Schema<unknown>;
@@ -101,5 +160,34 @@ describe("issue #137 — effect runtime codegen bugs", () => {
     const mod = await loadGenerated("bug2", src);
     const config = mod.Config as Schema.Schema<unknown>;
     expect(Schema.decodeUnknownSync(config)({})).toEqual({ path_mappings: [] });
+  });
+
+  test("Bug 3: narrowed enum in allOf remains enforced", async () => {
+    const src = generateFile({ ...mapOpenApiEndpoints(bug3Spec), runtime: "effect", schemasOnly: true });
+    const mod = await loadGenerated("bug3", src);
+    const schedule = mod.NarrowSchedule as Schema.Schema<unknown>;
+
+    expect(Schema.is(schedule)({ day: "Monday" })).toBe(true);
+    expect(Schema.is(schedule)({ day: "Tuesday" })).toBe(false);
+  });
+
+  test("Bug 4: scalar component refs in allOf compose without mapFields", async () => {
+    const src = generateFile({ ...mapOpenApiEndpoints(bug4Spec), runtime: "effect", schemasOnly: true });
+    const mod = await loadGenerated("bug4", src);
+    const combined = mod.Combined as Schema.Schema<unknown>;
+
+    expect(Schema.is(combined)("ok")).toBe(true);
+    expect(Schema.is(combined)("x")).toBe(false);
+  });
+
+  test("Bug 5: StructWithRest refs in allOf do not use Struct fields", async () => {
+    const src = generateFile({ ...mapOpenApiEndpoints(bug5Spec), runtime: "effect", schemasOnly: true });
+    const output = await prettify(src);
+    expect(output).not.toContain("OpenPayload).fields");
+
+    const mod = await loadGenerated("bug5", src);
+    const extended = mod.ExtendedPayload as Schema.Schema<unknown>;
+    expect(Schema.is(extended)({ id: "id", extra: "extra" })).toBe(true);
+    expect(Schema.is(extended)({ id: "id", extra: 1 })).toBe(false);
   });
 });
