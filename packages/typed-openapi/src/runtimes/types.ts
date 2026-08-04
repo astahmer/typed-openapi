@@ -23,6 +23,8 @@ export type EmitCtx = {
   validation: ValidationPolicy;
   /** Named schemas that are recursive and need lazy/suspend wrapping when referenced from themselves */
   recursiveNames: Set<string>;
+  /** Emitted named-schema IR, used by adapters that need to classify a referenced schema. */
+  schemaNodes?: ReadonlyMap<string, SchemaNode>;
   /** Currently emitting schema name (for lazy detection) */
   currentSchemaName?: string;
   /**
@@ -80,11 +82,7 @@ export type RuntimeAdapter = {
    * Optional batch emit for all component schemas (e.g. ArkType `type.module` for recursion).
    * When present, used instead of looping `emitNamedSchema`.
    */
-  emitNamedSchemas?: (
-    schemas: NamedSchema[],
-    ctx: EmitCtx,
-    typeReferenceForName?: (name: string) => string,
-  ) => string;
+  emitNamedSchemas?: (schemas: NamedSchema[], ctx: EmitCtx, typeReferenceForName?: (name: string) => string) => string;
   /** Emit endpoint const object body fields using emitNode */
   literalString: (value: string) => string;
   unknown: () => string;
@@ -99,12 +97,14 @@ export const createEmitCtx = (
     transformDates?: boolean;
     transformBigInt?: boolean;
     includeDescriptions?: boolean;
+    schemaNodes?: ReadonlyMap<string, SchemaNode>;
   },
 ): EmitCtx => ({
   validation,
   recursiveNames,
   indent: "  ",
   internedDefaults: new Map(),
+  ...(options?.schemaNodes ? { schemaNodes: options.schemaNodes } : {}),
   ...(options?.coercePrimitives ? { coercePrimitives: true } : {}),
   ...(options?.transformDates ? { transformDates: true } : {}),
   ...(options?.transformBigInt ? { transformBigInt: true } : {}),

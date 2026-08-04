@@ -107,6 +107,39 @@ export const withValibotDefault = (expr: string, meta: SchemaMeta): string => {
   return `v.optional(${expr}, ${lit})`;
 };
 
+/**
+ * `Partial`/`Record` are expanded inline by adapters (`Schema.partial`, `Record(...)`) and do not
+ * produce a bare identifier reference, so they don't need deferral.
+ */
+const builtinGenericRefs = new Set(["Partial", "Record"]);
+
+/** True when a schema node references a named component schema (a bare-identifier `ref`). */
+export const containsNamedRef = (node: SchemaNode): boolean => {
+  switch (node.kind) {
+    case "ref":
+      if (builtinGenericRefs.has(node.name)) return false;
+      return true;
+    case "array":
+      return containsNamedRef(node.items);
+    case "tuple":
+      return node.items.some(containsNamedRef) || (node.rest ? containsNamedRef(node.rest) : false);
+    case "object":
+      return (
+        Object.values(node.properties).some(containsNamedRef) ||
+        (typeof node.additionalProperties === "object" && containsNamedRef(node.additionalProperties))
+      );
+    case "union":
+    case "intersection":
+      return node.members.some(containsNamedRef);
+    case "not":
+      return containsNamedRef(node.schema);
+    case "record":
+      return containsNamedRef(node.key) || containsNamedRef(node.value);
+    default:
+      return false;
+  }
+};
+
 /** Turn a schema expr + default literal into a stable helper name, e.g. `Boolean_default_false`. */
 export const effectDefaultHelperName = (baseExpr: string, lit: string): string => {
   const simple = baseExpr.match(/^(?:Schema|S)\.([A-Za-z][A-Za-z0-9]*)$/);
@@ -131,6 +164,10 @@ export const effectDefaultHelperName = (baseExpr: string, lit: string): string =
  * Effect Schema: intern a reusable defaulted schema and return its name.
  * - v3 (`effect3`): `optionalWith` (prop) / `transform(UndefinedOr)` (value)
  * - v4 (`effect`): `withDecodingDefaultType(Effect.succeed(...))` for both
+ *
+ * Default helper consts are emitted before component schemas, so referencing a named schema here
+ * would hit the temporal dead zone at module load. In v4, such expressions are deferred with
+ * `Schema.suspend(() => ...)` when the underlying node contains a component `ref`.
  */
 export const internEffectDefault = (
   baseExpr: string,
@@ -139,6 +176,7 @@ export const internEffectDefault = (
   ctx: EmitCtx,
   kind: "prop" | "value",
   api: "v3" | "v4" = "v3",
+  node?: SchemaNode,
 ): string | undefined => {
   const lit = jsLiteral(meta.default);
   if (lit === undefined) return undefined;
@@ -154,9 +192,11 @@ export const internEffectDefault = (
     name = `${name}_${map.size}`;
   }
 
+  const base =
+    api === "v4" && node && containsNamedRef(node) ? `Schema.suspend(() => ${baseExpr})` : baseExpr;
   const decl =
     api === "v4"
-      ? `const ${name} = ${baseExpr}.pipe(${schemaNs}.withDecodingDefaultType(Effect.succeed(${lit})));`
+      ? `const ${name} = ${base}.pipe(${schemaNs}.withDecodingDefaultType(Effect.succeed(${lit})));`
       : kind === "prop"
         ? `const ${name} = ${schemaNs}.optionalWith(${baseExpr}, { default: () => ${lit} });`
         : `const ${name} = ${schemaNs}.transform(${schemaNs}.UndefinedOr(${baseExpr}), ${baseExpr}, { strict: true, decode: (i) => (i === undefined ? ${lit} : i), encode: (a) => a });`;

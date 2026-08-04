@@ -129,6 +129,7 @@ export const emitRuntimeFile = ({
     transformDates,
     transformBigInt,
     includeDescriptions,
+    schemaNodes: new Map(namedSchemas.map(({ name, node }) => [name, node])),
   });
 
   let schemasBlock = `// <Schemas>\n`;
@@ -155,12 +156,7 @@ export const emitRuntimeFile = ({
     endpointsBlock += `\n// <Endpoints>\n`;
     for (const endpoint of endpointList) {
       const endpointType = typeNamespace ? `${typeNamespace}.Endpoints.${endpoint.meta.alias}` : undefined;
-      const parameters = emitParameters(
-        adapter,
-        endpoint.parameters,
-        ctx,
-        coerce,
-      );
+      const parameters = emitParameters(adapter, endpoint.parameters, ctx, coerce);
       const responses = emitResponses(adapter, endpoint.responses, ctx);
       const responseHeaders = emitResponseHeaders(adapter, endpoint.responseHeaders, ctx);
 
