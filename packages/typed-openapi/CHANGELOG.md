@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 3.2.1
+
+### Patch Changes
+
+- 5a3399c: fix(effect): handle `allOf` intersections mixing `$ref` with inline enum/scalar members, and defer default schemas that reference component schemas past their temporal dead zone
+
 ## 3.2.0
 
 ### Minor Changes
