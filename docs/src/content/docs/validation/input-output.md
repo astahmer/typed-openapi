@@ -116,6 +116,43 @@ pnpm exec typed-openapi openapi.yaml \
 - `format: int64` becomes `bigint`.
 - With the types-only runtime, ISO date strings are revived for the generated client path.
 
+## Custom transforms
+
+When a format, `x-` vendor extension, or naming convention needs a bespoke type — a branded integer, a `Temporal.Instant` instead of `Date`, a domain enum — supply a `transformSchema` callback in a TS/JS config file:
+
+```ts
+// typed-openapi.config.ts
+import { defineConfig } from "typed-openapi";
+
+export default defineConfig({
+  input: "./openapi.yaml",
+  runtime: "zod",
+  transformSchema: (schema) => {
+    if (schema.type === "integer" && schema.format === "int64") {
+      return {
+        type: "number & { readonly __brand: \"IntId\" }",
+        runtime: "z.number().int()",
+      };
+    }
+    if (schema.type === "string" && schema.format === "date-time") {
+      return { type: "Temporal.Instant" };
+    }
+    return undefined;
+  },
+});
+```
+
+The callback runs on every OpenAPI SchemaObject (including nested properties and `$ref` targets) before the internal IR conversion, so it can match on `type`, `format`, `enum`, `x-` extensions, and more. It returns one of:
+
+- `{ type }` — override the generated TypeScript. With a runtime adapter, validation stays permissive and the schema is typed as the declared type.
+- `{ runtime }` — override the runtime validator expression for the active runtime, keeping the default type.
+- `{ type, runtime }` — override both.
+- `undefined` — leave the default emission untouched.
+
+Because config files are validated as plain data, `transformSchema` is only expressible in TypeScript/JavaScript config files via `defineConfig` — it cannot be written in JSON configs or passed as a CLI flag.
+
+The `runtime` expression must be valid for the active runtime adapter (`z.*` for zod, `S.*`/`Schema.*` for effect, `v.*` for valibot, and so on). For the types-only runtime, only `type` is used.
+
 ## Defaults and read/write fields
 
 OpenAPI `default` values are emitted in runtime schemas. For inline request objects, `readOnly` properties are removed from input schemas; for inline response objects, `writeOnly` properties are removed from output schemas. Named `$ref` components remain shared so a component’s public shape does not silently differ between endpoints.
