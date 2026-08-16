@@ -79,6 +79,8 @@ export const optionsSchema = type({
 
 export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
   nameTransform?: NameTransformOptions;
+  /** Custom schema transform (function). See `SchemaTransform`. Config files only (TS/JS). */
+  transformSchema?: GeneratorOptions["transformSchema"];
   /** From CLI `--endpoint` (cac may pass string | string[]) */
   endpoint?: string | string[];
   /** From CLI `--schema` */
@@ -151,7 +153,10 @@ export async function generateClientFiles(input: string | undefined, options: Ge
   }
   const openApiDoc = (await SwaggerParser.bundle(resolvedInput)) as OpenAPIObject;
 
-  const ctx = mapOpenApiEndpoints(openApiDoc, merged);
+  const ctx = mapOpenApiEndpoints(openApiDoc, {
+    ...(merged.nameTransform ? { nameTransform: merged.nameTransform } : {}),
+    ...(merged.transformSchema ? { transformSchema: merged.transformSchema } : {}),
+  });
   console.log(`Found ${ctx.endpointList.length} endpoints`);
 
   // Parse success status codes if provided
@@ -182,6 +187,7 @@ export async function generateClientFiles(input: string | undefined, options: Ge
     ...(validation ? { validation } : {}),
     schemasOnly: merged.schemasOnly ?? false,
     ...(options.nameTransform ? { nameTransform: options.nameTransform } : {}),
+    ...(merged.transformSchema ? { transformSchema: merged.transformSchema } : {}),
     includeClient: includeClient ?? true,
     jsdoc,
     includeDescriptions,

@@ -4,6 +4,7 @@ import { extname, resolve } from "pathe";
 import { type } from "arktype";
 import type { ValidationPreset, ValidationPolicy } from "./runtimes/validation.ts";
 import { resolveValidationPolicy } from "./runtimes/validation.ts";
+import type { SchemaTransform } from "./types.ts";
 
 const validationOverrideSchema = type({
   "preset?": "'loose' | 'formats' | 'strict'",
@@ -49,9 +50,17 @@ export const configFileSchema = type({
   "transformDates?": "boolean",
   "transformBigInt?": "boolean",
   "runtimeTypes?": "boolean",
+  /**
+   * Custom schema transform (function). Passed through as-is by ArkType (`unknown`).
+   * Only expressible in TS/JS config files (via `defineConfig`) — not in JSON configs.
+   */
+  "transformSchema?": "unknown",
 });
 
-export type TypedOpenapiConfigFile = typeof configFileSchema.infer;
+export type TypedOpenapiConfigFile = typeof configFileSchema.infer & {
+  /** Custom schema transform; see `SchemaTransform`. */
+  transformSchema?: SchemaTransform;
+};
 
 /** Full config type for `defineConfig` / `typed-openapi.config.ts`. */
 export type TypedOpenapiConfig = TypedOpenapiConfigFile;
@@ -89,7 +98,8 @@ const parseAndValidate = (path: string, parsed: unknown): TypedOpenapiConfigFile
   if (result instanceof type.errors) {
     throw new Error(`Invalid config file ${path}:\n${result.summary}`);
   }
-  return result;
+  // `transformSchema` is passed through by ArkType as `unknown`; retype to the callback signature.
+  return result as TypedOpenapiConfigFile;
 };
 
 /** Sync JSON config load (legacy). Prefer `loadConfig` for TS/JS configs. */
