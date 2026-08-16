@@ -288,8 +288,7 @@ export const arktypeAdapter: RuntimeAdapter = {
   imports: () => `import { type } from "arktype";`,
   inferType: (expr) => `${expr}["infer"]`,
   schemaType: (typeReference) => `import("arktype").Type<${typeReference}>`,
-  annotateSchema: (schemaExpr, typeReference) =>
-    `${schemaExpr} as unknown as import("arktype").Type<${typeReference}>`,
+  annotateSchema: (schemaExpr, typeReference) => `${schemaExpr} as unknown as import("arktype").Type<${typeReference}>`,
   emitNode,
   wrapLazy: (_name, body) => body,
   literalString: (value) => `type(${arkUnitDef(value)})`,

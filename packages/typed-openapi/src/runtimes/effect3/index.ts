@@ -234,8 +234,7 @@ export const effect3Adapter: RuntimeAdapter = {
   imports: () => `import { Schema as S } from "@effect/schema";`,
   inferType: (expr) => `S.Schema.Type<typeof ${expr}>`,
   schemaType: (typeReference) => `S.Schema<${typeReference}, unknown>`,
-  annotateSchema: (schemaExpr, typeReference) =>
-    `${schemaExpr} as unknown as S.Schema<${typeReference}, unknown>`,
+  annotateSchema: (schemaExpr, typeReference) => `${schemaExpr} as unknown as S.Schema<${typeReference}, unknown>`,
   emitNode,
   wrapLazy: (_name, body) => `${S}.suspend(() => ${body})`,
   literalString: (value) => `${S}.Literal(${quote(value)})`,

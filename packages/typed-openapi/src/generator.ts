@@ -225,7 +225,6 @@ export const generateRuntimeTypeDeclarations = (options: GeneratorOptions): stri
   const typeContext = { ...ctx, runtime: "none" as const } as GeneratorContext;
   return `${generateSchemaList(typeContext)}${generateEndpointSchemaList(typeContext)}${generateEndpointByMethod(typeContext)}`;
 };
-
 export const generateFile = (options: GeneratorOptions) => {
   const ctx = createGeneratorContext(options);
 

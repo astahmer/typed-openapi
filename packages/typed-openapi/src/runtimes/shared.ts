@@ -195,8 +195,7 @@ export const internEffectDefault = (
     name = `${name}_${map.size}`;
   }
 
-  const base =
-    api === "v4" && node && containsNamedRef(node) ? `Schema.suspend(() => ${baseExpr})` : baseExpr;
+  const base = api === "v4" && node && containsNamedRef(node) ? `Schema.suspend(() => ${baseExpr})` : baseExpr;
   const decl =
     api === "v4"
       ? `const ${name} = ${base}.pipe(${schemaNs}.withDecodingDefaultType(Effect.succeed(${lit})));`
