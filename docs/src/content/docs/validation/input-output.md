@@ -153,6 +153,8 @@ Because config files are validated as plain data, `transformSchema` is only expr
 
 The `runtime` expression must be valid for the active runtime adapter (`z.*` for zod, `S.*`/`Schema.*` for effect, `v.*` for valibot, and so on). For the types-only runtime, only `type` is used.
 
+> **Type-only transforms are a deliberate tradeoff.** When you return `{ type }` alone and a runtime adapter is active, the generated validator no longer checks the original OpenAPI shape — it is a permissive placeholder typed as the declared type (for example `z.unknown() as unknown as z.ZodType<Foo>`). The transform *types* the boundary without *enforcing* it at runtime. If you need both, return `{ type, runtime }` and supply a validator that actually produces the transformed value (e.g. `z.string().transform((s) => Temporal.Instant.from(s))`), or keep `runtime: "none"` for a types-only client.
+
 ## Defaults and read/write fields
 
 OpenAPI `default` values are emitted in runtime schemas. For inline request objects, `readOnly` properties are removed from input schemas; for inline response objects, `writeOnly` properties are removed from output schemas. Named `$ref` components remain shared so a component’s public shape does not silently differ between endpoints.
