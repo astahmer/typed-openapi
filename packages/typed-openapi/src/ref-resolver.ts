@@ -28,7 +28,11 @@ export type RefInfo = {
   kind: "schemas" | "responses" | "parameters" | "requestBodies" | "headers";
 };
 
-export const createRefResolver = (doc: OpenAPIObject, nameTransform?: NameTransformOptions) => {
+export const createRefResolver = (
+  doc: OpenAPIObject,
+  nameTransform?: NameTransformOptions,
+  transformSchema?: SchemaIrConvertContext["transformSchema"],
+) => {
   // both used for debugging purpose
   const nameByRef = new Map<string, string>();
   const refByName = new Map<string, string>();
@@ -124,11 +128,14 @@ export const createRefResolver = (doc: OpenAPIObject, nameTransform?: NameTransf
 
   const directDependencies = new Map<string, Set<string>>();
 
-  const irCtx: SchemaIrConvertContext = { getRefName: (ref) => getInfosByRef(ref).normalized };
+  const irCtx: SchemaIrConvertContext = {
+    getRefName: (ref) => getInfosByRef(ref).normalized,
+    ...(transformSchema ? { transformSchema } : {}),
+  };
 
   const registerSchemaNode = (ref: string) => {
     const schema = getSchemaByRef(ref);
-    nodeByRef.set(ref, openApiToIr(schema, irCtx));
+    nodeByRef.set(ref, openApiToIr(schema, { ...irCtx, ref, path: [`#/components/.../${ref.split("/").pop()}`] }));
 
     if (!directDependencies.has(ref)) {
       directDependencies.set(ref, new Set<string>());

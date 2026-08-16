@@ -1,3 +1,5 @@
+import type { LibSchemaObject, SchemaTransformResult } from "../schema-transform.ts";
+
 export type SchemaMeta = {
   description?: string;
   title?: string;
@@ -78,8 +80,29 @@ export type SchemaNode =
   | { kind: "stream"; meta: SchemaMeta }
   | { kind: "unknown"; meta: SchemaMeta }
   | { kind: "any"; meta: SchemaMeta }
-  | { kind: "never"; meta: SchemaMeta };
+  | { kind: "never"; meta: SchemaMeta }
+  /**
+   * User-supplied transform (`transformSchema`): replaces the default type/runtime emission
+   * for a SchemaObject with custom TypeScript (`type`) and/or a runtime validator expression (`runtime`).
+   * When `type` is omitted, the default IR node is kept as `fallback` and rendered instead.
+   */
+  | {
+      kind: "custom";
+      type?: string | undefined;
+      runtime?: string | undefined;
+      fallback?: SchemaNode;
+      meta: SchemaMeta;
+    };
 
 export type SchemaIrConvertContext = {
   getRefName: (ref: string) => string;
+  /** User-supplied schema transform; when it returns a result, the SchemaObject becomes a `custom` node. */
+  transformSchema?: (
+    schema: LibSchemaObject,
+    ctx: { path: string[]; ref?: string },
+  ) => SchemaTransformResult | undefined;
+  /** JSON-pointer-ish path of the SchemaObject being converted (for transform context / debugging). */
+  path?: string[];
+  /** `$ref` of the SchemaObject being converted, when it's a named component. */
+  ref?: string;
 };
