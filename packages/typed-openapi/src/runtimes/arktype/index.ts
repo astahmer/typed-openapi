@@ -235,6 +235,9 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.partial) expr = `${expr}.partial()`;
       return expr;
     }
+    case "custom":
+      if (node.runtime) return node.runtime;
+      return `type.unknown() as unknown as import("arktype").Type<${node.type ?? "unknown"}>`;
     default: {
       const _e: never = node;
       return _e;

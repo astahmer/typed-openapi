@@ -159,6 +159,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       }
       return pipe(expr, actions);
     }
+    case "custom":
+      if (node.runtime) return node.runtime;
+      return `v.unknown() as unknown as v.GenericSchema<${node.type ?? "unknown"}>`;
     default: {
       const _e: never = node;
       return _e;
@@ -166,7 +169,8 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
   }
 };
 
-const emitNode = (node: SchemaNode, ctx: EmitCtx): string => withValibotDefault(emitNodeInner(node, ctx), node.meta);
+const emitNode = (node: SchemaNode, ctx: EmitCtx): string =>
+  node.kind === "custom" ? emitNodeInner(node, ctx) : withValibotDefault(emitNodeInner(node, ctx), node.meta);
 
 export const valibotAdapter: RuntimeAdapter = {
   name: "valibot",

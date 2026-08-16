@@ -177,6 +177,10 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       }
       return expr;
     }
+    case "custom":
+      if (node.runtime) return node.runtime;
+      // Type-only transform: keep validation permissive but declare the transformed output type.
+      return `z.unknown() as unknown as z.ZodType<${node.type ?? "unknown"}>`;
     default: {
       const _e: never = node;
       return _e;
@@ -185,7 +189,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
 };
 
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string =>
-  withZodDescription(withZodDefault(emitNodeInner(node, ctx), node.meta), node.meta, ctx.includeDescriptions);
+  node.kind === "custom"
+    ? emitNodeInner(node, ctx)
+    : withZodDescription(withZodDefault(emitNodeInner(node, ctx), node.meta), node.meta, ctx.includeDescriptions);
 
 export const zodAdapter: RuntimeAdapter = {
   name: "zod",

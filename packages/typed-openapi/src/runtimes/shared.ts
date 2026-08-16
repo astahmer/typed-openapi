@@ -135,6 +135,9 @@ export const containsNamedRef = (node: SchemaNode): boolean => {
       return containsNamedRef(node.schema);
     case "record":
       return containsNamedRef(node.key) || containsNamedRef(node.value);
+    case "custom":
+      // Custom nodes are opaque strings — no named refs to resolve inside them.
+      return false;
     default:
       return false;
   }
@@ -371,6 +374,8 @@ export const findRecursiveSchemaNames = (schemas: Array<{ name: string; node: Sc
       case "record":
         refsIn(node.key, into);
         refsIn(node.value, into);
+        break;
+      case "custom":
         break;
       default:
         break;

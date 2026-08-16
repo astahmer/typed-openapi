@@ -63,6 +63,10 @@ const typiaTypeExpr = (node: SchemaNode, ctx: EmitCtx): string => {
         return node.name;
       }
       return toTs(node, ctx);
+    case "custom":
+      if (node.runtime) return node.runtime;
+      // typia can generate a guard directly from the declared type.
+      return `typia.createIs<${node.type ?? "unknown"}>()`;
     default:
       return toTs(node, ctx);
   }

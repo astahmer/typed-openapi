@@ -212,6 +212,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       }
       return pipeFilters(expr, filters);
     }
+    case "custom":
+      if (node.runtime) return node.runtime;
+      return `${S}.Unknown as unknown as ${S}.Schema<${node.type ?? "unknown"}, unknown>`;
     default: {
       const _e: never = node;
       return _e;
@@ -221,7 +224,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
 
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const inner = emitNodeInner(node, ctx);
-  if (ctx.omitDefaults || node.meta.default === undefined) return inner;
+  if (ctx.omitDefaults || node.meta.default === undefined || node.kind === "custom") return inner;
   if (node.kind === "object") return inner;
   return internEffectDefault(inner, node.meta, S, ctx, "value") ?? inner;
 };

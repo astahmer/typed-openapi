@@ -158,6 +158,9 @@ export const stubFromSchema = (
     }
     case "record":
       return {};
+    case "custom":
+      // Custom transforms are opaque to MSW stub generation.
+      return null;
     case "binary":
       return null;
     case "stream":
