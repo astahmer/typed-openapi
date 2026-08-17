@@ -212,6 +212,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       }
       return pipeFilters(expr, filters);
     }
+    case "custom":
+      if (node.runtime) return node.runtime;
+      return `${S}.Unknown as unknown as ${S}.Schema<${node.type ?? "unknown"}, unknown>`;
     default: {
       const _e: never = node;
       return _e;
@@ -221,7 +224,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
 
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const inner = emitNodeInner(node, ctx);
-  if (ctx.omitDefaults || node.meta.default === undefined) return inner;
+  if (ctx.omitDefaults || node.meta.default === undefined || node.kind === "custom") return inner;
   if (node.kind === "object") return inner;
   return internEffectDefault(inner, node.meta, S, ctx, "value") ?? inner;
 };
@@ -231,8 +234,7 @@ export const effect3Adapter: RuntimeAdapter = {
   imports: () => `import { Schema as S } from "@effect/schema";`,
   inferType: (expr) => `S.Schema.Type<typeof ${expr}>`,
   schemaType: (typeReference) => `S.Schema<${typeReference}, unknown>`,
-  annotateSchema: (schemaExpr, typeReference) =>
-    `${schemaExpr} as unknown as S.Schema<${typeReference}, unknown>`,
+  annotateSchema: (schemaExpr, typeReference) => `${schemaExpr} as unknown as S.Schema<${typeReference}, unknown>`,
   emitNode,
   wrapLazy: (_name, body) => `${S}.suspend(() => ${body})`,
   literalString: (value) => `${S}.Literal(${quote(value)})`,

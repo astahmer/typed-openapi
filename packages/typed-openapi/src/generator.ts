@@ -2,7 +2,7 @@ import { capitalize, groupBy } from "pastable/server";
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 import { type } from "arktype";
 import { wrapWithQuotesIfNeeded } from "./string-utils.ts";
-import type { NameTransformOptions } from "./types.ts";
+import type { NameTransformOptions, SchemaTransform } from "./types.ts";
 import { emitRuntimeFile } from "./runtimes/emit-runtime-file.ts";
 import { getRuntimeAdapter, type ShippedRuntime } from "./runtimes/registry.ts";
 import { resolveValidationPolicy, type ValidationPreset, type ValidationPolicy } from "./runtimes/validation.ts";
@@ -43,6 +43,8 @@ export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> &
     validateSide?: "none" | "input" | "output" | "both";
     schemasOnly?: boolean;
     nameTransform?: NameTransformOptions | undefined;
+    /** Custom schema transform (type + optional runtime expression). See `SchemaTransform`. */
+    transformSchema?: SchemaTransform | undefined;
     successStatusCodes?: readonly number[];
     errorStatusCodes?: readonly number[];
     includeClient?: boolean;
@@ -223,7 +225,6 @@ export const generateRuntimeTypeDeclarations = (options: GeneratorOptions): stri
   const typeContext = { ...ctx, runtime: "none" as const } as GeneratorContext;
   return `${generateSchemaList(typeContext)}${generateEndpointSchemaList(typeContext)}${generateEndpointByMethod(typeContext)}`;
 };
-
 export const generateFile = (options: GeneratorOptions) => {
   const ctx = createGeneratorContext(options);
 
@@ -589,6 +590,9 @@ const collectTransformFieldKeys = (
       return;
     case "record":
       collectTransformFieldKeys(node.value, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      return;
+    case "custom":
+      // Custom nodes may still carry a runtime transform; field keys can't be statically known.
       return;
     case "ref": {
       if (resolving.has(node.name)) return;

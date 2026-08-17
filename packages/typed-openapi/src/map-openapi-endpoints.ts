@@ -7,6 +7,7 @@ import { stripReadWrite } from "./schema-ir/read-write.ts";
 import type { SchemaIrConvertContext, SchemaNode } from "./schema-ir/types.ts";
 import { pathToVariableName } from "./string-utils.ts";
 import { NameTransformOptions } from "./types.ts";
+import type { SchemaTransform } from "./schema-transform.ts";
 import { match, P } from "ts-pattern";
 import { sanitizeName } from "./sanitize-name.ts";
 
@@ -33,9 +34,15 @@ const schemaFromParameter = (param: ParameterObject): unknown => {
 
 type ParamLocation = "query" | "path" | "header" | "cookie";
 
-export const mapOpenApiEndpoints = (doc: OpenAPIObject, options?: { nameTransform?: NameTransformOptions }) => {
-  const refs = createRefResolver(doc, options?.nameTransform);
-  const irCtx: SchemaIrConvertContext = { getRefName: (ref) => refs.getInfosByRef(ref).normalized };
+export const mapOpenApiEndpoints = (
+  doc: OpenAPIObject,
+  options?: { nameTransform?: NameTransformOptions; transformSchema?: SchemaTransform },
+) => {
+  const refs = createRefResolver(doc, options?.nameTransform, options?.transformSchema);
+  const irCtx: SchemaIrConvertContext = {
+    getRefName: (ref) => refs.getInfosByRef(ref).normalized,
+    ...(options?.transformSchema ? { transformSchema: options.transformSchema } : {}),
+  };
   const endpointList = [] as Array<Endpoint>;
   const endpointAliases = new Set<string>();
 

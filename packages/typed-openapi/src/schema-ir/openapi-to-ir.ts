@@ -128,10 +128,35 @@ const enumToIr = (values: unknown[], meta: SchemaMeta): SchemaNode => {
 };
 
 export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): SchemaNode => {
+  return openApiToIrInternal(input, ctx, ctx.path ?? []);
+};
+
+const openApiToIrInternal = (input: unknown, ctx: SchemaIrConvertContext, path: string[]): SchemaNode => {
   if (!input) {
     return { kind: "unknown", meta: emptyMeta() };
   }
 
+  const transformCtx = { path, ...(ctx.ref !== undefined ? { ref: ctx.ref } : {}) };
+  const transformResult =
+    ctx.transformSchema && input && typeof input === "object"
+      ? ctx.transformSchema(input as LibSchemaObject, transformCtx)
+      : undefined;
+  if (transformResult && (transformResult.type !== undefined || transformResult.runtime !== undefined)) {
+    // Runtime-only transforms keep the default type; compute the default node as fallback.
+    const fallback = transformResult.type === undefined ? openApiToIrInnerBody(input, ctx, path) : undefined;
+    return {
+      kind: "custom",
+      type: transformResult.type,
+      runtime: transformResult.runtime,
+      ...(fallback ? { fallback } : {}),
+      meta: isReferenceObject(input) ? emptyMeta() : extractMeta(input as LibSchemaObject),
+    };
+  }
+
+  return openApiToIrInnerBody(input, ctx, path);
+};
+
+const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path: string[]): SchemaNode => {
   if (isReferenceObject(input)) {
     return { kind: "ref", name: ctx.getRefName(input.$ref), meta: emptyMeta() };
   }
@@ -146,14 +171,14 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
 
   if (Array.isArray(schema.type)) {
     if (schema.type.length === 1) {
-      return openApiToIr({ ...schema, type: schema.type[0]! }, ctx);
+      return openApiToIrInternal({ ...schema, type: schema.type[0]! }, ctx, path);
     }
     return withNullable(
       {
         kind: "union",
         members: schema.type.map((prop: string) => {
           const { nullable: _n, ...rest } = schema;
-          return openApiToIr({ ...rest, type: prop }, ctx);
+          return openApiToIrInternal({ ...rest, type: prop }, ctx, path);
         }),
         meta,
       },
@@ -166,7 +191,7 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
   }
 
   if (schema.not) {
-    return withNullable({ kind: "not", schema: openApiToIr(schema.not, ctx), meta }, schema);
+    return withNullable({ kind: "not", schema: openApiToIrInternal(schema.not, ctx, [...path, "not"]), meta }, schema);
   }
 
   const discriminator =
@@ -179,12 +204,12 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
 
   if (schema.oneOf) {
     if (schema.oneOf.length === 1) {
-      return withNullable(openApiToIr(schema.oneOf[0]!, ctx), schema);
+      return withNullable(openApiToIrInternal(schema.oneOf[0]!, ctx, [...path, "oneOf", "0"]), schema);
     }
     return withNullable(
       {
         kind: "union",
-        members: schema.oneOf.map((prop: unknown) => openApiToIr(prop, ctx)),
+        members: schema.oneOf.map((prop: unknown, i) => openApiToIrInternal(prop, ctx, [...path, "oneOf", String(i)])),
         meta,
         ...(discriminator ? { discriminator } : {}),
       },
@@ -194,12 +219,12 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
 
   if (schema.anyOf) {
     if (schema.anyOf.length === 1) {
-      return withNullable(openApiToIr(schema.anyOf[0]!, ctx), schema);
+      return withNullable(openApiToIrInternal(schema.anyOf[0]!, ctx, [...path, "anyOf", "0"]), schema);
     }
     return withNullable(
       {
         kind: "union",
-        members: schema.anyOf.map((prop: unknown) => openApiToIr(prop, ctx)),
+        members: schema.anyOf.map((prop: unknown, i) => openApiToIrInternal(prop, ctx, [...path, "anyOf", String(i)])),
         meta,
         ...(discriminator ? { discriminator } : {}),
       },
@@ -208,10 +233,12 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
   }
 
   if (schema.allOf) {
-    const members = schema.allOf.map((prop: unknown) => openApiToIr(prop, ctx));
+    const members = schema.allOf.map((prop: unknown, i) =>
+      openApiToIrInternal(prop, ctx, [...path, "allOf", String(i)]),
+    );
     const { allOf: _a, externalDocs: _e, example: _ex, examples: _xs, description: _d, title: _t, ...rest } = schema;
     if (Object.keys(rest).filter((k) => k !== "nullable").length > 0) {
-      members.push(openApiToIr(rest as LibSchemaObject, ctx));
+      members.push(openApiToIrInternal(rest as LibSchemaObject, ctx, path));
     }
     return withNullable({ kind: "intersection", members, meta }, schema);
   }
@@ -219,8 +246,10 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
   // OAS 3.1 prefixItems → tuple
   if (schema.type === "array" && Array.isArray((schema as { prefixItems?: unknown }).prefixItems)) {
     const prefixItems = (schema as { prefixItems: Array<LibSchemaObject | ReferenceObject> }).prefixItems;
-    const items = prefixItems.map((item: unknown) => openApiToIr(item, ctx));
-    const restNode = schema.items ? openApiToIr(schema.items, ctx) : undefined;
+    const items = prefixItems.map((item: unknown, i) =>
+      openApiToIrInternal(item, ctx, [...path, "prefixItems", String(i)]),
+    );
+    const restNode = schema.items ? openApiToIrInternal(schema.items, ctx, [...path, "items"]) : undefined;
     const tupleNode: SchemaNode =
       restNode === undefined ? { kind: "tuple", items, meta } : { kind: "tuple", items, rest: restNode, meta };
     return withNullable(tupleNode, schema);
@@ -264,7 +293,9 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
   }
 
   if (schemaType === "array") {
-    const items = schema.items ? openApiToIr(schema.items, ctx) : ({ kind: "any", meta: emptyMeta() } as SchemaNode);
+    const items = schema.items
+      ? openApiToIrInternal(schema.items, ctx, [...path, "items"])
+      : ({ kind: "any", meta: emptyMeta() } as SchemaNode);
     return withNullable({ kind: "array", items, constraints: arrayConstraints(schema), meta }, schema);
   }
 
@@ -275,7 +306,7 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
           {
             kind: "record",
             key: { kind: "string", constraints: {}, meta: emptyMeta() },
-            value: openApiToIr(schema.additionalProperties, ctx),
+            value: openApiToIrInternal(schema.additionalProperties, ctx, [...path, "additionalProperties"]),
             meta,
           },
           schema,
@@ -299,7 +330,7 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
     ) {
       additionalProperties = true;
     } else if (typeof schema.additionalProperties === "object") {
-      additionalProperties = openApiToIr(schema.additionalProperties, ctx);
+      additionalProperties = openApiToIrInternal(schema.additionalProperties, ctx, [...path, "additionalProperties"]);
     }
 
     const hasRequiredArray = Boolean(schema.required && schema.required.length > 0);
@@ -307,7 +338,7 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
 
     const properties: Record<string, SchemaNode> = {};
     for (const [prop, propSchema] of Object.entries(schema.properties)) {
-      properties[prop] = openApiToIr(propSchema, ctx);
+      properties[prop] = openApiToIrInternal(propSchema, ctx, [...path, "properties", prop]);
     }
 
     const required = isPartial ? [] : hasRequiredArray ? [...(schema.required ?? [])] : Object.keys(properties);

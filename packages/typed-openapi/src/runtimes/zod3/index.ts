@@ -165,6 +165,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       }
       return expr;
     }
+    case "custom":
+      if (node.runtime) return node.runtime;
+      return `z.unknown() as unknown as z.ZodType<${node.type ?? "unknown"}>`;
     default: {
       const _e: never = node;
       return _e;
@@ -173,7 +176,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
 };
 
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string =>
-  withZodDescription(withZodDefault(emitNodeInner(node, ctx), node.meta), node.meta, ctx.includeDescriptions);
+  node.kind === "custom"
+    ? emitNodeInner(node, ctx)
+    : withZodDescription(withZodDefault(emitNodeInner(node, ctx), node.meta), node.meta, ctx.includeDescriptions);
 
 export const zod3Adapter: RuntimeAdapter = {
   name: "zod3",

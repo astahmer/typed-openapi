@@ -235,6 +235,9 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.partial) expr = `${expr}.partial()`;
       return expr;
     }
+    case "custom":
+      if (node.runtime) return node.runtime;
+      return `type.unknown() as unknown as import("arktype").Type<${node.type ?? "unknown"}>`;
     default: {
       const _e: never = node;
       return _e;
@@ -285,8 +288,7 @@ export const arktypeAdapter: RuntimeAdapter = {
   imports: () => `import { type } from "arktype";`,
   inferType: (expr) => `${expr}["infer"]`,
   schemaType: (typeReference) => `import("arktype").Type<${typeReference}>`,
-  annotateSchema: (schemaExpr, typeReference) =>
-    `${schemaExpr} as unknown as import("arktype").Type<${typeReference}>`,
+  annotateSchema: (schemaExpr, typeReference) => `${schemaExpr} as unknown as import("arktype").Type<${typeReference}>`,
   emitNode,
   wrapLazy: (_name, body) => body,
   literalString: (value) => `type(${arkUnitDef(value)})`,

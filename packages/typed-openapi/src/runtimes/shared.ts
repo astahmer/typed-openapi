@@ -135,6 +135,9 @@ export const containsNamedRef = (node: SchemaNode): boolean => {
       return containsNamedRef(node.schema);
     case "record":
       return containsNamedRef(node.key) || containsNamedRef(node.value);
+    case "custom":
+      // Custom nodes are opaque strings — no named refs to resolve inside them.
+      return false;
     default:
       return false;
   }
@@ -192,8 +195,7 @@ export const internEffectDefault = (
     name = `${name}_${map.size}`;
   }
 
-  const base =
-    api === "v4" && node && containsNamedRef(node) ? `Schema.suspend(() => ${baseExpr})` : baseExpr;
+  const base = api === "v4" && node && containsNamedRef(node) ? `Schema.suspend(() => ${baseExpr})` : baseExpr;
   const decl =
     api === "v4"
       ? `const ${name} = ${base}.pipe(${schemaNs}.withDecodingDefaultType(Effect.succeed(${lit})));`
@@ -371,6 +373,8 @@ export const findRecursiveSchemaNames = (schemas: Array<{ name: string; node: Sc
       case "record":
         refsIn(node.key, into);
         refsIn(node.value, into);
+        break;
+      case "custom":
         break;
       default:
         break;

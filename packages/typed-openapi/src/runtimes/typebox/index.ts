@@ -139,6 +139,10 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.partial) expr = `Type.Partial(${expr})`;
       return expr;
     }
+    case "custom":
+      if (node.runtime) return node.runtime;
+      // `Type.Unsafe<T>` yields Static = T (accepts anything at runtime, like a type-only transform).
+      return `Type.Unsafe<${node.type ?? "unknown"}>({ type: "unknown" })`;
     default: {
       const _exhaustive: never = node;
       return _exhaustive;

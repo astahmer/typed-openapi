@@ -114,6 +114,9 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
     }
     case "record":
       return `Record<${irToTs(node.key, { ...options, prefixRefsWithSchemas: false })}, ${irToTs(node.value, options)}>`;
+    case "custom":
+      // User-supplied transform type; falls back to the default-rendered type when only a runtime transform was given.
+      return node.type ?? (node.fallback ? irToTs(node.fallback, options) : "unknown");
     case "object": {
       const entries = Object.entries(node.properties);
       const rendered = entries.map(([prop, propNode]) => {
@@ -164,6 +167,7 @@ export const renderSchemaJsdoc = (description: string | undefined) =>
 /** Object/record shapes that can be declared as `interface` (breaks TS2456 cycles). */
 export const canEmitAsInterface = (node: SchemaNode): boolean => {
   if (node.kind === "record") return true;
+  if (node.kind === "custom") return false;
   if (node.kind === "object" && !node.partial && node.additionalProperties === false) return true;
   return false;
 };
@@ -180,6 +184,10 @@ export const emitNamedInterface = (name: string, node: SchemaNode, options: IrTo
       return `export interface ${name} { [key: string]: ${value} }`;
     }
     return `export type ${name} = Record<${keyTs}, ${value}>`;
+  }
+
+  if (node.kind === "custom") {
+    return `export type ${name} = ${node.type ?? (node.fallback ? irToTs(node.fallback, options) : "unknown")};`;
   }
 
   if (node.kind === "object") {
