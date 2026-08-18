@@ -1,5 +1,11 @@
 # typed-openapi
 
+## 3.3.1
+
+### Patch Changes
+
+- 4ceed30: Preserve the encoded schema fallback for custom transforms so generated MSW mocks can emit valid JSON values for transformed fields such as dates.
+
 ## 3.3.0
 
 ### Minor Changes
