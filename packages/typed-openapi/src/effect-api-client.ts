@@ -162,7 +162,7 @@ export class EffectApiClient {
     TMethod extends keyof EndpointByMethod,
     TPath extends keyof EndpointByMethod[TMethod],
     TEndpoint extends EndpointByMethod[TMethod][TPath],
-    TParams extends ApiCallParams<TEndpoint>
+    TParams extends ApiCallParams<TEndpoint> = ApiCallParams<TEndpoint>
   >(
     method: TMethod,
     path: TPath,
@@ -323,7 +323,7 @@ export class EffectApiClient {
     .map(([method, list]) => {
       const endpoints = `${capitalize(method)}Endpoints`;
       return list.length
-        ? `${method}<Path extends keyof ${endpoints}, TEndpoint extends ${endpoints}[Path], TParams extends ApiCallParams<TEndpoint>>(
+        ? `${method}<Path extends keyof ${endpoints}, TEndpoint extends ${endpoints}[Path], TParams extends ApiCallParams<TEndpoint> = ApiCallParams<TEndpoint>>(
     path: Path,
     ...params: MaybeOptionalArg<TParams>
   ): Effect.Effect<

@@ -55065,7 +55065,7 @@ export class EffectApiClient {
     TMethod extends keyof EndpointByMethod,
     TPath extends keyof EndpointByMethod[TMethod],
     TEndpoint extends EndpointByMethod[TMethod][TPath],
-    TParams extends ApiCallParams<TEndpoint>
+    TParams extends ApiCallParams<TEndpoint> = ApiCallParams<TEndpoint>
   >(
     method: TMethod,
     path: TPath,
@@ -55270,7 +55270,7 @@ export class EffectApiClient {
     });
   }
 
-  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path], TParams extends ApiCallParams<TEndpoint>>(
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path], TParams extends ApiCallParams<TEndpoint> = ApiCallParams<TEndpoint>>(
     path: Path,
     ...params: MaybeOptionalArg<TParams>
   ): Effect.Effect<
@@ -55280,7 +55280,7 @@ export class EffectApiClient {
   > {
     return this.request<"get", Path, GetEndpoints[Path], TParams>("get", path, params[0] as never);
   }
-post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path], TParams extends ApiCallParams<TEndpoint>>(
+post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path], TParams extends ApiCallParams<TEndpoint> = ApiCallParams<TEndpoint>>(
     path: Path,
     ...params: MaybeOptionalArg<TParams>
   ): Effect.Effect<
@@ -55290,7 +55290,7 @@ post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path], TP
   > {
     return this.request<"post", Path, PostEndpoints[Path], TParams>("post", path, params[0] as never);
   }
-delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path], TParams extends ApiCallParams<TEndpoint>>(
+delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path], TParams extends ApiCallParams<TEndpoint> = ApiCallParams<TEndpoint>>(
     path: Path,
     ...params: MaybeOptionalArg<TParams>
   ): Effect.Effect<
@@ -55300,7 +55300,7 @@ delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Pat
   > {
     return this.request<"delete", Path, DeleteEndpoints[Path], TParams>("delete", path, params[0] as never);
   }
-put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path], TParams extends ApiCallParams<TEndpoint>>(
+put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path], TParams extends ApiCallParams<TEndpoint> = ApiCallParams<TEndpoint>>(
     path: Path,
     ...params: MaybeOptionalArg<TParams>
   ): Effect.Effect<
@@ -55310,7 +55310,7 @@ put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path], TPara
   > {
     return this.request<"put", Path, PutEndpoints[Path], TParams>("put", path, params[0] as never);
   }
-patch<Path extends keyof PatchEndpoints, TEndpoint extends PatchEndpoints[Path], TParams extends ApiCallParams<TEndpoint>>(
+patch<Path extends keyof PatchEndpoints, TEndpoint extends PatchEndpoints[Path], TParams extends ApiCallParams<TEndpoint> = ApiCallParams<TEndpoint>>(
     path: Path,
     ...params: MaybeOptionalArg<TParams>
   ): Effect.Effect<

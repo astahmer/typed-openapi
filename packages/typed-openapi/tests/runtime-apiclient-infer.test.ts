@@ -6,6 +6,7 @@ import { createRequire } from "node:module";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { generateFile, generateRuntimeTypeDeclarations } from "../src/generator.ts";
+import type { SchemaTransform } from "../src/types.ts";
 
 const require = createRequire(import.meta.url);
 const tscBin = require.resolve("typescript/bin/tsc");
@@ -94,6 +95,43 @@ const brandedDoc = {
         },
       },
     },
+    "/thing": {
+      put: {
+        operationId: "updateThing",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["id", "createdAt"],
+                properties: {
+                  id: { type: "string", format: "brand" },
+                  createdAt: { type: "string", format: "date-time" },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "ok",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["id", "createdAt"],
+                  properties: {
+                    id: { type: "string", format: "brand" },
+                    createdAt: { type: "string", format: "date-time" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 } as unknown as OpenAPIObject;
 
@@ -122,6 +160,20 @@ describe("runtime ApiClient InferSchemaValue", () => {
 
     expect(endpointMap).toContain("satisfies {");
     expect(endpointMap).not.toContain("as any");
+  });
+
+  test("runtime sidecar markers are required so plain runtime objects cannot match them", () => {
+    const output = generateFile({
+      ...mapOpenApiEndpoints(miniDoc),
+      runtime: "effect",
+      client: "effect",
+      runtimeTypeDeclarations: "./client.types.js",
+    });
+
+    expect(output).toContain("readonly __typedOpenapiOutput: TOutput;");
+    expect(output).toContain("readonly __typedOpenapiInput: TInput;");
+    expect(output).not.toContain("readonly __typedOpenapiOutput?: TOutput;");
+    expect(output).not.toContain("readonly __typedOpenapiInput?: TInput;");
   });
 
   test("generated zod client exposes InferSchemaValue / InferSchemaInput helpers", () => {
@@ -214,29 +266,55 @@ import type { DateTime } from "effect";
 
 declare const api: EffectApiClient;
 type ThingId = string & { readonly __brand: "ThingId" };
+type GetThingEndpoint = import("./client").GetEndpoints["/thing/{thingId}"];
 
-async function ok(id: ThingId) {
-  const result = await Effect.runPromise(api.get("/thing/{thingId}", { path: { thingId: id } }));
-  const responseId: ThingId = result.id;
-  const createdAt: DateTime.Utc = result.createdAt;
-  const metadataCount: number = result.metadata.item.count;
-  const response = await Effect.runPromise(api.get("/thing/{thingId}", { path: { thingId: id }, withResponse: true }));
-  const responseStatus: number = response.status;
-  const responseDataId: ThingId = response.data.id;
+  async function ok(id: ThingId) {
+    const result = await Effect.runPromise(api.get("/thing/{thingId}", { path: { thingId: id } }));
+    const responseId: ThingId = result.id;
+    const createdAt: DateTime.Utc = result.createdAt;
+    const metadataCount: number = result.metadata.item.count;
+    const response = await Effect.runPromise(api.get("/thing/{thingId}", { path: { thingId: id }, withResponse: true }));
+    const responseStatus: 200 = response.status;
+    const responseDataId: ThingId = response.data.id;
+    const explicit = await Effect.runPromise(
+      api.get<"/thing/{thingId}", GetThingEndpoint>("/thing/{thingId}", { path: { thingId: id } }),
+    );
+    const explicitRequest = await Effect.runPromise(
+      api.request<"get", "/thing/{thingId}", GetThingEndpoint>("get", "/thing/{thingId}", {
+        path: { thingId: id },
+      }),
+    );
   void responseId;
   void createdAt;
   void metadataCount;
   void responseStatus;
   void responseDataId;
+  void explicit;
+  void explicitRequest;
 }
 
 async function bad() {
   // @ts-expect-error a raw string must not satisfy the branded path parameter
-  await api.get("/thing/{thingId}", { path: { thingId: "raw" } });
+    await api.get("/thing/{thingId}", { path: { thingId: "raw" } });
+}
+
+async function update(id: ThingId, encodedCreatedAt: string, decodedCreatedAt: DateTime.Utc) {
+  const result = await Effect.runPromise(
+    api.put("/thing", { body: { id, createdAt: encodedCreatedAt } }),
+  );
+  const responseId: ThingId = result.id;
+  const responseCreatedAt: DateTime.Utc = result.createdAt;
+
+  // @ts-expect-error request bodies use the schema's encoded input type, not its decoded output type
+  await api.put("/thing", { body: { id, createdAt: decodedCreatedAt } });
+
+  void responseId;
+  void responseCreatedAt;
 }
 
 void ok;
 void bad;
+void update;
 `,
     );
     writeFileSync(

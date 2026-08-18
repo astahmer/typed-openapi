@@ -43,8 +43,30 @@ test("getSchemaBox", async () => {
       patternProperties: { "^x": { type: "string" } },
     }),
   ).toMatchInlineSnapshot(`"export type _Test = Record<string, string>;"`);
+  expect(
+    await getSchemaBox({
+      type: "object",
+      properties: { known: { type: "boolean" } },
+      required: ["known"],
+      patternProperties: { "^x": { type: "string" } },
+    }),
+  ).toMatchInlineSnapshot(`"export type _Test = { known: boolean } & Record<string, string>;"`);
+  expect(
+    await getSchemaBox({
+      type: "object",
+      patternProperties: { "^x": { type: "string" } },
+      additionalProperties: { type: "number" },
+    }),
+  ).toMatchInlineSnapshot(`"export type _Test = Record<string, string> & Record<string, number>;"`);
   expect(await getSchemaBox({ type: "object" })).toMatchInlineSnapshot(
     `"export type _Test = Record<string, unknown>;"`,
+  );
+  expect(await getSchemaBox({ allOf: [{}, { type: "string" }] })).toMatchInlineSnapshot(
+    `"export type _Test = string;"`,
+  );
+  expect(await getSchemaBox({ allOf: [{}] })).toMatchInlineSnapshot(`"export type _Test = unknown;"`);
+  expect(await getSchemaBox({ allOf: [{ type: "string" }], nullable: true })).toMatchInlineSnapshot(
+    `"export type _Test = string | null;"`,
   );
   expect(await getSchemaBox({ type: "object", properties: { str: { type: "string" } } })).toMatchInlineSnapshot(
     `"export type _Test = Partial<{ str: string }>;"`,

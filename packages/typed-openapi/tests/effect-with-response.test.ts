@@ -39,6 +39,8 @@ describe("EffectApiClient withResponse", () => {
     expect(src).toContain("const withResponse = Boolean(requestParams?.withResponse)");
     expect(src).toContain("throwOnStatusError");
     expect(src).toContain("return (withResponse ? typedResponse : data)");
+    expect(src).toContain("TResponses extends Record<string | number, unknown>");
+    expect(src).toContain("TParams extends ApiCallParams<TEndpoint> = ApiCallParams<TEndpoint>");
     expect(src).not.toContain("status: 200, data");
   });
 });

@@ -35,6 +35,8 @@ describe("tanstack-query.generator", () => {
     expect(file).toContain("queryOptions:");
     expect(file).toContain("mutationOptions:");
     expect(file).toContain("export class TanstackQueryApiClient");
+    expect(file).not.toContain("this.client as any");
+    expect(file).not.toContain("params as any");
   });
 
   test("infinite query merges pageParam into query[pageParamKey]", async () => {

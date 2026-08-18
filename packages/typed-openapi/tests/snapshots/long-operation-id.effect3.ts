@@ -423,7 +423,7 @@ export class EffectApiClient {
     TMethod extends keyof EndpointByMethod,
     TPath extends keyof EndpointByMethod[TMethod],
     TEndpoint extends EndpointByMethod[TMethod][TPath],
-    TParams extends ApiCallParams<TEndpoint>,
+    TParams extends ApiCallParams<TEndpoint> = ApiCallParams<TEndpoint>,
   >(
     method: TMethod,
     path: TPath,
@@ -628,7 +628,11 @@ export class EffectApiClient {
     });
   }
 
-  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path], TParams extends ApiCallParams<TEndpoint>>(
+  get<
+    Path extends keyof GetEndpoints,
+    TEndpoint extends GetEndpoints[Path],
+    TParams extends ApiCallParams<TEndpoint> = ApiCallParams<TEndpoint>,
+  >(
     path: Path,
     ...params: MaybeOptionalArg<TParams>
   ): Effect.Effect<ApiCallResult<TEndpoint, TParams>, TypedStatusError | HttpClientError, never> {
@@ -637,7 +641,7 @@ export class EffectApiClient {
   post<
     Path extends keyof PostEndpoints,
     TEndpoint extends PostEndpoints[Path],
-    TParams extends ApiCallParams<TEndpoint>,
+    TParams extends ApiCallParams<TEndpoint> = ApiCallParams<TEndpoint>,
   >(
     path: Path,
     ...params: MaybeOptionalArg<TParams>
