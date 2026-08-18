@@ -112,7 +112,7 @@ const runtimeInferHelper = (runtime: OutputRuntime, usesSidecarTypes = false): s
 };`;
 
   if (runtime === "none") {
-    return `type InferSchemaValue<T> = T;\ntype InferSchemaInput<T> = T;`;
+    return `export type InferSchemaValue<T> = T;\ntype InferSchemaInput<T> = T;`;
   }
 
   const sidecarSchema = `type __TypedOpenapiSchema<TOutput, TInput = TOutput> = {
@@ -134,41 +134,41 @@ const runtimeInferHelper = (runtime: OutputRuntime, usesSidecarTypes = false): s
 
   if (runtime === "zod" || runtime === "zod3") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends z.ZodType ? z.infer<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+export type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends z.ZodType ? z.infer<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
 type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}T extends z.ZodType ? z.input<T> : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "valibot") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends v.GenericSchema ? v.InferOutput<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+export type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends v.GenericSchema ? v.InferOutput<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
 type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}T extends v.GenericSchema ? v.InferInput<T> : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "effect" || runtime === "effect3") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}${effectOutputCheck}T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+export type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}${effectOutputCheck}T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
 type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}${effectInputCheck}T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "arktype") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends { infer: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+export type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends { infer: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
 type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}T extends { inferIn: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "typebox") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
 type InferSchemaValueRaw<T> = ${primitiveCheck}${outputCheck}T extends import("@sinclair/typebox").TSchema ? import("@sinclair/typebox").Static<T> : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
-type InferSchemaValue<T> = InferSchemaValueRaw<T>;
+export type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;`;
   }
   if (runtime === "typia") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
 type InferSchemaValueRaw<T> = ${primitiveCheck}${outputCheck}T extends (input: unknown) => input is infer U ? U : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
-type InferSchemaValue<T> = InferSchemaValueRaw<T>;
+export type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;`;
   }
-  return `type InferSchemaValue<T> = T;\ntype InferSchemaInput<T> = T;`;
+  return `export type InferSchemaValue<T> = T;\ntype InferSchemaInput<T> = T;`;
 };
 
 const escapeCommentText = (text: string) => text.replace(/\*\//g, "*\\/");
