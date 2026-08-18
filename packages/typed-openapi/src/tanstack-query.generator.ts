@@ -116,32 +116,40 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
     .join("\n");
 
   const mutationFnBody = isEffectClient
-    ? `const response = await Effect.runPromise((this.client as any)[method](path, {
-                ...params as any,
+    ? `const response = await Effect.runPromise(this.client.request(method, path, {
+                ...params,
                 withResponse: true,
                 throwOnStatusError: false,
-            }) as Effect.Effect<any, unknown>);
+            } as never) as Effect.Effect<MutationResponse<TEndpoint>, unknown>);
 
                 if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
                     throw new TypedStatusError(response as never);
                 }
 
                 const finalResponse = withResponse ? response : response.data;
-                const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
-                return res as never;`
-    : `const response = await (this.client as any)[method](path, {
-                ...params as any,
+                const res = selectFn
+                    ? selectFn(finalResponse as TWithResponse extends true
+                        ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
+                        : InferResponseData<TEndpoint, SuccessStatusCode>)
+                    : finalResponse;
+                return res as TSelection;`
+    : `const response = await this.client.request(method, path, {
+                ...params,
                 withResponse: true,
                 throwOnStatusError: false,
-            });
+            } as never) as MutationResponse<TEndpoint>;
 
                 if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
                     throw new TypedStatusError(response as never);
                 }
 
                 const finalResponse = withResponse ? response : response.data;
-                const res = selectFn ? selectFn(finalResponse as any) : finalResponse;
-                return res as never;`;
+                const res = selectFn
+                    ? selectFn(finalResponse as TWithResponse extends true
+                        ? InferResponseByStatus<TEndpoint, SuccessStatusCode>
+                        : InferResponseData<TEndpoint, SuccessStatusCode>)
+                    : finalResponse;
+                return res as TSelection;`;
 
   const effectImport = isEffectClient ? `import { Effect } from "effect"\n` : "";
 
@@ -235,6 +243,11 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
   }[keyof T];
 
   type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
+
+  type MutationResponse<TEndpoint> = {
+      status: number;
+      data: unknown;
+  };
 
   type InferResponseData<TEndpoint, TStatusCode> =  TypedSuccessResponse<any, any, any> extends
       InferResponseByStatus<TEndpoint, TStatusCode>

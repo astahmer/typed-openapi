@@ -98,7 +98,7 @@ ${validateValue("output", "data", "responseSchema", "data =")}
       }`
     : "";
 
-  const effectRequestParams = `ApiCallParams<TEndpoint>`;
+  const effectImplementationParams = `[config?: unknown]`;
 
   return `
 ${effectImports}
@@ -161,13 +161,28 @@ export class EffectApiClient {
   request<
     TMethod extends keyof EndpointByMethod,
     TPath extends keyof EndpointByMethod[TMethod],
+    TEndpoint extends EndpointByMethod[TMethod][TPath],
+    TParams extends ApiCallParams<TEndpoint>
+  >(
+    method: TMethod,
+    path: TPath,
+    ...params: MaybeOptionalArg<TParams>
+  ): Effect.Effect<
+    ApiCallResult<TEndpoint, TParams>,
+    ${errorChannel},
+    never
+  >;
+
+  request<
+    TMethod extends keyof EndpointByMethod,
+    TPath extends keyof EndpointByMethod[TMethod],
     TEndpoint extends EndpointByMethod[TMethod][TPath]
   >(
     method: TMethod,
     path: TPath,
-    ...params: MaybeOptionalArg<${effectRequestParams}>
+    ...params: ${effectImplementationParams}
   ): Effect.Effect<
-    InferSuccessData<TEndpoint>,
+    SafeApiResponse<TEndpoint> | InferSuccessData<TEndpoint>,
     ${errorChannel},
     never
   > {
@@ -297,10 +312,10 @@ export class EffectApiClient {
             new TypedStatusError(typedResponse as TypedErrorResponse<unknown, ErrorStatusCode, unknown>),
           );
         }
-        return (withResponse ? typedResponse : data) as InferSuccessData<TEndpoint>;
+        return (withResponse ? typedResponse : data) as SafeApiResponse<TEndpoint> | InferSuccessData<TEndpoint>;
       }
 
-      return (withResponse ? typedResponse : data) as InferSuccessData<TEndpoint>;
+      return (withResponse ? typedResponse : data) as SafeApiResponse<TEndpoint> | InferSuccessData<TEndpoint>;
     });
   }
 
@@ -308,15 +323,15 @@ export class EffectApiClient {
     .map(([method, list]) => {
       const endpoints = `${capitalize(method)}Endpoints`;
       return list.length
-        ? `${method}<Path extends keyof ${endpoints}, TEndpoint extends ${endpoints}[Path]>(
+        ? `${method}<Path extends keyof ${endpoints}, TEndpoint extends ${endpoints}[Path], TParams extends ApiCallParams<TEndpoint>>(
     path: Path,
-    ...params: MaybeOptionalArg<${effectRequestParams}>
+    ...params: MaybeOptionalArg<TParams>
   ): Effect.Effect<
-    InferSuccessData<TEndpoint>,
+    ApiCallResult<TEndpoint, TParams>,
     ${errorChannel},
     never
   > {
-    return this.request<"${method}", Path, ${endpoints}[Path]>("${method}", path, ...params);
+    return this.request<"${method}", Path, ${endpoints}[Path], TParams>("${method}", path, params[0] as never);
   }`
         : "";
     })

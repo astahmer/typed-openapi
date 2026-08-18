@@ -1,0 +1,1 @@
+{"kind":"cut","id":"pc_65lyv9sl7brg","ts":"2026-08-18T17:06:02.308Z","agent":"unknown","text":"The typed-openapi checkout has no installed Vitest binary, so its focused test command fails before executing tests; the repo should document or provision its test dependencies for a clean checkout.","tags":["tooling"],"severity":"minor"}

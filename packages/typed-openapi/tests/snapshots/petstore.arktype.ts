@@ -594,7 +594,7 @@ type InferSchemaInputRaw<T> = T extends { inferIn: infer I }
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
-  ? TResponses extends Record<string, unknown>
+  ? TResponses extends Record<string | number, unknown>
     ? TypedApiResponse<
         InferSchemaValue<TResponses>,
         TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never

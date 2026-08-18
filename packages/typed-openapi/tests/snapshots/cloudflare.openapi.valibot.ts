@@ -51,13 +51,13 @@ export type aaa_api_response_common = v.InferOutput<typeof aaa_api_response_comm
 export const aaa_api_response_common = v.object({ errors: aaa_messages, messages: aaa_messages, success: v.literal(true) });
 
 export type aaa_api_response_common_failure = v.InferOutput<typeof aaa_api_response_common_failure>;
-export const aaa_api_response_common_failure = v.object({ errors: v.intersect([aaa_messages, v.unknown()]), messages: aaa_messages, success: v.literal(false) });
+export const aaa_api_response_common_failure = v.object({ errors: aaa_messages, messages: aaa_messages, success: v.literal(false) });
 
 export type aaa_api_response_common_failure_2 = v.InferOutput<typeof aaa_api_response_common_failure_2>;
 export const aaa_api_response_common_failure_2 = v.object({ errors: v.array(v.object({ message: v.string() })), messages: v.optional(v.array(v.partial(v.object({ message: v.string() })))), success: v.literal(false) });
 
 export type aaa_api_response_common_failure_3 = v.InferOutput<typeof aaa_api_response_common_failure_3>;
-export const aaa_api_response_common_failure_3 = v.object({ errors: v.intersect([aaa_messages_3, v.unknown()]), messages: v.intersect([aaa_messages_3]), success: v.literal(false) });
+export const aaa_api_response_common_failure_3 = v.object({ errors: aaa_messages_3, messages: aaa_messages_3, success: v.literal(false) });
 
 export type aaa_api_response_single = v.InferOutput<typeof aaa_api_response_single>;
 export const aaa_api_response_single = v.intersect([aaa_api_response_common_2, v.record(v.string(), v.unknown())]);
@@ -621,7 +621,7 @@ export type access_any_valid_service_token_rule = v.InferOutput<typeof access_an
 export const access_any_valid_service_token_rule = v.object({ any_valid_service_token: v.record(v.string(), v.unknown()) });
 
 export type access_api_response_common_failure = v.InferOutput<typeof access_api_response_common_failure>;
-export const access_api_response_common_failure = v.object({ errors: v.intersect([access_messages, v.unknown()]), messages: v.intersect([access_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const access_api_response_common_failure = v.object({ errors: access_messages, messages: access_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type access_app_count = v.InferOutput<typeof access_app_count>;
 export const access_app_count = v.pipe(v.number(), v.integer());
@@ -699,7 +699,7 @@ export type access_skip_app_launcher_login_page = v.InferOutput<typeof access_sk
 export const access_skip_app_launcher_login_page = v.optional(v.boolean(), false);
 
 export type access_app_launcher_props = v.InferOutput<typeof access_app_launcher_props>;
-export const access_app_launcher_props = v.intersect([access_feature_app_props, v.partial(v.object({ app_launcher_logo_url: access_app_launcher_logo_url, bg_color: access_bg_color, domain: v.unknown(), footer_links: access_footer_links, header_bg_color: access_header_bg_color, landing_page_design: access_landing_page_design, name: v.optional(v.unknown(), "App Launcher"), skip_app_launcher_login_page: access_skip_app_launcher_login_page, type: v.intersect([access_type, v.unknown()]) }))]);
+export const access_app_launcher_props = v.intersect([access_feature_app_props, v.partial(v.object({ app_launcher_logo_url: access_app_launcher_logo_url, bg_color: access_bg_color, domain: v.unknown(), footer_links: access_footer_links, header_bg_color: access_header_bg_color, landing_page_design: access_landing_page_design, name: v.optional(v.unknown(), "App Launcher"), skip_app_launcher_login_page: access_skip_app_launcher_login_page, type: access_type }))]);
 
 export type access_domain_3 = v.InferOutput<typeof access_domain_3>;
 export const access_domain_3 = v.string();
@@ -870,7 +870,7 @@ export type access_app_policy_response = v.InferOutput<typeof access_app_policy_
 export const access_app_policy_response = v.intersect([access_policy_resp, v.partial(v.object({ precedence: access_precedence })), v.record(v.string(), v.unknown())]);
 
 export type access_app_req_embedded_policies = v.InferOutput<typeof access_app_req_embedded_policies>;
-export const access_app_req_embedded_policies = v.partial(v.object({ policies: v.array(v.union([access_app_policy_link, v.intersect([v.unknown(), access_uuid_2]), v.intersect([v.record(v.string(), v.unknown()), v.partial(v.object({ id: access_uuid_2 })), access_app_policy_request])])) }));
+export const access_app_req_embedded_policies = v.partial(v.object({ policies: v.array(v.union([access_app_policy_link, access_uuid_2, v.intersect([v.record(v.string(), v.unknown()), v.partial(v.object({ id: access_uuid_2 })), access_app_policy_request])])) }));
 
 export type access_scim_config_authentication_http_basic = v.InferOutput<typeof access_scim_config_authentication_http_basic>;
 export const access_scim_config_authentication_http_basic = v.object({ password: v.string(), scheme: v.literal("httpbasic"), user: v.string() });
@@ -954,13 +954,13 @@ export type access_use_clientless_isolation_app_launcher_url = v.InferOutput<typ
 export const access_use_clientless_isolation_app_launcher_url = v.optional(v.boolean(), false);
 
 export type access_self_hosted_props = v.InferOutput<typeof access_self_hosted_props>;
-export const access_self_hosted_props = v.object({ allow_authenticate_via_warp: v.optional(access_allow_authenticate_via_warp_2), allow_iframe: v.optional(access_allow_iframe), allowed_idps: v.optional(access_allowed_idps), app_launcher_visible: v.optional(access_app_launcher_visible), auto_redirect_to_identity: v.optional(access_auto_redirect_to_identity_2), cors_headers: v.optional(access_cors_headers), custom_deny_message: v.optional(access_custom_deny_message), custom_deny_url: v.optional(access_custom_deny_url), custom_non_identity_deny_url: v.optional(access_custom_non_identity_deny_url), custom_pages: v.optional(access_custom_pages_2), destinations: v.optional(access_destinations), domain: access_domain, eager_redirect_cookie_setting: v.optional(access_eager_redirect_cookie_setting), enable_binding_cookie: v.optional(access_enable_binding_cookie), http_only_cookie_attribute: v.optional(access_http_only_cookie_attribute), logo_url: v.optional(access_logo_url), mfa_config: v.optional(access_mfa_config), name: v.optional(access_name_8), oauth_configuration: v.optional(access_oauth_configuration), options_preflight_bypass: v.optional(access_options_preflight_bypass), path_cookie_attribute: v.optional(access_path_cookie_attribute), read_service_tokens_from_header: v.optional(access_read_service_tokens_from_header), same_site_cookie_attribute: v.optional(access_same_site_cookie_attribute), scim_config: v.optional(access_scim_config), self_hosted_domains: v.optional(access_self_hosted_domains), service_auth_401_redirect: v.optional(access_service_auth_401_redirect), session_duration: v.optional(access_session_duration_2), skip_interstitial: v.optional(access_skip_interstitial), tags: v.optional(access_tags), type: v.intersect([access_type, v.unknown()]), use_clientless_isolation_app_launcher_url: v.optional(access_use_clientless_isolation_app_launcher_url) });
+export const access_self_hosted_props = v.object({ allow_authenticate_via_warp: v.optional(access_allow_authenticate_via_warp_2), allow_iframe: v.optional(access_allow_iframe), allowed_idps: v.optional(access_allowed_idps), app_launcher_visible: v.optional(access_app_launcher_visible), auto_redirect_to_identity: v.optional(access_auto_redirect_to_identity_2), cors_headers: v.optional(access_cors_headers), custom_deny_message: v.optional(access_custom_deny_message), custom_deny_url: v.optional(access_custom_deny_url), custom_non_identity_deny_url: v.optional(access_custom_non_identity_deny_url), custom_pages: v.optional(access_custom_pages_2), destinations: v.optional(access_destinations), domain: access_domain, eager_redirect_cookie_setting: v.optional(access_eager_redirect_cookie_setting), enable_binding_cookie: v.optional(access_enable_binding_cookie), http_only_cookie_attribute: v.optional(access_http_only_cookie_attribute), logo_url: v.optional(access_logo_url), mfa_config: v.optional(access_mfa_config), name: v.optional(access_name_8), oauth_configuration: v.optional(access_oauth_configuration), options_preflight_bypass: v.optional(access_options_preflight_bypass), path_cookie_attribute: v.optional(access_path_cookie_attribute), read_service_tokens_from_header: v.optional(access_read_service_tokens_from_header), same_site_cookie_attribute: v.optional(access_same_site_cookie_attribute), scim_config: v.optional(access_scim_config), self_hosted_domains: v.optional(access_self_hosted_domains), service_auth_401_redirect: v.optional(access_service_auth_401_redirect), session_duration: v.optional(access_session_duration_2), skip_interstitial: v.optional(access_skip_interstitial), tags: v.optional(access_tags), type: access_type, use_clientless_isolation_app_launcher_url: v.optional(access_use_clientless_isolation_app_launcher_url) });
 
 export type access_created_at = v.InferOutput<typeof access_created_at>;
-export const access_created_at = v.intersect([v.unknown(), access_timestamp]);
+export const access_created_at = access_timestamp;
 
 export type access_updated_at = v.InferOutput<typeof access_updated_at>;
-export const access_updated_at = v.intersect([v.unknown(), access_timestamp]);
+export const access_updated_at = access_timestamp;
 
 export type access_saml_saas_app = v.InferOutput<typeof access_saml_saas_app>;
 export const access_saml_saas_app = v.partial(v.object({ auth_type: v.picklist(["saml", "oidc"]), consumer_service_url: v.string(), created_at: access_created_at, custom_attributes: v.array(v.partial(v.object({ friendly_name: v.string(), name: v.string(), name_format: v.picklist(["urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified", "urn:oasis:names:tc:SAML:2.0:attrname-format:basic", "urn:oasis:names:tc:SAML:2.0:attrname-format:uri"]), required: v.boolean(), source: v.partial(v.object({ name: v.string(), name_by_idp: v.array(v.partial(v.object({ idp_id: v.string(), source_name: v.string() }))) })) }))), default_relay_state: v.string(), idp_entity_id: v.string(), name_id_format: v.picklist(["id", "email"]), name_id_transform_jsonata: v.string(), public_key: v.string(), saml_attribute_transform_jsonata: v.string(), sp_entity_id: v.string(), sso_endpoint: v.string(), updated_at: access_updated_at }));
@@ -969,25 +969,25 @@ export type access_oidc_saas_app = v.InferOutput<typeof access_oidc_saas_app>;
 export const access_oidc_saas_app = v.partial(v.object({ access_token_lifetime: v.string(), allow_pkce_without_client_secret: v.boolean(), app_launcher_url: v.string(), auth_type: v.picklist(["saml", "oidc"]), client_id: v.string(), client_secret: v.string(), created_at: access_created_at, custom_claims: v.array(v.partial(v.object({ name: v.string(), required: v.boolean(), scope: v.picklist(["groups", "profile", "email", "openid"]), source: v.partial(v.object({ name: v.string(), name_by_idp: v.record(v.string(), v.string()) })) }))), grant_types: v.array(v.picklist(["authorization_code", "authorization_code_with_pkce", "refresh_tokens", "hybrid", "implicit"])), group_filter_regex: v.string(), hybrid_and_implicit_options: v.partial(v.object({ return_access_token_from_authorization_endpoint: v.boolean(), return_id_token_from_authorization_endpoint: v.boolean() })), public_key: v.string(), redirect_uris: v.array(v.string()), refresh_token_options: v.partial(v.object({ lifetime: v.string() })), scopes: v.array(v.picklist(["openid", "groups", "email", "profile"])), updated_at: access_updated_at }));
 
 export type access_saas_props = v.InferOutput<typeof access_saas_props>;
-export const access_saas_props = v.partial(v.object({ allowed_idps: access_allowed_idps, app_launcher_visible: access_app_launcher_visible, auto_redirect_to_identity: access_auto_redirect_to_identity_2, custom_pages: access_custom_pages_2, logo_url: access_logo_url, name: access_name_8, saas_app: v.union([access_saml_saas_app, access_oidc_saas_app]), scim_config: access_scim_config, tags: access_tags, type: v.intersect([access_type, v.unknown()]) }));
+export const access_saas_props = v.partial(v.object({ allowed_idps: access_allowed_idps, app_launcher_visible: access_app_launcher_visible, auto_redirect_to_identity: access_auto_redirect_to_identity_2, custom_pages: access_custom_pages_2, logo_url: access_logo_url, name: access_name_8, saas_app: v.union([access_saml_saas_app, access_oidc_saas_app]), scim_config: access_scim_config, tags: access_tags, type: access_type }));
 
 export type access_ssh_props = v.InferOutput<typeof access_ssh_props>;
-export const access_ssh_props = v.intersect([access_self_hosted_props, v.partial(v.object({ type: v.intersect([access_type, v.unknown()]) }))]);
+export const access_ssh_props = v.intersect([access_self_hosted_props, v.partial(v.object({ type: access_type }))]);
 
 export type access_vnc_props = v.InferOutput<typeof access_vnc_props>;
-export const access_vnc_props = v.intersect([access_self_hosted_props, v.partial(v.object({ type: v.intersect([access_type, v.unknown()]) }))]);
+export const access_vnc_props = v.intersect([access_self_hosted_props, v.partial(v.object({ type: access_type }))]);
 
 export type access_warp_props = v.InferOutput<typeof access_warp_props>;
-export const access_warp_props = v.intersect([access_feature_app_props, v.partial(v.object({ domain: v.unknown(), name: v.optional(v.unknown(), "Warp Login App"), type: v.intersect([access_type, v.unknown()]) }))]);
+export const access_warp_props = v.intersect([access_feature_app_props, v.partial(v.object({ domain: v.unknown(), name: v.optional(v.unknown(), "Warp Login App"), type: access_type }))]);
 
 export type access_biso_props = v.InferOutput<typeof access_biso_props>;
-export const access_biso_props = v.intersect([access_feature_app_props, v.partial(v.object({ domain: v.unknown(), name: v.optional(v.unknown(), "Clientless Web Isolation"), type: v.intersect([access_type, v.unknown()]) }))]);
+export const access_biso_props = v.intersect([access_feature_app_props, v.partial(v.object({ domain: v.unknown(), name: v.optional(v.unknown(), "Clientless Web Isolation"), type: access_type }))]);
 
 export type access_proxy_endpoint_props = v.InferOutput<typeof access_proxy_endpoint_props>;
-export const access_proxy_endpoint_props = v.intersect([access_feature_app_props, v.partial(v.object({ domain: v.unknown(), name: v.optional(v.unknown(), "Gateway Proxy"), type: v.intersect([access_type, v.unknown()]) }))]);
+export const access_proxy_endpoint_props = v.intersect([access_feature_app_props, v.partial(v.object({ domain: v.unknown(), name: v.optional(v.unknown(), "Gateway Proxy"), type: access_type }))]);
 
 export type access_bookmark_props = v.InferOutput<typeof access_bookmark_props>;
-export const access_bookmark_props = v.partial(v.object({ app_launcher_visible: access_app_launcher_visible, domain: v.string(), logo_url: access_logo_url, name: access_name_8, tags: access_tags, type: v.intersect([access_type, v.unknown()]) }));
+export const access_bookmark_props = v.partial(v.object({ app_launcher_visible: access_app_launcher_visible, domain: v.string(), logo_url: access_logo_url, name: access_name_8, tags: access_tags, type: access_type }));
 
 export type access_port = v.InferOutput<typeof access_port>;
 export const access_port = v.pipe(v.number(), v.integer());
@@ -1008,7 +1008,7 @@ export type access_app_resp_embedded_target_criteria_infra = v.InferOutput<typeo
 export const access_app_resp_embedded_target_criteria_infra = v.partial(v.object({ target_criteria: v.array(access_target_criteria_infra_app) }));
 
 export type access_infra_props = v.InferOutput<typeof access_infra_props>;
-export const access_infra_props = v.intersect([v.partial(v.object({ name: access_name_8, type: v.intersect([access_type, v.unknown()]) })), access_app_resp_embedded_target_criteria_infra, v.record(v.string(), v.unknown())]);
+export const access_infra_props = v.intersect([v.partial(v.object({ name: access_name_8, type: access_type })), access_app_resp_embedded_target_criteria_infra, v.record(v.string(), v.unknown())]);
 
 export type access_usernames = v.InferOutput<typeof access_usernames>;
 export const access_usernames = v.array(v.string());
@@ -1038,13 +1038,13 @@ export type access_app_resp_embedded_target_criteria_self_hosted = v.InferOutput
 export const access_app_resp_embedded_target_criteria_self_hosted = v.partial(v.object({ target_criteria: v.array(access_target_criteria_self_hosted_app) }));
 
 export type access_rdp_props = v.InferOutput<typeof access_rdp_props>;
-export const access_rdp_props = v.intersect([access_app_resp_embedded_target_criteria_self_hosted, access_self_hosted_props, v.partial(v.object({ type: v.intersect([access_type, v.unknown()]) })), v.unknown()]);
+export const access_rdp_props = v.intersect([access_app_resp_embedded_target_criteria_self_hosted, access_self_hosted_props, v.partial(v.object({ type: access_type }))]);
 
 export type access_mcp_props = v.InferOutput<typeof access_mcp_props>;
-export const access_mcp_props = v.object({ allow_authenticate_via_warp: v.optional(access_allow_authenticate_via_warp_2), allowed_idps: v.optional(access_allowed_idps), auto_redirect_to_identity: v.optional(access_auto_redirect_to_identity_2), custom_deny_message: v.optional(access_custom_deny_message), custom_deny_url: v.optional(access_custom_deny_url), custom_non_identity_deny_url: v.optional(access_custom_non_identity_deny_url), custom_pages: v.optional(access_custom_pages_2), destinations: v.optional(access_destinations), http_only_cookie_attribute: v.optional(access_http_only_cookie_attribute), logo_url: v.optional(access_logo_url), name: v.optional(access_name_8), oauth_configuration: v.optional(access_oauth_configuration), options_preflight_bypass: v.optional(access_options_preflight_bypass), same_site_cookie_attribute: v.optional(access_same_site_cookie_attribute), scim_config: v.optional(access_scim_config), session_duration: v.optional(access_session_duration_2), tags: v.optional(access_tags), type: v.intersect([access_type, v.unknown()]) });
+export const access_mcp_props = v.object({ allow_authenticate_via_warp: v.optional(access_allow_authenticate_via_warp_2), allowed_idps: v.optional(access_allowed_idps), auto_redirect_to_identity: v.optional(access_auto_redirect_to_identity_2), custom_deny_message: v.optional(access_custom_deny_message), custom_deny_url: v.optional(access_custom_deny_url), custom_non_identity_deny_url: v.optional(access_custom_non_identity_deny_url), custom_pages: v.optional(access_custom_pages_2), destinations: v.optional(access_destinations), http_only_cookie_attribute: v.optional(access_http_only_cookie_attribute), logo_url: v.optional(access_logo_url), name: v.optional(access_name_8), oauth_configuration: v.optional(access_oauth_configuration), options_preflight_bypass: v.optional(access_options_preflight_bypass), same_site_cookie_attribute: v.optional(access_same_site_cookie_attribute), scim_config: v.optional(access_scim_config), session_duration: v.optional(access_session_duration_2), tags: v.optional(access_tags), type: access_type });
 
 export type access_mcp_portal_props = v.InferOutput<typeof access_mcp_portal_props>;
-export const access_mcp_portal_props = v.object({ allow_authenticate_via_warp: v.optional(access_allow_authenticate_via_warp_2), allowed_idps: v.optional(access_allowed_idps), auto_redirect_to_identity: v.optional(access_auto_redirect_to_identity_2), custom_deny_message: v.optional(access_custom_deny_message), custom_deny_url: v.optional(access_custom_deny_url), custom_non_identity_deny_url: v.optional(access_custom_non_identity_deny_url), custom_pages: v.optional(access_custom_pages_2), destinations: v.optional(access_destinations), domain: v.optional(access_domain), http_only_cookie_attribute: v.optional(access_http_only_cookie_attribute), logo_url: v.optional(access_logo_url), name: v.optional(access_name_8), oauth_configuration: v.optional(access_oauth_configuration), options_preflight_bypass: v.optional(access_options_preflight_bypass), same_site_cookie_attribute: v.optional(access_same_site_cookie_attribute), scim_config: v.optional(access_scim_config), session_duration: v.optional(access_session_duration_2), tags: v.optional(access_tags), type: v.intersect([access_type, v.unknown()]) });
+export const access_mcp_portal_props = v.object({ allow_authenticate_via_warp: v.optional(access_allow_authenticate_via_warp_2), allowed_idps: v.optional(access_allowed_idps), auto_redirect_to_identity: v.optional(access_auto_redirect_to_identity_2), custom_deny_message: v.optional(access_custom_deny_message), custom_deny_url: v.optional(access_custom_deny_url), custom_non_identity_deny_url: v.optional(access_custom_non_identity_deny_url), custom_pages: v.optional(access_custom_pages_2), destinations: v.optional(access_destinations), domain: v.optional(access_domain), http_only_cookie_attribute: v.optional(access_http_only_cookie_attribute), logo_url: v.optional(access_logo_url), name: v.optional(access_name_8), oauth_configuration: v.optional(access_oauth_configuration), options_preflight_bypass: v.optional(access_options_preflight_bypass), same_site_cookie_attribute: v.optional(access_same_site_cookie_attribute), scim_config: v.optional(access_scim_config), session_duration: v.optional(access_session_duration_2), tags: v.optional(access_tags), type: access_type });
 
 export type access_app_request = v.InferOutput<typeof access_app_request>;
 export const access_app_request = v.union([v.intersect([access_self_hosted_props, access_app_req_embedded_policies, access_app_req_embedded_scim_config, v.record(v.string(), v.unknown())]), v.intersect([access_saas_props, access_app_req_embedded_policies, access_app_req_embedded_scim_config, v.record(v.string(), v.unknown())]), v.intersect([access_ssh_props, access_app_req_embedded_policies, access_app_req_embedded_scim_config, v.record(v.string(), v.unknown())]), v.intersect([access_vnc_props, access_app_req_embedded_policies, access_app_req_embedded_scim_config, v.record(v.string(), v.unknown())]), v.intersect([access_app_launcher_props, access_app_req_embedded_policies, v.record(v.string(), v.unknown())]), v.intersect([access_warp_props, access_app_req_embedded_policies, v.record(v.string(), v.unknown())]), v.intersect([access_biso_props, access_app_req_embedded_policies, v.record(v.string(), v.unknown())]), v.intersect([access_proxy_endpoint_props, access_app_req_embedded_policies, v.record(v.string(), v.unknown())]), v.intersect([access_bookmark_props, access_app_req_embedded_policies, v.record(v.string(), v.unknown())]), v.intersect([access_infra_props, access_infra_app_req_embedded_policies, v.record(v.string(), v.unknown())]), v.intersect([access_rdp_props, access_app_req_embedded_policies, v.record(v.string(), v.unknown())]), v.intersect([access_mcp_props, access_app_req_embedded_policies, v.record(v.string(), v.unknown())]), v.intersect([access_mcp_portal_props, access_app_req_embedded_policies, v.record(v.string(), v.unknown())])]);
@@ -1173,10 +1173,10 @@ export type access_saml_certificate = v.InferOutput<typeof access_saml_certifica
 export const access_saml_certificate = v.object({ is_current: v.boolean(), not_after: v.string(), public_certificate: v.string(), uid: v.pipe(v.string(), v.uuid()) });
 
 export type access_saml_certificate_set = v.InferOutput<typeof access_saml_certificate_set>;
-export const access_saml_certificate_set = v.object({ created_at: v.string(), current_certificate: v.optional(v.intersect([access_saml_certificate])), previous_certificate: v.optional(v.nullable(v.record(v.string(), v.unknown()))), uid: v.pipe(v.string(), v.uuid()), updated_at: v.string() });
+export const access_saml_certificate_set = v.object({ created_at: v.string(), current_certificate: v.optional(access_saml_certificate), previous_certificate: v.optional(v.nullable(v.record(v.string(), v.unknown()))), uid: v.pipe(v.string(), v.uuid()), updated_at: v.string() });
 
 export type access_identity_provider = v.InferOutput<typeof access_identity_provider>;
-export const access_identity_provider = v.object({ config: v.record(v.string(), v.unknown()), id: v.optional(access_uuid), name: access_name_3, read_only: v.optional(v.boolean()), saml_certificate_set: v.optional(v.intersect([access_saml_certificate_set, v.unknown()])), saml_certificate_set_id: v.optional(v.pipe(v.string(), v.uuid())), scim_config: v.optional(v.partial(v.object({ enabled: v.optional(v.boolean(), false), identity_update_behavior: v.optional(v.picklist(["automatic", "reauth", "no_action"]), "no_action"), scim_base_url: v.string(), seat_deprovision: v.optional(v.boolean(), false), secret: v.string(), user_deprovision: v.optional(v.boolean(), false) }))), type: v.picklist(["onetimepin", "azureAD", "saml", "centrify", "facebook", "github", "google-apps", "google", "linkedin", "oidc", "okta", "onelogin", "pingone", "yandex", "cloudflare"]) });
+export const access_identity_provider = v.object({ config: v.record(v.string(), v.unknown()), id: v.optional(access_uuid), name: access_name_3, read_only: v.optional(v.boolean()), saml_certificate_set: v.optional(access_saml_certificate_set), saml_certificate_set_id: v.optional(v.pipe(v.string(), v.uuid())), scim_config: v.optional(v.partial(v.object({ enabled: v.optional(v.boolean(), false), identity_update_behavior: v.optional(v.picklist(["automatic", "reauth", "no_action"]), "no_action"), scim_base_url: v.string(), seat_deprovision: v.optional(v.boolean(), false), secret: v.string(), user_deprovision: v.optional(v.boolean(), false) }))), type: v.picklist(["onetimepin", "azureAD", "saml", "centrify", "facebook", "github", "google-apps", "google", "linkedin", "oidc", "okta", "onelogin", "pingone", "yandex", "cloudflare"]) });
 
 export type access_generic_oauth_config = v.InferOutput<typeof access_generic_oauth_config>;
 export const access_generic_oauth_config = v.partial(v.object({ client_id: v.string(), client_secret: v.string() }));
@@ -1233,7 +1233,7 @@ export type access_saml_certificate_2 = v.InferOutput<typeof access_saml_certifi
 export const access_saml_certificate_2 = v.object({ is_current: v.boolean(), not_after: v.string(), public_certificate: v.string(), uid: v.string() });
 
 export type access_saml_certificate_set_2 = v.InferOutput<typeof access_saml_certificate_set_2>;
-export const access_saml_certificate_set_2 = v.object({ created_at: v.string(), current_certificate: v.optional(v.intersect([access_saml_certificate_2])), previous_certificate: v.optional(v.nullable(v.record(v.string(), v.unknown()))), uid: v.string(), updated_at: v.string() });
+export const access_saml_certificate_set_2 = v.object({ created_at: v.string(), current_certificate: v.optional(access_saml_certificate_2), previous_certificate: v.optional(v.nullable(v.record(v.string(), v.unknown()))), uid: v.string(), updated_at: v.string() });
 
 export type access_certificate_set_list_response = v.InferOutput<typeof access_certificate_set_list_response>;
 export const access_certificate_set_list_response = v.intersect([access_api_response_collection, v.partial(v.object({ result: v.array(access_saml_certificate_set_2) }))]);
@@ -1440,7 +1440,7 @@ export type access_id_response_6 = v.InferOutput<typeof access_id_response_6>;
 export const access_id_response_6 = v.intersect([access_api_response_single, v.partial(v.object({ result: v.partial(v.object({ id: access_id_3 })) })), v.record(v.string(), v.unknown())]);
 
 export type access_identifier_2 = v.InferOutput<typeof access_identifier_2>;
-export const access_identifier_2 = v.intersect([access_identifier, v.unknown()]);
+export const access_identifier_2 = access_identifier;
 
 export type access_identifier_3 = v.InferOutput<typeof access_identifier_3>;
 export const access_identifier_3 = v.string();
@@ -1500,13 +1500,13 @@ export type access_identity_providers_2 = v.InferOutput<typeof access_identity_p
 export const access_identity_providers_2 = v.union([access_azureAD_2, access_centrify_2, access_facebook_2, access_github_2, access_google_2, access_google_apps_2, access_linkedin_2, access_oidc_2, access_okta_2, access_onelogin_2, access_pingone_2, access_saml_2, access_yandex_2, access_cloudflare_2]);
 
 export type access_idp_federation_grant = v.InferOutput<typeof access_idp_federation_grant>;
-export const access_idp_federation_grant = v.object({ created_at: access_created_at, id: v.intersect([access_identifier, v.unknown()]), idp_id: v.pipe(v.string(), v.uuid()) });
+export const access_idp_federation_grant = v.object({ created_at: access_created_at, id: access_identifier, idp_id: v.pipe(v.string(), v.uuid()) });
 
 export type access_idp_federation_grant_create_request = v.InferOutput<typeof access_idp_federation_grant_create_request>;
 export const access_idp_federation_grant_create_request = v.object({ idp_id: v.pipe(v.string(), v.uuid()) });
 
 export type access_idp_federation_grant_id_response = v.InferOutput<typeof access_idp_federation_grant_id_response>;
-export const access_idp_federation_grant_id_response = v.intersect([access_api_response_single, v.partial(v.object({ result: v.partial(v.object({ id: v.intersect([access_identifier]) })) }))]);
+export const access_idp_federation_grant_id_response = v.intersect([access_api_response_single, v.partial(v.object({ result: v.partial(v.object({ id: access_identifier })) }))]);
 
 export type access_idp_federation_grant_list_response = v.InferOutput<typeof access_idp_federation_grant_list_response>;
 export const access_idp_federation_grant_list_response = v.intersect([access_api_response_collection, v.partial(v.object({ result: v.array(access_idp_federation_grant) }))]);
@@ -1749,7 +1749,7 @@ export type access_response_collection_18 = v.InferOutput<typeof access_response
 export const access_response_collection_18 = v.intersect([access_api_response_collection, v.partial(v.object({ result: v.array(access_groups_3) })), v.record(v.string(), v.unknown())]);
 
 export type access_service_tokens_2 = v.InferOutput<typeof access_service_tokens_2>;
-export const access_service_tokens_2 = v.partial(v.object({ client_id: access_client_id, created_at: access_timestamp, duration: access_duration_2, expires_at: access_timestamp, id: v.intersect([v.unknown(), access_uuid]), last_seen_at: access_timestamp, name: access_name_17, updated_at: access_timestamp }));
+export const access_service_tokens_2 = v.partial(v.object({ client_id: access_client_id, created_at: access_timestamp, duration: access_duration_2, expires_at: access_timestamp, id: access_uuid, last_seen_at: access_timestamp, name: access_name_17, updated_at: access_timestamp }));
 
 export type access_response_collection_19 = v.InferOutput<typeof access_response_collection_19>;
 export const access_response_collection_19 = v.intersect([access_api_response_collection, v.partial(v.object({ result: v.array(access_service_tokens_2) })), v.record(v.string(), v.unknown())]);
@@ -1782,7 +1782,7 @@ export type access_response_collection_24 = v.InferOutput<typeof access_response
 export const access_response_collection_24 = v.intersect([access_api_response_collection, v.partial(v.object({ result_info: v.partial(v.object({ count: v.unknown(), page: v.unknown(), per_page: v.unknown(), total_count: v.unknown() })) })), v.partial(v.object({ result: v.array(access_users_2) })), v.record(v.string(), v.unknown())]);
 
 export type access_service_tokens = v.InferOutput<typeof access_service_tokens>;
-export const access_service_tokens = v.partial(v.object({ client_id: access_client_id, created_at: access_created_at, duration: access_duration, expires_at: access_timestamp, id: v.intersect([v.unknown(), access_uuid]), last_seen_at: v.intersect([v.unknown(), access_timestamp]), name: access_name_2, updated_at: access_updated_at }));
+export const access_service_tokens = v.partial(v.object({ client_id: access_client_id, created_at: access_created_at, duration: access_duration, expires_at: access_timestamp, id: access_uuid, last_seen_at: access_timestamp, name: access_name_2, updated_at: access_updated_at }));
 
 export type access_response_collection_3 = v.InferOutput<typeof access_response_collection_3>;
 export const access_response_collection_3 = v.intersect([access_api_response_collection, v.partial(v.object({ result: v.array(access_service_tokens) })), v.record(v.string(), v.unknown())]);
@@ -2013,7 +2013,7 @@ export type addressing_api_response_collection = v.InferOutput<typeof addressing
 export const addressing_api_response_collection = v.intersect([addressing_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type addressing_api_response_common_failure = v.InferOutput<typeof addressing_api_response_common_failure>;
-export const addressing_api_response_common_failure = v.object({ errors: v.intersect([addressing_messages, v.unknown()]), messages: v.intersect([addressing_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const addressing_api_response_common_failure = v.object({ errors: addressing_messages, messages: addressing_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type addressing_approved = v.InferOutput<typeof addressing_approved>;
 export const addressing_approved = v.string();
@@ -2319,7 +2319,7 @@ export type alexandria_api_response_collection = v.InferOutput<typeof alexandria
 export const alexandria_api_response_collection = v.intersect([alexandria_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type alexandria_api_response_common_failure = v.InferOutput<typeof alexandria_api_response_common_failure>;
-export const alexandria_api_response_common_failure = v.object({ errors: v.intersect([alexandria_messages, v.unknown()]), messages: v.intersect([alexandria_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const alexandria_api_response_common_failure = v.object({ errors: alexandria_messages, messages: alexandria_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type alexandria_application_confidence_score = v.InferOutput<typeof alexandria_application_confidence_score>;
 export const alexandria_application_confidence_score = v.number();
@@ -2514,7 +2514,7 @@ export type api_shield_api_response_collection = v.InferOutput<typeof api_shield
 export const api_shield_api_response_collection = v.intersect([api_shield_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type api_shield_api_response_common_failure = v.InferOutput<typeof api_shield_api_response_common_failure>;
-export const api_shield_api_response_common_failure = v.object({ errors: v.intersect([api_shield_messages, v.unknown()]), messages: v.intersect([api_shield_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const api_shield_api_response_common_failure = v.object({ errors: api_shield_messages, messages: api_shield_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type api_shield_api_response_single = v.InferOutput<typeof api_shield_api_response_single>;
 export const api_shield_api_response_single = v.intersect([api_shield_api_response_common, v.record(v.string(), v.unknown())]);
@@ -2715,7 +2715,7 @@ export type api_shield_multiple_operation_response = v.InferOutput<typeof api_sh
 export const api_shield_multiple_operation_response = v.intersect([api_shield_api_response_common, v.object({ result: v.array(api_shield_operation) })]);
 
 export type api_shield_multiple_operation_response_paginated = v.InferOutput<typeof api_shield_multiple_operation_response_paginated>;
-export const api_shield_multiple_operation_response_paginated = v.intersect([api_shield_api_response_collection, v.object({ result: v.array(v.intersect([api_shield_operation])) })]);
+export const api_shield_multiple_operation_response_paginated = v.intersect([api_shield_api_response_collection, v.object({ result: v.array(api_shield_operation) })]);
 
 export type api_shield_object_with_operation_id = v.InferOutput<typeof api_shield_object_with_operation_id>;
 export const api_shield_object_with_operation_id = v.object({ operation_id: v.intersect([v.string(), api_shield_uuid_2]) });
@@ -2868,7 +2868,7 @@ export type argo_analytics_api_response_common = v.InferOutput<typeof argo_analy
 export const argo_analytics_api_response_common = v.object({ errors: argo_analytics_messages, messages: argo_analytics_messages, result: v.union([v.record(v.string(), v.unknown()), v.array(v.unknown()), v.string()]), success: v.literal(true) });
 
 export type argo_analytics_api_response_common_failure = v.InferOutput<typeof argo_analytics_api_response_common_failure>;
-export const argo_analytics_api_response_common_failure = v.object({ errors: v.intersect([argo_analytics_messages, v.unknown()]), messages: v.intersect([argo_analytics_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const argo_analytics_api_response_common_failure = v.object({ errors: argo_analytics_messages, messages: argo_analytics_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type argo_analytics_api_response_single = v.InferOutput<typeof argo_analytics_api_response_single>;
 export const argo_analytics_api_response_single = v.intersect([argo_analytics_api_response_common, v.partial(v.object({ result: v.union([v.nullable(v.record(v.string(), v.unknown())), v.nullable(v.string())]) })), v.record(v.string(), v.unknown())]);
@@ -2883,7 +2883,7 @@ export type argo_config_messages = v.InferOutput<typeof argo_config_messages>;
 export const argo_config_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), message: v.string() }));
 
 export type argo_config_api_response_common_failure = v.InferOutput<typeof argo_config_api_response_common_failure>;
-export const argo_config_api_response_common_failure = v.object({ errors: v.intersect([argo_config_messages, v.unknown()]), messages: v.intersect([argo_config_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const argo_config_api_response_common_failure = v.object({ errors: argo_config_messages, messages: argo_config_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type argo_config_editable = v.InferOutput<typeof argo_config_editable>;
 export const argo_config_editable = v.boolean();
@@ -2943,7 +2943,7 @@ export type art_ErrorResponse = v.InferOutput<typeof art_ErrorResponse>;
 export const art_ErrorResponse = v.object({ errors: v.array(art_APIError), messages: v.array(art_APIMessage), result: v.optional(v.nullable(v.record(v.string(), v.unknown()))), success: v.boolean() });
 
 export type art_QuerySummary = v.InferOutput<typeof art_QuerySummary>;
-export const art_QuerySummary = v.intersect([art_CommonQuery]);
+export const art_QuerySummary = art_CommonQuery;
 
 export type art_QueryTimeseries = v.InferOutput<typeof art_QueryTimeseries>;
 export const art_QueryTimeseries = v.intersect([art_CommonQuery, v.object({ resolution: v.string() })]);
@@ -3042,7 +3042,7 @@ export type bill_subs_api_amount = v.InferOutput<typeof bill_subs_api_amount>;
 export const bill_subs_api_amount = v.number();
 
 export type bill_subs_api_api_response_common_failure = v.InferOutput<typeof bill_subs_api_api_response_common_failure>;
-export const bill_subs_api_api_response_common_failure = v.object({ errors: v.intersect([bill_subs_api_messages, v.unknown()]), messages: v.intersect([bill_subs_api_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const bill_subs_api_api_response_common_failure = v.object({ errors: bill_subs_api_messages, messages: bill_subs_api_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type bill_subs_api_can_subscribe = v.InferOutput<typeof bill_subs_api_can_subscribe>;
 export const bill_subs_api_can_subscribe = v.optional(v.boolean(), false);
@@ -3120,7 +3120,7 @@ export type bill_subs_api_duration = v.InferOutput<typeof bill_subs_api_duration
 export const bill_subs_api_duration = v.number();
 
 export type bill_subs_api_frequency_response = v.InferOutput<typeof bill_subs_api_frequency_response>;
-export const bill_subs_api_frequency_response = v.intersect([bill_subs_api_frequency, v.picklist(["weekly", "monthly", "quarterly", "yearly", "not-applicable"]), v.unknown()]);
+export const bill_subs_api_frequency_response = v.intersect([bill_subs_api_frequency, v.picklist(["weekly", "monthly", "quarterly", "yearly", "not-applicable"])]);
 
 export type bill_subs_api_schemas_component_values = v.InferOutput<typeof bill_subs_api_schemas_component_values>;
 export const bill_subs_api_schemas_component_values = v.array(bill_subs_api_component_value);
@@ -3183,7 +3183,7 @@ export type bot_management_api_response_common = v.InferOutput<typeof bot_manage
 export const bot_management_api_response_common = v.object({ errors: bot_management_messages, messages: bot_management_messages, success: v.literal(true) });
 
 export type bot_management_api_response_common_failure = v.InferOutput<typeof bot_management_api_response_common_failure>;
-export const bot_management_api_response_common_failure = v.object({ errors: v.intersect([bot_management_messages, v.unknown()]), messages: v.intersect([bot_management_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const bot_management_api_response_common_failure = v.object({ errors: bot_management_messages, messages: bot_management_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type bot_management_api_response_single = v.InferOutput<typeof bot_management_api_response_single>;
 export const bot_management_api_response_single = v.intersect([bot_management_api_response_common, v.record(v.string(), v.unknown())]);
@@ -3210,7 +3210,7 @@ export type bot_management_using_latest_model = v.InferOutput<typeof bot_managem
 export const bot_management_using_latest_model = v.boolean();
 
 export type bot_management_base_config = v.InferOutput<typeof bot_management_base_config>;
-export const bot_management_base_config = v.intersect([v.partial(v.object({ ai_bots_protection: bot_management_ai_bots_protection, cf_robots_variant: bot_management_cf_robots_variant, content_bots_protection: bot_management_content_bots_protection, crawler_protection: bot_management_crawler_protection, enable_js: bot_management_enable_js, is_robots_txt_managed: bot_management_is_robots_txt_managed, using_latest_model: bot_management_using_latest_model }))]);
+export const bot_management_base_config = v.partial(v.object({ ai_bots_protection: bot_management_ai_bots_protection, cf_robots_variant: bot_management_cf_robots_variant, content_bots_protection: bot_management_content_bots_protection, crawler_protection: bot_management_crawler_protection, enable_js: bot_management_enable_js, is_robots_txt_managed: bot_management_is_robots_txt_managed, using_latest_model: bot_management_using_latest_model }));
 
 export type bot_management_bm_cookie_enabled = v.InferOutput<typeof bot_management_bm_cookie_enabled>;
 export const bot_management_bm_cookie_enabled = v.boolean();
@@ -3495,7 +3495,7 @@ export type builds_EnvironmentVariablesRequest = v.InferOutput<typeof builds_Env
 export const builds_EnvironmentVariablesRequest = v.record(v.string(), v.object({ is_secret: builds_is_secret, value: v.optional(v.nullable(v.string())) }));
 
 export type builds_CreateWorkerBuildSettingsInput = v.InferOutput<typeof builds_CreateWorkerBuildSettingsInput>;
-export const builds_CreateWorkerBuildSettingsInput = v.object({ build_caching_enabled: v.optional(v.intersect([builds_build_caching_enabled, v.optional(v.unknown(), true)]), true), build_command: builds_build_command, build_token_uuid: builds_build_token_uuid, deploy_command: builds_deploy_command, environment_variables: v.optional(builds_EnvironmentVariablesRequest), path_excludes: v.optional(builds_path_excludes), path_includes: v.optional(builds_path_includes), root_directory: v.optional(v.intersect([builds_root_directory, v.optional(v.unknown(), "/")]), "/") });
+export const builds_CreateWorkerBuildSettingsInput = v.object({ build_caching_enabled: v.optional(builds_build_caching_enabled), build_command: builds_build_command, build_token_uuid: builds_build_token_uuid, deploy_command: builds_deploy_command, environment_variables: v.optional(builds_EnvironmentVariablesRequest), path_excludes: v.optional(builds_path_excludes), path_includes: v.optional(builds_path_includes), root_directory: v.optional(builds_root_directory) });
 
 export type builds_CreateWorkerGitRepositoryFunfettiInput = v.InferOutput<typeof builds_CreateWorkerGitRepositoryFunfettiInput>;
 export const builds_CreateWorkerGitRepositoryFunfettiInput = v.object({ branch: v.pipe(v.string(), v.minLength(1), v.maxLength(256)), provider_account_id: builds_provider_account_id, provider_account_name: builds_provider_account_name, provider_type: v.picklist(["github", "gitlab"]), repo_id: builds_repo_id, repo_name: builds_repo_name });
@@ -3600,7 +3600,7 @@ export type cache_purge_messages = v.InferOutput<typeof cache_purge_messages>;
 export const cache_purge_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), message: v.string() }));
 
 export type cache_purge_api_response_common_failure = v.InferOutput<typeof cache_purge_api_response_common_failure>;
-export const cache_purge_api_response_common_failure = v.object({ errors: v.intersect([cache_purge_messages, v.unknown()]), messages: v.intersect([cache_purge_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
+export const cache_purge_api_response_common_failure = v.object({ errors: cache_purge_messages, messages: cache_purge_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
 
 export type cache_purge_identifier = v.InferOutput<typeof cache_purge_identifier>;
 export const cache_purge_identifier = v.pipe(v.string(), v.maxLength(32));
@@ -3810,7 +3810,7 @@ export type cache_result = v.InferOutput<typeof cache_result>;
 export const cache_result = v.object({ editable: v.boolean(), id: v.string(), modified_on: v.string(), next_scheduled_scan: v.optional(v.nullable(v.string())), value: v.picklist(["auto", "custom"]) });
 
 export type cache_api_response_common_failure = v.InferOutput<typeof cache_api_response_common_failure>;
-export const cache_api_response_common_failure = v.object({ errors: v.intersect([cache_messages, v.unknown()]), messages: v.intersect([cache_messages]), result: cache_result, success: v.boolean() });
+export const cache_api_response_common_failure = v.object({ errors: cache_messages, messages: cache_messages, result: cache_result, success: v.boolean() });
 
 export type cache_api_response_single_id = v.InferOutput<typeof cache_api_response_single_id>;
 export const cache_api_response_single_id = v.object({ errors: cache_messages, messages: cache_messages, result: cache_result, success: v.boolean() });
@@ -3819,10 +3819,10 @@ export type cache_auto_origin_tls_kex_value = v.InferOutput<typeof cache_auto_or
 export const cache_auto_origin_tls_kex_value = v.boolean();
 
 export type cache_auto_origin_tls_kex_result = v.InferOutput<typeof cache_auto_origin_tls_kex_result>;
-export const cache_auto_origin_tls_kex_result = v.object({ enabled: v.intersect([cache_auto_origin_tls_kex_value, v.unknown()]), id: v.string(), modified_on: v.string() });
+export const cache_auto_origin_tls_kex_result = v.object({ enabled: cache_auto_origin_tls_kex_value, id: v.string(), modified_on: v.string() });
 
 export type cache_auto_origin_tls_kex_failure_response = v.InferOutput<typeof cache_auto_origin_tls_kex_failure_response>;
-export const cache_auto_origin_tls_kex_failure_response = v.object({ errors: v.intersect([cache_messages, v.unknown()]), messages: cache_messages, result: cache_auto_origin_tls_kex_result, success: v.boolean() });
+export const cache_auto_origin_tls_kex_failure_response = v.object({ errors: cache_messages, messages: cache_messages, result: cache_auto_origin_tls_kex_result, success: v.boolean() });
 
 export type cache_auto_origin_tls_kex_patch = v.InferOutput<typeof cache_auto_origin_tls_kex_patch>;
 export const cache_auto_origin_tls_kex_patch = v.object({ enabled: cache_auto_origin_tls_kex_value });
@@ -3849,7 +3849,7 @@ export type calls_api_response_common = v.InferOutput<typeof calls_api_response_
 export const calls_api_response_common = v.object({ errors: calls_messages, messages: calls_messages, success: v.literal(true) });
 
 export type calls_api_response_common_failure = v.InferOutput<typeof calls_api_response_common_failure>;
-export const calls_api_response_common_failure = v.object({ errors: v.intersect([calls_messages, v.unknown()]), messages: v.intersect([calls_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const calls_api_response_common_failure = v.object({ errors: calls_messages, messages: calls_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type calls_api_response_single = v.InferOutput<typeof calls_api_response_single>;
 export const calls_api_response_single = v.intersect([calls_api_response_common, v.record(v.string(), v.unknown())]);
@@ -4173,7 +4173,7 @@ export type cc_ModifyApplicationRequestBody = v.InferOutput<typeof cc_ModifyAppl
 export const cc_ModifyApplicationRequestBody = v.partial(v.object({ configuration: cc_ModifyUserDeploymentConfiguration, constraints: cc_ApplicationConstraints, instances: v.pipe(v.number(), v.integer()), max_instances: v.pipe(v.number(), v.integer()), name: v.string(), observability: cc_ApplicationObservability, rollout_active_grace_period: cc_ApplicationRolloutActiveGracePeriod, scheduling_policy: cc_SchedulingPolicy }));
 
 export type cc_V4BaseErrorResponse = v.InferOutput<typeof cc_V4BaseErrorResponse>;
-export const cc_V4BaseErrorResponse = v.object({ errors: v.intersect([cc_Messages, v.unknown()]), messages: v.intersect([cc_Messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
+export const cc_V4BaseErrorResponse = v.object({ errors: cc_Messages, messages: cc_Messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
 
 export type cc_V4BaseResponse = v.InferOutput<typeof cc_V4BaseResponse>;
 export const cc_V4BaseResponse = v.object({ errors: cc_Messages, messages: cc_Messages, success: v.boolean() });
@@ -4191,7 +4191,7 @@ export type cloud_connector_api_response_common = v.InferOutput<typeof cloud_con
 export const cloud_connector_api_response_common = v.object({ errors: cloud_connector_messages, messages: cloud_connector_messages, success: v.literal(true) });
 
 export type cloud_connector_api_response_common_failure = v.InferOutput<typeof cloud_connector_api_response_common_failure>;
-export const cloud_connector_api_response_common_failure = v.object({ errors: v.intersect([cloud_connector_messages, v.unknown()]), messages: v.intersect([cloud_connector_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const cloud_connector_api_response_common_failure = v.object({ errors: cloud_connector_messages, messages: cloud_connector_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type cloud_connector_identifier = v.InferOutput<typeof cloud_connector_identifier>;
 export const cloud_connector_identifier = v.pipe(v.string(), v.maxLength(32));
@@ -4245,7 +4245,7 @@ export type cloudflare_pipelines_Format = v.InferOutput<typeof cloudflare_pipeli
 export const cloudflare_pipelines_Format = v.union([v.intersect([cloudflare_pipelines_JsonFormat, v.object({ type: v.literal("json") })]), v.intersect([cloudflare_pipelines_ParquetFormat, v.object({ type: v.literal("parquet") })])]);
 
 export type cloudflare_pipelines_ConnectionSchema = v.InferOutput<typeof cloudflare_pipelines_ConnectionSchema>;
-export const cloudflare_pipelines_ConnectionSchema = v.partial(v.object({ fields: v.array(cloudflare_pipelines_SourceField), format: v.intersect([cloudflare_pipelines_Format]), inferred: v.nullable(v.boolean()) }));
+export const cloudflare_pipelines_ConnectionSchema = v.partial(v.object({ fields: v.array(cloudflare_pipelines_SourceField), format: cloudflare_pipelines_Format, inferred: v.nullable(v.boolean()) }));
 
 export type cloudflare_pipelines_PipelineEdge = v.InferOutput<typeof cloudflare_pipelines_PipelineEdge>;
 export const cloudflare_pipelines_PipelineEdge = v.object({ dest_id: v.pipe(v.number(), v.integer(), v.minValue(0)), edge_type: v.string(), key_type: v.string(), src_id: v.pipe(v.number(), v.integer(), v.minValue(0)), value_type: v.string() });
@@ -4353,19 +4353,19 @@ export type cloudforce_one_requests_uuid = v.InferOutput<typeof cloudforce_one_r
 export const cloudforce_one_requests_uuid = v.pipe(v.string(), v.maxLength(36));
 
 export type cloudforce_one_requests_priority_item = v.InferOutput<typeof cloudforce_one_requests_priority_item>;
-export const cloudforce_one_requests_priority_item = v.object({ created: v.intersect([cloudforce_one_requests_time]), id: cloudforce_one_requests_uuid, labels: cloudforce_one_requests_labels, priority: v.pipe(v.number(), v.integer()), requirement: v.string(), tlp: cloudforce_one_requests_tlp, updated: v.intersect([cloudforce_one_requests_time]) });
+export const cloudforce_one_requests_priority_item = v.object({ created: cloudforce_one_requests_time, id: cloudforce_one_requests_uuid, labels: cloudforce_one_requests_labels, priority: v.pipe(v.number(), v.integer()), requirement: v.string(), tlp: cloudforce_one_requests_tlp, updated: cloudforce_one_requests_time });
 
 export type cloudforce_one_requests_priority_list = v.InferOutput<typeof cloudforce_one_requests_priority_list>;
 export const cloudforce_one_requests_priority_list = v.object({ page: v.pipe(v.number(), v.integer()), per_page: v.pipe(v.number(), v.integer()) });
 
 export type cloudforce_one_requests_quota = v.InferOutput<typeof cloudforce_one_requests_quota>;
-export const cloudforce_one_requests_quota = v.partial(v.object({ anniversary_date: v.intersect([cloudforce_one_requests_time]), quarter_anniversary_date: v.intersect([cloudforce_one_requests_time]), quota: v.pipe(v.number(), v.integer()), remaining: v.pipe(v.number(), v.integer()) }));
+export const cloudforce_one_requests_quota = v.partial(v.object({ anniversary_date: cloudforce_one_requests_time, quarter_anniversary_date: cloudforce_one_requests_time, quota: v.pipe(v.number(), v.integer()), remaining: v.pipe(v.number(), v.integer()) }));
 
 export type cloudforce_one_requests_request_asset_edit = v.InferOutput<typeof cloudforce_one_requests_request_asset_edit>;
 export const cloudforce_one_requests_request_asset_edit = v.partial(v.object({ source: cloudforce_one_requests_asset_content }));
 
 export type cloudforce_one_requests_request_asset_item = v.InferOutput<typeof cloudforce_one_requests_request_asset_item>;
-export const cloudforce_one_requests_request_asset_item = v.object({ created: v.optional(v.intersect([cloudforce_one_requests_time])), description: v.optional(v.string()), file_type: v.optional(v.string()), id: v.pipe(v.number(), v.integer()), name: v.string() });
+export const cloudforce_one_requests_request_asset_item = v.object({ created: v.optional(cloudforce_one_requests_time), description: v.optional(v.string()), file_type: v.optional(v.string()), id: v.pipe(v.number(), v.integer()), name: v.string() });
 
 export type cloudforce_one_requests_request_asset_list = v.InferOutput<typeof cloudforce_one_requests_request_asset_list>;
 export const cloudforce_one_requests_request_asset_list = v.object({ page: v.pipe(v.number(), v.integer()), per_page: v.pipe(v.number(), v.integer()) });
@@ -4395,19 +4395,19 @@ export type cloudforce_one_requests_request_item = v.InferOutput<typeof cloudfor
 export const cloudforce_one_requests_request_item = v.object({ completed: v.optional(cloudforce_one_requests_time), content: cloudforce_one_requests_request_content, created: cloudforce_one_requests_time, id: cloudforce_one_requests_uuid, message_tokens: v.optional(v.pipe(v.number(), v.integer())), priority: cloudforce_one_requests_time, readable_id: v.optional(cloudforce_one_requests_request_readable_id), request: cloudforce_one_requests_request_type, status: v.optional(cloudforce_one_requests_request_status), summary: cloudforce_one_requests_request_summary, tlp: cloudforce_one_requests_tlp, tokens: v.optional(v.pipe(v.number(), v.integer())), updated: cloudforce_one_requests_time });
 
 export type cloudforce_one_requests_request_list = v.InferOutput<typeof cloudforce_one_requests_request_list>;
-export const cloudforce_one_requests_request_list = v.object({ completed_after: v.optional(v.intersect([cloudforce_one_requests_time])), completed_before: v.optional(v.intersect([cloudforce_one_requests_time])), created_after: v.optional(v.intersect([cloudforce_one_requests_time])), created_before: v.optional(v.intersect([cloudforce_one_requests_time])), page: v.pipe(v.number(), v.integer()), per_page: v.pipe(v.number(), v.integer()), request_type: v.optional(cloudforce_one_requests_request_type), sort_by: v.optional(v.string()), sort_order: v.optional(v.picklist(["asc", "desc"])), status: v.optional(cloudforce_one_requests_request_status) });
+export const cloudforce_one_requests_request_list = v.object({ completed_after: v.optional(cloudforce_one_requests_time), completed_before: v.optional(cloudforce_one_requests_time), created_after: v.optional(cloudforce_one_requests_time), created_before: v.optional(cloudforce_one_requests_time), page: v.pipe(v.number(), v.integer()), per_page: v.pipe(v.number(), v.integer()), request_type: v.optional(cloudforce_one_requests_request_type), sort_by: v.optional(v.string()), sort_order: v.optional(v.picklist(["asc", "desc"])), status: v.optional(cloudforce_one_requests_request_status) });
 
 export type cloudforce_one_requests_request_list_item = v.InferOutput<typeof cloudforce_one_requests_request_list_item>;
-export const cloudforce_one_requests_request_list_item = v.object({ completed: v.optional(v.intersect([cloudforce_one_requests_time])), created: v.intersect([cloudforce_one_requests_time]), id: cloudforce_one_requests_uuid, message_tokens: v.optional(v.pipe(v.number(), v.integer())), priority: cloudforce_one_requests_priority, readable_id: v.optional(cloudforce_one_requests_request_readable_id), request: cloudforce_one_requests_request_type, status: v.optional(cloudforce_one_requests_request_status), summary: cloudforce_one_requests_request_summary, tlp: cloudforce_one_requests_tlp, tokens: v.optional(v.pipe(v.number(), v.integer())), updated: v.intersect([cloudforce_one_requests_time]) });
+export const cloudforce_one_requests_request_list_item = v.object({ completed: v.optional(cloudforce_one_requests_time), created: cloudforce_one_requests_time, id: cloudforce_one_requests_uuid, message_tokens: v.optional(v.pipe(v.number(), v.integer())), priority: cloudforce_one_requests_priority, readable_id: v.optional(cloudforce_one_requests_request_readable_id), request: cloudforce_one_requests_request_type, status: v.optional(cloudforce_one_requests_request_status), summary: cloudforce_one_requests_request_summary, tlp: cloudforce_one_requests_tlp, tokens: v.optional(v.pipe(v.number(), v.integer())), updated: cloudforce_one_requests_time });
 
 export type cloudforce_one_requests_request_message_edit = v.InferOutput<typeof cloudforce_one_requests_request_message_edit>;
 export const cloudforce_one_requests_request_message_edit = v.partial(v.object({ content: cloudforce_one_requests_message_content }));
 
 export type cloudforce_one_requests_request_message_item = v.InferOutput<typeof cloudforce_one_requests_request_message_item>;
-export const cloudforce_one_requests_request_message_item = v.object({ author: v.string(), content: cloudforce_one_requests_message_content, created: v.optional(v.intersect([cloudforce_one_requests_time])), id: v.pipe(v.number(), v.integer()), is_follow_on_request: v.boolean(), updated: v.intersect([cloudforce_one_requests_time]) });
+export const cloudforce_one_requests_request_message_item = v.object({ author: v.string(), content: cloudforce_one_requests_message_content, created: v.optional(cloudforce_one_requests_time), id: v.pipe(v.number(), v.integer()), is_follow_on_request: v.boolean(), updated: cloudforce_one_requests_time });
 
 export type cloudforce_one_requests_request_message_list = v.InferOutput<typeof cloudforce_one_requests_request_message_list>;
-export const cloudforce_one_requests_request_message_list = v.object({ after: v.optional(v.intersect([cloudforce_one_requests_time])), before: v.optional(v.intersect([cloudforce_one_requests_time])), page: v.pipe(v.number(), v.integer()), per_page: v.pipe(v.number(), v.integer()), sort_by: v.optional(v.string()), sort_order: v.optional(v.picklist(["asc", "desc"])) });
+export const cloudforce_one_requests_request_message_list = v.object({ after: v.optional(cloudforce_one_requests_time), before: v.optional(cloudforce_one_requests_time), page: v.pipe(v.number(), v.integer()), per_page: v.pipe(v.number(), v.integer()), sort_by: v.optional(v.string()), sort_order: v.optional(v.picklist(["asc", "desc"])) });
 
 export type cloudforce_one_requests_request_types = v.InferOutput<typeof cloudforce_one_requests_request_types>;
 export const cloudforce_one_requests_request_types = v.array(v.string());
@@ -4422,7 +4422,7 @@ export type cloudforce_one_whois_messages = v.InferOutput<typeof cloudforce_one_
 export const cloudforce_one_whois_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), message: v.string() }));
 
 export type cloudforce_one_whois_api_response_common_failure = v.InferOutput<typeof cloudforce_one_whois_api_response_common_failure>;
-export const cloudforce_one_whois_api_response_common_failure = v.object({ errors: v.intersect([cloudforce_one_whois_messages, v.unknown()]), messages: v.intersect([cloudforce_one_whois_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const cloudforce_one_whois_api_response_common_failure = v.object({ errors: cloudforce_one_whois_messages, messages: cloudforce_one_whois_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type cloudforce_one_whois_api_response_single = v.InferOutput<typeof cloudforce_one_whois_api_response_single>;
 export const cloudforce_one_whois_api_response_single = v.intersect([cloudforce_one_whois_api_response_common, v.record(v.string(), v.unknown())]);
@@ -4437,7 +4437,7 @@ export type cloudforce_one_whois_whois = v.InferOutput<typeof cloudforce_one_who
 export const cloudforce_one_whois_whois = v.object({ administrative_city: v.optional(v.string()), administrative_country: v.optional(v.string()), administrative_email: v.optional(v.string()), administrative_fax: v.optional(v.string()), administrative_fax_ext: v.optional(v.string()), administrative_id: v.optional(v.string()), administrative_name: v.optional(v.string()), administrative_org: v.optional(v.string()), administrative_phone: v.optional(v.string()), administrative_phone_ext: v.optional(v.string()), administrative_postal_code: v.optional(v.string()), administrative_province: v.optional(v.string()), administrative_referral_url: v.optional(v.string()), administrative_street: v.optional(v.string()), billing_city: v.optional(v.string()), billing_country: v.optional(v.string()), billing_email: v.optional(v.string()), billing_fax: v.optional(v.string()), billing_fax_ext: v.optional(v.string()), billing_id: v.optional(v.string()), billing_name: v.optional(v.string()), billing_org: v.optional(v.string()), billing_phone: v.optional(v.string()), billing_phone_ext: v.optional(v.string()), billing_postal_code: v.optional(v.string()), billing_province: v.optional(v.string()), billing_referral_url: v.optional(v.string()), billing_street: v.optional(v.string()), created_date: v.optional(v.string()), created_date_raw: v.optional(v.string()), dnssec: v.boolean(), domain: cloudforce_one_whois_domain_name, expiration_date: v.optional(v.string()), expiration_date_raw: v.optional(v.string()), extension: v.string(), found: v.boolean(), id: v.optional(v.string()), nameservers: v.array(v.string()), punycode: v.string(), registrant: v.string(), registrant_city: v.optional(v.string()), registrant_country: v.optional(v.string()), registrant_email: v.optional(v.string()), registrant_fax: v.optional(v.string()), registrant_fax_ext: v.optional(v.string()), registrant_id: v.optional(v.string()), registrant_name: v.optional(v.string()), registrant_org: v.optional(v.string()), registrant_phone: v.optional(v.string()), registrant_phone_ext: v.optional(v.string()), registrant_postal_code: v.optional(v.string()), registrant_province: v.optional(v.string()), registrant_referral_url: v.optional(v.string()), registrant_street: v.optional(v.string()), registrar: v.string(), registrar_city: v.optional(v.string()), registrar_country: v.optional(v.string()), registrar_email: v.optional(v.string()), registrar_fax: v.optional(v.string()), registrar_fax_ext: v.optional(v.string()), registrar_id: v.optional(v.string()), registrar_name: v.optional(v.string()), registrar_org: v.optional(v.string()), registrar_phone: v.optional(v.string()), registrar_phone_ext: v.optional(v.string()), registrar_postal_code: v.optional(v.string()), registrar_province: v.optional(v.string()), registrar_referral_url: v.optional(v.string()), registrar_street: v.optional(v.string()), status: v.optional(v.array(v.string())), technical_city: v.optional(v.string()), technical_country: v.optional(v.string()), technical_email: v.optional(v.string()), technical_fax: v.optional(v.string()), technical_fax_ext: v.optional(v.string()), technical_id: v.optional(v.string()), technical_name: v.optional(v.string()), technical_org: v.optional(v.string()), technical_phone: v.optional(v.string()), technical_phone_ext: v.optional(v.string()), technical_postal_code: v.optional(v.string()), technical_province: v.optional(v.string()), technical_referral_url: v.optional(v.string()), technical_street: v.optional(v.string()), updated_date: v.optional(v.string()), updated_date_raw: v.optional(v.string()), whois_server: v.optional(v.string()) });
 
 export type cloudforce_one_whois_schemas_single_response = v.InferOutput<typeof cloudforce_one_whois_schemas_single_response>;
-export const cloudforce_one_whois_schemas_single_response = v.intersect([cloudforce_one_whois_api_response_single, v.partial(v.object({ result: v.intersect([cloudforce_one_whois_whois]) }))]);
+export const cloudforce_one_whois_schemas_single_response = v.intersect([cloudforce_one_whois_api_response_single, v.partial(v.object({ result: cloudforce_one_whois_whois }))]);
 
 export type cloudforce_one_AccountExemptions = v.InferOutput<typeof cloudforce_one_AccountExemptions>;
 export const cloudforce_one_AccountExemptions = v.object({ namespace: v.array(v.string()), tag_match: v.array(v.string()), worker_name: v.array(v.string()) });
@@ -4545,7 +4545,7 @@ export type custom_indicator_feeds_messages = v.InferOutput<typeof custom_indica
 export const custom_indicator_feeds_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), message: v.string() }));
 
 export type custom_indicator_feeds_api_response_common_failure = v.InferOutput<typeof custom_indicator_feeds_api_response_common_failure>;
-export const custom_indicator_feeds_api_response_common_failure = v.object({ errors: v.intersect([custom_indicator_feeds_messages, v.unknown()]), messages: v.intersect([custom_indicator_feeds_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const custom_indicator_feeds_api_response_common_failure = v.object({ errors: custom_indicator_feeds_messages, messages: custom_indicator_feeds_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type custom_indicator_feeds_description = v.InferOutput<typeof custom_indicator_feeds_description>;
 export const custom_indicator_feeds_description = v.string();
@@ -4647,7 +4647,7 @@ export type custom_pages_api_response_collection = v.InferOutput<typeof custom_p
 export const custom_pages_api_response_collection = v.intersect([custom_pages_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type custom_pages_api_response_common_failure = v.InferOutput<typeof custom_pages_api_response_common_failure>;
-export const custom_pages_api_response_common_failure = v.object({ errors: v.intersect([custom_pages_messages, v.unknown()]), messages: v.intersect([custom_pages_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const custom_pages_api_response_common_failure = v.object({ errors: custom_pages_messages, messages: custom_pages_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type custom_pages_api_response_single = v.InferOutput<typeof custom_pages_api_response_single>;
 export const custom_pages_api_response_single = v.intersect([custom_pages_api_response_common, v.record(v.string(), v.unknown())]);
@@ -4713,7 +4713,7 @@ export type d1_api_response_common = v.InferOutput<typeof d1_api_response_common
 export const d1_api_response_common = v.object({ errors: d1_messages, messages: d1_messages, result: v.record(v.string(), v.unknown()), success: v.literal(true) });
 
 export type d1_api_response_common_failure = v.InferOutput<typeof d1_api_response_common_failure>;
-export const d1_api_response_common_failure = v.object({ errors: v.intersect([d1_messages, v.unknown()]), messages: v.intersect([d1_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const d1_api_response_common_failure = v.object({ errors: d1_messages, messages: d1_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type d1_params = v.InferOutput<typeof d1_params>;
 export const d1_params = v.array(v.string());
@@ -4791,7 +4791,7 @@ export type d1_time_travel_bookmark = v.InferOutput<typeof d1_time_travel_bookma
 export const d1_time_travel_bookmark = v.string();
 
 export type d1_time_travel_restore_response = v.InferOutput<typeof d1_time_travel_restore_response>;
-export const d1_time_travel_restore_response = v.partial(v.object({ bookmark: v.intersect([d1_time_travel_bookmark, v.unknown()]), message: v.string(), previous_bookmark: v.intersect([d1_time_travel_bookmark, v.unknown()]) }));
+export const d1_time_travel_restore_response = v.partial(v.object({ bookmark: d1_time_travel_bookmark, message: v.string(), previous_bookmark: d1_time_travel_bookmark }));
 
 export type d1_time_travel_timestamp = v.InferOutput<typeof d1_time_travel_timestamp>;
 export const d1_time_travel_timestamp = v.string();
@@ -4821,7 +4821,7 @@ export type digital_experience_monitoring_api_response_collection_common = v.Inf
 export const digital_experience_monitoring_api_response_collection_common = v.intersect([digital_experience_monitoring_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.unknown())) })), v.record(v.string(), v.unknown())]);
 
 export type digital_experience_monitoring_api_response_common_failure = v.InferOutput<typeof digital_experience_monitoring_api_response_common_failure>;
-export const digital_experience_monitoring_api_response_common_failure = v.object({ errors: v.intersect([digital_experience_monitoring_messages, v.unknown()]), messages: v.intersect([digital_experience_monitoring_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const digital_experience_monitoring_api_response_common_failure = v.object({ errors: digital_experience_monitoring_messages, messages: digital_experience_monitoring_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type digital_experience_monitoring_api_response_single = v.InferOutput<typeof digital_experience_monitoring_api_response_single>;
 export const digital_experience_monitoring_api_response_single = v.intersect([digital_experience_monitoring_api_response_common, v.record(v.string(), v.unknown())]);
@@ -4899,7 +4899,7 @@ export type digital_experience_monitoring_uuid = v.InferOutput<typeof digital_ex
 export const digital_experience_monitoring_uuid = v.pipe(v.string(), v.maxLength(36));
 
 export type digital_experience_monitoring_dex_target_policy = v.InferOutput<typeof digital_experience_monitoring_dex_target_policy>;
-export const digital_experience_monitoring_dex_target_policy = v.object({ default: v.optional(v.boolean()), id: v.intersect([digital_experience_monitoring_uuid]), name: v.optional(v.string()) });
+export const digital_experience_monitoring_dex_target_policy = v.object({ default: v.optional(v.boolean()), id: digital_experience_monitoring_uuid, name: v.optional(v.string()) });
 
 export type digital_experience_monitoring_device_dex_test_target_policies = v.InferOutput<typeof digital_experience_monitoring_device_dex_test_target_policies>;
 export const digital_experience_monitoring_device_dex_test_target_policies = v.array(digital_experience_monitoring_dex_target_policy);
@@ -4908,7 +4908,7 @@ export type digital_experience_monitoring_schemas_test_id = v.InferOutput<typeof
 export const digital_experience_monitoring_schemas_test_id = v.pipe(v.string(), v.maxLength(32));
 
 export type digital_experience_monitoring_device_dex_test_schemas_http = v.InferOutput<typeof digital_experience_monitoring_device_dex_test_schemas_http>;
-export const digital_experience_monitoring_device_dex_test_schemas_http = v.object({ created: v.optional(v.string()), data: digital_experience_monitoring_device_dex_test_schemas_data, description: v.optional(digital_experience_monitoring_device_dex_test_schemas_description), enabled: digital_experience_monitoring_device_dex_test_schemas_enabled, interval: digital_experience_monitoring_device_dex_test_schemas_interval, name: digital_experience_monitoring_device_dex_test_schemas_name, target_policies: v.optional(v.intersect([digital_experience_monitoring_device_dex_test_target_policies, v.unknown()])), targeted: v.optional(v.boolean()), test_id: v.optional(digital_experience_monitoring_schemas_test_id), updated: v.optional(v.string()) });
+export const digital_experience_monitoring_device_dex_test_schemas_http = v.object({ created: v.optional(v.string()), data: digital_experience_monitoring_device_dex_test_schemas_data, description: v.optional(digital_experience_monitoring_device_dex_test_schemas_description), enabled: digital_experience_monitoring_device_dex_test_schemas_enabled, interval: digital_experience_monitoring_device_dex_test_schemas_interval, name: digital_experience_monitoring_device_dex_test_schemas_name, target_policies: v.optional(digital_experience_monitoring_device_dex_test_target_policies), targeted: v.optional(v.boolean()), test_id: v.optional(digital_experience_monitoring_schemas_test_id), updated: v.optional(v.string()) });
 
 export type digital_experience_monitoring_device_id = v.InferOutput<typeof digital_experience_monitoring_device_id>;
 export const digital_experience_monitoring_device_id = v.string();
@@ -4935,7 +4935,7 @@ export type digital_experience_monitoring_timeslot_string = v.InferOutput<typeof
 export const digital_experience_monitoring_timeslot_string = v.object({ timestamp: v.string(), value: v.string() });
 
 export type digital_experience_monitoring_timeslot_rtt_stats = v.InferOutput<typeof digital_experience_monitoring_timeslot_rtt_stats>;
-export const digital_experience_monitoring_timeslot_rtt_stats = v.object({ timestamp: v.string(), value: v.intersect([digital_experience_monitoring_rtt_stats]) });
+export const digital_experience_monitoring_timeslot_rtt_stats = v.object({ timestamp: v.string(), value: digital_experience_monitoring_rtt_stats });
 
 export type digital_experience_monitoring_timeslot_cpu_apps = v.InferOutput<typeof digital_experience_monitoring_timeslot_cpu_apps>;
 export const digital_experience_monitoring_timeslot_cpu_apps = v.object({ timestamp: v.string(), value: v.array(digital_experience_monitoring_cpu_pct_by_app) });
@@ -4944,7 +4944,7 @@ export type digital_experience_monitoring_timeslot_ram_apps = v.InferOutput<type
 export const digital_experience_monitoring_timeslot_ram_apps = v.object({ timestamp: v.string(), value: v.array(digital_experience_monitoring_ram_used_pct_by_app) });
 
 export type digital_experience_monitoring_timeslot_tunnel_stats = v.InferOutput<typeof digital_experience_monitoring_timeslot_tunnel_stats>;
-export const digital_experience_monitoring_timeslot_tunnel_stats = v.object({ timestamp: v.string(), value: v.intersect([digital_experience_monitoring_tunnel_stats]) });
+export const digital_experience_monitoring_timeslot_tunnel_stats = v.object({ timestamp: v.string(), value: digital_experience_monitoring_tunnel_stats });
 
 export type digital_experience_monitoring_device_state_over_time = v.InferOutput<typeof digital_experience_monitoring_device_state_over_time>;
 export const digital_experience_monitoring_device_state_over_time = v.partial(v.object({ battery_cycles: v.array(digital_experience_monitoring_timeslot_int), battery_pct: v.array(digital_experience_monitoring_timeslot_float), connection_type: v.array(digital_experience_monitoring_timeslot_string), cpu_pct: v.array(digital_experience_monitoring_timeslot_float), disk_read_bps: v.array(digital_experience_monitoring_timeslot_int), disk_usage_pct: v.array(digital_experience_monitoring_timeslot_float), disk_write_bps: v.array(digital_experience_monitoring_timeslot_int), mode: v.array(digital_experience_monitoring_timeslot_string), network_rcvd_bps: v.array(digital_experience_monitoring_timeslot_int), network_sent_bps: v.array(digital_experience_monitoring_timeslot_int), network_ssid: v.array(digital_experience_monitoring_timeslot_string), ram_available_kb: v.array(digital_experience_monitoring_timeslot_int), ram_used_pct: v.array(digital_experience_monitoring_timeslot_float), rtt: v.array(digital_experience_monitoring_timeslot_rtt_stats), status: v.array(digital_experience_monitoring_timeslot_string), top_cpu_applications: v.array(digital_experience_monitoring_timeslot_cpu_apps), top_ram_applications: v.array(digital_experience_monitoring_timeslot_ram_apps), tunnel_stats: v.array(digital_experience_monitoring_timeslot_tunnel_stats), tunnel_type: v.array(digital_experience_monitoring_timeslot_string), unique_networks: v.array(digital_experience_monitoring_timeslot_int), wifi_strength_dbm: v.array(digital_experience_monitoring_timeslot_int) }));
@@ -4962,10 +4962,10 @@ export type digital_experience_monitoring_dex_response_collection = v.InferOutpu
 export const digital_experience_monitoring_dex_response_collection = v.intersect([digital_experience_monitoring_api_response_collection_common, v.partial(v.object({ result: v.array(digital_experience_monitoring_device_dex_test_schemas_http) }))]);
 
 export type digital_experience_monitoring_dex_targeted_test = v.InferOutput<typeof digital_experience_monitoring_dex_targeted_test>;
-export const digital_experience_monitoring_dex_targeted_test = v.object({ data: v.intersect([digital_experience_monitoring_device_dex_test_schemas_data, v.unknown()]), enabled: v.boolean(), name: v.string(), test_id: v.string() });
+export const digital_experience_monitoring_dex_targeted_test = v.object({ data: digital_experience_monitoring_device_dex_test_schemas_data, enabled: v.boolean(), name: v.string(), test_id: v.string() });
 
 export type digital_experience_monitoring_dex_rule = v.InferOutput<typeof digital_experience_monitoring_dex_rule>;
-export const digital_experience_monitoring_dex_rule = v.object({ created_at: v.string(), description: v.optional(v.string()), id: v.intersect([digital_experience_monitoring_uuid, v.unknown()]), match: v.string(), name: v.string(), targeted_tests: v.optional(v.array(digital_experience_monitoring_dex_targeted_test)), updated_at: v.optional(v.string()) });
+export const digital_experience_monitoring_dex_rule = v.object({ created_at: v.string(), description: v.optional(v.string()), id: digital_experience_monitoring_uuid, match: v.string(), name: v.string(), targeted_tests: v.optional(v.array(digital_experience_monitoring_dex_targeted_test)), updated_at: v.optional(v.string()) });
 
 export type digital_experience_monitoring_dex_single_response = v.InferOutput<typeof digital_experience_monitoring_dex_single_response>;
 export const digital_experience_monitoring_dex_single_response = v.intersect([digital_experience_monitoring_api_response_single, v.partial(v.object({ result: digital_experience_monitoring_device_dex_test_schemas_http }))]);
@@ -5058,19 +5058,19 @@ export type digital_experience_monitoring_traceroute_test_network_path_response 
 export const digital_experience_monitoring_traceroute_test_network_path_response = v.object({ deviceName: v.optional(v.string()), id: digital_experience_monitoring_uuid, interval: v.optional(v.string()), kind: v.optional(v.literal("traceroute")), name: v.optional(v.string()), networkPath: v.optional(v.nullable(v.object({ sampling: v.optional(v.nullable(v.object({ unit: v.literal("hours"), value: v.pipe(v.number(), v.integer()) }))), slots: v.array(v.object({ clientToAppRttMs: v.nullable(v.pipe(v.number(), v.integer())), clientToCfEgressRttMs: v.nullable(v.pipe(v.number(), v.integer())), clientToCfIngressRttMs: v.nullable(v.pipe(v.number(), v.integer())), clientToIspRttMs: v.optional(v.nullable(v.pipe(v.number(), v.integer()))), id: digital_experience_monitoring_uuid, timestamp: v.string() })) }))), url: v.optional(v.string()) });
 
 export type digital_experience_monitoring_traceroute_test_result_network_path_response = v.InferOutput<typeof digital_experience_monitoring_traceroute_test_result_network_path_response>;
-export const digital_experience_monitoring_traceroute_test_result_network_path_response = v.object({ colo: v.optional(digital_experience_monitoring_colo), deviceName: v.optional(v.string()), execution_context: v.optional(v.intersect([digital_experience_monitoring_execution_context])), hops: v.array(v.object({ asn: v.optional(v.nullable(v.pipe(v.number(), v.integer()))), aso: v.optional(v.nullable(v.string())), ipAddress: v.optional(v.nullable(v.string())), location: v.optional(v.nullable(v.partial(v.object({ city: v.nullable(v.string()), state: v.nullable(v.string()), zip: v.nullable(v.string()) })))), mile: v.optional(v.nullable(v.picklist(["client-to-app", "client-to-cf-egress", "client-to-cf-ingress", "client-to-isp"]))), name: v.optional(v.nullable(v.string())), packetLossPct: v.optional(v.nullable(v.number())), rttMs: v.optional(v.nullable(v.pipe(v.number(), v.integer()))), ttl: v.pipe(v.number(), v.integer()) })), resultId: digital_experience_monitoring_uuid, testId: v.optional(digital_experience_monitoring_uuid), testName: v.optional(v.string()), time_start: v.optional(v.string()), tunnel_type: v.optional(v.nullable(v.string())) });
+export const digital_experience_monitoring_traceroute_test_result_network_path_response = v.object({ colo: v.optional(digital_experience_monitoring_colo), deviceName: v.optional(v.string()), execution_context: v.optional(digital_experience_monitoring_execution_context), hops: v.array(v.object({ asn: v.optional(v.nullable(v.pipe(v.number(), v.integer()))), aso: v.optional(v.nullable(v.string())), ipAddress: v.optional(v.nullable(v.string())), location: v.optional(v.nullable(v.partial(v.object({ city: v.nullable(v.string()), state: v.nullable(v.string()), zip: v.nullable(v.string()) })))), mile: v.optional(v.nullable(v.picklist(["client-to-app", "client-to-cf-egress", "client-to-cf-ingress", "client-to-isp"]))), name: v.optional(v.nullable(v.string())), packetLossPct: v.optional(v.nullable(v.number())), rttMs: v.optional(v.nullable(v.pipe(v.number(), v.integer()))), ttl: v.pipe(v.number(), v.integer()) })), resultId: digital_experience_monitoring_uuid, testId: v.optional(digital_experience_monitoring_uuid), testName: v.optional(v.string()), time_start: v.optional(v.string()), tunnel_type: v.optional(v.nullable(v.string())) });
 
 export type digital_experience_monitoring_unique_devices_response = v.InferOutput<typeof digital_experience_monitoring_unique_devices_response>;
 export const digital_experience_monitoring_unique_devices_response = v.object({ uniqueDevicesTotal: v.pipe(v.number(), v.integer()) });
 
 export type digital_experience_monitoring_warp_config_details = v.InferOutput<typeof digital_experience_monitoring_warp_config_details>;
-export const digital_experience_monitoring_warp_config_details = v.partial(v.object({ account_name: v.string(), account_tag: v.intersect([digital_experience_monitoring_uuid]), config_name: v.string() }));
+export const digital_experience_monitoring_warp_config_details = v.partial(v.object({ account_name: v.string(), account_tag: digital_experience_monitoring_uuid, config_name: v.string() }));
 
 export type digital_experience_monitoring_warp_config_change_event = v.InferOutput<typeof digital_experience_monitoring_warp_config_change_event>;
-export const digital_experience_monitoring_warp_config_change_event = v.partial(v.object({ device_id: v.intersect([digital_experience_monitoring_uuid]), device_registration: v.intersect([digital_experience_monitoring_uuid, v.unknown()]), from: v.intersect([digital_experience_monitoring_warp_config_details]), hostname: v.string(), registration_id: v.intersect([digital_experience_monitoring_uuid]), serial_number: v.string(), timestamp: v.intersect([digital_experience_monitoring_timestamp_datetime]), to: v.intersect([digital_experience_monitoring_warp_config_details]), user_email: v.string() }));
+export const digital_experience_monitoring_warp_config_change_event = v.partial(v.object({ device_id: digital_experience_monitoring_uuid, device_registration: digital_experience_monitoring_uuid, from: digital_experience_monitoring_warp_config_details, hostname: v.string(), registration_id: digital_experience_monitoring_uuid, serial_number: v.string(), timestamp: digital_experience_monitoring_timestamp_datetime, to: digital_experience_monitoring_warp_config_details, user_email: v.string() }));
 
 export type digital_experience_monitoring_warp_toggle_change_event = v.InferOutput<typeof digital_experience_monitoring_warp_toggle_change_event>;
-export const digital_experience_monitoring_warp_toggle_change_event = v.partial(v.object({ account_name: v.string(), account_tag: v.string(), device_id: v.intersect([digital_experience_monitoring_uuid]), device_registration: v.intersect([digital_experience_monitoring_uuid, v.unknown()]), hostname: v.string(), registration_id: v.intersect([digital_experience_monitoring_uuid]), serial_number: v.string(), timestamp: v.intersect([digital_experience_monitoring_timestamp_datetime]), toggle: v.picklist(["on", "off"]), user_email: v.string() }));
+export const digital_experience_monitoring_warp_toggle_change_event = v.partial(v.object({ account_name: v.string(), account_tag: v.string(), device_id: digital_experience_monitoring_uuid, device_registration: digital_experience_monitoring_uuid, hostname: v.string(), registration_id: digital_experience_monitoring_uuid, serial_number: v.string(), timestamp: digital_experience_monitoring_timestamp_datetime, toggle: v.picklist(["on", "off"]), user_email: v.string() }));
 
 export type digital_experience_monitoring_warp_events_response = v.InferOutput<typeof digital_experience_monitoring_warp_events_response>;
 export const digital_experience_monitoring_warp_events_response = v.array(v.union([digital_experience_monitoring_warp_toggle_change_event, digital_experience_monitoring_warp_config_change_event]));
@@ -5127,7 +5127,7 @@ export type dlp_Validation = v.InferOutput<typeof dlp_Validation>;
 export const dlp_Validation = v.literal("luhn");
 
 export type dlp_Pattern = v.InferOutput<typeof dlp_Pattern>;
-export const dlp_Pattern = v.object({ regex: v.string(), validation: v.optional(v.intersect([dlp_Validation])) });
+export const dlp_Pattern = v.object({ regex: v.string(), validation: v.optional(dlp_Validation) });
 
 export type dlp_CustomEntry = v.InferOutput<typeof dlp_CustomEntry>;
 export const dlp_CustomEntry = v.object({ created_at: v.string(), description: v.optional(v.nullable(v.string())), enabled: v.boolean(), id: v.pipe(v.string(), v.uuid()), name: v.string(), pattern: dlp_Pattern, profile_id: v.optional(v.nullable(v.pipe(v.string(), v.uuid()))), updated_at: v.string() });
@@ -5151,7 +5151,7 @@ export type dlp_PredefinedEntryVariant = v.InferOutput<typeof dlp_PredefinedEntr
 export const dlp_PredefinedEntryVariant = v.union([v.object({ description: v.optional(v.nullable(v.string())), topic_type: dlp_PromptTopicType, type: v.literal("PromptTopic") }), v.object({ description: v.optional(v.nullable(v.string())), type: v.literal("General") })]);
 
 export type dlp_PredefinedEntry = v.InferOutput<typeof dlp_PredefinedEntry>;
-export const dlp_PredefinedEntry = v.object({ confidence: dlp_EntryConfidence, enabled: v.boolean(), id: v.pipe(v.string(), v.uuid()), name: v.string(), profile_id: v.optional(v.nullable(v.pipe(v.string(), v.uuid()))), variant: v.optional(v.intersect([dlp_PredefinedEntryVariant])) });
+export const dlp_PredefinedEntry = v.object({ confidence: dlp_EntryConfidence, enabled: v.boolean(), id: v.pipe(v.string(), v.uuid()), name: v.string(), profile_id: v.optional(v.nullable(v.pipe(v.string(), v.uuid()))), variant: v.optional(dlp_PredefinedEntryVariant) });
 
 export type dlp_IntegrationEntry = v.InferOutput<typeof dlp_IntegrationEntry>;
 export const dlp_IntegrationEntry = v.object({ created_at: v.string(), enabled: v.boolean(), id: v.pipe(v.string(), v.uuid()), name: v.string(), profile_id: v.optional(v.nullable(v.pipe(v.string(), v.uuid()))), updated_at: v.string() });
@@ -5172,7 +5172,7 @@ export type dlp_SensitivityLevelRef = v.InferOutput<typeof dlp_SensitivityLevelR
 export const dlp_SensitivityLevelRef = v.object({ group_id: v.pipe(v.string(), v.uuid()), level_id: v.pipe(v.string(), v.uuid()) });
 
 export type dlp_CustomProfile = v.InferOutput<typeof dlp_CustomProfile>;
-export const dlp_CustomProfile = v.object({ ai_context_enabled: v.optional(v.boolean(), false), allowed_match_count: v.optional(v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(1000)), 0), confidence_threshold: v.optional(v.intersect([dlp_Confidence, v.optional(v.unknown(), "low")]), "low"), context_awareness: v.optional(dlp_ContextAwareness), created_at: v.string(), data_classes: v.optional(v.array(v.pipe(v.string(), v.uuid()))), data_tags: v.optional(v.array(v.pipe(v.string(), v.uuid()))), description: v.optional(v.nullable(v.string())), entries: v.optional(v.array(dlp_Entry)), id: v.pipe(v.string(), v.uuid()), name: v.string(), ocr_enabled: v.optional(v.boolean(), false), sensitivity_levels: v.optional(v.array(dlp_SensitivityLevelRef)), shared_entries: v.optional(v.array(dlp_Entry)), updated_at: v.string() });
+export const dlp_CustomProfile = v.object({ ai_context_enabled: v.optional(v.boolean(), false), allowed_match_count: v.optional(v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(1000)), 0), confidence_threshold: v.optional(dlp_Confidence), context_awareness: v.optional(dlp_ContextAwareness), created_at: v.string(), data_classes: v.optional(v.array(v.pipe(v.string(), v.uuid()))), data_tags: v.optional(v.array(v.pipe(v.string(), v.uuid()))), description: v.optional(v.nullable(v.string())), entries: v.optional(v.array(dlp_Entry)), id: v.pipe(v.string(), v.uuid()), name: v.string(), ocr_enabled: v.optional(v.boolean(), false), sensitivity_levels: v.optional(v.array(dlp_SensitivityLevelRef)), shared_entries: v.optional(v.array(dlp_Entry)), updated_at: v.string() });
 
 export type dlp_CustomProfileArray = v.InferOutput<typeof dlp_CustomProfileArray>;
 export const dlp_CustomProfileArray = v.array(dlp_CustomProfile);
@@ -5268,16 +5268,16 @@ export type dlp_PayloadLogMaskingLevel = v.InferOutput<typeof dlp_PayloadLogMask
 export const dlp_PayloadLogMaskingLevel = v.picklist(["full", "partial", "clear", "default"]);
 
 export type dlp_PayloadLogSetting = v.InferOutput<typeof dlp_PayloadLogSetting>;
-export const dlp_PayloadLogSetting = v.object({ masking_level: v.optional(v.intersect([dlp_PayloadLogMaskingLevel])), public_key: v.optional(v.nullable(v.string())), updated_at: v.string() });
+export const dlp_PayloadLogSetting = v.object({ masking_level: v.optional(dlp_PayloadLogMaskingLevel), public_key: v.optional(v.nullable(v.string())), updated_at: v.string() });
 
 export type dlp_DlpSettings = v.InferOutput<typeof dlp_DlpSettings>;
 export const dlp_DlpSettings = v.object({ ai_context_analysis: v.boolean(), ocr: v.boolean(), payload_logging: dlp_PayloadLogSetting });
 
 export type dlp_PayloadLogSettingUpdate = v.InferOutput<typeof dlp_PayloadLogSettingUpdate>;
-export const dlp_PayloadLogSettingUpdate = v.partial(v.object({ masking_level: v.optional(v.intersect([dlp_PayloadLogMaskingLevel, v.optional(v.unknown(), "default")]), "default"), public_key: v.nullable(v.string()) }));
+export const dlp_PayloadLogSettingUpdate = v.partial(v.object({ masking_level: dlp_PayloadLogMaskingLevel, public_key: v.nullable(v.string()) }));
 
 export type dlp_DlpSettingsUpdate = v.InferOutput<typeof dlp_DlpSettingsUpdate>;
-export const dlp_DlpSettingsUpdate = v.partial(v.object({ ai_context_analysis: v.optional(v.nullable(v.boolean()), false), ocr: v.optional(v.nullable(v.boolean()), false), payload_logging: v.intersect([dlp_PayloadLogSettingUpdate, v.unknown()]) }));
+export const dlp_DlpSettingsUpdate = v.partial(v.object({ ai_context_analysis: v.optional(v.nullable(v.boolean()), false), ocr: v.optional(v.nullable(v.boolean()), false), payload_logging: dlp_PayloadLogSettingUpdate }));
 
 export type dlp_DocumentFingerprint = v.InferOutput<typeof dlp_DocumentFingerprint>;
 export const dlp_DocumentFingerprint = v.object({ created_at: v.string(), description: v.optional(v.string(), ""), entry_id: v.pipe(v.string(), v.uuid()), file_name: v.optional(v.nullable(v.string())), id: v.pipe(v.string(), v.uuid()), match_percent: v.pipe(v.number(), v.integer()), name: v.string(), status: dlp_DatasetUploadStatus, updated_at: v.string(), version: v.optional(v.nullable(v.pipe(v.number(), v.integer()))) });
@@ -5313,7 +5313,7 @@ export type dlp_EntryUpdate = v.InferOutput<typeof dlp_EntryUpdate>;
 export const dlp_EntryUpdate = v.intersect([dlp_EntryUpdateType, v.object({ enabled: v.boolean() })]);
 
 export type dlp_EntryWithUploadStatus = v.InferOutput<typeof dlp_EntryWithUploadStatus>;
-export const dlp_EntryWithUploadStatus = v.intersect([dlp_Entry, v.partial(v.object({ upload_status: v.intersect([dlp_DatasetUploadStatus, v.unknown()]) }))]);
+export const dlp_EntryWithUploadStatus = v.intersect([dlp_Entry, v.partial(v.object({ upload_status: dlp_DatasetUploadStatus }))]);
 
 export type dlp_EntryWithSharedProfiles = v.InferOutput<typeof dlp_EntryWithSharedProfiles>;
 export const dlp_EntryWithSharedProfiles = v.intersect([dlp_EntryWithUploadStatus, v.object({ profiles: v.array(dlp_EntryProfile) })]);
@@ -5373,13 +5373,13 @@ export type dlp_NewSensitivityGroup = v.InferOutput<typeof dlp_NewSensitivityGro
 export const dlp_NewSensitivityGroup = v.object({ description: v.optional(v.nullable(v.string())), levels: v.optional(v.array(dlp_NewSensitivityLevel)), name: v.string(), template_id: v.optional(v.nullable(v.pipe(v.string(), v.uuid()))) });
 
 export type dlp_PayloadLogSettingUpdateLegacy = v.InferOutput<typeof dlp_PayloadLogSettingUpdateLegacy>;
-export const dlp_PayloadLogSettingUpdateLegacy = v.partial(v.object({ masking_level: v.intersect([dlp_PayloadLogMaskingLevel]), public_key: v.nullable(v.string()) }));
+export const dlp_PayloadLogSettingUpdateLegacy = v.partial(v.object({ masking_level: dlp_PayloadLogMaskingLevel, public_key: v.nullable(v.string()) }));
 
 export type dlp_PredefinedEntryUpdate = v.InferOutput<typeof dlp_PredefinedEntryUpdate>;
 export const dlp_PredefinedEntryUpdate = v.object({ enabled: v.boolean() });
 
 export type dlp_PredefinedProfile = v.InferOutput<typeof dlp_PredefinedProfile>;
-export const dlp_PredefinedProfile = v.object({ ai_context_enabled: v.optional(v.boolean(), false), allowed_match_count: v.pipe(v.number(), v.integer()), confidence_threshold: v.optional(v.intersect([dlp_Confidence, v.optional(v.unknown(), "low")]), "low"), context_awareness: v.optional(dlp_ContextAwareness), entries: v.array(dlp_Entry), id: v.pipe(v.string(), v.uuid()), name: v.string(), ocr_enabled: v.optional(v.boolean(), false), open_access: v.optional(v.boolean()) });
+export const dlp_PredefinedProfile = v.object({ ai_context_enabled: v.optional(v.boolean(), false), allowed_match_count: v.pipe(v.number(), v.integer()), confidence_threshold: v.optional(dlp_Confidence), context_awareness: v.optional(dlp_ContextAwareness), entries: v.array(dlp_Entry), id: v.pipe(v.string(), v.uuid()), name: v.string(), ocr_enabled: v.optional(v.boolean(), false), open_access: v.optional(v.boolean()) });
 
 export type dlp_PredefinedProfileConfig = v.InferOutput<typeof dlp_PredefinedProfileConfig>;
 export const dlp_PredefinedProfileConfig = v.object({ ai_context_enabled: v.optional(v.boolean(), false), allowed_match_count: v.pipe(v.number(), v.integer()), confidence_threshold: v.optional(v.nullable(v.string()), "low"), enabled_entries: v.array(v.pipe(v.string(), v.uuid())), entries: v.array(dlp_Entry), id: v.pipe(v.string(), v.uuid()), name: v.string(), ocr_enabled: v.optional(v.boolean(), false), open_access: v.optional(v.boolean()) });
@@ -5403,7 +5403,7 @@ export type dlp_RiskEvent = v.InferOutput<typeof dlp_RiskEvent>;
 export const dlp_RiskEvent = v.object({ event_details: v.optional(v.unknown()), id: v.string(), name: v.string(), risk_level: dlp_RiskLevel, timestamp: v.string() });
 
 export type dlp_RiskEvents = v.InferOutput<typeof dlp_RiskEvents>;
-export const dlp_RiskEvents = v.object({ email: v.string(), events: v.array(dlp_RiskEvent), last_reset_time: v.optional(v.nullable(v.string())), name: v.string(), risk_level: v.optional(v.intersect([dlp_RiskLevel])) });
+export const dlp_RiskEvents = v.object({ email: v.string(), events: v.array(dlp_RiskEvent), last_reset_time: v.optional(v.nullable(v.string())), name: v.string(), risk_level: v.optional(dlp_RiskLevel) });
 
 export type dlp_RiskScoreIntegration = v.InferOutput<typeof dlp_RiskScoreIntegration>;
 export const dlp_RiskScoreIntegration = v.object({ account_tag: v.string(), active: v.boolean(), created_at: v.string(), id: v.pipe(v.string(), v.uuid()), integration_type: dlp_RiskScoreIntegrationType, reference_id: v.string(), tenant_url: v.string(), well_known_url: v.string() });
@@ -5478,7 +5478,7 @@ export type dlp_api_response_collection = v.InferOutput<typeof dlp_api_response_
 export const dlp_api_response_collection = v.intersect([dlp_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type dlp_api_response_common_failure = v.InferOutput<typeof dlp_api_response_common_failure>;
-export const dlp_api_response_common_failure = v.object({ errors: v.intersect([dlp_messages, v.unknown()]), messages: v.intersect([dlp_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const dlp_api_response_common_failure = v.object({ errors: dlp_messages, messages: dlp_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type dlp_api_response_single = v.InferOutput<typeof dlp_api_response_single>;
 export const dlp_api_response_single = v.intersect([dlp_api_response_common, v.record(v.string(), v.unknown())]);
@@ -5529,7 +5529,7 @@ export type dls_api_response_collection = v.InferOutput<typeof dls_api_response_
 export const dls_api_response_collection = v.intersect([dls_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type dls_api_response_common_failure = v.InferOutput<typeof dls_api_response_common_failure>;
-export const dls_api_response_common_failure = v.object({ errors: v.intersect([dls_messages, v.unknown()]), messages: v.intersect([dls_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const dls_api_response_common_failure = v.object({ errors: dls_messages, messages: dls_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type dls_none = v.InferOutput<typeof dls_none>;
 export const dls_none = v.nullable(v.record(v.string(), v.unknown()));
@@ -5553,7 +5553,7 @@ export type dls_routing = v.InferOutput<typeof dls_routing>;
 export const dls_routing = v.optional(v.string(), "dns");
 
 export type dls_regional_hostname_response = v.InferOutput<typeof dls_regional_hostname_response>;
-export const dls_regional_hostname_response = v.object({ created_on: v.intersect([dls_timestamp, v.unknown(), v.unknown()]), hostname: dls_hostname_schemas, region_key: dls_region_key, routing: dls_routing });
+export const dls_regional_hostname_response = v.object({ created_on: dls_timestamp, hostname: dls_hostname_schemas, region_key: dls_region_key, routing: dls_routing });
 
 export type dns_analytics_messages = v.InferOutput<typeof dns_analytics_messages>;
 export const dns_analytics_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), documentation_url: v.optional(v.string()), message: v.string(), source: v.optional(v.partial(v.object({ pointer: v.string() }))) }));
@@ -5562,7 +5562,7 @@ export type dns_analytics_api_response_common = v.InferOutput<typeof dns_analyti
 export const dns_analytics_api_response_common = v.object({ errors: dns_analytics_messages, messages: dns_analytics_messages, success: v.literal(true) });
 
 export type dns_analytics_api_response_common_failure = v.InferOutput<typeof dns_analytics_api_response_common_failure>;
-export const dns_analytics_api_response_common_failure = v.object({ errors: v.intersect([dns_analytics_messages, v.unknown()]), messages: v.intersect([dns_analytics_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const dns_analytics_api_response_common_failure = v.object({ errors: dns_analytics_messages, messages: dns_analytics_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type dns_analytics_api_response_single = v.InferOutput<typeof dns_analytics_api_response_single>;
 export const dns_analytics_api_response_single = v.intersect([dns_analytics_api_response_common, v.record(v.string(), v.unknown())]);
@@ -5646,7 +5646,7 @@ export type dns_custom_nameservers_acns_response_single = v.InferOutput<typeof d
 export const dns_custom_nameservers_acns_response_single = v.intersect([dns_custom_nameservers_api_response_single, v.partial(v.object({ result: dns_custom_nameservers_CustomNS })), v.record(v.string(), v.unknown())]);
 
 export type dns_custom_nameservers_api_response_common_failure = v.InferOutput<typeof dns_custom_nameservers_api_response_common_failure>;
-export const dns_custom_nameservers_api_response_common_failure = v.object({ errors: v.intersect([dns_custom_nameservers_messages, v.unknown()]), messages: v.intersect([dns_custom_nameservers_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const dns_custom_nameservers_api_response_common_failure = v.object({ errors: dns_custom_nameservers_messages, messages: dns_custom_nameservers_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type dns_custom_nameservers_empty_response = v.InferOutput<typeof dns_custom_nameservers_empty_response>;
 export const dns_custom_nameservers_empty_response = v.intersect([dns_custom_nameservers_api_response_collection, v.partial(v.object({ result: v.pipe(v.array(v.string()), v.maxLength(0)) })), v.record(v.string(), v.unknown())]);
@@ -5682,7 +5682,7 @@ export type dns_firewall_api_response_collection = v.InferOutput<typeof dns_fire
 export const dns_firewall_api_response_collection = v.intersect([dns_firewall_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type dns_firewall_api_response_common_failure = v.InferOutput<typeof dns_firewall_api_response_common_failure>;
-export const dns_firewall_api_response_common_failure = v.object({ errors: v.intersect([dns_firewall_messages, v.unknown()]), messages: v.intersect([dns_firewall_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const dns_firewall_api_response_common_failure = v.object({ errors: dns_firewall_messages, messages: dns_firewall_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type dns_firewall_api_response_single = v.InferOutput<typeof dns_firewall_api_response_single>;
 export const dns_firewall_api_response_single = v.intersect([dns_firewall_api_response_common, v.record(v.string(), v.unknown())]);
@@ -5856,7 +5856,7 @@ export type dns_records_api_response_collection = v.InferOutput<typeof dns_recor
 export const dns_records_api_response_collection = v.intersect([dns_records_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type dns_records_api_response_common_failure = v.InferOutput<typeof dns_records_api_response_common_failure>;
-export const dns_records_api_response_common_failure = v.object({ errors: v.intersect([dns_records_messages, v.unknown()]), messages: v.intersect([dns_records_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const dns_records_api_response_common_failure = v.object({ errors: dns_records_messages, messages: dns_records_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type dns_records_api_response_single = v.InferOutput<typeof dns_records_api_response_single>;
 export const dns_records_api_response_single = v.intersect([dns_records_api_response_common, v.record(v.string(), v.unknown())]);
@@ -6021,7 +6021,7 @@ export type dns_settings_api_response_collection = v.InferOutput<typeof dns_sett
 export const dns_settings_api_response_collection = v.intersect([dns_settings_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type dns_settings_api_response_common_failure = v.InferOutput<typeof dns_settings_api_response_common_failure>;
-export const dns_settings_api_response_common_failure = v.object({ errors: v.intersect([dns_settings_messages, v.unknown()]), messages: v.intersect([dns_settings_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const dns_settings_api_response_common_failure = v.object({ errors: dns_settings_messages, messages: dns_settings_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type dns_settings_api_response_single = v.InferOutput<typeof dns_settings_api_response_single>;
 export const dns_settings_api_response_single = v.intersect([dns_settings_api_response_common, v.record(v.string(), v.unknown())]);
@@ -6096,7 +6096,7 @@ export type dnssec_api_response_common = v.InferOutput<typeof dnssec_api_respons
 export const dnssec_api_response_common = v.object({ errors: dnssec_messages, messages: dnssec_messages, success: v.literal(true) });
 
 export type dnssec_api_response_common_failure = v.InferOutput<typeof dnssec_api_response_common_failure>;
-export const dnssec_api_response_common_failure = v.object({ errors: v.intersect([dnssec_messages, v.unknown()]), messages: v.intersect([dnssec_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const dnssec_api_response_common_failure = v.object({ errors: dnssec_messages, messages: dnssec_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type dnssec_api_response_single = v.InferOutput<typeof dnssec_api_response_single>;
 export const dnssec_api_response_single = v.intersect([dnssec_api_response_common, v.record(v.string(), v.unknown())]);
@@ -6243,7 +6243,7 @@ export type dos_api_response_collection = v.InferOutput<typeof dos_api_response_
 export const dos_api_response_collection = v.intersect([dos_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type dos_api_response_common_failure = v.InferOutput<typeof dos_api_response_common_failure>;
-export const dos_api_response_common_failure = v.object({ errors: v.intersect([dos_messages, v.unknown()]), messages: v.intersect([dos_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const dos_api_response_common_failure = v.object({ errors: dos_messages, messages: dos_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type dos_api_response_common_paginated = v.InferOutput<typeof dos_api_response_common_paginated>;
 export const dos_api_response_common_paginated = dos_api_response_collection;
@@ -6335,8 +6335,8 @@ export const email_auth_SpfResult = v.picklist(["pass", "neutral", "fail", "soft
 export interface email_auth_SpfTree { components: Array<email_auth_SpfComponent>, domain: string, errors?: Array<email_auth_InspectError>, record: string, total_lookups: number }
 export const email_auth_SpfTree: v.GenericSchema<email_auth_SpfTree> = v.lazy(() => v.object({ components: v.array(email_auth_SpfComponent), domain: v.string(), errors: v.optional(v.array(email_auth_InspectError)), record: v.string(), total_lookups: v.pipe(v.number(), v.integer()) }));
 
-export interface email_auth_SpfComponent { lookup_count: number, nested?: (email_auth_SpfTree), result: email_auth_SpfResult, type: ("ALL" | "A" | "MX" | "IP4" | "IP6" | "EXISTS" | "INCLUDE" | "PTR" | "REDIRECT"), value: string }
-export const email_auth_SpfComponent: v.GenericSchema<email_auth_SpfComponent> = v.lazy(() => v.object({ lookup_count: v.pipe(v.number(), v.integer()), nested: v.optional(v.intersect([email_auth_SpfTree])), result: email_auth_SpfResult, type: v.picklist(["ALL", "A", "MX", "IP4", "IP6", "EXISTS", "INCLUDE", "PTR", "REDIRECT"]), value: v.string() }));
+export interface email_auth_SpfComponent { lookup_count: number, nested?: email_auth_SpfTree, result: email_auth_SpfResult, type: ("ALL" | "A" | "MX" | "IP4" | "IP6" | "EXISTS" | "INCLUDE" | "PTR" | "REDIRECT"), value: string }
+export const email_auth_SpfComponent: v.GenericSchema<email_auth_SpfComponent> = v.lazy(() => v.object({ lookup_count: v.pipe(v.number(), v.integer()), nested: v.optional(email_auth_SpfTree), result: email_auth_SpfResult, type: v.picklist(["ALL", "A", "MX", "IP4", "IP6", "EXISTS", "INCLUDE", "PTR", "REDIRECT"]), value: v.string() }));
 
 export type email_auth_messages = v.InferOutput<typeof email_auth_messages>;
 export const email_auth_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), documentation_url: v.optional(v.string()), message: v.string(), source: v.optional(v.partial(v.object({ pointer: v.string() }))) }));
@@ -6345,7 +6345,7 @@ export type email_auth_api_response_common = v.InferOutput<typeof email_auth_api
 export const email_auth_api_response_common = v.object({ errors: email_auth_messages, messages: email_auth_messages, success: v.literal(true) });
 
 export type email_auth_api_response_common_failure = v.InferOutput<typeof email_auth_api_response_common_failure>;
-export const email_auth_api_response_common_failure = v.object({ errors: v.intersect([email_auth_messages, v.unknown()]), messages: v.intersect([email_auth_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const email_auth_api_response_common_failure = v.object({ errors: email_auth_messages, messages: email_auth_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type email_auth_api_response_single = v.InferOutput<typeof email_auth_api_response_single>;
 export const email_auth_api_response_single = v.intersect([email_auth_api_response_common, v.record(v.string(), v.unknown())]);
@@ -6372,7 +6372,7 @@ export type email_security_PatternType = v.InferOutput<typeof email_security_Pat
 export const email_security_PatternType = v.picklist(["EMAIL", "DOMAIN", "IP", "UNKNOWN"]);
 
 export type email_security_AllowPolicy = v.InferOutput<typeof email_security_AllowPolicy>;
-export const email_security_AllowPolicy = v.object({ comments: v.optional(v.nullable(v.pipe(v.string(), v.maxLength(1024)))), created_at: v.intersect([email_security_timestamp, v.unknown()]), id: v.intersect([email_security_AllowPolicyId, v.unknown()]), is_acceptable_sender: v.optional(v.boolean()), is_exempt_recipient: v.optional(v.boolean()), is_recipient: v.optional(v.boolean()), is_regex: v.optional(v.boolean()), is_sender: v.optional(v.boolean()), is_spoof: v.optional(v.boolean()), is_trusted_sender: v.optional(v.boolean()), last_modified: v.intersect([email_security_timestamp, v.unknown()]), modified_at: v.optional(v.intersect([email_security_timestamp, v.unknown()])), pattern: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(1024))), pattern_type: v.optional(email_security_PatternType), verify_sender: v.optional(v.boolean()) });
+export const email_security_AllowPolicy = v.object({ comments: v.optional(v.nullable(v.pipe(v.string(), v.maxLength(1024)))), created_at: email_security_timestamp, id: email_security_AllowPolicyId, is_acceptable_sender: v.optional(v.boolean()), is_exempt_recipient: v.optional(v.boolean()), is_recipient: v.optional(v.boolean()), is_regex: v.optional(v.boolean()), is_sender: v.optional(v.boolean()), is_spoof: v.optional(v.boolean()), is_trusted_sender: v.optional(v.boolean()), last_modified: email_security_timestamp, modified_at: v.optional(email_security_timestamp), pattern: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(1024))), pattern_type: v.optional(email_security_PatternType), verify_sender: v.optional(v.boolean()) });
 
 export type email_security_AllowPolicyList = v.InferOutput<typeof email_security_AllowPolicyList>;
 export const email_security_AllowPolicyList = v.array(email_security_AllowPolicy);
@@ -6387,7 +6387,7 @@ export type email_security_BlockedSenderId = v.InferOutput<typeof email_security
 export const email_security_BlockedSenderId = v.pipe(v.string(), v.uuid());
 
 export type email_security_BlockedSender = v.InferOutput<typeof email_security_BlockedSender>;
-export const email_security_BlockedSender = v.partial(v.object({ comments: v.nullable(v.pipe(v.string(), v.maxLength(1024))), created_at: v.intersect([email_security_timestamp, v.unknown()]), id: v.intersect([email_security_BlockedSenderId, v.unknown()]), is_regex: v.boolean(), last_modified: v.intersect([email_security_timestamp, v.unknown()]), modified_at: v.intersect([email_security_timestamp, v.unknown()]), pattern: v.pipe(v.string(), v.minLength(1), v.maxLength(1024)), pattern_type: email_security_PatternType }));
+export const email_security_BlockedSender = v.partial(v.object({ comments: v.nullable(v.pipe(v.string(), v.maxLength(1024))), created_at: email_security_timestamp, id: email_security_BlockedSenderId, is_regex: v.boolean(), last_modified: email_security_timestamp, modified_at: email_security_timestamp, pattern: v.pipe(v.string(), v.minLength(1), v.maxLength(1024)), pattern_type: email_security_PatternType }));
 
 export type email_security_BlockedSenderList = v.InferOutput<typeof email_security_BlockedSenderList>;
 export const email_security_BlockedSenderList = v.array(email_security_BlockedSender);
@@ -6417,10 +6417,10 @@ export type email_security_BulkJobDetail = v.InferOutput<typeof email_security_B
 export const email_security_BulkJobDetail = v.object({ action_params: email_security_BulkJobActionParams, action_type: v.picklist(["MOVE", "RELEASE"]), comment: v.optional(v.nullable(v.string())), completed_at: v.optional(v.nullable(v.string())), created_at: v.string(), job_id: v.pipe(v.string(), v.uuid()), messages_failed: v.pipe(v.number(), v.integer()), messages_pending: v.pipe(v.number(), v.integer()), messages_successful: v.pipe(v.number(), v.integer()), search_params: email_security_BulkSearchParams, started_at: v.optional(v.nullable(v.string())), status: v.picklist(["PENDING", "DISCOVERING", "PROCESSING", "COMPLETED", "FAILED", "CANCELLED", "SKIPPED"]), status_message: v.optional(v.nullable(v.string())), total_messages_discovered: v.pipe(v.number(), v.integer()) });
 
 export type email_security_CreateAllowPolicy = v.InferOutput<typeof email_security_CreateAllowPolicy>;
-export const email_security_CreateAllowPolicy = v.intersect([email_security_AllowPolicy, v.unknown()]);
+export const email_security_CreateAllowPolicy = email_security_AllowPolicy;
 
 export type email_security_CreateBlockedSender = v.InferOutput<typeof email_security_CreateBlockedSender>;
-export const email_security_CreateBlockedSender = v.intersect([email_security_BlockedSender, v.unknown()]);
+export const email_security_CreateBlockedSender = email_security_BlockedSender;
 
 export type email_security_DeliveryMode = v.InferOutput<typeof email_security_DeliveryMode>;
 export const email_security_DeliveryMode = v.picklist(["DIRECT", "BCC", "JOURNAL", "API", "RETRO_SCAN"]);
@@ -6441,28 +6441,28 @@ export type email_security_Provenance = v.InferOutput<typeof email_security_Prov
 export const email_security_Provenance = v.picklist(["A1S_INTERNAL", "SNOOPY-CASB_OFFICE_365", "SNOOPY-OFFICE_365", "SNOOPY-GOOGLE_DIRECTORY"]);
 
 export type email_security_ImpersonationRegistry = v.InferOutput<typeof email_security_ImpersonationRegistry>;
-export const email_security_ImpersonationRegistry = v.partial(v.object({ comments: v.nullable(v.string()), created_at: v.intersect([email_security_timestamp, v.unknown()]), directory_id: v.nullable(v.pipe(v.number(), v.integer())), directory_node_id: v.nullable(v.pipe(v.number(), v.integer())), email: v.string(), external_directory_node_id: v.nullable(v.string()), id: v.intersect([email_security_ImpersonationRegistryId, v.unknown()]), is_email_regex: v.boolean(), last_modified: v.intersect([email_security_timestamp, v.unknown()]), modified_at: v.intersect([email_security_timestamp, v.unknown()]), name: v.pipe(v.string(), v.maxLength(1024)), provenance: email_security_Provenance }));
+export const email_security_ImpersonationRegistry = v.partial(v.object({ comments: v.nullable(v.string()), created_at: email_security_timestamp, directory_id: v.nullable(v.pipe(v.number(), v.integer())), directory_node_id: v.nullable(v.pipe(v.number(), v.integer())), email: v.string(), external_directory_node_id: v.nullable(v.string()), id: email_security_ImpersonationRegistryId, is_email_regex: v.boolean(), last_modified: email_security_timestamp, modified_at: email_security_timestamp, name: v.pipe(v.string(), v.maxLength(1024)), provenance: email_security_Provenance }));
 
 export type email_security_CreateImpersonationRegistry = v.InferOutput<typeof email_security_CreateImpersonationRegistry>;
-export const email_security_CreateImpersonationRegistry = v.intersect([email_security_ImpersonationRegistry, v.unknown()]);
+export const email_security_CreateImpersonationRegistry = email_security_ImpersonationRegistry;
 
 export type email_security_SendingDomainRestrictionId = v.InferOutput<typeof email_security_SendingDomainRestrictionId>;
 export const email_security_SendingDomainRestrictionId = v.pipe(v.string(), v.uuid());
 
 export type email_security_SendingDomainRestriction = v.InferOutput<typeof email_security_SendingDomainRestriction>;
-export const email_security_SendingDomainRestriction = v.partial(v.object({ comments: v.nullable(v.pipe(v.string(), v.maxLength(1024))), created_at: v.intersect([email_security_timestamp, v.unknown()]), domain: v.string(), exclude: v.array(v.string()), id: v.intersect([email_security_SendingDomainRestrictionId, v.unknown()]), last_modified: v.intersect([email_security_timestamp, v.unknown()]), modified_at: v.intersect([email_security_timestamp, v.unknown()]) }));
+export const email_security_SendingDomainRestriction = v.partial(v.object({ comments: v.nullable(v.pipe(v.string(), v.maxLength(1024))), created_at: email_security_timestamp, domain: v.string(), exclude: v.array(v.string()), id: email_security_SendingDomainRestrictionId, last_modified: email_security_timestamp, modified_at: email_security_timestamp }));
 
 export type email_security_CreateSendingDomainRestriction = v.InferOutput<typeof email_security_CreateSendingDomainRestriction>;
-export const email_security_CreateSendingDomainRestriction = v.intersect([email_security_SendingDomainRestriction, v.unknown()]);
+export const email_security_CreateSendingDomainRestriction = email_security_SendingDomainRestriction;
 
 export type email_security_TrustedDomainId = v.InferOutput<typeof email_security_TrustedDomainId>;
 export const email_security_TrustedDomainId = v.pipe(v.string(), v.uuid());
 
 export type email_security_TrustedDomain = v.InferOutput<typeof email_security_TrustedDomain>;
-export const email_security_TrustedDomain = v.partial(v.object({ comments: v.nullable(v.pipe(v.string(), v.maxLength(1024))), created_at: v.intersect([email_security_timestamp, v.unknown()]), id: v.intersect([email_security_TrustedDomainId, v.unknown()]), is_recent: v.boolean(), is_regex: v.boolean(), is_similarity: v.boolean(), last_modified: v.intersect([email_security_timestamp, v.unknown()]), modified_at: v.intersect([email_security_timestamp, v.unknown()]), pattern: v.pipe(v.string(), v.minLength(1), v.maxLength(1024)) }));
+export const email_security_TrustedDomain = v.partial(v.object({ comments: v.nullable(v.pipe(v.string(), v.maxLength(1024))), created_at: email_security_timestamp, id: email_security_TrustedDomainId, is_recent: v.boolean(), is_regex: v.boolean(), is_similarity: v.boolean(), last_modified: email_security_timestamp, modified_at: email_security_timestamp, pattern: v.pipe(v.string(), v.minLength(1), v.maxLength(1024)) }));
 
 export type email_security_CreateTrustedDomain = v.InferOutput<typeof email_security_CreateTrustedDomain>;
-export const email_security_CreateTrustedDomain = v.intersect([email_security_TrustedDomain, v.unknown()]);
+export const email_security_CreateTrustedDomain = email_security_TrustedDomain;
 
 export type email_security_CreateUrlIgnorePattern = v.InferOutput<typeof email_security_CreateUrlIgnorePattern>;
 export const email_security_CreateUrlIgnorePattern = v.object({ comments: v.optional(v.nullable(v.pipe(v.string(), v.maxLength(1024)))), pattern: v.pipe(v.string(), v.minLength(1), v.maxLength(1024)) });
@@ -6516,7 +6516,7 @@ export type email_security_DomainStatus = v.InferOutput<typeof email_security_Do
 export const email_security_DomainStatus = v.nullable(v.union([v.literal("pending"), v.literal("active"), v.literal("failed"), v.literal("timeout"), v.literal(null)]));
 
 export type email_security_Domain = v.InferOutput<typeof email_security_Domain>;
-export const email_security_Domain = v.partial(v.object({ allowed_delivery_modes: v.array(email_security_DeliveryMode), authorization: email_security_DomainAuthorization, created_at: v.intersect([email_security_timestamp, v.unknown()]), dmarc_status: email_security_DmarcStatus, domain: v.string(), drop_dispositions: v.array(email_security_DispositionLabel), emails_processed: email_security_EmailsProcessed, folder: email_security_ScannableFolder, id: email_security_DomainId, inbox_provider: v.nullable(v.union([v.literal("Microsoft"), v.literal("Google"), v.literal(null)])), integration_id: v.nullable(v.pipe(v.string(), v.uuid())), ip_restrictions: v.array(v.string()), last_modified: v.intersect([email_security_timestamp, v.unknown()]), lookback_hops: v.pipe(v.number(), v.integer()), modified_at: v.intersect([email_security_timestamp, v.unknown()]), o365_tenant_id: v.nullable(v.string()), regions: v.array(email_security_Region), require_tls_inbound: v.nullable(v.boolean()), require_tls_outbound: v.nullable(v.boolean()), spf_status: email_security_SpfStatus, status: email_security_DomainStatus, transport: v.string() }));
+export const email_security_Domain = v.partial(v.object({ allowed_delivery_modes: v.array(email_security_DeliveryMode), authorization: email_security_DomainAuthorization, created_at: email_security_timestamp, dmarc_status: email_security_DmarcStatus, domain: v.string(), drop_dispositions: v.array(email_security_DispositionLabel), emails_processed: email_security_EmailsProcessed, folder: email_security_ScannableFolder, id: email_security_DomainId, inbox_provider: v.nullable(v.union([v.literal("Microsoft"), v.literal("Google"), v.literal(null)])), integration_id: v.nullable(v.pipe(v.string(), v.uuid())), ip_restrictions: v.array(v.string()), last_modified: email_security_timestamp, lookback_hops: v.pipe(v.number(), v.integer()), modified_at: email_security_timestamp, o365_tenant_id: v.nullable(v.string()), regions: v.array(email_security_Region), require_tls_inbound: v.nullable(v.boolean()), require_tls_outbound: v.nullable(v.boolean()), spf_status: email_security_SpfStatus, status: email_security_DomainStatus, transport: v.string() }));
 
 export type email_security_DomainList = v.InferOutput<typeof email_security_DomainList>;
 export const email_security_DomainList = v.array(email_security_Domain);
@@ -6546,7 +6546,7 @@ export type email_security_Validation = v.InferOutput<typeof email_security_Vali
 export const email_security_Validation = v.partial(v.object({ comment: v.nullable(v.string()), dkim: email_security_ValidationStatus, dmarc: email_security_ValidationStatus, spf: email_security_ValidationStatus }));
 
 export type email_security_MessageDetails = v.InferOutput<typeof email_security_MessageDetails>;
-export const email_security_MessageDetails = v.object({ action_log: v.array(email_security_ActionLogEntry), alert_id: v.optional(v.nullable(v.string())), client_recipients: v.array(v.string()), delivery_mode: v.optional(email_security_MessageDeliveryMode), delivery_status: v.optional(v.nullable(v.array(email_security_MessageDeliveryStatus))), detection_reasons: v.array(v.string()), edf_hash: v.optional(v.nullable(v.string())), envelope_from: v.optional(v.nullable(v.string())), envelope_to: v.optional(v.nullable(v.array(v.string()))), final_disposition: v.optional(email_security_DispositionLabel), findings: v.optional(v.nullable(v.array(v.partial(v.object({ attachment: v.nullable(v.string()), detail: v.nullable(v.string()), detection: email_security_DispositionLabel, field: v.nullable(v.string()), name: v.nullable(v.string()), portion: v.nullable(v.string()), reason: v.nullable(v.string()), score: v.nullable(v.number()), value: v.nullable(v.string()) }))))), from: v.optional(v.nullable(v.string())), from_name: v.optional(v.nullable(v.string())), htmltext_structure_hash: v.optional(v.nullable(v.string())), id: v.intersect([email_security_InvestigateId, v.unknown()]), is_phish_submission: v.boolean(), is_quarantined: v.boolean(), message_id: v.optional(v.nullable(v.string())), post_delivery_operations: v.optional(v.nullable(v.array(v.picklist(["PREVIEW", "QUARANTINE_RELEASE", "SUBMISSION", "MOVE"])))), postfix_id: email_security_PostfixId, postfix_id_outbound: v.optional(v.nullable(v.string())), properties: v.partial(v.object({ allowlisted_pattern: v.nullable(v.string()), allowlisted_pattern_type: v.nullable(v.picklist(["quarantine_release", "acceptable_sender", "allowed_sender", "allowed_recipient", "domain_similarity", "domain_recency", "managed_acceptable_sender", "outbound_ndr"])), blocklisted_message: v.nullable(v.boolean()), blocklisted_pattern: v.nullable(v.string()), whitelisted_pattern_type: v.nullable(v.picklist(["quarantine_release", "acceptable_sender", "allowed_sender", "allowed_recipient", "domain_similarity", "domain_recency", "managed_acceptable_sender", "outbound_ndr"])) })), replyto: v.optional(v.nullable(v.string())), scanned_at: v.optional(v.nullable(v.string())), sent_at: v.optional(v.nullable(v.string())), sent_date: v.optional(v.nullable(v.string())), smtp_helo_server_ip: v.optional(v.nullable(v.string())), smtp_previous_hop_ip: v.optional(v.nullable(v.string())), subject: v.optional(v.nullable(v.string())), threat_categories: v.optional(v.nullable(v.array(v.string()))), to: v.optional(v.nullable(v.array(v.string()))), to_name: v.optional(v.nullable(v.array(v.string()))), ts: v.string(), validation: v.optional(email_security_Validation), x_originating_ip: v.optional(v.nullable(v.string())) });
+export const email_security_MessageDetails = v.object({ action_log: v.array(email_security_ActionLogEntry), alert_id: v.optional(v.nullable(v.string())), client_recipients: v.array(v.string()), delivery_mode: v.optional(email_security_MessageDeliveryMode), delivery_status: v.optional(v.nullable(v.array(email_security_MessageDeliveryStatus))), detection_reasons: v.array(v.string()), edf_hash: v.optional(v.nullable(v.string())), envelope_from: v.optional(v.nullable(v.string())), envelope_to: v.optional(v.nullable(v.array(v.string()))), final_disposition: v.optional(email_security_DispositionLabel), findings: v.optional(v.nullable(v.array(v.partial(v.object({ attachment: v.nullable(v.string()), detail: v.nullable(v.string()), detection: email_security_DispositionLabel, field: v.nullable(v.string()), name: v.nullable(v.string()), portion: v.nullable(v.string()), reason: v.nullable(v.string()), score: v.nullable(v.number()), value: v.nullable(v.string()) }))))), from: v.optional(v.nullable(v.string())), from_name: v.optional(v.nullable(v.string())), htmltext_structure_hash: v.optional(v.nullable(v.string())), id: email_security_InvestigateId, is_phish_submission: v.boolean(), is_quarantined: v.boolean(), message_id: v.optional(v.nullable(v.string())), post_delivery_operations: v.optional(v.nullable(v.array(v.picklist(["PREVIEW", "QUARANTINE_RELEASE", "SUBMISSION", "MOVE"])))), postfix_id: email_security_PostfixId, postfix_id_outbound: v.optional(v.nullable(v.string())), properties: v.partial(v.object({ allowlisted_pattern: v.nullable(v.string()), allowlisted_pattern_type: v.nullable(v.picklist(["quarantine_release", "acceptable_sender", "allowed_sender", "allowed_recipient", "domain_similarity", "domain_recency", "managed_acceptable_sender", "outbound_ndr"])), blocklisted_message: v.nullable(v.boolean()), blocklisted_pattern: v.nullable(v.string()), whitelisted_pattern_type: v.nullable(v.picklist(["quarantine_release", "acceptable_sender", "allowed_sender", "allowed_recipient", "domain_similarity", "domain_recency", "managed_acceptable_sender", "outbound_ndr"])) })), replyto: v.optional(v.nullable(v.string())), scanned_at: v.optional(v.nullable(v.string())), sent_at: v.optional(v.nullable(v.string())), sent_date: v.optional(v.nullable(v.string())), smtp_helo_server_ip: v.optional(v.nullable(v.string())), smtp_previous_hop_ip: v.optional(v.nullable(v.string())), subject: v.optional(v.nullable(v.string())), threat_categories: v.optional(v.nullable(v.array(v.string()))), to: v.optional(v.nullable(v.array(v.string()))), to_name: v.optional(v.nullable(v.array(v.string()))), ts: v.string(), validation: v.optional(email_security_Validation), x_originating_ip: v.optional(v.nullable(v.string())) });
 
 export type email_security_MessageHeader = v.InferOutput<typeof email_security_MessageHeader>;
 export const email_security_MessageHeader = v.object({ name: v.string(), value: v.string() });
@@ -6588,7 +6588,7 @@ export type email_security_ReclassifyRequest = v.InferOutput<typeof email_securi
 export const email_security_ReclassifyRequest = v.object({ eml_content: v.optional(v.string()), escalated_submission_id: v.optional(v.string()), expected_disposition: v.picklist(["NONE", "BULK", "MALICIOUS", "SPAM", "SPOOF", "SUSPICIOUS"]) });
 
 export type email_security_ReleaseResponse = v.InferOutput<typeof email_security_ReleaseResponse>;
-export const email_security_ReleaseResponse = v.object({ delivered: v.optional(v.nullable(v.array(v.string()))), failed: v.optional(v.nullable(v.array(v.string()))), id: v.intersect([email_security_InvestigateId, v.unknown()]), postfix_id: v.optional(v.intersect([email_security_PostfixId, v.unknown()])), undelivered: v.optional(v.nullable(v.array(v.string()))) });
+export const email_security_ReleaseResponse = v.object({ delivered: v.optional(v.nullable(v.array(v.string()))), failed: v.optional(v.nullable(v.array(v.string()))), id: email_security_InvestigateId, postfix_id: v.optional(email_security_PostfixId), undelivered: v.optional(v.nullable(v.array(v.string()))) });
 
 export type email_security_ReplaceDomain = v.InferOutput<typeof email_security_ReplaceDomain>;
 export const email_security_ReplaceDomain = v.object({ allowed_delivery_modes: v.pipe(v.array(email_security_DeliveryMode), v.minLength(1), v.maxLength(10)), drop_dispositions: v.pipe(v.array(email_security_DispositionLabel), v.maxLength(10)), folder: v.optional(email_security_ScannableFolder), integration_id: v.optional(v.nullable(v.pipe(v.string(), v.uuid()))), ip_restrictions: v.pipe(v.array(v.string()), v.maxLength(100)), lookback_hops: v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(20)), regions: v.pipe(v.array(email_security_Region), v.minLength(1), v.maxLength(10)), require_tls_inbound: v.optional(v.nullable(v.boolean())), require_tls_outbound: v.optional(v.nullable(v.boolean())), transport: v.optional(v.nullable(v.string())) });
@@ -6603,28 +6603,28 @@ export type email_security_TrustedDomainList = v.InferOutput<typeof email_securi
 export const email_security_TrustedDomainList = v.array(email_security_TrustedDomain);
 
 export type email_security_UpdateAllowPolicy = v.InferOutput<typeof email_security_UpdateAllowPolicy>;
-export const email_security_UpdateAllowPolicy = v.intersect([email_security_AllowPolicy, v.unknown()]);
+export const email_security_UpdateAllowPolicy = email_security_AllowPolicy;
 
 export type email_security_UpdateBlockedSender = v.InferOutput<typeof email_security_UpdateBlockedSender>;
-export const email_security_UpdateBlockedSender = v.intersect([email_security_BlockedSender, v.unknown()]);
+export const email_security_UpdateBlockedSender = email_security_BlockedSender;
 
 export type email_security_UpdateDomain = v.InferOutput<typeof email_security_UpdateDomain>;
 export const email_security_UpdateDomain = v.partial(v.object({ allowed_delivery_modes: v.array(email_security_DeliveryMode), domain: v.string(), drop_dispositions: v.array(email_security_DispositionLabel), folder: email_security_ScannableFolder, integration_id: v.nullable(v.pipe(v.string(), v.uuid())), ip_restrictions: v.array(v.string()), lookback_hops: v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(20)), regions: v.array(email_security_Region), require_tls_inbound: v.boolean(), require_tls_outbound: v.boolean(), transport: v.string() }));
 
 export type email_security_UpdateImpersonationRegistry = v.InferOutput<typeof email_security_UpdateImpersonationRegistry>;
-export const email_security_UpdateImpersonationRegistry = v.intersect([email_security_ImpersonationRegistry, v.unknown()]);
+export const email_security_UpdateImpersonationRegistry = email_security_ImpersonationRegistry;
 
 export type email_security_UpdateSendingDomainRestriction = v.InferOutput<typeof email_security_UpdateSendingDomainRestriction>;
-export const email_security_UpdateSendingDomainRestriction = v.intersect([email_security_SendingDomainRestriction, v.unknown()]);
+export const email_security_UpdateSendingDomainRestriction = email_security_SendingDomainRestriction;
 
 export type email_security_UpdateTrustedDomain = v.InferOutput<typeof email_security_UpdateTrustedDomain>;
-export const email_security_UpdateTrustedDomain = v.intersect([email_security_TrustedDomain, v.unknown()]);
+export const email_security_UpdateTrustedDomain = email_security_TrustedDomain;
 
 export type email_security_UpdateUrlIgnorePattern = v.InferOutput<typeof email_security_UpdateUrlIgnorePattern>;
 export const email_security_UpdateUrlIgnorePattern = v.pipe(v.partial(v.object({ comments: v.nullable(v.pipe(v.string(), v.maxLength(1024))), pattern: v.pipe(v.string(), v.minLength(1), v.maxLength(1024)) })), v.check((obj) => Object.keys(obj).length >= 1, "minProperties"));
 
 export type email_security_UrlIgnorePattern = v.InferOutput<typeof email_security_UrlIgnorePattern>;
-export const email_security_UrlIgnorePattern = v.object({ comments: v.optional(v.nullable(v.pipe(v.string(), v.maxLength(1024)))), created_at: v.string(), id: v.intersect([email_security_UrlIgnorePatternId, v.unknown()]), last_modified: v.optional(v.string()), modified_at: v.optional(v.string()), pattern: v.pipe(v.string(), v.minLength(1), v.maxLength(1024)) });
+export const email_security_UrlIgnorePattern = v.object({ comments: v.optional(v.nullable(v.pipe(v.string(), v.maxLength(1024)))), created_at: v.string(), id: email_security_UrlIgnorePatternId, last_modified: v.optional(v.string()), modified_at: v.optional(v.string()), pattern: v.pipe(v.string(), v.minLength(1), v.maxLength(1024)) });
 
 export type email_security_messages = v.InferOutput<typeof email_security_messages>;
 export const email_security_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), documentation_url: v.optional(v.string()), message: v.string(), source: v.optional(v.partial(v.object({ pointer: v.string() }))) }));
@@ -6636,7 +6636,7 @@ export type email_security_api_response_collection = v.InferOutput<typeof email_
 export const email_security_api_response_collection = v.intersect([email_security_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type email_security_api_response_common_failure = v.InferOutput<typeof email_security_api_response_common_failure>;
-export const email_security_api_response_common_failure = v.object({ errors: v.intersect([email_security_messages, v.unknown()]), messages: v.intersect([email_security_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const email_security_api_response_common_failure = v.object({ errors: email_security_messages, messages: email_security_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type email_security_api_response_single = v.InferOutput<typeof email_security_api_response_single>;
 export const email_security_api_response_single = v.intersect([email_security_api_response_common, v.record(v.string(), v.unknown())]);
@@ -6663,7 +6663,7 @@ export type email_sending_NamedRecipientList = v.InferOutput<typeof email_sendin
 export const email_sending_NamedRecipientList = v.union([email_sending_EmailAddressString, email_sending_EmailAddressObject, v.array(v.union([email_sending_EmailAddressString, email_sending_EmailAddressObject]))]);
 
 export type email_sending_EmailBuilder = v.InferOutput<typeof email_sending_EmailBuilder>;
-export const email_sending_EmailBuilder = v.object({ attachments: v.optional(v.array(v.union([email_sending_EmailInlineAttachment, email_sending_EmailAttachment]))), bcc: v.optional(v.intersect([email_sending_NamedRecipientList, v.unknown()])), cc: v.optional(v.intersect([email_sending_NamedRecipientList, v.unknown()])), from: v.union([email_sending_EmailAddressString, email_sending_EmailAddressObject]), headers: v.optional(v.record(v.string(), v.string())), html: v.optional(v.string()), reply_to: v.optional(v.union([email_sending_EmailAddressString, email_sending_EmailAddressObject])), subject: v.string(), text: v.optional(v.string()), to: v.optional(email_sending_NamedRecipientList) });
+export const email_sending_EmailBuilder = v.object({ attachments: v.optional(v.array(v.union([email_sending_EmailInlineAttachment, email_sending_EmailAttachment]))), bcc: v.optional(email_sending_NamedRecipientList), cc: v.optional(email_sending_NamedRecipientList), from: v.union([email_sending_EmailAddressString, email_sending_EmailAddressObject]), headers: v.optional(v.record(v.string(), v.string())), html: v.optional(v.string()), reply_to: v.optional(v.union([email_sending_EmailAddressString, email_sending_EmailAddressObject])), subject: v.string(), text: v.optional(v.string()), to: v.optional(email_sending_NamedRecipientList) });
 
 export type email_sending_EmailSendResponse = v.InferOutput<typeof email_sending_EmailSendResponse>;
 export const email_sending_EmailSendResponse = v.object({ delivered: v.array(v.pipe(v.string(), v.regex(new RegExp("^[\\x20-\\x7E]+$")))), message_id: v.pipe(v.string(), v.regex(new RegExp("^[\\x20-\\x7E]+$"))), permanent_bounces: v.array(v.pipe(v.string(), v.regex(new RegExp("^[\\x20-\\x7E]+$")))), queued: v.array(v.pipe(v.string(), v.regex(new RegExp("^[\\x20-\\x7E]+$")))) });
@@ -6891,7 +6891,7 @@ export type email_sending_subdomain_properties = v.InferOutput<typeof email_send
 export const email_sending_subdomain_properties = v.object({ created: v.optional(email_created), dkim_selector: v.optional(v.string()), enabled: v.boolean(), modified: v.optional(email_modified), name: v.string(), preview_enabled: v.optional(v.boolean()), return_path_domain: v.optional(v.string()), tag: email_sending_subdomain_identifier });
 
 export type email_sending_subdomain = v.InferOutput<typeof email_sending_subdomain>;
-export const email_sending_subdomain = v.intersect([email_sending_subdomain_properties]);
+export const email_sending_subdomain = email_sending_subdomain_properties;
 
 export type email_sending_subdomain_config_error = v.InferOutput<typeof email_sending_subdomain_config_error>;
 export const email_sending_subdomain_config_error = v.object({ code: v.picklist(["mx.missing", "mx.foreign", "spf.missing", "spf.foreign", "spf.multiple", "dkim.missing", "dkim.conflict", "dmarc.missing", "dmarc.multiple", "domainkey.delegated"]), existing: v.optional(email_dns_record), missing: v.optional(email_dns_record), multiple: v.optional(v.array(email_dns_record)) });
@@ -6981,7 +6981,7 @@ export type firewall_sensitivity = v.InferOutput<typeof firewall_sensitivity>;
 export const firewall_sensitivity = v.optional(v.picklist(["high", "medium", "low", "off"]), "high");
 
 export type firewall_anomaly_package = v.InferOutput<typeof firewall_anomaly_package>;
-export const firewall_anomaly_package = v.intersect([firewall_package_definition, v.partial(v.object({ action_mode: firewall_action_mode, description: firewall_anomaly_description, detection_mode: firewall_anomaly_detection_mode, name: firewall_anomaly_name, sensitivity: firewall_sensitivity })), v.unknown()]);
+export const firewall_anomaly_package = v.intersect([firewall_package_definition, v.partial(v.object({ action_mode: firewall_action_mode, description: firewall_anomaly_description, detection_mode: firewall_anomaly_detection_mode, name: firewall_anomaly_name, sensitivity: firewall_sensitivity }))]);
 
 export type firewall_messages = v.InferOutput<typeof firewall_messages>;
 export const firewall_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), message: v.string() }));
@@ -6996,7 +6996,7 @@ export type firewall_api_response_collection = v.InferOutput<typeof firewall_api
 export const firewall_api_response_collection = v.intersect([firewall_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.record(v.string(), v.unknown()))), result_info: firewall_result_info })), v.record(v.string(), v.unknown())]);
 
 export type firewall_api_response_common_failure = v.InferOutput<typeof firewall_api_response_common_failure>;
-export const firewall_api_response_common_failure = v.object({ errors: v.intersect([firewall_messages, v.unknown()]), messages: v.intersect([firewall_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const firewall_api_response_common_failure = v.object({ errors: firewall_messages, messages: firewall_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type firewall_api_response_single = v.InferOutput<typeof firewall_api_response_single>;
 export const firewall_api_response_single = v.intersect([firewall_api_response_common, v.partial(v.object({ result: v.union([v.nullable(v.record(v.string(), v.unknown())), v.nullable(v.string())]) })), v.record(v.string(), v.unknown())]);
@@ -7137,7 +7137,7 @@ export type firewall_filter_rule_response = v.InferOutput<typeof firewall_filter
 export const firewall_filter_rule_response = v.intersect([firewall_filter_rule_base, v.partial(v.object({ filter: v.union([firewall_filter, firewall_deleted_filter]) })), v.record(v.string(), v.unknown())]);
 
 export type firewall_filter_rule_update_request = v.InferOutput<typeof firewall_filter_rule_update_request>;
-export const firewall_filter_rule_update_request = v.intersect([firewall_filter, v.partial(v.object({ id: v.intersect([firewall_filters_components_schemas_id]) }))]);
+export const firewall_filter_rule_update_request = v.intersect([firewall_filter, v.partial(v.object({ id: firewall_filters_components_schemas_id }))]);
 
 export type firewall_filter_rules_response_collection = v.InferOutput<typeof firewall_filter_rules_response_collection>;
 export const firewall_filter_rules_response_collection = v.intersect([firewall_api_response_collection, v.object({ result: v.array(firewall_filter_rule_response) })]);
@@ -7242,7 +7242,7 @@ export type firewall_waf_action = v.InferOutput<typeof firewall_waf_action>;
 export const firewall_waf_action = v.picklist(["challenge", "block", "simulate", "disable", "default"]);
 
 export type firewall_rules = v.InferOutput<typeof firewall_rules>;
-export const firewall_rules = v.record(v.string(), v.intersect([firewall_waf_action]));
+export const firewall_rules = v.record(v.string(), firewall_waf_action);
 
 export type firewall_urls = v.InferOutput<typeof firewall_urls>;
 export const firewall_urls = v.array(v.string());
@@ -7389,7 +7389,7 @@ export type fraud_api_response_common = v.InferOutput<typeof fraud_api_response_
 export const fraud_api_response_common = v.object({ errors: fraud_messages, messages: fraud_messages, success: v.literal(true) });
 
 export type fraud_api_response_common_failure = v.InferOutput<typeof fraud_api_response_common_failure>;
-export const fraud_api_response_common_failure = v.object({ errors: v.intersect([fraud_messages, v.unknown()]), messages: v.intersect([fraud_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const fraud_api_response_common_failure = v.object({ errors: fraud_messages, messages: fraud_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type fraud_api_response_single = v.InferOutput<typeof fraud_api_response_single>;
 export const fraud_api_response_single = v.intersect([fraud_api_response_common, v.record(v.string(), v.unknown())]);
@@ -7398,7 +7398,7 @@ export type fraud_auth_criteria = v.InferOutput<typeof fraud_auth_criteria>;
 export const fraud_auth_criteria = v.object({ kind: v.literal("status_code"), status_codes: v.optional(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(100), v.maxValue(599))), v.maxLength(10))) });
 
 export type fraud_authentication_settings = v.InferOutput<typeof fraud_authentication_settings>;
-export const fraud_authentication_settings = v.partial(v.object({ failure_criteria: v.intersect([fraud_auth_criteria]), success_criteria: v.intersect([fraud_auth_criteria]) }));
+export const fraud_authentication_settings = v.partial(v.object({ failure_criteria: fraud_auth_criteria, success_criteria: fraud_auth_criteria }));
 
 export type fraud_user_profiles_status = v.InferOutput<typeof fraud_user_profiles_status>;
 export const fraud_user_profiles_status = v.picklist(["enabled", "disabled"]);
@@ -7422,7 +7422,7 @@ export type google_tag_gateway_api_response_common = v.InferOutput<typeof google
 export const google_tag_gateway_api_response_common = v.object({ errors: google_tag_gateway_messages, messages: google_tag_gateway_messages, success: v.literal(true) });
 
 export type google_tag_gateway_api_response_common_failure = v.InferOutput<typeof google_tag_gateway_api_response_common_failure>;
-export const google_tag_gateway_api_response_common_failure = v.object({ errors: v.intersect([google_tag_gateway_messages, v.unknown()]), messages: v.intersect([google_tag_gateway_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const google_tag_gateway_api_response_common_failure = v.object({ errors: google_tag_gateway_messages, messages: google_tag_gateway_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type google_tag_gateway_google_tag_gateway_config = v.InferOutput<typeof google_tag_gateway_google_tag_gateway_config>;
 export const google_tag_gateway_google_tag_gateway_config = v.object({ enabled: v.boolean(), endpoint: v.string(), hideOriginalIp: v.boolean(), measurementId: v.string(), setUpTag: v.optional(v.nullable(v.boolean())) });
@@ -7449,7 +7449,7 @@ export type healthchecks_api_response_collection = v.InferOutput<typeof healthch
 export const healthchecks_api_response_collection = v.intersect([healthchecks_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.unknown())), result_info: healthchecks_result_info })), v.record(v.string(), v.unknown())]);
 
 export type healthchecks_api_response_common_failure = v.InferOutput<typeof healthchecks_api_response_common_failure>;
-export const healthchecks_api_response_common_failure = v.object({ errors: v.intersect([healthchecks_messages, v.unknown()]), messages: v.intersect([healthchecks_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const healthchecks_api_response_common_failure = v.object({ errors: healthchecks_messages, messages: healthchecks_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type healthchecks_api_response_single = v.InferOutput<typeof healthchecks_api_response_single>;
 export const healthchecks_api_response_single = v.intersect([healthchecks_api_response_common, v.partial(v.object({ result: v.union([v.record(v.string(), v.unknown()), v.string()]) })), v.record(v.string(), v.unknown())]);
@@ -7530,7 +7530,7 @@ export type hyperdrive_api_response_collection = v.InferOutput<typeof hyperdrive
 export const hyperdrive_api_response_collection = v.intersect([hyperdrive_api_response_common, v.partial(v.object({ result_info: hyperdrive_result_info })), v.record(v.string(), v.unknown())]);
 
 export type hyperdrive_api_response_common_failure = v.InferOutput<typeof hyperdrive_api_response_common_failure>;
-export const hyperdrive_api_response_common_failure = v.object({ errors: v.intersect([hyperdrive_messages, v.unknown()]), messages: v.intersect([hyperdrive_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const hyperdrive_api_response_common_failure = v.object({ errors: hyperdrive_messages, messages: hyperdrive_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type hyperdrive_api_response_single = v.InferOutput<typeof hyperdrive_api_response_single>;
 export const hyperdrive_api_response_single = v.intersect([hyperdrive_api_response_common, v.record(v.string(), v.unknown())]);
@@ -7602,7 +7602,7 @@ export type iam_account = v.InferOutput<typeof iam_account>;
 export const iam_account = v.object({ created_on: v.optional(v.string()), id: iam_common_components_schemas_identifier, managed_by: v.optional(v.partial(v.object({ parent_org_id: v.pipe(v.string(), v.maxLength(32)), parent_org_name: v.string() }))), name: v.pipe(v.string(), v.maxLength(100)), settings: v.optional(v.partial(v.object({ abuse_contact_email: v.string(), enforce_twofactor: v.optional(v.boolean(), false) }))), type: iam_account_type });
 
 export type iam_account_identifier = v.InferOutput<typeof iam_account_identifier>;
-export const iam_account_identifier = v.intersect([iam_common_components_schemas_identifier]);
+export const iam_account_identifier = iam_common_components_schemas_identifier;
 
 export type iam_messages_2 = v.InferOutput<typeof iam_messages_2>;
 export const iam_messages_2 = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), documentation_url: v.optional(v.string()), message: v.string(), source: v.optional(v.partial(v.object({ pointer: v.string() }))) }));
@@ -7617,7 +7617,7 @@ export type iam_api_response_collection = v.InferOutput<typeof iam_api_response_
 export const iam_api_response_collection = v.intersect([iam_api_response_common, v.partial(v.object({ result_info: iam_result_info })), v.record(v.string(), v.unknown())]);
 
 export type iam_api_response_common_failure = v.InferOutput<typeof iam_api_response_common_failure>;
-export const iam_api_response_common_failure = v.object({ errors: v.intersect([iam_messages_2, v.unknown()]), messages: v.intersect([iam_messages_2]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const iam_api_response_common_failure = v.object({ errors: iam_messages_2, messages: iam_messages_2, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type iam_api_response_single = v.InferOutput<typeof iam_api_response_single>;
 export const iam_api_response_single = v.intersect([iam_api_response_common, v.record(v.string(), v.unknown())]);
@@ -7680,7 +7680,7 @@ export type iam_permissions = v.InferOutput<typeof iam_permissions>;
 export const iam_permissions = v.partial(v.object({ analytics: iam_grants, billing: iam_grants, cache_purge: iam_grants, dns: iam_grants, dns_records: iam_grants, lb: iam_grants, logs: iam_grants, organization: iam_grants, ssl: iam_grants, waf: iam_grants, zone_settings: iam_grants, zones: iam_grants }));
 
 export type iam_role = v.InferOutput<typeof iam_role>;
-export const iam_role = v.object({ description: v.string(), id: iam_role_components_schemas_identifier, name: v.pipe(v.string(), v.maxLength(120)), permissions: v.intersect([iam_permissions, v.unknown()]) });
+export const iam_role = v.object({ description: v.string(), id: iam_role_components_schemas_identifier, name: v.pipe(v.string(), v.maxLength(120)), permissions: iam_permissions });
 
 export type iam_first_name = v.InferOutput<typeof iam_first_name>;
 export const iam_first_name = v.nullable(v.pipe(v.string(), v.maxLength(60)));
@@ -7698,7 +7698,7 @@ export type iam_collection_member_response_with_policies = v.InferOutput<typeof 
 export const iam_collection_member_response_with_policies = v.intersect([iam_api_response_collection, v.partial(v.object({ result: v.array(iam_member_with_policies) }))]);
 
 export type iam_schemas_account = v.InferOutput<typeof iam_schemas_account>;
-export const iam_schemas_account = v.intersect([iam_account, v.unknown()]);
+export const iam_schemas_account = iam_account;
 
 export type iam_role_names = v.InferOutput<typeof iam_role_names>;
 export const iam_role_names = v.array(v.pipe(v.string(), v.maxLength(120)));
@@ -7707,13 +7707,13 @@ export type iam_schemas_status = v.InferOutput<typeof iam_schemas_status>;
 export const iam_schemas_status = v.picklist(["accepted", "pending", "rejected"]);
 
 export type iam_membership = v.InferOutput<typeof iam_membership>;
-export const iam_membership = v.partial(v.object({ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: v.intersect([iam_permissions, v.unknown()]), roles: iam_role_names, status: iam_schemas_status }));
+export const iam_membership = v.partial(v.object({ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: iam_permissions, roles: iam_role_names, status: iam_schemas_status }));
 
 export type iam_collection_membership_response = v.InferOutput<typeof iam_collection_membership_response>;
 export const iam_collection_membership_response = v.intersect([iam_api_response_collection, v.partial(v.object({ result: v.array(iam_membership) }))]);
 
 export type iam_membership_with_policies = v.InferOutput<typeof iam_membership_with_policies>;
-export const iam_membership_with_policies = v.partial(v.object({ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: v.intersect([iam_permissions, v.unknown()]), policies: v.array(iam_list_member_policy), roles: iam_role_names, status: iam_schemas_status }));
+export const iam_membership_with_policies = v.partial(v.object({ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: iam_permissions, policies: v.array(iam_list_member_policy), roles: iam_role_names, status: iam_schemas_status }));
 
 export type iam_collection_membership_response_with_policies = v.InferOutput<typeof iam_collection_membership_response_with_policies>;
 export const iam_collection_membership_response_with_policies = v.intersect([iam_api_response_collection, v.partial(v.object({ result: v.array(iam_membership_with_policies) }))]);
@@ -7737,7 +7737,7 @@ export type iam_oauth_client_uri_verification = v.InferOutput<typeof iam_oauth_c
 export const iam_oauth_client_uri_verification = v.partial(v.object({ status: v.picklist(["pending", "in_progress", "verified", "failed"]), text: v.string() }));
 
 export type iam_oauth_client = v.InferOutput<typeof iam_oauth_client>;
-export const iam_oauth_client = v.intersect([iam_oauth_client_common, v.object({ client_id: v.intersect([iam_oauth_client_identifier, v.unknown()]), client_uri_verification: v.optional(iam_oauth_client_uri_verification), created_at: v.optional(v.string()), has_rotated_secret: v.optional(v.boolean()), promoted_at: v.optional(v.string()), updated_at: v.optional(v.string()), visibility: v.picklist(["public", "private"]) })]);
+export const iam_oauth_client = v.intersect([iam_oauth_client_common, v.object({ client_id: iam_oauth_client_identifier, client_uri_verification: v.optional(iam_oauth_client_uri_verification), created_at: v.optional(v.string()), has_rotated_secret: v.optional(v.boolean()), promoted_at: v.optional(v.string()), updated_at: v.optional(v.string()), visibility: v.picklist(["public", "private"]) })]);
 
 export type iam_collection_oauth_client_response = v.InferOutput<typeof iam_collection_oauth_client_response>;
 export const iam_collection_oauth_client_response = v.intersect([iam_api_response_collection, v.partial(v.object({ result: v.array(iam_oauth_client) }))]);
@@ -7824,7 +7824,7 @@ export type iam_collection_tokens_response = v.InferOutput<typeof iam_collection
 export const iam_collection_tokens_response = v.intersect([iam_api_response_collection, v.partial(v.object({ result: v.array(iam_token_base) }))]);
 
 export type iam_components_schemas_account = v.InferOutput<typeof iam_components_schemas_account>;
-export const iam_components_schemas_account = v.intersect([iam_account]);
+export const iam_components_schemas_account = iam_account;
 
 export type iam_country = v.InferOutput<typeof iam_country>;
 export const iam_country = v.nullable(v.pipe(v.string(), v.maxLength(30)));
@@ -7872,13 +7872,13 @@ export type iam_create_payload = v.InferOutput<typeof iam_create_payload>;
 export const iam_create_payload = v.object({ condition: v.optional(iam_condition), expires_on: v.optional(iam_expires_on), name: iam_name, not_before: v.optional(iam_not_before), policies: iam_token_policies });
 
 export type iam_permission_group_identifier = v.InferOutput<typeof iam_permission_group_identifier>;
-export const iam_permission_group_identifier = v.intersect([iam_common_components_schemas_identifier]);
+export const iam_permission_group_identifier = iam_common_components_schemas_identifier;
 
 export type iam_permission_group_ids = v.InferOutput<typeof iam_permission_group_ids>;
 export const iam_permission_group_ids = v.array(v.object({ id: iam_permission_group_identifier }));
 
 export type iam_resource_group_identifier = v.InferOutput<typeof iam_resource_group_identifier>;
-export const iam_resource_group_identifier = v.intersect([iam_common_components_schemas_identifier]);
+export const iam_resource_group_identifier = iam_common_components_schemas_identifier;
 
 export type iam_resource_group_ids = v.InferOutput<typeof iam_resource_group_ids>;
 export const iam_resource_group_ids = v.array(v.object({ id: iam_resource_group_identifier }));
@@ -8106,7 +8106,7 @@ export type iam_single_user_response = v.InferOutput<typeof iam_single_user_resp
 export const iam_single_user_response = v.intersect([iam_api_response_single, v.partial(v.object({ result: v.object({ betas: v.optional(v.array(v.string())), country: v.optional(iam_country), email: v.pipe(v.string(), v.email()), first_name: v.optional(iam_first_name), has_business_zones: v.optional(v.boolean(), false), has_enterprise_zones: v.optional(v.boolean(), false), has_pro_zones: v.optional(v.boolean(), false), id: v.string(), last_name: v.optional(iam_last_name), organizations: v.optional(v.array(iam_organization)), suspended: v.optional(v.boolean(), false), telephone: v.optional(iam_telephone), two_factor_authentication_enabled: v.optional(iam_two_factor_authentication_enabled), two_factor_authentication_locked: v.optional(iam_two_factor_authentication_locked), zipcode: v.optional(iam_zipcode) }) }))]);
 
 export type iam_sso_connector_identifier = v.InferOutput<typeof iam_sso_connector_identifier>;
-export const iam_sso_connector_identifier = v.intersect([iam_common_components_schemas_identifier]);
+export const iam_sso_connector_identifier = iam_common_components_schemas_identifier;
 
 export type iam_use_fedramp_language = v.InferOutput<typeof iam_use_fedramp_language>;
 export const iam_use_fedramp_language = v.optional(v.boolean(), false);
@@ -8124,7 +8124,7 @@ export type iam_sso_connector_response = v.InferOutput<typeof iam_sso_connector_
 export const iam_sso_connector_response = v.intersect([iam_api_response_single, v.partial(v.object({ result: iam_sso_connector }))]);
 
 export type iam_token_body = v.InferOutput<typeof iam_token_body>;
-export const iam_token_body = v.intersect([iam_token_base, v.record(v.string(), v.unknown()), v.unknown()]);
+export const iam_token_body = v.intersect([iam_token_base, v.record(v.string(), v.unknown())]);
 
 export type iam_token_verify_response_single_segment = v.InferOutput<typeof iam_token_verify_response_single_segment>;
 export const iam_token_verify_response_single_segment = v.intersect([iam_api_response_single, v.partial(v.object({ result: v.object({ expires_on: v.optional(iam_expires_on), id: iam_token_identifier, not_before: v.optional(iam_not_before), status: iam_token_status }) }))]);
@@ -8142,7 +8142,7 @@ export type iam_update_user_group_body = v.InferOutput<typeof iam_update_user_gr
 export const iam_update_user_group_body = v.partial(v.object({ name: v.string(), policies: v.array(v.intersect([v.object({ id: v.string() }), iam_user_group_policy_write_body])) }));
 
 export type iam_user_group_identifier = v.InferOutput<typeof iam_user_group_identifier>;
-export const iam_user_group_identifier = v.intersect([iam_common_components_schemas_identifier]);
+export const iam_user_group_identifier = iam_common_components_schemas_identifier;
 
 export type iam_user_group = v.InferOutput<typeof iam_user_group>;
 export const iam_user_group = v.object({ created_on: v.string(), id: iam_user_group_identifier, modified_on: v.string(), name: v.string(), policies: v.optional(v.array(v.partial(v.object({ access: iam_access, id: iam_policy_identifier, permission_groups: iam_permission_groups, resource_groups: iam_resource_groups })))) });
@@ -8154,7 +8154,7 @@ export type iam_user_group_member_detailed = v.InferOutput<typeof iam_user_group
 export const iam_user_group_member_detailed = v.object({ created_at: v.optional(v.string()), email: v.optional(iam_email), id: v.string(), status: v.optional(v.picklist(["accepted", "pending"])), user: v.optional(v.partial(v.object({ email: iam_email, first_name: v.string(), id: v.string(), last_name: v.string() }))) });
 
 export type iam_user_group_member_identifier = v.InferOutput<typeof iam_user_group_member_identifier>;
-export const iam_user_group_member_identifier = v.intersect([iam_common_components_schemas_identifier]);
+export const iam_user_group_member_identifier = iam_common_components_schemas_identifier;
 
 export type iam_user_groups = v.InferOutput<typeof iam_user_groups>;
 export const iam_user_groups = v.array(iam_user_group);
@@ -8175,7 +8175,7 @@ export type images_api_response_collection_v2 = v.InferOutput<typeof images_api_
 export const images_api_response_collection_v2 = v.intersect([images_api_response_common, v.partial(v.object({ result: v.partial(v.object({ continuation_token: images_images_list_continuation_token })) })), v.record(v.string(), v.unknown())]);
 
 export type images_api_response_common_failure = v.InferOutput<typeof images_api_response_common_failure>;
-export const images_api_response_common_failure = v.object({ errors: v.intersect([images_messages, v.unknown()]), messages: v.intersect([images_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const images_api_response_common_failure = v.object({ errors: images_messages, messages: images_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type images_api_response_single = v.InferOutput<typeof images_api_response_single>;
 export const images_api_response_single = v.intersect([images_api_response_common, v.partial(v.object({ result: v.union([v.record(v.string(), v.unknown()), v.string()]) })), v.record(v.string(), v.unknown())]);
@@ -8463,7 +8463,7 @@ export type infra_api_response_collection = v.InferOutput<typeof infra_api_respo
 export const infra_api_response_collection = v.intersect([infra_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type infra_api_response_common_failure = v.InferOutput<typeof infra_api_response_common_failure>;
-export const infra_api_response_common_failure = v.object({ errors: v.intersect([infra_messages, v.unknown()]), messages: v.intersect([infra_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const infra_api_response_common_failure = v.object({ errors: infra_messages, messages: infra_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type infra_api_response_single = v.InferOutput<typeof infra_api_response_single>;
 export const infra_api_response_single = v.intersect([infra_api_response_common, v.record(v.string(), v.unknown())]);
@@ -8475,10 +8475,10 @@ export type intel_sinkholes_api_response_common = v.InferOutput<typeof intel_sin
 export const intel_sinkholes_api_response_common = v.object({ errors: intel_sinkholes_messages, messages: intel_sinkholes_messages, success: v.literal(true) });
 
 export type intel_sinkholes_api_response_common_failure = v.InferOutput<typeof intel_sinkholes_api_response_common_failure>;
-export const intel_sinkholes_api_response_common_failure = v.object({ errors: v.intersect([intel_sinkholes_messages, v.unknown()]), messages: v.intersect([intel_sinkholes_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const intel_sinkholes_api_response_common_failure = v.object({ errors: intel_sinkholes_messages, messages: intel_sinkholes_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type intel_sinkholes_api_response_common_failure_schemas = v.InferOutput<typeof intel_sinkholes_api_response_common_failure_schemas>;
-export const intel_sinkholes_api_response_common_failure_schemas = v.intersect([intel_sinkholes_api_response_common_failure]);
+export const intel_sinkholes_api_response_common_failure_schemas = intel_sinkholes_api_response_common_failure;
 
 export type intel_sinkholes_api_response_single_empty = v.InferOutput<typeof intel_sinkholes_api_response_single_empty>;
 export const intel_sinkholes_api_response_single_empty = v.intersect([intel_sinkholes_api_response_common, v.partial(v.object({ result: v.record(v.string(), v.unknown()) }))]);
@@ -8526,7 +8526,7 @@ export type intel_api_response_collection = v.InferOutput<typeof intel_api_respo
 export const intel_api_response_collection = v.intersect([intel_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.union([v.string(), v.record(v.string(), v.unknown())]))), result_info: intel_result_info })), v.record(v.string(), v.unknown())]);
 
 export type intel_api_response_common_failure = v.InferOutput<typeof intel_api_response_common_failure>;
-export const intel_api_response_common_failure = v.object({ errors: v.intersect([intel_messages, v.unknown()]), messages: v.intersect([intel_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
+export const intel_api_response_common_failure = v.object({ errors: intel_messages, messages: intel_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
 
 export type intel_schemas_messages = v.InferOutput<typeof intel_schemas_messages>;
 export const intel_schemas_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), documentation_url: v.optional(v.string()), message: v.string(), source: v.optional(v.partial(v.object({ pointer: v.string() }))) }));
@@ -8775,7 +8775,7 @@ export type lists_api_response_collection = v.InferOutput<typeof lists_api_respo
 export const lists_api_response_collection = v.intersect([v.partial(v.object({ result: v.nullable(v.array(v.record(v.string(), v.unknown()))) })), lists_api_response_common, v.record(v.string(), v.unknown())]);
 
 export type lists_api_response_common_failure = v.InferOutput<typeof lists_api_response_common_failure>;
-export const lists_api_response_common_failure = v.object({ errors: v.intersect([lists_messages, v.unknown()]), messages: v.intersect([lists_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const lists_api_response_common_failure = v.object({ errors: lists_messages, messages: lists_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type lists_operation_id = v.InferOutput<typeof lists_operation_id>;
 export const lists_operation_id = v.string();
@@ -8961,7 +8961,7 @@ export type load_balancing_api_paginated_response_collection = v.InferOutput<typ
 export const load_balancing_api_paginated_response_collection = v.intersect([load_balancing_api_response_common, v.partial(v.object({ result_info: load_balancing_result_info })), v.record(v.string(), v.unknown())]);
 
 export type load_balancing_api_response_common_failure = v.InferOutput<typeof load_balancing_api_response_common_failure>;
-export const load_balancing_api_response_common_failure = v.object({ errors: v.intersect([load_balancing_messages, v.unknown()]), messages: v.intersect([load_balancing_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const load_balancing_api_response_common_failure = v.object({ errors: load_balancing_messages, messages: load_balancing_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type load_balancing_api_response_single = v.InferOutput<typeof load_balancing_api_response_single>;
 export const load_balancing_api_response_single = v.intersect([load_balancing_api_response_common, v.partial(v.object({ result: v.union([v.nullable(v.record(v.string(), v.unknown())), v.nullable(v.string())]) })), v.record(v.string(), v.unknown())]);
@@ -9183,7 +9183,7 @@ export type load_balancing_monitor_group_member = v.InferOutput<typeof load_bala
 export const load_balancing_monitor_group_member = v.object({ created_at: v.optional(v.string()), enabled: v.boolean(), monitor_id: load_balancing_monitor_id, monitoring_only: v.boolean(), must_be_healthy: v.boolean(), updated_at: v.optional(v.string()) });
 
 export type load_balancing_monitor_group = v.InferOutput<typeof load_balancing_monitor_group>;
-export const load_balancing_monitor_group = v.object({ created_on: v.optional(v.string()), description: v.string(), id: v.intersect([load_balancing_monitor_group_id, v.unknown()]), members: v.array(load_balancing_monitor_group_member), modified_on: v.optional(v.string()) });
+export const load_balancing_monitor_group = v.object({ created_on: v.optional(v.string()), description: v.string(), id: load_balancing_monitor_group_id, members: v.array(load_balancing_monitor_group_member), modified_on: v.optional(v.string()) });
 
 export type load_balancing_monitor_group_references_response = v.InferOutput<typeof load_balancing_monitor_group_references_response>;
 export const load_balancing_monitor_group_references_response = v.intersect([load_balancing_api_response_common, v.partial(v.object({ result: v.array(v.partial(v.object({ reference_type: v.picklist(["*", "referral", "referrer"]), resource_id: v.string(), resource_name: v.string(), resource_type: v.string() }))) }))]);
@@ -9324,7 +9324,7 @@ export type logcontrol_api_response_common = v.InferOutput<typeof logcontrol_api
 export const logcontrol_api_response_common = v.object({ errors: logcontrol_messages, messages: logcontrol_messages, success: v.literal(true) });
 
 export type logcontrol_api_response_common_failure = v.InferOutput<typeof logcontrol_api_response_common_failure>;
-export const logcontrol_api_response_common_failure = v.object({ errors: v.intersect([logcontrol_messages, v.unknown()]), messages: v.intersect([logcontrol_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const logcontrol_api_response_common_failure = v.object({ errors: logcontrol_messages, messages: logcontrol_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type logcontrol_api_response_single = v.InferOutput<typeof logcontrol_api_response_single>;
 export const logcontrol_api_response_single = v.intersect([logcontrol_api_response_common, v.record(v.string(), v.unknown())]);
@@ -9378,7 +9378,7 @@ export type logpush_api_response_common = v.InferOutput<typeof logpush_api_respo
 export const logpush_api_response_common = v.object({ errors: logpush_messages, messages: logpush_messages, success: v.literal(true) });
 
 export type logpush_api_response_common_failure = v.InferOutput<typeof logpush_api_response_common_failure>;
-export const logpush_api_response_common_failure = v.object({ errors: v.intersect([logpush_messages, v.unknown()]), messages: v.intersect([logpush_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const logpush_api_response_common_failure = v.object({ errors: logpush_messages, messages: logpush_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type logpush_api_response_single = v.InferOutput<typeof logpush_api_response_single>;
 export const logpush_api_response_single = v.intersect([logpush_api_response_common, v.record(v.string(), v.unknown())]);
@@ -9489,7 +9489,7 @@ export type logshare_messages = v.InferOutput<typeof logshare_messages>;
 export const logshare_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), documentation_url: v.optional(v.string()), message: v.string(), source: v.optional(v.partial(v.object({ pointer: v.string() }))) }));
 
 export type logshare_api_response_common_failure = v.InferOutput<typeof logshare_api_response_common_failure>;
-export const logshare_api_response_common_failure = v.object({ errors: v.intersect([logshare_messages, v.unknown()]), messages: v.intersect([logshare_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const logshare_api_response_common_failure = v.object({ errors: logshare_messages, messages: logshare_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type logshare_count = v.InferOutput<typeof logshare_count>;
 export const logshare_count = v.pipe(v.number(), v.integer(), v.minValue(1));
@@ -9531,7 +9531,7 @@ export type magic_transit_api_response_common = v.InferOutput<typeof magic_trans
 export const magic_transit_api_response_common = v.object({ errors: magic_transit_messages, messages: magic_transit_messages, success: v.literal(true) });
 
 export type magic_transit_api_response_common_failure = v.InferOutput<typeof magic_transit_api_response_common_failure>;
-export const magic_transit_api_response_common_failure = v.object({ errors: v.intersect([magic_transit_messages, v.unknown()]), messages: v.intersect([magic_transit_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const magic_transit_api_response_common_failure = v.object({ errors: magic_transit_messages, messages: magic_transit_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type magic_transit_asn = v.InferOutput<typeof magic_transit_asn>;
 export const magic_transit_asn = v.string();
@@ -9666,7 +9666,7 @@ export type magic_visibility_mnm_api_response_collection = v.InferOutput<typeof 
 export const magic_visibility_mnm_api_response_collection = v.intersect([magic_visibility_mnm_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.unknown())), result_info: magic_visibility_mnm_result_info })), v.record(v.string(), v.unknown())]);
 
 export type magic_visibility_mnm_api_response_common_failure = v.InferOutput<typeof magic_visibility_mnm_api_response_common_failure>;
-export const magic_visibility_mnm_api_response_common_failure = v.object({ errors: v.intersect([magic_visibility_mnm_messages, v.unknown()]), messages: v.intersect([magic_visibility_mnm_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const magic_visibility_mnm_api_response_common_failure = v.object({ errors: magic_visibility_mnm_messages, messages: magic_visibility_mnm_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type magic_visibility_mnm_api_response_single = v.InferOutput<typeof magic_visibility_mnm_api_response_single>;
 export const magic_visibility_mnm_api_response_single = v.intersect([magic_visibility_mnm_api_response_common, v.partial(v.object({ result: v.union([v.nullable(v.record(v.string(), v.unknown())), v.nullable(v.string())]) })), v.record(v.string(), v.unknown())]);
@@ -9768,7 +9768,7 @@ export type magic_visibility_pcaps_api_response_collection = v.InferOutput<typeo
 export const magic_visibility_pcaps_api_response_collection = v.intersect([magic_visibility_pcaps_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.unknown())), result_info: magic_visibility_pcaps_result_info })), v.record(v.string(), v.unknown())]);
 
 export type magic_visibility_pcaps_api_response_common_failure = v.InferOutput<typeof magic_visibility_pcaps_api_response_common_failure>;
-export const magic_visibility_pcaps_api_response_common_failure = v.object({ errors: v.intersect([magic_visibility_pcaps_messages, v.unknown()]), messages: v.intersect([magic_visibility_pcaps_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const magic_visibility_pcaps_api_response_common_failure = v.object({ errors: magic_visibility_pcaps_messages, messages: magic_visibility_pcaps_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type magic_visibility_pcaps_api_response_single = v.InferOutput<typeof magic_visibility_pcaps_api_response_single>;
 export const magic_visibility_pcaps_api_response_single = v.intersect([magic_visibility_pcaps_api_response_common, v.partial(v.object({ result: v.union([v.record(v.string(), v.unknown()), v.string()]) })), v.record(v.string(), v.unknown())]);
@@ -9873,13 +9873,13 @@ export type magic_cidr = v.InferOutput<typeof magic_cidr>;
 export const magic_cidr = v.string();
 
 export type magic_app_subnets = v.InferOutput<typeof magic_app_subnets>;
-export const magic_app_subnets = v.array(v.intersect([magic_cidr, v.unknown()]));
+export const magic_app_subnets = v.array(magic_cidr);
 
 export type magic_app_name = v.InferOutput<typeof magic_app_name>;
 export const magic_app_name = v.string();
 
 export type magic_app_source_subnets = v.InferOutput<typeof magic_app_source_subnets>;
-export const magic_app_source_subnets = v.array(v.intersect([magic_cidr, v.unknown()]));
+export const magic_app_source_subnets = v.array(magic_cidr);
 
 export type magic_app_type = v.InferOutput<typeof magic_app_type>;
 export const magic_app_type = v.string();
@@ -9945,7 +9945,7 @@ export type magic_allow_null_cipher = v.InferOutput<typeof magic_allow_null_ciph
 export const magic_allow_null_cipher = v.boolean();
 
 export type magic_api_response_common_failure = v.InferOutput<typeof magic_api_response_common_failure>;
-export const magic_api_response_common_failure = v.object({ errors: v.intersect([magic_messages, v.unknown()]), messages: v.intersect([magic_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const magic_api_response_common_failure = v.object({ errors: magic_messages, messages: magic_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type magic_managed_app_id = v.InferOutput<typeof magic_managed_app_id>;
 export const magic_managed_app_id = v.string();
@@ -10029,7 +10029,7 @@ export type magic_cf1_site_location = v.InferOutput<typeof magic_cf1_site_locati
 export const magic_cf1_site_location = v.partial(v.object({ lat: v.number(), long: v.number(), name: v.string() }));
 
 export type magic_cf1_site = v.InferOutput<typeof magic_cf1_site>;
-export const magic_cf1_site = v.object({ created_on: v.optional(v.string()), description: v.optional(v.string()), id: v.optional(v.intersect([magic_identifier, v.unknown()])), location: v.optional(magic_cf1_site_location), modified_on: v.optional(v.string()), name: v.string() });
+export const magic_cf1_site = v.object({ created_on: v.optional(v.string()), description: v.optional(v.string()), id: v.optional(magic_identifier), location: v.optional(magic_cf1_site_location), modified_on: v.optional(v.string()), name: v.string() });
 
 export type magic_cf1_site_managed_ramp = v.InferOutput<typeof magic_cf1_site_managed_ramp>;
 export const magic_cf1_site_managed_ramp = v.partial(v.object({ managed_by: v.string() }));
@@ -10041,7 +10041,7 @@ export type magic_cf1_site_ramp = v.InferOutput<typeof magic_cf1_site_ramp>;
 export const magic_cf1_site_ramp = v.union([v.unknown(), v.unknown(), v.unknown(), v.unknown(), v.unknown()]);
 
 export type magic_cf1_site_ramp_body = v.InferOutput<typeof magic_cf1_site_ramp_body>;
-export const magic_cf1_site_ramp_body = v.object({ source_ramp_id: v.intersect([magic_identifier]), type: magic_cf1_site_ramp_type });
+export const magic_cf1_site_ramp_body = v.object({ source_ramp_id: magic_identifier, type: magic_cf1_site_ramp_type });
 
 export type magic_cf1_site_ramp_single_response = v.InferOutput<typeof magic_cf1_site_ramp_single_response>;
 export const magic_cf1_site_ramp_single_response = v.intersect([magic_api_response_single, v.partial(v.object({ result: magic_cf1_site_ramp }))]);
@@ -10110,7 +10110,7 @@ export type magic_schemas_mtu = v.InferOutput<typeof magic_schemas_mtu>;
 export const magic_schemas_mtu = v.optional(v.pipe(v.number(), v.integer()), 1476);
 
 export type magic_interconnect = v.InferOutput<typeof magic_interconnect>;
-export const magic_interconnect = v.partial(v.object({ automatic_return_routing: magic_automatic_return_routing, colo_name: magic_components_schemas_name, created_on: magic_schemas_created_on, description: magic_interconnect_components_schemas_description, gre: magic_gre, health_check: magic_health_check_base, id: magic_schemas_identifier, interface_address: magic_interface_address, interface_address6: magic_interface_address6, modified_on: magic_schemas_modified_on, mtu: magic_schemas_mtu, name: magic_components_schemas_name, virtual_port_reservation_id: v.intersect([magic_schemas_identifier, v.unknown()]) }));
+export const magic_interconnect = v.partial(v.object({ automatic_return_routing: magic_automatic_return_routing, colo_name: magic_components_schemas_name, created_on: magic_schemas_created_on, description: magic_interconnect_components_schemas_description, gre: magic_gre, health_check: magic_health_check_base, id: magic_schemas_identifier, interface_address: magic_interface_address, interface_address6: magic_interface_address6, modified_on: magic_schemas_modified_on, mtu: magic_schemas_mtu, name: magic_components_schemas_name, virtual_port_reservation_id: magic_schemas_identifier }));
 
 export type magic_components_schemas_modified_tunnels_collection_response = v.InferOutput<typeof magic_components_schemas_modified_tunnels_collection_response>;
 export const magic_components_schemas_modified_tunnels_collection_response = v.intersect([magic_api_response_single, v.partial(v.object({ result: v.partial(v.object({ modified: v.boolean(), modified_interconnects: v.array(magic_interconnect) })) }))]);
@@ -10215,7 +10215,7 @@ export type magic_gre_tunnel_add_single_request = v.InferOutput<typeof magic_gre
 export const magic_gre_tunnel_add_single_request = v.object({ automatic_return_routing: v.optional(magic_automatic_return_routing), cloudflare_gre_endpoint: magic_cloudflare_gre_endpoint, customer_gre_endpoint: magic_customer_gre_endpoint, description: v.optional(magic_schemas_description), health_check: v.optional(magic_tunnel_health_check), interface_address: magic_interface_address, interface_address6: v.optional(magic_interface_address6), mtu: v.optional(magic_mtu), name: magic_gre_tunnel_name, ttl: v.optional(magic_ttl) });
 
 export type magic_gre_tunnel_update_request = v.InferOutput<typeof magic_gre_tunnel_update_request>;
-export const magic_gre_tunnel_update_request = v.intersect([magic_gre_tunnel_add_single_request]);
+export const magic_gre_tunnel_update_request = magic_gre_tunnel_add_single_request;
 
 export type magic_interconnect_health_check = v.InferOutput<typeof magic_interconnect_health_check>;
 export const magic_interconnect_health_check = magic_health_check_base;
@@ -10242,16 +10242,16 @@ export type magic_ipsec_tunnel_add_single_request = v.InferOutput<typeof magic_i
 export const magic_ipsec_tunnel_add_single_request = v.object({ automatic_return_routing: v.optional(magic_automatic_return_routing), bgp: v.optional(magic_bgp_config), cloudflare_endpoint: magic_cloudflare_ipsec_endpoint, custom_remote_identities: v.optional(magic_custom_remote_identities), customer_endpoint: v.optional(magic_customer_ipsec_endpoint), description: v.optional(magic_components_schemas_description), health_check: v.optional(magic_tunnel_health_check), interface_address: magic_interface_address, interface_address6: v.optional(magic_interface_address6), name: magic_ipsec_tunnel_name, psk: v.optional(magic_psk), replay_protection: v.optional(magic_replay_protection) });
 
 export type magic_ipsec_tunnel_add_request = v.InferOutput<typeof magic_ipsec_tunnel_add_request>;
-export const magic_ipsec_tunnel_add_request = v.intersect([magic_ipsec_tunnel_add_single_request]);
+export const magic_ipsec_tunnel_add_request = magic_ipsec_tunnel_add_single_request;
 
 export type magic_ipsec_tunnel_applied_psk = v.InferOutput<typeof magic_ipsec_tunnel_applied_psk>;
 export const magic_ipsec_tunnel_applied_psk = v.object({ ipsec_id: v.string(), ipsec_tunnel_id: magic_identifier, psk: magic_psk, psk_metadata: magic_psk_metadata });
 
 export type magic_ipsec_tunnel_psk_entry = v.InferOutput<typeof magic_ipsec_tunnel_psk_entry>;
-export const magic_ipsec_tunnel_psk_entry = v.object({ id: v.intersect([magic_identifier]), psk: magic_psk });
+export const magic_ipsec_tunnel_psk_entry = v.object({ id: magic_identifier, psk: magic_psk });
 
 export type magic_ipsec_tunnel_update_request = v.InferOutput<typeof magic_ipsec_tunnel_update_request>;
-export const magic_ipsec_tunnel_update_request = v.intersect([magic_ipsec_tunnel_add_single_request]);
+export const magic_ipsec_tunnel_update_request = magic_ipsec_tunnel_add_single_request;
 
 export type magic_ipsec_tunnels_psk_request = v.InferOutput<typeof magic_ipsec_tunnels_psk_request>;
 export const magic_ipsec_tunnels_psk_request = v.object({ psks: v.array(magic_ipsec_tunnel_psk_entry) });
@@ -10347,7 +10347,7 @@ export type magic_route_add_single_request = v.InferOutput<typeof magic_route_ad
 export const magic_route_add_single_request = v.object({ description: v.optional(magic_description), nexthop: magic_nexthop, prefix: magic_prefix, priority: magic_priority, scope: v.optional(magic_scope), weight: v.optional(magic_weight) });
 
 export type magic_route_delete_id = v.InferOutput<typeof magic_route_delete_id>;
-export const magic_route_delete_id = v.intersect([v.object({ id: magic_identifier })]);
+export const magic_route_delete_id = v.object({ id: magic_identifier });
 
 export type magic_route_delete_many_request = v.InferOutput<typeof magic_route_delete_many_request>;
 export const magic_route_delete_many_request = v.object({ routes: v.array(magic_route_delete_id) });
@@ -10368,7 +10368,7 @@ export type magic_route_update_many_request = v.InferOutput<typeof magic_route_u
 export const magic_route_update_many_request = v.object({ routes: v.array(magic_route_update_single_request) });
 
 export type magic_route_update_request = v.InferOutput<typeof magic_route_update_request>;
-export const magic_route_update_request = v.intersect([magic_route_add_single_request]);
+export const magic_route_update_request = magic_route_add_single_request;
 
 export type magic_routes_collection_response = v.InferOutput<typeof magic_routes_collection_response>;
 export const magic_routes_collection_response = v.intersect([magic_api_response_single, v.partial(v.object({ result: v.partial(v.object({ routes: v.array(magic_route) })) }))]);
@@ -11208,7 +11208,7 @@ export type observatory_messages_2 = v.InferOutput<typeof observatory_messages_2
 export const observatory_messages_2 = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), documentation_url: v.optional(v.string()), message: v.string(), source: v.optional(v.partial(v.object({ pointer: v.string() }))) }));
 
 export type observatory_api_response_common_failure = v.InferOutput<typeof observatory_api_response_common_failure>;
-export const observatory_api_response_common_failure = v.object({ errors: v.intersect([observatory_messages_2, v.unknown()]), messages: v.intersect([observatory_messages_2]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const observatory_api_response_common_failure = v.object({ errors: observatory_messages_2, messages: observatory_messages_2, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type observatory_api_response_single = v.InferOutput<typeof observatory_api_response_single>;
 export const observatory_api_response_single = v.intersect([observatory_api_response_common, v.record(v.string(), v.unknown())]);
@@ -11319,7 +11319,7 @@ export type one_Instructions = v.InferOutput<typeof one_Instructions>;
 export const one_Instructions = v.object({ markdown: v.string() });
 
 export type one_AuthMethodDetail = v.InferOutput<typeof one_AuthMethodDetail>;
-export const one_AuthMethodDetail = v.object({ display_name: v.string(), human_interaction_required: v.boolean(), id: v.string(), instructions: v.intersect([one_Instructions]), payload_example: v.nullable(v.record(v.string(), v.unknown())), payload_schema: v.nullable(v.record(v.string(), v.unknown())), redirect_url: v.nullable(v.string()) });
+export const one_AuthMethodDetail = v.object({ display_name: v.string(), human_interaction_required: v.boolean(), id: v.string(), instructions: one_Instructions, payload_example: v.nullable(v.record(v.string(), v.unknown())), payload_schema: v.nullable(v.record(v.string(), v.unknown())), redirect_url: v.nullable(v.string()) });
 
 export type one_DynamicContent = v.InferOutput<typeof one_DynamicContent>;
 export const one_DynamicContent = v.object({ label: v.string(), type: v.picklist(["copy_block", "external_link"]), url_template: v.optional(v.nullable(v.string())), value_from: v.optional(v.nullable(v.string())) });
@@ -11343,7 +11343,7 @@ export type one_SetupFlowStep = v.InferOutput<typeof one_SetupFlowStep>;
 export const one_SetupFlowStep = v.object({ component_id: v.optional(v.nullable(v.string())), description: v.optional(v.nullable(v.string())), dynamic_content: v.optional(v.nullable(v.array(one_DynamicContent))), form_fields: v.optional(v.array(one_FormField)), is_required: v.optional(v.boolean()), parameters: v.optional(v.nullable(v.record(v.string(), v.string()))), title: v.optional(v.string()), type: v.picklist(["component", "instruction", "form_input", "oauth_redirect"]) });
 
 export type one_SetupFlow = v.InferOutput<typeof one_SetupFlow>;
-export const one_SetupFlow = v.object({ auth_config: v.optional(v.intersect([one_AuthConfig])), default: v.boolean(), description: v.string(), id: v.string(), name: v.string(), steps: v.array(one_SetupFlowStep), supported_environments: v.array(v.string()) });
+export const one_SetupFlow = v.object({ auth_config: v.optional(one_AuthConfig), default: v.boolean(), description: v.string(), id: v.string(), name: v.string(), steps: v.array(one_SetupFlowStep), supported_environments: v.array(v.string()) });
 
 export type organizations_api_Account = v.InferOutput<typeof organizations_api_Account>;
 export const organizations_api_Account = v.object({ created_on: v.string(), id: v.string(), name: v.nullable(v.string()), settings: v.object({ abuse_contact_email: v.nullable(v.string()), access_approval_expiry: v.nullable(v.string()), api_access_enabled: v.nullable(v.boolean()), default_nameservers: v.nullable(v.string()), enforce_twofactor: v.nullable(v.boolean()), use_account_custom_ns_by_default: v.nullable(v.boolean()) }), type: v.picklist(["standard", "enterprise"]) });
@@ -11403,7 +11403,7 @@ export type organizations_api_Profile = v.InferOutput<typeof organizations_api_P
 export const organizations_api_Profile = v.object({ business_address: v.string(), business_email: v.string(), business_name: v.string(), business_phone: v.string(), external_metadata: v.string() });
 
 export type organizations_api_Organization = v.InferOutput<typeof organizations_api_Organization>;
-export const organizations_api_Organization = v.object({ create_time: v.string(), id: v.intersect([organizations_api_OrganizationID, v.unknown()]), meta: v.intersect([v.partial(v.object({ flags: v.intersect([organizations_api_OrganizationFlags]), hierarchy_tags: v.array(v.string()), managed_by: v.string() })), v.record(v.string(), v.record(v.string(), v.unknown()))]), name: v.string(), parent: v.optional(v.object({ id: organizations_api_OrganizationID, name: v.string() })), profile: v.optional(organizations_api_Profile) });
+export const organizations_api_Organization = v.object({ create_time: v.string(), id: organizations_api_OrganizationID, meta: v.intersect([v.partial(v.object({ flags: organizations_api_OrganizationFlags, hierarchy_tags: v.array(v.string()), managed_by: v.string() })), v.record(v.string(), v.record(v.string(), v.unknown()))]), name: v.string(), parent: v.optional(v.object({ id: organizations_api_OrganizationID, name: v.string() })), profile: v.optional(organizations_api_Profile) });
 
 export type organizations_api_PageTokenResultInfo = v.InferOutput<typeof organizations_api_PageTokenResultInfo>;
 export const organizations_api_PageTokenResultInfo = v.partial(v.object({ next_page_token: v.string(), total_size: v.pipe(v.number(), v.integer()) }));
@@ -11493,7 +11493,7 @@ export type page_shield_policy = v.InferOutput<typeof page_shield_policy>;
 export const page_shield_policy = v.object({ action: page_shield_policy_action, description: page_shield_policy_description, enabled: page_shield_policy_enabled, expression: page_shield_policy_expression, value: page_shield_policy_value });
 
 export type page_shield_policy_with_id = v.InferOutput<typeof page_shield_policy_with_id>;
-export const page_shield_policy_with_id = v.intersect([page_shield_policy, v.object({ id: page_shield_id }), v.unknown()]);
+export const page_shield_policy_with_id = v.intersect([page_shield_policy, v.object({ id: page_shield_id })]);
 
 export type page_shield_get_zone_policy_response = v.InferOutput<typeof page_shield_get_zone_policy_response>;
 export const page_shield_get_zone_policy_response = v.intersect([page_shield_api_get_response_collection, v.object({ result: page_shield_policy_with_id })]);
@@ -11514,10 +11514,10 @@ export type page_shield_obfuscation_score = v.InferOutput<typeof page_shield_obf
 export const page_shield_obfuscation_score = v.nullable(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(99)));
 
 export type page_shield_script = v.InferOutput<typeof page_shield_script>;
-export const page_shield_script = v.object({ added_at: v.string(), cryptomining_score: v.optional(page_shield_cryptomining_score), dataflow_score: v.optional(v.intersect([page_shield_dataflow_score, v.unknown()])), domain_reported_malicious: v.optional(v.boolean()), fetched_at: v.optional(page_shield_fetched_at), first_page_url: v.optional(v.string()), first_seen_at: v.string(), hash: v.optional(page_shield_hash), host: v.string(), id: page_shield_id, js_integrity_score: v.optional(page_shield_js_integrity_score), last_seen_at: v.string(), magecart_score: v.optional(page_shield_magecart_score), malicious_domain_categories: v.optional(v.array(v.string())), malicious_url_categories: v.optional(v.array(v.string())), malware_score: v.optional(page_shield_malware_score), obfuscation_score: v.optional(v.intersect([page_shield_obfuscation_score, v.unknown()])), page_urls: v.optional(v.array(v.string())), url: v.string(), url_contains_cdn_cgi_path: v.boolean(), url_reported_malicious: v.optional(v.boolean()) });
+export const page_shield_script = v.object({ added_at: v.string(), cryptomining_score: v.optional(page_shield_cryptomining_score), dataflow_score: v.optional(page_shield_dataflow_score), domain_reported_malicious: v.optional(v.boolean()), fetched_at: v.optional(page_shield_fetched_at), first_page_url: v.optional(v.string()), first_seen_at: v.string(), hash: v.optional(page_shield_hash), host: v.string(), id: page_shield_id, js_integrity_score: v.optional(page_shield_js_integrity_score), last_seen_at: v.string(), magecart_score: v.optional(page_shield_magecart_score), malicious_domain_categories: v.optional(v.array(v.string())), malicious_url_categories: v.optional(v.array(v.string())), malware_score: v.optional(page_shield_malware_score), obfuscation_score: v.optional(page_shield_obfuscation_score), page_urls: v.optional(v.array(v.string())), url: v.string(), url_contains_cdn_cgi_path: v.boolean(), url_reported_malicious: v.optional(v.boolean()) });
 
 export type page_shield_version = v.InferOutput<typeof page_shield_version>;
-export const page_shield_version = v.partial(v.object({ cryptomining_score: page_shield_cryptomining_score, dataflow_score: v.intersect([page_shield_dataflow_score, v.unknown()]), fetched_at: page_shield_fetched_at, hash: page_shield_hash, js_integrity_score: page_shield_js_integrity_score, magecart_score: page_shield_magecart_score, malware_score: page_shield_malware_score, obfuscation_score: v.intersect([page_shield_obfuscation_score, v.unknown()]) }));
+export const page_shield_version = v.partial(v.object({ cryptomining_score: page_shield_cryptomining_score, dataflow_score: page_shield_dataflow_score, fetched_at: page_shield_fetched_at, hash: page_shield_hash, js_integrity_score: page_shield_js_integrity_score, magecart_score: page_shield_magecart_score, malware_score: page_shield_malware_score, obfuscation_score: page_shield_obfuscation_score }));
 
 export type page_shield_get_zone_script_response = v.InferOutput<typeof page_shield_get_zone_script_response>;
 export const page_shield_get_zone_script_response = v.intersect([page_shield_api_get_response_collection, v.object({ result: v.intersect([page_shield_script, v.partial(v.object({ versions: v.nullable(v.array(page_shield_version)) }))]) })]);
@@ -11562,7 +11562,7 @@ export type pages_api_response_collection = v.InferOutput<typeof pages_api_respo
 export const pages_api_response_collection = v.intersect([pages_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type pages_api_response_common_failure = v.InferOutput<typeof pages_api_response_common_failure>;
-export const pages_api_response_common_failure = v.object({ errors: v.intersect([pages_messages, v.unknown()]), messages: v.intersect([pages_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const pages_api_response_common_failure = v.object({ errors: pages_messages, messages: pages_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type pages_build_config = v.InferOutput<typeof pages_build_config>;
 export const pages_build_config = v.object({ build_caching: v.optional(v.nullable(v.boolean())), build_command: v.optional(v.nullable(v.string())), destination_dir: v.optional(v.nullable(v.string())), root_dir: v.optional(v.nullable(v.string())), web_analytics_tag: v.nullable(v.string()), web_analytics_token: v.nullable(v.string()) });
@@ -11625,7 +11625,7 @@ export type pages_pages_upload_token_response = v.InferOutput<typeof pages_pages
 export const pages_pages_upload_token_response = v.object({ jwt: v.string() });
 
 export type pages_project = v.InferOutput<typeof pages_project>;
-export const pages_project = v.object({ build_config: v.optional(pages_build_config), canonical_deployment: v.intersect([pages_deployment, v.nullable(v.record(v.string(), v.unknown()))]), created_on: v.string(), deployment_configs: v.object({ preview: v.intersect([pages_deployment_config_values]), production: v.intersect([pages_deployment_config_values]) }), domains: v.optional(v.array(v.string())), framework: v.string(), framework_version: v.string(), id: v.string(), latest_deployment: v.intersect([pages_deployment, v.nullable(v.record(v.string(), v.unknown()))]), name: pages_project_name, preview_script_name: v.string(), production_branch: v.string(), production_script_name: v.string(), source: v.optional(pages_source), subdomain: v.optional(v.string()), uses_functions: v.nullable(v.boolean()) });
+export const pages_project = v.object({ build_config: v.optional(pages_build_config), canonical_deployment: v.intersect([pages_deployment, v.nullable(v.record(v.string(), v.unknown()))]), created_on: v.string(), deployment_configs: v.object({ preview: pages_deployment_config_values, production: pages_deployment_config_values }), domains: v.optional(v.array(v.string())), framework: v.string(), framework_version: v.string(), id: v.string(), latest_deployment: v.intersect([pages_deployment, v.nullable(v.record(v.string(), v.unknown()))]), name: pages_project_name, preview_script_name: v.string(), production_branch: v.string(), production_script_name: v.string(), source: v.optional(pages_source), subdomain: v.optional(v.string()), uses_functions: v.nullable(v.boolean()) });
 
 export type pages_project_object = v.InferOutput<typeof pages_project_object>;
 export const pages_project_object = pages_project;
@@ -11952,7 +11952,7 @@ export type precursor_api_response_common = v.InferOutput<typeof precursor_api_r
 export const precursor_api_response_common = v.object({ errors: precursor_messages, messages: precursor_messages, success: v.literal(true) });
 
 export type precursor_api_response_common_failure = v.InferOutput<typeof precursor_api_response_common_failure>;
-export const precursor_api_response_common_failure = v.object({ errors: v.intersect([precursor_messages, v.unknown()]), messages: v.intersect([precursor_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const precursor_api_response_common_failure = v.object({ errors: precursor_messages, messages: precursor_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type precursor_api_response_single = v.InferOutput<typeof precursor_api_response_single>;
 export const precursor_api_response_single = v.intersect([precursor_api_response_common, v.record(v.string(), v.unknown())]);
@@ -11985,7 +11985,7 @@ export type public_ip_api_response_common = v.InferOutput<typeof public_ip_api_r
 export const public_ip_api_response_common = v.object({ errors: public_ip_messages, messages: public_ip_messages, success: v.literal(true) });
 
 export type public_ip_api_response_common_failure = v.InferOutput<typeof public_ip_api_response_common_failure>;
-export const public_ip_api_response_common_failure = v.object({ errors: v.intersect([public_ip_messages, v.unknown()]), messages: v.intersect([public_ip_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const public_ip_api_response_common_failure = v.object({ errors: public_ip_messages, messages: public_ip_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type public_ip_api_response_single = v.InferOutput<typeof public_ip_api_response_single>;
 export const public_ip_api_response_single = v.intersect([public_ip_api_response_common, v.record(v.string(), v.unknown())]);
@@ -12069,16 +12069,16 @@ export type r2_data_catalog_catalog_maintenance_config_response = v.InferOutput<
 export const r2_data_catalog_catalog_maintenance_config_response = v.object({ credential_status: r2_data_catalog_credential_status, maintenance_config: r2_data_catalog_catalog_maintenance_config });
 
 export type r2_data_catalog_compaction_update_params = v.InferOutput<typeof r2_data_catalog_compaction_update_params>;
-export const r2_data_catalog_compaction_update_params = v.partial(v.object({ state: v.intersect([r2_data_catalog_catalog_maintenance_state]), target_size_mb: v.intersect([r2_data_catalog_catalog_target_file_size]) }));
+export const r2_data_catalog_compaction_update_params = v.partial(v.object({ state: r2_data_catalog_catalog_maintenance_state, target_size_mb: r2_data_catalog_catalog_target_file_size }));
 
 export type r2_data_catalog_snapshot_expiration_update_params = v.InferOutput<typeof r2_data_catalog_snapshot_expiration_update_params>;
-export const r2_data_catalog_snapshot_expiration_update_params = v.partial(v.object({ max_snapshot_age: v.pipe(v.string(), v.regex(new RegExp("^\\d+(d|h|m|s)$"))), min_snapshots_to_keep: v.pipe(v.number(), v.integer(), v.minValue(1)), state: v.intersect([r2_data_catalog_catalog_maintenance_state]) }));
+export const r2_data_catalog_snapshot_expiration_update_params = v.partial(v.object({ max_snapshot_age: v.pipe(v.string(), v.regex(new RegExp("^\\d+(d|h|m|s)$"))), min_snapshots_to_keep: v.pipe(v.number(), v.integer(), v.minValue(1)), state: r2_data_catalog_catalog_maintenance_state }));
 
 export type r2_data_catalog_maintenance_update_params = v.InferOutput<typeof r2_data_catalog_maintenance_update_params>;
 export const r2_data_catalog_maintenance_update_params = v.partial(v.object({ compaction: r2_data_catalog_compaction_update_params, snapshot_expiration: r2_data_catalog_snapshot_expiration_update_params }));
 
 export type r2_data_catalog_catalog_maintenance_update_request = v.InferOutput<typeof r2_data_catalog_catalog_maintenance_update_request>;
-export const r2_data_catalog_catalog_maintenance_update_request = v.intersect([r2_data_catalog_maintenance_update_params]);
+export const r2_data_catalog_catalog_maintenance_update_request = r2_data_catalog_maintenance_update_params;
 
 export type r2_data_catalog_namespace_identifier = v.InferOutput<typeof r2_data_catalog_namespace_identifier>;
 export const r2_data_catalog_namespace_identifier = v.pipe(v.array(v.string()), v.minLength(1), v.maxLength(16));
@@ -12114,7 +12114,7 @@ export type r2_data_catalog_table_maintenance_config_response = v.InferOutput<ty
 export const r2_data_catalog_table_maintenance_config_response = v.object({ maintenance_config: r2_data_catalog_table_maintenance_config });
 
 export type r2_data_catalog_table_maintenance_update_request = v.InferOutput<typeof r2_data_catalog_table_maintenance_update_request>;
-export const r2_data_catalog_table_maintenance_update_request = v.intersect([r2_data_catalog_maintenance_update_params]);
+export const r2_data_catalog_table_maintenance_update_request = r2_data_catalog_maintenance_update_params;
 
 export type r2_slurper_ConnectivityResponse = v.InferOutput<typeof r2_slurper_ConnectivityResponse>;
 export const r2_slurper_ConnectivityResponse = v.partial(v.object({ connectivityStatus: v.picklist(["success", "error"]) }));
@@ -12228,7 +12228,7 @@ export type r2_bucket_lock_rule = v.InferOutput<typeof r2_bucket_lock_rule>;
 export const r2_bucket_lock_rule = v.object({ condition: v.union([r2_lock_rule_age_condition, r2_lock_rule_date_condition, r2_lock_rule_indefinite_condition]), enabled: v.boolean(), id: v.string(), prefix: v.optional(v.string()) });
 
 export type r2_bucket_lock_rule_config = v.InferOutput<typeof r2_bucket_lock_rule_config>;
-export const r2_bucket_lock_rule_config = v.partial(v.object({ rules: v.array(v.intersect([r2_bucket_lock_rule])) }));
+export const r2_bucket_lock_rule_config = v.partial(v.object({ rules: v.array(r2_bucket_lock_rule) }));
 
 export type r2_cors_rule = v.InferOutput<typeof r2_cors_rule>;
 export const r2_cors_rule = v.object({ allowed: v.object({ headers: v.optional(v.array(v.string())), methods: v.array(v.picklist(["GET", "PUT", "POST", "DELETE", "HEAD"])), origins: v.array(v.string()) }), exposeHeaders: v.optional(v.array(v.string())), id: v.optional(v.string()), maxAgeSeconds: v.optional(v.number()) });
@@ -12270,10 +12270,10 @@ export type r2_lifecycle_storage_transition = v.InferOutput<typeof r2_lifecycle_
 export const r2_lifecycle_storage_transition = v.object({ condition: v.union([r2_lifecycle_age_condition, r2_lifecycle_date_condition]), storageClass: v.literal("InfrequentAccess") });
 
 export type r2_lifecycle_rule = v.InferOutput<typeof r2_lifecycle_rule>;
-export const r2_lifecycle_rule = v.object({ abortMultipartUploadsTransition: v.optional(v.partial(v.object({ condition: v.intersect([r2_lifecycle_age_condition]) }))), conditions: v.object({ prefix: v.string() }), deleteObjectsTransition: v.optional(v.partial(v.object({ condition: v.union([r2_lifecycle_age_condition, r2_lifecycle_date_condition]) }))), enabled: v.boolean(), id: v.string(), storageClassTransitions: v.optional(v.array(v.intersect([r2_lifecycle_storage_transition]))) });
+export const r2_lifecycle_rule = v.object({ abortMultipartUploadsTransition: v.optional(v.partial(v.object({ condition: r2_lifecycle_age_condition }))), conditions: v.object({ prefix: v.string() }), deleteObjectsTransition: v.optional(v.partial(v.object({ condition: v.union([r2_lifecycle_age_condition, r2_lifecycle_date_condition]) }))), enabled: v.boolean(), id: v.string(), storageClassTransitions: v.optional(v.array(r2_lifecycle_storage_transition)) });
 
 export type r2_lifecycle_config = v.InferOutput<typeof r2_lifecycle_config>;
-export const r2_lifecycle_config = v.partial(v.object({ rules: v.array(v.intersect([r2_lifecycle_rule])) }));
+export const r2_lifecycle_config = v.partial(v.object({ rules: v.array(r2_lifecycle_rule) }));
 
 export type r2_list_custom_domains_response = v.InferOutput<typeof r2_list_custom_domains_response>;
 export const r2_list_custom_domains_response = v.object({ domains: v.array(v.object({ ciphers: v.optional(v.array(v.string())), domain: v.string(), enabled: v.boolean(), minTLS: v.optional(v.picklist(["1.0", "1.1", "1.2", "1.3"])), status: v.object({ ownership: v.picklist(["pending", "active", "deactivated", "blocked", "error", "unknown"]), ssl: v.picklist(["initializing", "pending", "active", "deactivated", "error", "unknown"]) }), zoneId: v.optional(v.string()), zoneName: v.optional(v.string()) })) });
@@ -12558,7 +12558,7 @@ export type registrar_api_sandbox_api_response_collection = v.InferOutput<typeof
 export const registrar_api_sandbox_api_response_collection = v.intersect([registrar_api_sandbox_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.unknown())), result_info: registrar_api_sandbox_result_info })), v.record(v.string(), v.unknown())]);
 
 export type registrar_api_sandbox_api_response_common_failure = v.InferOutput<typeof registrar_api_sandbox_api_response_common_failure>;
-export const registrar_api_sandbox_api_response_common_failure = v.object({ errors: v.intersect([registrar_api_sandbox_messages, v.unknown()]), messages: v.intersect([registrar_api_sandbox_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const registrar_api_sandbox_api_response_common_failure = v.object({ errors: registrar_api_sandbox_messages, messages: registrar_api_sandbox_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type registrar_api_sandbox_api_response_single = v.InferOutput<typeof registrar_api_sandbox_api_response_single>;
 export const registrar_api_sandbox_api_response_single = v.intersect([registrar_api_sandbox_api_response_common, v.partial(v.object({ result: v.nullable(v.record(v.string(), v.unknown())) })), v.record(v.string(), v.unknown())]);
@@ -12645,7 +12645,7 @@ export type registrar_api_sandbox_locked = v.InferOutput<typeof registrar_api_sa
 export const registrar_api_sandbox_locked = v.boolean();
 
 export type registrar_api_sandbox_registrant_contact = v.InferOutput<typeof registrar_api_sandbox_registrant_contact>;
-export const registrar_api_sandbox_registrant_contact = v.intersect([registrar_api_sandbox_contacts]);
+export const registrar_api_sandbox_registrant_contact = registrar_api_sandbox_contacts;
 
 export type registrar_api_sandbox_registry_statuses = v.InferOutput<typeof registrar_api_sandbox_registry_statuses>;
 export const registrar_api_sandbox_registry_statuses = v.string();
@@ -12729,7 +12729,7 @@ export type registrar_api_sandbox_workflow_links = v.InferOutput<typeof registra
 export const registrar_api_sandbox_workflow_links = v.object({ resource: v.optional(v.string()), self: v.string() });
 
 export type registrar_api_sandbox_workflow_status = v.InferOutput<typeof registrar_api_sandbox_workflow_status>;
-export const registrar_api_sandbox_workflow_status = v.object({ completed: v.boolean(), context: v.optional(v.record(v.string(), v.unknown())), created_at: v.string(), error: v.optional(v.nullable(v.intersect([registrar_api_sandbox_workflow_error]))), links: registrar_api_sandbox_workflow_links, state: v.picklist(["pending", "in_progress", "action_required", "blocked", "succeeded", "failed"]), updated_at: v.string() });
+export const registrar_api_sandbox_workflow_status = v.object({ completed: v.boolean(), context: v.optional(v.record(v.string(), v.unknown())), created_at: v.string(), error: v.optional(v.nullable(registrar_api_sandbox_workflow_error)), links: registrar_api_sandbox_workflow_links, state: v.picklist(["pending", "in_progress", "action_required", "blocked", "succeeded", "failed"]), updated_at: v.string() });
 
 export type registrar_api_sandbox_workflow_status_response_single = v.InferOutput<typeof registrar_api_sandbox_workflow_status_response_single>;
 export const registrar_api_sandbox_workflow_status_response_single = v.intersect([registrar_api_sandbox_api_response_common, v.partial(v.object({ result: registrar_api_sandbox_workflow_status }))]);
@@ -12753,7 +12753,7 @@ export type registrar_api_api_response_collection = v.InferOutput<typeof registr
 export const registrar_api_api_response_collection = v.intersect([registrar_api_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.unknown())), result_info: registrar_api_result_info })), v.record(v.string(), v.unknown())]);
 
 export type registrar_api_api_response_common_failure = v.InferOutput<typeof registrar_api_api_response_common_failure>;
-export const registrar_api_api_response_common_failure = v.object({ errors: v.intersect([registrar_api_messages, v.unknown()]), messages: v.intersect([registrar_api_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const registrar_api_api_response_common_failure = v.object({ errors: registrar_api_messages, messages: registrar_api_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type registrar_api_api_response_single = v.InferOutput<typeof registrar_api_api_response_single>;
 export const registrar_api_api_response_single = v.intersect([registrar_api_api_response_common, v.partial(v.object({ result: v.nullable(v.record(v.string(), v.unknown())) })), v.record(v.string(), v.unknown())]);
@@ -12840,7 +12840,7 @@ export type registrar_api_locked = v.InferOutput<typeof registrar_api_locked>;
 export const registrar_api_locked = v.boolean();
 
 export type registrar_api_registrant_contact = v.InferOutput<typeof registrar_api_registrant_contact>;
-export const registrar_api_registrant_contact = v.intersect([registrar_api_contacts]);
+export const registrar_api_registrant_contact = registrar_api_contacts;
 
 export type registrar_api_registry_statuses = v.InferOutput<typeof registrar_api_registry_statuses>;
 export const registrar_api_registry_statuses = v.string();
@@ -12924,7 +12924,7 @@ export type registrar_api_workflow_links = v.InferOutput<typeof registrar_api_wo
 export const registrar_api_workflow_links = v.object({ resource: v.optional(v.string()), self: v.string() });
 
 export type registrar_api_workflow_status = v.InferOutput<typeof registrar_api_workflow_status>;
-export const registrar_api_workflow_status = v.object({ completed: v.boolean(), context: v.optional(v.record(v.string(), v.unknown())), created_at: v.string(), error: v.optional(v.nullable(v.intersect([registrar_api_workflow_error]))), links: registrar_api_workflow_links, state: v.picklist(["pending", "in_progress", "action_required", "blocked", "succeeded", "failed"]), updated_at: v.string() });
+export const registrar_api_workflow_status = v.object({ completed: v.boolean(), context: v.optional(v.record(v.string(), v.unknown())), created_at: v.string(), error: v.optional(v.nullable(registrar_api_workflow_error)), links: registrar_api_workflow_links, state: v.picklist(["pending", "in_progress", "action_required", "blocked", "succeeded", "failed"]), updated_at: v.string() });
 
 export type registrar_api_workflow_status_response_single = v.InferOutput<typeof registrar_api_workflow_status_response_single>;
 export const registrar_api_workflow_status_response_single = v.intersect([registrar_api_api_response_common, v.partial(v.object({ result: registrar_api_workflow_status }))]);
@@ -12942,7 +12942,7 @@ export type request_tracer_api_response_common = v.InferOutput<typeof request_tr
 export const request_tracer_api_response_common = v.object({ errors: request_tracer_messages, messages: request_tracer_messages, success: v.literal(true) });
 
 export type request_tracer_api_response_common_failure = v.InferOutput<typeof request_tracer_api_response_common_failure>;
-export const request_tracer_api_response_common_failure = v.object({ errors: v.intersect([request_tracer_messages, v.unknown()]), messages: v.intersect([request_tracer_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const request_tracer_api_response_common_failure = v.object({ errors: request_tracer_messages, messages: request_tracer_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type request_tracer_trace = Array<Partial<{ action: string, action_parameters: Record<string, unknown>, description: string, expression: string, kind: string, matched: boolean, name: string, step_name: string, trace: request_tracer_trace, type: string }>>
 export const request_tracer_trace: v.GenericSchema<request_tracer_trace> = v.lazy(() => v.array(v.partial(v.object({ action: v.pipe(v.string(), v.regex(new RegExp("^[a-z_]+$"))), action_parameters: v.record(v.string(), v.unknown()), description: v.string(), expression: v.string(), kind: v.string(), matched: v.boolean(), name: v.string(), step_name: v.string(), trace: request_tracer_trace, type: v.string() }))));
@@ -12969,13 +12969,13 @@ export type resource_sharing_api_response_collection = v.InferOutput<typeof reso
 export const resource_sharing_api_response_collection = v.intersect([resource_sharing_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.unknown())), result_info: resource_sharing_result_info })), v.record(v.string(), v.unknown())]);
 
 export type resource_sharing_api_response_common_failure = v.InferOutput<typeof resource_sharing_api_response_common_failure>;
-export const resource_sharing_api_response_common_failure = v.object({ errors: v.intersect([resource_sharing_v4errors, v.unknown()]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
+export const resource_sharing_api_response_common_failure = v.object({ errors: resource_sharing_v4errors, result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
 
 export type resource_sharing_organization_id = v.InferOutput<typeof resource_sharing_organization_id>;
 export const resource_sharing_organization_id = v.pipe(v.string(), v.maxLength(32));
 
 export type resource_sharing_create_share_recipient_request = v.InferOutput<typeof resource_sharing_create_share_recipient_request>;
-export const resource_sharing_create_share_recipient_request = v.partial(v.object({ account_id: v.intersect([resource_sharing_account_id, v.unknown()]), organization_id: resource_sharing_organization_id, recipient_account_id: v.intersect([resource_sharing_account_id]) }));
+export const resource_sharing_create_share_recipient_request = v.partial(v.object({ account_id: resource_sharing_account_id, organization_id: resource_sharing_organization_id, recipient_account_id: resource_sharing_account_id }));
 
 export type resource_sharing_share_name = v.InferOutput<typeof resource_sharing_share_name>;
 export const resource_sharing_share_name = v.string();
@@ -13080,7 +13080,7 @@ export type resource_tagging_identifier = v.InferOutput<typeof resource_tagging_
 export const resource_tagging_identifier = v.pipe(v.string(), v.maxLength(32));
 
 export type resource_tagging_account_id = v.InferOutput<typeof resource_tagging_account_id>;
-export const resource_tagging_account_id = v.intersect([resource_tagging_identifier, v.unknown()]);
+export const resource_tagging_account_id = resource_tagging_identifier;
 
 export type resource_tagging_account_resource_type = v.InferOutput<typeof resource_tagging_account_resource_type>;
 export const resource_tagging_account_resource_type = v.picklist(["access_application", "access_group", "account", "ai_gateway", "alerting_policy", "alerting_webhook", "cloudflared_tunnel", "d1_database", "durable_object_namespace", "gateway_list", "gateway_rule", "image", "kv_namespace", "queue", "r2_bucket", "resource_share", "stream_live_input", "stream_video", "worker", "worker_version"]);
@@ -13098,7 +13098,7 @@ export type resource_tagging_api_response_common = v.InferOutput<typeof resource
 export const resource_tagging_api_response_common = v.object({ errors: resource_tagging_messages, messages: resource_tagging_messages, success: v.literal(true) });
 
 export type resource_tagging_api_response_common_failure = v.InferOutput<typeof resource_tagging_api_response_common_failure>;
-export const resource_tagging_api_response_common_failure = v.object({ errors: v.intersect([resource_tagging_messages, v.unknown()]), messages: v.intersect([resource_tagging_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const resource_tagging_api_response_common_failure = v.object({ errors: resource_tagging_messages, messages: resource_tagging_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type resource_tagging_cursor_result_info = v.InferOutput<typeof resource_tagging_cursor_result_info>;
 export const resource_tagging_cursor_result_info = v.partial(v.object({ count: v.pipe(v.number(), v.integer()), cursor: v.nullable(v.string()) }));
@@ -13176,7 +13176,7 @@ export type resource_tagging_tagged_resource_object_access_application = v.Infer
 export const resource_tagging_tagged_resource_object_access_application = v.intersect([v.object({ type: v.literal("access_application") }), resource_tagging_tagged_resource_object_account_level_base]);
 
 export type resource_tagging_zone_id = v.InferOutput<typeof resource_tagging_zone_id>;
-export const resource_tagging_zone_id = v.intersect([resource_tagging_identifier, v.unknown()]);
+export const resource_tagging_zone_id = resource_tagging_identifier;
 
 export type resource_tagging_tagged_resource_object_access_application_policy_base = v.InferOutput<typeof resource_tagging_tagged_resource_object_access_application_policy_base>;
 export const resource_tagging_tagged_resource_object_access_application_policy_base = v.object({ access_application_id: resource_tagging_access_application_id, etag: resource_tagging_etag, id: resource_tagging_resource_id, name: resource_tagging_resource_name, tags: resource_tagging_tags, zone_id: resource_tagging_zone_id });
@@ -13326,7 +13326,7 @@ export type rulesets_RuleRatelimit = v.InferOutput<typeof rulesets_RuleRatelimit
 export const rulesets_RuleRatelimit = v.object({ characteristics: v.pipe(v.array(v.pipe(v.string(), v.minLength(1))), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems")), counting_expression: v.optional(v.pipe(v.string(), v.minLength(1))), mitigation_timeout: v.optional(v.pipe(v.number(), v.integer())), period: v.pipe(v.number(), v.integer(), v.minValue(0)), requests_per_period: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1))), requests_to_origin: v.optional(v.boolean(), false), score_per_period: v.optional(v.pipe(v.number(), v.integer())), score_response_header_name: v.optional(v.pipe(v.string(), v.minLength(1))) });
 
 export type rulesets_Rule_schemas = v.InferOutput<typeof rulesets_Rule_schemas>;
-export const rulesets_Rule_schemas = v.object({ action: v.optional(rulesets_RuleAction), action_parameters: v.optional(v.record(v.string(), v.unknown()), {}), categories: v.optional(rulesets_RuleCategories), description: v.optional(v.string(), ""), enabled: v.optional(v.intersect([rulesets_RuleEnabled, v.optional(v.unknown(), true)])), exposed_credential_check: v.optional(rulesets_RuleExposedCredentialCheck), expression: v.optional(v.pipe(v.string(), v.minLength(1))), id: v.optional(rulesets_RuleId), last_updated: v.string(), logging: v.optional(rulesets_RuleLogging), ratelimit: v.optional(rulesets_RuleRatelimit), ref: v.optional(v.pipe(v.string(), v.minLength(1))), version: v.pipe(v.string(), v.regex(new RegExp("^[0-9]+$"))) });
+export const rulesets_Rule_schemas = v.object({ action: v.optional(rulesets_RuleAction), action_parameters: v.optional(v.record(v.string(), v.unknown()), {}), categories: v.optional(rulesets_RuleCategories), description: v.optional(v.string(), ""), enabled: v.optional(rulesets_RuleEnabled), exposed_credential_check: v.optional(rulesets_RuleExposedCredentialCheck), expression: v.optional(v.pipe(v.string(), v.minLength(1))), id: v.optional(rulesets_RuleId), last_updated: v.string(), logging: v.optional(rulesets_RuleLogging), ratelimit: v.optional(rulesets_RuleRatelimit), ref: v.optional(v.pipe(v.string(), v.minLength(1))), version: v.pipe(v.string(), v.regex(new RegExp("^[0-9]+$"))) });
 
 export type rulesets_BlockRule = v.InferOutput<typeof rulesets_BlockRule>;
 export const rulesets_BlockRule = v.intersect([rulesets_Rule_schemas, v.partial(v.object({ action: v.literal("block"), action_parameters: v.partial(v.object({ response: v.object({ content: v.pipe(v.string(), v.minLength(1)), content_type: v.pipe(v.string(), v.minLength(1)), status_code: v.pipe(v.number(), v.integer(), v.minValue(400), v.maxValue(499)) }) })), description: v.unknown() }))]);
@@ -13353,22 +13353,22 @@ export type rulesets_ExecuteSensitivityLevel = v.InferOutput<typeof rulesets_Exe
 export const rulesets_ExecuteSensitivityLevel = v.picklist(["default", "medium", "low", "eoff"]);
 
 export type rulesets_ExecuteCategoryOverrides = v.InferOutput<typeof rulesets_ExecuteCategoryOverrides>;
-export const rulesets_ExecuteCategoryOverrides = v.pipe(v.array(v.pipe(v.object({ action: v.optional(v.intersect([rulesets_RuleAction, v.unknown()])), category: v.intersect([rulesets_RuleCategory, v.unknown()]), enabled: v.optional(v.intersect([rulesets_RuleEnabled, v.unknown()])), sensitivity_level: v.optional(v.intersect([rulesets_ExecuteSensitivityLevel, v.unknown()])) }), v.check((obj) => Object.keys(obj).length >= 2, "minProperties"))), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems"));
+export const rulesets_ExecuteCategoryOverrides = v.pipe(v.array(v.pipe(v.object({ action: v.optional(rulesets_RuleAction), category: rulesets_RuleCategory, enabled: v.optional(rulesets_RuleEnabled), sensitivity_level: v.optional(rulesets_ExecuteSensitivityLevel) }), v.check((obj) => Object.keys(obj).length >= 2, "minProperties"))), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems"));
 
 export type rulesets_ExecuteMatchedData = v.InferOutput<typeof rulesets_ExecuteMatchedData>;
 export const rulesets_ExecuteMatchedData = v.object({ public_key: v.pipe(v.string(), v.minLength(1)) });
 
 export type rulesets_ExecuteRuleOverrides = v.InferOutput<typeof rulesets_ExecuteRuleOverrides>;
-export const rulesets_ExecuteRuleOverrides = v.pipe(v.array(v.pipe(v.object({ action: v.optional(v.intersect([rulesets_RuleAction, v.unknown()])), enabled: v.optional(v.intersect([rulesets_RuleEnabled, v.unknown()])), id: v.intersect([rulesets_RuleId, v.unknown()]), score_threshold: v.optional(v.pipe(v.number(), v.integer())), sensitivity_level: v.optional(v.intersect([rulesets_ExecuteSensitivityLevel, v.unknown()])) }), v.check((obj) => Object.keys(obj).length >= 2, "minProperties"))), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems"));
+export const rulesets_ExecuteRuleOverrides = v.pipe(v.array(v.pipe(v.object({ action: v.optional(rulesets_RuleAction), enabled: v.optional(rulesets_RuleEnabled), id: rulesets_RuleId, score_threshold: v.optional(v.pipe(v.number(), v.integer())), sensitivity_level: v.optional(rulesets_ExecuteSensitivityLevel) }), v.check((obj) => Object.keys(obj).length >= 2, "minProperties"))), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems"));
 
 export type rulesets_ExecuteOverrides = v.InferOutput<typeof rulesets_ExecuteOverrides>;
-export const rulesets_ExecuteOverrides = v.pipe(v.partial(v.object({ action: v.intersect([rulesets_RuleAction, v.unknown()]), categories: rulesets_ExecuteCategoryOverrides, enabled: v.intersect([rulesets_RuleEnabled, v.unknown()]), rules: rulesets_ExecuteRuleOverrides, sensitivity_level: v.intersect([rulesets_ExecuteSensitivityLevel, v.unknown()]) })), v.check((obj) => Object.keys(obj).length >= 1, "minProperties"));
+export const rulesets_ExecuteOverrides = v.pipe(v.partial(v.object({ action: rulesets_RuleAction, categories: rulesets_ExecuteCategoryOverrides, enabled: rulesets_RuleEnabled, rules: rulesets_ExecuteRuleOverrides, sensitivity_level: rulesets_ExecuteSensitivityLevel })), v.check((obj) => Object.keys(obj).length >= 1, "minProperties"));
 
 export type rulesets_RulesetId = v.InferOutput<typeof rulesets_RulesetId>;
 export const rulesets_RulesetId = v.pipe(v.string(), v.regex(new RegExp("^[0-9a-f]{32}$")));
 
 export type rulesets_ExecuteRule = v.InferOutput<typeof rulesets_ExecuteRule>;
-export const rulesets_ExecuteRule = v.intersect([rulesets_Rule_schemas, v.partial(v.object({ action: v.literal("execute"), action_parameters: v.object({ id: v.intersect([rulesets_RulesetId, v.unknown()]), matched_data: v.optional(rulesets_ExecuteMatchedData), overrides: v.optional(rulesets_ExecuteOverrides) }), description: v.unknown() }))]);
+export const rulesets_ExecuteRule = v.intersect([rulesets_Rule_schemas, v.partial(v.object({ action: v.literal("execute"), action_parameters: v.object({ id: rulesets_RulesetId, matched_data: v.optional(rulesets_ExecuteMatchedData), overrides: v.optional(rulesets_ExecuteOverrides) }), description: v.unknown() }))]);
 
 export type rulesets_ForceConnectionCloseRule = v.InferOutput<typeof rulesets_ForceConnectionCloseRule>;
 export const rulesets_ForceConnectionCloseRule = v.intersect([rulesets_Rule_schemas, v.partial(v.object({ action: v.literal("force_connection_close"), description: v.unknown() }))]);
@@ -13404,7 +13404,7 @@ export type rulesets_ManagedTransformId = v.InferOutput<typeof rulesets_ManagedT
 export const rulesets_ManagedTransformId = v.pipe(v.string(), v.minLength(1));
 
 export type rulesets_ManagedTransform = v.InferOutput<typeof rulesets_ManagedTransform>;
-export const rulesets_ManagedTransform = v.object({ conflicts_with: v.optional(v.pipe(v.array(v.intersect([rulesets_ManagedTransformId, v.unknown()])), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems"))), enabled: v.boolean(), has_conflict: v.boolean(), id: rulesets_ManagedTransformId });
+export const rulesets_ManagedTransform = v.object({ conflicts_with: v.optional(v.pipe(v.array(rulesets_ManagedTransformId), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems"))), enabled: v.boolean(), has_conflict: v.boolean(), id: rulesets_ManagedTransformId });
 
 export type rulesets_ManagedTransforms_schemas = v.InferOutput<typeof rulesets_ManagedTransforms_schemas>;
 export const rulesets_ManagedTransforms_schemas = v.object({ managed_request_headers: v.pipe(v.array(v.intersect([rulesets_ManagedTransform, v.partial(v.object({ id: v.unknown() }))])), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems")), managed_response_headers: v.pipe(v.array(v.intersect([rulesets_ManagedTransform, v.partial(v.object({ id: v.unknown() }))])), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems")) });
@@ -13605,19 +13605,19 @@ export type rulesets_RulesetPhase = v.InferOutput<typeof rulesets_RulesetPhase>;
 export const rulesets_RulesetPhase = v.picklist(["ddos_l4", "ddos_l7", "http_config_settings", "http_custom_errors", "http_log_custom_fields", "http_ratelimit", "http_request_cache_settings", "http_request_dynamic_redirect", "http_request_firewall_custom", "http_request_firewall_managed", "http_request_late_transform", "http_request_origin", "http_request_redirect", "http_request_sanitize", "http_request_sbfm", "http_request_transform", "http_response_cache_settings", "http_response_compression", "http_response_firewall_managed", "http_response_headers_transform", "magic_transit", "magic_transit_ids_managed", "magic_transit_managed", "magic_transit_ratelimit"]);
 
 export type rulesets_SkipPhases = v.InferOutput<typeof rulesets_SkipPhases>;
-export const rulesets_SkipPhases = v.pipe(v.array(v.intersect([rulesets_RulesetPhase, v.unknown()])), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems"));
+export const rulesets_SkipPhases = v.pipe(v.array(rulesets_RulesetPhase), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems"));
 
 export type rulesets_SkipProducts = v.InferOutput<typeof rulesets_SkipProducts>;
 export const rulesets_SkipProducts = v.pipe(v.array(v.picklist(["bic", "hot", "rateLimit", "securityLevel", "uaBlock", "waf", "zoneLockdown"])), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems"));
 
 export type rulesets_SkipRules = v.InferOutput<typeof rulesets_SkipRules>;
-export const rulesets_SkipRules = v.record(v.string(), v.pipe(v.array(v.intersect([rulesets_RuleId, v.unknown()])), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems")));
+export const rulesets_SkipRules = v.record(v.string(), v.pipe(v.array(rulesets_RuleId), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems")));
 
 export type rulesets_SkipRuleset = v.InferOutput<typeof rulesets_SkipRuleset>;
 export const rulesets_SkipRuleset = v.literal("current");
 
 export type rulesets_SkipRulesets = v.InferOutput<typeof rulesets_SkipRulesets>;
-export const rulesets_SkipRulesets = v.pipe(v.array(v.intersect([rulesets_RulesetId, v.unknown()])), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems"));
+export const rulesets_SkipRulesets = v.pipe(v.array(rulesets_RulesetId), v.minLength(1), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems"));
 
 export type rulesets_SkipRule = v.InferOutput<typeof rulesets_SkipRule>;
 export const rulesets_SkipRule = v.intersect([rulesets_Rule_schemas, v.partial(v.object({ action: v.literal("skip"), action_parameters: v.pipe(v.partial(v.object({ phase: rulesets_SkipPhase, phases: rulesets_SkipPhases, products: rulesets_SkipProducts, rules: rulesets_SkipRules, ruleset: rulesets_SkipRuleset, rulesets: rulesets_SkipRulesets })), v.check((obj) => Object.keys(obj).length >= 1, "minProperties")), description: v.unknown() }))]);
@@ -13635,13 +13635,13 @@ export type rulesets_Response = v.InferOutput<typeof rulesets_Response>;
 export const rulesets_Response = v.object({ errors: rulesets_Errors, messages: rulesets_Messages, result: v.unknown(), success: v.boolean() });
 
 export type rulesets_ResponseRule = v.InferOutput<typeof rulesets_ResponseRule>;
-export const rulesets_ResponseRule = v.intersect([rulesets_RequestRule, v.unknown()]);
+export const rulesets_ResponseRule = rulesets_RequestRule;
 
 export type rulesets_ResponseRules = v.InferOutput<typeof rulesets_ResponseRules>;
 export const rulesets_ResponseRules = v.array(rulesets_ResponseRule);
 
 export type rulesets_ResultInfo = v.InferOutput<typeof rulesets_ResultInfo>;
-export const rulesets_ResultInfo = v.partial(v.object({ cursors: v.object({ after: v.intersect([rulesets_Cursor, v.unknown()]) }) }));
+export const rulesets_ResultInfo = v.partial(v.object({ cursors: v.object({ after: rulesets_Cursor }) }));
 
 export type rulesets_RulePosition = v.InferOutput<typeof rulesets_RulePosition>;
 export const rulesets_RulePosition = v.record(v.string(), v.unknown());
@@ -13650,7 +13650,7 @@ export type rulesets_RulesetVersion = v.InferOutput<typeof rulesets_RulesetVersi
 export const rulesets_RulesetVersion = v.pipe(v.string(), v.regex(new RegExp("^[0-9]+$")));
 
 export type rulesets_Ruleset_schemas = v.InferOutput<typeof rulesets_Ruleset_schemas>;
-export const rulesets_Ruleset_schemas = v.object({ description: v.optional(v.string(), ""), id: v.intersect([rulesets_RulesetId, v.unknown()]), last_updated: v.string(), name: v.optional(v.pipe(v.string(), v.minLength(1))), version: v.intersect([rulesets_RulesetVersion, v.unknown()]) });
+export const rulesets_Ruleset_schemas = v.object({ description: v.optional(v.string(), ""), id: rulesets_RulesetId, last_updated: v.string(), name: v.optional(v.pipe(v.string(), v.minLength(1))), version: rulesets_RulesetVersion });
 
 export type rulesets_RulesetKind = v.InferOutput<typeof rulesets_RulesetKind>;
 export const rulesets_RulesetKind = v.picklist(["managed", "custom", "root", "zone"]);
@@ -13671,7 +13671,7 @@ export type rum_messages_2 = v.InferOutput<typeof rum_messages_2>;
 export const rum_messages_2 = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), documentation_url: v.optional(v.string()), message: v.string(), source: v.optional(v.partial(v.object({ pointer: v.string() }))) }));
 
 export type rum_api_response_common_failure = v.InferOutput<typeof rum_api_response_common_failure>;
-export const rum_api_response_common_failure = v.object({ errors: v.intersect([rum_messages_2, v.unknown()]), messages: v.intersect([rum_messages_2]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const rum_api_response_common_failure = v.object({ errors: rum_messages_2, messages: rum_messages_2, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type rum_auto_install = v.InferOutput<typeof rum_auto_install>;
 export const rum_auto_install = v.boolean();
@@ -13824,7 +13824,7 @@ export type secondary_dns_api_response_collection = v.InferOutput<typeof seconda
 export const secondary_dns_api_response_collection = v.intersect([secondary_dns_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type secondary_dns_api_response_common_failure = v.InferOutput<typeof secondary_dns_api_response_common_failure>;
-export const secondary_dns_api_response_common_failure = v.object({ errors: v.intersect([secondary_dns_messages, v.unknown()]), messages: v.intersect([secondary_dns_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const secondary_dns_api_response_common_failure = v.object({ errors: secondary_dns_messages, messages: secondary_dns_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type secondary_dns_api_response_single = v.InferOutput<typeof secondary_dns_api_response_single>;
 export const secondary_dns_api_response_single = v.intersect([secondary_dns_api_response_common, v.record(v.string(), v.unknown())]);
@@ -13959,7 +13959,7 @@ export type secrets_store_api_response_collection = v.InferOutput<typeof secrets
 export const secrets_store_api_response_collection = v.intersect([secrets_store_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type secrets_store_api_response_common_failure = v.InferOutput<typeof secrets_store_api_response_common_failure>;
-export const secrets_store_api_response_common_failure = v.object({ errors: v.intersect([secrets_store_messages, v.unknown()]), messages: v.intersect([secrets_store_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const secrets_store_api_response_common_failure = v.object({ errors: secrets_store_messages, messages: secrets_store_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type secrets_store_api_response_single = v.InferOutput<typeof secrets_store_api_response_single>;
 export const secrets_store_api_response_single = v.intersect([secrets_store_api_response_common, v.record(v.string(), v.unknown())]);
@@ -14055,7 +14055,7 @@ export type security_center_ExternalApiResponseCommon = v.InferOutput<typeof sec
 export const security_center_ExternalApiResponseCommon = security_center_api_response_common;
 
 export type security_center_api_response_common_failure = v.InferOutput<typeof security_center_api_response_common_failure>;
-export const security_center_api_response_common_failure = v.object({ errors: v.intersect([security_center_messages, v.unknown()]), messages: v.intersect([security_center_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const security_center_api_response_common_failure = v.object({ errors: security_center_messages, messages: security_center_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type security_center_ExternalApiResponseCommonFailure = v.InferOutput<typeof security_center_ExternalApiResponseCommonFailure>;
 export const security_center_ExternalApiResponseCommonFailure = security_center_api_response_common_failure;
@@ -14163,7 +14163,7 @@ export type smartshield_api_response_collection = v.InferOutput<typeof smartshie
 export const smartshield_api_response_collection = v.intersect([smartshield_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.unknown())), result_info: smartshield_result_info })), v.record(v.string(), v.unknown())]);
 
 export type smartshield_api_response_common_failure = v.InferOutput<typeof smartshield_api_response_common_failure>;
-export const smartshield_api_response_common_failure = v.object({ errors: v.intersect([smartshield_messages, v.unknown()]), messages: v.intersect([smartshield_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const smartshield_api_response_common_failure = v.object({ errors: smartshield_messages, messages: smartshield_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type smartshield_api_response_single = v.InferOutput<typeof smartshield_api_response_single>;
 export const smartshield_api_response_single = v.intersect([smartshield_api_response_common, v.partial(v.object({ result: v.union([v.record(v.string(), v.unknown()), v.string()]) })), v.record(v.string(), v.unknown())]);
@@ -14313,7 +14313,7 @@ export type spectrum_analytics_api_response_common = v.InferOutput<typeof spectr
 export const spectrum_analytics_api_response_common = v.object({ errors: spectrum_analytics_messages, messages: spectrum_analytics_messages, success: v.literal(true) });
 
 export type spectrum_analytics_api_response_common_failure = v.InferOutput<typeof spectrum_analytics_api_response_common_failure>;
-export const spectrum_analytics_api_response_common_failure = v.object({ errors: v.intersect([spectrum_analytics_messages, v.unknown()]), messages: v.intersect([spectrum_analytics_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const spectrum_analytics_api_response_common_failure = v.object({ errors: spectrum_analytics_messages, messages: spectrum_analytics_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type spectrum_analytics_api_response_single = v.InferOutput<typeof spectrum_analytics_api_response_single>;
 export const spectrum_analytics_api_response_single = v.intersect([spectrum_analytics_api_response_common, v.record(v.string(), v.unknown())]);
@@ -14340,25 +14340,25 @@ export type spectrum_analytics_timestamp = v.InferOutput<typeof spectrum_analyti
 export const spectrum_analytics_timestamp = v.string();
 
 export type spectrum_analytics_since = v.InferOutput<typeof spectrum_analytics_since>;
-export const spectrum_analytics_since = v.intersect([v.unknown(), spectrum_analytics_timestamp]);
+export const spectrum_analytics_since = spectrum_analytics_timestamp;
 
 export type spectrum_analytics_sort = v.InferOutput<typeof spectrum_analytics_sort>;
 export const spectrum_analytics_sort = v.array(v.string());
 
 export type spectrum_analytics_until = v.InferOutput<typeof spectrum_analytics_until>;
-export const spectrum_analytics_until = v.intersect([v.unknown(), spectrum_analytics_timestamp]);
+export const spectrum_analytics_until = spectrum_analytics_timestamp;
 
 export type spectrum_analytics_query = v.InferOutput<typeof spectrum_analytics_query>;
 export const spectrum_analytics_query = v.partial(v.object({ dimensions: spectrum_analytics_dimensions, filters: spectrum_analytics_filters, limit: v.number(), metrics: spectrum_analytics_metrics, since: spectrum_analytics_since, sort: spectrum_analytics_sort, until: spectrum_analytics_until }));
 
 export type spectrum_analytics_query_response_aggregate = v.InferOutput<typeof spectrum_analytics_query_response_aggregate>;
-export const spectrum_analytics_query_response_aggregate = v.intersect([spectrum_analytics_api_response_single, v.partial(v.object({ result: v.array(v.object({ appID: v.intersect([v.unknown(), spectrum_analytics_identifier]), bytesEgress: v.number(), bytesIngress: v.number(), connections: v.number(), durationAvg: v.number() })) }))]);
+export const spectrum_analytics_query_response_aggregate = v.intersect([spectrum_analytics_api_response_single, v.partial(v.object({ result: v.array(v.object({ appID: spectrum_analytics_identifier, bytesEgress: v.number(), bytesIngress: v.number(), connections: v.number(), durationAvg: v.number() })) }))]);
 
 export type spectrum_analytics_stat = v.InferOutput<typeof spectrum_analytics_stat>;
 export const spectrum_analytics_stat = v.record(v.string(), v.number());
 
 export type spectrum_analytics_query_response_single = v.InferOutput<typeof spectrum_analytics_query_response_single>;
-export const spectrum_analytics_query_response_single = v.intersect([spectrum_analytics_api_response_single, v.partial(v.object({ result: v.object({ data: v.array(spectrum_analytics_column), data_lag: v.pipe(v.number(), v.minValue(0)), max: v.intersect([v.unknown(), spectrum_analytics_stat]), min: v.intersect([v.unknown(), spectrum_analytics_stat]), query: spectrum_analytics_query, rows: v.pipe(v.number(), v.minValue(0)), time_intervals: v.optional(v.array(v.array(spectrum_analytics_timestamp))), totals: v.intersect([v.unknown(), spectrum_analytics_stat]) }) }))]);
+export const spectrum_analytics_query_response_single = v.intersect([spectrum_analytics_api_response_single, v.partial(v.object({ result: v.object({ data: v.array(spectrum_analytics_column), data_lag: v.pipe(v.number(), v.minValue(0)), max: spectrum_analytics_stat, min: spectrum_analytics_stat, query: spectrum_analytics_query, rows: v.pipe(v.number(), v.minValue(0)), time_intervals: v.optional(v.array(v.array(spectrum_analytics_timestamp))), totals: spectrum_analytics_stat }) }))]);
 
 export type spectrum_config_messages = v.InferOutput<typeof spectrum_config_messages>;
 export const spectrum_config_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), documentation_url: v.optional(v.string()), message: v.string(), source: v.optional(v.partial(v.object({ pointer: v.string() }))) }));
@@ -14370,7 +14370,7 @@ export type spectrum_config_api_response_collection = v.InferOutput<typeof spect
 export const spectrum_config_api_response_collection = v.intersect([spectrum_config_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type spectrum_config_api_response_common_failure = v.InferOutput<typeof spectrum_config_api_response_common_failure>;
-export const spectrum_config_api_response_common_failure = v.object({ errors: v.intersect([spectrum_config_messages, v.unknown()]), messages: v.intersect([spectrum_config_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const spectrum_config_api_response_common_failure = v.object({ errors: spectrum_config_messages, messages: spectrum_config_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type spectrum_config_api_response_single = v.InferOutput<typeof spectrum_config_api_response_single>;
 export const spectrum_config_api_response_single = v.intersect([spectrum_config_api_response_common, v.record(v.string(), v.unknown())]);
@@ -14385,13 +14385,13 @@ export type spectrum_config_timestamp = v.InferOutput<typeof spectrum_config_tim
 export const spectrum_config_timestamp = v.string();
 
 export type spectrum_config_created = v.InferOutput<typeof spectrum_config_created>;
-export const spectrum_config_created = v.intersect([v.unknown(), v.unknown(), spectrum_config_timestamp]);
+export const spectrum_config_created = spectrum_config_timestamp;
 
 export type spectrum_config_app_identifier = v.InferOutput<typeof spectrum_config_app_identifier>;
-export const spectrum_config_app_identifier = v.intersect([v.unknown(), v.unknown(), spectrum_config_identifier]);
+export const spectrum_config_app_identifier = spectrum_config_identifier;
 
 export type spectrum_config_modified = v.InferOutput<typeof spectrum_config_modified>;
-export const spectrum_config_modified = v.intersect([v.unknown(), v.unknown(), spectrum_config_timestamp]);
+export const spectrum_config_modified = spectrum_config_timestamp;
 
 export type spectrum_config_base_app_config = v.InferOutput<typeof spectrum_config_base_app_config>;
 export const spectrum_config_base_app_config = v.object({ created_on: spectrum_config_created, id: spectrum_config_app_identifier, modified_on: spectrum_config_modified });
@@ -14463,7 +14463,7 @@ export type spectrum_config_update_app_config = v.InferOutput<typeof spectrum_co
 export const spectrum_config_update_app_config = v.union([spectrum_config_app_config, spectrum_config_paygo_app_config]);
 
 export type spectrum_config_zone_identifier = v.InferOutput<typeof spectrum_config_zone_identifier>;
-export const spectrum_config_zone_identifier = v.intersect([v.unknown(), v.unknown(), spectrum_config_identifier]);
+export const spectrum_config_zone_identifier = spectrum_config_identifier;
 
 export type speed_messages = v.InferOutput<typeof speed_messages>;
 export const speed_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), message: v.string() }));
@@ -14472,7 +14472,7 @@ export type speed_api_response_common = v.InferOutput<typeof speed_api_response_
 export const speed_api_response_common = v.object({ errors: speed_messages, messages: speed_messages, success: v.boolean() });
 
 export type speed_api_response_common_failure = v.InferOutput<typeof speed_api_response_common_failure>;
-export const speed_api_response_common_failure = v.object({ errors: v.intersect([speed_messages, v.unknown()]), messages: v.intersect([speed_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
+export const speed_api_response_common_failure = v.object({ errors: speed_messages, messages: speed_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
 
 export type speed_identifier = v.InferOutput<typeof speed_identifier>;
 export const speed_identifier = v.pipe(v.string(), v.maxLength(32));
@@ -14526,7 +14526,7 @@ export type stream_allowedOrigins = v.InferOutput<typeof stream_allowedOrigins>;
 export const stream_allowedOrigins = v.array(v.string());
 
 export type stream_api_response_common_failure = v.InferOutput<typeof stream_api_response_common_failure>;
-export const stream_api_response_common_failure = v.object({ errors: v.intersect([stream_messages, v.unknown()]), messages: v.intersect([stream_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const stream_api_response_common_failure = v.object({ errors: stream_messages, messages: stream_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type stream_api_response_single = v.InferOutput<typeof stream_api_response_single>;
 export const stream_api_response_single = v.intersect([stream_api_response_common, v.record(v.string(), v.unknown())]);
@@ -14772,7 +14772,7 @@ export type stream_downloads = v.InferOutput<typeof stream_downloads>;
 export const stream_downloads = v.object({ percentComplete: stream_download_percent_complete, status: stream_download_status, url: v.optional(stream_download_url) });
 
 export type stream_downloads_response = v.InferOutput<typeof stream_downloads_response>;
-export const stream_downloads_response = v.intersect([stream_api_response_single, v.partial(v.object({ result: v.partial(v.object({ audio: v.intersect([stream_downloads]), default: v.intersect([stream_downloads]) })) }))]);
+export const stream_downloads_response = v.intersect([stream_api_response_single, v.partial(v.object({ result: v.partial(v.object({ audio: stream_downloads, default: stream_downloads })) }))]);
 
 export type stream_editAudioTrack = v.InferOutput<typeof stream_editAudioTrack>;
 export const stream_editAudioTrack = v.partial(v.object({ default: stream_audio_default, label: stream_audio_label }));
@@ -15006,7 +15006,7 @@ export type teams_devices_api_response_collection_common = v.InferOutput<typeof 
 export const teams_devices_api_response_collection_common = v.intersect([teams_devices_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.record(v.string(), v.unknown()))) })), v.record(v.string(), v.unknown())]);
 
 export type teams_devices_api_response_common_failure = v.InferOutput<typeof teams_devices_api_response_common_failure>;
-export const teams_devices_api_response_common_failure = v.object({ errors: v.intersect([teams_devices_messages, v.unknown()]), messages: v.intersect([teams_devices_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const teams_devices_api_response_common_failure = v.object({ errors: teams_devices_messages, messages: teams_devices_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type teams_devices_api_response_single = v.InferOutput<typeof teams_devices_api_response_single>;
 export const teams_devices_api_response_single = v.intersect([teams_devices_api_response_common, v.partial(v.object({ result: v.nullable(v.union([v.record(v.string(), v.unknown()), v.string()])) })), v.record(v.string(), v.unknown())]);
@@ -15663,7 +15663,7 @@ export type tls_certificates_and_hostnames_api_response_collection = v.InferOutp
 export const tls_certificates_and_hostnames_api_response_collection = v.intersect([tls_certificates_and_hostnames_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type tls_certificates_and_hostnames_api_response_common_failure = v.InferOutput<typeof tls_certificates_and_hostnames_api_response_common_failure>;
-export const tls_certificates_and_hostnames_api_response_common_failure = v.object({ errors: v.intersect([tls_certificates_and_hostnames_messages, v.unknown()]), messages: v.intersect([tls_certificates_and_hostnames_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const tls_certificates_and_hostnames_api_response_common_failure = v.object({ errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type tls_certificates_and_hostnames_service = v.InferOutput<typeof tls_certificates_and_hostnames_service>;
 export const tls_certificates_and_hostnames_service = v.string();
@@ -15930,7 +15930,7 @@ export type tls_certificates_and_hostnames_revoked_at = v.InferOutput<typeof tls
 export const tls_certificates_and_hostnames_revoked_at = v.string();
 
 export type tls_certificates_and_hostnames_certificate_revoke_response = v.InferOutput<typeof tls_certificates_and_hostnames_certificate_revoke_response>;
-export const tls_certificates_and_hostnames_certificate_revoke_response = v.intersect([v.partial(v.object({ result: v.partial(v.object({ id: tls_certificates_and_hostnames_identifier, revoked_at: tls_certificates_and_hostnames_revoked_at })) }))]);
+export const tls_certificates_and_hostnames_certificate_revoke_response = v.partial(v.object({ result: v.partial(v.object({ id: tls_certificates_and_hostnames_identifier, revoked_at: tls_certificates_and_hostnames_revoked_at })) }));
 
 export type tls_certificates_and_hostnames_certificate_status = v.InferOutput<typeof tls_certificates_and_hostnames_certificate_status>;
 export const tls_certificates_and_hostnames_certificate_status = v.picklist(["initializing", "authorizing", "active", "expired", "issuing", "timing_out", "pending_deployment"]);
@@ -16116,7 +16116,7 @@ export type tls_certificates_and_hostnames_custom_hostname_api_response_common =
 export const tls_certificates_and_hostnames_custom_hostname_api_response_common = v.object({ errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_custom_hostname_response_messages, success: v.literal(true) });
 
 export type tls_certificates_and_hostnames_custom_hostname_api_response_failure = v.InferOutput<typeof tls_certificates_and_hostnames_custom_hostname_api_response_failure>;
-export const tls_certificates_and_hostnames_custom_hostname_api_response_failure = v.object({ errors: v.intersect([tls_certificates_and_hostnames_messages, v.unknown()]), messages: tls_certificates_and_hostnames_custom_hostname_response_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const tls_certificates_and_hostnames_custom_hostname_api_response_failure = v.object({ errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_custom_hostname_response_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type tls_certificates_and_hostnames_custom_hostname_quota = v.InferOutput<typeof tls_certificates_and_hostnames_custom_hostname_quota>;
 export const tls_certificates_and_hostnames_custom_hostname_quota = v.object({ allocated: v.pipe(v.number(), v.integer()), exceeded: v.boolean(), hard_cap: v.pipe(v.number(), v.integer()), used: v.pipe(v.number(), v.integer()) });
@@ -16308,7 +16308,7 @@ export type tls_certificates_and_hostnames_verification = v.InferOutput<typeof t
 export const tls_certificates_and_hostnames_verification = v.object({ brand_check: v.optional(tls_certificates_and_hostnames_brand_check), cert_pack_uuid: v.optional(tls_certificates_and_hostnames_cert_pack_uuid), certificate_status: tls_certificates_and_hostnames_certificate_status, signature: v.optional(tls_certificates_and_hostnames_signature_2), validation_method: v.optional(tls_certificates_and_hostnames_validation_method_2), verification_info: v.optional(tls_certificates_and_hostnames_verification_info), verification_status: v.optional(tls_certificates_and_hostnames_verification_status), verification_type: v.optional(tls_certificates_and_hostnames_verification_type) });
 
 export type tls_certificates_and_hostnames_ssl_verification_response_collection = v.InferOutput<typeof tls_certificates_and_hostnames_ssl_verification_response_collection>;
-export const tls_certificates_and_hostnames_ssl_verification_response_collection = v.intersect([v.partial(v.object({ result: v.array(tls_certificates_and_hostnames_verification) }))]);
+export const tls_certificates_and_hostnames_ssl_verification_response_collection = v.partial(v.object({ result: v.array(tls_certificates_and_hostnames_verification) }));
 
 export type tls_certificates_and_hostnames_sslpost = v.InferOutput<typeof tls_certificates_and_hostnames_sslpost>;
 export const tls_certificates_and_hostnames_sslpost = v.partial(v.object({ bundle_method: v.optional(v.picklist(["ubiquitous", "optimal", "force"]), "ubiquitous"), certificate_authority: tls_certificates_and_hostnames_certificate_authority, cloudflare_branding: v.boolean(), custom_cert_bundle: tls_certificates_and_hostnames_custom_cert_bundle, custom_certificate: v.string(), custom_csr_id: v.string(), custom_key: v.string(), method: v.picklist(["http", "txt", "email"]), settings: tls_certificates_and_hostnames_sslsettings, type: v.literal("dv"), wildcard: v.boolean() }));
@@ -16350,10 +16350,10 @@ export type tunnel_api_response_common_2 = v.InferOutput<typeof tunnel_api_respo
 export const tunnel_api_response_common_2 = v.object({ errors: tunnel_messages_2, messages: tunnel_messages_2, success: v.literal(true) });
 
 export type tunnel_api_response_common_failure = v.InferOutput<typeof tunnel_api_response_common_failure>;
-export const tunnel_api_response_common_failure = v.object({ errors: v.intersect([tunnel_messages, v.unknown()]), messages: v.intersect([tunnel_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const tunnel_api_response_common_failure = v.object({ errors: tunnel_messages, messages: tunnel_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type tunnel_api_response_common_failure_2 = v.InferOutput<typeof tunnel_api_response_common_failure_2>;
-export const tunnel_api_response_common_failure_2 = v.object({ errors: v.intersect([tunnel_messages_2, v.unknown()]), messages: v.intersect([tunnel_messages_2]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const tunnel_api_response_common_failure_2 = v.object({ errors: tunnel_messages_2, messages: tunnel_messages_2, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type tunnel_api_response_single = v.InferOutput<typeof tunnel_api_response_single>;
 export const tunnel_api_response_single = tunnel_api_response_common;
@@ -16404,7 +16404,7 @@ export type tunnel_ip = v.InferOutput<typeof tunnel_ip>;
 export const tunnel_ip = v.string();
 
 export type tunnel_schemas_connection = v.InferOutput<typeof tunnel_schemas_connection>;
-export const tunnel_schemas_connection = v.partial(v.object({ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, is_pending_reconnect: tunnel_is_pending_reconnect, opened_at: v.string(), origin_ip: v.intersect([tunnel_ip]), uuid: tunnel_connection_id }));
+export const tunnel_schemas_connection = v.partial(v.object({ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, is_pending_reconnect: tunnel_is_pending_reconnect, opened_at: v.string(), origin_ip: tunnel_ip, uuid: tunnel_connection_id }));
 
 export type tunnel_connections_deprecated = v.InferOutput<typeof tunnel_connections_deprecated>;
 export const tunnel_connections_deprecated = v.array(tunnel_schemas_connection);
@@ -16590,7 +16590,7 @@ export type tunnel_run_at = v.InferOutput<typeof tunnel_run_at>;
 export const tunnel_run_at = v.string();
 
 export type tunnel_schemas_warp_connector_connection = v.InferOutput<typeof tunnel_schemas_warp_connector_connection>;
-export const tunnel_schemas_warp_connector_connection = v.partial(v.object({ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, opened_at: v.string(), origin_ip: v.intersect([tunnel_ip]) }));
+export const tunnel_schemas_warp_connector_connection = v.partial(v.object({ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, opened_at: v.string(), origin_ip: tunnel_ip }));
 
 export type tunnel_subnet_capacity = v.InferOutput<typeof tunnel_subnet_capacity>;
 export const tunnel_subnet_capacity = v.partial(v.object({ total: v.pipe(v.number(), v.integer()), used: v.pipe(v.number(), v.integer()) }));
@@ -16719,7 +16719,7 @@ export type turnstile_api_response_common = v.InferOutput<typeof turnstile_api_r
 export const turnstile_api_response_common = v.object({ errors: turnstile_messages, messages: turnstile_messages, success: v.boolean() });
 
 export type turnstile_api_response_common_failure = v.InferOutput<typeof turnstile_api_response_common_failure>;
-export const turnstile_api_response_common_failure = v.object({ errors: v.intersect([turnstile_messages, v.unknown()]), messages: v.intersect([turnstile_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
+export const turnstile_api_response_common_failure = v.object({ errors: turnstile_messages, messages: turnstile_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
 
 export type turnstile_bot_fight_mode = v.InferOutput<typeof turnstile_bot_fight_mode>;
 export const turnstile_bot_fight_mode = v.boolean();
@@ -16815,7 +16815,7 @@ export type vectorize_api_response_collection = v.InferOutput<typeof vectorize_a
 export const vectorize_api_response_collection = v.intersect([vectorize_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.unknown())), result_info: vectorize_result_info })), v.record(v.string(), v.unknown())]);
 
 export type vectorize_api_response_common_failure = v.InferOutput<typeof vectorize_api_response_common_failure>;
-export const vectorize_api_response_common_failure = v.object({ errors: v.intersect([vectorize_messages, v.unknown()]), messages: v.intersect([vectorize_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const vectorize_api_response_common_failure = v.object({ errors: vectorize_messages, messages: vectorize_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type vectorize_api_response_single = v.InferOutput<typeof vectorize_api_response_single>;
 export const vectorize_api_response_single = v.intersect([vectorize_api_response_common, v.partial(v.object({ result: v.nullable(v.union([v.record(v.string(), v.unknown()), v.string()])) })), v.record(v.string(), v.unknown())]);
@@ -16845,7 +16845,7 @@ export type vectorize_index_name = v.InferOutput<typeof vectorize_index_name>;
 export const vectorize_index_name = v.pipe(v.string(), v.regex(new RegExp("^([a-z]+[a-z0-9_-]*[a-z0-9]+)$")));
 
 export type vectorize_create_index_request = v.InferOutput<typeof vectorize_create_index_request>;
-export const vectorize_create_index_request = v.object({ config: v.intersect([vectorize_index_configuration]), description: v.optional(vectorize_index_description), name: vectorize_index_name });
+export const vectorize_create_index_request = v.object({ config: vectorize_index_configuration, description: v.optional(vectorize_index_description), name: vectorize_index_name });
 
 export type vectorize_create_index_response = v.InferOutput<typeof vectorize_create_index_response>;
 export const vectorize_create_index_response = v.partial(v.object({ config: vectorize_index_dimension_configuration, created_on: v.string(), description: vectorize_index_description, modified_on: v.string(), name: vectorize_index_name }));
@@ -16935,7 +16935,7 @@ export type vuln_scanner_api_response_collection = v.InferOutput<typeof vuln_sca
 export const vuln_scanner_api_response_collection = v.intersect([vuln_scanner_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type vuln_scanner_api_response_common_failure = v.InferOutput<typeof vuln_scanner_api_response_common_failure>;
-export const vuln_scanner_api_response_common_failure = v.object({ errors: v.intersect([vuln_scanner_messages, v.unknown()]), messages: v.intersect([vuln_scanner_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const vuln_scanner_api_response_common_failure = v.object({ errors: vuln_scanner_messages, messages: vuln_scanner_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type vuln_scanner_bola_http_status_range = v.InferOutput<typeof vuln_scanner_bola_http_status_range>;
 export const vuln_scanner_bola_http_status_range = v.object({ max: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)), min: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)) });
@@ -16974,37 +16974,37 @@ export type vuln_scanner_bola_verdict = v.InferOutput<typeof vuln_scanner_bola_v
 export const vuln_scanner_bola_verdict = v.picklist(["ok", "warning", "inconclusive"]);
 
 export type vuln_scanner_bola_report_summary = v.InferOutput<typeof vuln_scanner_bola_report_summary>;
-export const vuln_scanner_bola_report_summary = v.object({ verdict: v.intersect([vuln_scanner_bola_verdict]) });
+export const vuln_scanner_bola_report_summary = v.object({ verdict: vuln_scanner_bola_verdict });
 
 export type vuln_scanner_bola_test_error = v.InferOutput<typeof vuln_scanner_bola_test_error>;
 export const vuln_scanner_bola_test_error = v.object({ description: v.string(), error_code: v.optional(v.nullable(v.pipe(v.number(), v.integer(), v.minValue(0)))) });
 
 export type vuln_scanner_bola_test_assertion = v.InferOutput<typeof vuln_scanner_bola_test_assertion>;
-export const vuln_scanner_bola_test_assertion = v.object({ description: v.string(), kind: v.intersect([vuln_scanner_bola_assertion_kind]), observed: v.nullable(v.pipe(v.number(), v.integer())), outcome: v.intersect([vuln_scanner_bola_outcome]) });
+export const vuln_scanner_bola_test_assertion = v.object({ description: v.string(), kind: vuln_scanner_bola_assertion_kind, observed: v.nullable(v.pipe(v.number(), v.integer())), outcome: vuln_scanner_bola_outcome });
 
 export type vuln_scanner_bola_test_credential_set = v.InferOutput<typeof vuln_scanner_bola_test_credential_set>;
-export const vuln_scanner_bola_test_credential_set = v.object({ id: v.pipe(v.string(), v.uuid()), role: v.intersect([vuln_scanner_bola_credential_role]) });
+export const vuln_scanner_bola_test_credential_set = v.object({ id: v.pipe(v.string(), v.uuid()), role: vuln_scanner_bola_credential_role });
 
 export type vuln_scanner_bola_variable_capture = v.InferOutput<typeof vuln_scanner_bola_variable_capture>;
 export const vuln_scanner_bola_variable_capture = v.object({ json_path: v.string(), name: v.string() });
 
 export type vuln_scanner_bola_test_request = v.InferOutput<typeof vuln_scanner_bola_test_request>;
-export const vuln_scanner_bola_test_request = v.object({ body: v.optional(v.nullable(v.record(v.string(), v.unknown()))), credential_set: v.intersect([vuln_scanner_bola_test_credential_set]), header_names: v.array(v.string()), method: v.intersect([vuln_scanner_bola_method]), url: v.pipe(v.string(), v.url()), variable_captures: v.array(vuln_scanner_bola_variable_capture) });
+export const vuln_scanner_bola_test_request = v.object({ body: v.optional(v.nullable(v.record(v.string(), v.unknown()))), credential_set: vuln_scanner_bola_test_credential_set, header_names: v.array(v.string()), method: vuln_scanner_bola_method, url: v.pipe(v.string(), v.url()), variable_captures: v.array(vuln_scanner_bola_variable_capture) });
 
 export type vuln_scanner_bola_test_response = v.InferOutput<typeof vuln_scanner_bola_test_response>;
-export const vuln_scanner_bola_test_response = v.object({ body: v.intersect([vuln_scanner_bola_body_response]), header_names: v.array(v.string()), status: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)), status_text: v.optional(v.nullable(v.string())) });
+export const vuln_scanner_bola_test_response = v.object({ body: vuln_scanner_bola_body_response, header_names: v.array(v.string()), status: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)), status_text: v.optional(v.nullable(v.string())) });
 
 export type vuln_scanner_bola_test_step = v.InferOutput<typeof vuln_scanner_bola_test_step>;
 export const vuln_scanner_bola_test_step = v.object({ assertions: v.array(vuln_scanner_bola_test_assertion), errors: v.optional(v.array(vuln_scanner_bola_test_error)), request: v.optional(v.nullable(v.intersect([vuln_scanner_bola_test_request, v.nullable(v.record(v.string(), v.unknown()))]))), response: v.optional(v.nullable(v.intersect([vuln_scanner_bola_test_response, v.nullable(v.record(v.string(), v.unknown()))]))) });
 
 export type vuln_scanner_bola_test = v.InferOutput<typeof vuln_scanner_bola_test>;
-export const vuln_scanner_bola_test = v.object({ preflight_errors: v.optional(v.array(vuln_scanner_bola_test_error)), steps: v.array(vuln_scanner_bola_test_step), verdict: v.intersect([vuln_scanner_bola_verdict]) });
+export const vuln_scanner_bola_test = v.object({ preflight_errors: v.optional(v.array(vuln_scanner_bola_test_error)), steps: v.array(vuln_scanner_bola_test_step), verdict: vuln_scanner_bola_verdict });
 
 export type vuln_scanner_bola_report_v1 = v.InferOutput<typeof vuln_scanner_bola_report_v1>;
-export const vuln_scanner_bola_report_v1 = v.object({ summary: v.intersect([vuln_scanner_bola_report_summary]), tests: v.array(vuln_scanner_bola_test) });
+export const vuln_scanner_bola_report_v1 = v.object({ summary: vuln_scanner_bola_report_summary, tests: v.array(vuln_scanner_bola_test) });
 
 export type vuln_scanner_bola_report = v.InferOutput<typeof vuln_scanner_bola_report>;
-export const vuln_scanner_bola_report = v.object({ report: v.intersect([vuln_scanner_bola_report_v1]), report_schema_version: v.literal("v1") });
+export const vuln_scanner_bola_report = v.object({ report: vuln_scanner_bola_report_v1, report_schema_version: v.literal("v1") });
 
 export type vuln_scanner_create_bola_scan_request = v.InferOutput<typeof vuln_scanner_create_bola_scan_request>;
 export const vuln_scanner_create_bola_scan_request = v.object({ credential_sets: vuln_scanner_bola_credential_sets, open_api: v.string(), scan_type: v.literal("bola"), target_environment_id: v.pipe(v.string(), v.uuid()) });
@@ -17115,7 +17115,7 @@ export type waf_managed_rules_base = v.InferOutput<typeof waf_managed_rules_base
 export const waf_managed_rules_base = v.partial(v.object({ description: waf_managed_rules_schemas_description, group: v.partial(v.object({ id: waf_managed_rules_components_schemas_identifier, name: waf_managed_rules_name })), id: waf_managed_rules_rule_components_schemas_identifier, package_id: waf_managed_rules_identifier, priority: waf_managed_rules_priority }));
 
 export type waf_managed_rules_schemas_base = v.InferOutput<typeof waf_managed_rules_schemas_base>;
-export const waf_managed_rules_schemas_base = v.intersect([waf_managed_rules_base]);
+export const waf_managed_rules_schemas_base = waf_managed_rules_base;
 
 export type waf_managed_rules_anomaly_rule = v.InferOutput<typeof waf_managed_rules_anomaly_rule>;
 export const waf_managed_rules_anomaly_rule = v.intersect([waf_managed_rules_schemas_base, v.partial(v.object({ allowed_modes: waf_managed_rules_allowed_modes_anomaly, mode: waf_managed_rules_mode_anomaly })), v.record(v.string(), v.unknown())]);
@@ -17133,7 +17133,7 @@ export type waf_managed_rules_api_response_collection = v.InferOutput<typeof waf
 export const waf_managed_rules_api_response_collection = v.intersect([waf_managed_rules_api_response_common, v.partial(v.object({ result_info: waf_managed_rules_result_info })), v.record(v.string(), v.unknown())]);
 
 export type waf_managed_rules_api_response_common_failure = v.InferOutput<typeof waf_managed_rules_api_response_common_failure>;
-export const waf_managed_rules_api_response_common_failure = v.object({ errors: v.intersect([waf_managed_rules_messages, v.unknown()]), messages: v.intersect([waf_managed_rules_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const waf_managed_rules_api_response_common_failure = v.object({ errors: waf_managed_rules_messages, messages: waf_managed_rules_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type waf_managed_rules_api_response_single = v.InferOutput<typeof waf_managed_rules_api_response_single>;
 export const waf_managed_rules_api_response_single = v.intersect([waf_managed_rules_api_response_common, v.partial(v.object({ result: v.union([v.nullable(v.record(v.string(), v.unknown())), v.nullable(v.string())]) })), v.record(v.string(), v.unknown())]);
@@ -17154,10 +17154,10 @@ export type waf_managed_rules_group = v.InferOutput<typeof waf_managed_rules_gro
 export const waf_managed_rules_group = v.partial(v.object({ description: waf_managed_rules_description, id: waf_managed_rules_components_schemas_identifier, modified_rules_count: waf_managed_rules_modified_rules_count, name: waf_managed_rules_name, package_id: waf_managed_rules_identifier, rules_count: waf_managed_rules_rules_count }));
 
 export type waf_managed_rules_traditional_deny_rule = v.InferOutput<typeof waf_managed_rules_traditional_deny_rule>;
-export const waf_managed_rules_traditional_deny_rule = v.intersect([waf_managed_rules_base, v.partial(v.object({ allowed_modes: waf_managed_rules_allowed_modes_deny_traditional, default_mode: waf_managed_rules_default_mode, mode: waf_managed_rules_mode_deny_traditional })), v.unknown()]);
+export const waf_managed_rules_traditional_deny_rule = v.intersect([waf_managed_rules_base, v.partial(v.object({ allowed_modes: waf_managed_rules_allowed_modes_deny_traditional, default_mode: waf_managed_rules_default_mode, mode: waf_managed_rules_mode_deny_traditional }))]);
 
 export type waf_managed_rules_traditional_allow_rule = v.InferOutput<typeof waf_managed_rules_traditional_allow_rule>;
-export const waf_managed_rules_traditional_allow_rule = v.intersect([waf_managed_rules_base, v.partial(v.object({ allowed_modes: waf_managed_rules_allowed_modes_allow_traditional, mode: waf_managed_rules_mode_allow_traditional })), v.unknown()]);
+export const waf_managed_rules_traditional_allow_rule = v.intersect([waf_managed_rules_base, v.partial(v.object({ allowed_modes: waf_managed_rules_allowed_modes_allow_traditional, mode: waf_managed_rules_mode_allow_traditional }))]);
 
 export type waf_managed_rules_rule = v.InferOutput<typeof waf_managed_rules_rule>;
 export const waf_managed_rules_rule = v.union([waf_managed_rules_anomaly_rule, waf_managed_rules_traditional_deny_rule, waf_managed_rules_traditional_allow_rule]);
@@ -17196,13 +17196,13 @@ export type waf_product_api_bundle_api_response_collection_2 = v.InferOutput<typ
 export const waf_product_api_bundle_api_response_collection_2 = v.intersect([waf_product_api_bundle_api_response_common_2, v.partial(v.object({ result: v.nullable(v.array(v.record(v.string(), v.unknown()))) })), v.record(v.string(), v.unknown())]);
 
 export type waf_product_api_bundle_api_response_common_failure = v.InferOutput<typeof waf_product_api_bundle_api_response_common_failure>;
-export const waf_product_api_bundle_api_response_common_failure = v.object({ errors: v.intersect([waf_product_api_bundle_messages, v.unknown()]), messages: v.intersect([waf_product_api_bundle_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const waf_product_api_bundle_api_response_common_failure = v.object({ errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type waf_product_api_bundle_api_response_common_failure_2 = v.InferOutput<typeof waf_product_api_bundle_api_response_common_failure_2>;
-export const waf_product_api_bundle_api_response_common_failure_2 = v.object({ errors: v.intersect([waf_product_api_bundle_messages, v.unknown()]), messages: v.intersect([waf_product_api_bundle_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const waf_product_api_bundle_api_response_common_failure_2 = v.object({ errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type waf_product_api_bundle_api_response_common_failure_3 = v.InferOutput<typeof waf_product_api_bundle_api_response_common_failure_3>;
-export const waf_product_api_bundle_api_response_common_failure_3 = v.object({ errors: v.intersect([waf_product_api_bundle_messages, v.unknown()]), messages: v.intersect([waf_product_api_bundle_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const waf_product_api_bundle_api_response_common_failure_3 = v.object({ errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type waf_product_api_bundle_api_response_single = v.InferOutput<typeof waf_product_api_bundle_api_response_single>;
 export const waf_product_api_bundle_api_response_single = v.intersect([waf_product_api_bundle_api_response_common, v.partial(v.object({ result: v.union([v.nullable(v.record(v.string(), v.unknown())), v.nullable(v.string())]) })), v.record(v.string(), v.unknown())]);
@@ -17214,13 +17214,13 @@ export type waf_product_api_bundle_identifier = v.InferOutput<typeof waf_product
 export const waf_product_api_bundle_identifier = v.pipe(v.string(), v.maxLength(32));
 
 export type waf_product_api_bundle_detection_id = v.InferOutput<typeof waf_product_api_bundle_detection_id>;
-export const waf_product_api_bundle_detection_id = v.intersect([waf_product_api_bundle_identifier, v.unknown()]);
+export const waf_product_api_bundle_detection_id = waf_product_api_bundle_identifier;
 
 export type waf_product_api_bundle_custom_detection = v.InferOutput<typeof waf_product_api_bundle_custom_detection>;
 export const waf_product_api_bundle_custom_detection = v.partial(v.object({ id: waf_product_api_bundle_detection_id, password: v.string(), username: v.string() }));
 
 export type waf_product_api_bundle_custom_scan_id = v.InferOutput<typeof waf_product_api_bundle_custom_scan_id>;
-export const waf_product_api_bundle_custom_scan_id = v.intersect([waf_product_api_bundle_identifier]);
+export const waf_product_api_bundle_custom_scan_id = waf_product_api_bundle_identifier;
 
 export type waf_product_api_bundle_custom_scan_payload = v.InferOutput<typeof waf_product_api_bundle_custom_scan_payload>;
 export const waf_product_api_bundle_custom_scan_payload = v.string();
@@ -17283,7 +17283,7 @@ export type waitingroom_api_response_common = v.InferOutput<typeof waitingroom_a
 export const waitingroom_api_response_common = v.record(v.string(), v.unknown());
 
 export type waitingroom_api_response_common_failure = v.InferOutput<typeof waitingroom_api_response_common_failure>;
-export const waitingroom_api_response_common_failure = v.object({ errors: v.intersect([waitingroom_messages, v.unknown()]), messages: v.intersect([waitingroom_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const waitingroom_api_response_common_failure = v.object({ errors: waitingroom_messages, messages: waitingroom_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type waitingroom_api_response_single = v.InferOutput<typeof waitingroom_api_response_single>;
 export const waitingroom_api_response_single = v.intersect([waitingroom_api_response_common, v.partial(v.object({ result: v.union([v.record(v.string(), v.unknown()), v.string()]) })), v.record(v.string(), v.unknown())]);
@@ -17550,7 +17550,7 @@ export type web3_api_response_collection = v.InferOutput<typeof web3_api_respons
 export const web3_api_response_collection = v.intersect([web3_api_response_common, v.partial(v.object({ result: v.nullable(v.array(v.unknown())), result_info: web3_result_info })), v.record(v.string(), v.unknown())]);
 
 export type web3_api_response_common_failure = v.InferOutput<typeof web3_api_response_common_failure>;
-export const web3_api_response_common_failure = v.object({ errors: v.intersect([web3_messages, v.unknown()]), messages: v.intersect([web3_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const web3_api_response_common_failure = v.object({ errors: web3_messages, messages: web3_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type web3_api_response_single = v.InferOutput<typeof web3_api_response_single>;
 export const web3_api_response_single = v.intersect([web3_api_response_common, v.partial(v.object({ result_info: v.union([v.nullable(v.record(v.string(), v.unknown())), v.nullable(v.string())]) })), v.record(v.string(), v.unknown())]);
@@ -17646,7 +17646,7 @@ export type workers_kv_api_response_collection = v.InferOutput<typeof workers_kv
 export const workers_kv_api_response_collection = v.intersect([workers_kv_api_response_common, v.partial(v.object({ result_info: workers_kv_result_info })), v.record(v.string(), v.unknown())]);
 
 export type workers_kv_api_response_common_failure = v.InferOutput<typeof workers_kv_api_response_common_failure>;
-export const workers_kv_api_response_common_failure = v.object({ errors: v.intersect([workers_kv_messages, v.unknown()]), messages: v.intersect([workers_kv_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const workers_kv_api_response_common_failure = v.object({ errors: workers_kv_messages, messages: workers_kv_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type workers_kv_api_response_common_no_result = v.InferOutput<typeof workers_kv_api_response_common_no_result>;
 export const workers_kv_api_response_common_no_result = v.intersect([workers_kv_api_response_common, v.partial(v.object({ result: v.nullable(v.record(v.string(), v.unknown())) }))]);
@@ -17658,7 +17658,7 @@ export type workers_kv_expiration = v.InferOutput<typeof workers_kv_expiration>;
 export const workers_kv_expiration = v.number();
 
 export type workers_kv_bulk_get_result_with_metadata = v.InferOutput<typeof workers_kv_bulk_get_result_with_metadata>;
-export const workers_kv_bulk_get_result_with_metadata = v.partial(v.object({ values: v.record(v.string(), v.nullable(v.object({ expiration: v.optional(workers_kv_expiration), metadata: v.intersect([workers_kv_any, v.unknown()]), value: v.intersect([workers_kv_any, v.unknown()]) }))) }));
+export const workers_kv_bulk_get_result_with_metadata = v.partial(v.object({ values: v.record(v.string(), v.nullable(v.object({ expiration: v.optional(workers_kv_expiration), metadata: workers_kv_any, value: workers_kv_any }))) }));
 
 export type workers_kv_bulk_result = v.InferOutput<typeof workers_kv_bulk_result>;
 export const workers_kv_bulk_result = v.partial(v.object({ successful_key_count: v.number(), unsuccessful_keys: v.array(v.string()) }));
@@ -17673,7 +17673,7 @@ export type workers_kv_expiration_ttl = v.InferOutput<typeof workers_kv_expirati
 export const workers_kv_expiration_ttl = v.pipe(v.number(), v.minValue(60));
 
 export type workers_kv_list_metadata = v.InferOutput<typeof workers_kv_list_metadata>;
-export const workers_kv_list_metadata = v.intersect([workers_kv_any, v.unknown()]);
+export const workers_kv_list_metadata = workers_kv_any;
 
 export type workers_kv_bulk_write = v.InferOutput<typeof workers_kv_bulk_write>;
 export const workers_kv_bulk_write = v.array(v.object({ base64: v.optional(v.boolean(), false), expiration: v.optional(workers_kv_expiration), expiration_ttl: v.optional(workers_kv_expiration_ttl), key: workers_kv_key_name_bulk, metadata: v.optional(workers_kv_list_metadata), value: v.pipe(v.string(), v.maxLength(26214400)) }));
@@ -17700,7 +17700,7 @@ export type workers_kv_key = v.InferOutput<typeof workers_kv_key>;
 export const workers_kv_key = v.object({ expiration: v.optional(v.number()), metadata: v.optional(workers_kv_list_metadata), name: workers_kv_key_name });
 
 export type workers_kv_metadata = v.InferOutput<typeof workers_kv_metadata>;
-export const workers_kv_metadata = v.intersect([workers_kv_any, v.unknown()]);
+export const workers_kv_metadata = workers_kv_any;
 
 export type workers_kv_namespace_identifier = v.InferOutput<typeof workers_kv_namespace_identifier>;
 export const workers_kv_namespace_identifier = v.pipe(v.string(), v.maxLength(32));
@@ -17916,7 +17916,7 @@ export type workers_entrypoint_cache_options = v.InferOutput<typeof workers_entr
 export const workers_entrypoint_cache_options = v.object({ enabled: v.boolean() });
 
 export type workers_worker_export = v.InferOutput<typeof workers_worker_export>;
-export const workers_worker_export = v.object({ cache: v.optional(v.intersect([workers_entrypoint_cache_options])), state: v.optional(v.literal("created")), type: v.literal("worker") });
+export const workers_worker_export = v.object({ cache: v.optional(workers_entrypoint_cache_options), state: v.optional(v.literal("created")), type: v.literal("worker") });
 
 export type workers_export_storage = v.InferOutput<typeof workers_export_storage>;
 export const workers_export_storage = v.picklist(["sqlite", "legacy-kv"]);
@@ -17985,7 +17985,7 @@ export type workers_placement_info_no_status = v.InferOutput<typeof workers_plac
 export const workers_placement_info_no_status = v.union([v.object({ mode: v.literal("smart") }), v.object({ region: v.string() }), v.object({ hostname: v.string() }), v.object({ host: v.string() }), v.object({ mode: v.literal("targeted"), region: v.string() }), v.object({ hostname: v.string(), mode: v.literal("targeted") }), v.object({ host: v.string(), mode: v.literal("targeted") }), v.object({ mode: v.literal("targeted"), target: v.pipe(v.array(workers_placement_target), v.minLength(1), v.maxLength(1)) })]);
 
 export type workers_Version = v.InferOutput<typeof workers_Version>;
-export const workers_Version = v.object({ annotations: v.optional(v.partial(v.object({ "workers/message": v.pipe(v.string(), v.maxLength(1000)), "workers/tag": v.pipe(v.string(), v.maxLength(100)), "workers/triggered_by": v.string() }))), assets: v.optional(v.partial(v.object({ config: v.partial(v.object({ html_handling: v.optional(v.picklist(["auto-trailing-slash", "force-trailing-slash", "drop-trailing-slash", "none"]), "auto-trailing-slash"), not_found_handling: v.optional(v.picklist(["none", "404-page", "single-page-application"]), "none"), run_worker_first: v.optional(v.union([v.array(v.string()), v.boolean()]), false) })), jwt: v.string() }))), bindings: v.optional(workers_bindings), cache_options: v.optional(workers_cache_options), compatibility_date: v.optional(workers_compatibility_date), compatibility_flags: v.optional(workers_compatibility_flags), containers: v.optional(workers_containers), created_on: v.string(), exports: v.optional(v.intersect([workers_exports_config_map])), exports_reconciliation: v.optional(v.intersect([workers_exports_reconciliation_result])), id: v.pipe(v.string(), v.uuid()), limits: v.optional(v.partial(v.object({ cpu_ms: v.pipe(v.number(), v.integer()), subrequests: v.pipe(v.number(), v.integer()) }))), main_module: v.optional(v.string()), migration_tag: v.optional(v.string()), migrations: v.optional(v.union([workers_single_step_migrations, workers_multiple_step_migrations])), modules: v.optional(v.array(v.object({ content_base64: v.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob), content_type: v.string(), name: v.string() }))), number: v.pipe(v.number(), v.integer()), package_dependencies: v.optional(v.array(v.object({ installedVersion: v.string(), name: v.string(), packageJsonVersion: v.string() }))), placement: v.optional(workers_placement_info_no_status), source: v.optional(v.string()), startup_time_ms: v.optional(v.pipe(v.number(), v.integer())), urls: v.array(v.pipe(v.string(), v.url())), usage_model: v.optional(v.picklist(["standard", "bundled", "unbound"]), "standard") });
+export const workers_Version = v.object({ annotations: v.optional(v.partial(v.object({ "workers/message": v.pipe(v.string(), v.maxLength(1000)), "workers/tag": v.pipe(v.string(), v.maxLength(100)), "workers/triggered_by": v.string() }))), assets: v.optional(v.partial(v.object({ config: v.partial(v.object({ html_handling: v.optional(v.picklist(["auto-trailing-slash", "force-trailing-slash", "drop-trailing-slash", "none"]), "auto-trailing-slash"), not_found_handling: v.optional(v.picklist(["none", "404-page", "single-page-application"]), "none"), run_worker_first: v.optional(v.union([v.array(v.string()), v.boolean()]), false) })), jwt: v.string() }))), bindings: v.optional(workers_bindings), cache_options: v.optional(workers_cache_options), compatibility_date: v.optional(workers_compatibility_date), compatibility_flags: v.optional(workers_compatibility_flags), containers: v.optional(workers_containers), created_on: v.string(), exports: v.optional(workers_exports_config_map), exports_reconciliation: v.optional(workers_exports_reconciliation_result), id: v.pipe(v.string(), v.uuid()), limits: v.optional(v.partial(v.object({ cpu_ms: v.pipe(v.number(), v.integer()), subrequests: v.pipe(v.number(), v.integer()) }))), main_module: v.optional(v.string()), migration_tag: v.optional(v.string()), migrations: v.optional(v.union([workers_single_step_migrations, workers_multiple_step_migrations])), modules: v.optional(v.array(v.object({ content_base64: v.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob), content_type: v.string(), name: v.string() }))), number: v.pipe(v.number(), v.integer()), package_dependencies: v.optional(v.array(v.object({ installedVersion: v.string(), name: v.string(), packageJsonVersion: v.string() }))), placement: v.optional(workers_placement_info_no_status), source: v.optional(v.string()), startup_time_ms: v.optional(v.pipe(v.number(), v.integer())), urls: v.array(v.pipe(v.string(), v.url())), usage_model: v.optional(v.picklist(["standard", "bundled", "unbound"]), "standard") });
 
 export type workers_Worker = v.InferOutput<typeof workers_Worker>;
 export const workers_Worker = v.object({ created_on: v.string(), deployed_on: v.optional(v.nullable(v.string())), id: v.string(), logpush: v.optional(v.boolean(), false), name: v.pipe(v.string(), v.regex(new RegExp("^[a-z0-9_][a-z0-9-_]*$"))), observability: v.partial(v.object({ enabled: v.optional(v.boolean(), false), head_sampling_rate: v.optional(v.number(), 1), logs: v.partial(v.object({ destinations: v.optional(v.array(v.string()), []), enabled: v.optional(v.boolean(), false), head_sampling_rate: v.optional(v.number(), 1), invocation_logs: v.optional(v.boolean(), true), persist: v.optional(v.boolean(), true) })), traces: v.partial(v.object({ destinations: v.optional(v.array(v.string()), []), enabled: v.optional(v.boolean(), false), head_sampling_rate: v.optional(v.number(), 1), persist: v.optional(v.boolean(), true), propagation_policy: v.optional(v.picklist(["authenticated", "accept"]), "authenticated") })) })), references: v.object({ dispatch_namespace_outbounds: v.array(v.object({ namespace_id: v.string(), namespace_name: v.string(), worker_id: v.string(), worker_name: v.string() })), domains: v.array(v.object({ certificate_id: v.string(), hostname: v.string(), id: v.string(), zone_id: v.string(), zone_name: v.string() })), durable_objects: v.array(v.object({ namespace_id: v.string(), namespace_name: v.string(), worker_id: v.string(), worker_name: v.string() })), queues: v.array(v.object({ queue_consumer_id: v.string(), queue_id: v.string(), queue_name: v.string() })), workers: v.array(v.object({ id: v.string(), name: v.string() })) }), subdomain: v.partial(v.object({ enabled: v.optional(v.boolean(), false), previews_enabled: v.boolean() })), tags: v.optional(v.pipe(v.array(v.pipe(v.string(), v.maxLength(1024), v.regex(new RegExp("^[^,&]*$")))), v.maxLength(8)), []), tail_consumers: v.optional(v.array(v.object({ name: v.string() })), []), updated_on: v.string() });
@@ -18003,7 +18003,7 @@ export type workers_api_response_collection = v.InferOutput<typeof workers_api_r
 export const workers_api_response_collection = v.intersect([workers_api_response_common, v.partial(v.object({ result_info: v.partial(v.object({ count: v.number(), page: v.number(), per_page: v.number(), total_count: v.number(), total_pages: v.number() })) })), v.record(v.string(), v.unknown())]);
 
 export type workers_api_response_common_failure = v.InferOutput<typeof workers_api_response_common_failure>;
-export const workers_api_response_common_failure = v.object({ errors: v.intersect([workers_messages, v.unknown()]), messages: v.intersect([workers_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const workers_api_response_common_failure = v.object({ errors: workers_messages, messages: workers_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type workers_api_response_null_result = v.InferOutput<typeof workers_api_response_null_result>;
 export const workers_api_response_null_result = v.intersect([workers_api_response_common, v.partial(v.object({ result: v.nullable(v.record(v.string(), v.unknown())) }))]);
@@ -18087,7 +18087,7 @@ export type workers_usage_model = v.InferOutput<typeof workers_usage_model>;
 export const workers_usage_model = v.optional(v.picklist(["standard", "bundled", "unbound"]), "standard");
 
 export type workers_multipart_script = v.InferOutput<typeof workers_multipart_script>;
-export const workers_multipart_script = v.object({ files: v.optional(v.array(v.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob))), metadata: v.partial(v.object({ assets: workers_assets, bindings: workers_bindings, body_part: v.string(), cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, exports: v.intersect([workers_exports_config_map, v.unknown()]), exports_reconciliation: v.intersect([workers_exports_reconciliation_result]), keep_assets: v.boolean(), keep_bindings: v.array(v.string()), limits: workers_limits, logpush: workers_logpush, main_module: v.string(), migrations: v.union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, package_dependencies: v.array(v.object({ installedVersion: v.string(), name: v.string(), packageJsonVersion: v.string() })), placement: workers_placement_info, tags: v.array(v.string()), tail_consumers: workers_tail_consumers, usage_model: workers_usage_model })) });
+export const workers_multipart_script = v.object({ files: v.optional(v.array(v.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob))), metadata: v.partial(v.object({ assets: workers_assets, bindings: workers_bindings, body_part: v.string(), cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, keep_assets: v.boolean(), keep_bindings: v.array(v.string()), limits: workers_limits, logpush: workers_logpush, main_module: v.string(), migrations: v.union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, package_dependencies: v.array(v.object({ installedVersion: v.string(), name: v.string(), packageJsonVersion: v.string() })), placement: workers_placement_info, tags: v.array(v.string()), tail_consumers: workers_tail_consumers, usage_model: workers_usage_model })) });
 
 export type workers_namespace = v.InferOutput<typeof workers_namespace>;
 export const workers_namespace = v.partial(v.object({ class: v.string(), id: v.string(), name: v.string(), script: v.string(), use_sqlite: v.boolean() }));
@@ -18114,7 +18114,7 @@ export type workers_tags = v.InferOutput<typeof workers_tags>;
 export const workers_tags = v.nullable(v.pipe(v.array(workers_tag), v.maxLength(10)));
 
 export type workers_namespace_script_and_version_settings_item = v.InferOutput<typeof workers_namespace_script_and_version_settings_item>;
-export const workers_namespace_script_and_version_settings_item = v.partial(v.object({ bindings: v.intersect([workers_bindings, v.optional(v.array(workers_binding_item), [])]), cache_options: workers_cache_options, compatibility_date: v.intersect([workers_compatibility_date, v.optional(v.string(), "")]), compatibility_flags: v.intersect([workers_compatibility_flags, v.optional(v.array(v.string()), [])]), exports: v.intersect([workers_exports_config_map, v.unknown()]), exports_reconciliation: v.intersect([workers_exports_reconciliation_result]), limits: workers_limits, logpush: workers_logpush, migrations: v.union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, placement: v.intersect([workers_placement_info_no_status, v.optional(v.record(v.string(), v.unknown()), {})]), tags: v.intersect([workers_tags, v.optional(v.array(v.string()), [])]), tail_consumers: v.intersect([workers_tail_consumers, v.optional(v.array(workers_tail_consumers_script), [])]), usage_model: workers_usage_model }));
+export const workers_namespace_script_and_version_settings_item = v.partial(v.object({ bindings: v.intersect([workers_bindings, v.optional(v.array(workers_binding_item), [])]), cache_options: workers_cache_options, compatibility_date: v.intersect([workers_compatibility_date, v.optional(v.string(), "")]), compatibility_flags: v.intersect([workers_compatibility_flags, v.optional(v.array(v.string()), [])]), exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, limits: workers_limits, logpush: workers_logpush, migrations: v.union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, placement: v.intersect([workers_placement_info_no_status, v.optional(v.record(v.string(), v.unknown()), {})]), tags: v.intersect([workers_tags, v.optional(v.array(v.string()), [])]), tail_consumers: v.intersect([workers_tail_consumers, v.optional(v.array(workers_tail_consumers_script), [])]), usage_model: workers_usage_model }));
 
 export type workers_namespace_script_delete_bulk_response = v.InferOutput<typeof workers_namespace_script_delete_bulk_response>;
 export const workers_namespace_script_delete_bulk_response = v.partial(v.object({ deleted: v.array(v.partial(v.object({ id: workers_uuid }))), deleted_count: v.pipe(v.number(), v.integer()), has_more: v.boolean() }));
@@ -18123,7 +18123,7 @@ export type workers_placement_mode = v.InferOutput<typeof workers_placement_mode
 export const workers_placement_mode = v.picklist(["smart", "targeted"]);
 
 export type workers_script_response = v.InferOutput<typeof workers_script_response>;
-export const workers_script_response = v.partial(v.object({ cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, created_on: workers_created_on, etag: workers_etag, exports: v.intersect([workers_exports_config_map, v.unknown()]), handlers: v.array(v.string()), has_assets: workers_has_assets, has_modules: workers_has_modules, id: v.string(), last_deployed_from: v.string(), logpush: workers_logpush, migration_tag: v.string(), modified_on: workers_modified_on, named_handlers: v.array(v.partial(v.object({ handlers: v.array(v.string()), name: v.string() }))), observability: workers_observability, placement: workers_placement_info, placement_mode: v.intersect([workers_placement_mode, v.string()]), placement_status: v.intersect([workers_placement_status, v.string()]), tag: v.string(), tags: workers_tags, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }));
+export const workers_script_response = v.partial(v.object({ cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, created_on: workers_created_on, etag: workers_etag, exports: workers_exports_config_map, handlers: v.array(v.string()), has_assets: workers_has_assets, has_modules: workers_has_modules, id: v.string(), last_deployed_from: v.string(), logpush: workers_logpush, migration_tag: v.string(), modified_on: workers_modified_on, named_handlers: v.array(v.partial(v.object({ handlers: v.array(v.string()), name: v.string() }))), observability: workers_observability, placement: workers_placement_info, placement_mode: v.intersect([workers_placement_mode, v.string()]), placement_status: v.intersect([workers_placement_status, v.string()]), tag: v.string(), tags: workers_tags, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }));
 
 export type workers_namespace_script_response = v.InferOutput<typeof workers_namespace_script_response>;
 export const workers_namespace_script_response = v.partial(v.object({ created_on: workers_created_on, dispatch_namespace: workers_dispatch_namespace_name, modified_on: workers_modified_on, script: workers_script_response }));
@@ -18147,7 +18147,7 @@ export type workers_placement_regions_response = v.InferOutput<typeof workers_pl
 export const workers_placement_regions_response = v.object({ providers: v.array(workers_placement_provider) });
 
 export type workers_route = v.InferOutput<typeof workers_route>;
-export const workers_route = v.object({ id: v.intersect([workers_identifier, v.unknown()]), pattern: v.string(), script: v.optional(v.string()) });
+export const workers_route = v.object({ id: workers_identifier, pattern: v.string(), script: v.optional(v.string()) });
 
 export type workers_schedule = v.InferOutput<typeof workers_schedule>;
 export const workers_schedule = v.object({ created_on: v.optional(v.string()), cron: v.string(), modified_on: v.optional(v.string()) });
@@ -18156,7 +18156,7 @@ export type workers_schemas_id = v.InferOutput<typeof workers_schemas_id>;
 export const workers_schemas_id = v.string();
 
 export type workers_script_and_version_settings_item = v.InferOutput<typeof workers_script_and_version_settings_item>;
-export const workers_script_and_version_settings_item = v.partial(v.object({ annotations: v.partial(v.object({ "workers/message": v.pipe(v.string(), v.maxLength(1000)), "workers/tag": v.pipe(v.string(), v.maxLength(100)), "workers/triggered_by": v.string() })), bindings: v.intersect([workers_bindings, v.optional(v.array(workers_binding_item), [])]), cache_options: workers_cache_options, compatibility_date: v.intersect([workers_compatibility_date, v.optional(v.string(), "")]), compatibility_flags: v.intersect([workers_compatibility_flags, v.optional(v.array(v.string()), [])]), exports: v.intersect([workers_exports_config_map, v.unknown()]), exports_reconciliation: v.intersect([workers_exports_reconciliation_result]), limits: workers_limits, logpush: workers_logpush, migrations: v.union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, placement: v.intersect([workers_placement_info_no_status, v.optional(v.record(v.string(), v.unknown()), {})]), tags: v.intersect([workers_tags, v.optional(v.array(v.string()), [])]), tail_consumers: v.intersect([workers_tail_consumers, v.optional(v.array(workers_tail_consumers_script), [])]), usage_model: workers_usage_model }));
+export const workers_script_and_version_settings_item = v.partial(v.object({ annotations: v.partial(v.object({ "workers/message": v.pipe(v.string(), v.maxLength(1000)), "workers/tag": v.pipe(v.string(), v.maxLength(100)), "workers/triggered_by": v.string() })), bindings: v.intersect([workers_bindings, v.optional(v.array(workers_binding_item), [])]), cache_options: workers_cache_options, compatibility_date: v.intersect([workers_compatibility_date, v.optional(v.string(), "")]), compatibility_flags: v.intersect([workers_compatibility_flags, v.optional(v.array(v.string()), [])]), exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, limits: workers_limits, logpush: workers_logpush, migrations: v.union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, placement: v.intersect([workers_placement_info_no_status, v.optional(v.record(v.string(), v.unknown()), {})]), tags: v.intersect([workers_tags, v.optional(v.array(v.string()), [])]), tail_consumers: v.intersect([workers_tail_consumers, v.optional(v.array(workers_tail_consumers_script), [])]), usage_model: workers_usage_model }));
 
 export type workers_script_and_version_settings_response = v.InferOutput<typeof workers_script_and_version_settings_response>;
 export const workers_script_and_version_settings_response = v.intersect([workers_api_response_common, v.object({ result: workers_script_and_version_settings_item })]);
@@ -18210,7 +18210,7 @@ export type workers_subdomain_2 = v.InferOutput<typeof workers_subdomain_2>;
 export const workers_subdomain_2 = v.object({ subdomain: v.string() });
 
 export type workers_tail = v.InferOutput<typeof workers_tail>;
-export const workers_tail = v.object({ expires_at: v.string(), id: v.intersect([workers_identifier, v.unknown()]), url: v.string() });
+export const workers_tail = v.object({ expires_at: v.string(), id: workers_identifier, url: v.string() });
 
 export type workers_upload_assets_response = v.InferOutput<typeof workers_upload_assets_response>;
 export const workers_upload_assets_response = v.intersect([workers_api_response_common, v.partial(v.object({ result: v.record(v.string(), v.unknown()) }))]);
@@ -18225,10 +18225,10 @@ export type workers_version_item_short = v.InferOutput<typeof workers_version_it
 export const workers_version_item_short = v.partial(v.object({ id: v.string(), metadata: v.partial(v.object({ author_email: v.string(), author_id: v.string(), created_on: v.string(), hasPreview: v.boolean(), modified_on: v.string(), source: v.picklist(["unknown", "api", "wrangler", "terraform", "dash", "cf_cli", "dash_template", "integration", "quick_editor", "playground", "workersci"]) })), number: v.number() }));
 
 export type workers_version_item_full = v.InferOutput<typeof workers_version_item_full>;
-export const workers_version_item_full = v.intersect([workers_version_item_short, v.object({ resources: v.partial(v.object({ bindings: v.intersect([workers_bindings, v.unknown()]), script: v.partial(v.object({ etag: v.string(), handlers: v.array(v.string()), last_deployed_from: v.string(), named_handlers: v.array(v.partial(v.object({ handlers: v.array(v.string()), name: v.string() }))) })), script_runtime: v.partial(v.object({ compatibility_date: v.string(), compatibility_flags: v.array(v.string()), exports: v.intersect([workers_exports_config_map, v.unknown()]), limits: v.partial(v.object({ cpu_ms: v.pipe(v.number(), v.integer()) })), migration_tag: v.string(), usage_model: v.picklist(["bundled", "unbound", "standard"]) })) })) })]);
+export const workers_version_item_full = v.intersect([workers_version_item_short, v.object({ resources: v.partial(v.object({ bindings: workers_bindings, script: v.partial(v.object({ etag: v.string(), handlers: v.array(v.string()), last_deployed_from: v.string(), named_handlers: v.array(v.partial(v.object({ handlers: v.array(v.string()), name: v.string() }))) })), script_runtime: v.partial(v.object({ compatibility_date: v.string(), compatibility_flags: v.array(v.string()), exports: workers_exports_config_map, limits: v.partial(v.object({ cpu_ms: v.pipe(v.number(), v.integer()) })), migration_tag: v.string(), usage_model: v.picklist(["bundled", "unbound", "standard"]) })) })) })]);
 
 export type workers_version_item_uploaded = v.InferOutput<typeof workers_version_item_uploaded>;
-export const workers_version_item_uploaded = v.intersect([workers_version_item_full, v.object({ exports_reconciliation: v.optional(v.intersect([workers_exports_reconciliation_result])), startup_time_ms: v.optional(v.pipe(v.number(), v.integer())) })]);
+export const workers_version_item_uploaded = v.intersect([workers_version_item_full, v.object({ exports_reconciliation: v.optional(workers_exports_reconciliation_result), startup_time_ms: v.optional(v.pipe(v.number(), v.integer())) })]);
 
 export type workers_version_identifier = v.InferOutput<typeof workers_version_identifier>;
 export const workers_version_identifier = v.pipe(v.string(), v.maxLength(36));
@@ -18249,7 +18249,7 @@ export type zaraz_api_response_common = v.InferOutput<typeof zaraz_api_response_
 export const zaraz_api_response_common = v.object({ errors: zaraz_messages, messages: zaraz_messages, success: v.boolean() });
 
 export type zaraz_api_response_common_failure = v.InferOutput<typeof zaraz_api_response_common_failure>;
-export const zaraz_api_response_common_failure = v.object({ errors: v.intersect([zaraz_messages, v.unknown()]), messages: v.intersect([zaraz_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const zaraz_api_response_common_failure = v.object({ errors: zaraz_messages, messages: zaraz_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type zaraz_base_tool = v.InferOutput<typeof zaraz_base_tool>;
 export const zaraz_base_tool = v.object({ blockingTriggers: v.array(v.string()), defaultFields: v.record(v.string(), v.union([v.string(), v.boolean()])), defaultPurpose: v.optional(v.string()), enabled: v.boolean(), name: v.string(), vendorName: v.optional(v.string()), vendorPolicyUrl: v.optional(v.string()) });
@@ -18576,7 +18576,7 @@ export type zero_trust_gateway_gateway_account_egress_cidr_pair_list_response = 
 export const zero_trust_gateway_gateway_account_egress_cidr_pair_list_response = v.intersect([zero_trust_gateway_api_response_single, v.partial(v.object({ result: v.array(zero_trust_gateway_gateway_account_egress_cidr) }))]);
 
 export type zero_trust_gateway_gateway_account_logging_settings = v.InferOutput<typeof zero_trust_gateway_gateway_account_logging_settings>;
-export const zero_trust_gateway_gateway_account_logging_settings = v.partial(v.object({ redact_pii: v.optional(v.boolean(), false), settings_by_rule_type: v.partial(v.object({ dns: v.intersect([zero_trust_gateway_account_log_options]), http: v.intersect([zero_trust_gateway_account_log_options]), l4: v.intersect([zero_trust_gateway_account_log_options]) })) }));
+export const zero_trust_gateway_gateway_account_logging_settings = v.partial(v.object({ redact_pii: v.optional(v.boolean(), false), settings_by_rule_type: v.partial(v.object({ dns: zero_trust_gateway_account_log_options, http: zero_trust_gateway_account_log_options, l4: zero_trust_gateway_account_log_options })) }));
 
 export type zero_trust_gateway_gateway_account_logging_settings_response = v.InferOutput<typeof zero_trust_gateway_gateway_account_logging_settings_response>;
 export const zero_trust_gateway_gateway_account_logging_settings_response = v.intersect([zero_trust_gateway_api_response_single, v.partial(v.object({ result: zero_trust_gateway_gateway_account_logging_settings }))]);
@@ -18816,7 +18816,7 @@ export type zone_activation_api_response_common = v.InferOutput<typeof zone_acti
 export const zone_activation_api_response_common = v.object({ errors: zone_activation_messages, messages: zone_activation_messages, success: v.literal(true) });
 
 export type zone_activation_api_response_common_failure = v.InferOutput<typeof zone_activation_api_response_common_failure>;
-export const zone_activation_api_response_common_failure = v.object({ errors: v.intersect([zone_activation_messages, v.unknown()]), messages: v.intersect([zone_activation_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const zone_activation_api_response_common_failure = v.object({ errors: zone_activation_messages, messages: zone_activation_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type zone_activation_api_response_single = v.InferOutput<typeof zone_activation_api_response_single>;
 export const zone_activation_api_response_single = v.intersect([zone_activation_api_response_common, v.record(v.string(), v.unknown())]);
@@ -18831,7 +18831,7 @@ export type zone_analytics_api_api_response_common = v.InferOutput<typeof zone_a
 export const zone_analytics_api_api_response_common = v.object({ errors: zone_analytics_api_messages, messages: zone_analytics_api_messages, result: v.union([v.record(v.string(), v.unknown()), v.array(v.unknown()), v.string()]), success: v.literal(true) });
 
 export type zone_analytics_api_api_response_common_failure = v.InferOutput<typeof zone_analytics_api_api_response_common_failure>;
-export const zone_analytics_api_api_response_common_failure = v.object({ errors: v.intersect([zone_analytics_api_messages, v.unknown()]), messages: v.intersect([zone_analytics_api_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const zone_analytics_api_api_response_common_failure = v.object({ errors: zone_analytics_api_messages, messages: zone_analytics_api_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type zone_analytics_api_api_response_single = v.InferOutput<typeof zone_analytics_api_api_response_single>;
 export const zone_analytics_api_api_response_single = v.intersect([zone_analytics_api_api_response_common, v.partial(v.object({ result: v.union([v.nullable(v.record(v.string(), v.unknown())), v.nullable(v.string())]) })), v.record(v.string(), v.unknown())]);
@@ -19038,7 +19038,7 @@ export type zones_always_use_https_value = v.InferOutput<typeof zones_always_use
 export const zones_always_use_https_value = v.optional(v.picklist(["on", "off"]), "off");
 
 export type zones_always_use_https_2 = v.InferOutput<typeof zones_always_use_https_2>;
-export const zones_always_use_https_2 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("always_use_https"), value: zones_always_use_https_value })), v.optional(v.unknown(), "off")]), "off");
+export const zones_always_use_https_2 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("always_use_https"), value: zones_always_use_https_value }))]), "off");
 
 export type zones_messages = v.InferOutput<typeof zones_messages>;
 export const zones_messages = v.array(v.object({ code: v.pipe(v.number(), v.integer(), v.minValue(1000)), message: v.string() }));
@@ -19059,13 +19059,13 @@ export type zones_api_response_common_4 = v.InferOutput<typeof zones_api_respons
 export const zones_api_response_common_4 = v.object({ errors: zones_messages, messages: zones_messages, success: v.boolean() });
 
 export type zones_api_response_common_failure = v.InferOutput<typeof zones_api_response_common_failure>;
-export const zones_api_response_common_failure = v.object({ errors: v.intersect([zones_messages, v.unknown()]), messages: v.intersect([zones_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
+export const zones_api_response_common_failure = v.object({ errors: zones_messages, messages: zones_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
 
 export type zones_api_response_common_failure_2 = v.InferOutput<typeof zones_api_response_common_failure_2>;
-export const zones_api_response_common_failure_2 = v.object({ errors: v.intersect([zones_messages_2, v.unknown()]), messages: v.intersect([zones_messages_2]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
+export const zones_api_response_common_failure_2 = v.object({ errors: zones_messages_2, messages: zones_messages_2, result: v.nullable(v.record(v.string(), v.unknown())), success: v.literal(false) });
 
 export type zones_api_response_common_failure_3 = v.InferOutput<typeof zones_api_response_common_failure_3>;
-export const zones_api_response_common_failure_3 = v.object({ errors: v.intersect([zones_messages, v.unknown()]), messages: v.intersect([zones_messages]), result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
+export const zones_api_response_common_failure_3 = v.object({ errors: zones_messages, messages: zones_messages, result: v.nullable(v.record(v.string(), v.unknown())), success: v.boolean() });
 
 export type zones_api_response_single = v.InferOutput<typeof zones_api_response_single>;
 export const zones_api_response_single = v.intersect([zones_api_response_common_2, v.record(v.string(), v.unknown())]);
@@ -19089,7 +19089,7 @@ export type zones_automatic_https_rewrites_value = v.InferOutput<typeof zones_au
 export const zones_automatic_https_rewrites_value = v.optional(v.picklist(["on", "off"]), "on");
 
 export type zones_automatic_https_rewrites_2 = v.InferOutput<typeof zones_automatic_https_rewrites_2>;
-export const zones_automatic_https_rewrites_2 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("automatic_https_rewrites"), value: zones_automatic_https_rewrites_value })), v.optional(v.unknown(), "off")]), "off");
+export const zones_automatic_https_rewrites_2 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("automatic_https_rewrites"), value: zones_automatic_https_rewrites_value }))]), "off");
 
 export type zones_automatic_platform_optimization = v.InferOutput<typeof zones_automatic_platform_optimization>;
 export const zones_automatic_platform_optimization = v.object({ cache_by_device_type: v.boolean(), cf: v.optional(v.boolean(), false), enabled: v.optional(v.boolean(), false), hostnames: v.array(v.string()), wordpress: v.optional(v.boolean(), false), wp_plugin: v.optional(v.boolean(), false) });
@@ -19158,13 +19158,13 @@ export type zones_ciphers_value = v.InferOutput<typeof zones_ciphers_value>;
 export const zones_ciphers_value = v.optional(v.pipe(v.array(v.string()), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems")), []);
 
 export type zones_ciphers = v.InferOutput<typeof zones_ciphers>;
-export const zones_ciphers = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("ciphers"), value: zones_ciphers_value })), v.optional(v.unknown(), [])]), []);
+export const zones_ciphers = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("ciphers"), value: zones_ciphers_value }))]), []);
 
 export type zones_cname_flattening_value = v.InferOutput<typeof zones_cname_flattening_value>;
 export const zones_cname_flattening_value = v.optional(v.picklist(["flatten_at_root", "flatten_all"]), "flatten_at_root");
 
 export type zones_cname_flattening = v.InferOutput<typeof zones_cname_flattening>;
-export const zones_cname_flattening = v.intersect([zones_base, v.partial(v.object({ id: v.literal("cname_flattening"), value: zones_cname_flattening_value })), v.unknown()]);
+export const zones_cname_flattening = v.intersect([zones_base, v.partial(v.object({ id: v.literal("cname_flattening"), value: zones_cname_flattening_value }))]);
 
 export type zones_content_converter_value = v.InferOutput<typeof zones_content_converter_value>;
 export const zones_content_converter_value = v.optional(v.picklist(["off", "on"]), "off");
@@ -19251,13 +19251,13 @@ export type zones_min_tls_version_value = v.InferOutput<typeof zones_min_tls_ver
 export const zones_min_tls_version_value = v.optional(v.picklist(["1.0", "1.1", "1.2", "1.3"]), "1.0");
 
 export type zones_min_tls_version = v.InferOutput<typeof zones_min_tls_version>;
-export const zones_min_tls_version = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("min_tls_version"), value: zones_min_tls_version_value })), v.optional(v.unknown(), "1.0")]), "1.0");
+export const zones_min_tls_version = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("min_tls_version"), value: zones_min_tls_version_value }))]), "1.0");
 
 export type zones_mirage_value = v.InferOutput<typeof zones_mirage_value>;
 export const zones_mirage_value = v.optional(v.picklist(["on", "off"]), "off");
 
 export type zones_mirage_2 = v.InferOutput<typeof zones_mirage_2>;
-export const zones_mirage_2 = v.intersect([zones_base, v.partial(v.object({ id: v.literal("mirage"), value: zones_mirage_value })), v.unknown()]);
+export const zones_mirage_2 = v.intersect([zones_base, v.partial(v.object({ id: v.literal("mirage"), value: zones_mirage_value }))]);
 
 export type zones_modified_on = v.InferOutput<typeof zones_modified_on>;
 export const zones_modified_on = v.string();
@@ -19278,7 +19278,7 @@ export type zones_opportunistic_onion_value = v.InferOutput<typeof zones_opportu
 export const zones_opportunistic_onion_value = v.optional(v.picklist(["on", "off"]), "off");
 
 export type zones_opportunistic_onion = v.InferOutput<typeof zones_opportunistic_onion>;
-export const zones_opportunistic_onion = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("opportunistic_onion"), value: zones_opportunistic_onion_value })), v.optional(v.unknown(), "off")]), "off");
+export const zones_opportunistic_onion = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("opportunistic_onion"), value: zones_opportunistic_onion_value }))]), "off");
 
 export type zones_orange_to_orange_value = v.InferOutput<typeof zones_orange_to_orange_value>;
 export const zones_orange_to_orange_value = v.optional(v.picklist(["on", "off"]), "on");
@@ -19290,7 +19290,7 @@ export type zones_origin_error_page_pass_thru_value = v.InferOutput<typeof zones
 export const zones_origin_error_page_pass_thru_value = v.optional(v.picklist(["on", "off"]), "off");
 
 export type zones_origin_error_page_pass_thru_2 = v.InferOutput<typeof zones_origin_error_page_pass_thru_2>;
-export const zones_origin_error_page_pass_thru_2 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("origin_error_page_pass_thru"), value: zones_origin_error_page_pass_thru_value })), v.optional(v.unknown(), "off")]), "off");
+export const zones_origin_error_page_pass_thru_2 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("origin_error_page_pass_thru"), value: zones_origin_error_page_pass_thru_value }))]), "off");
 
 export type zones_polish_value = v.InferOutput<typeof zones_polish_value>;
 export const zones_polish_value = v.optional(v.picklist(["off", "lossless", "lossy"]), "off");
@@ -19302,13 +19302,13 @@ export type zones_prefetch_preload_value = v.InferOutput<typeof zones_prefetch_p
 export const zones_prefetch_preload_value = v.optional(v.picklist(["on", "off"]), "off");
 
 export type zones_prefetch_preload = v.InferOutput<typeof zones_prefetch_preload>;
-export const zones_prefetch_preload = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("prefetch_preload"), value: zones_prefetch_preload_value })), v.optional(v.unknown(), "off")]), "off");
+export const zones_prefetch_preload = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("prefetch_preload"), value: zones_prefetch_preload_value }))]), "off");
 
 export type zones_privacy_pass_value = v.InferOutput<typeof zones_privacy_pass_value>;
 export const zones_privacy_pass_value = v.optional(v.picklist(["on", "off"]), "off");
 
 export type zones_privacy_pass = v.InferOutput<typeof zones_privacy_pass>;
-export const zones_privacy_pass = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("privacy_pass"), value: zones_privacy_pass_value })), v.optional(v.unknown(), "off")]), "off");
+export const zones_privacy_pass = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("privacy_pass"), value: zones_privacy_pass_value }))]), "off");
 
 export type zones_proxy_read_timeout_value = v.InferOutput<typeof zones_proxy_read_timeout_value>;
 export const zones_proxy_read_timeout_value = v.optional(v.number(), 100);
@@ -19338,7 +19338,7 @@ export type zones_response_buffering_value = v.InferOutput<typeof zones_response
 export const zones_response_buffering_value = v.optional(v.picklist(["on", "off"]), "off");
 
 export type zones_response_buffering_2 = v.InferOutput<typeof zones_response_buffering_2>;
-export const zones_response_buffering_2 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("response_buffering"), value: zones_response_buffering_value })), v.optional(v.unknown(), "off")]), "off");
+export const zones_response_buffering_2 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("response_buffering"), value: zones_response_buffering_value }))]), "off");
 
 export type zones_rocket_loader_value = v.InferOutput<typeof zones_rocket_loader_value>;
 export const zones_rocket_loader_value = v.optional(v.picklist(["on", "off"]), "off");
@@ -19383,7 +19383,7 @@ export type zones_sort_query_string_for_cache_value = v.InferOutput<typeof zones
 export const zones_sort_query_string_for_cache_value = v.optional(v.picklist(["on", "off"]), "off");
 
 export type zones_sort_query_string_for_cache_2 = v.InferOutput<typeof zones_sort_query_string_for_cache_2>;
-export const zones_sort_query_string_for_cache_2 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("sort_query_string_for_cache"), value: zones_sort_query_string_for_cache_value })), v.optional(v.unknown(), "off")]), "off");
+export const zones_sort_query_string_for_cache_2 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("sort_query_string_for_cache"), value: zones_sort_query_string_for_cache_value }))]), "off");
 
 export type zones_ssl_value = v.InferOutput<typeof zones_ssl_value>;
 export const zones_ssl_value = v.optional(v.picklist(["off", "flexible", "full", "strict"]), "off");
@@ -19395,7 +19395,7 @@ export type zones_ssl_recommender_enabled = v.InferOutput<typeof zones_ssl_recom
 export const zones_ssl_recommender_enabled = v.optional(v.boolean(), false);
 
 export type zones_ssl_recommender = v.InferOutput<typeof zones_ssl_recommender>;
-export const zones_ssl_recommender = v.intersect([v.partial(v.object({ enabled: zones_ssl_recommender_enabled, id: v.literal("ssl_recommender") }))]);
+export const zones_ssl_recommender = v.partial(v.object({ enabled: zones_ssl_recommender_enabled, id: v.literal("ssl_recommender") }));
 
 export type zones_tls_1_2_only_value = v.InferOutput<typeof zones_tls_1_2_only_value>;
 export const zones_tls_1_2_only_value = v.optional(v.picklist(["off", "on"]), "off");
@@ -19407,7 +19407,7 @@ export type zones_tls_1_3_value = v.InferOutput<typeof zones_tls_1_3_value>;
 export const zones_tls_1_3_value = v.optional(v.picklist(["on", "off", "zrt"]), "off");
 
 export type zones_tls_1_3 = v.InferOutput<typeof zones_tls_1_3>;
-export const zones_tls_1_3 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("tls_1_3"), value: zones_tls_1_3_value })), v.optional(v.unknown(), "off")]), "off");
+export const zones_tls_1_3 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("tls_1_3"), value: zones_tls_1_3_value }))]), "off");
 
 export type zones_tls_client_auth_value = v.InferOutput<typeof zones_tls_client_auth_value>;
 export const zones_tls_client_auth_value = v.optional(v.picklist(["on", "off"]), "off");
@@ -19419,7 +19419,7 @@ export type zones_true_client_ip_header_value = v.InferOutput<typeof zones_true_
 export const zones_true_client_ip_header_value = v.optional(v.picklist(["on", "off"]), "off");
 
 export type zones_true_client_ip_header_2 = v.InferOutput<typeof zones_true_client_ip_header_2>;
-export const zones_true_client_ip_header_2 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("true_client_ip_header"), value: zones_true_client_ip_header_value })), v.optional(v.unknown(), "off")]), "off");
+export const zones_true_client_ip_header_2 = v.optional(v.intersect([zones_base, v.partial(v.object({ id: v.literal("true_client_ip_header"), value: zones_true_client_ip_header_value }))]), "off");
 
 export type zones_waf_value = v.InferOutput<typeof zones_waf_value>;
 export const zones_waf_value = v.optional(v.picklist(["on", "off"]), "off");
@@ -20027,7 +20027,7 @@ export const patch_Access__applications__patch__update__access__application__set
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ app_id: access_app_id, account_id: access_identifier }), body: access_app_settings_request },
-  responses: { 202: v.intersect([access_single_response_update]), "4XX": access_api_response_common_failure },
+  responses: { 202: access_single_response_update, "4XX": access_api_response_common_failure },
 };
 
 export type put_Access__applications__put__update__access__application__settings = typeof put_Access__applications__put__update__access__application__settings;
@@ -20037,7 +20037,7 @@ export const put_Access__applications__put__update__access__application__setting
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ app_id: access_app_id, account_id: access_identifier }), body: access_app_settings_request },
-  responses: { 202: v.intersect([access_single_response_update]), "4XX": access_api_response_common_failure },
+  responses: { 202: access_single_response_update, "4XX": access_api_response_common_failure },
 };
 
 export type get_Access__applications__test__access__policies = typeof get_Access__applications__test__access__policies;
@@ -20988,7 +20988,7 @@ export const get_Ip__address__management__prefixes__download__loa__document = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ loa_document_id: addressing_loa_document_identifier, account_id: addressing_account_identifier }) },
-  responses: { 200: v.unknown(), "4XX": v.intersect([v.unknown(), addressing_api_response_common_failure]) },
+  responses: { 200: v.unknown(), "4XX": addressing_api_response_common_failure },
 };
 
 export type get_Ip__address__management__prefixes__list__prefixes = typeof get_Ip__address__management__prefixes__list__prefixes;
@@ -21178,7 +21178,7 @@ export const get_Dls__account__regional__hostnames__list__regions = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: dls_identifier }) },
-  responses: { 200: v.intersect([dls_api_response_collection, v.partial(v.object({ result: v.array(v.partial(v.object({ key: dls_region_key, label: v.string() }))) }))]), "4XX": v.intersect([dls_api_response_common_failure]) },
+  responses: { 200: v.intersect([dls_api_response_collection, v.partial(v.object({ result: v.array(v.partial(v.object({ key: dls_region_key, label: v.string() }))) }))]), "4XX": dls_api_response_common_failure },
 };
 
 export type get_Ip__address__management__service__bindings__list__services = typeof get_Ip__address__management__service__bindings__list__services;
@@ -22518,7 +22518,7 @@ export const get_Notification__alert__types__get__alert__types = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: aaa_account_id }) },
-  responses: { 200: aaa_alerts_response_collection, "4XX": v.intersect([aaa_api_response_common_failure_3]) },
+  responses: { 200: aaa_alerts_response_collection, "4XX": aaa_api_response_common_failure_3 },
 };
 
 export type get_Notification__mechanism__eligibility__get__delivery__mechanism__eligibility = typeof get_Notification__mechanism__eligibility__get__delivery__mechanism__eligibility;
@@ -22528,7 +22528,7 @@ export const get_Notification__mechanism__eligibility__get__delivery__mechanism_
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: aaa_account_id }) },
-  responses: { 200: aaa_schemas_response_collection, "4XX": v.intersect([aaa_api_response_common_failure_3]) },
+  responses: { 200: aaa_schemas_response_collection, "4XX": aaa_api_response_common_failure_3 },
 };
 
 export type delete_Notification__destinations__with__pager__duty__delete__pager__duty__services = typeof delete_Notification__destinations__with__pager__duty__delete__pager__duty__services;
@@ -22538,7 +22538,7 @@ export const delete_Notification__destinations__with__pager__duty__delete__pager
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: aaa_account_id }) },
-  responses: { 200: aaa_api_response_common_2, "4XX": v.intersect([aaa_api_response_common_failure_3]) },
+  responses: { 200: aaa_api_response_common_2, "4XX": aaa_api_response_common_failure_3 },
 };
 
 export type get_Notification__destinations__with__pager__duty__list__pager__duty__services = typeof get_Notification__destinations__with__pager__duty__list__pager__duty__services;
@@ -22548,7 +22548,7 @@ export const get_Notification__destinations__with__pager__duty__list__pager__dut
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: aaa_account_id }) },
-  responses: { 200: aaa_components_schemas_response_collection, "4XX": v.intersect([aaa_api_response_common_failure_3]) },
+  responses: { 200: aaa_components_schemas_response_collection, "4XX": aaa_api_response_common_failure_3 },
 };
 
 export type post_Notification__destinations__with__pager__duty__connect__pager__duty = typeof post_Notification__destinations__with__pager__duty__connect__pager__duty;
@@ -22598,7 +22598,7 @@ export const delete_Notification__webhooks__delete__a__webhook = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ webhook_id: aaa_webhook_id, account_id: aaa_account_id }) },
-  responses: { 200: aaa_api_response_common_2, "4XX": v.intersect([aaa_api_response_common_failure_3]) },
+  responses: { 200: aaa_api_response_common_2, "4XX": aaa_api_response_common_failure_3 },
 };
 
 export type get_Notification__webhooks__get__a__webhook = typeof get_Notification__webhooks__get__a__webhook;
@@ -22638,7 +22638,7 @@ export const get_Notification__policies__list__notification__policies = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: aaa_account_id }) },
-  responses: { 200: aaa_policies_components_schemas_response_collection, "4XX": v.intersect([aaa_api_response_common_failure_3]) },
+  responses: { 200: aaa_policies_components_schemas_response_collection, "4XX": aaa_api_response_common_failure_3 },
 };
 
 export type post_Notification__policies__create__a__notification__policy = typeof post_Notification__policies__create__a__notification__policy;
@@ -23566,7 +23566,7 @@ export const post_Brapi__post_Crawl = {
   path: v.literal("/accounts/{account_id}/browser-rendering/crawl"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ cacheTTL: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.minValue(0), v.maxValue(86400))), 5) }))), path: v.object({ account_id: v.string() }), body: v.intersect([v.union([v.object({ actionTimeout: v.optional(v.pipe(v.number(), v.maxValue(120000))), addScriptTag: v.optional(v.array(v.partial(v.object({ content: v.string(), id: v.string(), type: v.string(), url: v.pipe(v.string(), v.url()) })))), addStyleTag: v.optional(v.array(v.partial(v.object({ content: v.string(), url: v.pipe(v.string(), v.url()) })))), allowRequestPattern: v.optional(v.array(v.string())), allowResourceTypes: v.optional(v.array(v.union([v.literal("document"), v.literal("stylesheet"), v.literal("image"), v.literal("media"), v.literal("font"), v.literal("script"), v.literal("texttrack"), v.literal("xhr"), v.literal("fetch"), v.literal("prefetch"), v.literal("eventsource"), v.literal("websocket"), v.literal("manifest"), v.literal("signedexchange"), v.literal("ping"), v.literal("cspviolationreport"), v.literal("preflight"), v.literal("other")]))), authenticate: v.optional(v.object({ password: v.pipe(v.string(), v.minLength(1)), username: v.pipe(v.string(), v.minLength(1)) })), bestAttempt: v.optional(v.boolean()), cookies: v.optional(v.array(v.object({ domain: v.optional(v.string()), expires: v.optional(v.number()), httpOnly: v.optional(v.boolean()), name: v.string(), partitionKey: v.optional(v.string()), path: v.optional(v.string()), priority: v.optional(v.union([v.literal("Low"), v.literal("Medium"), v.literal("High")])), sameParty: v.optional(v.boolean()), sameSite: v.optional(v.union([v.literal("Strict"), v.literal("Lax"), v.literal("None")])), secure: v.optional(v.boolean()), sourcePort: v.optional(v.number()), sourceScheme: v.optional(v.union([v.literal("Unset"), v.literal("NonSecure"), v.literal("Secure")])), url: v.optional(v.string()), value: v.string() }))), crawlPurposes: v.optional(v.pipe(v.array(v.union([v.literal("search"), v.literal("ai-input"), v.literal("ai-train")])), v.minLength(1), v.maxLength(3)), ["search","ai-input","ai-train"]), depth: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(100000)), 100000), emulateMediaType: v.optional(v.string()), formats: v.optional(v.array(v.union([v.literal("html"), v.literal("markdown"), v.literal("json")])), ["html"]), gotoOptions: v.optional(v.partial(v.object({ referer: v.string(), referrerPolicy: v.string(), timeout: v.optional(v.pipe(v.number(), v.maxValue(60000)), 30000), waitUntil: v.optional(v.union([v.literal("load"), v.literal("domcontentloaded"), v.literal("networkidle0"), v.literal("networkidle2"), v.array(v.union([v.literal("load"), v.literal("domcontentloaded"), v.literal("networkidle0"), v.literal("networkidle2")]))]), "domcontentloaded") })), {}), jsonOptions: v.optional(v.partial(v.object({ custom_ai: v.array(v.object({ authorization: v.optional(v.string()), model: v.string() })), prompt: v.string(), response_format: v.object({ json_schema: v.optional(v.nullable(v.record(v.string(), v.union([v.string(), v.number(), v.boolean(), v.record(v.string(), v.unknown()), v.array(v.string())])))), type: v.string() }) }))), limit: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(100000)), 10), maxAge: v.optional(v.pipe(v.number(), v.minValue(0), v.maxValue(604800)), 86400), modifiedSince: v.optional(v.pipe(v.number(), v.integer(), v.gtValue(0))), options: v.optional(v.partial(v.object({ excludePatterns: v.pipe(v.array(v.pipe(v.string(), v.minLength(1), v.maxLength(500))), v.maxLength(100)), includeExternalLinks: v.optional(v.boolean(), false), includePatterns: v.pipe(v.array(v.pipe(v.string(), v.minLength(1), v.maxLength(500))), v.maxLength(100)), includeSubdomains: v.optional(v.boolean(), false) })), {"includeExternalLinks":false,"includeSubdomains":false}), rejectRequestPattern: v.optional(v.array(v.string())), rejectResourceTypes: v.optional(v.array(v.union([v.literal("document"), v.literal("stylesheet"), v.literal("image"), v.literal("media"), v.literal("font"), v.literal("script"), v.literal("texttrack"), v.literal("xhr"), v.literal("fetch"), v.literal("prefetch"), v.literal("eventsource"), v.literal("websocket"), v.literal("manifest"), v.literal("signedexchange"), v.literal("ping"), v.literal("cspviolationreport"), v.literal("preflight"), v.literal("other")]))), render: v.optional(v.literal(true)), setExtraHTTPHeaders: v.optional(v.record(v.string(), v.string())), setJavaScriptEnabled: v.optional(v.boolean()), source: v.optional(v.union([v.literal("sitemaps"), v.literal("links"), v.literal("all")]), "all"), url: v.pipe(v.string(), v.url()), viewport: v.optional(v.object({ deviceScaleFactor: v.optional(v.number()), hasTouch: v.optional(v.boolean()), height: v.number(), isLandscape: v.optional(v.boolean()), isMobile: v.optional(v.boolean()), width: v.number() }), {"height":1080,"width":1920}), waitForSelector: v.optional(v.object({ hidden: v.optional(v.literal(true)), selector: v.string(), timeout: v.optional(v.pipe(v.number(), v.maxValue(120000))), visible: v.optional(v.literal(true)) })), waitForTimeout: v.optional(v.pipe(v.number(), v.maxValue(120000))) }), v.object({ crawlPurposes: v.optional(v.pipe(v.array(v.union([v.literal("search"), v.literal("ai-input"), v.literal("ai-train")])), v.minLength(1), v.maxLength(3)), ["search","ai-input","ai-train"]), depth: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(100000)), 100000), formats: v.optional(v.array(v.union([v.literal("html"), v.literal("markdown"), v.literal("json")])), ["html"]), jsonOptions: v.optional(v.partial(v.object({ custom_ai: v.array(v.object({ authorization: v.optional(v.string()), model: v.string() })), prompt: v.string(), response_format: v.object({ json_schema: v.optional(v.nullable(v.record(v.string(), v.union([v.string(), v.number(), v.boolean(), v.record(v.string(), v.unknown()), v.array(v.string())])))), type: v.string() }) }))), limit: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(100000)), 10), maxAge: v.optional(v.pipe(v.number(), v.minValue(0), v.maxValue(604800)), 86400), modifiedSince: v.optional(v.pipe(v.number(), v.integer(), v.gtValue(0))), options: v.optional(v.partial(v.object({ excludePatterns: v.pipe(v.array(v.pipe(v.string(), v.minLength(1), v.maxLength(500))), v.maxLength(100)), includeExternalLinks: v.optional(v.boolean(), false), includePatterns: v.pipe(v.array(v.pipe(v.string(), v.minLength(1), v.maxLength(500))), v.maxLength(100)), includeSubdomains: v.optional(v.boolean(), false) })), {"includeExternalLinks":false,"includeSubdomains":false}), render: v.literal(false), source: v.optional(v.union([v.literal("sitemaps"), v.literal("links"), v.literal("all")]), "all"), url: v.pipe(v.string(), v.url()) })])]) },
+  parameters: { query: v.optional(v.partial(v.object({ cacheTTL: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.minValue(0), v.maxValue(86400))), 5) }))), path: v.object({ account_id: v.string() }), body: v.union([v.object({ actionTimeout: v.optional(v.pipe(v.number(), v.maxValue(120000))), addScriptTag: v.optional(v.array(v.partial(v.object({ content: v.string(), id: v.string(), type: v.string(), url: v.pipe(v.string(), v.url()) })))), addStyleTag: v.optional(v.array(v.partial(v.object({ content: v.string(), url: v.pipe(v.string(), v.url()) })))), allowRequestPattern: v.optional(v.array(v.string())), allowResourceTypes: v.optional(v.array(v.union([v.literal("document"), v.literal("stylesheet"), v.literal("image"), v.literal("media"), v.literal("font"), v.literal("script"), v.literal("texttrack"), v.literal("xhr"), v.literal("fetch"), v.literal("prefetch"), v.literal("eventsource"), v.literal("websocket"), v.literal("manifest"), v.literal("signedexchange"), v.literal("ping"), v.literal("cspviolationreport"), v.literal("preflight"), v.literal("other")]))), authenticate: v.optional(v.object({ password: v.pipe(v.string(), v.minLength(1)), username: v.pipe(v.string(), v.minLength(1)) })), bestAttempt: v.optional(v.boolean()), cookies: v.optional(v.array(v.object({ domain: v.optional(v.string()), expires: v.optional(v.number()), httpOnly: v.optional(v.boolean()), name: v.string(), partitionKey: v.optional(v.string()), path: v.optional(v.string()), priority: v.optional(v.union([v.literal("Low"), v.literal("Medium"), v.literal("High")])), sameParty: v.optional(v.boolean()), sameSite: v.optional(v.union([v.literal("Strict"), v.literal("Lax"), v.literal("None")])), secure: v.optional(v.boolean()), sourcePort: v.optional(v.number()), sourceScheme: v.optional(v.union([v.literal("Unset"), v.literal("NonSecure"), v.literal("Secure")])), url: v.optional(v.string()), value: v.string() }))), crawlPurposes: v.optional(v.pipe(v.array(v.union([v.literal("search"), v.literal("ai-input"), v.literal("ai-train")])), v.minLength(1), v.maxLength(3)), ["search","ai-input","ai-train"]), depth: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(100000)), 100000), emulateMediaType: v.optional(v.string()), formats: v.optional(v.array(v.union([v.literal("html"), v.literal("markdown"), v.literal("json")])), ["html"]), gotoOptions: v.optional(v.partial(v.object({ referer: v.string(), referrerPolicy: v.string(), timeout: v.optional(v.pipe(v.number(), v.maxValue(60000)), 30000), waitUntil: v.optional(v.union([v.literal("load"), v.literal("domcontentloaded"), v.literal("networkidle0"), v.literal("networkidle2"), v.array(v.union([v.literal("load"), v.literal("domcontentloaded"), v.literal("networkidle0"), v.literal("networkidle2")]))]), "domcontentloaded") })), {}), jsonOptions: v.optional(v.partial(v.object({ custom_ai: v.array(v.object({ authorization: v.optional(v.string()), model: v.string() })), prompt: v.string(), response_format: v.object({ json_schema: v.optional(v.nullable(v.record(v.string(), v.union([v.string(), v.number(), v.boolean(), v.record(v.string(), v.unknown()), v.array(v.string())])))), type: v.string() }) }))), limit: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(100000)), 10), maxAge: v.optional(v.pipe(v.number(), v.minValue(0), v.maxValue(604800)), 86400), modifiedSince: v.optional(v.pipe(v.number(), v.integer(), v.gtValue(0))), options: v.optional(v.partial(v.object({ excludePatterns: v.pipe(v.array(v.pipe(v.string(), v.minLength(1), v.maxLength(500))), v.maxLength(100)), includeExternalLinks: v.optional(v.boolean(), false), includePatterns: v.pipe(v.array(v.pipe(v.string(), v.minLength(1), v.maxLength(500))), v.maxLength(100)), includeSubdomains: v.optional(v.boolean(), false) })), {"includeExternalLinks":false,"includeSubdomains":false}), rejectRequestPattern: v.optional(v.array(v.string())), rejectResourceTypes: v.optional(v.array(v.union([v.literal("document"), v.literal("stylesheet"), v.literal("image"), v.literal("media"), v.literal("font"), v.literal("script"), v.literal("texttrack"), v.literal("xhr"), v.literal("fetch"), v.literal("prefetch"), v.literal("eventsource"), v.literal("websocket"), v.literal("manifest"), v.literal("signedexchange"), v.literal("ping"), v.literal("cspviolationreport"), v.literal("preflight"), v.literal("other")]))), render: v.optional(v.literal(true)), setExtraHTTPHeaders: v.optional(v.record(v.string(), v.string())), setJavaScriptEnabled: v.optional(v.boolean()), source: v.optional(v.union([v.literal("sitemaps"), v.literal("links"), v.literal("all")]), "all"), url: v.pipe(v.string(), v.url()), viewport: v.optional(v.object({ deviceScaleFactor: v.optional(v.number()), hasTouch: v.optional(v.boolean()), height: v.number(), isLandscape: v.optional(v.boolean()), isMobile: v.optional(v.boolean()), width: v.number() }), {"height":1080,"width":1920}), waitForSelector: v.optional(v.object({ hidden: v.optional(v.literal(true)), selector: v.string(), timeout: v.optional(v.pipe(v.number(), v.maxValue(120000))), visible: v.optional(v.literal(true)) })), waitForTimeout: v.optional(v.pipe(v.number(), v.maxValue(120000))) }), v.object({ crawlPurposes: v.optional(v.pipe(v.array(v.union([v.literal("search"), v.literal("ai-input"), v.literal("ai-train")])), v.minLength(1), v.maxLength(3)), ["search","ai-input","ai-train"]), depth: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(100000)), 100000), formats: v.optional(v.array(v.union([v.literal("html"), v.literal("markdown"), v.literal("json")])), ["html"]), jsonOptions: v.optional(v.partial(v.object({ custom_ai: v.array(v.object({ authorization: v.optional(v.string()), model: v.string() })), prompt: v.string(), response_format: v.object({ json_schema: v.optional(v.nullable(v.record(v.string(), v.union([v.string(), v.number(), v.boolean(), v.record(v.string(), v.unknown()), v.array(v.string())])))), type: v.string() }) }))), limit: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(100000)), 10), maxAge: v.optional(v.pipe(v.number(), v.minValue(0), v.maxValue(604800)), 86400), modifiedSince: v.optional(v.pipe(v.number(), v.integer(), v.gtValue(0))), options: v.optional(v.partial(v.object({ excludePatterns: v.pipe(v.array(v.pipe(v.string(), v.minLength(1), v.maxLength(500))), v.maxLength(100)), includeExternalLinks: v.optional(v.boolean(), false), includePatterns: v.pipe(v.array(v.pipe(v.string(), v.minLength(1), v.maxLength(500))), v.maxLength(100)), includeSubdomains: v.optional(v.boolean(), false) })), {"includeExternalLinks":false,"includeSubdomains":false}), render: v.literal(false), source: v.optional(v.union([v.literal("sitemaps"), v.literal("links"), v.literal("all")]), "all"), url: v.pipe(v.string(), v.url()) })]) },
   responses: { 200: v.object({ errors: v.optional(v.array(v.object({ code: v.number(), message: v.string() }))), result: v.string(), success: v.boolean() }), 400: v.object({ errors: v.optional(v.array(v.object({ code: v.number(), message: v.string() }))), success: v.boolean() }), 429: v.object({ errors: v.optional(v.array(v.object({ code: v.number(), message: v.string() }))), success: v.boolean() }), 500: v.object({ errors: v.optional(v.array(v.object({ code: v.number(), message: v.string() }))), success: v.boolean() }) },
   responseHeaders: { 429: v.object({ "Retry-After": v.number() }) },
 };
@@ -25286,7 +25286,7 @@ export const get_Cloudforce__one__priority__quota = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: cloudforce_one_requests_identifier }) },
-  responses: { 200: v.intersect([cloudforce_one_requests_api_response_common, v.partial(v.object({ result: v.intersect([cloudforce_one_requests_quota]) }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: v.intersect([cloudforce_one_requests_api_response_common, v.partial(v.object({ result: cloudforce_one_requests_quota }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type delete_Cloudforce__one__priority__delete = typeof delete_Cloudforce__one__priority__delete;
@@ -25306,7 +25306,7 @@ export const get_Cloudforce__one__priority__get = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: cloudforce_one_requests_identifier, priority_id: cloudforce_one_requests_uuid }) },
-  responses: { 200: v.intersect([cloudforce_one_requests_api_response_common, v.partial(v.object({ result: v.intersect([cloudforce_one_requests_request_item]) }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: v.intersect([cloudforce_one_requests_api_response_common, v.partial(v.object({ result: cloudforce_one_requests_request_item }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type put_Cloudforce__one__priority__update = typeof put_Cloudforce__one__priority__update;
@@ -25316,7 +25316,7 @@ export const put_Cloudforce__one__priority__update = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: cloudforce_one_requests_identifier, priority_id: cloudforce_one_requests_uuid }), body: cloudforce_one_requests_priority_edit },
-  responses: { 200: v.intersect([cloudforce_one_requests_api_response_common, v.partial(v.object({ result: v.intersect([cloudforce_one_requests_request_item]) }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: v.intersect([cloudforce_one_requests_api_response_common, v.partial(v.object({ result: cloudforce_one_requests_request_item }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type get_Cloudforce__one__request__quota = typeof get_Cloudforce__one__request__quota;
@@ -27226,7 +27226,7 @@ export const post_Devices__create__device__settings__policy = {
   path: v.literal("/accounts/{account_id}/devices/policy"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ account_id: teams_devices_identifier }), body: v.object({ allow_mode_switch: v.optional(teams_devices_allow_mode_switch), allow_updates: v.optional(teams_devices_allow_updates), allowed_to_leave: v.optional(teams_devices_allowed_to_leave), auto_connect: v.optional(teams_devices_auto_connect), captive_portal: v.optional(teams_devices_captive_portal), description: v.optional(v.intersect([teams_devices_schemas_description, v.optional(v.unknown(), "")])), disable_auto_fallback: v.optional(teams_devices_disable_auto_fallback), dns_search_suffixes: v.optional(teams_devices_dns_search_suffixes), enabled: v.optional(v.boolean(), true), exclude: v.optional(teams_devices_exclude_request), exclude_office_ips: v.optional(teams_devices_exclude_office_ips), global_acceleration: v.optional(teams_devices_global_acceleration), include: v.optional(teams_devices_include_request), lan_allow_minutes: v.optional(teams_devices_lan_allow_minutes), lan_allow_subnet_size: v.optional(teams_devices_lan_allow_subnet_size), match: teams_devices_schemas_match, name: v.pipe(v.string(), v.maxLength(100)), precedence: teams_devices_precedence, register_interface_ip_with_dns: v.optional(teams_devices_register_interface_ip_with_dns), sccm_vpn_boundary_support: v.optional(teams_devices_sccm_vpn_boundary_support), service_mode_v2: v.optional(teams_devices_service_mode_v2), support_url: v.optional(teams_devices_support_url), switch_locked: v.optional(teams_devices_switch_locked), tunnel_protocol: v.optional(teams_devices_tunnel_protocol), virtual_networks: v.optional(teams_devices_virtual_networks) }) },
+  parameters: { path: v.object({ account_id: teams_devices_identifier }), body: v.object({ allow_mode_switch: v.optional(teams_devices_allow_mode_switch), allow_updates: v.optional(teams_devices_allow_updates), allowed_to_leave: v.optional(teams_devices_allowed_to_leave), auto_connect: v.optional(teams_devices_auto_connect), captive_portal: v.optional(teams_devices_captive_portal), description: v.optional(teams_devices_schemas_description), disable_auto_fallback: v.optional(teams_devices_disable_auto_fallback), dns_search_suffixes: v.optional(teams_devices_dns_search_suffixes), enabled: v.optional(v.boolean(), true), exclude: v.optional(teams_devices_exclude_request), exclude_office_ips: v.optional(teams_devices_exclude_office_ips), global_acceleration: v.optional(teams_devices_global_acceleration), include: v.optional(teams_devices_include_request), lan_allow_minutes: v.optional(teams_devices_lan_allow_minutes), lan_allow_subnet_size: v.optional(teams_devices_lan_allow_subnet_size), match: teams_devices_schemas_match, name: v.pipe(v.string(), v.maxLength(100)), precedence: teams_devices_precedence, register_interface_ip_with_dns: v.optional(teams_devices_register_interface_ip_with_dns), sccm_vpn_boundary_support: v.optional(teams_devices_sccm_vpn_boundary_support), service_mode_v2: v.optional(teams_devices_service_mode_v2), support_url: v.optional(teams_devices_support_url), switch_locked: v.optional(teams_devices_switch_locked), tunnel_protocol: v.optional(teams_devices_tunnel_protocol), virtual_networks: v.optional(teams_devices_virtual_networks) }) },
   responses: { 200: teams_devices_device_settings_response, "4XX": v.intersect([teams_devices_device_settings_response, teams_devices_api_response_common_failure]) },
 };
 
@@ -27557,7 +27557,7 @@ export const get_Devices__resilience__retrieve__global__warp__override = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: teams_devices_identifier }) },
-  responses: { 200: teams_devices_global_warp_override_response, "4XX": v.intersect([teams_devices_api_response_common_failure]) },
+  responses: { 200: teams_devices_global_warp_override_response, "4XX": teams_devices_api_response_common_failure },
 };
 
 export type post_Devices__resilience__set__global__warp__override = typeof post_Devices__resilience__set__global__warp__override;
@@ -27567,7 +27567,7 @@ export const post_Devices__resilience__set__global__warp__override = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: teams_devices_identifier }), body: teams_devices_global_warp_override_request },
-  responses: { 200: teams_devices_global_warp_override_response, "4XX": v.intersect([teams_devices_api_response_common_failure]) },
+  responses: { 200: teams_devices_global_warp_override_response, "4XX": teams_devices_api_response_common_failure },
 };
 
 export type delete_Zero__trust__accounts__delete__device__settings__for__zero__trust__account = typeof delete_Zero__trust__accounts__delete__device__settings__for__zero__trust__account;
@@ -27928,7 +27928,7 @@ export const get_Diagnostics__endpoint__healthcheck__list = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: magic_transit_identifier }) },
-  responses: { 200: magic_transit_endpoint_health_check_response_single, "4XX": v.intersect([magic_transit_api_response_common_failure]) },
+  responses: { 200: magic_transit_endpoint_health_check_response_single, "4XX": magic_transit_api_response_common_failure },
 };
 
 export type post_Diagnostics__endpoint__healthcheck__create = typeof post_Diagnostics__endpoint__healthcheck__create;
@@ -27938,7 +27938,7 @@ export const post_Diagnostics__endpoint__healthcheck__create = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: magic_transit_identifier }), body: magic_transit_endpoint_health_check },
-  responses: { 201: magic_transit_endpoint_health_check_response_single, "4XX": v.intersect([magic_transit_api_response_common_failure]) },
+  responses: { 201: magic_transit_endpoint_health_check_response_single, "4XX": magic_transit_api_response_common_failure },
 };
 
 export type delete_Diagnostics__endpoint__healthcheck__delete = typeof delete_Diagnostics__endpoint__healthcheck__delete;
@@ -27948,7 +27948,7 @@ export const delete_Diagnostics__endpoint__healthcheck__delete = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: magic_transit_identifier, id: magic_transit_uuid }) },
-  responses: { 200: magic_transit_api_response_common, "4XX": v.intersect([magic_transit_api_response_common_failure]) },
+  responses: { 200: magic_transit_api_response_common, "4XX": magic_transit_api_response_common_failure },
 };
 
 export type get_Diagnostics__endpoint__healthcheck__get = typeof get_Diagnostics__endpoint__healthcheck__get;
@@ -27968,7 +27968,7 @@ export const put_Diagnostics__endpoint__healthcheck__update = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: magic_transit_identifier, id: magic_transit_uuid }), body: magic_transit_endpoint_health_check },
-  responses: { 200: magic_transit_endpoint_health_check_response_single, "4XX": v.intersect([magic_transit_api_response_common_failure]) },
+  responses: { 200: magic_transit_endpoint_health_check_response_single, "4XX": magic_transit_api_response_common_failure },
 };
 
 export type post_Diagnostics__traceroute = typeof post_Diagnostics__traceroute;
@@ -29348,7 +29348,7 @@ export const get_Email_security_list_allow_policies = {
   path: v.literal("/accounts/{account_id}/email-security/settings/allow_policies"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1))), 1), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(1000))), 20), search: v.string(), order: v.picklist(["pattern", "created_at"]), direction: v.picklist(["asc", "desc"]), is_exempt_recipient: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), is_trusted_sender: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), is_acceptable_sender: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), verify_sender: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), pattern_type: v.intersect([email_security_PatternType]), pattern: v.string() }))), path: v.object({ account_id: email_security_identifier }) },
+  parameters: { query: v.optional(v.partial(v.object({ page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1))), 1), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(1000))), 20), search: v.string(), order: v.picklist(["pattern", "created_at"]), direction: v.picklist(["asc", "desc"]), is_exempt_recipient: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), is_trusted_sender: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), is_acceptable_sender: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), verify_sender: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), pattern_type: email_security_PatternType, pattern: v.string() }))), path: v.object({ account_id: email_security_identifier }) },
   responses: { 200: v.intersect([email_security_api_response_collection, v.partial(v.object({ result: email_security_AllowPolicyList }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -29368,7 +29368,7 @@ export const post_Email_security_batch_allow_policies = {
   path: v.literal("/accounts/{account_id}/email-security/settings/allow_policies/batch"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ account_id: email_security_identifier }), body: v.object({ deletes: v.pipe(v.array(v.object({ id: email_security_AllowPolicyId })), v.maxLength(1000)), patches: v.pipe(v.array(v.intersect([email_security_UpdateAllowPolicy, v.object({ id: v.intersect([email_security_AllowPolicyId]) })])), v.maxLength(1000)), posts: v.pipe(v.array(email_security_CreateAllowPolicy), v.maxLength(1000)), puts: v.pipe(v.array(v.intersect([email_security_AllowPolicy, v.object({ id: v.intersect([email_security_AllowPolicyId]) })])), v.maxLength(1000)) }) },
+  parameters: { path: v.object({ account_id: email_security_identifier }), body: v.object({ deletes: v.pipe(v.array(v.object({ id: email_security_AllowPolicyId })), v.maxLength(1000)), patches: v.pipe(v.array(v.intersect([email_security_UpdateAllowPolicy, v.object({ id: email_security_AllowPolicyId })])), v.maxLength(1000)), posts: v.pipe(v.array(email_security_CreateAllowPolicy), v.maxLength(1000)), puts: v.pipe(v.array(v.intersect([email_security_AllowPolicy, v.object({ id: email_security_AllowPolicyId })])), v.maxLength(1000)) }) },
   responses: { 200: v.intersect([email_security_api_response_single, v.partial(v.object({ result: v.partial(v.object({ deletes: v.array(email_security_DeletedAllowPolicy), patches: email_security_AllowPolicyList, posts: email_security_AllowPolicyList, puts: email_security_AllowPolicyList })) }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -29408,7 +29408,7 @@ export const get_Email_security_list_blocked_senders = {
   path: v.literal("/accounts/{account_id}/email-security/settings/block_senders"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1))), 1), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(1000))), 20), search: v.string(), order: v.picklist(["pattern", "created_at"]), direction: v.picklist(["asc", "desc"]), pattern_type: v.intersect([email_security_PatternType]), pattern: v.string() }))), path: v.object({ account_id: email_security_identifier }) },
+  parameters: { query: v.optional(v.partial(v.object({ page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1))), 1), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(1000))), 20), search: v.string(), order: v.picklist(["pattern", "created_at"]), direction: v.picklist(["asc", "desc"]), pattern_type: email_security_PatternType, pattern: v.string() }))), path: v.object({ account_id: email_security_identifier }) },
   responses: { 200: v.intersect([email_security_api_response_collection, v.partial(v.object({ result: email_security_BlockedSenderList }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -29428,7 +29428,7 @@ export const post_Email_security_batch_blocked_senders = {
   path: v.literal("/accounts/{account_id}/email-security/settings/block_senders/batch"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ account_id: email_security_identifier }), body: v.object({ deletes: v.pipe(v.array(v.object({ id: email_security_BlockedSenderId })), v.maxLength(1000)), patches: v.pipe(v.array(v.intersect([email_security_UpdateBlockedSender, v.object({ id: v.intersect([email_security_BlockedSenderId]) })])), v.maxLength(1000)), posts: v.pipe(v.array(email_security_CreateBlockedSender), v.maxLength(1000)), puts: v.pipe(v.array(v.intersect([email_security_BlockedSender, v.object({ id: v.intersect([email_security_BlockedSenderId]) })])), v.maxLength(1000)) }) },
+  parameters: { path: v.object({ account_id: email_security_identifier }), body: v.object({ deletes: v.pipe(v.array(v.object({ id: email_security_BlockedSenderId })), v.maxLength(1000)), patches: v.pipe(v.array(v.intersect([email_security_UpdateBlockedSender, v.object({ id: email_security_BlockedSenderId })])), v.maxLength(1000)), posts: v.pipe(v.array(email_security_CreateBlockedSender), v.maxLength(1000)), puts: v.pipe(v.array(v.intersect([email_security_BlockedSender, v.object({ id: email_security_BlockedSenderId })])), v.maxLength(1000)) }) },
   responses: { 200: v.intersect([email_security_api_response_single, v.partial(v.object({ result: v.partial(v.object({ deletes: v.array(email_security_DeletedBlockedSender), patches: email_security_BlockedSenderList, posts: email_security_BlockedSenderList, puts: email_security_BlockedSenderList })) }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -29678,7 +29678,7 @@ export const post_Email_security_batch_trusted_domains = {
   path: v.literal("/accounts/{account_id}/email-security/settings/trusted_domains/batch"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ account_id: email_security_identifier }), body: v.object({ deletes: v.pipe(v.array(v.object({ id: email_security_TrustedDomainId })), v.maxLength(1000)), patches: v.pipe(v.array(v.intersect([email_security_UpdateTrustedDomain, v.object({ id: v.intersect([email_security_TrustedDomainId]) })])), v.maxLength(1000)), posts: v.pipe(v.array(email_security_CreateTrustedDomain), v.maxLength(1000)), puts: v.pipe(v.array(v.intersect([email_security_TrustedDomain, v.object({ id: v.intersect([email_security_TrustedDomainId]) })])), v.maxLength(1000)) }) },
+  parameters: { path: v.object({ account_id: email_security_identifier }), body: v.object({ deletes: v.pipe(v.array(v.object({ id: email_security_TrustedDomainId })), v.maxLength(1000)), patches: v.pipe(v.array(v.intersect([email_security_UpdateTrustedDomain, v.object({ id: email_security_TrustedDomainId })])), v.maxLength(1000)), posts: v.pipe(v.array(email_security_CreateTrustedDomain), v.maxLength(1000)), puts: v.pipe(v.array(v.intersect([email_security_TrustedDomain, v.object({ id: email_security_TrustedDomainId })])), v.maxLength(1000)) }) },
   responses: { 200: v.intersect([email_security_api_response_single, v.partial(v.object({ result: v.partial(v.object({ deletes: v.array(email_security_DeletedTrustedDomain), patches: email_security_TrustedDomainList, posts: email_security_TrustedDomainList, puts: email_security_TrustedDomainList })) }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -29738,7 +29738,7 @@ export const post_Email_security_batch_url_ignore_patterns = {
   path: v.literal("/accounts/{account_id}/email-security/settings/url_ignore_patterns/batch"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ account_id: email_security_identifier }), body: v.object({ deletes: v.pipe(v.array(v.object({ id: email_security_UrlIgnorePatternId })), v.maxLength(1000)), patches: v.pipe(v.array(v.intersect([email_security_UpdateUrlIgnorePattern, v.object({ id: v.intersect([email_security_UrlIgnorePatternId]) })])), v.maxLength(1000)), posts: v.pipe(v.array(email_security_CreateUrlIgnorePattern), v.maxLength(1000)), puts: v.pipe(v.array(v.intersect([email_security_CreateUrlIgnorePattern, v.object({ id: v.intersect([email_security_UrlIgnorePatternId]) })])), v.maxLength(1000)) }) },
+  parameters: { path: v.object({ account_id: email_security_identifier }), body: v.object({ deletes: v.pipe(v.array(v.object({ id: email_security_UrlIgnorePatternId })), v.maxLength(1000)), patches: v.pipe(v.array(v.intersect([email_security_UpdateUrlIgnorePattern, v.object({ id: email_security_UrlIgnorePatternId })])), v.maxLength(1000)), posts: v.pipe(v.array(email_security_CreateUrlIgnorePattern), v.maxLength(1000)), puts: v.pipe(v.array(v.intersect([email_security_CreateUrlIgnorePattern, v.object({ id: email_security_UrlIgnorePatternId })])), v.maxLength(1000)) }) },
   responses: { 200: v.intersect([email_security_api_response_common, v.object({ result: v.object({ deletes: v.array(email_security_DeletedUrlIgnorePattern), patches: v.array(email_security_UrlIgnorePattern), posts: v.array(email_security_UrlIgnorePattern), puts: v.array(email_security_UrlIgnorePattern) }) })]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -30138,7 +30138,7 @@ export const post_Ip__access__rules__for__an__account__create__an__ip__access__r
   path: v.literal("/accounts/{account_id}/firewall/access_rules/rules"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ account_id: firewall_account_identifier }), body: v.object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: v.optional(v.intersect([firewall_notes, v.optional(v.unknown(), "")])) }) },
+  parameters: { path: v.object({ account_id: firewall_account_identifier }), body: v.object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: v.optional(firewall_notes) }) },
   responses: { 200: firewall_response_single, "4XX": v.intersect([firewall_response_single, firewall_api_response_common_failure]) },
 };
 
@@ -30238,7 +30238,7 @@ export const post_Flagship_evaluate_flag_post = {
   path: v.literal("/accounts/{account_id}/flagship/apps/{app_id}/evaluate"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ account_id: v.string(), app_id: v.string() }), body: v.object({ context: v.optional(v.record(v.string(), flagship_JsonValue), {}), flagKey: v.pipe(v.string(), v.minLength(1), v.maxLength(64), v.regex(new RegExp("^[a-zA-Z0-9_-]+$"))) }) },
+  parameters: { path: v.object({ account_id: v.string(), app_id: v.string() }), body: v.object({ context: v.optional(v.record(v.string(), flagship_JsonValue)), flagKey: v.pipe(v.string(), v.minLength(1), v.maxLength(64), v.regex(new RegExp("^[a-zA-Z0-9_-]+$"))) }) },
   responses: { 200: flagship_EvaluationResult, 400: flagship_Error, 401: flagship_Error, 403: flagship_Error, 404: flagship_Error, 500: flagship_Error, 503: flagship_Error },
 };
 
@@ -30958,7 +30958,7 @@ export const get_Account__resource__group__list = {
   path: v.literal("/accounts/{account_id}/iam/resource_groups"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ id: v.intersect([iam_resource_group_identifier]), name: v.string() }))), path: v.object({ account_id: iam_account_identifier }) },
+  parameters: { query: v.optional(v.partial(v.object({ id: iam_resource_group_identifier, name: v.string() }))), path: v.object({ account_id: iam_account_identifier }) },
   responses: { 200: v.intersect([iam_api_response_common, v.partial(v.object({ result: v.array(iam_resource_group) }))]), "4XX": iam_api_response_common_failure },
 };
 
@@ -31428,7 +31428,7 @@ export const get_Infra__targets__list = {
   path: v.literal("/accounts/{account_id}/infrastructure/targets"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ hostname: v.nullable(v.string()), hostname_contains: v.nullable(v.string()), virtual_network_id: v.nullable(v.pipe(v.string(), v.uuid())), ip_v4: v.nullable(v.string()), ip_v6: v.nullable(v.string()), created_before: v.nullable(v.string()), created_after: v.nullable(v.string()), modified_before: v.nullable(v.string()), modified_after: v.nullable(v.string()), ips: v.array(v.string()), target_ids: v.array(v.pipe(v.string(), v.uuid())), ip_like: v.nullable(v.string()), ipv4_start: v.nullable(v.string()), ipv4_end: v.nullable(v.string()), ipv6_start: v.nullable(v.string()), ipv6_end: v.nullable(v.string()), page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1))), 1), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(1000))), 1000), order: v.picklist(["hostname", "created_at"]), direction: v.intersect([infra_SortingDirection]) }))), path: v.object({ account_id: infra_AccountTag }) },
+  parameters: { query: v.optional(v.partial(v.object({ hostname: v.nullable(v.string()), hostname_contains: v.nullable(v.string()), virtual_network_id: v.nullable(v.pipe(v.string(), v.uuid())), ip_v4: v.nullable(v.string()), ip_v6: v.nullable(v.string()), created_before: v.nullable(v.string()), created_after: v.nullable(v.string()), modified_before: v.nullable(v.string()), modified_after: v.nullable(v.string()), ips: v.array(v.string()), target_ids: v.array(v.pipe(v.string(), v.uuid())), ip_like: v.nullable(v.string()), ipv4_start: v.nullable(v.string()), ipv4_end: v.nullable(v.string()), ipv6_start: v.nullable(v.string()), ipv6_end: v.nullable(v.string()), page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1))), 1), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(1000))), 1000), order: v.picklist(["hostname", "created_at"]), direction: infra_SortingDirection }))), path: v.object({ account_id: infra_AccountTag }) },
   responses: { 200: v.intersect([infra_api_response_collection, v.partial(v.object({ result: infra_TargetArray }))]), "4XX": infra_api_response_common_failure },
 };
 
@@ -31649,7 +31649,7 @@ export const get_Custom__indicator__feeds__get__indicator__feed__data = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: custom_indicator_feeds_identifier, feed_id: custom_indicator_feeds_feed_id }) },
-  responses: { 200: v.unknown(), "4XX": v.intersect([custom_indicator_feeds_api_response_common_failure]) },
+  responses: { 200: v.unknown(), "4XX": custom_indicator_feeds_api_response_common_failure },
 };
 
 export type get_Custom__indicator__feeds__download__indicator__feed__data = typeof get_Custom__indicator__feeds__download__indicator__feed__data;
@@ -31659,7 +31659,7 @@ export const get_Custom__indicator__feeds__download__indicator__feed__data = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: custom_indicator_feeds_identifier, feed_id: custom_indicator_feeds_feed_id }) },
-  responses: { 200: custom_indicator_feeds_update_feed_response, "4XX": v.intersect([custom_indicator_feeds_api_response_common_failure]) },
+  responses: { 200: custom_indicator_feeds_update_feed_response, "4XX": custom_indicator_feeds_api_response_common_failure },
 };
 
 export type put_Custom__indicator__feeds__update__indicator__feed__data = typeof put_Custom__indicator__feeds__update__indicator__feed__data;
@@ -31669,7 +31669,7 @@ export const put_Custom__indicator__feeds__update__indicator__feed__data = {
   requestFormat: v.literal("form-data"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: custom_indicator_feeds_identifier, feed_id: custom_indicator_feeds_feed_id }), body: v.optional(v.partial(v.object({ source: v.string() }))) },
-  responses: { 200: custom_indicator_feeds_update_feed_response, 413: v.intersect([custom_indicator_feeds_api_response_common_failure]), "4XX": v.intersect([custom_indicator_feeds_api_response_common_failure]) },
+  responses: { 200: custom_indicator_feeds_update_feed_response, 413: custom_indicator_feeds_api_response_common_failure, "4XX": custom_indicator_feeds_api_response_common_failure },
 };
 
 export type get_Ip__intelligence__get__ip__overview = typeof get_Ip__intelligence__get__ip__overview;
@@ -31889,7 +31889,7 @@ export const post_Account__load__balancer__monitors__create__monitor = {
   path: v.literal("/accounts/{account_id}/load_balancers/monitors"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ account_id: load_balancing_components_schemas_identifier }), body: v.intersect([load_balancing_monitor_editable]) },
+  parameters: { path: v.object({ account_id: load_balancing_components_schemas_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_monitor_response_single, "4XX": v.intersect([load_balancing_monitor_response_single, load_balancing_api_response_common_failure]) },
 };
 
@@ -31919,7 +31919,7 @@ export const patch_Account__load__balancer__monitors__patch__monitor = {
   path: v.literal("/accounts/{account_id}/load_balancers/monitors/{monitor_id}"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }), body: v.intersect([load_balancing_monitor_editable]) },
+  parameters: { path: v.object({ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_monitor_response_single, "4XX": v.intersect([load_balancing_monitor_response_single, load_balancing_api_response_common_failure]) },
 };
 
@@ -31929,7 +31929,7 @@ export const put_Account__load__balancer__monitors__update__monitor = {
   path: v.literal("/accounts/{account_id}/load_balancers/monitors/{monitor_id}"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }), body: v.intersect([load_balancing_monitor_editable]) },
+  parameters: { path: v.object({ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_monitor_response_single, "4XX": v.intersect([load_balancing_monitor_response_single, load_balancing_api_response_common_failure]) },
 };
 
@@ -31939,7 +31939,7 @@ export const post_Account__load__balancer__monitors__preview__monitor = {
   path: v.literal("/accounts/{account_id}/load_balancers/monitors/{monitor_id}/preview"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }), body: v.intersect([load_balancing_monitor_editable]) },
+  parameters: { path: v.object({ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_preview_response, "4XX": v.intersect([load_balancing_preview_response, load_balancing_api_response_common_failure]) },
 };
 
@@ -32039,7 +32039,7 @@ export const post_Account__load__balancer__pools__preview__pool = {
   path: v.literal("/accounts/{account_id}/load_balancers/pools/{pool_id}/preview"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ pool_id: load_balancing_schemas_identifier, account_id: load_balancing_components_schemas_identifier }), body: v.intersect([load_balancing_monitor_editable]) },
+  parameters: { path: v.object({ pool_id: load_balancing_schemas_identifier, account_id: load_balancing_components_schemas_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_preview_response, "4XX": v.intersect([load_balancing_preview_response, load_balancing_api_response_common_failure]) },
 };
 
@@ -32129,7 +32129,7 @@ export const patch_Account__load__balancers__patch__account__load__balancer = {
   path: v.literal("/accounts/{account_id}/load_balancers/{load_balancer_id}"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ account_id: load_balancing_components_schemas_identifier, load_balancer_id: load_balancing_load_balancer_components_schemas_identifier }), body: v.intersect([load_balancing_load_balancer_editable]) },
+  parameters: { path: v.object({ account_id: load_balancing_components_schemas_identifier, load_balancer_id: load_balancing_load_balancer_components_schemas_identifier }), body: load_balancing_load_balancer_editable },
   responses: { 200: load_balancing_load_balancer_components_schemas_single_response, "4XX": v.intersect([load_balancing_load_balancer_components_schemas_single_response, load_balancing_api_response_common_failure]) },
 };
 
@@ -32150,7 +32150,7 @@ export const get_Get__accounts__account_id__logpush__datasets__dataset_id__field
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ dataset_id: logpush_dataset, account_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_field_response_collection, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_field_response_collection, "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logpush__datasets__dataset_id__jobs = typeof get_Get__accounts__account_id__logpush__datasets__dataset_id__jobs;
@@ -32160,7 +32160,7 @@ export const get_Get__accounts__account_id__logpush__datasets__dataset_id__jobs 
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ dataset_id: logpush_dataset, account_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_job_response_collection, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_collection, "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logpush__jobs = typeof get_Get__accounts__account_id__logpush__jobs;
@@ -32170,7 +32170,7 @@ export const get_Get__accounts__account_id__logpush__jobs = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_job_response_collection, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_collection, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logpush__jobs = typeof post_Post__accounts__account_id__logpush__jobs;
@@ -32180,7 +32180,7 @@ export const post_Post__accounts__account_id__logpush__jobs = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: logpush_identifier }), body: v.object({ dataset: v.optional(logpush_dataset), destination_conf: logpush_destination_conf, enabled: v.optional(logpush_enabled), filter: v.optional(logpush_filter), frequency: v.optional(logpush_frequency), kind: v.optional(logpush_kind), logpull_options: v.optional(logpush_logpull_options), max_upload_bytes: v.optional(logpush_max_upload_bytes), max_upload_interval_seconds: v.optional(logpush_max_upload_interval_seconds), max_upload_records: v.optional(logpush_max_upload_records), name: v.optional(logpush_name), output_options: v.optional(logpush_output_options), ownership_challenge: v.optional(logpush_ownership_challenge) }) },
-  responses: { 200: logpush_logpush_job_response_single, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_single, "4XX": logpush_api_response_common_failure },
 };
 
 export type delete_Delete__accounts__account_id__logpush__jobs__job_id = typeof delete_Delete__accounts__account_id__logpush__jobs__job_id;
@@ -32190,7 +32190,7 @@ export const delete_Delete__accounts__account_id__logpush__jobs__job_id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ job_id: logpush_id, account_id: logpush_identifier }), body: v.unknown() },
-  responses: { 200: v.intersect([logpush_api_response_common, v.partial(v.object({ result: v.partial(v.object({ id: logpush_id })) }))]), "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: v.intersect([logpush_api_response_common, v.partial(v.object({ result: v.partial(v.object({ id: logpush_id })) }))]), "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logpush__jobs__job_id = typeof get_Get__accounts__account_id__logpush__jobs__job_id;
@@ -32200,7 +32200,7 @@ export const get_Get__accounts__account_id__logpush__jobs__job_id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ job_id: logpush_id, account_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_job_response_single, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_single, "4XX": logpush_api_response_common_failure },
 };
 
 export type put_Put__accounts__account_id__logpush__jobs__job_id = typeof put_Put__accounts__account_id__logpush__jobs__job_id;
@@ -32210,7 +32210,7 @@ export const put_Put__accounts__account_id__logpush__jobs__job_id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ job_id: logpush_id, account_id: logpush_identifier }), body: v.optional(v.partial(v.object({ destination_conf: logpush_destination_conf, enabled: logpush_enabled, filter: logpush_filter, frequency: logpush_frequency, kind: logpush_kind, logpull_options: logpush_logpull_options, max_upload_bytes: logpush_max_upload_bytes, max_upload_interval_seconds: logpush_max_upload_interval_seconds, max_upload_records: logpush_max_upload_records, name: logpush_name, output_options: logpush_output_options, ownership_challenge: logpush_ownership_challenge }))) },
-  responses: { 200: logpush_logpush_job_response_single, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_single, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logpush__ownership = typeof post_Post__accounts__account_id__logpush__ownership;
@@ -32220,7 +32220,7 @@ export const post_Post__accounts__account_id__logpush__ownership = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: logpush_identifier }), body: v.object({ destination_conf: logpush_destination_conf }) },
-  responses: { 200: logpush_get_ownership_response, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_get_ownership_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logpush__ownership__validate = typeof post_Post__accounts__account_id__logpush__ownership__validate;
@@ -32230,7 +32230,7 @@ export const post_Post__accounts__account_id__logpush__ownership__validate = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: logpush_identifier }), body: v.object({ destination_conf: logpush_destination_conf, ownership_challenge: logpush_ownership_challenge }) },
-  responses: { 200: logpush_validate_ownership_response, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_validate_ownership_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Delete__accounts__account_id__logpush__validate__destination = typeof post_Delete__accounts__account_id__logpush__validate__destination;
@@ -32240,7 +32240,7 @@ export const post_Delete__accounts__account_id__logpush__validate__destination =
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: logpush_identifier }), body: v.object({ destination_conf: logpush_destination_conf }) },
-  responses: { 200: logpush_validate_response, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_validate_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Delete__accounts__account_id__logpush__validate__destination__exists = typeof post_Delete__accounts__account_id__logpush__validate__destination__exists;
@@ -32250,7 +32250,7 @@ export const post_Delete__accounts__account_id__logpush__validate__destination__
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: logpush_identifier }), body: v.object({ destination_conf: logpush_destination_conf }) },
-  responses: { 200: logpush_destination_exists_response, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_destination_exists_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logpush__validate__origin = typeof post_Post__accounts__account_id__logpush__validate__origin;
@@ -32260,7 +32260,7 @@ export const post_Post__accounts__account_id__logpush__validate__origin = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: logpush_identifier }), body: v.object({ logpull_options: logpush_logpull_options }) },
-  responses: { 200: logpush_validate_response, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_validate_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Audit__logs__v2__get__account__audit__logs = typeof get_Audit__logs__v2__get__account__audit__logs;
@@ -32300,7 +32300,7 @@ export const delete_Delete__accounts__account_id__logs__control__cmb__config = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: logcontrol_identifier }), body: v.unknown() },
-  responses: { 200: v.intersect([logcontrol_api_response_common, v.partial(v.object({ result: v.nullable(v.record(v.string(), v.unknown())) }))]), "4XX": v.intersect([logcontrol_api_response_common_failure]) },
+  responses: { 200: v.intersect([logcontrol_api_response_common, v.partial(v.object({ result: v.nullable(v.record(v.string(), v.unknown())) }))]), "4XX": logcontrol_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logs__control__cmb__config = typeof get_Get__accounts__account_id__logs__control__cmb__config;
@@ -32310,7 +32310,7 @@ export const get_Get__accounts__account_id__logs__control__cmb__config = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: logcontrol_identifier }) },
-  responses: { 200: logcontrol_cmb_config_response_single, "4XX": v.intersect([logcontrol_api_response_common_failure]) },
+  responses: { 200: logcontrol_cmb_config_response_single, "4XX": logcontrol_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logs__control__cmb__config = typeof post_Post__accounts__account_id__logs__control__cmb__config;
@@ -32320,7 +32320,7 @@ export const post_Post__accounts__account_id__logs__control__cmb__config = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: logcontrol_identifier }), body: logcontrol_cmb_config },
-  responses: { 200: logcontrol_cmb_config_response_single, "4XX": v.intersect([logcontrol_api_response_common_failure]) },
+  responses: { 200: logcontrol_cmb_config_response_single, "4XX": logcontrol_api_response_common_failure },
 };
 
 export type get_Accounts__logs__explorer__datasets__list = typeof get_Accounts__logs__explorer__datasets__list;
@@ -34744,7 +34744,7 @@ export const post_Pages__project__create__project = {
   path: v.literal("/accounts/{account_id}/pages/projects"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ account_id: pages_identifier }), body: v.object({ build_config: v.optional(v.partial(v.object({ build_caching: v.boolean(), build_command: v.string(), destination_dir: v.string(), root_dir: v.string(), web_analytics_tag: v.nullable(v.string()), web_analytics_token: v.nullable(v.string()) }))), deployment_configs: v.optional(v.partial(v.object({ preview: v.intersect([pages_deployment_config_values_request]), production: v.intersect([pages_deployment_config_values_request]) }))), name: v.string(), production_branch: v.string(), source: v.optional(v.object({ config: v.partial(v.object({ deployments_enabled: v.boolean(), owner: v.string(), owner_id: v.string(), path_excludes: v.array(v.string()), path_includes: v.array(v.string()), pr_comments_enabled: v.boolean(), preview_branch_excludes: v.array(v.string()), preview_branch_includes: v.array(v.string()), preview_deployment_setting: v.picklist(["all", "none", "custom"]), production_branch: v.string(), production_deployments_enabled: v.boolean(), repo_id: v.string(), repo_name: v.string() })), type: v.picklist(["github", "gitlab"]) })) }) },
+  parameters: { path: v.object({ account_id: pages_identifier }), body: v.object({ build_config: v.optional(v.partial(v.object({ build_caching: v.boolean(), build_command: v.string(), destination_dir: v.string(), root_dir: v.string(), web_analytics_tag: v.nullable(v.string()), web_analytics_token: v.nullable(v.string()) }))), deployment_configs: v.optional(v.partial(v.object({ preview: pages_deployment_config_values_request, production: pages_deployment_config_values_request }))), name: v.string(), production_branch: v.string(), source: v.optional(v.object({ config: v.partial(v.object({ deployments_enabled: v.boolean(), owner: v.string(), owner_id: v.string(), path_excludes: v.array(v.string()), path_includes: v.array(v.string()), pr_comments_enabled: v.boolean(), preview_branch_excludes: v.array(v.string()), preview_branch_includes: v.array(v.string()), preview_deployment_setting: v.picklist(["all", "none", "custom"]), production_branch: v.string(), production_deployments_enabled: v.boolean(), repo_id: v.string(), repo_name: v.string() })), type: v.picklist(["github", "gitlab"]) })) }) },
   responses: { 200: v.intersect([pages_api_response_common, v.object({ result: pages_project })]), "4XX": pages_api_response_common_failure },
 };
 
@@ -34774,7 +34774,7 @@ export const patch_Pages__project__update__project = {
   path: v.literal("/accounts/{account_id}/pages/projects/{project_name}"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ project_name: pages_project_name, account_id: pages_identifier }), body: v.optional(v.partial(v.object({ build_config: v.partial(v.object({ build_caching: v.boolean(), build_command: v.string(), destination_dir: v.string(), root_dir: v.string(), web_analytics_tag: v.nullable(v.string()), web_analytics_token: v.nullable(v.string()) })), deployment_configs: v.partial(v.object({ preview: v.intersect([pages_deployment_config_values_request]), production: v.intersect([pages_deployment_config_values_request]) })), name: v.string(), production_branch: v.string(), source: v.object({ config: v.partial(v.object({ deployments_enabled: v.boolean(), owner: v.string(), owner_id: v.string(), path_excludes: v.array(v.string()), path_includes: v.array(v.string()), pr_comments_enabled: v.boolean(), preview_branch_excludes: v.array(v.string()), preview_branch_includes: v.array(v.string()), preview_deployment_setting: v.picklist(["all", "none", "custom"]), production_branch: v.string(), production_deployments_enabled: v.boolean(), repo_id: v.string(), repo_name: v.string() })), type: v.picklist(["github", "gitlab"]) }) }))) },
+  parameters: { path: v.object({ project_name: pages_project_name, account_id: pages_identifier }), body: v.optional(v.partial(v.object({ build_config: v.partial(v.object({ build_caching: v.boolean(), build_command: v.string(), destination_dir: v.string(), root_dir: v.string(), web_analytics_tag: v.nullable(v.string()), web_analytics_token: v.nullable(v.string()) })), deployment_configs: v.partial(v.object({ preview: pages_deployment_config_values_request, production: pages_deployment_config_values_request })), name: v.string(), production_branch: v.string(), source: v.object({ config: v.partial(v.object({ deployments_enabled: v.boolean(), owner: v.string(), owner_id: v.string(), path_excludes: v.array(v.string()), path_includes: v.array(v.string()), pr_comments_enabled: v.boolean(), preview_branch_excludes: v.array(v.string()), preview_branch_includes: v.array(v.string()), preview_deployment_setting: v.picklist(["all", "none", "custom"]), production_branch: v.string(), production_deployments_enabled: v.boolean(), repo_id: v.string(), repo_name: v.string() })), type: v.picklist(["github", "gitlab"]) }) }))) },
   responses: { 200: v.intersect([pages_api_response_common, v.object({ result: pages_project })]), "4XX": pages_api_response_common_failure },
 };
 
@@ -35674,7 +35674,7 @@ export const patch_R2__patch__bucket = {
   path: v.literal("/accounts/{account_id}/r2/buckets/{bucket_name}"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }), header: v.object({ "cf-r2-jurisdiction": v.optional(r2_jurisdiction), "cf-r2-storage-class": v.intersect([r2_storage_class, v.unknown()]) }) },
+  parameters: { path: v.object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }), header: v.object({ "cf-r2-jurisdiction": v.optional(r2_jurisdiction), "cf-r2-storage-class": r2_storage_class }) },
   responses: { 200: v.intersect([r2_v4_response, v.partial(v.object({ result: r2_bucket }))]), "4XX": r2_v4_response_failure },
 };
 
@@ -35745,7 +35745,7 @@ export const get_R2__get__custom__domain__settings = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name, domain: r2_domain_name }), header: v.optional(v.partial(v.object({ "cf-r2-jurisdiction": r2_jurisdiction }))) },
-  responses: { 200: v.intersect([r2_v4_response, v.partial(v.object({ result: v.intersect([r2_get_custom_domain_response]) }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: v.intersect([r2_v4_response, v.partial(v.object({ result: r2_get_custom_domain_response }))]), "4XX": r2_v4_response_failure },
 };
 
 export type put_R2__edit__custom__domain__settings = typeof put_R2__edit__custom__domain__settings;
@@ -35755,7 +35755,7 @@ export const put_R2__edit__custom__domain__settings = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name, domain: r2_domain_name }), header: v.optional(v.partial(v.object({ "cf-r2-jurisdiction": r2_jurisdiction }))), body: r2_edit_custom_domain_request },
-  responses: { 200: v.intersect([r2_v4_response, v.partial(v.object({ result: v.intersect([r2_edit_custom_domain_response]) }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: v.intersect([r2_v4_response, v.partial(v.object({ result: r2_edit_custom_domain_response }))]), "4XX": r2_v4_response_failure },
 };
 
 export type get_R2__get__bucket__public__policy = typeof get_R2__get__bucket__public__policy;
@@ -36774,7 +36774,7 @@ export const post_Account__request__tracer__request__trace = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: request_tracer_identifier }), body: v.object({ body: v.optional(v.partial(v.object({ base64: v.string(), json: v.record(v.string(), v.unknown()), plain_text: v.string() }))), context: v.optional(v.partial(v.object({ bot_score: v.pipe(v.number(), v.integer()), geoloc: v.partial(v.object({ city: v.string(), continent: v.string(), is_eu_country: v.boolean(), iso_code: v.string(), latitude: v.number(), longitude: v.number(), postal_code: v.string(), region_code: v.string(), subdivision_2_iso_code: v.string(), timezone: v.string() })), skip_challenge: v.boolean(), threat_score: v.pipe(v.number(), v.integer()) }))), cookies: v.optional(v.record(v.string(), v.string())), headers: v.optional(v.record(v.string(), v.string())), method: v.string(), protocol: v.optional(v.string()), skip_response: v.optional(v.boolean()), url: v.string() }) },
-  responses: { 200: v.intersect([request_tracer_api_response_common, v.partial(v.object({ result: v.partial(v.object({ status_code: v.pipe(v.number(), v.integer()), trace: request_tracer_trace })) })), v.record(v.string(), v.unknown())]), "4XX": v.intersect([request_tracer_api_response_common_failure]) },
+  responses: { 200: v.intersect([request_tracer_api_response_common, v.partial(v.object({ result: v.partial(v.object({ status_code: v.pipe(v.number(), v.integer()), trace: request_tracer_trace })) })), v.record(v.string(), v.unknown())]), "4XX": request_tracer_api_response_common_failure },
 };
 
 export type get_GetApplications = typeof get_GetApplications;
@@ -37524,7 +37524,7 @@ export const get_Secrets__store__quota = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: secrets_store_account_identifier }) },
-  responses: { 200: secrets_store_quota_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_quota_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__list = typeof get_Secrets__store__list;
@@ -37534,7 +37534,7 @@ export const get_Secrets__store__list = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ direction: v.optional(v.picklist(["asc", "desc"]), "desc"), page: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(0), v.multipleOf(1))), per_page: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(100), v.multipleOf(1))), order: v.optional(v.picklist(["name", "comment", "created", "modified", "status"]), "created") }))), path: v.object({ account_id: secrets_store_account_identifier }) },
-  responses: { 200: secrets_store_stores_response_collection, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_stores_response_collection, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__create = typeof post_Secrets__store__create;
@@ -37544,7 +37544,7 @@ export const post_Secrets__store__create = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: secrets_store_account_identifier }), body: secrets_store_createStoreObject },
-  responses: { 200: secrets_store_store_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_store_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__delete__by__id = typeof delete_Secrets__store__delete__by__id;
@@ -37554,7 +37554,7 @@ export const delete_Secrets__store__delete__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ force: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false) }))), path: v.object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }) },
-  responses: { 200: secrets_store_delete_response, 409: v.intersect([secrets_store_api_response_common_failure]), "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_delete_response, 409: secrets_store_api_response_common_failure, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__get__store__by__id = typeof get_Secrets__store__get__store__by__id;
@@ -37564,7 +37564,7 @@ export const get_Secrets__store__get__store__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }) },
-  responses: { 200: secrets_store_store_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_store_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__delete__bulk = typeof delete_Secrets__store__delete__bulk;
@@ -37574,7 +37574,7 @@ export const delete_Secrets__store__delete__bulk = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }), body: secrets_store_deleteSecretsRequest },
-  responses: { 202: secrets_store_delete_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 202: secrets_store_delete_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__secrets__list = typeof get_Secrets__store__secrets__list;
@@ -37584,7 +37584,7 @@ export const get_Secrets__store__secrets__list = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ direction: v.optional(v.picklist(["asc", "desc"]), "desc"), page: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(0), v.multipleOf(1))), per_page: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(100), v.multipleOf(1))), search: v.string(), order: v.optional(v.picklist(["name", "comment", "created", "modified", "status"]), "created"), scopes: v.array(secrets_store_scopes) }))), path: v.object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }) },
-  responses: { 200: secrets_store_secrets_response_collection, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secrets_response_collection, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__secret__create = typeof post_Secrets__store__secret__create;
@@ -37594,7 +37594,7 @@ export const post_Secrets__store__secret__create = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }), body: v.array(secrets_store_createSecretObject) },
-  responses: { 200: secrets_store_secrets_response_collection, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secrets_response_collection, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__secret__delete__by__id = typeof delete_Secrets__store__secret__delete__by__id;
@@ -37604,7 +37604,7 @@ export const delete_Secrets__store__secret__delete__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }) },
-  responses: { 202: secrets_store_delete_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 202: secrets_store_delete_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__get__by__id = typeof get_Secrets__store__get__by__id;
@@ -37614,7 +37614,7 @@ export const get_Secrets__store__get__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }) },
-  responses: { 200: secrets_store_secret_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secret_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type patch_Secrets__store__patch__by__id = typeof patch_Secrets__store__patch__by__id;
@@ -37624,7 +37624,7 @@ export const patch_Secrets__store__patch__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }), body: secrets_store_patchSecretObject },
-  responses: { 200: secrets_store_secret_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secret_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__duplicate__by__id = typeof post_Secrets__store__duplicate__by__id;
@@ -37634,7 +37634,7 @@ export const post_Secrets__store__duplicate__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }), body: secrets_store_duplicateSecretObject },
-  responses: { 200: secrets_store_secret_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secret_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Get__security__center__insights = typeof get_Get__security__center__insights;
@@ -37643,7 +37643,7 @@ export const get_Get__security__center__insights = {
   path: v.literal("/accounts/{account_id}/security-center/insights"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: v.optional(v.intersect([security_center_page, v.optional(v.unknown(), 1)]), 1), per_page: v.optional(v.intersect([security_center_perPage, v.optional(v.unknown(), 25)]), 25) }))), path: v.object({ account_id: security_center_identifier }) },
+  parameters: { query: v.optional(v.partial(v.object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: security_center_page, per_page: security_center_perPage }))), path: v.object({ account_id: security_center_identifier }) },
   responses: { 200: v.intersect([security_center_api_response_common, v.partial(v.object({ result: v.partial(v.object({ count: security_center_count, issues: v.array(security_center_issue), page: security_center_page, per_page: security_center_perPage })) }))]), "4XX": security_center_api_response_common_failure },
 };
 
@@ -37724,7 +37724,7 @@ export const patch_Update__security__center__insight__classification = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: security_center_identifier, issue_id: v.string() }), body: security_center_userClassificationUpdate },
-  responses: { 200: v.intersect([security_center_api_response_single]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: security_center_api_response_single, "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Get__security__center__insight__context = typeof get_Get__security__center__insight__context;
@@ -37744,7 +37744,7 @@ export const put_Archive__security__center__insight = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: security_center_identifier, issue_id: v.string() }), body: v.optional(v.partial(v.object({ dismiss: v.optional(v.boolean(), true) }))) },
-  responses: { 200: v.intersect([security_center_api_response_single]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: security_center_api_response_single, "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Shares__list = typeof get_Shares__list;
@@ -37754,7 +37754,7 @@ export const get_Shares__list = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ status: resource_sharing_share_status, kind: resource_sharing_share_kind, target_type: resource_sharing_share_target_type, resource_types: v.array(resource_sharing_resource_type_schemas), order: v.optional(v.picklist(["name", "created"]), "created"), direction: v.optional(v.picklist(["asc", "desc"]), "asc"), page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.multipleOf(1))), 1), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100), v.multipleOf(1))), 20), include_resources: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), include_recipient_counts: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), tag: v.pipe(v.array(v.pipe(v.string(), v.maxLength(1281))), v.maxLength(20)) }))), path: v.object({ account_id: resource_sharing_account_id }) },
-  responses: { 200: resource_sharing_share_response_collection, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_response_collection, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type post_Share__create = typeof post_Share__create;
@@ -37764,7 +37764,7 @@ export const post_Share__create = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: resource_sharing_account_id }), body: resource_sharing_create_share_request },
-  responses: { 201: resource_sharing_share_response_single, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 201: resource_sharing_share_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type delete_Share__delete = typeof delete_Share__delete;
@@ -37774,7 +37774,7 @@ export const delete_Share__delete = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }) },
-  responses: { 200: resource_sharing_share_response_single, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type get_Shares__get__by__id = typeof get_Shares__get__by__id;
@@ -37784,7 +37784,7 @@ export const get_Shares__get__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ include_resources: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), include_recipient_counts: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")) }))), path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }) },
-  responses: { 200: resource_sharing_share_response_single, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type put_Share__update = typeof put_Share__update;
@@ -37794,7 +37794,7 @@ export const put_Share__update = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }), body: resource_sharing_update_share_request },
-  responses: { 200: resource_sharing_share_response_single, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type get_Share__recipients__list = typeof get_Share__recipients__list;
@@ -37804,7 +37804,7 @@ export const get_Share__recipients__list = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ include_resources: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.multipleOf(1))), 1), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100), v.multipleOf(1))), 20) }))), path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }) },
-  responses: { 200: resource_sharing_share_recipient_response_collection, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_recipient_response_collection, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type post_Share__recipient__create = typeof post_Share__recipient__create;
@@ -37814,7 +37814,7 @@ export const post_Share__recipient__create = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }), body: resource_sharing_create_share_recipient_request },
-  responses: { 201: resource_sharing_share_recipient_response_single, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 201: resource_sharing_share_recipient_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type put_Share__recipients__update = typeof put_Share__recipients__update;
@@ -37824,7 +37824,7 @@ export const put_Share__recipients__update = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }), body: resource_sharing_update_share_recipients_request },
-  responses: { 204: v.unknown(), "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 204: v.unknown(), "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type delete_Share__recipient__delete = typeof delete_Share__recipient__delete;
@@ -37834,7 +37834,7 @@ export const delete_Share__recipient__delete = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, recipient_id: resource_sharing_recipient_id }) },
-  responses: { 200: resource_sharing_share_recipient_response_single, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_recipient_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type get_Share__recipients__get__by__id = typeof get_Share__recipients__get__by__id;
@@ -37844,7 +37844,7 @@ export const get_Share__recipients__get__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ include_resources: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")) }))), path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, recipient_id: resource_sharing_recipient_id }) },
-  responses: { 200: resource_sharing_share_recipient_response_single, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_recipient_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type get_Share__resources__list = typeof get_Share__resources__list;
@@ -37854,7 +37854,7 @@ export const get_Share__resources__list = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ status: resource_sharing_resource_status_schemas, resource_type: resource_sharing_resource_type_schemas, page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.multipleOf(1))), 1), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100), v.multipleOf(1))), 20) }))), path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }) },
-  responses: { 200: resource_sharing_share_resource_response_collection, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_resource_response_collection, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type post_Share__resource__create = typeof post_Share__resource__create;
@@ -37864,7 +37864,7 @@ export const post_Share__resource__create = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }), body: resource_sharing_create_share_resource_request },
-  responses: { 201: resource_sharing_share_resource_response_single, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 201: resource_sharing_share_resource_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type delete_Share__resource__delete = typeof delete_Share__resource__delete;
@@ -37874,7 +37874,7 @@ export const delete_Share__resource__delete = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, share_resource_id: resource_sharing_resource_id }) },
-  responses: { 200: resource_sharing_share_resource_response_single, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_resource_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type get_Share__resources__get__by__id = typeof get_Share__resources__get__by__id;
@@ -37884,7 +37884,7 @@ export const get_Share__resources__get__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, share_resource_id: resource_sharing_resource_id }) },
-  responses: { 200: resource_sharing_share_resource_response_single, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_resource_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type put_Share__resource__update = typeof put_Share__resource__update;
@@ -37894,7 +37894,7 @@ export const put_Share__resource__update = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, share_resource_id: resource_sharing_resource_id }), body: resource_sharing_update_share_resource_request },
-  responses: { 200: resource_sharing_share_resource_response_single, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_resource_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type get_Slurper__list__jobs = typeof get_Slurper__list__jobs;
@@ -38814,7 +38814,7 @@ export const get_Tunnel__route__list__tunnel__routes = {
   path: v.literal("/accounts/{account_id}/teamnet/routes"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ comment: tunnel_route_comment, is_deleted: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), network_subset: v.intersect([tunnel_ip_network]), network_superset: v.intersect([tunnel_ip_network]), existed_at: tunnel_existed_at, tunnel_id: tunnel_tunnel_id, route_id: tunnel_route_id, tun_types: tunnel_tunnel_types, virtual_network_id: tunnel_virtual_network_id, per_page: tunnel_per_page, page: tunnel_page_number }))), path: v.object({ account_id: tunnel_account_id }) },
+  parameters: { query: v.optional(v.partial(v.object({ comment: tunnel_route_comment, is_deleted: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), network_subset: tunnel_ip_network, network_superset: tunnel_ip_network, existed_at: tunnel_existed_at, tunnel_id: tunnel_tunnel_id, route_id: tunnel_route_id, tun_types: tunnel_tunnel_types, virtual_network_id: tunnel_virtual_network_id, per_page: tunnel_per_page, page: tunnel_page_number }))), path: v.object({ account_id: tunnel_account_id }) },
   responses: { 200: tunnel_teamnet_response_collection, "4XX": v.intersect([tunnel_teamnet_response_collection, tunnel_api_response_common_failure]) },
 };
 
@@ -40424,7 +40424,7 @@ export const post_Worker__versions__upload__version = {
   path: v.literal("/accounts/{account_id}/workers/scripts/{script_name}/versions"),
   requestFormat: v.literal("form-data"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ bindings_inherit: v.literal("strict") }))), path: v.object({ account_id: workers_identifier, script_name: workers_script_name_2 }), body: v.object({ files: v.optional(v.array(v.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob))), metadata: v.object({ annotations: v.optional(v.partial(v.object({ "workers/alias": v.pipe(v.string(), v.maxLength(63)), "workers/message": v.pipe(v.string(), v.maxLength(1000)), "workers/tag": v.pipe(v.string(), v.maxLength(100)) }))), bindings: v.optional(workers_bindings), cache_options: v.optional(workers_cache_options), compatibility_date: v.optional(workers_compatibility_date), compatibility_flags: v.optional(workers_compatibility_flags), exports: v.optional(v.intersect([workers_exports_config_map, v.unknown()])), keep_bindings: v.optional(v.array(v.string())), main_module: v.string(), package_dependencies: v.optional(v.array(v.object({ installedVersion: v.string(), name: v.string(), packageJsonVersion: v.string() }))), usage_model: v.optional(workers_usage_model) }) }) },
+  parameters: { query: v.optional(v.partial(v.object({ bindings_inherit: v.literal("strict") }))), path: v.object({ account_id: workers_identifier, script_name: workers_script_name_2 }), body: v.object({ files: v.optional(v.array(v.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob))), metadata: v.object({ annotations: v.optional(v.partial(v.object({ "workers/alias": v.pipe(v.string(), v.maxLength(63)), "workers/message": v.pipe(v.string(), v.maxLength(1000)), "workers/tag": v.pipe(v.string(), v.maxLength(100)) }))), bindings: v.optional(workers_bindings), cache_options: v.optional(workers_cache_options), compatibility_date: v.optional(workers_compatibility_date), compatibility_flags: v.optional(workers_compatibility_flags), exports: v.optional(workers_exports_config_map), keep_bindings: v.optional(v.array(v.string())), main_module: v.string(), package_dependencies: v.optional(v.array(v.object({ installedVersion: v.string(), name: v.string(), packageJsonVersion: v.string() }))), usage_model: v.optional(workers_usage_model) }) }) },
   responses: { 200: workers_versions_upload_response, "4XX": v.union([v.intersect([workers_versions_upload_response, workers_api_response_common_failure]), workers_exports_reconciliation_error_response]) },
 };
 
@@ -40864,7 +40864,7 @@ export const get_Zero__trust__networks__subnets__list = {
   path: v.literal("/accounts/{account_id}/zerotrust/subnets"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ name: tunnel_subnet_query_name, comment: tunnel_subnet_query_comment, network: v.intersect([tunnel_ip_network_encoded]), existed_at: tunnel_existed_at, address_family: tunnel_address_family, is_default_network: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), is_deleted: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), sort_order: v.picklist(["asc", "desc"]), subnet_types: v.picklist(["cloudflare_source", "initial_resolved_ip", "warp"]), per_page: tunnel_per_page, page: tunnel_page_number }))), path: v.object({ account_id: tunnel_account_id }) },
+  parameters: { query: v.optional(v.partial(v.object({ name: tunnel_subnet_query_name, comment: tunnel_subnet_query_comment, network: tunnel_ip_network_encoded, existed_at: tunnel_existed_at, address_family: tunnel_address_family, is_default_network: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), is_deleted: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), sort_order: v.picklist(["asc", "desc"]), subnet_types: v.picklist(["cloudflare_source", "initial_resolved_ip", "warp"]), per_page: tunnel_per_page, page: tunnel_page_number }))), path: v.object({ account_id: tunnel_account_id }) },
   responses: { 200: tunnel_subnet_response_collection, "4XX": v.intersect([tunnel_subnet_response_collection, tunnel_api_response_common_failure]) },
 };
 
@@ -41335,7 +41335,7 @@ export const get_Organization__shares__list = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ status: resource_sharing_share_status, kind: resource_sharing_share_kind, target_type: resource_sharing_share_target_type, resource_types: v.array(resource_sharing_resource_type_schemas), order: v.optional(v.picklist(["name", "created"]), "created"), direction: v.optional(v.picklist(["asc", "desc"]), "asc"), page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.multipleOf(1))), 1), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100), v.multipleOf(1))), 20) }))), path: v.object({ organization_id: resource_sharing_organization_id }) },
-  responses: { 200: resource_sharing_share_response_collection, "4XX": v.intersect([resource_sharing_api_response_common_failure]), "5XX": v.intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_response_collection, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type post_Pages__assets__check__missing = typeof post_Pages__assets__check__missing;
@@ -42875,7 +42875,7 @@ export const get_Secrets__store__system__list = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ direction: v.optional(v.picklist(["asc", "desc"]), "desc"), page: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(0), v.multipleOf(1))), per_page: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(100), v.multipleOf(1))), order: v.optional(v.picklist(["name", "comment", "created", "modified", "status"]), "created") }))), path: v.object({ account_tag: secrets_store_account_tag_schemas }) },
-  responses: { 200: secrets_store_stores_response_collection, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_stores_response_collection, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__system__create = typeof post_Secrets__store__system__create;
@@ -42885,7 +42885,7 @@ export const post_Secrets__store__system__create = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_tag: secrets_store_account_tag_schemas }), body: secrets_store_createStoreObjectSystem },
-  responses: { 200: secrets_store_store_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_store_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__system__delete__by__id = typeof delete_Secrets__store__system__delete__by__id;
@@ -42895,7 +42895,7 @@ export const delete_Secrets__store__system__delete__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ force: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false) }))), path: v.object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }) },
-  responses: { 200: secrets_store_delete_response, 409: v.intersect([secrets_store_api_response_common_failure]), "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_delete_response, 409: secrets_store_api_response_common_failure, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__system__get__store__by__id = typeof get_Secrets__store__system__get__store__by__id;
@@ -42905,7 +42905,7 @@ export const get_Secrets__store__system__get__store__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }) },
-  responses: { 200: secrets_store_store_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_store_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__system__delete__bulk = typeof delete_Secrets__store__system__delete__bulk;
@@ -42915,7 +42915,7 @@ export const delete_Secrets__store__system__delete__bulk = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }), body: secrets_store_deleteSecretsRequest },
-  responses: { 202: secrets_store_delete_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 202: secrets_store_delete_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__system__secrets__list = typeof get_Secrets__store__system__secrets__list;
@@ -42925,7 +42925,7 @@ export const get_Secrets__store__system__secrets__list = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ direction: v.optional(v.picklist(["asc", "desc"]), "desc"), page: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(0), v.multipleOf(1))), per_page: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(100), v.multipleOf(1))), search: v.string(), order: v.optional(v.picklist(["name", "comment", "created", "modified", "status"]), "created"), scopes: v.array(secrets_store_scopes) }))), path: v.object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }) },
-  responses: { 200: secrets_store_secrets_response_collection, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secrets_response_collection, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__system__secret__create = typeof post_Secrets__store__system__secret__create;
@@ -42935,7 +42935,7 @@ export const post_Secrets__store__system__secret__create = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }), body: v.array(secrets_store_createSecretObject) },
-  responses: { 200: secrets_store_secrets_response_collection, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secrets_response_collection, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__system__secret__delete__by__id = typeof delete_Secrets__store__system__secret__delete__by__id;
@@ -42945,7 +42945,7 @@ export const delete_Secrets__store__system__secret__delete__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }) },
-  responses: { 202: secrets_store_delete_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 202: secrets_store_delete_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__system__get__by__id = typeof get_Secrets__store__system__get__by__id;
@@ -42955,7 +42955,7 @@ export const get_Secrets__store__system__get__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }) },
-  responses: { 200: secrets_store_secret_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secret_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type patch_Secrets__store__system__patch__by__id = typeof patch_Secrets__store__system__patch__by__id;
@@ -42965,7 +42965,7 @@ export const patch_Secrets__store__system__patch__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }), body: secrets_store_patchSecretObject },
-  responses: { 200: secrets_store_secret_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secret_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__system__duplicate__by__id = typeof post_Secrets__store__system__duplicate__by__id;
@@ -42975,7 +42975,7 @@ export const post_Secrets__store__system__duplicate__by__id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }), body: secrets_store_duplicateSecretObject },
-  responses: { 200: secrets_store_secret_response, "4XX": v.intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secret_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Tenants_retrieveTenant = typeof get_Tenants_retrieveTenant;
@@ -43104,7 +43104,7 @@ export const post_Ip__access__rules__for__a__user__create__an__ip__access__rule 
   path: v.literal("/user/firewall/access_rules/rules"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { body: v.object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: v.optional(v.intersect([firewall_notes, v.optional(v.unknown(), "")])) }) },
+  parameters: { body: v.object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: v.optional(firewall_notes) }) },
   responses: { 200: firewall_rule_single_response, "4XX": v.intersect([firewall_rule_single_response, firewall_api_response_common_failure]) },
 };
 
@@ -43184,7 +43184,7 @@ export const post_Load__balancer__monitors__create__monitor = {
   path: v.literal("/user/load_balancers/monitors"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { body: v.intersect([load_balancing_monitor_editable]) },
+  parameters: { body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_monitor_response_single, "4XX": v.intersect([load_balancing_monitor_response_single, load_balancing_api_response_common_failure]) },
 };
 
@@ -43214,7 +43214,7 @@ export const patch_Load__balancer__monitors__patch__monitor = {
   path: v.literal("/user/load_balancers/monitors/{monitor_id}"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ monitor_id: load_balancing_identifier }), body: v.intersect([load_balancing_monitor_editable]) },
+  parameters: { path: v.object({ monitor_id: load_balancing_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_monitor_response_single, "4XX": v.intersect([load_balancing_monitor_response_single, load_balancing_api_response_common_failure]) },
 };
 
@@ -43224,7 +43224,7 @@ export const put_Load__balancer__monitors__update__monitor = {
   path: v.literal("/user/load_balancers/monitors/{monitor_id}"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ monitor_id: load_balancing_identifier }), body: v.intersect([load_balancing_monitor_editable]) },
+  parameters: { path: v.object({ monitor_id: load_balancing_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_monitor_response_single, "4XX": v.intersect([load_balancing_monitor_response_single, load_balancing_api_response_common_failure]) },
 };
 
@@ -43234,7 +43234,7 @@ export const post_Load__balancer__monitors__preview__monitor = {
   path: v.literal("/user/load_balancers/monitors/{monitor_id}/preview"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ monitor_id: load_balancing_identifier }), body: v.intersect([load_balancing_monitor_editable]) },
+  parameters: { path: v.object({ monitor_id: load_balancing_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_preview_response, "4XX": v.intersect([load_balancing_preview_response, load_balancing_api_response_common_failure]) },
 };
 
@@ -43334,7 +43334,7 @@ export const post_Load__balancer__pools__preview__pool = {
   path: v.literal("/user/load_balancers/pools/{pool_id}/preview"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ pool_id: load_balancing_schemas_identifier }), body: v.intersect([load_balancing_monitor_editable]) },
+  parameters: { path: v.object({ pool_id: load_balancing_schemas_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_preview_response, "4XX": v.intersect([load_balancing_preview_response, load_balancing_api_response_common_failure]) },
 };
 
@@ -43815,7 +43815,7 @@ export const patch_Zone__level__access__applications__patch__update__access__app
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ app_id: access_app_id, zone_id: access_identifier }), body: access_app_settings_request },
-  responses: { 202: v.intersect([access_single_response_update]), "4XX": access_api_response_common_failure },
+  responses: { 202: access_single_response_update, "4XX": access_api_response_common_failure },
 };
 
 export type put_Zone__level__access__applications__put__update__access__application__settings = typeof put_Zone__level__access__applications__put__update__access__application__settings;
@@ -43825,7 +43825,7 @@ export const put_Zone__level__access__applications__put__update__access__applica
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ app_id: access_app_id, zone_id: access_identifier }), body: access_app_settings_request },
-  responses: { 202: v.intersect([access_single_response_update]), "4XX": access_api_response_common_failure },
+  responses: { 202: access_single_response_update, "4XX": access_api_response_common_failure },
 };
 
 export type get_Zone__level__access__applications__test__access__policies = typeof get_Zone__level__access__applications__test__access__policies;
@@ -44165,7 +44165,7 @@ export const put_Put__zones__zone_id__activation_check = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: zone_activation_identifier }) },
-  responses: { 200: v.intersect([zone_activation_api_response_single, v.partial(v.object({ result: v.partial(v.object({ id: zone_activation_identifier })) }))]), "4XX": v.intersect([zone_activation_api_response_common_failure]) },
+  responses: { 200: v.intersect([zone_activation_api_response_single, v.partial(v.object({ result: v.partial(v.object({ id: zone_activation_identifier })) }))]), "4XX": zone_activation_api_response_common_failure },
 };
 
 export type get_Dls__zone__regional__hostnames__list = typeof get_Dls__zone__regional__hostnames__list;
@@ -44175,7 +44175,7 @@ export const get_Dls__zone__regional__hostnames__list = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: dls_identifier }) },
-  responses: { 200: v.intersect([dls_api_response_collection, v.partial(v.object({ result: v.array(dls_regional_hostname_response) }))]), "4XX": v.intersect([dls_api_response_common_failure]) },
+  responses: { 200: v.intersect([dls_api_response_collection, v.partial(v.object({ result: v.array(dls_regional_hostname_response) }))]), "4XX": dls_api_response_common_failure },
 };
 
 export type post_Dls__zone__regional__hostnames__create = typeof post_Dls__zone__regional__hostnames__create;
@@ -44185,7 +44185,7 @@ export const post_Dls__zone__regional__hostnames__create = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: dls_identifier }), body: v.object({ hostname: dls_hostname_schemas, region_key: dls_region_key, routing: v.optional(dls_routing) }) },
-  responses: { 200: v.intersect([dls_api_response_common, v.partial(v.object({ result: dls_regional_hostname_response }))]), "4XX": v.intersect([dls_api_response_common_failure]) },
+  responses: { 200: v.intersect([dls_api_response_common, v.partial(v.object({ result: dls_regional_hostname_response }))]), "4XX": dls_api_response_common_failure },
 };
 
 export type delete_Dls__zone__regional__hostnames__delete = typeof delete_Dls__zone__regional__hostnames__delete;
@@ -44195,7 +44195,7 @@ export const delete_Dls__zone__regional__hostnames__delete = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: dls_identifier, hostname: dls_hostname_schemas }) },
-  responses: { 200: v.intersect([dls_api_response_common]), "4XX": v.intersect([dls_api_response_common_failure]) },
+  responses: { 200: dls_api_response_common, "4XX": dls_api_response_common_failure },
 };
 
 export type get_Dls__zone__regional__hostnames__fetch = typeof get_Dls__zone__regional__hostnames__fetch;
@@ -44205,7 +44205,7 @@ export const get_Dls__zone__regional__hostnames__fetch = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: dls_identifier, hostname: dls_hostname_schemas }) },
-  responses: { 200: v.intersect([dls_api_response_common, v.partial(v.object({ result: dls_regional_hostname_response }))]), "4XX": v.intersect([dls_api_response_common_failure]) },
+  responses: { 200: v.intersect([dls_api_response_common, v.partial(v.object({ result: dls_regional_hostname_response }))]), "4XX": dls_api_response_common_failure },
 };
 
 export type patch_Dls__zone__regional__hostnames__patch = typeof patch_Dls__zone__regional__hostnames__patch;
@@ -44215,7 +44215,7 @@ export const patch_Dls__zone__regional__hostnames__patch = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: dls_identifier, hostname: dls_hostname_schemas }), body: v.object({ region_key: dls_region_key }) },
-  responses: { 200: v.intersect([dls_api_response_common, v.partial(v.object({ result: dls_regional_hostname_response }))]), "4XX": v.intersect([dls_api_response_common_failure]) },
+  responses: { 200: v.intersect([dls_api_response_common, v.partial(v.object({ result: dls_regional_hostname_response }))]), "4XX": dls_api_response_common_failure },
 };
 
 export type get_Ai__audit__get__robots = typeof get_Ai__audit__get__robots;
@@ -44335,7 +44335,7 @@ export const get_Api__shield__api__discovery__retrieve__discovered__operations__
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(1))), 1), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer(), v.minValue(5), v.maxValue(50))), 20), host: v.pipe(v.array(v.string()), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems")), method: v.pipe(v.array(v.string()), v.check((arr) => new Set(arr).size === arr.length, "uniqueItems")), endpoint: v.string(), direction: v.picklist(["asc", "desc"]), order: v.picklist(["host", "method", "endpoint", "traffic_stats.requests", "traffic_stats.last_updated"]), diff: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), origin: api_shield_api_discovery_origin, state: api_shield_api_discovery_state }))), path: v.object({ zone_id: api_shield_identifier_2 }) },
-  responses: { 200: v.intersect([api_shield_api_response_collection, v.object({ result: v.array(api_shield_discovery_operation) })]), "4XX": v.intersect([api_shield_api_response_common_failure]) },
+  responses: { 200: v.intersect([api_shield_api_response_collection, v.object({ result: v.array(api_shield_discovery_operation) })]), "4XX": api_shield_api_response_common_failure },
 };
 
 export type patch_Api__shield__api__patch__discovered__operations = typeof patch_Api__shield__api__patch__discovered__operations;
@@ -44364,7 +44364,7 @@ export const patch_Api__shield__api__patch__discovered__operation = {
   path: v.literal("/zones/{zone_id}/api_gateway/discovery/operations/{discovery_id}"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ zone_id: api_shield_identifier_2, discovery_id: api_shield_uuid_2 }), body: v.optional(v.partial(v.object({ state: v.intersect([api_shield_api_discovery_state_patch]) }))) },
+  parameters: { path: v.object({ zone_id: api_shield_identifier_2, discovery_id: api_shield_uuid_2 }), body: v.optional(v.partial(v.object({ state: api_shield_api_discovery_state_patch }))) },
   responses: { 200: api_shield_patch_discovery_response, "4XX": api_shield_api_response_common_failure },
 };
 
@@ -44615,7 +44615,7 @@ export const get_Argo__smart__routing__get__argo__smart__routing__setting = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: argo_config_identifier }) },
-  responses: { 200: argo_config_api_response_single, "4XX": v.intersect([argo_config_api_response_common_failure]) },
+  responses: { 200: argo_config_api_response_single, "4XX": argo_config_api_response_common_failure },
 };
 
 export type patch_Argo__smart__routing__patch__argo__smart__routing__setting = typeof patch_Argo__smart__routing__patch__argo__smart__routing__setting;
@@ -44625,7 +44625,7 @@ export const patch_Argo__smart__routing__patch__argo__smart__routing__setting = 
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: argo_config_identifier }), body: argo_config_patch },
-  responses: { 200: argo_config_api_response_single, "4XX": v.intersect([argo_config_api_response_common_failure]) },
+  responses: { 200: argo_config_api_response_single, "4XX": argo_config_api_response_common_failure },
 };
 
 export type get_Tiered__caching__get__tiered__caching__setting = typeof get_Tiered__caching__get__tiered__caching__setting;
@@ -44855,7 +44855,7 @@ export const get_Client__certificate__for__a__zone__list__hostname__associations
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ mtls_certificate_id: v.pipe(v.string(), v.minLength(36), v.maxLength(36)) }))), path: v.object({ zone_id: tls_certificates_and_hostnames_identifier }) },
-  responses: { 200: tls_certificates_and_hostnames_hostname_associations_response, "4XX": v.intersect([tls_certificates_and_hostnames_api_response_common_failure]) },
+  responses: { 200: tls_certificates_and_hostnames_hostname_associations_response, "4XX": tls_certificates_and_hostnames_api_response_common_failure },
 };
 
 export type put_Client__certificate__for__a__zone__put__hostname__associations = typeof put_Client__certificate__for__a__zone__put__hostname__associations;
@@ -44875,7 +44875,7 @@ export const get_Client__certificate__for__a__zone__list__client__certificates =
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ status: v.picklist(["all", "active", "pending_reactivation", "pending_revocation", "revoked"]), page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.minValue(1))), 1), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.minValue(5), v.maxValue(50))), 20), limit: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())), offset: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())) }))), path: v.object({ zone_id: tls_certificates_and_hostnames_identifier }) },
-  responses: { 200: tls_certificates_and_hostnames_client_certificate_response_collection, "4XX": v.intersect([tls_certificates_and_hostnames_api_response_common_failure]) },
+  responses: { 200: tls_certificates_and_hostnames_client_certificate_response_collection, "4XX": tls_certificates_and_hostnames_api_response_common_failure },
 };
 
 export type post_Client__certificate__for__a__zone__create__client__certificate = typeof post_Client__certificate__for__a__zone__create__client__certificate;
@@ -44925,7 +44925,7 @@ export const get_Zone__cloud__connector__rules = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: cloud_connector_identifier }) },
-  responses: { 200: v.intersect([cloud_connector_api_response_common, v.partial(v.object({ result: cloud_connector_rules })), v.record(v.string(), v.unknown())]), "4XX": v.intersect([cloud_connector_api_response_common_failure]), "5XX": v.intersect([cloud_connector_api_response_common_failure]) },
+  responses: { 200: v.intersect([cloud_connector_api_response_common, v.partial(v.object({ result: cloud_connector_rules })), v.record(v.string(), v.unknown())]), "4XX": cloud_connector_api_response_common_failure, "5XX": cloud_connector_api_response_common_failure },
 };
 
 export type put_Zone__cloud__conenctor__rules__put = typeof put_Zone__cloud__conenctor__rules__put;
@@ -44935,7 +44935,7 @@ export const put_Zone__cloud__conenctor__rules__put = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: cloud_connector_identifier }), body: v.array(cloud_connector_rule) },
-  responses: { 200: v.intersect([cloud_connector_api_response_common, v.partial(v.object({ result: cloud_connector_rules })), v.record(v.string(), v.unknown())]), "4XX": v.intersect([cloud_connector_api_response_common_failure]), "5XX": v.intersect([cloud_connector_api_response_common_failure]) },
+  responses: { 200: v.intersect([cloud_connector_api_response_common, v.partial(v.object({ result: cloud_connector_rules })), v.record(v.string(), v.unknown())]), "4XX": cloud_connector_api_response_common_failure, "5XX": cloud_connector_api_response_common_failure },
 };
 
 export type post_Waf__content__scanning__disable = typeof post_Waf__content__scanning__disable;
@@ -44945,7 +44945,7 @@ export const post_Waf__content__scanning__disable = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: waf_product_api_bundle_identifier }) },
-  responses: { 200: waf_product_api_bundle_api_response_common_2, "4XX": v.intersect([waf_product_api_bundle_api_response_common_failure_2]) },
+  responses: { 200: waf_product_api_bundle_api_response_common_2, "4XX": waf_product_api_bundle_api_response_common_failure_2 },
 };
 
 export type post_Waf__content__scanning__enable = typeof post_Waf__content__scanning__enable;
@@ -44955,7 +44955,7 @@ export const post_Waf__content__scanning__enable = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: waf_product_api_bundle_identifier }) },
-  responses: { 200: waf_product_api_bundle_api_response_common_2, "4XX": v.intersect([waf_product_api_bundle_api_response_common_failure_2]) },
+  responses: { 200: waf_product_api_bundle_api_response_common_2, "4XX": waf_product_api_bundle_api_response_common_failure_2 },
 };
 
 export type get_Waf__content__scanning__list__custom__scan__expressions = typeof get_Waf__content__scanning__list__custom__scan__expressions;
@@ -45904,7 +45904,7 @@ export const post_Ip__access__rules__for__a__zone__create__an__ip__access__rule 
   path: v.literal("/zones/{zone_id}/firewall/access_rules/rules"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ zone_id: firewall_identifier }), body: v.object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: v.optional(v.intersect([firewall_notes, v.optional(v.unknown(), "")])) }) },
+  parameters: { path: v.object({ zone_id: firewall_identifier }), body: v.object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: v.optional(firewall_notes) }) },
   responses: { 200: firewall_rule_single_response, "4XX": v.intersect([firewall_rule_single_response, firewall_api_response_common_failure]) },
 };
 
@@ -45934,7 +45934,7 @@ export const get_Zone__lockdown__list__zone__lockdown__rules = {
   path: v.literal("/zones/{zone_id}/firewall/lockdowns"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.minValue(1))), 1), description: v.intersect([firewall_schemas_description_search]), modified_on: v.intersect([firewall_modified_on]), ip: v.intersect([firewall_ip_search]), priority: v.intersect([firewall_schemas_priority]), uri_search: v.intersect([firewall_uri_search]), ip_range_search: v.intersect([firewall_ip_range_search]), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.minValue(1), v.maxValue(1000))), 20), created_on: v.string(), description_search: v.string(), ip_search: v.string() }))), path: v.object({ zone_id: firewall_identifier }) },
+  parameters: { query: v.optional(v.partial(v.object({ page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.minValue(1))), 1), description: firewall_schemas_description_search, modified_on: firewall_modified_on, ip: firewall_ip_search, priority: firewall_schemas_priority, uri_search: firewall_uri_search, ip_range_search: firewall_ip_range_search, per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.minValue(1), v.maxValue(1000))), 20), created_on: v.string(), description_search: v.string(), ip_search: v.string() }))), path: v.object({ zone_id: firewall_identifier }) },
   responses: { 200: firewall_zonelockdown_response_collection, "4XX": v.intersect([firewall_zonelockdown_response_collection, firewall_api_response_common_failure]) },
 };
 
@@ -45984,7 +45984,7 @@ export const get_User__agent__blocking__rules__list__user__agent__blocking__rule
   path: v.literal("/zones/{zone_id}/firewall/ua_rules"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.minValue(1))), 1), description: v.intersect([firewall_description_search]), per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.minValue(1), v.maxValue(1000))), 20), user_agent: v.string(), paused: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")) }))), path: v.object({ zone_id: firewall_identifier }) },
+  parameters: { query: v.optional(v.partial(v.object({ page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.minValue(1))), 1), description: firewall_description_search, per_page: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.minValue(1), v.maxValue(1000))), 20), user_agent: v.string(), paused: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")) }))), path: v.object({ zone_id: firewall_identifier }) },
   responses: { 200: firewall_firewalluablock_response_collection, "4XX": v.intersect([firewall_firewalluablock_response_collection, firewall_api_response_common_failure]) },
 };
 
@@ -46145,7 +46145,7 @@ export const delete_Zones__0__hold__delete = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ hold_after: v.string() }))), path: v.object({ zone_id: zones_identifier_2 }) },
-  responses: { 200: v.intersect([zones_api_response_single_2, v.partial(v.object({ result: v.partial(v.object({ hold: v.boolean(), hold_after: v.string(), include_subdomains: v.string() })) }))]), "4XX": v.intersect([zones_api_response_common_failure_2]) },
+  responses: { 200: v.intersect([zones_api_response_single_2, v.partial(v.object({ result: v.partial(v.object({ hold: v.boolean(), hold_after: v.string(), include_subdomains: v.string() })) }))]), "4XX": zones_api_response_common_failure_2 },
 };
 
 export type get_Zones__0__hold__get = typeof get_Zones__0__hold__get;
@@ -46155,7 +46155,7 @@ export const get_Zones__0__hold__get = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: zones_identifier_2 }) },
-  responses: { 200: v.intersect([zones_api_response_single_2, v.partial(v.object({ result: v.partial(v.object({ hold: v.boolean(), hold_after: v.string(), include_subdomains: v.string() })) }))]), "4XX": v.intersect([zones_api_response_common_failure_2]) },
+  responses: { 200: v.intersect([zones_api_response_single_2, v.partial(v.object({ result: v.partial(v.object({ hold: v.boolean(), hold_after: v.string(), include_subdomains: v.string() })) }))]), "4XX": zones_api_response_common_failure_2 },
 };
 
 export type patch_Zones__0__hold__patch = typeof patch_Zones__0__hold__patch;
@@ -46165,7 +46165,7 @@ export const patch_Zones__0__hold__patch = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: zones_identifier_2 }), body: v.optional(v.partial(v.object({ hold_after: v.optional(v.nullable(v.string()), ""), include_subdomains: v.optional(v.boolean(), false) }))) },
-  responses: { 200: v.intersect([zones_api_response_single_2, v.partial(v.object({ result: v.partial(v.object({ hold: v.boolean(), hold_after: v.string(), include_subdomains: v.string() })) }))]), "4XX": v.intersect([zones_api_response_common_failure_2]) },
+  responses: { 200: v.intersect([zones_api_response_single_2, v.partial(v.object({ result: v.partial(v.object({ hold: v.boolean(), hold_after: v.string(), include_subdomains: v.string() })) }))]), "4XX": zones_api_response_common_failure_2 },
 };
 
 export type post_Zones__0__hold__post = typeof post_Zones__0__hold__post;
@@ -46175,7 +46175,7 @@ export const post_Zones__0__hold__post = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ include_subdomains: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")) }))), path: v.object({ zone_id: zones_identifier_2 }) },
-  responses: { 200: v.intersect([zones_api_response_single_2, v.partial(v.object({ result: v.partial(v.object({ hold: v.boolean(), hold_after: v.string(), include_subdomains: v.string() })) }))]), "4XX": v.intersect([zones_api_response_common_failure_2]) },
+  responses: { 200: v.intersect([zones_api_response_single_2, v.partial(v.object({ result: v.partial(v.object({ hold: v.boolean(), hold_after: v.string(), include_subdomains: v.string() })) }))]), "4XX": zones_api_response_common_failure_2 },
 };
 
 export type get_Zones__0__hold__zone__name__get = typeof get_Zones__0__hold__zone__name__get;
@@ -46185,7 +46185,7 @@ export const get_Zones__0__hold__zone__name__get = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: zones_identifier_2, zone_name: v.pipe(v.string(), v.maxLength(253), v.regex(new RegExp("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}$"))) }) },
-  responses: { 200: v.partial(v.object({ hold: v.boolean(), hold_after: v.nullable(v.string()), include_subdomains: v.boolean() })), "4XX": v.intersect([zones_api_response_common_failure_2]) },
+  responses: { 200: v.partial(v.object({ hold: v.boolean(), hold_after: v.nullable(v.string()), include_subdomains: v.boolean() })), "4XX": zones_api_response_common_failure_2 },
 };
 
 export type get_Per__hostname__tls__settings__list = typeof get_Per__hostname__tls__settings__list;
@@ -46456,7 +46456,7 @@ export const get_Get__zones__zone_id__logpush__datasets__dataset_id__fields = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ dataset_id: logpush_dataset, zone_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_field_response_collection, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_field_response_collection, "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logpush__datasets__dataset_id__jobs = typeof get_Get__zones__zone_id__logpush__datasets__dataset_id__jobs;
@@ -46466,7 +46466,7 @@ export const get_Get__zones__zone_id__logpush__datasets__dataset_id__jobs = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ dataset_id: logpush_dataset, zone_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_job_response_collection, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_collection, "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logpush__edge__jobs = typeof get_Get__zones__zone_id__logpush__edge__jobs;
@@ -46496,7 +46496,7 @@ export const get_Get__zones__zone_id__logpush__jobs = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_job_response_collection, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_collection, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__jobs = typeof post_Post__zones__zone_id__logpush__jobs;
@@ -46506,7 +46506,7 @@ export const post_Post__zones__zone_id__logpush__jobs = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: logpush_identifier }), body: v.object({ dataset: v.optional(logpush_dataset), destination_conf: logpush_destination_conf, enabled: v.optional(logpush_enabled), filter: v.optional(logpush_filter), frequency: v.optional(logpush_frequency), kind: v.optional(logpush_kind), logpull_options: v.optional(logpush_logpull_options), max_upload_bytes: v.optional(logpush_max_upload_bytes), max_upload_interval_seconds: v.optional(logpush_max_upload_interval_seconds), max_upload_records: v.optional(logpush_max_upload_records), name: v.optional(logpush_name), output_options: v.optional(logpush_output_options), ownership_challenge: v.optional(logpush_ownership_challenge) }) },
-  responses: { 200: logpush_logpush_job_response_single, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_single, "4XX": logpush_api_response_common_failure },
 };
 
 export type delete_Delete__zones__zone_id__logpush__jobs__job_id = typeof delete_Delete__zones__zone_id__logpush__jobs__job_id;
@@ -46516,7 +46516,7 @@ export const delete_Delete__zones__zone_id__logpush__jobs__job_id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ job_id: logpush_id, zone_id: logpush_identifier }), body: v.unknown() },
-  responses: { 200: v.intersect([logpush_api_response_common, v.partial(v.object({ result: v.partial(v.object({ id: logpush_id })) }))]), "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: v.intersect([logpush_api_response_common, v.partial(v.object({ result: v.partial(v.object({ id: logpush_id })) }))]), "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logpush__jobs__job_id = typeof get_Get__zones__zone_id__logpush__jobs__job_id;
@@ -46526,7 +46526,7 @@ export const get_Get__zones__zone_id__logpush__jobs__job_id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ job_id: logpush_id, zone_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_job_response_single, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_single, "4XX": logpush_api_response_common_failure },
 };
 
 export type put_Put__zones__zone_id__logpush__jobs__job_id = typeof put_Put__zones__zone_id__logpush__jobs__job_id;
@@ -46536,7 +46536,7 @@ export const put_Put__zones__zone_id__logpush__jobs__job_id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ job_id: logpush_id, zone_id: logpush_identifier }), body: v.optional(v.partial(v.object({ destination_conf: logpush_destination_conf, enabled: logpush_enabled, filter: logpush_filter, frequency: logpush_frequency, kind: logpush_kind, logpull_options: logpush_logpull_options, max_upload_bytes: logpush_max_upload_bytes, max_upload_interval_seconds: logpush_max_upload_interval_seconds, max_upload_records: logpush_max_upload_records, name: logpush_name, output_options: logpush_output_options, ownership_challenge: logpush_ownership_challenge }))) },
-  responses: { 200: logpush_logpush_job_response_single, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_single, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__ownership = typeof post_Post__zones__zone_id__logpush__ownership;
@@ -46546,7 +46546,7 @@ export const post_Post__zones__zone_id__logpush__ownership = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: logpush_identifier }), body: v.object({ destination_conf: logpush_destination_conf }) },
-  responses: { 200: logpush_get_ownership_response, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_get_ownership_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__ownership__validate = typeof post_Post__zones__zone_id__logpush__ownership__validate;
@@ -46556,7 +46556,7 @@ export const post_Post__zones__zone_id__logpush__ownership__validate = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: logpush_identifier }), body: v.object({ destination_conf: logpush_destination_conf, ownership_challenge: logpush_ownership_challenge }) },
-  responses: { 200: logpush_validate_ownership_response, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_validate_ownership_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__validate__destination = typeof post_Post__zones__zone_id__logpush__validate__destination;
@@ -46566,7 +46566,7 @@ export const post_Post__zones__zone_id__logpush__validate__destination = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: logpush_identifier }), body: v.object({ destination_conf: logpush_destination_conf }) },
-  responses: { 200: logpush_validate_response, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_validate_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__validate__destination__exists = typeof post_Post__zones__zone_id__logpush__validate__destination__exists;
@@ -46576,7 +46576,7 @@ export const post_Post__zones__zone_id__logpush__validate__destination__exists =
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: logpush_identifier }), body: v.object({ destination_conf: logpush_destination_conf }) },
-  responses: { 200: logpush_destination_exists_response, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_destination_exists_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__validate__origin = typeof post_Post__zones__zone_id__logpush__validate__origin;
@@ -46586,7 +46586,7 @@ export const post_Post__zones__zone_id__logpush__validate__origin = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: logpush_identifier }), body: v.object({ logpull_options: logpush_logpull_options }) },
-  responses: { 200: logpush_validate_response, "4XX": v.intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_validate_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logs__control__retention__flag = typeof get_Get__zones__zone_id__logs__control__retention__flag;
@@ -46596,7 +46596,7 @@ export const get_Get__zones__zone_id__logs__control__retention__flag = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: logcontrol_identifier }) },
-  responses: { 200: logcontrol_retention_flag_response_single, "4XX": v.intersect([logcontrol_api_response_common_failure]) },
+  responses: { 200: logcontrol_retention_flag_response_single, "4XX": logcontrol_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logs__control__retention__flag = typeof post_Post__zones__zone_id__logs__control__retention__flag;
@@ -46606,7 +46606,7 @@ export const post_Post__zones__zone_id__logs__control__retention__flag = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: logcontrol_identifier }), body: logcontrol_retention_flag },
-  responses: { 200: logcontrol_retention_flag_response_single, "4XX": v.intersect([logcontrol_api_response_common_failure]) },
+  responses: { 200: logcontrol_retention_flag_response_single, "4XX": logcontrol_api_response_common_failure },
 };
 
 export type get_Zones__logs__explorer__datasets__list = typeof get_Zones__logs__explorer__datasets__list;
@@ -46676,7 +46676,7 @@ export const get_Get__zones__zone_id__logs__rayids__ray_id = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ fields: logshare_fields, timestamps: logshare_timestamps }))), path: v.object({ zone_id: logshare_identifier, ray_id: logshare_ray_identifier }) },
-  responses: { 200: logshare_logs_response_json_lines, "4XX": v.intersect([logshare_api_response_common_failure]) },
+  responses: { 200: logshare_logs_response_json_lines, "4XX": logshare_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logs__received = typeof get_Get__zones__zone_id__logs__received;
@@ -46686,7 +46686,7 @@ export const get_Get__zones__zone_id__logs__received = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.object({ start: v.optional(logshare_start), end: logshare_end, fields: v.optional(logshare_fields), sample: v.optional(logshare_sample), count: v.optional(logshare_count), timestamps: v.optional(logshare_timestamps) }), path: v.object({ zone_id: logshare_identifier }) },
-  responses: { 200: logshare_logs_response_json_lines, "4XX": v.intersect([logshare_api_response_common_failure]) },
+  responses: { 200: logshare_logs_response_json_lines, "4XX": logshare_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logs__received__fields = typeof get_Get__zones__zone_id__logs__received__fields;
@@ -46696,7 +46696,7 @@ export const get_Get__zones__zone_id__logs__received__fields = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: logshare_identifier }) },
-  responses: { 200: logshare_fields_response, "4XX": v.intersect([logshare_api_response_common_failure]) },
+  responses: { 200: logshare_fields_response, "4XX": logshare_api_response_common_failure },
 };
 
 export type delete_DeleteManagedTransforms = typeof delete_DeleteManagedTransforms;
@@ -47066,7 +47066,7 @@ export const get_Page__shield__get__script = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: page_shield_id, script_id: page_shield_id }) },
-  responses: { 200: page_shield_get_zone_script_response, "4XX": v.intersect([page_shield_api_response_common_failure]) },
+  responses: { 200: page_shield_get_zone_script_response, "4XX": page_shield_api_response_common_failure },
 };
 
 export type get_Page__rules__list__page__rules = typeof get_Page__rules__list__page__rules;
@@ -47645,7 +47645,7 @@ export const get_Get__zone__security__center__insights = {
   path: v.literal("/zones/{zone_id}/security-center/insights"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: v.optional(v.intersect([security_center_page, v.optional(v.unknown(), 1)]), 1), per_page: v.optional(v.intersect([security_center_perPage, v.optional(v.unknown(), 25)]), 25) }))), path: v.object({ zone_id: security_center_identifier }) },
+  parameters: { query: v.optional(v.partial(v.object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: security_center_page, per_page: security_center_perPage }))), path: v.object({ zone_id: security_center_identifier }) },
   responses: { 200: v.intersect([security_center_api_response_common, v.partial(v.object({ result: v.partial(v.object({ count: security_center_count, issues: v.array(security_center_issue), page: security_center_page, per_page: security_center_perPage })) }))]), "4XX": security_center_api_response_common_failure },
 };
 
@@ -47726,7 +47726,7 @@ export const patch_Update__zone__security__center__insight__classification = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: security_center_identifier, issue_id: v.string() }), body: security_center_userClassificationUpdate },
-  responses: { 200: v.intersect([security_center_api_response_single]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: security_center_api_response_single, "4XX": security_center_api_response_common_failure },
 };
 
 export type put_Archive__zone__security__center__insight = typeof put_Archive__zone__security__center__insight;
@@ -47736,7 +47736,7 @@ export const put_Archive__zone__security__center__insight = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: security_center_identifier, issue_id: v.string() }), body: v.optional(v.partial(v.object({ dismiss: v.optional(v.boolean(), true) }))) },
-  responses: { 200: v.intersect([security_center_api_response_single]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: security_center_api_response_single, "4XX": security_center_api_response_common_failure },
 };
 
 export type delete_Delete__security__txt = typeof delete_Delete__security__txt;
@@ -47746,7 +47746,7 @@ export const delete_Delete__security__txt = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: security_center_identifier }) },
-  responses: { 200: v.intersect([security_center_api_response_single]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: security_center_api_response_single, "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Get__security__txt = typeof get_Get__security__txt;
@@ -47766,7 +47766,7 @@ export const put_Update__security__txt = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ zone_id: security_center_identifier }), body: security_center_securityTxt },
-  responses: { 200: v.intersect([security_center_api_response_single]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: security_center_api_response_single, "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Zone__cache__settings__get__aegis__setting = typeof get_Zone__cache__settings__get__aegis__setting;
@@ -54445,7 +54445,7 @@ type InferSchemaInputRaw<T> = T extends v.GenericSchema ? v.InferInput<T> : T ex
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
-  ? TResponses extends Record<string, unknown>
+  ? TResponses extends Record<string | number, unknown>
     ? TypedApiResponse<InferSchemaValue<TResponses>, TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never>
     : never
   : never

@@ -1,7 +1,11 @@
 import type { SchemaObject } from "openapi3-ts/oas31";
 import type { SchemaObject as SchemaObject3 } from "openapi3-ts/oas30";
 
-export type LibSchemaObject = SchemaObject & SchemaObject3;
+type LibSchemaObjectBase = SchemaObject & SchemaObject3;
+
+export type LibSchemaObject = LibSchemaObjectBase & {
+  patternProperties?: Record<string, LibSchemaObject>;
+};
 
 /**
  * Result of a user `transformSchema` callback.

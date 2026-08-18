@@ -51,13 +51,13 @@ export type aaa_api_response_common = z.infer<typeof aaa_api_response_common>;
 export const aaa_api_response_common = z.object({ errors: aaa_messages, messages: aaa_messages, success: z.literal(true) });
 
 export type aaa_api_response_common_failure = z.infer<typeof aaa_api_response_common_failure>;
-export const aaa_api_response_common_failure = z.object({ errors: aaa_messages.and(z.unknown()), messages: aaa_messages, success: z.literal(false) });
+export const aaa_api_response_common_failure = z.object({ errors: aaa_messages, messages: aaa_messages, success: z.literal(false) });
 
 export type aaa_api_response_common_failure_2 = z.infer<typeof aaa_api_response_common_failure_2>;
 export const aaa_api_response_common_failure_2 = z.object({ errors: z.array(z.object({ message: z.string() })), messages: z.array(z.object({ message: z.string() }).partial()).optional(), success: z.literal(false) });
 
 export type aaa_api_response_common_failure_3 = z.infer<typeof aaa_api_response_common_failure_3>;
-export const aaa_api_response_common_failure_3 = z.object({ errors: aaa_messages_3.and(z.unknown()), messages: aaa_messages_3, success: z.literal(false) });
+export const aaa_api_response_common_failure_3 = z.object({ errors: aaa_messages_3, messages: aaa_messages_3, success: z.literal(false) });
 
 export type aaa_api_response_single = z.infer<typeof aaa_api_response_single>;
 export const aaa_api_response_single = aaa_api_response_common_2.and(z.record(z.string(), z.unknown()));
@@ -621,7 +621,7 @@ export type access_any_valid_service_token_rule = z.infer<typeof access_any_vali
 export const access_any_valid_service_token_rule = z.object({ any_valid_service_token: z.record(z.string(), z.unknown()) });
 
 export type access_api_response_common_failure = z.infer<typeof access_api_response_common_failure>;
-export const access_api_response_common_failure = z.object({ errors: access_messages.and(z.unknown()), messages: access_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const access_api_response_common_failure = z.object({ errors: access_messages, messages: access_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type access_app_count = z.infer<typeof access_app_count>;
 export const access_app_count = z.number().int();
@@ -699,7 +699,7 @@ export type access_skip_app_launcher_login_page = z.infer<typeof access_skip_app
 export const access_skip_app_launcher_login_page = z.boolean().default(false);
 
 export type access_app_launcher_props = z.infer<typeof access_app_launcher_props>;
-export const access_app_launcher_props = access_feature_app_props.and(z.object({ app_launcher_logo_url: access_app_launcher_logo_url, bg_color: access_bg_color, domain: z.unknown(), footer_links: access_footer_links, header_bg_color: access_header_bg_color, landing_page_design: access_landing_page_design, name: z.unknown().default("App Launcher"), skip_app_launcher_login_page: access_skip_app_launcher_login_page, type: access_type.and(z.unknown()) }).partial());
+export const access_app_launcher_props = access_feature_app_props.and(z.object({ app_launcher_logo_url: access_app_launcher_logo_url, bg_color: access_bg_color, domain: z.unknown(), footer_links: access_footer_links, header_bg_color: access_header_bg_color, landing_page_design: access_landing_page_design, name: z.unknown().default("App Launcher"), skip_app_launcher_login_page: access_skip_app_launcher_login_page, type: access_type }).partial());
 
 export type access_domain_3 = z.infer<typeof access_domain_3>;
 export const access_domain_3 = z.string();
@@ -870,7 +870,7 @@ export type access_app_policy_response = z.infer<typeof access_app_policy_respon
 export const access_app_policy_response = access_policy_resp.and(z.object({ precedence: access_precedence }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type access_app_req_embedded_policies = z.infer<typeof access_app_req_embedded_policies>;
-export const access_app_req_embedded_policies = z.object({ policies: z.array(z.union([access_app_policy_link, z.unknown().and(access_uuid_2), z.record(z.string(), z.unknown()).and(z.object({ id: access_uuid_2 }).partial()).and(access_app_policy_request)])) }).partial();
+export const access_app_req_embedded_policies = z.object({ policies: z.array(z.union([access_app_policy_link, access_uuid_2, z.record(z.string(), z.unknown()).and(z.object({ id: access_uuid_2 }).partial()).and(access_app_policy_request)])) }).partial();
 
 export type access_scim_config_authentication_http_basic = z.infer<typeof access_scim_config_authentication_http_basic>;
 export const access_scim_config_authentication_http_basic = z.object({ password: z.string(), scheme: z.literal("httpbasic"), user: z.string() });
@@ -954,13 +954,13 @@ export type access_use_clientless_isolation_app_launcher_url = z.infer<typeof ac
 export const access_use_clientless_isolation_app_launcher_url = z.boolean().default(false);
 
 export type access_self_hosted_props = z.infer<typeof access_self_hosted_props>;
-export const access_self_hosted_props = z.object({ allow_authenticate_via_warp: access_allow_authenticate_via_warp_2.optional(), allow_iframe: access_allow_iframe.optional(), allowed_idps: access_allowed_idps.optional(), app_launcher_visible: access_app_launcher_visible.optional(), auto_redirect_to_identity: access_auto_redirect_to_identity_2.optional(), cors_headers: access_cors_headers.optional(), custom_deny_message: access_custom_deny_message.optional(), custom_deny_url: access_custom_deny_url.optional(), custom_non_identity_deny_url: access_custom_non_identity_deny_url.optional(), custom_pages: access_custom_pages_2.optional(), destinations: access_destinations.optional(), domain: access_domain, eager_redirect_cookie_setting: access_eager_redirect_cookie_setting.optional(), enable_binding_cookie: access_enable_binding_cookie.optional(), http_only_cookie_attribute: access_http_only_cookie_attribute.optional(), logo_url: access_logo_url.optional(), mfa_config: access_mfa_config.optional(), name: access_name_8.optional(), oauth_configuration: access_oauth_configuration.optional(), options_preflight_bypass: access_options_preflight_bypass.optional(), path_cookie_attribute: access_path_cookie_attribute.optional(), read_service_tokens_from_header: access_read_service_tokens_from_header.optional(), same_site_cookie_attribute: access_same_site_cookie_attribute.optional(), scim_config: access_scim_config.optional(), self_hosted_domains: access_self_hosted_domains.optional(), service_auth_401_redirect: access_service_auth_401_redirect.optional(), session_duration: access_session_duration_2.optional(), skip_interstitial: access_skip_interstitial.optional(), tags: access_tags.optional(), type: access_type.and(z.unknown()), use_clientless_isolation_app_launcher_url: access_use_clientless_isolation_app_launcher_url.optional() });
+export const access_self_hosted_props = z.object({ allow_authenticate_via_warp: access_allow_authenticate_via_warp_2.optional(), allow_iframe: access_allow_iframe.optional(), allowed_idps: access_allowed_idps.optional(), app_launcher_visible: access_app_launcher_visible.optional(), auto_redirect_to_identity: access_auto_redirect_to_identity_2.optional(), cors_headers: access_cors_headers.optional(), custom_deny_message: access_custom_deny_message.optional(), custom_deny_url: access_custom_deny_url.optional(), custom_non_identity_deny_url: access_custom_non_identity_deny_url.optional(), custom_pages: access_custom_pages_2.optional(), destinations: access_destinations.optional(), domain: access_domain, eager_redirect_cookie_setting: access_eager_redirect_cookie_setting.optional(), enable_binding_cookie: access_enable_binding_cookie.optional(), http_only_cookie_attribute: access_http_only_cookie_attribute.optional(), logo_url: access_logo_url.optional(), mfa_config: access_mfa_config.optional(), name: access_name_8.optional(), oauth_configuration: access_oauth_configuration.optional(), options_preflight_bypass: access_options_preflight_bypass.optional(), path_cookie_attribute: access_path_cookie_attribute.optional(), read_service_tokens_from_header: access_read_service_tokens_from_header.optional(), same_site_cookie_attribute: access_same_site_cookie_attribute.optional(), scim_config: access_scim_config.optional(), self_hosted_domains: access_self_hosted_domains.optional(), service_auth_401_redirect: access_service_auth_401_redirect.optional(), session_duration: access_session_duration_2.optional(), skip_interstitial: access_skip_interstitial.optional(), tags: access_tags.optional(), type: access_type, use_clientless_isolation_app_launcher_url: access_use_clientless_isolation_app_launcher_url.optional() });
 
 export type access_created_at = z.infer<typeof access_created_at>;
-export const access_created_at = z.unknown().and(access_timestamp);
+export const access_created_at = access_timestamp;
 
 export type access_updated_at = z.infer<typeof access_updated_at>;
-export const access_updated_at = z.unknown().and(access_timestamp);
+export const access_updated_at = access_timestamp;
 
 export type access_saml_saas_app = z.infer<typeof access_saml_saas_app>;
 export const access_saml_saas_app = z.object({ auth_type: z.enum(["saml", "oidc"]), consumer_service_url: z.string(), created_at: access_created_at, custom_attributes: z.array(z.object({ friendly_name: z.string(), name: z.string(), name_format: z.enum(["urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified", "urn:oasis:names:tc:SAML:2.0:attrname-format:basic", "urn:oasis:names:tc:SAML:2.0:attrname-format:uri"]), required: z.boolean(), source: z.object({ name: z.string(), name_by_idp: z.array(z.object({ idp_id: z.string(), source_name: z.string() }).partial()) }).partial() }).partial()), default_relay_state: z.string(), idp_entity_id: z.string(), name_id_format: z.enum(["id", "email"]), name_id_transform_jsonata: z.string(), public_key: z.string(), saml_attribute_transform_jsonata: z.string(), sp_entity_id: z.string(), sso_endpoint: z.string(), updated_at: access_updated_at }).partial();
@@ -969,25 +969,25 @@ export type access_oidc_saas_app = z.infer<typeof access_oidc_saas_app>;
 export const access_oidc_saas_app = z.object({ access_token_lifetime: z.string(), allow_pkce_without_client_secret: z.boolean(), app_launcher_url: z.string(), auth_type: z.enum(["saml", "oidc"]), client_id: z.string(), client_secret: z.string(), created_at: access_created_at, custom_claims: z.array(z.object({ name: z.string(), required: z.boolean(), scope: z.enum(["groups", "profile", "email", "openid"]), source: z.object({ name: z.string(), name_by_idp: z.record(z.string(), z.string()) }).partial() }).partial()), grant_types: z.array(z.enum(["authorization_code", "authorization_code_with_pkce", "refresh_tokens", "hybrid", "implicit"])), group_filter_regex: z.string(), hybrid_and_implicit_options: z.object({ return_access_token_from_authorization_endpoint: z.boolean(), return_id_token_from_authorization_endpoint: z.boolean() }).partial(), public_key: z.string(), redirect_uris: z.array(z.string()), refresh_token_options: z.object({ lifetime: z.string() }).partial(), scopes: z.array(z.enum(["openid", "groups", "email", "profile"])), updated_at: access_updated_at }).partial();
 
 export type access_saas_props = z.infer<typeof access_saas_props>;
-export const access_saas_props = z.object({ allowed_idps: access_allowed_idps, app_launcher_visible: access_app_launcher_visible, auto_redirect_to_identity: access_auto_redirect_to_identity_2, custom_pages: access_custom_pages_2, logo_url: access_logo_url, name: access_name_8, saas_app: z.union([access_saml_saas_app, access_oidc_saas_app]), scim_config: access_scim_config, tags: access_tags, type: access_type.and(z.unknown()) }).partial();
+export const access_saas_props = z.object({ allowed_idps: access_allowed_idps, app_launcher_visible: access_app_launcher_visible, auto_redirect_to_identity: access_auto_redirect_to_identity_2, custom_pages: access_custom_pages_2, logo_url: access_logo_url, name: access_name_8, saas_app: z.union([access_saml_saas_app, access_oidc_saas_app]), scim_config: access_scim_config, tags: access_tags, type: access_type }).partial();
 
 export type access_ssh_props = z.infer<typeof access_ssh_props>;
-export const access_ssh_props = access_self_hosted_props.and(z.object({ type: access_type.and(z.unknown()) }).partial());
+export const access_ssh_props = access_self_hosted_props.and(z.object({ type: access_type }).partial());
 
 export type access_vnc_props = z.infer<typeof access_vnc_props>;
-export const access_vnc_props = access_self_hosted_props.and(z.object({ type: access_type.and(z.unknown()) }).partial());
+export const access_vnc_props = access_self_hosted_props.and(z.object({ type: access_type }).partial());
 
 export type access_warp_props = z.infer<typeof access_warp_props>;
-export const access_warp_props = access_feature_app_props.and(z.object({ domain: z.unknown(), name: z.unknown().default("Warp Login App"), type: access_type.and(z.unknown()) }).partial());
+export const access_warp_props = access_feature_app_props.and(z.object({ domain: z.unknown(), name: z.unknown().default("Warp Login App"), type: access_type }).partial());
 
 export type access_biso_props = z.infer<typeof access_biso_props>;
-export const access_biso_props = access_feature_app_props.and(z.object({ domain: z.unknown(), name: z.unknown().default("Clientless Web Isolation"), type: access_type.and(z.unknown()) }).partial());
+export const access_biso_props = access_feature_app_props.and(z.object({ domain: z.unknown(), name: z.unknown().default("Clientless Web Isolation"), type: access_type }).partial());
 
 export type access_proxy_endpoint_props = z.infer<typeof access_proxy_endpoint_props>;
-export const access_proxy_endpoint_props = access_feature_app_props.and(z.object({ domain: z.unknown(), name: z.unknown().default("Gateway Proxy"), type: access_type.and(z.unknown()) }).partial());
+export const access_proxy_endpoint_props = access_feature_app_props.and(z.object({ domain: z.unknown(), name: z.unknown().default("Gateway Proxy"), type: access_type }).partial());
 
 export type access_bookmark_props = z.infer<typeof access_bookmark_props>;
-export const access_bookmark_props = z.object({ app_launcher_visible: access_app_launcher_visible, domain: z.string(), logo_url: access_logo_url, name: access_name_8, tags: access_tags, type: access_type.and(z.unknown()) }).partial();
+export const access_bookmark_props = z.object({ app_launcher_visible: access_app_launcher_visible, domain: z.string(), logo_url: access_logo_url, name: access_name_8, tags: access_tags, type: access_type }).partial();
 
 export type access_port = z.infer<typeof access_port>;
 export const access_port = z.number().int();
@@ -1008,7 +1008,7 @@ export type access_app_resp_embedded_target_criteria_infra = z.infer<typeof acce
 export const access_app_resp_embedded_target_criteria_infra = z.object({ target_criteria: z.array(access_target_criteria_infra_app) }).partial();
 
 export type access_infra_props = z.infer<typeof access_infra_props>;
-export const access_infra_props = z.object({ name: access_name_8, type: access_type.and(z.unknown()) }).partial().and(access_app_resp_embedded_target_criteria_infra).and(z.record(z.string(), z.unknown()));
+export const access_infra_props = z.object({ name: access_name_8, type: access_type }).partial().and(access_app_resp_embedded_target_criteria_infra).and(z.record(z.string(), z.unknown()));
 
 export type access_usernames = z.infer<typeof access_usernames>;
 export const access_usernames = z.array(z.string());
@@ -1038,13 +1038,13 @@ export type access_app_resp_embedded_target_criteria_self_hosted = z.infer<typeo
 export const access_app_resp_embedded_target_criteria_self_hosted = z.object({ target_criteria: z.array(access_target_criteria_self_hosted_app) }).partial();
 
 export type access_rdp_props = z.infer<typeof access_rdp_props>;
-export const access_rdp_props = access_app_resp_embedded_target_criteria_self_hosted.and(access_self_hosted_props).and(z.object({ type: access_type.and(z.unknown()) }).partial()).and(z.unknown());
+export const access_rdp_props = access_app_resp_embedded_target_criteria_self_hosted.and(access_self_hosted_props).and(z.object({ type: access_type }).partial());
 
 export type access_mcp_props = z.infer<typeof access_mcp_props>;
-export const access_mcp_props = z.object({ allow_authenticate_via_warp: access_allow_authenticate_via_warp_2.optional(), allowed_idps: access_allowed_idps.optional(), auto_redirect_to_identity: access_auto_redirect_to_identity_2.optional(), custom_deny_message: access_custom_deny_message.optional(), custom_deny_url: access_custom_deny_url.optional(), custom_non_identity_deny_url: access_custom_non_identity_deny_url.optional(), custom_pages: access_custom_pages_2.optional(), destinations: access_destinations.optional(), http_only_cookie_attribute: access_http_only_cookie_attribute.optional(), logo_url: access_logo_url.optional(), name: access_name_8.optional(), oauth_configuration: access_oauth_configuration.optional(), options_preflight_bypass: access_options_preflight_bypass.optional(), same_site_cookie_attribute: access_same_site_cookie_attribute.optional(), scim_config: access_scim_config.optional(), session_duration: access_session_duration_2.optional(), tags: access_tags.optional(), type: access_type.and(z.unknown()) });
+export const access_mcp_props = z.object({ allow_authenticate_via_warp: access_allow_authenticate_via_warp_2.optional(), allowed_idps: access_allowed_idps.optional(), auto_redirect_to_identity: access_auto_redirect_to_identity_2.optional(), custom_deny_message: access_custom_deny_message.optional(), custom_deny_url: access_custom_deny_url.optional(), custom_non_identity_deny_url: access_custom_non_identity_deny_url.optional(), custom_pages: access_custom_pages_2.optional(), destinations: access_destinations.optional(), http_only_cookie_attribute: access_http_only_cookie_attribute.optional(), logo_url: access_logo_url.optional(), name: access_name_8.optional(), oauth_configuration: access_oauth_configuration.optional(), options_preflight_bypass: access_options_preflight_bypass.optional(), same_site_cookie_attribute: access_same_site_cookie_attribute.optional(), scim_config: access_scim_config.optional(), session_duration: access_session_duration_2.optional(), tags: access_tags.optional(), type: access_type });
 
 export type access_mcp_portal_props = z.infer<typeof access_mcp_portal_props>;
-export const access_mcp_portal_props = z.object({ allow_authenticate_via_warp: access_allow_authenticate_via_warp_2.optional(), allowed_idps: access_allowed_idps.optional(), auto_redirect_to_identity: access_auto_redirect_to_identity_2.optional(), custom_deny_message: access_custom_deny_message.optional(), custom_deny_url: access_custom_deny_url.optional(), custom_non_identity_deny_url: access_custom_non_identity_deny_url.optional(), custom_pages: access_custom_pages_2.optional(), destinations: access_destinations.optional(), domain: access_domain.optional(), http_only_cookie_attribute: access_http_only_cookie_attribute.optional(), logo_url: access_logo_url.optional(), name: access_name_8.optional(), oauth_configuration: access_oauth_configuration.optional(), options_preflight_bypass: access_options_preflight_bypass.optional(), same_site_cookie_attribute: access_same_site_cookie_attribute.optional(), scim_config: access_scim_config.optional(), session_duration: access_session_duration_2.optional(), tags: access_tags.optional(), type: access_type.and(z.unknown()) });
+export const access_mcp_portal_props = z.object({ allow_authenticate_via_warp: access_allow_authenticate_via_warp_2.optional(), allowed_idps: access_allowed_idps.optional(), auto_redirect_to_identity: access_auto_redirect_to_identity_2.optional(), custom_deny_message: access_custom_deny_message.optional(), custom_deny_url: access_custom_deny_url.optional(), custom_non_identity_deny_url: access_custom_non_identity_deny_url.optional(), custom_pages: access_custom_pages_2.optional(), destinations: access_destinations.optional(), domain: access_domain.optional(), http_only_cookie_attribute: access_http_only_cookie_attribute.optional(), logo_url: access_logo_url.optional(), name: access_name_8.optional(), oauth_configuration: access_oauth_configuration.optional(), options_preflight_bypass: access_options_preflight_bypass.optional(), same_site_cookie_attribute: access_same_site_cookie_attribute.optional(), scim_config: access_scim_config.optional(), session_duration: access_session_duration_2.optional(), tags: access_tags.optional(), type: access_type });
 
 export type access_app_request = z.infer<typeof access_app_request>;
 export const access_app_request = z.union([access_self_hosted_props.and(access_app_req_embedded_policies).and(access_app_req_embedded_scim_config).and(z.record(z.string(), z.unknown())), access_saas_props.and(access_app_req_embedded_policies).and(access_app_req_embedded_scim_config).and(z.record(z.string(), z.unknown())), access_ssh_props.and(access_app_req_embedded_policies).and(access_app_req_embedded_scim_config).and(z.record(z.string(), z.unknown())), access_vnc_props.and(access_app_req_embedded_policies).and(access_app_req_embedded_scim_config).and(z.record(z.string(), z.unknown())), access_app_launcher_props.and(access_app_req_embedded_policies).and(z.record(z.string(), z.unknown())), access_warp_props.and(access_app_req_embedded_policies).and(z.record(z.string(), z.unknown())), access_biso_props.and(access_app_req_embedded_policies).and(z.record(z.string(), z.unknown())), access_proxy_endpoint_props.and(access_app_req_embedded_policies).and(z.record(z.string(), z.unknown())), access_bookmark_props.and(access_app_req_embedded_policies).and(z.record(z.string(), z.unknown())), access_infra_props.and(access_infra_app_req_embedded_policies).and(z.record(z.string(), z.unknown())), access_rdp_props.and(access_app_req_embedded_policies).and(z.record(z.string(), z.unknown())), access_mcp_props.and(access_app_req_embedded_policies).and(z.record(z.string(), z.unknown())), access_mcp_portal_props.and(access_app_req_embedded_policies).and(z.record(z.string(), z.unknown()))]);
@@ -1176,7 +1176,7 @@ export type access_saml_certificate_set = z.infer<typeof access_saml_certificate
 export const access_saml_certificate_set = z.object({ created_at: z.iso.datetime(), current_certificate: access_saml_certificate.optional(), previous_certificate: z.record(z.string(), z.unknown()).nullable().optional(), uid: z.uuid(), updated_at: z.iso.datetime() });
 
 export type access_identity_provider = z.infer<typeof access_identity_provider>;
-export const access_identity_provider = z.object({ config: z.record(z.string(), z.unknown()), id: access_uuid.optional(), name: access_name_3, read_only: z.boolean().optional(), saml_certificate_set: access_saml_certificate_set.and(z.unknown()).optional(), saml_certificate_set_id: z.uuid().optional(), scim_config: z.object({ enabled: z.boolean().default(false), identity_update_behavior: z.enum(["automatic", "reauth", "no_action"]).default("no_action"), scim_base_url: z.string(), seat_deprovision: z.boolean().default(false), secret: z.string(), user_deprovision: z.boolean().default(false) }).partial().optional(), type: z.enum(["onetimepin", "azureAD", "saml", "centrify", "facebook", "github", "google-apps", "google", "linkedin", "oidc", "okta", "onelogin", "pingone", "yandex", "cloudflare"]) });
+export const access_identity_provider = z.object({ config: z.record(z.string(), z.unknown()), id: access_uuid.optional(), name: access_name_3, read_only: z.boolean().optional(), saml_certificate_set: access_saml_certificate_set.optional(), saml_certificate_set_id: z.uuid().optional(), scim_config: z.object({ enabled: z.boolean().default(false), identity_update_behavior: z.enum(["automatic", "reauth", "no_action"]).default("no_action"), scim_base_url: z.string(), seat_deprovision: z.boolean().default(false), secret: z.string(), user_deprovision: z.boolean().default(false) }).partial().optional(), type: z.enum(["onetimepin", "azureAD", "saml", "centrify", "facebook", "github", "google-apps", "google", "linkedin", "oidc", "okta", "onelogin", "pingone", "yandex", "cloudflare"]) });
 
 export type access_generic_oauth_config = z.infer<typeof access_generic_oauth_config>;
 export const access_generic_oauth_config = z.object({ client_id: z.string(), client_secret: z.string() }).partial();
@@ -1440,7 +1440,7 @@ export type access_id_response_6 = z.infer<typeof access_id_response_6>;
 export const access_id_response_6 = access_api_response_single.and(z.object({ result: z.object({ id: access_id_3 }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type access_identifier_2 = z.infer<typeof access_identifier_2>;
-export const access_identifier_2 = access_identifier.and(z.unknown());
+export const access_identifier_2 = access_identifier;
 
 export type access_identifier_3 = z.infer<typeof access_identifier_3>;
 export const access_identifier_3 = z.string();
@@ -1500,7 +1500,7 @@ export type access_identity_providers_2 = z.infer<typeof access_identity_provide
 export const access_identity_providers_2 = z.union([access_azureAD_2, access_centrify_2, access_facebook_2, access_github_2, access_google_2, access_google_apps_2, access_linkedin_2, access_oidc_2, access_okta_2, access_onelogin_2, access_pingone_2, access_saml_2, access_yandex_2, access_cloudflare_2]);
 
 export type access_idp_federation_grant = z.infer<typeof access_idp_federation_grant>;
-export const access_idp_federation_grant = z.object({ created_at: access_created_at, id: access_identifier.and(z.unknown()), idp_id: z.uuid() });
+export const access_idp_federation_grant = z.object({ created_at: access_created_at, id: access_identifier, idp_id: z.uuid() });
 
 export type access_idp_federation_grant_create_request = z.infer<typeof access_idp_federation_grant_create_request>;
 export const access_idp_federation_grant_create_request = z.object({ idp_id: z.uuid() });
@@ -1749,7 +1749,7 @@ export type access_response_collection_18 = z.infer<typeof access_response_colle
 export const access_response_collection_18 = access_api_response_collection.and(z.object({ result: z.array(access_groups_3) }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type access_service_tokens_2 = z.infer<typeof access_service_tokens_2>;
-export const access_service_tokens_2 = z.object({ client_id: access_client_id, created_at: access_timestamp, duration: access_duration_2, expires_at: access_timestamp, id: z.unknown().and(access_uuid), last_seen_at: access_timestamp, name: access_name_17, updated_at: access_timestamp }).partial();
+export const access_service_tokens_2 = z.object({ client_id: access_client_id, created_at: access_timestamp, duration: access_duration_2, expires_at: access_timestamp, id: access_uuid, last_seen_at: access_timestamp, name: access_name_17, updated_at: access_timestamp }).partial();
 
 export type access_response_collection_19 = z.infer<typeof access_response_collection_19>;
 export const access_response_collection_19 = access_api_response_collection.and(z.object({ result: z.array(access_service_tokens_2) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -1782,7 +1782,7 @@ export type access_response_collection_24 = z.infer<typeof access_response_colle
 export const access_response_collection_24 = access_api_response_collection.and(z.object({ result_info: z.object({ count: z.unknown(), page: z.unknown(), per_page: z.unknown(), total_count: z.unknown() }).partial() }).partial()).and(z.object({ result: z.array(access_users_2) }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type access_service_tokens = z.infer<typeof access_service_tokens>;
-export const access_service_tokens = z.object({ client_id: access_client_id, created_at: access_created_at, duration: access_duration, expires_at: access_timestamp, id: z.unknown().and(access_uuid), last_seen_at: z.unknown().and(access_timestamp), name: access_name_2, updated_at: access_updated_at }).partial();
+export const access_service_tokens = z.object({ client_id: access_client_id, created_at: access_created_at, duration: access_duration, expires_at: access_timestamp, id: access_uuid, last_seen_at: access_timestamp, name: access_name_2, updated_at: access_updated_at }).partial();
 
 export type access_response_collection_3 = z.infer<typeof access_response_collection_3>;
 export const access_response_collection_3 = access_api_response_collection.and(z.object({ result: z.array(access_service_tokens) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -2013,7 +2013,7 @@ export type addressing_api_response_collection = z.infer<typeof addressing_api_r
 export const addressing_api_response_collection = addressing_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type addressing_api_response_common_failure = z.infer<typeof addressing_api_response_common_failure>;
-export const addressing_api_response_common_failure = z.object({ errors: addressing_messages.and(z.unknown()), messages: addressing_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const addressing_api_response_common_failure = z.object({ errors: addressing_messages, messages: addressing_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type addressing_approved = z.infer<typeof addressing_approved>;
 export const addressing_approved = z.string();
@@ -2319,7 +2319,7 @@ export type alexandria_api_response_collection = z.infer<typeof alexandria_api_r
 export const alexandria_api_response_collection = alexandria_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type alexandria_api_response_common_failure = z.infer<typeof alexandria_api_response_common_failure>;
-export const alexandria_api_response_common_failure = z.object({ errors: alexandria_messages.and(z.unknown()), messages: alexandria_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const alexandria_api_response_common_failure = z.object({ errors: alexandria_messages, messages: alexandria_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type alexandria_application_confidence_score = z.infer<typeof alexandria_application_confidence_score>;
 export const alexandria_application_confidence_score = z.number();
@@ -2514,7 +2514,7 @@ export type api_shield_api_response_collection = z.infer<typeof api_shield_api_r
 export const api_shield_api_response_collection = api_shield_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type api_shield_api_response_common_failure = z.infer<typeof api_shield_api_response_common_failure>;
-export const api_shield_api_response_common_failure = z.object({ errors: api_shield_messages.and(z.unknown()), messages: api_shield_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const api_shield_api_response_common_failure = z.object({ errors: api_shield_messages, messages: api_shield_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type api_shield_api_response_single = z.infer<typeof api_shield_api_response_single>;
 export const api_shield_api_response_single = api_shield_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -2868,7 +2868,7 @@ export type argo_analytics_api_response_common = z.infer<typeof argo_analytics_a
 export const argo_analytics_api_response_common = z.object({ errors: argo_analytics_messages, messages: argo_analytics_messages, result: z.union([z.record(z.string(), z.unknown()), z.array(z.unknown()), z.string()]), success: z.literal(true) });
 
 export type argo_analytics_api_response_common_failure = z.infer<typeof argo_analytics_api_response_common_failure>;
-export const argo_analytics_api_response_common_failure = z.object({ errors: argo_analytics_messages.and(z.unknown()), messages: argo_analytics_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const argo_analytics_api_response_common_failure = z.object({ errors: argo_analytics_messages, messages: argo_analytics_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type argo_analytics_api_response_single = z.infer<typeof argo_analytics_api_response_single>;
 export const argo_analytics_api_response_single = argo_analytics_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()).nullable(), z.string().nullable()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -2883,7 +2883,7 @@ export type argo_config_messages = z.infer<typeof argo_config_messages>;
 export const argo_config_messages = z.array(z.object({ code: z.number().int().min(1000), message: z.string() }));
 
 export type argo_config_api_response_common_failure = z.infer<typeof argo_config_api_response_common_failure>;
-export const argo_config_api_response_common_failure = z.object({ errors: argo_config_messages.and(z.unknown()), messages: argo_config_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const argo_config_api_response_common_failure = z.object({ errors: argo_config_messages, messages: argo_config_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type argo_config_editable = z.infer<typeof argo_config_editable>;
 export const argo_config_editable = z.boolean();
@@ -3042,7 +3042,7 @@ export type bill_subs_api_amount = z.infer<typeof bill_subs_api_amount>;
 export const bill_subs_api_amount = z.number();
 
 export type bill_subs_api_api_response_common_failure = z.infer<typeof bill_subs_api_api_response_common_failure>;
-export const bill_subs_api_api_response_common_failure = z.object({ errors: bill_subs_api_messages.and(z.unknown()), messages: bill_subs_api_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const bill_subs_api_api_response_common_failure = z.object({ errors: bill_subs_api_messages, messages: bill_subs_api_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type bill_subs_api_can_subscribe = z.infer<typeof bill_subs_api_can_subscribe>;
 export const bill_subs_api_can_subscribe = z.boolean().default(false);
@@ -3120,7 +3120,7 @@ export type bill_subs_api_duration = z.infer<typeof bill_subs_api_duration>;
 export const bill_subs_api_duration = z.number();
 
 export type bill_subs_api_frequency_response = z.infer<typeof bill_subs_api_frequency_response>;
-export const bill_subs_api_frequency_response = bill_subs_api_frequency.and(z.enum(["weekly", "monthly", "quarterly", "yearly", "not-applicable"])).and(z.unknown());
+export const bill_subs_api_frequency_response = bill_subs_api_frequency.and(z.enum(["weekly", "monthly", "quarterly", "yearly", "not-applicable"]));
 
 export type bill_subs_api_schemas_component_values = z.infer<typeof bill_subs_api_schemas_component_values>;
 export const bill_subs_api_schemas_component_values = z.array(bill_subs_api_component_value);
@@ -3183,7 +3183,7 @@ export type bot_management_api_response_common = z.infer<typeof bot_management_a
 export const bot_management_api_response_common = z.object({ errors: bot_management_messages, messages: bot_management_messages, success: z.literal(true) });
 
 export type bot_management_api_response_common_failure = z.infer<typeof bot_management_api_response_common_failure>;
-export const bot_management_api_response_common_failure = z.object({ errors: bot_management_messages.and(z.unknown()), messages: bot_management_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const bot_management_api_response_common_failure = z.object({ errors: bot_management_messages, messages: bot_management_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type bot_management_api_response_single = z.infer<typeof bot_management_api_response_single>;
 export const bot_management_api_response_single = bot_management_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -3495,7 +3495,7 @@ export type builds_EnvironmentVariablesRequest = z.infer<typeof builds_Environme
 export const builds_EnvironmentVariablesRequest = z.record(z.string(), z.object({ is_secret: builds_is_secret, value: z.string().nullable().optional() }));
 
 export type builds_CreateWorkerBuildSettingsInput = z.infer<typeof builds_CreateWorkerBuildSettingsInput>;
-export const builds_CreateWorkerBuildSettingsInput = z.object({ build_caching_enabled: builds_build_caching_enabled.and(z.unknown().default(true)).default(true), build_command: builds_build_command, build_token_uuid: builds_build_token_uuid, deploy_command: builds_deploy_command, environment_variables: builds_EnvironmentVariablesRequest.optional(), path_excludes: builds_path_excludes.optional(), path_includes: builds_path_includes.optional(), root_directory: builds_root_directory.and(z.unknown().default("/")).default("/") });
+export const builds_CreateWorkerBuildSettingsInput = z.object({ build_caching_enabled: builds_build_caching_enabled.optional(), build_command: builds_build_command, build_token_uuid: builds_build_token_uuid, deploy_command: builds_deploy_command, environment_variables: builds_EnvironmentVariablesRequest.optional(), path_excludes: builds_path_excludes.optional(), path_includes: builds_path_includes.optional(), root_directory: builds_root_directory.optional() });
 
 export type builds_CreateWorkerGitRepositoryFunfettiInput = z.infer<typeof builds_CreateWorkerGitRepositoryFunfettiInput>;
 export const builds_CreateWorkerGitRepositoryFunfettiInput = z.object({ branch: z.string().min(1).max(256), provider_account_id: builds_provider_account_id, provider_account_name: builds_provider_account_name, provider_type: z.enum(["github", "gitlab"]), repo_id: builds_repo_id, repo_name: builds_repo_name });
@@ -3600,7 +3600,7 @@ export type cache_purge_messages = z.infer<typeof cache_purge_messages>;
 export const cache_purge_messages = z.array(z.object({ code: z.number().int().min(1000), message: z.string() }));
 
 export type cache_purge_api_response_common_failure = z.infer<typeof cache_purge_api_response_common_failure>;
-export const cache_purge_api_response_common_failure = z.object({ errors: cache_purge_messages.and(z.unknown()), messages: cache_purge_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
+export const cache_purge_api_response_common_failure = z.object({ errors: cache_purge_messages, messages: cache_purge_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
 
 export type cache_purge_identifier = z.infer<typeof cache_purge_identifier>;
 export const cache_purge_identifier = z.string().max(32);
@@ -3810,7 +3810,7 @@ export type cache_result = z.infer<typeof cache_result>;
 export const cache_result = z.object({ editable: z.boolean(), id: z.string(), modified_on: z.iso.datetime(), next_scheduled_scan: z.iso.datetime().nullable().optional(), value: z.enum(["auto", "custom"]) });
 
 export type cache_api_response_common_failure = z.infer<typeof cache_api_response_common_failure>;
-export const cache_api_response_common_failure = z.object({ errors: cache_messages.and(z.unknown()), messages: cache_messages, result: cache_result, success: z.boolean() });
+export const cache_api_response_common_failure = z.object({ errors: cache_messages, messages: cache_messages, result: cache_result, success: z.boolean() });
 
 export type cache_api_response_single_id = z.infer<typeof cache_api_response_single_id>;
 export const cache_api_response_single_id = z.object({ errors: cache_messages, messages: cache_messages, result: cache_result, success: z.boolean() });
@@ -3819,10 +3819,10 @@ export type cache_auto_origin_tls_kex_value = z.infer<typeof cache_auto_origin_t
 export const cache_auto_origin_tls_kex_value = z.boolean();
 
 export type cache_auto_origin_tls_kex_result = z.infer<typeof cache_auto_origin_tls_kex_result>;
-export const cache_auto_origin_tls_kex_result = z.object({ enabled: cache_auto_origin_tls_kex_value.and(z.unknown()), id: z.string(), modified_on: z.iso.datetime() });
+export const cache_auto_origin_tls_kex_result = z.object({ enabled: cache_auto_origin_tls_kex_value, id: z.string(), modified_on: z.iso.datetime() });
 
 export type cache_auto_origin_tls_kex_failure_response = z.infer<typeof cache_auto_origin_tls_kex_failure_response>;
-export const cache_auto_origin_tls_kex_failure_response = z.object({ errors: cache_messages.and(z.unknown()), messages: cache_messages, result: cache_auto_origin_tls_kex_result, success: z.boolean() });
+export const cache_auto_origin_tls_kex_failure_response = z.object({ errors: cache_messages, messages: cache_messages, result: cache_auto_origin_tls_kex_result, success: z.boolean() });
 
 export type cache_auto_origin_tls_kex_patch = z.infer<typeof cache_auto_origin_tls_kex_patch>;
 export const cache_auto_origin_tls_kex_patch = z.object({ enabled: cache_auto_origin_tls_kex_value });
@@ -3849,7 +3849,7 @@ export type calls_api_response_common = z.infer<typeof calls_api_response_common
 export const calls_api_response_common = z.object({ errors: calls_messages, messages: calls_messages, success: z.literal(true) });
 
 export type calls_api_response_common_failure = z.infer<typeof calls_api_response_common_failure>;
-export const calls_api_response_common_failure = z.object({ errors: calls_messages.and(z.unknown()), messages: calls_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const calls_api_response_common_failure = z.object({ errors: calls_messages, messages: calls_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type calls_api_response_single = z.infer<typeof calls_api_response_single>;
 export const calls_api_response_single = calls_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -4173,7 +4173,7 @@ export type cc_ModifyApplicationRequestBody = z.infer<typeof cc_ModifyApplicatio
 export const cc_ModifyApplicationRequestBody = z.object({ configuration: cc_ModifyUserDeploymentConfiguration, constraints: cc_ApplicationConstraints, instances: z.number().int(), max_instances: z.number().int(), name: z.string(), observability: cc_ApplicationObservability, rollout_active_grace_period: cc_ApplicationRolloutActiveGracePeriod, scheduling_policy: cc_SchedulingPolicy }).partial();
 
 export type cc_V4BaseErrorResponse = z.infer<typeof cc_V4BaseErrorResponse>;
-export const cc_V4BaseErrorResponse = z.object({ errors: cc_Messages.and(z.unknown()), messages: cc_Messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
+export const cc_V4BaseErrorResponse = z.object({ errors: cc_Messages, messages: cc_Messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
 
 export type cc_V4BaseResponse = z.infer<typeof cc_V4BaseResponse>;
 export const cc_V4BaseResponse = z.object({ errors: cc_Messages, messages: cc_Messages, success: z.boolean() });
@@ -4191,7 +4191,7 @@ export type cloud_connector_api_response_common = z.infer<typeof cloud_connector
 export const cloud_connector_api_response_common = z.object({ errors: cloud_connector_messages, messages: cloud_connector_messages, success: z.literal(true) });
 
 export type cloud_connector_api_response_common_failure = z.infer<typeof cloud_connector_api_response_common_failure>;
-export const cloud_connector_api_response_common_failure = z.object({ errors: cloud_connector_messages.and(z.unknown()), messages: cloud_connector_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const cloud_connector_api_response_common_failure = z.object({ errors: cloud_connector_messages, messages: cloud_connector_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type cloud_connector_identifier = z.infer<typeof cloud_connector_identifier>;
 export const cloud_connector_identifier = z.string().max(32);
@@ -4422,7 +4422,7 @@ export type cloudforce_one_whois_messages = z.infer<typeof cloudforce_one_whois_
 export const cloudforce_one_whois_messages = z.array(z.object({ code: z.number().int().min(1000), message: z.string() }));
 
 export type cloudforce_one_whois_api_response_common_failure = z.infer<typeof cloudforce_one_whois_api_response_common_failure>;
-export const cloudforce_one_whois_api_response_common_failure = z.object({ errors: cloudforce_one_whois_messages.and(z.unknown()), messages: cloudforce_one_whois_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const cloudforce_one_whois_api_response_common_failure = z.object({ errors: cloudforce_one_whois_messages, messages: cloudforce_one_whois_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type cloudforce_one_whois_api_response_single = z.infer<typeof cloudforce_one_whois_api_response_single>;
 export const cloudforce_one_whois_api_response_single = cloudforce_one_whois_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -4545,7 +4545,7 @@ export type custom_indicator_feeds_messages = z.infer<typeof custom_indicator_fe
 export const custom_indicator_feeds_messages = z.array(z.object({ code: z.number().int().min(1000), message: z.string() }));
 
 export type custom_indicator_feeds_api_response_common_failure = z.infer<typeof custom_indicator_feeds_api_response_common_failure>;
-export const custom_indicator_feeds_api_response_common_failure = z.object({ errors: custom_indicator_feeds_messages.and(z.unknown()), messages: custom_indicator_feeds_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const custom_indicator_feeds_api_response_common_failure = z.object({ errors: custom_indicator_feeds_messages, messages: custom_indicator_feeds_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type custom_indicator_feeds_description = z.infer<typeof custom_indicator_feeds_description>;
 export const custom_indicator_feeds_description = z.string();
@@ -4647,7 +4647,7 @@ export type custom_pages_api_response_collection = z.infer<typeof custom_pages_a
 export const custom_pages_api_response_collection = custom_pages_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type custom_pages_api_response_common_failure = z.infer<typeof custom_pages_api_response_common_failure>;
-export const custom_pages_api_response_common_failure = z.object({ errors: custom_pages_messages.and(z.unknown()), messages: custom_pages_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const custom_pages_api_response_common_failure = z.object({ errors: custom_pages_messages, messages: custom_pages_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type custom_pages_api_response_single = z.infer<typeof custom_pages_api_response_single>;
 export const custom_pages_api_response_single = custom_pages_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -4713,7 +4713,7 @@ export type d1_api_response_common = z.infer<typeof d1_api_response_common>;
 export const d1_api_response_common = z.object({ errors: d1_messages, messages: d1_messages, result: z.record(z.string(), z.unknown()), success: z.literal(true) });
 
 export type d1_api_response_common_failure = z.infer<typeof d1_api_response_common_failure>;
-export const d1_api_response_common_failure = z.object({ errors: d1_messages.and(z.unknown()), messages: d1_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const d1_api_response_common_failure = z.object({ errors: d1_messages, messages: d1_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type d1_params = z.infer<typeof d1_params>;
 export const d1_params = z.array(z.string());
@@ -4791,7 +4791,7 @@ export type d1_time_travel_bookmark = z.infer<typeof d1_time_travel_bookmark>;
 export const d1_time_travel_bookmark = z.string();
 
 export type d1_time_travel_restore_response = z.infer<typeof d1_time_travel_restore_response>;
-export const d1_time_travel_restore_response = z.object({ bookmark: d1_time_travel_bookmark.and(z.unknown()), message: z.string(), previous_bookmark: d1_time_travel_bookmark.and(z.unknown()) }).partial();
+export const d1_time_travel_restore_response = z.object({ bookmark: d1_time_travel_bookmark, message: z.string(), previous_bookmark: d1_time_travel_bookmark }).partial();
 
 export type d1_time_travel_timestamp = z.infer<typeof d1_time_travel_timestamp>;
 export const d1_time_travel_timestamp = z.iso.datetime();
@@ -4821,7 +4821,7 @@ export type digital_experience_monitoring_api_response_collection_common = z.inf
 export const digital_experience_monitoring_api_response_collection_common = digital_experience_monitoring_api_response_common.and(z.object({ result: z.array(z.unknown()).nullable() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type digital_experience_monitoring_api_response_common_failure = z.infer<typeof digital_experience_monitoring_api_response_common_failure>;
-export const digital_experience_monitoring_api_response_common_failure = z.object({ errors: digital_experience_monitoring_messages.and(z.unknown()), messages: digital_experience_monitoring_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const digital_experience_monitoring_api_response_common_failure = z.object({ errors: digital_experience_monitoring_messages, messages: digital_experience_monitoring_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type digital_experience_monitoring_api_response_single = z.infer<typeof digital_experience_monitoring_api_response_single>;
 export const digital_experience_monitoring_api_response_single = digital_experience_monitoring_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -4908,7 +4908,7 @@ export type digital_experience_monitoring_schemas_test_id = z.infer<typeof digit
 export const digital_experience_monitoring_schemas_test_id = z.string().max(32);
 
 export type digital_experience_monitoring_device_dex_test_schemas_http = z.infer<typeof digital_experience_monitoring_device_dex_test_schemas_http>;
-export const digital_experience_monitoring_device_dex_test_schemas_http = z.object({ created: z.iso.datetime().optional(), data: digital_experience_monitoring_device_dex_test_schemas_data, description: digital_experience_monitoring_device_dex_test_schemas_description.optional(), enabled: digital_experience_monitoring_device_dex_test_schemas_enabled, interval: digital_experience_monitoring_device_dex_test_schemas_interval, name: digital_experience_monitoring_device_dex_test_schemas_name, target_policies: digital_experience_monitoring_device_dex_test_target_policies.and(z.unknown()).optional(), targeted: z.boolean().optional(), test_id: digital_experience_monitoring_schemas_test_id.optional(), updated: z.iso.datetime().optional() });
+export const digital_experience_monitoring_device_dex_test_schemas_http = z.object({ created: z.iso.datetime().optional(), data: digital_experience_monitoring_device_dex_test_schemas_data, description: digital_experience_monitoring_device_dex_test_schemas_description.optional(), enabled: digital_experience_monitoring_device_dex_test_schemas_enabled, interval: digital_experience_monitoring_device_dex_test_schemas_interval, name: digital_experience_monitoring_device_dex_test_schemas_name, target_policies: digital_experience_monitoring_device_dex_test_target_policies.optional(), targeted: z.boolean().optional(), test_id: digital_experience_monitoring_schemas_test_id.optional(), updated: z.iso.datetime().optional() });
 
 export type digital_experience_monitoring_device_id = z.infer<typeof digital_experience_monitoring_device_id>;
 export const digital_experience_monitoring_device_id = z.string();
@@ -4962,10 +4962,10 @@ export type digital_experience_monitoring_dex_response_collection = z.infer<type
 export const digital_experience_monitoring_dex_response_collection = digital_experience_monitoring_api_response_collection_common.and(z.object({ result: z.array(digital_experience_monitoring_device_dex_test_schemas_http) }).partial());
 
 export type digital_experience_monitoring_dex_targeted_test = z.infer<typeof digital_experience_monitoring_dex_targeted_test>;
-export const digital_experience_monitoring_dex_targeted_test = z.object({ data: digital_experience_monitoring_device_dex_test_schemas_data.and(z.unknown()), enabled: z.boolean(), name: z.string(), test_id: z.string() });
+export const digital_experience_monitoring_dex_targeted_test = z.object({ data: digital_experience_monitoring_device_dex_test_schemas_data, enabled: z.boolean(), name: z.string(), test_id: z.string() });
 
 export type digital_experience_monitoring_dex_rule = z.infer<typeof digital_experience_monitoring_dex_rule>;
-export const digital_experience_monitoring_dex_rule = z.object({ created_at: z.string(), description: z.string().optional(), id: digital_experience_monitoring_uuid.and(z.unknown()), match: z.string(), name: z.string(), targeted_tests: z.array(digital_experience_monitoring_dex_targeted_test).optional(), updated_at: z.string().optional() });
+export const digital_experience_monitoring_dex_rule = z.object({ created_at: z.string(), description: z.string().optional(), id: digital_experience_monitoring_uuid, match: z.string(), name: z.string(), targeted_tests: z.array(digital_experience_monitoring_dex_targeted_test).optional(), updated_at: z.string().optional() });
 
 export type digital_experience_monitoring_dex_single_response = z.infer<typeof digital_experience_monitoring_dex_single_response>;
 export const digital_experience_monitoring_dex_single_response = digital_experience_monitoring_api_response_single.and(z.object({ result: digital_experience_monitoring_device_dex_test_schemas_http }).partial());
@@ -5067,10 +5067,10 @@ export type digital_experience_monitoring_warp_config_details = z.infer<typeof d
 export const digital_experience_monitoring_warp_config_details = z.object({ account_name: z.string(), account_tag: digital_experience_monitoring_uuid, config_name: z.string() }).partial();
 
 export type digital_experience_monitoring_warp_config_change_event = z.infer<typeof digital_experience_monitoring_warp_config_change_event>;
-export const digital_experience_monitoring_warp_config_change_event = z.object({ device_id: digital_experience_monitoring_uuid, device_registration: digital_experience_monitoring_uuid.and(z.unknown()), from: digital_experience_monitoring_warp_config_details, hostname: z.string(), registration_id: digital_experience_monitoring_uuid, serial_number: z.string(), timestamp: digital_experience_monitoring_timestamp_datetime, to: digital_experience_monitoring_warp_config_details, user_email: z.string() }).partial();
+export const digital_experience_monitoring_warp_config_change_event = z.object({ device_id: digital_experience_monitoring_uuid, device_registration: digital_experience_monitoring_uuid, from: digital_experience_monitoring_warp_config_details, hostname: z.string(), registration_id: digital_experience_monitoring_uuid, serial_number: z.string(), timestamp: digital_experience_monitoring_timestamp_datetime, to: digital_experience_monitoring_warp_config_details, user_email: z.string() }).partial();
 
 export type digital_experience_monitoring_warp_toggle_change_event = z.infer<typeof digital_experience_monitoring_warp_toggle_change_event>;
-export const digital_experience_monitoring_warp_toggle_change_event = z.object({ account_name: z.string(), account_tag: z.string(), device_id: digital_experience_monitoring_uuid, device_registration: digital_experience_monitoring_uuid.and(z.unknown()), hostname: z.string(), registration_id: digital_experience_monitoring_uuid, serial_number: z.string(), timestamp: digital_experience_monitoring_timestamp_datetime, toggle: z.enum(["on", "off"]), user_email: z.string() }).partial();
+export const digital_experience_monitoring_warp_toggle_change_event = z.object({ account_name: z.string(), account_tag: z.string(), device_id: digital_experience_monitoring_uuid, device_registration: digital_experience_monitoring_uuid, hostname: z.string(), registration_id: digital_experience_monitoring_uuid, serial_number: z.string(), timestamp: digital_experience_monitoring_timestamp_datetime, toggle: z.enum(["on", "off"]), user_email: z.string() }).partial();
 
 export type digital_experience_monitoring_warp_events_response = z.infer<typeof digital_experience_monitoring_warp_events_response>;
 export const digital_experience_monitoring_warp_events_response = z.array(z.union([digital_experience_monitoring_warp_toggle_change_event, digital_experience_monitoring_warp_config_change_event]));
@@ -5172,7 +5172,7 @@ export type dlp_SensitivityLevelRef = z.infer<typeof dlp_SensitivityLevelRef>;
 export const dlp_SensitivityLevelRef = z.object({ group_id: z.uuid(), level_id: z.uuid() });
 
 export type dlp_CustomProfile = z.infer<typeof dlp_CustomProfile>;
-export const dlp_CustomProfile = z.object({ ai_context_enabled: z.boolean().default(false), allowed_match_count: z.number().int().min(0).max(1000).default(0), confidence_threshold: dlp_Confidence.and(z.unknown().default("low")).default("low"), context_awareness: dlp_ContextAwareness.optional(), created_at: z.iso.datetime(), data_classes: z.array(z.uuid()).optional(), data_tags: z.array(z.uuid()).optional(), description: z.string().nullable().optional(), entries: z.array(dlp_Entry).optional(), id: z.uuid(), name: z.string(), ocr_enabled: z.boolean().default(false), sensitivity_levels: z.array(dlp_SensitivityLevelRef).optional(), shared_entries: z.array(dlp_Entry).optional(), updated_at: z.iso.datetime() });
+export const dlp_CustomProfile = z.object({ ai_context_enabled: z.boolean().default(false), allowed_match_count: z.number().int().min(0).max(1000).default(0), confidence_threshold: dlp_Confidence.optional(), context_awareness: dlp_ContextAwareness.optional(), created_at: z.iso.datetime(), data_classes: z.array(z.uuid()).optional(), data_tags: z.array(z.uuid()).optional(), description: z.string().nullable().optional(), entries: z.array(dlp_Entry).optional(), id: z.uuid(), name: z.string(), ocr_enabled: z.boolean().default(false), sensitivity_levels: z.array(dlp_SensitivityLevelRef).optional(), shared_entries: z.array(dlp_Entry).optional(), updated_at: z.iso.datetime() });
 
 export type dlp_CustomProfileArray = z.infer<typeof dlp_CustomProfileArray>;
 export const dlp_CustomProfileArray = z.array(dlp_CustomProfile);
@@ -5274,10 +5274,10 @@ export type dlp_DlpSettings = z.infer<typeof dlp_DlpSettings>;
 export const dlp_DlpSettings = z.object({ ai_context_analysis: z.boolean(), ocr: z.boolean(), payload_logging: dlp_PayloadLogSetting });
 
 export type dlp_PayloadLogSettingUpdate = z.infer<typeof dlp_PayloadLogSettingUpdate>;
-export const dlp_PayloadLogSettingUpdate = z.object({ masking_level: dlp_PayloadLogMaskingLevel.and(z.unknown().default("default")).default("default"), public_key: z.string().nullable() }).partial();
+export const dlp_PayloadLogSettingUpdate = z.object({ masking_level: dlp_PayloadLogMaskingLevel, public_key: z.string().nullable() }).partial();
 
 export type dlp_DlpSettingsUpdate = z.infer<typeof dlp_DlpSettingsUpdate>;
-export const dlp_DlpSettingsUpdate = z.object({ ai_context_analysis: z.boolean().nullable().default(false), ocr: z.boolean().nullable().default(false), payload_logging: dlp_PayloadLogSettingUpdate.and(z.unknown()) }).partial();
+export const dlp_DlpSettingsUpdate = z.object({ ai_context_analysis: z.boolean().nullable().default(false), ocr: z.boolean().nullable().default(false), payload_logging: dlp_PayloadLogSettingUpdate }).partial();
 
 export type dlp_DocumentFingerprint = z.infer<typeof dlp_DocumentFingerprint>;
 export const dlp_DocumentFingerprint = z.object({ created_at: z.iso.datetime(), description: z.string().default(""), entry_id: z.uuid(), file_name: z.string().nullable().optional(), id: z.uuid(), match_percent: z.number().int(), name: z.string(), status: dlp_DatasetUploadStatus, updated_at: z.iso.datetime(), version: z.number().int().nullable().optional() });
@@ -5313,7 +5313,7 @@ export type dlp_EntryUpdate = z.infer<typeof dlp_EntryUpdate>;
 export const dlp_EntryUpdate = dlp_EntryUpdateType.and(z.object({ enabled: z.boolean() }));
 
 export type dlp_EntryWithUploadStatus = z.infer<typeof dlp_EntryWithUploadStatus>;
-export const dlp_EntryWithUploadStatus = dlp_Entry.and(z.object({ upload_status: dlp_DatasetUploadStatus.and(z.unknown()) }).partial());
+export const dlp_EntryWithUploadStatus = dlp_Entry.and(z.object({ upload_status: dlp_DatasetUploadStatus }).partial());
 
 export type dlp_EntryWithSharedProfiles = z.infer<typeof dlp_EntryWithSharedProfiles>;
 export const dlp_EntryWithSharedProfiles = dlp_EntryWithUploadStatus.and(z.object({ profiles: z.array(dlp_EntryProfile) }));
@@ -5379,7 +5379,7 @@ export type dlp_PredefinedEntryUpdate = z.infer<typeof dlp_PredefinedEntryUpdate
 export const dlp_PredefinedEntryUpdate = z.object({ enabled: z.boolean() });
 
 export type dlp_PredefinedProfile = z.infer<typeof dlp_PredefinedProfile>;
-export const dlp_PredefinedProfile = z.object({ ai_context_enabled: z.boolean().default(false), allowed_match_count: z.number().int(), confidence_threshold: dlp_Confidence.and(z.unknown().default("low")).default("low"), context_awareness: dlp_ContextAwareness.optional(), entries: z.array(dlp_Entry), id: z.uuid(), name: z.string(), ocr_enabled: z.boolean().default(false), open_access: z.boolean().optional() });
+export const dlp_PredefinedProfile = z.object({ ai_context_enabled: z.boolean().default(false), allowed_match_count: z.number().int(), confidence_threshold: dlp_Confidence.optional(), context_awareness: dlp_ContextAwareness.optional(), entries: z.array(dlp_Entry), id: z.uuid(), name: z.string(), ocr_enabled: z.boolean().default(false), open_access: z.boolean().optional() });
 
 export type dlp_PredefinedProfileConfig = z.infer<typeof dlp_PredefinedProfileConfig>;
 export const dlp_PredefinedProfileConfig = z.object({ ai_context_enabled: z.boolean().default(false), allowed_match_count: z.number().int(), confidence_threshold: z.string().nullable().default("low"), enabled_entries: z.array(z.uuid()), entries: z.array(dlp_Entry), id: z.uuid(), name: z.string(), ocr_enabled: z.boolean().default(false), open_access: z.boolean().optional() });
@@ -5478,7 +5478,7 @@ export type dlp_api_response_collection = z.infer<typeof dlp_api_response_collec
 export const dlp_api_response_collection = dlp_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type dlp_api_response_common_failure = z.infer<typeof dlp_api_response_common_failure>;
-export const dlp_api_response_common_failure = z.object({ errors: dlp_messages.and(z.unknown()), messages: dlp_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const dlp_api_response_common_failure = z.object({ errors: dlp_messages, messages: dlp_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type dlp_api_response_single = z.infer<typeof dlp_api_response_single>;
 export const dlp_api_response_single = dlp_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -5529,7 +5529,7 @@ export type dls_api_response_collection = z.infer<typeof dls_api_response_collec
 export const dls_api_response_collection = dls_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type dls_api_response_common_failure = z.infer<typeof dls_api_response_common_failure>;
-export const dls_api_response_common_failure = z.object({ errors: dls_messages.and(z.unknown()), messages: dls_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const dls_api_response_common_failure = z.object({ errors: dls_messages, messages: dls_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type dls_none = z.infer<typeof dls_none>;
 export const dls_none = z.record(z.string(), z.unknown()).nullable();
@@ -5553,7 +5553,7 @@ export type dls_routing = z.infer<typeof dls_routing>;
 export const dls_routing = z.string().default("dns");
 
 export type dls_regional_hostname_response = z.infer<typeof dls_regional_hostname_response>;
-export const dls_regional_hostname_response = z.object({ created_on: dls_timestamp.and(z.unknown()).and(z.unknown()), hostname: dls_hostname_schemas, region_key: dls_region_key, routing: dls_routing });
+export const dls_regional_hostname_response = z.object({ created_on: dls_timestamp, hostname: dls_hostname_schemas, region_key: dls_region_key, routing: dls_routing });
 
 export type dns_analytics_messages = z.infer<typeof dns_analytics_messages>;
 export const dns_analytics_messages = z.array(z.object({ code: z.number().int().min(1000), documentation_url: z.string().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().optional() }));
@@ -5562,7 +5562,7 @@ export type dns_analytics_api_response_common = z.infer<typeof dns_analytics_api
 export const dns_analytics_api_response_common = z.object({ errors: dns_analytics_messages, messages: dns_analytics_messages, success: z.literal(true) });
 
 export type dns_analytics_api_response_common_failure = z.infer<typeof dns_analytics_api_response_common_failure>;
-export const dns_analytics_api_response_common_failure = z.object({ errors: dns_analytics_messages.and(z.unknown()), messages: dns_analytics_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const dns_analytics_api_response_common_failure = z.object({ errors: dns_analytics_messages, messages: dns_analytics_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type dns_analytics_api_response_single = z.infer<typeof dns_analytics_api_response_single>;
 export const dns_analytics_api_response_single = dns_analytics_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -5646,7 +5646,7 @@ export type dns_custom_nameservers_acns_response_single = z.infer<typeof dns_cus
 export const dns_custom_nameservers_acns_response_single = dns_custom_nameservers_api_response_single.and(z.object({ result: dns_custom_nameservers_CustomNS }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type dns_custom_nameservers_api_response_common_failure = z.infer<typeof dns_custom_nameservers_api_response_common_failure>;
-export const dns_custom_nameservers_api_response_common_failure = z.object({ errors: dns_custom_nameservers_messages.and(z.unknown()), messages: dns_custom_nameservers_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const dns_custom_nameservers_api_response_common_failure = z.object({ errors: dns_custom_nameservers_messages, messages: dns_custom_nameservers_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type dns_custom_nameservers_empty_response = z.infer<typeof dns_custom_nameservers_empty_response>;
 export const dns_custom_nameservers_empty_response = dns_custom_nameservers_api_response_collection.and(z.object({ result: z.array(z.string()).max(0) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -5682,7 +5682,7 @@ export type dns_firewall_api_response_collection = z.infer<typeof dns_firewall_a
 export const dns_firewall_api_response_collection = dns_firewall_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type dns_firewall_api_response_common_failure = z.infer<typeof dns_firewall_api_response_common_failure>;
-export const dns_firewall_api_response_common_failure = z.object({ errors: dns_firewall_messages.and(z.unknown()), messages: dns_firewall_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const dns_firewall_api_response_common_failure = z.object({ errors: dns_firewall_messages, messages: dns_firewall_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type dns_firewall_api_response_single = z.infer<typeof dns_firewall_api_response_single>;
 export const dns_firewall_api_response_single = dns_firewall_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -5856,7 +5856,7 @@ export type dns_records_api_response_collection = z.infer<typeof dns_records_api
 export const dns_records_api_response_collection = dns_records_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type dns_records_api_response_common_failure = z.infer<typeof dns_records_api_response_common_failure>;
-export const dns_records_api_response_common_failure = z.object({ errors: dns_records_messages.and(z.unknown()), messages: dns_records_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const dns_records_api_response_common_failure = z.object({ errors: dns_records_messages, messages: dns_records_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type dns_records_api_response_single = z.infer<typeof dns_records_api_response_single>;
 export const dns_records_api_response_single = dns_records_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -6021,7 +6021,7 @@ export type dns_settings_api_response_collection = z.infer<typeof dns_settings_a
 export const dns_settings_api_response_collection = dns_settings_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type dns_settings_api_response_common_failure = z.infer<typeof dns_settings_api_response_common_failure>;
-export const dns_settings_api_response_common_failure = z.object({ errors: dns_settings_messages.and(z.unknown()), messages: dns_settings_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const dns_settings_api_response_common_failure = z.object({ errors: dns_settings_messages, messages: dns_settings_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type dns_settings_api_response_single = z.infer<typeof dns_settings_api_response_single>;
 export const dns_settings_api_response_single = dns_settings_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -6096,7 +6096,7 @@ export type dnssec_api_response_common = z.infer<typeof dnssec_api_response_comm
 export const dnssec_api_response_common = z.object({ errors: dnssec_messages, messages: dnssec_messages, success: z.literal(true) });
 
 export type dnssec_api_response_common_failure = z.infer<typeof dnssec_api_response_common_failure>;
-export const dnssec_api_response_common_failure = z.object({ errors: dnssec_messages.and(z.unknown()), messages: dnssec_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const dnssec_api_response_common_failure = z.object({ errors: dnssec_messages, messages: dnssec_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type dnssec_api_response_single = z.infer<typeof dnssec_api_response_single>;
 export const dnssec_api_response_single = dnssec_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -6243,7 +6243,7 @@ export type dos_api_response_collection = z.infer<typeof dos_api_response_collec
 export const dos_api_response_collection = dos_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type dos_api_response_common_failure = z.infer<typeof dos_api_response_common_failure>;
-export const dos_api_response_common_failure = z.object({ errors: dos_messages.and(z.unknown()), messages: dos_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const dos_api_response_common_failure = z.object({ errors: dos_messages, messages: dos_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type dos_api_response_common_paginated = z.infer<typeof dos_api_response_common_paginated>;
 export const dos_api_response_common_paginated = dos_api_response_collection;
@@ -6335,7 +6335,7 @@ export const email_auth_SpfResult = z.enum(["pass", "neutral", "fail", "soft_fai
 export interface email_auth_SpfTree { components: Array<email_auth_SpfComponent>, domain: string, errors?: Array<email_auth_InspectError>, record: string, total_lookups: number }
 export const email_auth_SpfTree: z.ZodType<email_auth_SpfTree> = z.lazy(() => z.object({ components: z.array(email_auth_SpfComponent), domain: z.string(), errors: z.array(email_auth_InspectError).optional(), record: z.string(), total_lookups: z.number().int() }));
 
-export interface email_auth_SpfComponent { lookup_count: number, nested?: (email_auth_SpfTree), result: email_auth_SpfResult, type: ("ALL" | "A" | "MX" | "IP4" | "IP6" | "EXISTS" | "INCLUDE" | "PTR" | "REDIRECT"), value: string }
+export interface email_auth_SpfComponent { lookup_count: number, nested?: email_auth_SpfTree, result: email_auth_SpfResult, type: ("ALL" | "A" | "MX" | "IP4" | "IP6" | "EXISTS" | "INCLUDE" | "PTR" | "REDIRECT"), value: string }
 export const email_auth_SpfComponent: z.ZodType<email_auth_SpfComponent> = z.lazy(() => z.object({ lookup_count: z.number().int(), nested: email_auth_SpfTree.optional(), result: email_auth_SpfResult, type: z.enum(["ALL", "A", "MX", "IP4", "IP6", "EXISTS", "INCLUDE", "PTR", "REDIRECT"]), value: z.string() }));
 
 export type email_auth_messages = z.infer<typeof email_auth_messages>;
@@ -6345,7 +6345,7 @@ export type email_auth_api_response_common = z.infer<typeof email_auth_api_respo
 export const email_auth_api_response_common = z.object({ errors: email_auth_messages, messages: email_auth_messages, success: z.literal(true) });
 
 export type email_auth_api_response_common_failure = z.infer<typeof email_auth_api_response_common_failure>;
-export const email_auth_api_response_common_failure = z.object({ errors: email_auth_messages.and(z.unknown()), messages: email_auth_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const email_auth_api_response_common_failure = z.object({ errors: email_auth_messages, messages: email_auth_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type email_auth_api_response_single = z.infer<typeof email_auth_api_response_single>;
 export const email_auth_api_response_single = email_auth_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -6372,7 +6372,7 @@ export type email_security_PatternType = z.infer<typeof email_security_PatternTy
 export const email_security_PatternType = z.enum(["EMAIL", "DOMAIN", "IP", "UNKNOWN"]);
 
 export type email_security_AllowPolicy = z.infer<typeof email_security_AllowPolicy>;
-export const email_security_AllowPolicy = z.object({ comments: z.string().max(1024).nullable().optional(), created_at: email_security_timestamp.and(z.unknown()), id: email_security_AllowPolicyId.and(z.unknown()), is_acceptable_sender: z.boolean().optional(), is_exempt_recipient: z.boolean().optional(), is_recipient: z.boolean().optional(), is_regex: z.boolean().optional(), is_sender: z.boolean().optional(), is_spoof: z.boolean().optional(), is_trusted_sender: z.boolean().optional(), last_modified: email_security_timestamp.and(z.unknown()), modified_at: email_security_timestamp.and(z.unknown()).optional(), pattern: z.string().min(1).max(1024).optional(), pattern_type: email_security_PatternType.optional(), verify_sender: z.boolean().optional() });
+export const email_security_AllowPolicy = z.object({ comments: z.string().max(1024).nullable().optional(), created_at: email_security_timestamp, id: email_security_AllowPolicyId, is_acceptable_sender: z.boolean().optional(), is_exempt_recipient: z.boolean().optional(), is_recipient: z.boolean().optional(), is_regex: z.boolean().optional(), is_sender: z.boolean().optional(), is_spoof: z.boolean().optional(), is_trusted_sender: z.boolean().optional(), last_modified: email_security_timestamp, modified_at: email_security_timestamp.optional(), pattern: z.string().min(1).max(1024).optional(), pattern_type: email_security_PatternType.optional(), verify_sender: z.boolean().optional() });
 
 export type email_security_AllowPolicyList = z.infer<typeof email_security_AllowPolicyList>;
 export const email_security_AllowPolicyList = z.array(email_security_AllowPolicy);
@@ -6387,7 +6387,7 @@ export type email_security_BlockedSenderId = z.infer<typeof email_security_Block
 export const email_security_BlockedSenderId = z.uuid();
 
 export type email_security_BlockedSender = z.infer<typeof email_security_BlockedSender>;
-export const email_security_BlockedSender = z.object({ comments: z.string().max(1024).nullable(), created_at: email_security_timestamp.and(z.unknown()), id: email_security_BlockedSenderId.and(z.unknown()), is_regex: z.boolean(), last_modified: email_security_timestamp.and(z.unknown()), modified_at: email_security_timestamp.and(z.unknown()), pattern: z.string().min(1).max(1024), pattern_type: email_security_PatternType }).partial();
+export const email_security_BlockedSender = z.object({ comments: z.string().max(1024).nullable(), created_at: email_security_timestamp, id: email_security_BlockedSenderId, is_regex: z.boolean(), last_modified: email_security_timestamp, modified_at: email_security_timestamp, pattern: z.string().min(1).max(1024), pattern_type: email_security_PatternType }).partial();
 
 export type email_security_BlockedSenderList = z.infer<typeof email_security_BlockedSenderList>;
 export const email_security_BlockedSenderList = z.array(email_security_BlockedSender);
@@ -6417,10 +6417,10 @@ export type email_security_BulkJobDetail = z.infer<typeof email_security_BulkJob
 export const email_security_BulkJobDetail = z.object({ action_params: email_security_BulkJobActionParams, action_type: z.enum(["MOVE", "RELEASE"]), comment: z.string().nullable().optional(), completed_at: z.iso.datetime().nullable().optional(), created_at: z.iso.datetime(), job_id: z.uuid(), messages_failed: z.number().int(), messages_pending: z.number().int(), messages_successful: z.number().int(), search_params: email_security_BulkSearchParams, started_at: z.iso.datetime().nullable().optional(), status: z.enum(["PENDING", "DISCOVERING", "PROCESSING", "COMPLETED", "FAILED", "CANCELLED", "SKIPPED"]), status_message: z.string().nullable().optional(), total_messages_discovered: z.number().int() });
 
 export type email_security_CreateAllowPolicy = z.infer<typeof email_security_CreateAllowPolicy>;
-export const email_security_CreateAllowPolicy = email_security_AllowPolicy.and(z.unknown());
+export const email_security_CreateAllowPolicy = email_security_AllowPolicy;
 
 export type email_security_CreateBlockedSender = z.infer<typeof email_security_CreateBlockedSender>;
-export const email_security_CreateBlockedSender = email_security_BlockedSender.and(z.unknown());
+export const email_security_CreateBlockedSender = email_security_BlockedSender;
 
 export type email_security_DeliveryMode = z.infer<typeof email_security_DeliveryMode>;
 export const email_security_DeliveryMode = z.enum(["DIRECT", "BCC", "JOURNAL", "API", "RETRO_SCAN"]);
@@ -6441,28 +6441,28 @@ export type email_security_Provenance = z.infer<typeof email_security_Provenance
 export const email_security_Provenance = z.enum(["A1S_INTERNAL", "SNOOPY-CASB_OFFICE_365", "SNOOPY-OFFICE_365", "SNOOPY-GOOGLE_DIRECTORY"]);
 
 export type email_security_ImpersonationRegistry = z.infer<typeof email_security_ImpersonationRegistry>;
-export const email_security_ImpersonationRegistry = z.object({ comments: z.string().nullable(), created_at: email_security_timestamp.and(z.unknown()), directory_id: z.number().int().nullable(), directory_node_id: z.number().int().nullable(), email: z.string(), external_directory_node_id: z.string().nullable(), id: email_security_ImpersonationRegistryId.and(z.unknown()), is_email_regex: z.boolean(), last_modified: email_security_timestamp.and(z.unknown()), modified_at: email_security_timestamp.and(z.unknown()), name: z.string().max(1024), provenance: email_security_Provenance }).partial();
+export const email_security_ImpersonationRegistry = z.object({ comments: z.string().nullable(), created_at: email_security_timestamp, directory_id: z.number().int().nullable(), directory_node_id: z.number().int().nullable(), email: z.string(), external_directory_node_id: z.string().nullable(), id: email_security_ImpersonationRegistryId, is_email_regex: z.boolean(), last_modified: email_security_timestamp, modified_at: email_security_timestamp, name: z.string().max(1024), provenance: email_security_Provenance }).partial();
 
 export type email_security_CreateImpersonationRegistry = z.infer<typeof email_security_CreateImpersonationRegistry>;
-export const email_security_CreateImpersonationRegistry = email_security_ImpersonationRegistry.and(z.unknown());
+export const email_security_CreateImpersonationRegistry = email_security_ImpersonationRegistry;
 
 export type email_security_SendingDomainRestrictionId = z.infer<typeof email_security_SendingDomainRestrictionId>;
 export const email_security_SendingDomainRestrictionId = z.uuid();
 
 export type email_security_SendingDomainRestriction = z.infer<typeof email_security_SendingDomainRestriction>;
-export const email_security_SendingDomainRestriction = z.object({ comments: z.string().max(1024).nullable(), created_at: email_security_timestamp.and(z.unknown()), domain: z.string(), exclude: z.array(z.string()), id: email_security_SendingDomainRestrictionId.and(z.unknown()), last_modified: email_security_timestamp.and(z.unknown()), modified_at: email_security_timestamp.and(z.unknown()) }).partial();
+export const email_security_SendingDomainRestriction = z.object({ comments: z.string().max(1024).nullable(), created_at: email_security_timestamp, domain: z.string(), exclude: z.array(z.string()), id: email_security_SendingDomainRestrictionId, last_modified: email_security_timestamp, modified_at: email_security_timestamp }).partial();
 
 export type email_security_CreateSendingDomainRestriction = z.infer<typeof email_security_CreateSendingDomainRestriction>;
-export const email_security_CreateSendingDomainRestriction = email_security_SendingDomainRestriction.and(z.unknown());
+export const email_security_CreateSendingDomainRestriction = email_security_SendingDomainRestriction;
 
 export type email_security_TrustedDomainId = z.infer<typeof email_security_TrustedDomainId>;
 export const email_security_TrustedDomainId = z.uuid();
 
 export type email_security_TrustedDomain = z.infer<typeof email_security_TrustedDomain>;
-export const email_security_TrustedDomain = z.object({ comments: z.string().max(1024).nullable(), created_at: email_security_timestamp.and(z.unknown()), id: email_security_TrustedDomainId.and(z.unknown()), is_recent: z.boolean(), is_regex: z.boolean(), is_similarity: z.boolean(), last_modified: email_security_timestamp.and(z.unknown()), modified_at: email_security_timestamp.and(z.unknown()), pattern: z.string().min(1).max(1024) }).partial();
+export const email_security_TrustedDomain = z.object({ comments: z.string().max(1024).nullable(), created_at: email_security_timestamp, id: email_security_TrustedDomainId, is_recent: z.boolean(), is_regex: z.boolean(), is_similarity: z.boolean(), last_modified: email_security_timestamp, modified_at: email_security_timestamp, pattern: z.string().min(1).max(1024) }).partial();
 
 export type email_security_CreateTrustedDomain = z.infer<typeof email_security_CreateTrustedDomain>;
-export const email_security_CreateTrustedDomain = email_security_TrustedDomain.and(z.unknown());
+export const email_security_CreateTrustedDomain = email_security_TrustedDomain;
 
 export type email_security_CreateUrlIgnorePattern = z.infer<typeof email_security_CreateUrlIgnorePattern>;
 export const email_security_CreateUrlIgnorePattern = z.object({ comments: z.string().max(1024).nullable().optional(), pattern: z.string().min(1).max(1024) });
@@ -6516,7 +6516,7 @@ export type email_security_DomainStatus = z.infer<typeof email_security_DomainSt
 export const email_security_DomainStatus = z.union([z.literal("pending"), z.literal("active"), z.literal("failed"), z.literal("timeout"), z.literal(null)]).nullable();
 
 export type email_security_Domain = z.infer<typeof email_security_Domain>;
-export const email_security_Domain = z.object({ allowed_delivery_modes: z.array(email_security_DeliveryMode), authorization: email_security_DomainAuthorization, created_at: email_security_timestamp.and(z.unknown()), dmarc_status: email_security_DmarcStatus, domain: z.string(), drop_dispositions: z.array(email_security_DispositionLabel), emails_processed: email_security_EmailsProcessed, folder: email_security_ScannableFolder, id: email_security_DomainId, inbox_provider: z.union([z.literal("Microsoft"), z.literal("Google"), z.literal(null)]).nullable(), integration_id: z.uuid().nullable(), ip_restrictions: z.array(z.string()), last_modified: email_security_timestamp.and(z.unknown()), lookback_hops: z.number().int(), modified_at: email_security_timestamp.and(z.unknown()), o365_tenant_id: z.string().nullable(), regions: z.array(email_security_Region), require_tls_inbound: z.boolean().nullable(), require_tls_outbound: z.boolean().nullable(), spf_status: email_security_SpfStatus, status: email_security_DomainStatus, transport: z.string() }).partial();
+export const email_security_Domain = z.object({ allowed_delivery_modes: z.array(email_security_DeliveryMode), authorization: email_security_DomainAuthorization, created_at: email_security_timestamp, dmarc_status: email_security_DmarcStatus, domain: z.string(), drop_dispositions: z.array(email_security_DispositionLabel), emails_processed: email_security_EmailsProcessed, folder: email_security_ScannableFolder, id: email_security_DomainId, inbox_provider: z.union([z.literal("Microsoft"), z.literal("Google"), z.literal(null)]).nullable(), integration_id: z.uuid().nullable(), ip_restrictions: z.array(z.string()), last_modified: email_security_timestamp, lookback_hops: z.number().int(), modified_at: email_security_timestamp, o365_tenant_id: z.string().nullable(), regions: z.array(email_security_Region), require_tls_inbound: z.boolean().nullable(), require_tls_outbound: z.boolean().nullable(), spf_status: email_security_SpfStatus, status: email_security_DomainStatus, transport: z.string() }).partial();
 
 export type email_security_DomainList = z.infer<typeof email_security_DomainList>;
 export const email_security_DomainList = z.array(email_security_Domain);
@@ -6546,7 +6546,7 @@ export type email_security_Validation = z.infer<typeof email_security_Validation
 export const email_security_Validation = z.object({ comment: z.string().nullable(), dkim: email_security_ValidationStatus, dmarc: email_security_ValidationStatus, spf: email_security_ValidationStatus }).partial();
 
 export type email_security_MessageDetails = z.infer<typeof email_security_MessageDetails>;
-export const email_security_MessageDetails = z.object({ action_log: z.array(email_security_ActionLogEntry), alert_id: z.string().nullable().optional(), client_recipients: z.array(z.string()), delivery_mode: email_security_MessageDeliveryMode.optional(), delivery_status: z.array(email_security_MessageDeliveryStatus).nullable().optional(), detection_reasons: z.array(z.string()), edf_hash: z.string().nullable().optional(), envelope_from: z.string().nullable().optional(), envelope_to: z.array(z.string()).nullable().optional(), final_disposition: email_security_DispositionLabel.optional(), findings: z.array(z.object({ attachment: z.string().nullable(), detail: z.string().nullable(), detection: email_security_DispositionLabel, field: z.string().nullable(), name: z.string().nullable(), portion: z.string().nullable(), reason: z.string().nullable(), score: z.number().nullable(), value: z.string().nullable() }).partial()).nullable().optional(), from: z.string().nullable().optional(), from_name: z.string().nullable().optional(), htmltext_structure_hash: z.string().nullable().optional(), id: email_security_InvestigateId.and(z.unknown()), is_phish_submission: z.boolean(), is_quarantined: z.boolean(), message_id: z.string().nullable().optional(), post_delivery_operations: z.array(z.enum(["PREVIEW", "QUARANTINE_RELEASE", "SUBMISSION", "MOVE"])).nullable().optional(), postfix_id: email_security_PostfixId, postfix_id_outbound: z.string().nullable().optional(), properties: z.object({ allowlisted_pattern: z.string().nullable(), allowlisted_pattern_type: z.enum(["quarantine_release", "acceptable_sender", "allowed_sender", "allowed_recipient", "domain_similarity", "domain_recency", "managed_acceptable_sender", "outbound_ndr"]).nullable(), blocklisted_message: z.boolean().nullable(), blocklisted_pattern: z.string().nullable(), whitelisted_pattern_type: z.enum(["quarantine_release", "acceptable_sender", "allowed_sender", "allowed_recipient", "domain_similarity", "domain_recency", "managed_acceptable_sender", "outbound_ndr"]).nullable() }).partial(), replyto: z.string().nullable().optional(), scanned_at: z.iso.datetime().nullable().optional(), sent_at: z.iso.datetime().nullable().optional(), sent_date: z.string().nullable().optional(), smtp_helo_server_ip: z.string().nullable().optional(), smtp_previous_hop_ip: z.string().nullable().optional(), subject: z.string().nullable().optional(), threat_categories: z.array(z.string()).nullable().optional(), to: z.array(z.string()).nullable().optional(), to_name: z.array(z.string()).nullable().optional(), ts: z.string(), validation: email_security_Validation.optional(), x_originating_ip: z.string().nullable().optional() });
+export const email_security_MessageDetails = z.object({ action_log: z.array(email_security_ActionLogEntry), alert_id: z.string().nullable().optional(), client_recipients: z.array(z.string()), delivery_mode: email_security_MessageDeliveryMode.optional(), delivery_status: z.array(email_security_MessageDeliveryStatus).nullable().optional(), detection_reasons: z.array(z.string()), edf_hash: z.string().nullable().optional(), envelope_from: z.string().nullable().optional(), envelope_to: z.array(z.string()).nullable().optional(), final_disposition: email_security_DispositionLabel.optional(), findings: z.array(z.object({ attachment: z.string().nullable(), detail: z.string().nullable(), detection: email_security_DispositionLabel, field: z.string().nullable(), name: z.string().nullable(), portion: z.string().nullable(), reason: z.string().nullable(), score: z.number().nullable(), value: z.string().nullable() }).partial()).nullable().optional(), from: z.string().nullable().optional(), from_name: z.string().nullable().optional(), htmltext_structure_hash: z.string().nullable().optional(), id: email_security_InvestigateId, is_phish_submission: z.boolean(), is_quarantined: z.boolean(), message_id: z.string().nullable().optional(), post_delivery_operations: z.array(z.enum(["PREVIEW", "QUARANTINE_RELEASE", "SUBMISSION", "MOVE"])).nullable().optional(), postfix_id: email_security_PostfixId, postfix_id_outbound: z.string().nullable().optional(), properties: z.object({ allowlisted_pattern: z.string().nullable(), allowlisted_pattern_type: z.enum(["quarantine_release", "acceptable_sender", "allowed_sender", "allowed_recipient", "domain_similarity", "domain_recency", "managed_acceptable_sender", "outbound_ndr"]).nullable(), blocklisted_message: z.boolean().nullable(), blocklisted_pattern: z.string().nullable(), whitelisted_pattern_type: z.enum(["quarantine_release", "acceptable_sender", "allowed_sender", "allowed_recipient", "domain_similarity", "domain_recency", "managed_acceptable_sender", "outbound_ndr"]).nullable() }).partial(), replyto: z.string().nullable().optional(), scanned_at: z.iso.datetime().nullable().optional(), sent_at: z.iso.datetime().nullable().optional(), sent_date: z.string().nullable().optional(), smtp_helo_server_ip: z.string().nullable().optional(), smtp_previous_hop_ip: z.string().nullable().optional(), subject: z.string().nullable().optional(), threat_categories: z.array(z.string()).nullable().optional(), to: z.array(z.string()).nullable().optional(), to_name: z.array(z.string()).nullable().optional(), ts: z.string(), validation: email_security_Validation.optional(), x_originating_ip: z.string().nullable().optional() });
 
 export type email_security_MessageHeader = z.infer<typeof email_security_MessageHeader>;
 export const email_security_MessageHeader = z.object({ name: z.string(), value: z.string() });
@@ -6588,7 +6588,7 @@ export type email_security_ReclassifyRequest = z.infer<typeof email_security_Rec
 export const email_security_ReclassifyRequest = z.object({ eml_content: z.string().optional(), escalated_submission_id: z.string().optional(), expected_disposition: z.enum(["NONE", "BULK", "MALICIOUS", "SPAM", "SPOOF", "SUSPICIOUS"]) });
 
 export type email_security_ReleaseResponse = z.infer<typeof email_security_ReleaseResponse>;
-export const email_security_ReleaseResponse = z.object({ delivered: z.array(z.string()).nullable().optional(), failed: z.array(z.string()).nullable().optional(), id: email_security_InvestigateId.and(z.unknown()), postfix_id: email_security_PostfixId.and(z.unknown()).optional(), undelivered: z.array(z.string()).nullable().optional() });
+export const email_security_ReleaseResponse = z.object({ delivered: z.array(z.string()).nullable().optional(), failed: z.array(z.string()).nullable().optional(), id: email_security_InvestigateId, postfix_id: email_security_PostfixId.optional(), undelivered: z.array(z.string()).nullable().optional() });
 
 export type email_security_ReplaceDomain = z.infer<typeof email_security_ReplaceDomain>;
 export const email_security_ReplaceDomain = z.object({ allowed_delivery_modes: z.array(email_security_DeliveryMode).min(1).max(10), drop_dispositions: z.array(email_security_DispositionLabel).max(10), folder: email_security_ScannableFolder.optional(), integration_id: z.uuid().nullable().optional(), ip_restrictions: z.array(z.string()).max(100), lookback_hops: z.number().int().min(1).max(20), regions: z.array(email_security_Region).min(1).max(10), require_tls_inbound: z.boolean().nullable().optional(), require_tls_outbound: z.boolean().nullable().optional(), transport: z.string().nullable().optional() });
@@ -6603,28 +6603,28 @@ export type email_security_TrustedDomainList = z.infer<typeof email_security_Tru
 export const email_security_TrustedDomainList = z.array(email_security_TrustedDomain);
 
 export type email_security_UpdateAllowPolicy = z.infer<typeof email_security_UpdateAllowPolicy>;
-export const email_security_UpdateAllowPolicy = email_security_AllowPolicy.and(z.unknown());
+export const email_security_UpdateAllowPolicy = email_security_AllowPolicy;
 
 export type email_security_UpdateBlockedSender = z.infer<typeof email_security_UpdateBlockedSender>;
-export const email_security_UpdateBlockedSender = email_security_BlockedSender.and(z.unknown());
+export const email_security_UpdateBlockedSender = email_security_BlockedSender;
 
 export type email_security_UpdateDomain = z.infer<typeof email_security_UpdateDomain>;
 export const email_security_UpdateDomain = z.object({ allowed_delivery_modes: z.array(email_security_DeliveryMode), domain: z.string(), drop_dispositions: z.array(email_security_DispositionLabel), folder: email_security_ScannableFolder, integration_id: z.uuid().nullable(), ip_restrictions: z.array(z.string()), lookback_hops: z.number().int().min(1).max(20), regions: z.array(email_security_Region), require_tls_inbound: z.boolean(), require_tls_outbound: z.boolean(), transport: z.string() }).partial();
 
 export type email_security_UpdateImpersonationRegistry = z.infer<typeof email_security_UpdateImpersonationRegistry>;
-export const email_security_UpdateImpersonationRegistry = email_security_ImpersonationRegistry.and(z.unknown());
+export const email_security_UpdateImpersonationRegistry = email_security_ImpersonationRegistry;
 
 export type email_security_UpdateSendingDomainRestriction = z.infer<typeof email_security_UpdateSendingDomainRestriction>;
-export const email_security_UpdateSendingDomainRestriction = email_security_SendingDomainRestriction.and(z.unknown());
+export const email_security_UpdateSendingDomainRestriction = email_security_SendingDomainRestriction;
 
 export type email_security_UpdateTrustedDomain = z.infer<typeof email_security_UpdateTrustedDomain>;
-export const email_security_UpdateTrustedDomain = email_security_TrustedDomain.and(z.unknown());
+export const email_security_UpdateTrustedDomain = email_security_TrustedDomain;
 
 export type email_security_UpdateUrlIgnorePattern = z.infer<typeof email_security_UpdateUrlIgnorePattern>;
 export const email_security_UpdateUrlIgnorePattern = z.object({ comments: z.string().max(1024).nullable(), pattern: z.string().min(1).max(1024) }).partial().refine((obj) => Object.keys(obj).length >= 1, { message: "minProperties" });
 
 export type email_security_UrlIgnorePattern = z.infer<typeof email_security_UrlIgnorePattern>;
-export const email_security_UrlIgnorePattern = z.object({ comments: z.string().max(1024).nullable().optional(), created_at: z.iso.datetime(), id: email_security_UrlIgnorePatternId.and(z.unknown()), last_modified: z.iso.datetime().optional(), modified_at: z.iso.datetime().optional(), pattern: z.string().min(1).max(1024) });
+export const email_security_UrlIgnorePattern = z.object({ comments: z.string().max(1024).nullable().optional(), created_at: z.iso.datetime(), id: email_security_UrlIgnorePatternId, last_modified: z.iso.datetime().optional(), modified_at: z.iso.datetime().optional(), pattern: z.string().min(1).max(1024) });
 
 export type email_security_messages = z.infer<typeof email_security_messages>;
 export const email_security_messages = z.array(z.object({ code: z.number().int().min(1000), documentation_url: z.string().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().optional() }));
@@ -6636,7 +6636,7 @@ export type email_security_api_response_collection = z.infer<typeof email_securi
 export const email_security_api_response_collection = email_security_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type email_security_api_response_common_failure = z.infer<typeof email_security_api_response_common_failure>;
-export const email_security_api_response_common_failure = z.object({ errors: email_security_messages.and(z.unknown()), messages: email_security_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const email_security_api_response_common_failure = z.object({ errors: email_security_messages, messages: email_security_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type email_security_api_response_single = z.infer<typeof email_security_api_response_single>;
 export const email_security_api_response_single = email_security_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -6663,7 +6663,7 @@ export type email_sending_NamedRecipientList = z.infer<typeof email_sending_Name
 export const email_sending_NamedRecipientList = z.union([email_sending_EmailAddressString, email_sending_EmailAddressObject, z.array(z.union([email_sending_EmailAddressString, email_sending_EmailAddressObject]))]);
 
 export type email_sending_EmailBuilder = z.infer<typeof email_sending_EmailBuilder>;
-export const email_sending_EmailBuilder = z.object({ attachments: z.array(z.union([email_sending_EmailInlineAttachment, email_sending_EmailAttachment])).optional(), bcc: email_sending_NamedRecipientList.and(z.unknown()).optional(), cc: email_sending_NamedRecipientList.and(z.unknown()).optional(), from: z.union([email_sending_EmailAddressString, email_sending_EmailAddressObject]), headers: z.record(z.string(), z.string()).optional(), html: z.string().optional(), reply_to: z.union([email_sending_EmailAddressString, email_sending_EmailAddressObject]).optional(), subject: z.string(), text: z.string().optional(), to: email_sending_NamedRecipientList.optional() });
+export const email_sending_EmailBuilder = z.object({ attachments: z.array(z.union([email_sending_EmailInlineAttachment, email_sending_EmailAttachment])).optional(), bcc: email_sending_NamedRecipientList.optional(), cc: email_sending_NamedRecipientList.optional(), from: z.union([email_sending_EmailAddressString, email_sending_EmailAddressObject]), headers: z.record(z.string(), z.string()).optional(), html: z.string().optional(), reply_to: z.union([email_sending_EmailAddressString, email_sending_EmailAddressObject]).optional(), subject: z.string(), text: z.string().optional(), to: email_sending_NamedRecipientList.optional() });
 
 export type email_sending_EmailSendResponse = z.infer<typeof email_sending_EmailSendResponse>;
 export const email_sending_EmailSendResponse = z.object({ delivered: z.array(z.string().regex(new RegExp("^[\\x20-\\x7E]+$"))), message_id: z.string().regex(new RegExp("^[\\x20-\\x7E]+$")), permanent_bounces: z.array(z.string().regex(new RegExp("^[\\x20-\\x7E]+$"))), queued: z.array(z.string().regex(new RegExp("^[\\x20-\\x7E]+$"))) });
@@ -6981,7 +6981,7 @@ export type firewall_sensitivity = z.infer<typeof firewall_sensitivity>;
 export const firewall_sensitivity = z.enum(["high", "medium", "low", "off"]).default("high");
 
 export type firewall_anomaly_package = z.infer<typeof firewall_anomaly_package>;
-export const firewall_anomaly_package = firewall_package_definition.and(z.object({ action_mode: firewall_action_mode, description: firewall_anomaly_description, detection_mode: firewall_anomaly_detection_mode, name: firewall_anomaly_name, sensitivity: firewall_sensitivity }).partial()).and(z.unknown());
+export const firewall_anomaly_package = firewall_package_definition.and(z.object({ action_mode: firewall_action_mode, description: firewall_anomaly_description, detection_mode: firewall_anomaly_detection_mode, name: firewall_anomaly_name, sensitivity: firewall_sensitivity }).partial());
 
 export type firewall_messages = z.infer<typeof firewall_messages>;
 export const firewall_messages = z.array(z.object({ code: z.number().int().min(1000), message: z.string() }));
@@ -6996,7 +6996,7 @@ export type firewall_api_response_collection = z.infer<typeof firewall_api_respo
 export const firewall_api_response_collection = firewall_api_response_common.and(z.object({ result: z.array(z.record(z.string(), z.unknown())).nullable(), result_info: firewall_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type firewall_api_response_common_failure = z.infer<typeof firewall_api_response_common_failure>;
-export const firewall_api_response_common_failure = z.object({ errors: firewall_messages.and(z.unknown()), messages: firewall_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const firewall_api_response_common_failure = z.object({ errors: firewall_messages, messages: firewall_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type firewall_api_response_single = z.infer<typeof firewall_api_response_single>;
 export const firewall_api_response_single = firewall_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()).nullable(), z.string().nullable()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -7389,7 +7389,7 @@ export type fraud_api_response_common = z.infer<typeof fraud_api_response_common
 export const fraud_api_response_common = z.object({ errors: fraud_messages, messages: fraud_messages, success: z.literal(true) });
 
 export type fraud_api_response_common_failure = z.infer<typeof fraud_api_response_common_failure>;
-export const fraud_api_response_common_failure = z.object({ errors: fraud_messages.and(z.unknown()), messages: fraud_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const fraud_api_response_common_failure = z.object({ errors: fraud_messages, messages: fraud_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type fraud_api_response_single = z.infer<typeof fraud_api_response_single>;
 export const fraud_api_response_single = fraud_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -7422,7 +7422,7 @@ export type google_tag_gateway_api_response_common = z.infer<typeof google_tag_g
 export const google_tag_gateway_api_response_common = z.object({ errors: google_tag_gateway_messages, messages: google_tag_gateway_messages, success: z.literal(true) });
 
 export type google_tag_gateway_api_response_common_failure = z.infer<typeof google_tag_gateway_api_response_common_failure>;
-export const google_tag_gateway_api_response_common_failure = z.object({ errors: google_tag_gateway_messages.and(z.unknown()), messages: google_tag_gateway_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const google_tag_gateway_api_response_common_failure = z.object({ errors: google_tag_gateway_messages, messages: google_tag_gateway_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type google_tag_gateway_google_tag_gateway_config = z.infer<typeof google_tag_gateway_google_tag_gateway_config>;
 export const google_tag_gateway_google_tag_gateway_config = z.object({ enabled: z.boolean(), endpoint: z.string(), hideOriginalIp: z.boolean(), measurementId: z.string(), setUpTag: z.boolean().nullable().optional() });
@@ -7449,7 +7449,7 @@ export type healthchecks_api_response_collection = z.infer<typeof healthchecks_a
 export const healthchecks_api_response_collection = healthchecks_api_response_common.and(z.object({ result: z.array(z.unknown()).nullable(), result_info: healthchecks_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type healthchecks_api_response_common_failure = z.infer<typeof healthchecks_api_response_common_failure>;
-export const healthchecks_api_response_common_failure = z.object({ errors: healthchecks_messages.and(z.unknown()), messages: healthchecks_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const healthchecks_api_response_common_failure = z.object({ errors: healthchecks_messages, messages: healthchecks_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type healthchecks_api_response_single = z.infer<typeof healthchecks_api_response_single>;
 export const healthchecks_api_response_single = healthchecks_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()), z.string()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -7530,7 +7530,7 @@ export type hyperdrive_api_response_collection = z.infer<typeof hyperdrive_api_r
 export const hyperdrive_api_response_collection = hyperdrive_api_response_common.and(z.object({ result_info: hyperdrive_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type hyperdrive_api_response_common_failure = z.infer<typeof hyperdrive_api_response_common_failure>;
-export const hyperdrive_api_response_common_failure = z.object({ errors: hyperdrive_messages.and(z.unknown()), messages: hyperdrive_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const hyperdrive_api_response_common_failure = z.object({ errors: hyperdrive_messages, messages: hyperdrive_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type hyperdrive_api_response_single = z.infer<typeof hyperdrive_api_response_single>;
 export const hyperdrive_api_response_single = hyperdrive_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -7617,7 +7617,7 @@ export type iam_api_response_collection = z.infer<typeof iam_api_response_collec
 export const iam_api_response_collection = iam_api_response_common.and(z.object({ result_info: iam_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type iam_api_response_common_failure = z.infer<typeof iam_api_response_common_failure>;
-export const iam_api_response_common_failure = z.object({ errors: iam_messages_2.and(z.unknown()), messages: iam_messages_2, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const iam_api_response_common_failure = z.object({ errors: iam_messages_2, messages: iam_messages_2, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type iam_api_response_single = z.infer<typeof iam_api_response_single>;
 export const iam_api_response_single = iam_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -7680,7 +7680,7 @@ export type iam_permissions = z.infer<typeof iam_permissions>;
 export const iam_permissions = z.object({ analytics: iam_grants, billing: iam_grants, cache_purge: iam_grants, dns: iam_grants, dns_records: iam_grants, lb: iam_grants, logs: iam_grants, organization: iam_grants, ssl: iam_grants, waf: iam_grants, zone_settings: iam_grants, zones: iam_grants }).partial();
 
 export type iam_role = z.infer<typeof iam_role>;
-export const iam_role = z.object({ description: z.string(), id: iam_role_components_schemas_identifier, name: z.string().max(120), permissions: iam_permissions.and(z.unknown()) });
+export const iam_role = z.object({ description: z.string(), id: iam_role_components_schemas_identifier, name: z.string().max(120), permissions: iam_permissions });
 
 export type iam_first_name = z.infer<typeof iam_first_name>;
 export const iam_first_name = z.string().max(60).nullable();
@@ -7698,7 +7698,7 @@ export type iam_collection_member_response_with_policies = z.infer<typeof iam_co
 export const iam_collection_member_response_with_policies = iam_api_response_collection.and(z.object({ result: z.array(iam_member_with_policies) }).partial());
 
 export type iam_schemas_account = z.infer<typeof iam_schemas_account>;
-export const iam_schemas_account = iam_account.and(z.unknown());
+export const iam_schemas_account = iam_account;
 
 export type iam_role_names = z.infer<typeof iam_role_names>;
 export const iam_role_names = z.array(z.string().max(120));
@@ -7707,13 +7707,13 @@ export type iam_schemas_status = z.infer<typeof iam_schemas_status>;
 export const iam_schemas_status = z.enum(["accepted", "pending", "rejected"]);
 
 export type iam_membership = z.infer<typeof iam_membership>;
-export const iam_membership = z.object({ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: iam_permissions.and(z.unknown()), roles: iam_role_names, status: iam_schemas_status }).partial();
+export const iam_membership = z.object({ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: iam_permissions, roles: iam_role_names, status: iam_schemas_status }).partial();
 
 export type iam_collection_membership_response = z.infer<typeof iam_collection_membership_response>;
 export const iam_collection_membership_response = iam_api_response_collection.and(z.object({ result: z.array(iam_membership) }).partial());
 
 export type iam_membership_with_policies = z.infer<typeof iam_membership_with_policies>;
-export const iam_membership_with_policies = z.object({ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: iam_permissions.and(z.unknown()), policies: z.array(iam_list_member_policy), roles: iam_role_names, status: iam_schemas_status }).partial();
+export const iam_membership_with_policies = z.object({ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: iam_permissions, policies: z.array(iam_list_member_policy), roles: iam_role_names, status: iam_schemas_status }).partial();
 
 export type iam_collection_membership_response_with_policies = z.infer<typeof iam_collection_membership_response_with_policies>;
 export const iam_collection_membership_response_with_policies = iam_api_response_collection.and(z.object({ result: z.array(iam_membership_with_policies) }).partial());
@@ -7737,7 +7737,7 @@ export type iam_oauth_client_uri_verification = z.infer<typeof iam_oauth_client_
 export const iam_oauth_client_uri_verification = z.object({ status: z.enum(["pending", "in_progress", "verified", "failed"]), text: z.string() }).partial();
 
 export type iam_oauth_client = z.infer<typeof iam_oauth_client>;
-export const iam_oauth_client = iam_oauth_client_common.and(z.object({ client_id: iam_oauth_client_identifier.and(z.unknown()), client_uri_verification: iam_oauth_client_uri_verification.optional(), created_at: z.iso.datetime().optional(), has_rotated_secret: z.boolean().optional(), promoted_at: z.iso.datetime().optional(), updated_at: z.iso.datetime().optional(), visibility: z.enum(["public", "private"]) }));
+export const iam_oauth_client = iam_oauth_client_common.and(z.object({ client_id: iam_oauth_client_identifier, client_uri_verification: iam_oauth_client_uri_verification.optional(), created_at: z.iso.datetime().optional(), has_rotated_secret: z.boolean().optional(), promoted_at: z.iso.datetime().optional(), updated_at: z.iso.datetime().optional(), visibility: z.enum(["public", "private"]) }));
 
 export type iam_collection_oauth_client_response = z.infer<typeof iam_collection_oauth_client_response>;
 export const iam_collection_oauth_client_response = iam_api_response_collection.and(z.object({ result: z.array(iam_oauth_client) }).partial());
@@ -8124,7 +8124,7 @@ export type iam_sso_connector_response = z.infer<typeof iam_sso_connector_respon
 export const iam_sso_connector_response = iam_api_response_single.and(z.object({ result: iam_sso_connector }).partial());
 
 export type iam_token_body = z.infer<typeof iam_token_body>;
-export const iam_token_body = iam_token_base.and(z.record(z.string(), z.unknown())).and(z.unknown());
+export const iam_token_body = iam_token_base.and(z.record(z.string(), z.unknown()));
 
 export type iam_token_verify_response_single_segment = z.infer<typeof iam_token_verify_response_single_segment>;
 export const iam_token_verify_response_single_segment = iam_api_response_single.and(z.object({ result: z.object({ expires_on: iam_expires_on.optional(), id: iam_token_identifier, not_before: iam_not_before.optional(), status: iam_token_status }) }).partial());
@@ -8175,7 +8175,7 @@ export type images_api_response_collection_v2 = z.infer<typeof images_api_respon
 export const images_api_response_collection_v2 = images_api_response_common.and(z.object({ result: z.object({ continuation_token: images_images_list_continuation_token }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type images_api_response_common_failure = z.infer<typeof images_api_response_common_failure>;
-export const images_api_response_common_failure = z.object({ errors: images_messages.and(z.unknown()), messages: images_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const images_api_response_common_failure = z.object({ errors: images_messages, messages: images_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type images_api_response_single = z.infer<typeof images_api_response_single>;
 export const images_api_response_single = images_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()), z.string()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -8463,7 +8463,7 @@ export type infra_api_response_collection = z.infer<typeof infra_api_response_co
 export const infra_api_response_collection = infra_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type infra_api_response_common_failure = z.infer<typeof infra_api_response_common_failure>;
-export const infra_api_response_common_failure = z.object({ errors: infra_messages.and(z.unknown()), messages: infra_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const infra_api_response_common_failure = z.object({ errors: infra_messages, messages: infra_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type infra_api_response_single = z.infer<typeof infra_api_response_single>;
 export const infra_api_response_single = infra_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -8475,7 +8475,7 @@ export type intel_sinkholes_api_response_common = z.infer<typeof intel_sinkholes
 export const intel_sinkholes_api_response_common = z.object({ errors: intel_sinkholes_messages, messages: intel_sinkholes_messages, success: z.literal(true) });
 
 export type intel_sinkholes_api_response_common_failure = z.infer<typeof intel_sinkholes_api_response_common_failure>;
-export const intel_sinkholes_api_response_common_failure = z.object({ errors: intel_sinkholes_messages.and(z.unknown()), messages: intel_sinkholes_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const intel_sinkholes_api_response_common_failure = z.object({ errors: intel_sinkholes_messages, messages: intel_sinkholes_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type intel_sinkholes_api_response_common_failure_schemas = z.infer<typeof intel_sinkholes_api_response_common_failure_schemas>;
 export const intel_sinkholes_api_response_common_failure_schemas = intel_sinkholes_api_response_common_failure;
@@ -8526,7 +8526,7 @@ export type intel_api_response_collection = z.infer<typeof intel_api_response_co
 export const intel_api_response_collection = intel_api_response_common.and(z.object({ result: z.array(z.union([z.string(), z.record(z.string(), z.unknown())])).nullable(), result_info: intel_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type intel_api_response_common_failure = z.infer<typeof intel_api_response_common_failure>;
-export const intel_api_response_common_failure = z.object({ errors: intel_messages.and(z.unknown()), messages: intel_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
+export const intel_api_response_common_failure = z.object({ errors: intel_messages, messages: intel_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
 
 export type intel_schemas_messages = z.infer<typeof intel_schemas_messages>;
 export const intel_schemas_messages = z.array(z.object({ code: z.number().int().min(1000), documentation_url: z.string().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().optional() }));
@@ -8775,7 +8775,7 @@ export type lists_api_response_collection = z.infer<typeof lists_api_response_co
 export const lists_api_response_collection = z.object({ result: z.array(z.record(z.string(), z.unknown())).nullable() }).partial().and(lists_api_response_common).and(z.record(z.string(), z.unknown()));
 
 export type lists_api_response_common_failure = z.infer<typeof lists_api_response_common_failure>;
-export const lists_api_response_common_failure = z.object({ errors: lists_messages.and(z.unknown()), messages: lists_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const lists_api_response_common_failure = z.object({ errors: lists_messages, messages: lists_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type lists_operation_id = z.infer<typeof lists_operation_id>;
 export const lists_operation_id = z.string();
@@ -8961,7 +8961,7 @@ export type load_balancing_api_paginated_response_collection = z.infer<typeof lo
 export const load_balancing_api_paginated_response_collection = load_balancing_api_response_common.and(z.object({ result_info: load_balancing_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type load_balancing_api_response_common_failure = z.infer<typeof load_balancing_api_response_common_failure>;
-export const load_balancing_api_response_common_failure = z.object({ errors: load_balancing_messages.and(z.unknown()), messages: load_balancing_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const load_balancing_api_response_common_failure = z.object({ errors: load_balancing_messages, messages: load_balancing_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type load_balancing_api_response_single = z.infer<typeof load_balancing_api_response_single>;
 export const load_balancing_api_response_single = load_balancing_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()).nullable(), z.string().nullable()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -9183,7 +9183,7 @@ export type load_balancing_monitor_group_member = z.infer<typeof load_balancing_
 export const load_balancing_monitor_group_member = z.object({ created_at: z.iso.datetime().optional(), enabled: z.boolean(), monitor_id: load_balancing_monitor_id, monitoring_only: z.boolean(), must_be_healthy: z.boolean(), updated_at: z.iso.datetime().optional() });
 
 export type load_balancing_monitor_group = z.infer<typeof load_balancing_monitor_group>;
-export const load_balancing_monitor_group = z.object({ created_on: z.iso.datetime().optional(), description: z.string(), id: load_balancing_monitor_group_id.and(z.unknown()), members: z.array(load_balancing_monitor_group_member), modified_on: z.iso.datetime().optional() });
+export const load_balancing_monitor_group = z.object({ created_on: z.iso.datetime().optional(), description: z.string(), id: load_balancing_monitor_group_id, members: z.array(load_balancing_monitor_group_member), modified_on: z.iso.datetime().optional() });
 
 export type load_balancing_monitor_group_references_response = z.infer<typeof load_balancing_monitor_group_references_response>;
 export const load_balancing_monitor_group_references_response = load_balancing_api_response_common.and(z.object({ result: z.array(z.object({ reference_type: z.enum(["*", "referral", "referrer"]), resource_id: z.string(), resource_name: z.string(), resource_type: z.string() }).partial()) }).partial());
@@ -9324,7 +9324,7 @@ export type logcontrol_api_response_common = z.infer<typeof logcontrol_api_respo
 export const logcontrol_api_response_common = z.object({ errors: logcontrol_messages, messages: logcontrol_messages, success: z.literal(true) });
 
 export type logcontrol_api_response_common_failure = z.infer<typeof logcontrol_api_response_common_failure>;
-export const logcontrol_api_response_common_failure = z.object({ errors: logcontrol_messages.and(z.unknown()), messages: logcontrol_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const logcontrol_api_response_common_failure = z.object({ errors: logcontrol_messages, messages: logcontrol_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type logcontrol_api_response_single = z.infer<typeof logcontrol_api_response_single>;
 export const logcontrol_api_response_single = logcontrol_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -9378,7 +9378,7 @@ export type logpush_api_response_common = z.infer<typeof logpush_api_response_co
 export const logpush_api_response_common = z.object({ errors: logpush_messages, messages: logpush_messages, success: z.literal(true) });
 
 export type logpush_api_response_common_failure = z.infer<typeof logpush_api_response_common_failure>;
-export const logpush_api_response_common_failure = z.object({ errors: logpush_messages.and(z.unknown()), messages: logpush_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const logpush_api_response_common_failure = z.object({ errors: logpush_messages, messages: logpush_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type logpush_api_response_single = z.infer<typeof logpush_api_response_single>;
 export const logpush_api_response_single = logpush_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -9489,7 +9489,7 @@ export type logshare_messages = z.infer<typeof logshare_messages>;
 export const logshare_messages = z.array(z.object({ code: z.number().int().min(1000), documentation_url: z.string().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().optional() }));
 
 export type logshare_api_response_common_failure = z.infer<typeof logshare_api_response_common_failure>;
-export const logshare_api_response_common_failure = z.object({ errors: logshare_messages.and(z.unknown()), messages: logshare_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const logshare_api_response_common_failure = z.object({ errors: logshare_messages, messages: logshare_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type logshare_count = z.infer<typeof logshare_count>;
 export const logshare_count = z.number().int().min(1);
@@ -9531,7 +9531,7 @@ export type magic_transit_api_response_common = z.infer<typeof magic_transit_api
 export const magic_transit_api_response_common = z.object({ errors: magic_transit_messages, messages: magic_transit_messages, success: z.literal(true) });
 
 export type magic_transit_api_response_common_failure = z.infer<typeof magic_transit_api_response_common_failure>;
-export const magic_transit_api_response_common_failure = z.object({ errors: magic_transit_messages.and(z.unknown()), messages: magic_transit_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const magic_transit_api_response_common_failure = z.object({ errors: magic_transit_messages, messages: magic_transit_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type magic_transit_asn = z.infer<typeof magic_transit_asn>;
 export const magic_transit_asn = z.string();
@@ -9666,7 +9666,7 @@ export type magic_visibility_mnm_api_response_collection = z.infer<typeof magic_
 export const magic_visibility_mnm_api_response_collection = magic_visibility_mnm_api_response_common.and(z.object({ result: z.array(z.unknown()).nullable(), result_info: magic_visibility_mnm_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type magic_visibility_mnm_api_response_common_failure = z.infer<typeof magic_visibility_mnm_api_response_common_failure>;
-export const magic_visibility_mnm_api_response_common_failure = z.object({ errors: magic_visibility_mnm_messages.and(z.unknown()), messages: magic_visibility_mnm_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const magic_visibility_mnm_api_response_common_failure = z.object({ errors: magic_visibility_mnm_messages, messages: magic_visibility_mnm_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type magic_visibility_mnm_api_response_single = z.infer<typeof magic_visibility_mnm_api_response_single>;
 export const magic_visibility_mnm_api_response_single = magic_visibility_mnm_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()).nullable(), z.string().nullable()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -9768,7 +9768,7 @@ export type magic_visibility_pcaps_api_response_collection = z.infer<typeof magi
 export const magic_visibility_pcaps_api_response_collection = magic_visibility_pcaps_api_response_common.and(z.object({ result: z.array(z.unknown()).nullable(), result_info: magic_visibility_pcaps_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type magic_visibility_pcaps_api_response_common_failure = z.infer<typeof magic_visibility_pcaps_api_response_common_failure>;
-export const magic_visibility_pcaps_api_response_common_failure = z.object({ errors: magic_visibility_pcaps_messages.and(z.unknown()), messages: magic_visibility_pcaps_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const magic_visibility_pcaps_api_response_common_failure = z.object({ errors: magic_visibility_pcaps_messages, messages: magic_visibility_pcaps_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type magic_visibility_pcaps_api_response_single = z.infer<typeof magic_visibility_pcaps_api_response_single>;
 export const magic_visibility_pcaps_api_response_single = magic_visibility_pcaps_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()), z.string()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -9873,13 +9873,13 @@ export type magic_cidr = z.infer<typeof magic_cidr>;
 export const magic_cidr = z.string();
 
 export type magic_app_subnets = z.infer<typeof magic_app_subnets>;
-export const magic_app_subnets = z.array(magic_cidr.and(z.unknown()));
+export const magic_app_subnets = z.array(magic_cidr);
 
 export type magic_app_name = z.infer<typeof magic_app_name>;
 export const magic_app_name = z.string();
 
 export type magic_app_source_subnets = z.infer<typeof magic_app_source_subnets>;
-export const magic_app_source_subnets = z.array(magic_cidr.and(z.unknown()));
+export const magic_app_source_subnets = z.array(magic_cidr);
 
 export type magic_app_type = z.infer<typeof magic_app_type>;
 export const magic_app_type = z.string();
@@ -9945,7 +9945,7 @@ export type magic_allow_null_cipher = z.infer<typeof magic_allow_null_cipher>;
 export const magic_allow_null_cipher = z.boolean();
 
 export type magic_api_response_common_failure = z.infer<typeof magic_api_response_common_failure>;
-export const magic_api_response_common_failure = z.object({ errors: magic_messages.and(z.unknown()), messages: magic_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const magic_api_response_common_failure = z.object({ errors: magic_messages, messages: magic_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type magic_managed_app_id = z.infer<typeof magic_managed_app_id>;
 export const magic_managed_app_id = z.string();
@@ -10029,7 +10029,7 @@ export type magic_cf1_site_location = z.infer<typeof magic_cf1_site_location>;
 export const magic_cf1_site_location = z.object({ lat: z.number(), long: z.number(), name: z.string() }).partial();
 
 export type magic_cf1_site = z.infer<typeof magic_cf1_site>;
-export const magic_cf1_site = z.object({ created_on: z.iso.datetime().optional(), description: z.string().optional(), id: magic_identifier.and(z.unknown()).optional(), location: magic_cf1_site_location.optional(), modified_on: z.iso.datetime().optional(), name: z.string() });
+export const magic_cf1_site = z.object({ created_on: z.iso.datetime().optional(), description: z.string().optional(), id: magic_identifier.optional(), location: magic_cf1_site_location.optional(), modified_on: z.iso.datetime().optional(), name: z.string() });
 
 export type magic_cf1_site_managed_ramp = z.infer<typeof magic_cf1_site_managed_ramp>;
 export const magic_cf1_site_managed_ramp = z.object({ managed_by: z.string() }).partial();
@@ -10110,7 +10110,7 @@ export type magic_schemas_mtu = z.infer<typeof magic_schemas_mtu>;
 export const magic_schemas_mtu = z.number().int().default(1476);
 
 export type magic_interconnect = z.infer<typeof magic_interconnect>;
-export const magic_interconnect = z.object({ automatic_return_routing: magic_automatic_return_routing, colo_name: magic_components_schemas_name, created_on: magic_schemas_created_on, description: magic_interconnect_components_schemas_description, gre: magic_gre, health_check: magic_health_check_base, id: magic_schemas_identifier, interface_address: magic_interface_address, interface_address6: magic_interface_address6, modified_on: magic_schemas_modified_on, mtu: magic_schemas_mtu, name: magic_components_schemas_name, virtual_port_reservation_id: magic_schemas_identifier.and(z.unknown()) }).partial();
+export const magic_interconnect = z.object({ automatic_return_routing: magic_automatic_return_routing, colo_name: magic_components_schemas_name, created_on: magic_schemas_created_on, description: magic_interconnect_components_schemas_description, gre: magic_gre, health_check: magic_health_check_base, id: magic_schemas_identifier, interface_address: magic_interface_address, interface_address6: magic_interface_address6, modified_on: magic_schemas_modified_on, mtu: magic_schemas_mtu, name: magic_components_schemas_name, virtual_port_reservation_id: magic_schemas_identifier }).partial();
 
 export type magic_components_schemas_modified_tunnels_collection_response = z.infer<typeof magic_components_schemas_modified_tunnels_collection_response>;
 export const magic_components_schemas_modified_tunnels_collection_response = magic_api_response_single.and(z.object({ result: z.object({ modified: z.boolean(), modified_interconnects: z.array(magic_interconnect) }).partial() }).partial());
@@ -11208,7 +11208,7 @@ export type observatory_messages_2 = z.infer<typeof observatory_messages_2>;
 export const observatory_messages_2 = z.array(z.object({ code: z.number().int().min(1000), documentation_url: z.string().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().optional() }));
 
 export type observatory_api_response_common_failure = z.infer<typeof observatory_api_response_common_failure>;
-export const observatory_api_response_common_failure = z.object({ errors: observatory_messages_2.and(z.unknown()), messages: observatory_messages_2, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const observatory_api_response_common_failure = z.object({ errors: observatory_messages_2, messages: observatory_messages_2, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type observatory_api_response_single = z.infer<typeof observatory_api_response_single>;
 export const observatory_api_response_single = observatory_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -11403,7 +11403,7 @@ export type organizations_api_Profile = z.infer<typeof organizations_api_Profile
 export const organizations_api_Profile = z.object({ business_address: z.string(), business_email: z.string(), business_name: z.string(), business_phone: z.string(), external_metadata: z.string() });
 
 export type organizations_api_Organization = z.infer<typeof organizations_api_Organization>;
-export const organizations_api_Organization = z.object({ create_time: z.iso.datetime(), id: organizations_api_OrganizationID.and(z.unknown()), meta: z.object({ flags: organizations_api_OrganizationFlags, hierarchy_tags: z.array(z.string()), managed_by: z.string() }).partial().and(z.record(z.string(), z.record(z.string(), z.unknown()))), name: z.string(), parent: z.object({ id: organizations_api_OrganizationID, name: z.string() }).optional(), profile: organizations_api_Profile.optional() });
+export const organizations_api_Organization = z.object({ create_time: z.iso.datetime(), id: organizations_api_OrganizationID, meta: z.object({ flags: organizations_api_OrganizationFlags, hierarchy_tags: z.array(z.string()), managed_by: z.string() }).partial().and(z.record(z.string(), z.record(z.string(), z.unknown()))), name: z.string(), parent: z.object({ id: organizations_api_OrganizationID, name: z.string() }).optional(), profile: organizations_api_Profile.optional() });
 
 export type organizations_api_PageTokenResultInfo = z.infer<typeof organizations_api_PageTokenResultInfo>;
 export const organizations_api_PageTokenResultInfo = z.object({ next_page_token: z.string(), total_size: z.number().int() }).partial();
@@ -11493,7 +11493,7 @@ export type page_shield_policy = z.infer<typeof page_shield_policy>;
 export const page_shield_policy = z.object({ action: page_shield_policy_action, description: page_shield_policy_description, enabled: page_shield_policy_enabled, expression: page_shield_policy_expression, value: page_shield_policy_value });
 
 export type page_shield_policy_with_id = z.infer<typeof page_shield_policy_with_id>;
-export const page_shield_policy_with_id = page_shield_policy.and(z.object({ id: page_shield_id })).and(z.unknown());
+export const page_shield_policy_with_id = page_shield_policy.and(z.object({ id: page_shield_id }));
 
 export type page_shield_get_zone_policy_response = z.infer<typeof page_shield_get_zone_policy_response>;
 export const page_shield_get_zone_policy_response = page_shield_api_get_response_collection.and(z.object({ result: page_shield_policy_with_id }));
@@ -11514,10 +11514,10 @@ export type page_shield_obfuscation_score = z.infer<typeof page_shield_obfuscati
 export const page_shield_obfuscation_score = z.number().int().min(1).max(99).nullable();
 
 export type page_shield_script = z.infer<typeof page_shield_script>;
-export const page_shield_script = z.object({ added_at: z.iso.datetime(), cryptomining_score: page_shield_cryptomining_score.optional(), dataflow_score: page_shield_dataflow_score.and(z.unknown()).optional(), domain_reported_malicious: z.boolean().optional(), fetched_at: page_shield_fetched_at.optional(), first_page_url: z.string().optional(), first_seen_at: z.iso.datetime(), hash: page_shield_hash.optional(), host: z.string(), id: page_shield_id, js_integrity_score: page_shield_js_integrity_score.optional(), last_seen_at: z.iso.datetime(), magecart_score: page_shield_magecart_score.optional(), malicious_domain_categories: z.array(z.string()).optional(), malicious_url_categories: z.array(z.string()).optional(), malware_score: page_shield_malware_score.optional(), obfuscation_score: page_shield_obfuscation_score.and(z.unknown()).optional(), page_urls: z.array(z.string()).optional(), url: z.string(), url_contains_cdn_cgi_path: z.boolean(), url_reported_malicious: z.boolean().optional() });
+export const page_shield_script = z.object({ added_at: z.iso.datetime(), cryptomining_score: page_shield_cryptomining_score.optional(), dataflow_score: page_shield_dataflow_score.optional(), domain_reported_malicious: z.boolean().optional(), fetched_at: page_shield_fetched_at.optional(), first_page_url: z.string().optional(), first_seen_at: z.iso.datetime(), hash: page_shield_hash.optional(), host: z.string(), id: page_shield_id, js_integrity_score: page_shield_js_integrity_score.optional(), last_seen_at: z.iso.datetime(), magecart_score: page_shield_magecart_score.optional(), malicious_domain_categories: z.array(z.string()).optional(), malicious_url_categories: z.array(z.string()).optional(), malware_score: page_shield_malware_score.optional(), obfuscation_score: page_shield_obfuscation_score.optional(), page_urls: z.array(z.string()).optional(), url: z.string(), url_contains_cdn_cgi_path: z.boolean(), url_reported_malicious: z.boolean().optional() });
 
 export type page_shield_version = z.infer<typeof page_shield_version>;
-export const page_shield_version = z.object({ cryptomining_score: page_shield_cryptomining_score, dataflow_score: page_shield_dataflow_score.and(z.unknown()), fetched_at: page_shield_fetched_at, hash: page_shield_hash, js_integrity_score: page_shield_js_integrity_score, magecart_score: page_shield_magecart_score, malware_score: page_shield_malware_score, obfuscation_score: page_shield_obfuscation_score.and(z.unknown()) }).partial();
+export const page_shield_version = z.object({ cryptomining_score: page_shield_cryptomining_score, dataflow_score: page_shield_dataflow_score, fetched_at: page_shield_fetched_at, hash: page_shield_hash, js_integrity_score: page_shield_js_integrity_score, magecart_score: page_shield_magecart_score, malware_score: page_shield_malware_score, obfuscation_score: page_shield_obfuscation_score }).partial();
 
 export type page_shield_get_zone_script_response = z.infer<typeof page_shield_get_zone_script_response>;
 export const page_shield_get_zone_script_response = page_shield_api_get_response_collection.and(z.object({ result: page_shield_script.and(z.object({ versions: z.array(page_shield_version).nullable() }).partial()) }));
@@ -11562,7 +11562,7 @@ export type pages_api_response_collection = z.infer<typeof pages_api_response_co
 export const pages_api_response_collection = pages_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type pages_api_response_common_failure = z.infer<typeof pages_api_response_common_failure>;
-export const pages_api_response_common_failure = z.object({ errors: pages_messages.and(z.unknown()), messages: pages_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const pages_api_response_common_failure = z.object({ errors: pages_messages, messages: pages_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type pages_build_config = z.infer<typeof pages_build_config>;
 export const pages_build_config = z.object({ build_caching: z.boolean().nullable().optional(), build_command: z.string().nullable().optional(), destination_dir: z.string().nullable().optional(), root_dir: z.string().nullable().optional(), web_analytics_tag: z.string().nullable(), web_analytics_token: z.string().nullable() });
@@ -11952,7 +11952,7 @@ export type precursor_api_response_common = z.infer<typeof precursor_api_respons
 export const precursor_api_response_common = z.object({ errors: precursor_messages, messages: precursor_messages, success: z.literal(true) });
 
 export type precursor_api_response_common_failure = z.infer<typeof precursor_api_response_common_failure>;
-export const precursor_api_response_common_failure = z.object({ errors: precursor_messages.and(z.unknown()), messages: precursor_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const precursor_api_response_common_failure = z.object({ errors: precursor_messages, messages: precursor_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type precursor_api_response_single = z.infer<typeof precursor_api_response_single>;
 export const precursor_api_response_single = precursor_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -11985,7 +11985,7 @@ export type public_ip_api_response_common = z.infer<typeof public_ip_api_respons
 export const public_ip_api_response_common = z.object({ errors: public_ip_messages, messages: public_ip_messages, success: z.literal(true) });
 
 export type public_ip_api_response_common_failure = z.infer<typeof public_ip_api_response_common_failure>;
-export const public_ip_api_response_common_failure = z.object({ errors: public_ip_messages.and(z.unknown()), messages: public_ip_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const public_ip_api_response_common_failure = z.object({ errors: public_ip_messages, messages: public_ip_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type public_ip_api_response_single = z.infer<typeof public_ip_api_response_single>;
 export const public_ip_api_response_single = public_ip_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -12558,7 +12558,7 @@ export type registrar_api_sandbox_api_response_collection = z.infer<typeof regis
 export const registrar_api_sandbox_api_response_collection = registrar_api_sandbox_api_response_common.and(z.object({ result: z.array(z.unknown()).nullable(), result_info: registrar_api_sandbox_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type registrar_api_sandbox_api_response_common_failure = z.infer<typeof registrar_api_sandbox_api_response_common_failure>;
-export const registrar_api_sandbox_api_response_common_failure = z.object({ errors: registrar_api_sandbox_messages.and(z.unknown()), messages: registrar_api_sandbox_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const registrar_api_sandbox_api_response_common_failure = z.object({ errors: registrar_api_sandbox_messages, messages: registrar_api_sandbox_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type registrar_api_sandbox_api_response_single = z.infer<typeof registrar_api_sandbox_api_response_single>;
 export const registrar_api_sandbox_api_response_single = registrar_api_sandbox_api_response_common.and(z.object({ result: z.record(z.string(), z.unknown()).nullable() }).partial()).and(z.record(z.string(), z.unknown()));
@@ -12753,7 +12753,7 @@ export type registrar_api_api_response_collection = z.infer<typeof registrar_api
 export const registrar_api_api_response_collection = registrar_api_api_response_common.and(z.object({ result: z.array(z.unknown()).nullable(), result_info: registrar_api_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type registrar_api_api_response_common_failure = z.infer<typeof registrar_api_api_response_common_failure>;
-export const registrar_api_api_response_common_failure = z.object({ errors: registrar_api_messages.and(z.unknown()), messages: registrar_api_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const registrar_api_api_response_common_failure = z.object({ errors: registrar_api_messages, messages: registrar_api_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type registrar_api_api_response_single = z.infer<typeof registrar_api_api_response_single>;
 export const registrar_api_api_response_single = registrar_api_api_response_common.and(z.object({ result: z.record(z.string(), z.unknown()).nullable() }).partial()).and(z.record(z.string(), z.unknown()));
@@ -12942,7 +12942,7 @@ export type request_tracer_api_response_common = z.infer<typeof request_tracer_a
 export const request_tracer_api_response_common = z.object({ errors: request_tracer_messages, messages: request_tracer_messages, success: z.literal(true) });
 
 export type request_tracer_api_response_common_failure = z.infer<typeof request_tracer_api_response_common_failure>;
-export const request_tracer_api_response_common_failure = z.object({ errors: request_tracer_messages.and(z.unknown()), messages: request_tracer_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const request_tracer_api_response_common_failure = z.object({ errors: request_tracer_messages, messages: request_tracer_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type request_tracer_trace = Array<Partial<{ action: string, action_parameters: Record<string, unknown>, description: string, expression: string, kind: string, matched: boolean, name: string, step_name: string, trace: request_tracer_trace, type: string }>>
 export const request_tracer_trace: z.ZodType<request_tracer_trace> = z.lazy(() => z.array(z.object({ action: z.string().regex(new RegExp("^[a-z_]+$")), action_parameters: z.record(z.string(), z.unknown()), description: z.string(), expression: z.string(), kind: z.string(), matched: z.boolean(), name: z.string(), step_name: z.string(), trace: request_tracer_trace, type: z.string() }).partial()));
@@ -12969,13 +12969,13 @@ export type resource_sharing_api_response_collection = z.infer<typeof resource_s
 export const resource_sharing_api_response_collection = resource_sharing_api_response_common.and(z.object({ result: z.array(z.unknown()).nullable(), result_info: resource_sharing_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type resource_sharing_api_response_common_failure = z.infer<typeof resource_sharing_api_response_common_failure>;
-export const resource_sharing_api_response_common_failure = z.object({ errors: resource_sharing_v4errors.and(z.unknown()), result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
+export const resource_sharing_api_response_common_failure = z.object({ errors: resource_sharing_v4errors, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
 
 export type resource_sharing_organization_id = z.infer<typeof resource_sharing_organization_id>;
 export const resource_sharing_organization_id = z.string().max(32);
 
 export type resource_sharing_create_share_recipient_request = z.infer<typeof resource_sharing_create_share_recipient_request>;
-export const resource_sharing_create_share_recipient_request = z.object({ account_id: resource_sharing_account_id.and(z.unknown()), organization_id: resource_sharing_organization_id, recipient_account_id: resource_sharing_account_id }).partial();
+export const resource_sharing_create_share_recipient_request = z.object({ account_id: resource_sharing_account_id, organization_id: resource_sharing_organization_id, recipient_account_id: resource_sharing_account_id }).partial();
 
 export type resource_sharing_share_name = z.infer<typeof resource_sharing_share_name>;
 export const resource_sharing_share_name = z.string();
@@ -13080,7 +13080,7 @@ export type resource_tagging_identifier = z.infer<typeof resource_tagging_identi
 export const resource_tagging_identifier = z.string().max(32);
 
 export type resource_tagging_account_id = z.infer<typeof resource_tagging_account_id>;
-export const resource_tagging_account_id = resource_tagging_identifier.and(z.unknown());
+export const resource_tagging_account_id = resource_tagging_identifier;
 
 export type resource_tagging_account_resource_type = z.infer<typeof resource_tagging_account_resource_type>;
 export const resource_tagging_account_resource_type = z.enum(["access_application", "access_group", "account", "ai_gateway", "alerting_policy", "alerting_webhook", "cloudflared_tunnel", "d1_database", "durable_object_namespace", "gateway_list", "gateway_rule", "image", "kv_namespace", "queue", "r2_bucket", "resource_share", "stream_live_input", "stream_video", "worker", "worker_version"]);
@@ -13098,7 +13098,7 @@ export type resource_tagging_api_response_common = z.infer<typeof resource_taggi
 export const resource_tagging_api_response_common = z.object({ errors: resource_tagging_messages, messages: resource_tagging_messages, success: z.literal(true) });
 
 export type resource_tagging_api_response_common_failure = z.infer<typeof resource_tagging_api_response_common_failure>;
-export const resource_tagging_api_response_common_failure = z.object({ errors: resource_tagging_messages.and(z.unknown()), messages: resource_tagging_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const resource_tagging_api_response_common_failure = z.object({ errors: resource_tagging_messages, messages: resource_tagging_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type resource_tagging_cursor_result_info = z.infer<typeof resource_tagging_cursor_result_info>;
 export const resource_tagging_cursor_result_info = z.object({ count: z.number().int(), cursor: z.string().nullable() }).partial();
@@ -13176,7 +13176,7 @@ export type resource_tagging_tagged_resource_object_access_application = z.infer
 export const resource_tagging_tagged_resource_object_access_application = z.object({ type: z.literal("access_application") }).and(resource_tagging_tagged_resource_object_account_level_base);
 
 export type resource_tagging_zone_id = z.infer<typeof resource_tagging_zone_id>;
-export const resource_tagging_zone_id = resource_tagging_identifier.and(z.unknown());
+export const resource_tagging_zone_id = resource_tagging_identifier;
 
 export type resource_tagging_tagged_resource_object_access_application_policy_base = z.infer<typeof resource_tagging_tagged_resource_object_access_application_policy_base>;
 export const resource_tagging_tagged_resource_object_access_application_policy_base = z.object({ access_application_id: resource_tagging_access_application_id, etag: resource_tagging_etag, id: resource_tagging_resource_id, name: resource_tagging_resource_name, tags: resource_tagging_tags, zone_id: resource_tagging_zone_id });
@@ -13326,7 +13326,7 @@ export type rulesets_RuleRatelimit = z.infer<typeof rulesets_RuleRatelimit>;
 export const rulesets_RuleRatelimit = z.object({ characteristics: z.array(z.string().min(1)).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" }), counting_expression: z.string().min(1).optional(), mitigation_timeout: z.number().int().optional(), period: z.number().int().min(0), requests_per_period: z.number().int().min(1).optional(), requests_to_origin: z.boolean().default(false), score_per_period: z.number().int().optional(), score_response_header_name: z.string().min(1).optional() });
 
 export type rulesets_Rule_schemas = z.infer<typeof rulesets_Rule_schemas>;
-export const rulesets_Rule_schemas = z.object({ action: rulesets_RuleAction.optional(), action_parameters: z.record(z.string(), z.unknown()).default({}), categories: rulesets_RuleCategories.optional(), description: z.string().default(""), enabled: rulesets_RuleEnabled.and(z.unknown().default(true)).optional(), exposed_credential_check: rulesets_RuleExposedCredentialCheck.optional(), expression: z.string().min(1).optional(), id: rulesets_RuleId.optional(), last_updated: z.iso.datetime(), logging: rulesets_RuleLogging.optional(), ratelimit: rulesets_RuleRatelimit.optional(), ref: z.string().min(1).optional(), version: z.string().regex(new RegExp("^[0-9]+$")) });
+export const rulesets_Rule_schemas = z.object({ action: rulesets_RuleAction.optional(), action_parameters: z.record(z.string(), z.unknown()).default({}), categories: rulesets_RuleCategories.optional(), description: z.string().default(""), enabled: rulesets_RuleEnabled.optional(), exposed_credential_check: rulesets_RuleExposedCredentialCheck.optional(), expression: z.string().min(1).optional(), id: rulesets_RuleId.optional(), last_updated: z.iso.datetime(), logging: rulesets_RuleLogging.optional(), ratelimit: rulesets_RuleRatelimit.optional(), ref: z.string().min(1).optional(), version: z.string().regex(new RegExp("^[0-9]+$")) });
 
 export type rulesets_BlockRule = z.infer<typeof rulesets_BlockRule>;
 export const rulesets_BlockRule = rulesets_Rule_schemas.and(z.object({ action: z.literal("block"), action_parameters: z.object({ response: z.object({ content: z.string().min(1), content_type: z.string().min(1), status_code: z.number().int().min(400).max(499) }) }).partial(), description: z.unknown() }).partial());
@@ -13353,22 +13353,22 @@ export type rulesets_ExecuteSensitivityLevel = z.infer<typeof rulesets_ExecuteSe
 export const rulesets_ExecuteSensitivityLevel = z.enum(["default", "medium", "low", "eoff"]);
 
 export type rulesets_ExecuteCategoryOverrides = z.infer<typeof rulesets_ExecuteCategoryOverrides>;
-export const rulesets_ExecuteCategoryOverrides = z.array(z.object({ action: rulesets_RuleAction.and(z.unknown()).optional(), category: rulesets_RuleCategory.and(z.unknown()), enabled: rulesets_RuleEnabled.and(z.unknown()).optional(), sensitivity_level: rulesets_ExecuteSensitivityLevel.and(z.unknown()).optional() }).refine((obj) => Object.keys(obj).length >= 2, { message: "minProperties" })).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" });
+export const rulesets_ExecuteCategoryOverrides = z.array(z.object({ action: rulesets_RuleAction.optional(), category: rulesets_RuleCategory, enabled: rulesets_RuleEnabled.optional(), sensitivity_level: rulesets_ExecuteSensitivityLevel.optional() }).refine((obj) => Object.keys(obj).length >= 2, { message: "minProperties" })).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" });
 
 export type rulesets_ExecuteMatchedData = z.infer<typeof rulesets_ExecuteMatchedData>;
 export const rulesets_ExecuteMatchedData = z.object({ public_key: z.string().min(1) });
 
 export type rulesets_ExecuteRuleOverrides = z.infer<typeof rulesets_ExecuteRuleOverrides>;
-export const rulesets_ExecuteRuleOverrides = z.array(z.object({ action: rulesets_RuleAction.and(z.unknown()).optional(), enabled: rulesets_RuleEnabled.and(z.unknown()).optional(), id: rulesets_RuleId.and(z.unknown()), score_threshold: z.number().int().optional(), sensitivity_level: rulesets_ExecuteSensitivityLevel.and(z.unknown()).optional() }).refine((obj) => Object.keys(obj).length >= 2, { message: "minProperties" })).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" });
+export const rulesets_ExecuteRuleOverrides = z.array(z.object({ action: rulesets_RuleAction.optional(), enabled: rulesets_RuleEnabled.optional(), id: rulesets_RuleId, score_threshold: z.number().int().optional(), sensitivity_level: rulesets_ExecuteSensitivityLevel.optional() }).refine((obj) => Object.keys(obj).length >= 2, { message: "minProperties" })).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" });
 
 export type rulesets_ExecuteOverrides = z.infer<typeof rulesets_ExecuteOverrides>;
-export const rulesets_ExecuteOverrides = z.object({ action: rulesets_RuleAction.and(z.unknown()), categories: rulesets_ExecuteCategoryOverrides, enabled: rulesets_RuleEnabled.and(z.unknown()), rules: rulesets_ExecuteRuleOverrides, sensitivity_level: rulesets_ExecuteSensitivityLevel.and(z.unknown()) }).partial().refine((obj) => Object.keys(obj).length >= 1, { message: "minProperties" });
+export const rulesets_ExecuteOverrides = z.object({ action: rulesets_RuleAction, categories: rulesets_ExecuteCategoryOverrides, enabled: rulesets_RuleEnabled, rules: rulesets_ExecuteRuleOverrides, sensitivity_level: rulesets_ExecuteSensitivityLevel }).partial().refine((obj) => Object.keys(obj).length >= 1, { message: "minProperties" });
 
 export type rulesets_RulesetId = z.infer<typeof rulesets_RulesetId>;
 export const rulesets_RulesetId = z.string().regex(new RegExp("^[0-9a-f]{32}$"));
 
 export type rulesets_ExecuteRule = z.infer<typeof rulesets_ExecuteRule>;
-export const rulesets_ExecuteRule = rulesets_Rule_schemas.and(z.object({ action: z.literal("execute"), action_parameters: z.object({ id: rulesets_RulesetId.and(z.unknown()), matched_data: rulesets_ExecuteMatchedData.optional(), overrides: rulesets_ExecuteOverrides.optional() }), description: z.unknown() }).partial());
+export const rulesets_ExecuteRule = rulesets_Rule_schemas.and(z.object({ action: z.literal("execute"), action_parameters: z.object({ id: rulesets_RulesetId, matched_data: rulesets_ExecuteMatchedData.optional(), overrides: rulesets_ExecuteOverrides.optional() }), description: z.unknown() }).partial());
 
 export type rulesets_ForceConnectionCloseRule = z.infer<typeof rulesets_ForceConnectionCloseRule>;
 export const rulesets_ForceConnectionCloseRule = rulesets_Rule_schemas.and(z.object({ action: z.literal("force_connection_close"), description: z.unknown() }).partial());
@@ -13404,7 +13404,7 @@ export type rulesets_ManagedTransformId = z.infer<typeof rulesets_ManagedTransfo
 export const rulesets_ManagedTransformId = z.string().min(1);
 
 export type rulesets_ManagedTransform = z.infer<typeof rulesets_ManagedTransform>;
-export const rulesets_ManagedTransform = z.object({ conflicts_with: z.array(rulesets_ManagedTransformId.and(z.unknown())).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" }).optional(), enabled: z.boolean(), has_conflict: z.boolean(), id: rulesets_ManagedTransformId });
+export const rulesets_ManagedTransform = z.object({ conflicts_with: z.array(rulesets_ManagedTransformId).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" }).optional(), enabled: z.boolean(), has_conflict: z.boolean(), id: rulesets_ManagedTransformId });
 
 export type rulesets_ManagedTransforms_schemas = z.infer<typeof rulesets_ManagedTransforms_schemas>;
 export const rulesets_ManagedTransforms_schemas = z.object({ managed_request_headers: z.array(rulesets_ManagedTransform.and(z.object({ id: z.unknown() }).partial())).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" }), managed_response_headers: z.array(rulesets_ManagedTransform.and(z.object({ id: z.unknown() }).partial())).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" }) });
@@ -13605,19 +13605,19 @@ export type rulesets_RulesetPhase = z.infer<typeof rulesets_RulesetPhase>;
 export const rulesets_RulesetPhase = z.enum(["ddos_l4", "ddos_l7", "http_config_settings", "http_custom_errors", "http_log_custom_fields", "http_ratelimit", "http_request_cache_settings", "http_request_dynamic_redirect", "http_request_firewall_custom", "http_request_firewall_managed", "http_request_late_transform", "http_request_origin", "http_request_redirect", "http_request_sanitize", "http_request_sbfm", "http_request_transform", "http_response_cache_settings", "http_response_compression", "http_response_firewall_managed", "http_response_headers_transform", "magic_transit", "magic_transit_ids_managed", "magic_transit_managed", "magic_transit_ratelimit"]);
 
 export type rulesets_SkipPhases = z.infer<typeof rulesets_SkipPhases>;
-export const rulesets_SkipPhases = z.array(rulesets_RulesetPhase.and(z.unknown())).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" });
+export const rulesets_SkipPhases = z.array(rulesets_RulesetPhase).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" });
 
 export type rulesets_SkipProducts = z.infer<typeof rulesets_SkipProducts>;
 export const rulesets_SkipProducts = z.array(z.enum(["bic", "hot", "rateLimit", "securityLevel", "uaBlock", "waf", "zoneLockdown"])).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" });
 
 export type rulesets_SkipRules = z.infer<typeof rulesets_SkipRules>;
-export const rulesets_SkipRules = z.record(z.string(), z.array(rulesets_RuleId.and(z.unknown())).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" }));
+export const rulesets_SkipRules = z.record(z.string(), z.array(rulesets_RuleId).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" }));
 
 export type rulesets_SkipRuleset = z.infer<typeof rulesets_SkipRuleset>;
 export const rulesets_SkipRuleset = z.literal("current");
 
 export type rulesets_SkipRulesets = z.infer<typeof rulesets_SkipRulesets>;
-export const rulesets_SkipRulesets = z.array(rulesets_RulesetId.and(z.unknown())).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" });
+export const rulesets_SkipRulesets = z.array(rulesets_RulesetId).min(1).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" });
 
 export type rulesets_SkipRule = z.infer<typeof rulesets_SkipRule>;
 export const rulesets_SkipRule = rulesets_Rule_schemas.and(z.object({ action: z.literal("skip"), action_parameters: z.object({ phase: rulesets_SkipPhase, phases: rulesets_SkipPhases, products: rulesets_SkipProducts, rules: rulesets_SkipRules, ruleset: rulesets_SkipRuleset, rulesets: rulesets_SkipRulesets }).partial().refine((obj) => Object.keys(obj).length >= 1, { message: "minProperties" }), description: z.unknown() }).partial());
@@ -13635,13 +13635,13 @@ export type rulesets_Response = z.infer<typeof rulesets_Response>;
 export const rulesets_Response = z.object({ errors: rulesets_Errors, messages: rulesets_Messages, result: z.unknown(), success: z.boolean() });
 
 export type rulesets_ResponseRule = z.infer<typeof rulesets_ResponseRule>;
-export const rulesets_ResponseRule = rulesets_RequestRule.and(z.unknown());
+export const rulesets_ResponseRule = rulesets_RequestRule;
 
 export type rulesets_ResponseRules = z.infer<typeof rulesets_ResponseRules>;
 export const rulesets_ResponseRules = z.array(rulesets_ResponseRule);
 
 export type rulesets_ResultInfo = z.infer<typeof rulesets_ResultInfo>;
-export const rulesets_ResultInfo = z.object({ cursors: z.object({ after: rulesets_Cursor.and(z.unknown()) }) }).partial();
+export const rulesets_ResultInfo = z.object({ cursors: z.object({ after: rulesets_Cursor }) }).partial();
 
 export type rulesets_RulePosition = z.infer<typeof rulesets_RulePosition>;
 export const rulesets_RulePosition = z.record(z.string(), z.unknown());
@@ -13650,7 +13650,7 @@ export type rulesets_RulesetVersion = z.infer<typeof rulesets_RulesetVersion>;
 export const rulesets_RulesetVersion = z.string().regex(new RegExp("^[0-9]+$"));
 
 export type rulesets_Ruleset_schemas = z.infer<typeof rulesets_Ruleset_schemas>;
-export const rulesets_Ruleset_schemas = z.object({ description: z.string().default(""), id: rulesets_RulesetId.and(z.unknown()), last_updated: z.iso.datetime(), name: z.string().min(1).optional(), version: rulesets_RulesetVersion.and(z.unknown()) });
+export const rulesets_Ruleset_schemas = z.object({ description: z.string().default(""), id: rulesets_RulesetId, last_updated: z.iso.datetime(), name: z.string().min(1).optional(), version: rulesets_RulesetVersion });
 
 export type rulesets_RulesetKind = z.infer<typeof rulesets_RulesetKind>;
 export const rulesets_RulesetKind = z.enum(["managed", "custom", "root", "zone"]);
@@ -13671,7 +13671,7 @@ export type rum_messages_2 = z.infer<typeof rum_messages_2>;
 export const rum_messages_2 = z.array(z.object({ code: z.number().int().min(1000), documentation_url: z.string().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().optional() }));
 
 export type rum_api_response_common_failure = z.infer<typeof rum_api_response_common_failure>;
-export const rum_api_response_common_failure = z.object({ errors: rum_messages_2.and(z.unknown()), messages: rum_messages_2, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const rum_api_response_common_failure = z.object({ errors: rum_messages_2, messages: rum_messages_2, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type rum_auto_install = z.infer<typeof rum_auto_install>;
 export const rum_auto_install = z.boolean();
@@ -13824,7 +13824,7 @@ export type secondary_dns_api_response_collection = z.infer<typeof secondary_dns
 export const secondary_dns_api_response_collection = secondary_dns_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type secondary_dns_api_response_common_failure = z.infer<typeof secondary_dns_api_response_common_failure>;
-export const secondary_dns_api_response_common_failure = z.object({ errors: secondary_dns_messages.and(z.unknown()), messages: secondary_dns_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const secondary_dns_api_response_common_failure = z.object({ errors: secondary_dns_messages, messages: secondary_dns_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type secondary_dns_api_response_single = z.infer<typeof secondary_dns_api_response_single>;
 export const secondary_dns_api_response_single = secondary_dns_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -13959,7 +13959,7 @@ export type secrets_store_api_response_collection = z.infer<typeof secrets_store
 export const secrets_store_api_response_collection = secrets_store_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type secrets_store_api_response_common_failure = z.infer<typeof secrets_store_api_response_common_failure>;
-export const secrets_store_api_response_common_failure = z.object({ errors: secrets_store_messages.and(z.unknown()), messages: secrets_store_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const secrets_store_api_response_common_failure = z.object({ errors: secrets_store_messages, messages: secrets_store_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type secrets_store_api_response_single = z.infer<typeof secrets_store_api_response_single>;
 export const secrets_store_api_response_single = secrets_store_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -14055,7 +14055,7 @@ export type security_center_ExternalApiResponseCommon = z.infer<typeof security_
 export const security_center_ExternalApiResponseCommon = security_center_api_response_common;
 
 export type security_center_api_response_common_failure = z.infer<typeof security_center_api_response_common_failure>;
-export const security_center_api_response_common_failure = z.object({ errors: security_center_messages.and(z.unknown()), messages: security_center_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const security_center_api_response_common_failure = z.object({ errors: security_center_messages, messages: security_center_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type security_center_ExternalApiResponseCommonFailure = z.infer<typeof security_center_ExternalApiResponseCommonFailure>;
 export const security_center_ExternalApiResponseCommonFailure = security_center_api_response_common_failure;
@@ -14163,7 +14163,7 @@ export type smartshield_api_response_collection = z.infer<typeof smartshield_api
 export const smartshield_api_response_collection = smartshield_api_response_common.and(z.object({ result: z.array(z.unknown()).nullable(), result_info: smartshield_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type smartshield_api_response_common_failure = z.infer<typeof smartshield_api_response_common_failure>;
-export const smartshield_api_response_common_failure = z.object({ errors: smartshield_messages.and(z.unknown()), messages: smartshield_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const smartshield_api_response_common_failure = z.object({ errors: smartshield_messages, messages: smartshield_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type smartshield_api_response_single = z.infer<typeof smartshield_api_response_single>;
 export const smartshield_api_response_single = smartshield_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()), z.string()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -14313,7 +14313,7 @@ export type spectrum_analytics_api_response_common = z.infer<typeof spectrum_ana
 export const spectrum_analytics_api_response_common = z.object({ errors: spectrum_analytics_messages, messages: spectrum_analytics_messages, success: z.literal(true) });
 
 export type spectrum_analytics_api_response_common_failure = z.infer<typeof spectrum_analytics_api_response_common_failure>;
-export const spectrum_analytics_api_response_common_failure = z.object({ errors: spectrum_analytics_messages.and(z.unknown()), messages: spectrum_analytics_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const spectrum_analytics_api_response_common_failure = z.object({ errors: spectrum_analytics_messages, messages: spectrum_analytics_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type spectrum_analytics_api_response_single = z.infer<typeof spectrum_analytics_api_response_single>;
 export const spectrum_analytics_api_response_single = spectrum_analytics_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -14340,25 +14340,25 @@ export type spectrum_analytics_timestamp = z.infer<typeof spectrum_analytics_tim
 export const spectrum_analytics_timestamp = z.iso.datetime();
 
 export type spectrum_analytics_since = z.infer<typeof spectrum_analytics_since>;
-export const spectrum_analytics_since = z.unknown().and(spectrum_analytics_timestamp);
+export const spectrum_analytics_since = spectrum_analytics_timestamp;
 
 export type spectrum_analytics_sort = z.infer<typeof spectrum_analytics_sort>;
 export const spectrum_analytics_sort = z.array(z.string());
 
 export type spectrum_analytics_until = z.infer<typeof spectrum_analytics_until>;
-export const spectrum_analytics_until = z.unknown().and(spectrum_analytics_timestamp);
+export const spectrum_analytics_until = spectrum_analytics_timestamp;
 
 export type spectrum_analytics_query = z.infer<typeof spectrum_analytics_query>;
 export const spectrum_analytics_query = z.object({ dimensions: spectrum_analytics_dimensions, filters: spectrum_analytics_filters, limit: z.number(), metrics: spectrum_analytics_metrics, since: spectrum_analytics_since, sort: spectrum_analytics_sort, until: spectrum_analytics_until }).partial();
 
 export type spectrum_analytics_query_response_aggregate = z.infer<typeof spectrum_analytics_query_response_aggregate>;
-export const spectrum_analytics_query_response_aggregate = spectrum_analytics_api_response_single.and(z.object({ result: z.array(z.object({ appID: z.unknown().and(spectrum_analytics_identifier), bytesEgress: z.number(), bytesIngress: z.number(), connections: z.number(), durationAvg: z.number() })) }).partial());
+export const spectrum_analytics_query_response_aggregate = spectrum_analytics_api_response_single.and(z.object({ result: z.array(z.object({ appID: spectrum_analytics_identifier, bytesEgress: z.number(), bytesIngress: z.number(), connections: z.number(), durationAvg: z.number() })) }).partial());
 
 export type spectrum_analytics_stat = z.infer<typeof spectrum_analytics_stat>;
 export const spectrum_analytics_stat = z.record(z.string(), z.number());
 
 export type spectrum_analytics_query_response_single = z.infer<typeof spectrum_analytics_query_response_single>;
-export const spectrum_analytics_query_response_single = spectrum_analytics_api_response_single.and(z.object({ result: z.object({ data: z.array(spectrum_analytics_column), data_lag: z.number().min(0), max: z.unknown().and(spectrum_analytics_stat), min: z.unknown().and(spectrum_analytics_stat), query: spectrum_analytics_query, rows: z.number().min(0), time_intervals: z.array(z.array(spectrum_analytics_timestamp)).optional(), totals: z.unknown().and(spectrum_analytics_stat) }) }).partial());
+export const spectrum_analytics_query_response_single = spectrum_analytics_api_response_single.and(z.object({ result: z.object({ data: z.array(spectrum_analytics_column), data_lag: z.number().min(0), max: spectrum_analytics_stat, min: spectrum_analytics_stat, query: spectrum_analytics_query, rows: z.number().min(0), time_intervals: z.array(z.array(spectrum_analytics_timestamp)).optional(), totals: spectrum_analytics_stat }) }).partial());
 
 export type spectrum_config_messages = z.infer<typeof spectrum_config_messages>;
 export const spectrum_config_messages = z.array(z.object({ code: z.number().int().min(1000), documentation_url: z.string().optional(), message: z.string(), source: z.object({ pointer: z.string() }).partial().optional() }));
@@ -14370,7 +14370,7 @@ export type spectrum_config_api_response_collection = z.infer<typeof spectrum_co
 export const spectrum_config_api_response_collection = spectrum_config_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type spectrum_config_api_response_common_failure = z.infer<typeof spectrum_config_api_response_common_failure>;
-export const spectrum_config_api_response_common_failure = z.object({ errors: spectrum_config_messages.and(z.unknown()), messages: spectrum_config_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const spectrum_config_api_response_common_failure = z.object({ errors: spectrum_config_messages, messages: spectrum_config_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type spectrum_config_api_response_single = z.infer<typeof spectrum_config_api_response_single>;
 export const spectrum_config_api_response_single = spectrum_config_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -14385,13 +14385,13 @@ export type spectrum_config_timestamp = z.infer<typeof spectrum_config_timestamp
 export const spectrum_config_timestamp = z.iso.datetime();
 
 export type spectrum_config_created = z.infer<typeof spectrum_config_created>;
-export const spectrum_config_created = z.unknown().and(z.unknown()).and(spectrum_config_timestamp);
+export const spectrum_config_created = spectrum_config_timestamp;
 
 export type spectrum_config_app_identifier = z.infer<typeof spectrum_config_app_identifier>;
-export const spectrum_config_app_identifier = z.unknown().and(z.unknown()).and(spectrum_config_identifier);
+export const spectrum_config_app_identifier = spectrum_config_identifier;
 
 export type spectrum_config_modified = z.infer<typeof spectrum_config_modified>;
-export const spectrum_config_modified = z.unknown().and(z.unknown()).and(spectrum_config_timestamp);
+export const spectrum_config_modified = spectrum_config_timestamp;
 
 export type spectrum_config_base_app_config = z.infer<typeof spectrum_config_base_app_config>;
 export const spectrum_config_base_app_config = z.object({ created_on: spectrum_config_created, id: spectrum_config_app_identifier, modified_on: spectrum_config_modified });
@@ -14463,7 +14463,7 @@ export type spectrum_config_update_app_config = z.infer<typeof spectrum_config_u
 export const spectrum_config_update_app_config = z.union([spectrum_config_app_config, spectrum_config_paygo_app_config]);
 
 export type spectrum_config_zone_identifier = z.infer<typeof spectrum_config_zone_identifier>;
-export const spectrum_config_zone_identifier = z.unknown().and(z.unknown()).and(spectrum_config_identifier);
+export const spectrum_config_zone_identifier = spectrum_config_identifier;
 
 export type speed_messages = z.infer<typeof speed_messages>;
 export const speed_messages = z.array(z.object({ code: z.number().int().min(1000), message: z.string() }));
@@ -14472,7 +14472,7 @@ export type speed_api_response_common = z.infer<typeof speed_api_response_common
 export const speed_api_response_common = z.object({ errors: speed_messages, messages: speed_messages, success: z.boolean() });
 
 export type speed_api_response_common_failure = z.infer<typeof speed_api_response_common_failure>;
-export const speed_api_response_common_failure = z.object({ errors: speed_messages.and(z.unknown()), messages: speed_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
+export const speed_api_response_common_failure = z.object({ errors: speed_messages, messages: speed_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
 
 export type speed_identifier = z.infer<typeof speed_identifier>;
 export const speed_identifier = z.string().max(32);
@@ -14526,7 +14526,7 @@ export type stream_allowedOrigins = z.infer<typeof stream_allowedOrigins>;
 export const stream_allowedOrigins = z.array(z.string());
 
 export type stream_api_response_common_failure = z.infer<typeof stream_api_response_common_failure>;
-export const stream_api_response_common_failure = z.object({ errors: stream_messages.and(z.unknown()), messages: stream_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const stream_api_response_common_failure = z.object({ errors: stream_messages, messages: stream_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type stream_api_response_single = z.infer<typeof stream_api_response_single>;
 export const stream_api_response_single = stream_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -15006,7 +15006,7 @@ export type teams_devices_api_response_collection_common = z.infer<typeof teams_
 export const teams_devices_api_response_collection_common = teams_devices_api_response_common.and(z.object({ result: z.array(z.record(z.string(), z.unknown())).nullable() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type teams_devices_api_response_common_failure = z.infer<typeof teams_devices_api_response_common_failure>;
-export const teams_devices_api_response_common_failure = z.object({ errors: teams_devices_messages.and(z.unknown()), messages: teams_devices_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const teams_devices_api_response_common_failure = z.object({ errors: teams_devices_messages, messages: teams_devices_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type teams_devices_api_response_single = z.infer<typeof teams_devices_api_response_single>;
 export const teams_devices_api_response_single = teams_devices_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()), z.string()]).nullable() }).partial()).and(z.record(z.string(), z.unknown()));
@@ -15663,7 +15663,7 @@ export type tls_certificates_and_hostnames_api_response_collection = z.infer<typ
 export const tls_certificates_and_hostnames_api_response_collection = tls_certificates_and_hostnames_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type tls_certificates_and_hostnames_api_response_common_failure = z.infer<typeof tls_certificates_and_hostnames_api_response_common_failure>;
-export const tls_certificates_and_hostnames_api_response_common_failure = z.object({ errors: tls_certificates_and_hostnames_messages.and(z.unknown()), messages: tls_certificates_and_hostnames_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const tls_certificates_and_hostnames_api_response_common_failure = z.object({ errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type tls_certificates_and_hostnames_service = z.infer<typeof tls_certificates_and_hostnames_service>;
 export const tls_certificates_and_hostnames_service = z.string();
@@ -16116,7 +16116,7 @@ export type tls_certificates_and_hostnames_custom_hostname_api_response_common =
 export const tls_certificates_and_hostnames_custom_hostname_api_response_common = z.object({ errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_custom_hostname_response_messages, success: z.literal(true) });
 
 export type tls_certificates_and_hostnames_custom_hostname_api_response_failure = z.infer<typeof tls_certificates_and_hostnames_custom_hostname_api_response_failure>;
-export const tls_certificates_and_hostnames_custom_hostname_api_response_failure = z.object({ errors: tls_certificates_and_hostnames_messages.and(z.unknown()), messages: tls_certificates_and_hostnames_custom_hostname_response_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const tls_certificates_and_hostnames_custom_hostname_api_response_failure = z.object({ errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_custom_hostname_response_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type tls_certificates_and_hostnames_custom_hostname_quota = z.infer<typeof tls_certificates_and_hostnames_custom_hostname_quota>;
 export const tls_certificates_and_hostnames_custom_hostname_quota = z.object({ allocated: z.number().int(), exceeded: z.boolean(), hard_cap: z.number().int(), used: z.number().int() });
@@ -16350,10 +16350,10 @@ export type tunnel_api_response_common_2 = z.infer<typeof tunnel_api_response_co
 export const tunnel_api_response_common_2 = z.object({ errors: tunnel_messages_2, messages: tunnel_messages_2, success: z.literal(true) });
 
 export type tunnel_api_response_common_failure = z.infer<typeof tunnel_api_response_common_failure>;
-export const tunnel_api_response_common_failure = z.object({ errors: tunnel_messages.and(z.unknown()), messages: tunnel_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const tunnel_api_response_common_failure = z.object({ errors: tunnel_messages, messages: tunnel_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type tunnel_api_response_common_failure_2 = z.infer<typeof tunnel_api_response_common_failure_2>;
-export const tunnel_api_response_common_failure_2 = z.object({ errors: tunnel_messages_2.and(z.unknown()), messages: tunnel_messages_2, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const tunnel_api_response_common_failure_2 = z.object({ errors: tunnel_messages_2, messages: tunnel_messages_2, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type tunnel_api_response_single = z.infer<typeof tunnel_api_response_single>;
 export const tunnel_api_response_single = tunnel_api_response_common;
@@ -16719,7 +16719,7 @@ export type turnstile_api_response_common = z.infer<typeof turnstile_api_respons
 export const turnstile_api_response_common = z.object({ errors: turnstile_messages, messages: turnstile_messages, success: z.boolean() });
 
 export type turnstile_api_response_common_failure = z.infer<typeof turnstile_api_response_common_failure>;
-export const turnstile_api_response_common_failure = z.object({ errors: turnstile_messages.and(z.unknown()), messages: turnstile_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
+export const turnstile_api_response_common_failure = z.object({ errors: turnstile_messages, messages: turnstile_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
 
 export type turnstile_bot_fight_mode = z.infer<typeof turnstile_bot_fight_mode>;
 export const turnstile_bot_fight_mode = z.boolean();
@@ -16815,7 +16815,7 @@ export type vectorize_api_response_collection = z.infer<typeof vectorize_api_res
 export const vectorize_api_response_collection = vectorize_api_response_common.and(z.object({ result: z.array(z.unknown()).nullable(), result_info: vectorize_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type vectorize_api_response_common_failure = z.infer<typeof vectorize_api_response_common_failure>;
-export const vectorize_api_response_common_failure = z.object({ errors: vectorize_messages.and(z.unknown()), messages: vectorize_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const vectorize_api_response_common_failure = z.object({ errors: vectorize_messages, messages: vectorize_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type vectorize_api_response_single = z.infer<typeof vectorize_api_response_single>;
 export const vectorize_api_response_single = vectorize_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()), z.string()]).nullable() }).partial()).and(z.record(z.string(), z.unknown()));
@@ -16935,7 +16935,7 @@ export type vuln_scanner_api_response_collection = z.infer<typeof vuln_scanner_a
 export const vuln_scanner_api_response_collection = vuln_scanner_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type vuln_scanner_api_response_common_failure = z.infer<typeof vuln_scanner_api_response_common_failure>;
-export const vuln_scanner_api_response_common_failure = z.object({ errors: vuln_scanner_messages.and(z.unknown()), messages: vuln_scanner_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const vuln_scanner_api_response_common_failure = z.object({ errors: vuln_scanner_messages, messages: vuln_scanner_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type vuln_scanner_bola_http_status_range = z.infer<typeof vuln_scanner_bola_http_status_range>;
 export const vuln_scanner_bola_http_status_range = z.object({ max: z.number().int().min(0).max(65535), min: z.number().int().min(0).max(65535) });
@@ -17133,7 +17133,7 @@ export type waf_managed_rules_api_response_collection = z.infer<typeof waf_manag
 export const waf_managed_rules_api_response_collection = waf_managed_rules_api_response_common.and(z.object({ result_info: waf_managed_rules_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type waf_managed_rules_api_response_common_failure = z.infer<typeof waf_managed_rules_api_response_common_failure>;
-export const waf_managed_rules_api_response_common_failure = z.object({ errors: waf_managed_rules_messages.and(z.unknown()), messages: waf_managed_rules_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const waf_managed_rules_api_response_common_failure = z.object({ errors: waf_managed_rules_messages, messages: waf_managed_rules_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type waf_managed_rules_api_response_single = z.infer<typeof waf_managed_rules_api_response_single>;
 export const waf_managed_rules_api_response_single = waf_managed_rules_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()).nullable(), z.string().nullable()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -17154,10 +17154,10 @@ export type waf_managed_rules_group = z.infer<typeof waf_managed_rules_group>;
 export const waf_managed_rules_group = z.object({ description: waf_managed_rules_description, id: waf_managed_rules_components_schemas_identifier, modified_rules_count: waf_managed_rules_modified_rules_count, name: waf_managed_rules_name, package_id: waf_managed_rules_identifier, rules_count: waf_managed_rules_rules_count }).partial();
 
 export type waf_managed_rules_traditional_deny_rule = z.infer<typeof waf_managed_rules_traditional_deny_rule>;
-export const waf_managed_rules_traditional_deny_rule = waf_managed_rules_base.and(z.object({ allowed_modes: waf_managed_rules_allowed_modes_deny_traditional, default_mode: waf_managed_rules_default_mode, mode: waf_managed_rules_mode_deny_traditional }).partial()).and(z.unknown());
+export const waf_managed_rules_traditional_deny_rule = waf_managed_rules_base.and(z.object({ allowed_modes: waf_managed_rules_allowed_modes_deny_traditional, default_mode: waf_managed_rules_default_mode, mode: waf_managed_rules_mode_deny_traditional }).partial());
 
 export type waf_managed_rules_traditional_allow_rule = z.infer<typeof waf_managed_rules_traditional_allow_rule>;
-export const waf_managed_rules_traditional_allow_rule = waf_managed_rules_base.and(z.object({ allowed_modes: waf_managed_rules_allowed_modes_allow_traditional, mode: waf_managed_rules_mode_allow_traditional }).partial()).and(z.unknown());
+export const waf_managed_rules_traditional_allow_rule = waf_managed_rules_base.and(z.object({ allowed_modes: waf_managed_rules_allowed_modes_allow_traditional, mode: waf_managed_rules_mode_allow_traditional }).partial());
 
 export type waf_managed_rules_rule = z.infer<typeof waf_managed_rules_rule>;
 export const waf_managed_rules_rule = z.union([waf_managed_rules_anomaly_rule, waf_managed_rules_traditional_deny_rule, waf_managed_rules_traditional_allow_rule]);
@@ -17196,13 +17196,13 @@ export type waf_product_api_bundle_api_response_collection_2 = z.infer<typeof wa
 export const waf_product_api_bundle_api_response_collection_2 = waf_product_api_bundle_api_response_common_2.and(z.object({ result: z.array(z.record(z.string(), z.unknown())).nullable() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type waf_product_api_bundle_api_response_common_failure = z.infer<typeof waf_product_api_bundle_api_response_common_failure>;
-export const waf_product_api_bundle_api_response_common_failure = z.object({ errors: waf_product_api_bundle_messages.and(z.unknown()), messages: waf_product_api_bundle_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const waf_product_api_bundle_api_response_common_failure = z.object({ errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type waf_product_api_bundle_api_response_common_failure_2 = z.infer<typeof waf_product_api_bundle_api_response_common_failure_2>;
-export const waf_product_api_bundle_api_response_common_failure_2 = z.object({ errors: waf_product_api_bundle_messages.and(z.unknown()), messages: waf_product_api_bundle_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const waf_product_api_bundle_api_response_common_failure_2 = z.object({ errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type waf_product_api_bundle_api_response_common_failure_3 = z.infer<typeof waf_product_api_bundle_api_response_common_failure_3>;
-export const waf_product_api_bundle_api_response_common_failure_3 = z.object({ errors: waf_product_api_bundle_messages.and(z.unknown()), messages: waf_product_api_bundle_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const waf_product_api_bundle_api_response_common_failure_3 = z.object({ errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type waf_product_api_bundle_api_response_single = z.infer<typeof waf_product_api_bundle_api_response_single>;
 export const waf_product_api_bundle_api_response_single = waf_product_api_bundle_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()).nullable(), z.string().nullable()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -17214,7 +17214,7 @@ export type waf_product_api_bundle_identifier = z.infer<typeof waf_product_api_b
 export const waf_product_api_bundle_identifier = z.string().max(32);
 
 export type waf_product_api_bundle_detection_id = z.infer<typeof waf_product_api_bundle_detection_id>;
-export const waf_product_api_bundle_detection_id = waf_product_api_bundle_identifier.and(z.unknown());
+export const waf_product_api_bundle_detection_id = waf_product_api_bundle_identifier;
 
 export type waf_product_api_bundle_custom_detection = z.infer<typeof waf_product_api_bundle_custom_detection>;
 export const waf_product_api_bundle_custom_detection = z.object({ id: waf_product_api_bundle_detection_id, password: z.string(), username: z.string() }).partial();
@@ -17283,7 +17283,7 @@ export type waitingroom_api_response_common = z.infer<typeof waitingroom_api_res
 export const waitingroom_api_response_common = z.record(z.string(), z.unknown());
 
 export type waitingroom_api_response_common_failure = z.infer<typeof waitingroom_api_response_common_failure>;
-export const waitingroom_api_response_common_failure = z.object({ errors: waitingroom_messages.and(z.unknown()), messages: waitingroom_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const waitingroom_api_response_common_failure = z.object({ errors: waitingroom_messages, messages: waitingroom_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type waitingroom_api_response_single = z.infer<typeof waitingroom_api_response_single>;
 export const waitingroom_api_response_single = waitingroom_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()), z.string()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -17550,7 +17550,7 @@ export type web3_api_response_collection = z.infer<typeof web3_api_response_coll
 export const web3_api_response_collection = web3_api_response_common.and(z.object({ result: z.array(z.unknown()).nullable(), result_info: web3_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type web3_api_response_common_failure = z.infer<typeof web3_api_response_common_failure>;
-export const web3_api_response_common_failure = z.object({ errors: web3_messages.and(z.unknown()), messages: web3_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const web3_api_response_common_failure = z.object({ errors: web3_messages, messages: web3_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type web3_api_response_single = z.infer<typeof web3_api_response_single>;
 export const web3_api_response_single = web3_api_response_common.and(z.object({ result_info: z.union([z.record(z.string(), z.unknown()).nullable(), z.string().nullable()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -17646,7 +17646,7 @@ export type workers_kv_api_response_collection = z.infer<typeof workers_kv_api_r
 export const workers_kv_api_response_collection = workers_kv_api_response_common.and(z.object({ result_info: workers_kv_result_info }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type workers_kv_api_response_common_failure = z.infer<typeof workers_kv_api_response_common_failure>;
-export const workers_kv_api_response_common_failure = z.object({ errors: workers_kv_messages.and(z.unknown()), messages: workers_kv_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const workers_kv_api_response_common_failure = z.object({ errors: workers_kv_messages, messages: workers_kv_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type workers_kv_api_response_common_no_result = z.infer<typeof workers_kv_api_response_common_no_result>;
 export const workers_kv_api_response_common_no_result = workers_kv_api_response_common.and(z.object({ result: z.record(z.string(), z.unknown()).nullable() }).partial());
@@ -17658,7 +17658,7 @@ export type workers_kv_expiration = z.infer<typeof workers_kv_expiration>;
 export const workers_kv_expiration = z.number();
 
 export type workers_kv_bulk_get_result_with_metadata = z.infer<typeof workers_kv_bulk_get_result_with_metadata>;
-export const workers_kv_bulk_get_result_with_metadata = z.object({ values: z.record(z.string(), z.object({ expiration: workers_kv_expiration.optional(), metadata: workers_kv_any.and(z.unknown()), value: workers_kv_any.and(z.unknown()) }).nullable()) }).partial();
+export const workers_kv_bulk_get_result_with_metadata = z.object({ values: z.record(z.string(), z.object({ expiration: workers_kv_expiration.optional(), metadata: workers_kv_any, value: workers_kv_any }).nullable()) }).partial();
 
 export type workers_kv_bulk_result = z.infer<typeof workers_kv_bulk_result>;
 export const workers_kv_bulk_result = z.object({ successful_key_count: z.number(), unsuccessful_keys: z.array(z.string()) }).partial();
@@ -17673,7 +17673,7 @@ export type workers_kv_expiration_ttl = z.infer<typeof workers_kv_expiration_ttl
 export const workers_kv_expiration_ttl = z.number().min(60);
 
 export type workers_kv_list_metadata = z.infer<typeof workers_kv_list_metadata>;
-export const workers_kv_list_metadata = workers_kv_any.and(z.unknown());
+export const workers_kv_list_metadata = workers_kv_any;
 
 export type workers_kv_bulk_write = z.infer<typeof workers_kv_bulk_write>;
 export const workers_kv_bulk_write = z.array(z.object({ base64: z.boolean().default(false), expiration: workers_kv_expiration.optional(), expiration_ttl: workers_kv_expiration_ttl.optional(), key: workers_kv_key_name_bulk, metadata: workers_kv_list_metadata.optional(), value: z.string().max(26214400) }));
@@ -17700,7 +17700,7 @@ export type workers_kv_key = z.infer<typeof workers_kv_key>;
 export const workers_kv_key = z.object({ expiration: z.number().optional(), metadata: workers_kv_list_metadata.optional(), name: workers_kv_key_name });
 
 export type workers_kv_metadata = z.infer<typeof workers_kv_metadata>;
-export const workers_kv_metadata = workers_kv_any.and(z.unknown());
+export const workers_kv_metadata = workers_kv_any;
 
 export type workers_kv_namespace_identifier = z.infer<typeof workers_kv_namespace_identifier>;
 export const workers_kv_namespace_identifier = z.string().max(32);
@@ -18003,7 +18003,7 @@ export type workers_api_response_collection = z.infer<typeof workers_api_respons
 export const workers_api_response_collection = workers_api_response_common.and(z.object({ result_info: z.object({ count: z.number(), page: z.number(), per_page: z.number(), total_count: z.number(), total_pages: z.number() }).partial() }).partial()).and(z.record(z.string(), z.unknown()));
 
 export type workers_api_response_common_failure = z.infer<typeof workers_api_response_common_failure>;
-export const workers_api_response_common_failure = z.object({ errors: workers_messages.and(z.unknown()), messages: workers_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const workers_api_response_common_failure = z.object({ errors: workers_messages, messages: workers_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type workers_api_response_null_result = z.infer<typeof workers_api_response_null_result>;
 export const workers_api_response_null_result = workers_api_response_common.and(z.object({ result: z.record(z.string(), z.unknown()).nullable() }).partial());
@@ -18087,7 +18087,7 @@ export type workers_usage_model = z.infer<typeof workers_usage_model>;
 export const workers_usage_model = z.enum(["standard", "bundled", "unbound"]).default("standard");
 
 export type workers_multipart_script = z.infer<typeof workers_multipart_script>;
-export const workers_multipart_script = z.object({ files: z.array(z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob)).optional(), metadata: z.object({ assets: workers_assets, bindings: workers_bindings, body_part: z.string(), cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, exports: workers_exports_config_map.and(z.unknown()), exports_reconciliation: workers_exports_reconciliation_result, keep_assets: z.boolean(), keep_bindings: z.array(z.string()), limits: workers_limits, logpush: workers_logpush, main_module: z.string(), migrations: z.union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, package_dependencies: z.array(z.object({ installedVersion: z.string(), name: z.string(), packageJsonVersion: z.string() })), placement: workers_placement_info, tags: z.array(z.string()), tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }).partial() });
+export const workers_multipart_script = z.object({ files: z.array(z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob)).optional(), metadata: z.object({ assets: workers_assets, bindings: workers_bindings, body_part: z.string(), cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, keep_assets: z.boolean(), keep_bindings: z.array(z.string()), limits: workers_limits, logpush: workers_logpush, main_module: z.string(), migrations: z.union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, package_dependencies: z.array(z.object({ installedVersion: z.string(), name: z.string(), packageJsonVersion: z.string() })), placement: workers_placement_info, tags: z.array(z.string()), tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }).partial() });
 
 export type workers_namespace = z.infer<typeof workers_namespace>;
 export const workers_namespace = z.object({ class: z.string(), id: z.string(), name: z.string(), script: z.string(), use_sqlite: z.boolean() }).partial();
@@ -18114,7 +18114,7 @@ export type workers_tags = z.infer<typeof workers_tags>;
 export const workers_tags = z.array(workers_tag).max(10).nullable();
 
 export type workers_namespace_script_and_version_settings_item = z.infer<typeof workers_namespace_script_and_version_settings_item>;
-export const workers_namespace_script_and_version_settings_item = z.object({ bindings: workers_bindings.and(z.array(workers_binding_item).default([])), cache_options: workers_cache_options, compatibility_date: workers_compatibility_date.and(z.string().default("")), compatibility_flags: workers_compatibility_flags.and(z.array(z.string()).default([])), exports: workers_exports_config_map.and(z.unknown()), exports_reconciliation: workers_exports_reconciliation_result, limits: workers_limits, logpush: workers_logpush, migrations: z.union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, placement: workers_placement_info_no_status.and(z.record(z.string(), z.unknown()).default({})), tags: workers_tags.and(z.array(z.string()).default([])), tail_consumers: workers_tail_consumers.and(z.array(workers_tail_consumers_script).default([])), usage_model: workers_usage_model }).partial();
+export const workers_namespace_script_and_version_settings_item = z.object({ bindings: workers_bindings.and(z.array(workers_binding_item).default([])), cache_options: workers_cache_options, compatibility_date: workers_compatibility_date.and(z.string().default("")), compatibility_flags: workers_compatibility_flags.and(z.array(z.string()).default([])), exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, limits: workers_limits, logpush: workers_logpush, migrations: z.union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, placement: workers_placement_info_no_status.and(z.record(z.string(), z.unknown()).default({})), tags: workers_tags.and(z.array(z.string()).default([])), tail_consumers: workers_tail_consumers.and(z.array(workers_tail_consumers_script).default([])), usage_model: workers_usage_model }).partial();
 
 export type workers_namespace_script_delete_bulk_response = z.infer<typeof workers_namespace_script_delete_bulk_response>;
 export const workers_namespace_script_delete_bulk_response = z.object({ deleted: z.array(z.object({ id: workers_uuid }).partial()), deleted_count: z.number().int(), has_more: z.boolean() }).partial();
@@ -18123,7 +18123,7 @@ export type workers_placement_mode = z.infer<typeof workers_placement_mode>;
 export const workers_placement_mode = z.enum(["smart", "targeted"]);
 
 export type workers_script_response = z.infer<typeof workers_script_response>;
-export const workers_script_response = z.object({ cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, created_on: workers_created_on, etag: workers_etag, exports: workers_exports_config_map.and(z.unknown()), handlers: z.array(z.string()), has_assets: workers_has_assets, has_modules: workers_has_modules, id: z.string(), last_deployed_from: z.string(), logpush: workers_logpush, migration_tag: z.string(), modified_on: workers_modified_on, named_handlers: z.array(z.object({ handlers: z.array(z.string()), name: z.string() }).partial()), observability: workers_observability, placement: workers_placement_info, placement_mode: workers_placement_mode.and(z.string()), placement_status: workers_placement_status.and(z.string()), tag: z.string(), tags: workers_tags, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }).partial();
+export const workers_script_response = z.object({ cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, created_on: workers_created_on, etag: workers_etag, exports: workers_exports_config_map, handlers: z.array(z.string()), has_assets: workers_has_assets, has_modules: workers_has_modules, id: z.string(), last_deployed_from: z.string(), logpush: workers_logpush, migration_tag: z.string(), modified_on: workers_modified_on, named_handlers: z.array(z.object({ handlers: z.array(z.string()), name: z.string() }).partial()), observability: workers_observability, placement: workers_placement_info, placement_mode: workers_placement_mode.and(z.string()), placement_status: workers_placement_status.and(z.string()), tag: z.string(), tags: workers_tags, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }).partial();
 
 export type workers_namespace_script_response = z.infer<typeof workers_namespace_script_response>;
 export const workers_namespace_script_response = z.object({ created_on: workers_created_on, dispatch_namespace: workers_dispatch_namespace_name, modified_on: workers_modified_on, script: workers_script_response }).partial();
@@ -18147,7 +18147,7 @@ export type workers_placement_regions_response = z.infer<typeof workers_placemen
 export const workers_placement_regions_response = z.object({ providers: z.array(workers_placement_provider) });
 
 export type workers_route = z.infer<typeof workers_route>;
-export const workers_route = z.object({ id: workers_identifier.and(z.unknown()), pattern: z.string(), script: z.string().optional() });
+export const workers_route = z.object({ id: workers_identifier, pattern: z.string(), script: z.string().optional() });
 
 export type workers_schedule = z.infer<typeof workers_schedule>;
 export const workers_schedule = z.object({ created_on: z.string().optional(), cron: z.string(), modified_on: z.string().optional() });
@@ -18156,7 +18156,7 @@ export type workers_schemas_id = z.infer<typeof workers_schemas_id>;
 export const workers_schemas_id = z.string();
 
 export type workers_script_and_version_settings_item = z.infer<typeof workers_script_and_version_settings_item>;
-export const workers_script_and_version_settings_item = z.object({ annotations: z.object({ "workers/message": z.string().max(1000), "workers/tag": z.string().max(100), "workers/triggered_by": z.string() }).partial(), bindings: workers_bindings.and(z.array(workers_binding_item).default([])), cache_options: workers_cache_options, compatibility_date: workers_compatibility_date.and(z.string().default("")), compatibility_flags: workers_compatibility_flags.and(z.array(z.string()).default([])), exports: workers_exports_config_map.and(z.unknown()), exports_reconciliation: workers_exports_reconciliation_result, limits: workers_limits, logpush: workers_logpush, migrations: z.union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, placement: workers_placement_info_no_status.and(z.record(z.string(), z.unknown()).default({})), tags: workers_tags.and(z.array(z.string()).default([])), tail_consumers: workers_tail_consumers.and(z.array(workers_tail_consumers_script).default([])), usage_model: workers_usage_model }).partial();
+export const workers_script_and_version_settings_item = z.object({ annotations: z.object({ "workers/message": z.string().max(1000), "workers/tag": z.string().max(100), "workers/triggered_by": z.string() }).partial(), bindings: workers_bindings.and(z.array(workers_binding_item).default([])), cache_options: workers_cache_options, compatibility_date: workers_compatibility_date.and(z.string().default("")), compatibility_flags: workers_compatibility_flags.and(z.array(z.string()).default([])), exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, limits: workers_limits, logpush: workers_logpush, migrations: z.union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, placement: workers_placement_info_no_status.and(z.record(z.string(), z.unknown()).default({})), tags: workers_tags.and(z.array(z.string()).default([])), tail_consumers: workers_tail_consumers.and(z.array(workers_tail_consumers_script).default([])), usage_model: workers_usage_model }).partial();
 
 export type workers_script_and_version_settings_response = z.infer<typeof workers_script_and_version_settings_response>;
 export const workers_script_and_version_settings_response = workers_api_response_common.and(z.object({ result: workers_script_and_version_settings_item }));
@@ -18210,7 +18210,7 @@ export type workers_subdomain_2 = z.infer<typeof workers_subdomain_2>;
 export const workers_subdomain_2 = z.object({ subdomain: z.string() });
 
 export type workers_tail = z.infer<typeof workers_tail>;
-export const workers_tail = z.object({ expires_at: z.string(), id: workers_identifier.and(z.unknown()), url: z.string() });
+export const workers_tail = z.object({ expires_at: z.string(), id: workers_identifier, url: z.string() });
 
 export type workers_upload_assets_response = z.infer<typeof workers_upload_assets_response>;
 export const workers_upload_assets_response = workers_api_response_common.and(z.object({ result: z.record(z.string(), z.unknown()) }).partial());
@@ -18225,7 +18225,7 @@ export type workers_version_item_short = z.infer<typeof workers_version_item_sho
 export const workers_version_item_short = z.object({ id: z.string(), metadata: z.object({ author_email: z.string(), author_id: z.string(), created_on: z.string(), hasPreview: z.boolean(), modified_on: z.string(), source: z.enum(["unknown", "api", "wrangler", "terraform", "dash", "cf_cli", "dash_template", "integration", "quick_editor", "playground", "workersci"]) }).partial(), number: z.number() }).partial();
 
 export type workers_version_item_full = z.infer<typeof workers_version_item_full>;
-export const workers_version_item_full = workers_version_item_short.and(z.object({ resources: z.object({ bindings: workers_bindings.and(z.unknown()), script: z.object({ etag: z.string(), handlers: z.array(z.string()), last_deployed_from: z.string(), named_handlers: z.array(z.object({ handlers: z.array(z.string()), name: z.string() }).partial()) }).partial(), script_runtime: z.object({ compatibility_date: z.string(), compatibility_flags: z.array(z.string()), exports: workers_exports_config_map.and(z.unknown()), limits: z.object({ cpu_ms: z.number().int() }).partial(), migration_tag: z.string(), usage_model: z.enum(["bundled", "unbound", "standard"]) }).partial() }).partial() }));
+export const workers_version_item_full = workers_version_item_short.and(z.object({ resources: z.object({ bindings: workers_bindings, script: z.object({ etag: z.string(), handlers: z.array(z.string()), last_deployed_from: z.string(), named_handlers: z.array(z.object({ handlers: z.array(z.string()), name: z.string() }).partial()) }).partial(), script_runtime: z.object({ compatibility_date: z.string(), compatibility_flags: z.array(z.string()), exports: workers_exports_config_map, limits: z.object({ cpu_ms: z.number().int() }).partial(), migration_tag: z.string(), usage_model: z.enum(["bundled", "unbound", "standard"]) }).partial() }).partial() }));
 
 export type workers_version_item_uploaded = z.infer<typeof workers_version_item_uploaded>;
 export const workers_version_item_uploaded = workers_version_item_full.and(z.object({ exports_reconciliation: workers_exports_reconciliation_result.optional(), startup_time_ms: z.number().int().optional() }));
@@ -18249,7 +18249,7 @@ export type zaraz_api_response_common = z.infer<typeof zaraz_api_response_common
 export const zaraz_api_response_common = z.object({ errors: zaraz_messages, messages: zaraz_messages, success: z.boolean() });
 
 export type zaraz_api_response_common_failure = z.infer<typeof zaraz_api_response_common_failure>;
-export const zaraz_api_response_common_failure = z.object({ errors: zaraz_messages.and(z.unknown()), messages: zaraz_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const zaraz_api_response_common_failure = z.object({ errors: zaraz_messages, messages: zaraz_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type zaraz_base_tool = z.infer<typeof zaraz_base_tool>;
 export const zaraz_base_tool = z.object({ blockingTriggers: z.array(z.string()), defaultFields: z.record(z.string(), z.union([z.string(), z.boolean()])), defaultPurpose: z.string().optional(), enabled: z.boolean(), name: z.string(), vendorName: z.string().optional(), vendorPolicyUrl: z.string().optional() });
@@ -18816,7 +18816,7 @@ export type zone_activation_api_response_common = z.infer<typeof zone_activation
 export const zone_activation_api_response_common = z.object({ errors: zone_activation_messages, messages: zone_activation_messages, success: z.literal(true) });
 
 export type zone_activation_api_response_common_failure = z.infer<typeof zone_activation_api_response_common_failure>;
-export const zone_activation_api_response_common_failure = z.object({ errors: zone_activation_messages.and(z.unknown()), messages: zone_activation_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const zone_activation_api_response_common_failure = z.object({ errors: zone_activation_messages, messages: zone_activation_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type zone_activation_api_response_single = z.infer<typeof zone_activation_api_response_single>;
 export const zone_activation_api_response_single = zone_activation_api_response_common.and(z.record(z.string(), z.unknown()));
@@ -18831,7 +18831,7 @@ export type zone_analytics_api_api_response_common = z.infer<typeof zone_analyti
 export const zone_analytics_api_api_response_common = z.object({ errors: zone_analytics_api_messages, messages: zone_analytics_api_messages, result: z.union([z.record(z.string(), z.unknown()), z.array(z.unknown()), z.string()]), success: z.literal(true) });
 
 export type zone_analytics_api_api_response_common_failure = z.infer<typeof zone_analytics_api_api_response_common_failure>;
-export const zone_analytics_api_api_response_common_failure = z.object({ errors: zone_analytics_api_messages.and(z.unknown()), messages: zone_analytics_api_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const zone_analytics_api_api_response_common_failure = z.object({ errors: zone_analytics_api_messages, messages: zone_analytics_api_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type zone_analytics_api_api_response_single = z.infer<typeof zone_analytics_api_api_response_single>;
 export const zone_analytics_api_api_response_single = zone_analytics_api_api_response_common.and(z.object({ result: z.union([z.record(z.string(), z.unknown()).nullable(), z.string().nullable()]) }).partial()).and(z.record(z.string(), z.unknown()));
@@ -19038,7 +19038,7 @@ export type zones_always_use_https_value = z.infer<typeof zones_always_use_https
 export const zones_always_use_https_value = z.enum(["on", "off"]).default("off");
 
 export type zones_always_use_https_2 = z.infer<typeof zones_always_use_https_2>;
-export const zones_always_use_https_2 = zones_base.and(z.object({ id: z.literal("always_use_https"), value: zones_always_use_https_value }).partial()).and(z.unknown().default("off")).default("off");
+export const zones_always_use_https_2 = zones_base.and(z.object({ id: z.literal("always_use_https"), value: zones_always_use_https_value }).partial()).default("off");
 
 export type zones_messages = z.infer<typeof zones_messages>;
 export const zones_messages = z.array(z.object({ code: z.number().int().min(1000), message: z.string() }));
@@ -19059,13 +19059,13 @@ export type zones_api_response_common_4 = z.infer<typeof zones_api_response_comm
 export const zones_api_response_common_4 = z.object({ errors: zones_messages, messages: zones_messages, success: z.boolean() });
 
 export type zones_api_response_common_failure = z.infer<typeof zones_api_response_common_failure>;
-export const zones_api_response_common_failure = z.object({ errors: zones_messages.and(z.unknown()), messages: zones_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
+export const zones_api_response_common_failure = z.object({ errors: zones_messages, messages: zones_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
 
 export type zones_api_response_common_failure_2 = z.infer<typeof zones_api_response_common_failure_2>;
-export const zones_api_response_common_failure_2 = z.object({ errors: zones_messages_2.and(z.unknown()), messages: zones_messages_2, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
+export const zones_api_response_common_failure_2 = z.object({ errors: zones_messages_2, messages: zones_messages_2, result: z.record(z.string(), z.unknown()).nullable(), success: z.literal(false) });
 
 export type zones_api_response_common_failure_3 = z.infer<typeof zones_api_response_common_failure_3>;
-export const zones_api_response_common_failure_3 = z.object({ errors: zones_messages.and(z.unknown()), messages: zones_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
+export const zones_api_response_common_failure_3 = z.object({ errors: zones_messages, messages: zones_messages, result: z.record(z.string(), z.unknown()).nullable(), success: z.boolean() });
 
 export type zones_api_response_single = z.infer<typeof zones_api_response_single>;
 export const zones_api_response_single = zones_api_response_common_2.and(z.record(z.string(), z.unknown()));
@@ -19089,7 +19089,7 @@ export type zones_automatic_https_rewrites_value = z.infer<typeof zones_automati
 export const zones_automatic_https_rewrites_value = z.enum(["on", "off"]).default("on");
 
 export type zones_automatic_https_rewrites_2 = z.infer<typeof zones_automatic_https_rewrites_2>;
-export const zones_automatic_https_rewrites_2 = zones_base.and(z.object({ id: z.literal("automatic_https_rewrites"), value: zones_automatic_https_rewrites_value }).partial()).and(z.unknown().default("off")).default("off");
+export const zones_automatic_https_rewrites_2 = zones_base.and(z.object({ id: z.literal("automatic_https_rewrites"), value: zones_automatic_https_rewrites_value }).partial()).default("off");
 
 export type zones_automatic_platform_optimization = z.infer<typeof zones_automatic_platform_optimization>;
 export const zones_automatic_platform_optimization = z.object({ cache_by_device_type: z.boolean(), cf: z.boolean().default(false), enabled: z.boolean().default(false), hostnames: z.array(z.string()), wordpress: z.boolean().default(false), wp_plugin: z.boolean().default(false) });
@@ -19158,13 +19158,13 @@ export type zones_ciphers_value = z.infer<typeof zones_ciphers_value>;
 export const zones_ciphers_value = z.array(z.string()).refine((arr) => new Set(arr).size === arr.length, { message: "uniqueItems" }).default([]);
 
 export type zones_ciphers = z.infer<typeof zones_ciphers>;
-export const zones_ciphers = zones_base.and(z.object({ id: z.literal("ciphers"), value: zones_ciphers_value }).partial()).and(z.unknown().default([])).default([]);
+export const zones_ciphers = zones_base.and(z.object({ id: z.literal("ciphers"), value: zones_ciphers_value }).partial()).default([]);
 
 export type zones_cname_flattening_value = z.infer<typeof zones_cname_flattening_value>;
 export const zones_cname_flattening_value = z.enum(["flatten_at_root", "flatten_all"]).default("flatten_at_root");
 
 export type zones_cname_flattening = z.infer<typeof zones_cname_flattening>;
-export const zones_cname_flattening = zones_base.and(z.object({ id: z.literal("cname_flattening"), value: zones_cname_flattening_value }).partial()).and(z.unknown());
+export const zones_cname_flattening = zones_base.and(z.object({ id: z.literal("cname_flattening"), value: zones_cname_flattening_value }).partial());
 
 export type zones_content_converter_value = z.infer<typeof zones_content_converter_value>;
 export const zones_content_converter_value = z.enum(["off", "on"]).default("off");
@@ -19251,13 +19251,13 @@ export type zones_min_tls_version_value = z.infer<typeof zones_min_tls_version_v
 export const zones_min_tls_version_value = z.enum(["1.0", "1.1", "1.2", "1.3"]).default("1.0");
 
 export type zones_min_tls_version = z.infer<typeof zones_min_tls_version>;
-export const zones_min_tls_version = zones_base.and(z.object({ id: z.literal("min_tls_version"), value: zones_min_tls_version_value }).partial()).and(z.unknown().default("1.0")).default("1.0");
+export const zones_min_tls_version = zones_base.and(z.object({ id: z.literal("min_tls_version"), value: zones_min_tls_version_value }).partial()).default("1.0");
 
 export type zones_mirage_value = z.infer<typeof zones_mirage_value>;
 export const zones_mirage_value = z.enum(["on", "off"]).default("off");
 
 export type zones_mirage_2 = z.infer<typeof zones_mirage_2>;
-export const zones_mirage_2 = zones_base.and(z.object({ id: z.literal("mirage"), value: zones_mirage_value }).partial()).and(z.unknown());
+export const zones_mirage_2 = zones_base.and(z.object({ id: z.literal("mirage"), value: zones_mirage_value }).partial());
 
 export type zones_modified_on = z.infer<typeof zones_modified_on>;
 export const zones_modified_on = z.iso.datetime();
@@ -19278,7 +19278,7 @@ export type zones_opportunistic_onion_value = z.infer<typeof zones_opportunistic
 export const zones_opportunistic_onion_value = z.enum(["on", "off"]).default("off");
 
 export type zones_opportunistic_onion = z.infer<typeof zones_opportunistic_onion>;
-export const zones_opportunistic_onion = zones_base.and(z.object({ id: z.literal("opportunistic_onion"), value: zones_opportunistic_onion_value }).partial()).and(z.unknown().default("off")).default("off");
+export const zones_opportunistic_onion = zones_base.and(z.object({ id: z.literal("opportunistic_onion"), value: zones_opportunistic_onion_value }).partial()).default("off");
 
 export type zones_orange_to_orange_value = z.infer<typeof zones_orange_to_orange_value>;
 export const zones_orange_to_orange_value = z.enum(["on", "off"]).default("on");
@@ -19290,7 +19290,7 @@ export type zones_origin_error_page_pass_thru_value = z.infer<typeof zones_origi
 export const zones_origin_error_page_pass_thru_value = z.enum(["on", "off"]).default("off");
 
 export type zones_origin_error_page_pass_thru_2 = z.infer<typeof zones_origin_error_page_pass_thru_2>;
-export const zones_origin_error_page_pass_thru_2 = zones_base.and(z.object({ id: z.literal("origin_error_page_pass_thru"), value: zones_origin_error_page_pass_thru_value }).partial()).and(z.unknown().default("off")).default("off");
+export const zones_origin_error_page_pass_thru_2 = zones_base.and(z.object({ id: z.literal("origin_error_page_pass_thru"), value: zones_origin_error_page_pass_thru_value }).partial()).default("off");
 
 export type zones_polish_value = z.infer<typeof zones_polish_value>;
 export const zones_polish_value = z.enum(["off", "lossless", "lossy"]).default("off");
@@ -19302,13 +19302,13 @@ export type zones_prefetch_preload_value = z.infer<typeof zones_prefetch_preload
 export const zones_prefetch_preload_value = z.enum(["on", "off"]).default("off");
 
 export type zones_prefetch_preload = z.infer<typeof zones_prefetch_preload>;
-export const zones_prefetch_preload = zones_base.and(z.object({ id: z.literal("prefetch_preload"), value: zones_prefetch_preload_value }).partial()).and(z.unknown().default("off")).default("off");
+export const zones_prefetch_preload = zones_base.and(z.object({ id: z.literal("prefetch_preload"), value: zones_prefetch_preload_value }).partial()).default("off");
 
 export type zones_privacy_pass_value = z.infer<typeof zones_privacy_pass_value>;
 export const zones_privacy_pass_value = z.enum(["on", "off"]).default("off");
 
 export type zones_privacy_pass = z.infer<typeof zones_privacy_pass>;
-export const zones_privacy_pass = zones_base.and(z.object({ id: z.literal("privacy_pass"), value: zones_privacy_pass_value }).partial()).and(z.unknown().default("off")).default("off");
+export const zones_privacy_pass = zones_base.and(z.object({ id: z.literal("privacy_pass"), value: zones_privacy_pass_value }).partial()).default("off");
 
 export type zones_proxy_read_timeout_value = z.infer<typeof zones_proxy_read_timeout_value>;
 export const zones_proxy_read_timeout_value = z.number().default(100);
@@ -19338,7 +19338,7 @@ export type zones_response_buffering_value = z.infer<typeof zones_response_buffe
 export const zones_response_buffering_value = z.enum(["on", "off"]).default("off");
 
 export type zones_response_buffering_2 = z.infer<typeof zones_response_buffering_2>;
-export const zones_response_buffering_2 = zones_base.and(z.object({ id: z.literal("response_buffering"), value: zones_response_buffering_value }).partial()).and(z.unknown().default("off")).default("off");
+export const zones_response_buffering_2 = zones_base.and(z.object({ id: z.literal("response_buffering"), value: zones_response_buffering_value }).partial()).default("off");
 
 export type zones_rocket_loader_value = z.infer<typeof zones_rocket_loader_value>;
 export const zones_rocket_loader_value = z.enum(["on", "off"]).default("off");
@@ -19383,7 +19383,7 @@ export type zones_sort_query_string_for_cache_value = z.infer<typeof zones_sort_
 export const zones_sort_query_string_for_cache_value = z.enum(["on", "off"]).default("off");
 
 export type zones_sort_query_string_for_cache_2 = z.infer<typeof zones_sort_query_string_for_cache_2>;
-export const zones_sort_query_string_for_cache_2 = zones_base.and(z.object({ id: z.literal("sort_query_string_for_cache"), value: zones_sort_query_string_for_cache_value }).partial()).and(z.unknown().default("off")).default("off");
+export const zones_sort_query_string_for_cache_2 = zones_base.and(z.object({ id: z.literal("sort_query_string_for_cache"), value: zones_sort_query_string_for_cache_value }).partial()).default("off");
 
 export type zones_ssl_value = z.infer<typeof zones_ssl_value>;
 export const zones_ssl_value = z.enum(["off", "flexible", "full", "strict"]).default("off");
@@ -19407,7 +19407,7 @@ export type zones_tls_1_3_value = z.infer<typeof zones_tls_1_3_value>;
 export const zones_tls_1_3_value = z.enum(["on", "off", "zrt"]).default("off");
 
 export type zones_tls_1_3 = z.infer<typeof zones_tls_1_3>;
-export const zones_tls_1_3 = zones_base.and(z.object({ id: z.literal("tls_1_3"), value: zones_tls_1_3_value }).partial()).and(z.unknown().default("off")).default("off");
+export const zones_tls_1_3 = zones_base.and(z.object({ id: z.literal("tls_1_3"), value: zones_tls_1_3_value }).partial()).default("off");
 
 export type zones_tls_client_auth_value = z.infer<typeof zones_tls_client_auth_value>;
 export const zones_tls_client_auth_value = z.enum(["on", "off"]).default("off");
@@ -19419,7 +19419,7 @@ export type zones_true_client_ip_header_value = z.infer<typeof zones_true_client
 export const zones_true_client_ip_header_value = z.enum(["on", "off"]).default("off");
 
 export type zones_true_client_ip_header_2 = z.infer<typeof zones_true_client_ip_header_2>;
-export const zones_true_client_ip_header_2 = zones_base.and(z.object({ id: z.literal("true_client_ip_header"), value: zones_true_client_ip_header_value }).partial()).and(z.unknown().default("off")).default("off");
+export const zones_true_client_ip_header_2 = zones_base.and(z.object({ id: z.literal("true_client_ip_header"), value: zones_true_client_ip_header_value }).partial()).default("off");
 
 export type zones_waf_value = z.infer<typeof zones_waf_value>;
 export const zones_waf_value = z.enum(["on", "off"]).default("off");
@@ -20988,7 +20988,7 @@ export const get_Ip__address__management__prefixes__download__loa__document = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.object({ loa_document_id: addressing_loa_document_identifier, account_id: addressing_account_identifier }) },
-  responses: { 200: z.unknown(), "4XX": z.unknown().and(addressing_api_response_common_failure) },
+  responses: { 200: z.unknown(), "4XX": addressing_api_response_common_failure },
 };
 
 export type get_Ip__address__management__prefixes__list__prefixes = typeof get_Ip__address__management__prefixes__list__prefixes;
@@ -27226,7 +27226,7 @@ export const post_Devices__create__device__settings__policy = {
   path: z.literal("/accounts/{account_id}/devices/policy"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ account_id: teams_devices_identifier }), body: z.object({ allow_mode_switch: teams_devices_allow_mode_switch.optional(), allow_updates: teams_devices_allow_updates.optional(), allowed_to_leave: teams_devices_allowed_to_leave.optional(), auto_connect: teams_devices_auto_connect.optional(), captive_portal: teams_devices_captive_portal.optional(), description: teams_devices_schemas_description.and(z.unknown().default("")).optional(), disable_auto_fallback: teams_devices_disable_auto_fallback.optional(), dns_search_suffixes: teams_devices_dns_search_suffixes.optional(), enabled: z.boolean().default(true), exclude: teams_devices_exclude_request.optional(), exclude_office_ips: teams_devices_exclude_office_ips.optional(), global_acceleration: teams_devices_global_acceleration.optional(), include: teams_devices_include_request.optional(), lan_allow_minutes: teams_devices_lan_allow_minutes.optional(), lan_allow_subnet_size: teams_devices_lan_allow_subnet_size.optional(), match: teams_devices_schemas_match, name: z.string().max(100), precedence: teams_devices_precedence, register_interface_ip_with_dns: teams_devices_register_interface_ip_with_dns.optional(), sccm_vpn_boundary_support: teams_devices_sccm_vpn_boundary_support.optional(), service_mode_v2: teams_devices_service_mode_v2.optional(), support_url: teams_devices_support_url.optional(), switch_locked: teams_devices_switch_locked.optional(), tunnel_protocol: teams_devices_tunnel_protocol.optional(), virtual_networks: teams_devices_virtual_networks.optional() }) },
+  parameters: { path: z.object({ account_id: teams_devices_identifier }), body: z.object({ allow_mode_switch: teams_devices_allow_mode_switch.optional(), allow_updates: teams_devices_allow_updates.optional(), allowed_to_leave: teams_devices_allowed_to_leave.optional(), auto_connect: teams_devices_auto_connect.optional(), captive_portal: teams_devices_captive_portal.optional(), description: teams_devices_schemas_description.optional(), disable_auto_fallback: teams_devices_disable_auto_fallback.optional(), dns_search_suffixes: teams_devices_dns_search_suffixes.optional(), enabled: z.boolean().default(true), exclude: teams_devices_exclude_request.optional(), exclude_office_ips: teams_devices_exclude_office_ips.optional(), global_acceleration: teams_devices_global_acceleration.optional(), include: teams_devices_include_request.optional(), lan_allow_minutes: teams_devices_lan_allow_minutes.optional(), lan_allow_subnet_size: teams_devices_lan_allow_subnet_size.optional(), match: teams_devices_schemas_match, name: z.string().max(100), precedence: teams_devices_precedence, register_interface_ip_with_dns: teams_devices_register_interface_ip_with_dns.optional(), sccm_vpn_boundary_support: teams_devices_sccm_vpn_boundary_support.optional(), service_mode_v2: teams_devices_service_mode_v2.optional(), support_url: teams_devices_support_url.optional(), switch_locked: teams_devices_switch_locked.optional(), tunnel_protocol: teams_devices_tunnel_protocol.optional(), virtual_networks: teams_devices_virtual_networks.optional() }) },
   responses: { 200: teams_devices_device_settings_response, "4XX": teams_devices_device_settings_response.and(teams_devices_api_response_common_failure) },
 };
 
@@ -30138,7 +30138,7 @@ export const post_Ip__access__rules__for__an__account__create__an__ip__access__r
   path: z.literal("/accounts/{account_id}/firewall/access_rules/rules"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ account_id: firewall_account_identifier }), body: z.object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: firewall_notes.and(z.unknown().default("")).optional() }) },
+  parameters: { path: z.object({ account_id: firewall_account_identifier }), body: z.object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: firewall_notes.optional() }) },
   responses: { 200: firewall_response_single, "4XX": firewall_response_single.and(firewall_api_response_common_failure) },
 };
 
@@ -30238,7 +30238,7 @@ export const post_Flagship_evaluate_flag_post = {
   path: z.literal("/accounts/{account_id}/flagship/apps/{app_id}/evaluate"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ account_id: z.string(), app_id: z.string() }), body: z.object({ context: z.record(z.string(), flagship_JsonValue).default({}), flagKey: z.string().min(1).max(64).regex(new RegExp("^[a-zA-Z0-9_-]+$")) }) },
+  parameters: { path: z.object({ account_id: z.string(), app_id: z.string() }), body: z.object({ context: z.record(z.string(), flagship_JsonValue).optional(), flagKey: z.string().min(1).max(64).regex(new RegExp("^[a-zA-Z0-9_-]+$")) }) },
   responses: { 200: flagship_EvaluationResult, 400: flagship_Error, 401: flagship_Error, 403: flagship_Error, 404: flagship_Error, 500: flagship_Error, 503: flagship_Error },
 };
 
@@ -35674,7 +35674,7 @@ export const patch_R2__patch__bucket = {
   path: z.literal("/accounts/{account_id}/r2/buckets/{bucket_name}"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }), header: z.object({ "cf-r2-jurisdiction": r2_jurisdiction.optional(), "cf-r2-storage-class": r2_storage_class.and(z.unknown()) }) },
+  parameters: { path: z.object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }), header: z.object({ "cf-r2-jurisdiction": r2_jurisdiction.optional(), "cf-r2-storage-class": r2_storage_class }) },
   responses: { 200: r2_v4_response.and(z.object({ result: r2_bucket }).partial()), "4XX": r2_v4_response_failure },
 };
 
@@ -37643,7 +37643,7 @@ export const get_Get__security__center__insights = {
   path: z.literal("/accounts/{account_id}/security-center/insights"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { query: z.object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: security_center_page.and(z.unknown().default(1)).default(1), per_page: security_center_perPage.and(z.unknown().default(25)).default(25) }).partial().optional(), path: z.object({ account_id: security_center_identifier }) },
+  parameters: { query: z.object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: security_center_page, per_page: security_center_perPage }).partial().optional(), path: z.object({ account_id: security_center_identifier }) },
   responses: { 200: security_center_api_response_common.and(z.object({ result: z.object({ count: security_center_count, issues: z.array(security_center_issue), page: security_center_page, per_page: security_center_perPage }).partial() }).partial()), "4XX": security_center_api_response_common_failure },
 };
 
@@ -40424,7 +40424,7 @@ export const post_Worker__versions__upload__version = {
   path: z.literal("/accounts/{account_id}/workers/scripts/{script_name}/versions"),
   requestFormat: z.literal("form-data"),
   responseFormat: z.literal("json"),
-  parameters: { query: z.object({ bindings_inherit: z.literal("strict") }).partial().optional(), path: z.object({ account_id: workers_identifier, script_name: workers_script_name_2 }), body: z.object({ files: z.array(z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob)).optional(), metadata: z.object({ annotations: z.object({ "workers/alias": z.string().max(63), "workers/message": z.string().max(1000), "workers/tag": z.string().max(100) }).partial().optional(), bindings: workers_bindings.optional(), cache_options: workers_cache_options.optional(), compatibility_date: workers_compatibility_date.optional(), compatibility_flags: workers_compatibility_flags.optional(), exports: workers_exports_config_map.and(z.unknown()).optional(), keep_bindings: z.array(z.string()).optional(), main_module: z.string(), package_dependencies: z.array(z.object({ installedVersion: z.string(), name: z.string(), packageJsonVersion: z.string() })).optional(), usage_model: workers_usage_model.optional() }) }) },
+  parameters: { query: z.object({ bindings_inherit: z.literal("strict") }).partial().optional(), path: z.object({ account_id: workers_identifier, script_name: workers_script_name_2 }), body: z.object({ files: z.array(z.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob)).optional(), metadata: z.object({ annotations: z.object({ "workers/alias": z.string().max(63), "workers/message": z.string().max(1000), "workers/tag": z.string().max(100) }).partial().optional(), bindings: workers_bindings.optional(), cache_options: workers_cache_options.optional(), compatibility_date: workers_compatibility_date.optional(), compatibility_flags: workers_compatibility_flags.optional(), exports: workers_exports_config_map.optional(), keep_bindings: z.array(z.string()).optional(), main_module: z.string(), package_dependencies: z.array(z.object({ installedVersion: z.string(), name: z.string(), packageJsonVersion: z.string() })).optional(), usage_model: workers_usage_model.optional() }) }) },
   responses: { 200: workers_versions_upload_response, "4XX": z.union([workers_versions_upload_response.and(workers_api_response_common_failure), workers_exports_reconciliation_error_response]) },
 };
 
@@ -43104,7 +43104,7 @@ export const post_Ip__access__rules__for__a__user__create__an__ip__access__rule 
   path: z.literal("/user/firewall/access_rules/rules"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { body: z.object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: firewall_notes.and(z.unknown().default("")).optional() }) },
+  parameters: { body: z.object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: firewall_notes.optional() }) },
   responses: { 200: firewall_rule_single_response, "4XX": firewall_rule_single_response.and(firewall_api_response_common_failure) },
 };
 
@@ -45904,7 +45904,7 @@ export const post_Ip__access__rules__for__a__zone__create__an__ip__access__rule 
   path: z.literal("/zones/{zone_id}/firewall/access_rules/rules"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ zone_id: firewall_identifier }), body: z.object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: firewall_notes.and(z.unknown().default("")).optional() }) },
+  parameters: { path: z.object({ zone_id: firewall_identifier }), body: z.object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: firewall_notes.optional() }) },
   responses: { 200: firewall_rule_single_response, "4XX": firewall_rule_single_response.and(firewall_api_response_common_failure) },
 };
 
@@ -47645,7 +47645,7 @@ export const get_Get__zone__security__center__insights = {
   path: z.literal("/zones/{zone_id}/security-center/insights"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { query: z.object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: security_center_page.and(z.unknown().default(1)).default(1), per_page: security_center_perPage.and(z.unknown().default(25)).default(25) }).partial().optional(), path: z.object({ zone_id: security_center_identifier }) },
+  parameters: { query: z.object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: security_center_page, per_page: security_center_perPage }).partial().optional(), path: z.object({ zone_id: security_center_identifier }) },
   responses: { 200: security_center_api_response_common.and(z.object({ result: z.object({ count: security_center_count, issues: z.array(security_center_issue), page: security_center_page, per_page: security_center_perPage }).partial() }).partial()), "4XX": security_center_api_response_common_failure },
 };
 
@@ -54445,7 +54445,7 @@ type InferSchemaInputRaw<T> = T extends z.ZodType ? z.input<T> : T extends objec
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
-  ? TResponses extends Record<string, unknown>
+  ? TResponses extends Record<string | number, unknown>
     ? TypedApiResponse<InferSchemaValue<TResponses>, TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never>
     : never
   : never

@@ -116,46 +116,55 @@ const runtimeInferHelper = (runtime: OutputRuntime, usesSidecarTypes = false): s
   }
 
   const sidecarSchema = `type __TypedOpenapiSchema<TOutput, TInput = TOutput> = {
-  readonly __typedOpenapiOutput?: TOutput;
-  readonly __typedOpenapiInput?: TInput;
+  readonly __typedOpenapiOutput: TOutput;
+  readonly __typedOpenapiInput: TInput;
 };`;
   const sidecarPrefix = usesSidecarTypes ? `${sidecarSchema}\n` : "";
   const outputCheck = usesSidecarTypes ? "T extends __TypedOpenapiSchema<infer O> ? O : " : "";
   const inputCheck = usesSidecarTypes ? "T extends __TypedOpenapiSchema<infer _O, infer I> ? I : " : "";
+  const primitiveCheck = usesSidecarTypes
+    ? "T extends string | number | boolean | bigint | symbol | null | undefined ? T : "
+    : "";
+  const effectOutputCheck = usesSidecarTypes
+    ? "T extends { readonly Type: infer O; readonly Encoded: unknown } ? O : "
+    : "T extends { Type: infer O } ? O : ";
+  const effectInputCheck = usesSidecarTypes
+    ? "T extends { readonly Type: unknown; readonly Encoded: infer I } ? I : "
+    : "T extends { Encoded: infer I } ? I : ";
 
   if (runtime === "zod" || runtime === "zod3") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-type InferSchemaValue<T> = ${outputCheck}T extends z.ZodType ? z.infer<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInputRaw<T> = ${inputCheck}T extends z.ZodType ? z.input<T> : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends z.ZodType ? z.infer<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}T extends z.ZodType ? z.input<T> : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "valibot") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-type InferSchemaValue<T> = ${outputCheck}T extends v.GenericSchema ? v.InferOutput<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInputRaw<T> = ${inputCheck}T extends v.GenericSchema ? v.InferInput<T> : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends v.GenericSchema ? v.InferOutput<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}T extends v.GenericSchema ? v.InferInput<T> : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "effect" || runtime === "effect3") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-type InferSchemaValue<T> = ${outputCheck}T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInputRaw<T> = ${inputCheck}T extends { Encoded: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}${effectOutputCheck}T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}${effectInputCheck}T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "arktype") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-type InferSchemaValue<T> = ${outputCheck}T extends { infer: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInputRaw<T> = ${inputCheck}T extends { inferIn: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends { infer: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}T extends { inferIn: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "typebox") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-type InferSchemaValueRaw<T> = ${outputCheck}T extends import("@sinclair/typebox").TSchema ? import("@sinclair/typebox").Static<T> : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
+type InferSchemaValueRaw<T> = ${primitiveCheck}${outputCheck}T extends import("@sinclair/typebox").TSchema ? import("@sinclair/typebox").Static<T> : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
 type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;`;
   }
   if (runtime === "typia") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-type InferSchemaValueRaw<T> = ${outputCheck}T extends (input: unknown) => input is infer U ? U : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
+type InferSchemaValueRaw<T> = ${primitiveCheck}${outputCheck}T extends (input: unknown) => input is infer U ? U : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
 type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;`;
   }
@@ -405,27 +414,26 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
 const generateEndpointByMethod = (ctx: GeneratorContext) => {
   const { endpointList } = ctx;
   const byMethods = groupBy(endpointList, "method");
+  const runtimeEndpointTypeCheck =
+    ctx.runtime !== "none" && ctx.usesRuntimeTypeDeclarations
+      ? " satisfies { [M in keyof __TypedOpenapi.EndpointByMethod]: { [P in keyof __TypedOpenapi.EndpointByMethod[M]]: unknown } }"
+      : "";
 
   const endpointByMethod = `
      // <EndpointByMethod>
-     export ${ctx.runtime === "none" ? "type" : "const"} EndpointByMethod${
-       ctx.runtime !== "none" && ctx.usesRuntimeTypeDeclarations ? ": __TypedOpenapi.EndpointByMethod" : ""
-     } = {
+     export ${ctx.runtime === "none" ? "type" : "const"} EndpointByMethod = {
      ${Object.entries(byMethods)
        .map(([method, list]) => {
          return `${method}: {
            ${list
              .map(
-               (endpoint) =>
-                 `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}${
-                   ctx.runtime !== "none" && ctx.usesRuntimeTypeDeclarations ? " as any" : ""
-                 }`,
+               (endpoint) => `"${endpoint.path}": ${ctx.runtime === "none" ? "Endpoints." : ""}${endpoint.meta.alias}`,
              )
              .join(",\n")}
          }`;
        })
        .join(",\n")}
-     }
+     }${runtimeEndpointTypeCheck}
      ${
        ctx.runtime === "none"
          ? ""
@@ -829,7 +837,7 @@ export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
 ${runtimeInferHelper(ctx.runtime, ctx.usesRuntimeTypeDeclarations)}
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
-  ? TResponses extends Record<string, unknown>
+  ? TResponses extends Record<string | number, unknown>
     ? TypedApiResponse<InferSchemaValue<TResponses>, TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never>
     : never
   : never

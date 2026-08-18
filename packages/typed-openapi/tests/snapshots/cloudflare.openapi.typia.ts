@@ -82,7 +82,7 @@ export const isaaa_api_response_common = typia.createIs<aaa_api_response_common>
 export const assertaaa_api_response_common = typia.createAssert<aaa_api_response_common>();
 export const validateaaa_api_response_common = typia.createValidate<aaa_api_response_common>();
 
-export type aaa_api_response_common_failure = { errors: (aaa_messages & unknown), messages: aaa_messages, success: false };
+export type aaa_api_response_common_failure = { errors: aaa_messages, messages: aaa_messages, success: false };
 export const isaaa_api_response_common_failure = typia.createIs<aaa_api_response_common_failure>();
 export const assertaaa_api_response_common_failure = typia.createAssert<aaa_api_response_common_failure>();
 export const validateaaa_api_response_common_failure = typia.createValidate<aaa_api_response_common_failure>();
@@ -92,7 +92,7 @@ export const isaaa_api_response_common_failure_2 = typia.createIs<aaa_api_respon
 export const assertaaa_api_response_common_failure_2 = typia.createAssert<aaa_api_response_common_failure_2>();
 export const validateaaa_api_response_common_failure_2 = typia.createValidate<aaa_api_response_common_failure_2>();
 
-export type aaa_api_response_common_failure_3 = { errors: (aaa_messages_3 & unknown), messages: (aaa_messages_3), success: false };
+export type aaa_api_response_common_failure_3 = { errors: aaa_messages_3, messages: aaa_messages_3, success: false };
 export const isaaa_api_response_common_failure_3 = typia.createIs<aaa_api_response_common_failure_3>();
 export const assertaaa_api_response_common_failure_3 = typia.createAssert<aaa_api_response_common_failure_3>();
 export const validateaaa_api_response_common_failure_3 = typia.createValidate<aaa_api_response_common_failure_3>();
@@ -1032,7 +1032,7 @@ export const isaccess_any_valid_service_token_rule = typia.createIs<access_any_v
 export const assertaccess_any_valid_service_token_rule = typia.createAssert<access_any_valid_service_token_rule>();
 export const validateaccess_any_valid_service_token_rule = typia.createValidate<access_any_valid_service_token_rule>();
 
-export type access_api_response_common_failure = { errors: (access_messages & unknown), messages: (access_messages), result: (Record<string, unknown> | null), success: false };
+export type access_api_response_common_failure = { errors: access_messages, messages: access_messages, result: (Record<string, unknown> | null), success: false };
 export const isaccess_api_response_common_failure = typia.createIs<access_api_response_common_failure>();
 export const assertaccess_api_response_common_failure = typia.createAssert<access_api_response_common_failure>();
 export const validateaccess_api_response_common_failure = typia.createValidate<access_api_response_common_failure>();
@@ -1162,7 +1162,7 @@ export const isaccess_skip_app_launcher_login_page = typia.createIs<access_skip_
 export const assertaccess_skip_app_launcher_login_page = typia.createAssert<access_skip_app_launcher_login_page>();
 export const validateaccess_skip_app_launcher_login_page = typia.createValidate<access_skip_app_launcher_login_page>();
 
-export type access_app_launcher_props = (access_feature_app_props & Partial<{ app_launcher_logo_url: access_app_launcher_logo_url, bg_color: access_bg_color, domain: unknown, footer_links: access_footer_links, header_bg_color: access_header_bg_color, landing_page_design: access_landing_page_design, name: unknown, skip_app_launcher_login_page: access_skip_app_launcher_login_page, type: (access_type & unknown) }>);
+export type access_app_launcher_props = (access_feature_app_props & Partial<{ app_launcher_logo_url: access_app_launcher_logo_url, bg_color: access_bg_color, domain: unknown, footer_links: access_footer_links, header_bg_color: access_header_bg_color, landing_page_design: access_landing_page_design, name: unknown, skip_app_launcher_login_page: access_skip_app_launcher_login_page, type: access_type }>);
 export const isaccess_app_launcher_props = typia.createIs<access_app_launcher_props>();
 export const assertaccess_app_launcher_props = typia.createAssert<access_app_launcher_props>();
 export const validateaccess_app_launcher_props = typia.createValidate<access_app_launcher_props>();
@@ -1447,7 +1447,7 @@ export const isaccess_app_policy_response = typia.createIs<access_app_policy_res
 export const assertaccess_app_policy_response = typia.createAssert<access_app_policy_response>();
 export const validateaccess_app_policy_response = typia.createValidate<access_app_policy_response>();
 
-export type access_app_req_embedded_policies = Partial<{ policies: Array<(access_app_policy_link | (unknown & access_uuid_2) | (Record<string, unknown> & Partial<{ id: access_uuid_2 }> & access_app_policy_request))> }>;
+export type access_app_req_embedded_policies = Partial<{ policies: Array<(access_app_policy_link | access_uuid_2 | (Record<string, unknown> & Partial<{ id: access_uuid_2 }> & access_app_policy_request))> }>;
 export const isaccess_app_req_embedded_policies = typia.createIs<access_app_req_embedded_policies>();
 export const assertaccess_app_req_embedded_policies = typia.createAssert<access_app_req_embedded_policies>();
 export const validateaccess_app_req_embedded_policies = typia.createValidate<access_app_req_embedded_policies>();
@@ -1587,17 +1587,17 @@ export const isaccess_use_clientless_isolation_app_launcher_url = typia.createIs
 export const assertaccess_use_clientless_isolation_app_launcher_url = typia.createAssert<access_use_clientless_isolation_app_launcher_url>();
 export const validateaccess_use_clientless_isolation_app_launcher_url = typia.createValidate<access_use_clientless_isolation_app_launcher_url>();
 
-export type access_self_hosted_props = { allow_authenticate_via_warp?: access_allow_authenticate_via_warp_2, allow_iframe?: access_allow_iframe, allowed_idps?: access_allowed_idps, app_launcher_visible?: access_app_launcher_visible, auto_redirect_to_identity?: access_auto_redirect_to_identity_2, cors_headers?: access_cors_headers, custom_deny_message?: access_custom_deny_message, custom_deny_url?: access_custom_deny_url, custom_non_identity_deny_url?: access_custom_non_identity_deny_url, custom_pages?: access_custom_pages_2, destinations?: access_destinations, domain: access_domain, eager_redirect_cookie_setting?: access_eager_redirect_cookie_setting, enable_binding_cookie?: access_enable_binding_cookie, http_only_cookie_attribute?: access_http_only_cookie_attribute, logo_url?: access_logo_url, mfa_config?: access_mfa_config, name?: access_name_8, oauth_configuration?: access_oauth_configuration, options_preflight_bypass?: access_options_preflight_bypass, path_cookie_attribute?: access_path_cookie_attribute, read_service_tokens_from_header?: access_read_service_tokens_from_header, same_site_cookie_attribute?: access_same_site_cookie_attribute, scim_config?: access_scim_config, self_hosted_domains?: access_self_hosted_domains, service_auth_401_redirect?: access_service_auth_401_redirect, session_duration?: access_session_duration_2, skip_interstitial?: access_skip_interstitial, tags?: access_tags, type: (access_type & unknown), use_clientless_isolation_app_launcher_url?: access_use_clientless_isolation_app_launcher_url };
+export type access_self_hosted_props = { allow_authenticate_via_warp?: access_allow_authenticate_via_warp_2, allow_iframe?: access_allow_iframe, allowed_idps?: access_allowed_idps, app_launcher_visible?: access_app_launcher_visible, auto_redirect_to_identity?: access_auto_redirect_to_identity_2, cors_headers?: access_cors_headers, custom_deny_message?: access_custom_deny_message, custom_deny_url?: access_custom_deny_url, custom_non_identity_deny_url?: access_custom_non_identity_deny_url, custom_pages?: access_custom_pages_2, destinations?: access_destinations, domain: access_domain, eager_redirect_cookie_setting?: access_eager_redirect_cookie_setting, enable_binding_cookie?: access_enable_binding_cookie, http_only_cookie_attribute?: access_http_only_cookie_attribute, logo_url?: access_logo_url, mfa_config?: access_mfa_config, name?: access_name_8, oauth_configuration?: access_oauth_configuration, options_preflight_bypass?: access_options_preflight_bypass, path_cookie_attribute?: access_path_cookie_attribute, read_service_tokens_from_header?: access_read_service_tokens_from_header, same_site_cookie_attribute?: access_same_site_cookie_attribute, scim_config?: access_scim_config, self_hosted_domains?: access_self_hosted_domains, service_auth_401_redirect?: access_service_auth_401_redirect, session_duration?: access_session_duration_2, skip_interstitial?: access_skip_interstitial, tags?: access_tags, type: access_type, use_clientless_isolation_app_launcher_url?: access_use_clientless_isolation_app_launcher_url };
 export const isaccess_self_hosted_props = typia.createIs<access_self_hosted_props>();
 export const assertaccess_self_hosted_props = typia.createAssert<access_self_hosted_props>();
 export const validateaccess_self_hosted_props = typia.createValidate<access_self_hosted_props>();
 
-export type access_created_at = (unknown & access_timestamp);
+export type access_created_at = access_timestamp;
 export const isaccess_created_at = typia.createIs<access_created_at>();
 export const assertaccess_created_at = typia.createAssert<access_created_at>();
 export const validateaccess_created_at = typia.createValidate<access_created_at>();
 
-export type access_updated_at = (unknown & access_timestamp);
+export type access_updated_at = access_timestamp;
 export const isaccess_updated_at = typia.createIs<access_updated_at>();
 export const assertaccess_updated_at = typia.createAssert<access_updated_at>();
 export const validateaccess_updated_at = typia.createValidate<access_updated_at>();
@@ -1612,37 +1612,37 @@ export const isaccess_oidc_saas_app = typia.createIs<access_oidc_saas_app>();
 export const assertaccess_oidc_saas_app = typia.createAssert<access_oidc_saas_app>();
 export const validateaccess_oidc_saas_app = typia.createValidate<access_oidc_saas_app>();
 
-export type access_saas_props = Partial<{ allowed_idps: access_allowed_idps, app_launcher_visible: access_app_launcher_visible, auto_redirect_to_identity: access_auto_redirect_to_identity_2, custom_pages: access_custom_pages_2, logo_url: access_logo_url, name: access_name_8, saas_app: (access_saml_saas_app | access_oidc_saas_app), scim_config: access_scim_config, tags: access_tags, type: (access_type & unknown) }>;
+export type access_saas_props = Partial<{ allowed_idps: access_allowed_idps, app_launcher_visible: access_app_launcher_visible, auto_redirect_to_identity: access_auto_redirect_to_identity_2, custom_pages: access_custom_pages_2, logo_url: access_logo_url, name: access_name_8, saas_app: (access_saml_saas_app | access_oidc_saas_app), scim_config: access_scim_config, tags: access_tags, type: access_type }>;
 export const isaccess_saas_props = typia.createIs<access_saas_props>();
 export const assertaccess_saas_props = typia.createAssert<access_saas_props>();
 export const validateaccess_saas_props = typia.createValidate<access_saas_props>();
 
-export type access_ssh_props = (access_self_hosted_props & Partial<{ type: (access_type & unknown) }>);
+export type access_ssh_props = (access_self_hosted_props & Partial<{ type: access_type }>);
 export const isaccess_ssh_props = typia.createIs<access_ssh_props>();
 export const assertaccess_ssh_props = typia.createAssert<access_ssh_props>();
 export const validateaccess_ssh_props = typia.createValidate<access_ssh_props>();
 
-export type access_vnc_props = (access_self_hosted_props & Partial<{ type: (access_type & unknown) }>);
+export type access_vnc_props = (access_self_hosted_props & Partial<{ type: access_type }>);
 export const isaccess_vnc_props = typia.createIs<access_vnc_props>();
 export const assertaccess_vnc_props = typia.createAssert<access_vnc_props>();
 export const validateaccess_vnc_props = typia.createValidate<access_vnc_props>();
 
-export type access_warp_props = (access_feature_app_props & Partial<{ domain: unknown, name: unknown, type: (access_type & unknown) }>);
+export type access_warp_props = (access_feature_app_props & Partial<{ domain: unknown, name: unknown, type: access_type }>);
 export const isaccess_warp_props = typia.createIs<access_warp_props>();
 export const assertaccess_warp_props = typia.createAssert<access_warp_props>();
 export const validateaccess_warp_props = typia.createValidate<access_warp_props>();
 
-export type access_biso_props = (access_feature_app_props & Partial<{ domain: unknown, name: unknown, type: (access_type & unknown) }>);
+export type access_biso_props = (access_feature_app_props & Partial<{ domain: unknown, name: unknown, type: access_type }>);
 export const isaccess_biso_props = typia.createIs<access_biso_props>();
 export const assertaccess_biso_props = typia.createAssert<access_biso_props>();
 export const validateaccess_biso_props = typia.createValidate<access_biso_props>();
 
-export type access_proxy_endpoint_props = (access_feature_app_props & Partial<{ domain: unknown, name: unknown, type: (access_type & unknown) }>);
+export type access_proxy_endpoint_props = (access_feature_app_props & Partial<{ domain: unknown, name: unknown, type: access_type }>);
 export const isaccess_proxy_endpoint_props = typia.createIs<access_proxy_endpoint_props>();
 export const assertaccess_proxy_endpoint_props = typia.createAssert<access_proxy_endpoint_props>();
 export const validateaccess_proxy_endpoint_props = typia.createValidate<access_proxy_endpoint_props>();
 
-export type access_bookmark_props = Partial<{ app_launcher_visible: access_app_launcher_visible, domain: string, logo_url: access_logo_url, name: access_name_8, tags: access_tags, type: (access_type & unknown) }>;
+export type access_bookmark_props = Partial<{ app_launcher_visible: access_app_launcher_visible, domain: string, logo_url: access_logo_url, name: access_name_8, tags: access_tags, type: access_type }>;
 export const isaccess_bookmark_props = typia.createIs<access_bookmark_props>();
 export const assertaccess_bookmark_props = typia.createAssert<access_bookmark_props>();
 export const validateaccess_bookmark_props = typia.createValidate<access_bookmark_props>();
@@ -1677,7 +1677,7 @@ export const isaccess_app_resp_embedded_target_criteria_infra = typia.createIs<a
 export const assertaccess_app_resp_embedded_target_criteria_infra = typia.createAssert<access_app_resp_embedded_target_criteria_infra>();
 export const validateaccess_app_resp_embedded_target_criteria_infra = typia.createValidate<access_app_resp_embedded_target_criteria_infra>();
 
-export type access_infra_props = (Partial<{ name: access_name_8, type: (access_type & unknown) }> & access_app_resp_embedded_target_criteria_infra & Record<string, unknown>);
+export type access_infra_props = (Partial<{ name: access_name_8, type: access_type }> & access_app_resp_embedded_target_criteria_infra & Record<string, unknown>);
 export const isaccess_infra_props = typia.createIs<access_infra_props>();
 export const assertaccess_infra_props = typia.createAssert<access_infra_props>();
 export const validateaccess_infra_props = typia.createValidate<access_infra_props>();
@@ -1727,17 +1727,17 @@ export const isaccess_app_resp_embedded_target_criteria_self_hosted = typia.crea
 export const assertaccess_app_resp_embedded_target_criteria_self_hosted = typia.createAssert<access_app_resp_embedded_target_criteria_self_hosted>();
 export const validateaccess_app_resp_embedded_target_criteria_self_hosted = typia.createValidate<access_app_resp_embedded_target_criteria_self_hosted>();
 
-export type access_rdp_props = (access_app_resp_embedded_target_criteria_self_hosted & access_self_hosted_props & Partial<{ type: (access_type & unknown) }> & unknown);
+export type access_rdp_props = (access_app_resp_embedded_target_criteria_self_hosted & access_self_hosted_props & Partial<{ type: access_type }>);
 export const isaccess_rdp_props = typia.createIs<access_rdp_props>();
 export const assertaccess_rdp_props = typia.createAssert<access_rdp_props>();
 export const validateaccess_rdp_props = typia.createValidate<access_rdp_props>();
 
-export type access_mcp_props = { allow_authenticate_via_warp?: access_allow_authenticate_via_warp_2, allowed_idps?: access_allowed_idps, auto_redirect_to_identity?: access_auto_redirect_to_identity_2, custom_deny_message?: access_custom_deny_message, custom_deny_url?: access_custom_deny_url, custom_non_identity_deny_url?: access_custom_non_identity_deny_url, custom_pages?: access_custom_pages_2, destinations?: access_destinations, http_only_cookie_attribute?: access_http_only_cookie_attribute, logo_url?: access_logo_url, name?: access_name_8, oauth_configuration?: access_oauth_configuration, options_preflight_bypass?: access_options_preflight_bypass, same_site_cookie_attribute?: access_same_site_cookie_attribute, scim_config?: access_scim_config, session_duration?: access_session_duration_2, tags?: access_tags, type: (access_type & unknown) };
+export type access_mcp_props = { allow_authenticate_via_warp?: access_allow_authenticate_via_warp_2, allowed_idps?: access_allowed_idps, auto_redirect_to_identity?: access_auto_redirect_to_identity_2, custom_deny_message?: access_custom_deny_message, custom_deny_url?: access_custom_deny_url, custom_non_identity_deny_url?: access_custom_non_identity_deny_url, custom_pages?: access_custom_pages_2, destinations?: access_destinations, http_only_cookie_attribute?: access_http_only_cookie_attribute, logo_url?: access_logo_url, name?: access_name_8, oauth_configuration?: access_oauth_configuration, options_preflight_bypass?: access_options_preflight_bypass, same_site_cookie_attribute?: access_same_site_cookie_attribute, scim_config?: access_scim_config, session_duration?: access_session_duration_2, tags?: access_tags, type: access_type };
 export const isaccess_mcp_props = typia.createIs<access_mcp_props>();
 export const assertaccess_mcp_props = typia.createAssert<access_mcp_props>();
 export const validateaccess_mcp_props = typia.createValidate<access_mcp_props>();
 
-export type access_mcp_portal_props = { allow_authenticate_via_warp?: access_allow_authenticate_via_warp_2, allowed_idps?: access_allowed_idps, auto_redirect_to_identity?: access_auto_redirect_to_identity_2, custom_deny_message?: access_custom_deny_message, custom_deny_url?: access_custom_deny_url, custom_non_identity_deny_url?: access_custom_non_identity_deny_url, custom_pages?: access_custom_pages_2, destinations?: access_destinations, domain?: access_domain, http_only_cookie_attribute?: access_http_only_cookie_attribute, logo_url?: access_logo_url, name?: access_name_8, oauth_configuration?: access_oauth_configuration, options_preflight_bypass?: access_options_preflight_bypass, same_site_cookie_attribute?: access_same_site_cookie_attribute, scim_config?: access_scim_config, session_duration?: access_session_duration_2, tags?: access_tags, type: (access_type & unknown) };
+export type access_mcp_portal_props = { allow_authenticate_via_warp?: access_allow_authenticate_via_warp_2, allowed_idps?: access_allowed_idps, auto_redirect_to_identity?: access_auto_redirect_to_identity_2, custom_deny_message?: access_custom_deny_message, custom_deny_url?: access_custom_deny_url, custom_non_identity_deny_url?: access_custom_non_identity_deny_url, custom_pages?: access_custom_pages_2, destinations?: access_destinations, domain?: access_domain, http_only_cookie_attribute?: access_http_only_cookie_attribute, logo_url?: access_logo_url, name?: access_name_8, oauth_configuration?: access_oauth_configuration, options_preflight_bypass?: access_options_preflight_bypass, same_site_cookie_attribute?: access_same_site_cookie_attribute, scim_config?: access_scim_config, session_duration?: access_session_duration_2, tags?: access_tags, type: access_type };
 export const isaccess_mcp_portal_props = typia.createIs<access_mcp_portal_props>();
 export const assertaccess_mcp_portal_props = typia.createAssert<access_mcp_portal_props>();
 export const validateaccess_mcp_portal_props = typia.createValidate<access_mcp_portal_props>();
@@ -1952,12 +1952,12 @@ export const isaccess_saml_certificate = typia.createIs<access_saml_certificate>
 export const assertaccess_saml_certificate = typia.createAssert<access_saml_certificate>();
 export const validateaccess_saml_certificate = typia.createValidate<access_saml_certificate>();
 
-export type access_saml_certificate_set = { created_at: string, current_certificate?: (access_saml_certificate), previous_certificate?: (Record<string, unknown> | null), uid: string, updated_at: string };
+export type access_saml_certificate_set = { created_at: string, current_certificate?: access_saml_certificate, previous_certificate?: (Record<string, unknown> | null), uid: string, updated_at: string };
 export const isaccess_saml_certificate_set = typia.createIs<access_saml_certificate_set>();
 export const assertaccess_saml_certificate_set = typia.createAssert<access_saml_certificate_set>();
 export const validateaccess_saml_certificate_set = typia.createValidate<access_saml_certificate_set>();
 
-export type access_identity_provider = { config: Record<string, unknown>, id?: access_uuid, name: access_name_3, read_only?: boolean, saml_certificate_set?: (access_saml_certificate_set & unknown), saml_certificate_set_id?: string, scim_config?: Partial<{ enabled: boolean, identity_update_behavior: ("automatic" | "reauth" | "no_action"), scim_base_url: string, seat_deprovision: boolean, secret: string, user_deprovision: boolean }>, type: ("onetimepin" | "azureAD" | "saml" | "centrify" | "facebook" | "github" | "google-apps" | "google" | "linkedin" | "oidc" | "okta" | "onelogin" | "pingone" | "yandex" | "cloudflare") };
+export type access_identity_provider = { config: Record<string, unknown>, id?: access_uuid, name: access_name_3, read_only?: boolean, saml_certificate_set?: access_saml_certificate_set, saml_certificate_set_id?: string, scim_config?: Partial<{ enabled: boolean, identity_update_behavior: ("automatic" | "reauth" | "no_action"), scim_base_url: string, seat_deprovision: boolean, secret: string, user_deprovision: boolean }>, type: ("onetimepin" | "azureAD" | "saml" | "centrify" | "facebook" | "github" | "google-apps" | "google" | "linkedin" | "oidc" | "okta" | "onelogin" | "pingone" | "yandex" | "cloudflare") };
 export const isaccess_identity_provider = typia.createIs<access_identity_provider>();
 export const assertaccess_identity_provider = typia.createAssert<access_identity_provider>();
 export const validateaccess_identity_provider = typia.createValidate<access_identity_provider>();
@@ -2052,7 +2052,7 @@ export const isaccess_saml_certificate_2 = typia.createIs<access_saml_certificat
 export const assertaccess_saml_certificate_2 = typia.createAssert<access_saml_certificate_2>();
 export const validateaccess_saml_certificate_2 = typia.createValidate<access_saml_certificate_2>();
 
-export type access_saml_certificate_set_2 = { created_at: string, current_certificate?: (access_saml_certificate_2), previous_certificate?: (Record<string, unknown> | null), uid: string, updated_at: string };
+export type access_saml_certificate_set_2 = { created_at: string, current_certificate?: access_saml_certificate_2, previous_certificate?: (Record<string, unknown> | null), uid: string, updated_at: string };
 export const isaccess_saml_certificate_set_2 = typia.createIs<access_saml_certificate_set_2>();
 export const assertaccess_saml_certificate_set_2 = typia.createAssert<access_saml_certificate_set_2>();
 export const validateaccess_saml_certificate_set_2 = typia.createValidate<access_saml_certificate_set_2>();
@@ -2397,7 +2397,7 @@ export const isaccess_id_response_6 = typia.createIs<access_id_response_6>();
 export const assertaccess_id_response_6 = typia.createAssert<access_id_response_6>();
 export const validateaccess_id_response_6 = typia.createValidate<access_id_response_6>();
 
-export type access_identifier_2 = (access_identifier & unknown);
+export type access_identifier_2 = access_identifier;
 export const isaccess_identifier_2 = typia.createIs<access_identifier_2>();
 export const assertaccess_identifier_2 = typia.createAssert<access_identifier_2>();
 export const validateaccess_identifier_2 = typia.createValidate<access_identifier_2>();
@@ -2497,7 +2497,7 @@ export const isaccess_identity_providers_2 = typia.createIs<access_identity_prov
 export const assertaccess_identity_providers_2 = typia.createAssert<access_identity_providers_2>();
 export const validateaccess_identity_providers_2 = typia.createValidate<access_identity_providers_2>();
 
-export type access_idp_federation_grant = { created_at: access_created_at, id: (access_identifier & unknown), idp_id: string };
+export type access_idp_federation_grant = { created_at: access_created_at, id: access_identifier, idp_id: string };
 export const isaccess_idp_federation_grant = typia.createIs<access_idp_federation_grant>();
 export const assertaccess_idp_federation_grant = typia.createAssert<access_idp_federation_grant>();
 export const validateaccess_idp_federation_grant = typia.createValidate<access_idp_federation_grant>();
@@ -2507,7 +2507,7 @@ export const isaccess_idp_federation_grant_create_request = typia.createIs<acces
 export const assertaccess_idp_federation_grant_create_request = typia.createAssert<access_idp_federation_grant_create_request>();
 export const validateaccess_idp_federation_grant_create_request = typia.createValidate<access_idp_federation_grant_create_request>();
 
-export type access_idp_federation_grant_id_response = (access_api_response_single & Partial<{ result: Partial<{ id: (access_identifier) }> }>);
+export type access_idp_federation_grant_id_response = (access_api_response_single & Partial<{ result: Partial<{ id: access_identifier }> }>);
 export const isaccess_idp_federation_grant_id_response = typia.createIs<access_idp_federation_grant_id_response>();
 export const assertaccess_idp_federation_grant_id_response = typia.createAssert<access_idp_federation_grant_id_response>();
 export const validateaccess_idp_federation_grant_id_response = typia.createValidate<access_idp_federation_grant_id_response>();
@@ -2912,7 +2912,7 @@ export const isaccess_response_collection_18 = typia.createIs<access_response_co
 export const assertaccess_response_collection_18 = typia.createAssert<access_response_collection_18>();
 export const validateaccess_response_collection_18 = typia.createValidate<access_response_collection_18>();
 
-export type access_service_tokens_2 = Partial<{ client_id: access_client_id, created_at: access_timestamp, duration: access_duration_2, expires_at: access_timestamp, id: (unknown & access_uuid), last_seen_at: access_timestamp, name: access_name_17, updated_at: access_timestamp }>;
+export type access_service_tokens_2 = Partial<{ client_id: access_client_id, created_at: access_timestamp, duration: access_duration_2, expires_at: access_timestamp, id: access_uuid, last_seen_at: access_timestamp, name: access_name_17, updated_at: access_timestamp }>;
 export const isaccess_service_tokens_2 = typia.createIs<access_service_tokens_2>();
 export const assertaccess_service_tokens_2 = typia.createAssert<access_service_tokens_2>();
 export const validateaccess_service_tokens_2 = typia.createValidate<access_service_tokens_2>();
@@ -2967,7 +2967,7 @@ export const isaccess_response_collection_24 = typia.createIs<access_response_co
 export const assertaccess_response_collection_24 = typia.createAssert<access_response_collection_24>();
 export const validateaccess_response_collection_24 = typia.createValidate<access_response_collection_24>();
 
-export type access_service_tokens = Partial<{ client_id: access_client_id, created_at: access_created_at, duration: access_duration, expires_at: access_timestamp, id: (unknown & access_uuid), last_seen_at: (unknown & access_timestamp), name: access_name_2, updated_at: access_updated_at }>;
+export type access_service_tokens = Partial<{ client_id: access_client_id, created_at: access_created_at, duration: access_duration, expires_at: access_timestamp, id: access_uuid, last_seen_at: access_timestamp, name: access_name_2, updated_at: access_updated_at }>;
 export const isaccess_service_tokens = typia.createIs<access_service_tokens>();
 export const assertaccess_service_tokens = typia.createAssert<access_service_tokens>();
 export const validateaccess_service_tokens = typia.createValidate<access_service_tokens>();
@@ -3352,7 +3352,7 @@ export const isaddressing_api_response_collection = typia.createIs<addressing_ap
 export const assertaddressing_api_response_collection = typia.createAssert<addressing_api_response_collection>();
 export const validateaddressing_api_response_collection = typia.createValidate<addressing_api_response_collection>();
 
-export type addressing_api_response_common_failure = { errors: (addressing_messages & unknown), messages: (addressing_messages), result: (Record<string, unknown> | null), success: false };
+export type addressing_api_response_common_failure = { errors: addressing_messages, messages: addressing_messages, result: (Record<string, unknown> | null), success: false };
 export const isaddressing_api_response_common_failure = typia.createIs<addressing_api_response_common_failure>();
 export const assertaddressing_api_response_common_failure = typia.createAssert<addressing_api_response_common_failure>();
 export const validateaddressing_api_response_common_failure = typia.createValidate<addressing_api_response_common_failure>();
@@ -3862,7 +3862,7 @@ export const isalexandria_api_response_collection = typia.createIs<alexandria_ap
 export const assertalexandria_api_response_collection = typia.createAssert<alexandria_api_response_collection>();
 export const validatealexandria_api_response_collection = typia.createValidate<alexandria_api_response_collection>();
 
-export type alexandria_api_response_common_failure = { errors: (alexandria_messages & unknown), messages: (alexandria_messages), result: (Record<string, unknown> | null), success: false };
+export type alexandria_api_response_common_failure = { errors: alexandria_messages, messages: alexandria_messages, result: (Record<string, unknown> | null), success: false };
 export const isalexandria_api_response_common_failure = typia.createIs<alexandria_api_response_common_failure>();
 export const assertalexandria_api_response_common_failure = typia.createAssert<alexandria_api_response_common_failure>();
 export const validatealexandria_api_response_common_failure = typia.createValidate<alexandria_api_response_common_failure>();
@@ -4187,7 +4187,7 @@ export const isapi_shield_api_response_collection = typia.createIs<api_shield_ap
 export const assertapi_shield_api_response_collection = typia.createAssert<api_shield_api_response_collection>();
 export const validateapi_shield_api_response_collection = typia.createValidate<api_shield_api_response_collection>();
 
-export type api_shield_api_response_common_failure = { errors: (api_shield_messages & unknown), messages: (api_shield_messages), result: (Record<string, unknown> | null), success: false };
+export type api_shield_api_response_common_failure = { errors: api_shield_messages, messages: api_shield_messages, result: (Record<string, unknown> | null), success: false };
 export const isapi_shield_api_response_common_failure = typia.createIs<api_shield_api_response_common_failure>();
 export const assertapi_shield_api_response_common_failure = typia.createAssert<api_shield_api_response_common_failure>();
 export const validateapi_shield_api_response_common_failure = typia.createValidate<api_shield_api_response_common_failure>();
@@ -4522,7 +4522,7 @@ export const isapi_shield_multiple_operation_response = typia.createIs<api_shiel
 export const assertapi_shield_multiple_operation_response = typia.createAssert<api_shield_multiple_operation_response>();
 export const validateapi_shield_multiple_operation_response = typia.createValidate<api_shield_multiple_operation_response>();
 
-export type api_shield_multiple_operation_response_paginated = (api_shield_api_response_collection & { result: Array<(api_shield_operation)> });
+export type api_shield_multiple_operation_response_paginated = (api_shield_api_response_collection & { result: Array<api_shield_operation> });
 export const isapi_shield_multiple_operation_response_paginated = typia.createIs<api_shield_multiple_operation_response_paginated>();
 export const assertapi_shield_multiple_operation_response_paginated = typia.createAssert<api_shield_multiple_operation_response_paginated>();
 export const validateapi_shield_multiple_operation_response_paginated = typia.createValidate<api_shield_multiple_operation_response_paginated>();
@@ -4777,7 +4777,7 @@ export const isargo_analytics_api_response_common = typia.createIs<argo_analytic
 export const assertargo_analytics_api_response_common = typia.createAssert<argo_analytics_api_response_common>();
 export const validateargo_analytics_api_response_common = typia.createValidate<argo_analytics_api_response_common>();
 
-export type argo_analytics_api_response_common_failure = { errors: (argo_analytics_messages & unknown), messages: (argo_analytics_messages), result: (Record<string, unknown> | null), success: false };
+export type argo_analytics_api_response_common_failure = { errors: argo_analytics_messages, messages: argo_analytics_messages, result: (Record<string, unknown> | null), success: false };
 export const isargo_analytics_api_response_common_failure = typia.createIs<argo_analytics_api_response_common_failure>();
 export const assertargo_analytics_api_response_common_failure = typia.createAssert<argo_analytics_api_response_common_failure>();
 export const validateargo_analytics_api_response_common_failure = typia.createValidate<argo_analytics_api_response_common_failure>();
@@ -4802,7 +4802,7 @@ export const isargo_config_messages = typia.createIs<argo_config_messages>();
 export const assertargo_config_messages = typia.createAssert<argo_config_messages>();
 export const validateargo_config_messages = typia.createValidate<argo_config_messages>();
 
-export type argo_config_api_response_common_failure = { errors: (argo_config_messages & unknown), messages: (argo_config_messages), result: (Record<string, unknown> | null), success: false };
+export type argo_config_api_response_common_failure = { errors: argo_config_messages, messages: argo_config_messages, result: (Record<string, unknown> | null), success: false };
 export const isargo_config_api_response_common_failure = typia.createIs<argo_config_api_response_common_failure>();
 export const assertargo_config_api_response_common_failure = typia.createAssert<argo_config_api_response_common_failure>();
 export const validateargo_config_api_response_common_failure = typia.createValidate<argo_config_api_response_common_failure>();
@@ -4902,7 +4902,7 @@ export const isart_ErrorResponse = typia.createIs<art_ErrorResponse>();
 export const assertart_ErrorResponse = typia.createAssert<art_ErrorResponse>();
 export const validateart_ErrorResponse = typia.createValidate<art_ErrorResponse>();
 
-export type art_QuerySummary = (art_CommonQuery);
+export type art_QuerySummary = art_CommonQuery;
 export const isart_QuerySummary = typia.createIs<art_QuerySummary>();
 export const assertart_QuerySummary = typia.createAssert<art_QuerySummary>();
 export const validateart_QuerySummary = typia.createValidate<art_QuerySummary>();
@@ -5067,7 +5067,7 @@ export const isbill_subs_api_amount = typia.createIs<bill_subs_api_amount>();
 export const assertbill_subs_api_amount = typia.createAssert<bill_subs_api_amount>();
 export const validatebill_subs_api_amount = typia.createValidate<bill_subs_api_amount>();
 
-export type bill_subs_api_api_response_common_failure = { errors: (bill_subs_api_messages & unknown), messages: (bill_subs_api_messages), result: (Record<string, unknown> | null), success: false };
+export type bill_subs_api_api_response_common_failure = { errors: bill_subs_api_messages, messages: bill_subs_api_messages, result: (Record<string, unknown> | null), success: false };
 export const isbill_subs_api_api_response_common_failure = typia.createIs<bill_subs_api_api_response_common_failure>();
 export const assertbill_subs_api_api_response_common_failure = typia.createAssert<bill_subs_api_api_response_common_failure>();
 export const validatebill_subs_api_api_response_common_failure = typia.createValidate<bill_subs_api_api_response_common_failure>();
@@ -5197,7 +5197,7 @@ export const isbill_subs_api_duration = typia.createIs<bill_subs_api_duration>()
 export const assertbill_subs_api_duration = typia.createAssert<bill_subs_api_duration>();
 export const validatebill_subs_api_duration = typia.createValidate<bill_subs_api_duration>();
 
-export type bill_subs_api_frequency_response = (bill_subs_api_frequency & ("weekly" | "monthly" | "quarterly" | "yearly" | "not-applicable") & unknown);
+export type bill_subs_api_frequency_response = (bill_subs_api_frequency & ("weekly" | "monthly" | "quarterly" | "yearly" | "not-applicable"));
 export const isbill_subs_api_frequency_response = typia.createIs<bill_subs_api_frequency_response>();
 export const assertbill_subs_api_frequency_response = typia.createAssert<bill_subs_api_frequency_response>();
 export const validatebill_subs_api_frequency_response = typia.createValidate<bill_subs_api_frequency_response>();
@@ -5302,7 +5302,7 @@ export const isbot_management_api_response_common = typia.createIs<bot_managemen
 export const assertbot_management_api_response_common = typia.createAssert<bot_management_api_response_common>();
 export const validatebot_management_api_response_common = typia.createValidate<bot_management_api_response_common>();
 
-export type bot_management_api_response_common_failure = { errors: (bot_management_messages & unknown), messages: (bot_management_messages), result: (Record<string, unknown> | null), success: false };
+export type bot_management_api_response_common_failure = { errors: bot_management_messages, messages: bot_management_messages, result: (Record<string, unknown> | null), success: false };
 export const isbot_management_api_response_common_failure = typia.createIs<bot_management_api_response_common_failure>();
 export const assertbot_management_api_response_common_failure = typia.createAssert<bot_management_api_response_common_failure>();
 export const validatebot_management_api_response_common_failure = typia.createValidate<bot_management_api_response_common_failure>();
@@ -5347,7 +5347,7 @@ export const isbot_management_using_latest_model = typia.createIs<bot_management
 export const assertbot_management_using_latest_model = typia.createAssert<bot_management_using_latest_model>();
 export const validatebot_management_using_latest_model = typia.createValidate<bot_management_using_latest_model>();
 
-export type bot_management_base_config = (Partial<{ ai_bots_protection: bot_management_ai_bots_protection, cf_robots_variant: bot_management_cf_robots_variant, content_bots_protection: bot_management_content_bots_protection, crawler_protection: bot_management_crawler_protection, enable_js: bot_management_enable_js, is_robots_txt_managed: bot_management_is_robots_txt_managed, using_latest_model: bot_management_using_latest_model }>);
+export type bot_management_base_config = Partial<{ ai_bots_protection: bot_management_ai_bots_protection, cf_robots_variant: bot_management_cf_robots_variant, content_bots_protection: bot_management_content_bots_protection, crawler_protection: bot_management_crawler_protection, enable_js: bot_management_enable_js, is_robots_txt_managed: bot_management_is_robots_txt_managed, using_latest_model: bot_management_using_latest_model }>;
 export const isbot_management_base_config = typia.createIs<bot_management_base_config>();
 export const assertbot_management_base_config = typia.createAssert<bot_management_base_config>();
 export const validatebot_management_base_config = typia.createValidate<bot_management_base_config>();
@@ -5822,7 +5822,7 @@ export const isbuilds_EnvironmentVariablesRequest = typia.createIs<builds_Enviro
 export const assertbuilds_EnvironmentVariablesRequest = typia.createAssert<builds_EnvironmentVariablesRequest>();
 export const validatebuilds_EnvironmentVariablesRequest = typia.createValidate<builds_EnvironmentVariablesRequest>();
 
-export type builds_CreateWorkerBuildSettingsInput = { build_caching_enabled?: (builds_build_caching_enabled & unknown), build_command: builds_build_command, build_token_uuid: builds_build_token_uuid, deploy_command: builds_deploy_command, environment_variables?: builds_EnvironmentVariablesRequest, path_excludes?: builds_path_excludes, path_includes?: builds_path_includes, root_directory?: (builds_root_directory & unknown) };
+export type builds_CreateWorkerBuildSettingsInput = { build_caching_enabled?: builds_build_caching_enabled, build_command: builds_build_command, build_token_uuid: builds_build_token_uuid, deploy_command: builds_deploy_command, environment_variables?: builds_EnvironmentVariablesRequest, path_excludes?: builds_path_excludes, path_includes?: builds_path_includes, root_directory?: builds_root_directory };
 export const isbuilds_CreateWorkerBuildSettingsInput = typia.createIs<builds_CreateWorkerBuildSettingsInput>();
 export const assertbuilds_CreateWorkerBuildSettingsInput = typia.createAssert<builds_CreateWorkerBuildSettingsInput>();
 export const validatebuilds_CreateWorkerBuildSettingsInput = typia.createValidate<builds_CreateWorkerBuildSettingsInput>();
@@ -5997,7 +5997,7 @@ export const iscache_purge_messages = typia.createIs<cache_purge_messages>();
 export const assertcache_purge_messages = typia.createAssert<cache_purge_messages>();
 export const validatecache_purge_messages = typia.createValidate<cache_purge_messages>();
 
-export type cache_purge_api_response_common_failure = { errors: (cache_purge_messages & unknown), messages: (cache_purge_messages), result: (Record<string, unknown> | null), success: boolean };
+export type cache_purge_api_response_common_failure = { errors: cache_purge_messages, messages: cache_purge_messages, result: (Record<string, unknown> | null), success: boolean };
 export const iscache_purge_api_response_common_failure = typia.createIs<cache_purge_api_response_common_failure>();
 export const assertcache_purge_api_response_common_failure = typia.createAssert<cache_purge_api_response_common_failure>();
 export const validatecache_purge_api_response_common_failure = typia.createValidate<cache_purge_api_response_common_failure>();
@@ -6347,7 +6347,7 @@ export const iscache_result = typia.createIs<cache_result>();
 export const assertcache_result = typia.createAssert<cache_result>();
 export const validatecache_result = typia.createValidate<cache_result>();
 
-export type cache_api_response_common_failure = { errors: (cache_messages & unknown), messages: (cache_messages), result: cache_result, success: boolean };
+export type cache_api_response_common_failure = { errors: cache_messages, messages: cache_messages, result: cache_result, success: boolean };
 export const iscache_api_response_common_failure = typia.createIs<cache_api_response_common_failure>();
 export const assertcache_api_response_common_failure = typia.createAssert<cache_api_response_common_failure>();
 export const validatecache_api_response_common_failure = typia.createValidate<cache_api_response_common_failure>();
@@ -6362,12 +6362,12 @@ export const iscache_auto_origin_tls_kex_value = typia.createIs<cache_auto_origi
 export const assertcache_auto_origin_tls_kex_value = typia.createAssert<cache_auto_origin_tls_kex_value>();
 export const validatecache_auto_origin_tls_kex_value = typia.createValidate<cache_auto_origin_tls_kex_value>();
 
-export type cache_auto_origin_tls_kex_result = { enabled: (cache_auto_origin_tls_kex_value & unknown), id: string, modified_on: string };
+export type cache_auto_origin_tls_kex_result = { enabled: cache_auto_origin_tls_kex_value, id: string, modified_on: string };
 export const iscache_auto_origin_tls_kex_result = typia.createIs<cache_auto_origin_tls_kex_result>();
 export const assertcache_auto_origin_tls_kex_result = typia.createAssert<cache_auto_origin_tls_kex_result>();
 export const validatecache_auto_origin_tls_kex_result = typia.createValidate<cache_auto_origin_tls_kex_result>();
 
-export type cache_auto_origin_tls_kex_failure_response = { errors: (cache_messages & unknown), messages: cache_messages, result: cache_auto_origin_tls_kex_result, success: boolean };
+export type cache_auto_origin_tls_kex_failure_response = { errors: cache_messages, messages: cache_messages, result: cache_auto_origin_tls_kex_result, success: boolean };
 export const iscache_auto_origin_tls_kex_failure_response = typia.createIs<cache_auto_origin_tls_kex_failure_response>();
 export const assertcache_auto_origin_tls_kex_failure_response = typia.createAssert<cache_auto_origin_tls_kex_failure_response>();
 export const validatecache_auto_origin_tls_kex_failure_response = typia.createValidate<cache_auto_origin_tls_kex_failure_response>();
@@ -6412,7 +6412,7 @@ export const iscalls_api_response_common = typia.createIs<calls_api_response_com
 export const assertcalls_api_response_common = typia.createAssert<calls_api_response_common>();
 export const validatecalls_api_response_common = typia.createValidate<calls_api_response_common>();
 
-export type calls_api_response_common_failure = { errors: (calls_messages & unknown), messages: (calls_messages), result: (Record<string, unknown> | null), success: false };
+export type calls_api_response_common_failure = { errors: calls_messages, messages: calls_messages, result: (Record<string, unknown> | null), success: false };
 export const iscalls_api_response_common_failure = typia.createIs<calls_api_response_common_failure>();
 export const assertcalls_api_response_common_failure = typia.createAssert<calls_api_response_common_failure>();
 export const validatecalls_api_response_common_failure = typia.createValidate<calls_api_response_common_failure>();
@@ -6952,7 +6952,7 @@ export const iscc_ModifyApplicationRequestBody = typia.createIs<cc_ModifyApplica
 export const assertcc_ModifyApplicationRequestBody = typia.createAssert<cc_ModifyApplicationRequestBody>();
 export const validatecc_ModifyApplicationRequestBody = typia.createValidate<cc_ModifyApplicationRequestBody>();
 
-export type cc_V4BaseErrorResponse = { errors: (cc_Messages & unknown), messages: (cc_Messages), result: (Record<string, unknown> | null), success: boolean };
+export type cc_V4BaseErrorResponse = { errors: cc_Messages, messages: cc_Messages, result: (Record<string, unknown> | null), success: boolean };
 export const iscc_V4BaseErrorResponse = typia.createIs<cc_V4BaseErrorResponse>();
 export const assertcc_V4BaseErrorResponse = typia.createAssert<cc_V4BaseErrorResponse>();
 export const validatecc_V4BaseErrorResponse = typia.createValidate<cc_V4BaseErrorResponse>();
@@ -6982,7 +6982,7 @@ export const iscloud_connector_api_response_common = typia.createIs<cloud_connec
 export const assertcloud_connector_api_response_common = typia.createAssert<cloud_connector_api_response_common>();
 export const validatecloud_connector_api_response_common = typia.createValidate<cloud_connector_api_response_common>();
 
-export type cloud_connector_api_response_common_failure = { errors: (cloud_connector_messages & unknown), messages: (cloud_connector_messages), result: (Record<string, unknown> | null), success: false };
+export type cloud_connector_api_response_common_failure = { errors: cloud_connector_messages, messages: cloud_connector_messages, result: (Record<string, unknown> | null), success: false };
 export const iscloud_connector_api_response_common_failure = typia.createIs<cloud_connector_api_response_common_failure>();
 export const assertcloud_connector_api_response_common_failure = typia.createAssert<cloud_connector_api_response_common_failure>();
 export const validatecloud_connector_api_response_common_failure = typia.createValidate<cloud_connector_api_response_common_failure>();
@@ -7072,7 +7072,7 @@ export const iscloudflare_pipelines_Format = typia.createIs<cloudflare_pipelines
 export const assertcloudflare_pipelines_Format = typia.createAssert<cloudflare_pipelines_Format>();
 export const validatecloudflare_pipelines_Format = typia.createValidate<cloudflare_pipelines_Format>();
 
-export type cloudflare_pipelines_ConnectionSchema = Partial<{ fields: Array<cloudflare_pipelines_SourceField>, format: (cloudflare_pipelines_Format), inferred: (boolean | null) }>;
+export type cloudflare_pipelines_ConnectionSchema = Partial<{ fields: Array<cloudflare_pipelines_SourceField>, format: cloudflare_pipelines_Format, inferred: (boolean | null) }>;
 export const iscloudflare_pipelines_ConnectionSchema = typia.createIs<cloudflare_pipelines_ConnectionSchema>();
 export const assertcloudflare_pipelines_ConnectionSchema = typia.createAssert<cloudflare_pipelines_ConnectionSchema>();
 export const validatecloudflare_pipelines_ConnectionSchema = typia.createValidate<cloudflare_pipelines_ConnectionSchema>();
@@ -7252,7 +7252,7 @@ export const iscloudforce_one_requests_uuid = typia.createIs<cloudforce_one_requ
 export const assertcloudforce_one_requests_uuid = typia.createAssert<cloudforce_one_requests_uuid>();
 export const validatecloudforce_one_requests_uuid = typia.createValidate<cloudforce_one_requests_uuid>();
 
-export type cloudforce_one_requests_priority_item = { created: (cloudforce_one_requests_time), id: cloudforce_one_requests_uuid, labels: cloudforce_one_requests_labels, priority: number, requirement: string, tlp: cloudforce_one_requests_tlp, updated: (cloudforce_one_requests_time) };
+export type cloudforce_one_requests_priority_item = { created: cloudforce_one_requests_time, id: cloudforce_one_requests_uuid, labels: cloudforce_one_requests_labels, priority: number, requirement: string, tlp: cloudforce_one_requests_tlp, updated: cloudforce_one_requests_time };
 export const iscloudforce_one_requests_priority_item = typia.createIs<cloudforce_one_requests_priority_item>();
 export const assertcloudforce_one_requests_priority_item = typia.createAssert<cloudforce_one_requests_priority_item>();
 export const validatecloudforce_one_requests_priority_item = typia.createValidate<cloudforce_one_requests_priority_item>();
@@ -7262,7 +7262,7 @@ export const iscloudforce_one_requests_priority_list = typia.createIs<cloudforce
 export const assertcloudforce_one_requests_priority_list = typia.createAssert<cloudforce_one_requests_priority_list>();
 export const validatecloudforce_one_requests_priority_list = typia.createValidate<cloudforce_one_requests_priority_list>();
 
-export type cloudforce_one_requests_quota = Partial<{ anniversary_date: (cloudforce_one_requests_time), quarter_anniversary_date: (cloudforce_one_requests_time), quota: number, remaining: number }>;
+export type cloudforce_one_requests_quota = Partial<{ anniversary_date: cloudforce_one_requests_time, quarter_anniversary_date: cloudforce_one_requests_time, quota: number, remaining: number }>;
 export const iscloudforce_one_requests_quota = typia.createIs<cloudforce_one_requests_quota>();
 export const assertcloudforce_one_requests_quota = typia.createAssert<cloudforce_one_requests_quota>();
 export const validatecloudforce_one_requests_quota = typia.createValidate<cloudforce_one_requests_quota>();
@@ -7272,7 +7272,7 @@ export const iscloudforce_one_requests_request_asset_edit = typia.createIs<cloud
 export const assertcloudforce_one_requests_request_asset_edit = typia.createAssert<cloudforce_one_requests_request_asset_edit>();
 export const validatecloudforce_one_requests_request_asset_edit = typia.createValidate<cloudforce_one_requests_request_asset_edit>();
 
-export type cloudforce_one_requests_request_asset_item = { created?: (cloudforce_one_requests_time), description?: string, file_type?: string, id: number, name: string };
+export type cloudforce_one_requests_request_asset_item = { created?: cloudforce_one_requests_time, description?: string, file_type?: string, id: number, name: string };
 export const iscloudforce_one_requests_request_asset_item = typia.createIs<cloudforce_one_requests_request_asset_item>();
 export const assertcloudforce_one_requests_request_asset_item = typia.createAssert<cloudforce_one_requests_request_asset_item>();
 export const validatecloudforce_one_requests_request_asset_item = typia.createValidate<cloudforce_one_requests_request_asset_item>();
@@ -7322,12 +7322,12 @@ export const iscloudforce_one_requests_request_item = typia.createIs<cloudforce_
 export const assertcloudforce_one_requests_request_item = typia.createAssert<cloudforce_one_requests_request_item>();
 export const validatecloudforce_one_requests_request_item = typia.createValidate<cloudforce_one_requests_request_item>();
 
-export type cloudforce_one_requests_request_list = { completed_after?: (cloudforce_one_requests_time), completed_before?: (cloudforce_one_requests_time), created_after?: (cloudforce_one_requests_time), created_before?: (cloudforce_one_requests_time), page: number, per_page: number, request_type?: cloudforce_one_requests_request_type, sort_by?: string, sort_order?: ("asc" | "desc"), status?: cloudforce_one_requests_request_status };
+export type cloudforce_one_requests_request_list = { completed_after?: cloudforce_one_requests_time, completed_before?: cloudforce_one_requests_time, created_after?: cloudforce_one_requests_time, created_before?: cloudforce_one_requests_time, page: number, per_page: number, request_type?: cloudforce_one_requests_request_type, sort_by?: string, sort_order?: ("asc" | "desc"), status?: cloudforce_one_requests_request_status };
 export const iscloudforce_one_requests_request_list = typia.createIs<cloudforce_one_requests_request_list>();
 export const assertcloudforce_one_requests_request_list = typia.createAssert<cloudforce_one_requests_request_list>();
 export const validatecloudforce_one_requests_request_list = typia.createValidate<cloudforce_one_requests_request_list>();
 
-export type cloudforce_one_requests_request_list_item = { completed?: (cloudforce_one_requests_time), created: (cloudforce_one_requests_time), id: cloudforce_one_requests_uuid, message_tokens?: number, priority: cloudforce_one_requests_priority, readable_id?: cloudforce_one_requests_request_readable_id, request: cloudforce_one_requests_request_type, status?: cloudforce_one_requests_request_status, summary: cloudforce_one_requests_request_summary, tlp: cloudforce_one_requests_tlp, tokens?: number, updated: (cloudforce_one_requests_time) };
+export type cloudforce_one_requests_request_list_item = { completed?: cloudforce_one_requests_time, created: cloudforce_one_requests_time, id: cloudforce_one_requests_uuid, message_tokens?: number, priority: cloudforce_one_requests_priority, readable_id?: cloudforce_one_requests_request_readable_id, request: cloudforce_one_requests_request_type, status?: cloudforce_one_requests_request_status, summary: cloudforce_one_requests_request_summary, tlp: cloudforce_one_requests_tlp, tokens?: number, updated: cloudforce_one_requests_time };
 export const iscloudforce_one_requests_request_list_item = typia.createIs<cloudforce_one_requests_request_list_item>();
 export const assertcloudforce_one_requests_request_list_item = typia.createAssert<cloudforce_one_requests_request_list_item>();
 export const validatecloudforce_one_requests_request_list_item = typia.createValidate<cloudforce_one_requests_request_list_item>();
@@ -7337,12 +7337,12 @@ export const iscloudforce_one_requests_request_message_edit = typia.createIs<clo
 export const assertcloudforce_one_requests_request_message_edit = typia.createAssert<cloudforce_one_requests_request_message_edit>();
 export const validatecloudforce_one_requests_request_message_edit = typia.createValidate<cloudforce_one_requests_request_message_edit>();
 
-export type cloudforce_one_requests_request_message_item = { author: string, content: cloudforce_one_requests_message_content, created?: (cloudforce_one_requests_time), id: number, is_follow_on_request: boolean, updated: (cloudforce_one_requests_time) };
+export type cloudforce_one_requests_request_message_item = { author: string, content: cloudforce_one_requests_message_content, created?: cloudforce_one_requests_time, id: number, is_follow_on_request: boolean, updated: cloudforce_one_requests_time };
 export const iscloudforce_one_requests_request_message_item = typia.createIs<cloudforce_one_requests_request_message_item>();
 export const assertcloudforce_one_requests_request_message_item = typia.createAssert<cloudforce_one_requests_request_message_item>();
 export const validatecloudforce_one_requests_request_message_item = typia.createValidate<cloudforce_one_requests_request_message_item>();
 
-export type cloudforce_one_requests_request_message_list = { after?: (cloudforce_one_requests_time), before?: (cloudforce_one_requests_time), page: number, per_page: number, sort_by?: string, sort_order?: ("asc" | "desc") };
+export type cloudforce_one_requests_request_message_list = { after?: cloudforce_one_requests_time, before?: cloudforce_one_requests_time, page: number, per_page: number, sort_by?: string, sort_order?: ("asc" | "desc") };
 export const iscloudforce_one_requests_request_message_list = typia.createIs<cloudforce_one_requests_request_message_list>();
 export const assertcloudforce_one_requests_request_message_list = typia.createAssert<cloudforce_one_requests_request_message_list>();
 export const validatecloudforce_one_requests_request_message_list = typia.createValidate<cloudforce_one_requests_request_message_list>();
@@ -7367,7 +7367,7 @@ export const iscloudforce_one_whois_messages = typia.createIs<cloudforce_one_who
 export const assertcloudforce_one_whois_messages = typia.createAssert<cloudforce_one_whois_messages>();
 export const validatecloudforce_one_whois_messages = typia.createValidate<cloudforce_one_whois_messages>();
 
-export type cloudforce_one_whois_api_response_common_failure = { errors: (cloudforce_one_whois_messages & unknown), messages: (cloudforce_one_whois_messages), result: (Record<string, unknown> | null), success: false };
+export type cloudforce_one_whois_api_response_common_failure = { errors: cloudforce_one_whois_messages, messages: cloudforce_one_whois_messages, result: (Record<string, unknown> | null), success: false };
 export const iscloudforce_one_whois_api_response_common_failure = typia.createIs<cloudforce_one_whois_api_response_common_failure>();
 export const assertcloudforce_one_whois_api_response_common_failure = typia.createAssert<cloudforce_one_whois_api_response_common_failure>();
 export const validatecloudforce_one_whois_api_response_common_failure = typia.createValidate<cloudforce_one_whois_api_response_common_failure>();
@@ -7392,7 +7392,7 @@ export const iscloudforce_one_whois_whois = typia.createIs<cloudforce_one_whois_
 export const assertcloudforce_one_whois_whois = typia.createAssert<cloudforce_one_whois_whois>();
 export const validatecloudforce_one_whois_whois = typia.createValidate<cloudforce_one_whois_whois>();
 
-export type cloudforce_one_whois_schemas_single_response = (cloudforce_one_whois_api_response_single & Partial<{ result: (cloudforce_one_whois_whois) }>);
+export type cloudforce_one_whois_schemas_single_response = (cloudforce_one_whois_api_response_single & Partial<{ result: cloudforce_one_whois_whois }>);
 export const iscloudforce_one_whois_schemas_single_response = typia.createIs<cloudforce_one_whois_schemas_single_response>();
 export const assertcloudforce_one_whois_schemas_single_response = typia.createAssert<cloudforce_one_whois_schemas_single_response>();
 export const validatecloudforce_one_whois_schemas_single_response = typia.createValidate<cloudforce_one_whois_schemas_single_response>();
@@ -7572,7 +7572,7 @@ export const iscustom_indicator_feeds_messages = typia.createIs<custom_indicator
 export const assertcustom_indicator_feeds_messages = typia.createAssert<custom_indicator_feeds_messages>();
 export const validatecustom_indicator_feeds_messages = typia.createValidate<custom_indicator_feeds_messages>();
 
-export type custom_indicator_feeds_api_response_common_failure = { errors: (custom_indicator_feeds_messages & unknown), messages: (custom_indicator_feeds_messages), result: (Record<string, unknown> | null), success: false };
+export type custom_indicator_feeds_api_response_common_failure = { errors: custom_indicator_feeds_messages, messages: custom_indicator_feeds_messages, result: (Record<string, unknown> | null), success: false };
 export const iscustom_indicator_feeds_api_response_common_failure = typia.createIs<custom_indicator_feeds_api_response_common_failure>();
 export const assertcustom_indicator_feeds_api_response_common_failure = typia.createAssert<custom_indicator_feeds_api_response_common_failure>();
 export const validatecustom_indicator_feeds_api_response_common_failure = typia.createValidate<custom_indicator_feeds_api_response_common_failure>();
@@ -7742,7 +7742,7 @@ export const iscustom_pages_api_response_collection = typia.createIs<custom_page
 export const assertcustom_pages_api_response_collection = typia.createAssert<custom_pages_api_response_collection>();
 export const validatecustom_pages_api_response_collection = typia.createValidate<custom_pages_api_response_collection>();
 
-export type custom_pages_api_response_common_failure = { errors: (custom_pages_messages & unknown), messages: (custom_pages_messages), result: (Record<string, unknown> | null), success: false };
+export type custom_pages_api_response_common_failure = { errors: custom_pages_messages, messages: custom_pages_messages, result: (Record<string, unknown> | null), success: false };
 export const iscustom_pages_api_response_common_failure = typia.createIs<custom_pages_api_response_common_failure>();
 export const assertcustom_pages_api_response_common_failure = typia.createAssert<custom_pages_api_response_common_failure>();
 export const validatecustom_pages_api_response_common_failure = typia.createValidate<custom_pages_api_response_common_failure>();
@@ -7852,7 +7852,7 @@ export const isd1_api_response_common = typia.createIs<d1_api_response_common>()
 export const assertd1_api_response_common = typia.createAssert<d1_api_response_common>();
 export const validated1_api_response_common = typia.createValidate<d1_api_response_common>();
 
-export type d1_api_response_common_failure = { errors: (d1_messages & unknown), messages: (d1_messages), result: (Record<string, unknown> | null), success: false };
+export type d1_api_response_common_failure = { errors: d1_messages, messages: d1_messages, result: (Record<string, unknown> | null), success: false };
 export const isd1_api_response_common_failure = typia.createIs<d1_api_response_common_failure>();
 export const assertd1_api_response_common_failure = typia.createAssert<d1_api_response_common_failure>();
 export const validated1_api_response_common_failure = typia.createValidate<d1_api_response_common_failure>();
@@ -7982,7 +7982,7 @@ export const isd1_time_travel_bookmark = typia.createIs<d1_time_travel_bookmark>
 export const assertd1_time_travel_bookmark = typia.createAssert<d1_time_travel_bookmark>();
 export const validated1_time_travel_bookmark = typia.createValidate<d1_time_travel_bookmark>();
 
-export type d1_time_travel_restore_response = Partial<{ bookmark: (d1_time_travel_bookmark & unknown), message: string, previous_bookmark: (d1_time_travel_bookmark & unknown) }>;
+export type d1_time_travel_restore_response = Partial<{ bookmark: d1_time_travel_bookmark, message: string, previous_bookmark: d1_time_travel_bookmark }>;
 export const isd1_time_travel_restore_response = typia.createIs<d1_time_travel_restore_response>();
 export const assertd1_time_travel_restore_response = typia.createAssert<d1_time_travel_restore_response>();
 export const validated1_time_travel_restore_response = typia.createValidate<d1_time_travel_restore_response>();
@@ -8032,7 +8032,7 @@ export const isdigital_experience_monitoring_api_response_collection_common = ty
 export const assertdigital_experience_monitoring_api_response_collection_common = typia.createAssert<digital_experience_monitoring_api_response_collection_common>();
 export const validatedigital_experience_monitoring_api_response_collection_common = typia.createValidate<digital_experience_monitoring_api_response_collection_common>();
 
-export type digital_experience_monitoring_api_response_common_failure = { errors: (digital_experience_monitoring_messages & unknown), messages: (digital_experience_monitoring_messages), result: (Record<string, unknown> | null), success: false };
+export type digital_experience_monitoring_api_response_common_failure = { errors: digital_experience_monitoring_messages, messages: digital_experience_monitoring_messages, result: (Record<string, unknown> | null), success: false };
 export const isdigital_experience_monitoring_api_response_common_failure = typia.createIs<digital_experience_monitoring_api_response_common_failure>();
 export const assertdigital_experience_monitoring_api_response_common_failure = typia.createAssert<digital_experience_monitoring_api_response_common_failure>();
 export const validatedigital_experience_monitoring_api_response_common_failure = typia.createValidate<digital_experience_monitoring_api_response_common_failure>();
@@ -8162,7 +8162,7 @@ export const isdigital_experience_monitoring_uuid = typia.createIs<digital_exper
 export const assertdigital_experience_monitoring_uuid = typia.createAssert<digital_experience_monitoring_uuid>();
 export const validatedigital_experience_monitoring_uuid = typia.createValidate<digital_experience_monitoring_uuid>();
 
-export type digital_experience_monitoring_dex_target_policy = { default?: boolean, id: (digital_experience_monitoring_uuid), name?: string };
+export type digital_experience_monitoring_dex_target_policy = { default?: boolean, id: digital_experience_monitoring_uuid, name?: string };
 export const isdigital_experience_monitoring_dex_target_policy = typia.createIs<digital_experience_monitoring_dex_target_policy>();
 export const assertdigital_experience_monitoring_dex_target_policy = typia.createAssert<digital_experience_monitoring_dex_target_policy>();
 export const validatedigital_experience_monitoring_dex_target_policy = typia.createValidate<digital_experience_monitoring_dex_target_policy>();
@@ -8177,7 +8177,7 @@ export const isdigital_experience_monitoring_schemas_test_id = typia.createIs<di
 export const assertdigital_experience_monitoring_schemas_test_id = typia.createAssert<digital_experience_monitoring_schemas_test_id>();
 export const validatedigital_experience_monitoring_schemas_test_id = typia.createValidate<digital_experience_monitoring_schemas_test_id>();
 
-export type digital_experience_monitoring_device_dex_test_schemas_http = { created?: string, data: digital_experience_monitoring_device_dex_test_schemas_data, description?: digital_experience_monitoring_device_dex_test_schemas_description, enabled: digital_experience_monitoring_device_dex_test_schemas_enabled, interval: digital_experience_monitoring_device_dex_test_schemas_interval, name: digital_experience_monitoring_device_dex_test_schemas_name, target_policies?: (digital_experience_monitoring_device_dex_test_target_policies & unknown), targeted?: boolean, test_id?: digital_experience_monitoring_schemas_test_id, updated?: string };
+export type digital_experience_monitoring_device_dex_test_schemas_http = { created?: string, data: digital_experience_monitoring_device_dex_test_schemas_data, description?: digital_experience_monitoring_device_dex_test_schemas_description, enabled: digital_experience_monitoring_device_dex_test_schemas_enabled, interval: digital_experience_monitoring_device_dex_test_schemas_interval, name: digital_experience_monitoring_device_dex_test_schemas_name, target_policies?: digital_experience_monitoring_device_dex_test_target_policies, targeted?: boolean, test_id?: digital_experience_monitoring_schemas_test_id, updated?: string };
 export const isdigital_experience_monitoring_device_dex_test_schemas_http = typia.createIs<digital_experience_monitoring_device_dex_test_schemas_http>();
 export const assertdigital_experience_monitoring_device_dex_test_schemas_http = typia.createAssert<digital_experience_monitoring_device_dex_test_schemas_http>();
 export const validatedigital_experience_monitoring_device_dex_test_schemas_http = typia.createValidate<digital_experience_monitoring_device_dex_test_schemas_http>();
@@ -8222,7 +8222,7 @@ export const isdigital_experience_monitoring_timeslot_string = typia.createIs<di
 export const assertdigital_experience_monitoring_timeslot_string = typia.createAssert<digital_experience_monitoring_timeslot_string>();
 export const validatedigital_experience_monitoring_timeslot_string = typia.createValidate<digital_experience_monitoring_timeslot_string>();
 
-export type digital_experience_monitoring_timeslot_rtt_stats = { timestamp: string, value: (digital_experience_monitoring_rtt_stats) };
+export type digital_experience_monitoring_timeslot_rtt_stats = { timestamp: string, value: digital_experience_monitoring_rtt_stats };
 export const isdigital_experience_monitoring_timeslot_rtt_stats = typia.createIs<digital_experience_monitoring_timeslot_rtt_stats>();
 export const assertdigital_experience_monitoring_timeslot_rtt_stats = typia.createAssert<digital_experience_monitoring_timeslot_rtt_stats>();
 export const validatedigital_experience_monitoring_timeslot_rtt_stats = typia.createValidate<digital_experience_monitoring_timeslot_rtt_stats>();
@@ -8237,7 +8237,7 @@ export const isdigital_experience_monitoring_timeslot_ram_apps = typia.createIs<
 export const assertdigital_experience_monitoring_timeslot_ram_apps = typia.createAssert<digital_experience_monitoring_timeslot_ram_apps>();
 export const validatedigital_experience_monitoring_timeslot_ram_apps = typia.createValidate<digital_experience_monitoring_timeslot_ram_apps>();
 
-export type digital_experience_monitoring_timeslot_tunnel_stats = { timestamp: string, value: (digital_experience_monitoring_tunnel_stats) };
+export type digital_experience_monitoring_timeslot_tunnel_stats = { timestamp: string, value: digital_experience_monitoring_tunnel_stats };
 export const isdigital_experience_monitoring_timeslot_tunnel_stats = typia.createIs<digital_experience_monitoring_timeslot_tunnel_stats>();
 export const assertdigital_experience_monitoring_timeslot_tunnel_stats = typia.createAssert<digital_experience_monitoring_timeslot_tunnel_stats>();
 export const validatedigital_experience_monitoring_timeslot_tunnel_stats = typia.createValidate<digital_experience_monitoring_timeslot_tunnel_stats>();
@@ -8267,12 +8267,12 @@ export const isdigital_experience_monitoring_dex_response_collection = typia.cre
 export const assertdigital_experience_monitoring_dex_response_collection = typia.createAssert<digital_experience_monitoring_dex_response_collection>();
 export const validatedigital_experience_monitoring_dex_response_collection = typia.createValidate<digital_experience_monitoring_dex_response_collection>();
 
-export type digital_experience_monitoring_dex_targeted_test = { data: (digital_experience_monitoring_device_dex_test_schemas_data & unknown), enabled: boolean, name: string, test_id: string };
+export type digital_experience_monitoring_dex_targeted_test = { data: digital_experience_monitoring_device_dex_test_schemas_data, enabled: boolean, name: string, test_id: string };
 export const isdigital_experience_monitoring_dex_targeted_test = typia.createIs<digital_experience_monitoring_dex_targeted_test>();
 export const assertdigital_experience_monitoring_dex_targeted_test = typia.createAssert<digital_experience_monitoring_dex_targeted_test>();
 export const validatedigital_experience_monitoring_dex_targeted_test = typia.createValidate<digital_experience_monitoring_dex_targeted_test>();
 
-export type digital_experience_monitoring_dex_rule = { created_at: string, description?: string, id: (digital_experience_monitoring_uuid & unknown), match: string, name: string, targeted_tests?: Array<digital_experience_monitoring_dex_targeted_test>, updated_at?: string };
+export type digital_experience_monitoring_dex_rule = { created_at: string, description?: string, id: digital_experience_monitoring_uuid, match: string, name: string, targeted_tests?: Array<digital_experience_monitoring_dex_targeted_test>, updated_at?: string };
 export const isdigital_experience_monitoring_dex_rule = typia.createIs<digital_experience_monitoring_dex_rule>();
 export const assertdigital_experience_monitoring_dex_rule = typia.createAssert<digital_experience_monitoring_dex_rule>();
 export const validatedigital_experience_monitoring_dex_rule = typia.createValidate<digital_experience_monitoring_dex_rule>();
@@ -8427,7 +8427,7 @@ export const isdigital_experience_monitoring_traceroute_test_network_path_respon
 export const assertdigital_experience_monitoring_traceroute_test_network_path_response = typia.createAssert<digital_experience_monitoring_traceroute_test_network_path_response>();
 export const validatedigital_experience_monitoring_traceroute_test_network_path_response = typia.createValidate<digital_experience_monitoring_traceroute_test_network_path_response>();
 
-export type digital_experience_monitoring_traceroute_test_result_network_path_response = { colo?: digital_experience_monitoring_colo, deviceName?: string, execution_context?: (digital_experience_monitoring_execution_context), hops: Array<{ asn?: (number | null), aso?: (string | null), ipAddress?: (string | null), location?: (Partial<{ city: (string | null), state: (string | null), zip: (string | null) }> | null), mile?: (("client-to-app" | "client-to-cf-egress" | "client-to-cf-ingress" | "client-to-isp") | null), name?: (string | null), packetLossPct?: (number | null), rttMs?: (number | null), ttl: number }>, resultId: digital_experience_monitoring_uuid, testId?: digital_experience_monitoring_uuid, testName?: string, time_start?: string, tunnel_type?: (string | null) };
+export type digital_experience_monitoring_traceroute_test_result_network_path_response = { colo?: digital_experience_monitoring_colo, deviceName?: string, execution_context?: digital_experience_monitoring_execution_context, hops: Array<{ asn?: (number | null), aso?: (string | null), ipAddress?: (string | null), location?: (Partial<{ city: (string | null), state: (string | null), zip: (string | null) }> | null), mile?: (("client-to-app" | "client-to-cf-egress" | "client-to-cf-ingress" | "client-to-isp") | null), name?: (string | null), packetLossPct?: (number | null), rttMs?: (number | null), ttl: number }>, resultId: digital_experience_monitoring_uuid, testId?: digital_experience_monitoring_uuid, testName?: string, time_start?: string, tunnel_type?: (string | null) };
 export const isdigital_experience_monitoring_traceroute_test_result_network_path_response = typia.createIs<digital_experience_monitoring_traceroute_test_result_network_path_response>();
 export const assertdigital_experience_monitoring_traceroute_test_result_network_path_response = typia.createAssert<digital_experience_monitoring_traceroute_test_result_network_path_response>();
 export const validatedigital_experience_monitoring_traceroute_test_result_network_path_response = typia.createValidate<digital_experience_monitoring_traceroute_test_result_network_path_response>();
@@ -8437,17 +8437,17 @@ export const isdigital_experience_monitoring_unique_devices_response = typia.cre
 export const assertdigital_experience_monitoring_unique_devices_response = typia.createAssert<digital_experience_monitoring_unique_devices_response>();
 export const validatedigital_experience_monitoring_unique_devices_response = typia.createValidate<digital_experience_monitoring_unique_devices_response>();
 
-export type digital_experience_monitoring_warp_config_details = Partial<{ account_name: string, account_tag: (digital_experience_monitoring_uuid), config_name: string }>;
+export type digital_experience_monitoring_warp_config_details = Partial<{ account_name: string, account_tag: digital_experience_monitoring_uuid, config_name: string }>;
 export const isdigital_experience_monitoring_warp_config_details = typia.createIs<digital_experience_monitoring_warp_config_details>();
 export const assertdigital_experience_monitoring_warp_config_details = typia.createAssert<digital_experience_monitoring_warp_config_details>();
 export const validatedigital_experience_monitoring_warp_config_details = typia.createValidate<digital_experience_monitoring_warp_config_details>();
 
-export type digital_experience_monitoring_warp_config_change_event = Partial<{ device_id: (digital_experience_monitoring_uuid), device_registration: (digital_experience_monitoring_uuid & unknown), from: (digital_experience_monitoring_warp_config_details), hostname: string, registration_id: (digital_experience_monitoring_uuid), serial_number: string, timestamp: (digital_experience_monitoring_timestamp_datetime), to: (digital_experience_monitoring_warp_config_details), user_email: string }>;
+export type digital_experience_monitoring_warp_config_change_event = Partial<{ device_id: digital_experience_monitoring_uuid, device_registration: digital_experience_monitoring_uuid, from: digital_experience_monitoring_warp_config_details, hostname: string, registration_id: digital_experience_monitoring_uuid, serial_number: string, timestamp: digital_experience_monitoring_timestamp_datetime, to: digital_experience_monitoring_warp_config_details, user_email: string }>;
 export const isdigital_experience_monitoring_warp_config_change_event = typia.createIs<digital_experience_monitoring_warp_config_change_event>();
 export const assertdigital_experience_monitoring_warp_config_change_event = typia.createAssert<digital_experience_monitoring_warp_config_change_event>();
 export const validatedigital_experience_monitoring_warp_config_change_event = typia.createValidate<digital_experience_monitoring_warp_config_change_event>();
 
-export type digital_experience_monitoring_warp_toggle_change_event = Partial<{ account_name: string, account_tag: string, device_id: (digital_experience_monitoring_uuid), device_registration: (digital_experience_monitoring_uuid & unknown), hostname: string, registration_id: (digital_experience_monitoring_uuid), serial_number: string, timestamp: (digital_experience_monitoring_timestamp_datetime), toggle: ("on" | "off"), user_email: string }>;
+export type digital_experience_monitoring_warp_toggle_change_event = Partial<{ account_name: string, account_tag: string, device_id: digital_experience_monitoring_uuid, device_registration: digital_experience_monitoring_uuid, hostname: string, registration_id: digital_experience_monitoring_uuid, serial_number: string, timestamp: digital_experience_monitoring_timestamp_datetime, toggle: ("on" | "off"), user_email: string }>;
 export const isdigital_experience_monitoring_warp_toggle_change_event = typia.createIs<digital_experience_monitoring_warp_toggle_change_event>();
 export const assertdigital_experience_monitoring_warp_toggle_change_event = typia.createAssert<digital_experience_monitoring_warp_toggle_change_event>();
 export const validatedigital_experience_monitoring_warp_toggle_change_event = typia.createValidate<digital_experience_monitoring_warp_toggle_change_event>();
@@ -8542,7 +8542,7 @@ export const isdlp_Validation = typia.createIs<dlp_Validation>();
 export const assertdlp_Validation = typia.createAssert<dlp_Validation>();
 export const validatedlp_Validation = typia.createValidate<dlp_Validation>();
 
-export type dlp_Pattern = { regex: string, validation?: (dlp_Validation) };
+export type dlp_Pattern = { regex: string, validation?: dlp_Validation };
 export const isdlp_Pattern = typia.createIs<dlp_Pattern>();
 export const assertdlp_Pattern = typia.createAssert<dlp_Pattern>();
 export const validatedlp_Pattern = typia.createValidate<dlp_Pattern>();
@@ -8582,7 +8582,7 @@ export const isdlp_PredefinedEntryVariant = typia.createIs<dlp_PredefinedEntryVa
 export const assertdlp_PredefinedEntryVariant = typia.createAssert<dlp_PredefinedEntryVariant>();
 export const validatedlp_PredefinedEntryVariant = typia.createValidate<dlp_PredefinedEntryVariant>();
 
-export type dlp_PredefinedEntry = { confidence: dlp_EntryConfidence, enabled: boolean, id: string, name: string, profile_id?: (string | null), variant?: (dlp_PredefinedEntryVariant) };
+export type dlp_PredefinedEntry = { confidence: dlp_EntryConfidence, enabled: boolean, id: string, name: string, profile_id?: (string | null), variant?: dlp_PredefinedEntryVariant };
 export const isdlp_PredefinedEntry = typia.createIs<dlp_PredefinedEntry>();
 export const assertdlp_PredefinedEntry = typia.createAssert<dlp_PredefinedEntry>();
 export const validatedlp_PredefinedEntry = typia.createValidate<dlp_PredefinedEntry>();
@@ -8617,7 +8617,7 @@ export const isdlp_SensitivityLevelRef = typia.createIs<dlp_SensitivityLevelRef>
 export const assertdlp_SensitivityLevelRef = typia.createAssert<dlp_SensitivityLevelRef>();
 export const validatedlp_SensitivityLevelRef = typia.createValidate<dlp_SensitivityLevelRef>();
 
-export type dlp_CustomProfile = { ai_context_enabled?: boolean, allowed_match_count: number, confidence_threshold?: (dlp_Confidence & unknown), context_awareness?: dlp_ContextAwareness, created_at: string, data_classes?: Array<string>, data_tags?: Array<string>, description?: (string | null), entries?: Array<dlp_Entry>, id: string, name: string, ocr_enabled: boolean, sensitivity_levels?: Array<dlp_SensitivityLevelRef>, shared_entries?: Array<dlp_Entry>, updated_at: string };
+export type dlp_CustomProfile = { ai_context_enabled?: boolean, allowed_match_count: number, confidence_threshold?: dlp_Confidence, context_awareness?: dlp_ContextAwareness, created_at: string, data_classes?: Array<string>, data_tags?: Array<string>, description?: (string | null), entries?: Array<dlp_Entry>, id: string, name: string, ocr_enabled: boolean, sensitivity_levels?: Array<dlp_SensitivityLevelRef>, shared_entries?: Array<dlp_Entry>, updated_at: string };
 export const isdlp_CustomProfile = typia.createIs<dlp_CustomProfile>();
 export const assertdlp_CustomProfile = typia.createAssert<dlp_CustomProfile>();
 export const validatedlp_CustomProfile = typia.createValidate<dlp_CustomProfile>();
@@ -8777,7 +8777,7 @@ export const isdlp_PayloadLogMaskingLevel = typia.createIs<dlp_PayloadLogMasking
 export const assertdlp_PayloadLogMaskingLevel = typia.createAssert<dlp_PayloadLogMaskingLevel>();
 export const validatedlp_PayloadLogMaskingLevel = typia.createValidate<dlp_PayloadLogMaskingLevel>();
 
-export type dlp_PayloadLogSetting = { masking_level?: (dlp_PayloadLogMaskingLevel), public_key?: (string | null), updated_at: string };
+export type dlp_PayloadLogSetting = { masking_level?: dlp_PayloadLogMaskingLevel, public_key?: (string | null), updated_at: string };
 export const isdlp_PayloadLogSetting = typia.createIs<dlp_PayloadLogSetting>();
 export const assertdlp_PayloadLogSetting = typia.createAssert<dlp_PayloadLogSetting>();
 export const validatedlp_PayloadLogSetting = typia.createValidate<dlp_PayloadLogSetting>();
@@ -8787,12 +8787,12 @@ export const isdlp_DlpSettings = typia.createIs<dlp_DlpSettings>();
 export const assertdlp_DlpSettings = typia.createAssert<dlp_DlpSettings>();
 export const validatedlp_DlpSettings = typia.createValidate<dlp_DlpSettings>();
 
-export type dlp_PayloadLogSettingUpdate = Partial<{ masking_level: (dlp_PayloadLogMaskingLevel & unknown), public_key: (string | null) }>;
+export type dlp_PayloadLogSettingUpdate = Partial<{ masking_level: dlp_PayloadLogMaskingLevel, public_key: (string | null) }>;
 export const isdlp_PayloadLogSettingUpdate = typia.createIs<dlp_PayloadLogSettingUpdate>();
 export const assertdlp_PayloadLogSettingUpdate = typia.createAssert<dlp_PayloadLogSettingUpdate>();
 export const validatedlp_PayloadLogSettingUpdate = typia.createValidate<dlp_PayloadLogSettingUpdate>();
 
-export type dlp_DlpSettingsUpdate = Partial<{ ai_context_analysis: (boolean | null), ocr: (boolean | null), payload_logging: (dlp_PayloadLogSettingUpdate & unknown) }>;
+export type dlp_DlpSettingsUpdate = Partial<{ ai_context_analysis: (boolean | null), ocr: (boolean | null), payload_logging: dlp_PayloadLogSettingUpdate }>;
 export const isdlp_DlpSettingsUpdate = typia.createIs<dlp_DlpSettingsUpdate>();
 export const assertdlp_DlpSettingsUpdate = typia.createAssert<dlp_DlpSettingsUpdate>();
 export const validatedlp_DlpSettingsUpdate = typia.createValidate<dlp_DlpSettingsUpdate>();
@@ -8852,7 +8852,7 @@ export const isdlp_EntryUpdate = typia.createIs<dlp_EntryUpdate>();
 export const assertdlp_EntryUpdate = typia.createAssert<dlp_EntryUpdate>();
 export const validatedlp_EntryUpdate = typia.createValidate<dlp_EntryUpdate>();
 
-export type dlp_EntryWithUploadStatus = (dlp_Entry & Partial<{ upload_status: (dlp_DatasetUploadStatus & unknown) }>);
+export type dlp_EntryWithUploadStatus = (dlp_Entry & Partial<{ upload_status: dlp_DatasetUploadStatus }>);
 export const isdlp_EntryWithUploadStatus = typia.createIs<dlp_EntryWithUploadStatus>();
 export const assertdlp_EntryWithUploadStatus = typia.createAssert<dlp_EntryWithUploadStatus>();
 export const validatedlp_EntryWithUploadStatus = typia.createValidate<dlp_EntryWithUploadStatus>();
@@ -8952,7 +8952,7 @@ export const isdlp_NewSensitivityGroup = typia.createIs<dlp_NewSensitivityGroup>
 export const assertdlp_NewSensitivityGroup = typia.createAssert<dlp_NewSensitivityGroup>();
 export const validatedlp_NewSensitivityGroup = typia.createValidate<dlp_NewSensitivityGroup>();
 
-export type dlp_PayloadLogSettingUpdateLegacy = Partial<{ masking_level: (dlp_PayloadLogMaskingLevel), public_key: (string | null) }>;
+export type dlp_PayloadLogSettingUpdateLegacy = Partial<{ masking_level: dlp_PayloadLogMaskingLevel, public_key: (string | null) }>;
 export const isdlp_PayloadLogSettingUpdateLegacy = typia.createIs<dlp_PayloadLogSettingUpdateLegacy>();
 export const assertdlp_PayloadLogSettingUpdateLegacy = typia.createAssert<dlp_PayloadLogSettingUpdateLegacy>();
 export const validatedlp_PayloadLogSettingUpdateLegacy = typia.createValidate<dlp_PayloadLogSettingUpdateLegacy>();
@@ -8962,7 +8962,7 @@ export const isdlp_PredefinedEntryUpdate = typia.createIs<dlp_PredefinedEntryUpd
 export const assertdlp_PredefinedEntryUpdate = typia.createAssert<dlp_PredefinedEntryUpdate>();
 export const validatedlp_PredefinedEntryUpdate = typia.createValidate<dlp_PredefinedEntryUpdate>();
 
-export type dlp_PredefinedProfile = { ai_context_enabled?: boolean, allowed_match_count: number, confidence_threshold?: (dlp_Confidence & unknown), context_awareness?: dlp_ContextAwareness, entries: Array<dlp_Entry>, id: string, name: string, ocr_enabled?: boolean, open_access?: boolean };
+export type dlp_PredefinedProfile = { ai_context_enabled?: boolean, allowed_match_count: number, confidence_threshold?: dlp_Confidence, context_awareness?: dlp_ContextAwareness, entries: Array<dlp_Entry>, id: string, name: string, ocr_enabled?: boolean, open_access?: boolean };
 export const isdlp_PredefinedProfile = typia.createIs<dlp_PredefinedProfile>();
 export const assertdlp_PredefinedProfile = typia.createAssert<dlp_PredefinedProfile>();
 export const validatedlp_PredefinedProfile = typia.createValidate<dlp_PredefinedProfile>();
@@ -9002,7 +9002,7 @@ export const isdlp_RiskEvent = typia.createIs<dlp_RiskEvent>();
 export const assertdlp_RiskEvent = typia.createAssert<dlp_RiskEvent>();
 export const validatedlp_RiskEvent = typia.createValidate<dlp_RiskEvent>();
 
-export type dlp_RiskEvents = { email: string, events: Array<dlp_RiskEvent>, last_reset_time?: (string | null), name: string, risk_level?: (dlp_RiskLevel) };
+export type dlp_RiskEvents = { email: string, events: Array<dlp_RiskEvent>, last_reset_time?: (string | null), name: string, risk_level?: dlp_RiskLevel };
 export const isdlp_RiskEvents = typia.createIs<dlp_RiskEvents>();
 export const assertdlp_RiskEvents = typia.createAssert<dlp_RiskEvents>();
 export const validatedlp_RiskEvents = typia.createValidate<dlp_RiskEvents>();
@@ -9127,7 +9127,7 @@ export const isdlp_api_response_collection = typia.createIs<dlp_api_response_col
 export const assertdlp_api_response_collection = typia.createAssert<dlp_api_response_collection>();
 export const validatedlp_api_response_collection = typia.createValidate<dlp_api_response_collection>();
 
-export type dlp_api_response_common_failure = { errors: (dlp_messages & unknown), messages: (dlp_messages), result: (Record<string, unknown> | null), success: false };
+export type dlp_api_response_common_failure = { errors: dlp_messages, messages: dlp_messages, result: (Record<string, unknown> | null), success: false };
 export const isdlp_api_response_common_failure = typia.createIs<dlp_api_response_common_failure>();
 export const assertdlp_api_response_common_failure = typia.createAssert<dlp_api_response_common_failure>();
 export const validatedlp_api_response_common_failure = typia.createValidate<dlp_api_response_common_failure>();
@@ -9212,7 +9212,7 @@ export const isdls_api_response_collection = typia.createIs<dls_api_response_col
 export const assertdls_api_response_collection = typia.createAssert<dls_api_response_collection>();
 export const validatedls_api_response_collection = typia.createValidate<dls_api_response_collection>();
 
-export type dls_api_response_common_failure = { errors: (dls_messages & unknown), messages: (dls_messages), result: (Record<string, unknown> | null), success: false };
+export type dls_api_response_common_failure = { errors: dls_messages, messages: dls_messages, result: (Record<string, unknown> | null), success: false };
 export const isdls_api_response_common_failure = typia.createIs<dls_api_response_common_failure>();
 export const assertdls_api_response_common_failure = typia.createAssert<dls_api_response_common_failure>();
 export const validatedls_api_response_common_failure = typia.createValidate<dls_api_response_common_failure>();
@@ -9252,7 +9252,7 @@ export const isdls_routing = typia.createIs<dls_routing>();
 export const assertdls_routing = typia.createAssert<dls_routing>();
 export const validatedls_routing = typia.createValidate<dls_routing>();
 
-export type dls_regional_hostname_response = { created_on: (dls_timestamp & unknown & unknown), hostname: dls_hostname_schemas, region_key: dls_region_key, routing: dls_routing };
+export type dls_regional_hostname_response = { created_on: dls_timestamp, hostname: dls_hostname_schemas, region_key: dls_region_key, routing: dls_routing };
 export const isdls_regional_hostname_response = typia.createIs<dls_regional_hostname_response>();
 export const assertdls_regional_hostname_response = typia.createAssert<dls_regional_hostname_response>();
 export const validatedls_regional_hostname_response = typia.createValidate<dls_regional_hostname_response>();
@@ -9267,7 +9267,7 @@ export const isdns_analytics_api_response_common = typia.createIs<dns_analytics_
 export const assertdns_analytics_api_response_common = typia.createAssert<dns_analytics_api_response_common>();
 export const validatedns_analytics_api_response_common = typia.createValidate<dns_analytics_api_response_common>();
 
-export type dns_analytics_api_response_common_failure = { errors: (dns_analytics_messages & unknown), messages: (dns_analytics_messages), result: (Record<string, unknown> | null), success: false };
+export type dns_analytics_api_response_common_failure = { errors: dns_analytics_messages, messages: dns_analytics_messages, result: (Record<string, unknown> | null), success: false };
 export const isdns_analytics_api_response_common_failure = typia.createIs<dns_analytics_api_response_common_failure>();
 export const assertdns_analytics_api_response_common_failure = typia.createAssert<dns_analytics_api_response_common_failure>();
 export const validatedns_analytics_api_response_common_failure = typia.createValidate<dns_analytics_api_response_common_failure>();
@@ -9407,7 +9407,7 @@ export const isdns_custom_nameservers_acns_response_single = typia.createIs<dns_
 export const assertdns_custom_nameservers_acns_response_single = typia.createAssert<dns_custom_nameservers_acns_response_single>();
 export const validatedns_custom_nameservers_acns_response_single = typia.createValidate<dns_custom_nameservers_acns_response_single>();
 
-export type dns_custom_nameservers_api_response_common_failure = { errors: (dns_custom_nameservers_messages & unknown), messages: (dns_custom_nameservers_messages), result: (Record<string, unknown> | null), success: false };
+export type dns_custom_nameservers_api_response_common_failure = { errors: dns_custom_nameservers_messages, messages: dns_custom_nameservers_messages, result: (Record<string, unknown> | null), success: false };
 export const isdns_custom_nameservers_api_response_common_failure = typia.createIs<dns_custom_nameservers_api_response_common_failure>();
 export const assertdns_custom_nameservers_api_response_common_failure = typia.createAssert<dns_custom_nameservers_api_response_common_failure>();
 export const validatedns_custom_nameservers_api_response_common_failure = typia.createValidate<dns_custom_nameservers_api_response_common_failure>();
@@ -9467,7 +9467,7 @@ export const isdns_firewall_api_response_collection = typia.createIs<dns_firewal
 export const assertdns_firewall_api_response_collection = typia.createAssert<dns_firewall_api_response_collection>();
 export const validatedns_firewall_api_response_collection = typia.createValidate<dns_firewall_api_response_collection>();
 
-export type dns_firewall_api_response_common_failure = { errors: (dns_firewall_messages & unknown), messages: (dns_firewall_messages), result: (Record<string, unknown> | null), success: false };
+export type dns_firewall_api_response_common_failure = { errors: dns_firewall_messages, messages: dns_firewall_messages, result: (Record<string, unknown> | null), success: false };
 export const isdns_firewall_api_response_common_failure = typia.createIs<dns_firewall_api_response_common_failure>();
 export const assertdns_firewall_api_response_common_failure = typia.createAssert<dns_firewall_api_response_common_failure>();
 export const validatedns_firewall_api_response_common_failure = typia.createValidate<dns_firewall_api_response_common_failure>();
@@ -9757,7 +9757,7 @@ export const isdns_records_api_response_collection = typia.createIs<dns_records_
 export const assertdns_records_api_response_collection = typia.createAssert<dns_records_api_response_collection>();
 export const validatedns_records_api_response_collection = typia.createValidate<dns_records_api_response_collection>();
 
-export type dns_records_api_response_common_failure = { errors: (dns_records_messages & unknown), messages: (dns_records_messages), result: (Record<string, unknown> | null), success: false };
+export type dns_records_api_response_common_failure = { errors: dns_records_messages, messages: dns_records_messages, result: (Record<string, unknown> | null), success: false };
 export const isdns_records_api_response_common_failure = typia.createIs<dns_records_api_response_common_failure>();
 export const assertdns_records_api_response_common_failure = typia.createAssert<dns_records_api_response_common_failure>();
 export const validatedns_records_api_response_common_failure = typia.createValidate<dns_records_api_response_common_failure>();
@@ -10032,7 +10032,7 @@ export const isdns_settings_api_response_collection = typia.createIs<dns_setting
 export const assertdns_settings_api_response_collection = typia.createAssert<dns_settings_api_response_collection>();
 export const validatedns_settings_api_response_collection = typia.createValidate<dns_settings_api_response_collection>();
 
-export type dns_settings_api_response_common_failure = { errors: (dns_settings_messages & unknown), messages: (dns_settings_messages), result: (Record<string, unknown> | null), success: false };
+export type dns_settings_api_response_common_failure = { errors: dns_settings_messages, messages: dns_settings_messages, result: (Record<string, unknown> | null), success: false };
 export const isdns_settings_api_response_common_failure = typia.createIs<dns_settings_api_response_common_failure>();
 export const assertdns_settings_api_response_common_failure = typia.createAssert<dns_settings_api_response_common_failure>();
 export const validatedns_settings_api_response_common_failure = typia.createValidate<dns_settings_api_response_common_failure>();
@@ -10157,7 +10157,7 @@ export const isdnssec_api_response_common = typia.createIs<dnssec_api_response_c
 export const assertdnssec_api_response_common = typia.createAssert<dnssec_api_response_common>();
 export const validatednssec_api_response_common = typia.createValidate<dnssec_api_response_common>();
 
-export type dnssec_api_response_common_failure = { errors: (dnssec_messages & unknown), messages: (dnssec_messages), result: (Record<string, unknown> | null), success: false };
+export type dnssec_api_response_common_failure = { errors: dnssec_messages, messages: dnssec_messages, result: (Record<string, unknown> | null), success: false };
 export const isdnssec_api_response_common_failure = typia.createIs<dnssec_api_response_common_failure>();
 export const assertdnssec_api_response_common_failure = typia.createAssert<dnssec_api_response_common_failure>();
 export const validatednssec_api_response_common_failure = typia.createValidate<dnssec_api_response_common_failure>();
@@ -10402,7 +10402,7 @@ export const isdos_api_response_collection = typia.createIs<dos_api_response_col
 export const assertdos_api_response_collection = typia.createAssert<dos_api_response_collection>();
 export const validatedos_api_response_collection = typia.createValidate<dos_api_response_collection>();
 
-export type dos_api_response_common_failure = { errors: (dos_messages & unknown), messages: (dos_messages), result: (Record<string, unknown> | null), success: false };
+export type dos_api_response_common_failure = { errors: dos_messages, messages: dos_messages, result: (Record<string, unknown> | null), success: false };
 export const isdos_api_response_common_failure = typia.createIs<dos_api_response_common_failure>();
 export const assertdos_api_response_common_failure = typia.createAssert<dos_api_response_common_failure>();
 export const validatedos_api_response_common_failure = typia.createValidate<dos_api_response_common_failure>();
@@ -10557,7 +10557,7 @@ export const isemail_auth_SpfTree = typia.createIs<email_auth_SpfTree>();
 export const assertemail_auth_SpfTree = typia.createAssert<email_auth_SpfTree>();
 export const validateemail_auth_SpfTree = typia.createValidate<email_auth_SpfTree>();
 
-export interface email_auth_SpfComponent { lookup_count: number, nested?: (email_auth_SpfTree), result: email_auth_SpfResult, type: ("ALL" | "A" | "MX" | "IP4" | "IP6" | "EXISTS" | "INCLUDE" | "PTR" | "REDIRECT"), value: string }
+export interface email_auth_SpfComponent { lookup_count: number, nested?: email_auth_SpfTree, result: email_auth_SpfResult, type: ("ALL" | "A" | "MX" | "IP4" | "IP6" | "EXISTS" | "INCLUDE" | "PTR" | "REDIRECT"), value: string }
 export const isemail_auth_SpfComponent = typia.createIs<email_auth_SpfComponent>();
 export const assertemail_auth_SpfComponent = typia.createAssert<email_auth_SpfComponent>();
 export const validateemail_auth_SpfComponent = typia.createValidate<email_auth_SpfComponent>();
@@ -10572,7 +10572,7 @@ export const isemail_auth_api_response_common = typia.createIs<email_auth_api_re
 export const assertemail_auth_api_response_common = typia.createAssert<email_auth_api_response_common>();
 export const validateemail_auth_api_response_common = typia.createValidate<email_auth_api_response_common>();
 
-export type email_auth_api_response_common_failure = { errors: (email_auth_messages & unknown), messages: (email_auth_messages), result: (Record<string, unknown> | null), success: false };
+export type email_auth_api_response_common_failure = { errors: email_auth_messages, messages: email_auth_messages, result: (Record<string, unknown> | null), success: false };
 export const isemail_auth_api_response_common_failure = typia.createIs<email_auth_api_response_common_failure>();
 export const assertemail_auth_api_response_common_failure = typia.createAssert<email_auth_api_response_common_failure>();
 export const validateemail_auth_api_response_common_failure = typia.createValidate<email_auth_api_response_common_failure>();
@@ -10617,7 +10617,7 @@ export const isemail_security_PatternType = typia.createIs<email_security_Patter
 export const assertemail_security_PatternType = typia.createAssert<email_security_PatternType>();
 export const validateemail_security_PatternType = typia.createValidate<email_security_PatternType>();
 
-export type email_security_AllowPolicy = { comments?: (string | null), created_at: (email_security_timestamp & unknown), id: (email_security_AllowPolicyId & unknown), is_acceptable_sender?: boolean, is_exempt_recipient?: boolean, is_recipient?: boolean, is_regex?: boolean, is_sender?: boolean, is_spoof?: boolean, is_trusted_sender?: boolean, last_modified: (email_security_timestamp & unknown), modified_at?: (email_security_timestamp & unknown), pattern?: string, pattern_type?: email_security_PatternType, verify_sender?: boolean };
+export type email_security_AllowPolicy = { comments?: (string | null), created_at: email_security_timestamp, id: email_security_AllowPolicyId, is_acceptable_sender?: boolean, is_exempt_recipient?: boolean, is_recipient?: boolean, is_regex?: boolean, is_sender?: boolean, is_spoof?: boolean, is_trusted_sender?: boolean, last_modified: email_security_timestamp, modified_at?: email_security_timestamp, pattern?: string, pattern_type?: email_security_PatternType, verify_sender?: boolean };
 export const isemail_security_AllowPolicy = typia.createIs<email_security_AllowPolicy>();
 export const assertemail_security_AllowPolicy = typia.createAssert<email_security_AllowPolicy>();
 export const validateemail_security_AllowPolicy = typia.createValidate<email_security_AllowPolicy>();
@@ -10642,7 +10642,7 @@ export const isemail_security_BlockedSenderId = typia.createIs<email_security_Bl
 export const assertemail_security_BlockedSenderId = typia.createAssert<email_security_BlockedSenderId>();
 export const validateemail_security_BlockedSenderId = typia.createValidate<email_security_BlockedSenderId>();
 
-export type email_security_BlockedSender = Partial<{ comments: (string | null), created_at: (email_security_timestamp & unknown), id: (email_security_BlockedSenderId & unknown), is_regex: boolean, last_modified: (email_security_timestamp & unknown), modified_at: (email_security_timestamp & unknown), pattern: string, pattern_type: email_security_PatternType }>;
+export type email_security_BlockedSender = Partial<{ comments: (string | null), created_at: email_security_timestamp, id: email_security_BlockedSenderId, is_regex: boolean, last_modified: email_security_timestamp, modified_at: email_security_timestamp, pattern: string, pattern_type: email_security_PatternType }>;
 export const isemail_security_BlockedSender = typia.createIs<email_security_BlockedSender>();
 export const assertemail_security_BlockedSender = typia.createAssert<email_security_BlockedSender>();
 export const validateemail_security_BlockedSender = typia.createValidate<email_security_BlockedSender>();
@@ -10692,12 +10692,12 @@ export const isemail_security_BulkJobDetail = typia.createIs<email_security_Bulk
 export const assertemail_security_BulkJobDetail = typia.createAssert<email_security_BulkJobDetail>();
 export const validateemail_security_BulkJobDetail = typia.createValidate<email_security_BulkJobDetail>();
 
-export type email_security_CreateAllowPolicy = (email_security_AllowPolicy & unknown);
+export type email_security_CreateAllowPolicy = email_security_AllowPolicy;
 export const isemail_security_CreateAllowPolicy = typia.createIs<email_security_CreateAllowPolicy>();
 export const assertemail_security_CreateAllowPolicy = typia.createAssert<email_security_CreateAllowPolicy>();
 export const validateemail_security_CreateAllowPolicy = typia.createValidate<email_security_CreateAllowPolicy>();
 
-export type email_security_CreateBlockedSender = (email_security_BlockedSender & unknown);
+export type email_security_CreateBlockedSender = email_security_BlockedSender;
 export const isemail_security_CreateBlockedSender = typia.createIs<email_security_CreateBlockedSender>();
 export const assertemail_security_CreateBlockedSender = typia.createAssert<email_security_CreateBlockedSender>();
 export const validateemail_security_CreateBlockedSender = typia.createValidate<email_security_CreateBlockedSender>();
@@ -10732,12 +10732,12 @@ export const isemail_security_Provenance = typia.createIs<email_security_Provena
 export const assertemail_security_Provenance = typia.createAssert<email_security_Provenance>();
 export const validateemail_security_Provenance = typia.createValidate<email_security_Provenance>();
 
-export type email_security_ImpersonationRegistry = Partial<{ comments: (string | null), created_at: (email_security_timestamp & unknown), directory_id: (number | null), directory_node_id: (number | null), email: string, external_directory_node_id: (string | null), id: (email_security_ImpersonationRegistryId & unknown), is_email_regex: boolean, last_modified: (email_security_timestamp & unknown), modified_at: (email_security_timestamp & unknown), name: string, provenance: email_security_Provenance }>;
+export type email_security_ImpersonationRegistry = Partial<{ comments: (string | null), created_at: email_security_timestamp, directory_id: (number | null), directory_node_id: (number | null), email: string, external_directory_node_id: (string | null), id: email_security_ImpersonationRegistryId, is_email_regex: boolean, last_modified: email_security_timestamp, modified_at: email_security_timestamp, name: string, provenance: email_security_Provenance }>;
 export const isemail_security_ImpersonationRegistry = typia.createIs<email_security_ImpersonationRegistry>();
 export const assertemail_security_ImpersonationRegistry = typia.createAssert<email_security_ImpersonationRegistry>();
 export const validateemail_security_ImpersonationRegistry = typia.createValidate<email_security_ImpersonationRegistry>();
 
-export type email_security_CreateImpersonationRegistry = (email_security_ImpersonationRegistry & unknown);
+export type email_security_CreateImpersonationRegistry = email_security_ImpersonationRegistry;
 export const isemail_security_CreateImpersonationRegistry = typia.createIs<email_security_CreateImpersonationRegistry>();
 export const assertemail_security_CreateImpersonationRegistry = typia.createAssert<email_security_CreateImpersonationRegistry>();
 export const validateemail_security_CreateImpersonationRegistry = typia.createValidate<email_security_CreateImpersonationRegistry>();
@@ -10747,12 +10747,12 @@ export const isemail_security_SendingDomainRestrictionId = typia.createIs<email_
 export const assertemail_security_SendingDomainRestrictionId = typia.createAssert<email_security_SendingDomainRestrictionId>();
 export const validateemail_security_SendingDomainRestrictionId = typia.createValidate<email_security_SendingDomainRestrictionId>();
 
-export type email_security_SendingDomainRestriction = Partial<{ comments: (string | null), created_at: (email_security_timestamp & unknown), domain: string, exclude: Array<string>, id: (email_security_SendingDomainRestrictionId & unknown), last_modified: (email_security_timestamp & unknown), modified_at: (email_security_timestamp & unknown) }>;
+export type email_security_SendingDomainRestriction = Partial<{ comments: (string | null), created_at: email_security_timestamp, domain: string, exclude: Array<string>, id: email_security_SendingDomainRestrictionId, last_modified: email_security_timestamp, modified_at: email_security_timestamp }>;
 export const isemail_security_SendingDomainRestriction = typia.createIs<email_security_SendingDomainRestriction>();
 export const assertemail_security_SendingDomainRestriction = typia.createAssert<email_security_SendingDomainRestriction>();
 export const validateemail_security_SendingDomainRestriction = typia.createValidate<email_security_SendingDomainRestriction>();
 
-export type email_security_CreateSendingDomainRestriction = (email_security_SendingDomainRestriction & unknown);
+export type email_security_CreateSendingDomainRestriction = email_security_SendingDomainRestriction;
 export const isemail_security_CreateSendingDomainRestriction = typia.createIs<email_security_CreateSendingDomainRestriction>();
 export const assertemail_security_CreateSendingDomainRestriction = typia.createAssert<email_security_CreateSendingDomainRestriction>();
 export const validateemail_security_CreateSendingDomainRestriction = typia.createValidate<email_security_CreateSendingDomainRestriction>();
@@ -10762,12 +10762,12 @@ export const isemail_security_TrustedDomainId = typia.createIs<email_security_Tr
 export const assertemail_security_TrustedDomainId = typia.createAssert<email_security_TrustedDomainId>();
 export const validateemail_security_TrustedDomainId = typia.createValidate<email_security_TrustedDomainId>();
 
-export type email_security_TrustedDomain = Partial<{ comments: (string | null), created_at: (email_security_timestamp & unknown), id: (email_security_TrustedDomainId & unknown), is_recent: boolean, is_regex: boolean, is_similarity: boolean, last_modified: (email_security_timestamp & unknown), modified_at: (email_security_timestamp & unknown), pattern: string }>;
+export type email_security_TrustedDomain = Partial<{ comments: (string | null), created_at: email_security_timestamp, id: email_security_TrustedDomainId, is_recent: boolean, is_regex: boolean, is_similarity: boolean, last_modified: email_security_timestamp, modified_at: email_security_timestamp, pattern: string }>;
 export const isemail_security_TrustedDomain = typia.createIs<email_security_TrustedDomain>();
 export const assertemail_security_TrustedDomain = typia.createAssert<email_security_TrustedDomain>();
 export const validateemail_security_TrustedDomain = typia.createValidate<email_security_TrustedDomain>();
 
-export type email_security_CreateTrustedDomain = (email_security_TrustedDomain & unknown);
+export type email_security_CreateTrustedDomain = email_security_TrustedDomain;
 export const isemail_security_CreateTrustedDomain = typia.createIs<email_security_CreateTrustedDomain>();
 export const assertemail_security_CreateTrustedDomain = typia.createAssert<email_security_CreateTrustedDomain>();
 export const validateemail_security_CreateTrustedDomain = typia.createValidate<email_security_CreateTrustedDomain>();
@@ -10857,7 +10857,7 @@ export const isemail_security_DomainStatus = typia.createIs<email_security_Domai
 export const assertemail_security_DomainStatus = typia.createAssert<email_security_DomainStatus>();
 export const validateemail_security_DomainStatus = typia.createValidate<email_security_DomainStatus>();
 
-export type email_security_Domain = Partial<{ allowed_delivery_modes: Array<email_security_DeliveryMode>, authorization: email_security_DomainAuthorization, created_at: (email_security_timestamp & unknown), dmarc_status: email_security_DmarcStatus, domain: string, drop_dispositions: Array<email_security_DispositionLabel>, emails_processed: email_security_EmailsProcessed, folder: email_security_ScannableFolder, id: email_security_DomainId, inbox_provider: (("Microsoft" | "Google" | null) | null), integration_id: (string | null), ip_restrictions: Array<string>, last_modified: (email_security_timestamp & unknown), lookback_hops: number, modified_at: (email_security_timestamp & unknown), o365_tenant_id: (string | null), regions: Array<email_security_Region>, require_tls_inbound: (boolean | null), require_tls_outbound: (boolean | null), spf_status: email_security_SpfStatus, status: email_security_DomainStatus, transport: string }>;
+export type email_security_Domain = Partial<{ allowed_delivery_modes: Array<email_security_DeliveryMode>, authorization: email_security_DomainAuthorization, created_at: email_security_timestamp, dmarc_status: email_security_DmarcStatus, domain: string, drop_dispositions: Array<email_security_DispositionLabel>, emails_processed: email_security_EmailsProcessed, folder: email_security_ScannableFolder, id: email_security_DomainId, inbox_provider: (("Microsoft" | "Google" | null) | null), integration_id: (string | null), ip_restrictions: Array<string>, last_modified: email_security_timestamp, lookback_hops: number, modified_at: email_security_timestamp, o365_tenant_id: (string | null), regions: Array<email_security_Region>, require_tls_inbound: (boolean | null), require_tls_outbound: (boolean | null), spf_status: email_security_SpfStatus, status: email_security_DomainStatus, transport: string }>;
 export const isemail_security_Domain = typia.createIs<email_security_Domain>();
 export const assertemail_security_Domain = typia.createAssert<email_security_Domain>();
 export const validateemail_security_Domain = typia.createValidate<email_security_Domain>();
@@ -10907,7 +10907,7 @@ export const isemail_security_Validation = typia.createIs<email_security_Validat
 export const assertemail_security_Validation = typia.createAssert<email_security_Validation>();
 export const validateemail_security_Validation = typia.createValidate<email_security_Validation>();
 
-export type email_security_MessageDetails = { action_log: Array<email_security_ActionLogEntry>, alert_id?: (string | null), client_recipients: Array<string>, delivery_mode?: email_security_MessageDeliveryMode, delivery_status?: (Array<email_security_MessageDeliveryStatus> | null), detection_reasons: Array<string>, edf_hash?: (string | null), envelope_from?: (string | null), envelope_to?: (Array<string> | null), final_disposition?: email_security_DispositionLabel, findings?: (Array<Partial<{ attachment: (string | null), detail: (string | null), detection: email_security_DispositionLabel, field: (string | null), name: (string | null), portion: (string | null), reason: (string | null), score: (number | null), value: (string | null) }>> | null), from?: (string | null), from_name?: (string | null), htmltext_structure_hash?: (string | null), id: (email_security_InvestigateId & unknown), is_phish_submission: boolean, is_quarantined: boolean, message_id?: (string | null), post_delivery_operations?: (Array<("PREVIEW" | "QUARANTINE_RELEASE" | "SUBMISSION" | "MOVE")> | null), postfix_id: email_security_PostfixId, postfix_id_outbound?: (string | null), properties: Partial<{ allowlisted_pattern: (string | null), allowlisted_pattern_type: (("quarantine_release" | "acceptable_sender" | "allowed_sender" | "allowed_recipient" | "domain_similarity" | "domain_recency" | "managed_acceptable_sender" | "outbound_ndr") | null), blocklisted_message: (boolean | null), blocklisted_pattern: (string | null), whitelisted_pattern_type: (("quarantine_release" | "acceptable_sender" | "allowed_sender" | "allowed_recipient" | "domain_similarity" | "domain_recency" | "managed_acceptable_sender" | "outbound_ndr") | null) }>, replyto?: (string | null), scanned_at?: (string | null), sent_at?: (string | null), sent_date?: (string | null), smtp_helo_server_ip?: (string | null), smtp_previous_hop_ip?: (string | null), subject?: (string | null), threat_categories?: (Array<string> | null), to?: (Array<string> | null), to_name?: (Array<string> | null), ts: string, validation?: email_security_Validation, x_originating_ip?: (string | null) };
+export type email_security_MessageDetails = { action_log: Array<email_security_ActionLogEntry>, alert_id?: (string | null), client_recipients: Array<string>, delivery_mode?: email_security_MessageDeliveryMode, delivery_status?: (Array<email_security_MessageDeliveryStatus> | null), detection_reasons: Array<string>, edf_hash?: (string | null), envelope_from?: (string | null), envelope_to?: (Array<string> | null), final_disposition?: email_security_DispositionLabel, findings?: (Array<Partial<{ attachment: (string | null), detail: (string | null), detection: email_security_DispositionLabel, field: (string | null), name: (string | null), portion: (string | null), reason: (string | null), score: (number | null), value: (string | null) }>> | null), from?: (string | null), from_name?: (string | null), htmltext_structure_hash?: (string | null), id: email_security_InvestigateId, is_phish_submission: boolean, is_quarantined: boolean, message_id?: (string | null), post_delivery_operations?: (Array<("PREVIEW" | "QUARANTINE_RELEASE" | "SUBMISSION" | "MOVE")> | null), postfix_id: email_security_PostfixId, postfix_id_outbound?: (string | null), properties: Partial<{ allowlisted_pattern: (string | null), allowlisted_pattern_type: (("quarantine_release" | "acceptable_sender" | "allowed_sender" | "allowed_recipient" | "domain_similarity" | "domain_recency" | "managed_acceptable_sender" | "outbound_ndr") | null), blocklisted_message: (boolean | null), blocklisted_pattern: (string | null), whitelisted_pattern_type: (("quarantine_release" | "acceptable_sender" | "allowed_sender" | "allowed_recipient" | "domain_similarity" | "domain_recency" | "managed_acceptable_sender" | "outbound_ndr") | null) }>, replyto?: (string | null), scanned_at?: (string | null), sent_at?: (string | null), sent_date?: (string | null), smtp_helo_server_ip?: (string | null), smtp_previous_hop_ip?: (string | null), subject?: (string | null), threat_categories?: (Array<string> | null), to?: (Array<string> | null), to_name?: (Array<string> | null), ts: string, validation?: email_security_Validation, x_originating_ip?: (string | null) };
 export const isemail_security_MessageDetails = typia.createIs<email_security_MessageDetails>();
 export const assertemail_security_MessageDetails = typia.createAssert<email_security_MessageDetails>();
 export const validateemail_security_MessageDetails = typia.createValidate<email_security_MessageDetails>();
@@ -10977,7 +10977,7 @@ export const isemail_security_ReclassifyRequest = typia.createIs<email_security_
 export const assertemail_security_ReclassifyRequest = typia.createAssert<email_security_ReclassifyRequest>();
 export const validateemail_security_ReclassifyRequest = typia.createValidate<email_security_ReclassifyRequest>();
 
-export type email_security_ReleaseResponse = { delivered?: (Array<string> | null), failed?: (Array<string> | null), id: (email_security_InvestigateId & unknown), postfix_id?: (email_security_PostfixId & unknown), undelivered?: (Array<string> | null) };
+export type email_security_ReleaseResponse = { delivered?: (Array<string> | null), failed?: (Array<string> | null), id: email_security_InvestigateId, postfix_id?: email_security_PostfixId, undelivered?: (Array<string> | null) };
 export const isemail_security_ReleaseResponse = typia.createIs<email_security_ReleaseResponse>();
 export const assertemail_security_ReleaseResponse = typia.createAssert<email_security_ReleaseResponse>();
 export const validateemail_security_ReleaseResponse = typia.createValidate<email_security_ReleaseResponse>();
@@ -11002,12 +11002,12 @@ export const isemail_security_TrustedDomainList = typia.createIs<email_security_
 export const assertemail_security_TrustedDomainList = typia.createAssert<email_security_TrustedDomainList>();
 export const validateemail_security_TrustedDomainList = typia.createValidate<email_security_TrustedDomainList>();
 
-export type email_security_UpdateAllowPolicy = (email_security_AllowPolicy & unknown);
+export type email_security_UpdateAllowPolicy = email_security_AllowPolicy;
 export const isemail_security_UpdateAllowPolicy = typia.createIs<email_security_UpdateAllowPolicy>();
 export const assertemail_security_UpdateAllowPolicy = typia.createAssert<email_security_UpdateAllowPolicy>();
 export const validateemail_security_UpdateAllowPolicy = typia.createValidate<email_security_UpdateAllowPolicy>();
 
-export type email_security_UpdateBlockedSender = (email_security_BlockedSender & unknown);
+export type email_security_UpdateBlockedSender = email_security_BlockedSender;
 export const isemail_security_UpdateBlockedSender = typia.createIs<email_security_UpdateBlockedSender>();
 export const assertemail_security_UpdateBlockedSender = typia.createAssert<email_security_UpdateBlockedSender>();
 export const validateemail_security_UpdateBlockedSender = typia.createValidate<email_security_UpdateBlockedSender>();
@@ -11017,17 +11017,17 @@ export const isemail_security_UpdateDomain = typia.createIs<email_security_Updat
 export const assertemail_security_UpdateDomain = typia.createAssert<email_security_UpdateDomain>();
 export const validateemail_security_UpdateDomain = typia.createValidate<email_security_UpdateDomain>();
 
-export type email_security_UpdateImpersonationRegistry = (email_security_ImpersonationRegistry & unknown);
+export type email_security_UpdateImpersonationRegistry = email_security_ImpersonationRegistry;
 export const isemail_security_UpdateImpersonationRegistry = typia.createIs<email_security_UpdateImpersonationRegistry>();
 export const assertemail_security_UpdateImpersonationRegistry = typia.createAssert<email_security_UpdateImpersonationRegistry>();
 export const validateemail_security_UpdateImpersonationRegistry = typia.createValidate<email_security_UpdateImpersonationRegistry>();
 
-export type email_security_UpdateSendingDomainRestriction = (email_security_SendingDomainRestriction & unknown);
+export type email_security_UpdateSendingDomainRestriction = email_security_SendingDomainRestriction;
 export const isemail_security_UpdateSendingDomainRestriction = typia.createIs<email_security_UpdateSendingDomainRestriction>();
 export const assertemail_security_UpdateSendingDomainRestriction = typia.createAssert<email_security_UpdateSendingDomainRestriction>();
 export const validateemail_security_UpdateSendingDomainRestriction = typia.createValidate<email_security_UpdateSendingDomainRestriction>();
 
-export type email_security_UpdateTrustedDomain = (email_security_TrustedDomain & unknown);
+export type email_security_UpdateTrustedDomain = email_security_TrustedDomain;
 export const isemail_security_UpdateTrustedDomain = typia.createIs<email_security_UpdateTrustedDomain>();
 export const assertemail_security_UpdateTrustedDomain = typia.createAssert<email_security_UpdateTrustedDomain>();
 export const validateemail_security_UpdateTrustedDomain = typia.createValidate<email_security_UpdateTrustedDomain>();
@@ -11037,7 +11037,7 @@ export const isemail_security_UpdateUrlIgnorePattern = typia.createIs<email_secu
 export const assertemail_security_UpdateUrlIgnorePattern = typia.createAssert<email_security_UpdateUrlIgnorePattern>();
 export const validateemail_security_UpdateUrlIgnorePattern = typia.createValidate<email_security_UpdateUrlIgnorePattern>();
 
-export type email_security_UrlIgnorePattern = { comments?: (string | null), created_at: string, id: (email_security_UrlIgnorePatternId & unknown), last_modified?: string, modified_at?: string, pattern: string };
+export type email_security_UrlIgnorePattern = { comments?: (string | null), created_at: string, id: email_security_UrlIgnorePatternId, last_modified?: string, modified_at?: string, pattern: string };
 export const isemail_security_UrlIgnorePattern = typia.createIs<email_security_UrlIgnorePattern>();
 export const assertemail_security_UrlIgnorePattern = typia.createAssert<email_security_UrlIgnorePattern>();
 export const validateemail_security_UrlIgnorePattern = typia.createValidate<email_security_UrlIgnorePattern>();
@@ -11057,7 +11057,7 @@ export const isemail_security_api_response_collection = typia.createIs<email_sec
 export const assertemail_security_api_response_collection = typia.createAssert<email_security_api_response_collection>();
 export const validateemail_security_api_response_collection = typia.createValidate<email_security_api_response_collection>();
 
-export type email_security_api_response_common_failure = { errors: (email_security_messages & unknown), messages: (email_security_messages), result: (Record<string, unknown> | null), success: false };
+export type email_security_api_response_common_failure = { errors: email_security_messages, messages: email_security_messages, result: (Record<string, unknown> | null), success: false };
 export const isemail_security_api_response_common_failure = typia.createIs<email_security_api_response_common_failure>();
 export const assertemail_security_api_response_common_failure = typia.createAssert<email_security_api_response_common_failure>();
 export const validateemail_security_api_response_common_failure = typia.createValidate<email_security_api_response_common_failure>();
@@ -11102,7 +11102,7 @@ export const isemail_sending_NamedRecipientList = typia.createIs<email_sending_N
 export const assertemail_sending_NamedRecipientList = typia.createAssert<email_sending_NamedRecipientList>();
 export const validateemail_sending_NamedRecipientList = typia.createValidate<email_sending_NamedRecipientList>();
 
-export type email_sending_EmailBuilder = { attachments?: Array<(email_sending_EmailInlineAttachment | email_sending_EmailAttachment)>, bcc?: (email_sending_NamedRecipientList & unknown), cc?: (email_sending_NamedRecipientList & unknown), from: (email_sending_EmailAddressString | email_sending_EmailAddressObject), headers?: Record<string, string>, html?: string, reply_to?: (email_sending_EmailAddressString | email_sending_EmailAddressObject), subject: string, text?: string, to?: email_sending_NamedRecipientList };
+export type email_sending_EmailBuilder = { attachments?: Array<(email_sending_EmailInlineAttachment | email_sending_EmailAttachment)>, bcc?: email_sending_NamedRecipientList, cc?: email_sending_NamedRecipientList, from: (email_sending_EmailAddressString | email_sending_EmailAddressObject), headers?: Record<string, string>, html?: string, reply_to?: (email_sending_EmailAddressString | email_sending_EmailAddressObject), subject: string, text?: string, to?: email_sending_NamedRecipientList };
 export const isemail_sending_EmailBuilder = typia.createIs<email_sending_EmailBuilder>();
 export const assertemail_sending_EmailBuilder = typia.createAssert<email_sending_EmailBuilder>();
 export const validateemail_sending_EmailBuilder = typia.createValidate<email_sending_EmailBuilder>();
@@ -11482,7 +11482,7 @@ export const isemail_sending_subdomain_properties = typia.createIs<email_sending
 export const assertemail_sending_subdomain_properties = typia.createAssert<email_sending_subdomain_properties>();
 export const validateemail_sending_subdomain_properties = typia.createValidate<email_sending_subdomain_properties>();
 
-export type email_sending_subdomain = (email_sending_subdomain_properties);
+export type email_sending_subdomain = email_sending_subdomain_properties;
 export const isemail_sending_subdomain = typia.createIs<email_sending_subdomain>();
 export const assertemail_sending_subdomain = typia.createAssert<email_sending_subdomain>();
 export const validateemail_sending_subdomain = typia.createValidate<email_sending_subdomain>();
@@ -11632,7 +11632,7 @@ export const isfirewall_sensitivity = typia.createIs<firewall_sensitivity>();
 export const assertfirewall_sensitivity = typia.createAssert<firewall_sensitivity>();
 export const validatefirewall_sensitivity = typia.createValidate<firewall_sensitivity>();
 
-export type firewall_anomaly_package = (firewall_package_definition & Partial<{ action_mode: firewall_action_mode, description: firewall_anomaly_description, detection_mode: firewall_anomaly_detection_mode, name: firewall_anomaly_name, sensitivity: firewall_sensitivity }> & unknown);
+export type firewall_anomaly_package = (firewall_package_definition & Partial<{ action_mode: firewall_action_mode, description: firewall_anomaly_description, detection_mode: firewall_anomaly_detection_mode, name: firewall_anomaly_name, sensitivity: firewall_sensitivity }>);
 export const isfirewall_anomaly_package = typia.createIs<firewall_anomaly_package>();
 export const assertfirewall_anomaly_package = typia.createAssert<firewall_anomaly_package>();
 export const validatefirewall_anomaly_package = typia.createValidate<firewall_anomaly_package>();
@@ -11657,7 +11657,7 @@ export const isfirewall_api_response_collection = typia.createIs<firewall_api_re
 export const assertfirewall_api_response_collection = typia.createAssert<firewall_api_response_collection>();
 export const validatefirewall_api_response_collection = typia.createValidate<firewall_api_response_collection>();
 
-export type firewall_api_response_common_failure = { errors: (firewall_messages & unknown), messages: (firewall_messages), result: (Record<string, unknown> | null), success: false };
+export type firewall_api_response_common_failure = { errors: firewall_messages, messages: firewall_messages, result: (Record<string, unknown> | null), success: false };
 export const isfirewall_api_response_common_failure = typia.createIs<firewall_api_response_common_failure>();
 export const assertfirewall_api_response_common_failure = typia.createAssert<firewall_api_response_common_failure>();
 export const validatefirewall_api_response_common_failure = typia.createValidate<firewall_api_response_common_failure>();
@@ -11892,7 +11892,7 @@ export const isfirewall_filter_rule_response = typia.createIs<firewall_filter_ru
 export const assertfirewall_filter_rule_response = typia.createAssert<firewall_filter_rule_response>();
 export const validatefirewall_filter_rule_response = typia.createValidate<firewall_filter_rule_response>();
 
-export type firewall_filter_rule_update_request = (firewall_filter & Partial<{ id: (firewall_filters_components_schemas_id) }>);
+export type firewall_filter_rule_update_request = (firewall_filter & Partial<{ id: firewall_filters_components_schemas_id }>);
 export const isfirewall_filter_rule_update_request = typia.createIs<firewall_filter_rule_update_request>();
 export const assertfirewall_filter_rule_update_request = typia.createAssert<firewall_filter_rule_update_request>();
 export const validatefirewall_filter_rule_update_request = typia.createValidate<firewall_filter_rule_update_request>();
@@ -12067,7 +12067,7 @@ export const isfirewall_waf_action = typia.createIs<firewall_waf_action>();
 export const assertfirewall_waf_action = typia.createAssert<firewall_waf_action>();
 export const validatefirewall_waf_action = typia.createValidate<firewall_waf_action>();
 
-export type firewall_rules = Record<string, (firewall_waf_action)>;
+export type firewall_rules = Record<string, firewall_waf_action>;
 export const isfirewall_rules = typia.createIs<firewall_rules>();
 export const assertfirewall_rules = typia.createAssert<firewall_rules>();
 export const validatefirewall_rules = typia.createValidate<firewall_rules>();
@@ -12312,7 +12312,7 @@ export const isfraud_api_response_common = typia.createIs<fraud_api_response_com
 export const assertfraud_api_response_common = typia.createAssert<fraud_api_response_common>();
 export const validatefraud_api_response_common = typia.createValidate<fraud_api_response_common>();
 
-export type fraud_api_response_common_failure = { errors: (fraud_messages & unknown), messages: (fraud_messages), result: (Record<string, unknown> | null), success: false };
+export type fraud_api_response_common_failure = { errors: fraud_messages, messages: fraud_messages, result: (Record<string, unknown> | null), success: false };
 export const isfraud_api_response_common_failure = typia.createIs<fraud_api_response_common_failure>();
 export const assertfraud_api_response_common_failure = typia.createAssert<fraud_api_response_common_failure>();
 export const validatefraud_api_response_common_failure = typia.createValidate<fraud_api_response_common_failure>();
@@ -12327,7 +12327,7 @@ export const isfraud_auth_criteria = typia.createIs<fraud_auth_criteria>();
 export const assertfraud_auth_criteria = typia.createAssert<fraud_auth_criteria>();
 export const validatefraud_auth_criteria = typia.createValidate<fraud_auth_criteria>();
 
-export type fraud_authentication_settings = Partial<{ failure_criteria: (fraud_auth_criteria), success_criteria: (fraud_auth_criteria) }>;
+export type fraud_authentication_settings = Partial<{ failure_criteria: fraud_auth_criteria, success_criteria: fraud_auth_criteria }>;
 export const isfraud_authentication_settings = typia.createIs<fraud_authentication_settings>();
 export const assertfraud_authentication_settings = typia.createAssert<fraud_authentication_settings>();
 export const validatefraud_authentication_settings = typia.createValidate<fraud_authentication_settings>();
@@ -12367,7 +12367,7 @@ export const isgoogle_tag_gateway_api_response_common = typia.createIs<google_ta
 export const assertgoogle_tag_gateway_api_response_common = typia.createAssert<google_tag_gateway_api_response_common>();
 export const validategoogle_tag_gateway_api_response_common = typia.createValidate<google_tag_gateway_api_response_common>();
 
-export type google_tag_gateway_api_response_common_failure = { errors: (google_tag_gateway_messages & unknown), messages: (google_tag_gateway_messages), result: (Record<string, unknown> | null), success: false };
+export type google_tag_gateway_api_response_common_failure = { errors: google_tag_gateway_messages, messages: google_tag_gateway_messages, result: (Record<string, unknown> | null), success: false };
 export const isgoogle_tag_gateway_api_response_common_failure = typia.createIs<google_tag_gateway_api_response_common_failure>();
 export const assertgoogle_tag_gateway_api_response_common_failure = typia.createAssert<google_tag_gateway_api_response_common_failure>();
 export const validategoogle_tag_gateway_api_response_common_failure = typia.createValidate<google_tag_gateway_api_response_common_failure>();
@@ -12412,7 +12412,7 @@ export const ishealthchecks_api_response_collection = typia.createIs<healthcheck
 export const asserthealthchecks_api_response_collection = typia.createAssert<healthchecks_api_response_collection>();
 export const validatehealthchecks_api_response_collection = typia.createValidate<healthchecks_api_response_collection>();
 
-export type healthchecks_api_response_common_failure = { errors: (healthchecks_messages & unknown), messages: (healthchecks_messages), result: (Record<string, unknown> | null), success: false };
+export type healthchecks_api_response_common_failure = { errors: healthchecks_messages, messages: healthchecks_messages, result: (Record<string, unknown> | null), success: false };
 export const ishealthchecks_api_response_common_failure = typia.createIs<healthchecks_api_response_common_failure>();
 export const asserthealthchecks_api_response_common_failure = typia.createAssert<healthchecks_api_response_common_failure>();
 export const validatehealthchecks_api_response_common_failure = typia.createValidate<healthchecks_api_response_common_failure>();
@@ -12547,7 +12547,7 @@ export const ishyperdrive_api_response_collection = typia.createIs<hyperdrive_ap
 export const asserthyperdrive_api_response_collection = typia.createAssert<hyperdrive_api_response_collection>();
 export const validatehyperdrive_api_response_collection = typia.createValidate<hyperdrive_api_response_collection>();
 
-export type hyperdrive_api_response_common_failure = { errors: (hyperdrive_messages & unknown), messages: (hyperdrive_messages), result: (Record<string, unknown> | null), success: false };
+export type hyperdrive_api_response_common_failure = { errors: hyperdrive_messages, messages: hyperdrive_messages, result: (Record<string, unknown> | null), success: false };
 export const ishyperdrive_api_response_common_failure = typia.createIs<hyperdrive_api_response_common_failure>();
 export const asserthyperdrive_api_response_common_failure = typia.createAssert<hyperdrive_api_response_common_failure>();
 export const validatehyperdrive_api_response_common_failure = typia.createValidate<hyperdrive_api_response_common_failure>();
@@ -12667,7 +12667,7 @@ export const isiam_account = typia.createIs<iam_account>();
 export const assertiam_account = typia.createAssert<iam_account>();
 export const validateiam_account = typia.createValidate<iam_account>();
 
-export type iam_account_identifier = (iam_common_components_schemas_identifier);
+export type iam_account_identifier = iam_common_components_schemas_identifier;
 export const isiam_account_identifier = typia.createIs<iam_account_identifier>();
 export const assertiam_account_identifier = typia.createAssert<iam_account_identifier>();
 export const validateiam_account_identifier = typia.createValidate<iam_account_identifier>();
@@ -12692,7 +12692,7 @@ export const isiam_api_response_collection = typia.createIs<iam_api_response_col
 export const assertiam_api_response_collection = typia.createAssert<iam_api_response_collection>();
 export const validateiam_api_response_collection = typia.createValidate<iam_api_response_collection>();
 
-export type iam_api_response_common_failure = { errors: (iam_messages_2 & unknown), messages: (iam_messages_2), result: (Record<string, unknown> | null), success: false };
+export type iam_api_response_common_failure = { errors: iam_messages_2, messages: iam_messages_2, result: (Record<string, unknown> | null), success: false };
 export const isiam_api_response_common_failure = typia.createIs<iam_api_response_common_failure>();
 export const assertiam_api_response_common_failure = typia.createAssert<iam_api_response_common_failure>();
 export const validateiam_api_response_common_failure = typia.createValidate<iam_api_response_common_failure>();
@@ -12797,7 +12797,7 @@ export const isiam_permissions = typia.createIs<iam_permissions>();
 export const assertiam_permissions = typia.createAssert<iam_permissions>();
 export const validateiam_permissions = typia.createValidate<iam_permissions>();
 
-export type iam_role = { description: string, id: iam_role_components_schemas_identifier, name: string, permissions: (iam_permissions & unknown) };
+export type iam_role = { description: string, id: iam_role_components_schemas_identifier, name: string, permissions: iam_permissions };
 export const isiam_role = typia.createIs<iam_role>();
 export const assertiam_role = typia.createAssert<iam_role>();
 export const validateiam_role = typia.createValidate<iam_role>();
@@ -12827,7 +12827,7 @@ export const isiam_collection_member_response_with_policies = typia.createIs<iam
 export const assertiam_collection_member_response_with_policies = typia.createAssert<iam_collection_member_response_with_policies>();
 export const validateiam_collection_member_response_with_policies = typia.createValidate<iam_collection_member_response_with_policies>();
 
-export type iam_schemas_account = (iam_account & unknown);
+export type iam_schemas_account = iam_account;
 export const isiam_schemas_account = typia.createIs<iam_schemas_account>();
 export const assertiam_schemas_account = typia.createAssert<iam_schemas_account>();
 export const validateiam_schemas_account = typia.createValidate<iam_schemas_account>();
@@ -12842,7 +12842,7 @@ export const isiam_schemas_status = typia.createIs<iam_schemas_status>();
 export const assertiam_schemas_status = typia.createAssert<iam_schemas_status>();
 export const validateiam_schemas_status = typia.createValidate<iam_schemas_status>();
 
-export type iam_membership = Partial<{ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: (iam_permissions & unknown), roles: iam_role_names, status: iam_schemas_status }>;
+export type iam_membership = Partial<{ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: iam_permissions, roles: iam_role_names, status: iam_schemas_status }>;
 export const isiam_membership = typia.createIs<iam_membership>();
 export const assertiam_membership = typia.createAssert<iam_membership>();
 export const validateiam_membership = typia.createValidate<iam_membership>();
@@ -12852,7 +12852,7 @@ export const isiam_collection_membership_response = typia.createIs<iam_collectio
 export const assertiam_collection_membership_response = typia.createAssert<iam_collection_membership_response>();
 export const validateiam_collection_membership_response = typia.createValidate<iam_collection_membership_response>();
 
-export type iam_membership_with_policies = Partial<{ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: (iam_permissions & unknown), policies: Array<iam_list_member_policy>, roles: iam_role_names, status: iam_schemas_status }>;
+export type iam_membership_with_policies = Partial<{ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: iam_permissions, policies: Array<iam_list_member_policy>, roles: iam_role_names, status: iam_schemas_status }>;
 export const isiam_membership_with_policies = typia.createIs<iam_membership_with_policies>();
 export const assertiam_membership_with_policies = typia.createAssert<iam_membership_with_policies>();
 export const validateiam_membership_with_policies = typia.createValidate<iam_membership_with_policies>();
@@ -12892,7 +12892,7 @@ export const isiam_oauth_client_uri_verification = typia.createIs<iam_oauth_clie
 export const assertiam_oauth_client_uri_verification = typia.createAssert<iam_oauth_client_uri_verification>();
 export const validateiam_oauth_client_uri_verification = typia.createValidate<iam_oauth_client_uri_verification>();
 
-export type iam_oauth_client = (iam_oauth_client_common & { client_id: (iam_oauth_client_identifier & unknown), client_uri_verification?: iam_oauth_client_uri_verification, created_at?: string, has_rotated_secret?: boolean, promoted_at?: string, updated_at?: string, visibility: ("public" | "private") });
+export type iam_oauth_client = (iam_oauth_client_common & { client_id: iam_oauth_client_identifier, client_uri_verification?: iam_oauth_client_uri_verification, created_at?: string, has_rotated_secret?: boolean, promoted_at?: string, updated_at?: string, visibility: ("public" | "private") });
 export const isiam_oauth_client = typia.createIs<iam_oauth_client>();
 export const assertiam_oauth_client = typia.createAssert<iam_oauth_client>();
 export const validateiam_oauth_client = typia.createValidate<iam_oauth_client>();
@@ -13037,7 +13037,7 @@ export const isiam_collection_tokens_response = typia.createIs<iam_collection_to
 export const assertiam_collection_tokens_response = typia.createAssert<iam_collection_tokens_response>();
 export const validateiam_collection_tokens_response = typia.createValidate<iam_collection_tokens_response>();
 
-export type iam_components_schemas_account = (iam_account);
+export type iam_components_schemas_account = iam_account;
 export const isiam_components_schemas_account = typia.createIs<iam_components_schemas_account>();
 export const assertiam_components_schemas_account = typia.createAssert<iam_components_schemas_account>();
 export const validateiam_components_schemas_account = typia.createValidate<iam_components_schemas_account>();
@@ -13117,7 +13117,7 @@ export const isiam_create_payload = typia.createIs<iam_create_payload>();
 export const assertiam_create_payload = typia.createAssert<iam_create_payload>();
 export const validateiam_create_payload = typia.createValidate<iam_create_payload>();
 
-export type iam_permission_group_identifier = (iam_common_components_schemas_identifier);
+export type iam_permission_group_identifier = iam_common_components_schemas_identifier;
 export const isiam_permission_group_identifier = typia.createIs<iam_permission_group_identifier>();
 export const assertiam_permission_group_identifier = typia.createAssert<iam_permission_group_identifier>();
 export const validateiam_permission_group_identifier = typia.createValidate<iam_permission_group_identifier>();
@@ -13127,7 +13127,7 @@ export const isiam_permission_group_ids = typia.createIs<iam_permission_group_id
 export const assertiam_permission_group_ids = typia.createAssert<iam_permission_group_ids>();
 export const validateiam_permission_group_ids = typia.createValidate<iam_permission_group_ids>();
 
-export type iam_resource_group_identifier = (iam_common_components_schemas_identifier);
+export type iam_resource_group_identifier = iam_common_components_schemas_identifier;
 export const isiam_resource_group_identifier = typia.createIs<iam_resource_group_identifier>();
 export const assertiam_resource_group_identifier = typia.createAssert<iam_resource_group_identifier>();
 export const validateiam_resource_group_identifier = typia.createValidate<iam_resource_group_identifier>();
@@ -13507,7 +13507,7 @@ export const isiam_single_user_response = typia.createIs<iam_single_user_respons
 export const assertiam_single_user_response = typia.createAssert<iam_single_user_response>();
 export const validateiam_single_user_response = typia.createValidate<iam_single_user_response>();
 
-export type iam_sso_connector_identifier = (iam_common_components_schemas_identifier);
+export type iam_sso_connector_identifier = iam_common_components_schemas_identifier;
 export const isiam_sso_connector_identifier = typia.createIs<iam_sso_connector_identifier>();
 export const assertiam_sso_connector_identifier = typia.createAssert<iam_sso_connector_identifier>();
 export const validateiam_sso_connector_identifier = typia.createValidate<iam_sso_connector_identifier>();
@@ -13537,7 +13537,7 @@ export const isiam_sso_connector_response = typia.createIs<iam_sso_connector_res
 export const assertiam_sso_connector_response = typia.createAssert<iam_sso_connector_response>();
 export const validateiam_sso_connector_response = typia.createValidate<iam_sso_connector_response>();
 
-export type iam_token_body = (iam_token_base & Record<string, unknown> & unknown);
+export type iam_token_body = (iam_token_base & Record<string, unknown>);
 export const isiam_token_body = typia.createIs<iam_token_body>();
 export const assertiam_token_body = typia.createAssert<iam_token_body>();
 export const validateiam_token_body = typia.createValidate<iam_token_body>();
@@ -13567,7 +13567,7 @@ export const isiam_update_user_group_body = typia.createIs<iam_update_user_group
 export const assertiam_update_user_group_body = typia.createAssert<iam_update_user_group_body>();
 export const validateiam_update_user_group_body = typia.createValidate<iam_update_user_group_body>();
 
-export type iam_user_group_identifier = (iam_common_components_schemas_identifier);
+export type iam_user_group_identifier = iam_common_components_schemas_identifier;
 export const isiam_user_group_identifier = typia.createIs<iam_user_group_identifier>();
 export const assertiam_user_group_identifier = typia.createAssert<iam_user_group_identifier>();
 export const validateiam_user_group_identifier = typia.createValidate<iam_user_group_identifier>();
@@ -13587,7 +13587,7 @@ export const isiam_user_group_member_detailed = typia.createIs<iam_user_group_me
 export const assertiam_user_group_member_detailed = typia.createAssert<iam_user_group_member_detailed>();
 export const validateiam_user_group_member_detailed = typia.createValidate<iam_user_group_member_detailed>();
 
-export type iam_user_group_member_identifier = (iam_common_components_schemas_identifier);
+export type iam_user_group_member_identifier = iam_common_components_schemas_identifier;
 export const isiam_user_group_member_identifier = typia.createIs<iam_user_group_member_identifier>();
 export const assertiam_user_group_member_identifier = typia.createAssert<iam_user_group_member_identifier>();
 export const validateiam_user_group_member_identifier = typia.createValidate<iam_user_group_member_identifier>();
@@ -13622,7 +13622,7 @@ export const isimages_api_response_collection_v2 = typia.createIs<images_api_res
 export const assertimages_api_response_collection_v2 = typia.createAssert<images_api_response_collection_v2>();
 export const validateimages_api_response_collection_v2 = typia.createValidate<images_api_response_collection_v2>();
 
-export type images_api_response_common_failure = { errors: (images_messages & unknown), messages: (images_messages), result: (Record<string, unknown> | null), success: false };
+export type images_api_response_common_failure = { errors: images_messages, messages: images_messages, result: (Record<string, unknown> | null), success: false };
 export const isimages_api_response_common_failure = typia.createIs<images_api_response_common_failure>();
 export const assertimages_api_response_common_failure = typia.createAssert<images_api_response_common_failure>();
 export const validateimages_api_response_common_failure = typia.createValidate<images_api_response_common_failure>();
@@ -14102,7 +14102,7 @@ export const isinfra_api_response_collection = typia.createIs<infra_api_response
 export const assertinfra_api_response_collection = typia.createAssert<infra_api_response_collection>();
 export const validateinfra_api_response_collection = typia.createValidate<infra_api_response_collection>();
 
-export type infra_api_response_common_failure = { errors: (infra_messages & unknown), messages: (infra_messages), result: (Record<string, unknown> | null), success: false };
+export type infra_api_response_common_failure = { errors: infra_messages, messages: infra_messages, result: (Record<string, unknown> | null), success: false };
 export const isinfra_api_response_common_failure = typia.createIs<infra_api_response_common_failure>();
 export const assertinfra_api_response_common_failure = typia.createAssert<infra_api_response_common_failure>();
 export const validateinfra_api_response_common_failure = typia.createValidate<infra_api_response_common_failure>();
@@ -14122,12 +14122,12 @@ export const isintel_sinkholes_api_response_common = typia.createIs<intel_sinkho
 export const assertintel_sinkholes_api_response_common = typia.createAssert<intel_sinkholes_api_response_common>();
 export const validateintel_sinkholes_api_response_common = typia.createValidate<intel_sinkholes_api_response_common>();
 
-export type intel_sinkholes_api_response_common_failure = { errors: (intel_sinkholes_messages & unknown), messages: (intel_sinkholes_messages), result: (Record<string, unknown> | null), success: false };
+export type intel_sinkholes_api_response_common_failure = { errors: intel_sinkholes_messages, messages: intel_sinkholes_messages, result: (Record<string, unknown> | null), success: false };
 export const isintel_sinkholes_api_response_common_failure = typia.createIs<intel_sinkholes_api_response_common_failure>();
 export const assertintel_sinkholes_api_response_common_failure = typia.createAssert<intel_sinkholes_api_response_common_failure>();
 export const validateintel_sinkholes_api_response_common_failure = typia.createValidate<intel_sinkholes_api_response_common_failure>();
 
-export type intel_sinkholes_api_response_common_failure_schemas = (intel_sinkholes_api_response_common_failure);
+export type intel_sinkholes_api_response_common_failure_schemas = intel_sinkholes_api_response_common_failure;
 export const isintel_sinkholes_api_response_common_failure_schemas = typia.createIs<intel_sinkholes_api_response_common_failure_schemas>();
 export const assertintel_sinkholes_api_response_common_failure_schemas = typia.createAssert<intel_sinkholes_api_response_common_failure_schemas>();
 export const validateintel_sinkholes_api_response_common_failure_schemas = typia.createValidate<intel_sinkholes_api_response_common_failure_schemas>();
@@ -14207,7 +14207,7 @@ export const isintel_api_response_collection = typia.createIs<intel_api_response
 export const assertintel_api_response_collection = typia.createAssert<intel_api_response_collection>();
 export const validateintel_api_response_collection = typia.createValidate<intel_api_response_collection>();
 
-export type intel_api_response_common_failure = { errors: (intel_messages & unknown), messages: (intel_messages), result: (Record<string, unknown> | null), success: boolean };
+export type intel_api_response_common_failure = { errors: intel_messages, messages: intel_messages, result: (Record<string, unknown> | null), success: boolean };
 export const isintel_api_response_common_failure = typia.createIs<intel_api_response_common_failure>();
 export const assertintel_api_response_common_failure = typia.createAssert<intel_api_response_common_failure>();
 export const validateintel_api_response_common_failure = typia.createValidate<intel_api_response_common_failure>();
@@ -14622,7 +14622,7 @@ export const islists_api_response_collection = typia.createIs<lists_api_response
 export const assertlists_api_response_collection = typia.createAssert<lists_api_response_collection>();
 export const validatelists_api_response_collection = typia.createValidate<lists_api_response_collection>();
 
-export type lists_api_response_common_failure = { errors: (lists_messages & unknown), messages: (lists_messages), result: (Record<string, unknown> | null), success: false };
+export type lists_api_response_common_failure = { errors: lists_messages, messages: lists_messages, result: (Record<string, unknown> | null), success: false };
 export const islists_api_response_common_failure = typia.createIs<lists_api_response_common_failure>();
 export const assertlists_api_response_common_failure = typia.createAssert<lists_api_response_common_failure>();
 export const validatelists_api_response_common_failure = typia.createValidate<lists_api_response_common_failure>();
@@ -14932,7 +14932,7 @@ export const isload_balancing_api_paginated_response_collection = typia.createIs
 export const assertload_balancing_api_paginated_response_collection = typia.createAssert<load_balancing_api_paginated_response_collection>();
 export const validateload_balancing_api_paginated_response_collection = typia.createValidate<load_balancing_api_paginated_response_collection>();
 
-export type load_balancing_api_response_common_failure = { errors: (load_balancing_messages & unknown), messages: (load_balancing_messages), result: (Record<string, unknown> | null), success: false };
+export type load_balancing_api_response_common_failure = { errors: load_balancing_messages, messages: load_balancing_messages, result: (Record<string, unknown> | null), success: false };
 export const isload_balancing_api_response_common_failure = typia.createIs<load_balancing_api_response_common_failure>();
 export const assertload_balancing_api_response_common_failure = typia.createAssert<load_balancing_api_response_common_failure>();
 export const validateload_balancing_api_response_common_failure = typia.createValidate<load_balancing_api_response_common_failure>();
@@ -15302,7 +15302,7 @@ export const isload_balancing_monitor_group_member = typia.createIs<load_balanci
 export const assertload_balancing_monitor_group_member = typia.createAssert<load_balancing_monitor_group_member>();
 export const validateload_balancing_monitor_group_member = typia.createValidate<load_balancing_monitor_group_member>();
 
-export type load_balancing_monitor_group = { created_on?: string, description: string, id: (load_balancing_monitor_group_id & unknown), members: Array<load_balancing_monitor_group_member>, modified_on?: string };
+export type load_balancing_monitor_group = { created_on?: string, description: string, id: load_balancing_monitor_group_id, members: Array<load_balancing_monitor_group_member>, modified_on?: string };
 export const isload_balancing_monitor_group = typia.createIs<load_balancing_monitor_group>();
 export const assertload_balancing_monitor_group = typia.createAssert<load_balancing_monitor_group>();
 export const validateload_balancing_monitor_group = typia.createValidate<load_balancing_monitor_group>();
@@ -15537,7 +15537,7 @@ export const islogcontrol_api_response_common = typia.createIs<logcontrol_api_re
 export const assertlogcontrol_api_response_common = typia.createAssert<logcontrol_api_response_common>();
 export const validatelogcontrol_api_response_common = typia.createValidate<logcontrol_api_response_common>();
 
-export type logcontrol_api_response_common_failure = { errors: (logcontrol_messages & unknown), messages: (logcontrol_messages), result: (Record<string, unknown> | null), success: false };
+export type logcontrol_api_response_common_failure = { errors: logcontrol_messages, messages: logcontrol_messages, result: (Record<string, unknown> | null), success: false };
 export const islogcontrol_api_response_common_failure = typia.createIs<logcontrol_api_response_common_failure>();
 export const assertlogcontrol_api_response_common_failure = typia.createAssert<logcontrol_api_response_common_failure>();
 export const validatelogcontrol_api_response_common_failure = typia.createValidate<logcontrol_api_response_common_failure>();
@@ -15627,7 +15627,7 @@ export const islogpush_api_response_common = typia.createIs<logpush_api_response
 export const assertlogpush_api_response_common = typia.createAssert<logpush_api_response_common>();
 export const validatelogpush_api_response_common = typia.createValidate<logpush_api_response_common>();
 
-export type logpush_api_response_common_failure = { errors: (logpush_messages & unknown), messages: (logpush_messages), result: (Record<string, unknown> | null), success: false };
+export type logpush_api_response_common_failure = { errors: logpush_messages, messages: logpush_messages, result: (Record<string, unknown> | null), success: false };
 export const islogpush_api_response_common_failure = typia.createIs<logpush_api_response_common_failure>();
 export const assertlogpush_api_response_common_failure = typia.createAssert<logpush_api_response_common_failure>();
 export const validatelogpush_api_response_common_failure = typia.createValidate<logpush_api_response_common_failure>();
@@ -15812,7 +15812,7 @@ export const islogshare_messages = typia.createIs<logshare_messages>();
 export const assertlogshare_messages = typia.createAssert<logshare_messages>();
 export const validatelogshare_messages = typia.createValidate<logshare_messages>();
 
-export type logshare_api_response_common_failure = { errors: (logshare_messages & unknown), messages: (logshare_messages), result: (Record<string, unknown> | null), success: false };
+export type logshare_api_response_common_failure = { errors: logshare_messages, messages: logshare_messages, result: (Record<string, unknown> | null), success: false };
 export const islogshare_api_response_common_failure = typia.createIs<logshare_api_response_common_failure>();
 export const assertlogshare_api_response_common_failure = typia.createAssert<logshare_api_response_common_failure>();
 export const validatelogshare_api_response_common_failure = typia.createValidate<logshare_api_response_common_failure>();
@@ -15882,7 +15882,7 @@ export const ismagic_transit_api_response_common = typia.createIs<magic_transit_
 export const assertmagic_transit_api_response_common = typia.createAssert<magic_transit_api_response_common>();
 export const validatemagic_transit_api_response_common = typia.createValidate<magic_transit_api_response_common>();
 
-export type magic_transit_api_response_common_failure = { errors: (magic_transit_messages & unknown), messages: (magic_transit_messages), result: (Record<string, unknown> | null), success: false };
+export type magic_transit_api_response_common_failure = { errors: magic_transit_messages, messages: magic_transit_messages, result: (Record<string, unknown> | null), success: false };
 export const ismagic_transit_api_response_common_failure = typia.createIs<magic_transit_api_response_common_failure>();
 export const assertmagic_transit_api_response_common_failure = typia.createAssert<magic_transit_api_response_common_failure>();
 export const validatemagic_transit_api_response_common_failure = typia.createValidate<magic_transit_api_response_common_failure>();
@@ -16107,7 +16107,7 @@ export const ismagic_visibility_mnm_api_response_collection = typia.createIs<mag
 export const assertmagic_visibility_mnm_api_response_collection = typia.createAssert<magic_visibility_mnm_api_response_collection>();
 export const validatemagic_visibility_mnm_api_response_collection = typia.createValidate<magic_visibility_mnm_api_response_collection>();
 
-export type magic_visibility_mnm_api_response_common_failure = { errors: (magic_visibility_mnm_messages & unknown), messages: (magic_visibility_mnm_messages), result: (Record<string, unknown> | null), success: false };
+export type magic_visibility_mnm_api_response_common_failure = { errors: magic_visibility_mnm_messages, messages: magic_visibility_mnm_messages, result: (Record<string, unknown> | null), success: false };
 export const ismagic_visibility_mnm_api_response_common_failure = typia.createIs<magic_visibility_mnm_api_response_common_failure>();
 export const assertmagic_visibility_mnm_api_response_common_failure = typia.createAssert<magic_visibility_mnm_api_response_common_failure>();
 export const validatemagic_visibility_mnm_api_response_common_failure = typia.createValidate<magic_visibility_mnm_api_response_common_failure>();
@@ -16277,7 +16277,7 @@ export const ismagic_visibility_pcaps_api_response_collection = typia.createIs<m
 export const assertmagic_visibility_pcaps_api_response_collection = typia.createAssert<magic_visibility_pcaps_api_response_collection>();
 export const validatemagic_visibility_pcaps_api_response_collection = typia.createValidate<magic_visibility_pcaps_api_response_collection>();
 
-export type magic_visibility_pcaps_api_response_common_failure = { errors: (magic_visibility_pcaps_messages & unknown), messages: (magic_visibility_pcaps_messages), result: (Record<string, unknown> | null), success: false };
+export type magic_visibility_pcaps_api_response_common_failure = { errors: magic_visibility_pcaps_messages, messages: magic_visibility_pcaps_messages, result: (Record<string, unknown> | null), success: false };
 export const ismagic_visibility_pcaps_api_response_common_failure = typia.createIs<magic_visibility_pcaps_api_response_common_failure>();
 export const assertmagic_visibility_pcaps_api_response_common_failure = typia.createAssert<magic_visibility_pcaps_api_response_common_failure>();
 export const validatemagic_visibility_pcaps_api_response_common_failure = typia.createValidate<magic_visibility_pcaps_api_response_common_failure>();
@@ -16452,7 +16452,7 @@ export const ismagic_cidr = typia.createIs<magic_cidr>();
 export const assertmagic_cidr = typia.createAssert<magic_cidr>();
 export const validatemagic_cidr = typia.createValidate<magic_cidr>();
 
-export type magic_app_subnets = Array<(magic_cidr & unknown)>;
+export type magic_app_subnets = Array<magic_cidr>;
 export const ismagic_app_subnets = typia.createIs<magic_app_subnets>();
 export const assertmagic_app_subnets = typia.createAssert<magic_app_subnets>();
 export const validatemagic_app_subnets = typia.createValidate<magic_app_subnets>();
@@ -16462,7 +16462,7 @@ export const ismagic_app_name = typia.createIs<magic_app_name>();
 export const assertmagic_app_name = typia.createAssert<magic_app_name>();
 export const validatemagic_app_name = typia.createValidate<magic_app_name>();
 
-export type magic_app_source_subnets = Array<(magic_cidr & unknown)>;
+export type magic_app_source_subnets = Array<magic_cidr>;
 export const ismagic_app_source_subnets = typia.createIs<magic_app_source_subnets>();
 export const assertmagic_app_source_subnets = typia.createAssert<magic_app_source_subnets>();
 export const validatemagic_app_source_subnets = typia.createValidate<magic_app_source_subnets>();
@@ -16572,7 +16572,7 @@ export const ismagic_allow_null_cipher = typia.createIs<magic_allow_null_cipher>
 export const assertmagic_allow_null_cipher = typia.createAssert<magic_allow_null_cipher>();
 export const validatemagic_allow_null_cipher = typia.createValidate<magic_allow_null_cipher>();
 
-export type magic_api_response_common_failure = { errors: (magic_messages & unknown), messages: (magic_messages), result: (Record<string, unknown> | null), success: false };
+export type magic_api_response_common_failure = { errors: magic_messages, messages: magic_messages, result: (Record<string, unknown> | null), success: false };
 export const ismagic_api_response_common_failure = typia.createIs<magic_api_response_common_failure>();
 export const assertmagic_api_response_common_failure = typia.createAssert<magic_api_response_common_failure>();
 export const validatemagic_api_response_common_failure = typia.createValidate<magic_api_response_common_failure>();
@@ -16712,7 +16712,7 @@ export const ismagic_cf1_site_location = typia.createIs<magic_cf1_site_location>
 export const assertmagic_cf1_site_location = typia.createAssert<magic_cf1_site_location>();
 export const validatemagic_cf1_site_location = typia.createValidate<magic_cf1_site_location>();
 
-export type magic_cf1_site = { created_on?: string, description?: string, id?: (magic_identifier & unknown), location?: magic_cf1_site_location, modified_on?: string, name: string };
+export type magic_cf1_site = { created_on?: string, description?: string, id?: magic_identifier, location?: magic_cf1_site_location, modified_on?: string, name: string };
 export const ismagic_cf1_site = typia.createIs<magic_cf1_site>();
 export const assertmagic_cf1_site = typia.createAssert<magic_cf1_site>();
 export const validatemagic_cf1_site = typia.createValidate<magic_cf1_site>();
@@ -16732,7 +16732,7 @@ export const ismagic_cf1_site_ramp = typia.createIs<magic_cf1_site_ramp>();
 export const assertmagic_cf1_site_ramp = typia.createAssert<magic_cf1_site_ramp>();
 export const validatemagic_cf1_site_ramp = typia.createValidate<magic_cf1_site_ramp>();
 
-export type magic_cf1_site_ramp_body = { source_ramp_id: (magic_identifier), type: magic_cf1_site_ramp_type };
+export type magic_cf1_site_ramp_body = { source_ramp_id: magic_identifier, type: magic_cf1_site_ramp_type };
 export const ismagic_cf1_site_ramp_body = typia.createIs<magic_cf1_site_ramp_body>();
 export const assertmagic_cf1_site_ramp_body = typia.createAssert<magic_cf1_site_ramp_body>();
 export const validatemagic_cf1_site_ramp_body = typia.createValidate<magic_cf1_site_ramp_body>();
@@ -16847,7 +16847,7 @@ export const ismagic_schemas_mtu = typia.createIs<magic_schemas_mtu>();
 export const assertmagic_schemas_mtu = typia.createAssert<magic_schemas_mtu>();
 export const validatemagic_schemas_mtu = typia.createValidate<magic_schemas_mtu>();
 
-export type magic_interconnect = Partial<{ automatic_return_routing: magic_automatic_return_routing, colo_name: magic_components_schemas_name, created_on: magic_schemas_created_on, description: magic_interconnect_components_schemas_description, gre: magic_gre, health_check: magic_health_check_base, id: magic_schemas_identifier, interface_address: magic_interface_address, interface_address6: magic_interface_address6, modified_on: magic_schemas_modified_on, mtu: magic_schemas_mtu, name: magic_components_schemas_name, virtual_port_reservation_id: (magic_schemas_identifier & unknown) }>;
+export type magic_interconnect = Partial<{ automatic_return_routing: magic_automatic_return_routing, colo_name: magic_components_schemas_name, created_on: magic_schemas_created_on, description: magic_interconnect_components_schemas_description, gre: magic_gre, health_check: magic_health_check_base, id: magic_schemas_identifier, interface_address: magic_interface_address, interface_address6: magic_interface_address6, modified_on: magic_schemas_modified_on, mtu: magic_schemas_mtu, name: magic_components_schemas_name, virtual_port_reservation_id: magic_schemas_identifier }>;
 export const ismagic_interconnect = typia.createIs<magic_interconnect>();
 export const assertmagic_interconnect = typia.createAssert<magic_interconnect>();
 export const validatemagic_interconnect = typia.createValidate<magic_interconnect>();
@@ -17022,7 +17022,7 @@ export const ismagic_gre_tunnel_add_single_request = typia.createIs<magic_gre_tu
 export const assertmagic_gre_tunnel_add_single_request = typia.createAssert<magic_gre_tunnel_add_single_request>();
 export const validatemagic_gre_tunnel_add_single_request = typia.createValidate<magic_gre_tunnel_add_single_request>();
 
-export type magic_gre_tunnel_update_request = (magic_gre_tunnel_add_single_request);
+export type magic_gre_tunnel_update_request = magic_gre_tunnel_add_single_request;
 export const ismagic_gre_tunnel_update_request = typia.createIs<magic_gre_tunnel_update_request>();
 export const assertmagic_gre_tunnel_update_request = typia.createAssert<magic_gre_tunnel_update_request>();
 export const validatemagic_gre_tunnel_update_request = typia.createValidate<magic_gre_tunnel_update_request>();
@@ -17067,7 +17067,7 @@ export const ismagic_ipsec_tunnel_add_single_request = typia.createIs<magic_ipse
 export const assertmagic_ipsec_tunnel_add_single_request = typia.createAssert<magic_ipsec_tunnel_add_single_request>();
 export const validatemagic_ipsec_tunnel_add_single_request = typia.createValidate<magic_ipsec_tunnel_add_single_request>();
 
-export type magic_ipsec_tunnel_add_request = (magic_ipsec_tunnel_add_single_request);
+export type magic_ipsec_tunnel_add_request = magic_ipsec_tunnel_add_single_request;
 export const ismagic_ipsec_tunnel_add_request = typia.createIs<magic_ipsec_tunnel_add_request>();
 export const assertmagic_ipsec_tunnel_add_request = typia.createAssert<magic_ipsec_tunnel_add_request>();
 export const validatemagic_ipsec_tunnel_add_request = typia.createValidate<magic_ipsec_tunnel_add_request>();
@@ -17077,12 +17077,12 @@ export const ismagic_ipsec_tunnel_applied_psk = typia.createIs<magic_ipsec_tunne
 export const assertmagic_ipsec_tunnel_applied_psk = typia.createAssert<magic_ipsec_tunnel_applied_psk>();
 export const validatemagic_ipsec_tunnel_applied_psk = typia.createValidate<magic_ipsec_tunnel_applied_psk>();
 
-export type magic_ipsec_tunnel_psk_entry = { id: (magic_identifier), psk: magic_psk };
+export type magic_ipsec_tunnel_psk_entry = { id: magic_identifier, psk: magic_psk };
 export const ismagic_ipsec_tunnel_psk_entry = typia.createIs<magic_ipsec_tunnel_psk_entry>();
 export const assertmagic_ipsec_tunnel_psk_entry = typia.createAssert<magic_ipsec_tunnel_psk_entry>();
 export const validatemagic_ipsec_tunnel_psk_entry = typia.createValidate<magic_ipsec_tunnel_psk_entry>();
 
-export type magic_ipsec_tunnel_update_request = (magic_ipsec_tunnel_add_single_request);
+export type magic_ipsec_tunnel_update_request = magic_ipsec_tunnel_add_single_request;
 export const ismagic_ipsec_tunnel_update_request = typia.createIs<magic_ipsec_tunnel_update_request>();
 export const assertmagic_ipsec_tunnel_update_request = typia.createAssert<magic_ipsec_tunnel_update_request>();
 export const validatemagic_ipsec_tunnel_update_request = typia.createValidate<magic_ipsec_tunnel_update_request>();
@@ -17242,7 +17242,7 @@ export const ismagic_route_add_single_request = typia.createIs<magic_route_add_s
 export const assertmagic_route_add_single_request = typia.createAssert<magic_route_add_single_request>();
 export const validatemagic_route_add_single_request = typia.createValidate<magic_route_add_single_request>();
 
-export type magic_route_delete_id = ({ id: magic_identifier });
+export type magic_route_delete_id = { id: magic_identifier };
 export const ismagic_route_delete_id = typia.createIs<magic_route_delete_id>();
 export const assertmagic_route_delete_id = typia.createAssert<magic_route_delete_id>();
 export const validatemagic_route_delete_id = typia.createValidate<magic_route_delete_id>();
@@ -17277,7 +17277,7 @@ export const ismagic_route_update_many_request = typia.createIs<magic_route_upda
 export const assertmagic_route_update_many_request = typia.createAssert<magic_route_update_many_request>();
 export const validatemagic_route_update_many_request = typia.createValidate<magic_route_update_many_request>();
 
-export type magic_route_update_request = (magic_route_add_single_request);
+export type magic_route_update_request = magic_route_add_single_request;
 export const ismagic_route_update_request = typia.createIs<magic_route_update_request>();
 export const assertmagic_route_update_request = typia.createAssert<magic_route_update_request>();
 export const validatemagic_route_update_request = typia.createValidate<magic_route_update_request>();
@@ -18677,7 +18677,7 @@ export const isobservatory_messages_2 = typia.createIs<observatory_messages_2>()
 export const assertobservatory_messages_2 = typia.createAssert<observatory_messages_2>();
 export const validateobservatory_messages_2 = typia.createValidate<observatory_messages_2>();
 
-export type observatory_api_response_common_failure = { errors: (observatory_messages_2 & unknown), messages: (observatory_messages_2), result: (Record<string, unknown> | null), success: false };
+export type observatory_api_response_common_failure = { errors: observatory_messages_2, messages: observatory_messages_2, result: (Record<string, unknown> | null), success: false };
 export const isobservatory_api_response_common_failure = typia.createIs<observatory_api_response_common_failure>();
 export const assertobservatory_api_response_common_failure = typia.createAssert<observatory_api_response_common_failure>();
 export const validateobservatory_api_response_common_failure = typia.createValidate<observatory_api_response_common_failure>();
@@ -18862,7 +18862,7 @@ export const isone_Instructions = typia.createIs<one_Instructions>();
 export const assertone_Instructions = typia.createAssert<one_Instructions>();
 export const validateone_Instructions = typia.createValidate<one_Instructions>();
 
-export type one_AuthMethodDetail = { display_name: string, human_interaction_required: boolean, id: string, instructions: (one_Instructions), payload_example: (Record<string, unknown> | null), payload_schema: (Record<string, unknown> | null), redirect_url: (string | null) };
+export type one_AuthMethodDetail = { display_name: string, human_interaction_required: boolean, id: string, instructions: one_Instructions, payload_example: (Record<string, unknown> | null), payload_schema: (Record<string, unknown> | null), redirect_url: (string | null) };
 export const isone_AuthMethodDetail = typia.createIs<one_AuthMethodDetail>();
 export const assertone_AuthMethodDetail = typia.createAssert<one_AuthMethodDetail>();
 export const validateone_AuthMethodDetail = typia.createValidate<one_AuthMethodDetail>();
@@ -18902,7 +18902,7 @@ export const isone_SetupFlowStep = typia.createIs<one_SetupFlowStep>();
 export const assertone_SetupFlowStep = typia.createAssert<one_SetupFlowStep>();
 export const validateone_SetupFlowStep = typia.createValidate<one_SetupFlowStep>();
 
-export type one_SetupFlow = { auth_config?: (one_AuthConfig), default: boolean, description: string, id: string, name: string, steps: Array<one_SetupFlowStep>, supported_environments: Array<string> };
+export type one_SetupFlow = { auth_config?: one_AuthConfig, default: boolean, description: string, id: string, name: string, steps: Array<one_SetupFlowStep>, supported_environments: Array<string> };
 export const isone_SetupFlow = typia.createIs<one_SetupFlow>();
 export const assertone_SetupFlow = typia.createAssert<one_SetupFlow>();
 export const validateone_SetupFlow = typia.createValidate<one_SetupFlow>();
@@ -19002,7 +19002,7 @@ export const isorganizations_api_Profile = typia.createIs<organizations_api_Prof
 export const assertorganizations_api_Profile = typia.createAssert<organizations_api_Profile>();
 export const validateorganizations_api_Profile = typia.createValidate<organizations_api_Profile>();
 
-export type organizations_api_Organization = { create_time: string, id: (organizations_api_OrganizationID & unknown), meta: (Partial<{ flags: (organizations_api_OrganizationFlags), hierarchy_tags: Array<string>, managed_by: string }> & Record<string, Record<string, unknown>>), name: string, parent?: { id: organizations_api_OrganizationID, name: string }, profile?: organizations_api_Profile };
+export type organizations_api_Organization = { create_time: string, id: organizations_api_OrganizationID, meta: (Partial<{ flags: organizations_api_OrganizationFlags, hierarchy_tags: Array<string>, managed_by: string }> & Record<string, Record<string, unknown>>), name: string, parent?: { id: organizations_api_OrganizationID, name: string }, profile?: organizations_api_Profile };
 export const isorganizations_api_Organization = typia.createIs<organizations_api_Organization>();
 export const assertorganizations_api_Organization = typia.createAssert<organizations_api_Organization>();
 export const validateorganizations_api_Organization = typia.createValidate<organizations_api_Organization>();
@@ -19152,7 +19152,7 @@ export const ispage_shield_policy = typia.createIs<page_shield_policy>();
 export const assertpage_shield_policy = typia.createAssert<page_shield_policy>();
 export const validatepage_shield_policy = typia.createValidate<page_shield_policy>();
 
-export type page_shield_policy_with_id = (page_shield_policy & { id: page_shield_id } & unknown);
+export type page_shield_policy_with_id = (page_shield_policy & { id: page_shield_id });
 export const ispage_shield_policy_with_id = typia.createIs<page_shield_policy_with_id>();
 export const assertpage_shield_policy_with_id = typia.createAssert<page_shield_policy_with_id>();
 export const validatepage_shield_policy_with_id = typia.createValidate<page_shield_policy_with_id>();
@@ -19187,12 +19187,12 @@ export const ispage_shield_obfuscation_score = typia.createIs<page_shield_obfusc
 export const assertpage_shield_obfuscation_score = typia.createAssert<page_shield_obfuscation_score>();
 export const validatepage_shield_obfuscation_score = typia.createValidate<page_shield_obfuscation_score>();
 
-export type page_shield_script = { added_at: string, cryptomining_score?: page_shield_cryptomining_score, dataflow_score?: (page_shield_dataflow_score & unknown), domain_reported_malicious?: boolean, fetched_at?: page_shield_fetched_at, first_page_url?: string, first_seen_at: string, hash?: page_shield_hash, host: string, id: page_shield_id, js_integrity_score?: page_shield_js_integrity_score, last_seen_at: string, magecart_score?: page_shield_magecart_score, malicious_domain_categories?: Array<string>, malicious_url_categories?: Array<string>, malware_score?: page_shield_malware_score, obfuscation_score?: (page_shield_obfuscation_score & unknown), page_urls?: Array<string>, url: string, url_contains_cdn_cgi_path: boolean, url_reported_malicious?: boolean };
+export type page_shield_script = { added_at: string, cryptomining_score?: page_shield_cryptomining_score, dataflow_score?: page_shield_dataflow_score, domain_reported_malicious?: boolean, fetched_at?: page_shield_fetched_at, first_page_url?: string, first_seen_at: string, hash?: page_shield_hash, host: string, id: page_shield_id, js_integrity_score?: page_shield_js_integrity_score, last_seen_at: string, magecart_score?: page_shield_magecart_score, malicious_domain_categories?: Array<string>, malicious_url_categories?: Array<string>, malware_score?: page_shield_malware_score, obfuscation_score?: page_shield_obfuscation_score, page_urls?: Array<string>, url: string, url_contains_cdn_cgi_path: boolean, url_reported_malicious?: boolean };
 export const ispage_shield_script = typia.createIs<page_shield_script>();
 export const assertpage_shield_script = typia.createAssert<page_shield_script>();
 export const validatepage_shield_script = typia.createValidate<page_shield_script>();
 
-export type page_shield_version = Partial<{ cryptomining_score: page_shield_cryptomining_score, dataflow_score: (page_shield_dataflow_score & unknown), fetched_at: page_shield_fetched_at, hash: page_shield_hash, js_integrity_score: page_shield_js_integrity_score, magecart_score: page_shield_magecart_score, malware_score: page_shield_malware_score, obfuscation_score: (page_shield_obfuscation_score & unknown) }>;
+export type page_shield_version = Partial<{ cryptomining_score: page_shield_cryptomining_score, dataflow_score: page_shield_dataflow_score, fetched_at: page_shield_fetched_at, hash: page_shield_hash, js_integrity_score: page_shield_js_integrity_score, magecart_score: page_shield_magecart_score, malware_score: page_shield_malware_score, obfuscation_score: page_shield_obfuscation_score }>;
 export const ispage_shield_version = typia.createIs<page_shield_version>();
 export const assertpage_shield_version = typia.createAssert<page_shield_version>();
 export const validatepage_shield_version = typia.createValidate<page_shield_version>();
@@ -19267,7 +19267,7 @@ export const ispages_api_response_collection = typia.createIs<pages_api_response
 export const assertpages_api_response_collection = typia.createAssert<pages_api_response_collection>();
 export const validatepages_api_response_collection = typia.createValidate<pages_api_response_collection>();
 
-export type pages_api_response_common_failure = { errors: (pages_messages & unknown), messages: (pages_messages), result: (Record<string, unknown> | null), success: false };
+export type pages_api_response_common_failure = { errors: pages_messages, messages: pages_messages, result: (Record<string, unknown> | null), success: false };
 export const ispages_api_response_common_failure = typia.createIs<pages_api_response_common_failure>();
 export const assertpages_api_response_common_failure = typia.createAssert<pages_api_response_common_failure>();
 export const validatepages_api_response_common_failure = typia.createValidate<pages_api_response_common_failure>();
@@ -19372,7 +19372,7 @@ export const ispages_pages_upload_token_response = typia.createIs<pages_pages_up
 export const assertpages_pages_upload_token_response = typia.createAssert<pages_pages_upload_token_response>();
 export const validatepages_pages_upload_token_response = typia.createValidate<pages_pages_upload_token_response>();
 
-export type pages_project = { build_config?: pages_build_config, canonical_deployment: (pages_deployment & (Record<string, unknown> | null)), created_on: string, deployment_configs: { preview: (pages_deployment_config_values), production: (pages_deployment_config_values) }, domains?: Array<string>, framework: string, framework_version: string, id: string, latest_deployment: (pages_deployment & (Record<string, unknown> | null)), name: pages_project_name, preview_script_name: string, production_branch: string, production_script_name: string, source?: pages_source, subdomain?: string, uses_functions: (boolean | null) };
+export type pages_project = { build_config?: pages_build_config, canonical_deployment: (pages_deployment & (Record<string, unknown> | null)), created_on: string, deployment_configs: { preview: pages_deployment_config_values, production: pages_deployment_config_values }, domains?: Array<string>, framework: string, framework_version: string, id: string, latest_deployment: (pages_deployment & (Record<string, unknown> | null)), name: pages_project_name, preview_script_name: string, production_branch: string, production_script_name: string, source?: pages_source, subdomain?: string, uses_functions: (boolean | null) };
 export const ispages_project = typia.createIs<pages_project>();
 export const assertpages_project = typia.createAssert<pages_project>();
 export const validatepages_project = typia.createValidate<pages_project>();
@@ -19917,7 +19917,7 @@ export const isprecursor_api_response_common = typia.createIs<precursor_api_resp
 export const assertprecursor_api_response_common = typia.createAssert<precursor_api_response_common>();
 export const validateprecursor_api_response_common = typia.createValidate<precursor_api_response_common>();
 
-export type precursor_api_response_common_failure = { errors: (precursor_messages & unknown), messages: (precursor_messages), result: (Record<string, unknown> | null), success: false };
+export type precursor_api_response_common_failure = { errors: precursor_messages, messages: precursor_messages, result: (Record<string, unknown> | null), success: false };
 export const isprecursor_api_response_common_failure = typia.createIs<precursor_api_response_common_failure>();
 export const assertprecursor_api_response_common_failure = typia.createAssert<precursor_api_response_common_failure>();
 export const validateprecursor_api_response_common_failure = typia.createValidate<precursor_api_response_common_failure>();
@@ -19972,7 +19972,7 @@ export const ispublic_ip_api_response_common = typia.createIs<public_ip_api_resp
 export const assertpublic_ip_api_response_common = typia.createAssert<public_ip_api_response_common>();
 export const validatepublic_ip_api_response_common = typia.createValidate<public_ip_api_response_common>();
 
-export type public_ip_api_response_common_failure = { errors: (public_ip_messages & unknown), messages: (public_ip_messages), result: (Record<string, unknown> | null), success: false };
+export type public_ip_api_response_common_failure = { errors: public_ip_messages, messages: public_ip_messages, result: (Record<string, unknown> | null), success: false };
 export const ispublic_ip_api_response_common_failure = typia.createIs<public_ip_api_response_common_failure>();
 export const assertpublic_ip_api_response_common_failure = typia.createAssert<public_ip_api_response_common_failure>();
 export const validatepublic_ip_api_response_common_failure = typia.createValidate<public_ip_api_response_common_failure>();
@@ -20112,12 +20112,12 @@ export const isr2_data_catalog_catalog_maintenance_config_response = typia.creat
 export const assertr2_data_catalog_catalog_maintenance_config_response = typia.createAssert<r2_data_catalog_catalog_maintenance_config_response>();
 export const validater2_data_catalog_catalog_maintenance_config_response = typia.createValidate<r2_data_catalog_catalog_maintenance_config_response>();
 
-export type r2_data_catalog_compaction_update_params = Partial<{ state: (r2_data_catalog_catalog_maintenance_state), target_size_mb: (r2_data_catalog_catalog_target_file_size) }>;
+export type r2_data_catalog_compaction_update_params = Partial<{ state: r2_data_catalog_catalog_maintenance_state, target_size_mb: r2_data_catalog_catalog_target_file_size }>;
 export const isr2_data_catalog_compaction_update_params = typia.createIs<r2_data_catalog_compaction_update_params>();
 export const assertr2_data_catalog_compaction_update_params = typia.createAssert<r2_data_catalog_compaction_update_params>();
 export const validater2_data_catalog_compaction_update_params = typia.createValidate<r2_data_catalog_compaction_update_params>();
 
-export type r2_data_catalog_snapshot_expiration_update_params = Partial<{ max_snapshot_age: string, min_snapshots_to_keep: number, state: (r2_data_catalog_catalog_maintenance_state) }>;
+export type r2_data_catalog_snapshot_expiration_update_params = Partial<{ max_snapshot_age: string, min_snapshots_to_keep: number, state: r2_data_catalog_catalog_maintenance_state }>;
 export const isr2_data_catalog_snapshot_expiration_update_params = typia.createIs<r2_data_catalog_snapshot_expiration_update_params>();
 export const assertr2_data_catalog_snapshot_expiration_update_params = typia.createAssert<r2_data_catalog_snapshot_expiration_update_params>();
 export const validater2_data_catalog_snapshot_expiration_update_params = typia.createValidate<r2_data_catalog_snapshot_expiration_update_params>();
@@ -20127,7 +20127,7 @@ export const isr2_data_catalog_maintenance_update_params = typia.createIs<r2_dat
 export const assertr2_data_catalog_maintenance_update_params = typia.createAssert<r2_data_catalog_maintenance_update_params>();
 export const validater2_data_catalog_maintenance_update_params = typia.createValidate<r2_data_catalog_maintenance_update_params>();
 
-export type r2_data_catalog_catalog_maintenance_update_request = (r2_data_catalog_maintenance_update_params);
+export type r2_data_catalog_catalog_maintenance_update_request = r2_data_catalog_maintenance_update_params;
 export const isr2_data_catalog_catalog_maintenance_update_request = typia.createIs<r2_data_catalog_catalog_maintenance_update_request>();
 export const assertr2_data_catalog_catalog_maintenance_update_request = typia.createAssert<r2_data_catalog_catalog_maintenance_update_request>();
 export const validater2_data_catalog_catalog_maintenance_update_request = typia.createValidate<r2_data_catalog_catalog_maintenance_update_request>();
@@ -20187,7 +20187,7 @@ export const isr2_data_catalog_table_maintenance_config_response = typia.createI
 export const assertr2_data_catalog_table_maintenance_config_response = typia.createAssert<r2_data_catalog_table_maintenance_config_response>();
 export const validater2_data_catalog_table_maintenance_config_response = typia.createValidate<r2_data_catalog_table_maintenance_config_response>();
 
-export type r2_data_catalog_table_maintenance_update_request = (r2_data_catalog_maintenance_update_params);
+export type r2_data_catalog_table_maintenance_update_request = r2_data_catalog_maintenance_update_params;
 export const isr2_data_catalog_table_maintenance_update_request = typia.createIs<r2_data_catalog_table_maintenance_update_request>();
 export const assertr2_data_catalog_table_maintenance_update_request = typia.createAssert<r2_data_catalog_table_maintenance_update_request>();
 export const validater2_data_catalog_table_maintenance_update_request = typia.createValidate<r2_data_catalog_table_maintenance_update_request>();
@@ -20377,7 +20377,7 @@ export const isr2_bucket_lock_rule = typia.createIs<r2_bucket_lock_rule>();
 export const assertr2_bucket_lock_rule = typia.createAssert<r2_bucket_lock_rule>();
 export const validater2_bucket_lock_rule = typia.createValidate<r2_bucket_lock_rule>();
 
-export type r2_bucket_lock_rule_config = Partial<{ rules: Array<(r2_bucket_lock_rule)> }>;
+export type r2_bucket_lock_rule_config = Partial<{ rules: Array<r2_bucket_lock_rule> }>;
 export const isr2_bucket_lock_rule_config = typia.createIs<r2_bucket_lock_rule_config>();
 export const assertr2_bucket_lock_rule_config = typia.createAssert<r2_bucket_lock_rule_config>();
 export const validater2_bucket_lock_rule_config = typia.createValidate<r2_bucket_lock_rule_config>();
@@ -20447,12 +20447,12 @@ export const isr2_lifecycle_storage_transition = typia.createIs<r2_lifecycle_sto
 export const assertr2_lifecycle_storage_transition = typia.createAssert<r2_lifecycle_storage_transition>();
 export const validater2_lifecycle_storage_transition = typia.createValidate<r2_lifecycle_storage_transition>();
 
-export type r2_lifecycle_rule = { abortMultipartUploadsTransition?: Partial<{ condition: (r2_lifecycle_age_condition) }>, conditions: { prefix: string }, deleteObjectsTransition?: Partial<{ condition: (r2_lifecycle_age_condition | r2_lifecycle_date_condition) }>, enabled: boolean, id: string, storageClassTransitions?: Array<(r2_lifecycle_storage_transition)> };
+export type r2_lifecycle_rule = { abortMultipartUploadsTransition?: Partial<{ condition: r2_lifecycle_age_condition }>, conditions: { prefix: string }, deleteObjectsTransition?: Partial<{ condition: (r2_lifecycle_age_condition | r2_lifecycle_date_condition) }>, enabled: boolean, id: string, storageClassTransitions?: Array<r2_lifecycle_storage_transition> };
 export const isr2_lifecycle_rule = typia.createIs<r2_lifecycle_rule>();
 export const assertr2_lifecycle_rule = typia.createAssert<r2_lifecycle_rule>();
 export const validater2_lifecycle_rule = typia.createValidate<r2_lifecycle_rule>();
 
-export type r2_lifecycle_config = Partial<{ rules: Array<(r2_lifecycle_rule)> }>;
+export type r2_lifecycle_config = Partial<{ rules: Array<r2_lifecycle_rule> }>;
 export const isr2_lifecycle_config = typia.createIs<r2_lifecycle_config>();
 export const assertr2_lifecycle_config = typia.createAssert<r2_lifecycle_config>();
 export const validater2_lifecycle_config = typia.createValidate<r2_lifecycle_config>();
@@ -20927,7 +20927,7 @@ export const isregistrar_api_sandbox_api_response_collection = typia.createIs<re
 export const assertregistrar_api_sandbox_api_response_collection = typia.createAssert<registrar_api_sandbox_api_response_collection>();
 export const validateregistrar_api_sandbox_api_response_collection = typia.createValidate<registrar_api_sandbox_api_response_collection>();
 
-export type registrar_api_sandbox_api_response_common_failure = { errors: (registrar_api_sandbox_messages & unknown), messages: (registrar_api_sandbox_messages), result: (Record<string, unknown> | null), success: false };
+export type registrar_api_sandbox_api_response_common_failure = { errors: registrar_api_sandbox_messages, messages: registrar_api_sandbox_messages, result: (Record<string, unknown> | null), success: false };
 export const isregistrar_api_sandbox_api_response_common_failure = typia.createIs<registrar_api_sandbox_api_response_common_failure>();
 export const assertregistrar_api_sandbox_api_response_common_failure = typia.createAssert<registrar_api_sandbox_api_response_common_failure>();
 export const validateregistrar_api_sandbox_api_response_common_failure = typia.createValidate<registrar_api_sandbox_api_response_common_failure>();
@@ -21072,7 +21072,7 @@ export const isregistrar_api_sandbox_locked = typia.createIs<registrar_api_sandb
 export const assertregistrar_api_sandbox_locked = typia.createAssert<registrar_api_sandbox_locked>();
 export const validateregistrar_api_sandbox_locked = typia.createValidate<registrar_api_sandbox_locked>();
 
-export type registrar_api_sandbox_registrant_contact = (registrar_api_sandbox_contacts);
+export type registrar_api_sandbox_registrant_contact = registrar_api_sandbox_contacts;
 export const isregistrar_api_sandbox_registrant_contact = typia.createIs<registrar_api_sandbox_registrant_contact>();
 export const assertregistrar_api_sandbox_registrant_contact = typia.createAssert<registrar_api_sandbox_registrant_contact>();
 export const validateregistrar_api_sandbox_registrant_contact = typia.createValidate<registrar_api_sandbox_registrant_contact>();
@@ -21212,7 +21212,7 @@ export const isregistrar_api_sandbox_workflow_links = typia.createIs<registrar_a
 export const assertregistrar_api_sandbox_workflow_links = typia.createAssert<registrar_api_sandbox_workflow_links>();
 export const validateregistrar_api_sandbox_workflow_links = typia.createValidate<registrar_api_sandbox_workflow_links>();
 
-export type registrar_api_sandbox_workflow_status = { completed: boolean, context?: Record<string, unknown>, created_at: string, error?: ((registrar_api_sandbox_workflow_error) | null), links: registrar_api_sandbox_workflow_links, state: ("pending" | "in_progress" | "action_required" | "blocked" | "succeeded" | "failed"), updated_at: string };
+export type registrar_api_sandbox_workflow_status = { completed: boolean, context?: Record<string, unknown>, created_at: string, error?: (registrar_api_sandbox_workflow_error | null), links: registrar_api_sandbox_workflow_links, state: ("pending" | "in_progress" | "action_required" | "blocked" | "succeeded" | "failed"), updated_at: string };
 export const isregistrar_api_sandbox_workflow_status = typia.createIs<registrar_api_sandbox_workflow_status>();
 export const assertregistrar_api_sandbox_workflow_status = typia.createAssert<registrar_api_sandbox_workflow_status>();
 export const validateregistrar_api_sandbox_workflow_status = typia.createValidate<registrar_api_sandbox_workflow_status>();
@@ -21252,7 +21252,7 @@ export const isregistrar_api_api_response_collection = typia.createIs<registrar_
 export const assertregistrar_api_api_response_collection = typia.createAssert<registrar_api_api_response_collection>();
 export const validateregistrar_api_api_response_collection = typia.createValidate<registrar_api_api_response_collection>();
 
-export type registrar_api_api_response_common_failure = { errors: (registrar_api_messages & unknown), messages: (registrar_api_messages), result: (Record<string, unknown> | null), success: false };
+export type registrar_api_api_response_common_failure = { errors: registrar_api_messages, messages: registrar_api_messages, result: (Record<string, unknown> | null), success: false };
 export const isregistrar_api_api_response_common_failure = typia.createIs<registrar_api_api_response_common_failure>();
 export const assertregistrar_api_api_response_common_failure = typia.createAssert<registrar_api_api_response_common_failure>();
 export const validateregistrar_api_api_response_common_failure = typia.createValidate<registrar_api_api_response_common_failure>();
@@ -21397,7 +21397,7 @@ export const isregistrar_api_locked = typia.createIs<registrar_api_locked>();
 export const assertregistrar_api_locked = typia.createAssert<registrar_api_locked>();
 export const validateregistrar_api_locked = typia.createValidate<registrar_api_locked>();
 
-export type registrar_api_registrant_contact = (registrar_api_contacts);
+export type registrar_api_registrant_contact = registrar_api_contacts;
 export const isregistrar_api_registrant_contact = typia.createIs<registrar_api_registrant_contact>();
 export const assertregistrar_api_registrant_contact = typia.createAssert<registrar_api_registrant_contact>();
 export const validateregistrar_api_registrant_contact = typia.createValidate<registrar_api_registrant_contact>();
@@ -21537,7 +21537,7 @@ export const isregistrar_api_workflow_links = typia.createIs<registrar_api_workf
 export const assertregistrar_api_workflow_links = typia.createAssert<registrar_api_workflow_links>();
 export const validateregistrar_api_workflow_links = typia.createValidate<registrar_api_workflow_links>();
 
-export type registrar_api_workflow_status = { completed: boolean, context?: Record<string, unknown>, created_at: string, error?: ((registrar_api_workflow_error) | null), links: registrar_api_workflow_links, state: ("pending" | "in_progress" | "action_required" | "blocked" | "succeeded" | "failed"), updated_at: string };
+export type registrar_api_workflow_status = { completed: boolean, context?: Record<string, unknown>, created_at: string, error?: (registrar_api_workflow_error | null), links: registrar_api_workflow_links, state: ("pending" | "in_progress" | "action_required" | "blocked" | "succeeded" | "failed"), updated_at: string };
 export const isregistrar_api_workflow_status = typia.createIs<registrar_api_workflow_status>();
 export const assertregistrar_api_workflow_status = typia.createAssert<registrar_api_workflow_status>();
 export const validateregistrar_api_workflow_status = typia.createValidate<registrar_api_workflow_status>();
@@ -21567,7 +21567,7 @@ export const isrequest_tracer_api_response_common = typia.createIs<request_trace
 export const assertrequest_tracer_api_response_common = typia.createAssert<request_tracer_api_response_common>();
 export const validaterequest_tracer_api_response_common = typia.createValidate<request_tracer_api_response_common>();
 
-export type request_tracer_api_response_common_failure = { errors: (request_tracer_messages & unknown), messages: (request_tracer_messages), result: (Record<string, unknown> | null), success: false };
+export type request_tracer_api_response_common_failure = { errors: request_tracer_messages, messages: request_tracer_messages, result: (Record<string, unknown> | null), success: false };
 export const isrequest_tracer_api_response_common_failure = typia.createIs<request_tracer_api_response_common_failure>();
 export const assertrequest_tracer_api_response_common_failure = typia.createAssert<request_tracer_api_response_common_failure>();
 export const validaterequest_tracer_api_response_common_failure = typia.createValidate<request_tracer_api_response_common_failure>();
@@ -21612,7 +21612,7 @@ export const isresource_sharing_api_response_collection = typia.createIs<resourc
 export const assertresource_sharing_api_response_collection = typia.createAssert<resource_sharing_api_response_collection>();
 export const validateresource_sharing_api_response_collection = typia.createValidate<resource_sharing_api_response_collection>();
 
-export type resource_sharing_api_response_common_failure = { errors: (resource_sharing_v4errors & unknown), result: (Record<string, unknown> | null), success: boolean };
+export type resource_sharing_api_response_common_failure = { errors: resource_sharing_v4errors, result: (Record<string, unknown> | null), success: boolean };
 export const isresource_sharing_api_response_common_failure = typia.createIs<resource_sharing_api_response_common_failure>();
 export const assertresource_sharing_api_response_common_failure = typia.createAssert<resource_sharing_api_response_common_failure>();
 export const validateresource_sharing_api_response_common_failure = typia.createValidate<resource_sharing_api_response_common_failure>();
@@ -21622,7 +21622,7 @@ export const isresource_sharing_organization_id = typia.createIs<resource_sharin
 export const assertresource_sharing_organization_id = typia.createAssert<resource_sharing_organization_id>();
 export const validateresource_sharing_organization_id = typia.createValidate<resource_sharing_organization_id>();
 
-export type resource_sharing_create_share_recipient_request = Partial<{ account_id: (resource_sharing_account_id & unknown), organization_id: resource_sharing_organization_id, recipient_account_id: (resource_sharing_account_id) }>;
+export type resource_sharing_create_share_recipient_request = Partial<{ account_id: resource_sharing_account_id, organization_id: resource_sharing_organization_id, recipient_account_id: resource_sharing_account_id }>;
 export const isresource_sharing_create_share_recipient_request = typia.createIs<resource_sharing_create_share_recipient_request>();
 export const assertresource_sharing_create_share_recipient_request = typia.createAssert<resource_sharing_create_share_recipient_request>();
 export const validateresource_sharing_create_share_recipient_request = typia.createValidate<resource_sharing_create_share_recipient_request>();
@@ -21797,7 +21797,7 @@ export const isresource_tagging_identifier = typia.createIs<resource_tagging_ide
 export const assertresource_tagging_identifier = typia.createAssert<resource_tagging_identifier>();
 export const validateresource_tagging_identifier = typia.createValidate<resource_tagging_identifier>();
 
-export type resource_tagging_account_id = (resource_tagging_identifier & unknown);
+export type resource_tagging_account_id = resource_tagging_identifier;
 export const isresource_tagging_account_id = typia.createIs<resource_tagging_account_id>();
 export const assertresource_tagging_account_id = typia.createAssert<resource_tagging_account_id>();
 export const validateresource_tagging_account_id = typia.createValidate<resource_tagging_account_id>();
@@ -21827,7 +21827,7 @@ export const isresource_tagging_api_response_common = typia.createIs<resource_ta
 export const assertresource_tagging_api_response_common = typia.createAssert<resource_tagging_api_response_common>();
 export const validateresource_tagging_api_response_common = typia.createValidate<resource_tagging_api_response_common>();
 
-export type resource_tagging_api_response_common_failure = { errors: (resource_tagging_messages & unknown), messages: (resource_tagging_messages), result: (Record<string, unknown> | null), success: false };
+export type resource_tagging_api_response_common_failure = { errors: resource_tagging_messages, messages: resource_tagging_messages, result: (Record<string, unknown> | null), success: false };
 export const isresource_tagging_api_response_common_failure = typia.createIs<resource_tagging_api_response_common_failure>();
 export const assertresource_tagging_api_response_common_failure = typia.createAssert<resource_tagging_api_response_common_failure>();
 export const validateresource_tagging_api_response_common_failure = typia.createValidate<resource_tagging_api_response_common_failure>();
@@ -21957,7 +21957,7 @@ export const isresource_tagging_tagged_resource_object_access_application = typi
 export const assertresource_tagging_tagged_resource_object_access_application = typia.createAssert<resource_tagging_tagged_resource_object_access_application>();
 export const validateresource_tagging_tagged_resource_object_access_application = typia.createValidate<resource_tagging_tagged_resource_object_access_application>();
 
-export type resource_tagging_zone_id = (resource_tagging_identifier & unknown);
+export type resource_tagging_zone_id = resource_tagging_identifier;
 export const isresource_tagging_zone_id = typia.createIs<resource_tagging_zone_id>();
 export const assertresource_tagging_zone_id = typia.createAssert<resource_tagging_zone_id>();
 export const validateresource_tagging_zone_id = typia.createValidate<resource_tagging_zone_id>();
@@ -22207,7 +22207,7 @@ export const isrulesets_RuleRatelimit = typia.createIs<rulesets_RuleRatelimit>()
 export const assertrulesets_RuleRatelimit = typia.createAssert<rulesets_RuleRatelimit>();
 export const validaterulesets_RuleRatelimit = typia.createValidate<rulesets_RuleRatelimit>();
 
-export type rulesets_Rule_schemas = { action?: rulesets_RuleAction, action_parameters?: Record<string, unknown>, categories?: rulesets_RuleCategories, description?: string, enabled?: (rulesets_RuleEnabled & unknown), exposed_credential_check?: rulesets_RuleExposedCredentialCheck, expression?: string, id?: rulesets_RuleId, last_updated: string, logging?: rulesets_RuleLogging, ratelimit?: rulesets_RuleRatelimit, ref?: string, version: string };
+export type rulesets_Rule_schemas = { action?: rulesets_RuleAction, action_parameters?: Record<string, unknown>, categories?: rulesets_RuleCategories, description?: string, enabled?: rulesets_RuleEnabled, exposed_credential_check?: rulesets_RuleExposedCredentialCheck, expression?: string, id?: rulesets_RuleId, last_updated: string, logging?: rulesets_RuleLogging, ratelimit?: rulesets_RuleRatelimit, ref?: string, version: string };
 export const isrulesets_Rule_schemas = typia.createIs<rulesets_Rule_schemas>();
 export const assertrulesets_Rule_schemas = typia.createAssert<rulesets_Rule_schemas>();
 export const validaterulesets_Rule_schemas = typia.createValidate<rulesets_Rule_schemas>();
@@ -22252,7 +22252,7 @@ export const isrulesets_ExecuteSensitivityLevel = typia.createIs<rulesets_Execut
 export const assertrulesets_ExecuteSensitivityLevel = typia.createAssert<rulesets_ExecuteSensitivityLevel>();
 export const validaterulesets_ExecuteSensitivityLevel = typia.createValidate<rulesets_ExecuteSensitivityLevel>();
 
-export type rulesets_ExecuteCategoryOverrides = (Array<{ action?: (rulesets_RuleAction & unknown), category: (rulesets_RuleCategory & unknown), enabled?: (rulesets_RuleEnabled & unknown), sensitivity_level?: (rulesets_ExecuteSensitivityLevel & unknown) }> & tags.MinItems<1>);
+export type rulesets_ExecuteCategoryOverrides = (Array<{ action?: rulesets_RuleAction, category: rulesets_RuleCategory, enabled?: rulesets_RuleEnabled, sensitivity_level?: rulesets_ExecuteSensitivityLevel }> & tags.MinItems<1>);
 export const isrulesets_ExecuteCategoryOverrides = typia.createIs<rulesets_ExecuteCategoryOverrides>();
 export const assertrulesets_ExecuteCategoryOverrides = typia.createAssert<rulesets_ExecuteCategoryOverrides>();
 export const validaterulesets_ExecuteCategoryOverrides = typia.createValidate<rulesets_ExecuteCategoryOverrides>();
@@ -22262,12 +22262,12 @@ export const isrulesets_ExecuteMatchedData = typia.createIs<rulesets_ExecuteMatc
 export const assertrulesets_ExecuteMatchedData = typia.createAssert<rulesets_ExecuteMatchedData>();
 export const validaterulesets_ExecuteMatchedData = typia.createValidate<rulesets_ExecuteMatchedData>();
 
-export type rulesets_ExecuteRuleOverrides = (Array<{ action?: (rulesets_RuleAction & unknown), enabled?: (rulesets_RuleEnabled & unknown), id: (rulesets_RuleId & unknown), score_threshold?: number, sensitivity_level?: (rulesets_ExecuteSensitivityLevel & unknown) }> & tags.MinItems<1>);
+export type rulesets_ExecuteRuleOverrides = (Array<{ action?: rulesets_RuleAction, enabled?: rulesets_RuleEnabled, id: rulesets_RuleId, score_threshold?: number, sensitivity_level?: rulesets_ExecuteSensitivityLevel }> & tags.MinItems<1>);
 export const isrulesets_ExecuteRuleOverrides = typia.createIs<rulesets_ExecuteRuleOverrides>();
 export const assertrulesets_ExecuteRuleOverrides = typia.createAssert<rulesets_ExecuteRuleOverrides>();
 export const validaterulesets_ExecuteRuleOverrides = typia.createValidate<rulesets_ExecuteRuleOverrides>();
 
-export type rulesets_ExecuteOverrides = Partial<{ action: (rulesets_RuleAction & unknown), categories: rulesets_ExecuteCategoryOverrides, enabled: (rulesets_RuleEnabled & unknown), rules: rulesets_ExecuteRuleOverrides, sensitivity_level: (rulesets_ExecuteSensitivityLevel & unknown) }>;
+export type rulesets_ExecuteOverrides = Partial<{ action: rulesets_RuleAction, categories: rulesets_ExecuteCategoryOverrides, enabled: rulesets_RuleEnabled, rules: rulesets_ExecuteRuleOverrides, sensitivity_level: rulesets_ExecuteSensitivityLevel }>;
 export const isrulesets_ExecuteOverrides = typia.createIs<rulesets_ExecuteOverrides>();
 export const assertrulesets_ExecuteOverrides = typia.createAssert<rulesets_ExecuteOverrides>();
 export const validaterulesets_ExecuteOverrides = typia.createValidate<rulesets_ExecuteOverrides>();
@@ -22277,7 +22277,7 @@ export const isrulesets_RulesetId = typia.createIs<rulesets_RulesetId>();
 export const assertrulesets_RulesetId = typia.createAssert<rulesets_RulesetId>();
 export const validaterulesets_RulesetId = typia.createValidate<rulesets_RulesetId>();
 
-export type rulesets_ExecuteRule = (rulesets_Rule_schemas & Partial<{ action: "execute", action_parameters: { id: (rulesets_RulesetId & unknown), matched_data?: rulesets_ExecuteMatchedData, overrides?: rulesets_ExecuteOverrides }, description: unknown }>);
+export type rulesets_ExecuteRule = (rulesets_Rule_schemas & Partial<{ action: "execute", action_parameters: { id: rulesets_RulesetId, matched_data?: rulesets_ExecuteMatchedData, overrides?: rulesets_ExecuteOverrides }, description: unknown }>);
 export const isrulesets_ExecuteRule = typia.createIs<rulesets_ExecuteRule>();
 export const assertrulesets_ExecuteRule = typia.createAssert<rulesets_ExecuteRule>();
 export const validaterulesets_ExecuteRule = typia.createValidate<rulesets_ExecuteRule>();
@@ -22337,7 +22337,7 @@ export const isrulesets_ManagedTransformId = typia.createIs<rulesets_ManagedTran
 export const assertrulesets_ManagedTransformId = typia.createAssert<rulesets_ManagedTransformId>();
 export const validaterulesets_ManagedTransformId = typia.createValidate<rulesets_ManagedTransformId>();
 
-export type rulesets_ManagedTransform = { conflicts_with?: Array<(rulesets_ManagedTransformId & unknown)>, enabled: boolean, has_conflict: boolean, id: rulesets_ManagedTransformId };
+export type rulesets_ManagedTransform = { conflicts_with?: Array<rulesets_ManagedTransformId>, enabled: boolean, has_conflict: boolean, id: rulesets_ManagedTransformId };
 export const isrulesets_ManagedTransform = typia.createIs<rulesets_ManagedTransform>();
 export const assertrulesets_ManagedTransform = typia.createAssert<rulesets_ManagedTransform>();
 export const validaterulesets_ManagedTransform = typia.createValidate<rulesets_ManagedTransform>();
@@ -22672,7 +22672,7 @@ export const isrulesets_RulesetPhase = typia.createIs<rulesets_RulesetPhase>();
 export const assertrulesets_RulesetPhase = typia.createAssert<rulesets_RulesetPhase>();
 export const validaterulesets_RulesetPhase = typia.createValidate<rulesets_RulesetPhase>();
 
-export type rulesets_SkipPhases = (Array<(rulesets_RulesetPhase & unknown)> & tags.MinItems<1>);
+export type rulesets_SkipPhases = (Array<rulesets_RulesetPhase> & tags.MinItems<1>);
 export const isrulesets_SkipPhases = typia.createIs<rulesets_SkipPhases>();
 export const assertrulesets_SkipPhases = typia.createAssert<rulesets_SkipPhases>();
 export const validaterulesets_SkipPhases = typia.createValidate<rulesets_SkipPhases>();
@@ -22682,7 +22682,7 @@ export const isrulesets_SkipProducts = typia.createIs<rulesets_SkipProducts>();
 export const assertrulesets_SkipProducts = typia.createAssert<rulesets_SkipProducts>();
 export const validaterulesets_SkipProducts = typia.createValidate<rulesets_SkipProducts>();
 
-export type rulesets_SkipRules = Record<string, Array<(rulesets_RuleId & unknown)>>;
+export type rulesets_SkipRules = Record<string, Array<rulesets_RuleId>>;
 export const isrulesets_SkipRules = typia.createIs<rulesets_SkipRules>();
 export const assertrulesets_SkipRules = typia.createAssert<rulesets_SkipRules>();
 export const validaterulesets_SkipRules = typia.createValidate<rulesets_SkipRules>();
@@ -22692,7 +22692,7 @@ export const isrulesets_SkipRuleset = typia.createIs<rulesets_SkipRuleset>();
 export const assertrulesets_SkipRuleset = typia.createAssert<rulesets_SkipRuleset>();
 export const validaterulesets_SkipRuleset = typia.createValidate<rulesets_SkipRuleset>();
 
-export type rulesets_SkipRulesets = (Array<(rulesets_RulesetId & unknown)> & tags.MinItems<1>);
+export type rulesets_SkipRulesets = (Array<rulesets_RulesetId> & tags.MinItems<1>);
 export const isrulesets_SkipRulesets = typia.createIs<rulesets_SkipRulesets>();
 export const assertrulesets_SkipRulesets = typia.createAssert<rulesets_SkipRulesets>();
 export const validaterulesets_SkipRulesets = typia.createValidate<rulesets_SkipRulesets>();
@@ -22722,7 +22722,7 @@ export const isrulesets_Response = typia.createIs<rulesets_Response>();
 export const assertrulesets_Response = typia.createAssert<rulesets_Response>();
 export const validaterulesets_Response = typia.createValidate<rulesets_Response>();
 
-export type rulesets_ResponseRule = (rulesets_RequestRule & unknown);
+export type rulesets_ResponseRule = rulesets_RequestRule;
 export const isrulesets_ResponseRule = typia.createIs<rulesets_ResponseRule>();
 export const assertrulesets_ResponseRule = typia.createAssert<rulesets_ResponseRule>();
 export const validaterulesets_ResponseRule = typia.createValidate<rulesets_ResponseRule>();
@@ -22732,7 +22732,7 @@ export const isrulesets_ResponseRules = typia.createIs<rulesets_ResponseRules>()
 export const assertrulesets_ResponseRules = typia.createAssert<rulesets_ResponseRules>();
 export const validaterulesets_ResponseRules = typia.createValidate<rulesets_ResponseRules>();
 
-export type rulesets_ResultInfo = Partial<{ cursors: { after: (rulesets_Cursor & unknown) } }>;
+export type rulesets_ResultInfo = Partial<{ cursors: { after: rulesets_Cursor } }>;
 export const isrulesets_ResultInfo = typia.createIs<rulesets_ResultInfo>();
 export const assertrulesets_ResultInfo = typia.createAssert<rulesets_ResultInfo>();
 export const validaterulesets_ResultInfo = typia.createValidate<rulesets_ResultInfo>();
@@ -22747,7 +22747,7 @@ export const isrulesets_RulesetVersion = typia.createIs<rulesets_RulesetVersion>
 export const assertrulesets_RulesetVersion = typia.createAssert<rulesets_RulesetVersion>();
 export const validaterulesets_RulesetVersion = typia.createValidate<rulesets_RulesetVersion>();
 
-export type rulesets_Ruleset_schemas = { description?: string, id: (rulesets_RulesetId & unknown), last_updated: string, name?: string, version: (rulesets_RulesetVersion & unknown) };
+export type rulesets_Ruleset_schemas = { description?: string, id: rulesets_RulesetId, last_updated: string, name?: string, version: rulesets_RulesetVersion };
 export const isrulesets_Ruleset_schemas = typia.createIs<rulesets_Ruleset_schemas>();
 export const assertrulesets_Ruleset_schemas = typia.createAssert<rulesets_Ruleset_schemas>();
 export const validaterulesets_Ruleset_schemas = typia.createValidate<rulesets_Ruleset_schemas>();
@@ -22782,7 +22782,7 @@ export const isrum_messages_2 = typia.createIs<rum_messages_2>();
 export const assertrum_messages_2 = typia.createAssert<rum_messages_2>();
 export const validaterum_messages_2 = typia.createValidate<rum_messages_2>();
 
-export type rum_api_response_common_failure = { errors: (rum_messages_2 & unknown), messages: (rum_messages_2), result: (Record<string, unknown> | null), success: false };
+export type rum_api_response_common_failure = { errors: rum_messages_2, messages: rum_messages_2, result: (Record<string, unknown> | null), success: false };
 export const isrum_api_response_common_failure = typia.createIs<rum_api_response_common_failure>();
 export const assertrum_api_response_common_failure = typia.createAssert<rum_api_response_common_failure>();
 export const validaterum_api_response_common_failure = typia.createValidate<rum_api_response_common_failure>();
@@ -23037,7 +23037,7 @@ export const issecondary_dns_api_response_collection = typia.createIs<secondary_
 export const assertsecondary_dns_api_response_collection = typia.createAssert<secondary_dns_api_response_collection>();
 export const validatesecondary_dns_api_response_collection = typia.createValidate<secondary_dns_api_response_collection>();
 
-export type secondary_dns_api_response_common_failure = { errors: (secondary_dns_messages & unknown), messages: (secondary_dns_messages), result: (Record<string, unknown> | null), success: false };
+export type secondary_dns_api_response_common_failure = { errors: secondary_dns_messages, messages: secondary_dns_messages, result: (Record<string, unknown> | null), success: false };
 export const issecondary_dns_api_response_common_failure = typia.createIs<secondary_dns_api_response_common_failure>();
 export const assertsecondary_dns_api_response_common_failure = typia.createAssert<secondary_dns_api_response_common_failure>();
 export const validatesecondary_dns_api_response_common_failure = typia.createValidate<secondary_dns_api_response_common_failure>();
@@ -23262,7 +23262,7 @@ export const issecrets_store_api_response_collection = typia.createIs<secrets_st
 export const assertsecrets_store_api_response_collection = typia.createAssert<secrets_store_api_response_collection>();
 export const validatesecrets_store_api_response_collection = typia.createValidate<secrets_store_api_response_collection>();
 
-export type secrets_store_api_response_common_failure = { errors: (secrets_store_messages & unknown), messages: (secrets_store_messages), result: (Record<string, unknown> | null), success: false };
+export type secrets_store_api_response_common_failure = { errors: secrets_store_messages, messages: secrets_store_messages, result: (Record<string, unknown> | null), success: false };
 export const issecrets_store_api_response_common_failure = typia.createIs<secrets_store_api_response_common_failure>();
 export const assertsecrets_store_api_response_common_failure = typia.createAssert<secrets_store_api_response_common_failure>();
 export const validatesecrets_store_api_response_common_failure = typia.createValidate<secrets_store_api_response_common_failure>();
@@ -23422,7 +23422,7 @@ export const issecurity_center_ExternalApiResponseCommon = typia.createIs<securi
 export const assertsecurity_center_ExternalApiResponseCommon = typia.createAssert<security_center_ExternalApiResponseCommon>();
 export const validatesecurity_center_ExternalApiResponseCommon = typia.createValidate<security_center_ExternalApiResponseCommon>();
 
-export type security_center_api_response_common_failure = { errors: (security_center_messages & unknown), messages: (security_center_messages), result: (Record<string, unknown> | null), success: false };
+export type security_center_api_response_common_failure = { errors: security_center_messages, messages: security_center_messages, result: (Record<string, unknown> | null), success: false };
 export const issecurity_center_api_response_common_failure = typia.createIs<security_center_api_response_common_failure>();
 export const assertsecurity_center_api_response_common_failure = typia.createAssert<security_center_api_response_common_failure>();
 export const validatesecurity_center_api_response_common_failure = typia.createValidate<security_center_api_response_common_failure>();
@@ -23602,7 +23602,7 @@ export const issmartshield_api_response_collection = typia.createIs<smartshield_
 export const assertsmartshield_api_response_collection = typia.createAssert<smartshield_api_response_collection>();
 export const validatesmartshield_api_response_collection = typia.createValidate<smartshield_api_response_collection>();
 
-export type smartshield_api_response_common_failure = { errors: (smartshield_messages & unknown), messages: (smartshield_messages), result: (Record<string, unknown> | null), success: false };
+export type smartshield_api_response_common_failure = { errors: smartshield_messages, messages: smartshield_messages, result: (Record<string, unknown> | null), success: false };
 export const issmartshield_api_response_common_failure = typia.createIs<smartshield_api_response_common_failure>();
 export const assertsmartshield_api_response_common_failure = typia.createAssert<smartshield_api_response_common_failure>();
 export const validatesmartshield_api_response_common_failure = typia.createValidate<smartshield_api_response_common_failure>();
@@ -23852,7 +23852,7 @@ export const isspectrum_analytics_api_response_common = typia.createIs<spectrum_
 export const assertspectrum_analytics_api_response_common = typia.createAssert<spectrum_analytics_api_response_common>();
 export const validatespectrum_analytics_api_response_common = typia.createValidate<spectrum_analytics_api_response_common>();
 
-export type spectrum_analytics_api_response_common_failure = { errors: (spectrum_analytics_messages & unknown), messages: (spectrum_analytics_messages), result: (Record<string, unknown> | null), success: false };
+export type spectrum_analytics_api_response_common_failure = { errors: spectrum_analytics_messages, messages: spectrum_analytics_messages, result: (Record<string, unknown> | null), success: false };
 export const isspectrum_analytics_api_response_common_failure = typia.createIs<spectrum_analytics_api_response_common_failure>();
 export const assertspectrum_analytics_api_response_common_failure = typia.createAssert<spectrum_analytics_api_response_common_failure>();
 export const validatespectrum_analytics_api_response_common_failure = typia.createValidate<spectrum_analytics_api_response_common_failure>();
@@ -23897,7 +23897,7 @@ export const isspectrum_analytics_timestamp = typia.createIs<spectrum_analytics_
 export const assertspectrum_analytics_timestamp = typia.createAssert<spectrum_analytics_timestamp>();
 export const validatespectrum_analytics_timestamp = typia.createValidate<spectrum_analytics_timestamp>();
 
-export type spectrum_analytics_since = (unknown & spectrum_analytics_timestamp);
+export type spectrum_analytics_since = spectrum_analytics_timestamp;
 export const isspectrum_analytics_since = typia.createIs<spectrum_analytics_since>();
 export const assertspectrum_analytics_since = typia.createAssert<spectrum_analytics_since>();
 export const validatespectrum_analytics_since = typia.createValidate<spectrum_analytics_since>();
@@ -23907,7 +23907,7 @@ export const isspectrum_analytics_sort = typia.createIs<spectrum_analytics_sort>
 export const assertspectrum_analytics_sort = typia.createAssert<spectrum_analytics_sort>();
 export const validatespectrum_analytics_sort = typia.createValidate<spectrum_analytics_sort>();
 
-export type spectrum_analytics_until = (unknown & spectrum_analytics_timestamp);
+export type spectrum_analytics_until = spectrum_analytics_timestamp;
 export const isspectrum_analytics_until = typia.createIs<spectrum_analytics_until>();
 export const assertspectrum_analytics_until = typia.createAssert<spectrum_analytics_until>();
 export const validatespectrum_analytics_until = typia.createValidate<spectrum_analytics_until>();
@@ -23917,7 +23917,7 @@ export const isspectrum_analytics_query = typia.createIs<spectrum_analytics_quer
 export const assertspectrum_analytics_query = typia.createAssert<spectrum_analytics_query>();
 export const validatespectrum_analytics_query = typia.createValidate<spectrum_analytics_query>();
 
-export type spectrum_analytics_query_response_aggregate = (spectrum_analytics_api_response_single & Partial<{ result: Array<{ appID: (unknown & spectrum_analytics_identifier), bytesEgress: number, bytesIngress: number, connections: number, durationAvg: number }> }>);
+export type spectrum_analytics_query_response_aggregate = (spectrum_analytics_api_response_single & Partial<{ result: Array<{ appID: spectrum_analytics_identifier, bytesEgress: number, bytesIngress: number, connections: number, durationAvg: number }> }>);
 export const isspectrum_analytics_query_response_aggregate = typia.createIs<spectrum_analytics_query_response_aggregate>();
 export const assertspectrum_analytics_query_response_aggregate = typia.createAssert<spectrum_analytics_query_response_aggregate>();
 export const validatespectrum_analytics_query_response_aggregate = typia.createValidate<spectrum_analytics_query_response_aggregate>();
@@ -23927,7 +23927,7 @@ export const isspectrum_analytics_stat = typia.createIs<spectrum_analytics_stat>
 export const assertspectrum_analytics_stat = typia.createAssert<spectrum_analytics_stat>();
 export const validatespectrum_analytics_stat = typia.createValidate<spectrum_analytics_stat>();
 
-export type spectrum_analytics_query_response_single = (spectrum_analytics_api_response_single & Partial<{ result: { data: Array<spectrum_analytics_column>, data_lag: number, max: (unknown & spectrum_analytics_stat), min: (unknown & spectrum_analytics_stat), query: spectrum_analytics_query, rows: number, time_intervals?: Array<Array<spectrum_analytics_timestamp>>, totals: (unknown & spectrum_analytics_stat) } }>);
+export type spectrum_analytics_query_response_single = (spectrum_analytics_api_response_single & Partial<{ result: { data: Array<spectrum_analytics_column>, data_lag: number, max: spectrum_analytics_stat, min: spectrum_analytics_stat, query: spectrum_analytics_query, rows: number, time_intervals?: Array<Array<spectrum_analytics_timestamp>>, totals: spectrum_analytics_stat } }>);
 export const isspectrum_analytics_query_response_single = typia.createIs<spectrum_analytics_query_response_single>();
 export const assertspectrum_analytics_query_response_single = typia.createAssert<spectrum_analytics_query_response_single>();
 export const validatespectrum_analytics_query_response_single = typia.createValidate<spectrum_analytics_query_response_single>();
@@ -23947,7 +23947,7 @@ export const isspectrum_config_api_response_collection = typia.createIs<spectrum
 export const assertspectrum_config_api_response_collection = typia.createAssert<spectrum_config_api_response_collection>();
 export const validatespectrum_config_api_response_collection = typia.createValidate<spectrum_config_api_response_collection>();
 
-export type spectrum_config_api_response_common_failure = { errors: (spectrum_config_messages & unknown), messages: (spectrum_config_messages), result: (Record<string, unknown> | null), success: false };
+export type spectrum_config_api_response_common_failure = { errors: spectrum_config_messages, messages: spectrum_config_messages, result: (Record<string, unknown> | null), success: false };
 export const isspectrum_config_api_response_common_failure = typia.createIs<spectrum_config_api_response_common_failure>();
 export const assertspectrum_config_api_response_common_failure = typia.createAssert<spectrum_config_api_response_common_failure>();
 export const validatespectrum_config_api_response_common_failure = typia.createValidate<spectrum_config_api_response_common_failure>();
@@ -23972,17 +23972,17 @@ export const isspectrum_config_timestamp = typia.createIs<spectrum_config_timest
 export const assertspectrum_config_timestamp = typia.createAssert<spectrum_config_timestamp>();
 export const validatespectrum_config_timestamp = typia.createValidate<spectrum_config_timestamp>();
 
-export type spectrum_config_created = (unknown & unknown & spectrum_config_timestamp);
+export type spectrum_config_created = spectrum_config_timestamp;
 export const isspectrum_config_created = typia.createIs<spectrum_config_created>();
 export const assertspectrum_config_created = typia.createAssert<spectrum_config_created>();
 export const validatespectrum_config_created = typia.createValidate<spectrum_config_created>();
 
-export type spectrum_config_app_identifier = (unknown & unknown & spectrum_config_identifier);
+export type spectrum_config_app_identifier = spectrum_config_identifier;
 export const isspectrum_config_app_identifier = typia.createIs<spectrum_config_app_identifier>();
 export const assertspectrum_config_app_identifier = typia.createAssert<spectrum_config_app_identifier>();
 export const validatespectrum_config_app_identifier = typia.createValidate<spectrum_config_app_identifier>();
 
-export type spectrum_config_modified = (unknown & unknown & spectrum_config_timestamp);
+export type spectrum_config_modified = spectrum_config_timestamp;
 export const isspectrum_config_modified = typia.createIs<spectrum_config_modified>();
 export const assertspectrum_config_modified = typia.createAssert<spectrum_config_modified>();
 export const validatespectrum_config_modified = typia.createValidate<spectrum_config_modified>();
@@ -24102,7 +24102,7 @@ export const isspectrum_config_update_app_config = typia.createIs<spectrum_confi
 export const assertspectrum_config_update_app_config = typia.createAssert<spectrum_config_update_app_config>();
 export const validatespectrum_config_update_app_config = typia.createValidate<spectrum_config_update_app_config>();
 
-export type spectrum_config_zone_identifier = (unknown & unknown & spectrum_config_identifier);
+export type spectrum_config_zone_identifier = spectrum_config_identifier;
 export const isspectrum_config_zone_identifier = typia.createIs<spectrum_config_zone_identifier>();
 export const assertspectrum_config_zone_identifier = typia.createAssert<spectrum_config_zone_identifier>();
 export const validatespectrum_config_zone_identifier = typia.createValidate<spectrum_config_zone_identifier>();
@@ -24117,7 +24117,7 @@ export const isspeed_api_response_common = typia.createIs<speed_api_response_com
 export const assertspeed_api_response_common = typia.createAssert<speed_api_response_common>();
 export const validatespeed_api_response_common = typia.createValidate<speed_api_response_common>();
 
-export type speed_api_response_common_failure = { errors: (speed_messages & unknown), messages: (speed_messages), result: (Record<string, unknown> | null), success: boolean };
+export type speed_api_response_common_failure = { errors: speed_messages, messages: speed_messages, result: (Record<string, unknown> | null), success: boolean };
 export const isspeed_api_response_common_failure = typia.createIs<speed_api_response_common_failure>();
 export const assertspeed_api_response_common_failure = typia.createAssert<speed_api_response_common_failure>();
 export const validatespeed_api_response_common_failure = typia.createValidate<speed_api_response_common_failure>();
@@ -24207,7 +24207,7 @@ export const isstream_allowedOrigins = typia.createIs<stream_allowedOrigins>();
 export const assertstream_allowedOrigins = typia.createAssert<stream_allowedOrigins>();
 export const validatestream_allowedOrigins = typia.createValidate<stream_allowedOrigins>();
 
-export type stream_api_response_common_failure = { errors: (stream_messages & unknown), messages: (stream_messages), result: (Record<string, unknown> | null), success: false };
+export type stream_api_response_common_failure = { errors: stream_messages, messages: stream_messages, result: (Record<string, unknown> | null), success: false };
 export const isstream_api_response_common_failure = typia.createIs<stream_api_response_common_failure>();
 export const assertstream_api_response_common_failure = typia.createAssert<stream_api_response_common_failure>();
 export const validatestream_api_response_common_failure = typia.createValidate<stream_api_response_common_failure>();
@@ -24617,7 +24617,7 @@ export const isstream_downloads = typia.createIs<stream_downloads>();
 export const assertstream_downloads = typia.createAssert<stream_downloads>();
 export const validatestream_downloads = typia.createValidate<stream_downloads>();
 
-export type stream_downloads_response = (stream_api_response_single & Partial<{ result: Partial<{ audio: (stream_downloads), default: (stream_downloads) }> }>);
+export type stream_downloads_response = (stream_api_response_single & Partial<{ result: Partial<{ audio: stream_downloads, default: stream_downloads }> }>);
 export const isstream_downloads_response = typia.createIs<stream_downloads_response>();
 export const assertstream_downloads_response = typia.createAssert<stream_downloads_response>();
 export const validatestream_downloads_response = typia.createValidate<stream_downloads_response>();
@@ -25007,7 +25007,7 @@ export const isteams_devices_api_response_collection_common = typia.createIs<tea
 export const assertteams_devices_api_response_collection_common = typia.createAssert<teams_devices_api_response_collection_common>();
 export const validateteams_devices_api_response_collection_common = typia.createValidate<teams_devices_api_response_collection_common>();
 
-export type teams_devices_api_response_common_failure = { errors: (teams_devices_messages & unknown), messages: (teams_devices_messages), result: (Record<string, unknown> | null), success: false };
+export type teams_devices_api_response_common_failure = { errors: teams_devices_messages, messages: teams_devices_messages, result: (Record<string, unknown> | null), success: false };
 export const isteams_devices_api_response_common_failure = typia.createIs<teams_devices_api_response_common_failure>();
 export const assertteams_devices_api_response_common_failure = typia.createAssert<teams_devices_api_response_common_failure>();
 export const validateteams_devices_api_response_common_failure = typia.createValidate<teams_devices_api_response_common_failure>();
@@ -26102,7 +26102,7 @@ export const istls_certificates_and_hostnames_api_response_collection = typia.cr
 export const asserttls_certificates_and_hostnames_api_response_collection = typia.createAssert<tls_certificates_and_hostnames_api_response_collection>();
 export const validatetls_certificates_and_hostnames_api_response_collection = typia.createValidate<tls_certificates_and_hostnames_api_response_collection>();
 
-export type tls_certificates_and_hostnames_api_response_common_failure = { errors: (tls_certificates_and_hostnames_messages & unknown), messages: (tls_certificates_and_hostnames_messages), result: (Record<string, unknown> | null), success: false };
+export type tls_certificates_and_hostnames_api_response_common_failure = { errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_messages, result: (Record<string, unknown> | null), success: false };
 export const istls_certificates_and_hostnames_api_response_common_failure = typia.createIs<tls_certificates_and_hostnames_api_response_common_failure>();
 export const asserttls_certificates_and_hostnames_api_response_common_failure = typia.createAssert<tls_certificates_and_hostnames_api_response_common_failure>();
 export const validatetls_certificates_and_hostnames_api_response_common_failure = typia.createValidate<tls_certificates_and_hostnames_api_response_common_failure>();
@@ -26547,7 +26547,7 @@ export const istls_certificates_and_hostnames_revoked_at = typia.createIs<tls_ce
 export const asserttls_certificates_and_hostnames_revoked_at = typia.createAssert<tls_certificates_and_hostnames_revoked_at>();
 export const validatetls_certificates_and_hostnames_revoked_at = typia.createValidate<tls_certificates_and_hostnames_revoked_at>();
 
-export type tls_certificates_and_hostnames_certificate_revoke_response = (Partial<{ result: Partial<{ id: tls_certificates_and_hostnames_identifier, revoked_at: tls_certificates_and_hostnames_revoked_at }> }>);
+export type tls_certificates_and_hostnames_certificate_revoke_response = Partial<{ result: Partial<{ id: tls_certificates_and_hostnames_identifier, revoked_at: tls_certificates_and_hostnames_revoked_at }> }>;
 export const istls_certificates_and_hostnames_certificate_revoke_response = typia.createIs<tls_certificates_and_hostnames_certificate_revoke_response>();
 export const asserttls_certificates_and_hostnames_certificate_revoke_response = typia.createAssert<tls_certificates_and_hostnames_certificate_revoke_response>();
 export const validatetls_certificates_and_hostnames_certificate_revoke_response = typia.createValidate<tls_certificates_and_hostnames_certificate_revoke_response>();
@@ -26857,7 +26857,7 @@ export const istls_certificates_and_hostnames_custom_hostname_api_response_commo
 export const asserttls_certificates_and_hostnames_custom_hostname_api_response_common = typia.createAssert<tls_certificates_and_hostnames_custom_hostname_api_response_common>();
 export const validatetls_certificates_and_hostnames_custom_hostname_api_response_common = typia.createValidate<tls_certificates_and_hostnames_custom_hostname_api_response_common>();
 
-export type tls_certificates_and_hostnames_custom_hostname_api_response_failure = { errors: (tls_certificates_and_hostnames_messages & unknown), messages: tls_certificates_and_hostnames_custom_hostname_response_messages, result: (Record<string, unknown> | null), success: false };
+export type tls_certificates_and_hostnames_custom_hostname_api_response_failure = { errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_custom_hostname_response_messages, result: (Record<string, unknown> | null), success: false };
 export const istls_certificates_and_hostnames_custom_hostname_api_response_failure = typia.createIs<tls_certificates_and_hostnames_custom_hostname_api_response_failure>();
 export const asserttls_certificates_and_hostnames_custom_hostname_api_response_failure = typia.createAssert<tls_certificates_and_hostnames_custom_hostname_api_response_failure>();
 export const validatetls_certificates_and_hostnames_custom_hostname_api_response_failure = typia.createValidate<tls_certificates_and_hostnames_custom_hostname_api_response_failure>();
@@ -27177,7 +27177,7 @@ export const istls_certificates_and_hostnames_verification = typia.createIs<tls_
 export const asserttls_certificates_and_hostnames_verification = typia.createAssert<tls_certificates_and_hostnames_verification>();
 export const validatetls_certificates_and_hostnames_verification = typia.createValidate<tls_certificates_and_hostnames_verification>();
 
-export type tls_certificates_and_hostnames_ssl_verification_response_collection = (Partial<{ result: Array<tls_certificates_and_hostnames_verification> }>);
+export type tls_certificates_and_hostnames_ssl_verification_response_collection = Partial<{ result: Array<tls_certificates_and_hostnames_verification> }>;
 export const istls_certificates_and_hostnames_ssl_verification_response_collection = typia.createIs<tls_certificates_and_hostnames_ssl_verification_response_collection>();
 export const asserttls_certificates_and_hostnames_ssl_verification_response_collection = typia.createAssert<tls_certificates_and_hostnames_ssl_verification_response_collection>();
 export const validatetls_certificates_and_hostnames_ssl_verification_response_collection = typia.createValidate<tls_certificates_and_hostnames_ssl_verification_response_collection>();
@@ -27247,12 +27247,12 @@ export const istunnel_api_response_common_2 = typia.createIs<tunnel_api_response
 export const asserttunnel_api_response_common_2 = typia.createAssert<tunnel_api_response_common_2>();
 export const validatetunnel_api_response_common_2 = typia.createValidate<tunnel_api_response_common_2>();
 
-export type tunnel_api_response_common_failure = { errors: (tunnel_messages & unknown), messages: (tunnel_messages), result: (Record<string, unknown> | null), success: false };
+export type tunnel_api_response_common_failure = { errors: tunnel_messages, messages: tunnel_messages, result: (Record<string, unknown> | null), success: false };
 export const istunnel_api_response_common_failure = typia.createIs<tunnel_api_response_common_failure>();
 export const asserttunnel_api_response_common_failure = typia.createAssert<tunnel_api_response_common_failure>();
 export const validatetunnel_api_response_common_failure = typia.createValidate<tunnel_api_response_common_failure>();
 
-export type tunnel_api_response_common_failure_2 = { errors: (tunnel_messages_2 & unknown), messages: (tunnel_messages_2), result: (Record<string, unknown> | null), success: false };
+export type tunnel_api_response_common_failure_2 = { errors: tunnel_messages_2, messages: tunnel_messages_2, result: (Record<string, unknown> | null), success: false };
 export const istunnel_api_response_common_failure_2 = typia.createIs<tunnel_api_response_common_failure_2>();
 export const asserttunnel_api_response_common_failure_2 = typia.createAssert<tunnel_api_response_common_failure_2>();
 export const validatetunnel_api_response_common_failure_2 = typia.createValidate<tunnel_api_response_common_failure_2>();
@@ -27337,7 +27337,7 @@ export const istunnel_ip = typia.createIs<tunnel_ip>();
 export const asserttunnel_ip = typia.createAssert<tunnel_ip>();
 export const validatetunnel_ip = typia.createValidate<tunnel_ip>();
 
-export type tunnel_schemas_connection = Partial<{ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, is_pending_reconnect: tunnel_is_pending_reconnect, opened_at: string, origin_ip: (tunnel_ip), uuid: tunnel_connection_id }>;
+export type tunnel_schemas_connection = Partial<{ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, is_pending_reconnect: tunnel_is_pending_reconnect, opened_at: string, origin_ip: tunnel_ip, uuid: tunnel_connection_id }>;
 export const istunnel_schemas_connection = typia.createIs<tunnel_schemas_connection>();
 export const asserttunnel_schemas_connection = typia.createAssert<tunnel_schemas_connection>();
 export const validatetunnel_schemas_connection = typia.createValidate<tunnel_schemas_connection>();
@@ -27647,7 +27647,7 @@ export const istunnel_run_at = typia.createIs<tunnel_run_at>();
 export const asserttunnel_run_at = typia.createAssert<tunnel_run_at>();
 export const validatetunnel_run_at = typia.createValidate<tunnel_run_at>();
 
-export type tunnel_schemas_warp_connector_connection = Partial<{ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, opened_at: string, origin_ip: (tunnel_ip) }>;
+export type tunnel_schemas_warp_connector_connection = Partial<{ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, opened_at: string, origin_ip: tunnel_ip }>;
 export const istunnel_schemas_warp_connector_connection = typia.createIs<tunnel_schemas_warp_connector_connection>();
 export const asserttunnel_schemas_warp_connector_connection = typia.createAssert<tunnel_schemas_warp_connector_connection>();
 export const validatetunnel_schemas_warp_connector_connection = typia.createValidate<tunnel_schemas_warp_connector_connection>();
@@ -27862,7 +27862,7 @@ export const isturnstile_api_response_common = typia.createIs<turnstile_api_resp
 export const assertturnstile_api_response_common = typia.createAssert<turnstile_api_response_common>();
 export const validateturnstile_api_response_common = typia.createValidate<turnstile_api_response_common>();
 
-export type turnstile_api_response_common_failure = { errors: (turnstile_messages & unknown), messages: (turnstile_messages), result: (Record<string, unknown> | null), success: boolean };
+export type turnstile_api_response_common_failure = { errors: turnstile_messages, messages: turnstile_messages, result: (Record<string, unknown> | null), success: boolean };
 export const isturnstile_api_response_common_failure = typia.createIs<turnstile_api_response_common_failure>();
 export const assertturnstile_api_response_common_failure = typia.createAssert<turnstile_api_response_common_failure>();
 export const validateturnstile_api_response_common_failure = typia.createValidate<turnstile_api_response_common_failure>();
@@ -28022,7 +28022,7 @@ export const isvectorize_api_response_collection = typia.createIs<vectorize_api_
 export const assertvectorize_api_response_collection = typia.createAssert<vectorize_api_response_collection>();
 export const validatevectorize_api_response_collection = typia.createValidate<vectorize_api_response_collection>();
 
-export type vectorize_api_response_common_failure = { errors: (vectorize_messages & unknown), messages: (vectorize_messages), result: (Record<string, unknown> | null), success: false };
+export type vectorize_api_response_common_failure = { errors: vectorize_messages, messages: vectorize_messages, result: (Record<string, unknown> | null), success: false };
 export const isvectorize_api_response_common_failure = typia.createIs<vectorize_api_response_common_failure>();
 export const assertvectorize_api_response_common_failure = typia.createAssert<vectorize_api_response_common_failure>();
 export const validatevectorize_api_response_common_failure = typia.createValidate<vectorize_api_response_common_failure>();
@@ -28072,7 +28072,7 @@ export const isvectorize_index_name = typia.createIs<vectorize_index_name>();
 export const assertvectorize_index_name = typia.createAssert<vectorize_index_name>();
 export const validatevectorize_index_name = typia.createValidate<vectorize_index_name>();
 
-export type vectorize_create_index_request = { config: (vectorize_index_configuration), description?: vectorize_index_description, name: vectorize_index_name };
+export type vectorize_create_index_request = { config: vectorize_index_configuration, description?: vectorize_index_description, name: vectorize_index_name };
 export const isvectorize_create_index_request = typia.createIs<vectorize_create_index_request>();
 export const assertvectorize_create_index_request = typia.createAssert<vectorize_create_index_request>();
 export const validatevectorize_create_index_request = typia.createValidate<vectorize_create_index_request>();
@@ -28222,7 +28222,7 @@ export const isvuln_scanner_api_response_collection = typia.createIs<vuln_scanne
 export const assertvuln_scanner_api_response_collection = typia.createAssert<vuln_scanner_api_response_collection>();
 export const validatevuln_scanner_api_response_collection = typia.createValidate<vuln_scanner_api_response_collection>();
 
-export type vuln_scanner_api_response_common_failure = { errors: (vuln_scanner_messages & unknown), messages: (vuln_scanner_messages), result: (Record<string, unknown> | null), success: false };
+export type vuln_scanner_api_response_common_failure = { errors: vuln_scanner_messages, messages: vuln_scanner_messages, result: (Record<string, unknown> | null), success: false };
 export const isvuln_scanner_api_response_common_failure = typia.createIs<vuln_scanner_api_response_common_failure>();
 export const assertvuln_scanner_api_response_common_failure = typia.createAssert<vuln_scanner_api_response_common_failure>();
 export const validatevuln_scanner_api_response_common_failure = typia.createValidate<vuln_scanner_api_response_common_failure>();
@@ -28287,7 +28287,7 @@ export const isvuln_scanner_bola_verdict = typia.createIs<vuln_scanner_bola_verd
 export const assertvuln_scanner_bola_verdict = typia.createAssert<vuln_scanner_bola_verdict>();
 export const validatevuln_scanner_bola_verdict = typia.createValidate<vuln_scanner_bola_verdict>();
 
-export type vuln_scanner_bola_report_summary = { verdict: (vuln_scanner_bola_verdict) };
+export type vuln_scanner_bola_report_summary = { verdict: vuln_scanner_bola_verdict };
 export const isvuln_scanner_bola_report_summary = typia.createIs<vuln_scanner_bola_report_summary>();
 export const assertvuln_scanner_bola_report_summary = typia.createAssert<vuln_scanner_bola_report_summary>();
 export const validatevuln_scanner_bola_report_summary = typia.createValidate<vuln_scanner_bola_report_summary>();
@@ -28297,12 +28297,12 @@ export const isvuln_scanner_bola_test_error = typia.createIs<vuln_scanner_bola_t
 export const assertvuln_scanner_bola_test_error = typia.createAssert<vuln_scanner_bola_test_error>();
 export const validatevuln_scanner_bola_test_error = typia.createValidate<vuln_scanner_bola_test_error>();
 
-export type vuln_scanner_bola_test_assertion = { description: string, kind: (vuln_scanner_bola_assertion_kind), observed: (number | null), outcome: (vuln_scanner_bola_outcome) };
+export type vuln_scanner_bola_test_assertion = { description: string, kind: vuln_scanner_bola_assertion_kind, observed: (number | null), outcome: vuln_scanner_bola_outcome };
 export const isvuln_scanner_bola_test_assertion = typia.createIs<vuln_scanner_bola_test_assertion>();
 export const assertvuln_scanner_bola_test_assertion = typia.createAssert<vuln_scanner_bola_test_assertion>();
 export const validatevuln_scanner_bola_test_assertion = typia.createValidate<vuln_scanner_bola_test_assertion>();
 
-export type vuln_scanner_bola_test_credential_set = { id: string, role: (vuln_scanner_bola_credential_role) };
+export type vuln_scanner_bola_test_credential_set = { id: string, role: vuln_scanner_bola_credential_role };
 export const isvuln_scanner_bola_test_credential_set = typia.createIs<vuln_scanner_bola_test_credential_set>();
 export const assertvuln_scanner_bola_test_credential_set = typia.createAssert<vuln_scanner_bola_test_credential_set>();
 export const validatevuln_scanner_bola_test_credential_set = typia.createValidate<vuln_scanner_bola_test_credential_set>();
@@ -28312,12 +28312,12 @@ export const isvuln_scanner_bola_variable_capture = typia.createIs<vuln_scanner_
 export const assertvuln_scanner_bola_variable_capture = typia.createAssert<vuln_scanner_bola_variable_capture>();
 export const validatevuln_scanner_bola_variable_capture = typia.createValidate<vuln_scanner_bola_variable_capture>();
 
-export type vuln_scanner_bola_test_request = { body?: (Record<string, unknown> | null), credential_set: (vuln_scanner_bola_test_credential_set), header_names: Array<string>, method: (vuln_scanner_bola_method), url: string, variable_captures: Array<vuln_scanner_bola_variable_capture> };
+export type vuln_scanner_bola_test_request = { body?: (Record<string, unknown> | null), credential_set: vuln_scanner_bola_test_credential_set, header_names: Array<string>, method: vuln_scanner_bola_method, url: string, variable_captures: Array<vuln_scanner_bola_variable_capture> };
 export const isvuln_scanner_bola_test_request = typia.createIs<vuln_scanner_bola_test_request>();
 export const assertvuln_scanner_bola_test_request = typia.createAssert<vuln_scanner_bola_test_request>();
 export const validatevuln_scanner_bola_test_request = typia.createValidate<vuln_scanner_bola_test_request>();
 
-export type vuln_scanner_bola_test_response = { body: (vuln_scanner_bola_body_response), header_names: Array<string>, status: number, status_text?: (string | null) };
+export type vuln_scanner_bola_test_response = { body: vuln_scanner_bola_body_response, header_names: Array<string>, status: number, status_text?: (string | null) };
 export const isvuln_scanner_bola_test_response = typia.createIs<vuln_scanner_bola_test_response>();
 export const assertvuln_scanner_bola_test_response = typia.createAssert<vuln_scanner_bola_test_response>();
 export const validatevuln_scanner_bola_test_response = typia.createValidate<vuln_scanner_bola_test_response>();
@@ -28327,17 +28327,17 @@ export const isvuln_scanner_bola_test_step = typia.createIs<vuln_scanner_bola_te
 export const assertvuln_scanner_bola_test_step = typia.createAssert<vuln_scanner_bola_test_step>();
 export const validatevuln_scanner_bola_test_step = typia.createValidate<vuln_scanner_bola_test_step>();
 
-export type vuln_scanner_bola_test = { preflight_errors?: Array<vuln_scanner_bola_test_error>, steps: Array<vuln_scanner_bola_test_step>, verdict: (vuln_scanner_bola_verdict) };
+export type vuln_scanner_bola_test = { preflight_errors?: Array<vuln_scanner_bola_test_error>, steps: Array<vuln_scanner_bola_test_step>, verdict: vuln_scanner_bola_verdict };
 export const isvuln_scanner_bola_test = typia.createIs<vuln_scanner_bola_test>();
 export const assertvuln_scanner_bola_test = typia.createAssert<vuln_scanner_bola_test>();
 export const validatevuln_scanner_bola_test = typia.createValidate<vuln_scanner_bola_test>();
 
-export type vuln_scanner_bola_report_v1 = { summary: (vuln_scanner_bola_report_summary), tests: Array<vuln_scanner_bola_test> };
+export type vuln_scanner_bola_report_v1 = { summary: vuln_scanner_bola_report_summary, tests: Array<vuln_scanner_bola_test> };
 export const isvuln_scanner_bola_report_v1 = typia.createIs<vuln_scanner_bola_report_v1>();
 export const assertvuln_scanner_bola_report_v1 = typia.createAssert<vuln_scanner_bola_report_v1>();
 export const validatevuln_scanner_bola_report_v1 = typia.createValidate<vuln_scanner_bola_report_v1>();
 
-export type vuln_scanner_bola_report = { report: (vuln_scanner_bola_report_v1), report_schema_version: "v1" };
+export type vuln_scanner_bola_report = { report: vuln_scanner_bola_report_v1, report_schema_version: "v1" };
 export const isvuln_scanner_bola_report = typia.createIs<vuln_scanner_bola_report>();
 export const assertvuln_scanner_bola_report = typia.createAssert<vuln_scanner_bola_report>();
 export const validatevuln_scanner_bola_report = typia.createValidate<vuln_scanner_bola_report>();
@@ -28522,7 +28522,7 @@ export const iswaf_managed_rules_base = typia.createIs<waf_managed_rules_base>()
 export const assertwaf_managed_rules_base = typia.createAssert<waf_managed_rules_base>();
 export const validatewaf_managed_rules_base = typia.createValidate<waf_managed_rules_base>();
 
-export type waf_managed_rules_schemas_base = (waf_managed_rules_base);
+export type waf_managed_rules_schemas_base = waf_managed_rules_base;
 export const iswaf_managed_rules_schemas_base = typia.createIs<waf_managed_rules_schemas_base>();
 export const assertwaf_managed_rules_schemas_base = typia.createAssert<waf_managed_rules_schemas_base>();
 export const validatewaf_managed_rules_schemas_base = typia.createValidate<waf_managed_rules_schemas_base>();
@@ -28552,7 +28552,7 @@ export const iswaf_managed_rules_api_response_collection = typia.createIs<waf_ma
 export const assertwaf_managed_rules_api_response_collection = typia.createAssert<waf_managed_rules_api_response_collection>();
 export const validatewaf_managed_rules_api_response_collection = typia.createValidate<waf_managed_rules_api_response_collection>();
 
-export type waf_managed_rules_api_response_common_failure = { errors: (waf_managed_rules_messages & unknown), messages: (waf_managed_rules_messages), result: (Record<string, unknown> | null), success: false };
+export type waf_managed_rules_api_response_common_failure = { errors: waf_managed_rules_messages, messages: waf_managed_rules_messages, result: (Record<string, unknown> | null), success: false };
 export const iswaf_managed_rules_api_response_common_failure = typia.createIs<waf_managed_rules_api_response_common_failure>();
 export const assertwaf_managed_rules_api_response_common_failure = typia.createAssert<waf_managed_rules_api_response_common_failure>();
 export const validatewaf_managed_rules_api_response_common_failure = typia.createValidate<waf_managed_rules_api_response_common_failure>();
@@ -28587,12 +28587,12 @@ export const iswaf_managed_rules_group = typia.createIs<waf_managed_rules_group>
 export const assertwaf_managed_rules_group = typia.createAssert<waf_managed_rules_group>();
 export const validatewaf_managed_rules_group = typia.createValidate<waf_managed_rules_group>();
 
-export type waf_managed_rules_traditional_deny_rule = (waf_managed_rules_base & Partial<{ allowed_modes: waf_managed_rules_allowed_modes_deny_traditional, default_mode: waf_managed_rules_default_mode, mode: waf_managed_rules_mode_deny_traditional }> & unknown);
+export type waf_managed_rules_traditional_deny_rule = (waf_managed_rules_base & Partial<{ allowed_modes: waf_managed_rules_allowed_modes_deny_traditional, default_mode: waf_managed_rules_default_mode, mode: waf_managed_rules_mode_deny_traditional }>);
 export const iswaf_managed_rules_traditional_deny_rule = typia.createIs<waf_managed_rules_traditional_deny_rule>();
 export const assertwaf_managed_rules_traditional_deny_rule = typia.createAssert<waf_managed_rules_traditional_deny_rule>();
 export const validatewaf_managed_rules_traditional_deny_rule = typia.createValidate<waf_managed_rules_traditional_deny_rule>();
 
-export type waf_managed_rules_traditional_allow_rule = (waf_managed_rules_base & Partial<{ allowed_modes: waf_managed_rules_allowed_modes_allow_traditional, mode: waf_managed_rules_mode_allow_traditional }> & unknown);
+export type waf_managed_rules_traditional_allow_rule = (waf_managed_rules_base & Partial<{ allowed_modes: waf_managed_rules_allowed_modes_allow_traditional, mode: waf_managed_rules_mode_allow_traditional }>);
 export const iswaf_managed_rules_traditional_allow_rule = typia.createIs<waf_managed_rules_traditional_allow_rule>();
 export const assertwaf_managed_rules_traditional_allow_rule = typia.createAssert<waf_managed_rules_traditional_allow_rule>();
 export const validatewaf_managed_rules_traditional_allow_rule = typia.createValidate<waf_managed_rules_traditional_allow_rule>();
@@ -28657,17 +28657,17 @@ export const iswaf_product_api_bundle_api_response_collection_2 = typia.createIs
 export const assertwaf_product_api_bundle_api_response_collection_2 = typia.createAssert<waf_product_api_bundle_api_response_collection_2>();
 export const validatewaf_product_api_bundle_api_response_collection_2 = typia.createValidate<waf_product_api_bundle_api_response_collection_2>();
 
-export type waf_product_api_bundle_api_response_common_failure = { errors: (waf_product_api_bundle_messages & unknown), messages: (waf_product_api_bundle_messages), result: (Record<string, unknown> | null), success: false };
+export type waf_product_api_bundle_api_response_common_failure = { errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: (Record<string, unknown> | null), success: false };
 export const iswaf_product_api_bundle_api_response_common_failure = typia.createIs<waf_product_api_bundle_api_response_common_failure>();
 export const assertwaf_product_api_bundle_api_response_common_failure = typia.createAssert<waf_product_api_bundle_api_response_common_failure>();
 export const validatewaf_product_api_bundle_api_response_common_failure = typia.createValidate<waf_product_api_bundle_api_response_common_failure>();
 
-export type waf_product_api_bundle_api_response_common_failure_2 = { errors: (waf_product_api_bundle_messages & unknown), messages: (waf_product_api_bundle_messages), result: (Record<string, unknown> | null), success: false };
+export type waf_product_api_bundle_api_response_common_failure_2 = { errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: (Record<string, unknown> | null), success: false };
 export const iswaf_product_api_bundle_api_response_common_failure_2 = typia.createIs<waf_product_api_bundle_api_response_common_failure_2>();
 export const assertwaf_product_api_bundle_api_response_common_failure_2 = typia.createAssert<waf_product_api_bundle_api_response_common_failure_2>();
 export const validatewaf_product_api_bundle_api_response_common_failure_2 = typia.createValidate<waf_product_api_bundle_api_response_common_failure_2>();
 
-export type waf_product_api_bundle_api_response_common_failure_3 = { errors: (waf_product_api_bundle_messages & unknown), messages: (waf_product_api_bundle_messages), result: (Record<string, unknown> | null), success: false };
+export type waf_product_api_bundle_api_response_common_failure_3 = { errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: (Record<string, unknown> | null), success: false };
 export const iswaf_product_api_bundle_api_response_common_failure_3 = typia.createIs<waf_product_api_bundle_api_response_common_failure_3>();
 export const assertwaf_product_api_bundle_api_response_common_failure_3 = typia.createAssert<waf_product_api_bundle_api_response_common_failure_3>();
 export const validatewaf_product_api_bundle_api_response_common_failure_3 = typia.createValidate<waf_product_api_bundle_api_response_common_failure_3>();
@@ -28687,7 +28687,7 @@ export const iswaf_product_api_bundle_identifier = typia.createIs<waf_product_ap
 export const assertwaf_product_api_bundle_identifier = typia.createAssert<waf_product_api_bundle_identifier>();
 export const validatewaf_product_api_bundle_identifier = typia.createValidate<waf_product_api_bundle_identifier>();
 
-export type waf_product_api_bundle_detection_id = (waf_product_api_bundle_identifier & unknown);
+export type waf_product_api_bundle_detection_id = waf_product_api_bundle_identifier;
 export const iswaf_product_api_bundle_detection_id = typia.createIs<waf_product_api_bundle_detection_id>();
 export const assertwaf_product_api_bundle_detection_id = typia.createAssert<waf_product_api_bundle_detection_id>();
 export const validatewaf_product_api_bundle_detection_id = typia.createValidate<waf_product_api_bundle_detection_id>();
@@ -28697,7 +28697,7 @@ export const iswaf_product_api_bundle_custom_detection = typia.createIs<waf_prod
 export const assertwaf_product_api_bundle_custom_detection = typia.createAssert<waf_product_api_bundle_custom_detection>();
 export const validatewaf_product_api_bundle_custom_detection = typia.createValidate<waf_product_api_bundle_custom_detection>();
 
-export type waf_product_api_bundle_custom_scan_id = (waf_product_api_bundle_identifier);
+export type waf_product_api_bundle_custom_scan_id = waf_product_api_bundle_identifier;
 export const iswaf_product_api_bundle_custom_scan_id = typia.createIs<waf_product_api_bundle_custom_scan_id>();
 export const assertwaf_product_api_bundle_custom_scan_id = typia.createAssert<waf_product_api_bundle_custom_scan_id>();
 export const validatewaf_product_api_bundle_custom_scan_id = typia.createValidate<waf_product_api_bundle_custom_scan_id>();
@@ -28802,7 +28802,7 @@ export const iswaitingroom_api_response_common = typia.createIs<waitingroom_api_
 export const assertwaitingroom_api_response_common = typia.createAssert<waitingroom_api_response_common>();
 export const validatewaitingroom_api_response_common = typia.createValidate<waitingroom_api_response_common>();
 
-export type waitingroom_api_response_common_failure = { errors: (waitingroom_messages & unknown), messages: (waitingroom_messages), result: (Record<string, unknown> | null), success: false };
+export type waitingroom_api_response_common_failure = { errors: waitingroom_messages, messages: waitingroom_messages, result: (Record<string, unknown> | null), success: false };
 export const iswaitingroom_api_response_common_failure = typia.createIs<waitingroom_api_response_common_failure>();
 export const assertwaitingroom_api_response_common_failure = typia.createAssert<waitingroom_api_response_common_failure>();
 export const validatewaitingroom_api_response_common_failure = typia.createValidate<waitingroom_api_response_common_failure>();
@@ -29247,7 +29247,7 @@ export const isweb3_api_response_collection = typia.createIs<web3_api_response_c
 export const assertweb3_api_response_collection = typia.createAssert<web3_api_response_collection>();
 export const validateweb3_api_response_collection = typia.createValidate<web3_api_response_collection>();
 
-export type web3_api_response_common_failure = { errors: (web3_messages & unknown), messages: (web3_messages), result: (Record<string, unknown> | null), success: false };
+export type web3_api_response_common_failure = { errors: web3_messages, messages: web3_messages, result: (Record<string, unknown> | null), success: false };
 export const isweb3_api_response_common_failure = typia.createIs<web3_api_response_common_failure>();
 export const assertweb3_api_response_common_failure = typia.createAssert<web3_api_response_common_failure>();
 export const validateweb3_api_response_common_failure = typia.createValidate<web3_api_response_common_failure>();
@@ -29407,7 +29407,7 @@ export const isworkers_kv_api_response_collection = typia.createIs<workers_kv_ap
 export const assertworkers_kv_api_response_collection = typia.createAssert<workers_kv_api_response_collection>();
 export const validateworkers_kv_api_response_collection = typia.createValidate<workers_kv_api_response_collection>();
 
-export type workers_kv_api_response_common_failure = { errors: (workers_kv_messages & unknown), messages: (workers_kv_messages), result: (Record<string, unknown> | null), success: false };
+export type workers_kv_api_response_common_failure = { errors: workers_kv_messages, messages: workers_kv_messages, result: (Record<string, unknown> | null), success: false };
 export const isworkers_kv_api_response_common_failure = typia.createIs<workers_kv_api_response_common_failure>();
 export const assertworkers_kv_api_response_common_failure = typia.createAssert<workers_kv_api_response_common_failure>();
 export const validateworkers_kv_api_response_common_failure = typia.createValidate<workers_kv_api_response_common_failure>();
@@ -29427,7 +29427,7 @@ export const isworkers_kv_expiration = typia.createIs<workers_kv_expiration>();
 export const assertworkers_kv_expiration = typia.createAssert<workers_kv_expiration>();
 export const validateworkers_kv_expiration = typia.createValidate<workers_kv_expiration>();
 
-export type workers_kv_bulk_get_result_with_metadata = Partial<{ values: Record<string, ({ expiration?: workers_kv_expiration, metadata: (workers_kv_any & unknown), value: (workers_kv_any & unknown) } | null)> }>;
+export type workers_kv_bulk_get_result_with_metadata = Partial<{ values: Record<string, ({ expiration?: workers_kv_expiration, metadata: workers_kv_any, value: workers_kv_any } | null)> }>;
 export const isworkers_kv_bulk_get_result_with_metadata = typia.createIs<workers_kv_bulk_get_result_with_metadata>();
 export const assertworkers_kv_bulk_get_result_with_metadata = typia.createAssert<workers_kv_bulk_get_result_with_metadata>();
 export const validateworkers_kv_bulk_get_result_with_metadata = typia.createValidate<workers_kv_bulk_get_result_with_metadata>();
@@ -29452,7 +29452,7 @@ export const isworkers_kv_expiration_ttl = typia.createIs<workers_kv_expiration_
 export const assertworkers_kv_expiration_ttl = typia.createAssert<workers_kv_expiration_ttl>();
 export const validateworkers_kv_expiration_ttl = typia.createValidate<workers_kv_expiration_ttl>();
 
-export type workers_kv_list_metadata = (workers_kv_any & unknown);
+export type workers_kv_list_metadata = workers_kv_any;
 export const isworkers_kv_list_metadata = typia.createIs<workers_kv_list_metadata>();
 export const assertworkers_kv_list_metadata = typia.createAssert<workers_kv_list_metadata>();
 export const validateworkers_kv_list_metadata = typia.createValidate<workers_kv_list_metadata>();
@@ -29497,7 +29497,7 @@ export const isworkers_kv_key = typia.createIs<workers_kv_key>();
 export const assertworkers_kv_key = typia.createAssert<workers_kv_key>();
 export const validateworkers_kv_key = typia.createValidate<workers_kv_key>();
 
-export type workers_kv_metadata = (workers_kv_any & unknown);
+export type workers_kv_metadata = workers_kv_any;
 export const isworkers_kv_metadata = typia.createIs<workers_kv_metadata>();
 export const assertworkers_kv_metadata = typia.createAssert<workers_kv_metadata>();
 export const validateworkers_kv_metadata = typia.createValidate<workers_kv_metadata>();
@@ -29857,7 +29857,7 @@ export const isworkers_entrypoint_cache_options = typia.createIs<workers_entrypo
 export const assertworkers_entrypoint_cache_options = typia.createAssert<workers_entrypoint_cache_options>();
 export const validateworkers_entrypoint_cache_options = typia.createValidate<workers_entrypoint_cache_options>();
 
-export type workers_worker_export = { cache?: (workers_entrypoint_cache_options), state?: "created", type: "worker" };
+export type workers_worker_export = { cache?: workers_entrypoint_cache_options, state?: "created", type: "worker" };
 export const isworkers_worker_export = typia.createIs<workers_worker_export>();
 export const assertworkers_worker_export = typia.createAssert<workers_worker_export>();
 export const validateworkers_worker_export = typia.createValidate<workers_worker_export>();
@@ -29972,7 +29972,7 @@ export const isworkers_placement_info_no_status = typia.createIs<workers_placeme
 export const assertworkers_placement_info_no_status = typia.createAssert<workers_placement_info_no_status>();
 export const validateworkers_placement_info_no_status = typia.createValidate<workers_placement_info_no_status>();
 
-export type workers_Version = { annotations?: Partial<{ "workers/message": string, "workers/tag": string, "workers/triggered_by": string }>, assets?: Partial<{ config: Partial<{ html_handling: ("auto-trailing-slash" | "force-trailing-slash" | "drop-trailing-slash" | "none"), not_found_handling: ("none" | "404-page" | "single-page-application"), run_worker_first: (Array<string> | boolean) }>, jwt: string }>, bindings?: workers_bindings, cache_options?: workers_cache_options, compatibility_date?: workers_compatibility_date, compatibility_flags?: workers_compatibility_flags, containers?: workers_containers, created_on: string, exports?: (workers_exports_config_map), exports_reconciliation?: (workers_exports_reconciliation_result), id: string, limits?: Partial<{ cpu_ms: number, subrequests: number }>, main_module?: string, migration_tag?: string, migrations?: (workers_single_step_migrations | workers_multiple_step_migrations), modules?: Array<{ content_base64: Blob, content_type: string, name: string }>, number: number, package_dependencies?: Array<{ installedVersion: string, name: string, packageJsonVersion: string }>, placement?: workers_placement_info_no_status, source?: string, startup_time_ms?: number, urls: Array<string>, usage_model?: ("standard" | "bundled" | "unbound") };
+export type workers_Version = { annotations?: Partial<{ "workers/message": string, "workers/tag": string, "workers/triggered_by": string }>, assets?: Partial<{ config: Partial<{ html_handling: ("auto-trailing-slash" | "force-trailing-slash" | "drop-trailing-slash" | "none"), not_found_handling: ("none" | "404-page" | "single-page-application"), run_worker_first: (Array<string> | boolean) }>, jwt: string }>, bindings?: workers_bindings, cache_options?: workers_cache_options, compatibility_date?: workers_compatibility_date, compatibility_flags?: workers_compatibility_flags, containers?: workers_containers, created_on: string, exports?: workers_exports_config_map, exports_reconciliation?: workers_exports_reconciliation_result, id: string, limits?: Partial<{ cpu_ms: number, subrequests: number }>, main_module?: string, migration_tag?: string, migrations?: (workers_single_step_migrations | workers_multiple_step_migrations), modules?: Array<{ content_base64: Blob, content_type: string, name: string }>, number: number, package_dependencies?: Array<{ installedVersion: string, name: string, packageJsonVersion: string }>, placement?: workers_placement_info_no_status, source?: string, startup_time_ms?: number, urls: Array<string>, usage_model?: ("standard" | "bundled" | "unbound") };
 export const isworkers_Version = typia.createIs<workers_Version>();
 export const assertworkers_Version = typia.createAssert<workers_Version>();
 export const validateworkers_Version = typia.createValidate<workers_Version>();
@@ -30002,7 +30002,7 @@ export const isworkers_api_response_collection = typia.createIs<workers_api_resp
 export const assertworkers_api_response_collection = typia.createAssert<workers_api_response_collection>();
 export const validateworkers_api_response_collection = typia.createValidate<workers_api_response_collection>();
 
-export type workers_api_response_common_failure = { errors: (workers_messages & unknown), messages: (workers_messages), result: (Record<string, unknown> | null), success: false };
+export type workers_api_response_common_failure = { errors: workers_messages, messages: workers_messages, result: (Record<string, unknown> | null), success: false };
 export const isworkers_api_response_common_failure = typia.createIs<workers_api_response_common_failure>();
 export const assertworkers_api_response_common_failure = typia.createAssert<workers_api_response_common_failure>();
 export const validateworkers_api_response_common_failure = typia.createValidate<workers_api_response_common_failure>();
@@ -30142,7 +30142,7 @@ export const isworkers_usage_model = typia.createIs<workers_usage_model>();
 export const assertworkers_usage_model = typia.createAssert<workers_usage_model>();
 export const validateworkers_usage_model = typia.createValidate<workers_usage_model>();
 
-export type workers_multipart_script = { files?: Array<Blob>, metadata: Partial<{ assets: workers_assets, bindings: workers_bindings, body_part: string, cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, exports: (workers_exports_config_map & unknown), exports_reconciliation: (workers_exports_reconciliation_result), keep_assets: boolean, keep_bindings: Array<string>, limits: workers_limits, logpush: workers_logpush, main_module: string, migrations: (workers_single_step_migrations | workers_multiple_step_migrations), observability: workers_observability, package_dependencies: Array<{ installedVersion: string, name: string, packageJsonVersion: string }>, placement: workers_placement_info, tags: Array<string>, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }> };
+export type workers_multipart_script = { files?: Array<Blob>, metadata: Partial<{ assets: workers_assets, bindings: workers_bindings, body_part: string, cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, keep_assets: boolean, keep_bindings: Array<string>, limits: workers_limits, logpush: workers_logpush, main_module: string, migrations: (workers_single_step_migrations | workers_multiple_step_migrations), observability: workers_observability, package_dependencies: Array<{ installedVersion: string, name: string, packageJsonVersion: string }>, placement: workers_placement_info, tags: Array<string>, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }> };
 export const isworkers_multipart_script = typia.createIs<workers_multipart_script>();
 export const assertworkers_multipart_script = typia.createAssert<workers_multipart_script>();
 export const validateworkers_multipart_script = typia.createValidate<workers_multipart_script>();
@@ -30187,7 +30187,7 @@ export const isworkers_tags = typia.createIs<workers_tags>();
 export const assertworkers_tags = typia.createAssert<workers_tags>();
 export const validateworkers_tags = typia.createValidate<workers_tags>();
 
-export type workers_namespace_script_and_version_settings_item = Partial<{ bindings: (workers_bindings & Array<workers_binding_item>), cache_options: workers_cache_options, compatibility_date: (workers_compatibility_date & string), compatibility_flags: (workers_compatibility_flags & Array<string>), exports: (workers_exports_config_map & unknown), exports_reconciliation: (workers_exports_reconciliation_result), limits: workers_limits, logpush: workers_logpush, migrations: (workers_single_step_migrations | workers_multiple_step_migrations), observability: workers_observability, placement: (workers_placement_info_no_status & Record<string, unknown>), tags: (workers_tags & Array<string>), tail_consumers: (workers_tail_consumers & Array<workers_tail_consumers_script>), usage_model: workers_usage_model }>;
+export type workers_namespace_script_and_version_settings_item = Partial<{ bindings: (workers_bindings & Array<workers_binding_item>), cache_options: workers_cache_options, compatibility_date: (workers_compatibility_date & string), compatibility_flags: (workers_compatibility_flags & Array<string>), exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, limits: workers_limits, logpush: workers_logpush, migrations: (workers_single_step_migrations | workers_multiple_step_migrations), observability: workers_observability, placement: (workers_placement_info_no_status & Record<string, unknown>), tags: (workers_tags & Array<string>), tail_consumers: (workers_tail_consumers & Array<workers_tail_consumers_script>), usage_model: workers_usage_model }>;
 export const isworkers_namespace_script_and_version_settings_item = typia.createIs<workers_namespace_script_and_version_settings_item>();
 export const assertworkers_namespace_script_and_version_settings_item = typia.createAssert<workers_namespace_script_and_version_settings_item>();
 export const validateworkers_namespace_script_and_version_settings_item = typia.createValidate<workers_namespace_script_and_version_settings_item>();
@@ -30202,7 +30202,7 @@ export const isworkers_placement_mode = typia.createIs<workers_placement_mode>()
 export const assertworkers_placement_mode = typia.createAssert<workers_placement_mode>();
 export const validateworkers_placement_mode = typia.createValidate<workers_placement_mode>();
 
-export type workers_script_response = Partial<{ cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, created_on: workers_created_on, etag: workers_etag, exports: (workers_exports_config_map & unknown), handlers: Array<string>, has_assets: workers_has_assets, has_modules: workers_has_modules, id: string, last_deployed_from: string, logpush: workers_logpush, migration_tag: string, modified_on: workers_modified_on, named_handlers: Array<Partial<{ handlers: Array<string>, name: string }>>, observability: workers_observability, placement: workers_placement_info, placement_mode: (workers_placement_mode & string), placement_status: (workers_placement_status & string), tag: string, tags: workers_tags, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }>;
+export type workers_script_response = Partial<{ cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, created_on: workers_created_on, etag: workers_etag, exports: workers_exports_config_map, handlers: Array<string>, has_assets: workers_has_assets, has_modules: workers_has_modules, id: string, last_deployed_from: string, logpush: workers_logpush, migration_tag: string, modified_on: workers_modified_on, named_handlers: Array<Partial<{ handlers: Array<string>, name: string }>>, observability: workers_observability, placement: workers_placement_info, placement_mode: (workers_placement_mode & string), placement_status: (workers_placement_status & string), tag: string, tags: workers_tags, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }>;
 export const isworkers_script_response = typia.createIs<workers_script_response>();
 export const assertworkers_script_response = typia.createAssert<workers_script_response>();
 export const validateworkers_script_response = typia.createValidate<workers_script_response>();
@@ -30242,7 +30242,7 @@ export const isworkers_placement_regions_response = typia.createIs<workers_place
 export const assertworkers_placement_regions_response = typia.createAssert<workers_placement_regions_response>();
 export const validateworkers_placement_regions_response = typia.createValidate<workers_placement_regions_response>();
 
-export type workers_route = { id: (workers_identifier & unknown), pattern: string, script?: string };
+export type workers_route = { id: workers_identifier, pattern: string, script?: string };
 export const isworkers_route = typia.createIs<workers_route>();
 export const assertworkers_route = typia.createAssert<workers_route>();
 export const validateworkers_route = typia.createValidate<workers_route>();
@@ -30257,7 +30257,7 @@ export const isworkers_schemas_id = typia.createIs<workers_schemas_id>();
 export const assertworkers_schemas_id = typia.createAssert<workers_schemas_id>();
 export const validateworkers_schemas_id = typia.createValidate<workers_schemas_id>();
 
-export type workers_script_and_version_settings_item = Partial<{ annotations: Partial<{ "workers/message": string, "workers/tag": string, "workers/triggered_by": string }>, bindings: (workers_bindings & Array<workers_binding_item>), cache_options: workers_cache_options, compatibility_date: (workers_compatibility_date & string), compatibility_flags: (workers_compatibility_flags & Array<string>), exports: (workers_exports_config_map & unknown), exports_reconciliation: (workers_exports_reconciliation_result), limits: workers_limits, logpush: workers_logpush, migrations: (workers_single_step_migrations | workers_multiple_step_migrations), observability: workers_observability, placement: (workers_placement_info_no_status & Record<string, unknown>), tags: (workers_tags & Array<string>), tail_consumers: (workers_tail_consumers & Array<workers_tail_consumers_script>), usage_model: workers_usage_model }>;
+export type workers_script_and_version_settings_item = Partial<{ annotations: Partial<{ "workers/message": string, "workers/tag": string, "workers/triggered_by": string }>, bindings: (workers_bindings & Array<workers_binding_item>), cache_options: workers_cache_options, compatibility_date: (workers_compatibility_date & string), compatibility_flags: (workers_compatibility_flags & Array<string>), exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, limits: workers_limits, logpush: workers_logpush, migrations: (workers_single_step_migrations | workers_multiple_step_migrations), observability: workers_observability, placement: (workers_placement_info_no_status & Record<string, unknown>), tags: (workers_tags & Array<string>), tail_consumers: (workers_tail_consumers & Array<workers_tail_consumers_script>), usage_model: workers_usage_model }>;
 export const isworkers_script_and_version_settings_item = typia.createIs<workers_script_and_version_settings_item>();
 export const assertworkers_script_and_version_settings_item = typia.createAssert<workers_script_and_version_settings_item>();
 export const validateworkers_script_and_version_settings_item = typia.createValidate<workers_script_and_version_settings_item>();
@@ -30347,7 +30347,7 @@ export const isworkers_subdomain_2 = typia.createIs<workers_subdomain_2>();
 export const assertworkers_subdomain_2 = typia.createAssert<workers_subdomain_2>();
 export const validateworkers_subdomain_2 = typia.createValidate<workers_subdomain_2>();
 
-export type workers_tail = { expires_at: string, id: (workers_identifier & unknown), url: string };
+export type workers_tail = { expires_at: string, id: workers_identifier, url: string };
 export const isworkers_tail = typia.createIs<workers_tail>();
 export const assertworkers_tail = typia.createAssert<workers_tail>();
 export const validateworkers_tail = typia.createValidate<workers_tail>();
@@ -30372,12 +30372,12 @@ export const isworkers_version_item_short = typia.createIs<workers_version_item_
 export const assertworkers_version_item_short = typia.createAssert<workers_version_item_short>();
 export const validateworkers_version_item_short = typia.createValidate<workers_version_item_short>();
 
-export type workers_version_item_full = (workers_version_item_short & { resources: Partial<{ bindings: (workers_bindings & unknown), script: Partial<{ etag: string, handlers: Array<string>, last_deployed_from: string, named_handlers: Array<Partial<{ handlers: Array<string>, name: string }>> }>, script_runtime: Partial<{ compatibility_date: string, compatibility_flags: Array<string>, exports: (workers_exports_config_map & unknown), limits: Partial<{ cpu_ms: number }>, migration_tag: string, usage_model: ("bundled" | "unbound" | "standard") }> }> });
+export type workers_version_item_full = (workers_version_item_short & { resources: Partial<{ bindings: workers_bindings, script: Partial<{ etag: string, handlers: Array<string>, last_deployed_from: string, named_handlers: Array<Partial<{ handlers: Array<string>, name: string }>> }>, script_runtime: Partial<{ compatibility_date: string, compatibility_flags: Array<string>, exports: workers_exports_config_map, limits: Partial<{ cpu_ms: number }>, migration_tag: string, usage_model: ("bundled" | "unbound" | "standard") }> }> });
 export const isworkers_version_item_full = typia.createIs<workers_version_item_full>();
 export const assertworkers_version_item_full = typia.createAssert<workers_version_item_full>();
 export const validateworkers_version_item_full = typia.createValidate<workers_version_item_full>();
 
-export type workers_version_item_uploaded = (workers_version_item_full & { exports_reconciliation?: (workers_exports_reconciliation_result), startup_time_ms?: number });
+export type workers_version_item_uploaded = (workers_version_item_full & { exports_reconciliation?: workers_exports_reconciliation_result, startup_time_ms?: number });
 export const isworkers_version_item_uploaded = typia.createIs<workers_version_item_uploaded>();
 export const assertworkers_version_item_uploaded = typia.createAssert<workers_version_item_uploaded>();
 export const validateworkers_version_item_uploaded = typia.createValidate<workers_version_item_uploaded>();
@@ -30412,7 +30412,7 @@ export const iszaraz_api_response_common = typia.createIs<zaraz_api_response_com
 export const assertzaraz_api_response_common = typia.createAssert<zaraz_api_response_common>();
 export const validatezaraz_api_response_common = typia.createValidate<zaraz_api_response_common>();
 
-export type zaraz_api_response_common_failure = { errors: (zaraz_messages & unknown), messages: (zaraz_messages), result: (Record<string, unknown> | null), success: false };
+export type zaraz_api_response_common_failure = { errors: zaraz_messages, messages: zaraz_messages, result: (Record<string, unknown> | null), success: false };
 export const iszaraz_api_response_common_failure = typia.createIs<zaraz_api_response_common_failure>();
 export const assertzaraz_api_response_common_failure = typia.createAssert<zaraz_api_response_common_failure>();
 export const validatezaraz_api_response_common_failure = typia.createValidate<zaraz_api_response_common_failure>();
@@ -30957,7 +30957,7 @@ export const iszero_trust_gateway_gateway_account_egress_cidr_pair_list_response
 export const assertzero_trust_gateway_gateway_account_egress_cidr_pair_list_response = typia.createAssert<zero_trust_gateway_gateway_account_egress_cidr_pair_list_response>();
 export const validatezero_trust_gateway_gateway_account_egress_cidr_pair_list_response = typia.createValidate<zero_trust_gateway_gateway_account_egress_cidr_pair_list_response>();
 
-export type zero_trust_gateway_gateway_account_logging_settings = Partial<{ redact_pii: boolean, settings_by_rule_type: Partial<{ dns: (zero_trust_gateway_account_log_options), http: (zero_trust_gateway_account_log_options), l4: (zero_trust_gateway_account_log_options) }> }>;
+export type zero_trust_gateway_gateway_account_logging_settings = Partial<{ redact_pii: boolean, settings_by_rule_type: Partial<{ dns: zero_trust_gateway_account_log_options, http: zero_trust_gateway_account_log_options, l4: zero_trust_gateway_account_log_options }> }>;
 export const iszero_trust_gateway_gateway_account_logging_settings = typia.createIs<zero_trust_gateway_gateway_account_logging_settings>();
 export const assertzero_trust_gateway_gateway_account_logging_settings = typia.createAssert<zero_trust_gateway_gateway_account_logging_settings>();
 export const validatezero_trust_gateway_gateway_account_logging_settings = typia.createValidate<zero_trust_gateway_gateway_account_logging_settings>();
@@ -31357,7 +31357,7 @@ export const iszone_activation_api_response_common = typia.createIs<zone_activat
 export const assertzone_activation_api_response_common = typia.createAssert<zone_activation_api_response_common>();
 export const validatezone_activation_api_response_common = typia.createValidate<zone_activation_api_response_common>();
 
-export type zone_activation_api_response_common_failure = { errors: (zone_activation_messages & unknown), messages: (zone_activation_messages), result: (Record<string, unknown> | null), success: false };
+export type zone_activation_api_response_common_failure = { errors: zone_activation_messages, messages: zone_activation_messages, result: (Record<string, unknown> | null), success: false };
 export const iszone_activation_api_response_common_failure = typia.createIs<zone_activation_api_response_common_failure>();
 export const assertzone_activation_api_response_common_failure = typia.createAssert<zone_activation_api_response_common_failure>();
 export const validatezone_activation_api_response_common_failure = typia.createValidate<zone_activation_api_response_common_failure>();
@@ -31382,7 +31382,7 @@ export const iszone_analytics_api_api_response_common = typia.createIs<zone_anal
 export const assertzone_analytics_api_api_response_common = typia.createAssert<zone_analytics_api_api_response_common>();
 export const validatezone_analytics_api_api_response_common = typia.createValidate<zone_analytics_api_api_response_common>();
 
-export type zone_analytics_api_api_response_common_failure = { errors: (zone_analytics_api_messages & unknown), messages: (zone_analytics_api_messages), result: (Record<string, unknown> | null), success: false };
+export type zone_analytics_api_api_response_common_failure = { errors: zone_analytics_api_messages, messages: zone_analytics_api_messages, result: (Record<string, unknown> | null), success: false };
 export const iszone_analytics_api_api_response_common_failure = typia.createIs<zone_analytics_api_api_response_common_failure>();
 export const assertzone_analytics_api_api_response_common_failure = typia.createAssert<zone_analytics_api_api_response_common_failure>();
 export const validatezone_analytics_api_api_response_common_failure = typia.createValidate<zone_analytics_api_api_response_common_failure>();
@@ -31727,7 +31727,7 @@ export const iszones_always_use_https_value = typia.createIs<zones_always_use_ht
 export const assertzones_always_use_https_value = typia.createAssert<zones_always_use_https_value>();
 export const validatezones_always_use_https_value = typia.createValidate<zones_always_use_https_value>();
 
-export type zones_always_use_https_2 = (zones_base & Partial<{ id: "always_use_https", value: zones_always_use_https_value }> & unknown);
+export type zones_always_use_https_2 = (zones_base & Partial<{ id: "always_use_https", value: zones_always_use_https_value }>);
 export const iszones_always_use_https_2 = typia.createIs<zones_always_use_https_2>();
 export const assertzones_always_use_https_2 = typia.createAssert<zones_always_use_https_2>();
 export const validatezones_always_use_https_2 = typia.createValidate<zones_always_use_https_2>();
@@ -31762,17 +31762,17 @@ export const iszones_api_response_common_4 = typia.createIs<zones_api_response_c
 export const assertzones_api_response_common_4 = typia.createAssert<zones_api_response_common_4>();
 export const validatezones_api_response_common_4 = typia.createValidate<zones_api_response_common_4>();
 
-export type zones_api_response_common_failure = { errors: (zones_messages & unknown), messages: (zones_messages), result: (Record<string, unknown> | null), success: boolean };
+export type zones_api_response_common_failure = { errors: zones_messages, messages: zones_messages, result: (Record<string, unknown> | null), success: boolean };
 export const iszones_api_response_common_failure = typia.createIs<zones_api_response_common_failure>();
 export const assertzones_api_response_common_failure = typia.createAssert<zones_api_response_common_failure>();
 export const validatezones_api_response_common_failure = typia.createValidate<zones_api_response_common_failure>();
 
-export type zones_api_response_common_failure_2 = { errors: (zones_messages_2 & unknown), messages: (zones_messages_2), result: (Record<string, unknown> | null), success: false };
+export type zones_api_response_common_failure_2 = { errors: zones_messages_2, messages: zones_messages_2, result: (Record<string, unknown> | null), success: false };
 export const iszones_api_response_common_failure_2 = typia.createIs<zones_api_response_common_failure_2>();
 export const assertzones_api_response_common_failure_2 = typia.createAssert<zones_api_response_common_failure_2>();
 export const validatezones_api_response_common_failure_2 = typia.createValidate<zones_api_response_common_failure_2>();
 
-export type zones_api_response_common_failure_3 = { errors: (zones_messages & unknown), messages: (zones_messages), result: (Record<string, unknown> | null), success: boolean };
+export type zones_api_response_common_failure_3 = { errors: zones_messages, messages: zones_messages, result: (Record<string, unknown> | null), success: boolean };
 export const iszones_api_response_common_failure_3 = typia.createIs<zones_api_response_common_failure_3>();
 export const assertzones_api_response_common_failure_3 = typia.createAssert<zones_api_response_common_failure_3>();
 export const validatezones_api_response_common_failure_3 = typia.createValidate<zones_api_response_common_failure_3>();
@@ -31812,7 +31812,7 @@ export const iszones_automatic_https_rewrites_value = typia.createIs<zones_autom
 export const assertzones_automatic_https_rewrites_value = typia.createAssert<zones_automatic_https_rewrites_value>();
 export const validatezones_automatic_https_rewrites_value = typia.createValidate<zones_automatic_https_rewrites_value>();
 
-export type zones_automatic_https_rewrites_2 = (zones_base & Partial<{ id: "automatic_https_rewrites", value: zones_automatic_https_rewrites_value }> & unknown);
+export type zones_automatic_https_rewrites_2 = (zones_base & Partial<{ id: "automatic_https_rewrites", value: zones_automatic_https_rewrites_value }>);
 export const iszones_automatic_https_rewrites_2 = typia.createIs<zones_automatic_https_rewrites_2>();
 export const assertzones_automatic_https_rewrites_2 = typia.createAssert<zones_automatic_https_rewrites_2>();
 export const validatezones_automatic_https_rewrites_2 = typia.createValidate<zones_automatic_https_rewrites_2>();
@@ -31927,7 +31927,7 @@ export const iszones_ciphers_value = typia.createIs<zones_ciphers_value>();
 export const assertzones_ciphers_value = typia.createAssert<zones_ciphers_value>();
 export const validatezones_ciphers_value = typia.createValidate<zones_ciphers_value>();
 
-export type zones_ciphers = (zones_base & Partial<{ id: "ciphers", value: zones_ciphers_value }> & unknown);
+export type zones_ciphers = (zones_base & Partial<{ id: "ciphers", value: zones_ciphers_value }>);
 export const iszones_ciphers = typia.createIs<zones_ciphers>();
 export const assertzones_ciphers = typia.createAssert<zones_ciphers>();
 export const validatezones_ciphers = typia.createValidate<zones_ciphers>();
@@ -31937,7 +31937,7 @@ export const iszones_cname_flattening_value = typia.createIs<zones_cname_flatten
 export const assertzones_cname_flattening_value = typia.createAssert<zones_cname_flattening_value>();
 export const validatezones_cname_flattening_value = typia.createValidate<zones_cname_flattening_value>();
 
-export type zones_cname_flattening = (zones_base & Partial<{ id: "cname_flattening", value: zones_cname_flattening_value }> & unknown);
+export type zones_cname_flattening = (zones_base & Partial<{ id: "cname_flattening", value: zones_cname_flattening_value }>);
 export const iszones_cname_flattening = typia.createIs<zones_cname_flattening>();
 export const assertzones_cname_flattening = typia.createAssert<zones_cname_flattening>();
 export const validatezones_cname_flattening = typia.createValidate<zones_cname_flattening>();
@@ -32082,7 +32082,7 @@ export const iszones_min_tls_version_value = typia.createIs<zones_min_tls_versio
 export const assertzones_min_tls_version_value = typia.createAssert<zones_min_tls_version_value>();
 export const validatezones_min_tls_version_value = typia.createValidate<zones_min_tls_version_value>();
 
-export type zones_min_tls_version = (zones_base & Partial<{ id: "min_tls_version", value: zones_min_tls_version_value }> & unknown);
+export type zones_min_tls_version = (zones_base & Partial<{ id: "min_tls_version", value: zones_min_tls_version_value }>);
 export const iszones_min_tls_version = typia.createIs<zones_min_tls_version>();
 export const assertzones_min_tls_version = typia.createAssert<zones_min_tls_version>();
 export const validatezones_min_tls_version = typia.createValidate<zones_min_tls_version>();
@@ -32092,7 +32092,7 @@ export const iszones_mirage_value = typia.createIs<zones_mirage_value>();
 export const assertzones_mirage_value = typia.createAssert<zones_mirage_value>();
 export const validatezones_mirage_value = typia.createValidate<zones_mirage_value>();
 
-export type zones_mirage_2 = (zones_base & Partial<{ id: "mirage", value: zones_mirage_value }> & unknown);
+export type zones_mirage_2 = (zones_base & Partial<{ id: "mirage", value: zones_mirage_value }>);
 export const iszones_mirage_2 = typia.createIs<zones_mirage_2>();
 export const assertzones_mirage_2 = typia.createAssert<zones_mirage_2>();
 export const validatezones_mirage_2 = typia.createValidate<zones_mirage_2>();
@@ -32127,7 +32127,7 @@ export const iszones_opportunistic_onion_value = typia.createIs<zones_opportunis
 export const assertzones_opportunistic_onion_value = typia.createAssert<zones_opportunistic_onion_value>();
 export const validatezones_opportunistic_onion_value = typia.createValidate<zones_opportunistic_onion_value>();
 
-export type zones_opportunistic_onion = (zones_base & Partial<{ id: "opportunistic_onion", value: zones_opportunistic_onion_value }> & unknown);
+export type zones_opportunistic_onion = (zones_base & Partial<{ id: "opportunistic_onion", value: zones_opportunistic_onion_value }>);
 export const iszones_opportunistic_onion = typia.createIs<zones_opportunistic_onion>();
 export const assertzones_opportunistic_onion = typia.createAssert<zones_opportunistic_onion>();
 export const validatezones_opportunistic_onion = typia.createValidate<zones_opportunistic_onion>();
@@ -32147,7 +32147,7 @@ export const iszones_origin_error_page_pass_thru_value = typia.createIs<zones_or
 export const assertzones_origin_error_page_pass_thru_value = typia.createAssert<zones_origin_error_page_pass_thru_value>();
 export const validatezones_origin_error_page_pass_thru_value = typia.createValidate<zones_origin_error_page_pass_thru_value>();
 
-export type zones_origin_error_page_pass_thru_2 = (zones_base & Partial<{ id: "origin_error_page_pass_thru", value: zones_origin_error_page_pass_thru_value }> & unknown);
+export type zones_origin_error_page_pass_thru_2 = (zones_base & Partial<{ id: "origin_error_page_pass_thru", value: zones_origin_error_page_pass_thru_value }>);
 export const iszones_origin_error_page_pass_thru_2 = typia.createIs<zones_origin_error_page_pass_thru_2>();
 export const assertzones_origin_error_page_pass_thru_2 = typia.createAssert<zones_origin_error_page_pass_thru_2>();
 export const validatezones_origin_error_page_pass_thru_2 = typia.createValidate<zones_origin_error_page_pass_thru_2>();
@@ -32167,7 +32167,7 @@ export const iszones_prefetch_preload_value = typia.createIs<zones_prefetch_prel
 export const assertzones_prefetch_preload_value = typia.createAssert<zones_prefetch_preload_value>();
 export const validatezones_prefetch_preload_value = typia.createValidate<zones_prefetch_preload_value>();
 
-export type zones_prefetch_preload = (zones_base & Partial<{ id: "prefetch_preload", value: zones_prefetch_preload_value }> & unknown);
+export type zones_prefetch_preload = (zones_base & Partial<{ id: "prefetch_preload", value: zones_prefetch_preload_value }>);
 export const iszones_prefetch_preload = typia.createIs<zones_prefetch_preload>();
 export const assertzones_prefetch_preload = typia.createAssert<zones_prefetch_preload>();
 export const validatezones_prefetch_preload = typia.createValidate<zones_prefetch_preload>();
@@ -32177,7 +32177,7 @@ export const iszones_privacy_pass_value = typia.createIs<zones_privacy_pass_valu
 export const assertzones_privacy_pass_value = typia.createAssert<zones_privacy_pass_value>();
 export const validatezones_privacy_pass_value = typia.createValidate<zones_privacy_pass_value>();
 
-export type zones_privacy_pass = (zones_base & Partial<{ id: "privacy_pass", value: zones_privacy_pass_value }> & unknown);
+export type zones_privacy_pass = (zones_base & Partial<{ id: "privacy_pass", value: zones_privacy_pass_value }>);
 export const iszones_privacy_pass = typia.createIs<zones_privacy_pass>();
 export const assertzones_privacy_pass = typia.createAssert<zones_privacy_pass>();
 export const validatezones_privacy_pass = typia.createValidate<zones_privacy_pass>();
@@ -32227,7 +32227,7 @@ export const iszones_response_buffering_value = typia.createIs<zones_response_bu
 export const assertzones_response_buffering_value = typia.createAssert<zones_response_buffering_value>();
 export const validatezones_response_buffering_value = typia.createValidate<zones_response_buffering_value>();
 
-export type zones_response_buffering_2 = (zones_base & Partial<{ id: "response_buffering", value: zones_response_buffering_value }> & unknown);
+export type zones_response_buffering_2 = (zones_base & Partial<{ id: "response_buffering", value: zones_response_buffering_value }>);
 export const iszones_response_buffering_2 = typia.createIs<zones_response_buffering_2>();
 export const assertzones_response_buffering_2 = typia.createAssert<zones_response_buffering_2>();
 export const validatezones_response_buffering_2 = typia.createValidate<zones_response_buffering_2>();
@@ -32302,7 +32302,7 @@ export const iszones_sort_query_string_for_cache_value = typia.createIs<zones_so
 export const assertzones_sort_query_string_for_cache_value = typia.createAssert<zones_sort_query_string_for_cache_value>();
 export const validatezones_sort_query_string_for_cache_value = typia.createValidate<zones_sort_query_string_for_cache_value>();
 
-export type zones_sort_query_string_for_cache_2 = (zones_base & Partial<{ id: "sort_query_string_for_cache", value: zones_sort_query_string_for_cache_value }> & unknown);
+export type zones_sort_query_string_for_cache_2 = (zones_base & Partial<{ id: "sort_query_string_for_cache", value: zones_sort_query_string_for_cache_value }>);
 export const iszones_sort_query_string_for_cache_2 = typia.createIs<zones_sort_query_string_for_cache_2>();
 export const assertzones_sort_query_string_for_cache_2 = typia.createAssert<zones_sort_query_string_for_cache_2>();
 export const validatezones_sort_query_string_for_cache_2 = typia.createValidate<zones_sort_query_string_for_cache_2>();
@@ -32322,7 +32322,7 @@ export const iszones_ssl_recommender_enabled = typia.createIs<zones_ssl_recommen
 export const assertzones_ssl_recommender_enabled = typia.createAssert<zones_ssl_recommender_enabled>();
 export const validatezones_ssl_recommender_enabled = typia.createValidate<zones_ssl_recommender_enabled>();
 
-export type zones_ssl_recommender = (Partial<{ enabled: zones_ssl_recommender_enabled, id: "ssl_recommender" }>);
+export type zones_ssl_recommender = Partial<{ enabled: zones_ssl_recommender_enabled, id: "ssl_recommender" }>;
 export const iszones_ssl_recommender = typia.createIs<zones_ssl_recommender>();
 export const assertzones_ssl_recommender = typia.createAssert<zones_ssl_recommender>();
 export const validatezones_ssl_recommender = typia.createValidate<zones_ssl_recommender>();
@@ -32342,7 +32342,7 @@ export const iszones_tls_1_3_value = typia.createIs<zones_tls_1_3_value>();
 export const assertzones_tls_1_3_value = typia.createAssert<zones_tls_1_3_value>();
 export const validatezones_tls_1_3_value = typia.createValidate<zones_tls_1_3_value>();
 
-export type zones_tls_1_3 = (zones_base & Partial<{ id: "tls_1_3", value: zones_tls_1_3_value }> & unknown);
+export type zones_tls_1_3 = (zones_base & Partial<{ id: "tls_1_3", value: zones_tls_1_3_value }>);
 export const iszones_tls_1_3 = typia.createIs<zones_tls_1_3>();
 export const assertzones_tls_1_3 = typia.createAssert<zones_tls_1_3>();
 export const validatezones_tls_1_3 = typia.createValidate<zones_tls_1_3>();
@@ -32362,7 +32362,7 @@ export const iszones_true_client_ip_header_value = typia.createIs<zones_true_cli
 export const assertzones_true_client_ip_header_value = typia.createAssert<zones_true_client_ip_header_value>();
 export const validatezones_true_client_ip_header_value = typia.createValidate<zones_true_client_ip_header_value>();
 
-export type zones_true_client_ip_header_2 = (zones_base & Partial<{ id: "true_client_ip_header", value: zones_true_client_ip_header_value }> & unknown);
+export type zones_true_client_ip_header_2 = (zones_base & Partial<{ id: "true_client_ip_header", value: zones_true_client_ip_header_value }>);
 export const iszones_true_client_ip_header_2 = typia.createIs<zones_true_client_ip_header_2>();
 export const assertzones_true_client_ip_header_2 = typia.createAssert<zones_true_client_ip_header_2>();
 export const validatezones_true_client_ip_header_2 = typia.createValidate<zones_true_client_ip_header_2>();
@@ -33037,7 +33037,7 @@ export const patch_Access__applications__patch__update__access__application__set
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ app_id: access_app_id, account_id: access_identifier }>(), body: isaccess_app_settings_request },
-  responses: { 202: typia.createIs<(access_single_response_update)>(), "4XX": isaccess_api_response_common_failure },
+  responses: { 202: isaccess_single_response_update, "4XX": isaccess_api_response_common_failure },
 };
 
 export type put_Access__applications__put__update__access__application__settings = typeof put_Access__applications__put__update__access__application__settings;
@@ -33047,7 +33047,7 @@ export const put_Access__applications__put__update__access__application__setting
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ app_id: access_app_id, account_id: access_identifier }>(), body: isaccess_app_settings_request },
-  responses: { 202: typia.createIs<(access_single_response_update)>(), "4XX": isaccess_api_response_common_failure },
+  responses: { 202: isaccess_single_response_update, "4XX": isaccess_api_response_common_failure },
 };
 
 export type get_Access__applications__test__access__policies = typeof get_Access__applications__test__access__policies;
@@ -33998,7 +33998,7 @@ export const get_Ip__address__management__prefixes__download__loa__document = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ loa_document_id: addressing_loa_document_identifier, account_id: addressing_account_identifier }>() },
-  responses: { 200: typia.createIs<unknown>(), "4XX": typia.createIs<(unknown & addressing_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<unknown>(), "4XX": isaddressing_api_response_common_failure },
 };
 
 export type get_Ip__address__management__prefixes__list__prefixes = typeof get_Ip__address__management__prefixes__list__prefixes;
@@ -34188,7 +34188,7 @@ export const get_Dls__account__regional__hostnames__list__regions = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: dls_identifier }>() },
-  responses: { 200: typia.createIs<(dls_api_response_collection & Partial<{ result: Array<Partial<{ key: dls_region_key, label: string }>> }>)>(), "4XX": typia.createIs<(dls_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(dls_api_response_collection & Partial<{ result: Array<Partial<{ key: dls_region_key, label: string }>> }>)>(), "4XX": isdls_api_response_common_failure },
 };
 
 export type get_Ip__address__management__service__bindings__list__services = typeof get_Ip__address__management__service__bindings__list__services;
@@ -35528,7 +35528,7 @@ export const get_Notification__alert__types__get__alert__types = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: aaa_account_id }>() },
-  responses: { 200: isaaa_alerts_response_collection, "4XX": typia.createIs<(aaa_api_response_common_failure_3)>() },
+  responses: { 200: isaaa_alerts_response_collection, "4XX": isaaa_api_response_common_failure_3 },
 };
 
 export type get_Notification__mechanism__eligibility__get__delivery__mechanism__eligibility = typeof get_Notification__mechanism__eligibility__get__delivery__mechanism__eligibility;
@@ -35538,7 +35538,7 @@ export const get_Notification__mechanism__eligibility__get__delivery__mechanism_
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: aaa_account_id }>() },
-  responses: { 200: isaaa_schemas_response_collection, "4XX": typia.createIs<(aaa_api_response_common_failure_3)>() },
+  responses: { 200: isaaa_schemas_response_collection, "4XX": isaaa_api_response_common_failure_3 },
 };
 
 export type delete_Notification__destinations__with__pager__duty__delete__pager__duty__services = typeof delete_Notification__destinations__with__pager__duty__delete__pager__duty__services;
@@ -35548,7 +35548,7 @@ export const delete_Notification__destinations__with__pager__duty__delete__pager
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: aaa_account_id }>() },
-  responses: { 200: isaaa_api_response_common_2, "4XX": typia.createIs<(aaa_api_response_common_failure_3)>() },
+  responses: { 200: isaaa_api_response_common_2, "4XX": isaaa_api_response_common_failure_3 },
 };
 
 export type get_Notification__destinations__with__pager__duty__list__pager__duty__services = typeof get_Notification__destinations__with__pager__duty__list__pager__duty__services;
@@ -35558,7 +35558,7 @@ export const get_Notification__destinations__with__pager__duty__list__pager__dut
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: aaa_account_id }>() },
-  responses: { 200: isaaa_components_schemas_response_collection, "4XX": typia.createIs<(aaa_api_response_common_failure_3)>() },
+  responses: { 200: isaaa_components_schemas_response_collection, "4XX": isaaa_api_response_common_failure_3 },
 };
 
 export type post_Notification__destinations__with__pager__duty__connect__pager__duty = typeof post_Notification__destinations__with__pager__duty__connect__pager__duty;
@@ -35608,7 +35608,7 @@ export const delete_Notification__webhooks__delete__a__webhook = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ webhook_id: aaa_webhook_id, account_id: aaa_account_id }>() },
-  responses: { 200: isaaa_api_response_common_2, "4XX": typia.createIs<(aaa_api_response_common_failure_3)>() },
+  responses: { 200: isaaa_api_response_common_2, "4XX": isaaa_api_response_common_failure_3 },
 };
 
 export type get_Notification__webhooks__get__a__webhook = typeof get_Notification__webhooks__get__a__webhook;
@@ -35648,7 +35648,7 @@ export const get_Notification__policies__list__notification__policies = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: aaa_account_id }>() },
-  responses: { 200: isaaa_policies_components_schemas_response_collection, "4XX": typia.createIs<(aaa_api_response_common_failure_3)>() },
+  responses: { 200: isaaa_policies_components_schemas_response_collection, "4XX": isaaa_api_response_common_failure_3 },
 };
 
 export type post_Notification__policies__create__a__notification__policy = typeof post_Notification__policies__create__a__notification__policy;
@@ -36576,7 +36576,7 @@ export const post_Brapi__post_Crawl = {
   path: typia.createIs<"/accounts/{account_id}/browser-rendering/crawl">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ cacheTTL: number }>>(), path: typia.createIs<{ account_id: string }>(), body: typia.createIs<(({ actionTimeout?: number, addScriptTag?: Array<Partial<{ content: string, id: string, type: string, url: string }>>, addStyleTag?: Array<Partial<{ content: string, url: string }>>, allowRequestPattern?: Array<string>, allowResourceTypes?: Array<("document" | "stylesheet" | "image" | "media" | "font" | "script" | "texttrack" | "xhr" | "fetch" | "prefetch" | "eventsource" | "websocket" | "manifest" | "signedexchange" | "ping" | "cspviolationreport" | "preflight" | "other")>, authenticate?: { password: string, username: string }, bestAttempt?: boolean, cookies?: Array<{ domain?: string, expires?: number, httpOnly?: boolean, name: string, partitionKey?: string, path?: string, priority?: ("Low" | "Medium" | "High"), sameParty?: boolean, sameSite?: ("Strict" | "Lax" | "None"), secure?: boolean, sourcePort?: number, sourceScheme?: ("Unset" | "NonSecure" | "Secure"), url?: string, value: string }>, crawlPurposes?: Array<("search" | "ai-input" | "ai-train")>, depth?: number, emulateMediaType?: string, formats?: Array<("html" | "markdown" | "json")>, gotoOptions?: Partial<{ referer: string, referrerPolicy: string, timeout: number, waitUntil: ("load" | "domcontentloaded" | "networkidle0" | "networkidle2" | Array<("load" | "domcontentloaded" | "networkidle0" | "networkidle2")>) }>, jsonOptions?: Partial<{ custom_ai: Array<{ authorization?: string, model: string }>, prompt: string, response_format: { json_schema?: (Record<string, (string | number | boolean | Record<string, unknown> | Array<string>)> | null), type: string } }>, limit?: number, maxAge?: number, modifiedSince?: number, options?: Partial<{ excludePatterns: Array<string>, includeExternalLinks: boolean, includePatterns: Array<string>, includeSubdomains: boolean }>, rejectRequestPattern?: Array<string>, rejectResourceTypes?: Array<("document" | "stylesheet" | "image" | "media" | "font" | "script" | "texttrack" | "xhr" | "fetch" | "prefetch" | "eventsource" | "websocket" | "manifest" | "signedexchange" | "ping" | "cspviolationreport" | "preflight" | "other")>, render?: true, setExtraHTTPHeaders?: Record<string, string>, setJavaScriptEnabled?: boolean, source?: ("sitemaps" | "links" | "all"), url: string, viewport?: { deviceScaleFactor?: number, hasTouch?: boolean, height: number, isLandscape?: boolean, isMobile?: boolean, width: number }, waitForSelector?: { hidden?: true, selector: string, timeout?: number, visible?: true }, waitForTimeout?: number } | { crawlPurposes?: Array<("search" | "ai-input" | "ai-train")>, depth?: number, formats?: Array<("html" | "markdown" | "json")>, jsonOptions?: Partial<{ custom_ai: Array<{ authorization?: string, model: string }>, prompt: string, response_format: { json_schema?: (Record<string, (string | number | boolean | Record<string, unknown> | Array<string>)> | null), type: string } }>, limit?: number, maxAge?: number, modifiedSince?: number, options?: Partial<{ excludePatterns: Array<string>, includeExternalLinks: boolean, includePatterns: Array<string>, includeSubdomains: boolean }>, render: false, source?: ("sitemaps" | "links" | "all"), url: string }))>() },
+  parameters: { query: typia.createIs<Partial<{ cacheTTL: number }>>(), path: typia.createIs<{ account_id: string }>(), body: typia.createIs<({ actionTimeout?: number, addScriptTag?: Array<Partial<{ content: string, id: string, type: string, url: string }>>, addStyleTag?: Array<Partial<{ content: string, url: string }>>, allowRequestPattern?: Array<string>, allowResourceTypes?: Array<("document" | "stylesheet" | "image" | "media" | "font" | "script" | "texttrack" | "xhr" | "fetch" | "prefetch" | "eventsource" | "websocket" | "manifest" | "signedexchange" | "ping" | "cspviolationreport" | "preflight" | "other")>, authenticate?: { password: string, username: string }, bestAttempt?: boolean, cookies?: Array<{ domain?: string, expires?: number, httpOnly?: boolean, name: string, partitionKey?: string, path?: string, priority?: ("Low" | "Medium" | "High"), sameParty?: boolean, sameSite?: ("Strict" | "Lax" | "None"), secure?: boolean, sourcePort?: number, sourceScheme?: ("Unset" | "NonSecure" | "Secure"), url?: string, value: string }>, crawlPurposes?: Array<("search" | "ai-input" | "ai-train")>, depth?: number, emulateMediaType?: string, formats?: Array<("html" | "markdown" | "json")>, gotoOptions?: Partial<{ referer: string, referrerPolicy: string, timeout: number, waitUntil: ("load" | "domcontentloaded" | "networkidle0" | "networkidle2" | Array<("load" | "domcontentloaded" | "networkidle0" | "networkidle2")>) }>, jsonOptions?: Partial<{ custom_ai: Array<{ authorization?: string, model: string }>, prompt: string, response_format: { json_schema?: (Record<string, (string | number | boolean | Record<string, unknown> | Array<string>)> | null), type: string } }>, limit?: number, maxAge?: number, modifiedSince?: number, options?: Partial<{ excludePatterns: Array<string>, includeExternalLinks: boolean, includePatterns: Array<string>, includeSubdomains: boolean }>, rejectRequestPattern?: Array<string>, rejectResourceTypes?: Array<("document" | "stylesheet" | "image" | "media" | "font" | "script" | "texttrack" | "xhr" | "fetch" | "prefetch" | "eventsource" | "websocket" | "manifest" | "signedexchange" | "ping" | "cspviolationreport" | "preflight" | "other")>, render?: true, setExtraHTTPHeaders?: Record<string, string>, setJavaScriptEnabled?: boolean, source?: ("sitemaps" | "links" | "all"), url: string, viewport?: { deviceScaleFactor?: number, hasTouch?: boolean, height: number, isLandscape?: boolean, isMobile?: boolean, width: number }, waitForSelector?: { hidden?: true, selector: string, timeout?: number, visible?: true }, waitForTimeout?: number } | { crawlPurposes?: Array<("search" | "ai-input" | "ai-train")>, depth?: number, formats?: Array<("html" | "markdown" | "json")>, jsonOptions?: Partial<{ custom_ai: Array<{ authorization?: string, model: string }>, prompt: string, response_format: { json_schema?: (Record<string, (string | number | boolean | Record<string, unknown> | Array<string>)> | null), type: string } }>, limit?: number, maxAge?: number, modifiedSince?: number, options?: Partial<{ excludePatterns: Array<string>, includeExternalLinks: boolean, includePatterns: Array<string>, includeSubdomains: boolean }>, render: false, source?: ("sitemaps" | "links" | "all"), url: string })>() },
   responses: { 200: typia.createIs<{ errors?: Array<{ code: number, message: string }>, result: string, success: boolean }>(), 400: typia.createIs<{ errors?: Array<{ code: number, message: string }>, success: boolean }>(), 429: typia.createIs<{ errors?: Array<{ code: number, message: string }>, success: boolean }>(), 500: typia.createIs<{ errors?: Array<{ code: number, message: string }>, success: boolean }>() },
   responseHeaders: { 429: typia.createIs<{ "Retry-After": number }>() },
 };
@@ -38296,7 +38296,7 @@ export const get_Cloudforce__one__priority__quota = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: cloudforce_one_requests_identifier }>() },
-  responses: { 200: typia.createIs<(cloudforce_one_requests_api_response_common & Partial<{ result: (cloudforce_one_requests_quota) }>)>(), "4XX": iscloudforce_one_requests_api_response_common_failure },
+  responses: { 200: typia.createIs<(cloudforce_one_requests_api_response_common & Partial<{ result: cloudforce_one_requests_quota }>)>(), "4XX": iscloudforce_one_requests_api_response_common_failure },
 };
 
 export type delete_Cloudforce__one__priority__delete = typeof delete_Cloudforce__one__priority__delete;
@@ -38316,7 +38316,7 @@ export const get_Cloudforce__one__priority__get = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: cloudforce_one_requests_identifier, priority_id: cloudforce_one_requests_uuid }>() },
-  responses: { 200: typia.createIs<(cloudforce_one_requests_api_response_common & Partial<{ result: (cloudforce_one_requests_request_item) }>)>(), "4XX": iscloudforce_one_requests_api_response_common_failure },
+  responses: { 200: typia.createIs<(cloudforce_one_requests_api_response_common & Partial<{ result: cloudforce_one_requests_request_item }>)>(), "4XX": iscloudforce_one_requests_api_response_common_failure },
 };
 
 export type put_Cloudforce__one__priority__update = typeof put_Cloudforce__one__priority__update;
@@ -38326,7 +38326,7 @@ export const put_Cloudforce__one__priority__update = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: cloudforce_one_requests_identifier, priority_id: cloudforce_one_requests_uuid }>(), body: iscloudforce_one_requests_priority_edit },
-  responses: { 200: typia.createIs<(cloudforce_one_requests_api_response_common & Partial<{ result: (cloudforce_one_requests_request_item) }>)>(), "4XX": iscloudforce_one_requests_api_response_common_failure },
+  responses: { 200: typia.createIs<(cloudforce_one_requests_api_response_common & Partial<{ result: cloudforce_one_requests_request_item }>)>(), "4XX": iscloudforce_one_requests_api_response_common_failure },
 };
 
 export type get_Cloudforce__one__request__quota = typeof get_Cloudforce__one__request__quota;
@@ -40236,7 +40236,7 @@ export const post_Devices__create__device__settings__policy = {
   path: typia.createIs<"/accounts/{account_id}/devices/policy">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ account_id: teams_devices_identifier }>(), body: typia.createIs<{ allow_mode_switch?: teams_devices_allow_mode_switch, allow_updates?: teams_devices_allow_updates, allowed_to_leave?: teams_devices_allowed_to_leave, auto_connect?: teams_devices_auto_connect, captive_portal?: teams_devices_captive_portal, description?: (teams_devices_schemas_description & unknown), disable_auto_fallback?: teams_devices_disable_auto_fallback, dns_search_suffixes?: teams_devices_dns_search_suffixes, enabled?: boolean, exclude?: teams_devices_exclude_request, exclude_office_ips?: teams_devices_exclude_office_ips, global_acceleration?: teams_devices_global_acceleration, include?: teams_devices_include_request, lan_allow_minutes?: teams_devices_lan_allow_minutes, lan_allow_subnet_size?: teams_devices_lan_allow_subnet_size, match: teams_devices_schemas_match, name: string, precedence: teams_devices_precedence, register_interface_ip_with_dns?: teams_devices_register_interface_ip_with_dns, sccm_vpn_boundary_support?: teams_devices_sccm_vpn_boundary_support, service_mode_v2?: teams_devices_service_mode_v2, support_url?: teams_devices_support_url, switch_locked?: teams_devices_switch_locked, tunnel_protocol?: teams_devices_tunnel_protocol, virtual_networks?: teams_devices_virtual_networks }>() },
+  parameters: { path: typia.createIs<{ account_id: teams_devices_identifier }>(), body: typia.createIs<{ allow_mode_switch?: teams_devices_allow_mode_switch, allow_updates?: teams_devices_allow_updates, allowed_to_leave?: teams_devices_allowed_to_leave, auto_connect?: teams_devices_auto_connect, captive_portal?: teams_devices_captive_portal, description?: teams_devices_schemas_description, disable_auto_fallback?: teams_devices_disable_auto_fallback, dns_search_suffixes?: teams_devices_dns_search_suffixes, enabled?: boolean, exclude?: teams_devices_exclude_request, exclude_office_ips?: teams_devices_exclude_office_ips, global_acceleration?: teams_devices_global_acceleration, include?: teams_devices_include_request, lan_allow_minutes?: teams_devices_lan_allow_minutes, lan_allow_subnet_size?: teams_devices_lan_allow_subnet_size, match: teams_devices_schemas_match, name: string, precedence: teams_devices_precedence, register_interface_ip_with_dns?: teams_devices_register_interface_ip_with_dns, sccm_vpn_boundary_support?: teams_devices_sccm_vpn_boundary_support, service_mode_v2?: teams_devices_service_mode_v2, support_url?: teams_devices_support_url, switch_locked?: teams_devices_switch_locked, tunnel_protocol?: teams_devices_tunnel_protocol, virtual_networks?: teams_devices_virtual_networks }>() },
   responses: { 200: isteams_devices_device_settings_response, "4XX": typia.createIs<(teams_devices_device_settings_response & teams_devices_api_response_common_failure)>() },
 };
 
@@ -40567,7 +40567,7 @@ export const get_Devices__resilience__retrieve__global__warp__override = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: teams_devices_identifier }>() },
-  responses: { 200: isteams_devices_global_warp_override_response, "4XX": typia.createIs<(teams_devices_api_response_common_failure)>() },
+  responses: { 200: isteams_devices_global_warp_override_response, "4XX": isteams_devices_api_response_common_failure },
 };
 
 export type post_Devices__resilience__set__global__warp__override = typeof post_Devices__resilience__set__global__warp__override;
@@ -40577,7 +40577,7 @@ export const post_Devices__resilience__set__global__warp__override = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: teams_devices_identifier }>(), body: isteams_devices_global_warp_override_request },
-  responses: { 200: isteams_devices_global_warp_override_response, "4XX": typia.createIs<(teams_devices_api_response_common_failure)>() },
+  responses: { 200: isteams_devices_global_warp_override_response, "4XX": isteams_devices_api_response_common_failure },
 };
 
 export type delete_Zero__trust__accounts__delete__device__settings__for__zero__trust__account = typeof delete_Zero__trust__accounts__delete__device__settings__for__zero__trust__account;
@@ -40938,7 +40938,7 @@ export const get_Diagnostics__endpoint__healthcheck__list = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: magic_transit_identifier }>() },
-  responses: { 200: ismagic_transit_endpoint_health_check_response_single, "4XX": typia.createIs<(magic_transit_api_response_common_failure)>() },
+  responses: { 200: ismagic_transit_endpoint_health_check_response_single, "4XX": ismagic_transit_api_response_common_failure },
 };
 
 export type post_Diagnostics__endpoint__healthcheck__create = typeof post_Diagnostics__endpoint__healthcheck__create;
@@ -40948,7 +40948,7 @@ export const post_Diagnostics__endpoint__healthcheck__create = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: magic_transit_identifier }>(), body: ismagic_transit_endpoint_health_check },
-  responses: { 201: ismagic_transit_endpoint_health_check_response_single, "4XX": typia.createIs<(magic_transit_api_response_common_failure)>() },
+  responses: { 201: ismagic_transit_endpoint_health_check_response_single, "4XX": ismagic_transit_api_response_common_failure },
 };
 
 export type delete_Diagnostics__endpoint__healthcheck__delete = typeof delete_Diagnostics__endpoint__healthcheck__delete;
@@ -40958,7 +40958,7 @@ export const delete_Diagnostics__endpoint__healthcheck__delete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: magic_transit_identifier, id: magic_transit_uuid }>() },
-  responses: { 200: ismagic_transit_api_response_common, "4XX": typia.createIs<(magic_transit_api_response_common_failure)>() },
+  responses: { 200: ismagic_transit_api_response_common, "4XX": ismagic_transit_api_response_common_failure },
 };
 
 export type get_Diagnostics__endpoint__healthcheck__get = typeof get_Diagnostics__endpoint__healthcheck__get;
@@ -40978,7 +40978,7 @@ export const put_Diagnostics__endpoint__healthcheck__update = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: magic_transit_identifier, id: magic_transit_uuid }>(), body: ismagic_transit_endpoint_health_check },
-  responses: { 200: ismagic_transit_endpoint_health_check_response_single, "4XX": typia.createIs<(magic_transit_api_response_common_failure)>() },
+  responses: { 200: ismagic_transit_endpoint_health_check_response_single, "4XX": ismagic_transit_api_response_common_failure },
 };
 
 export type post_Diagnostics__traceroute = typeof post_Diagnostics__traceroute;
@@ -42358,7 +42358,7 @@ export const get_Email_security_list_allow_policies = {
   path: typia.createIs<"/accounts/{account_id}/email-security/settings/allow_policies">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ page: number, per_page: number, search: string, order: ("pattern" | "created_at"), direction: ("asc" | "desc"), is_exempt_recipient: boolean, is_trusted_sender: boolean, is_acceptable_sender: boolean, verify_sender: boolean, pattern_type: (email_security_PatternType), pattern: string }>>(), path: typia.createIs<{ account_id: email_security_identifier }>() },
+  parameters: { query: typia.createIs<Partial<{ page: number, per_page: number, search: string, order: ("pattern" | "created_at"), direction: ("asc" | "desc"), is_exempt_recipient: boolean, is_trusted_sender: boolean, is_acceptable_sender: boolean, verify_sender: boolean, pattern_type: email_security_PatternType, pattern: string }>>(), path: typia.createIs<{ account_id: email_security_identifier }>() },
   responses: { 200: typia.createIs<(email_security_api_response_collection & Partial<{ result: email_security_AllowPolicyList }>)>(), "4XX": isemail_security_api_response_common_failure },
 };
 
@@ -42378,7 +42378,7 @@ export const post_Email_security_batch_allow_policies = {
   path: typia.createIs<"/accounts/{account_id}/email-security/settings/allow_policies/batch">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ account_id: email_security_identifier }>(), body: typia.createIs<{ deletes: Array<{ id: email_security_AllowPolicyId }>, patches: Array<(email_security_UpdateAllowPolicy & { id: (email_security_AllowPolicyId) })>, posts: Array<email_security_CreateAllowPolicy>, puts: Array<(email_security_AllowPolicy & { id: (email_security_AllowPolicyId) })> }>() },
+  parameters: { path: typia.createIs<{ account_id: email_security_identifier }>(), body: typia.createIs<{ deletes: Array<{ id: email_security_AllowPolicyId }>, patches: Array<(email_security_UpdateAllowPolicy & { id: email_security_AllowPolicyId })>, posts: Array<email_security_CreateAllowPolicy>, puts: Array<(email_security_AllowPolicy & { id: email_security_AllowPolicyId })> }>() },
   responses: { 200: typia.createIs<(email_security_api_response_single & Partial<{ result: Partial<{ deletes: Array<email_security_DeletedAllowPolicy>, patches: email_security_AllowPolicyList, posts: email_security_AllowPolicyList, puts: email_security_AllowPolicyList }> }>)>(), "4XX": isemail_security_api_response_common_failure },
 };
 
@@ -42418,7 +42418,7 @@ export const get_Email_security_list_blocked_senders = {
   path: typia.createIs<"/accounts/{account_id}/email-security/settings/block_senders">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ page: number, per_page: number, search: string, order: ("pattern" | "created_at"), direction: ("asc" | "desc"), pattern_type: (email_security_PatternType), pattern: string }>>(), path: typia.createIs<{ account_id: email_security_identifier }>() },
+  parameters: { query: typia.createIs<Partial<{ page: number, per_page: number, search: string, order: ("pattern" | "created_at"), direction: ("asc" | "desc"), pattern_type: email_security_PatternType, pattern: string }>>(), path: typia.createIs<{ account_id: email_security_identifier }>() },
   responses: { 200: typia.createIs<(email_security_api_response_collection & Partial<{ result: email_security_BlockedSenderList }>)>(), "4XX": isemail_security_api_response_common_failure },
 };
 
@@ -42438,7 +42438,7 @@ export const post_Email_security_batch_blocked_senders = {
   path: typia.createIs<"/accounts/{account_id}/email-security/settings/block_senders/batch">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ account_id: email_security_identifier }>(), body: typia.createIs<{ deletes: Array<{ id: email_security_BlockedSenderId }>, patches: Array<(email_security_UpdateBlockedSender & { id: (email_security_BlockedSenderId) })>, posts: Array<email_security_CreateBlockedSender>, puts: Array<(email_security_BlockedSender & { id: (email_security_BlockedSenderId) })> }>() },
+  parameters: { path: typia.createIs<{ account_id: email_security_identifier }>(), body: typia.createIs<{ deletes: Array<{ id: email_security_BlockedSenderId }>, patches: Array<(email_security_UpdateBlockedSender & { id: email_security_BlockedSenderId })>, posts: Array<email_security_CreateBlockedSender>, puts: Array<(email_security_BlockedSender & { id: email_security_BlockedSenderId })> }>() },
   responses: { 200: typia.createIs<(email_security_api_response_single & Partial<{ result: Partial<{ deletes: Array<email_security_DeletedBlockedSender>, patches: email_security_BlockedSenderList, posts: email_security_BlockedSenderList, puts: email_security_BlockedSenderList }> }>)>(), "4XX": isemail_security_api_response_common_failure },
 };
 
@@ -42688,7 +42688,7 @@ export const post_Email_security_batch_trusted_domains = {
   path: typia.createIs<"/accounts/{account_id}/email-security/settings/trusted_domains/batch">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ account_id: email_security_identifier }>(), body: typia.createIs<{ deletes: Array<{ id: email_security_TrustedDomainId }>, patches: Array<(email_security_UpdateTrustedDomain & { id: (email_security_TrustedDomainId) })>, posts: Array<email_security_CreateTrustedDomain>, puts: Array<(email_security_TrustedDomain & { id: (email_security_TrustedDomainId) })> }>() },
+  parameters: { path: typia.createIs<{ account_id: email_security_identifier }>(), body: typia.createIs<{ deletes: Array<{ id: email_security_TrustedDomainId }>, patches: Array<(email_security_UpdateTrustedDomain & { id: email_security_TrustedDomainId })>, posts: Array<email_security_CreateTrustedDomain>, puts: Array<(email_security_TrustedDomain & { id: email_security_TrustedDomainId })> }>() },
   responses: { 200: typia.createIs<(email_security_api_response_single & Partial<{ result: Partial<{ deletes: Array<email_security_DeletedTrustedDomain>, patches: email_security_TrustedDomainList, posts: email_security_TrustedDomainList, puts: email_security_TrustedDomainList }> }>)>(), "4XX": isemail_security_api_response_common_failure },
 };
 
@@ -42748,7 +42748,7 @@ export const post_Email_security_batch_url_ignore_patterns = {
   path: typia.createIs<"/accounts/{account_id}/email-security/settings/url_ignore_patterns/batch">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ account_id: email_security_identifier }>(), body: typia.createIs<{ deletes: Array<{ id: email_security_UrlIgnorePatternId }>, patches: Array<(email_security_UpdateUrlIgnorePattern & { id: (email_security_UrlIgnorePatternId) })>, posts: Array<email_security_CreateUrlIgnorePattern>, puts: Array<(email_security_CreateUrlIgnorePattern & { id: (email_security_UrlIgnorePatternId) })> }>() },
+  parameters: { path: typia.createIs<{ account_id: email_security_identifier }>(), body: typia.createIs<{ deletes: Array<{ id: email_security_UrlIgnorePatternId }>, patches: Array<(email_security_UpdateUrlIgnorePattern & { id: email_security_UrlIgnorePatternId })>, posts: Array<email_security_CreateUrlIgnorePattern>, puts: Array<(email_security_CreateUrlIgnorePattern & { id: email_security_UrlIgnorePatternId })> }>() },
   responses: { 200: typia.createIs<(email_security_api_response_common & { result: { deletes: Array<email_security_DeletedUrlIgnorePattern>, patches: Array<email_security_UrlIgnorePattern>, posts: Array<email_security_UrlIgnorePattern>, puts: Array<email_security_UrlIgnorePattern> } })>(), "4XX": isemail_security_api_response_common_failure },
 };
 
@@ -43148,7 +43148,7 @@ export const post_Ip__access__rules__for__an__account__create__an__ip__access__r
   path: typia.createIs<"/accounts/{account_id}/firewall/access_rules/rules">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ account_id: firewall_account_identifier }>(), body: typia.createIs<{ configuration: firewall_configuration, mode: firewall_schemas_mode, notes?: (firewall_notes & unknown) }>() },
+  parameters: { path: typia.createIs<{ account_id: firewall_account_identifier }>(), body: typia.createIs<{ configuration: firewall_configuration, mode: firewall_schemas_mode, notes?: firewall_notes }>() },
   responses: { 200: isfirewall_response_single, "4XX": typia.createIs<(firewall_response_single & firewall_api_response_common_failure)>() },
 };
 
@@ -43968,7 +43968,7 @@ export const get_Account__resource__group__list = {
   path: typia.createIs<"/accounts/{account_id}/iam/resource_groups">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ id: (iam_resource_group_identifier), name: string }>>(), path: typia.createIs<{ account_id: iam_account_identifier }>() },
+  parameters: { query: typia.createIs<Partial<{ id: iam_resource_group_identifier, name: string }>>(), path: typia.createIs<{ account_id: iam_account_identifier }>() },
   responses: { 200: typia.createIs<(iam_api_response_common & Partial<{ result: Array<iam_resource_group> }>)>(), "4XX": isiam_api_response_common_failure },
 };
 
@@ -44438,7 +44438,7 @@ export const get_Infra__targets__list = {
   path: typia.createIs<"/accounts/{account_id}/infrastructure/targets">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ hostname: (string | null), hostname_contains: (string | null), virtual_network_id: (string | null), ip_v4: (string | null), ip_v6: (string | null), created_before: (string | null), created_after: (string | null), modified_before: (string | null), modified_after: (string | null), ips: Array<string>, target_ids: Array<string>, ip_like: (string | null), ipv4_start: (string | null), ipv4_end: (string | null), ipv6_start: (string | null), ipv6_end: (string | null), page: number, per_page: number, order: ("hostname" | "created_at"), direction: (infra_SortingDirection) }>>(), path: typia.createIs<{ account_id: infra_AccountTag }>() },
+  parameters: { query: typia.createIs<Partial<{ hostname: (string | null), hostname_contains: (string | null), virtual_network_id: (string | null), ip_v4: (string | null), ip_v6: (string | null), created_before: (string | null), created_after: (string | null), modified_before: (string | null), modified_after: (string | null), ips: Array<string>, target_ids: Array<string>, ip_like: (string | null), ipv4_start: (string | null), ipv4_end: (string | null), ipv6_start: (string | null), ipv6_end: (string | null), page: number, per_page: number, order: ("hostname" | "created_at"), direction: infra_SortingDirection }>>(), path: typia.createIs<{ account_id: infra_AccountTag }>() },
   responses: { 200: typia.createIs<(infra_api_response_collection & Partial<{ result: infra_TargetArray }>)>(), "4XX": isinfra_api_response_common_failure },
 };
 
@@ -44659,7 +44659,7 @@ export const get_Custom__indicator__feeds__get__indicator__feed__data = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: custom_indicator_feeds_identifier, feed_id: custom_indicator_feeds_feed_id }>() },
-  responses: { 200: typia.createIs<unknown>(), "4XX": typia.createIs<(custom_indicator_feeds_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<unknown>(), "4XX": iscustom_indicator_feeds_api_response_common_failure },
 };
 
 export type get_Custom__indicator__feeds__download__indicator__feed__data = typeof get_Custom__indicator__feeds__download__indicator__feed__data;
@@ -44669,7 +44669,7 @@ export const get_Custom__indicator__feeds__download__indicator__feed__data = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: custom_indicator_feeds_identifier, feed_id: custom_indicator_feeds_feed_id }>() },
-  responses: { 200: iscustom_indicator_feeds_update_feed_response, "4XX": typia.createIs<(custom_indicator_feeds_api_response_common_failure)>() },
+  responses: { 200: iscustom_indicator_feeds_update_feed_response, "4XX": iscustom_indicator_feeds_api_response_common_failure },
 };
 
 export type put_Custom__indicator__feeds__update__indicator__feed__data = typeof put_Custom__indicator__feeds__update__indicator__feed__data;
@@ -44679,7 +44679,7 @@ export const put_Custom__indicator__feeds__update__indicator__feed__data = {
   requestFormat: typia.createIs<"form-data">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: custom_indicator_feeds_identifier, feed_id: custom_indicator_feeds_feed_id }>(), body: typia.createIs<Partial<{ source: string }>>() },
-  responses: { 200: iscustom_indicator_feeds_update_feed_response, 413: typia.createIs<(custom_indicator_feeds_api_response_common_failure)>(), "4XX": typia.createIs<(custom_indicator_feeds_api_response_common_failure)>() },
+  responses: { 200: iscustom_indicator_feeds_update_feed_response, 413: iscustom_indicator_feeds_api_response_common_failure, "4XX": iscustom_indicator_feeds_api_response_common_failure },
 };
 
 export type get_Ip__intelligence__get__ip__overview = typeof get_Ip__intelligence__get__ip__overview;
@@ -44899,7 +44899,7 @@ export const post_Account__load__balancer__monitors__create__monitor = {
   path: typia.createIs<"/accounts/{account_id}/load_balancers/monitors">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ account_id: load_balancing_components_schemas_identifier }>(), body: typia.createIs<(load_balancing_monitor_editable)>() },
+  parameters: { path: typia.createIs<{ account_id: load_balancing_components_schemas_identifier }>(), body: isload_balancing_monitor_editable },
   responses: { 200: isload_balancing_monitor_response_single, "4XX": typia.createIs<(load_balancing_monitor_response_single & load_balancing_api_response_common_failure)>() },
 };
 
@@ -44929,7 +44929,7 @@ export const patch_Account__load__balancer__monitors__patch__monitor = {
   path: typia.createIs<"/accounts/{account_id}/load_balancers/monitors/{monitor_id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }>(), body: typia.createIs<(load_balancing_monitor_editable)>() },
+  parameters: { path: typia.createIs<{ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }>(), body: isload_balancing_monitor_editable },
   responses: { 200: isload_balancing_monitor_response_single, "4XX": typia.createIs<(load_balancing_monitor_response_single & load_balancing_api_response_common_failure)>() },
 };
 
@@ -44939,7 +44939,7 @@ export const put_Account__load__balancer__monitors__update__monitor = {
   path: typia.createIs<"/accounts/{account_id}/load_balancers/monitors/{monitor_id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }>(), body: typia.createIs<(load_balancing_monitor_editable)>() },
+  parameters: { path: typia.createIs<{ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }>(), body: isload_balancing_monitor_editable },
   responses: { 200: isload_balancing_monitor_response_single, "4XX": typia.createIs<(load_balancing_monitor_response_single & load_balancing_api_response_common_failure)>() },
 };
 
@@ -44949,7 +44949,7 @@ export const post_Account__load__balancer__monitors__preview__monitor = {
   path: typia.createIs<"/accounts/{account_id}/load_balancers/monitors/{monitor_id}/preview">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }>(), body: typia.createIs<(load_balancing_monitor_editable)>() },
+  parameters: { path: typia.createIs<{ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }>(), body: isload_balancing_monitor_editable },
   responses: { 200: isload_balancing_preview_response, "4XX": typia.createIs<(load_balancing_preview_response & load_balancing_api_response_common_failure)>() },
 };
 
@@ -45049,7 +45049,7 @@ export const post_Account__load__balancer__pools__preview__pool = {
   path: typia.createIs<"/accounts/{account_id}/load_balancers/pools/{pool_id}/preview">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ pool_id: load_balancing_schemas_identifier, account_id: load_balancing_components_schemas_identifier }>(), body: typia.createIs<(load_balancing_monitor_editable)>() },
+  parameters: { path: typia.createIs<{ pool_id: load_balancing_schemas_identifier, account_id: load_balancing_components_schemas_identifier }>(), body: isload_balancing_monitor_editable },
   responses: { 200: isload_balancing_preview_response, "4XX": typia.createIs<(load_balancing_preview_response & load_balancing_api_response_common_failure)>() },
 };
 
@@ -45139,7 +45139,7 @@ export const patch_Account__load__balancers__patch__account__load__balancer = {
   path: typia.createIs<"/accounts/{account_id}/load_balancers/{load_balancer_id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ account_id: load_balancing_components_schemas_identifier, load_balancer_id: load_balancing_load_balancer_components_schemas_identifier }>(), body: typia.createIs<(load_balancing_load_balancer_editable)>() },
+  parameters: { path: typia.createIs<{ account_id: load_balancing_components_schemas_identifier, load_balancer_id: load_balancing_load_balancer_components_schemas_identifier }>(), body: isload_balancing_load_balancer_editable },
   responses: { 200: isload_balancing_load_balancer_components_schemas_single_response, "4XX": typia.createIs<(load_balancing_load_balancer_components_schemas_single_response & load_balancing_api_response_common_failure)>() },
 };
 
@@ -45160,7 +45160,7 @@ export const get_Get__accounts__account_id__logpush__datasets__dataset_id__field
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ dataset_id: logpush_dataset, account_id: logpush_identifier }>() },
-  responses: { 200: islogpush_logpush_field_response_collection, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_logpush_field_response_collection, "4XX": islogpush_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logpush__datasets__dataset_id__jobs = typeof get_Get__accounts__account_id__logpush__datasets__dataset_id__jobs;
@@ -45170,7 +45170,7 @@ export const get_Get__accounts__account_id__logpush__datasets__dataset_id__jobs 
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ dataset_id: logpush_dataset, account_id: logpush_identifier }>() },
-  responses: { 200: islogpush_logpush_job_response_collection, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_logpush_job_response_collection, "4XX": islogpush_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logpush__jobs = typeof get_Get__accounts__account_id__logpush__jobs;
@@ -45180,7 +45180,7 @@ export const get_Get__accounts__account_id__logpush__jobs = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: logpush_identifier }>() },
-  responses: { 200: islogpush_logpush_job_response_collection, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_logpush_job_response_collection, "4XX": islogpush_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logpush__jobs = typeof post_Post__accounts__account_id__logpush__jobs;
@@ -45190,7 +45190,7 @@ export const post_Post__accounts__account_id__logpush__jobs = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: logpush_identifier }>(), body: typia.createIs<{ dataset?: logpush_dataset, destination_conf: logpush_destination_conf, enabled?: logpush_enabled, filter?: logpush_filter, frequency?: logpush_frequency, kind?: logpush_kind, logpull_options?: logpush_logpull_options, max_upload_bytes?: logpush_max_upload_bytes, max_upload_interval_seconds?: logpush_max_upload_interval_seconds, max_upload_records?: logpush_max_upload_records, name?: logpush_name, output_options?: logpush_output_options, ownership_challenge?: logpush_ownership_challenge }>() },
-  responses: { 200: islogpush_logpush_job_response_single, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_logpush_job_response_single, "4XX": islogpush_api_response_common_failure },
 };
 
 export type delete_Delete__accounts__account_id__logpush__jobs__job_id = typeof delete_Delete__accounts__account_id__logpush__jobs__job_id;
@@ -45200,7 +45200,7 @@ export const delete_Delete__accounts__account_id__logpush__jobs__job_id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ job_id: logpush_id, account_id: logpush_identifier }>(), body: typia.createIs<unknown>() },
-  responses: { 200: typia.createIs<(logpush_api_response_common & Partial<{ result: Partial<{ id: logpush_id }> }>)>(), "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(logpush_api_response_common & Partial<{ result: Partial<{ id: logpush_id }> }>)>(), "4XX": islogpush_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logpush__jobs__job_id = typeof get_Get__accounts__account_id__logpush__jobs__job_id;
@@ -45210,7 +45210,7 @@ export const get_Get__accounts__account_id__logpush__jobs__job_id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ job_id: logpush_id, account_id: logpush_identifier }>() },
-  responses: { 200: islogpush_logpush_job_response_single, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_logpush_job_response_single, "4XX": islogpush_api_response_common_failure },
 };
 
 export type put_Put__accounts__account_id__logpush__jobs__job_id = typeof put_Put__accounts__account_id__logpush__jobs__job_id;
@@ -45220,7 +45220,7 @@ export const put_Put__accounts__account_id__logpush__jobs__job_id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ job_id: logpush_id, account_id: logpush_identifier }>(), body: typia.createIs<Partial<{ destination_conf: logpush_destination_conf, enabled: logpush_enabled, filter: logpush_filter, frequency: logpush_frequency, kind: logpush_kind, logpull_options: logpush_logpull_options, max_upload_bytes: logpush_max_upload_bytes, max_upload_interval_seconds: logpush_max_upload_interval_seconds, max_upload_records: logpush_max_upload_records, name: logpush_name, output_options: logpush_output_options, ownership_challenge: logpush_ownership_challenge }>>() },
-  responses: { 200: islogpush_logpush_job_response_single, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_logpush_job_response_single, "4XX": islogpush_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logpush__ownership = typeof post_Post__accounts__account_id__logpush__ownership;
@@ -45230,7 +45230,7 @@ export const post_Post__accounts__account_id__logpush__ownership = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: logpush_identifier }>(), body: typia.createIs<{ destination_conf: logpush_destination_conf }>() },
-  responses: { 200: islogpush_get_ownership_response, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_get_ownership_response, "4XX": islogpush_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logpush__ownership__validate = typeof post_Post__accounts__account_id__logpush__ownership__validate;
@@ -45240,7 +45240,7 @@ export const post_Post__accounts__account_id__logpush__ownership__validate = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: logpush_identifier }>(), body: typia.createIs<{ destination_conf: logpush_destination_conf, ownership_challenge: logpush_ownership_challenge }>() },
-  responses: { 200: islogpush_validate_ownership_response, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_validate_ownership_response, "4XX": islogpush_api_response_common_failure },
 };
 
 export type post_Delete__accounts__account_id__logpush__validate__destination = typeof post_Delete__accounts__account_id__logpush__validate__destination;
@@ -45250,7 +45250,7 @@ export const post_Delete__accounts__account_id__logpush__validate__destination =
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: logpush_identifier }>(), body: typia.createIs<{ destination_conf: logpush_destination_conf }>() },
-  responses: { 200: islogpush_validate_response, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_validate_response, "4XX": islogpush_api_response_common_failure },
 };
 
 export type post_Delete__accounts__account_id__logpush__validate__destination__exists = typeof post_Delete__accounts__account_id__logpush__validate__destination__exists;
@@ -45260,7 +45260,7 @@ export const post_Delete__accounts__account_id__logpush__validate__destination__
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: logpush_identifier }>(), body: typia.createIs<{ destination_conf: logpush_destination_conf }>() },
-  responses: { 200: islogpush_destination_exists_response, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_destination_exists_response, "4XX": islogpush_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logpush__validate__origin = typeof post_Post__accounts__account_id__logpush__validate__origin;
@@ -45270,7 +45270,7 @@ export const post_Post__accounts__account_id__logpush__validate__origin = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: logpush_identifier }>(), body: typia.createIs<{ logpull_options: logpush_logpull_options }>() },
-  responses: { 200: islogpush_validate_response, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_validate_response, "4XX": islogpush_api_response_common_failure },
 };
 
 export type get_Audit__logs__v2__get__account__audit__logs = typeof get_Audit__logs__v2__get__account__audit__logs;
@@ -45310,7 +45310,7 @@ export const delete_Delete__accounts__account_id__logs__control__cmb__config = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: logcontrol_identifier }>(), body: typia.createIs<unknown>() },
-  responses: { 200: typia.createIs<(logcontrol_api_response_common & Partial<{ result: (Record<string, unknown> | null) }>)>(), "4XX": typia.createIs<(logcontrol_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(logcontrol_api_response_common & Partial<{ result: (Record<string, unknown> | null) }>)>(), "4XX": islogcontrol_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logs__control__cmb__config = typeof get_Get__accounts__account_id__logs__control__cmb__config;
@@ -45320,7 +45320,7 @@ export const get_Get__accounts__account_id__logs__control__cmb__config = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: logcontrol_identifier }>() },
-  responses: { 200: islogcontrol_cmb_config_response_single, "4XX": typia.createIs<(logcontrol_api_response_common_failure)>() },
+  responses: { 200: islogcontrol_cmb_config_response_single, "4XX": islogcontrol_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logs__control__cmb__config = typeof post_Post__accounts__account_id__logs__control__cmb__config;
@@ -45330,7 +45330,7 @@ export const post_Post__accounts__account_id__logs__control__cmb__config = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: logcontrol_identifier }>(), body: islogcontrol_cmb_config },
-  responses: { 200: islogcontrol_cmb_config_response_single, "4XX": typia.createIs<(logcontrol_api_response_common_failure)>() },
+  responses: { 200: islogcontrol_cmb_config_response_single, "4XX": islogcontrol_api_response_common_failure },
 };
 
 export type get_Accounts__logs__explorer__datasets__list = typeof get_Accounts__logs__explorer__datasets__list;
@@ -47754,7 +47754,7 @@ export const post_Pages__project__create__project = {
   path: typia.createIs<"/accounts/{account_id}/pages/projects">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ account_id: pages_identifier }>(), body: typia.createIs<{ build_config?: Partial<{ build_caching: boolean, build_command: string, destination_dir: string, root_dir: string, web_analytics_tag: (string | null), web_analytics_token: (string | null) }>, deployment_configs?: Partial<{ preview: (pages_deployment_config_values_request), production: (pages_deployment_config_values_request) }>, name: string, production_branch: string, source?: { config: Partial<{ deployments_enabled: boolean, owner: string, owner_id: string, path_excludes: Array<string>, path_includes: Array<string>, pr_comments_enabled: boolean, preview_branch_excludes: Array<string>, preview_branch_includes: Array<string>, preview_deployment_setting: ("all" | "none" | "custom"), production_branch: string, production_deployments_enabled: boolean, repo_id: string, repo_name: string }>, type: ("github" | "gitlab") } }>() },
+  parameters: { path: typia.createIs<{ account_id: pages_identifier }>(), body: typia.createIs<{ build_config?: Partial<{ build_caching: boolean, build_command: string, destination_dir: string, root_dir: string, web_analytics_tag: (string | null), web_analytics_token: (string | null) }>, deployment_configs?: Partial<{ preview: pages_deployment_config_values_request, production: pages_deployment_config_values_request }>, name: string, production_branch: string, source?: { config: Partial<{ deployments_enabled: boolean, owner: string, owner_id: string, path_excludes: Array<string>, path_includes: Array<string>, pr_comments_enabled: boolean, preview_branch_excludes: Array<string>, preview_branch_includes: Array<string>, preview_deployment_setting: ("all" | "none" | "custom"), production_branch: string, production_deployments_enabled: boolean, repo_id: string, repo_name: string }>, type: ("github" | "gitlab") } }>() },
   responses: { 200: typia.createIs<(pages_api_response_common & { result: pages_project })>(), "4XX": ispages_api_response_common_failure },
 };
 
@@ -47784,7 +47784,7 @@ export const patch_Pages__project__update__project = {
   path: typia.createIs<"/accounts/{account_id}/pages/projects/{project_name}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ project_name: pages_project_name, account_id: pages_identifier }>(), body: typia.createIs<Partial<{ build_config: Partial<{ build_caching: boolean, build_command: string, destination_dir: string, root_dir: string, web_analytics_tag: (string | null), web_analytics_token: (string | null) }>, deployment_configs: Partial<{ preview: (pages_deployment_config_values_request), production: (pages_deployment_config_values_request) }>, name: string, production_branch: string, source: { config: Partial<{ deployments_enabled: boolean, owner: string, owner_id: string, path_excludes: Array<string>, path_includes: Array<string>, pr_comments_enabled: boolean, preview_branch_excludes: Array<string>, preview_branch_includes: Array<string>, preview_deployment_setting: ("all" | "none" | "custom"), production_branch: string, production_deployments_enabled: boolean, repo_id: string, repo_name: string }>, type: ("github" | "gitlab") } }>>() },
+  parameters: { path: typia.createIs<{ project_name: pages_project_name, account_id: pages_identifier }>(), body: typia.createIs<Partial<{ build_config: Partial<{ build_caching: boolean, build_command: string, destination_dir: string, root_dir: string, web_analytics_tag: (string | null), web_analytics_token: (string | null) }>, deployment_configs: Partial<{ preview: pages_deployment_config_values_request, production: pages_deployment_config_values_request }>, name: string, production_branch: string, source: { config: Partial<{ deployments_enabled: boolean, owner: string, owner_id: string, path_excludes: Array<string>, path_includes: Array<string>, pr_comments_enabled: boolean, preview_branch_excludes: Array<string>, preview_branch_includes: Array<string>, preview_deployment_setting: ("all" | "none" | "custom"), production_branch: string, production_deployments_enabled: boolean, repo_id: string, repo_name: string }>, type: ("github" | "gitlab") } }>>() },
   responses: { 200: typia.createIs<(pages_api_response_common & { result: pages_project })>(), "4XX": ispages_api_response_common_failure },
 };
 
@@ -48684,7 +48684,7 @@ export const patch_R2__patch__bucket = {
   path: typia.createIs<"/accounts/{account_id}/r2/buckets/{bucket_name}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ account_id: r2_account_identifier, bucket_name: r2_bucket_name }>(), header: typia.createIs<{ "cf-r2-jurisdiction"?: r2_jurisdiction, "cf-r2-storage-class": (r2_storage_class & unknown) }>() },
+  parameters: { path: typia.createIs<{ account_id: r2_account_identifier, bucket_name: r2_bucket_name }>(), header: typia.createIs<{ "cf-r2-jurisdiction"?: r2_jurisdiction, "cf-r2-storage-class": r2_storage_class }>() },
   responses: { 200: typia.createIs<(r2_v4_response & Partial<{ result: r2_bucket }>)>(), "4XX": isr2_v4_response_failure },
 };
 
@@ -48755,7 +48755,7 @@ export const get_R2__get__custom__domain__settings = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: r2_account_identifier, bucket_name: r2_bucket_name, domain: r2_domain_name }>(), header: typia.createIs<Partial<{ "cf-r2-jurisdiction": r2_jurisdiction }>>() },
-  responses: { 200: typia.createIs<(r2_v4_response & Partial<{ result: (r2_get_custom_domain_response) }>)>(), "4XX": isr2_v4_response_failure },
+  responses: { 200: typia.createIs<(r2_v4_response & Partial<{ result: r2_get_custom_domain_response }>)>(), "4XX": isr2_v4_response_failure },
 };
 
 export type put_R2__edit__custom__domain__settings = typeof put_R2__edit__custom__domain__settings;
@@ -48765,7 +48765,7 @@ export const put_R2__edit__custom__domain__settings = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: r2_account_identifier, bucket_name: r2_bucket_name, domain: r2_domain_name }>(), header: typia.createIs<Partial<{ "cf-r2-jurisdiction": r2_jurisdiction }>>(), body: isr2_edit_custom_domain_request },
-  responses: { 200: typia.createIs<(r2_v4_response & Partial<{ result: (r2_edit_custom_domain_response) }>)>(), "4XX": isr2_v4_response_failure },
+  responses: { 200: typia.createIs<(r2_v4_response & Partial<{ result: r2_edit_custom_domain_response }>)>(), "4XX": isr2_v4_response_failure },
 };
 
 export type get_R2__get__bucket__public__policy = typeof get_R2__get__bucket__public__policy;
@@ -49784,7 +49784,7 @@ export const post_Account__request__tracer__request__trace = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: request_tracer_identifier }>(), body: typia.createIs<{ body?: Partial<{ base64: string, json: Record<string, unknown>, plain_text: string }>, context?: Partial<{ bot_score: number, geoloc: Partial<{ city: string, continent: string, is_eu_country: boolean, iso_code: string, latitude: number, longitude: number, postal_code: string, region_code: string, subdivision_2_iso_code: string, timezone: string }>, skip_challenge: boolean, threat_score: number }>, cookies?: Record<string, string>, headers?: Record<string, string>, method: string, protocol?: string, skip_response?: boolean, url: string }>() },
-  responses: { 200: typia.createIs<(request_tracer_api_response_common & Partial<{ result: Partial<{ status_code: number, trace: request_tracer_trace }> }> & Record<string, unknown>)>(), "4XX": typia.createIs<(request_tracer_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(request_tracer_api_response_common & Partial<{ result: Partial<{ status_code: number, trace: request_tracer_trace }> }> & Record<string, unknown>)>(), "4XX": isrequest_tracer_api_response_common_failure },
 };
 
 export type get_GetApplications = typeof get_GetApplications;
@@ -50534,7 +50534,7 @@ export const get_Secrets__store__quota = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: secrets_store_account_identifier }>() },
-  responses: { 200: issecrets_store_quota_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_quota_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__list = typeof get_Secrets__store__list;
@@ -50544,7 +50544,7 @@ export const get_Secrets__store__list = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ direction: ("asc" | "desc"), page: number, per_page: number, order: ("name" | "comment" | "created" | "modified" | "status") }>>(), path: typia.createIs<{ account_id: secrets_store_account_identifier }>() },
-  responses: { 200: issecrets_store_stores_response_collection, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_stores_response_collection, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__create = typeof post_Secrets__store__create;
@@ -50554,7 +50554,7 @@ export const post_Secrets__store__create = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: secrets_store_account_identifier }>(), body: issecrets_store_createStoreObject },
-  responses: { 200: issecrets_store_store_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_store_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__delete__by__id = typeof delete_Secrets__store__delete__by__id;
@@ -50564,7 +50564,7 @@ export const delete_Secrets__store__delete__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ force: boolean }>>(), path: typia.createIs<{ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }>() },
-  responses: { 200: issecrets_store_delete_response, 409: typia.createIs<(secrets_store_api_response_common_failure)>(), "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_delete_response, 409: issecrets_store_api_response_common_failure, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__get__store__by__id = typeof get_Secrets__store__get__store__by__id;
@@ -50574,7 +50574,7 @@ export const get_Secrets__store__get__store__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }>() },
-  responses: { 200: issecrets_store_store_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_store_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__delete__bulk = typeof delete_Secrets__store__delete__bulk;
@@ -50584,7 +50584,7 @@ export const delete_Secrets__store__delete__bulk = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }>(), body: issecrets_store_deleteSecretsRequest },
-  responses: { 202: issecrets_store_delete_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 202: issecrets_store_delete_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__secrets__list = typeof get_Secrets__store__secrets__list;
@@ -50594,7 +50594,7 @@ export const get_Secrets__store__secrets__list = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ direction: ("asc" | "desc"), page: number, per_page: number, search: string, order: ("name" | "comment" | "created" | "modified" | "status"), scopes: Array<secrets_store_scopes> }>>(), path: typia.createIs<{ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }>() },
-  responses: { 200: issecrets_store_secrets_response_collection, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_secrets_response_collection, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__secret__create = typeof post_Secrets__store__secret__create;
@@ -50604,7 +50604,7 @@ export const post_Secrets__store__secret__create = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }>(), body: typia.createIs<Array<secrets_store_createSecretObject>>() },
-  responses: { 200: issecrets_store_secrets_response_collection, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_secrets_response_collection, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__secret__delete__by__id = typeof delete_Secrets__store__secret__delete__by__id;
@@ -50614,7 +50614,7 @@ export const delete_Secrets__store__secret__delete__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }>() },
-  responses: { 202: issecrets_store_delete_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 202: issecrets_store_delete_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__get__by__id = typeof get_Secrets__store__get__by__id;
@@ -50624,7 +50624,7 @@ export const get_Secrets__store__get__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }>() },
-  responses: { 200: issecrets_store_secret_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_secret_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type patch_Secrets__store__patch__by__id = typeof patch_Secrets__store__patch__by__id;
@@ -50634,7 +50634,7 @@ export const patch_Secrets__store__patch__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }>(), body: issecrets_store_patchSecretObject },
-  responses: { 200: issecrets_store_secret_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_secret_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__duplicate__by__id = typeof post_Secrets__store__duplicate__by__id;
@@ -50644,7 +50644,7 @@ export const post_Secrets__store__duplicate__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }>(), body: issecrets_store_duplicateSecretObject },
-  responses: { 200: issecrets_store_secret_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_secret_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type get_Get__security__center__insights = typeof get_Get__security__center__insights;
@@ -50653,7 +50653,7 @@ export const get_Get__security__center__insights = {
   path: typia.createIs<"/accounts/{account_id}/security-center/insights">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: (security_center_page & unknown), per_page: (security_center_perPage & unknown) }>>(), path: typia.createIs<{ account_id: security_center_identifier }>() },
+  parameters: { query: typia.createIs<Partial<{ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: security_center_page, per_page: security_center_perPage }>>(), path: typia.createIs<{ account_id: security_center_identifier }>() },
   responses: { 200: typia.createIs<(security_center_api_response_common & Partial<{ result: Partial<{ count: security_center_count, issues: Array<security_center_issue>, page: security_center_page, per_page: security_center_perPage }> }>)>(), "4XX": issecurity_center_api_response_common_failure },
 };
 
@@ -50734,7 +50734,7 @@ export const patch_Update__security__center__insight__classification = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: security_center_identifier, issue_id: string }>(), body: issecurity_center_userClassificationUpdate },
-  responses: { 200: typia.createIs<(security_center_api_response_single)>(), "4XX": issecurity_center_api_response_common_failure },
+  responses: { 200: issecurity_center_api_response_single, "4XX": issecurity_center_api_response_common_failure },
 };
 
 export type get_Get__security__center__insight__context = typeof get_Get__security__center__insight__context;
@@ -50754,7 +50754,7 @@ export const put_Archive__security__center__insight = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: security_center_identifier, issue_id: string }>(), body: typia.createIs<Partial<{ dismiss: boolean }>>() },
-  responses: { 200: typia.createIs<(security_center_api_response_single)>(), "4XX": issecurity_center_api_response_common_failure },
+  responses: { 200: issecurity_center_api_response_single, "4XX": issecurity_center_api_response_common_failure },
 };
 
 export type get_Shares__list = typeof get_Shares__list;
@@ -50764,7 +50764,7 @@ export const get_Shares__list = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ status: resource_sharing_share_status, kind: resource_sharing_share_kind, target_type: resource_sharing_share_target_type, resource_types: Array<resource_sharing_resource_type_schemas>, order: ("name" | "created"), direction: ("asc" | "desc"), page: number, per_page: number, include_resources: boolean, include_recipient_counts: boolean, tag: Array<string> }>>(), path: typia.createIs<{ account_id: resource_sharing_account_id }>() },
-  responses: { 200: isresource_sharing_share_response_collection, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 200: isresource_sharing_share_response_collection, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type post_Share__create = typeof post_Share__create;
@@ -50774,7 +50774,7 @@ export const post_Share__create = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: resource_sharing_account_id }>(), body: isresource_sharing_create_share_request },
-  responses: { 201: isresource_sharing_share_response_single, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 201: isresource_sharing_share_response_single, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type delete_Share__delete = typeof delete_Share__delete;
@@ -50784,7 +50784,7 @@ export const delete_Share__delete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }>() },
-  responses: { 200: isresource_sharing_share_response_single, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 200: isresource_sharing_share_response_single, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type get_Shares__get__by__id = typeof get_Shares__get__by__id;
@@ -50794,7 +50794,7 @@ export const get_Shares__get__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ include_resources: boolean, include_recipient_counts: boolean }>>(), path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }>() },
-  responses: { 200: isresource_sharing_share_response_single, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 200: isresource_sharing_share_response_single, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type put_Share__update = typeof put_Share__update;
@@ -50804,7 +50804,7 @@ export const put_Share__update = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }>(), body: isresource_sharing_update_share_request },
-  responses: { 200: isresource_sharing_share_response_single, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 200: isresource_sharing_share_response_single, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type get_Share__recipients__list = typeof get_Share__recipients__list;
@@ -50814,7 +50814,7 @@ export const get_Share__recipients__list = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ include_resources: boolean, page: number, per_page: number }>>(), path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }>() },
-  responses: { 200: isresource_sharing_share_recipient_response_collection, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 200: isresource_sharing_share_recipient_response_collection, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type post_Share__recipient__create = typeof post_Share__recipient__create;
@@ -50824,7 +50824,7 @@ export const post_Share__recipient__create = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }>(), body: isresource_sharing_create_share_recipient_request },
-  responses: { 201: isresource_sharing_share_recipient_response_single, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 201: isresource_sharing_share_recipient_response_single, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type put_Share__recipients__update = typeof put_Share__recipients__update;
@@ -50834,7 +50834,7 @@ export const put_Share__recipients__update = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }>(), body: isresource_sharing_update_share_recipients_request },
-  responses: { 204: typia.createIs<unknown>(), "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 204: typia.createIs<unknown>(), "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type delete_Share__recipient__delete = typeof delete_Share__recipient__delete;
@@ -50844,7 +50844,7 @@ export const delete_Share__recipient__delete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, recipient_id: resource_sharing_recipient_id }>() },
-  responses: { 200: isresource_sharing_share_recipient_response_single, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 200: isresource_sharing_share_recipient_response_single, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type get_Share__recipients__get__by__id = typeof get_Share__recipients__get__by__id;
@@ -50854,7 +50854,7 @@ export const get_Share__recipients__get__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ include_resources: boolean }>>(), path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, recipient_id: resource_sharing_recipient_id }>() },
-  responses: { 200: isresource_sharing_share_recipient_response_single, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 200: isresource_sharing_share_recipient_response_single, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type get_Share__resources__list = typeof get_Share__resources__list;
@@ -50864,7 +50864,7 @@ export const get_Share__resources__list = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ status: resource_sharing_resource_status_schemas, resource_type: resource_sharing_resource_type_schemas, page: number, per_page: number }>>(), path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }>() },
-  responses: { 200: isresource_sharing_share_resource_response_collection, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 200: isresource_sharing_share_resource_response_collection, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type post_Share__resource__create = typeof post_Share__resource__create;
@@ -50874,7 +50874,7 @@ export const post_Share__resource__create = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }>(), body: isresource_sharing_create_share_resource_request },
-  responses: { 201: isresource_sharing_share_resource_response_single, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 201: isresource_sharing_share_resource_response_single, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type delete_Share__resource__delete = typeof delete_Share__resource__delete;
@@ -50884,7 +50884,7 @@ export const delete_Share__resource__delete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, share_resource_id: resource_sharing_resource_id }>() },
-  responses: { 200: isresource_sharing_share_resource_response_single, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 200: isresource_sharing_share_resource_response_single, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type get_Share__resources__get__by__id = typeof get_Share__resources__get__by__id;
@@ -50894,7 +50894,7 @@ export const get_Share__resources__get__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, share_resource_id: resource_sharing_resource_id }>() },
-  responses: { 200: isresource_sharing_share_resource_response_single, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 200: isresource_sharing_share_resource_response_single, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type put_Share__resource__update = typeof put_Share__resource__update;
@@ -50904,7 +50904,7 @@ export const put_Share__resource__update = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, share_resource_id: resource_sharing_resource_id }>(), body: isresource_sharing_update_share_resource_request },
-  responses: { 200: isresource_sharing_share_resource_response_single, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 200: isresource_sharing_share_resource_response_single, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type get_Slurper__list__jobs = typeof get_Slurper__list__jobs;
@@ -51824,7 +51824,7 @@ export const get_Tunnel__route__list__tunnel__routes = {
   path: typia.createIs<"/accounts/{account_id}/teamnet/routes">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ comment: tunnel_route_comment, is_deleted: boolean, network_subset: (tunnel_ip_network), network_superset: (tunnel_ip_network), existed_at: tunnel_existed_at, tunnel_id: tunnel_tunnel_id, route_id: tunnel_route_id, tun_types: tunnel_tunnel_types, virtual_network_id: tunnel_virtual_network_id, per_page: tunnel_per_page, page: tunnel_page_number }>>(), path: typia.createIs<{ account_id: tunnel_account_id }>() },
+  parameters: { query: typia.createIs<Partial<{ comment: tunnel_route_comment, is_deleted: boolean, network_subset: tunnel_ip_network, network_superset: tunnel_ip_network, existed_at: tunnel_existed_at, tunnel_id: tunnel_tunnel_id, route_id: tunnel_route_id, tun_types: tunnel_tunnel_types, virtual_network_id: tunnel_virtual_network_id, per_page: tunnel_per_page, page: tunnel_page_number }>>(), path: typia.createIs<{ account_id: tunnel_account_id }>() },
   responses: { 200: istunnel_teamnet_response_collection, "4XX": typia.createIs<(tunnel_teamnet_response_collection & tunnel_api_response_common_failure)>() },
 };
 
@@ -53434,7 +53434,7 @@ export const post_Worker__versions__upload__version = {
   path: typia.createIs<"/accounts/{account_id}/workers/scripts/{script_name}/versions">(),
   requestFormat: typia.createIs<"form-data">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ bindings_inherit: "strict" }>>(), path: typia.createIs<{ account_id: workers_identifier, script_name: workers_script_name_2 }>(), body: typia.createIs<{ files?: Array<Blob>, metadata: { annotations?: Partial<{ "workers/alias": string, "workers/message": string, "workers/tag": string }>, bindings?: workers_bindings, cache_options?: workers_cache_options, compatibility_date?: workers_compatibility_date, compatibility_flags?: workers_compatibility_flags, exports?: (workers_exports_config_map & unknown), keep_bindings?: Array<string>, main_module: string, package_dependencies?: Array<{ installedVersion: string, name: string, packageJsonVersion: string }>, usage_model?: workers_usage_model } }>() },
+  parameters: { query: typia.createIs<Partial<{ bindings_inherit: "strict" }>>(), path: typia.createIs<{ account_id: workers_identifier, script_name: workers_script_name_2 }>(), body: typia.createIs<{ files?: Array<Blob>, metadata: { annotations?: Partial<{ "workers/alias": string, "workers/message": string, "workers/tag": string }>, bindings?: workers_bindings, cache_options?: workers_cache_options, compatibility_date?: workers_compatibility_date, compatibility_flags?: workers_compatibility_flags, exports?: workers_exports_config_map, keep_bindings?: Array<string>, main_module: string, package_dependencies?: Array<{ installedVersion: string, name: string, packageJsonVersion: string }>, usage_model?: workers_usage_model } }>() },
   responses: { 200: isworkers_versions_upload_response, "4XX": typia.createIs<((workers_versions_upload_response & workers_api_response_common_failure) | workers_exports_reconciliation_error_response)>() },
 };
 
@@ -53874,7 +53874,7 @@ export const get_Zero__trust__networks__subnets__list = {
   path: typia.createIs<"/accounts/{account_id}/zerotrust/subnets">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ name: tunnel_subnet_query_name, comment: tunnel_subnet_query_comment, network: (tunnel_ip_network_encoded), existed_at: tunnel_existed_at, address_family: tunnel_address_family, is_default_network: boolean, is_deleted: boolean, sort_order: ("asc" | "desc"), subnet_types: ("cloudflare_source" | "initial_resolved_ip" | "warp"), per_page: tunnel_per_page, page: tunnel_page_number }>>(), path: typia.createIs<{ account_id: tunnel_account_id }>() },
+  parameters: { query: typia.createIs<Partial<{ name: tunnel_subnet_query_name, comment: tunnel_subnet_query_comment, network: tunnel_ip_network_encoded, existed_at: tunnel_existed_at, address_family: tunnel_address_family, is_default_network: boolean, is_deleted: boolean, sort_order: ("asc" | "desc"), subnet_types: ("cloudflare_source" | "initial_resolved_ip" | "warp"), per_page: tunnel_per_page, page: tunnel_page_number }>>(), path: typia.createIs<{ account_id: tunnel_account_id }>() },
   responses: { 200: istunnel_subnet_response_collection, "4XX": typia.createIs<(tunnel_subnet_response_collection & tunnel_api_response_common_failure)>() },
 };
 
@@ -54345,7 +54345,7 @@ export const get_Organization__shares__list = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ status: resource_sharing_share_status, kind: resource_sharing_share_kind, target_type: resource_sharing_share_target_type, resource_types: Array<resource_sharing_resource_type_schemas>, order: ("name" | "created"), direction: ("asc" | "desc"), page: number, per_page: number }>>(), path: typia.createIs<{ organization_id: resource_sharing_organization_id }>() },
-  responses: { 200: isresource_sharing_share_response_collection, "4XX": typia.createIs<(resource_sharing_api_response_common_failure)>(), "5XX": typia.createIs<(resource_sharing_api_response_common_failure)>() },
+  responses: { 200: isresource_sharing_share_response_collection, "4XX": isresource_sharing_api_response_common_failure, "5XX": isresource_sharing_api_response_common_failure },
 };
 
 export type post_Pages__assets__check__missing = typeof post_Pages__assets__check__missing;
@@ -55885,7 +55885,7 @@ export const get_Secrets__store__system__list = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ direction: ("asc" | "desc"), page: number, per_page: number, order: ("name" | "comment" | "created" | "modified" | "status") }>>(), path: typia.createIs<{ account_tag: secrets_store_account_tag_schemas }>() },
-  responses: { 200: issecrets_store_stores_response_collection, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_stores_response_collection, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__system__create = typeof post_Secrets__store__system__create;
@@ -55895,7 +55895,7 @@ export const post_Secrets__store__system__create = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_tag: secrets_store_account_tag_schemas }>(), body: issecrets_store_createStoreObjectSystem },
-  responses: { 200: issecrets_store_store_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_store_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__system__delete__by__id = typeof delete_Secrets__store__system__delete__by__id;
@@ -55905,7 +55905,7 @@ export const delete_Secrets__store__system__delete__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ force: boolean }>>(), path: typia.createIs<{ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }>() },
-  responses: { 200: issecrets_store_delete_response, 409: typia.createIs<(secrets_store_api_response_common_failure)>(), "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_delete_response, 409: issecrets_store_api_response_common_failure, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__system__get__store__by__id = typeof get_Secrets__store__system__get__store__by__id;
@@ -55915,7 +55915,7 @@ export const get_Secrets__store__system__get__store__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }>() },
-  responses: { 200: issecrets_store_store_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_store_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__system__delete__bulk = typeof delete_Secrets__store__system__delete__bulk;
@@ -55925,7 +55925,7 @@ export const delete_Secrets__store__system__delete__bulk = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }>(), body: issecrets_store_deleteSecretsRequest },
-  responses: { 202: issecrets_store_delete_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 202: issecrets_store_delete_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__system__secrets__list = typeof get_Secrets__store__system__secrets__list;
@@ -55935,7 +55935,7 @@ export const get_Secrets__store__system__secrets__list = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ direction: ("asc" | "desc"), page: number, per_page: number, search: string, order: ("name" | "comment" | "created" | "modified" | "status"), scopes: Array<secrets_store_scopes> }>>(), path: typia.createIs<{ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }>() },
-  responses: { 200: issecrets_store_secrets_response_collection, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_secrets_response_collection, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__system__secret__create = typeof post_Secrets__store__system__secret__create;
@@ -55945,7 +55945,7 @@ export const post_Secrets__store__system__secret__create = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }>(), body: typia.createIs<Array<secrets_store_createSecretObject>>() },
-  responses: { 200: issecrets_store_secrets_response_collection, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_secrets_response_collection, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__system__secret__delete__by__id = typeof delete_Secrets__store__system__secret__delete__by__id;
@@ -55955,7 +55955,7 @@ export const delete_Secrets__store__system__secret__delete__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }>() },
-  responses: { 202: issecrets_store_delete_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 202: issecrets_store_delete_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__system__get__by__id = typeof get_Secrets__store__system__get__by__id;
@@ -55965,7 +55965,7 @@ export const get_Secrets__store__system__get__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }>() },
-  responses: { 200: issecrets_store_secret_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_secret_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type patch_Secrets__store__system__patch__by__id = typeof patch_Secrets__store__system__patch__by__id;
@@ -55975,7 +55975,7 @@ export const patch_Secrets__store__system__patch__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }>(), body: issecrets_store_patchSecretObject },
-  responses: { 200: issecrets_store_secret_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_secret_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__system__duplicate__by__id = typeof post_Secrets__store__system__duplicate__by__id;
@@ -55985,7 +55985,7 @@ export const post_Secrets__store__system__duplicate__by__id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }>(), body: issecrets_store_duplicateSecretObject },
-  responses: { 200: issecrets_store_secret_response, "4XX": typia.createIs<(secrets_store_api_response_common_failure)>() },
+  responses: { 200: issecrets_store_secret_response, "4XX": issecrets_store_api_response_common_failure },
 };
 
 export type get_Tenants_retrieveTenant = typeof get_Tenants_retrieveTenant;
@@ -56114,7 +56114,7 @@ export const post_Ip__access__rules__for__a__user__create__an__ip__access__rule 
   path: typia.createIs<"/user/firewall/access_rules/rules">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { body: typia.createIs<{ configuration: firewall_configuration, mode: firewall_schemas_mode, notes?: (firewall_notes & unknown) }>() },
+  parameters: { body: typia.createIs<{ configuration: firewall_configuration, mode: firewall_schemas_mode, notes?: firewall_notes }>() },
   responses: { 200: isfirewall_rule_single_response, "4XX": typia.createIs<(firewall_rule_single_response & firewall_api_response_common_failure)>() },
 };
 
@@ -56194,7 +56194,7 @@ export const post_Load__balancer__monitors__create__monitor = {
   path: typia.createIs<"/user/load_balancers/monitors">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { body: typia.createIs<(load_balancing_monitor_editable)>() },
+  parameters: { body: isload_balancing_monitor_editable },
   responses: { 200: isload_balancing_monitor_response_single, "4XX": typia.createIs<(load_balancing_monitor_response_single & load_balancing_api_response_common_failure)>() },
 };
 
@@ -56224,7 +56224,7 @@ export const patch_Load__balancer__monitors__patch__monitor = {
   path: typia.createIs<"/user/load_balancers/monitors/{monitor_id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ monitor_id: load_balancing_identifier }>(), body: typia.createIs<(load_balancing_monitor_editable)>() },
+  parameters: { path: typia.createIs<{ monitor_id: load_balancing_identifier }>(), body: isload_balancing_monitor_editable },
   responses: { 200: isload_balancing_monitor_response_single, "4XX": typia.createIs<(load_balancing_monitor_response_single & load_balancing_api_response_common_failure)>() },
 };
 
@@ -56234,7 +56234,7 @@ export const put_Load__balancer__monitors__update__monitor = {
   path: typia.createIs<"/user/load_balancers/monitors/{monitor_id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ monitor_id: load_balancing_identifier }>(), body: typia.createIs<(load_balancing_monitor_editable)>() },
+  parameters: { path: typia.createIs<{ monitor_id: load_balancing_identifier }>(), body: isload_balancing_monitor_editable },
   responses: { 200: isload_balancing_monitor_response_single, "4XX": typia.createIs<(load_balancing_monitor_response_single & load_balancing_api_response_common_failure)>() },
 };
 
@@ -56244,7 +56244,7 @@ export const post_Load__balancer__monitors__preview__monitor = {
   path: typia.createIs<"/user/load_balancers/monitors/{monitor_id}/preview">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ monitor_id: load_balancing_identifier }>(), body: typia.createIs<(load_balancing_monitor_editable)>() },
+  parameters: { path: typia.createIs<{ monitor_id: load_balancing_identifier }>(), body: isload_balancing_monitor_editable },
   responses: { 200: isload_balancing_preview_response, "4XX": typia.createIs<(load_balancing_preview_response & load_balancing_api_response_common_failure)>() },
 };
 
@@ -56344,7 +56344,7 @@ export const post_Load__balancer__pools__preview__pool = {
   path: typia.createIs<"/user/load_balancers/pools/{pool_id}/preview">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ pool_id: load_balancing_schemas_identifier }>(), body: typia.createIs<(load_balancing_monitor_editable)>() },
+  parameters: { path: typia.createIs<{ pool_id: load_balancing_schemas_identifier }>(), body: isload_balancing_monitor_editable },
   responses: { 200: isload_balancing_preview_response, "4XX": typia.createIs<(load_balancing_preview_response & load_balancing_api_response_common_failure)>() },
 };
 
@@ -56825,7 +56825,7 @@ export const patch_Zone__level__access__applications__patch__update__access__app
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ app_id: access_app_id, zone_id: access_identifier }>(), body: isaccess_app_settings_request },
-  responses: { 202: typia.createIs<(access_single_response_update)>(), "4XX": isaccess_api_response_common_failure },
+  responses: { 202: isaccess_single_response_update, "4XX": isaccess_api_response_common_failure },
 };
 
 export type put_Zone__level__access__applications__put__update__access__application__settings = typeof put_Zone__level__access__applications__put__update__access__application__settings;
@@ -56835,7 +56835,7 @@ export const put_Zone__level__access__applications__put__update__access__applica
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ app_id: access_app_id, zone_id: access_identifier }>(), body: isaccess_app_settings_request },
-  responses: { 202: typia.createIs<(access_single_response_update)>(), "4XX": isaccess_api_response_common_failure },
+  responses: { 202: isaccess_single_response_update, "4XX": isaccess_api_response_common_failure },
 };
 
 export type get_Zone__level__access__applications__test__access__policies = typeof get_Zone__level__access__applications__test__access__policies;
@@ -57175,7 +57175,7 @@ export const put_Put__zones__zone_id__activation_check = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: zone_activation_identifier }>() },
-  responses: { 200: typia.createIs<(zone_activation_api_response_single & Partial<{ result: Partial<{ id: zone_activation_identifier }> }>)>(), "4XX": typia.createIs<(zone_activation_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(zone_activation_api_response_single & Partial<{ result: Partial<{ id: zone_activation_identifier }> }>)>(), "4XX": iszone_activation_api_response_common_failure },
 };
 
 export type get_Dls__zone__regional__hostnames__list = typeof get_Dls__zone__regional__hostnames__list;
@@ -57185,7 +57185,7 @@ export const get_Dls__zone__regional__hostnames__list = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: dls_identifier }>() },
-  responses: { 200: typia.createIs<(dls_api_response_collection & Partial<{ result: Array<dls_regional_hostname_response> }>)>(), "4XX": typia.createIs<(dls_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(dls_api_response_collection & Partial<{ result: Array<dls_regional_hostname_response> }>)>(), "4XX": isdls_api_response_common_failure },
 };
 
 export type post_Dls__zone__regional__hostnames__create = typeof post_Dls__zone__regional__hostnames__create;
@@ -57195,7 +57195,7 @@ export const post_Dls__zone__regional__hostnames__create = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: dls_identifier }>(), body: typia.createIs<{ hostname: dls_hostname_schemas, region_key: dls_region_key, routing?: dls_routing }>() },
-  responses: { 200: typia.createIs<(dls_api_response_common & Partial<{ result: dls_regional_hostname_response }>)>(), "4XX": typia.createIs<(dls_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(dls_api_response_common & Partial<{ result: dls_regional_hostname_response }>)>(), "4XX": isdls_api_response_common_failure },
 };
 
 export type delete_Dls__zone__regional__hostnames__delete = typeof delete_Dls__zone__regional__hostnames__delete;
@@ -57205,7 +57205,7 @@ export const delete_Dls__zone__regional__hostnames__delete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: dls_identifier, hostname: dls_hostname_schemas }>() },
-  responses: { 200: typia.createIs<(dls_api_response_common)>(), "4XX": typia.createIs<(dls_api_response_common_failure)>() },
+  responses: { 200: isdls_api_response_common, "4XX": isdls_api_response_common_failure },
 };
 
 export type get_Dls__zone__regional__hostnames__fetch = typeof get_Dls__zone__regional__hostnames__fetch;
@@ -57215,7 +57215,7 @@ export const get_Dls__zone__regional__hostnames__fetch = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: dls_identifier, hostname: dls_hostname_schemas }>() },
-  responses: { 200: typia.createIs<(dls_api_response_common & Partial<{ result: dls_regional_hostname_response }>)>(), "4XX": typia.createIs<(dls_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(dls_api_response_common & Partial<{ result: dls_regional_hostname_response }>)>(), "4XX": isdls_api_response_common_failure },
 };
 
 export type patch_Dls__zone__regional__hostnames__patch = typeof patch_Dls__zone__regional__hostnames__patch;
@@ -57225,7 +57225,7 @@ export const patch_Dls__zone__regional__hostnames__patch = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: dls_identifier, hostname: dls_hostname_schemas }>(), body: typia.createIs<{ region_key: dls_region_key }>() },
-  responses: { 200: typia.createIs<(dls_api_response_common & Partial<{ result: dls_regional_hostname_response }>)>(), "4XX": typia.createIs<(dls_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(dls_api_response_common & Partial<{ result: dls_regional_hostname_response }>)>(), "4XX": isdls_api_response_common_failure },
 };
 
 export type get_Ai__audit__get__robots = typeof get_Ai__audit__get__robots;
@@ -57345,7 +57345,7 @@ export const get_Api__shield__api__discovery__retrieve__discovered__operations__
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ page: number, per_page: number, host: Array<string>, method: Array<string>, endpoint: string, direction: ("asc" | "desc"), order: ("host" | "method" | "endpoint" | "traffic_stats.requests" | "traffic_stats.last_updated"), diff: boolean, origin: api_shield_api_discovery_origin, state: api_shield_api_discovery_state }>>(), path: typia.createIs<{ zone_id: api_shield_identifier_2 }>() },
-  responses: { 200: typia.createIs<(api_shield_api_response_collection & { result: Array<api_shield_discovery_operation> })>(), "4XX": typia.createIs<(api_shield_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(api_shield_api_response_collection & { result: Array<api_shield_discovery_operation> })>(), "4XX": isapi_shield_api_response_common_failure },
 };
 
 export type patch_Api__shield__api__patch__discovered__operations = typeof patch_Api__shield__api__patch__discovered__operations;
@@ -57374,7 +57374,7 @@ export const patch_Api__shield__api__patch__discovered__operation = {
   path: typia.createIs<"/zones/{zone_id}/api_gateway/discovery/operations/{discovery_id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ zone_id: api_shield_identifier_2, discovery_id: api_shield_uuid_2 }>(), body: typia.createIs<Partial<{ state: (api_shield_api_discovery_state_patch) }>>() },
+  parameters: { path: typia.createIs<{ zone_id: api_shield_identifier_2, discovery_id: api_shield_uuid_2 }>(), body: typia.createIs<Partial<{ state: api_shield_api_discovery_state_patch }>>() },
   responses: { 200: isapi_shield_patch_discovery_response, "4XX": isapi_shield_api_response_common_failure },
 };
 
@@ -57625,7 +57625,7 @@ export const get_Argo__smart__routing__get__argo__smart__routing__setting = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: argo_config_identifier }>() },
-  responses: { 200: isargo_config_api_response_single, "4XX": typia.createIs<(argo_config_api_response_common_failure)>() },
+  responses: { 200: isargo_config_api_response_single, "4XX": isargo_config_api_response_common_failure },
 };
 
 export type patch_Argo__smart__routing__patch__argo__smart__routing__setting = typeof patch_Argo__smart__routing__patch__argo__smart__routing__setting;
@@ -57635,7 +57635,7 @@ export const patch_Argo__smart__routing__patch__argo__smart__routing__setting = 
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: argo_config_identifier }>(), body: isargo_config_patch },
-  responses: { 200: isargo_config_api_response_single, "4XX": typia.createIs<(argo_config_api_response_common_failure)>() },
+  responses: { 200: isargo_config_api_response_single, "4XX": isargo_config_api_response_common_failure },
 };
 
 export type get_Tiered__caching__get__tiered__caching__setting = typeof get_Tiered__caching__get__tiered__caching__setting;
@@ -57865,7 +57865,7 @@ export const get_Client__certificate__for__a__zone__list__hostname__associations
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ mtls_certificate_id: string }>>(), path: typia.createIs<{ zone_id: tls_certificates_and_hostnames_identifier }>() },
-  responses: { 200: istls_certificates_and_hostnames_hostname_associations_response, "4XX": typia.createIs<(tls_certificates_and_hostnames_api_response_common_failure)>() },
+  responses: { 200: istls_certificates_and_hostnames_hostname_associations_response, "4XX": istls_certificates_and_hostnames_api_response_common_failure },
 };
 
 export type put_Client__certificate__for__a__zone__put__hostname__associations = typeof put_Client__certificate__for__a__zone__put__hostname__associations;
@@ -57885,7 +57885,7 @@ export const get_Client__certificate__for__a__zone__list__client__certificates =
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ status: ("all" | "active" | "pending_reactivation" | "pending_revocation" | "revoked"), page: number, per_page: number, limit: number, offset: number }>>(), path: typia.createIs<{ zone_id: tls_certificates_and_hostnames_identifier }>() },
-  responses: { 200: istls_certificates_and_hostnames_client_certificate_response_collection, "4XX": typia.createIs<(tls_certificates_and_hostnames_api_response_common_failure)>() },
+  responses: { 200: istls_certificates_and_hostnames_client_certificate_response_collection, "4XX": istls_certificates_and_hostnames_api_response_common_failure },
 };
 
 export type post_Client__certificate__for__a__zone__create__client__certificate = typeof post_Client__certificate__for__a__zone__create__client__certificate;
@@ -57935,7 +57935,7 @@ export const get_Zone__cloud__connector__rules = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: cloud_connector_identifier }>() },
-  responses: { 200: typia.createIs<(cloud_connector_api_response_common & Partial<{ result: cloud_connector_rules }> & Record<string, unknown>)>(), "4XX": typia.createIs<(cloud_connector_api_response_common_failure)>(), "5XX": typia.createIs<(cloud_connector_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(cloud_connector_api_response_common & Partial<{ result: cloud_connector_rules }> & Record<string, unknown>)>(), "4XX": iscloud_connector_api_response_common_failure, "5XX": iscloud_connector_api_response_common_failure },
 };
 
 export type put_Zone__cloud__conenctor__rules__put = typeof put_Zone__cloud__conenctor__rules__put;
@@ -57945,7 +57945,7 @@ export const put_Zone__cloud__conenctor__rules__put = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: cloud_connector_identifier }>(), body: typia.createIs<Array<cloud_connector_rule>>() },
-  responses: { 200: typia.createIs<(cloud_connector_api_response_common & Partial<{ result: cloud_connector_rules }> & Record<string, unknown>)>(), "4XX": typia.createIs<(cloud_connector_api_response_common_failure)>(), "5XX": typia.createIs<(cloud_connector_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(cloud_connector_api_response_common & Partial<{ result: cloud_connector_rules }> & Record<string, unknown>)>(), "4XX": iscloud_connector_api_response_common_failure, "5XX": iscloud_connector_api_response_common_failure },
 };
 
 export type post_Waf__content__scanning__disable = typeof post_Waf__content__scanning__disable;
@@ -57955,7 +57955,7 @@ export const post_Waf__content__scanning__disable = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: waf_product_api_bundle_identifier }>() },
-  responses: { 200: iswaf_product_api_bundle_api_response_common_2, "4XX": typia.createIs<(waf_product_api_bundle_api_response_common_failure_2)>() },
+  responses: { 200: iswaf_product_api_bundle_api_response_common_2, "4XX": iswaf_product_api_bundle_api_response_common_failure_2 },
 };
 
 export type post_Waf__content__scanning__enable = typeof post_Waf__content__scanning__enable;
@@ -57965,7 +57965,7 @@ export const post_Waf__content__scanning__enable = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: waf_product_api_bundle_identifier }>() },
-  responses: { 200: iswaf_product_api_bundle_api_response_common_2, "4XX": typia.createIs<(waf_product_api_bundle_api_response_common_failure_2)>() },
+  responses: { 200: iswaf_product_api_bundle_api_response_common_2, "4XX": iswaf_product_api_bundle_api_response_common_failure_2 },
 };
 
 export type get_Waf__content__scanning__list__custom__scan__expressions = typeof get_Waf__content__scanning__list__custom__scan__expressions;
@@ -58914,7 +58914,7 @@ export const post_Ip__access__rules__for__a__zone__create__an__ip__access__rule 
   path: typia.createIs<"/zones/{zone_id}/firewall/access_rules/rules">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ zone_id: firewall_identifier }>(), body: typia.createIs<{ configuration: firewall_configuration, mode: firewall_schemas_mode, notes?: (firewall_notes & unknown) }>() },
+  parameters: { path: typia.createIs<{ zone_id: firewall_identifier }>(), body: typia.createIs<{ configuration: firewall_configuration, mode: firewall_schemas_mode, notes?: firewall_notes }>() },
   responses: { 200: isfirewall_rule_single_response, "4XX": typia.createIs<(firewall_rule_single_response & firewall_api_response_common_failure)>() },
 };
 
@@ -58944,7 +58944,7 @@ export const get_Zone__lockdown__list__zone__lockdown__rules = {
   path: typia.createIs<"/zones/{zone_id}/firewall/lockdowns">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ page: number, description: (firewall_schemas_description_search), modified_on: (firewall_modified_on), ip: (firewall_ip_search), priority: (firewall_schemas_priority), uri_search: (firewall_uri_search), ip_range_search: (firewall_ip_range_search), per_page: number, created_on: string, description_search: string, ip_search: string }>>(), path: typia.createIs<{ zone_id: firewall_identifier }>() },
+  parameters: { query: typia.createIs<Partial<{ page: number, description: firewall_schemas_description_search, modified_on: firewall_modified_on, ip: firewall_ip_search, priority: firewall_schemas_priority, uri_search: firewall_uri_search, ip_range_search: firewall_ip_range_search, per_page: number, created_on: string, description_search: string, ip_search: string }>>(), path: typia.createIs<{ zone_id: firewall_identifier }>() },
   responses: { 200: isfirewall_zonelockdown_response_collection, "4XX": typia.createIs<(firewall_zonelockdown_response_collection & firewall_api_response_common_failure)>() },
 };
 
@@ -58994,7 +58994,7 @@ export const get_User__agent__blocking__rules__list__user__agent__blocking__rule
   path: typia.createIs<"/zones/{zone_id}/firewall/ua_rules">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ page: number, description: (firewall_description_search), per_page: number, user_agent: string, paused: boolean }>>(), path: typia.createIs<{ zone_id: firewall_identifier }>() },
+  parameters: { query: typia.createIs<Partial<{ page: number, description: firewall_description_search, per_page: number, user_agent: string, paused: boolean }>>(), path: typia.createIs<{ zone_id: firewall_identifier }>() },
   responses: { 200: isfirewall_firewalluablock_response_collection, "4XX": typia.createIs<(firewall_firewalluablock_response_collection & firewall_api_response_common_failure)>() },
 };
 
@@ -59155,7 +59155,7 @@ export const delete_Zones__0__hold__delete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ hold_after: string }>>(), path: typia.createIs<{ zone_id: zones_identifier_2 }>() },
-  responses: { 200: typia.createIs<(zones_api_response_single_2 & Partial<{ result: Partial<{ hold: boolean, hold_after: string, include_subdomains: string }> }>)>(), "4XX": typia.createIs<(zones_api_response_common_failure_2)>() },
+  responses: { 200: typia.createIs<(zones_api_response_single_2 & Partial<{ result: Partial<{ hold: boolean, hold_after: string, include_subdomains: string }> }>)>(), "4XX": iszones_api_response_common_failure_2 },
 };
 
 export type get_Zones__0__hold__get = typeof get_Zones__0__hold__get;
@@ -59165,7 +59165,7 @@ export const get_Zones__0__hold__get = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: zones_identifier_2 }>() },
-  responses: { 200: typia.createIs<(zones_api_response_single_2 & Partial<{ result: Partial<{ hold: boolean, hold_after: string, include_subdomains: string }> }>)>(), "4XX": typia.createIs<(zones_api_response_common_failure_2)>() },
+  responses: { 200: typia.createIs<(zones_api_response_single_2 & Partial<{ result: Partial<{ hold: boolean, hold_after: string, include_subdomains: string }> }>)>(), "4XX": iszones_api_response_common_failure_2 },
 };
 
 export type patch_Zones__0__hold__patch = typeof patch_Zones__0__hold__patch;
@@ -59175,7 +59175,7 @@ export const patch_Zones__0__hold__patch = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: zones_identifier_2 }>(), body: typia.createIs<Partial<{ hold_after: (string | null), include_subdomains: boolean }>>() },
-  responses: { 200: typia.createIs<(zones_api_response_single_2 & Partial<{ result: Partial<{ hold: boolean, hold_after: string, include_subdomains: string }> }>)>(), "4XX": typia.createIs<(zones_api_response_common_failure_2)>() },
+  responses: { 200: typia.createIs<(zones_api_response_single_2 & Partial<{ result: Partial<{ hold: boolean, hold_after: string, include_subdomains: string }> }>)>(), "4XX": iszones_api_response_common_failure_2 },
 };
 
 export type post_Zones__0__hold__post = typeof post_Zones__0__hold__post;
@@ -59185,7 +59185,7 @@ export const post_Zones__0__hold__post = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ include_subdomains: boolean }>>(), path: typia.createIs<{ zone_id: zones_identifier_2 }>() },
-  responses: { 200: typia.createIs<(zones_api_response_single_2 & Partial<{ result: Partial<{ hold: boolean, hold_after: string, include_subdomains: string }> }>)>(), "4XX": typia.createIs<(zones_api_response_common_failure_2)>() },
+  responses: { 200: typia.createIs<(zones_api_response_single_2 & Partial<{ result: Partial<{ hold: boolean, hold_after: string, include_subdomains: string }> }>)>(), "4XX": iszones_api_response_common_failure_2 },
 };
 
 export type get_Zones__0__hold__zone__name__get = typeof get_Zones__0__hold__zone__name__get;
@@ -59195,7 +59195,7 @@ export const get_Zones__0__hold__zone__name__get = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: zones_identifier_2, zone_name: string }>() },
-  responses: { 200: typia.createIs<Partial<{ hold: boolean, hold_after: (string | null), include_subdomains: boolean }>>(), "4XX": typia.createIs<(zones_api_response_common_failure_2)>() },
+  responses: { 200: typia.createIs<Partial<{ hold: boolean, hold_after: (string | null), include_subdomains: boolean }>>(), "4XX": iszones_api_response_common_failure_2 },
 };
 
 export type get_Per__hostname__tls__settings__list = typeof get_Per__hostname__tls__settings__list;
@@ -59466,7 +59466,7 @@ export const get_Get__zones__zone_id__logpush__datasets__dataset_id__fields = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ dataset_id: logpush_dataset, zone_id: logpush_identifier }>() },
-  responses: { 200: islogpush_logpush_field_response_collection, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_logpush_field_response_collection, "4XX": islogpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logpush__datasets__dataset_id__jobs = typeof get_Get__zones__zone_id__logpush__datasets__dataset_id__jobs;
@@ -59476,7 +59476,7 @@ export const get_Get__zones__zone_id__logpush__datasets__dataset_id__jobs = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ dataset_id: logpush_dataset, zone_id: logpush_identifier }>() },
-  responses: { 200: islogpush_logpush_job_response_collection, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_logpush_job_response_collection, "4XX": islogpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logpush__edge__jobs = typeof get_Get__zones__zone_id__logpush__edge__jobs;
@@ -59506,7 +59506,7 @@ export const get_Get__zones__zone_id__logpush__jobs = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: logpush_identifier }>() },
-  responses: { 200: islogpush_logpush_job_response_collection, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_logpush_job_response_collection, "4XX": islogpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__jobs = typeof post_Post__zones__zone_id__logpush__jobs;
@@ -59516,7 +59516,7 @@ export const post_Post__zones__zone_id__logpush__jobs = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: logpush_identifier }>(), body: typia.createIs<{ dataset?: logpush_dataset, destination_conf: logpush_destination_conf, enabled?: logpush_enabled, filter?: logpush_filter, frequency?: logpush_frequency, kind?: logpush_kind, logpull_options?: logpush_logpull_options, max_upload_bytes?: logpush_max_upload_bytes, max_upload_interval_seconds?: logpush_max_upload_interval_seconds, max_upload_records?: logpush_max_upload_records, name?: logpush_name, output_options?: logpush_output_options, ownership_challenge?: logpush_ownership_challenge }>() },
-  responses: { 200: islogpush_logpush_job_response_single, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_logpush_job_response_single, "4XX": islogpush_api_response_common_failure },
 };
 
 export type delete_Delete__zones__zone_id__logpush__jobs__job_id = typeof delete_Delete__zones__zone_id__logpush__jobs__job_id;
@@ -59526,7 +59526,7 @@ export const delete_Delete__zones__zone_id__logpush__jobs__job_id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ job_id: logpush_id, zone_id: logpush_identifier }>(), body: typia.createIs<unknown>() },
-  responses: { 200: typia.createIs<(logpush_api_response_common & Partial<{ result: Partial<{ id: logpush_id }> }>)>(), "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: typia.createIs<(logpush_api_response_common & Partial<{ result: Partial<{ id: logpush_id }> }>)>(), "4XX": islogpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logpush__jobs__job_id = typeof get_Get__zones__zone_id__logpush__jobs__job_id;
@@ -59536,7 +59536,7 @@ export const get_Get__zones__zone_id__logpush__jobs__job_id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ job_id: logpush_id, zone_id: logpush_identifier }>() },
-  responses: { 200: islogpush_logpush_job_response_single, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_logpush_job_response_single, "4XX": islogpush_api_response_common_failure },
 };
 
 export type put_Put__zones__zone_id__logpush__jobs__job_id = typeof put_Put__zones__zone_id__logpush__jobs__job_id;
@@ -59546,7 +59546,7 @@ export const put_Put__zones__zone_id__logpush__jobs__job_id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ job_id: logpush_id, zone_id: logpush_identifier }>(), body: typia.createIs<Partial<{ destination_conf: logpush_destination_conf, enabled: logpush_enabled, filter: logpush_filter, frequency: logpush_frequency, kind: logpush_kind, logpull_options: logpush_logpull_options, max_upload_bytes: logpush_max_upload_bytes, max_upload_interval_seconds: logpush_max_upload_interval_seconds, max_upload_records: logpush_max_upload_records, name: logpush_name, output_options: logpush_output_options, ownership_challenge: logpush_ownership_challenge }>>() },
-  responses: { 200: islogpush_logpush_job_response_single, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_logpush_job_response_single, "4XX": islogpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__ownership = typeof post_Post__zones__zone_id__logpush__ownership;
@@ -59556,7 +59556,7 @@ export const post_Post__zones__zone_id__logpush__ownership = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: logpush_identifier }>(), body: typia.createIs<{ destination_conf: logpush_destination_conf }>() },
-  responses: { 200: islogpush_get_ownership_response, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_get_ownership_response, "4XX": islogpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__ownership__validate = typeof post_Post__zones__zone_id__logpush__ownership__validate;
@@ -59566,7 +59566,7 @@ export const post_Post__zones__zone_id__logpush__ownership__validate = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: logpush_identifier }>(), body: typia.createIs<{ destination_conf: logpush_destination_conf, ownership_challenge: logpush_ownership_challenge }>() },
-  responses: { 200: islogpush_validate_ownership_response, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_validate_ownership_response, "4XX": islogpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__validate__destination = typeof post_Post__zones__zone_id__logpush__validate__destination;
@@ -59576,7 +59576,7 @@ export const post_Post__zones__zone_id__logpush__validate__destination = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: logpush_identifier }>(), body: typia.createIs<{ destination_conf: logpush_destination_conf }>() },
-  responses: { 200: islogpush_validate_response, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_validate_response, "4XX": islogpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__validate__destination__exists = typeof post_Post__zones__zone_id__logpush__validate__destination__exists;
@@ -59586,7 +59586,7 @@ export const post_Post__zones__zone_id__logpush__validate__destination__exists =
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: logpush_identifier }>(), body: typia.createIs<{ destination_conf: logpush_destination_conf }>() },
-  responses: { 200: islogpush_destination_exists_response, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_destination_exists_response, "4XX": islogpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__validate__origin = typeof post_Post__zones__zone_id__logpush__validate__origin;
@@ -59596,7 +59596,7 @@ export const post_Post__zones__zone_id__logpush__validate__origin = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: logpush_identifier }>(), body: typia.createIs<{ logpull_options: logpush_logpull_options }>() },
-  responses: { 200: islogpush_validate_response, "4XX": typia.createIs<(logpush_api_response_common_failure)>() },
+  responses: { 200: islogpush_validate_response, "4XX": islogpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logs__control__retention__flag = typeof get_Get__zones__zone_id__logs__control__retention__flag;
@@ -59606,7 +59606,7 @@ export const get_Get__zones__zone_id__logs__control__retention__flag = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: logcontrol_identifier }>() },
-  responses: { 200: islogcontrol_retention_flag_response_single, "4XX": typia.createIs<(logcontrol_api_response_common_failure)>() },
+  responses: { 200: islogcontrol_retention_flag_response_single, "4XX": islogcontrol_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logs__control__retention__flag = typeof post_Post__zones__zone_id__logs__control__retention__flag;
@@ -59616,7 +59616,7 @@ export const post_Post__zones__zone_id__logs__control__retention__flag = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: logcontrol_identifier }>(), body: islogcontrol_retention_flag },
-  responses: { 200: islogcontrol_retention_flag_response_single, "4XX": typia.createIs<(logcontrol_api_response_common_failure)>() },
+  responses: { 200: islogcontrol_retention_flag_response_single, "4XX": islogcontrol_api_response_common_failure },
 };
 
 export type get_Zones__logs__explorer__datasets__list = typeof get_Zones__logs__explorer__datasets__list;
@@ -59686,7 +59686,7 @@ export const get_Get__zones__zone_id__logs__rayids__ray_id = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ fields: logshare_fields, timestamps: logshare_timestamps }>>(), path: typia.createIs<{ zone_id: logshare_identifier, ray_id: logshare_ray_identifier }>() },
-  responses: { 200: islogshare_logs_response_json_lines, "4XX": typia.createIs<(logshare_api_response_common_failure)>() },
+  responses: { 200: islogshare_logs_response_json_lines, "4XX": islogshare_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logs__received = typeof get_Get__zones__zone_id__logs__received;
@@ -59696,7 +59696,7 @@ export const get_Get__zones__zone_id__logs__received = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<{ start?: logshare_start, end: logshare_end, fields?: logshare_fields, sample?: logshare_sample, count?: logshare_count, timestamps?: logshare_timestamps }>(), path: typia.createIs<{ zone_id: logshare_identifier }>() },
-  responses: { 200: islogshare_logs_response_json_lines, "4XX": typia.createIs<(logshare_api_response_common_failure)>() },
+  responses: { 200: islogshare_logs_response_json_lines, "4XX": islogshare_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logs__received__fields = typeof get_Get__zones__zone_id__logs__received__fields;
@@ -59706,7 +59706,7 @@ export const get_Get__zones__zone_id__logs__received__fields = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: logshare_identifier }>() },
-  responses: { 200: islogshare_fields_response, "4XX": typia.createIs<(logshare_api_response_common_failure)>() },
+  responses: { 200: islogshare_fields_response, "4XX": islogshare_api_response_common_failure },
 };
 
 export type delete_DeleteManagedTransforms = typeof delete_DeleteManagedTransforms;
@@ -60076,7 +60076,7 @@ export const get_Page__shield__get__script = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: page_shield_id, script_id: page_shield_id }>() },
-  responses: { 200: ispage_shield_get_zone_script_response, "4XX": typia.createIs<(page_shield_api_response_common_failure)>() },
+  responses: { 200: ispage_shield_get_zone_script_response, "4XX": ispage_shield_api_response_common_failure },
 };
 
 export type get_Page__rules__list__page__rules = typeof get_Page__rules__list__page__rules;
@@ -60655,7 +60655,7 @@ export const get_Get__zone__security__center__insights = {
   path: typia.createIs<"/zones/{zone_id}/security-center/insights">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: (security_center_page & unknown), per_page: (security_center_perPage & unknown) }>>(), path: typia.createIs<{ zone_id: security_center_identifier }>() },
+  parameters: { query: typia.createIs<Partial<{ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: security_center_page, per_page: security_center_perPage }>>(), path: typia.createIs<{ zone_id: security_center_identifier }>() },
   responses: { 200: typia.createIs<(security_center_api_response_common & Partial<{ result: Partial<{ count: security_center_count, issues: Array<security_center_issue>, page: security_center_page, per_page: security_center_perPage }> }>)>(), "4XX": issecurity_center_api_response_common_failure },
 };
 
@@ -60736,7 +60736,7 @@ export const patch_Update__zone__security__center__insight__classification = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: security_center_identifier, issue_id: string }>(), body: issecurity_center_userClassificationUpdate },
-  responses: { 200: typia.createIs<(security_center_api_response_single)>(), "4XX": issecurity_center_api_response_common_failure },
+  responses: { 200: issecurity_center_api_response_single, "4XX": issecurity_center_api_response_common_failure },
 };
 
 export type put_Archive__zone__security__center__insight = typeof put_Archive__zone__security__center__insight;
@@ -60746,7 +60746,7 @@ export const put_Archive__zone__security__center__insight = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: security_center_identifier, issue_id: string }>(), body: typia.createIs<Partial<{ dismiss: boolean }>>() },
-  responses: { 200: typia.createIs<(security_center_api_response_single)>(), "4XX": issecurity_center_api_response_common_failure },
+  responses: { 200: issecurity_center_api_response_single, "4XX": issecurity_center_api_response_common_failure },
 };
 
 export type delete_Delete__security__txt = typeof delete_Delete__security__txt;
@@ -60756,7 +60756,7 @@ export const delete_Delete__security__txt = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: security_center_identifier }>() },
-  responses: { 200: typia.createIs<(security_center_api_response_single)>(), "4XX": issecurity_center_api_response_common_failure },
+  responses: { 200: issecurity_center_api_response_single, "4XX": issecurity_center_api_response_common_failure },
 };
 
 export type get_Get__security__txt = typeof get_Get__security__txt;
@@ -60776,7 +60776,7 @@ export const put_Update__security__txt = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ zone_id: security_center_identifier }>(), body: issecurity_center_securityTxt },
-  responses: { 200: typia.createIs<(security_center_api_response_single)>(), "4XX": issecurity_center_api_response_common_failure },
+  responses: { 200: issecurity_center_api_response_single, "4XX": issecurity_center_api_response_common_failure },
 };
 
 export type get_Zone__cache__settings__get__aegis__setting = typeof get_Zone__cache__settings__get__aegis__setting;
@@ -67455,7 +67455,7 @@ type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
-  ? TResponses extends Record<string, unknown>
+  ? TResponses extends Record<string | number, unknown>
     ? TypedApiResponse<InferSchemaValue<TResponses>, TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never>
     : never
   : never

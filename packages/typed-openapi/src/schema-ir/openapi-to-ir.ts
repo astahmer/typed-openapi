@@ -85,6 +85,17 @@ const withNullable = (node: SchemaNode, schema: LibSchemaObject): SchemaNode => 
   return node;
 };
 
+const simplifyIntersection = (members: SchemaNode[], meta: SchemaMeta, schema: LibSchemaObject): SchemaNode => {
+  const meaningfulMembers = members.filter((member) => member.kind !== "unknown");
+  if (meaningfulMembers.length === 0) {
+    return withNullable({ kind: "unknown", meta }, schema);
+  }
+  if (meaningfulMembers.length === 1) {
+    return withNullable(meaningfulMembers[0]!, schema);
+  }
+  return withNullable({ kind: "intersection", members: meaningfulMembers, meta }, schema);
+};
+
 const isLiteralEnumValue = (value: unknown): value is string | number | boolean | null =>
   value === null || typeof value === "string" || typeof value === "number" || typeof value === "boolean";
 
@@ -241,7 +252,7 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
     if (Object.keys(rest).filter((k) => k !== "nullable").length > 0) {
       members.push(openApiToIrInternal(rest as LibSchemaObject, ctx, path));
     }
-    return withNullable({ kind: "intersection", members, meta }, schema);
+    return simplifyIntersection(members, meta, schema);
   }
 
   // OAS 3.1 prefixItems → tuple
@@ -300,18 +311,26 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
     return withNullable({ kind: "array", items, constraints: arrayConstraints(schema), meta }, schema);
   }
 
-  if (schemaType === "object" || schema.properties || schema.additionalProperties) {
+  if (schemaType === "object" || schema.properties || schema.additionalProperties || schema.patternProperties) {
+    const patternPropertyRecords = Object.entries(schema.patternProperties ?? {}).map(([pattern, value]) => ({
+      kind: "record" as const,
+      key: { kind: "string" as const, constraints: {}, meta: emptyMeta() },
+      value: openApiToIrInternal(value, ctx, [...path, "patternProperties", pattern]),
+      meta: emptyMeta(),
+    }));
+
     if (!schema.properties) {
-      if (schema.additionalProperties && typeof schema.additionalProperties !== "boolean") {
-        return withNullable(
-          {
-            kind: "record",
-            key: { kind: "string", constraints: {}, meta: emptyMeta() },
-            value: openApiToIrInternal(schema.additionalProperties, ctx, [...path, "additionalProperties"]),
-            meta,
-          },
-          schema,
-        );
+      const records = [...patternPropertyRecords];
+      if (typeof schema.additionalProperties === "object") {
+        records.push({
+          kind: "record",
+          key: { kind: "string", constraints: {}, meta: emptyMeta() },
+          value: openApiToIrInternal(schema.additionalProperties, ctx, [...path, "additionalProperties"]),
+          meta: emptyMeta(),
+        });
+      }
+      if (records.length > 0) {
+        return simplifyIntersection(records, meta, schema);
       }
       return withNullable(
         {
@@ -344,38 +363,27 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
 
     const required = isPartial ? [] : hasRequiredArray ? [...(schema.required ?? [])] : Object.keys(properties);
 
-    // When additionalProperties is a schema, represent as intersection with Record
+    const objectNode: SchemaNode = {
+      kind: "object",
+      properties,
+      required,
+      additionalProperties: typeof additionalProperties === "object" ? false : additionalProperties,
+      constraints: objectConstraints(schema),
+      meta,
+      partial: isPartial,
+    };
+    const records = [...patternPropertyRecords];
     if (typeof additionalProperties === "object") {
-      const objectNode: SchemaNode = {
-        kind: "object",
-        properties,
-        required,
-        additionalProperties: false,
-        constraints: objectConstraints(schema),
-        meta,
-        partial: isPartial,
-      };
-      const recordNode: SchemaNode = {
+      records.push({
         kind: "record",
         key: { kind: "string", constraints: {}, meta: emptyMeta() },
         value: additionalProperties,
         meta: emptyMeta(),
-      };
-      return withNullable({ kind: "intersection", members: [objectNode, recordNode], meta }, schema);
+      });
     }
-
-    return withNullable(
-      {
-        kind: "object",
-        properties,
-        required,
-        additionalProperties,
-        constraints: objectConstraints(schema),
-        meta,
-        partial: isPartial,
-      },
-      schema,
-    );
+    return records.length > 0
+      ? simplifyIntersection([objectNode, ...records], meta, schema)
+      : withNullable(objectNode, schema);
   }
 
   if (!schemaType) {

@@ -52,13 +52,13 @@ export type aaa_api_response_common = Static<typeof aaa_api_response_common>;
 export const aaa_api_response_common = Type.Object({ errors: aaa_messages, messages: aaa_messages, success: Type.Literal(true) });
 
 export type aaa_api_response_common_failure = Static<typeof aaa_api_response_common_failure>;
-export const aaa_api_response_common_failure = Type.Object({ errors: Type.Intersect([aaa_messages, Type.Unknown()]), messages: aaa_messages, success: Type.Literal(false) });
+export const aaa_api_response_common_failure = Type.Object({ errors: aaa_messages, messages: aaa_messages, success: Type.Literal(false) });
 
 export type aaa_api_response_common_failure_2 = Static<typeof aaa_api_response_common_failure_2>;
 export const aaa_api_response_common_failure_2 = Type.Object({ errors: Type.Array(Type.Object({ message: Type.String() })), messages: Type.Optional(Type.Array(Type.Partial(Type.Object({ message: Type.String() })))), success: Type.Literal(false) });
 
 export type aaa_api_response_common_failure_3 = Static<typeof aaa_api_response_common_failure_3>;
-export const aaa_api_response_common_failure_3 = Type.Object({ errors: Type.Intersect([aaa_messages_3, Type.Unknown()]), messages: Type.Intersect([aaa_messages_3]), success: Type.Literal(false) });
+export const aaa_api_response_common_failure_3 = Type.Object({ errors: aaa_messages_3, messages: aaa_messages_3, success: Type.Literal(false) });
 
 export type aaa_api_response_single = Static<typeof aaa_api_response_single>;
 export const aaa_api_response_single = Type.Intersect([aaa_api_response_common_2, Type.Record(Type.String(), Type.Unknown())]);
@@ -622,7 +622,7 @@ export type access_any_valid_service_token_rule = Static<typeof access_any_valid
 export const access_any_valid_service_token_rule = Type.Object({ any_valid_service_token: Type.Record(Type.String(), Type.Unknown()) });
 
 export type access_api_response_common_failure = Static<typeof access_api_response_common_failure>;
-export const access_api_response_common_failure = Type.Object({ errors: Type.Intersect([access_messages, Type.Unknown()]), messages: Type.Intersect([access_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const access_api_response_common_failure = Type.Object({ errors: access_messages, messages: access_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type access_app_count = Static<typeof access_app_count>;
 export const access_app_count = Type.Integer();
@@ -700,7 +700,7 @@ export type access_skip_app_launcher_login_page = Static<typeof access_skip_app_
 export const access_skip_app_launcher_login_page = Type.Boolean();
 
 export type access_app_launcher_props = Static<typeof access_app_launcher_props>;
-export const access_app_launcher_props = Type.Intersect([access_feature_app_props, Type.Partial(Type.Object({ app_launcher_logo_url: access_app_launcher_logo_url, bg_color: access_bg_color, domain: Type.Unknown(), footer_links: access_footer_links, header_bg_color: access_header_bg_color, landing_page_design: access_landing_page_design, name: Type.Unknown(), skip_app_launcher_login_page: access_skip_app_launcher_login_page, type: Type.Intersect([access_type, Type.Unknown()]) }))]);
+export const access_app_launcher_props = Type.Intersect([access_feature_app_props, Type.Partial(Type.Object({ app_launcher_logo_url: access_app_launcher_logo_url, bg_color: access_bg_color, domain: Type.Unknown(), footer_links: access_footer_links, header_bg_color: access_header_bg_color, landing_page_design: access_landing_page_design, name: Type.Unknown(), skip_app_launcher_login_page: access_skip_app_launcher_login_page, type: access_type }))]);
 
 export type access_domain_3 = Static<typeof access_domain_3>;
 export const access_domain_3 = Type.String();
@@ -871,7 +871,7 @@ export type access_app_policy_response = Static<typeof access_app_policy_respons
 export const access_app_policy_response = Type.Intersect([access_policy_resp, Type.Partial(Type.Object({ precedence: access_precedence })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type access_app_req_embedded_policies = Static<typeof access_app_req_embedded_policies>;
-export const access_app_req_embedded_policies = Type.Partial(Type.Object({ policies: Type.Array(Type.Union([access_app_policy_link, Type.Intersect([Type.Unknown(), access_uuid_2]), Type.Intersect([Type.Record(Type.String(), Type.Unknown()), Type.Partial(Type.Object({ id: access_uuid_2 })), access_app_policy_request])])) }));
+export const access_app_req_embedded_policies = Type.Partial(Type.Object({ policies: Type.Array(Type.Union([access_app_policy_link, access_uuid_2, Type.Intersect([Type.Record(Type.String(), Type.Unknown()), Type.Partial(Type.Object({ id: access_uuid_2 })), access_app_policy_request])])) }));
 
 export type access_scim_config_authentication_http_basic = Static<typeof access_scim_config_authentication_http_basic>;
 export const access_scim_config_authentication_http_basic = Type.Object({ password: Type.String(), scheme: Type.Literal("httpbasic"), user: Type.String() });
@@ -955,13 +955,13 @@ export type access_use_clientless_isolation_app_launcher_url = Static<typeof acc
 export const access_use_clientless_isolation_app_launcher_url = Type.Boolean();
 
 export type access_self_hosted_props = Static<typeof access_self_hosted_props>;
-export const access_self_hosted_props = Type.Object({ allow_authenticate_via_warp: Type.Optional(access_allow_authenticate_via_warp_2), allow_iframe: Type.Optional(access_allow_iframe), allowed_idps: Type.Optional(access_allowed_idps), app_launcher_visible: Type.Optional(access_app_launcher_visible), auto_redirect_to_identity: Type.Optional(access_auto_redirect_to_identity_2), cors_headers: Type.Optional(access_cors_headers), custom_deny_message: Type.Optional(access_custom_deny_message), custom_deny_url: Type.Optional(access_custom_deny_url), custom_non_identity_deny_url: Type.Optional(access_custom_non_identity_deny_url), custom_pages: Type.Optional(access_custom_pages_2), destinations: Type.Optional(access_destinations), domain: access_domain, eager_redirect_cookie_setting: Type.Optional(access_eager_redirect_cookie_setting), enable_binding_cookie: Type.Optional(access_enable_binding_cookie), http_only_cookie_attribute: Type.Optional(access_http_only_cookie_attribute), logo_url: Type.Optional(access_logo_url), mfa_config: Type.Optional(access_mfa_config), name: Type.Optional(access_name_8), oauth_configuration: Type.Optional(access_oauth_configuration), options_preflight_bypass: Type.Optional(access_options_preflight_bypass), path_cookie_attribute: Type.Optional(access_path_cookie_attribute), read_service_tokens_from_header: Type.Optional(access_read_service_tokens_from_header), same_site_cookie_attribute: Type.Optional(access_same_site_cookie_attribute), scim_config: Type.Optional(access_scim_config), self_hosted_domains: Type.Optional(access_self_hosted_domains), service_auth_401_redirect: Type.Optional(access_service_auth_401_redirect), session_duration: Type.Optional(access_session_duration_2), skip_interstitial: Type.Optional(access_skip_interstitial), tags: Type.Optional(access_tags), type: Type.Intersect([access_type, Type.Unknown()]), use_clientless_isolation_app_launcher_url: Type.Optional(access_use_clientless_isolation_app_launcher_url) });
+export const access_self_hosted_props = Type.Object({ allow_authenticate_via_warp: Type.Optional(access_allow_authenticate_via_warp_2), allow_iframe: Type.Optional(access_allow_iframe), allowed_idps: Type.Optional(access_allowed_idps), app_launcher_visible: Type.Optional(access_app_launcher_visible), auto_redirect_to_identity: Type.Optional(access_auto_redirect_to_identity_2), cors_headers: Type.Optional(access_cors_headers), custom_deny_message: Type.Optional(access_custom_deny_message), custom_deny_url: Type.Optional(access_custom_deny_url), custom_non_identity_deny_url: Type.Optional(access_custom_non_identity_deny_url), custom_pages: Type.Optional(access_custom_pages_2), destinations: Type.Optional(access_destinations), domain: access_domain, eager_redirect_cookie_setting: Type.Optional(access_eager_redirect_cookie_setting), enable_binding_cookie: Type.Optional(access_enable_binding_cookie), http_only_cookie_attribute: Type.Optional(access_http_only_cookie_attribute), logo_url: Type.Optional(access_logo_url), mfa_config: Type.Optional(access_mfa_config), name: Type.Optional(access_name_8), oauth_configuration: Type.Optional(access_oauth_configuration), options_preflight_bypass: Type.Optional(access_options_preflight_bypass), path_cookie_attribute: Type.Optional(access_path_cookie_attribute), read_service_tokens_from_header: Type.Optional(access_read_service_tokens_from_header), same_site_cookie_attribute: Type.Optional(access_same_site_cookie_attribute), scim_config: Type.Optional(access_scim_config), self_hosted_domains: Type.Optional(access_self_hosted_domains), service_auth_401_redirect: Type.Optional(access_service_auth_401_redirect), session_duration: Type.Optional(access_session_duration_2), skip_interstitial: Type.Optional(access_skip_interstitial), tags: Type.Optional(access_tags), type: access_type, use_clientless_isolation_app_launcher_url: Type.Optional(access_use_clientless_isolation_app_launcher_url) });
 
 export type access_created_at = Static<typeof access_created_at>;
-export const access_created_at = Type.Intersect([Type.Unknown(), access_timestamp]);
+export const access_created_at = access_timestamp;
 
 export type access_updated_at = Static<typeof access_updated_at>;
-export const access_updated_at = Type.Intersect([Type.Unknown(), access_timestamp]);
+export const access_updated_at = access_timestamp;
 
 export type access_saml_saas_app = Static<typeof access_saml_saas_app>;
 export const access_saml_saas_app = Type.Partial(Type.Object({ auth_type: Type.Union([Type.Literal("saml"), Type.Literal("oidc")]), consumer_service_url: Type.String(), created_at: access_created_at, custom_attributes: Type.Array(Type.Partial(Type.Object({ friendly_name: Type.String(), name: Type.String(), name_format: Type.Union([Type.Literal("urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"), Type.Literal("urn:oasis:names:tc:SAML:2.0:attrname-format:basic"), Type.Literal("urn:oasis:names:tc:SAML:2.0:attrname-format:uri")]), required: Type.Boolean(), source: Type.Partial(Type.Object({ name: Type.String(), name_by_idp: Type.Array(Type.Partial(Type.Object({ idp_id: Type.String(), source_name: Type.String() }))) })) }))), default_relay_state: Type.String(), idp_entity_id: Type.String(), name_id_format: Type.Union([Type.Literal("id"), Type.Literal("email")]), name_id_transform_jsonata: Type.String(), public_key: Type.String(), saml_attribute_transform_jsonata: Type.String(), sp_entity_id: Type.String(), sso_endpoint: Type.String(), updated_at: access_updated_at }));
@@ -970,25 +970,25 @@ export type access_oidc_saas_app = Static<typeof access_oidc_saas_app>;
 export const access_oidc_saas_app = Type.Partial(Type.Object({ access_token_lifetime: Type.String(), allow_pkce_without_client_secret: Type.Boolean(), app_launcher_url: Type.String(), auth_type: Type.Union([Type.Literal("saml"), Type.Literal("oidc")]), client_id: Type.String(), client_secret: Type.String(), created_at: access_created_at, custom_claims: Type.Array(Type.Partial(Type.Object({ name: Type.String(), required: Type.Boolean(), scope: Type.Union([Type.Literal("groups"), Type.Literal("profile"), Type.Literal("email"), Type.Literal("openid")]), source: Type.Partial(Type.Object({ name: Type.String(), name_by_idp: Type.Record(Type.String(), Type.String()) })) }))), grant_types: Type.Array(Type.Union([Type.Literal("authorization_code"), Type.Literal("authorization_code_with_pkce"), Type.Literal("refresh_tokens"), Type.Literal("hybrid"), Type.Literal("implicit")])), group_filter_regex: Type.String(), hybrid_and_implicit_options: Type.Partial(Type.Object({ return_access_token_from_authorization_endpoint: Type.Boolean(), return_id_token_from_authorization_endpoint: Type.Boolean() })), public_key: Type.String(), redirect_uris: Type.Array(Type.String()), refresh_token_options: Type.Partial(Type.Object({ lifetime: Type.String() })), scopes: Type.Array(Type.Union([Type.Literal("openid"), Type.Literal("groups"), Type.Literal("email"), Type.Literal("profile")])), updated_at: access_updated_at }));
 
 export type access_saas_props = Static<typeof access_saas_props>;
-export const access_saas_props = Type.Partial(Type.Object({ allowed_idps: access_allowed_idps, app_launcher_visible: access_app_launcher_visible, auto_redirect_to_identity: access_auto_redirect_to_identity_2, custom_pages: access_custom_pages_2, logo_url: access_logo_url, name: access_name_8, saas_app: Type.Union([access_saml_saas_app, access_oidc_saas_app]), scim_config: access_scim_config, tags: access_tags, type: Type.Intersect([access_type, Type.Unknown()]) }));
+export const access_saas_props = Type.Partial(Type.Object({ allowed_idps: access_allowed_idps, app_launcher_visible: access_app_launcher_visible, auto_redirect_to_identity: access_auto_redirect_to_identity_2, custom_pages: access_custom_pages_2, logo_url: access_logo_url, name: access_name_8, saas_app: Type.Union([access_saml_saas_app, access_oidc_saas_app]), scim_config: access_scim_config, tags: access_tags, type: access_type }));
 
 export type access_ssh_props = Static<typeof access_ssh_props>;
-export const access_ssh_props = Type.Intersect([access_self_hosted_props, Type.Partial(Type.Object({ type: Type.Intersect([access_type, Type.Unknown()]) }))]);
+export const access_ssh_props = Type.Intersect([access_self_hosted_props, Type.Partial(Type.Object({ type: access_type }))]);
 
 export type access_vnc_props = Static<typeof access_vnc_props>;
-export const access_vnc_props = Type.Intersect([access_self_hosted_props, Type.Partial(Type.Object({ type: Type.Intersect([access_type, Type.Unknown()]) }))]);
+export const access_vnc_props = Type.Intersect([access_self_hosted_props, Type.Partial(Type.Object({ type: access_type }))]);
 
 export type access_warp_props = Static<typeof access_warp_props>;
-export const access_warp_props = Type.Intersect([access_feature_app_props, Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.Intersect([access_type, Type.Unknown()]) }))]);
+export const access_warp_props = Type.Intersect([access_feature_app_props, Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: access_type }))]);
 
 export type access_biso_props = Static<typeof access_biso_props>;
-export const access_biso_props = Type.Intersect([access_feature_app_props, Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.Intersect([access_type, Type.Unknown()]) }))]);
+export const access_biso_props = Type.Intersect([access_feature_app_props, Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: access_type }))]);
 
 export type access_proxy_endpoint_props = Static<typeof access_proxy_endpoint_props>;
-export const access_proxy_endpoint_props = Type.Intersect([access_feature_app_props, Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: Type.Intersect([access_type, Type.Unknown()]) }))]);
+export const access_proxy_endpoint_props = Type.Intersect([access_feature_app_props, Type.Partial(Type.Object({ domain: Type.Unknown(), name: Type.Unknown(), type: access_type }))]);
 
 export type access_bookmark_props = Static<typeof access_bookmark_props>;
-export const access_bookmark_props = Type.Partial(Type.Object({ app_launcher_visible: access_app_launcher_visible, domain: Type.String(), logo_url: access_logo_url, name: access_name_8, tags: access_tags, type: Type.Intersect([access_type, Type.Unknown()]) }));
+export const access_bookmark_props = Type.Partial(Type.Object({ app_launcher_visible: access_app_launcher_visible, domain: Type.String(), logo_url: access_logo_url, name: access_name_8, tags: access_tags, type: access_type }));
 
 export type access_port = Static<typeof access_port>;
 export const access_port = Type.Integer();
@@ -1009,7 +1009,7 @@ export type access_app_resp_embedded_target_criteria_infra = Static<typeof acces
 export const access_app_resp_embedded_target_criteria_infra = Type.Partial(Type.Object({ target_criteria: Type.Array(access_target_criteria_infra_app) }));
 
 export type access_infra_props = Static<typeof access_infra_props>;
-export const access_infra_props = Type.Intersect([Type.Partial(Type.Object({ name: access_name_8, type: Type.Intersect([access_type, Type.Unknown()]) })), access_app_resp_embedded_target_criteria_infra, Type.Record(Type.String(), Type.Unknown())]);
+export const access_infra_props = Type.Intersect([Type.Partial(Type.Object({ name: access_name_8, type: access_type })), access_app_resp_embedded_target_criteria_infra, Type.Record(Type.String(), Type.Unknown())]);
 
 export type access_usernames = Static<typeof access_usernames>;
 export const access_usernames = Type.Array(Type.String());
@@ -1039,13 +1039,13 @@ export type access_app_resp_embedded_target_criteria_self_hosted = Static<typeof
 export const access_app_resp_embedded_target_criteria_self_hosted = Type.Partial(Type.Object({ target_criteria: Type.Array(access_target_criteria_self_hosted_app) }));
 
 export type access_rdp_props = Static<typeof access_rdp_props>;
-export const access_rdp_props = Type.Intersect([access_app_resp_embedded_target_criteria_self_hosted, access_self_hosted_props, Type.Partial(Type.Object({ type: Type.Intersect([access_type, Type.Unknown()]) })), Type.Unknown()]);
+export const access_rdp_props = Type.Intersect([access_app_resp_embedded_target_criteria_self_hosted, access_self_hosted_props, Type.Partial(Type.Object({ type: access_type }))]);
 
 export type access_mcp_props = Static<typeof access_mcp_props>;
-export const access_mcp_props = Type.Object({ allow_authenticate_via_warp: Type.Optional(access_allow_authenticate_via_warp_2), allowed_idps: Type.Optional(access_allowed_idps), auto_redirect_to_identity: Type.Optional(access_auto_redirect_to_identity_2), custom_deny_message: Type.Optional(access_custom_deny_message), custom_deny_url: Type.Optional(access_custom_deny_url), custom_non_identity_deny_url: Type.Optional(access_custom_non_identity_deny_url), custom_pages: Type.Optional(access_custom_pages_2), destinations: Type.Optional(access_destinations), http_only_cookie_attribute: Type.Optional(access_http_only_cookie_attribute), logo_url: Type.Optional(access_logo_url), name: Type.Optional(access_name_8), oauth_configuration: Type.Optional(access_oauth_configuration), options_preflight_bypass: Type.Optional(access_options_preflight_bypass), same_site_cookie_attribute: Type.Optional(access_same_site_cookie_attribute), scim_config: Type.Optional(access_scim_config), session_duration: Type.Optional(access_session_duration_2), tags: Type.Optional(access_tags), type: Type.Intersect([access_type, Type.Unknown()]) });
+export const access_mcp_props = Type.Object({ allow_authenticate_via_warp: Type.Optional(access_allow_authenticate_via_warp_2), allowed_idps: Type.Optional(access_allowed_idps), auto_redirect_to_identity: Type.Optional(access_auto_redirect_to_identity_2), custom_deny_message: Type.Optional(access_custom_deny_message), custom_deny_url: Type.Optional(access_custom_deny_url), custom_non_identity_deny_url: Type.Optional(access_custom_non_identity_deny_url), custom_pages: Type.Optional(access_custom_pages_2), destinations: Type.Optional(access_destinations), http_only_cookie_attribute: Type.Optional(access_http_only_cookie_attribute), logo_url: Type.Optional(access_logo_url), name: Type.Optional(access_name_8), oauth_configuration: Type.Optional(access_oauth_configuration), options_preflight_bypass: Type.Optional(access_options_preflight_bypass), same_site_cookie_attribute: Type.Optional(access_same_site_cookie_attribute), scim_config: Type.Optional(access_scim_config), session_duration: Type.Optional(access_session_duration_2), tags: Type.Optional(access_tags), type: access_type });
 
 export type access_mcp_portal_props = Static<typeof access_mcp_portal_props>;
-export const access_mcp_portal_props = Type.Object({ allow_authenticate_via_warp: Type.Optional(access_allow_authenticate_via_warp_2), allowed_idps: Type.Optional(access_allowed_idps), auto_redirect_to_identity: Type.Optional(access_auto_redirect_to_identity_2), custom_deny_message: Type.Optional(access_custom_deny_message), custom_deny_url: Type.Optional(access_custom_deny_url), custom_non_identity_deny_url: Type.Optional(access_custom_non_identity_deny_url), custom_pages: Type.Optional(access_custom_pages_2), destinations: Type.Optional(access_destinations), domain: Type.Optional(access_domain), http_only_cookie_attribute: Type.Optional(access_http_only_cookie_attribute), logo_url: Type.Optional(access_logo_url), name: Type.Optional(access_name_8), oauth_configuration: Type.Optional(access_oauth_configuration), options_preflight_bypass: Type.Optional(access_options_preflight_bypass), same_site_cookie_attribute: Type.Optional(access_same_site_cookie_attribute), scim_config: Type.Optional(access_scim_config), session_duration: Type.Optional(access_session_duration_2), tags: Type.Optional(access_tags), type: Type.Intersect([access_type, Type.Unknown()]) });
+export const access_mcp_portal_props = Type.Object({ allow_authenticate_via_warp: Type.Optional(access_allow_authenticate_via_warp_2), allowed_idps: Type.Optional(access_allowed_idps), auto_redirect_to_identity: Type.Optional(access_auto_redirect_to_identity_2), custom_deny_message: Type.Optional(access_custom_deny_message), custom_deny_url: Type.Optional(access_custom_deny_url), custom_non_identity_deny_url: Type.Optional(access_custom_non_identity_deny_url), custom_pages: Type.Optional(access_custom_pages_2), destinations: Type.Optional(access_destinations), domain: Type.Optional(access_domain), http_only_cookie_attribute: Type.Optional(access_http_only_cookie_attribute), logo_url: Type.Optional(access_logo_url), name: Type.Optional(access_name_8), oauth_configuration: Type.Optional(access_oauth_configuration), options_preflight_bypass: Type.Optional(access_options_preflight_bypass), same_site_cookie_attribute: Type.Optional(access_same_site_cookie_attribute), scim_config: Type.Optional(access_scim_config), session_duration: Type.Optional(access_session_duration_2), tags: Type.Optional(access_tags), type: access_type });
 
 export type access_app_request = Static<typeof access_app_request>;
 export const access_app_request = Type.Union([Type.Intersect([access_self_hosted_props, access_app_req_embedded_policies, access_app_req_embedded_scim_config, Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([access_saas_props, access_app_req_embedded_policies, access_app_req_embedded_scim_config, Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([access_ssh_props, access_app_req_embedded_policies, access_app_req_embedded_scim_config, Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([access_vnc_props, access_app_req_embedded_policies, access_app_req_embedded_scim_config, Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([access_app_launcher_props, access_app_req_embedded_policies, Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([access_warp_props, access_app_req_embedded_policies, Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([access_biso_props, access_app_req_embedded_policies, Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([access_proxy_endpoint_props, access_app_req_embedded_policies, Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([access_bookmark_props, access_app_req_embedded_policies, Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([access_infra_props, access_infra_app_req_embedded_policies, Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([access_rdp_props, access_app_req_embedded_policies, Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([access_mcp_props, access_app_req_embedded_policies, Type.Record(Type.String(), Type.Unknown())]), Type.Intersect([access_mcp_portal_props, access_app_req_embedded_policies, Type.Record(Type.String(), Type.Unknown())])]);
@@ -1174,10 +1174,10 @@ export type access_saml_certificate = Static<typeof access_saml_certificate>;
 export const access_saml_certificate = Type.Object({ is_current: Type.Boolean(), not_after: Type.String({ format: "date-time" }), public_certificate: Type.String(), uid: Type.String({ format: "uuid" }) });
 
 export type access_saml_certificate_set = Static<typeof access_saml_certificate_set>;
-export const access_saml_certificate_set = Type.Object({ created_at: Type.String({ format: "date-time" }), current_certificate: Type.Optional(Type.Intersect([access_saml_certificate])), previous_certificate: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])), uid: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) });
+export const access_saml_certificate_set = Type.Object({ created_at: Type.String({ format: "date-time" }), current_certificate: Type.Optional(access_saml_certificate), previous_certificate: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])), uid: Type.String({ format: "uuid" }), updated_at: Type.String({ format: "date-time" }) });
 
 export type access_identity_provider = Static<typeof access_identity_provider>;
-export const access_identity_provider = Type.Object({ config: Type.Record(Type.String(), Type.Unknown()), id: Type.Optional(access_uuid), name: access_name_3, read_only: Type.Optional(Type.Boolean()), saml_certificate_set: Type.Optional(Type.Intersect([access_saml_certificate_set, Type.Unknown()])), saml_certificate_set_id: Type.Optional(Type.String({ format: "uuid" })), scim_config: Type.Optional(Type.Partial(Type.Object({ enabled: Type.Boolean(), identity_update_behavior: Type.Union([Type.Literal("automatic"), Type.Literal("reauth"), Type.Literal("no_action")]), scim_base_url: Type.String(), seat_deprovision: Type.Boolean(), secret: Type.String(), user_deprovision: Type.Boolean() }))), type: Type.Union([Type.Literal("onetimepin"), Type.Literal("azureAD"), Type.Literal("saml"), Type.Literal("centrify"), Type.Literal("facebook"), Type.Literal("github"), Type.Literal("google-apps"), Type.Literal("google"), Type.Literal("linkedin"), Type.Literal("oidc"), Type.Literal("okta"), Type.Literal("onelogin"), Type.Literal("pingone"), Type.Literal("yandex"), Type.Literal("cloudflare")]) });
+export const access_identity_provider = Type.Object({ config: Type.Record(Type.String(), Type.Unknown()), id: Type.Optional(access_uuid), name: access_name_3, read_only: Type.Optional(Type.Boolean()), saml_certificate_set: Type.Optional(access_saml_certificate_set), saml_certificate_set_id: Type.Optional(Type.String({ format: "uuid" })), scim_config: Type.Optional(Type.Partial(Type.Object({ enabled: Type.Boolean(), identity_update_behavior: Type.Union([Type.Literal("automatic"), Type.Literal("reauth"), Type.Literal("no_action")]), scim_base_url: Type.String(), seat_deprovision: Type.Boolean(), secret: Type.String(), user_deprovision: Type.Boolean() }))), type: Type.Union([Type.Literal("onetimepin"), Type.Literal("azureAD"), Type.Literal("saml"), Type.Literal("centrify"), Type.Literal("facebook"), Type.Literal("github"), Type.Literal("google-apps"), Type.Literal("google"), Type.Literal("linkedin"), Type.Literal("oidc"), Type.Literal("okta"), Type.Literal("onelogin"), Type.Literal("pingone"), Type.Literal("yandex"), Type.Literal("cloudflare")]) });
 
 export type access_generic_oauth_config = Static<typeof access_generic_oauth_config>;
 export const access_generic_oauth_config = Type.Partial(Type.Object({ client_id: Type.String(), client_secret: Type.String() }));
@@ -1234,7 +1234,7 @@ export type access_saml_certificate_2 = Static<typeof access_saml_certificate_2>
 export const access_saml_certificate_2 = Type.Object({ is_current: Type.Boolean(), not_after: Type.String({ format: "date-time" }), public_certificate: Type.String(), uid: Type.String() });
 
 export type access_saml_certificate_set_2 = Static<typeof access_saml_certificate_set_2>;
-export const access_saml_certificate_set_2 = Type.Object({ created_at: Type.String({ format: "date-time" }), current_certificate: Type.Optional(Type.Intersect([access_saml_certificate_2])), previous_certificate: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])), uid: Type.String(), updated_at: Type.String({ format: "date-time" }) });
+export const access_saml_certificate_set_2 = Type.Object({ created_at: Type.String({ format: "date-time" }), current_certificate: Type.Optional(access_saml_certificate_2), previous_certificate: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])), uid: Type.String(), updated_at: Type.String({ format: "date-time" }) });
 
 export type access_certificate_set_list_response = Static<typeof access_certificate_set_list_response>;
 export const access_certificate_set_list_response = Type.Intersect([access_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(access_saml_certificate_set_2) }))]);
@@ -1441,7 +1441,7 @@ export type access_id_response_6 = Static<typeof access_id_response_6>;
 export const access_id_response_6 = Type.Intersect([access_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: access_id_3 })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type access_identifier_2 = Static<typeof access_identifier_2>;
-export const access_identifier_2 = Type.Intersect([access_identifier, Type.Unknown()]);
+export const access_identifier_2 = access_identifier;
 
 export type access_identifier_3 = Static<typeof access_identifier_3>;
 export const access_identifier_3 = Type.String();
@@ -1501,13 +1501,13 @@ export type access_identity_providers_2 = Static<typeof access_identity_provider
 export const access_identity_providers_2 = Type.Union([access_azureAD_2, access_centrify_2, access_facebook_2, access_github_2, access_google_2, access_google_apps_2, access_linkedin_2, access_oidc_2, access_okta_2, access_onelogin_2, access_pingone_2, access_saml_2, access_yandex_2, access_cloudflare_2]);
 
 export type access_idp_federation_grant = Static<typeof access_idp_federation_grant>;
-export const access_idp_federation_grant = Type.Object({ created_at: access_created_at, id: Type.Intersect([access_identifier, Type.Unknown()]), idp_id: Type.String({ format: "uuid" }) });
+export const access_idp_federation_grant = Type.Object({ created_at: access_created_at, id: access_identifier, idp_id: Type.String({ format: "uuid" }) });
 
 export type access_idp_federation_grant_create_request = Static<typeof access_idp_federation_grant_create_request>;
 export const access_idp_federation_grant_create_request = Type.Object({ idp_id: Type.String({ format: "uuid" }) });
 
 export type access_idp_federation_grant_id_response = Static<typeof access_idp_federation_grant_id_response>;
-export const access_idp_federation_grant_id_response = Type.Intersect([access_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: Type.Intersect([access_identifier]) })) }))]);
+export const access_idp_federation_grant_id_response = Type.Intersect([access_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: access_identifier })) }))]);
 
 export type access_idp_federation_grant_list_response = Static<typeof access_idp_federation_grant_list_response>;
 export const access_idp_federation_grant_list_response = Type.Intersect([access_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(access_idp_federation_grant) }))]);
@@ -1750,7 +1750,7 @@ export type access_response_collection_18 = Static<typeof access_response_collec
 export const access_response_collection_18 = Type.Intersect([access_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(access_groups_3) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type access_service_tokens_2 = Static<typeof access_service_tokens_2>;
-export const access_service_tokens_2 = Type.Partial(Type.Object({ client_id: access_client_id, created_at: access_timestamp, duration: access_duration_2, expires_at: access_timestamp, id: Type.Intersect([Type.Unknown(), access_uuid]), last_seen_at: access_timestamp, name: access_name_17, updated_at: access_timestamp }));
+export const access_service_tokens_2 = Type.Partial(Type.Object({ client_id: access_client_id, created_at: access_timestamp, duration: access_duration_2, expires_at: access_timestamp, id: access_uuid, last_seen_at: access_timestamp, name: access_name_17, updated_at: access_timestamp }));
 
 export type access_response_collection_19 = Static<typeof access_response_collection_19>;
 export const access_response_collection_19 = Type.Intersect([access_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(access_service_tokens_2) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -1783,7 +1783,7 @@ export type access_response_collection_24 = Static<typeof access_response_collec
 export const access_response_collection_24 = Type.Intersect([access_api_response_collection, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Unknown(), page: Type.Unknown(), per_page: Type.Unknown(), total_count: Type.Unknown() })) })), Type.Partial(Type.Object({ result: Type.Array(access_users_2) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type access_service_tokens = Static<typeof access_service_tokens>;
-export const access_service_tokens = Type.Partial(Type.Object({ client_id: access_client_id, created_at: access_created_at, duration: access_duration, expires_at: access_timestamp, id: Type.Intersect([Type.Unknown(), access_uuid]), last_seen_at: Type.Intersect([Type.Unknown(), access_timestamp]), name: access_name_2, updated_at: access_updated_at }));
+export const access_service_tokens = Type.Partial(Type.Object({ client_id: access_client_id, created_at: access_created_at, duration: access_duration, expires_at: access_timestamp, id: access_uuid, last_seen_at: access_timestamp, name: access_name_2, updated_at: access_updated_at }));
 
 export type access_response_collection_3 = Static<typeof access_response_collection_3>;
 export const access_response_collection_3 = Type.Intersect([access_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(access_service_tokens) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -2014,7 +2014,7 @@ export type addressing_api_response_collection = Static<typeof addressing_api_re
 export const addressing_api_response_collection = Type.Intersect([addressing_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type addressing_api_response_common_failure = Static<typeof addressing_api_response_common_failure>;
-export const addressing_api_response_common_failure = Type.Object({ errors: Type.Intersect([addressing_messages, Type.Unknown()]), messages: Type.Intersect([addressing_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const addressing_api_response_common_failure = Type.Object({ errors: addressing_messages, messages: addressing_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type addressing_approved = Static<typeof addressing_approved>;
 export const addressing_approved = Type.String();
@@ -2320,7 +2320,7 @@ export type alexandria_api_response_collection = Static<typeof alexandria_api_re
 export const alexandria_api_response_collection = Type.Intersect([alexandria_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type alexandria_api_response_common_failure = Static<typeof alexandria_api_response_common_failure>;
-export const alexandria_api_response_common_failure = Type.Object({ errors: Type.Intersect([alexandria_messages, Type.Unknown()]), messages: Type.Intersect([alexandria_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const alexandria_api_response_common_failure = Type.Object({ errors: alexandria_messages, messages: alexandria_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type alexandria_application_confidence_score = Static<typeof alexandria_application_confidence_score>;
 export const alexandria_application_confidence_score = Type.Number();
@@ -2515,7 +2515,7 @@ export type api_shield_api_response_collection = Static<typeof api_shield_api_re
 export const api_shield_api_response_collection = Type.Intersect([api_shield_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type api_shield_api_response_common_failure = Static<typeof api_shield_api_response_common_failure>;
-export const api_shield_api_response_common_failure = Type.Object({ errors: Type.Intersect([api_shield_messages, Type.Unknown()]), messages: Type.Intersect([api_shield_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const api_shield_api_response_common_failure = Type.Object({ errors: api_shield_messages, messages: api_shield_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type api_shield_api_response_single = Static<typeof api_shield_api_response_single>;
 export const api_shield_api_response_single = Type.Intersect([api_shield_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -2716,7 +2716,7 @@ export type api_shield_multiple_operation_response = Static<typeof api_shield_mu
 export const api_shield_multiple_operation_response = Type.Intersect([api_shield_api_response_common, Type.Object({ result: Type.Array(api_shield_operation) })]);
 
 export type api_shield_multiple_operation_response_paginated = Static<typeof api_shield_multiple_operation_response_paginated>;
-export const api_shield_multiple_operation_response_paginated = Type.Intersect([api_shield_api_response_collection, Type.Object({ result: Type.Array(Type.Intersect([api_shield_operation])) })]);
+export const api_shield_multiple_operation_response_paginated = Type.Intersect([api_shield_api_response_collection, Type.Object({ result: Type.Array(api_shield_operation) })]);
 
 export type api_shield_object_with_operation_id = Static<typeof api_shield_object_with_operation_id>;
 export const api_shield_object_with_operation_id = Type.Object({ operation_id: Type.Intersect([Type.String(), api_shield_uuid_2]) });
@@ -2869,7 +2869,7 @@ export type argo_analytics_api_response_common = Static<typeof argo_analytics_ap
 export const argo_analytics_api_response_common = Type.Object({ errors: argo_analytics_messages, messages: argo_analytics_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Array(Type.Unknown()), Type.String()]), success: Type.Literal(true) });
 
 export type argo_analytics_api_response_common_failure = Static<typeof argo_analytics_api_response_common_failure>;
-export const argo_analytics_api_response_common_failure = Type.Object({ errors: Type.Intersect([argo_analytics_messages, Type.Unknown()]), messages: Type.Intersect([argo_analytics_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const argo_analytics_api_response_common_failure = Type.Object({ errors: argo_analytics_messages, messages: argo_analytics_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type argo_analytics_api_response_single = Static<typeof argo_analytics_api_response_single>;
 export const argo_analytics_api_response_single = Type.Intersect([argo_analytics_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), Type.Union([Type.String(), Type.Null()])]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -2884,7 +2884,7 @@ export type argo_config_messages = Static<typeof argo_config_messages>;
 export const argo_config_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }));
 
 export type argo_config_api_response_common_failure = Static<typeof argo_config_api_response_common_failure>;
-export const argo_config_api_response_common_failure = Type.Object({ errors: Type.Intersect([argo_config_messages, Type.Unknown()]), messages: Type.Intersect([argo_config_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const argo_config_api_response_common_failure = Type.Object({ errors: argo_config_messages, messages: argo_config_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type argo_config_editable = Static<typeof argo_config_editable>;
 export const argo_config_editable = Type.Boolean();
@@ -2944,7 +2944,7 @@ export type art_ErrorResponse = Static<typeof art_ErrorResponse>;
 export const art_ErrorResponse = Type.Object({ errors: Type.Array(art_APIError), messages: Type.Array(art_APIMessage), result: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])), success: Type.Boolean() });
 
 export type art_QuerySummary = Static<typeof art_QuerySummary>;
-export const art_QuerySummary = Type.Intersect([art_CommonQuery]);
+export const art_QuerySummary = art_CommonQuery;
 
 export type art_QueryTimeseries = Static<typeof art_QueryTimeseries>;
 export const art_QueryTimeseries = Type.Intersect([art_CommonQuery, Type.Object({ resolution: Type.String() })]);
@@ -3043,7 +3043,7 @@ export type bill_subs_api_amount = Static<typeof bill_subs_api_amount>;
 export const bill_subs_api_amount = Type.Number();
 
 export type bill_subs_api_api_response_common_failure = Static<typeof bill_subs_api_api_response_common_failure>;
-export const bill_subs_api_api_response_common_failure = Type.Object({ errors: Type.Intersect([bill_subs_api_messages, Type.Unknown()]), messages: Type.Intersect([bill_subs_api_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const bill_subs_api_api_response_common_failure = Type.Object({ errors: bill_subs_api_messages, messages: bill_subs_api_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type bill_subs_api_can_subscribe = Static<typeof bill_subs_api_can_subscribe>;
 export const bill_subs_api_can_subscribe = Type.Boolean();
@@ -3121,7 +3121,7 @@ export type bill_subs_api_duration = Static<typeof bill_subs_api_duration>;
 export const bill_subs_api_duration = Type.Number();
 
 export type bill_subs_api_frequency_response = Static<typeof bill_subs_api_frequency_response>;
-export const bill_subs_api_frequency_response = Type.Intersect([bill_subs_api_frequency, Type.Union([Type.Literal("weekly"), Type.Literal("monthly"), Type.Literal("quarterly"), Type.Literal("yearly"), Type.Literal("not-applicable")]), Type.Unknown()]);
+export const bill_subs_api_frequency_response = Type.Intersect([bill_subs_api_frequency, Type.Union([Type.Literal("weekly"), Type.Literal("monthly"), Type.Literal("quarterly"), Type.Literal("yearly"), Type.Literal("not-applicable")])]);
 
 export type bill_subs_api_schemas_component_values = Static<typeof bill_subs_api_schemas_component_values>;
 export const bill_subs_api_schemas_component_values = Type.Array(bill_subs_api_component_value);
@@ -3184,7 +3184,7 @@ export type bot_management_api_response_common = Static<typeof bot_management_ap
 export const bot_management_api_response_common = Type.Object({ errors: bot_management_messages, messages: bot_management_messages, success: Type.Literal(true) });
 
 export type bot_management_api_response_common_failure = Static<typeof bot_management_api_response_common_failure>;
-export const bot_management_api_response_common_failure = Type.Object({ errors: Type.Intersect([bot_management_messages, Type.Unknown()]), messages: Type.Intersect([bot_management_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const bot_management_api_response_common_failure = Type.Object({ errors: bot_management_messages, messages: bot_management_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type bot_management_api_response_single = Static<typeof bot_management_api_response_single>;
 export const bot_management_api_response_single = Type.Intersect([bot_management_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -3211,7 +3211,7 @@ export type bot_management_using_latest_model = Static<typeof bot_management_usi
 export const bot_management_using_latest_model = Type.Boolean();
 
 export type bot_management_base_config = Static<typeof bot_management_base_config>;
-export const bot_management_base_config = Type.Intersect([Type.Partial(Type.Object({ ai_bots_protection: bot_management_ai_bots_protection, cf_robots_variant: bot_management_cf_robots_variant, content_bots_protection: bot_management_content_bots_protection, crawler_protection: bot_management_crawler_protection, enable_js: bot_management_enable_js, is_robots_txt_managed: bot_management_is_robots_txt_managed, using_latest_model: bot_management_using_latest_model }))]);
+export const bot_management_base_config = Type.Partial(Type.Object({ ai_bots_protection: bot_management_ai_bots_protection, cf_robots_variant: bot_management_cf_robots_variant, content_bots_protection: bot_management_content_bots_protection, crawler_protection: bot_management_crawler_protection, enable_js: bot_management_enable_js, is_robots_txt_managed: bot_management_is_robots_txt_managed, using_latest_model: bot_management_using_latest_model }));
 
 export type bot_management_bm_cookie_enabled = Static<typeof bot_management_bm_cookie_enabled>;
 export const bot_management_bm_cookie_enabled = Type.Boolean();
@@ -3496,7 +3496,7 @@ export type builds_EnvironmentVariablesRequest = Static<typeof builds_Environmen
 export const builds_EnvironmentVariablesRequest = Type.Record(Type.String(), Type.Object({ is_secret: builds_is_secret, value: Type.Optional(Type.Union([Type.String(), Type.Null()])) }));
 
 export type builds_CreateWorkerBuildSettingsInput = Static<typeof builds_CreateWorkerBuildSettingsInput>;
-export const builds_CreateWorkerBuildSettingsInput = Type.Object({ build_caching_enabled: Type.Optional(Type.Intersect([builds_build_caching_enabled, Type.Unknown()])), build_command: builds_build_command, build_token_uuid: builds_build_token_uuid, deploy_command: builds_deploy_command, environment_variables: Type.Optional(builds_EnvironmentVariablesRequest), path_excludes: Type.Optional(builds_path_excludes), path_includes: Type.Optional(builds_path_includes), root_directory: Type.Optional(Type.Intersect([builds_root_directory, Type.Unknown()])) });
+export const builds_CreateWorkerBuildSettingsInput = Type.Object({ build_caching_enabled: Type.Optional(builds_build_caching_enabled), build_command: builds_build_command, build_token_uuid: builds_build_token_uuid, deploy_command: builds_deploy_command, environment_variables: Type.Optional(builds_EnvironmentVariablesRequest), path_excludes: Type.Optional(builds_path_excludes), path_includes: Type.Optional(builds_path_includes), root_directory: Type.Optional(builds_root_directory) });
 
 export type builds_CreateWorkerGitRepositoryFunfettiInput = Static<typeof builds_CreateWorkerGitRepositoryFunfettiInput>;
 export const builds_CreateWorkerGitRepositoryFunfettiInput = Type.Object({ branch: Type.String({ minLength: 1, maxLength: 256 }), provider_account_id: builds_provider_account_id, provider_account_name: builds_provider_account_name, provider_type: Type.Union([Type.Literal("github"), Type.Literal("gitlab")]), repo_id: builds_repo_id, repo_name: builds_repo_name });
@@ -3601,7 +3601,7 @@ export type cache_purge_messages = Static<typeof cache_purge_messages>;
 export const cache_purge_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }));
 
 export type cache_purge_api_response_common_failure = Static<typeof cache_purge_api_response_common_failure>;
-export const cache_purge_api_response_common_failure = Type.Object({ errors: Type.Intersect([cache_purge_messages, Type.Unknown()]), messages: Type.Intersect([cache_purge_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
+export const cache_purge_api_response_common_failure = Type.Object({ errors: cache_purge_messages, messages: cache_purge_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
 
 export type cache_purge_identifier = Static<typeof cache_purge_identifier>;
 export const cache_purge_identifier = Type.String({ maxLength: 32 });
@@ -3811,7 +3811,7 @@ export type cache_result = Static<typeof cache_result>;
 export const cache_result = Type.Object({ editable: Type.Boolean(), id: Type.String(), modified_on: Type.String({ format: "date-time" }), next_scheduled_scan: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), value: Type.Union([Type.Literal("auto"), Type.Literal("custom")]) });
 
 export type cache_api_response_common_failure = Static<typeof cache_api_response_common_failure>;
-export const cache_api_response_common_failure = Type.Object({ errors: Type.Intersect([cache_messages, Type.Unknown()]), messages: Type.Intersect([cache_messages]), result: cache_result, success: Type.Boolean() });
+export const cache_api_response_common_failure = Type.Object({ errors: cache_messages, messages: cache_messages, result: cache_result, success: Type.Boolean() });
 
 export type cache_api_response_single_id = Static<typeof cache_api_response_single_id>;
 export const cache_api_response_single_id = Type.Object({ errors: cache_messages, messages: cache_messages, result: cache_result, success: Type.Boolean() });
@@ -3820,10 +3820,10 @@ export type cache_auto_origin_tls_kex_value = Static<typeof cache_auto_origin_tl
 export const cache_auto_origin_tls_kex_value = Type.Boolean();
 
 export type cache_auto_origin_tls_kex_result = Static<typeof cache_auto_origin_tls_kex_result>;
-export const cache_auto_origin_tls_kex_result = Type.Object({ enabled: Type.Intersect([cache_auto_origin_tls_kex_value, Type.Unknown()]), id: Type.String(), modified_on: Type.String({ format: "date-time" }) });
+export const cache_auto_origin_tls_kex_result = Type.Object({ enabled: cache_auto_origin_tls_kex_value, id: Type.String(), modified_on: Type.String({ format: "date-time" }) });
 
 export type cache_auto_origin_tls_kex_failure_response = Static<typeof cache_auto_origin_tls_kex_failure_response>;
-export const cache_auto_origin_tls_kex_failure_response = Type.Object({ errors: Type.Intersect([cache_messages, Type.Unknown()]), messages: cache_messages, result: cache_auto_origin_tls_kex_result, success: Type.Boolean() });
+export const cache_auto_origin_tls_kex_failure_response = Type.Object({ errors: cache_messages, messages: cache_messages, result: cache_auto_origin_tls_kex_result, success: Type.Boolean() });
 
 export type cache_auto_origin_tls_kex_patch = Static<typeof cache_auto_origin_tls_kex_patch>;
 export const cache_auto_origin_tls_kex_patch = Type.Object({ enabled: cache_auto_origin_tls_kex_value });
@@ -3850,7 +3850,7 @@ export type calls_api_response_common = Static<typeof calls_api_response_common>
 export const calls_api_response_common = Type.Object({ errors: calls_messages, messages: calls_messages, success: Type.Literal(true) });
 
 export type calls_api_response_common_failure = Static<typeof calls_api_response_common_failure>;
-export const calls_api_response_common_failure = Type.Object({ errors: Type.Intersect([calls_messages, Type.Unknown()]), messages: Type.Intersect([calls_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const calls_api_response_common_failure = Type.Object({ errors: calls_messages, messages: calls_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type calls_api_response_single = Static<typeof calls_api_response_single>;
 export const calls_api_response_single = Type.Intersect([calls_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -4174,7 +4174,7 @@ export type cc_ModifyApplicationRequestBody = Static<typeof cc_ModifyApplication
 export const cc_ModifyApplicationRequestBody = Type.Partial(Type.Object({ configuration: cc_ModifyUserDeploymentConfiguration, constraints: cc_ApplicationConstraints, instances: Type.Integer(), max_instances: Type.Integer(), name: Type.String(), observability: cc_ApplicationObservability, rollout_active_grace_period: cc_ApplicationRolloutActiveGracePeriod, scheduling_policy: cc_SchedulingPolicy }));
 
 export type cc_V4BaseErrorResponse = Static<typeof cc_V4BaseErrorResponse>;
-export const cc_V4BaseErrorResponse = Type.Object({ errors: Type.Intersect([cc_Messages, Type.Unknown()]), messages: Type.Intersect([cc_Messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
+export const cc_V4BaseErrorResponse = Type.Object({ errors: cc_Messages, messages: cc_Messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
 
 export type cc_V4BaseResponse = Static<typeof cc_V4BaseResponse>;
 export const cc_V4BaseResponse = Type.Object({ errors: cc_Messages, messages: cc_Messages, success: Type.Boolean() });
@@ -4192,7 +4192,7 @@ export type cloud_connector_api_response_common = Static<typeof cloud_connector_
 export const cloud_connector_api_response_common = Type.Object({ errors: cloud_connector_messages, messages: cloud_connector_messages, success: Type.Literal(true) });
 
 export type cloud_connector_api_response_common_failure = Static<typeof cloud_connector_api_response_common_failure>;
-export const cloud_connector_api_response_common_failure = Type.Object({ errors: Type.Intersect([cloud_connector_messages, Type.Unknown()]), messages: Type.Intersect([cloud_connector_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const cloud_connector_api_response_common_failure = Type.Object({ errors: cloud_connector_messages, messages: cloud_connector_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type cloud_connector_identifier = Static<typeof cloud_connector_identifier>;
 export const cloud_connector_identifier = Type.String({ maxLength: 32 });
@@ -4246,7 +4246,7 @@ export type cloudflare_pipelines_Format = Static<typeof cloudflare_pipelines_For
 export const cloudflare_pipelines_Format = Type.Union([Type.Intersect([cloudflare_pipelines_JsonFormat, Type.Object({ type: Type.Literal("json") })]), Type.Intersect([cloudflare_pipelines_ParquetFormat, Type.Object({ type: Type.Literal("parquet") })])]);
 
 export type cloudflare_pipelines_ConnectionSchema = Static<typeof cloudflare_pipelines_ConnectionSchema>;
-export const cloudflare_pipelines_ConnectionSchema = Type.Partial(Type.Object({ fields: Type.Array(Type.Unsafe(() => cloudflare_pipelines_SourceField)), format: Type.Intersect([cloudflare_pipelines_Format]), inferred: Type.Union([Type.Boolean(), Type.Null()]) }));
+export const cloudflare_pipelines_ConnectionSchema = Type.Partial(Type.Object({ fields: Type.Array(Type.Unsafe(() => cloudflare_pipelines_SourceField)), format: cloudflare_pipelines_Format, inferred: Type.Union([Type.Boolean(), Type.Null()]) }));
 
 export type cloudflare_pipelines_PipelineEdge = Static<typeof cloudflare_pipelines_PipelineEdge>;
 export const cloudflare_pipelines_PipelineEdge = Type.Object({ dest_id: Type.Integer({ minimum: 0 }), edge_type: Type.String(), key_type: Type.String(), src_id: Type.Integer({ minimum: 0 }), value_type: Type.String() });
@@ -4354,19 +4354,19 @@ export type cloudforce_one_requests_uuid = Static<typeof cloudforce_one_requests
 export const cloudforce_one_requests_uuid = Type.String({ maxLength: 36 });
 
 export type cloudforce_one_requests_priority_item = Static<typeof cloudforce_one_requests_priority_item>;
-export const cloudforce_one_requests_priority_item = Type.Object({ created: Type.Intersect([cloudforce_one_requests_time]), id: cloudforce_one_requests_uuid, labels: cloudforce_one_requests_labels, priority: Type.Integer(), requirement: Type.String(), tlp: cloudforce_one_requests_tlp, updated: Type.Intersect([cloudforce_one_requests_time]) });
+export const cloudforce_one_requests_priority_item = Type.Object({ created: cloudforce_one_requests_time, id: cloudforce_one_requests_uuid, labels: cloudforce_one_requests_labels, priority: Type.Integer(), requirement: Type.String(), tlp: cloudforce_one_requests_tlp, updated: cloudforce_one_requests_time });
 
 export type cloudforce_one_requests_priority_list = Static<typeof cloudforce_one_requests_priority_list>;
 export const cloudforce_one_requests_priority_list = Type.Object({ page: Type.Integer(), per_page: Type.Integer() });
 
 export type cloudforce_one_requests_quota = Static<typeof cloudforce_one_requests_quota>;
-export const cloudforce_one_requests_quota = Type.Partial(Type.Object({ anniversary_date: Type.Intersect([cloudforce_one_requests_time]), quarter_anniversary_date: Type.Intersect([cloudforce_one_requests_time]), quota: Type.Integer(), remaining: Type.Integer() }));
+export const cloudforce_one_requests_quota = Type.Partial(Type.Object({ anniversary_date: cloudforce_one_requests_time, quarter_anniversary_date: cloudforce_one_requests_time, quota: Type.Integer(), remaining: Type.Integer() }));
 
 export type cloudforce_one_requests_request_asset_edit = Static<typeof cloudforce_one_requests_request_asset_edit>;
 export const cloudforce_one_requests_request_asset_edit = Type.Partial(Type.Object({ source: cloudforce_one_requests_asset_content }));
 
 export type cloudforce_one_requests_request_asset_item = Static<typeof cloudforce_one_requests_request_asset_item>;
-export const cloudforce_one_requests_request_asset_item = Type.Object({ created: Type.Optional(Type.Intersect([cloudforce_one_requests_time])), description: Type.Optional(Type.String()), file_type: Type.Optional(Type.String()), id: Type.Integer(), name: Type.String() });
+export const cloudforce_one_requests_request_asset_item = Type.Object({ created: Type.Optional(cloudforce_one_requests_time), description: Type.Optional(Type.String()), file_type: Type.Optional(Type.String()), id: Type.Integer(), name: Type.String() });
 
 export type cloudforce_one_requests_request_asset_list = Static<typeof cloudforce_one_requests_request_asset_list>;
 export const cloudforce_one_requests_request_asset_list = Type.Object({ page: Type.Integer(), per_page: Type.Integer() });
@@ -4396,19 +4396,19 @@ export type cloudforce_one_requests_request_item = Static<typeof cloudforce_one_
 export const cloudforce_one_requests_request_item = Type.Object({ completed: Type.Optional(cloudforce_one_requests_time), content: cloudforce_one_requests_request_content, created: cloudforce_one_requests_time, id: cloudforce_one_requests_uuid, message_tokens: Type.Optional(Type.Integer()), priority: cloudforce_one_requests_time, readable_id: Type.Optional(cloudforce_one_requests_request_readable_id), request: cloudforce_one_requests_request_type, status: Type.Optional(cloudforce_one_requests_request_status), summary: cloudforce_one_requests_request_summary, tlp: cloudforce_one_requests_tlp, tokens: Type.Optional(Type.Integer()), updated: cloudforce_one_requests_time });
 
 export type cloudforce_one_requests_request_list = Static<typeof cloudforce_one_requests_request_list>;
-export const cloudforce_one_requests_request_list = Type.Object({ completed_after: Type.Optional(Type.Intersect([cloudforce_one_requests_time])), completed_before: Type.Optional(Type.Intersect([cloudforce_one_requests_time])), created_after: Type.Optional(Type.Intersect([cloudforce_one_requests_time])), created_before: Type.Optional(Type.Intersect([cloudforce_one_requests_time])), page: Type.Integer(), per_page: Type.Integer(), request_type: Type.Optional(cloudforce_one_requests_request_type), sort_by: Type.Optional(Type.String()), sort_order: Type.Optional(Type.Union([Type.Literal("asc"), Type.Literal("desc")])), status: Type.Optional(cloudforce_one_requests_request_status) });
+export const cloudforce_one_requests_request_list = Type.Object({ completed_after: Type.Optional(cloudforce_one_requests_time), completed_before: Type.Optional(cloudforce_one_requests_time), created_after: Type.Optional(cloudforce_one_requests_time), created_before: Type.Optional(cloudforce_one_requests_time), page: Type.Integer(), per_page: Type.Integer(), request_type: Type.Optional(cloudforce_one_requests_request_type), sort_by: Type.Optional(Type.String()), sort_order: Type.Optional(Type.Union([Type.Literal("asc"), Type.Literal("desc")])), status: Type.Optional(cloudforce_one_requests_request_status) });
 
 export type cloudforce_one_requests_request_list_item = Static<typeof cloudforce_one_requests_request_list_item>;
-export const cloudforce_one_requests_request_list_item = Type.Object({ completed: Type.Optional(Type.Intersect([cloudforce_one_requests_time])), created: Type.Intersect([cloudforce_one_requests_time]), id: cloudforce_one_requests_uuid, message_tokens: Type.Optional(Type.Integer()), priority: cloudforce_one_requests_priority, readable_id: Type.Optional(cloudforce_one_requests_request_readable_id), request: cloudforce_one_requests_request_type, status: Type.Optional(cloudforce_one_requests_request_status), summary: cloudforce_one_requests_request_summary, tlp: cloudforce_one_requests_tlp, tokens: Type.Optional(Type.Integer()), updated: Type.Intersect([cloudforce_one_requests_time]) });
+export const cloudforce_one_requests_request_list_item = Type.Object({ completed: Type.Optional(cloudforce_one_requests_time), created: cloudforce_one_requests_time, id: cloudforce_one_requests_uuid, message_tokens: Type.Optional(Type.Integer()), priority: cloudforce_one_requests_priority, readable_id: Type.Optional(cloudforce_one_requests_request_readable_id), request: cloudforce_one_requests_request_type, status: Type.Optional(cloudforce_one_requests_request_status), summary: cloudforce_one_requests_request_summary, tlp: cloudforce_one_requests_tlp, tokens: Type.Optional(Type.Integer()), updated: cloudforce_one_requests_time });
 
 export type cloudforce_one_requests_request_message_edit = Static<typeof cloudforce_one_requests_request_message_edit>;
 export const cloudforce_one_requests_request_message_edit = Type.Partial(Type.Object({ content: cloudforce_one_requests_message_content }));
 
 export type cloudforce_one_requests_request_message_item = Static<typeof cloudforce_one_requests_request_message_item>;
-export const cloudforce_one_requests_request_message_item = Type.Object({ author: Type.String(), content: cloudforce_one_requests_message_content, created: Type.Optional(Type.Intersect([cloudforce_one_requests_time])), id: Type.Integer(), is_follow_on_request: Type.Boolean(), updated: Type.Intersect([cloudforce_one_requests_time]) });
+export const cloudforce_one_requests_request_message_item = Type.Object({ author: Type.String(), content: cloudforce_one_requests_message_content, created: Type.Optional(cloudforce_one_requests_time), id: Type.Integer(), is_follow_on_request: Type.Boolean(), updated: cloudforce_one_requests_time });
 
 export type cloudforce_one_requests_request_message_list = Static<typeof cloudforce_one_requests_request_message_list>;
-export const cloudforce_one_requests_request_message_list = Type.Object({ after: Type.Optional(Type.Intersect([cloudforce_one_requests_time])), before: Type.Optional(Type.Intersect([cloudforce_one_requests_time])), page: Type.Integer(), per_page: Type.Integer(), sort_by: Type.Optional(Type.String()), sort_order: Type.Optional(Type.Union([Type.Literal("asc"), Type.Literal("desc")])) });
+export const cloudforce_one_requests_request_message_list = Type.Object({ after: Type.Optional(cloudforce_one_requests_time), before: Type.Optional(cloudforce_one_requests_time), page: Type.Integer(), per_page: Type.Integer(), sort_by: Type.Optional(Type.String()), sort_order: Type.Optional(Type.Union([Type.Literal("asc"), Type.Literal("desc")])) });
 
 export type cloudforce_one_requests_request_types = Static<typeof cloudforce_one_requests_request_types>;
 export const cloudforce_one_requests_request_types = Type.Array(Type.String());
@@ -4423,7 +4423,7 @@ export type cloudforce_one_whois_messages = Static<typeof cloudforce_one_whois_m
 export const cloudforce_one_whois_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }));
 
 export type cloudforce_one_whois_api_response_common_failure = Static<typeof cloudforce_one_whois_api_response_common_failure>;
-export const cloudforce_one_whois_api_response_common_failure = Type.Object({ errors: Type.Intersect([cloudforce_one_whois_messages, Type.Unknown()]), messages: Type.Intersect([cloudforce_one_whois_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const cloudforce_one_whois_api_response_common_failure = Type.Object({ errors: cloudforce_one_whois_messages, messages: cloudforce_one_whois_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type cloudforce_one_whois_api_response_single = Static<typeof cloudforce_one_whois_api_response_single>;
 export const cloudforce_one_whois_api_response_single = Type.Intersect([cloudforce_one_whois_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -4438,7 +4438,7 @@ export type cloudforce_one_whois_whois = Static<typeof cloudforce_one_whois_whoi
 export const cloudforce_one_whois_whois = Type.Object({ administrative_city: Type.Optional(Type.String()), administrative_country: Type.Optional(Type.String()), administrative_email: Type.Optional(Type.String()), administrative_fax: Type.Optional(Type.String()), administrative_fax_ext: Type.Optional(Type.String()), administrative_id: Type.Optional(Type.String()), administrative_name: Type.Optional(Type.String()), administrative_org: Type.Optional(Type.String()), administrative_phone: Type.Optional(Type.String()), administrative_phone_ext: Type.Optional(Type.String()), administrative_postal_code: Type.Optional(Type.String()), administrative_province: Type.Optional(Type.String()), administrative_referral_url: Type.Optional(Type.String()), administrative_street: Type.Optional(Type.String()), billing_city: Type.Optional(Type.String()), billing_country: Type.Optional(Type.String()), billing_email: Type.Optional(Type.String()), billing_fax: Type.Optional(Type.String()), billing_fax_ext: Type.Optional(Type.String()), billing_id: Type.Optional(Type.String()), billing_name: Type.Optional(Type.String()), billing_org: Type.Optional(Type.String()), billing_phone: Type.Optional(Type.String()), billing_phone_ext: Type.Optional(Type.String()), billing_postal_code: Type.Optional(Type.String()), billing_province: Type.Optional(Type.String()), billing_referral_url: Type.Optional(Type.String()), billing_street: Type.Optional(Type.String()), created_date: Type.Optional(Type.String({ format: "date-time" })), created_date_raw: Type.Optional(Type.String()), dnssec: Type.Boolean(), domain: cloudforce_one_whois_domain_name, expiration_date: Type.Optional(Type.String({ format: "date-time" })), expiration_date_raw: Type.Optional(Type.String()), extension: Type.String(), found: Type.Boolean(), id: Type.Optional(Type.String()), nameservers: Type.Array(Type.String()), punycode: Type.String(), registrant: Type.String(), registrant_city: Type.Optional(Type.String()), registrant_country: Type.Optional(Type.String()), registrant_email: Type.Optional(Type.String()), registrant_fax: Type.Optional(Type.String()), registrant_fax_ext: Type.Optional(Type.String()), registrant_id: Type.Optional(Type.String()), registrant_name: Type.Optional(Type.String()), registrant_org: Type.Optional(Type.String()), registrant_phone: Type.Optional(Type.String()), registrant_phone_ext: Type.Optional(Type.String()), registrant_postal_code: Type.Optional(Type.String()), registrant_province: Type.Optional(Type.String()), registrant_referral_url: Type.Optional(Type.String()), registrant_street: Type.Optional(Type.String()), registrar: Type.String(), registrar_city: Type.Optional(Type.String()), registrar_country: Type.Optional(Type.String()), registrar_email: Type.Optional(Type.String()), registrar_fax: Type.Optional(Type.String()), registrar_fax_ext: Type.Optional(Type.String()), registrar_id: Type.Optional(Type.String()), registrar_name: Type.Optional(Type.String()), registrar_org: Type.Optional(Type.String()), registrar_phone: Type.Optional(Type.String()), registrar_phone_ext: Type.Optional(Type.String()), registrar_postal_code: Type.Optional(Type.String()), registrar_province: Type.Optional(Type.String()), registrar_referral_url: Type.Optional(Type.String()), registrar_street: Type.Optional(Type.String()), status: Type.Optional(Type.Array(Type.String())), technical_city: Type.Optional(Type.String()), technical_country: Type.Optional(Type.String()), technical_email: Type.Optional(Type.String()), technical_fax: Type.Optional(Type.String()), technical_fax_ext: Type.Optional(Type.String()), technical_id: Type.Optional(Type.String()), technical_name: Type.Optional(Type.String()), technical_org: Type.Optional(Type.String()), technical_phone: Type.Optional(Type.String()), technical_phone_ext: Type.Optional(Type.String()), technical_postal_code: Type.Optional(Type.String()), technical_province: Type.Optional(Type.String()), technical_referral_url: Type.Optional(Type.String()), technical_street: Type.Optional(Type.String()), updated_date: Type.Optional(Type.String({ format: "date-time" })), updated_date_raw: Type.Optional(Type.String()), whois_server: Type.Optional(Type.String()) });
 
 export type cloudforce_one_whois_schemas_single_response = Static<typeof cloudforce_one_whois_schemas_single_response>;
-export const cloudforce_one_whois_schemas_single_response = Type.Intersect([cloudforce_one_whois_api_response_single, Type.Partial(Type.Object({ result: Type.Intersect([cloudforce_one_whois_whois]) }))]);
+export const cloudforce_one_whois_schemas_single_response = Type.Intersect([cloudforce_one_whois_api_response_single, Type.Partial(Type.Object({ result: cloudforce_one_whois_whois }))]);
 
 export type cloudforce_one_AccountExemptions = Static<typeof cloudforce_one_AccountExemptions>;
 export const cloudforce_one_AccountExemptions = Type.Object({ namespace: Type.Array(Type.String()), tag_match: Type.Array(Type.String()), worker_name: Type.Array(Type.String()) });
@@ -4546,7 +4546,7 @@ export type custom_indicator_feeds_messages = Static<typeof custom_indicator_fee
 export const custom_indicator_feeds_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }));
 
 export type custom_indicator_feeds_api_response_common_failure = Static<typeof custom_indicator_feeds_api_response_common_failure>;
-export const custom_indicator_feeds_api_response_common_failure = Type.Object({ errors: Type.Intersect([custom_indicator_feeds_messages, Type.Unknown()]), messages: Type.Intersect([custom_indicator_feeds_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const custom_indicator_feeds_api_response_common_failure = Type.Object({ errors: custom_indicator_feeds_messages, messages: custom_indicator_feeds_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type custom_indicator_feeds_description = Static<typeof custom_indicator_feeds_description>;
 export const custom_indicator_feeds_description = Type.String();
@@ -4648,7 +4648,7 @@ export type custom_pages_api_response_collection = Static<typeof custom_pages_ap
 export const custom_pages_api_response_collection = Type.Intersect([custom_pages_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type custom_pages_api_response_common_failure = Static<typeof custom_pages_api_response_common_failure>;
-export const custom_pages_api_response_common_failure = Type.Object({ errors: Type.Intersect([custom_pages_messages, Type.Unknown()]), messages: Type.Intersect([custom_pages_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const custom_pages_api_response_common_failure = Type.Object({ errors: custom_pages_messages, messages: custom_pages_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type custom_pages_api_response_single = Static<typeof custom_pages_api_response_single>;
 export const custom_pages_api_response_single = Type.Intersect([custom_pages_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -4714,7 +4714,7 @@ export type d1_api_response_common = Static<typeof d1_api_response_common>;
 export const d1_api_response_common = Type.Object({ errors: d1_messages, messages: d1_messages, result: Type.Record(Type.String(), Type.Unknown()), success: Type.Literal(true) });
 
 export type d1_api_response_common_failure = Static<typeof d1_api_response_common_failure>;
-export const d1_api_response_common_failure = Type.Object({ errors: Type.Intersect([d1_messages, Type.Unknown()]), messages: Type.Intersect([d1_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const d1_api_response_common_failure = Type.Object({ errors: d1_messages, messages: d1_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type d1_params = Static<typeof d1_params>;
 export const d1_params = Type.Array(Type.String());
@@ -4792,7 +4792,7 @@ export type d1_time_travel_bookmark = Static<typeof d1_time_travel_bookmark>;
 export const d1_time_travel_bookmark = Type.String();
 
 export type d1_time_travel_restore_response = Static<typeof d1_time_travel_restore_response>;
-export const d1_time_travel_restore_response = Type.Partial(Type.Object({ bookmark: Type.Intersect([d1_time_travel_bookmark, Type.Unknown()]), message: Type.String(), previous_bookmark: Type.Intersect([d1_time_travel_bookmark, Type.Unknown()]) }));
+export const d1_time_travel_restore_response = Type.Partial(Type.Object({ bookmark: d1_time_travel_bookmark, message: Type.String(), previous_bookmark: d1_time_travel_bookmark }));
 
 export type d1_time_travel_timestamp = Static<typeof d1_time_travel_timestamp>;
 export const d1_time_travel_timestamp = Type.String({ format: "date-time" });
@@ -4822,7 +4822,7 @@ export type digital_experience_monitoring_api_response_collection_common = Stati
 export const digital_experience_monitoring_api_response_collection_common = Type.Intersect([digital_experience_monitoring_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Unknown()), Type.Null()]) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type digital_experience_monitoring_api_response_common_failure = Static<typeof digital_experience_monitoring_api_response_common_failure>;
-export const digital_experience_monitoring_api_response_common_failure = Type.Object({ errors: Type.Intersect([digital_experience_monitoring_messages, Type.Unknown()]), messages: Type.Intersect([digital_experience_monitoring_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const digital_experience_monitoring_api_response_common_failure = Type.Object({ errors: digital_experience_monitoring_messages, messages: digital_experience_monitoring_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type digital_experience_monitoring_api_response_single = Static<typeof digital_experience_monitoring_api_response_single>;
 export const digital_experience_monitoring_api_response_single = Type.Intersect([digital_experience_monitoring_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -4900,7 +4900,7 @@ export type digital_experience_monitoring_uuid = Static<typeof digital_experienc
 export const digital_experience_monitoring_uuid = Type.String({ maxLength: 36 });
 
 export type digital_experience_monitoring_dex_target_policy = Static<typeof digital_experience_monitoring_dex_target_policy>;
-export const digital_experience_monitoring_dex_target_policy = Type.Object({ default: Type.Optional(Type.Boolean()), id: Type.Intersect([digital_experience_monitoring_uuid]), name: Type.Optional(Type.String()) });
+export const digital_experience_monitoring_dex_target_policy = Type.Object({ default: Type.Optional(Type.Boolean()), id: digital_experience_monitoring_uuid, name: Type.Optional(Type.String()) });
 
 export type digital_experience_monitoring_device_dex_test_target_policies = Static<typeof digital_experience_monitoring_device_dex_test_target_policies>;
 export const digital_experience_monitoring_device_dex_test_target_policies = Type.Array(digital_experience_monitoring_dex_target_policy);
@@ -4909,7 +4909,7 @@ export type digital_experience_monitoring_schemas_test_id = Static<typeof digita
 export const digital_experience_monitoring_schemas_test_id = Type.String({ maxLength: 32 });
 
 export type digital_experience_monitoring_device_dex_test_schemas_http = Static<typeof digital_experience_monitoring_device_dex_test_schemas_http>;
-export const digital_experience_monitoring_device_dex_test_schemas_http = Type.Object({ created: Type.Optional(Type.String({ format: "date-time" })), data: digital_experience_monitoring_device_dex_test_schemas_data, description: Type.Optional(digital_experience_monitoring_device_dex_test_schemas_description), enabled: digital_experience_monitoring_device_dex_test_schemas_enabled, interval: digital_experience_monitoring_device_dex_test_schemas_interval, name: digital_experience_monitoring_device_dex_test_schemas_name, target_policies: Type.Optional(Type.Intersect([digital_experience_monitoring_device_dex_test_target_policies, Type.Unknown()])), targeted: Type.Optional(Type.Boolean()), test_id: Type.Optional(digital_experience_monitoring_schemas_test_id), updated: Type.Optional(Type.String({ format: "date-time" })) });
+export const digital_experience_monitoring_device_dex_test_schemas_http = Type.Object({ created: Type.Optional(Type.String({ format: "date-time" })), data: digital_experience_monitoring_device_dex_test_schemas_data, description: Type.Optional(digital_experience_monitoring_device_dex_test_schemas_description), enabled: digital_experience_monitoring_device_dex_test_schemas_enabled, interval: digital_experience_monitoring_device_dex_test_schemas_interval, name: digital_experience_monitoring_device_dex_test_schemas_name, target_policies: Type.Optional(digital_experience_monitoring_device_dex_test_target_policies), targeted: Type.Optional(Type.Boolean()), test_id: Type.Optional(digital_experience_monitoring_schemas_test_id), updated: Type.Optional(Type.String({ format: "date-time" })) });
 
 export type digital_experience_monitoring_device_id = Static<typeof digital_experience_monitoring_device_id>;
 export const digital_experience_monitoring_device_id = Type.String();
@@ -4936,7 +4936,7 @@ export type digital_experience_monitoring_timeslot_string = Static<typeof digita
 export const digital_experience_monitoring_timeslot_string = Type.Object({ timestamp: Type.String(), value: Type.String() });
 
 export type digital_experience_monitoring_timeslot_rtt_stats = Static<typeof digital_experience_monitoring_timeslot_rtt_stats>;
-export const digital_experience_monitoring_timeslot_rtt_stats = Type.Object({ timestamp: Type.String(), value: Type.Intersect([digital_experience_monitoring_rtt_stats]) });
+export const digital_experience_monitoring_timeslot_rtt_stats = Type.Object({ timestamp: Type.String(), value: digital_experience_monitoring_rtt_stats });
 
 export type digital_experience_monitoring_timeslot_cpu_apps = Static<typeof digital_experience_monitoring_timeslot_cpu_apps>;
 export const digital_experience_monitoring_timeslot_cpu_apps = Type.Object({ timestamp: Type.String(), value: Type.Array(digital_experience_monitoring_cpu_pct_by_app) });
@@ -4945,7 +4945,7 @@ export type digital_experience_monitoring_timeslot_ram_apps = Static<typeof digi
 export const digital_experience_monitoring_timeslot_ram_apps = Type.Object({ timestamp: Type.String(), value: Type.Array(digital_experience_monitoring_ram_used_pct_by_app) });
 
 export type digital_experience_monitoring_timeslot_tunnel_stats = Static<typeof digital_experience_monitoring_timeslot_tunnel_stats>;
-export const digital_experience_monitoring_timeslot_tunnel_stats = Type.Object({ timestamp: Type.String(), value: Type.Intersect([digital_experience_monitoring_tunnel_stats]) });
+export const digital_experience_monitoring_timeslot_tunnel_stats = Type.Object({ timestamp: Type.String(), value: digital_experience_monitoring_tunnel_stats });
 
 export type digital_experience_monitoring_device_state_over_time = Static<typeof digital_experience_monitoring_device_state_over_time>;
 export const digital_experience_monitoring_device_state_over_time = Type.Partial(Type.Object({ battery_cycles: Type.Array(digital_experience_monitoring_timeslot_int), battery_pct: Type.Array(digital_experience_monitoring_timeslot_float), connection_type: Type.Array(digital_experience_monitoring_timeslot_string), cpu_pct: Type.Array(digital_experience_monitoring_timeslot_float), disk_read_bps: Type.Array(digital_experience_monitoring_timeslot_int), disk_usage_pct: Type.Array(digital_experience_monitoring_timeslot_float), disk_write_bps: Type.Array(digital_experience_monitoring_timeslot_int), mode: Type.Array(digital_experience_monitoring_timeslot_string), network_rcvd_bps: Type.Array(digital_experience_monitoring_timeslot_int), network_sent_bps: Type.Array(digital_experience_monitoring_timeslot_int), network_ssid: Type.Array(digital_experience_monitoring_timeslot_string), ram_available_kb: Type.Array(digital_experience_monitoring_timeslot_int), ram_used_pct: Type.Array(digital_experience_monitoring_timeslot_float), rtt: Type.Array(digital_experience_monitoring_timeslot_rtt_stats), status: Type.Array(digital_experience_monitoring_timeslot_string), top_cpu_applications: Type.Array(digital_experience_monitoring_timeslot_cpu_apps), top_ram_applications: Type.Array(digital_experience_monitoring_timeslot_ram_apps), tunnel_stats: Type.Array(digital_experience_monitoring_timeslot_tunnel_stats), tunnel_type: Type.Array(digital_experience_monitoring_timeslot_string), unique_networks: Type.Array(digital_experience_monitoring_timeslot_int), wifi_strength_dbm: Type.Array(digital_experience_monitoring_timeslot_int) }));
@@ -4963,10 +4963,10 @@ export type digital_experience_monitoring_dex_response_collection = Static<typeo
 export const digital_experience_monitoring_dex_response_collection = Type.Intersect([digital_experience_monitoring_api_response_collection_common, Type.Partial(Type.Object({ result: Type.Array(digital_experience_monitoring_device_dex_test_schemas_http) }))]);
 
 export type digital_experience_monitoring_dex_targeted_test = Static<typeof digital_experience_monitoring_dex_targeted_test>;
-export const digital_experience_monitoring_dex_targeted_test = Type.Object({ data: Type.Intersect([digital_experience_monitoring_device_dex_test_schemas_data, Type.Unknown()]), enabled: Type.Boolean(), name: Type.String(), test_id: Type.String() });
+export const digital_experience_monitoring_dex_targeted_test = Type.Object({ data: digital_experience_monitoring_device_dex_test_schemas_data, enabled: Type.Boolean(), name: Type.String(), test_id: Type.String() });
 
 export type digital_experience_monitoring_dex_rule = Static<typeof digital_experience_monitoring_dex_rule>;
-export const digital_experience_monitoring_dex_rule = Type.Object({ created_at: Type.String(), description: Type.Optional(Type.String()), id: Type.Intersect([digital_experience_monitoring_uuid, Type.Unknown()]), match: Type.String(), name: Type.String(), targeted_tests: Type.Optional(Type.Array(digital_experience_monitoring_dex_targeted_test)), updated_at: Type.Optional(Type.String()) });
+export const digital_experience_monitoring_dex_rule = Type.Object({ created_at: Type.String(), description: Type.Optional(Type.String()), id: digital_experience_monitoring_uuid, match: Type.String(), name: Type.String(), targeted_tests: Type.Optional(Type.Array(digital_experience_monitoring_dex_targeted_test)), updated_at: Type.Optional(Type.String()) });
 
 export type digital_experience_monitoring_dex_single_response = Static<typeof digital_experience_monitoring_dex_single_response>;
 export const digital_experience_monitoring_dex_single_response = Type.Intersect([digital_experience_monitoring_api_response_single, Type.Partial(Type.Object({ result: digital_experience_monitoring_device_dex_test_schemas_http }))]);
@@ -5059,19 +5059,19 @@ export type digital_experience_monitoring_traceroute_test_network_path_response 
 export const digital_experience_monitoring_traceroute_test_network_path_response = Type.Object({ deviceName: Type.Optional(Type.String()), id: digital_experience_monitoring_uuid, interval: Type.Optional(Type.String()), kind: Type.Optional(Type.Literal("traceroute")), name: Type.Optional(Type.String()), networkPath: Type.Optional(Type.Union([Type.Object({ sampling: Type.Optional(Type.Union([Type.Object({ unit: Type.Literal("hours"), value: Type.Integer() }), Type.Null()])), slots: Type.Array(Type.Object({ clientToAppRttMs: Type.Union([Type.Integer(), Type.Null()]), clientToCfEgressRttMs: Type.Union([Type.Integer(), Type.Null()]), clientToCfIngressRttMs: Type.Union([Type.Integer(), Type.Null()]), clientToIspRttMs: Type.Optional(Type.Union([Type.Integer(), Type.Null()])), id: digital_experience_monitoring_uuid, timestamp: Type.String() })) }), Type.Null()])), url: Type.Optional(Type.String()) });
 
 export type digital_experience_monitoring_traceroute_test_result_network_path_response = Static<typeof digital_experience_monitoring_traceroute_test_result_network_path_response>;
-export const digital_experience_monitoring_traceroute_test_result_network_path_response = Type.Object({ colo: Type.Optional(digital_experience_monitoring_colo), deviceName: Type.Optional(Type.String()), execution_context: Type.Optional(Type.Intersect([digital_experience_monitoring_execution_context])), hops: Type.Array(Type.Object({ asn: Type.Optional(Type.Union([Type.Integer(), Type.Null()])), aso: Type.Optional(Type.Union([Type.String(), Type.Null()])), ipAddress: Type.Optional(Type.Union([Type.String(), Type.Null()])), location: Type.Optional(Type.Union([Type.Partial(Type.Object({ city: Type.Union([Type.String(), Type.Null()]), state: Type.Union([Type.String(), Type.Null()]), zip: Type.Union([Type.String(), Type.Null()]) })), Type.Null()])), mile: Type.Optional(Type.Union([Type.Union([Type.Literal("client-to-app"), Type.Literal("client-to-cf-egress"), Type.Literal("client-to-cf-ingress"), Type.Literal("client-to-isp")]), Type.Null()])), name: Type.Optional(Type.Union([Type.String(), Type.Null()])), packetLossPct: Type.Optional(Type.Union([Type.Number(), Type.Null()])), rttMs: Type.Optional(Type.Union([Type.Integer(), Type.Null()])), ttl: Type.Integer() })), resultId: digital_experience_monitoring_uuid, testId: Type.Optional(digital_experience_monitoring_uuid), testName: Type.Optional(Type.String()), time_start: Type.Optional(Type.String()), tunnel_type: Type.Optional(Type.Union([Type.String(), Type.Null()])) });
+export const digital_experience_monitoring_traceroute_test_result_network_path_response = Type.Object({ colo: Type.Optional(digital_experience_monitoring_colo), deviceName: Type.Optional(Type.String()), execution_context: Type.Optional(digital_experience_monitoring_execution_context), hops: Type.Array(Type.Object({ asn: Type.Optional(Type.Union([Type.Integer(), Type.Null()])), aso: Type.Optional(Type.Union([Type.String(), Type.Null()])), ipAddress: Type.Optional(Type.Union([Type.String(), Type.Null()])), location: Type.Optional(Type.Union([Type.Partial(Type.Object({ city: Type.Union([Type.String(), Type.Null()]), state: Type.Union([Type.String(), Type.Null()]), zip: Type.Union([Type.String(), Type.Null()]) })), Type.Null()])), mile: Type.Optional(Type.Union([Type.Union([Type.Literal("client-to-app"), Type.Literal("client-to-cf-egress"), Type.Literal("client-to-cf-ingress"), Type.Literal("client-to-isp")]), Type.Null()])), name: Type.Optional(Type.Union([Type.String(), Type.Null()])), packetLossPct: Type.Optional(Type.Union([Type.Number(), Type.Null()])), rttMs: Type.Optional(Type.Union([Type.Integer(), Type.Null()])), ttl: Type.Integer() })), resultId: digital_experience_monitoring_uuid, testId: Type.Optional(digital_experience_monitoring_uuid), testName: Type.Optional(Type.String()), time_start: Type.Optional(Type.String()), tunnel_type: Type.Optional(Type.Union([Type.String(), Type.Null()])) });
 
 export type digital_experience_monitoring_unique_devices_response = Static<typeof digital_experience_monitoring_unique_devices_response>;
 export const digital_experience_monitoring_unique_devices_response = Type.Object({ uniqueDevicesTotal: Type.Integer() });
 
 export type digital_experience_monitoring_warp_config_details = Static<typeof digital_experience_monitoring_warp_config_details>;
-export const digital_experience_monitoring_warp_config_details = Type.Partial(Type.Object({ account_name: Type.String(), account_tag: Type.Intersect([digital_experience_monitoring_uuid]), config_name: Type.String() }));
+export const digital_experience_monitoring_warp_config_details = Type.Partial(Type.Object({ account_name: Type.String(), account_tag: digital_experience_monitoring_uuid, config_name: Type.String() }));
 
 export type digital_experience_monitoring_warp_config_change_event = Static<typeof digital_experience_monitoring_warp_config_change_event>;
-export const digital_experience_monitoring_warp_config_change_event = Type.Partial(Type.Object({ device_id: Type.Intersect([digital_experience_monitoring_uuid]), device_registration: Type.Intersect([digital_experience_monitoring_uuid, Type.Unknown()]), from: Type.Intersect([digital_experience_monitoring_warp_config_details]), hostname: Type.String(), registration_id: Type.Intersect([digital_experience_monitoring_uuid]), serial_number: Type.String(), timestamp: Type.Intersect([digital_experience_monitoring_timestamp_datetime]), to: Type.Intersect([digital_experience_monitoring_warp_config_details]), user_email: Type.String() }));
+export const digital_experience_monitoring_warp_config_change_event = Type.Partial(Type.Object({ device_id: digital_experience_monitoring_uuid, device_registration: digital_experience_monitoring_uuid, from: digital_experience_monitoring_warp_config_details, hostname: Type.String(), registration_id: digital_experience_monitoring_uuid, serial_number: Type.String(), timestamp: digital_experience_monitoring_timestamp_datetime, to: digital_experience_monitoring_warp_config_details, user_email: Type.String() }));
 
 export type digital_experience_monitoring_warp_toggle_change_event = Static<typeof digital_experience_monitoring_warp_toggle_change_event>;
-export const digital_experience_monitoring_warp_toggle_change_event = Type.Partial(Type.Object({ account_name: Type.String(), account_tag: Type.String(), device_id: Type.Intersect([digital_experience_monitoring_uuid]), device_registration: Type.Intersect([digital_experience_monitoring_uuid, Type.Unknown()]), hostname: Type.String(), registration_id: Type.Intersect([digital_experience_monitoring_uuid]), serial_number: Type.String(), timestamp: Type.Intersect([digital_experience_monitoring_timestamp_datetime]), toggle: Type.Union([Type.Literal("on"), Type.Literal("off")]), user_email: Type.String() }));
+export const digital_experience_monitoring_warp_toggle_change_event = Type.Partial(Type.Object({ account_name: Type.String(), account_tag: Type.String(), device_id: digital_experience_monitoring_uuid, device_registration: digital_experience_monitoring_uuid, hostname: Type.String(), registration_id: digital_experience_monitoring_uuid, serial_number: Type.String(), timestamp: digital_experience_monitoring_timestamp_datetime, toggle: Type.Union([Type.Literal("on"), Type.Literal("off")]), user_email: Type.String() }));
 
 export type digital_experience_monitoring_warp_events_response = Static<typeof digital_experience_monitoring_warp_events_response>;
 export const digital_experience_monitoring_warp_events_response = Type.Array(Type.Union([digital_experience_monitoring_warp_toggle_change_event, digital_experience_monitoring_warp_config_change_event]));
@@ -5128,7 +5128,7 @@ export type dlp_Validation = Static<typeof dlp_Validation>;
 export const dlp_Validation = Type.Literal("luhn");
 
 export type dlp_Pattern = Static<typeof dlp_Pattern>;
-export const dlp_Pattern = Type.Object({ regex: Type.String(), validation: Type.Optional(Type.Intersect([dlp_Validation])) });
+export const dlp_Pattern = Type.Object({ regex: Type.String(), validation: Type.Optional(dlp_Validation) });
 
 export type dlp_CustomEntry = Static<typeof dlp_CustomEntry>;
 export const dlp_CustomEntry = Type.Object({ created_at: Type.String({ format: "date-time" }), description: Type.Optional(Type.Union([Type.String(), Type.Null()])), enabled: Type.Boolean(), id: Type.String({ format: "uuid" }), name: Type.String(), pattern: dlp_Pattern, profile_id: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])), updated_at: Type.String({ format: "date-time" }) });
@@ -5152,7 +5152,7 @@ export type dlp_PredefinedEntryVariant = Static<typeof dlp_PredefinedEntryVarian
 export const dlp_PredefinedEntryVariant = Type.Union([Type.Object({ description: Type.Optional(Type.Union([Type.String(), Type.Null()])), topic_type: dlp_PromptTopicType, type: Type.Literal("PromptTopic") }), Type.Object({ description: Type.Optional(Type.Union([Type.String(), Type.Null()])), type: Type.Literal("General") })]);
 
 export type dlp_PredefinedEntry = Static<typeof dlp_PredefinedEntry>;
-export const dlp_PredefinedEntry = Type.Object({ confidence: dlp_EntryConfidence, enabled: Type.Boolean(), id: Type.String({ format: "uuid" }), name: Type.String(), profile_id: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])), variant: Type.Optional(Type.Intersect([dlp_PredefinedEntryVariant])) });
+export const dlp_PredefinedEntry = Type.Object({ confidence: dlp_EntryConfidence, enabled: Type.Boolean(), id: Type.String({ format: "uuid" }), name: Type.String(), profile_id: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])), variant: Type.Optional(dlp_PredefinedEntryVariant) });
 
 export type dlp_IntegrationEntry = Static<typeof dlp_IntegrationEntry>;
 export const dlp_IntegrationEntry = Type.Object({ created_at: Type.String({ format: "date-time" }), enabled: Type.Boolean(), id: Type.String({ format: "uuid" }), name: Type.String(), profile_id: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])), updated_at: Type.String({ format: "date-time" }) });
@@ -5173,7 +5173,7 @@ export type dlp_SensitivityLevelRef = Static<typeof dlp_SensitivityLevelRef>;
 export const dlp_SensitivityLevelRef = Type.Object({ group_id: Type.String({ format: "uuid" }), level_id: Type.String({ format: "uuid" }) });
 
 export type dlp_CustomProfile = Static<typeof dlp_CustomProfile>;
-export const dlp_CustomProfile = Type.Object({ ai_context_enabled: Type.Optional(Type.Boolean()), allowed_match_count: Type.Integer({ minimum: 0, maximum: 1000 }), confidence_threshold: Type.Optional(Type.Intersect([dlp_Confidence, Type.Unknown()])), context_awareness: Type.Optional(dlp_ContextAwareness), created_at: Type.String({ format: "date-time" }), data_classes: Type.Optional(Type.Array(Type.String({ format: "uuid" }))), data_tags: Type.Optional(Type.Array(Type.String({ format: "uuid" }))), description: Type.Optional(Type.Union([Type.String(), Type.Null()])), entries: Type.Optional(Type.Array(dlp_Entry)), id: Type.String({ format: "uuid" }), name: Type.String(), ocr_enabled: Type.Boolean(), sensitivity_levels: Type.Optional(Type.Array(dlp_SensitivityLevelRef)), shared_entries: Type.Optional(Type.Array(dlp_Entry)), updated_at: Type.String({ format: "date-time" }) });
+export const dlp_CustomProfile = Type.Object({ ai_context_enabled: Type.Optional(Type.Boolean()), allowed_match_count: Type.Integer({ minimum: 0, maximum: 1000 }), confidence_threshold: Type.Optional(dlp_Confidence), context_awareness: Type.Optional(dlp_ContextAwareness), created_at: Type.String({ format: "date-time" }), data_classes: Type.Optional(Type.Array(Type.String({ format: "uuid" }))), data_tags: Type.Optional(Type.Array(Type.String({ format: "uuid" }))), description: Type.Optional(Type.Union([Type.String(), Type.Null()])), entries: Type.Optional(Type.Array(dlp_Entry)), id: Type.String({ format: "uuid" }), name: Type.String(), ocr_enabled: Type.Boolean(), sensitivity_levels: Type.Optional(Type.Array(dlp_SensitivityLevelRef)), shared_entries: Type.Optional(Type.Array(dlp_Entry)), updated_at: Type.String({ format: "date-time" }) });
 
 export type dlp_CustomProfileArray = Static<typeof dlp_CustomProfileArray>;
 export const dlp_CustomProfileArray = Type.Array(dlp_CustomProfile);
@@ -5269,16 +5269,16 @@ export type dlp_PayloadLogMaskingLevel = Static<typeof dlp_PayloadLogMaskingLeve
 export const dlp_PayloadLogMaskingLevel = Type.Union([Type.Literal("full"), Type.Literal("partial"), Type.Literal("clear"), Type.Literal("default")]);
 
 export type dlp_PayloadLogSetting = Static<typeof dlp_PayloadLogSetting>;
-export const dlp_PayloadLogSetting = Type.Object({ masking_level: Type.Optional(Type.Intersect([dlp_PayloadLogMaskingLevel])), public_key: Type.Optional(Type.Union([Type.String(), Type.Null()])), updated_at: Type.String({ format: "date-time" }) });
+export const dlp_PayloadLogSetting = Type.Object({ masking_level: Type.Optional(dlp_PayloadLogMaskingLevel), public_key: Type.Optional(Type.Union([Type.String(), Type.Null()])), updated_at: Type.String({ format: "date-time" }) });
 
 export type dlp_DlpSettings = Static<typeof dlp_DlpSettings>;
 export const dlp_DlpSettings = Type.Object({ ai_context_analysis: Type.Boolean(), ocr: Type.Boolean(), payload_logging: dlp_PayloadLogSetting });
 
 export type dlp_PayloadLogSettingUpdate = Static<typeof dlp_PayloadLogSettingUpdate>;
-export const dlp_PayloadLogSettingUpdate = Type.Partial(Type.Object({ masking_level: Type.Intersect([dlp_PayloadLogMaskingLevel, Type.Unknown()]), public_key: Type.Union([Type.String(), Type.Null()]) }));
+export const dlp_PayloadLogSettingUpdate = Type.Partial(Type.Object({ masking_level: dlp_PayloadLogMaskingLevel, public_key: Type.Union([Type.String(), Type.Null()]) }));
 
 export type dlp_DlpSettingsUpdate = Static<typeof dlp_DlpSettingsUpdate>;
-export const dlp_DlpSettingsUpdate = Type.Partial(Type.Object({ ai_context_analysis: Type.Union([Type.Boolean(), Type.Null()]), ocr: Type.Union([Type.Boolean(), Type.Null()]), payload_logging: Type.Intersect([dlp_PayloadLogSettingUpdate, Type.Unknown()]) }));
+export const dlp_DlpSettingsUpdate = Type.Partial(Type.Object({ ai_context_analysis: Type.Union([Type.Boolean(), Type.Null()]), ocr: Type.Union([Type.Boolean(), Type.Null()]), payload_logging: dlp_PayloadLogSettingUpdate }));
 
 export type dlp_DocumentFingerprint = Static<typeof dlp_DocumentFingerprint>;
 export const dlp_DocumentFingerprint = Type.Object({ created_at: Type.String({ format: "date-time" }), description: Type.String(), entry_id: Type.String({ format: "uuid" }), file_name: Type.Optional(Type.Union([Type.String(), Type.Null()])), id: Type.String({ format: "uuid" }), match_percent: Type.Integer(), name: Type.String(), status: dlp_DatasetUploadStatus, updated_at: Type.String({ format: "date-time" }), version: Type.Optional(Type.Union([Type.Integer(), Type.Null()])) });
@@ -5314,7 +5314,7 @@ export type dlp_EntryUpdate = Static<typeof dlp_EntryUpdate>;
 export const dlp_EntryUpdate = Type.Intersect([dlp_EntryUpdateType, Type.Object({ enabled: Type.Boolean() })]);
 
 export type dlp_EntryWithUploadStatus = Static<typeof dlp_EntryWithUploadStatus>;
-export const dlp_EntryWithUploadStatus = Type.Intersect([dlp_Entry, Type.Partial(Type.Object({ upload_status: Type.Intersect([dlp_DatasetUploadStatus, Type.Unknown()]) }))]);
+export const dlp_EntryWithUploadStatus = Type.Intersect([dlp_Entry, Type.Partial(Type.Object({ upload_status: dlp_DatasetUploadStatus }))]);
 
 export type dlp_EntryWithSharedProfiles = Static<typeof dlp_EntryWithSharedProfiles>;
 export const dlp_EntryWithSharedProfiles = Type.Intersect([dlp_EntryWithUploadStatus, Type.Object({ profiles: Type.Array(dlp_EntryProfile) })]);
@@ -5374,13 +5374,13 @@ export type dlp_NewSensitivityGroup = Static<typeof dlp_NewSensitivityGroup>;
 export const dlp_NewSensitivityGroup = Type.Object({ description: Type.Optional(Type.Union([Type.String(), Type.Null()])), levels: Type.Optional(Type.Array(dlp_NewSensitivityLevel)), name: Type.String(), template_id: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])) });
 
 export type dlp_PayloadLogSettingUpdateLegacy = Static<typeof dlp_PayloadLogSettingUpdateLegacy>;
-export const dlp_PayloadLogSettingUpdateLegacy = Type.Partial(Type.Object({ masking_level: Type.Intersect([dlp_PayloadLogMaskingLevel]), public_key: Type.Union([Type.String(), Type.Null()]) }));
+export const dlp_PayloadLogSettingUpdateLegacy = Type.Partial(Type.Object({ masking_level: dlp_PayloadLogMaskingLevel, public_key: Type.Union([Type.String(), Type.Null()]) }));
 
 export type dlp_PredefinedEntryUpdate = Static<typeof dlp_PredefinedEntryUpdate>;
 export const dlp_PredefinedEntryUpdate = Type.Object({ enabled: Type.Boolean() });
 
 export type dlp_PredefinedProfile = Static<typeof dlp_PredefinedProfile>;
-export const dlp_PredefinedProfile = Type.Object({ ai_context_enabled: Type.Optional(Type.Boolean()), allowed_match_count: Type.Integer(), confidence_threshold: Type.Optional(Type.Intersect([dlp_Confidence, Type.Unknown()])), context_awareness: Type.Optional(dlp_ContextAwareness), entries: Type.Array(dlp_Entry), id: Type.String({ format: "uuid" }), name: Type.String(), ocr_enabled: Type.Optional(Type.Boolean()), open_access: Type.Optional(Type.Boolean()) });
+export const dlp_PredefinedProfile = Type.Object({ ai_context_enabled: Type.Optional(Type.Boolean()), allowed_match_count: Type.Integer(), confidence_threshold: Type.Optional(dlp_Confidence), context_awareness: Type.Optional(dlp_ContextAwareness), entries: Type.Array(dlp_Entry), id: Type.String({ format: "uuid" }), name: Type.String(), ocr_enabled: Type.Optional(Type.Boolean()), open_access: Type.Optional(Type.Boolean()) });
 
 export type dlp_PredefinedProfileConfig = Static<typeof dlp_PredefinedProfileConfig>;
 export const dlp_PredefinedProfileConfig = Type.Object({ ai_context_enabled: Type.Optional(Type.Boolean()), allowed_match_count: Type.Integer(), confidence_threshold: Type.Union([Type.String(), Type.Null()]), enabled_entries: Type.Array(Type.String({ format: "uuid" })), entries: Type.Array(dlp_Entry), id: Type.String({ format: "uuid" }), name: Type.String(), ocr_enabled: Type.Optional(Type.Boolean()), open_access: Type.Optional(Type.Boolean()) });
@@ -5404,7 +5404,7 @@ export type dlp_RiskEvent = Static<typeof dlp_RiskEvent>;
 export const dlp_RiskEvent = Type.Object({ event_details: Type.Optional(Type.Unknown()), id: Type.String(), name: Type.String(), risk_level: dlp_RiskLevel, timestamp: Type.String({ format: "date-time" }) });
 
 export type dlp_RiskEvents = Static<typeof dlp_RiskEvents>;
-export const dlp_RiskEvents = Type.Object({ email: Type.String(), events: Type.Array(dlp_RiskEvent), last_reset_time: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), name: Type.String(), risk_level: Type.Optional(Type.Intersect([dlp_RiskLevel])) });
+export const dlp_RiskEvents = Type.Object({ email: Type.String(), events: Type.Array(dlp_RiskEvent), last_reset_time: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), name: Type.String(), risk_level: Type.Optional(dlp_RiskLevel) });
 
 export type dlp_RiskScoreIntegration = Static<typeof dlp_RiskScoreIntegration>;
 export const dlp_RiskScoreIntegration = Type.Object({ account_tag: Type.String(), active: Type.Boolean(), created_at: Type.String({ format: "date-time" }), id: Type.String({ format: "uuid" }), integration_type: dlp_RiskScoreIntegrationType, reference_id: Type.String(), tenant_url: Type.String(), well_known_url: Type.String() });
@@ -5479,7 +5479,7 @@ export type dlp_api_response_collection = Static<typeof dlp_api_response_collect
 export const dlp_api_response_collection = Type.Intersect([dlp_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type dlp_api_response_common_failure = Static<typeof dlp_api_response_common_failure>;
-export const dlp_api_response_common_failure = Type.Object({ errors: Type.Intersect([dlp_messages, Type.Unknown()]), messages: Type.Intersect([dlp_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const dlp_api_response_common_failure = Type.Object({ errors: dlp_messages, messages: dlp_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type dlp_api_response_single = Static<typeof dlp_api_response_single>;
 export const dlp_api_response_single = Type.Intersect([dlp_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -5530,7 +5530,7 @@ export type dls_api_response_collection = Static<typeof dls_api_response_collect
 export const dls_api_response_collection = Type.Intersect([dls_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type dls_api_response_common_failure = Static<typeof dls_api_response_common_failure>;
-export const dls_api_response_common_failure = Type.Object({ errors: Type.Intersect([dls_messages, Type.Unknown()]), messages: Type.Intersect([dls_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const dls_api_response_common_failure = Type.Object({ errors: dls_messages, messages: dls_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type dls_none = Static<typeof dls_none>;
 export const dls_none = Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]);
@@ -5554,7 +5554,7 @@ export type dls_routing = Static<typeof dls_routing>;
 export const dls_routing = Type.String();
 
 export type dls_regional_hostname_response = Static<typeof dls_regional_hostname_response>;
-export const dls_regional_hostname_response = Type.Object({ created_on: Type.Intersect([dls_timestamp, Type.Unknown(), Type.Unknown()]), hostname: dls_hostname_schemas, region_key: dls_region_key, routing: dls_routing });
+export const dls_regional_hostname_response = Type.Object({ created_on: dls_timestamp, hostname: dls_hostname_schemas, region_key: dls_region_key, routing: dls_routing });
 
 export type dns_analytics_messages = Static<typeof dns_analytics_messages>;
 export const dns_analytics_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }))) }));
@@ -5563,7 +5563,7 @@ export type dns_analytics_api_response_common = Static<typeof dns_analytics_api_
 export const dns_analytics_api_response_common = Type.Object({ errors: dns_analytics_messages, messages: dns_analytics_messages, success: Type.Literal(true) });
 
 export type dns_analytics_api_response_common_failure = Static<typeof dns_analytics_api_response_common_failure>;
-export const dns_analytics_api_response_common_failure = Type.Object({ errors: Type.Intersect([dns_analytics_messages, Type.Unknown()]), messages: Type.Intersect([dns_analytics_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const dns_analytics_api_response_common_failure = Type.Object({ errors: dns_analytics_messages, messages: dns_analytics_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type dns_analytics_api_response_single = Static<typeof dns_analytics_api_response_single>;
 export const dns_analytics_api_response_single = Type.Intersect([dns_analytics_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -5647,7 +5647,7 @@ export type dns_custom_nameservers_acns_response_single = Static<typeof dns_cust
 export const dns_custom_nameservers_acns_response_single = Type.Intersect([dns_custom_nameservers_api_response_single, Type.Partial(Type.Object({ result: dns_custom_nameservers_CustomNS })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type dns_custom_nameservers_api_response_common_failure = Static<typeof dns_custom_nameservers_api_response_common_failure>;
-export const dns_custom_nameservers_api_response_common_failure = Type.Object({ errors: Type.Intersect([dns_custom_nameservers_messages, Type.Unknown()]), messages: Type.Intersect([dns_custom_nameservers_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const dns_custom_nameservers_api_response_common_failure = Type.Object({ errors: dns_custom_nameservers_messages, messages: dns_custom_nameservers_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type dns_custom_nameservers_empty_response = Static<typeof dns_custom_nameservers_empty_response>;
 export const dns_custom_nameservers_empty_response = Type.Intersect([dns_custom_nameservers_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(Type.String(), { maxItems: 0 }) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -5683,7 +5683,7 @@ export type dns_firewall_api_response_collection = Static<typeof dns_firewall_ap
 export const dns_firewall_api_response_collection = Type.Intersect([dns_firewall_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type dns_firewall_api_response_common_failure = Static<typeof dns_firewall_api_response_common_failure>;
-export const dns_firewall_api_response_common_failure = Type.Object({ errors: Type.Intersect([dns_firewall_messages, Type.Unknown()]), messages: Type.Intersect([dns_firewall_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const dns_firewall_api_response_common_failure = Type.Object({ errors: dns_firewall_messages, messages: dns_firewall_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type dns_firewall_api_response_single = Static<typeof dns_firewall_api_response_single>;
 export const dns_firewall_api_response_single = Type.Intersect([dns_firewall_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -5857,7 +5857,7 @@ export type dns_records_api_response_collection = Static<typeof dns_records_api_
 export const dns_records_api_response_collection = Type.Intersect([dns_records_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type dns_records_api_response_common_failure = Static<typeof dns_records_api_response_common_failure>;
-export const dns_records_api_response_common_failure = Type.Object({ errors: Type.Intersect([dns_records_messages, Type.Unknown()]), messages: Type.Intersect([dns_records_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const dns_records_api_response_common_failure = Type.Object({ errors: dns_records_messages, messages: dns_records_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type dns_records_api_response_single = Static<typeof dns_records_api_response_single>;
 export const dns_records_api_response_single = Type.Intersect([dns_records_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -6022,7 +6022,7 @@ export type dns_settings_api_response_collection = Static<typeof dns_settings_ap
 export const dns_settings_api_response_collection = Type.Intersect([dns_settings_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type dns_settings_api_response_common_failure = Static<typeof dns_settings_api_response_common_failure>;
-export const dns_settings_api_response_common_failure = Type.Object({ errors: Type.Intersect([dns_settings_messages, Type.Unknown()]), messages: Type.Intersect([dns_settings_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const dns_settings_api_response_common_failure = Type.Object({ errors: dns_settings_messages, messages: dns_settings_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type dns_settings_api_response_single = Static<typeof dns_settings_api_response_single>;
 export const dns_settings_api_response_single = Type.Intersect([dns_settings_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -6097,7 +6097,7 @@ export type dnssec_api_response_common = Static<typeof dnssec_api_response_commo
 export const dnssec_api_response_common = Type.Object({ errors: dnssec_messages, messages: dnssec_messages, success: Type.Literal(true) });
 
 export type dnssec_api_response_common_failure = Static<typeof dnssec_api_response_common_failure>;
-export const dnssec_api_response_common_failure = Type.Object({ errors: Type.Intersect([dnssec_messages, Type.Unknown()]), messages: Type.Intersect([dnssec_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const dnssec_api_response_common_failure = Type.Object({ errors: dnssec_messages, messages: dnssec_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type dnssec_api_response_single = Static<typeof dnssec_api_response_single>;
 export const dnssec_api_response_single = Type.Intersect([dnssec_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -6244,7 +6244,7 @@ export type dos_api_response_collection = Static<typeof dos_api_response_collect
 export const dos_api_response_collection = Type.Intersect([dos_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type dos_api_response_common_failure = Static<typeof dos_api_response_common_failure>;
-export const dos_api_response_common_failure = Type.Object({ errors: Type.Intersect([dos_messages, Type.Unknown()]), messages: Type.Intersect([dos_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const dos_api_response_common_failure = Type.Object({ errors: dos_messages, messages: dos_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type dos_api_response_common_paginated = Static<typeof dos_api_response_common_paginated>;
 export const dos_api_response_common_paginated = dos_api_response_collection;
@@ -6337,7 +6337,7 @@ export type email_auth_SpfTree = Static<typeof email_auth_SpfTree>;
 export const email_auth_SpfTree = Type.Recursive((This) => Type.Object({ components: Type.Array(Type.Unsafe(() => email_auth_SpfComponent)), domain: Type.String(), errors: Type.Optional(Type.Array(email_auth_InspectError)), record: Type.String(), total_lookups: Type.Integer() }));
 
 export type email_auth_SpfComponent = Static<typeof email_auth_SpfComponent>;
-export const email_auth_SpfComponent = Type.Recursive((This) => Type.Object({ lookup_count: Type.Integer(), nested: Type.Optional(Type.Intersect([Type.Unsafe(() => email_auth_SpfTree)])), result: email_auth_SpfResult, type: Type.Union([Type.Literal("ALL"), Type.Literal("A"), Type.Literal("MX"), Type.Literal("IP4"), Type.Literal("IP6"), Type.Literal("EXISTS"), Type.Literal("INCLUDE"), Type.Literal("PTR"), Type.Literal("REDIRECT")]), value: Type.String() }));
+export const email_auth_SpfComponent = Type.Recursive((This) => Type.Object({ lookup_count: Type.Integer(), nested: Type.Optional(Type.Unsafe(() => email_auth_SpfTree)), result: email_auth_SpfResult, type: Type.Union([Type.Literal("ALL"), Type.Literal("A"), Type.Literal("MX"), Type.Literal("IP4"), Type.Literal("IP6"), Type.Literal("EXISTS"), Type.Literal("INCLUDE"), Type.Literal("PTR"), Type.Literal("REDIRECT")]), value: Type.String() }));
 
 export type email_auth_messages = Static<typeof email_auth_messages>;
 export const email_auth_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }))) }));
@@ -6346,7 +6346,7 @@ export type email_auth_api_response_common = Static<typeof email_auth_api_respon
 export const email_auth_api_response_common = Type.Object({ errors: email_auth_messages, messages: email_auth_messages, success: Type.Literal(true) });
 
 export type email_auth_api_response_common_failure = Static<typeof email_auth_api_response_common_failure>;
-export const email_auth_api_response_common_failure = Type.Object({ errors: Type.Intersect([email_auth_messages, Type.Unknown()]), messages: Type.Intersect([email_auth_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const email_auth_api_response_common_failure = Type.Object({ errors: email_auth_messages, messages: email_auth_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type email_auth_api_response_single = Static<typeof email_auth_api_response_single>;
 export const email_auth_api_response_single = Type.Intersect([email_auth_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -6373,7 +6373,7 @@ export type email_security_PatternType = Static<typeof email_security_PatternTyp
 export const email_security_PatternType = Type.Union([Type.Literal("EMAIL"), Type.Literal("DOMAIN"), Type.Literal("IP"), Type.Literal("UNKNOWN")]);
 
 export type email_security_AllowPolicy = Static<typeof email_security_AllowPolicy>;
-export const email_security_AllowPolicy = Type.Object({ comments: Type.Optional(Type.Union([Type.String({ maxLength: 1024 }), Type.Null()])), created_at: Type.Intersect([email_security_timestamp, Type.Unknown()]), id: Type.Intersect([email_security_AllowPolicyId, Type.Unknown()]), is_acceptable_sender: Type.Optional(Type.Boolean()), is_exempt_recipient: Type.Optional(Type.Boolean()), is_recipient: Type.Optional(Type.Boolean()), is_regex: Type.Optional(Type.Boolean()), is_sender: Type.Optional(Type.Boolean()), is_spoof: Type.Optional(Type.Boolean()), is_trusted_sender: Type.Optional(Type.Boolean()), last_modified: Type.Intersect([email_security_timestamp, Type.Unknown()]), modified_at: Type.Optional(Type.Intersect([email_security_timestamp, Type.Unknown()])), pattern: Type.Optional(Type.String({ minLength: 1, maxLength: 1024 })), pattern_type: Type.Optional(email_security_PatternType), verify_sender: Type.Optional(Type.Boolean()) });
+export const email_security_AllowPolicy = Type.Object({ comments: Type.Optional(Type.Union([Type.String({ maxLength: 1024 }), Type.Null()])), created_at: email_security_timestamp, id: email_security_AllowPolicyId, is_acceptable_sender: Type.Optional(Type.Boolean()), is_exempt_recipient: Type.Optional(Type.Boolean()), is_recipient: Type.Optional(Type.Boolean()), is_regex: Type.Optional(Type.Boolean()), is_sender: Type.Optional(Type.Boolean()), is_spoof: Type.Optional(Type.Boolean()), is_trusted_sender: Type.Optional(Type.Boolean()), last_modified: email_security_timestamp, modified_at: Type.Optional(email_security_timestamp), pattern: Type.Optional(Type.String({ minLength: 1, maxLength: 1024 })), pattern_type: Type.Optional(email_security_PatternType), verify_sender: Type.Optional(Type.Boolean()) });
 
 export type email_security_AllowPolicyList = Static<typeof email_security_AllowPolicyList>;
 export const email_security_AllowPolicyList = Type.Array(email_security_AllowPolicy);
@@ -6388,7 +6388,7 @@ export type email_security_BlockedSenderId = Static<typeof email_security_Blocke
 export const email_security_BlockedSenderId = Type.String({ format: "uuid" });
 
 export type email_security_BlockedSender = Static<typeof email_security_BlockedSender>;
-export const email_security_BlockedSender = Type.Partial(Type.Object({ comments: Type.Union([Type.String({ maxLength: 1024 }), Type.Null()]), created_at: Type.Intersect([email_security_timestamp, Type.Unknown()]), id: Type.Intersect([email_security_BlockedSenderId, Type.Unknown()]), is_regex: Type.Boolean(), last_modified: Type.Intersect([email_security_timestamp, Type.Unknown()]), modified_at: Type.Intersect([email_security_timestamp, Type.Unknown()]), pattern: Type.String({ minLength: 1, maxLength: 1024 }), pattern_type: email_security_PatternType }));
+export const email_security_BlockedSender = Type.Partial(Type.Object({ comments: Type.Union([Type.String({ maxLength: 1024 }), Type.Null()]), created_at: email_security_timestamp, id: email_security_BlockedSenderId, is_regex: Type.Boolean(), last_modified: email_security_timestamp, modified_at: email_security_timestamp, pattern: Type.String({ minLength: 1, maxLength: 1024 }), pattern_type: email_security_PatternType }));
 
 export type email_security_BlockedSenderList = Static<typeof email_security_BlockedSenderList>;
 export const email_security_BlockedSenderList = Type.Array(email_security_BlockedSender);
@@ -6418,10 +6418,10 @@ export type email_security_BulkJobDetail = Static<typeof email_security_BulkJobD
 export const email_security_BulkJobDetail = Type.Object({ action_params: email_security_BulkJobActionParams, action_type: Type.Union([Type.Literal("MOVE"), Type.Literal("RELEASE")]), comment: Type.Optional(Type.Union([Type.String(), Type.Null()])), completed_at: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), created_at: Type.String({ format: "date-time" }), job_id: Type.String({ format: "uuid" }), messages_failed: Type.Integer(), messages_pending: Type.Integer(), messages_successful: Type.Integer(), search_params: email_security_BulkSearchParams, started_at: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), status: Type.Union([Type.Literal("PENDING"), Type.Literal("DISCOVERING"), Type.Literal("PROCESSING"), Type.Literal("COMPLETED"), Type.Literal("FAILED"), Type.Literal("CANCELLED"), Type.Literal("SKIPPED")]), status_message: Type.Optional(Type.Union([Type.String(), Type.Null()])), total_messages_discovered: Type.Integer() });
 
 export type email_security_CreateAllowPolicy = Static<typeof email_security_CreateAllowPolicy>;
-export const email_security_CreateAllowPolicy = Type.Intersect([email_security_AllowPolicy, Type.Unknown()]);
+export const email_security_CreateAllowPolicy = email_security_AllowPolicy;
 
 export type email_security_CreateBlockedSender = Static<typeof email_security_CreateBlockedSender>;
-export const email_security_CreateBlockedSender = Type.Intersect([email_security_BlockedSender, Type.Unknown()]);
+export const email_security_CreateBlockedSender = email_security_BlockedSender;
 
 export type email_security_DeliveryMode = Static<typeof email_security_DeliveryMode>;
 export const email_security_DeliveryMode = Type.Union([Type.Literal("DIRECT"), Type.Literal("BCC"), Type.Literal("JOURNAL"), Type.Literal("API"), Type.Literal("RETRO_SCAN")]);
@@ -6442,28 +6442,28 @@ export type email_security_Provenance = Static<typeof email_security_Provenance>
 export const email_security_Provenance = Type.Union([Type.Literal("A1S_INTERNAL"), Type.Literal("SNOOPY-CASB_OFFICE_365"), Type.Literal("SNOOPY-OFFICE_365"), Type.Literal("SNOOPY-GOOGLE_DIRECTORY")]);
 
 export type email_security_ImpersonationRegistry = Static<typeof email_security_ImpersonationRegistry>;
-export const email_security_ImpersonationRegistry = Type.Partial(Type.Object({ comments: Type.Union([Type.String(), Type.Null()]), created_at: Type.Intersect([email_security_timestamp, Type.Unknown()]), directory_id: Type.Union([Type.Integer(), Type.Null()]), directory_node_id: Type.Union([Type.Integer(), Type.Null()]), email: Type.String(), external_directory_node_id: Type.Union([Type.String(), Type.Null()]), id: Type.Intersect([email_security_ImpersonationRegistryId, Type.Unknown()]), is_email_regex: Type.Boolean(), last_modified: Type.Intersect([email_security_timestamp, Type.Unknown()]), modified_at: Type.Intersect([email_security_timestamp, Type.Unknown()]), name: Type.String({ maxLength: 1024 }), provenance: email_security_Provenance }));
+export const email_security_ImpersonationRegistry = Type.Partial(Type.Object({ comments: Type.Union([Type.String(), Type.Null()]), created_at: email_security_timestamp, directory_id: Type.Union([Type.Integer(), Type.Null()]), directory_node_id: Type.Union([Type.Integer(), Type.Null()]), email: Type.String(), external_directory_node_id: Type.Union([Type.String(), Type.Null()]), id: email_security_ImpersonationRegistryId, is_email_regex: Type.Boolean(), last_modified: email_security_timestamp, modified_at: email_security_timestamp, name: Type.String({ maxLength: 1024 }), provenance: email_security_Provenance }));
 
 export type email_security_CreateImpersonationRegistry = Static<typeof email_security_CreateImpersonationRegistry>;
-export const email_security_CreateImpersonationRegistry = Type.Intersect([email_security_ImpersonationRegistry, Type.Unknown()]);
+export const email_security_CreateImpersonationRegistry = email_security_ImpersonationRegistry;
 
 export type email_security_SendingDomainRestrictionId = Static<typeof email_security_SendingDomainRestrictionId>;
 export const email_security_SendingDomainRestrictionId = Type.String({ format: "uuid" });
 
 export type email_security_SendingDomainRestriction = Static<typeof email_security_SendingDomainRestriction>;
-export const email_security_SendingDomainRestriction = Type.Partial(Type.Object({ comments: Type.Union([Type.String({ maxLength: 1024 }), Type.Null()]), created_at: Type.Intersect([email_security_timestamp, Type.Unknown()]), domain: Type.String(), exclude: Type.Array(Type.String()), id: Type.Intersect([email_security_SendingDomainRestrictionId, Type.Unknown()]), last_modified: Type.Intersect([email_security_timestamp, Type.Unknown()]), modified_at: Type.Intersect([email_security_timestamp, Type.Unknown()]) }));
+export const email_security_SendingDomainRestriction = Type.Partial(Type.Object({ comments: Type.Union([Type.String({ maxLength: 1024 }), Type.Null()]), created_at: email_security_timestamp, domain: Type.String(), exclude: Type.Array(Type.String()), id: email_security_SendingDomainRestrictionId, last_modified: email_security_timestamp, modified_at: email_security_timestamp }));
 
 export type email_security_CreateSendingDomainRestriction = Static<typeof email_security_CreateSendingDomainRestriction>;
-export const email_security_CreateSendingDomainRestriction = Type.Intersect([email_security_SendingDomainRestriction, Type.Unknown()]);
+export const email_security_CreateSendingDomainRestriction = email_security_SendingDomainRestriction;
 
 export type email_security_TrustedDomainId = Static<typeof email_security_TrustedDomainId>;
 export const email_security_TrustedDomainId = Type.String({ format: "uuid" });
 
 export type email_security_TrustedDomain = Static<typeof email_security_TrustedDomain>;
-export const email_security_TrustedDomain = Type.Partial(Type.Object({ comments: Type.Union([Type.String({ maxLength: 1024 }), Type.Null()]), created_at: Type.Intersect([email_security_timestamp, Type.Unknown()]), id: Type.Intersect([email_security_TrustedDomainId, Type.Unknown()]), is_recent: Type.Boolean(), is_regex: Type.Boolean(), is_similarity: Type.Boolean(), last_modified: Type.Intersect([email_security_timestamp, Type.Unknown()]), modified_at: Type.Intersect([email_security_timestamp, Type.Unknown()]), pattern: Type.String({ minLength: 1, maxLength: 1024 }) }));
+export const email_security_TrustedDomain = Type.Partial(Type.Object({ comments: Type.Union([Type.String({ maxLength: 1024 }), Type.Null()]), created_at: email_security_timestamp, id: email_security_TrustedDomainId, is_recent: Type.Boolean(), is_regex: Type.Boolean(), is_similarity: Type.Boolean(), last_modified: email_security_timestamp, modified_at: email_security_timestamp, pattern: Type.String({ minLength: 1, maxLength: 1024 }) }));
 
 export type email_security_CreateTrustedDomain = Static<typeof email_security_CreateTrustedDomain>;
-export const email_security_CreateTrustedDomain = Type.Intersect([email_security_TrustedDomain, Type.Unknown()]);
+export const email_security_CreateTrustedDomain = email_security_TrustedDomain;
 
 export type email_security_CreateUrlIgnorePattern = Static<typeof email_security_CreateUrlIgnorePattern>;
 export const email_security_CreateUrlIgnorePattern = Type.Object({ comments: Type.Optional(Type.Union([Type.String({ maxLength: 1024 }), Type.Null()])), pattern: Type.String({ minLength: 1, maxLength: 1024 }) });
@@ -6517,7 +6517,7 @@ export type email_security_DomainStatus = Static<typeof email_security_DomainSta
 export const email_security_DomainStatus = Type.Union([Type.Union([Type.Literal("pending"), Type.Literal("active"), Type.Literal("failed"), Type.Literal("timeout"), Type.Literal(null)]), Type.Null()]);
 
 export type email_security_Domain = Static<typeof email_security_Domain>;
-export const email_security_Domain = Type.Partial(Type.Object({ allowed_delivery_modes: Type.Array(email_security_DeliveryMode), authorization: email_security_DomainAuthorization, created_at: Type.Intersect([email_security_timestamp, Type.Unknown()]), dmarc_status: email_security_DmarcStatus, domain: Type.String(), drop_dispositions: Type.Array(email_security_DispositionLabel), emails_processed: email_security_EmailsProcessed, folder: email_security_ScannableFolder, id: email_security_DomainId, inbox_provider: Type.Union([Type.Union([Type.Literal("Microsoft"), Type.Literal("Google"), Type.Literal(null)]), Type.Null()]), integration_id: Type.Union([Type.String({ format: "uuid" }), Type.Null()]), ip_restrictions: Type.Array(Type.String()), last_modified: Type.Intersect([email_security_timestamp, Type.Unknown()]), lookback_hops: Type.Integer(), modified_at: Type.Intersect([email_security_timestamp, Type.Unknown()]), o365_tenant_id: Type.Union([Type.String(), Type.Null()]), regions: Type.Array(email_security_Region), require_tls_inbound: Type.Union([Type.Boolean(), Type.Null()]), require_tls_outbound: Type.Union([Type.Boolean(), Type.Null()]), spf_status: email_security_SpfStatus, status: email_security_DomainStatus, transport: Type.String() }));
+export const email_security_Domain = Type.Partial(Type.Object({ allowed_delivery_modes: Type.Array(email_security_DeliveryMode), authorization: email_security_DomainAuthorization, created_at: email_security_timestamp, dmarc_status: email_security_DmarcStatus, domain: Type.String(), drop_dispositions: Type.Array(email_security_DispositionLabel), emails_processed: email_security_EmailsProcessed, folder: email_security_ScannableFolder, id: email_security_DomainId, inbox_provider: Type.Union([Type.Union([Type.Literal("Microsoft"), Type.Literal("Google"), Type.Literal(null)]), Type.Null()]), integration_id: Type.Union([Type.String({ format: "uuid" }), Type.Null()]), ip_restrictions: Type.Array(Type.String()), last_modified: email_security_timestamp, lookback_hops: Type.Integer(), modified_at: email_security_timestamp, o365_tenant_id: Type.Union([Type.String(), Type.Null()]), regions: Type.Array(email_security_Region), require_tls_inbound: Type.Union([Type.Boolean(), Type.Null()]), require_tls_outbound: Type.Union([Type.Boolean(), Type.Null()]), spf_status: email_security_SpfStatus, status: email_security_DomainStatus, transport: Type.String() }));
 
 export type email_security_DomainList = Static<typeof email_security_DomainList>;
 export const email_security_DomainList = Type.Array(email_security_Domain);
@@ -6547,7 +6547,7 @@ export type email_security_Validation = Static<typeof email_security_Validation>
 export const email_security_Validation = Type.Partial(Type.Object({ comment: Type.Union([Type.String(), Type.Null()]), dkim: email_security_ValidationStatus, dmarc: email_security_ValidationStatus, spf: email_security_ValidationStatus }));
 
 export type email_security_MessageDetails = Static<typeof email_security_MessageDetails>;
-export const email_security_MessageDetails = Type.Object({ action_log: Type.Array(email_security_ActionLogEntry), alert_id: Type.Optional(Type.Union([Type.String(), Type.Null()])), client_recipients: Type.Array(Type.String()), delivery_mode: Type.Optional(email_security_MessageDeliveryMode), delivery_status: Type.Optional(Type.Union([Type.Array(email_security_MessageDeliveryStatus), Type.Null()])), detection_reasons: Type.Array(Type.String()), edf_hash: Type.Optional(Type.Union([Type.String(), Type.Null()])), envelope_from: Type.Optional(Type.Union([Type.String(), Type.Null()])), envelope_to: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])), final_disposition: Type.Optional(email_security_DispositionLabel), findings: Type.Optional(Type.Union([Type.Array(Type.Partial(Type.Object({ attachment: Type.Union([Type.String(), Type.Null()]), detail: Type.Union([Type.String(), Type.Null()]), detection: email_security_DispositionLabel, field: Type.Union([Type.String(), Type.Null()]), name: Type.Union([Type.String(), Type.Null()]), portion: Type.Union([Type.String(), Type.Null()]), reason: Type.Union([Type.String(), Type.Null()]), score: Type.Union([Type.Number(), Type.Null()]), value: Type.Union([Type.String(), Type.Null()]) }))), Type.Null()])), from: Type.Optional(Type.Union([Type.String(), Type.Null()])), from_name: Type.Optional(Type.Union([Type.String(), Type.Null()])), htmltext_structure_hash: Type.Optional(Type.Union([Type.String(), Type.Null()])), id: Type.Intersect([email_security_InvestigateId, Type.Unknown()]), is_phish_submission: Type.Boolean(), is_quarantined: Type.Boolean(), message_id: Type.Optional(Type.Union([Type.String(), Type.Null()])), post_delivery_operations: Type.Optional(Type.Union([Type.Array(Type.Union([Type.Literal("PREVIEW"), Type.Literal("QUARANTINE_RELEASE"), Type.Literal("SUBMISSION"), Type.Literal("MOVE")])), Type.Null()])), postfix_id: email_security_PostfixId, postfix_id_outbound: Type.Optional(Type.Union([Type.String(), Type.Null()])), properties: Type.Partial(Type.Object({ allowlisted_pattern: Type.Union([Type.String(), Type.Null()]), allowlisted_pattern_type: Type.Union([Type.Union([Type.Literal("quarantine_release"), Type.Literal("acceptable_sender"), Type.Literal("allowed_sender"), Type.Literal("allowed_recipient"), Type.Literal("domain_similarity"), Type.Literal("domain_recency"), Type.Literal("managed_acceptable_sender"), Type.Literal("outbound_ndr")]), Type.Null()]), blocklisted_message: Type.Union([Type.Boolean(), Type.Null()]), blocklisted_pattern: Type.Union([Type.String(), Type.Null()]), whitelisted_pattern_type: Type.Union([Type.Union([Type.Literal("quarantine_release"), Type.Literal("acceptable_sender"), Type.Literal("allowed_sender"), Type.Literal("allowed_recipient"), Type.Literal("domain_similarity"), Type.Literal("domain_recency"), Type.Literal("managed_acceptable_sender"), Type.Literal("outbound_ndr")]), Type.Null()]) })), replyto: Type.Optional(Type.Union([Type.String(), Type.Null()])), scanned_at: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), sent_at: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), sent_date: Type.Optional(Type.Union([Type.String(), Type.Null()])), smtp_helo_server_ip: Type.Optional(Type.Union([Type.String(), Type.Null()])), smtp_previous_hop_ip: Type.Optional(Type.Union([Type.String(), Type.Null()])), subject: Type.Optional(Type.Union([Type.String(), Type.Null()])), threat_categories: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])), to: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])), to_name: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])), ts: Type.String(), validation: Type.Optional(email_security_Validation), x_originating_ip: Type.Optional(Type.Union([Type.String(), Type.Null()])) });
+export const email_security_MessageDetails = Type.Object({ action_log: Type.Array(email_security_ActionLogEntry), alert_id: Type.Optional(Type.Union([Type.String(), Type.Null()])), client_recipients: Type.Array(Type.String()), delivery_mode: Type.Optional(email_security_MessageDeliveryMode), delivery_status: Type.Optional(Type.Union([Type.Array(email_security_MessageDeliveryStatus), Type.Null()])), detection_reasons: Type.Array(Type.String()), edf_hash: Type.Optional(Type.Union([Type.String(), Type.Null()])), envelope_from: Type.Optional(Type.Union([Type.String(), Type.Null()])), envelope_to: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])), final_disposition: Type.Optional(email_security_DispositionLabel), findings: Type.Optional(Type.Union([Type.Array(Type.Partial(Type.Object({ attachment: Type.Union([Type.String(), Type.Null()]), detail: Type.Union([Type.String(), Type.Null()]), detection: email_security_DispositionLabel, field: Type.Union([Type.String(), Type.Null()]), name: Type.Union([Type.String(), Type.Null()]), portion: Type.Union([Type.String(), Type.Null()]), reason: Type.Union([Type.String(), Type.Null()]), score: Type.Union([Type.Number(), Type.Null()]), value: Type.Union([Type.String(), Type.Null()]) }))), Type.Null()])), from: Type.Optional(Type.Union([Type.String(), Type.Null()])), from_name: Type.Optional(Type.Union([Type.String(), Type.Null()])), htmltext_structure_hash: Type.Optional(Type.Union([Type.String(), Type.Null()])), id: email_security_InvestigateId, is_phish_submission: Type.Boolean(), is_quarantined: Type.Boolean(), message_id: Type.Optional(Type.Union([Type.String(), Type.Null()])), post_delivery_operations: Type.Optional(Type.Union([Type.Array(Type.Union([Type.Literal("PREVIEW"), Type.Literal("QUARANTINE_RELEASE"), Type.Literal("SUBMISSION"), Type.Literal("MOVE")])), Type.Null()])), postfix_id: email_security_PostfixId, postfix_id_outbound: Type.Optional(Type.Union([Type.String(), Type.Null()])), properties: Type.Partial(Type.Object({ allowlisted_pattern: Type.Union([Type.String(), Type.Null()]), allowlisted_pattern_type: Type.Union([Type.Union([Type.Literal("quarantine_release"), Type.Literal("acceptable_sender"), Type.Literal("allowed_sender"), Type.Literal("allowed_recipient"), Type.Literal("domain_similarity"), Type.Literal("domain_recency"), Type.Literal("managed_acceptable_sender"), Type.Literal("outbound_ndr")]), Type.Null()]), blocklisted_message: Type.Union([Type.Boolean(), Type.Null()]), blocklisted_pattern: Type.Union([Type.String(), Type.Null()]), whitelisted_pattern_type: Type.Union([Type.Union([Type.Literal("quarantine_release"), Type.Literal("acceptable_sender"), Type.Literal("allowed_sender"), Type.Literal("allowed_recipient"), Type.Literal("domain_similarity"), Type.Literal("domain_recency"), Type.Literal("managed_acceptable_sender"), Type.Literal("outbound_ndr")]), Type.Null()]) })), replyto: Type.Optional(Type.Union([Type.String(), Type.Null()])), scanned_at: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), sent_at: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), sent_date: Type.Optional(Type.Union([Type.String(), Type.Null()])), smtp_helo_server_ip: Type.Optional(Type.Union([Type.String(), Type.Null()])), smtp_previous_hop_ip: Type.Optional(Type.Union([Type.String(), Type.Null()])), subject: Type.Optional(Type.Union([Type.String(), Type.Null()])), threat_categories: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])), to: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])), to_name: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])), ts: Type.String(), validation: Type.Optional(email_security_Validation), x_originating_ip: Type.Optional(Type.Union([Type.String(), Type.Null()])) });
 
 export type email_security_MessageHeader = Static<typeof email_security_MessageHeader>;
 export const email_security_MessageHeader = Type.Object({ name: Type.String(), value: Type.String() });
@@ -6589,7 +6589,7 @@ export type email_security_ReclassifyRequest = Static<typeof email_security_Recl
 export const email_security_ReclassifyRequest = Type.Object({ eml_content: Type.Optional(Type.String()), escalated_submission_id: Type.Optional(Type.String()), expected_disposition: Type.Union([Type.Literal("NONE"), Type.Literal("BULK"), Type.Literal("MALICIOUS"), Type.Literal("SPAM"), Type.Literal("SPOOF"), Type.Literal("SUSPICIOUS")]) });
 
 export type email_security_ReleaseResponse = Static<typeof email_security_ReleaseResponse>;
-export const email_security_ReleaseResponse = Type.Object({ delivered: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])), failed: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])), id: Type.Intersect([email_security_InvestigateId, Type.Unknown()]), postfix_id: Type.Optional(Type.Intersect([email_security_PostfixId, Type.Unknown()])), undelivered: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])) });
+export const email_security_ReleaseResponse = Type.Object({ delivered: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])), failed: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])), id: email_security_InvestigateId, postfix_id: Type.Optional(email_security_PostfixId), undelivered: Type.Optional(Type.Union([Type.Array(Type.String()), Type.Null()])) });
 
 export type email_security_ReplaceDomain = Static<typeof email_security_ReplaceDomain>;
 export const email_security_ReplaceDomain = Type.Object({ allowed_delivery_modes: Type.Array(email_security_DeliveryMode, { minItems: 1, maxItems: 10 }), drop_dispositions: Type.Array(email_security_DispositionLabel, { maxItems: 10 }), folder: Type.Optional(email_security_ScannableFolder), integration_id: Type.Optional(Type.Union([Type.String({ format: "uuid" }), Type.Null()])), ip_restrictions: Type.Array(Type.String(), { maxItems: 100 }), lookback_hops: Type.Integer({ minimum: 1, maximum: 20 }), regions: Type.Array(email_security_Region, { minItems: 1, maxItems: 10 }), require_tls_inbound: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])), require_tls_outbound: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])), transport: Type.Optional(Type.Union([Type.String(), Type.Null()])) });
@@ -6604,28 +6604,28 @@ export type email_security_TrustedDomainList = Static<typeof email_security_Trus
 export const email_security_TrustedDomainList = Type.Array(email_security_TrustedDomain);
 
 export type email_security_UpdateAllowPolicy = Static<typeof email_security_UpdateAllowPolicy>;
-export const email_security_UpdateAllowPolicy = Type.Intersect([email_security_AllowPolicy, Type.Unknown()]);
+export const email_security_UpdateAllowPolicy = email_security_AllowPolicy;
 
 export type email_security_UpdateBlockedSender = Static<typeof email_security_UpdateBlockedSender>;
-export const email_security_UpdateBlockedSender = Type.Intersect([email_security_BlockedSender, Type.Unknown()]);
+export const email_security_UpdateBlockedSender = email_security_BlockedSender;
 
 export type email_security_UpdateDomain = Static<typeof email_security_UpdateDomain>;
 export const email_security_UpdateDomain = Type.Partial(Type.Object({ allowed_delivery_modes: Type.Array(email_security_DeliveryMode), domain: Type.String(), drop_dispositions: Type.Array(email_security_DispositionLabel), folder: email_security_ScannableFolder, integration_id: Type.Union([Type.String({ format: "uuid" }), Type.Null()]), ip_restrictions: Type.Array(Type.String()), lookback_hops: Type.Integer({ minimum: 1, maximum: 20 }), regions: Type.Array(email_security_Region), require_tls_inbound: Type.Boolean(), require_tls_outbound: Type.Boolean(), transport: Type.String() }));
 
 export type email_security_UpdateImpersonationRegistry = Static<typeof email_security_UpdateImpersonationRegistry>;
-export const email_security_UpdateImpersonationRegistry = Type.Intersect([email_security_ImpersonationRegistry, Type.Unknown()]);
+export const email_security_UpdateImpersonationRegistry = email_security_ImpersonationRegistry;
 
 export type email_security_UpdateSendingDomainRestriction = Static<typeof email_security_UpdateSendingDomainRestriction>;
-export const email_security_UpdateSendingDomainRestriction = Type.Intersect([email_security_SendingDomainRestriction, Type.Unknown()]);
+export const email_security_UpdateSendingDomainRestriction = email_security_SendingDomainRestriction;
 
 export type email_security_UpdateTrustedDomain = Static<typeof email_security_UpdateTrustedDomain>;
-export const email_security_UpdateTrustedDomain = Type.Intersect([email_security_TrustedDomain, Type.Unknown()]);
+export const email_security_UpdateTrustedDomain = email_security_TrustedDomain;
 
 export type email_security_UpdateUrlIgnorePattern = Static<typeof email_security_UpdateUrlIgnorePattern>;
 export const email_security_UpdateUrlIgnorePattern = Type.Partial(Type.Object({ comments: Type.Union([Type.String({ maxLength: 1024 }), Type.Null()]), pattern: Type.String({ minLength: 1, maxLength: 1024 }) }, { minProperties: 1 }));
 
 export type email_security_UrlIgnorePattern = Static<typeof email_security_UrlIgnorePattern>;
-export const email_security_UrlIgnorePattern = Type.Object({ comments: Type.Optional(Type.Union([Type.String({ maxLength: 1024 }), Type.Null()])), created_at: Type.String({ format: "date-time" }), id: Type.Intersect([email_security_UrlIgnorePatternId, Type.Unknown()]), last_modified: Type.Optional(Type.String({ format: "date-time" })), modified_at: Type.Optional(Type.String({ format: "date-time" })), pattern: Type.String({ minLength: 1, maxLength: 1024 }) });
+export const email_security_UrlIgnorePattern = Type.Object({ comments: Type.Optional(Type.Union([Type.String({ maxLength: 1024 }), Type.Null()])), created_at: Type.String({ format: "date-time" }), id: email_security_UrlIgnorePatternId, last_modified: Type.Optional(Type.String({ format: "date-time" })), modified_at: Type.Optional(Type.String({ format: "date-time" })), pattern: Type.String({ minLength: 1, maxLength: 1024 }) });
 
 export type email_security_messages = Static<typeof email_security_messages>;
 export const email_security_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }))) }));
@@ -6637,7 +6637,7 @@ export type email_security_api_response_collection = Static<typeof email_securit
 export const email_security_api_response_collection = Type.Intersect([email_security_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type email_security_api_response_common_failure = Static<typeof email_security_api_response_common_failure>;
-export const email_security_api_response_common_failure = Type.Object({ errors: Type.Intersect([email_security_messages, Type.Unknown()]), messages: Type.Intersect([email_security_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const email_security_api_response_common_failure = Type.Object({ errors: email_security_messages, messages: email_security_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type email_security_api_response_single = Static<typeof email_security_api_response_single>;
 export const email_security_api_response_single = Type.Intersect([email_security_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -6664,7 +6664,7 @@ export type email_sending_NamedRecipientList = Static<typeof email_sending_Named
 export const email_sending_NamedRecipientList = Type.Union([email_sending_EmailAddressString, email_sending_EmailAddressObject, Type.Array(Type.Union([email_sending_EmailAddressString, email_sending_EmailAddressObject]))]);
 
 export type email_sending_EmailBuilder = Static<typeof email_sending_EmailBuilder>;
-export const email_sending_EmailBuilder = Type.Object({ attachments: Type.Optional(Type.Array(Type.Union([email_sending_EmailInlineAttachment, email_sending_EmailAttachment]))), bcc: Type.Optional(Type.Intersect([email_sending_NamedRecipientList, Type.Unknown()])), cc: Type.Optional(Type.Intersect([email_sending_NamedRecipientList, Type.Unknown()])), from: Type.Union([email_sending_EmailAddressString, email_sending_EmailAddressObject]), headers: Type.Optional(Type.Record(Type.String(), Type.String())), html: Type.Optional(Type.String()), reply_to: Type.Optional(Type.Union([email_sending_EmailAddressString, email_sending_EmailAddressObject])), subject: Type.String(), text: Type.Optional(Type.String()), to: Type.Optional(email_sending_NamedRecipientList) });
+export const email_sending_EmailBuilder = Type.Object({ attachments: Type.Optional(Type.Array(Type.Union([email_sending_EmailInlineAttachment, email_sending_EmailAttachment]))), bcc: Type.Optional(email_sending_NamedRecipientList), cc: Type.Optional(email_sending_NamedRecipientList), from: Type.Union([email_sending_EmailAddressString, email_sending_EmailAddressObject]), headers: Type.Optional(Type.Record(Type.String(), Type.String())), html: Type.Optional(Type.String()), reply_to: Type.Optional(Type.Union([email_sending_EmailAddressString, email_sending_EmailAddressObject])), subject: Type.String(), text: Type.Optional(Type.String()), to: Type.Optional(email_sending_NamedRecipientList) });
 
 export type email_sending_EmailSendResponse = Static<typeof email_sending_EmailSendResponse>;
 export const email_sending_EmailSendResponse = Type.Object({ delivered: Type.Array(Type.String({ pattern: "^[\\x20-\\x7E]+$" })), message_id: Type.String({ pattern: "^[\\x20-\\x7E]+$" }), permanent_bounces: Type.Array(Type.String({ pattern: "^[\\x20-\\x7E]+$" })), queued: Type.Array(Type.String({ pattern: "^[\\x20-\\x7E]+$" })) });
@@ -6892,7 +6892,7 @@ export type email_sending_subdomain_properties = Static<typeof email_sending_sub
 export const email_sending_subdomain_properties = Type.Object({ created: Type.Optional(email_created), dkim_selector: Type.Optional(Type.String()), enabled: Type.Boolean(), modified: Type.Optional(email_modified), name: Type.String(), preview_enabled: Type.Optional(Type.Boolean()), return_path_domain: Type.Optional(Type.String()), tag: email_sending_subdomain_identifier });
 
 export type email_sending_subdomain = Static<typeof email_sending_subdomain>;
-export const email_sending_subdomain = Type.Intersect([email_sending_subdomain_properties]);
+export const email_sending_subdomain = email_sending_subdomain_properties;
 
 export type email_sending_subdomain_config_error = Static<typeof email_sending_subdomain_config_error>;
 export const email_sending_subdomain_config_error = Type.Object({ code: Type.Union([Type.Literal("mx.missing"), Type.Literal("mx.foreign"), Type.Literal("spf.missing"), Type.Literal("spf.foreign"), Type.Literal("spf.multiple"), Type.Literal("dkim.missing"), Type.Literal("dkim.conflict"), Type.Literal("dmarc.missing"), Type.Literal("dmarc.multiple"), Type.Literal("domainkey.delegated")]), existing: Type.Optional(email_dns_record), missing: Type.Optional(email_dns_record), multiple: Type.Optional(Type.Array(email_dns_record)) });
@@ -6982,7 +6982,7 @@ export type firewall_sensitivity = Static<typeof firewall_sensitivity>;
 export const firewall_sensitivity = Type.Union([Type.Literal("high"), Type.Literal("medium"), Type.Literal("low"), Type.Literal("off")]);
 
 export type firewall_anomaly_package = Static<typeof firewall_anomaly_package>;
-export const firewall_anomaly_package = Type.Intersect([firewall_package_definition, Type.Partial(Type.Object({ action_mode: firewall_action_mode, description: firewall_anomaly_description, detection_mode: firewall_anomaly_detection_mode, name: firewall_anomaly_name, sensitivity: firewall_sensitivity })), Type.Unknown()]);
+export const firewall_anomaly_package = Type.Intersect([firewall_package_definition, Type.Partial(Type.Object({ action_mode: firewall_action_mode, description: firewall_anomaly_description, detection_mode: firewall_anomaly_detection_mode, name: firewall_anomaly_name, sensitivity: firewall_sensitivity }))]);
 
 export type firewall_messages = Static<typeof firewall_messages>;
 export const firewall_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }));
@@ -6997,7 +6997,7 @@ export type firewall_api_response_collection = Static<typeof firewall_api_respon
 export const firewall_api_response_collection = Type.Intersect([firewall_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Record(Type.String(), Type.Unknown())), Type.Null()]), result_info: firewall_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type firewall_api_response_common_failure = Static<typeof firewall_api_response_common_failure>;
-export const firewall_api_response_common_failure = Type.Object({ errors: Type.Intersect([firewall_messages, Type.Unknown()]), messages: Type.Intersect([firewall_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const firewall_api_response_common_failure = Type.Object({ errors: firewall_messages, messages: firewall_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type firewall_api_response_single = Static<typeof firewall_api_response_single>;
 export const firewall_api_response_single = Type.Intersect([firewall_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), Type.Union([Type.String(), Type.Null()])]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -7138,7 +7138,7 @@ export type firewall_filter_rule_response = Static<typeof firewall_filter_rule_r
 export const firewall_filter_rule_response = Type.Intersect([firewall_filter_rule_base, Type.Partial(Type.Object({ filter: Type.Union([firewall_filter, firewall_deleted_filter]) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type firewall_filter_rule_update_request = Static<typeof firewall_filter_rule_update_request>;
-export const firewall_filter_rule_update_request = Type.Intersect([firewall_filter, Type.Partial(Type.Object({ id: Type.Intersect([firewall_filters_components_schemas_id]) }))]);
+export const firewall_filter_rule_update_request = Type.Intersect([firewall_filter, Type.Partial(Type.Object({ id: firewall_filters_components_schemas_id }))]);
 
 export type firewall_filter_rules_response_collection = Static<typeof firewall_filter_rules_response_collection>;
 export const firewall_filter_rules_response_collection = Type.Intersect([firewall_api_response_collection, Type.Object({ result: Type.Array(firewall_filter_rule_response) })]);
@@ -7243,7 +7243,7 @@ export type firewall_waf_action = Static<typeof firewall_waf_action>;
 export const firewall_waf_action = Type.Union([Type.Literal("challenge"), Type.Literal("block"), Type.Literal("simulate"), Type.Literal("disable"), Type.Literal("default")]);
 
 export type firewall_rules = Static<typeof firewall_rules>;
-export const firewall_rules = Type.Record(Type.String(), Type.Intersect([firewall_waf_action]));
+export const firewall_rules = Type.Record(Type.String(), firewall_waf_action);
 
 export type firewall_urls = Static<typeof firewall_urls>;
 export const firewall_urls = Type.Array(Type.String());
@@ -7390,7 +7390,7 @@ export type fraud_api_response_common = Static<typeof fraud_api_response_common>
 export const fraud_api_response_common = Type.Object({ errors: fraud_messages, messages: fraud_messages, success: Type.Literal(true) });
 
 export type fraud_api_response_common_failure = Static<typeof fraud_api_response_common_failure>;
-export const fraud_api_response_common_failure = Type.Object({ errors: Type.Intersect([fraud_messages, Type.Unknown()]), messages: Type.Intersect([fraud_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const fraud_api_response_common_failure = Type.Object({ errors: fraud_messages, messages: fraud_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type fraud_api_response_single = Static<typeof fraud_api_response_single>;
 export const fraud_api_response_single = Type.Intersect([fraud_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -7399,7 +7399,7 @@ export type fraud_auth_criteria = Static<typeof fraud_auth_criteria>;
 export const fraud_auth_criteria = Type.Object({ kind: Type.Literal("status_code"), status_codes: Type.Optional(Type.Array(Type.Integer({ minimum: 100, maximum: 599 }), { maxItems: 10 })) });
 
 export type fraud_authentication_settings = Static<typeof fraud_authentication_settings>;
-export const fraud_authentication_settings = Type.Partial(Type.Object({ failure_criteria: Type.Intersect([fraud_auth_criteria]), success_criteria: Type.Intersect([fraud_auth_criteria]) }));
+export const fraud_authentication_settings = Type.Partial(Type.Object({ failure_criteria: fraud_auth_criteria, success_criteria: fraud_auth_criteria }));
 
 export type fraud_user_profiles_status = Static<typeof fraud_user_profiles_status>;
 export const fraud_user_profiles_status = Type.Union([Type.Literal("enabled"), Type.Literal("disabled")]);
@@ -7423,7 +7423,7 @@ export type google_tag_gateway_api_response_common = Static<typeof google_tag_ga
 export const google_tag_gateway_api_response_common = Type.Object({ errors: google_tag_gateway_messages, messages: google_tag_gateway_messages, success: Type.Literal(true) });
 
 export type google_tag_gateway_api_response_common_failure = Static<typeof google_tag_gateway_api_response_common_failure>;
-export const google_tag_gateway_api_response_common_failure = Type.Object({ errors: Type.Intersect([google_tag_gateway_messages, Type.Unknown()]), messages: Type.Intersect([google_tag_gateway_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const google_tag_gateway_api_response_common_failure = Type.Object({ errors: google_tag_gateway_messages, messages: google_tag_gateway_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type google_tag_gateway_google_tag_gateway_config = Static<typeof google_tag_gateway_google_tag_gateway_config>;
 export const google_tag_gateway_google_tag_gateway_config = Type.Object({ enabled: Type.Boolean(), endpoint: Type.String(), hideOriginalIp: Type.Boolean(), measurementId: Type.String(), setUpTag: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])) });
@@ -7450,7 +7450,7 @@ export type healthchecks_api_response_collection = Static<typeof healthchecks_ap
 export const healthchecks_api_response_collection = Type.Intersect([healthchecks_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Unknown()), Type.Null()]), result_info: healthchecks_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type healthchecks_api_response_common_failure = Static<typeof healthchecks_api_response_common_failure>;
-export const healthchecks_api_response_common_failure = Type.Object({ errors: Type.Intersect([healthchecks_messages, Type.Unknown()]), messages: Type.Intersect([healthchecks_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const healthchecks_api_response_common_failure = Type.Object({ errors: healthchecks_messages, messages: healthchecks_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type healthchecks_api_response_single = Static<typeof healthchecks_api_response_single>;
 export const healthchecks_api_response_single = Type.Intersect([healthchecks_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.String()]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -7531,7 +7531,7 @@ export type hyperdrive_api_response_collection = Static<typeof hyperdrive_api_re
 export const hyperdrive_api_response_collection = Type.Intersect([hyperdrive_api_response_common, Type.Partial(Type.Object({ result_info: hyperdrive_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type hyperdrive_api_response_common_failure = Static<typeof hyperdrive_api_response_common_failure>;
-export const hyperdrive_api_response_common_failure = Type.Object({ errors: Type.Intersect([hyperdrive_messages, Type.Unknown()]), messages: Type.Intersect([hyperdrive_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const hyperdrive_api_response_common_failure = Type.Object({ errors: hyperdrive_messages, messages: hyperdrive_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type hyperdrive_api_response_single = Static<typeof hyperdrive_api_response_single>;
 export const hyperdrive_api_response_single = Type.Intersect([hyperdrive_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -7603,7 +7603,7 @@ export type iam_account = Static<typeof iam_account>;
 export const iam_account = Type.Object({ created_on: Type.Optional(Type.String({ format: "date-time" })), id: iam_common_components_schemas_identifier, managed_by: Type.Optional(Type.Partial(Type.Object({ parent_org_id: Type.String({ maxLength: 32 }), parent_org_name: Type.String() }))), name: Type.String({ maxLength: 100 }), settings: Type.Optional(Type.Partial(Type.Object({ abuse_contact_email: Type.String(), enforce_twofactor: Type.Boolean() }))), type: iam_account_type });
 
 export type iam_account_identifier = Static<typeof iam_account_identifier>;
-export const iam_account_identifier = Type.Intersect([iam_common_components_schemas_identifier]);
+export const iam_account_identifier = iam_common_components_schemas_identifier;
 
 export type iam_messages_2 = Static<typeof iam_messages_2>;
 export const iam_messages_2 = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }))) }));
@@ -7618,7 +7618,7 @@ export type iam_api_response_collection = Static<typeof iam_api_response_collect
 export const iam_api_response_collection = Type.Intersect([iam_api_response_common, Type.Partial(Type.Object({ result_info: iam_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type iam_api_response_common_failure = Static<typeof iam_api_response_common_failure>;
-export const iam_api_response_common_failure = Type.Object({ errors: Type.Intersect([iam_messages_2, Type.Unknown()]), messages: Type.Intersect([iam_messages_2]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const iam_api_response_common_failure = Type.Object({ errors: iam_messages_2, messages: iam_messages_2, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type iam_api_response_single = Static<typeof iam_api_response_single>;
 export const iam_api_response_single = Type.Intersect([iam_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -7681,7 +7681,7 @@ export type iam_permissions = Static<typeof iam_permissions>;
 export const iam_permissions = Type.Partial(Type.Object({ analytics: iam_grants, billing: iam_grants, cache_purge: iam_grants, dns: iam_grants, dns_records: iam_grants, lb: iam_grants, logs: iam_grants, organization: iam_grants, ssl: iam_grants, waf: iam_grants, zone_settings: iam_grants, zones: iam_grants }));
 
 export type iam_role = Static<typeof iam_role>;
-export const iam_role = Type.Object({ description: Type.String(), id: iam_role_components_schemas_identifier, name: Type.String({ maxLength: 120 }), permissions: Type.Intersect([iam_permissions, Type.Unknown()]) });
+export const iam_role = Type.Object({ description: Type.String(), id: iam_role_components_schemas_identifier, name: Type.String({ maxLength: 120 }), permissions: iam_permissions });
 
 export type iam_first_name = Static<typeof iam_first_name>;
 export const iam_first_name = Type.Union([Type.String({ maxLength: 60 }), Type.Null()]);
@@ -7699,7 +7699,7 @@ export type iam_collection_member_response_with_policies = Static<typeof iam_col
 export const iam_collection_member_response_with_policies = Type.Intersect([iam_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(iam_member_with_policies) }))]);
 
 export type iam_schemas_account = Static<typeof iam_schemas_account>;
-export const iam_schemas_account = Type.Intersect([iam_account, Type.Unknown()]);
+export const iam_schemas_account = iam_account;
 
 export type iam_role_names = Static<typeof iam_role_names>;
 export const iam_role_names = Type.Array(Type.String({ maxLength: 120 }));
@@ -7708,13 +7708,13 @@ export type iam_schemas_status = Static<typeof iam_schemas_status>;
 export const iam_schemas_status = Type.Union([Type.Literal("accepted"), Type.Literal("pending"), Type.Literal("rejected")]);
 
 export type iam_membership = Static<typeof iam_membership>;
-export const iam_membership = Type.Partial(Type.Object({ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: Type.Intersect([iam_permissions, Type.Unknown()]), roles: iam_role_names, status: iam_schemas_status }));
+export const iam_membership = Type.Partial(Type.Object({ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: iam_permissions, roles: iam_role_names, status: iam_schemas_status }));
 
 export type iam_collection_membership_response = Static<typeof iam_collection_membership_response>;
 export const iam_collection_membership_response = Type.Intersect([iam_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(iam_membership) }))]);
 
 export type iam_membership_with_policies = Static<typeof iam_membership_with_policies>;
-export const iam_membership_with_policies = Type.Partial(Type.Object({ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: Type.Intersect([iam_permissions, Type.Unknown()]), policies: Type.Array(iam_list_member_policy), roles: iam_role_names, status: iam_schemas_status }));
+export const iam_membership_with_policies = Type.Partial(Type.Object({ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: iam_permissions, policies: Type.Array(iam_list_member_policy), roles: iam_role_names, status: iam_schemas_status }));
 
 export type iam_collection_membership_response_with_policies = Static<typeof iam_collection_membership_response_with_policies>;
 export const iam_collection_membership_response_with_policies = Type.Intersect([iam_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(iam_membership_with_policies) }))]);
@@ -7738,7 +7738,7 @@ export type iam_oauth_client_uri_verification = Static<typeof iam_oauth_client_u
 export const iam_oauth_client_uri_verification = Type.Partial(Type.Object({ status: Type.Union([Type.Literal("pending"), Type.Literal("in_progress"), Type.Literal("verified"), Type.Literal("failed")]), text: Type.String() }));
 
 export type iam_oauth_client = Static<typeof iam_oauth_client>;
-export const iam_oauth_client = Type.Intersect([iam_oauth_client_common, Type.Object({ client_id: Type.Intersect([iam_oauth_client_identifier, Type.Unknown()]), client_uri_verification: Type.Optional(iam_oauth_client_uri_verification), created_at: Type.Optional(Type.String({ format: "date-time" })), has_rotated_secret: Type.Optional(Type.Boolean()), promoted_at: Type.Optional(Type.String({ format: "date-time" })), updated_at: Type.Optional(Type.String({ format: "date-time" })), visibility: Type.Union([Type.Literal("public"), Type.Literal("private")]) })]);
+export const iam_oauth_client = Type.Intersect([iam_oauth_client_common, Type.Object({ client_id: iam_oauth_client_identifier, client_uri_verification: Type.Optional(iam_oauth_client_uri_verification), created_at: Type.Optional(Type.String({ format: "date-time" })), has_rotated_secret: Type.Optional(Type.Boolean()), promoted_at: Type.Optional(Type.String({ format: "date-time" })), updated_at: Type.Optional(Type.String({ format: "date-time" })), visibility: Type.Union([Type.Literal("public"), Type.Literal("private")]) })]);
 
 export type iam_collection_oauth_client_response = Static<typeof iam_collection_oauth_client_response>;
 export const iam_collection_oauth_client_response = Type.Intersect([iam_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(iam_oauth_client) }))]);
@@ -7825,7 +7825,7 @@ export type iam_collection_tokens_response = Static<typeof iam_collection_tokens
 export const iam_collection_tokens_response = Type.Intersect([iam_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(iam_token_base) }))]);
 
 export type iam_components_schemas_account = Static<typeof iam_components_schemas_account>;
-export const iam_components_schemas_account = Type.Intersect([iam_account]);
+export const iam_components_schemas_account = iam_account;
 
 export type iam_country = Static<typeof iam_country>;
 export const iam_country = Type.Union([Type.String({ maxLength: 30 }), Type.Null()]);
@@ -7873,13 +7873,13 @@ export type iam_create_payload = Static<typeof iam_create_payload>;
 export const iam_create_payload = Type.Object({ condition: Type.Optional(iam_condition), expires_on: Type.Optional(iam_expires_on), name: iam_name, not_before: Type.Optional(iam_not_before), policies: iam_token_policies });
 
 export type iam_permission_group_identifier = Static<typeof iam_permission_group_identifier>;
-export const iam_permission_group_identifier = Type.Intersect([iam_common_components_schemas_identifier]);
+export const iam_permission_group_identifier = iam_common_components_schemas_identifier;
 
 export type iam_permission_group_ids = Static<typeof iam_permission_group_ids>;
 export const iam_permission_group_ids = Type.Array(Type.Object({ id: iam_permission_group_identifier }));
 
 export type iam_resource_group_identifier = Static<typeof iam_resource_group_identifier>;
-export const iam_resource_group_identifier = Type.Intersect([iam_common_components_schemas_identifier]);
+export const iam_resource_group_identifier = iam_common_components_schemas_identifier;
 
 export type iam_resource_group_ids = Static<typeof iam_resource_group_ids>;
 export const iam_resource_group_ids = Type.Array(Type.Object({ id: iam_resource_group_identifier }));
@@ -8107,7 +8107,7 @@ export type iam_single_user_response = Static<typeof iam_single_user_response>;
 export const iam_single_user_response = Type.Intersect([iam_api_response_single, Type.Partial(Type.Object({ result: Type.Object({ betas: Type.Optional(Type.Array(Type.String())), country: Type.Optional(iam_country), email: Type.String({ format: "email" }), first_name: Type.Optional(iam_first_name), has_business_zones: Type.Optional(Type.Boolean()), has_enterprise_zones: Type.Optional(Type.Boolean()), has_pro_zones: Type.Optional(Type.Boolean()), id: Type.String(), last_name: Type.Optional(iam_last_name), organizations: Type.Optional(Type.Array(iam_organization)), suspended: Type.Optional(Type.Boolean()), telephone: Type.Optional(iam_telephone), two_factor_authentication_enabled: Type.Optional(iam_two_factor_authentication_enabled), two_factor_authentication_locked: Type.Optional(iam_two_factor_authentication_locked), zipcode: Type.Optional(iam_zipcode) }) }))]);
 
 export type iam_sso_connector_identifier = Static<typeof iam_sso_connector_identifier>;
-export const iam_sso_connector_identifier = Type.Intersect([iam_common_components_schemas_identifier]);
+export const iam_sso_connector_identifier = iam_common_components_schemas_identifier;
 
 export type iam_use_fedramp_language = Static<typeof iam_use_fedramp_language>;
 export const iam_use_fedramp_language = Type.Boolean();
@@ -8125,7 +8125,7 @@ export type iam_sso_connector_response = Static<typeof iam_sso_connector_respons
 export const iam_sso_connector_response = Type.Intersect([iam_api_response_single, Type.Partial(Type.Object({ result: iam_sso_connector }))]);
 
 export type iam_token_body = Static<typeof iam_token_body>;
-export const iam_token_body = Type.Intersect([iam_token_base, Type.Record(Type.String(), Type.Unknown()), Type.Unknown()]);
+export const iam_token_body = Type.Intersect([iam_token_base, Type.Record(Type.String(), Type.Unknown())]);
 
 export type iam_token_verify_response_single_segment = Static<typeof iam_token_verify_response_single_segment>;
 export const iam_token_verify_response_single_segment = Type.Intersect([iam_api_response_single, Type.Partial(Type.Object({ result: Type.Object({ expires_on: Type.Optional(iam_expires_on), id: iam_token_identifier, not_before: Type.Optional(iam_not_before), status: iam_token_status }) }))]);
@@ -8143,7 +8143,7 @@ export type iam_update_user_group_body = Static<typeof iam_update_user_group_bod
 export const iam_update_user_group_body = Type.Partial(Type.Object({ name: Type.String(), policies: Type.Array(Type.Intersect([Type.Object({ id: Type.String() }), iam_user_group_policy_write_body])) }));
 
 export type iam_user_group_identifier = Static<typeof iam_user_group_identifier>;
-export const iam_user_group_identifier = Type.Intersect([iam_common_components_schemas_identifier]);
+export const iam_user_group_identifier = iam_common_components_schemas_identifier;
 
 export type iam_user_group = Static<typeof iam_user_group>;
 export const iam_user_group = Type.Object({ created_on: Type.String({ format: "date-time" }), id: iam_user_group_identifier, modified_on: Type.String({ format: "date-time" }), name: Type.String(), policies: Type.Optional(Type.Array(Type.Partial(Type.Object({ access: iam_access, id: iam_policy_identifier, permission_groups: iam_permission_groups, resource_groups: iam_resource_groups })))) });
@@ -8155,7 +8155,7 @@ export type iam_user_group_member_detailed = Static<typeof iam_user_group_member
 export const iam_user_group_member_detailed = Type.Object({ created_at: Type.Optional(Type.String({ format: "date-time" })), email: Type.Optional(iam_email), id: Type.String(), status: Type.Optional(Type.Union([Type.Literal("accepted"), Type.Literal("pending")])), user: Type.Optional(Type.Partial(Type.Object({ email: iam_email, first_name: Type.String(), id: Type.String(), last_name: Type.String() }))) });
 
 export type iam_user_group_member_identifier = Static<typeof iam_user_group_member_identifier>;
-export const iam_user_group_member_identifier = Type.Intersect([iam_common_components_schemas_identifier]);
+export const iam_user_group_member_identifier = iam_common_components_schemas_identifier;
 
 export type iam_user_groups = Static<typeof iam_user_groups>;
 export const iam_user_groups = Type.Array(iam_user_group);
@@ -8176,7 +8176,7 @@ export type images_api_response_collection_v2 = Static<typeof images_api_respons
 export const images_api_response_collection_v2 = Type.Intersect([images_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ continuation_token: images_images_list_continuation_token })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type images_api_response_common_failure = Static<typeof images_api_response_common_failure>;
-export const images_api_response_common_failure = Type.Object({ errors: Type.Intersect([images_messages, Type.Unknown()]), messages: Type.Intersect([images_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const images_api_response_common_failure = Type.Object({ errors: images_messages, messages: images_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type images_api_response_single = Static<typeof images_api_response_single>;
 export const images_api_response_single = Type.Intersect([images_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.String()]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -8464,7 +8464,7 @@ export type infra_api_response_collection = Static<typeof infra_api_response_col
 export const infra_api_response_collection = Type.Intersect([infra_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type infra_api_response_common_failure = Static<typeof infra_api_response_common_failure>;
-export const infra_api_response_common_failure = Type.Object({ errors: Type.Intersect([infra_messages, Type.Unknown()]), messages: Type.Intersect([infra_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const infra_api_response_common_failure = Type.Object({ errors: infra_messages, messages: infra_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type infra_api_response_single = Static<typeof infra_api_response_single>;
 export const infra_api_response_single = Type.Intersect([infra_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -8476,10 +8476,10 @@ export type intel_sinkholes_api_response_common = Static<typeof intel_sinkholes_
 export const intel_sinkholes_api_response_common = Type.Object({ errors: intel_sinkholes_messages, messages: intel_sinkholes_messages, success: Type.Literal(true) });
 
 export type intel_sinkholes_api_response_common_failure = Static<typeof intel_sinkholes_api_response_common_failure>;
-export const intel_sinkholes_api_response_common_failure = Type.Object({ errors: Type.Intersect([intel_sinkholes_messages, Type.Unknown()]), messages: Type.Intersect([intel_sinkholes_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const intel_sinkholes_api_response_common_failure = Type.Object({ errors: intel_sinkholes_messages, messages: intel_sinkholes_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type intel_sinkholes_api_response_common_failure_schemas = Static<typeof intel_sinkholes_api_response_common_failure_schemas>;
-export const intel_sinkholes_api_response_common_failure_schemas = Type.Intersect([intel_sinkholes_api_response_common_failure]);
+export const intel_sinkholes_api_response_common_failure_schemas = intel_sinkholes_api_response_common_failure;
 
 export type intel_sinkholes_api_response_single_empty = Static<typeof intel_sinkholes_api_response_single_empty>;
 export const intel_sinkholes_api_response_single_empty = Type.Intersect([intel_sinkholes_api_response_common, Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }))]);
@@ -8527,7 +8527,7 @@ export type intel_api_response_collection = Static<typeof intel_api_response_col
 export const intel_api_response_collection = Type.Intersect([intel_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Union([Type.String(), Type.Record(Type.String(), Type.Unknown())])), Type.Null()]), result_info: intel_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type intel_api_response_common_failure = Static<typeof intel_api_response_common_failure>;
-export const intel_api_response_common_failure = Type.Object({ errors: Type.Intersect([intel_messages, Type.Unknown()]), messages: Type.Intersect([intel_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
+export const intel_api_response_common_failure = Type.Object({ errors: intel_messages, messages: intel_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
 
 export type intel_schemas_messages = Static<typeof intel_schemas_messages>;
 export const intel_schemas_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }))) }));
@@ -8776,7 +8776,7 @@ export type lists_api_response_collection = Static<typeof lists_api_response_col
 export const lists_api_response_collection = Type.Intersect([Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Record(Type.String(), Type.Unknown())), Type.Null()]) })), lists_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
 
 export type lists_api_response_common_failure = Static<typeof lists_api_response_common_failure>;
-export const lists_api_response_common_failure = Type.Object({ errors: Type.Intersect([lists_messages, Type.Unknown()]), messages: Type.Intersect([lists_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const lists_api_response_common_failure = Type.Object({ errors: lists_messages, messages: lists_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type lists_operation_id = Static<typeof lists_operation_id>;
 export const lists_operation_id = Type.String();
@@ -8962,7 +8962,7 @@ export type load_balancing_api_paginated_response_collection = Static<typeof loa
 export const load_balancing_api_paginated_response_collection = Type.Intersect([load_balancing_api_response_common, Type.Partial(Type.Object({ result_info: load_balancing_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type load_balancing_api_response_common_failure = Static<typeof load_balancing_api_response_common_failure>;
-export const load_balancing_api_response_common_failure = Type.Object({ errors: Type.Intersect([load_balancing_messages, Type.Unknown()]), messages: Type.Intersect([load_balancing_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const load_balancing_api_response_common_failure = Type.Object({ errors: load_balancing_messages, messages: load_balancing_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type load_balancing_api_response_single = Static<typeof load_balancing_api_response_single>;
 export const load_balancing_api_response_single = Type.Intersect([load_balancing_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), Type.Union([Type.String(), Type.Null()])]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -9184,7 +9184,7 @@ export type load_balancing_monitor_group_member = Static<typeof load_balancing_m
 export const load_balancing_monitor_group_member = Type.Object({ created_at: Type.Optional(Type.String({ format: "date-time" })), enabled: Type.Boolean(), monitor_id: load_balancing_monitor_id, monitoring_only: Type.Boolean(), must_be_healthy: Type.Boolean(), updated_at: Type.Optional(Type.String({ format: "date-time" })) });
 
 export type load_balancing_monitor_group = Static<typeof load_balancing_monitor_group>;
-export const load_balancing_monitor_group = Type.Object({ created_on: Type.Optional(Type.String({ format: "date-time" })), description: Type.String(), id: Type.Intersect([load_balancing_monitor_group_id, Type.Unknown()]), members: Type.Array(load_balancing_monitor_group_member), modified_on: Type.Optional(Type.String({ format: "date-time" })) });
+export const load_balancing_monitor_group = Type.Object({ created_on: Type.Optional(Type.String({ format: "date-time" })), description: Type.String(), id: load_balancing_monitor_group_id, members: Type.Array(load_balancing_monitor_group_member), modified_on: Type.Optional(Type.String({ format: "date-time" })) });
 
 export type load_balancing_monitor_group_references_response = Static<typeof load_balancing_monitor_group_references_response>;
 export const load_balancing_monitor_group_references_response = Type.Intersect([load_balancing_api_response_common, Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ reference_type: Type.Union([Type.Literal("*"), Type.Literal("referral"), Type.Literal("referrer")]), resource_id: Type.String(), resource_name: Type.String(), resource_type: Type.String() }))) }))]);
@@ -9325,7 +9325,7 @@ export type logcontrol_api_response_common = Static<typeof logcontrol_api_respon
 export const logcontrol_api_response_common = Type.Object({ errors: logcontrol_messages, messages: logcontrol_messages, success: Type.Literal(true) });
 
 export type logcontrol_api_response_common_failure = Static<typeof logcontrol_api_response_common_failure>;
-export const logcontrol_api_response_common_failure = Type.Object({ errors: Type.Intersect([logcontrol_messages, Type.Unknown()]), messages: Type.Intersect([logcontrol_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const logcontrol_api_response_common_failure = Type.Object({ errors: logcontrol_messages, messages: logcontrol_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type logcontrol_api_response_single = Static<typeof logcontrol_api_response_single>;
 export const logcontrol_api_response_single = Type.Intersect([logcontrol_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -9379,7 +9379,7 @@ export type logpush_api_response_common = Static<typeof logpush_api_response_com
 export const logpush_api_response_common = Type.Object({ errors: logpush_messages, messages: logpush_messages, success: Type.Literal(true) });
 
 export type logpush_api_response_common_failure = Static<typeof logpush_api_response_common_failure>;
-export const logpush_api_response_common_failure = Type.Object({ errors: Type.Intersect([logpush_messages, Type.Unknown()]), messages: Type.Intersect([logpush_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const logpush_api_response_common_failure = Type.Object({ errors: logpush_messages, messages: logpush_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type logpush_api_response_single = Static<typeof logpush_api_response_single>;
 export const logpush_api_response_single = Type.Intersect([logpush_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -9490,7 +9490,7 @@ export type logshare_messages = Static<typeof logshare_messages>;
 export const logshare_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }))) }));
 
 export type logshare_api_response_common_failure = Static<typeof logshare_api_response_common_failure>;
-export const logshare_api_response_common_failure = Type.Object({ errors: Type.Intersect([logshare_messages, Type.Unknown()]), messages: Type.Intersect([logshare_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const logshare_api_response_common_failure = Type.Object({ errors: logshare_messages, messages: logshare_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type logshare_count = Static<typeof logshare_count>;
 export const logshare_count = Type.Integer({ minimum: 1 });
@@ -9532,7 +9532,7 @@ export type magic_transit_api_response_common = Static<typeof magic_transit_api_
 export const magic_transit_api_response_common = Type.Object({ errors: magic_transit_messages, messages: magic_transit_messages, success: Type.Literal(true) });
 
 export type magic_transit_api_response_common_failure = Static<typeof magic_transit_api_response_common_failure>;
-export const magic_transit_api_response_common_failure = Type.Object({ errors: Type.Intersect([magic_transit_messages, Type.Unknown()]), messages: Type.Intersect([magic_transit_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const magic_transit_api_response_common_failure = Type.Object({ errors: magic_transit_messages, messages: magic_transit_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type magic_transit_asn = Static<typeof magic_transit_asn>;
 export const magic_transit_asn = Type.String();
@@ -9667,7 +9667,7 @@ export type magic_visibility_mnm_api_response_collection = Static<typeof magic_v
 export const magic_visibility_mnm_api_response_collection = Type.Intersect([magic_visibility_mnm_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Unknown()), Type.Null()]), result_info: magic_visibility_mnm_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type magic_visibility_mnm_api_response_common_failure = Static<typeof magic_visibility_mnm_api_response_common_failure>;
-export const magic_visibility_mnm_api_response_common_failure = Type.Object({ errors: Type.Intersect([magic_visibility_mnm_messages, Type.Unknown()]), messages: Type.Intersect([magic_visibility_mnm_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const magic_visibility_mnm_api_response_common_failure = Type.Object({ errors: magic_visibility_mnm_messages, messages: magic_visibility_mnm_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type magic_visibility_mnm_api_response_single = Static<typeof magic_visibility_mnm_api_response_single>;
 export const magic_visibility_mnm_api_response_single = Type.Intersect([magic_visibility_mnm_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), Type.Union([Type.String(), Type.Null()])]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -9769,7 +9769,7 @@ export type magic_visibility_pcaps_api_response_collection = Static<typeof magic
 export const magic_visibility_pcaps_api_response_collection = Type.Intersect([magic_visibility_pcaps_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Unknown()), Type.Null()]), result_info: magic_visibility_pcaps_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type magic_visibility_pcaps_api_response_common_failure = Static<typeof magic_visibility_pcaps_api_response_common_failure>;
-export const magic_visibility_pcaps_api_response_common_failure = Type.Object({ errors: Type.Intersect([magic_visibility_pcaps_messages, Type.Unknown()]), messages: Type.Intersect([magic_visibility_pcaps_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const magic_visibility_pcaps_api_response_common_failure = Type.Object({ errors: magic_visibility_pcaps_messages, messages: magic_visibility_pcaps_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type magic_visibility_pcaps_api_response_single = Static<typeof magic_visibility_pcaps_api_response_single>;
 export const magic_visibility_pcaps_api_response_single = Type.Intersect([magic_visibility_pcaps_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.String()]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -9874,13 +9874,13 @@ export type magic_cidr = Static<typeof magic_cidr>;
 export const magic_cidr = Type.String();
 
 export type magic_app_subnets = Static<typeof magic_app_subnets>;
-export const magic_app_subnets = Type.Array(Type.Intersect([magic_cidr, Type.Unknown()]));
+export const magic_app_subnets = Type.Array(magic_cidr);
 
 export type magic_app_name = Static<typeof magic_app_name>;
 export const magic_app_name = Type.String();
 
 export type magic_app_source_subnets = Static<typeof magic_app_source_subnets>;
-export const magic_app_source_subnets = Type.Array(Type.Intersect([magic_cidr, Type.Unknown()]));
+export const magic_app_source_subnets = Type.Array(magic_cidr);
 
 export type magic_app_type = Static<typeof magic_app_type>;
 export const magic_app_type = Type.String();
@@ -9946,7 +9946,7 @@ export type magic_allow_null_cipher = Static<typeof magic_allow_null_cipher>;
 export const magic_allow_null_cipher = Type.Boolean();
 
 export type magic_api_response_common_failure = Static<typeof magic_api_response_common_failure>;
-export const magic_api_response_common_failure = Type.Object({ errors: Type.Intersect([magic_messages, Type.Unknown()]), messages: Type.Intersect([magic_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const magic_api_response_common_failure = Type.Object({ errors: magic_messages, messages: magic_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type magic_managed_app_id = Static<typeof magic_managed_app_id>;
 export const magic_managed_app_id = Type.String();
@@ -10030,7 +10030,7 @@ export type magic_cf1_site_location = Static<typeof magic_cf1_site_location>;
 export const magic_cf1_site_location = Type.Partial(Type.Object({ lat: Type.Number(), long: Type.Number(), name: Type.String() }));
 
 export type magic_cf1_site = Static<typeof magic_cf1_site>;
-export const magic_cf1_site = Type.Object({ created_on: Type.Optional(Type.String({ format: "date-time" })), description: Type.Optional(Type.String()), id: Type.Optional(Type.Intersect([magic_identifier, Type.Unknown()])), location: Type.Optional(magic_cf1_site_location), modified_on: Type.Optional(Type.String({ format: "date-time" })), name: Type.String() });
+export const magic_cf1_site = Type.Object({ created_on: Type.Optional(Type.String({ format: "date-time" })), description: Type.Optional(Type.String()), id: Type.Optional(magic_identifier), location: Type.Optional(magic_cf1_site_location), modified_on: Type.Optional(Type.String({ format: "date-time" })), name: Type.String() });
 
 export type magic_cf1_site_managed_ramp = Static<typeof magic_cf1_site_managed_ramp>;
 export const magic_cf1_site_managed_ramp = Type.Partial(Type.Object({ managed_by: Type.String() }));
@@ -10042,7 +10042,7 @@ export type magic_cf1_site_ramp = Static<typeof magic_cf1_site_ramp>;
 export const magic_cf1_site_ramp = Type.Union([Type.Unknown(), Type.Unknown(), Type.Unknown(), Type.Unknown(), Type.Unknown()]);
 
 export type magic_cf1_site_ramp_body = Static<typeof magic_cf1_site_ramp_body>;
-export const magic_cf1_site_ramp_body = Type.Object({ source_ramp_id: Type.Intersect([magic_identifier]), type: magic_cf1_site_ramp_type });
+export const magic_cf1_site_ramp_body = Type.Object({ source_ramp_id: magic_identifier, type: magic_cf1_site_ramp_type });
 
 export type magic_cf1_site_ramp_single_response = Static<typeof magic_cf1_site_ramp_single_response>;
 export const magic_cf1_site_ramp_single_response = Type.Intersect([magic_api_response_single, Type.Partial(Type.Object({ result: magic_cf1_site_ramp }))]);
@@ -10111,7 +10111,7 @@ export type magic_schemas_mtu = Static<typeof magic_schemas_mtu>;
 export const magic_schemas_mtu = Type.Integer();
 
 export type magic_interconnect = Static<typeof magic_interconnect>;
-export const magic_interconnect = Type.Partial(Type.Object({ automatic_return_routing: magic_automatic_return_routing, colo_name: magic_components_schemas_name, created_on: magic_schemas_created_on, description: magic_interconnect_components_schemas_description, gre: magic_gre, health_check: magic_health_check_base, id: magic_schemas_identifier, interface_address: magic_interface_address, interface_address6: magic_interface_address6, modified_on: magic_schemas_modified_on, mtu: magic_schemas_mtu, name: magic_components_schemas_name, virtual_port_reservation_id: Type.Intersect([magic_schemas_identifier, Type.Unknown()]) }));
+export const magic_interconnect = Type.Partial(Type.Object({ automatic_return_routing: magic_automatic_return_routing, colo_name: magic_components_schemas_name, created_on: magic_schemas_created_on, description: magic_interconnect_components_schemas_description, gre: magic_gre, health_check: magic_health_check_base, id: magic_schemas_identifier, interface_address: magic_interface_address, interface_address6: magic_interface_address6, modified_on: magic_schemas_modified_on, mtu: magic_schemas_mtu, name: magic_components_schemas_name, virtual_port_reservation_id: magic_schemas_identifier }));
 
 export type magic_components_schemas_modified_tunnels_collection_response = Static<typeof magic_components_schemas_modified_tunnels_collection_response>;
 export const magic_components_schemas_modified_tunnels_collection_response = Type.Intersect([magic_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ modified: Type.Boolean(), modified_interconnects: Type.Array(magic_interconnect) })) }))]);
@@ -10216,7 +10216,7 @@ export type magic_gre_tunnel_add_single_request = Static<typeof magic_gre_tunnel
 export const magic_gre_tunnel_add_single_request = Type.Object({ automatic_return_routing: Type.Optional(magic_automatic_return_routing), cloudflare_gre_endpoint: magic_cloudflare_gre_endpoint, customer_gre_endpoint: magic_customer_gre_endpoint, description: Type.Optional(magic_schemas_description), health_check: Type.Optional(magic_tunnel_health_check), interface_address: magic_interface_address, interface_address6: Type.Optional(magic_interface_address6), mtu: Type.Optional(magic_mtu), name: magic_gre_tunnel_name, ttl: Type.Optional(magic_ttl) });
 
 export type magic_gre_tunnel_update_request = Static<typeof magic_gre_tunnel_update_request>;
-export const magic_gre_tunnel_update_request = Type.Intersect([magic_gre_tunnel_add_single_request]);
+export const magic_gre_tunnel_update_request = magic_gre_tunnel_add_single_request;
 
 export type magic_interconnect_health_check = Static<typeof magic_interconnect_health_check>;
 export const magic_interconnect_health_check = magic_health_check_base;
@@ -10243,16 +10243,16 @@ export type magic_ipsec_tunnel_add_single_request = Static<typeof magic_ipsec_tu
 export const magic_ipsec_tunnel_add_single_request = Type.Object({ automatic_return_routing: Type.Optional(magic_automatic_return_routing), bgp: Type.Optional(magic_bgp_config), cloudflare_endpoint: magic_cloudflare_ipsec_endpoint, custom_remote_identities: Type.Optional(magic_custom_remote_identities), customer_endpoint: Type.Optional(magic_customer_ipsec_endpoint), description: Type.Optional(magic_components_schemas_description), health_check: Type.Optional(magic_tunnel_health_check), interface_address: magic_interface_address, interface_address6: Type.Optional(magic_interface_address6), name: magic_ipsec_tunnel_name, psk: Type.Optional(magic_psk), replay_protection: Type.Optional(magic_replay_protection) });
 
 export type magic_ipsec_tunnel_add_request = Static<typeof magic_ipsec_tunnel_add_request>;
-export const magic_ipsec_tunnel_add_request = Type.Intersect([magic_ipsec_tunnel_add_single_request]);
+export const magic_ipsec_tunnel_add_request = magic_ipsec_tunnel_add_single_request;
 
 export type magic_ipsec_tunnel_applied_psk = Static<typeof magic_ipsec_tunnel_applied_psk>;
 export const magic_ipsec_tunnel_applied_psk = Type.Object({ ipsec_id: Type.String(), ipsec_tunnel_id: magic_identifier, psk: magic_psk, psk_metadata: magic_psk_metadata });
 
 export type magic_ipsec_tunnel_psk_entry = Static<typeof magic_ipsec_tunnel_psk_entry>;
-export const magic_ipsec_tunnel_psk_entry = Type.Object({ id: Type.Intersect([magic_identifier]), psk: magic_psk });
+export const magic_ipsec_tunnel_psk_entry = Type.Object({ id: magic_identifier, psk: magic_psk });
 
 export type magic_ipsec_tunnel_update_request = Static<typeof magic_ipsec_tunnel_update_request>;
-export const magic_ipsec_tunnel_update_request = Type.Intersect([magic_ipsec_tunnel_add_single_request]);
+export const magic_ipsec_tunnel_update_request = magic_ipsec_tunnel_add_single_request;
 
 export type magic_ipsec_tunnels_psk_request = Static<typeof magic_ipsec_tunnels_psk_request>;
 export const magic_ipsec_tunnels_psk_request = Type.Object({ psks: Type.Array(magic_ipsec_tunnel_psk_entry) });
@@ -10348,7 +10348,7 @@ export type magic_route_add_single_request = Static<typeof magic_route_add_singl
 export const magic_route_add_single_request = Type.Object({ description: Type.Optional(magic_description), nexthop: magic_nexthop, prefix: magic_prefix, priority: magic_priority, scope: Type.Optional(magic_scope), weight: Type.Optional(magic_weight) });
 
 export type magic_route_delete_id = Static<typeof magic_route_delete_id>;
-export const magic_route_delete_id = Type.Intersect([Type.Object({ id: magic_identifier })]);
+export const magic_route_delete_id = Type.Object({ id: magic_identifier });
 
 export type magic_route_delete_many_request = Static<typeof magic_route_delete_many_request>;
 export const magic_route_delete_many_request = Type.Object({ routes: Type.Array(magic_route_delete_id) });
@@ -10369,7 +10369,7 @@ export type magic_route_update_many_request = Static<typeof magic_route_update_m
 export const magic_route_update_many_request = Type.Object({ routes: Type.Array(magic_route_update_single_request) });
 
 export type magic_route_update_request = Static<typeof magic_route_update_request>;
-export const magic_route_update_request = Type.Intersect([magic_route_add_single_request]);
+export const magic_route_update_request = magic_route_add_single_request;
 
 export type magic_routes_collection_response = Static<typeof magic_routes_collection_response>;
 export const magic_routes_collection_response = Type.Intersect([magic_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ routes: Type.Array(magic_route) })) }))]);
@@ -11209,7 +11209,7 @@ export type observatory_messages_2 = Static<typeof observatory_messages_2>;
 export const observatory_messages_2 = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }))) }));
 
 export type observatory_api_response_common_failure = Static<typeof observatory_api_response_common_failure>;
-export const observatory_api_response_common_failure = Type.Object({ errors: Type.Intersect([observatory_messages_2, Type.Unknown()]), messages: Type.Intersect([observatory_messages_2]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const observatory_api_response_common_failure = Type.Object({ errors: observatory_messages_2, messages: observatory_messages_2, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type observatory_api_response_single = Static<typeof observatory_api_response_single>;
 export const observatory_api_response_single = Type.Intersect([observatory_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -11320,7 +11320,7 @@ export type one_Instructions = Static<typeof one_Instructions>;
 export const one_Instructions = Type.Object({ markdown: Type.String() });
 
 export type one_AuthMethodDetail = Static<typeof one_AuthMethodDetail>;
-export const one_AuthMethodDetail = Type.Object({ display_name: Type.String(), human_interaction_required: Type.Boolean(), id: Type.String(), instructions: Type.Intersect([one_Instructions]), payload_example: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), payload_schema: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), redirect_url: Type.Union([Type.String(), Type.Null()]) });
+export const one_AuthMethodDetail = Type.Object({ display_name: Type.String(), human_interaction_required: Type.Boolean(), id: Type.String(), instructions: one_Instructions, payload_example: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), payload_schema: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), redirect_url: Type.Union([Type.String(), Type.Null()]) });
 
 export type one_DynamicContent = Static<typeof one_DynamicContent>;
 export const one_DynamicContent = Type.Object({ label: Type.String(), type: Type.Union([Type.Literal("copy_block"), Type.Literal("external_link")]), url_template: Type.Optional(Type.Union([Type.String(), Type.Null()])), value_from: Type.Optional(Type.Union([Type.String(), Type.Null()])) });
@@ -11344,7 +11344,7 @@ export type one_SetupFlowStep = Static<typeof one_SetupFlowStep>;
 export const one_SetupFlowStep = Type.Object({ component_id: Type.Optional(Type.Union([Type.String(), Type.Null()])), description: Type.Optional(Type.Union([Type.String(), Type.Null()])), dynamic_content: Type.Optional(Type.Union([Type.Array(one_DynamicContent), Type.Null()])), form_fields: Type.Optional(Type.Array(one_FormField)), is_required: Type.Optional(Type.Boolean()), parameters: Type.Optional(Type.Union([Type.Record(Type.String(), Type.String()), Type.Null()])), title: Type.Optional(Type.String()), type: Type.Union([Type.Literal("component"), Type.Literal("instruction"), Type.Literal("form_input"), Type.Literal("oauth_redirect")]) });
 
 export type one_SetupFlow = Static<typeof one_SetupFlow>;
-export const one_SetupFlow = Type.Object({ auth_config: Type.Optional(Type.Intersect([one_AuthConfig])), default: Type.Boolean(), description: Type.String(), id: Type.String(), name: Type.String(), steps: Type.Array(one_SetupFlowStep), supported_environments: Type.Array(Type.String()) });
+export const one_SetupFlow = Type.Object({ auth_config: Type.Optional(one_AuthConfig), default: Type.Boolean(), description: Type.String(), id: Type.String(), name: Type.String(), steps: Type.Array(one_SetupFlowStep), supported_environments: Type.Array(Type.String()) });
 
 export type organizations_api_Account = Static<typeof organizations_api_Account>;
 export const organizations_api_Account = Type.Object({ created_on: Type.String({ format: "date-time" }), id: Type.String(), name: Type.Union([Type.String(), Type.Null()]), settings: Type.Object({ abuse_contact_email: Type.Union([Type.String(), Type.Null()]), access_approval_expiry: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), api_access_enabled: Type.Union([Type.Boolean(), Type.Null()]), default_nameservers: Type.Union([Type.String(), Type.Null()]), enforce_twofactor: Type.Union([Type.Boolean(), Type.Null()]), use_account_custom_ns_by_default: Type.Union([Type.Boolean(), Type.Null()]) }), type: Type.Union([Type.Literal("standard"), Type.Literal("enterprise")]) });
@@ -11404,7 +11404,7 @@ export type organizations_api_Profile = Static<typeof organizations_api_Profile>
 export const organizations_api_Profile = Type.Object({ business_address: Type.String(), business_email: Type.String(), business_name: Type.String(), business_phone: Type.String(), external_metadata: Type.String() });
 
 export type organizations_api_Organization = Static<typeof organizations_api_Organization>;
-export const organizations_api_Organization = Type.Object({ create_time: Type.String({ format: "date-time" }), id: Type.Intersect([organizations_api_OrganizationID, Type.Unknown()]), meta: Type.Intersect([Type.Partial(Type.Object({ flags: Type.Intersect([organizations_api_OrganizationFlags]), hierarchy_tags: Type.Array(Type.String()), managed_by: Type.String() })), Type.Record(Type.String(), Type.Record(Type.String(), Type.Unknown()))]), name: Type.String(), parent: Type.Optional(Type.Object({ id: organizations_api_OrganizationID, name: Type.String() })), profile: Type.Optional(organizations_api_Profile) });
+export const organizations_api_Organization = Type.Object({ create_time: Type.String({ format: "date-time" }), id: organizations_api_OrganizationID, meta: Type.Intersect([Type.Partial(Type.Object({ flags: organizations_api_OrganizationFlags, hierarchy_tags: Type.Array(Type.String()), managed_by: Type.String() })), Type.Record(Type.String(), Type.Record(Type.String(), Type.Unknown()))]), name: Type.String(), parent: Type.Optional(Type.Object({ id: organizations_api_OrganizationID, name: Type.String() })), profile: Type.Optional(organizations_api_Profile) });
 
 export type organizations_api_PageTokenResultInfo = Static<typeof organizations_api_PageTokenResultInfo>;
 export const organizations_api_PageTokenResultInfo = Type.Partial(Type.Object({ next_page_token: Type.String(), total_size: Type.Integer() }));
@@ -11494,7 +11494,7 @@ export type page_shield_policy = Static<typeof page_shield_policy>;
 export const page_shield_policy = Type.Object({ action: page_shield_policy_action, description: page_shield_policy_description, enabled: page_shield_policy_enabled, expression: page_shield_policy_expression, value: page_shield_policy_value });
 
 export type page_shield_policy_with_id = Static<typeof page_shield_policy_with_id>;
-export const page_shield_policy_with_id = Type.Intersect([page_shield_policy, Type.Object({ id: page_shield_id }), Type.Unknown()]);
+export const page_shield_policy_with_id = Type.Intersect([page_shield_policy, Type.Object({ id: page_shield_id })]);
 
 export type page_shield_get_zone_policy_response = Static<typeof page_shield_get_zone_policy_response>;
 export const page_shield_get_zone_policy_response = Type.Intersect([page_shield_api_get_response_collection, Type.Object({ result: page_shield_policy_with_id })]);
@@ -11515,10 +11515,10 @@ export type page_shield_obfuscation_score = Static<typeof page_shield_obfuscatio
 export const page_shield_obfuscation_score = Type.Union([Type.Integer({ minimum: 1, maximum: 99 }), Type.Null()]);
 
 export type page_shield_script = Static<typeof page_shield_script>;
-export const page_shield_script = Type.Object({ added_at: Type.String({ format: "date-time" }), cryptomining_score: Type.Optional(page_shield_cryptomining_score), dataflow_score: Type.Optional(Type.Intersect([page_shield_dataflow_score, Type.Unknown()])), domain_reported_malicious: Type.Optional(Type.Boolean()), fetched_at: Type.Optional(page_shield_fetched_at), first_page_url: Type.Optional(Type.String()), first_seen_at: Type.String({ format: "date-time" }), hash: Type.Optional(page_shield_hash), host: Type.String(), id: page_shield_id, js_integrity_score: Type.Optional(page_shield_js_integrity_score), last_seen_at: Type.String({ format: "date-time" }), magecart_score: Type.Optional(page_shield_magecart_score), malicious_domain_categories: Type.Optional(Type.Array(Type.String())), malicious_url_categories: Type.Optional(Type.Array(Type.String())), malware_score: Type.Optional(page_shield_malware_score), obfuscation_score: Type.Optional(Type.Intersect([page_shield_obfuscation_score, Type.Unknown()])), page_urls: Type.Optional(Type.Array(Type.String())), url: Type.String(), url_contains_cdn_cgi_path: Type.Boolean(), url_reported_malicious: Type.Optional(Type.Boolean()) });
+export const page_shield_script = Type.Object({ added_at: Type.String({ format: "date-time" }), cryptomining_score: Type.Optional(page_shield_cryptomining_score), dataflow_score: Type.Optional(page_shield_dataflow_score), domain_reported_malicious: Type.Optional(Type.Boolean()), fetched_at: Type.Optional(page_shield_fetched_at), first_page_url: Type.Optional(Type.String()), first_seen_at: Type.String({ format: "date-time" }), hash: Type.Optional(page_shield_hash), host: Type.String(), id: page_shield_id, js_integrity_score: Type.Optional(page_shield_js_integrity_score), last_seen_at: Type.String({ format: "date-time" }), magecart_score: Type.Optional(page_shield_magecart_score), malicious_domain_categories: Type.Optional(Type.Array(Type.String())), malicious_url_categories: Type.Optional(Type.Array(Type.String())), malware_score: Type.Optional(page_shield_malware_score), obfuscation_score: Type.Optional(page_shield_obfuscation_score), page_urls: Type.Optional(Type.Array(Type.String())), url: Type.String(), url_contains_cdn_cgi_path: Type.Boolean(), url_reported_malicious: Type.Optional(Type.Boolean()) });
 
 export type page_shield_version = Static<typeof page_shield_version>;
-export const page_shield_version = Type.Partial(Type.Object({ cryptomining_score: page_shield_cryptomining_score, dataflow_score: Type.Intersect([page_shield_dataflow_score, Type.Unknown()]), fetched_at: page_shield_fetched_at, hash: page_shield_hash, js_integrity_score: page_shield_js_integrity_score, magecart_score: page_shield_magecart_score, malware_score: page_shield_malware_score, obfuscation_score: Type.Intersect([page_shield_obfuscation_score, Type.Unknown()]) }));
+export const page_shield_version = Type.Partial(Type.Object({ cryptomining_score: page_shield_cryptomining_score, dataflow_score: page_shield_dataflow_score, fetched_at: page_shield_fetched_at, hash: page_shield_hash, js_integrity_score: page_shield_js_integrity_score, magecart_score: page_shield_magecart_score, malware_score: page_shield_malware_score, obfuscation_score: page_shield_obfuscation_score }));
 
 export type page_shield_get_zone_script_response = Static<typeof page_shield_get_zone_script_response>;
 export const page_shield_get_zone_script_response = Type.Intersect([page_shield_api_get_response_collection, Type.Object({ result: Type.Intersect([page_shield_script, Type.Partial(Type.Object({ versions: Type.Union([Type.Array(page_shield_version), Type.Null()]) }))]) })]);
@@ -11563,7 +11563,7 @@ export type pages_api_response_collection = Static<typeof pages_api_response_col
 export const pages_api_response_collection = Type.Intersect([pages_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type pages_api_response_common_failure = Static<typeof pages_api_response_common_failure>;
-export const pages_api_response_common_failure = Type.Object({ errors: Type.Intersect([pages_messages, Type.Unknown()]), messages: Type.Intersect([pages_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const pages_api_response_common_failure = Type.Object({ errors: pages_messages, messages: pages_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type pages_build_config = Static<typeof pages_build_config>;
 export const pages_build_config = Type.Object({ build_caching: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])), build_command: Type.Optional(Type.Union([Type.String(), Type.Null()])), destination_dir: Type.Optional(Type.Union([Type.String(), Type.Null()])), root_dir: Type.Optional(Type.Union([Type.String(), Type.Null()])), web_analytics_tag: Type.Union([Type.String(), Type.Null()]), web_analytics_token: Type.Union([Type.String(), Type.Null()]) });
@@ -11626,7 +11626,7 @@ export type pages_pages_upload_token_response = Static<typeof pages_pages_upload
 export const pages_pages_upload_token_response = Type.Object({ jwt: Type.String() });
 
 export type pages_project = Static<typeof pages_project>;
-export const pages_project = Type.Object({ build_config: Type.Optional(pages_build_config), canonical_deployment: Type.Intersect([pages_deployment, Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])]), created_on: Type.String({ format: "date-time" }), deployment_configs: Type.Object({ preview: Type.Intersect([pages_deployment_config_values]), production: Type.Intersect([pages_deployment_config_values]) }), domains: Type.Optional(Type.Array(Type.String())), framework: Type.String(), framework_version: Type.String(), id: Type.String(), latest_deployment: Type.Intersect([pages_deployment, Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])]), name: pages_project_name, preview_script_name: Type.String(), production_branch: Type.String(), production_script_name: Type.String(), source: Type.Optional(pages_source), subdomain: Type.Optional(Type.String()), uses_functions: Type.Union([Type.Boolean(), Type.Null()]) });
+export const pages_project = Type.Object({ build_config: Type.Optional(pages_build_config), canonical_deployment: Type.Intersect([pages_deployment, Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])]), created_on: Type.String({ format: "date-time" }), deployment_configs: Type.Object({ preview: pages_deployment_config_values, production: pages_deployment_config_values }), domains: Type.Optional(Type.Array(Type.String())), framework: Type.String(), framework_version: Type.String(), id: Type.String(), latest_deployment: Type.Intersect([pages_deployment, Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])]), name: pages_project_name, preview_script_name: Type.String(), production_branch: Type.String(), production_script_name: Type.String(), source: Type.Optional(pages_source), subdomain: Type.Optional(Type.String()), uses_functions: Type.Union([Type.Boolean(), Type.Null()]) });
 
 export type pages_project_object = Static<typeof pages_project_object>;
 export const pages_project_object = pages_project;
@@ -11953,7 +11953,7 @@ export type precursor_api_response_common = Static<typeof precursor_api_response
 export const precursor_api_response_common = Type.Object({ errors: precursor_messages, messages: precursor_messages, success: Type.Literal(true) });
 
 export type precursor_api_response_common_failure = Static<typeof precursor_api_response_common_failure>;
-export const precursor_api_response_common_failure = Type.Object({ errors: Type.Intersect([precursor_messages, Type.Unknown()]), messages: Type.Intersect([precursor_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const precursor_api_response_common_failure = Type.Object({ errors: precursor_messages, messages: precursor_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type precursor_api_response_single = Static<typeof precursor_api_response_single>;
 export const precursor_api_response_single = Type.Intersect([precursor_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -11986,7 +11986,7 @@ export type public_ip_api_response_common = Static<typeof public_ip_api_response
 export const public_ip_api_response_common = Type.Object({ errors: public_ip_messages, messages: public_ip_messages, success: Type.Literal(true) });
 
 export type public_ip_api_response_common_failure = Static<typeof public_ip_api_response_common_failure>;
-export const public_ip_api_response_common_failure = Type.Object({ errors: Type.Intersect([public_ip_messages, Type.Unknown()]), messages: Type.Intersect([public_ip_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const public_ip_api_response_common_failure = Type.Object({ errors: public_ip_messages, messages: public_ip_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type public_ip_api_response_single = Static<typeof public_ip_api_response_single>;
 export const public_ip_api_response_single = Type.Intersect([public_ip_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -12070,16 +12070,16 @@ export type r2_data_catalog_catalog_maintenance_config_response = Static<typeof 
 export const r2_data_catalog_catalog_maintenance_config_response = Type.Object({ credential_status: r2_data_catalog_credential_status, maintenance_config: r2_data_catalog_catalog_maintenance_config });
 
 export type r2_data_catalog_compaction_update_params = Static<typeof r2_data_catalog_compaction_update_params>;
-export const r2_data_catalog_compaction_update_params = Type.Partial(Type.Object({ state: Type.Intersect([r2_data_catalog_catalog_maintenance_state]), target_size_mb: Type.Intersect([r2_data_catalog_catalog_target_file_size]) }));
+export const r2_data_catalog_compaction_update_params = Type.Partial(Type.Object({ state: r2_data_catalog_catalog_maintenance_state, target_size_mb: r2_data_catalog_catalog_target_file_size }));
 
 export type r2_data_catalog_snapshot_expiration_update_params = Static<typeof r2_data_catalog_snapshot_expiration_update_params>;
-export const r2_data_catalog_snapshot_expiration_update_params = Type.Partial(Type.Object({ max_snapshot_age: Type.String({ pattern: "^\\d+(d|h|m|s)$" }), min_snapshots_to_keep: Type.Integer({ minimum: 1 }), state: Type.Intersect([r2_data_catalog_catalog_maintenance_state]) }));
+export const r2_data_catalog_snapshot_expiration_update_params = Type.Partial(Type.Object({ max_snapshot_age: Type.String({ pattern: "^\\d+(d|h|m|s)$" }), min_snapshots_to_keep: Type.Integer({ minimum: 1 }), state: r2_data_catalog_catalog_maintenance_state }));
 
 export type r2_data_catalog_maintenance_update_params = Static<typeof r2_data_catalog_maintenance_update_params>;
 export const r2_data_catalog_maintenance_update_params = Type.Partial(Type.Object({ compaction: r2_data_catalog_compaction_update_params, snapshot_expiration: r2_data_catalog_snapshot_expiration_update_params }));
 
 export type r2_data_catalog_catalog_maintenance_update_request = Static<typeof r2_data_catalog_catalog_maintenance_update_request>;
-export const r2_data_catalog_catalog_maintenance_update_request = Type.Intersect([r2_data_catalog_maintenance_update_params]);
+export const r2_data_catalog_catalog_maintenance_update_request = r2_data_catalog_maintenance_update_params;
 
 export type r2_data_catalog_namespace_identifier = Static<typeof r2_data_catalog_namespace_identifier>;
 export const r2_data_catalog_namespace_identifier = Type.Array(Type.String(), { minItems: 1, maxItems: 16 });
@@ -12115,7 +12115,7 @@ export type r2_data_catalog_table_maintenance_config_response = Static<typeof r2
 export const r2_data_catalog_table_maintenance_config_response = Type.Object({ maintenance_config: r2_data_catalog_table_maintenance_config });
 
 export type r2_data_catalog_table_maintenance_update_request = Static<typeof r2_data_catalog_table_maintenance_update_request>;
-export const r2_data_catalog_table_maintenance_update_request = Type.Intersect([r2_data_catalog_maintenance_update_params]);
+export const r2_data_catalog_table_maintenance_update_request = r2_data_catalog_maintenance_update_params;
 
 export type r2_slurper_ConnectivityResponse = Static<typeof r2_slurper_ConnectivityResponse>;
 export const r2_slurper_ConnectivityResponse = Type.Partial(Type.Object({ connectivityStatus: Type.Union([Type.Literal("success"), Type.Literal("error")]) }));
@@ -12229,7 +12229,7 @@ export type r2_bucket_lock_rule = Static<typeof r2_bucket_lock_rule>;
 export const r2_bucket_lock_rule = Type.Object({ condition: Type.Union([r2_lock_rule_age_condition, r2_lock_rule_date_condition, r2_lock_rule_indefinite_condition]), enabled: Type.Boolean(), id: Type.String(), prefix: Type.Optional(Type.String()) });
 
 export type r2_bucket_lock_rule_config = Static<typeof r2_bucket_lock_rule_config>;
-export const r2_bucket_lock_rule_config = Type.Partial(Type.Object({ rules: Type.Array(Type.Intersect([r2_bucket_lock_rule])) }));
+export const r2_bucket_lock_rule_config = Type.Partial(Type.Object({ rules: Type.Array(r2_bucket_lock_rule) }));
 
 export type r2_cors_rule = Static<typeof r2_cors_rule>;
 export const r2_cors_rule = Type.Object({ allowed: Type.Object({ headers: Type.Optional(Type.Array(Type.String())), methods: Type.Array(Type.Union([Type.Literal("GET"), Type.Literal("PUT"), Type.Literal("POST"), Type.Literal("DELETE"), Type.Literal("HEAD")])), origins: Type.Array(Type.String()) }), exposeHeaders: Type.Optional(Type.Array(Type.String())), id: Type.Optional(Type.String()), maxAgeSeconds: Type.Optional(Type.Number()) });
@@ -12271,10 +12271,10 @@ export type r2_lifecycle_storage_transition = Static<typeof r2_lifecycle_storage
 export const r2_lifecycle_storage_transition = Type.Object({ condition: Type.Union([r2_lifecycle_age_condition, r2_lifecycle_date_condition]), storageClass: Type.Literal("InfrequentAccess") });
 
 export type r2_lifecycle_rule = Static<typeof r2_lifecycle_rule>;
-export const r2_lifecycle_rule = Type.Object({ abortMultipartUploadsTransition: Type.Optional(Type.Partial(Type.Object({ condition: Type.Intersect([r2_lifecycle_age_condition]) }))), conditions: Type.Object({ prefix: Type.String() }), deleteObjectsTransition: Type.Optional(Type.Partial(Type.Object({ condition: Type.Union([r2_lifecycle_age_condition, r2_lifecycle_date_condition]) }))), enabled: Type.Boolean(), id: Type.String(), storageClassTransitions: Type.Optional(Type.Array(Type.Intersect([r2_lifecycle_storage_transition]))) });
+export const r2_lifecycle_rule = Type.Object({ abortMultipartUploadsTransition: Type.Optional(Type.Partial(Type.Object({ condition: r2_lifecycle_age_condition }))), conditions: Type.Object({ prefix: Type.String() }), deleteObjectsTransition: Type.Optional(Type.Partial(Type.Object({ condition: Type.Union([r2_lifecycle_age_condition, r2_lifecycle_date_condition]) }))), enabled: Type.Boolean(), id: Type.String(), storageClassTransitions: Type.Optional(Type.Array(r2_lifecycle_storage_transition)) });
 
 export type r2_lifecycle_config = Static<typeof r2_lifecycle_config>;
-export const r2_lifecycle_config = Type.Partial(Type.Object({ rules: Type.Array(Type.Intersect([r2_lifecycle_rule])) }));
+export const r2_lifecycle_config = Type.Partial(Type.Object({ rules: Type.Array(r2_lifecycle_rule) }));
 
 export type r2_list_custom_domains_response = Static<typeof r2_list_custom_domains_response>;
 export const r2_list_custom_domains_response = Type.Object({ domains: Type.Array(Type.Object({ ciphers: Type.Optional(Type.Array(Type.String())), domain: Type.String(), enabled: Type.Boolean(), minTLS: Type.Optional(Type.Union([Type.Literal("1.0"), Type.Literal("1.1"), Type.Literal("1.2"), Type.Literal("1.3")])), status: Type.Object({ ownership: Type.Union([Type.Literal("pending"), Type.Literal("active"), Type.Literal("deactivated"), Type.Literal("blocked"), Type.Literal("error"), Type.Literal("unknown")]), ssl: Type.Union([Type.Literal("initializing"), Type.Literal("pending"), Type.Literal("active"), Type.Literal("deactivated"), Type.Literal("error"), Type.Literal("unknown")]) }), zoneId: Type.Optional(Type.String()), zoneName: Type.Optional(Type.String()) })) });
@@ -12559,7 +12559,7 @@ export type registrar_api_sandbox_api_response_collection = Static<typeof regist
 export const registrar_api_sandbox_api_response_collection = Type.Intersect([registrar_api_sandbox_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Unknown()), Type.Null()]), result_info: registrar_api_sandbox_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type registrar_api_sandbox_api_response_common_failure = Static<typeof registrar_api_sandbox_api_response_common_failure>;
-export const registrar_api_sandbox_api_response_common_failure = Type.Object({ errors: Type.Intersect([registrar_api_sandbox_messages, Type.Unknown()]), messages: Type.Intersect([registrar_api_sandbox_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const registrar_api_sandbox_api_response_common_failure = Type.Object({ errors: registrar_api_sandbox_messages, messages: registrar_api_sandbox_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type registrar_api_sandbox_api_response_single = Static<typeof registrar_api_sandbox_api_response_single>;
 export const registrar_api_sandbox_api_response_single = Type.Intersect([registrar_api_sandbox_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -12646,7 +12646,7 @@ export type registrar_api_sandbox_locked = Static<typeof registrar_api_sandbox_l
 export const registrar_api_sandbox_locked = Type.Boolean();
 
 export type registrar_api_sandbox_registrant_contact = Static<typeof registrar_api_sandbox_registrant_contact>;
-export const registrar_api_sandbox_registrant_contact = Type.Intersect([registrar_api_sandbox_contacts]);
+export const registrar_api_sandbox_registrant_contact = registrar_api_sandbox_contacts;
 
 export type registrar_api_sandbox_registry_statuses = Static<typeof registrar_api_sandbox_registry_statuses>;
 export const registrar_api_sandbox_registry_statuses = Type.String();
@@ -12730,7 +12730,7 @@ export type registrar_api_sandbox_workflow_links = Static<typeof registrar_api_s
 export const registrar_api_sandbox_workflow_links = Type.Object({ resource: Type.Optional(Type.String()), self: Type.String() });
 
 export type registrar_api_sandbox_workflow_status = Static<typeof registrar_api_sandbox_workflow_status>;
-export const registrar_api_sandbox_workflow_status = Type.Object({ completed: Type.Boolean(), context: Type.Optional(Type.Record(Type.String(), Type.Unknown())), created_at: Type.String({ format: "date-time" }), error: Type.Optional(Type.Union([Type.Intersect([registrar_api_sandbox_workflow_error]), Type.Null()])), links: registrar_api_sandbox_workflow_links, state: Type.Union([Type.Literal("pending"), Type.Literal("in_progress"), Type.Literal("action_required"), Type.Literal("blocked"), Type.Literal("succeeded"), Type.Literal("failed")]), updated_at: Type.String({ format: "date-time" }) });
+export const registrar_api_sandbox_workflow_status = Type.Object({ completed: Type.Boolean(), context: Type.Optional(Type.Record(Type.String(), Type.Unknown())), created_at: Type.String({ format: "date-time" }), error: Type.Optional(Type.Union([registrar_api_sandbox_workflow_error, Type.Null()])), links: registrar_api_sandbox_workflow_links, state: Type.Union([Type.Literal("pending"), Type.Literal("in_progress"), Type.Literal("action_required"), Type.Literal("blocked"), Type.Literal("succeeded"), Type.Literal("failed")]), updated_at: Type.String({ format: "date-time" }) });
 
 export type registrar_api_sandbox_workflow_status_response_single = Static<typeof registrar_api_sandbox_workflow_status_response_single>;
 export const registrar_api_sandbox_workflow_status_response_single = Type.Intersect([registrar_api_sandbox_api_response_common, Type.Partial(Type.Object({ result: registrar_api_sandbox_workflow_status }))]);
@@ -12754,7 +12754,7 @@ export type registrar_api_api_response_collection = Static<typeof registrar_api_
 export const registrar_api_api_response_collection = Type.Intersect([registrar_api_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Unknown()), Type.Null()]), result_info: registrar_api_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type registrar_api_api_response_common_failure = Static<typeof registrar_api_api_response_common_failure>;
-export const registrar_api_api_response_common_failure = Type.Object({ errors: Type.Intersect([registrar_api_messages, Type.Unknown()]), messages: Type.Intersect([registrar_api_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const registrar_api_api_response_common_failure = Type.Object({ errors: registrar_api_messages, messages: registrar_api_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type registrar_api_api_response_single = Static<typeof registrar_api_api_response_single>;
 export const registrar_api_api_response_single = Type.Intersect([registrar_api_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -12841,7 +12841,7 @@ export type registrar_api_locked = Static<typeof registrar_api_locked>;
 export const registrar_api_locked = Type.Boolean();
 
 export type registrar_api_registrant_contact = Static<typeof registrar_api_registrant_contact>;
-export const registrar_api_registrant_contact = Type.Intersect([registrar_api_contacts]);
+export const registrar_api_registrant_contact = registrar_api_contacts;
 
 export type registrar_api_registry_statuses = Static<typeof registrar_api_registry_statuses>;
 export const registrar_api_registry_statuses = Type.String();
@@ -12925,7 +12925,7 @@ export type registrar_api_workflow_links = Static<typeof registrar_api_workflow_
 export const registrar_api_workflow_links = Type.Object({ resource: Type.Optional(Type.String()), self: Type.String() });
 
 export type registrar_api_workflow_status = Static<typeof registrar_api_workflow_status>;
-export const registrar_api_workflow_status = Type.Object({ completed: Type.Boolean(), context: Type.Optional(Type.Record(Type.String(), Type.Unknown())), created_at: Type.String({ format: "date-time" }), error: Type.Optional(Type.Union([Type.Intersect([registrar_api_workflow_error]), Type.Null()])), links: registrar_api_workflow_links, state: Type.Union([Type.Literal("pending"), Type.Literal("in_progress"), Type.Literal("action_required"), Type.Literal("blocked"), Type.Literal("succeeded"), Type.Literal("failed")]), updated_at: Type.String({ format: "date-time" }) });
+export const registrar_api_workflow_status = Type.Object({ completed: Type.Boolean(), context: Type.Optional(Type.Record(Type.String(), Type.Unknown())), created_at: Type.String({ format: "date-time" }), error: Type.Optional(Type.Union([registrar_api_workflow_error, Type.Null()])), links: registrar_api_workflow_links, state: Type.Union([Type.Literal("pending"), Type.Literal("in_progress"), Type.Literal("action_required"), Type.Literal("blocked"), Type.Literal("succeeded"), Type.Literal("failed")]), updated_at: Type.String({ format: "date-time" }) });
 
 export type registrar_api_workflow_status_response_single = Static<typeof registrar_api_workflow_status_response_single>;
 export const registrar_api_workflow_status_response_single = Type.Intersect([registrar_api_api_response_common, Type.Partial(Type.Object({ result: registrar_api_workflow_status }))]);
@@ -12943,7 +12943,7 @@ export type request_tracer_api_response_common = Static<typeof request_tracer_ap
 export const request_tracer_api_response_common = Type.Object({ errors: request_tracer_messages, messages: request_tracer_messages, success: Type.Literal(true) });
 
 export type request_tracer_api_response_common_failure = Static<typeof request_tracer_api_response_common_failure>;
-export const request_tracer_api_response_common_failure = Type.Object({ errors: Type.Intersect([request_tracer_messages, Type.Unknown()]), messages: Type.Intersect([request_tracer_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const request_tracer_api_response_common_failure = Type.Object({ errors: request_tracer_messages, messages: request_tracer_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type request_tracer_trace = Static<typeof request_tracer_trace>;
 export const request_tracer_trace = Type.Recursive((This) => Type.Array(Type.Partial(Type.Object({ action: Type.String({ pattern: "^[a-z_]+$" }), action_parameters: Type.Record(Type.String(), Type.Unknown()), description: Type.String(), expression: Type.String(), kind: Type.String(), matched: Type.Boolean(), name: Type.String(), step_name: Type.String(), trace: This, type: Type.String() }))));
@@ -12970,13 +12970,13 @@ export type resource_sharing_api_response_collection = Static<typeof resource_sh
 export const resource_sharing_api_response_collection = Type.Intersect([resource_sharing_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Unknown()), Type.Null()]), result_info: resource_sharing_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type resource_sharing_api_response_common_failure = Static<typeof resource_sharing_api_response_common_failure>;
-export const resource_sharing_api_response_common_failure = Type.Object({ errors: Type.Intersect([resource_sharing_v4errors, Type.Unknown()]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
+export const resource_sharing_api_response_common_failure = Type.Object({ errors: resource_sharing_v4errors, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
 
 export type resource_sharing_organization_id = Static<typeof resource_sharing_organization_id>;
 export const resource_sharing_organization_id = Type.String({ maxLength: 32 });
 
 export type resource_sharing_create_share_recipient_request = Static<typeof resource_sharing_create_share_recipient_request>;
-export const resource_sharing_create_share_recipient_request = Type.Partial(Type.Object({ account_id: Type.Intersect([resource_sharing_account_id, Type.Unknown()]), organization_id: resource_sharing_organization_id, recipient_account_id: Type.Intersect([resource_sharing_account_id]) }));
+export const resource_sharing_create_share_recipient_request = Type.Partial(Type.Object({ account_id: resource_sharing_account_id, organization_id: resource_sharing_organization_id, recipient_account_id: resource_sharing_account_id }));
 
 export type resource_sharing_share_name = Static<typeof resource_sharing_share_name>;
 export const resource_sharing_share_name = Type.String();
@@ -13081,7 +13081,7 @@ export type resource_tagging_identifier = Static<typeof resource_tagging_identif
 export const resource_tagging_identifier = Type.String({ maxLength: 32 });
 
 export type resource_tagging_account_id = Static<typeof resource_tagging_account_id>;
-export const resource_tagging_account_id = Type.Intersect([resource_tagging_identifier, Type.Unknown()]);
+export const resource_tagging_account_id = resource_tagging_identifier;
 
 export type resource_tagging_account_resource_type = Static<typeof resource_tagging_account_resource_type>;
 export const resource_tagging_account_resource_type = Type.Union([Type.Literal("access_application"), Type.Literal("access_group"), Type.Literal("account"), Type.Literal("ai_gateway"), Type.Literal("alerting_policy"), Type.Literal("alerting_webhook"), Type.Literal("cloudflared_tunnel"), Type.Literal("d1_database"), Type.Literal("durable_object_namespace"), Type.Literal("gateway_list"), Type.Literal("gateway_rule"), Type.Literal("image"), Type.Literal("kv_namespace"), Type.Literal("queue"), Type.Literal("r2_bucket"), Type.Literal("resource_share"), Type.Literal("stream_live_input"), Type.Literal("stream_video"), Type.Literal("worker"), Type.Literal("worker_version")]);
@@ -13099,7 +13099,7 @@ export type resource_tagging_api_response_common = Static<typeof resource_taggin
 export const resource_tagging_api_response_common = Type.Object({ errors: resource_tagging_messages, messages: resource_tagging_messages, success: Type.Literal(true) });
 
 export type resource_tagging_api_response_common_failure = Static<typeof resource_tagging_api_response_common_failure>;
-export const resource_tagging_api_response_common_failure = Type.Object({ errors: Type.Intersect([resource_tagging_messages, Type.Unknown()]), messages: Type.Intersect([resource_tagging_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const resource_tagging_api_response_common_failure = Type.Object({ errors: resource_tagging_messages, messages: resource_tagging_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type resource_tagging_cursor_result_info = Static<typeof resource_tagging_cursor_result_info>;
 export const resource_tagging_cursor_result_info = Type.Partial(Type.Object({ count: Type.Integer(), cursor: Type.Union([Type.String(), Type.Null()]) }));
@@ -13177,7 +13177,7 @@ export type resource_tagging_tagged_resource_object_access_application = Static<
 export const resource_tagging_tagged_resource_object_access_application = Type.Intersect([Type.Object({ type: Type.Literal("access_application") }), resource_tagging_tagged_resource_object_account_level_base]);
 
 export type resource_tagging_zone_id = Static<typeof resource_tagging_zone_id>;
-export const resource_tagging_zone_id = Type.Intersect([resource_tagging_identifier, Type.Unknown()]);
+export const resource_tagging_zone_id = resource_tagging_identifier;
 
 export type resource_tagging_tagged_resource_object_access_application_policy_base = Static<typeof resource_tagging_tagged_resource_object_access_application_policy_base>;
 export const resource_tagging_tagged_resource_object_access_application_policy_base = Type.Object({ access_application_id: resource_tagging_access_application_id, etag: resource_tagging_etag, id: resource_tagging_resource_id, name: resource_tagging_resource_name, tags: resource_tagging_tags, zone_id: resource_tagging_zone_id });
@@ -13327,7 +13327,7 @@ export type rulesets_RuleRatelimit = Static<typeof rulesets_RuleRatelimit>;
 export const rulesets_RuleRatelimit = Type.Object({ characteristics: Type.Array(Type.String({ minLength: 1 }), { minItems: 1, uniqueItems: true }), counting_expression: Type.Optional(Type.String({ minLength: 1 })), mitigation_timeout: Type.Optional(Type.Integer()), period: Type.Integer({ minimum: 0 }), requests_per_period: Type.Optional(Type.Integer({ minimum: 1 })), requests_to_origin: Type.Optional(Type.Boolean()), score_per_period: Type.Optional(Type.Integer()), score_response_header_name: Type.Optional(Type.String({ minLength: 1 })) });
 
 export type rulesets_Rule_schemas = Static<typeof rulesets_Rule_schemas>;
-export const rulesets_Rule_schemas = Type.Object({ action: Type.Optional(rulesets_RuleAction), action_parameters: Type.Optional(Type.Record(Type.String(), Type.Unknown())), categories: Type.Optional(rulesets_RuleCategories), description: Type.Optional(Type.String()), enabled: Type.Optional(Type.Intersect([rulesets_RuleEnabled, Type.Unknown()])), exposed_credential_check: Type.Optional(rulesets_RuleExposedCredentialCheck), expression: Type.Optional(Type.String({ minLength: 1 })), id: Type.Optional(rulesets_RuleId), last_updated: Type.String({ format: "date-time" }), logging: Type.Optional(rulesets_RuleLogging), ratelimit: Type.Optional(rulesets_RuleRatelimit), ref: Type.Optional(Type.String({ minLength: 1 })), version: Type.String({ pattern: "^[0-9]+$" }) });
+export const rulesets_Rule_schemas = Type.Object({ action: Type.Optional(rulesets_RuleAction), action_parameters: Type.Optional(Type.Record(Type.String(), Type.Unknown())), categories: Type.Optional(rulesets_RuleCategories), description: Type.Optional(Type.String()), enabled: Type.Optional(rulesets_RuleEnabled), exposed_credential_check: Type.Optional(rulesets_RuleExposedCredentialCheck), expression: Type.Optional(Type.String({ minLength: 1 })), id: Type.Optional(rulesets_RuleId), last_updated: Type.String({ format: "date-time" }), logging: Type.Optional(rulesets_RuleLogging), ratelimit: Type.Optional(rulesets_RuleRatelimit), ref: Type.Optional(Type.String({ minLength: 1 })), version: Type.String({ pattern: "^[0-9]+$" }) });
 
 export type rulesets_BlockRule = Static<typeof rulesets_BlockRule>;
 export const rulesets_BlockRule = Type.Intersect([rulesets_Rule_schemas, Type.Partial(Type.Object({ action: Type.Literal("block"), action_parameters: Type.Partial(Type.Object({ response: Type.Object({ content: Type.String({ minLength: 1 }), content_type: Type.String({ minLength: 1 }), status_code: Type.Integer({ minimum: 400, maximum: 499 }) }) })), description: Type.Unknown() }))]);
@@ -13354,22 +13354,22 @@ export type rulesets_ExecuteSensitivityLevel = Static<typeof rulesets_ExecuteSen
 export const rulesets_ExecuteSensitivityLevel = Type.Union([Type.Literal("default"), Type.Literal("medium"), Type.Literal("low"), Type.Literal("eoff")]);
 
 export type rulesets_ExecuteCategoryOverrides = Static<typeof rulesets_ExecuteCategoryOverrides>;
-export const rulesets_ExecuteCategoryOverrides = Type.Array(Type.Object({ action: Type.Optional(Type.Intersect([rulesets_RuleAction, Type.Unknown()])), category: Type.Intersect([rulesets_RuleCategory, Type.Unknown()]), enabled: Type.Optional(Type.Intersect([rulesets_RuleEnabled, Type.Unknown()])), sensitivity_level: Type.Optional(Type.Intersect([rulesets_ExecuteSensitivityLevel, Type.Unknown()])) }, { minProperties: 2 }), { minItems: 1, uniqueItems: true });
+export const rulesets_ExecuteCategoryOverrides = Type.Array(Type.Object({ action: Type.Optional(rulesets_RuleAction), category: rulesets_RuleCategory, enabled: Type.Optional(rulesets_RuleEnabled), sensitivity_level: Type.Optional(rulesets_ExecuteSensitivityLevel) }, { minProperties: 2 }), { minItems: 1, uniqueItems: true });
 
 export type rulesets_ExecuteMatchedData = Static<typeof rulesets_ExecuteMatchedData>;
 export const rulesets_ExecuteMatchedData = Type.Object({ public_key: Type.String({ minLength: 1 }) });
 
 export type rulesets_ExecuteRuleOverrides = Static<typeof rulesets_ExecuteRuleOverrides>;
-export const rulesets_ExecuteRuleOverrides = Type.Array(Type.Object({ action: Type.Optional(Type.Intersect([rulesets_RuleAction, Type.Unknown()])), enabled: Type.Optional(Type.Intersect([rulesets_RuleEnabled, Type.Unknown()])), id: Type.Intersect([rulesets_RuleId, Type.Unknown()]), score_threshold: Type.Optional(Type.Integer()), sensitivity_level: Type.Optional(Type.Intersect([rulesets_ExecuteSensitivityLevel, Type.Unknown()])) }, { minProperties: 2 }), { minItems: 1, uniqueItems: true });
+export const rulesets_ExecuteRuleOverrides = Type.Array(Type.Object({ action: Type.Optional(rulesets_RuleAction), enabled: Type.Optional(rulesets_RuleEnabled), id: rulesets_RuleId, score_threshold: Type.Optional(Type.Integer()), sensitivity_level: Type.Optional(rulesets_ExecuteSensitivityLevel) }, { minProperties: 2 }), { minItems: 1, uniqueItems: true });
 
 export type rulesets_ExecuteOverrides = Static<typeof rulesets_ExecuteOverrides>;
-export const rulesets_ExecuteOverrides = Type.Partial(Type.Object({ action: Type.Intersect([rulesets_RuleAction, Type.Unknown()]), categories: rulesets_ExecuteCategoryOverrides, enabled: Type.Intersect([rulesets_RuleEnabled, Type.Unknown()]), rules: rulesets_ExecuteRuleOverrides, sensitivity_level: Type.Intersect([rulesets_ExecuteSensitivityLevel, Type.Unknown()]) }, { minProperties: 1 }));
+export const rulesets_ExecuteOverrides = Type.Partial(Type.Object({ action: rulesets_RuleAction, categories: rulesets_ExecuteCategoryOverrides, enabled: rulesets_RuleEnabled, rules: rulesets_ExecuteRuleOverrides, sensitivity_level: rulesets_ExecuteSensitivityLevel }, { minProperties: 1 }));
 
 export type rulesets_RulesetId = Static<typeof rulesets_RulesetId>;
 export const rulesets_RulesetId = Type.String({ pattern: "^[0-9a-f]{32}$" });
 
 export type rulesets_ExecuteRule = Static<typeof rulesets_ExecuteRule>;
-export const rulesets_ExecuteRule = Type.Intersect([rulesets_Rule_schemas, Type.Partial(Type.Object({ action: Type.Literal("execute"), action_parameters: Type.Object({ id: Type.Intersect([rulesets_RulesetId, Type.Unknown()]), matched_data: Type.Optional(rulesets_ExecuteMatchedData), overrides: Type.Optional(rulesets_ExecuteOverrides) }), description: Type.Unknown() }))]);
+export const rulesets_ExecuteRule = Type.Intersect([rulesets_Rule_schemas, Type.Partial(Type.Object({ action: Type.Literal("execute"), action_parameters: Type.Object({ id: rulesets_RulesetId, matched_data: Type.Optional(rulesets_ExecuteMatchedData), overrides: Type.Optional(rulesets_ExecuteOverrides) }), description: Type.Unknown() }))]);
 
 export type rulesets_ForceConnectionCloseRule = Static<typeof rulesets_ForceConnectionCloseRule>;
 export const rulesets_ForceConnectionCloseRule = Type.Intersect([rulesets_Rule_schemas, Type.Partial(Type.Object({ action: Type.Literal("force_connection_close"), description: Type.Unknown() }))]);
@@ -13405,7 +13405,7 @@ export type rulesets_ManagedTransformId = Static<typeof rulesets_ManagedTransfor
 export const rulesets_ManagedTransformId = Type.String({ minLength: 1 });
 
 export type rulesets_ManagedTransform = Static<typeof rulesets_ManagedTransform>;
-export const rulesets_ManagedTransform = Type.Object({ conflicts_with: Type.Optional(Type.Array(Type.Intersect([rulesets_ManagedTransformId, Type.Unknown()]), { minItems: 1, uniqueItems: true })), enabled: Type.Boolean(), has_conflict: Type.Boolean(), id: rulesets_ManagedTransformId });
+export const rulesets_ManagedTransform = Type.Object({ conflicts_with: Type.Optional(Type.Array(rulesets_ManagedTransformId, { minItems: 1, uniqueItems: true })), enabled: Type.Boolean(), has_conflict: Type.Boolean(), id: rulesets_ManagedTransformId });
 
 export type rulesets_ManagedTransforms_schemas = Static<typeof rulesets_ManagedTransforms_schemas>;
 export const rulesets_ManagedTransforms_schemas = Type.Object({ managed_request_headers: Type.Array(Type.Intersect([rulesets_ManagedTransform, Type.Partial(Type.Object({ id: Type.Unknown() }))]), { uniqueItems: true }), managed_response_headers: Type.Array(Type.Intersect([rulesets_ManagedTransform, Type.Partial(Type.Object({ id: Type.Unknown() }))]), { uniqueItems: true }) });
@@ -13606,19 +13606,19 @@ export type rulesets_RulesetPhase = Static<typeof rulesets_RulesetPhase>;
 export const rulesets_RulesetPhase = Type.Union([Type.Literal("ddos_l4"), Type.Literal("ddos_l7"), Type.Literal("http_config_settings"), Type.Literal("http_custom_errors"), Type.Literal("http_log_custom_fields"), Type.Literal("http_ratelimit"), Type.Literal("http_request_cache_settings"), Type.Literal("http_request_dynamic_redirect"), Type.Literal("http_request_firewall_custom"), Type.Literal("http_request_firewall_managed"), Type.Literal("http_request_late_transform"), Type.Literal("http_request_origin"), Type.Literal("http_request_redirect"), Type.Literal("http_request_sanitize"), Type.Literal("http_request_sbfm"), Type.Literal("http_request_transform"), Type.Literal("http_response_cache_settings"), Type.Literal("http_response_compression"), Type.Literal("http_response_firewall_managed"), Type.Literal("http_response_headers_transform"), Type.Literal("magic_transit"), Type.Literal("magic_transit_ids_managed"), Type.Literal("magic_transit_managed"), Type.Literal("magic_transit_ratelimit")]);
 
 export type rulesets_SkipPhases = Static<typeof rulesets_SkipPhases>;
-export const rulesets_SkipPhases = Type.Array(Type.Intersect([rulesets_RulesetPhase, Type.Unknown()]), { minItems: 1, uniqueItems: true });
+export const rulesets_SkipPhases = Type.Array(rulesets_RulesetPhase, { minItems: 1, uniqueItems: true });
 
 export type rulesets_SkipProducts = Static<typeof rulesets_SkipProducts>;
 export const rulesets_SkipProducts = Type.Array(Type.Union([Type.Literal("bic"), Type.Literal("hot"), Type.Literal("rateLimit"), Type.Literal("securityLevel"), Type.Literal("uaBlock"), Type.Literal("waf"), Type.Literal("zoneLockdown")]), { minItems: 1, uniqueItems: true });
 
 export type rulesets_SkipRules = Static<typeof rulesets_SkipRules>;
-export const rulesets_SkipRules = Type.Record(Type.String(), Type.Array(Type.Intersect([rulesets_RuleId, Type.Unknown()]), { minItems: 1, uniqueItems: true }));
+export const rulesets_SkipRules = Type.Record(Type.String(), Type.Array(rulesets_RuleId, { minItems: 1, uniqueItems: true }));
 
 export type rulesets_SkipRuleset = Static<typeof rulesets_SkipRuleset>;
 export const rulesets_SkipRuleset = Type.Literal("current");
 
 export type rulesets_SkipRulesets = Static<typeof rulesets_SkipRulesets>;
-export const rulesets_SkipRulesets = Type.Array(Type.Intersect([rulesets_RulesetId, Type.Unknown()]), { minItems: 1, uniqueItems: true });
+export const rulesets_SkipRulesets = Type.Array(rulesets_RulesetId, { minItems: 1, uniqueItems: true });
 
 export type rulesets_SkipRule = Static<typeof rulesets_SkipRule>;
 export const rulesets_SkipRule = Type.Intersect([rulesets_Rule_schemas, Type.Partial(Type.Object({ action: Type.Literal("skip"), action_parameters: Type.Partial(Type.Object({ phase: rulesets_SkipPhase, phases: rulesets_SkipPhases, products: rulesets_SkipProducts, rules: rulesets_SkipRules, ruleset: rulesets_SkipRuleset, rulesets: rulesets_SkipRulesets }, { minProperties: 1 })), description: Type.Unknown() }))]);
@@ -13636,13 +13636,13 @@ export type rulesets_Response = Static<typeof rulesets_Response>;
 export const rulesets_Response = Type.Object({ errors: rulesets_Errors, messages: rulesets_Messages, result: Type.Unknown(), success: Type.Boolean() });
 
 export type rulesets_ResponseRule = Static<typeof rulesets_ResponseRule>;
-export const rulesets_ResponseRule = Type.Intersect([rulesets_RequestRule, Type.Unknown()]);
+export const rulesets_ResponseRule = rulesets_RequestRule;
 
 export type rulesets_ResponseRules = Static<typeof rulesets_ResponseRules>;
 export const rulesets_ResponseRules = Type.Array(rulesets_ResponseRule);
 
 export type rulesets_ResultInfo = Static<typeof rulesets_ResultInfo>;
-export const rulesets_ResultInfo = Type.Partial(Type.Object({ cursors: Type.Object({ after: Type.Intersect([rulesets_Cursor, Type.Unknown()]) }) }));
+export const rulesets_ResultInfo = Type.Partial(Type.Object({ cursors: Type.Object({ after: rulesets_Cursor }) }));
 
 export type rulesets_RulePosition = Static<typeof rulesets_RulePosition>;
 export const rulesets_RulePosition = Type.Record(Type.String(), Type.Unknown());
@@ -13651,7 +13651,7 @@ export type rulesets_RulesetVersion = Static<typeof rulesets_RulesetVersion>;
 export const rulesets_RulesetVersion = Type.String({ pattern: "^[0-9]+$" });
 
 export type rulesets_Ruleset_schemas = Static<typeof rulesets_Ruleset_schemas>;
-export const rulesets_Ruleset_schemas = Type.Object({ description: Type.Optional(Type.String()), id: Type.Intersect([rulesets_RulesetId, Type.Unknown()]), last_updated: Type.String({ format: "date-time" }), name: Type.Optional(Type.String({ minLength: 1 })), version: Type.Intersect([rulesets_RulesetVersion, Type.Unknown()]) });
+export const rulesets_Ruleset_schemas = Type.Object({ description: Type.Optional(Type.String()), id: rulesets_RulesetId, last_updated: Type.String({ format: "date-time" }), name: Type.Optional(Type.String({ minLength: 1 })), version: rulesets_RulesetVersion });
 
 export type rulesets_RulesetKind = Static<typeof rulesets_RulesetKind>;
 export const rulesets_RulesetKind = Type.Union([Type.Literal("managed"), Type.Literal("custom"), Type.Literal("root"), Type.Literal("zone")]);
@@ -13672,7 +13672,7 @@ export type rum_messages_2 = Static<typeof rum_messages_2>;
 export const rum_messages_2 = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }))) }));
 
 export type rum_api_response_common_failure = Static<typeof rum_api_response_common_failure>;
-export const rum_api_response_common_failure = Type.Object({ errors: Type.Intersect([rum_messages_2, Type.Unknown()]), messages: Type.Intersect([rum_messages_2]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const rum_api_response_common_failure = Type.Object({ errors: rum_messages_2, messages: rum_messages_2, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type rum_auto_install = Static<typeof rum_auto_install>;
 export const rum_auto_install = Type.Boolean();
@@ -13825,7 +13825,7 @@ export type secondary_dns_api_response_collection = Static<typeof secondary_dns_
 export const secondary_dns_api_response_collection = Type.Intersect([secondary_dns_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type secondary_dns_api_response_common_failure = Static<typeof secondary_dns_api_response_common_failure>;
-export const secondary_dns_api_response_common_failure = Type.Object({ errors: Type.Intersect([secondary_dns_messages, Type.Unknown()]), messages: Type.Intersect([secondary_dns_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const secondary_dns_api_response_common_failure = Type.Object({ errors: secondary_dns_messages, messages: secondary_dns_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type secondary_dns_api_response_single = Static<typeof secondary_dns_api_response_single>;
 export const secondary_dns_api_response_single = Type.Intersect([secondary_dns_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -13960,7 +13960,7 @@ export type secrets_store_api_response_collection = Static<typeof secrets_store_
 export const secrets_store_api_response_collection = Type.Intersect([secrets_store_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type secrets_store_api_response_common_failure = Static<typeof secrets_store_api_response_common_failure>;
-export const secrets_store_api_response_common_failure = Type.Object({ errors: Type.Intersect([secrets_store_messages, Type.Unknown()]), messages: Type.Intersect([secrets_store_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const secrets_store_api_response_common_failure = Type.Object({ errors: secrets_store_messages, messages: secrets_store_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type secrets_store_api_response_single = Static<typeof secrets_store_api_response_single>;
 export const secrets_store_api_response_single = Type.Intersect([secrets_store_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -14056,7 +14056,7 @@ export type security_center_ExternalApiResponseCommon = Static<typeof security_c
 export const security_center_ExternalApiResponseCommon = security_center_api_response_common;
 
 export type security_center_api_response_common_failure = Static<typeof security_center_api_response_common_failure>;
-export const security_center_api_response_common_failure = Type.Object({ errors: Type.Intersect([security_center_messages, Type.Unknown()]), messages: Type.Intersect([security_center_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const security_center_api_response_common_failure = Type.Object({ errors: security_center_messages, messages: security_center_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type security_center_ExternalApiResponseCommonFailure = Static<typeof security_center_ExternalApiResponseCommonFailure>;
 export const security_center_ExternalApiResponseCommonFailure = security_center_api_response_common_failure;
@@ -14164,7 +14164,7 @@ export type smartshield_api_response_collection = Static<typeof smartshield_api_
 export const smartshield_api_response_collection = Type.Intersect([smartshield_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Unknown()), Type.Null()]), result_info: smartshield_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type smartshield_api_response_common_failure = Static<typeof smartshield_api_response_common_failure>;
-export const smartshield_api_response_common_failure = Type.Object({ errors: Type.Intersect([smartshield_messages, Type.Unknown()]), messages: Type.Intersect([smartshield_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const smartshield_api_response_common_failure = Type.Object({ errors: smartshield_messages, messages: smartshield_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type smartshield_api_response_single = Static<typeof smartshield_api_response_single>;
 export const smartshield_api_response_single = Type.Intersect([smartshield_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.String()]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -14314,7 +14314,7 @@ export type spectrum_analytics_api_response_common = Static<typeof spectrum_anal
 export const spectrum_analytics_api_response_common = Type.Object({ errors: spectrum_analytics_messages, messages: spectrum_analytics_messages, success: Type.Literal(true) });
 
 export type spectrum_analytics_api_response_common_failure = Static<typeof spectrum_analytics_api_response_common_failure>;
-export const spectrum_analytics_api_response_common_failure = Type.Object({ errors: Type.Intersect([spectrum_analytics_messages, Type.Unknown()]), messages: Type.Intersect([spectrum_analytics_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const spectrum_analytics_api_response_common_failure = Type.Object({ errors: spectrum_analytics_messages, messages: spectrum_analytics_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type spectrum_analytics_api_response_single = Static<typeof spectrum_analytics_api_response_single>;
 export const spectrum_analytics_api_response_single = Type.Intersect([spectrum_analytics_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -14341,25 +14341,25 @@ export type spectrum_analytics_timestamp = Static<typeof spectrum_analytics_time
 export const spectrum_analytics_timestamp = Type.String({ format: "date-time" });
 
 export type spectrum_analytics_since = Static<typeof spectrum_analytics_since>;
-export const spectrum_analytics_since = Type.Intersect([Type.Unknown(), spectrum_analytics_timestamp]);
+export const spectrum_analytics_since = spectrum_analytics_timestamp;
 
 export type spectrum_analytics_sort = Static<typeof spectrum_analytics_sort>;
 export const spectrum_analytics_sort = Type.Array(Type.String());
 
 export type spectrum_analytics_until = Static<typeof spectrum_analytics_until>;
-export const spectrum_analytics_until = Type.Intersect([Type.Unknown(), spectrum_analytics_timestamp]);
+export const spectrum_analytics_until = spectrum_analytics_timestamp;
 
 export type spectrum_analytics_query = Static<typeof spectrum_analytics_query>;
 export const spectrum_analytics_query = Type.Partial(Type.Object({ dimensions: spectrum_analytics_dimensions, filters: spectrum_analytics_filters, limit: Type.Number(), metrics: spectrum_analytics_metrics, since: spectrum_analytics_since, sort: spectrum_analytics_sort, until: spectrum_analytics_until }));
 
 export type spectrum_analytics_query_response_aggregate = Static<typeof spectrum_analytics_query_response_aggregate>;
-export const spectrum_analytics_query_response_aggregate = Type.Intersect([spectrum_analytics_api_response_single, Type.Partial(Type.Object({ result: Type.Array(Type.Object({ appID: Type.Intersect([Type.Unknown(), spectrum_analytics_identifier]), bytesEgress: Type.Number(), bytesIngress: Type.Number(), connections: Type.Number(), durationAvg: Type.Number() })) }))]);
+export const spectrum_analytics_query_response_aggregate = Type.Intersect([spectrum_analytics_api_response_single, Type.Partial(Type.Object({ result: Type.Array(Type.Object({ appID: spectrum_analytics_identifier, bytesEgress: Type.Number(), bytesIngress: Type.Number(), connections: Type.Number(), durationAvg: Type.Number() })) }))]);
 
 export type spectrum_analytics_stat = Static<typeof spectrum_analytics_stat>;
 export const spectrum_analytics_stat = Type.Record(Type.String(), Type.Number());
 
 export type spectrum_analytics_query_response_single = Static<typeof spectrum_analytics_query_response_single>;
-export const spectrum_analytics_query_response_single = Type.Intersect([spectrum_analytics_api_response_single, Type.Partial(Type.Object({ result: Type.Object({ data: Type.Array(spectrum_analytics_column), data_lag: Type.Number({ minimum: 0 }), max: Type.Intersect([Type.Unknown(), spectrum_analytics_stat]), min: Type.Intersect([Type.Unknown(), spectrum_analytics_stat]), query: spectrum_analytics_query, rows: Type.Number({ minimum: 0 }), time_intervals: Type.Optional(Type.Array(Type.Array(spectrum_analytics_timestamp))), totals: Type.Intersect([Type.Unknown(), spectrum_analytics_stat]) }) }))]);
+export const spectrum_analytics_query_response_single = Type.Intersect([spectrum_analytics_api_response_single, Type.Partial(Type.Object({ result: Type.Object({ data: Type.Array(spectrum_analytics_column), data_lag: Type.Number({ minimum: 0 }), max: spectrum_analytics_stat, min: spectrum_analytics_stat, query: spectrum_analytics_query, rows: Type.Number({ minimum: 0 }), time_intervals: Type.Optional(Type.Array(Type.Array(spectrum_analytics_timestamp))), totals: spectrum_analytics_stat }) }))]);
 
 export type spectrum_config_messages = Static<typeof spectrum_config_messages>;
 export const spectrum_config_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), documentation_url: Type.Optional(Type.String()), message: Type.String(), source: Type.Optional(Type.Partial(Type.Object({ pointer: Type.String() }))) }));
@@ -14371,7 +14371,7 @@ export type spectrum_config_api_response_collection = Static<typeof spectrum_con
 export const spectrum_config_api_response_collection = Type.Intersect([spectrum_config_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type spectrum_config_api_response_common_failure = Static<typeof spectrum_config_api_response_common_failure>;
-export const spectrum_config_api_response_common_failure = Type.Object({ errors: Type.Intersect([spectrum_config_messages, Type.Unknown()]), messages: Type.Intersect([spectrum_config_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const spectrum_config_api_response_common_failure = Type.Object({ errors: spectrum_config_messages, messages: spectrum_config_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type spectrum_config_api_response_single = Static<typeof spectrum_config_api_response_single>;
 export const spectrum_config_api_response_single = Type.Intersect([spectrum_config_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -14386,13 +14386,13 @@ export type spectrum_config_timestamp = Static<typeof spectrum_config_timestamp>
 export const spectrum_config_timestamp = Type.String({ format: "date-time" });
 
 export type spectrum_config_created = Static<typeof spectrum_config_created>;
-export const spectrum_config_created = Type.Intersect([Type.Unknown(), Type.Unknown(), spectrum_config_timestamp]);
+export const spectrum_config_created = spectrum_config_timestamp;
 
 export type spectrum_config_app_identifier = Static<typeof spectrum_config_app_identifier>;
-export const spectrum_config_app_identifier = Type.Intersect([Type.Unknown(), Type.Unknown(), spectrum_config_identifier]);
+export const spectrum_config_app_identifier = spectrum_config_identifier;
 
 export type spectrum_config_modified = Static<typeof spectrum_config_modified>;
-export const spectrum_config_modified = Type.Intersect([Type.Unknown(), Type.Unknown(), spectrum_config_timestamp]);
+export const spectrum_config_modified = spectrum_config_timestamp;
 
 export type spectrum_config_base_app_config = Static<typeof spectrum_config_base_app_config>;
 export const spectrum_config_base_app_config = Type.Object({ created_on: spectrum_config_created, id: spectrum_config_app_identifier, modified_on: spectrum_config_modified });
@@ -14464,7 +14464,7 @@ export type spectrum_config_update_app_config = Static<typeof spectrum_config_up
 export const spectrum_config_update_app_config = Type.Union([spectrum_config_app_config, spectrum_config_paygo_app_config]);
 
 export type spectrum_config_zone_identifier = Static<typeof spectrum_config_zone_identifier>;
-export const spectrum_config_zone_identifier = Type.Intersect([Type.Unknown(), Type.Unknown(), spectrum_config_identifier]);
+export const spectrum_config_zone_identifier = spectrum_config_identifier;
 
 export type speed_messages = Static<typeof speed_messages>;
 export const speed_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }));
@@ -14473,7 +14473,7 @@ export type speed_api_response_common = Static<typeof speed_api_response_common>
 export const speed_api_response_common = Type.Object({ errors: speed_messages, messages: speed_messages, success: Type.Boolean() });
 
 export type speed_api_response_common_failure = Static<typeof speed_api_response_common_failure>;
-export const speed_api_response_common_failure = Type.Object({ errors: Type.Intersect([speed_messages, Type.Unknown()]), messages: Type.Intersect([speed_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
+export const speed_api_response_common_failure = Type.Object({ errors: speed_messages, messages: speed_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
 
 export type speed_identifier = Static<typeof speed_identifier>;
 export const speed_identifier = Type.String({ maxLength: 32 });
@@ -14527,7 +14527,7 @@ export type stream_allowedOrigins = Static<typeof stream_allowedOrigins>;
 export const stream_allowedOrigins = Type.Array(Type.String());
 
 export type stream_api_response_common_failure = Static<typeof stream_api_response_common_failure>;
-export const stream_api_response_common_failure = Type.Object({ errors: Type.Intersect([stream_messages, Type.Unknown()]), messages: Type.Intersect([stream_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const stream_api_response_common_failure = Type.Object({ errors: stream_messages, messages: stream_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type stream_api_response_single = Static<typeof stream_api_response_single>;
 export const stream_api_response_single = Type.Intersect([stream_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -14773,7 +14773,7 @@ export type stream_downloads = Static<typeof stream_downloads>;
 export const stream_downloads = Type.Object({ percentComplete: stream_download_percent_complete, status: stream_download_status, url: Type.Optional(stream_download_url) });
 
 export type stream_downloads_response = Static<typeof stream_downloads_response>;
-export const stream_downloads_response = Type.Intersect([stream_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ audio: Type.Intersect([stream_downloads]), default: Type.Intersect([stream_downloads]) })) }))]);
+export const stream_downloads_response = Type.Intersect([stream_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ audio: stream_downloads, default: stream_downloads })) }))]);
 
 export type stream_editAudioTrack = Static<typeof stream_editAudioTrack>;
 export const stream_editAudioTrack = Type.Partial(Type.Object({ default: stream_audio_default, label: stream_audio_label }));
@@ -15007,7 +15007,7 @@ export type teams_devices_api_response_collection_common = Static<typeof teams_d
 export const teams_devices_api_response_collection_common = Type.Intersect([teams_devices_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Record(Type.String(), Type.Unknown())), Type.Null()]) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type teams_devices_api_response_common_failure = Static<typeof teams_devices_api_response_common_failure>;
-export const teams_devices_api_response_common_failure = Type.Object({ errors: Type.Intersect([teams_devices_messages, Type.Unknown()]), messages: Type.Intersect([teams_devices_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const teams_devices_api_response_common_failure = Type.Object({ errors: teams_devices_messages, messages: teams_devices_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type teams_devices_api_response_single = Static<typeof teams_devices_api_response_single>;
 export const teams_devices_api_response_single = Type.Intersect([teams_devices_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.String()]), Type.Null()]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -15664,7 +15664,7 @@ export type tls_certificates_and_hostnames_api_response_collection = Static<type
 export const tls_certificates_and_hostnames_api_response_collection = Type.Intersect([tls_certificates_and_hostnames_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type tls_certificates_and_hostnames_api_response_common_failure = Static<typeof tls_certificates_and_hostnames_api_response_common_failure>;
-export const tls_certificates_and_hostnames_api_response_common_failure = Type.Object({ errors: Type.Intersect([tls_certificates_and_hostnames_messages, Type.Unknown()]), messages: Type.Intersect([tls_certificates_and_hostnames_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const tls_certificates_and_hostnames_api_response_common_failure = Type.Object({ errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type tls_certificates_and_hostnames_service = Static<typeof tls_certificates_and_hostnames_service>;
 export const tls_certificates_and_hostnames_service = Type.String();
@@ -15931,7 +15931,7 @@ export type tls_certificates_and_hostnames_revoked_at = Static<typeof tls_certif
 export const tls_certificates_and_hostnames_revoked_at = Type.String({ format: "date-time" });
 
 export type tls_certificates_and_hostnames_certificate_revoke_response = Static<typeof tls_certificates_and_hostnames_certificate_revoke_response>;
-export const tls_certificates_and_hostnames_certificate_revoke_response = Type.Intersect([Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: tls_certificates_and_hostnames_identifier, revoked_at: tls_certificates_and_hostnames_revoked_at })) }))]);
+export const tls_certificates_and_hostnames_certificate_revoke_response = Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: tls_certificates_and_hostnames_identifier, revoked_at: tls_certificates_and_hostnames_revoked_at })) }));
 
 export type tls_certificates_and_hostnames_certificate_status = Static<typeof tls_certificates_and_hostnames_certificate_status>;
 export const tls_certificates_and_hostnames_certificate_status = Type.Union([Type.Literal("initializing"), Type.Literal("authorizing"), Type.Literal("active"), Type.Literal("expired"), Type.Literal("issuing"), Type.Literal("timing_out"), Type.Literal("pending_deployment")]);
@@ -16117,7 +16117,7 @@ export type tls_certificates_and_hostnames_custom_hostname_api_response_common =
 export const tls_certificates_and_hostnames_custom_hostname_api_response_common = Type.Object({ errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_custom_hostname_response_messages, success: Type.Literal(true) });
 
 export type tls_certificates_and_hostnames_custom_hostname_api_response_failure = Static<typeof tls_certificates_and_hostnames_custom_hostname_api_response_failure>;
-export const tls_certificates_and_hostnames_custom_hostname_api_response_failure = Type.Object({ errors: Type.Intersect([tls_certificates_and_hostnames_messages, Type.Unknown()]), messages: tls_certificates_and_hostnames_custom_hostname_response_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const tls_certificates_and_hostnames_custom_hostname_api_response_failure = Type.Object({ errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_custom_hostname_response_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type tls_certificates_and_hostnames_custom_hostname_quota = Static<typeof tls_certificates_and_hostnames_custom_hostname_quota>;
 export const tls_certificates_and_hostnames_custom_hostname_quota = Type.Object({ allocated: Type.Integer(), exceeded: Type.Boolean(), hard_cap: Type.Integer(), used: Type.Integer() });
@@ -16309,7 +16309,7 @@ export type tls_certificates_and_hostnames_verification = Static<typeof tls_cert
 export const tls_certificates_and_hostnames_verification = Type.Object({ brand_check: Type.Optional(tls_certificates_and_hostnames_brand_check), cert_pack_uuid: Type.Optional(tls_certificates_and_hostnames_cert_pack_uuid), certificate_status: tls_certificates_and_hostnames_certificate_status, signature: Type.Optional(tls_certificates_and_hostnames_signature_2), validation_method: Type.Optional(tls_certificates_and_hostnames_validation_method_2), verification_info: Type.Optional(tls_certificates_and_hostnames_verification_info), verification_status: Type.Optional(tls_certificates_and_hostnames_verification_status), verification_type: Type.Optional(tls_certificates_and_hostnames_verification_type) });
 
 export type tls_certificates_and_hostnames_ssl_verification_response_collection = Static<typeof tls_certificates_and_hostnames_ssl_verification_response_collection>;
-export const tls_certificates_and_hostnames_ssl_verification_response_collection = Type.Intersect([Type.Partial(Type.Object({ result: Type.Array(tls_certificates_and_hostnames_verification) }))]);
+export const tls_certificates_and_hostnames_ssl_verification_response_collection = Type.Partial(Type.Object({ result: Type.Array(tls_certificates_and_hostnames_verification) }));
 
 export type tls_certificates_and_hostnames_sslpost = Static<typeof tls_certificates_and_hostnames_sslpost>;
 export const tls_certificates_and_hostnames_sslpost = Type.Partial(Type.Object({ bundle_method: Type.Union([Type.Literal("ubiquitous"), Type.Literal("optimal"), Type.Literal("force")]), certificate_authority: tls_certificates_and_hostnames_certificate_authority, cloudflare_branding: Type.Boolean(), custom_cert_bundle: tls_certificates_and_hostnames_custom_cert_bundle, custom_certificate: Type.String(), custom_csr_id: Type.String(), custom_key: Type.String(), method: Type.Union([Type.Literal("http"), Type.Literal("txt"), Type.Literal("email")]), settings: tls_certificates_and_hostnames_sslsettings, type: Type.Literal("dv"), wildcard: Type.Boolean() }));
@@ -16351,10 +16351,10 @@ export type tunnel_api_response_common_2 = Static<typeof tunnel_api_response_com
 export const tunnel_api_response_common_2 = Type.Object({ errors: tunnel_messages_2, messages: tunnel_messages_2, success: Type.Literal(true) });
 
 export type tunnel_api_response_common_failure = Static<typeof tunnel_api_response_common_failure>;
-export const tunnel_api_response_common_failure = Type.Object({ errors: Type.Intersect([tunnel_messages, Type.Unknown()]), messages: Type.Intersect([tunnel_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const tunnel_api_response_common_failure = Type.Object({ errors: tunnel_messages, messages: tunnel_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type tunnel_api_response_common_failure_2 = Static<typeof tunnel_api_response_common_failure_2>;
-export const tunnel_api_response_common_failure_2 = Type.Object({ errors: Type.Intersect([tunnel_messages_2, Type.Unknown()]), messages: Type.Intersect([tunnel_messages_2]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const tunnel_api_response_common_failure_2 = Type.Object({ errors: tunnel_messages_2, messages: tunnel_messages_2, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type tunnel_api_response_single = Static<typeof tunnel_api_response_single>;
 export const tunnel_api_response_single = tunnel_api_response_common;
@@ -16405,7 +16405,7 @@ export type tunnel_ip = Static<typeof tunnel_ip>;
 export const tunnel_ip = Type.String();
 
 export type tunnel_schemas_connection = Static<typeof tunnel_schemas_connection>;
-export const tunnel_schemas_connection = Type.Partial(Type.Object({ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, is_pending_reconnect: tunnel_is_pending_reconnect, opened_at: Type.String({ format: "date-time" }), origin_ip: Type.Intersect([tunnel_ip]), uuid: tunnel_connection_id }));
+export const tunnel_schemas_connection = Type.Partial(Type.Object({ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, is_pending_reconnect: tunnel_is_pending_reconnect, opened_at: Type.String({ format: "date-time" }), origin_ip: tunnel_ip, uuid: tunnel_connection_id }));
 
 export type tunnel_connections_deprecated = Static<typeof tunnel_connections_deprecated>;
 export const tunnel_connections_deprecated = Type.Array(tunnel_schemas_connection);
@@ -16591,7 +16591,7 @@ export type tunnel_run_at = Static<typeof tunnel_run_at>;
 export const tunnel_run_at = Type.String({ format: "date-time" });
 
 export type tunnel_schemas_warp_connector_connection = Static<typeof tunnel_schemas_warp_connector_connection>;
-export const tunnel_schemas_warp_connector_connection = Type.Partial(Type.Object({ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, opened_at: Type.String({ format: "date-time" }), origin_ip: Type.Intersect([tunnel_ip]) }));
+export const tunnel_schemas_warp_connector_connection = Type.Partial(Type.Object({ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, opened_at: Type.String({ format: "date-time" }), origin_ip: tunnel_ip }));
 
 export type tunnel_subnet_capacity = Static<typeof tunnel_subnet_capacity>;
 export const tunnel_subnet_capacity = Type.Partial(Type.Object({ total: Type.Integer(), used: Type.Integer() }));
@@ -16720,7 +16720,7 @@ export type turnstile_api_response_common = Static<typeof turnstile_api_response
 export const turnstile_api_response_common = Type.Object({ errors: turnstile_messages, messages: turnstile_messages, success: Type.Boolean() });
 
 export type turnstile_api_response_common_failure = Static<typeof turnstile_api_response_common_failure>;
-export const turnstile_api_response_common_failure = Type.Object({ errors: Type.Intersect([turnstile_messages, Type.Unknown()]), messages: Type.Intersect([turnstile_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
+export const turnstile_api_response_common_failure = Type.Object({ errors: turnstile_messages, messages: turnstile_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
 
 export type turnstile_bot_fight_mode = Static<typeof turnstile_bot_fight_mode>;
 export const turnstile_bot_fight_mode = Type.Boolean();
@@ -16816,7 +16816,7 @@ export type vectorize_api_response_collection = Static<typeof vectorize_api_resp
 export const vectorize_api_response_collection = Type.Intersect([vectorize_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Unknown()), Type.Null()]), result_info: vectorize_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type vectorize_api_response_common_failure = Static<typeof vectorize_api_response_common_failure>;
-export const vectorize_api_response_common_failure = Type.Object({ errors: Type.Intersect([vectorize_messages, Type.Unknown()]), messages: Type.Intersect([vectorize_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const vectorize_api_response_common_failure = Type.Object({ errors: vectorize_messages, messages: vectorize_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type vectorize_api_response_single = Static<typeof vectorize_api_response_single>;
 export const vectorize_api_response_single = Type.Intersect([vectorize_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.String()]), Type.Null()]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -16846,7 +16846,7 @@ export type vectorize_index_name = Static<typeof vectorize_index_name>;
 export const vectorize_index_name = Type.String({ pattern: "^([a-z]+[a-z0-9_-]*[a-z0-9]+)$" });
 
 export type vectorize_create_index_request = Static<typeof vectorize_create_index_request>;
-export const vectorize_create_index_request = Type.Object({ config: Type.Intersect([vectorize_index_configuration]), description: Type.Optional(vectorize_index_description), name: vectorize_index_name });
+export const vectorize_create_index_request = Type.Object({ config: vectorize_index_configuration, description: Type.Optional(vectorize_index_description), name: vectorize_index_name });
 
 export type vectorize_create_index_response = Static<typeof vectorize_create_index_response>;
 export const vectorize_create_index_response = Type.Partial(Type.Object({ config: vectorize_index_dimension_configuration, created_on: Type.String({ format: "date-time" }), description: vectorize_index_description, modified_on: Type.String({ format: "date-time" }), name: vectorize_index_name }));
@@ -16936,7 +16936,7 @@ export type vuln_scanner_api_response_collection = Static<typeof vuln_scanner_ap
 export const vuln_scanner_api_response_collection = Type.Intersect([vuln_scanner_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type vuln_scanner_api_response_common_failure = Static<typeof vuln_scanner_api_response_common_failure>;
-export const vuln_scanner_api_response_common_failure = Type.Object({ errors: Type.Intersect([vuln_scanner_messages, Type.Unknown()]), messages: Type.Intersect([vuln_scanner_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const vuln_scanner_api_response_common_failure = Type.Object({ errors: vuln_scanner_messages, messages: vuln_scanner_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type vuln_scanner_bola_http_status_range = Static<typeof vuln_scanner_bola_http_status_range>;
 export const vuln_scanner_bola_http_status_range = Type.Object({ max: Type.Integer({ minimum: 0, maximum: 65535 }), min: Type.Integer({ minimum: 0, maximum: 65535 }) });
@@ -16975,37 +16975,37 @@ export type vuln_scanner_bola_verdict = Static<typeof vuln_scanner_bola_verdict>
 export const vuln_scanner_bola_verdict = Type.Union([Type.Literal("ok"), Type.Literal("warning"), Type.Literal("inconclusive")]);
 
 export type vuln_scanner_bola_report_summary = Static<typeof vuln_scanner_bola_report_summary>;
-export const vuln_scanner_bola_report_summary = Type.Object({ verdict: Type.Intersect([vuln_scanner_bola_verdict]) });
+export const vuln_scanner_bola_report_summary = Type.Object({ verdict: vuln_scanner_bola_verdict });
 
 export type vuln_scanner_bola_test_error = Static<typeof vuln_scanner_bola_test_error>;
 export const vuln_scanner_bola_test_error = Type.Object({ description: Type.String(), error_code: Type.Optional(Type.Union([Type.Integer({ minimum: 0 }), Type.Null()])) });
 
 export type vuln_scanner_bola_test_assertion = Static<typeof vuln_scanner_bola_test_assertion>;
-export const vuln_scanner_bola_test_assertion = Type.Object({ description: Type.String(), kind: Type.Intersect([vuln_scanner_bola_assertion_kind]), observed: Type.Union([Type.Integer(), Type.Null()]), outcome: Type.Intersect([vuln_scanner_bola_outcome]) });
+export const vuln_scanner_bola_test_assertion = Type.Object({ description: Type.String(), kind: vuln_scanner_bola_assertion_kind, observed: Type.Union([Type.Integer(), Type.Null()]), outcome: vuln_scanner_bola_outcome });
 
 export type vuln_scanner_bola_test_credential_set = Static<typeof vuln_scanner_bola_test_credential_set>;
-export const vuln_scanner_bola_test_credential_set = Type.Object({ id: Type.String({ format: "uuid" }), role: Type.Intersect([vuln_scanner_bola_credential_role]) });
+export const vuln_scanner_bola_test_credential_set = Type.Object({ id: Type.String({ format: "uuid" }), role: vuln_scanner_bola_credential_role });
 
 export type vuln_scanner_bola_variable_capture = Static<typeof vuln_scanner_bola_variable_capture>;
 export const vuln_scanner_bola_variable_capture = Type.Object({ json_path: Type.String(), name: Type.String() });
 
 export type vuln_scanner_bola_test_request = Static<typeof vuln_scanner_bola_test_request>;
-export const vuln_scanner_bola_test_request = Type.Object({ body: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])), credential_set: Type.Intersect([vuln_scanner_bola_test_credential_set]), header_names: Type.Array(Type.String()), method: Type.Intersect([vuln_scanner_bola_method]), url: Type.String({ format: "uri" }), variable_captures: Type.Array(vuln_scanner_bola_variable_capture) });
+export const vuln_scanner_bola_test_request = Type.Object({ body: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])), credential_set: vuln_scanner_bola_test_credential_set, header_names: Type.Array(Type.String()), method: vuln_scanner_bola_method, url: Type.String({ format: "uri" }), variable_captures: Type.Array(vuln_scanner_bola_variable_capture) });
 
 export type vuln_scanner_bola_test_response = Static<typeof vuln_scanner_bola_test_response>;
-export const vuln_scanner_bola_test_response = Type.Object({ body: Type.Intersect([vuln_scanner_bola_body_response]), header_names: Type.Array(Type.String()), status: Type.Integer({ minimum: 0, maximum: 65535 }), status_text: Type.Optional(Type.Union([Type.String(), Type.Null()])) });
+export const vuln_scanner_bola_test_response = Type.Object({ body: vuln_scanner_bola_body_response, header_names: Type.Array(Type.String()), status: Type.Integer({ minimum: 0, maximum: 65535 }), status_text: Type.Optional(Type.Union([Type.String(), Type.Null()])) });
 
 export type vuln_scanner_bola_test_step = Static<typeof vuln_scanner_bola_test_step>;
 export const vuln_scanner_bola_test_step = Type.Object({ assertions: Type.Array(vuln_scanner_bola_test_assertion), errors: Type.Optional(Type.Array(vuln_scanner_bola_test_error)), request: Type.Optional(Type.Union([Type.Intersect([vuln_scanner_bola_test_request, Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])]), Type.Null()])), response: Type.Optional(Type.Union([Type.Intersect([vuln_scanner_bola_test_response, Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()])]), Type.Null()])) });
 
 export type vuln_scanner_bola_test = Static<typeof vuln_scanner_bola_test>;
-export const vuln_scanner_bola_test = Type.Object({ preflight_errors: Type.Optional(Type.Array(vuln_scanner_bola_test_error)), steps: Type.Array(vuln_scanner_bola_test_step), verdict: Type.Intersect([vuln_scanner_bola_verdict]) });
+export const vuln_scanner_bola_test = Type.Object({ preflight_errors: Type.Optional(Type.Array(vuln_scanner_bola_test_error)), steps: Type.Array(vuln_scanner_bola_test_step), verdict: vuln_scanner_bola_verdict });
 
 export type vuln_scanner_bola_report_v1 = Static<typeof vuln_scanner_bola_report_v1>;
-export const vuln_scanner_bola_report_v1 = Type.Object({ summary: Type.Intersect([vuln_scanner_bola_report_summary]), tests: Type.Array(vuln_scanner_bola_test) });
+export const vuln_scanner_bola_report_v1 = Type.Object({ summary: vuln_scanner_bola_report_summary, tests: Type.Array(vuln_scanner_bola_test) });
 
 export type vuln_scanner_bola_report = Static<typeof vuln_scanner_bola_report>;
-export const vuln_scanner_bola_report = Type.Object({ report: Type.Intersect([vuln_scanner_bola_report_v1]), report_schema_version: Type.Literal("v1") });
+export const vuln_scanner_bola_report = Type.Object({ report: vuln_scanner_bola_report_v1, report_schema_version: Type.Literal("v1") });
 
 export type vuln_scanner_create_bola_scan_request = Static<typeof vuln_scanner_create_bola_scan_request>;
 export const vuln_scanner_create_bola_scan_request = Type.Object({ credential_sets: vuln_scanner_bola_credential_sets, open_api: Type.String(), scan_type: Type.Literal("bola"), target_environment_id: Type.String({ format: "uuid" }) });
@@ -17116,7 +17116,7 @@ export type waf_managed_rules_base = Static<typeof waf_managed_rules_base>;
 export const waf_managed_rules_base = Type.Partial(Type.Object({ description: waf_managed_rules_schemas_description, group: Type.Partial(Type.Object({ id: waf_managed_rules_components_schemas_identifier, name: waf_managed_rules_name })), id: waf_managed_rules_rule_components_schemas_identifier, package_id: waf_managed_rules_identifier, priority: waf_managed_rules_priority }));
 
 export type waf_managed_rules_schemas_base = Static<typeof waf_managed_rules_schemas_base>;
-export const waf_managed_rules_schemas_base = Type.Intersect([waf_managed_rules_base]);
+export const waf_managed_rules_schemas_base = waf_managed_rules_base;
 
 export type waf_managed_rules_anomaly_rule = Static<typeof waf_managed_rules_anomaly_rule>;
 export const waf_managed_rules_anomaly_rule = Type.Intersect([waf_managed_rules_schemas_base, Type.Partial(Type.Object({ allowed_modes: waf_managed_rules_allowed_modes_anomaly, mode: waf_managed_rules_mode_anomaly })), Type.Record(Type.String(), Type.Unknown())]);
@@ -17134,7 +17134,7 @@ export type waf_managed_rules_api_response_collection = Static<typeof waf_manage
 export const waf_managed_rules_api_response_collection = Type.Intersect([waf_managed_rules_api_response_common, Type.Partial(Type.Object({ result_info: waf_managed_rules_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type waf_managed_rules_api_response_common_failure = Static<typeof waf_managed_rules_api_response_common_failure>;
-export const waf_managed_rules_api_response_common_failure = Type.Object({ errors: Type.Intersect([waf_managed_rules_messages, Type.Unknown()]), messages: Type.Intersect([waf_managed_rules_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const waf_managed_rules_api_response_common_failure = Type.Object({ errors: waf_managed_rules_messages, messages: waf_managed_rules_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type waf_managed_rules_api_response_single = Static<typeof waf_managed_rules_api_response_single>;
 export const waf_managed_rules_api_response_single = Type.Intersect([waf_managed_rules_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), Type.Union([Type.String(), Type.Null()])]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -17155,10 +17155,10 @@ export type waf_managed_rules_group = Static<typeof waf_managed_rules_group>;
 export const waf_managed_rules_group = Type.Partial(Type.Object({ description: waf_managed_rules_description, id: waf_managed_rules_components_schemas_identifier, modified_rules_count: waf_managed_rules_modified_rules_count, name: waf_managed_rules_name, package_id: waf_managed_rules_identifier, rules_count: waf_managed_rules_rules_count }));
 
 export type waf_managed_rules_traditional_deny_rule = Static<typeof waf_managed_rules_traditional_deny_rule>;
-export const waf_managed_rules_traditional_deny_rule = Type.Intersect([waf_managed_rules_base, Type.Partial(Type.Object({ allowed_modes: waf_managed_rules_allowed_modes_deny_traditional, default_mode: waf_managed_rules_default_mode, mode: waf_managed_rules_mode_deny_traditional })), Type.Unknown()]);
+export const waf_managed_rules_traditional_deny_rule = Type.Intersect([waf_managed_rules_base, Type.Partial(Type.Object({ allowed_modes: waf_managed_rules_allowed_modes_deny_traditional, default_mode: waf_managed_rules_default_mode, mode: waf_managed_rules_mode_deny_traditional }))]);
 
 export type waf_managed_rules_traditional_allow_rule = Static<typeof waf_managed_rules_traditional_allow_rule>;
-export const waf_managed_rules_traditional_allow_rule = Type.Intersect([waf_managed_rules_base, Type.Partial(Type.Object({ allowed_modes: waf_managed_rules_allowed_modes_allow_traditional, mode: waf_managed_rules_mode_allow_traditional })), Type.Unknown()]);
+export const waf_managed_rules_traditional_allow_rule = Type.Intersect([waf_managed_rules_base, Type.Partial(Type.Object({ allowed_modes: waf_managed_rules_allowed_modes_allow_traditional, mode: waf_managed_rules_mode_allow_traditional }))]);
 
 export type waf_managed_rules_rule = Static<typeof waf_managed_rules_rule>;
 export const waf_managed_rules_rule = Type.Union([waf_managed_rules_anomaly_rule, waf_managed_rules_traditional_deny_rule, waf_managed_rules_traditional_allow_rule]);
@@ -17197,13 +17197,13 @@ export type waf_product_api_bundle_api_response_collection_2 = Static<typeof waf
 export const waf_product_api_bundle_api_response_collection_2 = Type.Intersect([waf_product_api_bundle_api_response_common_2, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Record(Type.String(), Type.Unknown())), Type.Null()]) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type waf_product_api_bundle_api_response_common_failure = Static<typeof waf_product_api_bundle_api_response_common_failure>;
-export const waf_product_api_bundle_api_response_common_failure = Type.Object({ errors: Type.Intersect([waf_product_api_bundle_messages, Type.Unknown()]), messages: Type.Intersect([waf_product_api_bundle_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const waf_product_api_bundle_api_response_common_failure = Type.Object({ errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type waf_product_api_bundle_api_response_common_failure_2 = Static<typeof waf_product_api_bundle_api_response_common_failure_2>;
-export const waf_product_api_bundle_api_response_common_failure_2 = Type.Object({ errors: Type.Intersect([waf_product_api_bundle_messages, Type.Unknown()]), messages: Type.Intersect([waf_product_api_bundle_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const waf_product_api_bundle_api_response_common_failure_2 = Type.Object({ errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type waf_product_api_bundle_api_response_common_failure_3 = Static<typeof waf_product_api_bundle_api_response_common_failure_3>;
-export const waf_product_api_bundle_api_response_common_failure_3 = Type.Object({ errors: Type.Intersect([waf_product_api_bundle_messages, Type.Unknown()]), messages: Type.Intersect([waf_product_api_bundle_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const waf_product_api_bundle_api_response_common_failure_3 = Type.Object({ errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type waf_product_api_bundle_api_response_single = Static<typeof waf_product_api_bundle_api_response_single>;
 export const waf_product_api_bundle_api_response_single = Type.Intersect([waf_product_api_bundle_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), Type.Union([Type.String(), Type.Null()])]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -17215,13 +17215,13 @@ export type waf_product_api_bundle_identifier = Static<typeof waf_product_api_bu
 export const waf_product_api_bundle_identifier = Type.String({ maxLength: 32 });
 
 export type waf_product_api_bundle_detection_id = Static<typeof waf_product_api_bundle_detection_id>;
-export const waf_product_api_bundle_detection_id = Type.Intersect([waf_product_api_bundle_identifier, Type.Unknown()]);
+export const waf_product_api_bundle_detection_id = waf_product_api_bundle_identifier;
 
 export type waf_product_api_bundle_custom_detection = Static<typeof waf_product_api_bundle_custom_detection>;
 export const waf_product_api_bundle_custom_detection = Type.Partial(Type.Object({ id: waf_product_api_bundle_detection_id, password: Type.String(), username: Type.String() }));
 
 export type waf_product_api_bundle_custom_scan_id = Static<typeof waf_product_api_bundle_custom_scan_id>;
-export const waf_product_api_bundle_custom_scan_id = Type.Intersect([waf_product_api_bundle_identifier]);
+export const waf_product_api_bundle_custom_scan_id = waf_product_api_bundle_identifier;
 
 export type waf_product_api_bundle_custom_scan_payload = Static<typeof waf_product_api_bundle_custom_scan_payload>;
 export const waf_product_api_bundle_custom_scan_payload = Type.String();
@@ -17284,7 +17284,7 @@ export type waitingroom_api_response_common = Static<typeof waitingroom_api_resp
 export const waitingroom_api_response_common = Type.Record(Type.String(), Type.Unknown());
 
 export type waitingroom_api_response_common_failure = Static<typeof waitingroom_api_response_common_failure>;
-export const waitingroom_api_response_common_failure = Type.Object({ errors: Type.Intersect([waitingroom_messages, Type.Unknown()]), messages: Type.Intersect([waitingroom_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const waitingroom_api_response_common_failure = Type.Object({ errors: waitingroom_messages, messages: waitingroom_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type waitingroom_api_response_single = Static<typeof waitingroom_api_response_single>;
 export const waitingroom_api_response_single = Type.Intersect([waitingroom_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.String()]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -17551,7 +17551,7 @@ export type web3_api_response_collection = Static<typeof web3_api_response_colle
 export const web3_api_response_collection = Type.Intersect([web3_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Array(Type.Unknown()), Type.Null()]), result_info: web3_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type web3_api_response_common_failure = Static<typeof web3_api_response_common_failure>;
-export const web3_api_response_common_failure = Type.Object({ errors: Type.Intersect([web3_messages, Type.Unknown()]), messages: Type.Intersect([web3_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const web3_api_response_common_failure = Type.Object({ errors: web3_messages, messages: web3_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type web3_api_response_single = Static<typeof web3_api_response_single>;
 export const web3_api_response_single = Type.Intersect([web3_api_response_common, Type.Partial(Type.Object({ result_info: Type.Union([Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), Type.Union([Type.String(), Type.Null()])]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -17647,7 +17647,7 @@ export type workers_kv_api_response_collection = Static<typeof workers_kv_api_re
 export const workers_kv_api_response_collection = Type.Intersect([workers_kv_api_response_common, Type.Partial(Type.Object({ result_info: workers_kv_result_info })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type workers_kv_api_response_common_failure = Static<typeof workers_kv_api_response_common_failure>;
-export const workers_kv_api_response_common_failure = Type.Object({ errors: Type.Intersect([workers_kv_messages, Type.Unknown()]), messages: Type.Intersect([workers_kv_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const workers_kv_api_response_common_failure = Type.Object({ errors: workers_kv_messages, messages: workers_kv_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type workers_kv_api_response_common_no_result = Static<typeof workers_kv_api_response_common_no_result>;
 export const workers_kv_api_response_common_no_result = Type.Intersect([workers_kv_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }))]);
@@ -17659,7 +17659,7 @@ export type workers_kv_expiration = Static<typeof workers_kv_expiration>;
 export const workers_kv_expiration = Type.Number();
 
 export type workers_kv_bulk_get_result_with_metadata = Static<typeof workers_kv_bulk_get_result_with_metadata>;
-export const workers_kv_bulk_get_result_with_metadata = Type.Partial(Type.Object({ values: Type.Record(Type.String(), Type.Union([Type.Object({ expiration: Type.Optional(workers_kv_expiration), metadata: Type.Intersect([Type.Unsafe(() => workers_kv_any), Type.Unknown()]), value: Type.Intersect([Type.Unsafe(() => workers_kv_any), Type.Unknown()]) }), Type.Null()])) }));
+export const workers_kv_bulk_get_result_with_metadata = Type.Partial(Type.Object({ values: Type.Record(Type.String(), Type.Union([Type.Object({ expiration: Type.Optional(workers_kv_expiration), metadata: Type.Unsafe(() => workers_kv_any), value: Type.Unsafe(() => workers_kv_any) }), Type.Null()])) }));
 
 export type workers_kv_bulk_result = Static<typeof workers_kv_bulk_result>;
 export const workers_kv_bulk_result = Type.Partial(Type.Object({ successful_key_count: Type.Number(), unsuccessful_keys: Type.Array(Type.String()) }));
@@ -17674,7 +17674,7 @@ export type workers_kv_expiration_ttl = Static<typeof workers_kv_expiration_ttl>
 export const workers_kv_expiration_ttl = Type.Number({ minimum: 60 });
 
 export type workers_kv_list_metadata = Static<typeof workers_kv_list_metadata>;
-export const workers_kv_list_metadata = Type.Intersect([Type.Unsafe(() => workers_kv_any), Type.Unknown()]);
+export const workers_kv_list_metadata = Type.Unsafe(() => workers_kv_any);
 
 export type workers_kv_bulk_write = Static<typeof workers_kv_bulk_write>;
 export const workers_kv_bulk_write = Type.Array(Type.Object({ base64: Type.Optional(Type.Boolean()), expiration: Type.Optional(workers_kv_expiration), expiration_ttl: Type.Optional(workers_kv_expiration_ttl), key: workers_kv_key_name_bulk, metadata: Type.Optional(workers_kv_list_metadata), value: Type.String({ maxLength: 26214400 }) }));
@@ -17701,7 +17701,7 @@ export type workers_kv_key = Static<typeof workers_kv_key>;
 export const workers_kv_key = Type.Object({ expiration: Type.Optional(Type.Number()), metadata: Type.Optional(workers_kv_list_metadata), name: workers_kv_key_name });
 
 export type workers_kv_metadata = Static<typeof workers_kv_metadata>;
-export const workers_kv_metadata = Type.Intersect([Type.Unsafe(() => workers_kv_any), Type.Unknown()]);
+export const workers_kv_metadata = Type.Unsafe(() => workers_kv_any);
 
 export type workers_kv_namespace_identifier = Static<typeof workers_kv_namespace_identifier>;
 export const workers_kv_namespace_identifier = Type.String({ maxLength: 32 });
@@ -17917,7 +17917,7 @@ export type workers_entrypoint_cache_options = Static<typeof workers_entrypoint_
 export const workers_entrypoint_cache_options = Type.Object({ enabled: Type.Boolean() });
 
 export type workers_worker_export = Static<typeof workers_worker_export>;
-export const workers_worker_export = Type.Object({ cache: Type.Optional(Type.Intersect([workers_entrypoint_cache_options])), state: Type.Optional(Type.Literal("created")), type: Type.Literal("worker") });
+export const workers_worker_export = Type.Object({ cache: Type.Optional(workers_entrypoint_cache_options), state: Type.Optional(Type.Literal("created")), type: Type.Literal("worker") });
 
 export type workers_export_storage = Static<typeof workers_export_storage>;
 export const workers_export_storage = Type.Union([Type.Literal("sqlite"), Type.Literal("legacy-kv")]);
@@ -17986,7 +17986,7 @@ export type workers_placement_info_no_status = Static<typeof workers_placement_i
 export const workers_placement_info_no_status = Type.Union([Type.Object({ mode: Type.Literal("smart") }), Type.Object({ region: Type.String() }), Type.Object({ hostname: Type.String() }), Type.Object({ host: Type.String() }), Type.Object({ mode: Type.Literal("targeted"), region: Type.String() }), Type.Object({ hostname: Type.String(), mode: Type.Literal("targeted") }), Type.Object({ host: Type.String(), mode: Type.Literal("targeted") }), Type.Object({ mode: Type.Literal("targeted"), target: Type.Array(workers_placement_target, { minItems: 1, maxItems: 1 }) })]);
 
 export type workers_Version = Static<typeof workers_Version>;
-export const workers_Version = Type.Object({ annotations: Type.Optional(Type.Partial(Type.Object({ "workers/message": Type.String({ maxLength: 1000 }), "workers/tag": Type.String({ maxLength: 100 }), "workers/triggered_by": Type.String() }))), assets: Type.Optional(Type.Partial(Type.Object({ config: Type.Partial(Type.Object({ html_handling: Type.Union([Type.Literal("auto-trailing-slash"), Type.Literal("force-trailing-slash"), Type.Literal("drop-trailing-slash"), Type.Literal("none")]), not_found_handling: Type.Union([Type.Literal("none"), Type.Literal("404-page"), Type.Literal("single-page-application")]), run_worker_first: Type.Union([Type.Array(Type.String()), Type.Boolean()]) })), jwt: Type.String() }))), bindings: Type.Optional(workers_bindings), cache_options: Type.Optional(workers_cache_options), compatibility_date: Type.Optional(workers_compatibility_date), compatibility_flags: Type.Optional(workers_compatibility_flags), containers: Type.Optional(workers_containers), created_on: Type.String({ format: "date-time" }), exports: Type.Optional(Type.Intersect([workers_exports_config_map])), exports_reconciliation: Type.Optional(Type.Intersect([workers_exports_reconciliation_result])), id: Type.String({ format: "uuid" }), limits: Type.Optional(Type.Partial(Type.Object({ cpu_ms: Type.Integer(), subrequests: Type.Integer() }))), main_module: Type.Optional(Type.String()), migration_tag: Type.Optional(Type.String()), migrations: Type.Optional(Type.Union([workers_single_step_migrations, workers_multiple_step_migrations])), modules: Type.Optional(Type.Array(Type.Object({ content_base64: Type.Unsafe<Blob>({ type: "string", format: "binary" }), content_type: Type.String(), name: Type.String() }))), number: Type.Integer(), package_dependencies: Type.Optional(Type.Array(Type.Object({ installedVersion: Type.String(), name: Type.String(), packageJsonVersion: Type.String() }))), placement: Type.Optional(workers_placement_info_no_status), source: Type.Optional(Type.String()), startup_time_ms: Type.Optional(Type.Integer()), urls: Type.Array(Type.String({ format: "uri" })), usage_model: Type.Optional(Type.Union([Type.Literal("standard"), Type.Literal("bundled"), Type.Literal("unbound")])) });
+export const workers_Version = Type.Object({ annotations: Type.Optional(Type.Partial(Type.Object({ "workers/message": Type.String({ maxLength: 1000 }), "workers/tag": Type.String({ maxLength: 100 }), "workers/triggered_by": Type.String() }))), assets: Type.Optional(Type.Partial(Type.Object({ config: Type.Partial(Type.Object({ html_handling: Type.Union([Type.Literal("auto-trailing-slash"), Type.Literal("force-trailing-slash"), Type.Literal("drop-trailing-slash"), Type.Literal("none")]), not_found_handling: Type.Union([Type.Literal("none"), Type.Literal("404-page"), Type.Literal("single-page-application")]), run_worker_first: Type.Union([Type.Array(Type.String()), Type.Boolean()]) })), jwt: Type.String() }))), bindings: Type.Optional(workers_bindings), cache_options: Type.Optional(workers_cache_options), compatibility_date: Type.Optional(workers_compatibility_date), compatibility_flags: Type.Optional(workers_compatibility_flags), containers: Type.Optional(workers_containers), created_on: Type.String({ format: "date-time" }), exports: Type.Optional(workers_exports_config_map), exports_reconciliation: Type.Optional(workers_exports_reconciliation_result), id: Type.String({ format: "uuid" }), limits: Type.Optional(Type.Partial(Type.Object({ cpu_ms: Type.Integer(), subrequests: Type.Integer() }))), main_module: Type.Optional(Type.String()), migration_tag: Type.Optional(Type.String()), migrations: Type.Optional(Type.Union([workers_single_step_migrations, workers_multiple_step_migrations])), modules: Type.Optional(Type.Array(Type.Object({ content_base64: Type.Unsafe<Blob>({ type: "string", format: "binary" }), content_type: Type.String(), name: Type.String() }))), number: Type.Integer(), package_dependencies: Type.Optional(Type.Array(Type.Object({ installedVersion: Type.String(), name: Type.String(), packageJsonVersion: Type.String() }))), placement: Type.Optional(workers_placement_info_no_status), source: Type.Optional(Type.String()), startup_time_ms: Type.Optional(Type.Integer()), urls: Type.Array(Type.String({ format: "uri" })), usage_model: Type.Optional(Type.Union([Type.Literal("standard"), Type.Literal("bundled"), Type.Literal("unbound")])) });
 
 export type workers_Worker = Static<typeof workers_Worker>;
 export const workers_Worker = Type.Object({ created_on: Type.String({ format: "date-time" }), deployed_on: Type.Optional(Type.Union([Type.String({ format: "date-time" }), Type.Null()])), id: Type.String(), logpush: Type.Boolean(), name: Type.String({ pattern: "^[a-z0-9_][a-z0-9-_]*$" }), observability: Type.Partial(Type.Object({ enabled: Type.Boolean(), head_sampling_rate: Type.Number(), logs: Type.Partial(Type.Object({ destinations: Type.Array(Type.String()), enabled: Type.Boolean(), head_sampling_rate: Type.Number(), invocation_logs: Type.Boolean(), persist: Type.Boolean() })), traces: Type.Partial(Type.Object({ destinations: Type.Array(Type.String()), enabled: Type.Boolean(), head_sampling_rate: Type.Number(), persist: Type.Boolean(), propagation_policy: Type.Union([Type.Literal("authenticated"), Type.Literal("accept")]) })) })), references: Type.Object({ dispatch_namespace_outbounds: Type.Array(Type.Object({ namespace_id: Type.String(), namespace_name: Type.String(), worker_id: Type.String(), worker_name: Type.String() })), domains: Type.Array(Type.Object({ certificate_id: Type.String(), hostname: Type.String(), id: Type.String(), zone_id: Type.String(), zone_name: Type.String() })), durable_objects: Type.Array(Type.Object({ namespace_id: Type.String(), namespace_name: Type.String(), worker_id: Type.String(), worker_name: Type.String() })), queues: Type.Array(Type.Object({ queue_consumer_id: Type.String(), queue_id: Type.String(), queue_name: Type.String() })), workers: Type.Array(Type.Object({ id: Type.String(), name: Type.String() })) }), subdomain: Type.Partial(Type.Object({ enabled: Type.Boolean(), previews_enabled: Type.Boolean() })), tags: Type.Array(Type.String({ maxLength: 1024, pattern: "^[^,&]*$" }), { maxItems: 8 }), tail_consumers: Type.Array(Type.Object({ name: Type.String() })), updated_on: Type.String({ format: "date-time" }) });
@@ -18004,7 +18004,7 @@ export type workers_api_response_collection = Static<typeof workers_api_response
 export const workers_api_response_collection = Type.Intersect([workers_api_response_common, Type.Partial(Type.Object({ result_info: Type.Partial(Type.Object({ count: Type.Number(), page: Type.Number(), per_page: Type.Number(), total_count: Type.Number(), total_pages: Type.Number() })) })), Type.Record(Type.String(), Type.Unknown())]);
 
 export type workers_api_response_common_failure = Static<typeof workers_api_response_common_failure>;
-export const workers_api_response_common_failure = Type.Object({ errors: Type.Intersect([workers_messages, Type.Unknown()]), messages: Type.Intersect([workers_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const workers_api_response_common_failure = Type.Object({ errors: workers_messages, messages: workers_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type workers_api_response_null_result = Static<typeof workers_api_response_null_result>;
 export const workers_api_response_null_result = Type.Intersect([workers_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }))]);
@@ -18088,7 +18088,7 @@ export type workers_usage_model = Static<typeof workers_usage_model>;
 export const workers_usage_model = Type.Union([Type.Literal("standard"), Type.Literal("bundled"), Type.Literal("unbound")]);
 
 export type workers_multipart_script = Static<typeof workers_multipart_script>;
-export const workers_multipart_script = Type.Object({ files: Type.Optional(Type.Array(Type.Unsafe<Blob>({ type: "string", format: "binary" }))), metadata: Type.Partial(Type.Object({ assets: workers_assets, bindings: workers_bindings, body_part: Type.String(), cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, exports: Type.Intersect([workers_exports_config_map, Type.Unknown()]), exports_reconciliation: Type.Intersect([workers_exports_reconciliation_result]), keep_assets: Type.Boolean(), keep_bindings: Type.Array(Type.String()), limits: workers_limits, logpush: workers_logpush, main_module: Type.String(), migrations: Type.Union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, package_dependencies: Type.Array(Type.Object({ installedVersion: Type.String(), name: Type.String(), packageJsonVersion: Type.String() })), placement: workers_placement_info, tags: Type.Array(Type.String()), tail_consumers: workers_tail_consumers, usage_model: workers_usage_model })) });
+export const workers_multipart_script = Type.Object({ files: Type.Optional(Type.Array(Type.Unsafe<Blob>({ type: "string", format: "binary" }))), metadata: Type.Partial(Type.Object({ assets: workers_assets, bindings: workers_bindings, body_part: Type.String(), cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, keep_assets: Type.Boolean(), keep_bindings: Type.Array(Type.String()), limits: workers_limits, logpush: workers_logpush, main_module: Type.String(), migrations: Type.Union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, package_dependencies: Type.Array(Type.Object({ installedVersion: Type.String(), name: Type.String(), packageJsonVersion: Type.String() })), placement: workers_placement_info, tags: Type.Array(Type.String()), tail_consumers: workers_tail_consumers, usage_model: workers_usage_model })) });
 
 export type workers_namespace = Static<typeof workers_namespace>;
 export const workers_namespace = Type.Partial(Type.Object({ class: Type.String(), id: Type.String(), name: Type.String(), script: Type.String(), use_sqlite: Type.Boolean() }));
@@ -18115,7 +18115,7 @@ export type workers_tags = Static<typeof workers_tags>;
 export const workers_tags = Type.Union([Type.Array(workers_tag, { maxItems: 10 }), Type.Null()]);
 
 export type workers_namespace_script_and_version_settings_item = Static<typeof workers_namespace_script_and_version_settings_item>;
-export const workers_namespace_script_and_version_settings_item = Type.Partial(Type.Object({ bindings: Type.Intersect([workers_bindings, Type.Array(workers_binding_item)]), cache_options: workers_cache_options, compatibility_date: Type.Intersect([workers_compatibility_date, Type.String()]), compatibility_flags: Type.Intersect([workers_compatibility_flags, Type.Array(Type.String())]), exports: Type.Intersect([workers_exports_config_map, Type.Unknown()]), exports_reconciliation: Type.Intersect([workers_exports_reconciliation_result]), limits: workers_limits, logpush: workers_logpush, migrations: Type.Union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, placement: Type.Intersect([workers_placement_info_no_status, Type.Record(Type.String(), Type.Unknown())]), tags: Type.Intersect([workers_tags, Type.Array(Type.String())]), tail_consumers: Type.Intersect([workers_tail_consumers, Type.Array(workers_tail_consumers_script)]), usage_model: workers_usage_model }));
+export const workers_namespace_script_and_version_settings_item = Type.Partial(Type.Object({ bindings: Type.Intersect([workers_bindings, Type.Array(workers_binding_item)]), cache_options: workers_cache_options, compatibility_date: Type.Intersect([workers_compatibility_date, Type.String()]), compatibility_flags: Type.Intersect([workers_compatibility_flags, Type.Array(Type.String())]), exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, limits: workers_limits, logpush: workers_logpush, migrations: Type.Union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, placement: Type.Intersect([workers_placement_info_no_status, Type.Record(Type.String(), Type.Unknown())]), tags: Type.Intersect([workers_tags, Type.Array(Type.String())]), tail_consumers: Type.Intersect([workers_tail_consumers, Type.Array(workers_tail_consumers_script)]), usage_model: workers_usage_model }));
 
 export type workers_namespace_script_delete_bulk_response = Static<typeof workers_namespace_script_delete_bulk_response>;
 export const workers_namespace_script_delete_bulk_response = Type.Partial(Type.Object({ deleted: Type.Array(Type.Partial(Type.Object({ id: workers_uuid }))), deleted_count: Type.Integer(), has_more: Type.Boolean() }));
@@ -18124,7 +18124,7 @@ export type workers_placement_mode = Static<typeof workers_placement_mode>;
 export const workers_placement_mode = Type.Union([Type.Literal("smart"), Type.Literal("targeted")]);
 
 export type workers_script_response = Static<typeof workers_script_response>;
-export const workers_script_response = Type.Partial(Type.Object({ cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, created_on: workers_created_on, etag: workers_etag, exports: Type.Intersect([workers_exports_config_map, Type.Unknown()]), handlers: Type.Array(Type.String()), has_assets: workers_has_assets, has_modules: workers_has_modules, id: Type.String(), last_deployed_from: Type.String(), logpush: workers_logpush, migration_tag: Type.String(), modified_on: workers_modified_on, named_handlers: Type.Array(Type.Partial(Type.Object({ handlers: Type.Array(Type.String()), name: Type.String() }))), observability: workers_observability, placement: workers_placement_info, placement_mode: Type.Intersect([workers_placement_mode, Type.String()]), placement_status: Type.Intersect([workers_placement_status, Type.String()]), tag: Type.String(), tags: workers_tags, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }));
+export const workers_script_response = Type.Partial(Type.Object({ cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, created_on: workers_created_on, etag: workers_etag, exports: workers_exports_config_map, handlers: Type.Array(Type.String()), has_assets: workers_has_assets, has_modules: workers_has_modules, id: Type.String(), last_deployed_from: Type.String(), logpush: workers_logpush, migration_tag: Type.String(), modified_on: workers_modified_on, named_handlers: Type.Array(Type.Partial(Type.Object({ handlers: Type.Array(Type.String()), name: Type.String() }))), observability: workers_observability, placement: workers_placement_info, placement_mode: Type.Intersect([workers_placement_mode, Type.String()]), placement_status: Type.Intersect([workers_placement_status, Type.String()]), tag: Type.String(), tags: workers_tags, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }));
 
 export type workers_namespace_script_response = Static<typeof workers_namespace_script_response>;
 export const workers_namespace_script_response = Type.Partial(Type.Object({ created_on: workers_created_on, dispatch_namespace: workers_dispatch_namespace_name, modified_on: workers_modified_on, script: workers_script_response }));
@@ -18148,7 +18148,7 @@ export type workers_placement_regions_response = Static<typeof workers_placement
 export const workers_placement_regions_response = Type.Object({ providers: Type.Array(workers_placement_provider) });
 
 export type workers_route = Static<typeof workers_route>;
-export const workers_route = Type.Object({ id: Type.Intersect([workers_identifier, Type.Unknown()]), pattern: Type.String(), script: Type.Optional(Type.String()) });
+export const workers_route = Type.Object({ id: workers_identifier, pattern: Type.String(), script: Type.Optional(Type.String()) });
 
 export type workers_schedule = Static<typeof workers_schedule>;
 export const workers_schedule = Type.Object({ created_on: Type.Optional(Type.String()), cron: Type.String(), modified_on: Type.Optional(Type.String()) });
@@ -18157,7 +18157,7 @@ export type workers_schemas_id = Static<typeof workers_schemas_id>;
 export const workers_schemas_id = Type.String();
 
 export type workers_script_and_version_settings_item = Static<typeof workers_script_and_version_settings_item>;
-export const workers_script_and_version_settings_item = Type.Partial(Type.Object({ annotations: Type.Partial(Type.Object({ "workers/message": Type.String({ maxLength: 1000 }), "workers/tag": Type.String({ maxLength: 100 }), "workers/triggered_by": Type.String() })), bindings: Type.Intersect([workers_bindings, Type.Array(workers_binding_item)]), cache_options: workers_cache_options, compatibility_date: Type.Intersect([workers_compatibility_date, Type.String()]), compatibility_flags: Type.Intersect([workers_compatibility_flags, Type.Array(Type.String())]), exports: Type.Intersect([workers_exports_config_map, Type.Unknown()]), exports_reconciliation: Type.Intersect([workers_exports_reconciliation_result]), limits: workers_limits, logpush: workers_logpush, migrations: Type.Union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, placement: Type.Intersect([workers_placement_info_no_status, Type.Record(Type.String(), Type.Unknown())]), tags: Type.Intersect([workers_tags, Type.Array(Type.String())]), tail_consumers: Type.Intersect([workers_tail_consumers, Type.Array(workers_tail_consumers_script)]), usage_model: workers_usage_model }));
+export const workers_script_and_version_settings_item = Type.Partial(Type.Object({ annotations: Type.Partial(Type.Object({ "workers/message": Type.String({ maxLength: 1000 }), "workers/tag": Type.String({ maxLength: 100 }), "workers/triggered_by": Type.String() })), bindings: Type.Intersect([workers_bindings, Type.Array(workers_binding_item)]), cache_options: workers_cache_options, compatibility_date: Type.Intersect([workers_compatibility_date, Type.String()]), compatibility_flags: Type.Intersect([workers_compatibility_flags, Type.Array(Type.String())]), exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, limits: workers_limits, logpush: workers_logpush, migrations: Type.Union([workers_single_step_migrations, workers_multiple_step_migrations]), observability: workers_observability, placement: Type.Intersect([workers_placement_info_no_status, Type.Record(Type.String(), Type.Unknown())]), tags: Type.Intersect([workers_tags, Type.Array(Type.String())]), tail_consumers: Type.Intersect([workers_tail_consumers, Type.Array(workers_tail_consumers_script)]), usage_model: workers_usage_model }));
 
 export type workers_script_and_version_settings_response = Static<typeof workers_script_and_version_settings_response>;
 export const workers_script_and_version_settings_response = Type.Intersect([workers_api_response_common, Type.Object({ result: workers_script_and_version_settings_item })]);
@@ -18211,7 +18211,7 @@ export type workers_subdomain_2 = Static<typeof workers_subdomain_2>;
 export const workers_subdomain_2 = Type.Object({ subdomain: Type.String() });
 
 export type workers_tail = Static<typeof workers_tail>;
-export const workers_tail = Type.Object({ expires_at: Type.String(), id: Type.Intersect([workers_identifier, Type.Unknown()]), url: Type.String() });
+export const workers_tail = Type.Object({ expires_at: Type.String(), id: workers_identifier, url: Type.String() });
 
 export type workers_upload_assets_response = Static<typeof workers_upload_assets_response>;
 export const workers_upload_assets_response = Type.Intersect([workers_api_response_common, Type.Partial(Type.Object({ result: Type.Record(Type.String(), Type.Unknown()) }))]);
@@ -18226,10 +18226,10 @@ export type workers_version_item_short = Static<typeof workers_version_item_shor
 export const workers_version_item_short = Type.Partial(Type.Object({ id: Type.String(), metadata: Type.Partial(Type.Object({ author_email: Type.String(), author_id: Type.String(), created_on: Type.String(), hasPreview: Type.Boolean(), modified_on: Type.String(), source: Type.Union([Type.Literal("unknown"), Type.Literal("api"), Type.Literal("wrangler"), Type.Literal("terraform"), Type.Literal("dash"), Type.Literal("cf_cli"), Type.Literal("dash_template"), Type.Literal("integration"), Type.Literal("quick_editor"), Type.Literal("playground"), Type.Literal("workersci")]) })), number: Type.Number() }));
 
 export type workers_version_item_full = Static<typeof workers_version_item_full>;
-export const workers_version_item_full = Type.Intersect([workers_version_item_short, Type.Object({ resources: Type.Partial(Type.Object({ bindings: Type.Intersect([workers_bindings, Type.Unknown()]), script: Type.Partial(Type.Object({ etag: Type.String(), handlers: Type.Array(Type.String()), last_deployed_from: Type.String(), named_handlers: Type.Array(Type.Partial(Type.Object({ handlers: Type.Array(Type.String()), name: Type.String() }))) })), script_runtime: Type.Partial(Type.Object({ compatibility_date: Type.String(), compatibility_flags: Type.Array(Type.String()), exports: Type.Intersect([workers_exports_config_map, Type.Unknown()]), limits: Type.Partial(Type.Object({ cpu_ms: Type.Integer() })), migration_tag: Type.String(), usage_model: Type.Union([Type.Literal("bundled"), Type.Literal("unbound"), Type.Literal("standard")]) })) })) })]);
+export const workers_version_item_full = Type.Intersect([workers_version_item_short, Type.Object({ resources: Type.Partial(Type.Object({ bindings: workers_bindings, script: Type.Partial(Type.Object({ etag: Type.String(), handlers: Type.Array(Type.String()), last_deployed_from: Type.String(), named_handlers: Type.Array(Type.Partial(Type.Object({ handlers: Type.Array(Type.String()), name: Type.String() }))) })), script_runtime: Type.Partial(Type.Object({ compatibility_date: Type.String(), compatibility_flags: Type.Array(Type.String()), exports: workers_exports_config_map, limits: Type.Partial(Type.Object({ cpu_ms: Type.Integer() })), migration_tag: Type.String(), usage_model: Type.Union([Type.Literal("bundled"), Type.Literal("unbound"), Type.Literal("standard")]) })) })) })]);
 
 export type workers_version_item_uploaded = Static<typeof workers_version_item_uploaded>;
-export const workers_version_item_uploaded = Type.Intersect([workers_version_item_full, Type.Object({ exports_reconciliation: Type.Optional(Type.Intersect([workers_exports_reconciliation_result])), startup_time_ms: Type.Optional(Type.Integer()) })]);
+export const workers_version_item_uploaded = Type.Intersect([workers_version_item_full, Type.Object({ exports_reconciliation: Type.Optional(workers_exports_reconciliation_result), startup_time_ms: Type.Optional(Type.Integer()) })]);
 
 export type workers_version_identifier = Static<typeof workers_version_identifier>;
 export const workers_version_identifier = Type.String({ maxLength: 36 });
@@ -18250,7 +18250,7 @@ export type zaraz_api_response_common = Static<typeof zaraz_api_response_common>
 export const zaraz_api_response_common = Type.Object({ errors: zaraz_messages, messages: zaraz_messages, success: Type.Boolean() });
 
 export type zaraz_api_response_common_failure = Static<typeof zaraz_api_response_common_failure>;
-export const zaraz_api_response_common_failure = Type.Object({ errors: Type.Intersect([zaraz_messages, Type.Unknown()]), messages: Type.Intersect([zaraz_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const zaraz_api_response_common_failure = Type.Object({ errors: zaraz_messages, messages: zaraz_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type zaraz_base_tool = Static<typeof zaraz_base_tool>;
 export const zaraz_base_tool = Type.Object({ blockingTriggers: Type.Array(Type.String()), defaultFields: Type.Record(Type.String(), Type.Union([Type.String(), Type.Boolean()])), defaultPurpose: Type.Optional(Type.String()), enabled: Type.Boolean(), name: Type.String(), vendorName: Type.Optional(Type.String()), vendorPolicyUrl: Type.Optional(Type.String()) });
@@ -18577,7 +18577,7 @@ export type zero_trust_gateway_gateway_account_egress_cidr_pair_list_response = 
 export const zero_trust_gateway_gateway_account_egress_cidr_pair_list_response = Type.Intersect([zero_trust_gateway_api_response_single, Type.Partial(Type.Object({ result: Type.Array(zero_trust_gateway_gateway_account_egress_cidr) }))]);
 
 export type zero_trust_gateway_gateway_account_logging_settings = Static<typeof zero_trust_gateway_gateway_account_logging_settings>;
-export const zero_trust_gateway_gateway_account_logging_settings = Type.Partial(Type.Object({ redact_pii: Type.Boolean(), settings_by_rule_type: Type.Partial(Type.Object({ dns: Type.Intersect([zero_trust_gateway_account_log_options]), http: Type.Intersect([zero_trust_gateway_account_log_options]), l4: Type.Intersect([zero_trust_gateway_account_log_options]) })) }));
+export const zero_trust_gateway_gateway_account_logging_settings = Type.Partial(Type.Object({ redact_pii: Type.Boolean(), settings_by_rule_type: Type.Partial(Type.Object({ dns: zero_trust_gateway_account_log_options, http: zero_trust_gateway_account_log_options, l4: zero_trust_gateway_account_log_options })) }));
 
 export type zero_trust_gateway_gateway_account_logging_settings_response = Static<typeof zero_trust_gateway_gateway_account_logging_settings_response>;
 export const zero_trust_gateway_gateway_account_logging_settings_response = Type.Intersect([zero_trust_gateway_api_response_single, Type.Partial(Type.Object({ result: zero_trust_gateway_gateway_account_logging_settings }))]);
@@ -18817,7 +18817,7 @@ export type zone_activation_api_response_common = Static<typeof zone_activation_
 export const zone_activation_api_response_common = Type.Object({ errors: zone_activation_messages, messages: zone_activation_messages, success: Type.Literal(true) });
 
 export type zone_activation_api_response_common_failure = Static<typeof zone_activation_api_response_common_failure>;
-export const zone_activation_api_response_common_failure = Type.Object({ errors: Type.Intersect([zone_activation_messages, Type.Unknown()]), messages: Type.Intersect([zone_activation_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const zone_activation_api_response_common_failure = Type.Object({ errors: zone_activation_messages, messages: zone_activation_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type zone_activation_api_response_single = Static<typeof zone_activation_api_response_single>;
 export const zone_activation_api_response_single = Type.Intersect([zone_activation_api_response_common, Type.Record(Type.String(), Type.Unknown())]);
@@ -18832,7 +18832,7 @@ export type zone_analytics_api_api_response_common = Static<typeof zone_analytic
 export const zone_analytics_api_api_response_common = Type.Object({ errors: zone_analytics_api_messages, messages: zone_analytics_api_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Array(Type.Unknown()), Type.String()]), success: Type.Literal(true) });
 
 export type zone_analytics_api_api_response_common_failure = Static<typeof zone_analytics_api_api_response_common_failure>;
-export const zone_analytics_api_api_response_common_failure = Type.Object({ errors: Type.Intersect([zone_analytics_api_messages, Type.Unknown()]), messages: Type.Intersect([zone_analytics_api_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const zone_analytics_api_api_response_common_failure = Type.Object({ errors: zone_analytics_api_messages, messages: zone_analytics_api_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type zone_analytics_api_api_response_single = Static<typeof zone_analytics_api_api_response_single>;
 export const zone_analytics_api_api_response_single = Type.Intersect([zone_analytics_api_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), Type.Union([Type.String(), Type.Null()])]) })), Type.Record(Type.String(), Type.Unknown())]);
@@ -19039,7 +19039,7 @@ export type zones_always_use_https_value = Static<typeof zones_always_use_https_
 export const zones_always_use_https_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
 
 export type zones_always_use_https_2 = Static<typeof zones_always_use_https_2>;
-export const zones_always_use_https_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("always_use_https"), value: zones_always_use_https_value })), Type.Unknown()]);
+export const zones_always_use_https_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("always_use_https"), value: zones_always_use_https_value }))]);
 
 export type zones_messages = Static<typeof zones_messages>;
 export const zones_messages = Type.Array(Type.Object({ code: Type.Integer({ minimum: 1000 }), message: Type.String() }));
@@ -19060,13 +19060,13 @@ export type zones_api_response_common_4 = Static<typeof zones_api_response_commo
 export const zones_api_response_common_4 = Type.Object({ errors: zones_messages, messages: zones_messages, success: Type.Boolean() });
 
 export type zones_api_response_common_failure = Static<typeof zones_api_response_common_failure>;
-export const zones_api_response_common_failure = Type.Object({ errors: Type.Intersect([zones_messages, Type.Unknown()]), messages: Type.Intersect([zones_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
+export const zones_api_response_common_failure = Type.Object({ errors: zones_messages, messages: zones_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
 
 export type zones_api_response_common_failure_2 = Static<typeof zones_api_response_common_failure_2>;
-export const zones_api_response_common_failure_2 = Type.Object({ errors: Type.Intersect([zones_messages_2, Type.Unknown()]), messages: Type.Intersect([zones_messages_2]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
+export const zones_api_response_common_failure_2 = Type.Object({ errors: zones_messages_2, messages: zones_messages_2, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Literal(false) });
 
 export type zones_api_response_common_failure_3 = Static<typeof zones_api_response_common_failure_3>;
-export const zones_api_response_common_failure_3 = Type.Object({ errors: Type.Intersect([zones_messages, Type.Unknown()]), messages: Type.Intersect([zones_messages]), result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
+export const zones_api_response_common_failure_3 = Type.Object({ errors: zones_messages, messages: zones_messages, result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]), success: Type.Boolean() });
 
 export type zones_api_response_single = Static<typeof zones_api_response_single>;
 export const zones_api_response_single = Type.Intersect([zones_api_response_common_2, Type.Record(Type.String(), Type.Unknown())]);
@@ -19090,7 +19090,7 @@ export type zones_automatic_https_rewrites_value = Static<typeof zones_automatic
 export const zones_automatic_https_rewrites_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
 
 export type zones_automatic_https_rewrites_2 = Static<typeof zones_automatic_https_rewrites_2>;
-export const zones_automatic_https_rewrites_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("automatic_https_rewrites"), value: zones_automatic_https_rewrites_value })), Type.Unknown()]);
+export const zones_automatic_https_rewrites_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("automatic_https_rewrites"), value: zones_automatic_https_rewrites_value }))]);
 
 export type zones_automatic_platform_optimization = Static<typeof zones_automatic_platform_optimization>;
 export const zones_automatic_platform_optimization = Type.Object({ cache_by_device_type: Type.Boolean(), cf: Type.Boolean(), enabled: Type.Boolean(), hostnames: Type.Array(Type.String({ format: "hostname" })), wordpress: Type.Boolean(), wp_plugin: Type.Boolean() });
@@ -19159,13 +19159,13 @@ export type zones_ciphers_value = Static<typeof zones_ciphers_value>;
 export const zones_ciphers_value = Type.Array(Type.String(), { uniqueItems: true });
 
 export type zones_ciphers = Static<typeof zones_ciphers>;
-export const zones_ciphers = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("ciphers"), value: zones_ciphers_value })), Type.Unknown()]);
+export const zones_ciphers = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("ciphers"), value: zones_ciphers_value }))]);
 
 export type zones_cname_flattening_value = Static<typeof zones_cname_flattening_value>;
 export const zones_cname_flattening_value = Type.Union([Type.Literal("flatten_at_root"), Type.Literal("flatten_all")]);
 
 export type zones_cname_flattening = Static<typeof zones_cname_flattening>;
-export const zones_cname_flattening = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("cname_flattening"), value: zones_cname_flattening_value })), Type.Unknown()]);
+export const zones_cname_flattening = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("cname_flattening"), value: zones_cname_flattening_value }))]);
 
 export type zones_content_converter_value = Static<typeof zones_content_converter_value>;
 export const zones_content_converter_value = Type.Union([Type.Literal("off"), Type.Literal("on")]);
@@ -19252,13 +19252,13 @@ export type zones_min_tls_version_value = Static<typeof zones_min_tls_version_va
 export const zones_min_tls_version_value = Type.Union([Type.Literal("1.0"), Type.Literal("1.1"), Type.Literal("1.2"), Type.Literal("1.3")]);
 
 export type zones_min_tls_version = Static<typeof zones_min_tls_version>;
-export const zones_min_tls_version = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("min_tls_version"), value: zones_min_tls_version_value })), Type.Unknown()]);
+export const zones_min_tls_version = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("min_tls_version"), value: zones_min_tls_version_value }))]);
 
 export type zones_mirage_value = Static<typeof zones_mirage_value>;
 export const zones_mirage_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
 
 export type zones_mirage_2 = Static<typeof zones_mirage_2>;
-export const zones_mirage_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("mirage"), value: zones_mirage_value })), Type.Unknown()]);
+export const zones_mirage_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("mirage"), value: zones_mirage_value }))]);
 
 export type zones_modified_on = Static<typeof zones_modified_on>;
 export const zones_modified_on = Type.String({ format: "date-time" });
@@ -19279,7 +19279,7 @@ export type zones_opportunistic_onion_value = Static<typeof zones_opportunistic_
 export const zones_opportunistic_onion_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
 
 export type zones_opportunistic_onion = Static<typeof zones_opportunistic_onion>;
-export const zones_opportunistic_onion = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("opportunistic_onion"), value: zones_opportunistic_onion_value })), Type.Unknown()]);
+export const zones_opportunistic_onion = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("opportunistic_onion"), value: zones_opportunistic_onion_value }))]);
 
 export type zones_orange_to_orange_value = Static<typeof zones_orange_to_orange_value>;
 export const zones_orange_to_orange_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
@@ -19291,7 +19291,7 @@ export type zones_origin_error_page_pass_thru_value = Static<typeof zones_origin
 export const zones_origin_error_page_pass_thru_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
 
 export type zones_origin_error_page_pass_thru_2 = Static<typeof zones_origin_error_page_pass_thru_2>;
-export const zones_origin_error_page_pass_thru_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("origin_error_page_pass_thru"), value: zones_origin_error_page_pass_thru_value })), Type.Unknown()]);
+export const zones_origin_error_page_pass_thru_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("origin_error_page_pass_thru"), value: zones_origin_error_page_pass_thru_value }))]);
 
 export type zones_polish_value = Static<typeof zones_polish_value>;
 export const zones_polish_value = Type.Union([Type.Literal("off"), Type.Literal("lossless"), Type.Literal("lossy")]);
@@ -19303,13 +19303,13 @@ export type zones_prefetch_preload_value = Static<typeof zones_prefetch_preload_
 export const zones_prefetch_preload_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
 
 export type zones_prefetch_preload = Static<typeof zones_prefetch_preload>;
-export const zones_prefetch_preload = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("prefetch_preload"), value: zones_prefetch_preload_value })), Type.Unknown()]);
+export const zones_prefetch_preload = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("prefetch_preload"), value: zones_prefetch_preload_value }))]);
 
 export type zones_privacy_pass_value = Static<typeof zones_privacy_pass_value>;
 export const zones_privacy_pass_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
 
 export type zones_privacy_pass = Static<typeof zones_privacy_pass>;
-export const zones_privacy_pass = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("privacy_pass"), value: zones_privacy_pass_value })), Type.Unknown()]);
+export const zones_privacy_pass = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("privacy_pass"), value: zones_privacy_pass_value }))]);
 
 export type zones_proxy_read_timeout_value = Static<typeof zones_proxy_read_timeout_value>;
 export const zones_proxy_read_timeout_value = Type.Number();
@@ -19339,7 +19339,7 @@ export type zones_response_buffering_value = Static<typeof zones_response_buffer
 export const zones_response_buffering_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
 
 export type zones_response_buffering_2 = Static<typeof zones_response_buffering_2>;
-export const zones_response_buffering_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("response_buffering"), value: zones_response_buffering_value })), Type.Unknown()]);
+export const zones_response_buffering_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("response_buffering"), value: zones_response_buffering_value }))]);
 
 export type zones_rocket_loader_value = Static<typeof zones_rocket_loader_value>;
 export const zones_rocket_loader_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
@@ -19384,7 +19384,7 @@ export type zones_sort_query_string_for_cache_value = Static<typeof zones_sort_q
 export const zones_sort_query_string_for_cache_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
 
 export type zones_sort_query_string_for_cache_2 = Static<typeof zones_sort_query_string_for_cache_2>;
-export const zones_sort_query_string_for_cache_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("sort_query_string_for_cache"), value: zones_sort_query_string_for_cache_value })), Type.Unknown()]);
+export const zones_sort_query_string_for_cache_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("sort_query_string_for_cache"), value: zones_sort_query_string_for_cache_value }))]);
 
 export type zones_ssl_value = Static<typeof zones_ssl_value>;
 export const zones_ssl_value = Type.Union([Type.Literal("off"), Type.Literal("flexible"), Type.Literal("full"), Type.Literal("strict")]);
@@ -19396,7 +19396,7 @@ export type zones_ssl_recommender_enabled = Static<typeof zones_ssl_recommender_
 export const zones_ssl_recommender_enabled = Type.Boolean();
 
 export type zones_ssl_recommender = Static<typeof zones_ssl_recommender>;
-export const zones_ssl_recommender = Type.Intersect([Type.Partial(Type.Object({ enabled: zones_ssl_recommender_enabled, id: Type.Literal("ssl_recommender") }))]);
+export const zones_ssl_recommender = Type.Partial(Type.Object({ enabled: zones_ssl_recommender_enabled, id: Type.Literal("ssl_recommender") }));
 
 export type zones_tls_1_2_only_value = Static<typeof zones_tls_1_2_only_value>;
 export const zones_tls_1_2_only_value = Type.Union([Type.Literal("off"), Type.Literal("on")]);
@@ -19408,7 +19408,7 @@ export type zones_tls_1_3_value = Static<typeof zones_tls_1_3_value>;
 export const zones_tls_1_3_value = Type.Union([Type.Literal("on"), Type.Literal("off"), Type.Literal("zrt")]);
 
 export type zones_tls_1_3 = Static<typeof zones_tls_1_3>;
-export const zones_tls_1_3 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("tls_1_3"), value: zones_tls_1_3_value })), Type.Unknown()]);
+export const zones_tls_1_3 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("tls_1_3"), value: zones_tls_1_3_value }))]);
 
 export type zones_tls_client_auth_value = Static<typeof zones_tls_client_auth_value>;
 export const zones_tls_client_auth_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
@@ -19420,7 +19420,7 @@ export type zones_true_client_ip_header_value = Static<typeof zones_true_client_
 export const zones_true_client_ip_header_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
 
 export type zones_true_client_ip_header_2 = Static<typeof zones_true_client_ip_header_2>;
-export const zones_true_client_ip_header_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("true_client_ip_header"), value: zones_true_client_ip_header_value })), Type.Unknown()]);
+export const zones_true_client_ip_header_2 = Type.Intersect([zones_base, Type.Partial(Type.Object({ id: Type.Literal("true_client_ip_header"), value: zones_true_client_ip_header_value }))]);
 
 export type zones_waf_value = Static<typeof zones_waf_value>;
 export const zones_waf_value = Type.Union([Type.Literal("on"), Type.Literal("off")]);
@@ -20028,7 +20028,7 @@ export const patch_Access__applications__patch__update__access__application__set
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ app_id: access_app_id, account_id: access_identifier }), body: access_app_settings_request },
-  responses: { 202: Type.Intersect([access_single_response_update]), "4XX": access_api_response_common_failure },
+  responses: { 202: access_single_response_update, "4XX": access_api_response_common_failure },
 };
 
 export type put_Access__applications__put__update__access__application__settings = typeof put_Access__applications__put__update__access__application__settings;
@@ -20038,7 +20038,7 @@ export const put_Access__applications__put__update__access__application__setting
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ app_id: access_app_id, account_id: access_identifier }), body: access_app_settings_request },
-  responses: { 202: Type.Intersect([access_single_response_update]), "4XX": access_api_response_common_failure },
+  responses: { 202: access_single_response_update, "4XX": access_api_response_common_failure },
 };
 
 export type get_Access__applications__test__access__policies = typeof get_Access__applications__test__access__policies;
@@ -20989,7 +20989,7 @@ export const get_Ip__address__management__prefixes__download__loa__document = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ loa_document_id: addressing_loa_document_identifier, account_id: addressing_account_identifier }) },
-  responses: { 200: Type.Unknown(), "4XX": Type.Intersect([Type.Unknown(), addressing_api_response_common_failure]) },
+  responses: { 200: Type.Unknown(), "4XX": addressing_api_response_common_failure },
 };
 
 export type get_Ip__address__management__prefixes__list__prefixes = typeof get_Ip__address__management__prefixes__list__prefixes;
@@ -21179,7 +21179,7 @@ export const get_Dls__account__regional__hostnames__list__regions = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: dls_identifier }) },
-  responses: { 200: Type.Intersect([dls_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ key: dls_region_key, label: Type.String() }))) }))]), "4XX": Type.Intersect([dls_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([dls_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(Type.Partial(Type.Object({ key: dls_region_key, label: Type.String() }))) }))]), "4XX": dls_api_response_common_failure },
 };
 
 export type get_Ip__address__management__service__bindings__list__services = typeof get_Ip__address__management__service__bindings__list__services;
@@ -22519,7 +22519,7 @@ export const get_Notification__alert__types__get__alert__types = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: aaa_account_id }) },
-  responses: { 200: aaa_alerts_response_collection, "4XX": Type.Intersect([aaa_api_response_common_failure_3]) },
+  responses: { 200: aaa_alerts_response_collection, "4XX": aaa_api_response_common_failure_3 },
 };
 
 export type get_Notification__mechanism__eligibility__get__delivery__mechanism__eligibility = typeof get_Notification__mechanism__eligibility__get__delivery__mechanism__eligibility;
@@ -22529,7 +22529,7 @@ export const get_Notification__mechanism__eligibility__get__delivery__mechanism_
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: aaa_account_id }) },
-  responses: { 200: aaa_schemas_response_collection, "4XX": Type.Intersect([aaa_api_response_common_failure_3]) },
+  responses: { 200: aaa_schemas_response_collection, "4XX": aaa_api_response_common_failure_3 },
 };
 
 export type delete_Notification__destinations__with__pager__duty__delete__pager__duty__services = typeof delete_Notification__destinations__with__pager__duty__delete__pager__duty__services;
@@ -22539,7 +22539,7 @@ export const delete_Notification__destinations__with__pager__duty__delete__pager
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: aaa_account_id }) },
-  responses: { 200: aaa_api_response_common_2, "4XX": Type.Intersect([aaa_api_response_common_failure_3]) },
+  responses: { 200: aaa_api_response_common_2, "4XX": aaa_api_response_common_failure_3 },
 };
 
 export type get_Notification__destinations__with__pager__duty__list__pager__duty__services = typeof get_Notification__destinations__with__pager__duty__list__pager__duty__services;
@@ -22549,7 +22549,7 @@ export const get_Notification__destinations__with__pager__duty__list__pager__dut
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: aaa_account_id }) },
-  responses: { 200: aaa_components_schemas_response_collection, "4XX": Type.Intersect([aaa_api_response_common_failure_3]) },
+  responses: { 200: aaa_components_schemas_response_collection, "4XX": aaa_api_response_common_failure_3 },
 };
 
 export type post_Notification__destinations__with__pager__duty__connect__pager__duty = typeof post_Notification__destinations__with__pager__duty__connect__pager__duty;
@@ -22599,7 +22599,7 @@ export const delete_Notification__webhooks__delete__a__webhook = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ webhook_id: aaa_webhook_id, account_id: aaa_account_id }) },
-  responses: { 200: aaa_api_response_common_2, "4XX": Type.Intersect([aaa_api_response_common_failure_3]) },
+  responses: { 200: aaa_api_response_common_2, "4XX": aaa_api_response_common_failure_3 },
 };
 
 export type get_Notification__webhooks__get__a__webhook = typeof get_Notification__webhooks__get__a__webhook;
@@ -22639,7 +22639,7 @@ export const get_Notification__policies__list__notification__policies = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: aaa_account_id }) },
-  responses: { 200: aaa_policies_components_schemas_response_collection, "4XX": Type.Intersect([aaa_api_response_common_failure_3]) },
+  responses: { 200: aaa_policies_components_schemas_response_collection, "4XX": aaa_api_response_common_failure_3 },
 };
 
 export type post_Notification__policies__create__a__notification__policy = typeof post_Notification__policies__create__a__notification__policy;
@@ -23567,7 +23567,7 @@ export const post_Brapi__post_Crawl = {
   path: Type.Literal("/accounts/{account_id}/browser-rendering/crawl"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ cacheTTL: Type.Number({ minimum: 0, maximum: 86400 }) }))), path: Type.Object({ account_id: Type.String() }), body: Type.Intersect([Type.Union([Type.Object({ actionTimeout: Type.Optional(Type.Number({ maximum: 120000 })), addScriptTag: Type.Optional(Type.Array(Type.Partial(Type.Object({ content: Type.String(), id: Type.String(), type: Type.String(), url: Type.String({ format: "uri" }) })))), addStyleTag: Type.Optional(Type.Array(Type.Partial(Type.Object({ content: Type.String(), url: Type.String({ format: "uri" }) })))), allowRequestPattern: Type.Optional(Type.Array(Type.String())), allowResourceTypes: Type.Optional(Type.Array(Type.Union([Type.Literal("document"), Type.Literal("stylesheet"), Type.Literal("image"), Type.Literal("media"), Type.Literal("font"), Type.Literal("script"), Type.Literal("texttrack"), Type.Literal("xhr"), Type.Literal("fetch"), Type.Literal("prefetch"), Type.Literal("eventsource"), Type.Literal("websocket"), Type.Literal("manifest"), Type.Literal("signedexchange"), Type.Literal("ping"), Type.Literal("cspviolationreport"), Type.Literal("preflight"), Type.Literal("other")]))), authenticate: Type.Optional(Type.Object({ password: Type.String({ minLength: 1 }), username: Type.String({ minLength: 1 }) })), bestAttempt: Type.Optional(Type.Boolean()), cookies: Type.Optional(Type.Array(Type.Object({ domain: Type.Optional(Type.String()), expires: Type.Optional(Type.Number()), httpOnly: Type.Optional(Type.Boolean()), name: Type.String(), partitionKey: Type.Optional(Type.String()), path: Type.Optional(Type.String()), priority: Type.Optional(Type.Union([Type.Literal("Low"), Type.Literal("Medium"), Type.Literal("High")])), sameParty: Type.Optional(Type.Boolean()), sameSite: Type.Optional(Type.Union([Type.Literal("Strict"), Type.Literal("Lax"), Type.Literal("None")])), secure: Type.Optional(Type.Boolean()), sourcePort: Type.Optional(Type.Number()), sourceScheme: Type.Optional(Type.Union([Type.Literal("Unset"), Type.Literal("NonSecure"), Type.Literal("Secure")])), url: Type.Optional(Type.String()), value: Type.String() }))), crawlPurposes: Type.Optional(Type.Array(Type.Union([Type.Literal("search"), Type.Literal("ai-input"), Type.Literal("ai-train")]), { minItems: 1, maxItems: 3 })), depth: Type.Optional(Type.Number({ minimum: 1, maximum: 100000 })), emulateMediaType: Type.Optional(Type.String()), formats: Type.Optional(Type.Array(Type.Union([Type.Literal("html"), Type.Literal("markdown"), Type.Literal("json")]))), gotoOptions: Type.Optional(Type.Partial(Type.Object({ referer: Type.String(), referrerPolicy: Type.String(), timeout: Type.Number({ maximum: 60000 }), waitUntil: Type.Union([Type.Literal("load"), Type.Literal("domcontentloaded"), Type.Literal("networkidle0"), Type.Literal("networkidle2"), Type.Array(Type.Union([Type.Literal("load"), Type.Literal("domcontentloaded"), Type.Literal("networkidle0"), Type.Literal("networkidle2")]))]) }))), jsonOptions: Type.Optional(Type.Partial(Type.Object({ custom_ai: Type.Array(Type.Object({ authorization: Type.Optional(Type.String()), model: Type.String() })), prompt: Type.String(), response_format: Type.Object({ json_schema: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Union([Type.String(), Type.Number(), Type.Boolean(), Type.Record(Type.String(), Type.Unknown()), Type.Array(Type.String())])), Type.Null()])), type: Type.String() }) }))), limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100000 })), maxAge: Type.Optional(Type.Number({ minimum: 0, maximum: 604800 })), modifiedSince: Type.Optional(Type.Integer({ exclusiveMinimum: 0 })), options: Type.Optional(Type.Partial(Type.Object({ excludePatterns: Type.Array(Type.String({ minLength: 1, maxLength: 500 }), { maxItems: 100 }), includeExternalLinks: Type.Boolean(), includePatterns: Type.Array(Type.String({ minLength: 1, maxLength: 500 }), { maxItems: 100 }), includeSubdomains: Type.Boolean() }))), rejectRequestPattern: Type.Optional(Type.Array(Type.String())), rejectResourceTypes: Type.Optional(Type.Array(Type.Union([Type.Literal("document"), Type.Literal("stylesheet"), Type.Literal("image"), Type.Literal("media"), Type.Literal("font"), Type.Literal("script"), Type.Literal("texttrack"), Type.Literal("xhr"), Type.Literal("fetch"), Type.Literal("prefetch"), Type.Literal("eventsource"), Type.Literal("websocket"), Type.Literal("manifest"), Type.Literal("signedexchange"), Type.Literal("ping"), Type.Literal("cspviolationreport"), Type.Literal("preflight"), Type.Literal("other")]))), render: Type.Optional(Type.Literal(true)), setExtraHTTPHeaders: Type.Optional(Type.Record(Type.String(), Type.String())), setJavaScriptEnabled: Type.Optional(Type.Boolean()), source: Type.Optional(Type.Union([Type.Literal("sitemaps"), Type.Literal("links"), Type.Literal("all")])), url: Type.String({ format: "uri" }), viewport: Type.Optional(Type.Object({ deviceScaleFactor: Type.Optional(Type.Number()), hasTouch: Type.Optional(Type.Boolean()), height: Type.Number(), isLandscape: Type.Optional(Type.Boolean()), isMobile: Type.Optional(Type.Boolean()), width: Type.Number() })), waitForSelector: Type.Optional(Type.Object({ hidden: Type.Optional(Type.Literal(true)), selector: Type.String(), timeout: Type.Optional(Type.Number({ maximum: 120000 })), visible: Type.Optional(Type.Literal(true)) })), waitForTimeout: Type.Optional(Type.Number({ maximum: 120000 })) }), Type.Object({ crawlPurposes: Type.Optional(Type.Array(Type.Union([Type.Literal("search"), Type.Literal("ai-input"), Type.Literal("ai-train")]), { minItems: 1, maxItems: 3 })), depth: Type.Optional(Type.Number({ minimum: 1, maximum: 100000 })), formats: Type.Optional(Type.Array(Type.Union([Type.Literal("html"), Type.Literal("markdown"), Type.Literal("json")]))), jsonOptions: Type.Optional(Type.Partial(Type.Object({ custom_ai: Type.Array(Type.Object({ authorization: Type.Optional(Type.String()), model: Type.String() })), prompt: Type.String(), response_format: Type.Object({ json_schema: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Union([Type.String(), Type.Number(), Type.Boolean(), Type.Record(Type.String(), Type.Unknown()), Type.Array(Type.String())])), Type.Null()])), type: Type.String() }) }))), limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100000 })), maxAge: Type.Optional(Type.Number({ minimum: 0, maximum: 604800 })), modifiedSince: Type.Optional(Type.Integer({ exclusiveMinimum: 0 })), options: Type.Optional(Type.Partial(Type.Object({ excludePatterns: Type.Array(Type.String({ minLength: 1, maxLength: 500 }), { maxItems: 100 }), includeExternalLinks: Type.Boolean(), includePatterns: Type.Array(Type.String({ minLength: 1, maxLength: 500 }), { maxItems: 100 }), includeSubdomains: Type.Boolean() }))), render: Type.Literal(false), source: Type.Optional(Type.Union([Type.Literal("sitemaps"), Type.Literal("links"), Type.Literal("all")])), url: Type.String({ format: "uri" }) })])]) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ cacheTTL: Type.Number({ minimum: 0, maximum: 86400 }) }))), path: Type.Object({ account_id: Type.String() }), body: Type.Union([Type.Object({ actionTimeout: Type.Optional(Type.Number({ maximum: 120000 })), addScriptTag: Type.Optional(Type.Array(Type.Partial(Type.Object({ content: Type.String(), id: Type.String(), type: Type.String(), url: Type.String({ format: "uri" }) })))), addStyleTag: Type.Optional(Type.Array(Type.Partial(Type.Object({ content: Type.String(), url: Type.String({ format: "uri" }) })))), allowRequestPattern: Type.Optional(Type.Array(Type.String())), allowResourceTypes: Type.Optional(Type.Array(Type.Union([Type.Literal("document"), Type.Literal("stylesheet"), Type.Literal("image"), Type.Literal("media"), Type.Literal("font"), Type.Literal("script"), Type.Literal("texttrack"), Type.Literal("xhr"), Type.Literal("fetch"), Type.Literal("prefetch"), Type.Literal("eventsource"), Type.Literal("websocket"), Type.Literal("manifest"), Type.Literal("signedexchange"), Type.Literal("ping"), Type.Literal("cspviolationreport"), Type.Literal("preflight"), Type.Literal("other")]))), authenticate: Type.Optional(Type.Object({ password: Type.String({ minLength: 1 }), username: Type.String({ minLength: 1 }) })), bestAttempt: Type.Optional(Type.Boolean()), cookies: Type.Optional(Type.Array(Type.Object({ domain: Type.Optional(Type.String()), expires: Type.Optional(Type.Number()), httpOnly: Type.Optional(Type.Boolean()), name: Type.String(), partitionKey: Type.Optional(Type.String()), path: Type.Optional(Type.String()), priority: Type.Optional(Type.Union([Type.Literal("Low"), Type.Literal("Medium"), Type.Literal("High")])), sameParty: Type.Optional(Type.Boolean()), sameSite: Type.Optional(Type.Union([Type.Literal("Strict"), Type.Literal("Lax"), Type.Literal("None")])), secure: Type.Optional(Type.Boolean()), sourcePort: Type.Optional(Type.Number()), sourceScheme: Type.Optional(Type.Union([Type.Literal("Unset"), Type.Literal("NonSecure"), Type.Literal("Secure")])), url: Type.Optional(Type.String()), value: Type.String() }))), crawlPurposes: Type.Optional(Type.Array(Type.Union([Type.Literal("search"), Type.Literal("ai-input"), Type.Literal("ai-train")]), { minItems: 1, maxItems: 3 })), depth: Type.Optional(Type.Number({ minimum: 1, maximum: 100000 })), emulateMediaType: Type.Optional(Type.String()), formats: Type.Optional(Type.Array(Type.Union([Type.Literal("html"), Type.Literal("markdown"), Type.Literal("json")]))), gotoOptions: Type.Optional(Type.Partial(Type.Object({ referer: Type.String(), referrerPolicy: Type.String(), timeout: Type.Number({ maximum: 60000 }), waitUntil: Type.Union([Type.Literal("load"), Type.Literal("domcontentloaded"), Type.Literal("networkidle0"), Type.Literal("networkidle2"), Type.Array(Type.Union([Type.Literal("load"), Type.Literal("domcontentloaded"), Type.Literal("networkidle0"), Type.Literal("networkidle2")]))]) }))), jsonOptions: Type.Optional(Type.Partial(Type.Object({ custom_ai: Type.Array(Type.Object({ authorization: Type.Optional(Type.String()), model: Type.String() })), prompt: Type.String(), response_format: Type.Object({ json_schema: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Union([Type.String(), Type.Number(), Type.Boolean(), Type.Record(Type.String(), Type.Unknown()), Type.Array(Type.String())])), Type.Null()])), type: Type.String() }) }))), limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100000 })), maxAge: Type.Optional(Type.Number({ minimum: 0, maximum: 604800 })), modifiedSince: Type.Optional(Type.Integer({ exclusiveMinimum: 0 })), options: Type.Optional(Type.Partial(Type.Object({ excludePatterns: Type.Array(Type.String({ minLength: 1, maxLength: 500 }), { maxItems: 100 }), includeExternalLinks: Type.Boolean(), includePatterns: Type.Array(Type.String({ minLength: 1, maxLength: 500 }), { maxItems: 100 }), includeSubdomains: Type.Boolean() }))), rejectRequestPattern: Type.Optional(Type.Array(Type.String())), rejectResourceTypes: Type.Optional(Type.Array(Type.Union([Type.Literal("document"), Type.Literal("stylesheet"), Type.Literal("image"), Type.Literal("media"), Type.Literal("font"), Type.Literal("script"), Type.Literal("texttrack"), Type.Literal("xhr"), Type.Literal("fetch"), Type.Literal("prefetch"), Type.Literal("eventsource"), Type.Literal("websocket"), Type.Literal("manifest"), Type.Literal("signedexchange"), Type.Literal("ping"), Type.Literal("cspviolationreport"), Type.Literal("preflight"), Type.Literal("other")]))), render: Type.Optional(Type.Literal(true)), setExtraHTTPHeaders: Type.Optional(Type.Record(Type.String(), Type.String())), setJavaScriptEnabled: Type.Optional(Type.Boolean()), source: Type.Optional(Type.Union([Type.Literal("sitemaps"), Type.Literal("links"), Type.Literal("all")])), url: Type.String({ format: "uri" }), viewport: Type.Optional(Type.Object({ deviceScaleFactor: Type.Optional(Type.Number()), hasTouch: Type.Optional(Type.Boolean()), height: Type.Number(), isLandscape: Type.Optional(Type.Boolean()), isMobile: Type.Optional(Type.Boolean()), width: Type.Number() })), waitForSelector: Type.Optional(Type.Object({ hidden: Type.Optional(Type.Literal(true)), selector: Type.String(), timeout: Type.Optional(Type.Number({ maximum: 120000 })), visible: Type.Optional(Type.Literal(true)) })), waitForTimeout: Type.Optional(Type.Number({ maximum: 120000 })) }), Type.Object({ crawlPurposes: Type.Optional(Type.Array(Type.Union([Type.Literal("search"), Type.Literal("ai-input"), Type.Literal("ai-train")]), { minItems: 1, maxItems: 3 })), depth: Type.Optional(Type.Number({ minimum: 1, maximum: 100000 })), formats: Type.Optional(Type.Array(Type.Union([Type.Literal("html"), Type.Literal("markdown"), Type.Literal("json")]))), jsonOptions: Type.Optional(Type.Partial(Type.Object({ custom_ai: Type.Array(Type.Object({ authorization: Type.Optional(Type.String()), model: Type.String() })), prompt: Type.String(), response_format: Type.Object({ json_schema: Type.Optional(Type.Union([Type.Record(Type.String(), Type.Union([Type.String(), Type.Number(), Type.Boolean(), Type.Record(Type.String(), Type.Unknown()), Type.Array(Type.String())])), Type.Null()])), type: Type.String() }) }))), limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100000 })), maxAge: Type.Optional(Type.Number({ minimum: 0, maximum: 604800 })), modifiedSince: Type.Optional(Type.Integer({ exclusiveMinimum: 0 })), options: Type.Optional(Type.Partial(Type.Object({ excludePatterns: Type.Array(Type.String({ minLength: 1, maxLength: 500 }), { maxItems: 100 }), includeExternalLinks: Type.Boolean(), includePatterns: Type.Array(Type.String({ minLength: 1, maxLength: 500 }), { maxItems: 100 }), includeSubdomains: Type.Boolean() }))), render: Type.Literal(false), source: Type.Optional(Type.Union([Type.Literal("sitemaps"), Type.Literal("links"), Type.Literal("all")])), url: Type.String({ format: "uri" }) })]) },
   responses: { 200: Type.Object({ errors: Type.Optional(Type.Array(Type.Object({ code: Type.Number(), message: Type.String() }))), result: Type.String(), success: Type.Boolean() }), 400: Type.Object({ errors: Type.Optional(Type.Array(Type.Object({ code: Type.Number(), message: Type.String() }))), success: Type.Boolean() }), 429: Type.Object({ errors: Type.Optional(Type.Array(Type.Object({ code: Type.Number(), message: Type.String() }))), success: Type.Boolean() }), 500: Type.Object({ errors: Type.Optional(Type.Array(Type.Object({ code: Type.Number(), message: Type.String() }))), success: Type.Boolean() }) },
   responseHeaders: { 429: Type.Object({ "Retry-After": Type.Number() }) },
 };
@@ -25287,7 +25287,7 @@ export const get_Cloudforce__one__priority__quota = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier }) },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Intersect([cloudforce_one_requests_quota]) }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_quota }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type delete_Cloudforce__one__priority__delete = typeof delete_Cloudforce__one__priority__delete;
@@ -25307,7 +25307,7 @@ export const get_Cloudforce__one__priority__get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, priority_id: cloudforce_one_requests_uuid }) },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Intersect([cloudforce_one_requests_request_item]) }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_item }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type put_Cloudforce__one__priority__update = typeof put_Cloudforce__one__priority__update;
@@ -25317,7 +25317,7 @@ export const put_Cloudforce__one__priority__update = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: cloudforce_one_requests_identifier, priority_id: cloudforce_one_requests_uuid }), body: cloudforce_one_requests_priority_edit },
-  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: Type.Intersect([cloudforce_one_requests_request_item]) }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
+  responses: { 200: Type.Intersect([cloudforce_one_requests_api_response_common, Type.Partial(Type.Object({ result: cloudforce_one_requests_request_item }))]), "4XX": cloudforce_one_requests_api_response_common_failure },
 };
 
 export type get_Cloudforce__one__request__quota = typeof get_Cloudforce__one__request__quota;
@@ -27227,7 +27227,7 @@ export const post_Devices__create__device__settings__policy = {
   path: Type.Literal("/accounts/{account_id}/devices/policy"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: teams_devices_identifier }), body: Type.Object({ allow_mode_switch: Type.Optional(teams_devices_allow_mode_switch), allow_updates: Type.Optional(teams_devices_allow_updates), allowed_to_leave: Type.Optional(teams_devices_allowed_to_leave), auto_connect: Type.Optional(teams_devices_auto_connect), captive_portal: Type.Optional(teams_devices_captive_portal), description: Type.Optional(Type.Intersect([teams_devices_schemas_description, Type.Unknown()])), disable_auto_fallback: Type.Optional(teams_devices_disable_auto_fallback), dns_search_suffixes: Type.Optional(teams_devices_dns_search_suffixes), enabled: Type.Optional(Type.Boolean()), exclude: Type.Optional(teams_devices_exclude_request), exclude_office_ips: Type.Optional(teams_devices_exclude_office_ips), global_acceleration: Type.Optional(teams_devices_global_acceleration), include: Type.Optional(teams_devices_include_request), lan_allow_minutes: Type.Optional(teams_devices_lan_allow_minutes), lan_allow_subnet_size: Type.Optional(teams_devices_lan_allow_subnet_size), match: teams_devices_schemas_match, name: Type.String({ maxLength: 100 }), precedence: teams_devices_precedence, register_interface_ip_with_dns: Type.Optional(teams_devices_register_interface_ip_with_dns), sccm_vpn_boundary_support: Type.Optional(teams_devices_sccm_vpn_boundary_support), service_mode_v2: Type.Optional(teams_devices_service_mode_v2), support_url: Type.Optional(teams_devices_support_url), switch_locked: Type.Optional(teams_devices_switch_locked), tunnel_protocol: Type.Optional(teams_devices_tunnel_protocol), virtual_networks: Type.Optional(teams_devices_virtual_networks) }) },
+  parameters: { path: Type.Object({ account_id: teams_devices_identifier }), body: Type.Object({ allow_mode_switch: Type.Optional(teams_devices_allow_mode_switch), allow_updates: Type.Optional(teams_devices_allow_updates), allowed_to_leave: Type.Optional(teams_devices_allowed_to_leave), auto_connect: Type.Optional(teams_devices_auto_connect), captive_portal: Type.Optional(teams_devices_captive_portal), description: Type.Optional(teams_devices_schemas_description), disable_auto_fallback: Type.Optional(teams_devices_disable_auto_fallback), dns_search_suffixes: Type.Optional(teams_devices_dns_search_suffixes), enabled: Type.Optional(Type.Boolean()), exclude: Type.Optional(teams_devices_exclude_request), exclude_office_ips: Type.Optional(teams_devices_exclude_office_ips), global_acceleration: Type.Optional(teams_devices_global_acceleration), include: Type.Optional(teams_devices_include_request), lan_allow_minutes: Type.Optional(teams_devices_lan_allow_minutes), lan_allow_subnet_size: Type.Optional(teams_devices_lan_allow_subnet_size), match: teams_devices_schemas_match, name: Type.String({ maxLength: 100 }), precedence: teams_devices_precedence, register_interface_ip_with_dns: Type.Optional(teams_devices_register_interface_ip_with_dns), sccm_vpn_boundary_support: Type.Optional(teams_devices_sccm_vpn_boundary_support), service_mode_v2: Type.Optional(teams_devices_service_mode_v2), support_url: Type.Optional(teams_devices_support_url), switch_locked: Type.Optional(teams_devices_switch_locked), tunnel_protocol: Type.Optional(teams_devices_tunnel_protocol), virtual_networks: Type.Optional(teams_devices_virtual_networks) }) },
   responses: { 200: teams_devices_device_settings_response, "4XX": Type.Intersect([teams_devices_device_settings_response, teams_devices_api_response_common_failure]) },
 };
 
@@ -27558,7 +27558,7 @@ export const get_Devices__resilience__retrieve__global__warp__override = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: teams_devices_identifier }) },
-  responses: { 200: teams_devices_global_warp_override_response, "4XX": Type.Intersect([teams_devices_api_response_common_failure]) },
+  responses: { 200: teams_devices_global_warp_override_response, "4XX": teams_devices_api_response_common_failure },
 };
 
 export type post_Devices__resilience__set__global__warp__override = typeof post_Devices__resilience__set__global__warp__override;
@@ -27568,7 +27568,7 @@ export const post_Devices__resilience__set__global__warp__override = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: teams_devices_identifier }), body: teams_devices_global_warp_override_request },
-  responses: { 200: teams_devices_global_warp_override_response, "4XX": Type.Intersect([teams_devices_api_response_common_failure]) },
+  responses: { 200: teams_devices_global_warp_override_response, "4XX": teams_devices_api_response_common_failure },
 };
 
 export type delete_Zero__trust__accounts__delete__device__settings__for__zero__trust__account = typeof delete_Zero__trust__accounts__delete__device__settings__for__zero__trust__account;
@@ -27929,7 +27929,7 @@ export const get_Diagnostics__endpoint__healthcheck__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: magic_transit_identifier }) },
-  responses: { 200: magic_transit_endpoint_health_check_response_single, "4XX": Type.Intersect([magic_transit_api_response_common_failure]) },
+  responses: { 200: magic_transit_endpoint_health_check_response_single, "4XX": magic_transit_api_response_common_failure },
 };
 
 export type post_Diagnostics__endpoint__healthcheck__create = typeof post_Diagnostics__endpoint__healthcheck__create;
@@ -27939,7 +27939,7 @@ export const post_Diagnostics__endpoint__healthcheck__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: magic_transit_identifier }), body: magic_transit_endpoint_health_check },
-  responses: { 201: magic_transit_endpoint_health_check_response_single, "4XX": Type.Intersect([magic_transit_api_response_common_failure]) },
+  responses: { 201: magic_transit_endpoint_health_check_response_single, "4XX": magic_transit_api_response_common_failure },
 };
 
 export type delete_Diagnostics__endpoint__healthcheck__delete = typeof delete_Diagnostics__endpoint__healthcheck__delete;
@@ -27949,7 +27949,7 @@ export const delete_Diagnostics__endpoint__healthcheck__delete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: magic_transit_identifier, id: magic_transit_uuid }) },
-  responses: { 200: magic_transit_api_response_common, "4XX": Type.Intersect([magic_transit_api_response_common_failure]) },
+  responses: { 200: magic_transit_api_response_common, "4XX": magic_transit_api_response_common_failure },
 };
 
 export type get_Diagnostics__endpoint__healthcheck__get = typeof get_Diagnostics__endpoint__healthcheck__get;
@@ -27969,7 +27969,7 @@ export const put_Diagnostics__endpoint__healthcheck__update = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: magic_transit_identifier, id: magic_transit_uuid }), body: magic_transit_endpoint_health_check },
-  responses: { 200: magic_transit_endpoint_health_check_response_single, "4XX": Type.Intersect([magic_transit_api_response_common_failure]) },
+  responses: { 200: magic_transit_endpoint_health_check_response_single, "4XX": magic_transit_api_response_common_failure },
 };
 
 export type post_Diagnostics__traceroute = typeof post_Diagnostics__traceroute;
@@ -29349,7 +29349,7 @@ export const get_Email_security_list_allow_policies = {
   path: Type.Literal("/accounts/{account_id}/email-security/settings/allow_policies"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 1000 }), search: Type.String(), order: Type.Union([Type.Literal("pattern"), Type.Literal("created_at")]), direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), is_exempt_recipient: Type.Boolean(), is_trusted_sender: Type.Boolean(), is_acceptable_sender: Type.Boolean(), verify_sender: Type.Boolean(), pattern_type: Type.Intersect([email_security_PatternType]), pattern: Type.String() }))), path: Type.Object({ account_id: email_security_identifier }) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 1000 }), search: Type.String(), order: Type.Union([Type.Literal("pattern"), Type.Literal("created_at")]), direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), is_exempt_recipient: Type.Boolean(), is_trusted_sender: Type.Boolean(), is_acceptable_sender: Type.Boolean(), verify_sender: Type.Boolean(), pattern_type: email_security_PatternType, pattern: Type.String() }))), path: Type.Object({ account_id: email_security_identifier }) },
   responses: { 200: Type.Intersect([email_security_api_response_collection, Type.Partial(Type.Object({ result: email_security_AllowPolicyList }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -29369,7 +29369,7 @@ export const post_Email_security_batch_allow_policies = {
   path: Type.Literal("/accounts/{account_id}/email-security/settings/allow_policies/batch"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: email_security_identifier }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_AllowPolicyId }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateAllowPolicy, Type.Object({ id: Type.Intersect([email_security_AllowPolicyId]) })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateAllowPolicy, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_AllowPolicy, Type.Object({ id: Type.Intersect([email_security_AllowPolicyId]) })]), { maxItems: 1000 }) }) },
+  parameters: { path: Type.Object({ account_id: email_security_identifier }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_AllowPolicyId }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateAllowPolicy, Type.Object({ id: email_security_AllowPolicyId })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateAllowPolicy, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_AllowPolicy, Type.Object({ id: email_security_AllowPolicyId })]), { maxItems: 1000 }) }) },
   responses: { 200: Type.Intersect([email_security_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ deletes: Type.Array(email_security_DeletedAllowPolicy), patches: email_security_AllowPolicyList, posts: email_security_AllowPolicyList, puts: email_security_AllowPolicyList })) }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -29409,7 +29409,7 @@ export const get_Email_security_list_blocked_senders = {
   path: Type.Literal("/accounts/{account_id}/email-security/settings/block_senders"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 1000 }), search: Type.String(), order: Type.Union([Type.Literal("pattern"), Type.Literal("created_at")]), direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), pattern_type: Type.Intersect([email_security_PatternType]), pattern: Type.String() }))), path: Type.Object({ account_id: email_security_identifier }) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 1000 }), search: Type.String(), order: Type.Union([Type.Literal("pattern"), Type.Literal("created_at")]), direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), pattern_type: email_security_PatternType, pattern: Type.String() }))), path: Type.Object({ account_id: email_security_identifier }) },
   responses: { 200: Type.Intersect([email_security_api_response_collection, Type.Partial(Type.Object({ result: email_security_BlockedSenderList }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -29429,7 +29429,7 @@ export const post_Email_security_batch_blocked_senders = {
   path: Type.Literal("/accounts/{account_id}/email-security/settings/block_senders/batch"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: email_security_identifier }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_BlockedSenderId }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateBlockedSender, Type.Object({ id: Type.Intersect([email_security_BlockedSenderId]) })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateBlockedSender, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_BlockedSender, Type.Object({ id: Type.Intersect([email_security_BlockedSenderId]) })]), { maxItems: 1000 }) }) },
+  parameters: { path: Type.Object({ account_id: email_security_identifier }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_BlockedSenderId }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateBlockedSender, Type.Object({ id: email_security_BlockedSenderId })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateBlockedSender, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_BlockedSender, Type.Object({ id: email_security_BlockedSenderId })]), { maxItems: 1000 }) }) },
   responses: { 200: Type.Intersect([email_security_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ deletes: Type.Array(email_security_DeletedBlockedSender), patches: email_security_BlockedSenderList, posts: email_security_BlockedSenderList, puts: email_security_BlockedSenderList })) }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -29679,7 +29679,7 @@ export const post_Email_security_batch_trusted_domains = {
   path: Type.Literal("/accounts/{account_id}/email-security/settings/trusted_domains/batch"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: email_security_identifier }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_TrustedDomainId }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateTrustedDomain, Type.Object({ id: Type.Intersect([email_security_TrustedDomainId]) })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateTrustedDomain, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_TrustedDomain, Type.Object({ id: Type.Intersect([email_security_TrustedDomainId]) })]), { maxItems: 1000 }) }) },
+  parameters: { path: Type.Object({ account_id: email_security_identifier }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_TrustedDomainId }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateTrustedDomain, Type.Object({ id: email_security_TrustedDomainId })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateTrustedDomain, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_TrustedDomain, Type.Object({ id: email_security_TrustedDomainId })]), { maxItems: 1000 }) }) },
   responses: { 200: Type.Intersect([email_security_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ deletes: Type.Array(email_security_DeletedTrustedDomain), patches: email_security_TrustedDomainList, posts: email_security_TrustedDomainList, puts: email_security_TrustedDomainList })) }))]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -29739,7 +29739,7 @@ export const post_Email_security_batch_url_ignore_patterns = {
   path: Type.Literal("/accounts/{account_id}/email-security/settings/url_ignore_patterns/batch"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: email_security_identifier }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_UrlIgnorePatternId }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateUrlIgnorePattern, Type.Object({ id: Type.Intersect([email_security_UrlIgnorePatternId]) })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateUrlIgnorePattern, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_CreateUrlIgnorePattern, Type.Object({ id: Type.Intersect([email_security_UrlIgnorePatternId]) })]), { maxItems: 1000 }) }) },
+  parameters: { path: Type.Object({ account_id: email_security_identifier }), body: Type.Object({ deletes: Type.Array(Type.Object({ id: email_security_UrlIgnorePatternId }), { maxItems: 1000 }), patches: Type.Array(Type.Intersect([email_security_UpdateUrlIgnorePattern, Type.Object({ id: email_security_UrlIgnorePatternId })]), { maxItems: 1000 }), posts: Type.Array(email_security_CreateUrlIgnorePattern, { maxItems: 1000 }), puts: Type.Array(Type.Intersect([email_security_CreateUrlIgnorePattern, Type.Object({ id: email_security_UrlIgnorePatternId })]), { maxItems: 1000 }) }) },
   responses: { 200: Type.Intersect([email_security_api_response_common, Type.Object({ result: Type.Object({ deletes: Type.Array(email_security_DeletedUrlIgnorePattern), patches: Type.Array(email_security_UrlIgnorePattern), posts: Type.Array(email_security_UrlIgnorePattern), puts: Type.Array(email_security_UrlIgnorePattern) }) })]), "4XX": email_security_api_response_common_failure },
 };
 
@@ -30139,7 +30139,7 @@ export const post_Ip__access__rules__for__an__account__create__an__ip__access__r
   path: Type.Literal("/accounts/{account_id}/firewall/access_rules/rules"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: firewall_account_identifier }), body: Type.Object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: Type.Optional(Type.Intersect([firewall_notes, Type.Unknown()])) }) },
+  parameters: { path: Type.Object({ account_id: firewall_account_identifier }), body: Type.Object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: Type.Optional(firewall_notes) }) },
   responses: { 200: firewall_response_single, "4XX": Type.Intersect([firewall_response_single, firewall_api_response_common_failure]) },
 };
 
@@ -30959,7 +30959,7 @@ export const get_Account__resource__group__list = {
   path: Type.Literal("/accounts/{account_id}/iam/resource_groups"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ id: Type.Intersect([iam_resource_group_identifier]), name: Type.String() }))), path: Type.Object({ account_id: iam_account_identifier }) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ id: iam_resource_group_identifier, name: Type.String() }))), path: Type.Object({ account_id: iam_account_identifier }) },
   responses: { 200: Type.Intersect([iam_api_response_common, Type.Partial(Type.Object({ result: Type.Array(iam_resource_group) }))]), "4XX": iam_api_response_common_failure },
 };
 
@@ -31429,7 +31429,7 @@ export const get_Infra__targets__list = {
   path: Type.Literal("/accounts/{account_id}/infrastructure/targets"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ hostname: Type.Union([Type.String(), Type.Null()]), hostname_contains: Type.Union([Type.String(), Type.Null()]), virtual_network_id: Type.Union([Type.String({ format: "uuid" }), Type.Null()]), ip_v4: Type.Union([Type.String(), Type.Null()]), ip_v6: Type.Union([Type.String(), Type.Null()]), created_before: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), created_after: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), modified_before: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), modified_after: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), ips: Type.Array(Type.String()), target_ids: Type.Array(Type.String({ format: "uuid" })), ip_like: Type.Union([Type.String(), Type.Null()]), ipv4_start: Type.Union([Type.String(), Type.Null()]), ipv4_end: Type.Union([Type.String(), Type.Null()]), ipv6_start: Type.Union([Type.String(), Type.Null()]), ipv6_end: Type.Union([Type.String(), Type.Null()]), page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 1000 }), order: Type.Union([Type.Literal("hostname"), Type.Literal("created_at")]), direction: Type.Intersect([infra_SortingDirection]) }))), path: Type.Object({ account_id: infra_AccountTag }) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ hostname: Type.Union([Type.String(), Type.Null()]), hostname_contains: Type.Union([Type.String(), Type.Null()]), virtual_network_id: Type.Union([Type.String({ format: "uuid" }), Type.Null()]), ip_v4: Type.Union([Type.String(), Type.Null()]), ip_v6: Type.Union([Type.String(), Type.Null()]), created_before: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), created_after: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), modified_before: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), modified_after: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), ips: Type.Array(Type.String()), target_ids: Type.Array(Type.String({ format: "uuid" })), ip_like: Type.Union([Type.String(), Type.Null()]), ipv4_start: Type.Union([Type.String(), Type.Null()]), ipv4_end: Type.Union([Type.String(), Type.Null()]), ipv6_start: Type.Union([Type.String(), Type.Null()]), ipv6_end: Type.Union([Type.String(), Type.Null()]), page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 1000 }), order: Type.Union([Type.Literal("hostname"), Type.Literal("created_at")]), direction: infra_SortingDirection }))), path: Type.Object({ account_id: infra_AccountTag }) },
   responses: { 200: Type.Intersect([infra_api_response_collection, Type.Partial(Type.Object({ result: infra_TargetArray }))]), "4XX": infra_api_response_common_failure },
 };
 
@@ -31650,7 +31650,7 @@ export const get_Custom__indicator__feeds__get__indicator__feed__data = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: custom_indicator_feeds_identifier, feed_id: custom_indicator_feeds_feed_id }) },
-  responses: { 200: Type.Unknown(), "4XX": Type.Intersect([custom_indicator_feeds_api_response_common_failure]) },
+  responses: { 200: Type.Unknown(), "4XX": custom_indicator_feeds_api_response_common_failure },
 };
 
 export type get_Custom__indicator__feeds__download__indicator__feed__data = typeof get_Custom__indicator__feeds__download__indicator__feed__data;
@@ -31660,7 +31660,7 @@ export const get_Custom__indicator__feeds__download__indicator__feed__data = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: custom_indicator_feeds_identifier, feed_id: custom_indicator_feeds_feed_id }) },
-  responses: { 200: custom_indicator_feeds_update_feed_response, "4XX": Type.Intersect([custom_indicator_feeds_api_response_common_failure]) },
+  responses: { 200: custom_indicator_feeds_update_feed_response, "4XX": custom_indicator_feeds_api_response_common_failure },
 };
 
 export type put_Custom__indicator__feeds__update__indicator__feed__data = typeof put_Custom__indicator__feeds__update__indicator__feed__data;
@@ -31670,7 +31670,7 @@ export const put_Custom__indicator__feeds__update__indicator__feed__data = {
   requestFormat: Type.Literal("form-data"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: custom_indicator_feeds_identifier, feed_id: custom_indicator_feeds_feed_id }), body: Type.Optional(Type.Partial(Type.Object({ source: Type.String() }))) },
-  responses: { 200: custom_indicator_feeds_update_feed_response, 413: Type.Intersect([custom_indicator_feeds_api_response_common_failure]), "4XX": Type.Intersect([custom_indicator_feeds_api_response_common_failure]) },
+  responses: { 200: custom_indicator_feeds_update_feed_response, 413: custom_indicator_feeds_api_response_common_failure, "4XX": custom_indicator_feeds_api_response_common_failure },
 };
 
 export type get_Ip__intelligence__get__ip__overview = typeof get_Ip__intelligence__get__ip__overview;
@@ -31890,7 +31890,7 @@ export const post_Account__load__balancer__monitors__create__monitor = {
   path: Type.Literal("/accounts/{account_id}/load_balancers/monitors"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: load_balancing_components_schemas_identifier }), body: Type.Intersect([load_balancing_monitor_editable]) },
+  parameters: { path: Type.Object({ account_id: load_balancing_components_schemas_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_monitor_response_single, "4XX": Type.Intersect([load_balancing_monitor_response_single, load_balancing_api_response_common_failure]) },
 };
 
@@ -31920,7 +31920,7 @@ export const patch_Account__load__balancer__monitors__patch__monitor = {
   path: Type.Literal("/accounts/{account_id}/load_balancers/monitors/{monitor_id}"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }), body: Type.Intersect([load_balancing_monitor_editable]) },
+  parameters: { path: Type.Object({ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_monitor_response_single, "4XX": Type.Intersect([load_balancing_monitor_response_single, load_balancing_api_response_common_failure]) },
 };
 
@@ -31930,7 +31930,7 @@ export const put_Account__load__balancer__monitors__update__monitor = {
   path: Type.Literal("/accounts/{account_id}/load_balancers/monitors/{monitor_id}"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }), body: Type.Intersect([load_balancing_monitor_editable]) },
+  parameters: { path: Type.Object({ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_monitor_response_single, "4XX": Type.Intersect([load_balancing_monitor_response_single, load_balancing_api_response_common_failure]) },
 };
 
@@ -31940,7 +31940,7 @@ export const post_Account__load__balancer__monitors__preview__monitor = {
   path: Type.Literal("/accounts/{account_id}/load_balancers/monitors/{monitor_id}/preview"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }), body: Type.Intersect([load_balancing_monitor_editable]) },
+  parameters: { path: Type.Object({ monitor_id: load_balancing_identifier, account_id: load_balancing_components_schemas_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_preview_response, "4XX": Type.Intersect([load_balancing_preview_response, load_balancing_api_response_common_failure]) },
 };
 
@@ -32040,7 +32040,7 @@ export const post_Account__load__balancer__pools__preview__pool = {
   path: Type.Literal("/accounts/{account_id}/load_balancers/pools/{pool_id}/preview"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ pool_id: load_balancing_schemas_identifier, account_id: load_balancing_components_schemas_identifier }), body: Type.Intersect([load_balancing_monitor_editable]) },
+  parameters: { path: Type.Object({ pool_id: load_balancing_schemas_identifier, account_id: load_balancing_components_schemas_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_preview_response, "4XX": Type.Intersect([load_balancing_preview_response, load_balancing_api_response_common_failure]) },
 };
 
@@ -32130,7 +32130,7 @@ export const patch_Account__load__balancers__patch__account__load__balancer = {
   path: Type.Literal("/accounts/{account_id}/load_balancers/{load_balancer_id}"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: load_balancing_components_schemas_identifier, load_balancer_id: load_balancing_load_balancer_components_schemas_identifier }), body: Type.Intersect([load_balancing_load_balancer_editable]) },
+  parameters: { path: Type.Object({ account_id: load_balancing_components_schemas_identifier, load_balancer_id: load_balancing_load_balancer_components_schemas_identifier }), body: load_balancing_load_balancer_editable },
   responses: { 200: load_balancing_load_balancer_components_schemas_single_response, "4XX": Type.Intersect([load_balancing_load_balancer_components_schemas_single_response, load_balancing_api_response_common_failure]) },
 };
 
@@ -32151,7 +32151,7 @@ export const get_Get__accounts__account_id__logpush__datasets__dataset_id__field
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ dataset_id: logpush_dataset, account_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_field_response_collection, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_field_response_collection, "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logpush__datasets__dataset_id__jobs = typeof get_Get__accounts__account_id__logpush__datasets__dataset_id__jobs;
@@ -32161,7 +32161,7 @@ export const get_Get__accounts__account_id__logpush__datasets__dataset_id__jobs 
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ dataset_id: logpush_dataset, account_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_job_response_collection, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_collection, "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logpush__jobs = typeof get_Get__accounts__account_id__logpush__jobs;
@@ -32171,7 +32171,7 @@ export const get_Get__accounts__account_id__logpush__jobs = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_job_response_collection, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_collection, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logpush__jobs = typeof post_Post__accounts__account_id__logpush__jobs;
@@ -32181,7 +32181,7 @@ export const post_Post__accounts__account_id__logpush__jobs = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: logpush_identifier }), body: Type.Object({ dataset: Type.Optional(logpush_dataset), destination_conf: logpush_destination_conf, enabled: Type.Optional(logpush_enabled), filter: Type.Optional(logpush_filter), frequency: Type.Optional(logpush_frequency), kind: Type.Optional(logpush_kind), logpull_options: Type.Optional(logpush_logpull_options), max_upload_bytes: Type.Optional(logpush_max_upload_bytes), max_upload_interval_seconds: Type.Optional(logpush_max_upload_interval_seconds), max_upload_records: Type.Optional(logpush_max_upload_records), name: Type.Optional(logpush_name), output_options: Type.Optional(logpush_output_options), ownership_challenge: Type.Optional(logpush_ownership_challenge) }) },
-  responses: { 200: logpush_logpush_job_response_single, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_single, "4XX": logpush_api_response_common_failure },
 };
 
 export type delete_Delete__accounts__account_id__logpush__jobs__job_id = typeof delete_Delete__accounts__account_id__logpush__jobs__job_id;
@@ -32191,7 +32191,7 @@ export const delete_Delete__accounts__account_id__logpush__jobs__job_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ job_id: logpush_id, account_id: logpush_identifier }), body: Type.Unknown() },
-  responses: { 200: Type.Intersect([logpush_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: logpush_id })) }))]), "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([logpush_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: logpush_id })) }))]), "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logpush__jobs__job_id = typeof get_Get__accounts__account_id__logpush__jobs__job_id;
@@ -32201,7 +32201,7 @@ export const get_Get__accounts__account_id__logpush__jobs__job_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ job_id: logpush_id, account_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_job_response_single, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_single, "4XX": logpush_api_response_common_failure },
 };
 
 export type put_Put__accounts__account_id__logpush__jobs__job_id = typeof put_Put__accounts__account_id__logpush__jobs__job_id;
@@ -32211,7 +32211,7 @@ export const put_Put__accounts__account_id__logpush__jobs__job_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ job_id: logpush_id, account_id: logpush_identifier }), body: Type.Optional(Type.Partial(Type.Object({ destination_conf: logpush_destination_conf, enabled: logpush_enabled, filter: logpush_filter, frequency: logpush_frequency, kind: logpush_kind, logpull_options: logpush_logpull_options, max_upload_bytes: logpush_max_upload_bytes, max_upload_interval_seconds: logpush_max_upload_interval_seconds, max_upload_records: logpush_max_upload_records, name: logpush_name, output_options: logpush_output_options, ownership_challenge: logpush_ownership_challenge }))) },
-  responses: { 200: logpush_logpush_job_response_single, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_single, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logpush__ownership = typeof post_Post__accounts__account_id__logpush__ownership;
@@ -32221,7 +32221,7 @@ export const post_Post__accounts__account_id__logpush__ownership = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: logpush_identifier }), body: Type.Object({ destination_conf: logpush_destination_conf }) },
-  responses: { 200: logpush_get_ownership_response, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_get_ownership_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logpush__ownership__validate = typeof post_Post__accounts__account_id__logpush__ownership__validate;
@@ -32231,7 +32231,7 @@ export const post_Post__accounts__account_id__logpush__ownership__validate = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: logpush_identifier }), body: Type.Object({ destination_conf: logpush_destination_conf, ownership_challenge: logpush_ownership_challenge }) },
-  responses: { 200: logpush_validate_ownership_response, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_validate_ownership_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Delete__accounts__account_id__logpush__validate__destination = typeof post_Delete__accounts__account_id__logpush__validate__destination;
@@ -32241,7 +32241,7 @@ export const post_Delete__accounts__account_id__logpush__validate__destination =
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: logpush_identifier }), body: Type.Object({ destination_conf: logpush_destination_conf }) },
-  responses: { 200: logpush_validate_response, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_validate_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Delete__accounts__account_id__logpush__validate__destination__exists = typeof post_Delete__accounts__account_id__logpush__validate__destination__exists;
@@ -32251,7 +32251,7 @@ export const post_Delete__accounts__account_id__logpush__validate__destination__
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: logpush_identifier }), body: Type.Object({ destination_conf: logpush_destination_conf }) },
-  responses: { 200: logpush_destination_exists_response, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_destination_exists_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logpush__validate__origin = typeof post_Post__accounts__account_id__logpush__validate__origin;
@@ -32261,7 +32261,7 @@ export const post_Post__accounts__account_id__logpush__validate__origin = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: logpush_identifier }), body: Type.Object({ logpull_options: logpush_logpull_options }) },
-  responses: { 200: logpush_validate_response, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_validate_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Audit__logs__v2__get__account__audit__logs = typeof get_Audit__logs__v2__get__account__audit__logs;
@@ -32301,7 +32301,7 @@ export const delete_Delete__accounts__account_id__logs__control__cmb__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: logcontrol_identifier }), body: Type.Unknown() },
-  responses: { 200: Type.Intersect([logcontrol_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }))]), "4XX": Type.Intersect([logcontrol_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([logcontrol_api_response_common, Type.Partial(Type.Object({ result: Type.Union([Type.Record(Type.String(), Type.Unknown()), Type.Null()]) }))]), "4XX": logcontrol_api_response_common_failure },
 };
 
 export type get_Get__accounts__account_id__logs__control__cmb__config = typeof get_Get__accounts__account_id__logs__control__cmb__config;
@@ -32311,7 +32311,7 @@ export const get_Get__accounts__account_id__logs__control__cmb__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: logcontrol_identifier }) },
-  responses: { 200: logcontrol_cmb_config_response_single, "4XX": Type.Intersect([logcontrol_api_response_common_failure]) },
+  responses: { 200: logcontrol_cmb_config_response_single, "4XX": logcontrol_api_response_common_failure },
 };
 
 export type post_Post__accounts__account_id__logs__control__cmb__config = typeof post_Post__accounts__account_id__logs__control__cmb__config;
@@ -32321,7 +32321,7 @@ export const post_Post__accounts__account_id__logs__control__cmb__config = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: logcontrol_identifier }), body: logcontrol_cmb_config },
-  responses: { 200: logcontrol_cmb_config_response_single, "4XX": Type.Intersect([logcontrol_api_response_common_failure]) },
+  responses: { 200: logcontrol_cmb_config_response_single, "4XX": logcontrol_api_response_common_failure },
 };
 
 export type get_Accounts__logs__explorer__datasets__list = typeof get_Accounts__logs__explorer__datasets__list;
@@ -34745,7 +34745,7 @@ export const post_Pages__project__create__project = {
   path: Type.Literal("/accounts/{account_id}/pages/projects"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: pages_identifier }), body: Type.Object({ build_config: Type.Optional(Type.Partial(Type.Object({ build_caching: Type.Boolean(), build_command: Type.String(), destination_dir: Type.String(), root_dir: Type.String(), web_analytics_tag: Type.Union([Type.String(), Type.Null()]), web_analytics_token: Type.Union([Type.String(), Type.Null()]) }))), deployment_configs: Type.Optional(Type.Partial(Type.Object({ preview: Type.Intersect([pages_deployment_config_values_request]), production: Type.Intersect([pages_deployment_config_values_request]) }))), name: Type.String(), production_branch: Type.String(), source: Type.Optional(Type.Object({ config: Type.Partial(Type.Object({ deployments_enabled: Type.Boolean(), owner: Type.String(), owner_id: Type.String(), path_excludes: Type.Array(Type.String()), path_includes: Type.Array(Type.String()), pr_comments_enabled: Type.Boolean(), preview_branch_excludes: Type.Array(Type.String()), preview_branch_includes: Type.Array(Type.String()), preview_deployment_setting: Type.Union([Type.Literal("all"), Type.Literal("none"), Type.Literal("custom")]), production_branch: Type.String(), production_deployments_enabled: Type.Boolean(), repo_id: Type.String(), repo_name: Type.String() })), type: Type.Union([Type.Literal("github"), Type.Literal("gitlab")]) })) }) },
+  parameters: { path: Type.Object({ account_id: pages_identifier }), body: Type.Object({ build_config: Type.Optional(Type.Partial(Type.Object({ build_caching: Type.Boolean(), build_command: Type.String(), destination_dir: Type.String(), root_dir: Type.String(), web_analytics_tag: Type.Union([Type.String(), Type.Null()]), web_analytics_token: Type.Union([Type.String(), Type.Null()]) }))), deployment_configs: Type.Optional(Type.Partial(Type.Object({ preview: pages_deployment_config_values_request, production: pages_deployment_config_values_request }))), name: Type.String(), production_branch: Type.String(), source: Type.Optional(Type.Object({ config: Type.Partial(Type.Object({ deployments_enabled: Type.Boolean(), owner: Type.String(), owner_id: Type.String(), path_excludes: Type.Array(Type.String()), path_includes: Type.Array(Type.String()), pr_comments_enabled: Type.Boolean(), preview_branch_excludes: Type.Array(Type.String()), preview_branch_includes: Type.Array(Type.String()), preview_deployment_setting: Type.Union([Type.Literal("all"), Type.Literal("none"), Type.Literal("custom")]), production_branch: Type.String(), production_deployments_enabled: Type.Boolean(), repo_id: Type.String(), repo_name: Type.String() })), type: Type.Union([Type.Literal("github"), Type.Literal("gitlab")]) })) }) },
   responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_project })]), "4XX": pages_api_response_common_failure },
 };
 
@@ -34775,7 +34775,7 @@ export const patch_Pages__project__update__project = {
   path: Type.Literal("/accounts/{account_id}/pages/projects/{project_name}"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ project_name: pages_project_name, account_id: pages_identifier }), body: Type.Optional(Type.Partial(Type.Object({ build_config: Type.Partial(Type.Object({ build_caching: Type.Boolean(), build_command: Type.String(), destination_dir: Type.String(), root_dir: Type.String(), web_analytics_tag: Type.Union([Type.String(), Type.Null()]), web_analytics_token: Type.Union([Type.String(), Type.Null()]) })), deployment_configs: Type.Partial(Type.Object({ preview: Type.Intersect([pages_deployment_config_values_request]), production: Type.Intersect([pages_deployment_config_values_request]) })), name: Type.String(), production_branch: Type.String(), source: Type.Object({ config: Type.Partial(Type.Object({ deployments_enabled: Type.Boolean(), owner: Type.String(), owner_id: Type.String(), path_excludes: Type.Array(Type.String()), path_includes: Type.Array(Type.String()), pr_comments_enabled: Type.Boolean(), preview_branch_excludes: Type.Array(Type.String()), preview_branch_includes: Type.Array(Type.String()), preview_deployment_setting: Type.Union([Type.Literal("all"), Type.Literal("none"), Type.Literal("custom")]), production_branch: Type.String(), production_deployments_enabled: Type.Boolean(), repo_id: Type.String(), repo_name: Type.String() })), type: Type.Union([Type.Literal("github"), Type.Literal("gitlab")]) }) }))) },
+  parameters: { path: Type.Object({ project_name: pages_project_name, account_id: pages_identifier }), body: Type.Optional(Type.Partial(Type.Object({ build_config: Type.Partial(Type.Object({ build_caching: Type.Boolean(), build_command: Type.String(), destination_dir: Type.String(), root_dir: Type.String(), web_analytics_tag: Type.Union([Type.String(), Type.Null()]), web_analytics_token: Type.Union([Type.String(), Type.Null()]) })), deployment_configs: Type.Partial(Type.Object({ preview: pages_deployment_config_values_request, production: pages_deployment_config_values_request })), name: Type.String(), production_branch: Type.String(), source: Type.Object({ config: Type.Partial(Type.Object({ deployments_enabled: Type.Boolean(), owner: Type.String(), owner_id: Type.String(), path_excludes: Type.Array(Type.String()), path_includes: Type.Array(Type.String()), pr_comments_enabled: Type.Boolean(), preview_branch_excludes: Type.Array(Type.String()), preview_branch_includes: Type.Array(Type.String()), preview_deployment_setting: Type.Union([Type.Literal("all"), Type.Literal("none"), Type.Literal("custom")]), production_branch: Type.String(), production_deployments_enabled: Type.Boolean(), repo_id: Type.String(), repo_name: Type.String() })), type: Type.Union([Type.Literal("github"), Type.Literal("gitlab")]) }) }))) },
   responses: { 200: Type.Intersect([pages_api_response_common, Type.Object({ result: pages_project })]), "4XX": pages_api_response_common_failure },
 };
 
@@ -35675,7 +35675,7 @@ export const patch_R2__patch__bucket = {
   path: Type.Literal("/accounts/{account_id}/r2/buckets/{bucket_name}"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }), header: Type.Object({ "cf-r2-jurisdiction": Type.Optional(r2_jurisdiction), "cf-r2-storage-class": Type.Intersect([r2_storage_class, Type.Unknown()]) }) },
+  parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name }), header: Type.Object({ "cf-r2-jurisdiction": Type.Optional(r2_jurisdiction), "cf-r2-storage-class": r2_storage_class }) },
   responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_bucket }))]), "4XX": r2_v4_response_failure },
 };
 
@@ -35746,7 +35746,7 @@ export const get_R2__get__custom__domain__settings = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name, domain: r2_domain_name }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }))) },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: Type.Intersect([r2_get_custom_domain_response]) }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_get_custom_domain_response }))]), "4XX": r2_v4_response_failure },
 };
 
 export type put_R2__edit__custom__domain__settings = typeof put_R2__edit__custom__domain__settings;
@@ -35756,7 +35756,7 @@ export const put_R2__edit__custom__domain__settings = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: r2_account_identifier, bucket_name: r2_bucket_name, domain: r2_domain_name }), header: Type.Optional(Type.Partial(Type.Object({ "cf-r2-jurisdiction": r2_jurisdiction }))), body: r2_edit_custom_domain_request },
-  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: Type.Intersect([r2_edit_custom_domain_response]) }))]), "4XX": r2_v4_response_failure },
+  responses: { 200: Type.Intersect([r2_v4_response, Type.Partial(Type.Object({ result: r2_edit_custom_domain_response }))]), "4XX": r2_v4_response_failure },
 };
 
 export type get_R2__get__bucket__public__policy = typeof get_R2__get__bucket__public__policy;
@@ -36775,7 +36775,7 @@ export const post_Account__request__tracer__request__trace = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: request_tracer_identifier }), body: Type.Object({ body: Type.Optional(Type.Partial(Type.Object({ base64: Type.String(), json: Type.Record(Type.String(), Type.Unknown()), plain_text: Type.String() }))), context: Type.Optional(Type.Partial(Type.Object({ bot_score: Type.Integer(), geoloc: Type.Partial(Type.Object({ city: Type.String(), continent: Type.String(), is_eu_country: Type.Boolean(), iso_code: Type.String(), latitude: Type.Number(), longitude: Type.Number(), postal_code: Type.String(), region_code: Type.String(), subdivision_2_iso_code: Type.String(), timezone: Type.String() })), skip_challenge: Type.Boolean(), threat_score: Type.Integer() }))), cookies: Type.Optional(Type.Record(Type.String(), Type.String())), headers: Type.Optional(Type.Record(Type.String(), Type.String())), method: Type.String(), protocol: Type.Optional(Type.String()), skip_response: Type.Optional(Type.Boolean()), url: Type.String() }) },
-  responses: { 200: Type.Intersect([request_tracer_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ status_code: Type.Integer(), trace: Type.Unsafe(() => request_tracer_trace) })) })), Type.Record(Type.String(), Type.Unknown())]), "4XX": Type.Intersect([request_tracer_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([request_tracer_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ status_code: Type.Integer(), trace: Type.Unsafe(() => request_tracer_trace) })) })), Type.Record(Type.String(), Type.Unknown())]), "4XX": request_tracer_api_response_common_failure },
 };
 
 export type get_GetApplications = typeof get_GetApplications;
@@ -37525,7 +37525,7 @@ export const get_Secrets__store__quota = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: secrets_store_account_identifier }) },
-  responses: { 200: secrets_store_quota_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_quota_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__list = typeof get_Secrets__store__list;
@@ -37535,7 +37535,7 @@ export const get_Secrets__store__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), page: Type.Integer({ minimum: 0, multipleOf: 1 }), per_page: Type.Integer({ minimum: 0, maximum: 100, multipleOf: 1 }), order: Type.Union([Type.Literal("name"), Type.Literal("comment"), Type.Literal("created"), Type.Literal("modified"), Type.Literal("status")]) }))), path: Type.Object({ account_id: secrets_store_account_identifier }) },
-  responses: { 200: secrets_store_stores_response_collection, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_stores_response_collection, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__create = typeof post_Secrets__store__create;
@@ -37545,7 +37545,7 @@ export const post_Secrets__store__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: secrets_store_account_identifier }), body: secrets_store_createStoreObject },
-  responses: { 200: secrets_store_store_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_store_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__delete__by__id = typeof delete_Secrets__store__delete__by__id;
@@ -37555,7 +37555,7 @@ export const delete_Secrets__store__delete__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ force: Type.Boolean() }))), path: Type.Object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }) },
-  responses: { 200: secrets_store_delete_response, 409: Type.Intersect([secrets_store_api_response_common_failure]), "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_delete_response, 409: secrets_store_api_response_common_failure, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__get__store__by__id = typeof get_Secrets__store__get__store__by__id;
@@ -37565,7 +37565,7 @@ export const get_Secrets__store__get__store__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }) },
-  responses: { 200: secrets_store_store_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_store_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__delete__bulk = typeof delete_Secrets__store__delete__bulk;
@@ -37575,7 +37575,7 @@ export const delete_Secrets__store__delete__bulk = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }), body: secrets_store_deleteSecretsRequest },
-  responses: { 202: secrets_store_delete_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 202: secrets_store_delete_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__secrets__list = typeof get_Secrets__store__secrets__list;
@@ -37585,7 +37585,7 @@ export const get_Secrets__store__secrets__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), page: Type.Integer({ minimum: 0, multipleOf: 1 }), per_page: Type.Integer({ minimum: 0, maximum: 100, multipleOf: 1 }), search: Type.String(), order: Type.Union([Type.Literal("name"), Type.Literal("comment"), Type.Literal("created"), Type.Literal("modified"), Type.Literal("status")]), scopes: Type.Array(secrets_store_scopes) }))), path: Type.Object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }) },
-  responses: { 200: secrets_store_secrets_response_collection, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secrets_response_collection, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__secret__create = typeof post_Secrets__store__secret__create;
@@ -37595,7 +37595,7 @@ export const post_Secrets__store__secret__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier }), body: Type.Array(secrets_store_createSecretObject) },
-  responses: { 200: secrets_store_secrets_response_collection, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secrets_response_collection, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__secret__delete__by__id = typeof delete_Secrets__store__secret__delete__by__id;
@@ -37605,7 +37605,7 @@ export const delete_Secrets__store__secret__delete__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }) },
-  responses: { 202: secrets_store_delete_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 202: secrets_store_delete_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__get__by__id = typeof get_Secrets__store__get__by__id;
@@ -37615,7 +37615,7 @@ export const get_Secrets__store__get__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }) },
-  responses: { 200: secrets_store_secret_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secret_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type patch_Secrets__store__patch__by__id = typeof patch_Secrets__store__patch__by__id;
@@ -37625,7 +37625,7 @@ export const patch_Secrets__store__patch__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }), body: secrets_store_patchSecretObject },
-  responses: { 200: secrets_store_secret_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secret_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__duplicate__by__id = typeof post_Secrets__store__duplicate__by__id;
@@ -37635,7 +37635,7 @@ export const post_Secrets__store__duplicate__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: secrets_store_account_identifier, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }), body: secrets_store_duplicateSecretObject },
-  responses: { 200: secrets_store_secret_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secret_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Get__security__center__insights = typeof get_Get__security__center__insights;
@@ -37644,7 +37644,7 @@ export const get_Get__security__center__insights = {
   path: Type.Literal("/accounts/{account_id}/security-center/insights"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: Type.Intersect([security_center_page, Type.Unknown()]), per_page: Type.Intersect([security_center_perPage, Type.Unknown()]) }))), path: Type.Object({ account_id: security_center_identifier }) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: security_center_page, per_page: security_center_perPage }))), path: Type.Object({ account_id: security_center_identifier }) },
   responses: { 200: Type.Intersect([security_center_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ count: security_center_count, issues: Type.Array(security_center_issue), page: security_center_page, per_page: security_center_perPage })) }))]), "4XX": security_center_api_response_common_failure },
 };
 
@@ -37725,7 +37725,7 @@ export const patch_Update__security__center__insight__classification = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: security_center_identifier, issue_id: Type.String() }), body: security_center_userClassificationUpdate },
-  responses: { 200: Type.Intersect([security_center_api_response_single]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: security_center_api_response_single, "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Get__security__center__insight__context = typeof get_Get__security__center__insight__context;
@@ -37745,7 +37745,7 @@ export const put_Archive__security__center__insight = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: security_center_identifier, issue_id: Type.String() }), body: Type.Optional(Type.Partial(Type.Object({ dismiss: Type.Boolean() }))) },
-  responses: { 200: Type.Intersect([security_center_api_response_single]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: security_center_api_response_single, "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Shares__list = typeof get_Shares__list;
@@ -37755,7 +37755,7 @@ export const get_Shares__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ status: resource_sharing_share_status, kind: resource_sharing_share_kind, target_type: resource_sharing_share_target_type, resource_types: Type.Array(resource_sharing_resource_type_schemas), order: Type.Union([Type.Literal("name"), Type.Literal("created")]), direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), page: Type.Integer({ minimum: 1, multipleOf: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 100, multipleOf: 1 }), include_resources: Type.Boolean(), include_recipient_counts: Type.Boolean(), tag: Type.Array(Type.String({ maxLength: 1281 }), { maxItems: 20 }) }))), path: Type.Object({ account_id: resource_sharing_account_id }) },
-  responses: { 200: resource_sharing_share_response_collection, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_response_collection, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type post_Share__create = typeof post_Share__create;
@@ -37765,7 +37765,7 @@ export const post_Share__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: resource_sharing_account_id }), body: resource_sharing_create_share_request },
-  responses: { 201: resource_sharing_share_response_single, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 201: resource_sharing_share_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type delete_Share__delete = typeof delete_Share__delete;
@@ -37775,7 +37775,7 @@ export const delete_Share__delete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }) },
-  responses: { 200: resource_sharing_share_response_single, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type get_Shares__get__by__id = typeof get_Shares__get__by__id;
@@ -37785,7 +37785,7 @@ export const get_Shares__get__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ include_resources: Type.Boolean(), include_recipient_counts: Type.Boolean() }))), path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }) },
-  responses: { 200: resource_sharing_share_response_single, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type put_Share__update = typeof put_Share__update;
@@ -37795,7 +37795,7 @@ export const put_Share__update = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }), body: resource_sharing_update_share_request },
-  responses: { 200: resource_sharing_share_response_single, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type get_Share__recipients__list = typeof get_Share__recipients__list;
@@ -37805,7 +37805,7 @@ export const get_Share__recipients__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ include_resources: Type.Boolean(), page: Type.Integer({ minimum: 1, multipleOf: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 100, multipleOf: 1 }) }))), path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }) },
-  responses: { 200: resource_sharing_share_recipient_response_collection, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_recipient_response_collection, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type post_Share__recipient__create = typeof post_Share__recipient__create;
@@ -37815,7 +37815,7 @@ export const post_Share__recipient__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }), body: resource_sharing_create_share_recipient_request },
-  responses: { 201: resource_sharing_share_recipient_response_single, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 201: resource_sharing_share_recipient_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type put_Share__recipients__update = typeof put_Share__recipients__update;
@@ -37825,7 +37825,7 @@ export const put_Share__recipients__update = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }), body: resource_sharing_update_share_recipients_request },
-  responses: { 204: Type.Unknown(), "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 204: Type.Unknown(), "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type delete_Share__recipient__delete = typeof delete_Share__recipient__delete;
@@ -37835,7 +37835,7 @@ export const delete_Share__recipient__delete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, recipient_id: resource_sharing_recipient_id }) },
-  responses: { 200: resource_sharing_share_recipient_response_single, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_recipient_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type get_Share__recipients__get__by__id = typeof get_Share__recipients__get__by__id;
@@ -37845,7 +37845,7 @@ export const get_Share__recipients__get__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ include_resources: Type.Boolean() }))), path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, recipient_id: resource_sharing_recipient_id }) },
-  responses: { 200: resource_sharing_share_recipient_response_single, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_recipient_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type get_Share__resources__list = typeof get_Share__resources__list;
@@ -37855,7 +37855,7 @@ export const get_Share__resources__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ status: resource_sharing_resource_status_schemas, resource_type: resource_sharing_resource_type_schemas, page: Type.Integer({ minimum: 1, multipleOf: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 100, multipleOf: 1 }) }))), path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }) },
-  responses: { 200: resource_sharing_share_resource_response_collection, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_resource_response_collection, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type post_Share__resource__create = typeof post_Share__resource__create;
@@ -37865,7 +37865,7 @@ export const post_Share__resource__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id }), body: resource_sharing_create_share_resource_request },
-  responses: { 201: resource_sharing_share_resource_response_single, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 201: resource_sharing_share_resource_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type delete_Share__resource__delete = typeof delete_Share__resource__delete;
@@ -37875,7 +37875,7 @@ export const delete_Share__resource__delete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, share_resource_id: resource_sharing_resource_id }) },
-  responses: { 200: resource_sharing_share_resource_response_single, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_resource_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type get_Share__resources__get__by__id = typeof get_Share__resources__get__by__id;
@@ -37885,7 +37885,7 @@ export const get_Share__resources__get__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, share_resource_id: resource_sharing_resource_id }) },
-  responses: { 200: resource_sharing_share_resource_response_single, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_resource_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type put_Share__resource__update = typeof put_Share__resource__update;
@@ -37895,7 +37895,7 @@ export const put_Share__resource__update = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_id: resource_sharing_account_id, share_id: resource_sharing_share_id, share_resource_id: resource_sharing_resource_id }), body: resource_sharing_update_share_resource_request },
-  responses: { 200: resource_sharing_share_resource_response_single, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_resource_response_single, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type get_Slurper__list__jobs = typeof get_Slurper__list__jobs;
@@ -38815,7 +38815,7 @@ export const get_Tunnel__route__list__tunnel__routes = {
   path: Type.Literal("/accounts/{account_id}/teamnet/routes"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ comment: tunnel_route_comment, is_deleted: Type.Boolean(), network_subset: Type.Intersect([tunnel_ip_network]), network_superset: Type.Intersect([tunnel_ip_network]), existed_at: tunnel_existed_at, tunnel_id: tunnel_tunnel_id, route_id: tunnel_route_id, tun_types: tunnel_tunnel_types, virtual_network_id: tunnel_virtual_network_id, per_page: tunnel_per_page, page: tunnel_page_number }))), path: Type.Object({ account_id: tunnel_account_id }) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ comment: tunnel_route_comment, is_deleted: Type.Boolean(), network_subset: tunnel_ip_network, network_superset: tunnel_ip_network, existed_at: tunnel_existed_at, tunnel_id: tunnel_tunnel_id, route_id: tunnel_route_id, tun_types: tunnel_tunnel_types, virtual_network_id: tunnel_virtual_network_id, per_page: tunnel_per_page, page: tunnel_page_number }))), path: Type.Object({ account_id: tunnel_account_id }) },
   responses: { 200: tunnel_teamnet_response_collection, "4XX": Type.Intersect([tunnel_teamnet_response_collection, tunnel_api_response_common_failure]) },
 };
 
@@ -40425,7 +40425,7 @@ export const post_Worker__versions__upload__version = {
   path: Type.Literal("/accounts/{account_id}/workers/scripts/{script_name}/versions"),
   requestFormat: Type.Literal("form-data"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ bindings_inherit: Type.Literal("strict") }))), path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name_2 }), body: Type.Object({ files: Type.Optional(Type.Array(Type.Unsafe<Blob>({ type: "string", format: "binary" }))), metadata: Type.Object({ annotations: Type.Optional(Type.Partial(Type.Object({ "workers/alias": Type.String({ maxLength: 63 }), "workers/message": Type.String({ maxLength: 1000 }), "workers/tag": Type.String({ maxLength: 100 }) }))), bindings: Type.Optional(workers_bindings), cache_options: Type.Optional(workers_cache_options), compatibility_date: Type.Optional(workers_compatibility_date), compatibility_flags: Type.Optional(workers_compatibility_flags), exports: Type.Optional(Type.Intersect([workers_exports_config_map, Type.Unknown()])), keep_bindings: Type.Optional(Type.Array(Type.String())), main_module: Type.String(), package_dependencies: Type.Optional(Type.Array(Type.Object({ installedVersion: Type.String(), name: Type.String(), packageJsonVersion: Type.String() }))), usage_model: Type.Optional(workers_usage_model) }) }) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ bindings_inherit: Type.Literal("strict") }))), path: Type.Object({ account_id: workers_identifier, script_name: workers_script_name_2 }), body: Type.Object({ files: Type.Optional(Type.Array(Type.Unsafe<Blob>({ type: "string", format: "binary" }))), metadata: Type.Object({ annotations: Type.Optional(Type.Partial(Type.Object({ "workers/alias": Type.String({ maxLength: 63 }), "workers/message": Type.String({ maxLength: 1000 }), "workers/tag": Type.String({ maxLength: 100 }) }))), bindings: Type.Optional(workers_bindings), cache_options: Type.Optional(workers_cache_options), compatibility_date: Type.Optional(workers_compatibility_date), compatibility_flags: Type.Optional(workers_compatibility_flags), exports: Type.Optional(workers_exports_config_map), keep_bindings: Type.Optional(Type.Array(Type.String())), main_module: Type.String(), package_dependencies: Type.Optional(Type.Array(Type.Object({ installedVersion: Type.String(), name: Type.String(), packageJsonVersion: Type.String() }))), usage_model: Type.Optional(workers_usage_model) }) }) },
   responses: { 200: workers_versions_upload_response, "4XX": Type.Union([Type.Intersect([workers_versions_upload_response, workers_api_response_common_failure]), workers_exports_reconciliation_error_response]) },
 };
 
@@ -40865,7 +40865,7 @@ export const get_Zero__trust__networks__subnets__list = {
   path: Type.Literal("/accounts/{account_id}/zerotrust/subnets"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ name: tunnel_subnet_query_name, comment: tunnel_subnet_query_comment, network: Type.Intersect([tunnel_ip_network_encoded]), existed_at: tunnel_existed_at, address_family: tunnel_address_family, is_default_network: Type.Boolean(), is_deleted: Type.Boolean(), sort_order: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), subnet_types: Type.Union([Type.Literal("cloudflare_source"), Type.Literal("initial_resolved_ip"), Type.Literal("warp")]), per_page: tunnel_per_page, page: tunnel_page_number }))), path: Type.Object({ account_id: tunnel_account_id }) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ name: tunnel_subnet_query_name, comment: tunnel_subnet_query_comment, network: tunnel_ip_network_encoded, existed_at: tunnel_existed_at, address_family: tunnel_address_family, is_default_network: Type.Boolean(), is_deleted: Type.Boolean(), sort_order: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), subnet_types: Type.Union([Type.Literal("cloudflare_source"), Type.Literal("initial_resolved_ip"), Type.Literal("warp")]), per_page: tunnel_per_page, page: tunnel_page_number }))), path: Type.Object({ account_id: tunnel_account_id }) },
   responses: { 200: tunnel_subnet_response_collection, "4XX": Type.Intersect([tunnel_subnet_response_collection, tunnel_api_response_common_failure]) },
 };
 
@@ -41336,7 +41336,7 @@ export const get_Organization__shares__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ status: resource_sharing_share_status, kind: resource_sharing_share_kind, target_type: resource_sharing_share_target_type, resource_types: Type.Array(resource_sharing_resource_type_schemas), order: Type.Union([Type.Literal("name"), Type.Literal("created")]), direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), page: Type.Integer({ minimum: 1, multipleOf: 1 }), per_page: Type.Integer({ minimum: 1, maximum: 100, multipleOf: 1 }) }))), path: Type.Object({ organization_id: resource_sharing_organization_id }) },
-  responses: { 200: resource_sharing_share_response_collection, "4XX": Type.Intersect([resource_sharing_api_response_common_failure]), "5XX": Type.Intersect([resource_sharing_api_response_common_failure]) },
+  responses: { 200: resource_sharing_share_response_collection, "4XX": resource_sharing_api_response_common_failure, "5XX": resource_sharing_api_response_common_failure },
 };
 
 export type post_Pages__assets__check__missing = typeof post_Pages__assets__check__missing;
@@ -42876,7 +42876,7 @@ export const get_Secrets__store__system__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), page: Type.Integer({ minimum: 0, multipleOf: 1 }), per_page: Type.Integer({ minimum: 0, maximum: 100, multipleOf: 1 }), order: Type.Union([Type.Literal("name"), Type.Literal("comment"), Type.Literal("created"), Type.Literal("modified"), Type.Literal("status")]) }))), path: Type.Object({ account_tag: secrets_store_account_tag_schemas }) },
-  responses: { 200: secrets_store_stores_response_collection, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_stores_response_collection, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__system__create = typeof post_Secrets__store__system__create;
@@ -42886,7 +42886,7 @@ export const post_Secrets__store__system__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_tag: secrets_store_account_tag_schemas }), body: secrets_store_createStoreObjectSystem },
-  responses: { 200: secrets_store_store_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_store_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__system__delete__by__id = typeof delete_Secrets__store__system__delete__by__id;
@@ -42896,7 +42896,7 @@ export const delete_Secrets__store__system__delete__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ force: Type.Boolean() }))), path: Type.Object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }) },
-  responses: { 200: secrets_store_delete_response, 409: Type.Intersect([secrets_store_api_response_common_failure]), "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_delete_response, 409: secrets_store_api_response_common_failure, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__system__get__store__by__id = typeof get_Secrets__store__system__get__store__by__id;
@@ -42906,7 +42906,7 @@ export const get_Secrets__store__system__get__store__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }) },
-  responses: { 200: secrets_store_store_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_store_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__system__delete__bulk = typeof delete_Secrets__store__system__delete__bulk;
@@ -42916,7 +42916,7 @@ export const delete_Secrets__store__system__delete__bulk = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }), body: secrets_store_deleteSecretsRequest },
-  responses: { 202: secrets_store_delete_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 202: secrets_store_delete_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__system__secrets__list = typeof get_Secrets__store__system__secrets__list;
@@ -42926,7 +42926,7 @@ export const get_Secrets__store__system__secrets__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), page: Type.Integer({ minimum: 0, multipleOf: 1 }), per_page: Type.Integer({ minimum: 0, maximum: 100, multipleOf: 1 }), search: Type.String(), order: Type.Union([Type.Literal("name"), Type.Literal("comment"), Type.Literal("created"), Type.Literal("modified"), Type.Literal("status")]), scopes: Type.Array(secrets_store_scopes) }))), path: Type.Object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }) },
-  responses: { 200: secrets_store_secrets_response_collection, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secrets_response_collection, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__system__secret__create = typeof post_Secrets__store__system__secret__create;
@@ -42936,7 +42936,7 @@ export const post_Secrets__store__system__secret__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier }), body: Type.Array(secrets_store_createSecretObject) },
-  responses: { 200: secrets_store_secrets_response_collection, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secrets_response_collection, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type delete_Secrets__store__system__secret__delete__by__id = typeof delete_Secrets__store__system__secret__delete__by__id;
@@ -42946,7 +42946,7 @@ export const delete_Secrets__store__system__secret__delete__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }) },
-  responses: { 202: secrets_store_delete_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 202: secrets_store_delete_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Secrets__store__system__get__by__id = typeof get_Secrets__store__system__get__by__id;
@@ -42956,7 +42956,7 @@ export const get_Secrets__store__system__get__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }) },
-  responses: { 200: secrets_store_secret_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secret_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type patch_Secrets__store__system__patch__by__id = typeof patch_Secrets__store__system__patch__by__id;
@@ -42966,7 +42966,7 @@ export const patch_Secrets__store__system__patch__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }), body: secrets_store_patchSecretObject },
-  responses: { 200: secrets_store_secret_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secret_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type post_Secrets__store__system__duplicate__by__id = typeof post_Secrets__store__system__duplicate__by__id;
@@ -42976,7 +42976,7 @@ export const post_Secrets__store__system__duplicate__by__id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ account_tag: secrets_store_account_tag_schemas, store_id: secrets_store_store_identifier, secret_id: secrets_store_identifier }), body: secrets_store_duplicateSecretObject },
-  responses: { 200: secrets_store_secret_response, "4XX": Type.Intersect([secrets_store_api_response_common_failure]) },
+  responses: { 200: secrets_store_secret_response, "4XX": secrets_store_api_response_common_failure },
 };
 
 export type get_Tenants_retrieveTenant = typeof get_Tenants_retrieveTenant;
@@ -43105,7 +43105,7 @@ export const post_Ip__access__rules__for__a__user__create__an__ip__access__rule 
   path: Type.Literal("/user/firewall/access_rules/rules"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { body: Type.Object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: Type.Optional(Type.Intersect([firewall_notes, Type.Unknown()])) }) },
+  parameters: { body: Type.Object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: Type.Optional(firewall_notes) }) },
   responses: { 200: firewall_rule_single_response, "4XX": Type.Intersect([firewall_rule_single_response, firewall_api_response_common_failure]) },
 };
 
@@ -43185,7 +43185,7 @@ export const post_Load__balancer__monitors__create__monitor = {
   path: Type.Literal("/user/load_balancers/monitors"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { body: Type.Intersect([load_balancing_monitor_editable]) },
+  parameters: { body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_monitor_response_single, "4XX": Type.Intersect([load_balancing_monitor_response_single, load_balancing_api_response_common_failure]) },
 };
 
@@ -43215,7 +43215,7 @@ export const patch_Load__balancer__monitors__patch__monitor = {
   path: Type.Literal("/user/load_balancers/monitors/{monitor_id}"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ monitor_id: load_balancing_identifier }), body: Type.Intersect([load_balancing_monitor_editable]) },
+  parameters: { path: Type.Object({ monitor_id: load_balancing_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_monitor_response_single, "4XX": Type.Intersect([load_balancing_monitor_response_single, load_balancing_api_response_common_failure]) },
 };
 
@@ -43225,7 +43225,7 @@ export const put_Load__balancer__monitors__update__monitor = {
   path: Type.Literal("/user/load_balancers/monitors/{monitor_id}"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ monitor_id: load_balancing_identifier }), body: Type.Intersect([load_balancing_monitor_editable]) },
+  parameters: { path: Type.Object({ monitor_id: load_balancing_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_monitor_response_single, "4XX": Type.Intersect([load_balancing_monitor_response_single, load_balancing_api_response_common_failure]) },
 };
 
@@ -43235,7 +43235,7 @@ export const post_Load__balancer__monitors__preview__monitor = {
   path: Type.Literal("/user/load_balancers/monitors/{monitor_id}/preview"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ monitor_id: load_balancing_identifier }), body: Type.Intersect([load_balancing_monitor_editable]) },
+  parameters: { path: Type.Object({ monitor_id: load_balancing_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_preview_response, "4XX": Type.Intersect([load_balancing_preview_response, load_balancing_api_response_common_failure]) },
 };
 
@@ -43335,7 +43335,7 @@ export const post_Load__balancer__pools__preview__pool = {
   path: Type.Literal("/user/load_balancers/pools/{pool_id}/preview"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ pool_id: load_balancing_schemas_identifier }), body: Type.Intersect([load_balancing_monitor_editable]) },
+  parameters: { path: Type.Object({ pool_id: load_balancing_schemas_identifier }), body: load_balancing_monitor_editable },
   responses: { 200: load_balancing_preview_response, "4XX": Type.Intersect([load_balancing_preview_response, load_balancing_api_response_common_failure]) },
 };
 
@@ -43816,7 +43816,7 @@ export const patch_Zone__level__access__applications__patch__update__access__app
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ app_id: access_app_id, zone_id: access_identifier }), body: access_app_settings_request },
-  responses: { 202: Type.Intersect([access_single_response_update]), "4XX": access_api_response_common_failure },
+  responses: { 202: access_single_response_update, "4XX": access_api_response_common_failure },
 };
 
 export type put_Zone__level__access__applications__put__update__access__application__settings = typeof put_Zone__level__access__applications__put__update__access__application__settings;
@@ -43826,7 +43826,7 @@ export const put_Zone__level__access__applications__put__update__access__applica
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ app_id: access_app_id, zone_id: access_identifier }), body: access_app_settings_request },
-  responses: { 202: Type.Intersect([access_single_response_update]), "4XX": access_api_response_common_failure },
+  responses: { 202: access_single_response_update, "4XX": access_api_response_common_failure },
 };
 
 export type get_Zone__level__access__applications__test__access__policies = typeof get_Zone__level__access__applications__test__access__policies;
@@ -44166,7 +44166,7 @@ export const put_Put__zones__zone_id__activation_check = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: zone_activation_identifier }) },
-  responses: { 200: Type.Intersect([zone_activation_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: zone_activation_identifier })) }))]), "4XX": Type.Intersect([zone_activation_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([zone_activation_api_response_single, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: zone_activation_identifier })) }))]), "4XX": zone_activation_api_response_common_failure },
 };
 
 export type get_Dls__zone__regional__hostnames__list = typeof get_Dls__zone__regional__hostnames__list;
@@ -44176,7 +44176,7 @@ export const get_Dls__zone__regional__hostnames__list = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: dls_identifier }) },
-  responses: { 200: Type.Intersect([dls_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(dls_regional_hostname_response) }))]), "4XX": Type.Intersect([dls_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([dls_api_response_collection, Type.Partial(Type.Object({ result: Type.Array(dls_regional_hostname_response) }))]), "4XX": dls_api_response_common_failure },
 };
 
 export type post_Dls__zone__regional__hostnames__create = typeof post_Dls__zone__regional__hostnames__create;
@@ -44186,7 +44186,7 @@ export const post_Dls__zone__regional__hostnames__create = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: dls_identifier }), body: Type.Object({ hostname: dls_hostname_schemas, region_key: dls_region_key, routing: Type.Optional(dls_routing) }) },
-  responses: { 200: Type.Intersect([dls_api_response_common, Type.Partial(Type.Object({ result: dls_regional_hostname_response }))]), "4XX": Type.Intersect([dls_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([dls_api_response_common, Type.Partial(Type.Object({ result: dls_regional_hostname_response }))]), "4XX": dls_api_response_common_failure },
 };
 
 export type delete_Dls__zone__regional__hostnames__delete = typeof delete_Dls__zone__regional__hostnames__delete;
@@ -44196,7 +44196,7 @@ export const delete_Dls__zone__regional__hostnames__delete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: dls_identifier, hostname: dls_hostname_schemas }) },
-  responses: { 200: Type.Intersect([dls_api_response_common]), "4XX": Type.Intersect([dls_api_response_common_failure]) },
+  responses: { 200: dls_api_response_common, "4XX": dls_api_response_common_failure },
 };
 
 export type get_Dls__zone__regional__hostnames__fetch = typeof get_Dls__zone__regional__hostnames__fetch;
@@ -44206,7 +44206,7 @@ export const get_Dls__zone__regional__hostnames__fetch = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: dls_identifier, hostname: dls_hostname_schemas }) },
-  responses: { 200: Type.Intersect([dls_api_response_common, Type.Partial(Type.Object({ result: dls_regional_hostname_response }))]), "4XX": Type.Intersect([dls_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([dls_api_response_common, Type.Partial(Type.Object({ result: dls_regional_hostname_response }))]), "4XX": dls_api_response_common_failure },
 };
 
 export type patch_Dls__zone__regional__hostnames__patch = typeof patch_Dls__zone__regional__hostnames__patch;
@@ -44216,7 +44216,7 @@ export const patch_Dls__zone__regional__hostnames__patch = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: dls_identifier, hostname: dls_hostname_schemas }), body: Type.Object({ region_key: dls_region_key }) },
-  responses: { 200: Type.Intersect([dls_api_response_common, Type.Partial(Type.Object({ result: dls_regional_hostname_response }))]), "4XX": Type.Intersect([dls_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([dls_api_response_common, Type.Partial(Type.Object({ result: dls_regional_hostname_response }))]), "4XX": dls_api_response_common_failure },
 };
 
 export type get_Ai__audit__get__robots = typeof get_Ai__audit__get__robots;
@@ -44336,7 +44336,7 @@ export const get_Api__shield__api__discovery__retrieve__discovered__operations__
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Integer({ minimum: 1 }), per_page: Type.Integer({ minimum: 5, maximum: 50 }), host: Type.Array(Type.String(), { uniqueItems: true }), method: Type.Array(Type.String(), { uniqueItems: true }), endpoint: Type.String(), direction: Type.Union([Type.Literal("asc"), Type.Literal("desc")]), order: Type.Union([Type.Literal("host"), Type.Literal("method"), Type.Literal("endpoint"), Type.Literal("traffic_stats.requests"), Type.Literal("traffic_stats.last_updated")]), diff: Type.Boolean(), origin: api_shield_api_discovery_origin, state: api_shield_api_discovery_state }))), path: Type.Object({ zone_id: api_shield_identifier_2 }) },
-  responses: { 200: Type.Intersect([api_shield_api_response_collection, Type.Object({ result: Type.Array(api_shield_discovery_operation) })]), "4XX": Type.Intersect([api_shield_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([api_shield_api_response_collection, Type.Object({ result: Type.Array(api_shield_discovery_operation) })]), "4XX": api_shield_api_response_common_failure },
 };
 
 export type patch_Api__shield__api__patch__discovered__operations = typeof patch_Api__shield__api__patch__discovered__operations;
@@ -44365,7 +44365,7 @@ export const patch_Api__shield__api__patch__discovered__operation = {
   path: Type.Literal("/zones/{zone_id}/api_gateway/discovery/operations/{discovery_id}"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, discovery_id: api_shield_uuid_2 }), body: Type.Optional(Type.Partial(Type.Object({ state: Type.Intersect([api_shield_api_discovery_state_patch]) }))) },
+  parameters: { path: Type.Object({ zone_id: api_shield_identifier_2, discovery_id: api_shield_uuid_2 }), body: Type.Optional(Type.Partial(Type.Object({ state: api_shield_api_discovery_state_patch }))) },
   responses: { 200: api_shield_patch_discovery_response, "4XX": api_shield_api_response_common_failure },
 };
 
@@ -44616,7 +44616,7 @@ export const get_Argo__smart__routing__get__argo__smart__routing__setting = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: argo_config_identifier }) },
-  responses: { 200: argo_config_api_response_single, "4XX": Type.Intersect([argo_config_api_response_common_failure]) },
+  responses: { 200: argo_config_api_response_single, "4XX": argo_config_api_response_common_failure },
 };
 
 export type patch_Argo__smart__routing__patch__argo__smart__routing__setting = typeof patch_Argo__smart__routing__patch__argo__smart__routing__setting;
@@ -44626,7 +44626,7 @@ export const patch_Argo__smart__routing__patch__argo__smart__routing__setting = 
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: argo_config_identifier }), body: argo_config_patch },
-  responses: { 200: argo_config_api_response_single, "4XX": Type.Intersect([argo_config_api_response_common_failure]) },
+  responses: { 200: argo_config_api_response_single, "4XX": argo_config_api_response_common_failure },
 };
 
 export type get_Tiered__caching__get__tiered__caching__setting = typeof get_Tiered__caching__get__tiered__caching__setting;
@@ -44856,7 +44856,7 @@ export const get_Client__certificate__for__a__zone__list__hostname__associations
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ mtls_certificate_id: Type.String({ minLength: 36, maxLength: 36 }) }))), path: Type.Object({ zone_id: tls_certificates_and_hostnames_identifier }) },
-  responses: { 200: tls_certificates_and_hostnames_hostname_associations_response, "4XX": Type.Intersect([tls_certificates_and_hostnames_api_response_common_failure]) },
+  responses: { 200: tls_certificates_and_hostnames_hostname_associations_response, "4XX": tls_certificates_and_hostnames_api_response_common_failure },
 };
 
 export type put_Client__certificate__for__a__zone__put__hostname__associations = typeof put_Client__certificate__for__a__zone__put__hostname__associations;
@@ -44876,7 +44876,7 @@ export const get_Client__certificate__for__a__zone__list__client__certificates =
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ status: Type.Union([Type.Literal("all"), Type.Literal("active"), Type.Literal("pending_reactivation"), Type.Literal("pending_revocation"), Type.Literal("revoked")]), page: Type.Number({ minimum: 1 }), per_page: Type.Number({ minimum: 5, maximum: 50 }), limit: Type.Integer(), offset: Type.Integer() }))), path: Type.Object({ zone_id: tls_certificates_and_hostnames_identifier }) },
-  responses: { 200: tls_certificates_and_hostnames_client_certificate_response_collection, "4XX": Type.Intersect([tls_certificates_and_hostnames_api_response_common_failure]) },
+  responses: { 200: tls_certificates_and_hostnames_client_certificate_response_collection, "4XX": tls_certificates_and_hostnames_api_response_common_failure },
 };
 
 export type post_Client__certificate__for__a__zone__create__client__certificate = typeof post_Client__certificate__for__a__zone__create__client__certificate;
@@ -44926,7 +44926,7 @@ export const get_Zone__cloud__connector__rules = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: cloud_connector_identifier }) },
-  responses: { 200: Type.Intersect([cloud_connector_api_response_common, Type.Partial(Type.Object({ result: cloud_connector_rules })), Type.Record(Type.String(), Type.Unknown())]), "4XX": Type.Intersect([cloud_connector_api_response_common_failure]), "5XX": Type.Intersect([cloud_connector_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([cloud_connector_api_response_common, Type.Partial(Type.Object({ result: cloud_connector_rules })), Type.Record(Type.String(), Type.Unknown())]), "4XX": cloud_connector_api_response_common_failure, "5XX": cloud_connector_api_response_common_failure },
 };
 
 export type put_Zone__cloud__conenctor__rules__put = typeof put_Zone__cloud__conenctor__rules__put;
@@ -44936,7 +44936,7 @@ export const put_Zone__cloud__conenctor__rules__put = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: cloud_connector_identifier }), body: Type.Array(cloud_connector_rule) },
-  responses: { 200: Type.Intersect([cloud_connector_api_response_common, Type.Partial(Type.Object({ result: cloud_connector_rules })), Type.Record(Type.String(), Type.Unknown())]), "4XX": Type.Intersect([cloud_connector_api_response_common_failure]), "5XX": Type.Intersect([cloud_connector_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([cloud_connector_api_response_common, Type.Partial(Type.Object({ result: cloud_connector_rules })), Type.Record(Type.String(), Type.Unknown())]), "4XX": cloud_connector_api_response_common_failure, "5XX": cloud_connector_api_response_common_failure },
 };
 
 export type post_Waf__content__scanning__disable = typeof post_Waf__content__scanning__disable;
@@ -44946,7 +44946,7 @@ export const post_Waf__content__scanning__disable = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: waf_product_api_bundle_identifier }) },
-  responses: { 200: waf_product_api_bundle_api_response_common_2, "4XX": Type.Intersect([waf_product_api_bundle_api_response_common_failure_2]) },
+  responses: { 200: waf_product_api_bundle_api_response_common_2, "4XX": waf_product_api_bundle_api_response_common_failure_2 },
 };
 
 export type post_Waf__content__scanning__enable = typeof post_Waf__content__scanning__enable;
@@ -44956,7 +44956,7 @@ export const post_Waf__content__scanning__enable = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: waf_product_api_bundle_identifier }) },
-  responses: { 200: waf_product_api_bundle_api_response_common_2, "4XX": Type.Intersect([waf_product_api_bundle_api_response_common_failure_2]) },
+  responses: { 200: waf_product_api_bundle_api_response_common_2, "4XX": waf_product_api_bundle_api_response_common_failure_2 },
 };
 
 export type get_Waf__content__scanning__list__custom__scan__expressions = typeof get_Waf__content__scanning__list__custom__scan__expressions;
@@ -45905,7 +45905,7 @@ export const post_Ip__access__rules__for__a__zone__create__an__ip__access__rule 
   path: Type.Literal("/zones/{zone_id}/firewall/access_rules/rules"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ zone_id: firewall_identifier }), body: Type.Object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: Type.Optional(Type.Intersect([firewall_notes, Type.Unknown()])) }) },
+  parameters: { path: Type.Object({ zone_id: firewall_identifier }), body: Type.Object({ configuration: firewall_configuration, mode: firewall_schemas_mode, notes: Type.Optional(firewall_notes) }) },
   responses: { 200: firewall_rule_single_response, "4XX": Type.Intersect([firewall_rule_single_response, firewall_api_response_common_failure]) },
 };
 
@@ -45935,7 +45935,7 @@ export const get_Zone__lockdown__list__zone__lockdown__rules = {
   path: Type.Literal("/zones/{zone_id}/firewall/lockdowns"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Number({ minimum: 1 }), description: Type.Intersect([firewall_schemas_description_search]), modified_on: Type.Intersect([firewall_modified_on]), ip: Type.Intersect([firewall_ip_search]), priority: Type.Intersect([firewall_schemas_priority]), uri_search: Type.Intersect([firewall_uri_search]), ip_range_search: Type.Intersect([firewall_ip_range_search]), per_page: Type.Number({ minimum: 1, maximum: 1000 }), created_on: Type.String({ format: "date-time" }), description_search: Type.String(), ip_search: Type.String() }))), path: Type.Object({ zone_id: firewall_identifier }) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Number({ minimum: 1 }), description: firewall_schemas_description_search, modified_on: firewall_modified_on, ip: firewall_ip_search, priority: firewall_schemas_priority, uri_search: firewall_uri_search, ip_range_search: firewall_ip_range_search, per_page: Type.Number({ minimum: 1, maximum: 1000 }), created_on: Type.String({ format: "date-time" }), description_search: Type.String(), ip_search: Type.String() }))), path: Type.Object({ zone_id: firewall_identifier }) },
   responses: { 200: firewall_zonelockdown_response_collection, "4XX": Type.Intersect([firewall_zonelockdown_response_collection, firewall_api_response_common_failure]) },
 };
 
@@ -45985,7 +45985,7 @@ export const get_User__agent__blocking__rules__list__user__agent__blocking__rule
   path: Type.Literal("/zones/{zone_id}/firewall/ua_rules"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Number({ minimum: 1 }), description: Type.Intersect([firewall_description_search]), per_page: Type.Number({ minimum: 1, maximum: 1000 }), user_agent: Type.String(), paused: Type.Boolean() }))), path: Type.Object({ zone_id: firewall_identifier }) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ page: Type.Number({ minimum: 1 }), description: firewall_description_search, per_page: Type.Number({ minimum: 1, maximum: 1000 }), user_agent: Type.String(), paused: Type.Boolean() }))), path: Type.Object({ zone_id: firewall_identifier }) },
   responses: { 200: firewall_firewalluablock_response_collection, "4XX": Type.Intersect([firewall_firewalluablock_response_collection, firewall_api_response_common_failure]) },
 };
 
@@ -46146,7 +46146,7 @@ export const delete_Zones__0__hold__delete = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ hold_after: Type.String() }))), path: Type.Object({ zone_id: zones_identifier_2 }) },
-  responses: { 200: Type.Intersect([zones_api_response_single_2, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ hold: Type.Boolean(), hold_after: Type.String(), include_subdomains: Type.String() })) }))]), "4XX": Type.Intersect([zones_api_response_common_failure_2]) },
+  responses: { 200: Type.Intersect([zones_api_response_single_2, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ hold: Type.Boolean(), hold_after: Type.String(), include_subdomains: Type.String() })) }))]), "4XX": zones_api_response_common_failure_2 },
 };
 
 export type get_Zones__0__hold__get = typeof get_Zones__0__hold__get;
@@ -46156,7 +46156,7 @@ export const get_Zones__0__hold__get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: zones_identifier_2 }) },
-  responses: { 200: Type.Intersect([zones_api_response_single_2, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ hold: Type.Boolean(), hold_after: Type.String(), include_subdomains: Type.String() })) }))]), "4XX": Type.Intersect([zones_api_response_common_failure_2]) },
+  responses: { 200: Type.Intersect([zones_api_response_single_2, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ hold: Type.Boolean(), hold_after: Type.String(), include_subdomains: Type.String() })) }))]), "4XX": zones_api_response_common_failure_2 },
 };
 
 export type patch_Zones__0__hold__patch = typeof patch_Zones__0__hold__patch;
@@ -46166,7 +46166,7 @@ export const patch_Zones__0__hold__patch = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: zones_identifier_2 }), body: Type.Optional(Type.Partial(Type.Object({ hold_after: Type.Union([Type.String(), Type.Null()]), include_subdomains: Type.Boolean() }))) },
-  responses: { 200: Type.Intersect([zones_api_response_single_2, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ hold: Type.Boolean(), hold_after: Type.String(), include_subdomains: Type.String() })) }))]), "4XX": Type.Intersect([zones_api_response_common_failure_2]) },
+  responses: { 200: Type.Intersect([zones_api_response_single_2, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ hold: Type.Boolean(), hold_after: Type.String(), include_subdomains: Type.String() })) }))]), "4XX": zones_api_response_common_failure_2 },
 };
 
 export type post_Zones__0__hold__post = typeof post_Zones__0__hold__post;
@@ -46176,7 +46176,7 @@ export const post_Zones__0__hold__post = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ include_subdomains: Type.Boolean() }))), path: Type.Object({ zone_id: zones_identifier_2 }) },
-  responses: { 200: Type.Intersect([zones_api_response_single_2, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ hold: Type.Boolean(), hold_after: Type.String(), include_subdomains: Type.String() })) }))]), "4XX": Type.Intersect([zones_api_response_common_failure_2]) },
+  responses: { 200: Type.Intersect([zones_api_response_single_2, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ hold: Type.Boolean(), hold_after: Type.String(), include_subdomains: Type.String() })) }))]), "4XX": zones_api_response_common_failure_2 },
 };
 
 export type get_Zones__0__hold__zone__name__get = typeof get_Zones__0__hold__zone__name__get;
@@ -46186,7 +46186,7 @@ export const get_Zones__0__hold__zone__name__get = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: zones_identifier_2, zone_name: Type.String({ maxLength: 253, pattern: "^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}$" }) }) },
-  responses: { 200: Type.Partial(Type.Object({ hold: Type.Boolean(), hold_after: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), include_subdomains: Type.Boolean() })), "4XX": Type.Intersect([zones_api_response_common_failure_2]) },
+  responses: { 200: Type.Partial(Type.Object({ hold: Type.Boolean(), hold_after: Type.Union([Type.String({ format: "date-time" }), Type.Null()]), include_subdomains: Type.Boolean() })), "4XX": zones_api_response_common_failure_2 },
 };
 
 export type get_Per__hostname__tls__settings__list = typeof get_Per__hostname__tls__settings__list;
@@ -46457,7 +46457,7 @@ export const get_Get__zones__zone_id__logpush__datasets__dataset_id__fields = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ dataset_id: logpush_dataset, zone_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_field_response_collection, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_field_response_collection, "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logpush__datasets__dataset_id__jobs = typeof get_Get__zones__zone_id__logpush__datasets__dataset_id__jobs;
@@ -46467,7 +46467,7 @@ export const get_Get__zones__zone_id__logpush__datasets__dataset_id__jobs = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ dataset_id: logpush_dataset, zone_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_job_response_collection, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_collection, "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logpush__edge__jobs = typeof get_Get__zones__zone_id__logpush__edge__jobs;
@@ -46497,7 +46497,7 @@ export const get_Get__zones__zone_id__logpush__jobs = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_job_response_collection, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_collection, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__jobs = typeof post_Post__zones__zone_id__logpush__jobs;
@@ -46507,7 +46507,7 @@ export const post_Post__zones__zone_id__logpush__jobs = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: logpush_identifier }), body: Type.Object({ dataset: Type.Optional(logpush_dataset), destination_conf: logpush_destination_conf, enabled: Type.Optional(logpush_enabled), filter: Type.Optional(logpush_filter), frequency: Type.Optional(logpush_frequency), kind: Type.Optional(logpush_kind), logpull_options: Type.Optional(logpush_logpull_options), max_upload_bytes: Type.Optional(logpush_max_upload_bytes), max_upload_interval_seconds: Type.Optional(logpush_max_upload_interval_seconds), max_upload_records: Type.Optional(logpush_max_upload_records), name: Type.Optional(logpush_name), output_options: Type.Optional(logpush_output_options), ownership_challenge: Type.Optional(logpush_ownership_challenge) }) },
-  responses: { 200: logpush_logpush_job_response_single, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_single, "4XX": logpush_api_response_common_failure },
 };
 
 export type delete_Delete__zones__zone_id__logpush__jobs__job_id = typeof delete_Delete__zones__zone_id__logpush__jobs__job_id;
@@ -46517,7 +46517,7 @@ export const delete_Delete__zones__zone_id__logpush__jobs__job_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ job_id: logpush_id, zone_id: logpush_identifier }), body: Type.Unknown() },
-  responses: { 200: Type.Intersect([logpush_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: logpush_id })) }))]), "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: Type.Intersect([logpush_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ id: logpush_id })) }))]), "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logpush__jobs__job_id = typeof get_Get__zones__zone_id__logpush__jobs__job_id;
@@ -46527,7 +46527,7 @@ export const get_Get__zones__zone_id__logpush__jobs__job_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ job_id: logpush_id, zone_id: logpush_identifier }) },
-  responses: { 200: logpush_logpush_job_response_single, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_single, "4XX": logpush_api_response_common_failure },
 };
 
 export type put_Put__zones__zone_id__logpush__jobs__job_id = typeof put_Put__zones__zone_id__logpush__jobs__job_id;
@@ -46537,7 +46537,7 @@ export const put_Put__zones__zone_id__logpush__jobs__job_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ job_id: logpush_id, zone_id: logpush_identifier }), body: Type.Optional(Type.Partial(Type.Object({ destination_conf: logpush_destination_conf, enabled: logpush_enabled, filter: logpush_filter, frequency: logpush_frequency, kind: logpush_kind, logpull_options: logpush_logpull_options, max_upload_bytes: logpush_max_upload_bytes, max_upload_interval_seconds: logpush_max_upload_interval_seconds, max_upload_records: logpush_max_upload_records, name: logpush_name, output_options: logpush_output_options, ownership_challenge: logpush_ownership_challenge }))) },
-  responses: { 200: logpush_logpush_job_response_single, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_logpush_job_response_single, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__ownership = typeof post_Post__zones__zone_id__logpush__ownership;
@@ -46547,7 +46547,7 @@ export const post_Post__zones__zone_id__logpush__ownership = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: logpush_identifier }), body: Type.Object({ destination_conf: logpush_destination_conf }) },
-  responses: { 200: logpush_get_ownership_response, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_get_ownership_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__ownership__validate = typeof post_Post__zones__zone_id__logpush__ownership__validate;
@@ -46557,7 +46557,7 @@ export const post_Post__zones__zone_id__logpush__ownership__validate = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: logpush_identifier }), body: Type.Object({ destination_conf: logpush_destination_conf, ownership_challenge: logpush_ownership_challenge }) },
-  responses: { 200: logpush_validate_ownership_response, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_validate_ownership_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__validate__destination = typeof post_Post__zones__zone_id__logpush__validate__destination;
@@ -46567,7 +46567,7 @@ export const post_Post__zones__zone_id__logpush__validate__destination = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: logpush_identifier }), body: Type.Object({ destination_conf: logpush_destination_conf }) },
-  responses: { 200: logpush_validate_response, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_validate_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__validate__destination__exists = typeof post_Post__zones__zone_id__logpush__validate__destination__exists;
@@ -46577,7 +46577,7 @@ export const post_Post__zones__zone_id__logpush__validate__destination__exists =
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: logpush_identifier }), body: Type.Object({ destination_conf: logpush_destination_conf }) },
-  responses: { 200: logpush_destination_exists_response, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_destination_exists_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logpush__validate__origin = typeof post_Post__zones__zone_id__logpush__validate__origin;
@@ -46587,7 +46587,7 @@ export const post_Post__zones__zone_id__logpush__validate__origin = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: logpush_identifier }), body: Type.Object({ logpull_options: logpush_logpull_options }) },
-  responses: { 200: logpush_validate_response, "4XX": Type.Intersect([logpush_api_response_common_failure]) },
+  responses: { 200: logpush_validate_response, "4XX": logpush_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logs__control__retention__flag = typeof get_Get__zones__zone_id__logs__control__retention__flag;
@@ -46597,7 +46597,7 @@ export const get_Get__zones__zone_id__logs__control__retention__flag = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: logcontrol_identifier }) },
-  responses: { 200: logcontrol_retention_flag_response_single, "4XX": Type.Intersect([logcontrol_api_response_common_failure]) },
+  responses: { 200: logcontrol_retention_flag_response_single, "4XX": logcontrol_api_response_common_failure },
 };
 
 export type post_Post__zones__zone_id__logs__control__retention__flag = typeof post_Post__zones__zone_id__logs__control__retention__flag;
@@ -46607,7 +46607,7 @@ export const post_Post__zones__zone_id__logs__control__retention__flag = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: logcontrol_identifier }), body: logcontrol_retention_flag },
-  responses: { 200: logcontrol_retention_flag_response_single, "4XX": Type.Intersect([logcontrol_api_response_common_failure]) },
+  responses: { 200: logcontrol_retention_flag_response_single, "4XX": logcontrol_api_response_common_failure },
 };
 
 export type get_Zones__logs__explorer__datasets__list = typeof get_Zones__logs__explorer__datasets__list;
@@ -46677,7 +46677,7 @@ export const get_Get__zones__zone_id__logs__rayids__ray_id = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ fields: logshare_fields, timestamps: logshare_timestamps }))), path: Type.Object({ zone_id: logshare_identifier, ray_id: logshare_ray_identifier }) },
-  responses: { 200: logshare_logs_response_json_lines, "4XX": Type.Intersect([logshare_api_response_common_failure]) },
+  responses: { 200: logshare_logs_response_json_lines, "4XX": logshare_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logs__received = typeof get_Get__zones__zone_id__logs__received;
@@ -46687,7 +46687,7 @@ export const get_Get__zones__zone_id__logs__received = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ start: Type.Optional(logshare_start), end: logshare_end, fields: Type.Optional(logshare_fields), sample: Type.Optional(logshare_sample), count: Type.Optional(logshare_count), timestamps: Type.Optional(logshare_timestamps) }), path: Type.Object({ zone_id: logshare_identifier }) },
-  responses: { 200: logshare_logs_response_json_lines, "4XX": Type.Intersect([logshare_api_response_common_failure]) },
+  responses: { 200: logshare_logs_response_json_lines, "4XX": logshare_api_response_common_failure },
 };
 
 export type get_Get__zones__zone_id__logs__received__fields = typeof get_Get__zones__zone_id__logs__received__fields;
@@ -46697,7 +46697,7 @@ export const get_Get__zones__zone_id__logs__received__fields = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: logshare_identifier }) },
-  responses: { 200: logshare_fields_response, "4XX": Type.Intersect([logshare_api_response_common_failure]) },
+  responses: { 200: logshare_fields_response, "4XX": logshare_api_response_common_failure },
 };
 
 export type delete_DeleteManagedTransforms = typeof delete_DeleteManagedTransforms;
@@ -47067,7 +47067,7 @@ export const get_Page__shield__get__script = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: page_shield_id, script_id: page_shield_id }) },
-  responses: { 200: page_shield_get_zone_script_response, "4XX": Type.Intersect([page_shield_api_response_common_failure]) },
+  responses: { 200: page_shield_get_zone_script_response, "4XX": page_shield_api_response_common_failure },
 };
 
 export type get_Page__rules__list__page__rules = typeof get_Page__rules__list__page__rules;
@@ -47646,7 +47646,7 @@ export const get_Get__zone__security__center__insights = {
   path: Type.Literal("/zones/{zone_id}/security-center/insights"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: Type.Intersect([security_center_page, Type.Unknown()]), per_page: Type.Intersect([security_center_perPage, Type.Unknown()]) }))), path: Type.Object({ zone_id: security_center_identifier }) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ dismissed: security_center_dismissed, issue_class: security_center_issueClasses, issue_type: security_center_issueTypes, product: security_center_products, severity: security_center_severityQueryParam, subject: security_center_subjects, "issue_class~neq": security_center_issueClasses, "issue_type~neq": security_center_issueTypes, "product~neq": security_center_products, "severity~neq": security_center_severityQueryParam, "subject~neq": security_center_subjects, page: security_center_page, per_page: security_center_perPage }))), path: Type.Object({ zone_id: security_center_identifier }) },
   responses: { 200: Type.Intersect([security_center_api_response_common, Type.Partial(Type.Object({ result: Type.Partial(Type.Object({ count: security_center_count, issues: Type.Array(security_center_issue), page: security_center_page, per_page: security_center_perPage })) }))]), "4XX": security_center_api_response_common_failure },
 };
 
@@ -47727,7 +47727,7 @@ export const patch_Update__zone__security__center__insight__classification = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: security_center_identifier, issue_id: Type.String() }), body: security_center_userClassificationUpdate },
-  responses: { 200: Type.Intersect([security_center_api_response_single]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: security_center_api_response_single, "4XX": security_center_api_response_common_failure },
 };
 
 export type put_Archive__zone__security__center__insight = typeof put_Archive__zone__security__center__insight;
@@ -47737,7 +47737,7 @@ export const put_Archive__zone__security__center__insight = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: security_center_identifier, issue_id: Type.String() }), body: Type.Optional(Type.Partial(Type.Object({ dismiss: Type.Boolean() }))) },
-  responses: { 200: Type.Intersect([security_center_api_response_single]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: security_center_api_response_single, "4XX": security_center_api_response_common_failure },
 };
 
 export type delete_Delete__security__txt = typeof delete_Delete__security__txt;
@@ -47747,7 +47747,7 @@ export const delete_Delete__security__txt = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: security_center_identifier }) },
-  responses: { 200: Type.Intersect([security_center_api_response_single]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: security_center_api_response_single, "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Get__security__txt = typeof get_Get__security__txt;
@@ -47767,7 +47767,7 @@ export const put_Update__security__txt = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ zone_id: security_center_identifier }), body: security_center_securityTxt },
-  responses: { 200: Type.Intersect([security_center_api_response_single]), "4XX": security_center_api_response_common_failure },
+  responses: { 200: security_center_api_response_single, "4XX": security_center_api_response_common_failure },
 };
 
 export type get_Zone__cache__settings__get__aegis__setting = typeof get_Zone__cache__settings__get__aegis__setting;
@@ -54446,7 +54446,7 @@ type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
-  ? TResponses extends Record<string, unknown>
+  ? TResponses extends Record<string | number, unknown>
     ? TypedApiResponse<InferSchemaValue<TResponses>, TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never>
     : never
   : never

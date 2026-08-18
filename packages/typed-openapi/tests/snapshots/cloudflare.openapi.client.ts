@@ -18,9 +18,9 @@ export type aaa_result_info_2 = Partial<{ count: number, page: number, per_page:
 export type aaa_api_response_collection = (aaa_api_response_common_2 & Partial<{ result_info: aaa_result_info_2 }> & Record<string, unknown>)
 export type aaa_messages = Array<{ code: number, message: string }>
 export type aaa_api_response_common = { errors: aaa_messages, messages: aaa_messages, success: true }
-export type aaa_api_response_common_failure = { errors: (aaa_messages & unknown), messages: aaa_messages, success: false }
+export type aaa_api_response_common_failure = { errors: aaa_messages, messages: aaa_messages, success: false }
 export type aaa_api_response_common_failure_2 = { errors: Array<{ message: string }>, messages?: Array<Partial<{ message: string }>>, success: false }
-export type aaa_api_response_common_failure_3 = { errors: (aaa_messages_3 & unknown), messages: (aaa_messages_3), success: false }
+export type aaa_api_response_common_failure_3 = { errors: aaa_messages_3, messages: aaa_messages_3, success: false }
 export type aaa_api_response_single = (aaa_api_response_common_2 & Record<string, unknown>)
 export type aaa_audit_log_action = Partial<{ description: string, result: string, time: string, type: string }>
 export type aaa_audit_log_actor_base = Partial<{ context: ("api_key" | "api_token" | "dash" | "oauth" | "origin_ca_key"), email: string, id: string, ip_address: string, token_id: string, token_name: string }>
@@ -208,7 +208,7 @@ export type access_allowed_methods = Array<("GET" | "POST" | "HEAD" | "PUT" | "D
 export type access_allowed_origins = Array<string>
 export type access_allowed_origins_2 = Array<unknown>
 export type access_any_valid_service_token_rule = { any_valid_service_token: Record<string, unknown> }
-export type access_api_response_common_failure = { errors: (access_messages & unknown), messages: (access_messages), result: (Record<string, unknown> | null), success: false }
+export type access_api_response_common_failure = { errors: access_messages, messages: access_messages, result: (Record<string, unknown> | null), success: false }
 export type access_app_count = number
 export type access_app_count_2 = number
 export type access_identifier = string
@@ -234,7 +234,7 @@ export type access_message = string
 export type access_title = string
 export type access_landing_page_design = Partial<{ button_color: access_button_color, button_text_color: access_button_text_color, image_url: access_image_url, message: access_message, title: access_title }>
 export type access_skip_app_launcher_login_page = boolean
-export type access_app_launcher_props = (access_feature_app_props & Partial<{ app_launcher_logo_url: access_app_launcher_logo_url, bg_color: access_bg_color, domain: unknown, footer_links: access_footer_links, header_bg_color: access_header_bg_color, landing_page_design: access_landing_page_design, name: unknown, skip_app_launcher_login_page: access_skip_app_launcher_login_page, type: (access_type & unknown) }>)
+export type access_app_launcher_props = (access_feature_app_props & Partial<{ app_launcher_logo_url: access_app_launcher_logo_url, bg_color: access_bg_color, domain: unknown, footer_links: access_footer_links, header_bg_color: access_header_bg_color, landing_page_design: access_landing_page_design, name: unknown, skip_app_launcher_login_page: access_skip_app_launcher_login_page, type: access_type }>)
 export type access_domain_3 = string
 export type access_session_duration_4 = string
 export type access_type_3 = ("self_hosted" | "saas" | "ssh" | "vnc" | "app_launcher" | "warp" | "biso" | "bookmark" | "dash_sso")
@@ -291,7 +291,7 @@ export type access_app_policy_request = (Partial<{ precedence: access_precedence
 export type access_base_policy_resp = Partial<{ created_at: access_timestamp, decision: access_decision, exclude: access_exclude_2, id: access_uuid_2, include: access_include_2, name: access_name_9, require: access_require_2, updated_at: access_timestamp }>
 export type access_policy_resp = (access_base_policy_resp & Partial<{ approval_groups: access_approval_groups, approval_required: access_approval_required, connection_rules: access_connection_rules, isolation_required: access_isolation_required, mfa_config: access_mfa_config, purpose_justification_prompt: access_purpose_justification_prompt, purpose_justification_required: access_purpose_justification_required, session_duration: access_session_duration_3 }>)
 export type access_app_policy_response = (access_policy_resp & Partial<{ precedence: access_precedence }> & Record<string, unknown>)
-export type access_app_req_embedded_policies = Partial<{ policies: Array<(access_app_policy_link | (unknown & access_uuid_2) | (Record<string, unknown> & Partial<{ id: access_uuid_2 }> & access_app_policy_request))> }>
+export type access_app_req_embedded_policies = Partial<{ policies: Array<(access_app_policy_link | access_uuid_2 | (Record<string, unknown> & Partial<{ id: access_uuid_2 }> & access_app_policy_request))> }>
 export type access_scim_config_authentication_http_basic = { password: string, scheme: "httpbasic", user: string }
 export type access_scim_config_authentication_oauth_bearer_token = { scheme: "oauthbearertoken", token: string }
 export type access_scim_config_authentication_oauth2 = { authorization_url: string, client_id: string, client_secret: string, scheme: "oauth2", scopes?: Array<string>, token_url: string }
@@ -319,25 +319,25 @@ export type access_service_auth_401_redirect = boolean
 export type access_skip_interstitial = boolean
 export type access_tags = Array<string>
 export type access_use_clientless_isolation_app_launcher_url = boolean
-export type access_self_hosted_props = { allow_authenticate_via_warp?: access_allow_authenticate_via_warp_2, allow_iframe?: access_allow_iframe, allowed_idps?: access_allowed_idps, app_launcher_visible?: access_app_launcher_visible, auto_redirect_to_identity?: access_auto_redirect_to_identity_2, cors_headers?: access_cors_headers, custom_deny_message?: access_custom_deny_message, custom_deny_url?: access_custom_deny_url, custom_non_identity_deny_url?: access_custom_non_identity_deny_url, custom_pages?: access_custom_pages_2, destinations?: access_destinations, domain: access_domain, eager_redirect_cookie_setting?: access_eager_redirect_cookie_setting, enable_binding_cookie?: access_enable_binding_cookie, http_only_cookie_attribute?: access_http_only_cookie_attribute, logo_url?: access_logo_url, mfa_config?: access_mfa_config, name?: access_name_8, oauth_configuration?: access_oauth_configuration, options_preflight_bypass?: access_options_preflight_bypass, path_cookie_attribute?: access_path_cookie_attribute, read_service_tokens_from_header?: access_read_service_tokens_from_header, same_site_cookie_attribute?: access_same_site_cookie_attribute, scim_config?: access_scim_config, self_hosted_domains?: access_self_hosted_domains, service_auth_401_redirect?: access_service_auth_401_redirect, session_duration?: access_session_duration_2, skip_interstitial?: access_skip_interstitial, tags?: access_tags, type: (access_type & unknown), use_clientless_isolation_app_launcher_url?: access_use_clientless_isolation_app_launcher_url }
-export type access_created_at = (unknown & access_timestamp)
-export type access_updated_at = (unknown & access_timestamp)
+export type access_self_hosted_props = { allow_authenticate_via_warp?: access_allow_authenticate_via_warp_2, allow_iframe?: access_allow_iframe, allowed_idps?: access_allowed_idps, app_launcher_visible?: access_app_launcher_visible, auto_redirect_to_identity?: access_auto_redirect_to_identity_2, cors_headers?: access_cors_headers, custom_deny_message?: access_custom_deny_message, custom_deny_url?: access_custom_deny_url, custom_non_identity_deny_url?: access_custom_non_identity_deny_url, custom_pages?: access_custom_pages_2, destinations?: access_destinations, domain: access_domain, eager_redirect_cookie_setting?: access_eager_redirect_cookie_setting, enable_binding_cookie?: access_enable_binding_cookie, http_only_cookie_attribute?: access_http_only_cookie_attribute, logo_url?: access_logo_url, mfa_config?: access_mfa_config, name?: access_name_8, oauth_configuration?: access_oauth_configuration, options_preflight_bypass?: access_options_preflight_bypass, path_cookie_attribute?: access_path_cookie_attribute, read_service_tokens_from_header?: access_read_service_tokens_from_header, same_site_cookie_attribute?: access_same_site_cookie_attribute, scim_config?: access_scim_config, self_hosted_domains?: access_self_hosted_domains, service_auth_401_redirect?: access_service_auth_401_redirect, session_duration?: access_session_duration_2, skip_interstitial?: access_skip_interstitial, tags?: access_tags, type: access_type, use_clientless_isolation_app_launcher_url?: access_use_clientless_isolation_app_launcher_url }
+export type access_created_at = access_timestamp
+export type access_updated_at = access_timestamp
 export type access_saml_saas_app = Partial<{ auth_type: ("saml" | "oidc"), consumer_service_url: string, created_at: access_created_at, custom_attributes: Array<Partial<{ friendly_name: string, name: string, name_format: ("urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified" | "urn:oasis:names:tc:SAML:2.0:attrname-format:basic" | "urn:oasis:names:tc:SAML:2.0:attrname-format:uri"), required: boolean, source: Partial<{ name: string, name_by_idp: Array<Partial<{ idp_id: string, source_name: string }>> }> }>>, default_relay_state: string, idp_entity_id: string, name_id_format: ("id" | "email"), name_id_transform_jsonata: string, public_key: string, saml_attribute_transform_jsonata: string, sp_entity_id: string, sso_endpoint: string, updated_at: access_updated_at }>
 export type access_oidc_saas_app = Partial<{ access_token_lifetime: string, allow_pkce_without_client_secret: boolean, app_launcher_url: string, auth_type: ("saml" | "oidc"), client_id: string, client_secret: string, created_at: access_created_at, custom_claims: Array<Partial<{ name: string, required: boolean, scope: ("groups" | "profile" | "email" | "openid"), source: Partial<{ name: string, name_by_idp: Record<string, string> }> }>>, grant_types: Array<("authorization_code" | "authorization_code_with_pkce" | "refresh_tokens" | "hybrid" | "implicit")>, group_filter_regex: string, hybrid_and_implicit_options: Partial<{ return_access_token_from_authorization_endpoint: boolean, return_id_token_from_authorization_endpoint: boolean }>, public_key: string, redirect_uris: Array<string>, refresh_token_options: Partial<{ lifetime: string }>, scopes: Array<("openid" | "groups" | "email" | "profile")>, updated_at: access_updated_at }>
-export type access_saas_props = Partial<{ allowed_idps: access_allowed_idps, app_launcher_visible: access_app_launcher_visible, auto_redirect_to_identity: access_auto_redirect_to_identity_2, custom_pages: access_custom_pages_2, logo_url: access_logo_url, name: access_name_8, saas_app: (access_saml_saas_app | access_oidc_saas_app), scim_config: access_scim_config, tags: access_tags, type: (access_type & unknown) }>
-export type access_ssh_props = (access_self_hosted_props & Partial<{ type: (access_type & unknown) }>)
-export type access_vnc_props = (access_self_hosted_props & Partial<{ type: (access_type & unknown) }>)
-export type access_warp_props = (access_feature_app_props & Partial<{ domain: unknown, name: unknown, type: (access_type & unknown) }>)
-export type access_biso_props = (access_feature_app_props & Partial<{ domain: unknown, name: unknown, type: (access_type & unknown) }>)
-export type access_proxy_endpoint_props = (access_feature_app_props & Partial<{ domain: unknown, name: unknown, type: (access_type & unknown) }>)
-export type access_bookmark_props = Partial<{ app_launcher_visible: access_app_launcher_visible, domain: string, logo_url: access_logo_url, name: access_name_8, tags: access_tags, type: (access_type & unknown) }>
+export type access_saas_props = Partial<{ allowed_idps: access_allowed_idps, app_launcher_visible: access_app_launcher_visible, auto_redirect_to_identity: access_auto_redirect_to_identity_2, custom_pages: access_custom_pages_2, logo_url: access_logo_url, name: access_name_8, saas_app: (access_saml_saas_app | access_oidc_saas_app), scim_config: access_scim_config, tags: access_tags, type: access_type }>
+export type access_ssh_props = (access_self_hosted_props & Partial<{ type: access_type }>)
+export type access_vnc_props = (access_self_hosted_props & Partial<{ type: access_type }>)
+export type access_warp_props = (access_feature_app_props & Partial<{ domain: unknown, name: unknown, type: access_type }>)
+export type access_biso_props = (access_feature_app_props & Partial<{ domain: unknown, name: unknown, type: access_type }>)
+export type access_proxy_endpoint_props = (access_feature_app_props & Partial<{ domain: unknown, name: unknown, type: access_type }>)
+export type access_bookmark_props = Partial<{ app_launcher_visible: access_app_launcher_visible, domain: string, logo_url: access_logo_url, name: access_name_8, tags: access_tags, type: access_type }>
 export type access_port = number
 export type access_target_attributes = Record<string, Array<string>>
 export type access_target_criteria_base = { port: access_port, target_attributes: access_target_attributes }
 export type access_protocol_infra_app = "SSH"
 export type access_target_criteria_infra_app = (access_target_criteria_base & Partial<{ protocol: access_protocol_infra_app }>)
 export type access_app_resp_embedded_target_criteria_infra = Partial<{ target_criteria: Array<access_target_criteria_infra_app> }>
-export type access_infra_props = (Partial<{ name: access_name_8, type: (access_type & unknown) }> & access_app_resp_embedded_target_criteria_infra & Record<string, unknown>)
+export type access_infra_props = (Partial<{ name: access_name_8, type: access_type }> & access_app_resp_embedded_target_criteria_infra & Record<string, unknown>)
 export type access_usernames = Array<string>
 export type access_connection_rules_ssh = { allow_email_alias?: access_allow_email_alias, usernames: access_usernames }
 export type access_connection_rules_infra = Partial<{ ssh: access_connection_rules_ssh }>
@@ -347,9 +347,9 @@ export type access_infra_app_req_embedded_policies = Partial<{ policies: Array<a
 export type access_protocol_self_hosted_app = "RDP"
 export type access_target_criteria_self_hosted_app = (access_target_criteria_base & Partial<{ protocol: access_protocol_self_hosted_app }>)
 export type access_app_resp_embedded_target_criteria_self_hosted = Partial<{ target_criteria: Array<access_target_criteria_self_hosted_app> }>
-export type access_rdp_props = (access_app_resp_embedded_target_criteria_self_hosted & access_self_hosted_props & Partial<{ type: (access_type & unknown) }> & unknown)
-export type access_mcp_props = { allow_authenticate_via_warp?: access_allow_authenticate_via_warp_2, allowed_idps?: access_allowed_idps, auto_redirect_to_identity?: access_auto_redirect_to_identity_2, custom_deny_message?: access_custom_deny_message, custom_deny_url?: access_custom_deny_url, custom_non_identity_deny_url?: access_custom_non_identity_deny_url, custom_pages?: access_custom_pages_2, destinations?: access_destinations, http_only_cookie_attribute?: access_http_only_cookie_attribute, logo_url?: access_logo_url, name?: access_name_8, oauth_configuration?: access_oauth_configuration, options_preflight_bypass?: access_options_preflight_bypass, same_site_cookie_attribute?: access_same_site_cookie_attribute, scim_config?: access_scim_config, session_duration?: access_session_duration_2, tags?: access_tags, type: (access_type & unknown) }
-export type access_mcp_portal_props = { allow_authenticate_via_warp?: access_allow_authenticate_via_warp_2, allowed_idps?: access_allowed_idps, auto_redirect_to_identity?: access_auto_redirect_to_identity_2, custom_deny_message?: access_custom_deny_message, custom_deny_url?: access_custom_deny_url, custom_non_identity_deny_url?: access_custom_non_identity_deny_url, custom_pages?: access_custom_pages_2, destinations?: access_destinations, domain?: access_domain, http_only_cookie_attribute?: access_http_only_cookie_attribute, logo_url?: access_logo_url, name?: access_name_8, oauth_configuration?: access_oauth_configuration, options_preflight_bypass?: access_options_preflight_bypass, same_site_cookie_attribute?: access_same_site_cookie_attribute, scim_config?: access_scim_config, session_duration?: access_session_duration_2, tags?: access_tags, type: (access_type & unknown) }
+export type access_rdp_props = (access_app_resp_embedded_target_criteria_self_hosted & access_self_hosted_props & Partial<{ type: access_type }>)
+export type access_mcp_props = { allow_authenticate_via_warp?: access_allow_authenticate_via_warp_2, allowed_idps?: access_allowed_idps, auto_redirect_to_identity?: access_auto_redirect_to_identity_2, custom_deny_message?: access_custom_deny_message, custom_deny_url?: access_custom_deny_url, custom_non_identity_deny_url?: access_custom_non_identity_deny_url, custom_pages?: access_custom_pages_2, destinations?: access_destinations, http_only_cookie_attribute?: access_http_only_cookie_attribute, logo_url?: access_logo_url, name?: access_name_8, oauth_configuration?: access_oauth_configuration, options_preflight_bypass?: access_options_preflight_bypass, same_site_cookie_attribute?: access_same_site_cookie_attribute, scim_config?: access_scim_config, session_duration?: access_session_duration_2, tags?: access_tags, type: access_type }
+export type access_mcp_portal_props = { allow_authenticate_via_warp?: access_allow_authenticate_via_warp_2, allowed_idps?: access_allowed_idps, auto_redirect_to_identity?: access_auto_redirect_to_identity_2, custom_deny_message?: access_custom_deny_message, custom_deny_url?: access_custom_deny_url, custom_non_identity_deny_url?: access_custom_non_identity_deny_url, custom_pages?: access_custom_pages_2, destinations?: access_destinations, domain?: access_domain, http_only_cookie_attribute?: access_http_only_cookie_attribute, logo_url?: access_logo_url, name?: access_name_8, oauth_configuration?: access_oauth_configuration, options_preflight_bypass?: access_options_preflight_bypass, same_site_cookie_attribute?: access_same_site_cookie_attribute, scim_config?: access_scim_config, session_duration?: access_session_duration_2, tags?: access_tags, type: access_type }
 export type access_app_request = ((access_self_hosted_props & access_app_req_embedded_policies & access_app_req_embedded_scim_config & Record<string, unknown>) | (access_saas_props & access_app_req_embedded_policies & access_app_req_embedded_scim_config & Record<string, unknown>) | (access_ssh_props & access_app_req_embedded_policies & access_app_req_embedded_scim_config & Record<string, unknown>) | (access_vnc_props & access_app_req_embedded_policies & access_app_req_embedded_scim_config & Record<string, unknown>) | (access_app_launcher_props & access_app_req_embedded_policies & Record<string, unknown>) | (access_warp_props & access_app_req_embedded_policies & Record<string, unknown>) | (access_biso_props & access_app_req_embedded_policies & Record<string, unknown>) | (access_proxy_endpoint_props & access_app_req_embedded_policies & Record<string, unknown>) | (access_bookmark_props & access_app_req_embedded_policies & Record<string, unknown>) | (access_infra_props & access_infra_app_req_embedded_policies & Record<string, unknown>) | (access_rdp_props & access_app_req_embedded_policies & Record<string, unknown>) | (access_mcp_props & access_app_req_embedded_policies & Record<string, unknown>) | (access_mcp_portal_props & access_app_req_embedded_policies & Record<string, unknown>))
 export type access_app_resp_embedded_policies = Partial<{ policies: Array<access_app_policy_response> }>
 export type access_aud_2 = string
@@ -392,8 +392,8 @@ export type access_authenticator_id = string
 export type access_auto_redirect_to_identity = boolean
 export type access_name_3 = string
 export type access_saml_certificate = { is_current: boolean, not_after: string, public_certificate: string, uid: string }
-export type access_saml_certificate_set = { created_at: string, current_certificate?: (access_saml_certificate), previous_certificate?: (Record<string, unknown> | null), uid: string, updated_at: string }
-export type access_identity_provider = { config: Record<string, unknown>, id?: access_uuid, name: access_name_3, read_only?: boolean, saml_certificate_set?: (access_saml_certificate_set & unknown), saml_certificate_set_id?: string, scim_config?: Partial<{ enabled: boolean, identity_update_behavior: ("automatic" | "reauth" | "no_action"), scim_base_url: string, seat_deprovision: boolean, secret: string, user_deprovision: boolean }>, type: ("onetimepin" | "azureAD" | "saml" | "centrify" | "facebook" | "github" | "google-apps" | "google" | "linkedin" | "oidc" | "okta" | "onelogin" | "pingone" | "yandex" | "cloudflare") }
+export type access_saml_certificate_set = { created_at: string, current_certificate?: access_saml_certificate, previous_certificate?: (Record<string, unknown> | null), uid: string, updated_at: string }
+export type access_identity_provider = { config: Record<string, unknown>, id?: access_uuid, name: access_name_3, read_only?: boolean, saml_certificate_set?: access_saml_certificate_set, saml_certificate_set_id?: string, scim_config?: Partial<{ enabled: boolean, identity_update_behavior: ("automatic" | "reauth" | "no_action"), scim_base_url: string, seat_deprovision: boolean, secret: string, user_deprovision: boolean }>, type: ("onetimepin" | "azureAD" | "saml" | "centrify" | "facebook" | "github" | "google-apps" | "google" | "linkedin" | "oidc" | "okta" | "onelogin" | "pingone" | "yandex" | "cloudflare") }
 export type access_generic_oauth_config = Partial<{ client_id: string, client_secret: string }>
 export type access_custom_claims_support = Partial<{ claims: Array<string>, email_claim_name: string }>
 export type access_azureAD = (access_identity_provider & Partial<{ config: (access_generic_oauth_config & access_custom_claims_support & Partial<{ conditional_access_enabled: boolean, directory_id: string, prompt: ("login" | "select_account" | "none"), support_groups: boolean }> & Record<string, unknown>) }> & Record<string, unknown>)
@@ -412,7 +412,7 @@ export type access_ca_2 = Partial<{ aud: access_aud_3, id: access_id_3, public_k
 export type access_centrify = (access_identity_provider & Partial<{ config: (access_generic_oauth_config & access_custom_claims_support & Partial<{ centrify_account: string, centrify_app_id: string }>) }> & Record<string, unknown>)
 export type access_centrify_2 = (access_identity_provider_2 & Partial<{ config: (access_generic_oauth_config_2 & Partial<{ centrify_account: string, centrify_app_id: string }>) }> & Record<string, unknown>)
 export type access_saml_certificate_2 = { is_current: boolean, not_after: string, public_certificate: string, uid: string }
-export type access_saml_certificate_set_2 = { created_at: string, current_certificate?: (access_saml_certificate_2), previous_certificate?: (Record<string, unknown> | null), uid: string, updated_at: string }
+export type access_saml_certificate_set_2 = { created_at: string, current_certificate?: access_saml_certificate_2, previous_certificate?: (Record<string, unknown> | null), uid: string, updated_at: string }
 export type access_certificate_set_list_response = (access_api_response_collection & Partial<{ result: Array<access_saml_certificate_set_2> }>)
 export type access_certificate_set_response = (access_api_response_single & Partial<{ result: access_saml_certificate_set_2 }>)
 export type access_fingerprint = string
@@ -481,7 +481,7 @@ export type access_id_response_3 = (access_api_response_common & Partial<{ resul
 export type access_id_response_4 = (access_api_response_single & Partial<{ result: Partial<{ id: access_uuid }> }> & Record<string, unknown>)
 export type access_id_response_5 = (access_api_response_single & Partial<{ result: Partial<{ id: access_uuid_2 }> }> & Record<string, unknown>)
 export type access_id_response_6 = (access_api_response_single & Partial<{ result: Partial<{ id: access_id_3 }> }> & Record<string, unknown>)
-export type access_identifier_2 = (access_identifier & unknown)
+export type access_identifier_2 = access_identifier
 export type access_identifier_3 = string
 export type access_identifier_4 = unknown
 export type access_linkedin = (access_identity_provider & Partial<{ config: access_generic_oauth_config }> & Record<string, unknown>)
@@ -501,9 +501,9 @@ export type access_pingone_2 = (access_identity_provider_2 & Partial<{ config: (
 export type access_saml_2 = (access_identity_provider_2 & Partial<{ config: Partial<{ attributes: Array<string>, email_attribute_name: string, header_attributes: Array<Partial<{ attribute_name: string, header_name: string }>>, idp_public_certs: Array<string>, issuer_url: string, sign_request: boolean, sso_target_url: string }> }> & Record<string, unknown>)
 export type access_yandex_2 = (access_identity_provider_2 & Partial<{ config: access_generic_oauth_config_2 }> & Record<string, unknown>)
 export type access_identity_providers_2 = (access_azureAD_2 | access_centrify_2 | access_facebook_2 | access_github_2 | access_google_2 | access_google_apps_2 | access_linkedin_2 | access_oidc_2 | access_okta_2 | access_onelogin_2 | access_pingone_2 | access_saml_2 | access_yandex_2 | access_cloudflare_2)
-export type access_idp_federation_grant = { created_at: access_created_at, id: (access_identifier & unknown), idp_id: string }
+export type access_idp_federation_grant = { created_at: access_created_at, id: access_identifier, idp_id: string }
 export type access_idp_federation_grant_create_request = { idp_id: string }
-export type access_idp_federation_grant_id_response = (access_api_response_single & Partial<{ result: Partial<{ id: (access_identifier) }> }>)
+export type access_idp_federation_grant_id_response = (access_api_response_single & Partial<{ result: Partial<{ id: access_identifier }> }>)
 export type access_idp_federation_grant_list_response = (access_api_response_collection & Partial<{ result: Array<access_idp_federation_grant> }>)
 export type access_idp_federation_grant_response = (access_api_response_single & Partial<{ result: access_idp_federation_grant }>)
 export type access_idp_id = Array<string>
@@ -584,7 +584,7 @@ export type access_response_collection_15 = (access_api_response_collection & Pa
 export type access_response_collection_16 = (access_api_response_collection & Partial<{ result: Array<access_authenticator_device_aaguid> }> & Record<string, unknown>)
 export type access_response_collection_17 = (access_api_response_collection & Partial<{ result: Array<(access_azureAD_2 | access_centrify_2 | access_facebook_2 | access_github_2 | access_google_2 | access_google_apps_2 | access_linkedin_2 | access_oidc_2 | access_okta_2 | access_onelogin_2 | access_pingone_2 | access_saml_2 | access_yandex_2 | access_onetimepin_2 | access_cloudflare_2)> }> & Record<string, unknown>)
 export type access_response_collection_18 = (access_api_response_collection & Partial<{ result: Array<access_groups_3> }> & Record<string, unknown>)
-export type access_service_tokens_2 = Partial<{ client_id: access_client_id, created_at: access_timestamp, duration: access_duration_2, expires_at: access_timestamp, id: (unknown & access_uuid), last_seen_at: access_timestamp, name: access_name_17, updated_at: access_timestamp }>
+export type access_service_tokens_2 = Partial<{ client_id: access_client_id, created_at: access_timestamp, duration: access_duration_2, expires_at: access_timestamp, id: access_uuid, last_seen_at: access_timestamp, name: access_name_17, updated_at: access_timestamp }>
 export type access_response_collection_19 = (access_api_response_collection & Partial<{ result: Array<access_service_tokens_2> }> & Record<string, unknown>)
 export type access_response_collection_2 = (access_api_response_collection & Partial<{ result: Array<access_groups_2> }> & Record<string, unknown>)
 export type access_response_collection_20 = (access_api_response_collection & Partial<{ result: Array<access_ca_2> }> & Record<string, unknown>)
@@ -595,7 +595,7 @@ export type access_seat_uid_2 = string
 export type access_uid = string
 export type access_users_2 = Partial<{ access_seat: access_access_seat_2, active_device_count: access_active_device_count, created_at: access_timestamp, email: access_email_2, gateway_seat: access_gateway_seat_2, id: access_uuid, last_successful_login: access_last_successful_login, name: access_name_10, seat_uid: access_seat_uid_2, uid: access_uid, updated_at: access_timestamp }>
 export type access_response_collection_24 = (access_api_response_collection & Partial<{ result_info: Partial<{ count: unknown, page: unknown, per_page: unknown, total_count: unknown }> }> & Partial<{ result: Array<access_users_2> }> & Record<string, unknown>)
-export type access_service_tokens = Partial<{ client_id: access_client_id, created_at: access_created_at, duration: access_duration, expires_at: access_timestamp, id: (unknown & access_uuid), last_seen_at: (unknown & access_timestamp), name: access_name_2, updated_at: access_updated_at }>
+export type access_service_tokens = Partial<{ client_id: access_client_id, created_at: access_created_at, duration: access_duration, expires_at: access_timestamp, id: access_uuid, last_seen_at: access_timestamp, name: access_name_2, updated_at: access_updated_at }>
 export type access_response_collection_3 = (access_api_response_collection & Partial<{ result: Array<access_service_tokens> }> & Record<string, unknown>)
 export type access_response_collection_4 = (access_api_response_collection & Partial<{ result: Array<access_ca> }> & Record<string, unknown>)
 export type access_response_collection_5 = (access_api_response_collection & Partial<{ result: Array<access_certificates> }> & Record<string, unknown>)
@@ -672,7 +672,7 @@ export type addressing_components_schemas_advertised = boolean
 export type addressing_modified_at_nullable = (string | null)
 export type addressing_advertised_response = (addressing_api_response_single & Partial<{ result: Partial<{ advertised: addressing_components_schemas_advertised, advertised_modified_at: addressing_modified_at_nullable }> }>)
 export type addressing_api_response_collection = (addressing_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type addressing_api_response_common_failure = { errors: (addressing_messages & unknown), messages: (addressing_messages), result: (Record<string, unknown> | null), success: false }
+export type addressing_api_response_common_failure = { errors: addressing_messages, messages: addressing_messages, result: (Record<string, unknown> | null), success: false }
 export type addressing_approved = string
 export type addressing_asn = number
 export type addressing_asn_prepend_count = number
@@ -774,7 +774,7 @@ export type aig_billing_TopupStatusResponse = { errors: Array<{ code: number, me
 export type alexandria_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type alexandria_api_response_common = { errors: alexandria_messages, messages: alexandria_messages, success: true }
 export type alexandria_api_response_collection = (alexandria_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number }> }> & Record<string, unknown>)
-export type alexandria_api_response_common_failure = { errors: (alexandria_messages & unknown), messages: (alexandria_messages), result: (Record<string, unknown> | null), success: false }
+export type alexandria_api_response_common_failure = { errors: alexandria_messages, messages: alexandria_messages, result: (Record<string, unknown> | null), success: false }
 export type alexandria_application_confidence_score = number
 export type alexandria_application_score_composition = (Record<string, unknown> | null)
 export type alexandria_application_source = string
@@ -839,7 +839,7 @@ export type api_shield_after = Partial<{ after: string }>
 export type api_shield_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type api_shield_api_response_common = { errors: api_shield_messages, messages: api_shield_messages, success: true }
 export type api_shield_api_response_collection = (api_shield_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type api_shield_api_response_common_failure = { errors: (api_shield_messages & unknown), messages: (api_shield_messages), result: (Record<string, unknown> | null), success: false }
+export type api_shield_api_response_common_failure = { errors: api_shield_messages, messages: api_shield_messages, result: (Record<string, unknown> | null), success: false }
 export type api_shield_api_response_single = (api_shield_api_response_common & Record<string, unknown>)
 export type api_shield_api_response_single_obj = (api_shield_api_response_common & Partial<{ result: Record<string, unknown> }>)
 export type api_shield_api_discovery_origin = ("ML" | "SessionIdentifier" | "LabelDiscovery")
@@ -906,7 +906,7 @@ export type api_shield_operation_feature_schema_info = Partial<{ schema_info: Pa
 export type api_shield_operation_features = (api_shield_operation_feature_thresholds | api_shield_operation_feature_parameter_schemas | api_shield_operation_feature_api_routing | api_shield_operation_feature_confidence_intervals | api_shield_operation_feature_schema_info)
 export type api_shield_operation = (api_shield_standard_operation & (Partial<{ features: api_shield_operation_features }> | null))
 export type api_shield_multiple_operation_response = (api_shield_api_response_common & { result: Array<api_shield_operation> })
-export type api_shield_multiple_operation_response_paginated = (api_shield_api_response_collection & { result: Array<(api_shield_operation)> })
+export type api_shield_multiple_operation_response_paginated = (api_shield_api_response_collection & { result: Array<api_shield_operation> })
 export type api_shield_object_with_operation_id = { operation_id: (string & api_shield_uuid_2) }
 export type api_shield_old_kind = "openapi_v3"
 export type api_shield_old_operation_mitigation_action = (("log" | "block" | "none" | null) | null)
@@ -957,12 +957,12 @@ export type api_shield_selector_operation_state = ("included" | "excluded" | "ig
 export type api_shield_single_operation_response = (api_shield_api_response_common & { result: (api_shield_operation & Partial<{ schemas: api_shield_operation_schemas }>) })
 export type argo_analytics_messages = Array<{ code: number, message: string }>
 export type argo_analytics_api_response_common = { errors: argo_analytics_messages, messages: argo_analytics_messages, result: (Record<string, unknown> | Array<unknown> | string), success: true }
-export type argo_analytics_api_response_common_failure = { errors: (argo_analytics_messages & unknown), messages: (argo_analytics_messages), result: (Record<string, unknown> | null), success: false }
+export type argo_analytics_api_response_common_failure = { errors: argo_analytics_messages, messages: argo_analytics_messages, result: (Record<string, unknown> | null), success: false }
 export type argo_analytics_api_response_single = (argo_analytics_api_response_common & Partial<{ result: ((Record<string, unknown> | null) | (string | null)) }> & Record<string, unknown>)
 export type argo_analytics_identifier = string
 export type argo_analytics_response_single = (argo_analytics_api_response_single & Partial<{ result: Record<string, unknown> }>)
 export type argo_config_messages = Array<{ code: number, message: string }>
-export type argo_config_api_response_common_failure = { errors: (argo_config_messages & unknown), messages: (argo_config_messages), result: (Record<string, unknown> | null), success: false }
+export type argo_config_api_response_common_failure = { errors: argo_config_messages, messages: argo_config_messages, result: (Record<string, unknown> | null), success: false }
 export type argo_config_editable = boolean
 export type argo_config_setting_id = string
 export type argo_config_modified_on = string
@@ -982,7 +982,7 @@ export type art_ResultValues = Record<string, unknown>
 export type art_DataSecurityFindingsTimeseriesResult = { resolution?: (string | null), slots: Array<art_ResultValues> }
 export type art_DataSecurityFindingsTimeseriesResponse = { errors: Array<art_APIError>, messages: Array<art_APIMessage>, result: art_DataSecurityFindingsTimeseriesResult, success: boolean }
 export type art_ErrorResponse = { errors: Array<art_APIError>, messages: Array<art_APIMessage>, result?: (Record<string, unknown> | null), success: boolean }
-export type art_QuerySummary = (art_CommonQuery)
+export type art_QuerySummary = art_CommonQuery
 export type art_QueryTimeseries = (art_CommonQuery & { resolution: string })
 export type art_QueryTopN = (art_CommonQuery & { n: number, orderBy: string })
 export type art_SummaryResult = { currentTotal: Array<art_ResultValues>, previousTotal: Array<art_ResultValues> }
@@ -1015,7 +1015,7 @@ export type bill_subs_api_api_response_single = (bill_subs_api_api_response_comm
 export type bill_subs_api_account_subscription_response_single = (bill_subs_api_api_response_single & Partial<{ result: bill_subs_api_subscription }>)
 export type bill_subs_api_action = string
 export type bill_subs_api_amount = number
-export type bill_subs_api_api_response_common_failure = { errors: (bill_subs_api_messages & unknown), messages: (bill_subs_api_messages), result: (Record<string, unknown> | null), success: false }
+export type bill_subs_api_api_response_common_failure = { errors: bill_subs_api_messages, messages: bill_subs_api_messages, result: (Record<string, unknown> | null), success: false }
 export type bill_subs_api_can_subscribe = boolean
 export type bill_subs_api_externally_managed = boolean
 export type bill_subs_api_schemas_frequency = ("weekly" | "monthly" | "quarterly" | "yearly")
@@ -1041,7 +1041,7 @@ export type bill_subs_api_components_schemas_name = ("zones" | "page_rules" | "d
 export type bill_subs_api_unit_price = number
 export type bill_subs_api_component_value = Partial<{ default: bill_subs_api_default, name: bill_subs_api_components_schemas_name, unit_price: bill_subs_api_unit_price }>
 export type bill_subs_api_duration = number
-export type bill_subs_api_frequency_response = (bill_subs_api_frequency & ("weekly" | "monthly" | "quarterly" | "yearly" | "not-applicable") & unknown)
+export type bill_subs_api_frequency_response = (bill_subs_api_frequency & ("weekly" | "monthly" | "quarterly" | "yearly" | "not-applicable"))
 export type bill_subs_api_schemas_component_values = Array<bill_subs_api_component_value>
 export type bill_subs_api_rate_plan_components_schemas_identifier = string
 export type bill_subs_api_rate_plan = Partial<{ components: bill_subs_api_schemas_component_values, currency: bill_subs_api_currency, duration: bill_subs_api_duration, frequency: bill_subs_api_schemas_frequency, id: bill_subs_api_rate_plan_components_schemas_identifier, name: bill_subs_api_schemas_name }>
@@ -1062,7 +1062,7 @@ export type billable_usage_api_v2_usage_response = { errors: (Array<billable_usa
 export type bot_management_ai_bots_protection = ("block" | "disabled" | "only_on_ad_pages")
 export type bot_management_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type bot_management_api_response_common = { errors: bot_management_messages, messages: bot_management_messages, success: true }
-export type bot_management_api_response_common_failure = { errors: (bot_management_messages & unknown), messages: (bot_management_messages), result: (Record<string, unknown> | null), success: false }
+export type bot_management_api_response_common_failure = { errors: bot_management_messages, messages: bot_management_messages, result: (Record<string, unknown> | null), success: false }
 export type bot_management_api_response_single = (bot_management_api_response_common & Record<string, unknown>)
 export type bot_management_auto_update_model = boolean
 export type bot_management_cf_robots_variant = ("off" | "policy_only")
@@ -1071,7 +1071,7 @@ export type bot_management_crawler_protection = ("enabled" | "disabled")
 export type bot_management_enable_js = boolean
 export type bot_management_is_robots_txt_managed = boolean
 export type bot_management_using_latest_model = boolean
-export type bot_management_base_config = (Partial<{ ai_bots_protection: bot_management_ai_bots_protection, cf_robots_variant: bot_management_cf_robots_variant, content_bots_protection: bot_management_content_bots_protection, crawler_protection: bot_management_crawler_protection, enable_js: bot_management_enable_js, is_robots_txt_managed: bot_management_is_robots_txt_managed, using_latest_model: bot_management_using_latest_model }>)
+export type bot_management_base_config = Partial<{ ai_bots_protection: bot_management_ai_bots_protection, cf_robots_variant: bot_management_cf_robots_variant, content_bots_protection: bot_management_content_bots_protection, crawler_protection: bot_management_crawler_protection, enable_js: bot_management_enable_js, is_robots_txt_managed: bot_management_is_robots_txt_managed, using_latest_model: bot_management_using_latest_model }>
 export type bot_management_bm_cookie_enabled = boolean
 export type bot_management_fight_mode_turned_on = boolean
 export type bot_management_optimize_wordpress_turned_on = boolean
@@ -1166,7 +1166,7 @@ export type builds_CreateDeployHookRequest = { branch: builds_branch, deploy_hoo
 export type builds_CreateTriggerRequest = { branch_excludes: builds_branch_excludes, branch_includes: builds_branch_includes, build_caching_enabled?: builds_build_caching_enabled, build_command: builds_build_command, build_token_uuid: builds_build_token_uuid, deploy_command: builds_deploy_command, external_script_id: builds_external_script_id, path_excludes: builds_path_excludes, path_includes: builds_path_includes, repo_connection_uuid: builds_repo_connection_uuid, root_directory: builds_root_directory, trigger_name: builds_trigger_name }
 export type builds_is_secret = boolean
 export type builds_EnvironmentVariablesRequest = Record<string, { is_secret: builds_is_secret, value?: (string | null) }>
-export type builds_CreateWorkerBuildSettingsInput = { build_caching_enabled?: (builds_build_caching_enabled & unknown), build_command: builds_build_command, build_token_uuid: builds_build_token_uuid, deploy_command: builds_deploy_command, environment_variables?: builds_EnvironmentVariablesRequest, path_excludes?: builds_path_excludes, path_includes?: builds_path_includes, root_directory?: (builds_root_directory & unknown) }
+export type builds_CreateWorkerBuildSettingsInput = { build_caching_enabled?: builds_build_caching_enabled, build_command: builds_build_command, build_token_uuid: builds_build_token_uuid, deploy_command: builds_deploy_command, environment_variables?: builds_EnvironmentVariablesRequest, path_excludes?: builds_path_excludes, path_includes?: builds_path_includes, root_directory?: builds_root_directory }
 export type builds_CreateWorkerGitRepositoryFunfettiInput = { branch: string, provider_account_id: builds_provider_account_id, provider_account_name: builds_provider_account_name, provider_type: ("github" | "gitlab"), repo_id: builds_repo_id, repo_name: builds_repo_name }
 export type builds_CreateWorkerGitRepositoryGrantInput = { branch: string, grant_id: string, provider_account_id: builds_provider_account_id, provider_account_name: builds_provider_account_name, provider_type: "gitlab_internal", repo_id: builds_repo_id, repo_name: builds_repo_name }
 export type builds_CreateWorkerGitRepositoryInput = (builds_CreateWorkerGitRepositoryFunfettiInput | builds_CreateWorkerGitRepositoryGrantInput)
@@ -1201,7 +1201,7 @@ export type cache_purge_FlexPurgeByTags = Partial<{ tags: Array<string> }>
 export type cache_purge_SingleFile = Partial<{ files: Array<string> }>
 export type cache_purge_SingleFileWithUrlAndHeaders = Partial<{ files: Array<Partial<{ headers: Record<string, string>, url: string }>> }>
 export type cache_purge_messages = Array<{ code: number, message: string }>
-export type cache_purge_api_response_common_failure = { errors: (cache_purge_messages & unknown), messages: (cache_purge_messages), result: (Record<string, unknown> | null), success: boolean }
+export type cache_purge_api_response_common_failure = { errors: cache_purge_messages, messages: cache_purge_messages, result: (Record<string, unknown> | null), success: boolean }
 export type cache_purge_identifier = string
 export type cache_purge_api_response_single_id = { errors: cache_purge_messages, messages: cache_purge_messages, result?: ({ id: cache_purge_identifier } | null), success: boolean }
 export type cache_rules_base = { id: string, modified_on?: (string | null) }
@@ -1271,11 +1271,11 @@ export type cache_rules_zone_cache_settings_delete_response_single = (cache_rule
 export type cache_rules_zone_cache_settings_response_single = (cache_rules_api_response_common & Partial<{ result: cache_rules_result_object }> & Record<string, unknown>)
 export type cache_messages = Array<{ code: number, message: string }>
 export type cache_result = { editable: boolean, id: string, modified_on: string, next_scheduled_scan?: (string | null), value: ("auto" | "custom") }
-export type cache_api_response_common_failure = { errors: (cache_messages & unknown), messages: (cache_messages), result: cache_result, success: boolean }
+export type cache_api_response_common_failure = { errors: cache_messages, messages: cache_messages, result: cache_result, success: boolean }
 export type cache_api_response_single_id = { errors: cache_messages, messages: cache_messages, result: cache_result, success: boolean }
 export type cache_auto_origin_tls_kex_value = boolean
-export type cache_auto_origin_tls_kex_result = { enabled: (cache_auto_origin_tls_kex_value & unknown), id: string, modified_on: string }
-export type cache_auto_origin_tls_kex_failure_response = { errors: (cache_messages & unknown), messages: cache_messages, result: cache_auto_origin_tls_kex_result, success: boolean }
+export type cache_auto_origin_tls_kex_result = { enabled: cache_auto_origin_tls_kex_value, id: string, modified_on: string }
+export type cache_auto_origin_tls_kex_failure_response = { errors: cache_messages, messages: cache_messages, result: cache_auto_origin_tls_kex_result, success: boolean }
 export type cache_auto_origin_tls_kex_patch = { enabled: cache_auto_origin_tls_kex_value }
 export type cache_auto_origin_tls_kex_response = { errors: cache_messages, messages: cache_messages, result: cache_auto_origin_tls_kex_result, success: boolean }
 export type cache_identifier = string
@@ -1284,7 +1284,7 @@ export type cache_schemas_patch = { value: cache_schemas_value }
 export type calls_account_identifier = string
 export type calls_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type calls_api_response_common = { errors: calls_messages, messages: calls_messages, success: true }
-export type calls_api_response_common_failure = { errors: (calls_messages & unknown), messages: (calls_messages), result: (Record<string, unknown> | null), success: false }
+export type calls_api_response_common_failure = { errors: calls_messages, messages: calls_messages, result: (Record<string, unknown> | null), success: false }
 export type calls_api_response_single = (calls_api_response_common & Record<string, unknown>)
 export type calls_created = string
 export type calls_modified = string
@@ -1392,13 +1392,13 @@ export type cc_ListApplications = Array<cc_Application>
 export type cc_ListContainerInstances = { instances: Array<cc_ContainerInstance> }
 export type cc_Messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type cc_ModifyApplicationRequestBody = Partial<{ configuration: cc_ModifyUserDeploymentConfiguration, constraints: cc_ApplicationConstraints, instances: number, max_instances: number, name: string, observability: cc_ApplicationObservability, rollout_active_grace_period: cc_ApplicationRolloutActiveGracePeriod, scheduling_policy: cc_SchedulingPolicy }>
-export type cc_V4BaseErrorResponse = { errors: (cc_Messages & unknown), messages: (cc_Messages), result: (Record<string, unknown> | null), success: boolean }
+export type cc_V4BaseErrorResponse = { errors: cc_Messages, messages: cc_Messages, result: (Record<string, unknown> | null), success: boolean }
 export type cc_V4BaseResponse = { errors: cc_Messages, messages: cc_Messages, success: boolean }
 export type cc_V4BasePaginatedResponse = (cc_V4BaseResponse & { result_info: Partial<{ next_page_token: string, page_token: string, per_page: number }> } & Record<string, unknown>)
 export type cc_WranglerSSHResponse = { token: string, url: string }
 export type cloud_connector_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type cloud_connector_api_response_common = { errors: cloud_connector_messages, messages: cloud_connector_messages, success: true }
-export type cloud_connector_api_response_common_failure = { errors: (cloud_connector_messages & unknown), messages: (cloud_connector_messages), result: (Record<string, unknown> | null), success: false }
+export type cloud_connector_api_response_common_failure = { errors: cloud_connector_messages, messages: cloud_connector_messages, result: (Record<string, unknown> | null), success: false }
 export type cloud_connector_identifier = string
 export type cloud_connector_provider = ("aws_s3" | "cloudflare_r2" | "gcp_storage" | "azure_storage")
 export type cloud_connector_rule = Partial<{ description: string, enabled: boolean, expression: string, id: string, parameters: Partial<{ host: string }>, provider: cloud_connector_provider }>
@@ -1416,7 +1416,7 @@ export type cloudflare_pipelines_JsonFormat = Partial<{ decimal_encoding: cloudf
 export type cloudflare_pipelines_ParquetCompression = ("uncompressed" | "snappy" | "gzip" | "zstd" | "lz4")
 export type cloudflare_pipelines_ParquetFormat = Partial<{ compression: cloudflare_pipelines_ParquetCompression, row_group_bytes: (number | null) }>
 export type cloudflare_pipelines_Format = ((cloudflare_pipelines_JsonFormat & { type: "json" }) | (cloudflare_pipelines_ParquetFormat & { type: "parquet" }))
-export type cloudflare_pipelines_ConnectionSchema = Partial<{ fields: Array<cloudflare_pipelines_SourceField>, format: (cloudflare_pipelines_Format), inferred: (boolean | null) }>
+export type cloudflare_pipelines_ConnectionSchema = Partial<{ fields: Array<cloudflare_pipelines_SourceField>, format: cloudflare_pipelines_Format, inferred: (boolean | null) }>
 export type cloudflare_pipelines_PipelineEdge = { dest_id: number, edge_type: string, key_type: string, src_id: number, value_type: string }
 export type cloudflare_pipelines_PipelineNode = { description: string, node_id: number, operator: string, parallelism: number }
 export type cloudflare_pipelines_PipelineGraph = { edges: Array<cloudflare_pipelines_PipelineEdge>, nodes: Array<cloudflare_pipelines_PipelineNode> }
@@ -1452,11 +1452,11 @@ export type cloudforce_one_requests_tlp = ("clear" | "amber" | "amber-strict" | 
 export type cloudforce_one_requests_priority_edit = { labels: cloudforce_one_requests_labels, priority: number, requirement: string, tlp: cloudforce_one_requests_tlp }
 export type cloudforce_one_requests_time = string
 export type cloudforce_one_requests_uuid = string
-export type cloudforce_one_requests_priority_item = { created: (cloudforce_one_requests_time), id: cloudforce_one_requests_uuid, labels: cloudforce_one_requests_labels, priority: number, requirement: string, tlp: cloudforce_one_requests_tlp, updated: (cloudforce_one_requests_time) }
+export type cloudforce_one_requests_priority_item = { created: cloudforce_one_requests_time, id: cloudforce_one_requests_uuid, labels: cloudforce_one_requests_labels, priority: number, requirement: string, tlp: cloudforce_one_requests_tlp, updated: cloudforce_one_requests_time }
 export type cloudforce_one_requests_priority_list = { page: number, per_page: number }
-export type cloudforce_one_requests_quota = Partial<{ anniversary_date: (cloudforce_one_requests_time), quarter_anniversary_date: (cloudforce_one_requests_time), quota: number, remaining: number }>
+export type cloudforce_one_requests_quota = Partial<{ anniversary_date: cloudforce_one_requests_time, quarter_anniversary_date: cloudforce_one_requests_time, quota: number, remaining: number }>
 export type cloudforce_one_requests_request_asset_edit = Partial<{ source: cloudforce_one_requests_asset_content }>
-export type cloudforce_one_requests_request_asset_item = { created?: (cloudforce_one_requests_time), description?: string, file_type?: string, id: number, name: string }
+export type cloudforce_one_requests_request_asset_item = { created?: cloudforce_one_requests_time, description?: string, file_type?: string, id: number, name: string }
 export type cloudforce_one_requests_request_asset_list = { page: number, per_page: number }
 export type cloudforce_one_requests_request_status = ("open" | "accepted" | "reported" | "approved" | "completed" | "declined")
 export type cloudforce_one_requests_request_constants = Partial<{ priority: Array<cloudforce_one_requests_priority>, status: Array<cloudforce_one_requests_request_status>, tlp: Array<cloudforce_one_requests_tlp> }>
@@ -1466,21 +1466,21 @@ export type cloudforce_one_requests_request_summary = string
 export type cloudforce_one_requests_request_edit = Partial<{ content: cloudforce_one_requests_request_content, priority: string, request_type: cloudforce_one_requests_request_type, summary: cloudforce_one_requests_request_summary, tlp: cloudforce_one_requests_tlp }>
 export type cloudforce_one_requests_request_readable_id = string
 export type cloudforce_one_requests_request_item = { completed?: cloudforce_one_requests_time, content: cloudforce_one_requests_request_content, created: cloudforce_one_requests_time, id: cloudforce_one_requests_uuid, message_tokens?: number, priority: cloudforce_one_requests_time, readable_id?: cloudforce_one_requests_request_readable_id, request: cloudforce_one_requests_request_type, status?: cloudforce_one_requests_request_status, summary: cloudforce_one_requests_request_summary, tlp: cloudforce_one_requests_tlp, tokens?: number, updated: cloudforce_one_requests_time }
-export type cloudforce_one_requests_request_list = { completed_after?: (cloudforce_one_requests_time), completed_before?: (cloudforce_one_requests_time), created_after?: (cloudforce_one_requests_time), created_before?: (cloudforce_one_requests_time), page: number, per_page: number, request_type?: cloudforce_one_requests_request_type, sort_by?: string, sort_order?: ("asc" | "desc"), status?: cloudforce_one_requests_request_status }
-export type cloudforce_one_requests_request_list_item = { completed?: (cloudforce_one_requests_time), created: (cloudforce_one_requests_time), id: cloudforce_one_requests_uuid, message_tokens?: number, priority: cloudforce_one_requests_priority, readable_id?: cloudforce_one_requests_request_readable_id, request: cloudforce_one_requests_request_type, status?: cloudforce_one_requests_request_status, summary: cloudforce_one_requests_request_summary, tlp: cloudforce_one_requests_tlp, tokens?: number, updated: (cloudforce_one_requests_time) }
+export type cloudforce_one_requests_request_list = { completed_after?: cloudforce_one_requests_time, completed_before?: cloudforce_one_requests_time, created_after?: cloudforce_one_requests_time, created_before?: cloudforce_one_requests_time, page: number, per_page: number, request_type?: cloudforce_one_requests_request_type, sort_by?: string, sort_order?: ("asc" | "desc"), status?: cloudforce_one_requests_request_status }
+export type cloudforce_one_requests_request_list_item = { completed?: cloudforce_one_requests_time, created: cloudforce_one_requests_time, id: cloudforce_one_requests_uuid, message_tokens?: number, priority: cloudforce_one_requests_priority, readable_id?: cloudforce_one_requests_request_readable_id, request: cloudforce_one_requests_request_type, status?: cloudforce_one_requests_request_status, summary: cloudforce_one_requests_request_summary, tlp: cloudforce_one_requests_tlp, tokens?: number, updated: cloudforce_one_requests_time }
 export type cloudforce_one_requests_request_message_edit = Partial<{ content: cloudforce_one_requests_message_content }>
-export type cloudforce_one_requests_request_message_item = { author: string, content: cloudforce_one_requests_message_content, created?: (cloudforce_one_requests_time), id: number, is_follow_on_request: boolean, updated: (cloudforce_one_requests_time) }
-export type cloudforce_one_requests_request_message_list = { after?: (cloudforce_one_requests_time), before?: (cloudforce_one_requests_time), page: number, per_page: number, sort_by?: string, sort_order?: ("asc" | "desc") }
+export type cloudforce_one_requests_request_message_item = { author: string, content: cloudforce_one_requests_message_content, created?: cloudforce_one_requests_time, id: number, is_follow_on_request: boolean, updated: cloudforce_one_requests_time }
+export type cloudforce_one_requests_request_message_list = { after?: cloudforce_one_requests_time, before?: cloudforce_one_requests_time, page: number, per_page: number, sort_by?: string, sort_order?: ("asc" | "desc") }
 export type cloudforce_one_requests_request_types = Array<string>
 export type cloudforce_one_whois_schemas_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type cloudforce_one_whois_api_response_common = { errors: cloudforce_one_whois_schemas_messages, messages: cloudforce_one_whois_schemas_messages, success: true }
 export type cloudforce_one_whois_messages = Array<{ code: number, message: string }>
-export type cloudforce_one_whois_api_response_common_failure = { errors: (cloudforce_one_whois_messages & unknown), messages: (cloudforce_one_whois_messages), result: (Record<string, unknown> | null), success: false }
+export type cloudforce_one_whois_api_response_common_failure = { errors: cloudforce_one_whois_messages, messages: cloudforce_one_whois_messages, result: (Record<string, unknown> | null), success: false }
 export type cloudforce_one_whois_api_response_single = (cloudforce_one_whois_api_response_common & Record<string, unknown>)
 export type cloudforce_one_whois_domain_name = string
 export type cloudforce_one_whois_identifier = string
 export type cloudforce_one_whois_whois = { administrative_city?: string, administrative_country?: string, administrative_email?: string, administrative_fax?: string, administrative_fax_ext?: string, administrative_id?: string, administrative_name?: string, administrative_org?: string, administrative_phone?: string, administrative_phone_ext?: string, administrative_postal_code?: string, administrative_province?: string, administrative_referral_url?: string, administrative_street?: string, billing_city?: string, billing_country?: string, billing_email?: string, billing_fax?: string, billing_fax_ext?: string, billing_id?: string, billing_name?: string, billing_org?: string, billing_phone?: string, billing_phone_ext?: string, billing_postal_code?: string, billing_province?: string, billing_referral_url?: string, billing_street?: string, created_date?: string, created_date_raw?: string, dnssec: boolean, domain: cloudforce_one_whois_domain_name, expiration_date?: string, expiration_date_raw?: string, extension: string, found: boolean, id?: string, nameservers: Array<string>, punycode: string, registrant: string, registrant_city?: string, registrant_country?: string, registrant_email?: string, registrant_fax?: string, registrant_fax_ext?: string, registrant_id?: string, registrant_name?: string, registrant_org?: string, registrant_phone?: string, registrant_phone_ext?: string, registrant_postal_code?: string, registrant_province?: string, registrant_referral_url?: string, registrant_street?: string, registrar: string, registrar_city?: string, registrar_country?: string, registrar_email?: string, registrar_fax?: string, registrar_fax_ext?: string, registrar_id?: string, registrar_name?: string, registrar_org?: string, registrar_phone?: string, registrar_phone_ext?: string, registrar_postal_code?: string, registrar_province?: string, registrar_referral_url?: string, registrar_street?: string, status?: Array<string>, technical_city?: string, technical_country?: string, technical_email?: string, technical_fax?: string, technical_fax_ext?: string, technical_id?: string, technical_name?: string, technical_org?: string, technical_phone?: string, technical_phone_ext?: string, technical_postal_code?: string, technical_province?: string, technical_referral_url?: string, technical_street?: string, updated_date?: string, updated_date_raw?: string, whois_server?: string }
-export type cloudforce_one_whois_schemas_single_response = (cloudforce_one_whois_api_response_single & Partial<{ result: (cloudforce_one_whois_whois) }>)
+export type cloudforce_one_whois_schemas_single_response = (cloudforce_one_whois_api_response_single & Partial<{ result: cloudforce_one_whois_whois }>)
 export type cloudforce_one_AccountExemptions = { namespace: Array<string>, tag_match: Array<string>, worker_name: Array<string> }
 export type cloudforce_one_ApprovalPendingResponse = { approval_id: number, message: string }
 export type cloudforce_one_RuleAction = { action_config: Record<string, (string | number | boolean | Array<string> | Record<string, string>)>, action_type: ("alert_gchat" | "webhook" | "logging" | "email" | "pipeline" | "remediation" | "throttle" | "delete"), enabled?: boolean }
@@ -1516,7 +1516,7 @@ export type custom_indicator_feeds_messages_2 = Array<{ code: number, documentat
 export type custom_indicator_feeds_api_response_common = { errors: custom_indicator_feeds_messages_2, messages: custom_indicator_feeds_messages_2, success: true }
 export type custom_indicator_feeds_api_response_single = (custom_indicator_feeds_api_response_common & Record<string, unknown>)
 export type custom_indicator_feeds_messages = Array<{ code: number, message: string }>
-export type custom_indicator_feeds_api_response_common_failure = { errors: (custom_indicator_feeds_messages & unknown), messages: (custom_indicator_feeds_messages), result: (Record<string, unknown> | null), success: false }
+export type custom_indicator_feeds_api_response_common_failure = { errors: custom_indicator_feeds_messages, messages: custom_indicator_feeds_messages, result: (Record<string, unknown> | null), success: false }
 export type custom_indicator_feeds_description = string
 export type custom_indicator_feeds_name = string
 export type custom_indicator_feeds_create_feed = Partial<{ description: custom_indicator_feeds_description, name: custom_indicator_feeds_name }>
@@ -1550,7 +1550,7 @@ export type custom_indicator_feeds_update_public_field_response = (custom_indica
 export type custom_pages_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type custom_pages_api_response_common = { errors: custom_pages_messages, messages: custom_pages_messages, success: true }
 export type custom_pages_api_response_collection = (custom_pages_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type custom_pages_api_response_common_failure = { errors: (custom_pages_messages & unknown), messages: (custom_pages_messages), result: (Record<string, unknown> | null), success: false }
+export type custom_pages_api_response_common_failure = { errors: custom_pages_messages, messages: custom_pages_messages, result: (Record<string, unknown> | null), success: false }
 export type custom_pages_api_response_single = (custom_pages_api_response_common & Record<string, unknown>)
 export type custom_pages_asset_description = string
 export type custom_pages_asset_name = string
@@ -1572,7 +1572,7 @@ export type custom_pages_preview_token_result = (custom_pages_api_response_singl
 export type d1_account_identifier = string
 export type d1_messages = Array<{ code: number, message: string }>
 export type d1_api_response_common = { errors: d1_messages, messages: d1_messages, result: Record<string, unknown>, success: true }
-export type d1_api_response_common_failure = { errors: (d1_messages & unknown), messages: (d1_messages), result: (Record<string, unknown> | null), success: false }
+export type d1_api_response_common_failure = { errors: d1_messages, messages: d1_messages, result: (Record<string, unknown> | null), success: false }
 export type d1_params = Array<string>
 export type d1_sql = string
 export type d1_single_query = { params?: d1_params, sql: d1_sql }
@@ -1598,7 +1598,7 @@ export type d1_query_meta = Partial<{ changed_db: boolean, changes: number, dura
 export type d1_query_result_response = Partial<{ meta: d1_query_meta, results: Array<Record<string, unknown>>, success: boolean }>
 export type d1_raw_result_response = Partial<{ meta: d1_query_meta, results: Partial<{ columns: Array<string>, rows: Array<Array<(number | string | Record<string, unknown>)>> }>, success: boolean }>
 export type d1_time_travel_bookmark = string
-export type d1_time_travel_restore_response = Partial<{ bookmark: (d1_time_travel_bookmark & unknown), message: string, previous_bookmark: (d1_time_travel_bookmark & unknown) }>
+export type d1_time_travel_restore_response = Partial<{ bookmark: d1_time_travel_bookmark, message: string, previous_bookmark: d1_time_travel_bookmark }>
 export type d1_time_travel_timestamp = string
 export type digital_experience_monitoring_account_identifier = string
 export type digital_experience_monitoring_aggregate_time_period = { units: ("hours" | "days" | "testRuns"), value: number }
@@ -1608,7 +1608,7 @@ export type digital_experience_monitoring_messages = Array<{ code: number, docum
 export type digital_experience_monitoring_api_response_common = { errors: digital_experience_monitoring_messages, messages: digital_experience_monitoring_messages, success: true }
 export type digital_experience_monitoring_api_response_collection = (digital_experience_monitoring_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
 export type digital_experience_monitoring_api_response_collection_common = (digital_experience_monitoring_api_response_common & Partial<{ result: (Array<unknown> | null) }> & Record<string, unknown>)
-export type digital_experience_monitoring_api_response_common_failure = { errors: (digital_experience_monitoring_messages & unknown), messages: (digital_experience_monitoring_messages), result: (Record<string, unknown> | null), success: false }
+export type digital_experience_monitoring_api_response_common_failure = { errors: digital_experience_monitoring_messages, messages: digital_experience_monitoring_messages, result: (Record<string, unknown> | null), success: false }
 export type digital_experience_monitoring_api_response_single = (digital_experience_monitoring_api_response_common & Record<string, unknown>)
 export type digital_experience_monitoring_colo = string
 export type digital_experience_monitoring_colos_response = Array<{ airportCode: string, city: string, countryCode: string }>
@@ -1634,10 +1634,10 @@ export type digital_experience_monitoring_device_dex_test_schemas_enabled = bool
 export type digital_experience_monitoring_device_dex_test_schemas_interval = string
 export type digital_experience_monitoring_device_dex_test_schemas_name = string
 export type digital_experience_monitoring_uuid = string
-export type digital_experience_monitoring_dex_target_policy = { default?: boolean, id: (digital_experience_monitoring_uuid), name?: string }
+export type digital_experience_monitoring_dex_target_policy = { default?: boolean, id: digital_experience_monitoring_uuid, name?: string }
 export type digital_experience_monitoring_device_dex_test_target_policies = Array<digital_experience_monitoring_dex_target_policy>
 export type digital_experience_monitoring_schemas_test_id = string
-export type digital_experience_monitoring_device_dex_test_schemas_http = { created?: string, data: digital_experience_monitoring_device_dex_test_schemas_data, description?: digital_experience_monitoring_device_dex_test_schemas_description, enabled: digital_experience_monitoring_device_dex_test_schemas_enabled, interval: digital_experience_monitoring_device_dex_test_schemas_interval, name: digital_experience_monitoring_device_dex_test_schemas_name, target_policies?: (digital_experience_monitoring_device_dex_test_target_policies & unknown), targeted?: boolean, test_id?: digital_experience_monitoring_schemas_test_id, updated?: string }
+export type digital_experience_monitoring_device_dex_test_schemas_http = { created?: string, data: digital_experience_monitoring_device_dex_test_schemas_data, description?: digital_experience_monitoring_device_dex_test_schemas_description, enabled: digital_experience_monitoring_device_dex_test_schemas_enabled, interval: digital_experience_monitoring_device_dex_test_schemas_interval, name: digital_experience_monitoring_device_dex_test_schemas_name, target_policies?: digital_experience_monitoring_device_dex_test_target_policies, targeted?: boolean, test_id?: digital_experience_monitoring_schemas_test_id, updated?: string }
 export type digital_experience_monitoring_device_id = string
 export type digital_experience_monitoring_ip_location = Partial<{ city: string, country_iso: string, state_iso: string, zip: string }>
 export type digital_experience_monitoring_ip_info = Partial<{ address: string, asn: number, aso: string, location: digital_experience_monitoring_ip_location, name: string, netmask: string, version: number }>
@@ -1646,17 +1646,17 @@ export type digital_experience_monitoring_device_isps_response = { isps: Array<d
 export type digital_experience_monitoring_timeslot_int = { timestamp: string, value: number }
 export type digital_experience_monitoring_timeslot_float = { timestamp: string, value: number }
 export type digital_experience_monitoring_timeslot_string = { timestamp: string, value: string }
-export type digital_experience_monitoring_timeslot_rtt_stats = { timestamp: string, value: (digital_experience_monitoring_rtt_stats) }
+export type digital_experience_monitoring_timeslot_rtt_stats = { timestamp: string, value: digital_experience_monitoring_rtt_stats }
 export type digital_experience_monitoring_timeslot_cpu_apps = { timestamp: string, value: Array<digital_experience_monitoring_cpu_pct_by_app> }
 export type digital_experience_monitoring_timeslot_ram_apps = { timestamp: string, value: Array<digital_experience_monitoring_ram_used_pct_by_app> }
-export type digital_experience_monitoring_timeslot_tunnel_stats = { timestamp: string, value: (digital_experience_monitoring_tunnel_stats) }
+export type digital_experience_monitoring_timeslot_tunnel_stats = { timestamp: string, value: digital_experience_monitoring_tunnel_stats }
 export type digital_experience_monitoring_device_state_over_time = Partial<{ battery_cycles: Array<digital_experience_monitoring_timeslot_int>, battery_pct: Array<digital_experience_monitoring_timeslot_float>, connection_type: Array<digital_experience_monitoring_timeslot_string>, cpu_pct: Array<digital_experience_monitoring_timeslot_float>, disk_read_bps: Array<digital_experience_monitoring_timeslot_int>, disk_usage_pct: Array<digital_experience_monitoring_timeslot_float>, disk_write_bps: Array<digital_experience_monitoring_timeslot_int>, mode: Array<digital_experience_monitoring_timeslot_string>, network_rcvd_bps: Array<digital_experience_monitoring_timeslot_int>, network_sent_bps: Array<digital_experience_monitoring_timeslot_int>, network_ssid: Array<digital_experience_monitoring_timeslot_string>, ram_available_kb: Array<digital_experience_monitoring_timeslot_int>, ram_used_pct: Array<digital_experience_monitoring_timeslot_float>, rtt: Array<digital_experience_monitoring_timeslot_rtt_stats>, status: Array<digital_experience_monitoring_timeslot_string>, top_cpu_applications: Array<digital_experience_monitoring_timeslot_cpu_apps>, top_ram_applications: Array<digital_experience_monitoring_timeslot_ram_apps>, tunnel_stats: Array<digital_experience_monitoring_timeslot_tunnel_stats>, tunnel_type: Array<digital_experience_monitoring_timeslot_string>, unique_networks: Array<digital_experience_monitoring_timeslot_int>, wifi_strength_dbm: Array<digital_experience_monitoring_timeslot_int> }>
 export type digital_experience_monitoring_device_state_top_networks_summary = { count: number, name: string }
 export type digital_experience_monitoring_device_status_over_time_result = { over_time: digital_experience_monitoring_device_state_over_time, top_networks: Array<digital_experience_monitoring_device_state_top_networks_summary> }
 export type digital_experience_monitoring_dex_delete_response_collection = (digital_experience_monitoring_api_response_common & Partial<{ result: Partial<{ dex_tests: Array<digital_experience_monitoring_device_dex_test_schemas_http> }> }>)
 export type digital_experience_monitoring_dex_response_collection = (digital_experience_monitoring_api_response_collection_common & Partial<{ result: Array<digital_experience_monitoring_device_dex_test_schemas_http> }>)
-export type digital_experience_monitoring_dex_targeted_test = { data: (digital_experience_monitoring_device_dex_test_schemas_data & unknown), enabled: boolean, name: string, test_id: string }
-export type digital_experience_monitoring_dex_rule = { created_at: string, description?: string, id: (digital_experience_monitoring_uuid & unknown), match: string, name: string, targeted_tests?: Array<digital_experience_monitoring_dex_targeted_test>, updated_at?: string }
+export type digital_experience_monitoring_dex_targeted_test = { data: digital_experience_monitoring_device_dex_test_schemas_data, enabled: boolean, name: string, test_id: string }
+export type digital_experience_monitoring_dex_rule = { created_at: string, description?: string, id: digital_experience_monitoring_uuid, match: string, name: string, targeted_tests?: Array<digital_experience_monitoring_dex_targeted_test>, updated_at?: string }
 export type digital_experience_monitoring_dex_single_response = (digital_experience_monitoring_api_response_single & Partial<{ result: digital_experience_monitoring_device_dex_test_schemas_http }>)
 export type digital_experience_monitoring_execution_context = ("EXECUTION_CONTEXT_INVALID" | "OUT_OF_TUNNEL" | "IN_TUNNEL")
 export type digital_experience_monitoring_fleet_status_devices_response = (digital_experience_monitoring_api_response_collection & Partial<{ result: Array<digital_experience_monitoring_device> }>)
@@ -1687,11 +1687,11 @@ export type digital_experience_monitoring_timestamp_datetime = string
 export type digital_experience_monitoring_traceroute_details_percentiles_response = Partial<{ hopsCount: digital_experience_monitoring_percentiles, packetLossPct: digital_experience_monitoring_percentiles, roundTripTimeMs: digital_experience_monitoring_percentiles }>
 export type digital_experience_monitoring_traceroute_details_response = { host: string, interval: string, kind: "traceroute", name: string, target_policies?: (Array<{ default: boolean, id: digital_experience_monitoring_uuid, name: string }> | null), targeted?: boolean, tracerouteStats?: ({ availabilityPct: digital_experience_monitoring_test_stat_pct_over_time, hopsCount: digital_experience_monitoring_test_stat_over_time, packetLossPct: digital_experience_monitoring_test_stat_pct_over_time, roundTripTimeMs: digital_experience_monitoring_test_stat_over_time, uniqueDevicesTotal: number } | null), tracerouteStatsByColo?: Array<{ availabilityPct: digital_experience_monitoring_test_stat_pct_over_time, colo: string, hopsCount: digital_experience_monitoring_test_stat_over_time, packetLossPct: digital_experience_monitoring_test_stat_pct_over_time, roundTripTimeMs: digital_experience_monitoring_test_stat_over_time, uniqueDevicesTotal: number }> }
 export type digital_experience_monitoring_traceroute_test_network_path_response = { deviceName?: string, id: digital_experience_monitoring_uuid, interval?: string, kind?: "traceroute", name?: string, networkPath?: ({ sampling?: ({ unit: "hours", value: number } | null), slots: Array<{ clientToAppRttMs: (number | null), clientToCfEgressRttMs: (number | null), clientToCfIngressRttMs: (number | null), clientToIspRttMs?: (number | null), id: digital_experience_monitoring_uuid, timestamp: string }> } | null), url?: string }
-export type digital_experience_monitoring_traceroute_test_result_network_path_response = { colo?: digital_experience_monitoring_colo, deviceName?: string, execution_context?: (digital_experience_monitoring_execution_context), hops: Array<{ asn?: (number | null), aso?: (string | null), ipAddress?: (string | null), location?: (Partial<{ city: (string | null), state: (string | null), zip: (string | null) }> | null), mile?: (("client-to-app" | "client-to-cf-egress" | "client-to-cf-ingress" | "client-to-isp") | null), name?: (string | null), packetLossPct?: (number | null), rttMs?: (number | null), ttl: number }>, resultId: digital_experience_monitoring_uuid, testId?: digital_experience_monitoring_uuid, testName?: string, time_start?: string, tunnel_type?: (string | null) }
+export type digital_experience_monitoring_traceroute_test_result_network_path_response = { colo?: digital_experience_monitoring_colo, deviceName?: string, execution_context?: digital_experience_monitoring_execution_context, hops: Array<{ asn?: (number | null), aso?: (string | null), ipAddress?: (string | null), location?: (Partial<{ city: (string | null), state: (string | null), zip: (string | null) }> | null), mile?: (("client-to-app" | "client-to-cf-egress" | "client-to-cf-ingress" | "client-to-isp") | null), name?: (string | null), packetLossPct?: (number | null), rttMs?: (number | null), ttl: number }>, resultId: digital_experience_monitoring_uuid, testId?: digital_experience_monitoring_uuid, testName?: string, time_start?: string, tunnel_type?: (string | null) }
 export type digital_experience_monitoring_unique_devices_response = { uniqueDevicesTotal: number }
-export type digital_experience_monitoring_warp_config_details = Partial<{ account_name: string, account_tag: (digital_experience_monitoring_uuid), config_name: string }>
-export type digital_experience_monitoring_warp_config_change_event = Partial<{ device_id: (digital_experience_monitoring_uuid), device_registration: (digital_experience_monitoring_uuid & unknown), from: (digital_experience_monitoring_warp_config_details), hostname: string, registration_id: (digital_experience_monitoring_uuid), serial_number: string, timestamp: (digital_experience_monitoring_timestamp_datetime), to: (digital_experience_monitoring_warp_config_details), user_email: string }>
-export type digital_experience_monitoring_warp_toggle_change_event = Partial<{ account_name: string, account_tag: string, device_id: (digital_experience_monitoring_uuid), device_registration: (digital_experience_monitoring_uuid & unknown), hostname: string, registration_id: (digital_experience_monitoring_uuid), serial_number: string, timestamp: (digital_experience_monitoring_timestamp_datetime), toggle: ("on" | "off"), user_email: string }>
+export type digital_experience_monitoring_warp_config_details = Partial<{ account_name: string, account_tag: digital_experience_monitoring_uuid, config_name: string }>
+export type digital_experience_monitoring_warp_config_change_event = Partial<{ device_id: digital_experience_monitoring_uuid, device_registration: digital_experience_monitoring_uuid, from: digital_experience_monitoring_warp_config_details, hostname: string, registration_id: digital_experience_monitoring_uuid, serial_number: string, timestamp: digital_experience_monitoring_timestamp_datetime, to: digital_experience_monitoring_warp_config_details, user_email: string }>
+export type digital_experience_monitoring_warp_toggle_change_event = Partial<{ account_name: string, account_tag: string, device_id: digital_experience_monitoring_uuid, device_registration: digital_experience_monitoring_uuid, hostname: string, registration_id: digital_experience_monitoring_uuid, serial_number: string, timestamp: digital_experience_monitoring_timestamp_datetime, toggle: ("on" | "off"), user_email: string }>
 export type digital_experience_monitoring_warp_events_response = Array<(digital_experience_monitoring_warp_toggle_change_event | digital_experience_monitoring_warp_config_change_event)>
 export type dlp_AddinAuth = ({ allowed_microsoft_organizations: Array<string>, type: "Org" } | { type: "NoAuth" })
 export type dlp_AddinAccountMapping = { addin_identifier_token: string, auth_requirements: dlp_AddinAuth }
@@ -1710,7 +1710,7 @@ export type dlp_CreateEmailRule = { action: dlp_EmailRuleAction, conditions: Arr
 export type dlp_RiskScoreIntegrationType = "Okta"
 export type dlp_CreateIntegrationBody = { integration_type: dlp_RiskScoreIntegrationType, reference_id?: (string | null), tenant_url: string }
 export type dlp_Validation = "luhn"
-export type dlp_Pattern = { regex: string, validation?: (dlp_Validation) }
+export type dlp_Pattern = { regex: string, validation?: dlp_Validation }
 export type dlp_CustomEntry = { created_at: string, description?: (string | null), enabled: boolean, id: string, name: string, pattern: dlp_Pattern, profile_id?: (string | null), updated_at: string }
 export type dlp_CustomEntryUpdateType = { description?: (string | null), name: string, pattern: dlp_Pattern }
 export type dlp_CustomEntryUpdate = (dlp_CustomEntryUpdateType & { enabled: boolean })
@@ -1718,14 +1718,14 @@ export type dlp_CustomPromptTopicEntry = { created_at: string, description?: (st
 export type dlp_EntryConfidence = { ai_context_available: boolean, available: boolean }
 export type dlp_PromptTopicType = ("Intent" | "Content")
 export type dlp_PredefinedEntryVariant = ({ description?: (string | null), topic_type: dlp_PromptTopicType, type: "PromptTopic" } | { description?: (string | null), type: "General" })
-export type dlp_PredefinedEntry = { confidence: dlp_EntryConfidence, enabled: boolean, id: string, name: string, profile_id?: (string | null), variant?: (dlp_PredefinedEntryVariant) }
+export type dlp_PredefinedEntry = { confidence: dlp_EntryConfidence, enabled: boolean, id: string, name: string, profile_id?: (string | null), variant?: dlp_PredefinedEntryVariant }
 export type dlp_IntegrationEntry = { created_at: string, enabled: boolean, id: string, name: string, profile_id?: (string | null), updated_at: string }
 export type dlp_ExactDataEntry = { case_sensitive: boolean, created_at: string, description?: (string | null), enabled: boolean, id: string, name: string, secret: boolean, updated_at: string }
 export type dlp_DocumentFingerprintEntry = { created_at: string, description?: (string | null), enabled: boolean, id: string, name: string, updated_at: string }
 export type dlp_WordListEntry = { created_at: string, enabled: boolean, id: string, name: string, profile_id?: (string | null), updated_at: string, word_list: unknown }
 export type dlp_Entry = ((dlp_CustomEntry & { type: "custom" }) | (dlp_CustomPromptTopicEntry & { type: "custom_prompt_topic" }) | (dlp_PredefinedEntry & { type: "predefined" }) | (dlp_IntegrationEntry & { type: "integration" }) | (dlp_ExactDataEntry & { type: "exact_data" }) | (dlp_DocumentFingerprintEntry & { type: "document_fingerprint" }) | (dlp_WordListEntry & { type: "word_list" }))
 export type dlp_SensitivityLevelRef = { group_id: string, level_id: string }
-export type dlp_CustomProfile = { ai_context_enabled?: boolean, allowed_match_count: number, confidence_threshold?: (dlp_Confidence & unknown), context_awareness?: dlp_ContextAwareness, created_at: string, data_classes?: Array<string>, data_tags?: Array<string>, description?: (string | null), entries?: Array<dlp_Entry>, id: string, name: string, ocr_enabled: boolean, sensitivity_levels?: Array<dlp_SensitivityLevelRef>, shared_entries?: Array<dlp_Entry>, updated_at: string }
+export type dlp_CustomProfile = { ai_context_enabled?: boolean, allowed_match_count: number, confidence_threshold?: dlp_Confidence, context_awareness?: dlp_ContextAwareness, created_at: string, data_classes?: Array<string>, data_tags?: Array<string>, description?: (string | null), entries?: Array<dlp_Entry>, id: string, name: string, ocr_enabled: boolean, sensitivity_levels?: Array<dlp_SensitivityLevelRef>, shared_entries?: Array<dlp_Entry>, updated_at: string }
 export type dlp_CustomProfileArray = Array<dlp_CustomProfile>
 export type dlp_NewCustomEntry = { description?: (string | null), enabled: boolean, name: string, pattern: dlp_Pattern }
 export type dlp_NewCustomEntryWithId = (dlp_NewCustomEntry & { entry_id: string })
@@ -1757,10 +1757,10 @@ export type dlp_DatasetCreation = { dataset: dlp_Dataset, encoding_version: numb
 export type dlp_DatasetNewVersion = { case_sensitive?: boolean, columns?: Array<dlp_DatasetColumn>, encoding_version: number, max_cells: number, secret?: string, version: number }
 export type dlp_DatasetUpdate = Partial<{ case_sensitive: boolean, description: (string | null), name: (string | null) }>
 export type dlp_PayloadLogMaskingLevel = ("full" | "partial" | "clear" | "default")
-export type dlp_PayloadLogSetting = { masking_level?: (dlp_PayloadLogMaskingLevel), public_key?: (string | null), updated_at: string }
+export type dlp_PayloadLogSetting = { masking_level?: dlp_PayloadLogMaskingLevel, public_key?: (string | null), updated_at: string }
 export type dlp_DlpSettings = { ai_context_analysis: boolean, ocr: boolean, payload_logging: dlp_PayloadLogSetting }
-export type dlp_PayloadLogSettingUpdate = Partial<{ masking_level: (dlp_PayloadLogMaskingLevel & unknown), public_key: (string | null) }>
-export type dlp_DlpSettingsUpdate = Partial<{ ai_context_analysis: (boolean | null), ocr: (boolean | null), payload_logging: (dlp_PayloadLogSettingUpdate & unknown) }>
+export type dlp_PayloadLogSettingUpdate = Partial<{ masking_level: dlp_PayloadLogMaskingLevel, public_key: (string | null) }>
+export type dlp_DlpSettingsUpdate = Partial<{ ai_context_analysis: (boolean | null), ocr: (boolean | null), payload_logging: dlp_PayloadLogSettingUpdate }>
 export type dlp_DocumentFingerprint = { created_at: string, description: string, entry_id: string, file_name?: (string | null), id: string, match_percent: number, name: string, status: dlp_DatasetUploadStatus, updated_at: string, version?: (number | null) }
 export type dlp_DocumentFingerprintArray = Array<dlp_DocumentFingerprint>
 export type dlp_DocumentFingerprintUpload = { created_at: string, description: string, entry_id: string, file_name: string, id: string, match_percent: number, name: string, status: dlp_DatasetUploadStatus, updated_at: string, version: number }
@@ -1772,7 +1772,7 @@ export type dlp_EntryOfNewProfile = (dlp_NewCustomEntry | dlp_NewWordListEntry)
 export type dlp_EntryProfile = { id: string, name: string }
 export type dlp_EntryUpdateType = ((dlp_CustomEntryUpdateType & { type: "custom" }) | { type: "predefined" } | { type: "integration" })
 export type dlp_EntryUpdate = (dlp_EntryUpdateType & { enabled: boolean })
-export type dlp_EntryWithUploadStatus = (dlp_Entry & Partial<{ upload_status: (dlp_DatasetUploadStatus & unknown) }>)
+export type dlp_EntryWithUploadStatus = (dlp_Entry & Partial<{ upload_status: dlp_DatasetUploadStatus }>)
 export type dlp_EntryWithSharedProfiles = (dlp_EntryWithUploadStatus & { profiles: Array<dlp_EntryProfile> })
 export type dlp_IntegrationProfile = { created_at: string, description?: (string | null), entries: Array<dlp_Entry>, id: string, name: string, shared_entries: Array<dlp_Entry>, updated_at: string }
 export type dlp_Limits = { max_custom_regex_entries: number, max_dataset_cells: number, max_document_fingerprints: number, used_custom_regex_entries: number, used_dataset_cells: number, used_document_fingerprints: number }
@@ -1792,9 +1792,9 @@ export type dlp_PredefinedProfileUpdate = Partial<{ ai_context_enabled: boolean,
 export type dlp_NewPredefinedProfile = (dlp_PredefinedProfileUpdate & { profile_id: string })
 export type dlp_NewSensitivityLevel = { description?: (string | null), name: string }
 export type dlp_NewSensitivityGroup = { description?: (string | null), levels?: Array<dlp_NewSensitivityLevel>, name: string, template_id?: (string | null) }
-export type dlp_PayloadLogSettingUpdateLegacy = Partial<{ masking_level: (dlp_PayloadLogMaskingLevel), public_key: (string | null) }>
+export type dlp_PayloadLogSettingUpdateLegacy = Partial<{ masking_level: dlp_PayloadLogMaskingLevel, public_key: (string | null) }>
 export type dlp_PredefinedEntryUpdate = { enabled: boolean }
-export type dlp_PredefinedProfile = { ai_context_enabled?: boolean, allowed_match_count: number, confidence_threshold?: (dlp_Confidence & unknown), context_awareness?: dlp_ContextAwareness, entries: Array<dlp_Entry>, id: string, name: string, ocr_enabled?: boolean, open_access?: boolean }
+export type dlp_PredefinedProfile = { ai_context_enabled?: boolean, allowed_match_count: number, confidence_threshold?: dlp_Confidence, context_awareness?: dlp_ContextAwareness, entries: Array<dlp_Entry>, id: string, name: string, ocr_enabled?: boolean, open_access?: boolean }
 export type dlp_PredefinedProfileConfig = { ai_context_enabled?: boolean, allowed_match_count: number, confidence_threshold: (string | null), enabled_entries: Array<string>, entries: Array<dlp_Entry>, id: string, name: string, ocr_enabled?: boolean, open_access?: boolean }
 export type dlp_PredefinedProfileConfigUpdate = Partial<{ ai_context_enabled: boolean, allowed_match_count: (number | null), confidence_threshold: (string | null), enabled_entries: (Array<string> | null), entries: Array<dlp_PredefinedProfileEntryUpdate>, ocr_enabled: boolean }>
 export type dlp_Profile = ((dlp_CustomProfile & { type: "custom" }) | (dlp_PredefinedProfile & { type: "predefined" }) | (dlp_IntegrationProfile & { type: "integration" }))
@@ -1802,7 +1802,7 @@ export type dlp_ProfileArray = Array<dlp_Profile>
 export type dlp_RegexValidationQuery = { max_match_bytes?: (number | null), regex: string }
 export type dlp_RegexValidationResult = { valid: boolean }
 export type dlp_RiskEvent = { event_details?: unknown, id: string, name: string, risk_level: dlp_RiskLevel, timestamp: string }
-export type dlp_RiskEvents = { email: string, events: Array<dlp_RiskEvent>, last_reset_time?: (string | null), name: string, risk_level?: (dlp_RiskLevel) }
+export type dlp_RiskEvents = { email: string, events: Array<dlp_RiskEvent>, last_reset_time?: (string | null), name: string, risk_level?: dlp_RiskLevel }
 export type dlp_RiskScoreIntegration = { account_tag: string, active: boolean, created_at: string, id: string, integration_type: dlp_RiskScoreIntegrationType, reference_id: string, tenant_url: string, well_known_url: string }
 export type dlp_RiskScoreIntegrationArray = Array<dlp_RiskScoreIntegration>
 export type dlp_UserRiskInfo = { email: string, event_count: number, last_event: string, max_risk_level: dlp_RiskLevel, name: string, user_id: string }
@@ -1827,7 +1827,7 @@ export type dlp_UpdateIntegrationBody = { active: boolean, reference_id?: (strin
 export type dlp_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type dlp_api_response_common = { errors: dlp_messages, messages: dlp_messages, success: true }
 export type dlp_api_response_collection = (dlp_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type dlp_api_response_common_failure = { errors: (dlp_messages & unknown), messages: (dlp_messages), result: (Record<string, unknown> | null), success: false }
+export type dlp_api_response_common_failure = { errors: dlp_messages, messages: dlp_messages, result: (Record<string, unknown> | null), success: false }
 export type dlp_api_response_single = (dlp_api_response_common & Record<string, unknown>)
 export type dls_CreatePrefixBindingInput = { cidr: string, prefix_id: string, region_key: string }
 export interface dls_coded_message { code: number, error_chain?: Array<dls_coded_message>, message: string }
@@ -1844,7 +1844,7 @@ export type dls_account_identifier = string
 export type dls_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type dls_api_response_common = { errors: dls_messages, messages: dls_messages, success: true }
 export type dls_api_response_collection = (dls_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type dls_api_response_common_failure = { errors: (dls_messages & unknown), messages: (dls_messages), result: (Record<string, unknown> | null), success: false }
+export type dls_api_response_common_failure = { errors: dls_messages, messages: dls_messages, result: (Record<string, unknown> | null), success: false }
 export type dls_none = (Record<string, unknown> | null)
 export type dls_bad_response = (dls_response & { errors: Array<dls_coded_message>, result?: dls_none })
 export type dls_hostname_schemas = string
@@ -1852,10 +1852,10 @@ export type dls_identifier = string
 export type dls_region_key = string
 export type dls_timestamp = string
 export type dls_routing = string
-export type dls_regional_hostname_response = { created_on: (dls_timestamp & unknown & unknown), hostname: dls_hostname_schemas, region_key: dls_region_key, routing: dls_routing }
+export type dls_regional_hostname_response = { created_on: dls_timestamp, hostname: dls_hostname_schemas, region_key: dls_region_key, routing: dls_routing }
 export type dns_analytics_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type dns_analytics_api_response_common = { errors: dns_analytics_messages, messages: dns_analytics_messages, success: true }
-export type dns_analytics_api_response_common_failure = { errors: (dns_analytics_messages & unknown), messages: (dns_analytics_messages), result: (Record<string, unknown> | null), success: false }
+export type dns_analytics_api_response_common_failure = { errors: dns_analytics_messages, messages: dns_analytics_messages, result: (Record<string, unknown> | null), success: false }
 export type dns_analytics_api_response_single = (dns_analytics_api_response_common & Record<string, unknown>)
 export type dns_analytics_data = Array<{ dimensions: Array<string> }>
 export type dns_analytics_dimensions = string
@@ -1883,7 +1883,7 @@ export type dns_custom_nameservers_api_response_collection = (dns_custom_nameser
 export type dns_custom_nameservers_acns_response_collection = (dns_custom_nameservers_api_response_collection & Partial<{ result: Array<dns_custom_nameservers_CustomNS> }> & Record<string, unknown>)
 export type dns_custom_nameservers_api_response_single = (dns_custom_nameservers_api_response_common & Record<string, unknown>)
 export type dns_custom_nameservers_acns_response_single = (dns_custom_nameservers_api_response_single & Partial<{ result: dns_custom_nameservers_CustomNS }> & Record<string, unknown>)
-export type dns_custom_nameservers_api_response_common_failure = { errors: (dns_custom_nameservers_messages & unknown), messages: (dns_custom_nameservers_messages), result: (Record<string, unknown> | null), success: false }
+export type dns_custom_nameservers_api_response_common_failure = { errors: dns_custom_nameservers_messages, messages: dns_custom_nameservers_messages, result: (Record<string, unknown> | null), success: false }
 export type dns_custom_nameservers_empty_response = (dns_custom_nameservers_api_response_collection & Partial<{ result: Array<string> }> & Record<string, unknown>)
 export type dns_custom_nameservers_empty_response_2 = (dns_custom_nameservers_api_response_collection & Partial<{ result: Array<string> }> & Record<string, unknown>)
 export type dns_custom_nameservers_zone_metadata = Partial<{ enabled: boolean, ns_set: number }>
@@ -1895,7 +1895,7 @@ export type dns_custom_nameservers_tcns_response_single = (dns_custom_nameserver
 export type dns_firewall_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type dns_firewall_api_response_common = { errors: dns_firewall_messages, messages: dns_firewall_messages, success: true }
 export type dns_firewall_api_response_collection = (dns_firewall_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type dns_firewall_api_response_common_failure = { errors: (dns_firewall_messages & unknown), messages: (dns_firewall_messages), result: (Record<string, unknown> | null), success: false }
+export type dns_firewall_api_response_common_failure = { errors: dns_firewall_messages, messages: dns_firewall_messages, result: (Record<string, unknown> | null), success: false }
 export type dns_firewall_api_response_single = (dns_firewall_api_response_common & Record<string, unknown>)
 export type dns_firewall_attack_mitigation = (Partial<{ enabled: boolean, only_when_upstream_unhealthy: boolean }> | null)
 export type dns_firewall_deprecate_any_requests = boolean
@@ -1953,7 +1953,7 @@ export type dns_records_URIRecord = (dns_records_dns_record_shared_fields & Part
 export type dns_records_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type dns_records_api_response_common = { errors: dns_records_messages, messages: dns_records_messages, success: true }
 export type dns_records_api_response_collection = (dns_records_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type dns_records_api_response_common_failure = { errors: (dns_records_messages & unknown), messages: (dns_records_messages), result: (Record<string, unknown> | null), success: false }
+export type dns_records_api_response_common_failure = { errors: dns_records_messages, messages: dns_records_messages, result: (Record<string, unknown> | null), success: false }
 export type dns_records_api_response_single = (dns_records_api_response_common & Record<string, unknown>)
 export type dns_records_direction = ("asc" | "desc")
 export type dns_records_identifier = string
@@ -2008,7 +2008,7 @@ export type dns_settings_account_settings_patch = Partial<{ enforce_dns_only: dn
 export type dns_settings_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type dns_settings_api_response_common = { errors: dns_settings_messages, messages: dns_settings_messages, success: true }
 export type dns_settings_api_response_collection = (dns_settings_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type dns_settings_api_response_common_failure = { errors: (dns_settings_messages & unknown), messages: (dns_settings_messages), result: (Record<string, unknown> | null), success: false }
+export type dns_settings_api_response_common_failure = { errors: dns_settings_messages, messages: dns_settings_messages, result: (Record<string, unknown> | null), success: false }
 export type dns_settings_api_response_single = (dns_settings_api_response_common & Record<string, unknown>)
 export type dns_settings_created_time = string
 export type dns_settings_direction = ("asc" | "desc")
@@ -2033,7 +2033,7 @@ export type dns_settings_per_page = number
 export type dnssec_algorithm = (string | null)
 export type dnssec_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type dnssec_api_response_common = { errors: dnssec_messages, messages: dnssec_messages, success: true }
-export type dnssec_api_response_common_failure = { errors: (dnssec_messages & unknown), messages: (dnssec_messages), result: (Record<string, unknown> | null), success: false }
+export type dnssec_api_response_common_failure = { errors: dnssec_messages, messages: dnssec_messages, result: (Record<string, unknown> | null), success: false }
 export type dnssec_api_response_single = (dnssec_api_response_common & Record<string, unknown>)
 export type dnssec_delete_dnssec_response_single = (dnssec_api_response_single & Partial<{ result: string }>)
 export type dnssec_digest = (string | null)
@@ -2082,7 +2082,7 @@ export type dos_UpdateProtectionStatus = { enabled: boolean }
 export type dos_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type dos_api_response_common = { errors: dos_messages, messages: dos_messages, success: true }
 export type dos_api_response_collection = (dos_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type dos_api_response_common_failure = { errors: (dos_messages & unknown), messages: (dos_messages), result: (Record<string, unknown> | null), success: false }
+export type dos_api_response_common_failure = { errors: dos_messages, messages: dos_messages, result: (Record<string, unknown> | null), success: false }
 export type dos_api_response_common_paginated = dos_api_response_collection
 export type dos_asn = number
 export type dos_asn_country = string
@@ -2113,10 +2113,10 @@ export type email_auth_DmarcReportResponse = Partial<{ approved_sources: Array<e
 export type email_auth_InspectError = { code: string, details?: string, domain: string, message: string }
 export type email_auth_SpfResult = ("pass" | "neutral" | "fail" | "soft_fail" | "none" | "temp_error" | "perm_error")
 export interface email_auth_SpfTree { components: Array<email_auth_SpfComponent>, domain: string, errors?: Array<email_auth_InspectError>, record: string, total_lookups: number }
-export interface email_auth_SpfComponent { lookup_count: number, nested?: (email_auth_SpfTree), result: email_auth_SpfResult, type: ("ALL" | "A" | "MX" | "IP4" | "IP6" | "EXISTS" | "INCLUDE" | "PTR" | "REDIRECT"), value: string }
+export interface email_auth_SpfComponent { lookup_count: number, nested?: email_auth_SpfTree, result: email_auth_SpfResult, type: ("ALL" | "A" | "MX" | "IP4" | "IP6" | "EXISTS" | "INCLUDE" | "PTR" | "REDIRECT"), value: string }
 export type email_auth_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type email_auth_api_response_common = { errors: email_auth_messages, messages: email_auth_messages, success: true }
-export type email_auth_api_response_common_failure = { errors: (email_auth_messages & unknown), messages: (email_auth_messages), result: (Record<string, unknown> | null), success: false }
+export type email_auth_api_response_common_failure = { errors: email_auth_messages, messages: email_auth_messages, result: (Record<string, unknown> | null), success: false }
 export type email_auth_api_response_single = (email_auth_api_response_common & Record<string, unknown>)
 export type email_auth_identifier = string
 export type email_security_ActionEntryProperties = Partial<{ folder: (string | null), requested_by: (string | null), requested_disposition: (string | null), service: (string | null), submission_id: (string | null), submission_type: (string | null) }>
@@ -2125,12 +2125,12 @@ export type email_security_ActionLogEntry = { completed_at: string, completed_ti
 export type email_security_timestamp = string
 export type email_security_AllowPolicyId = string
 export type email_security_PatternType = ("EMAIL" | "DOMAIN" | "IP" | "UNKNOWN")
-export type email_security_AllowPolicy = { comments?: (string | null), created_at: (email_security_timestamp & unknown), id: (email_security_AllowPolicyId & unknown), is_acceptable_sender?: boolean, is_exempt_recipient?: boolean, is_recipient?: boolean, is_regex?: boolean, is_sender?: boolean, is_spoof?: boolean, is_trusted_sender?: boolean, last_modified: (email_security_timestamp & unknown), modified_at?: (email_security_timestamp & unknown), pattern?: string, pattern_type?: email_security_PatternType, verify_sender?: boolean }
+export type email_security_AllowPolicy = { comments?: (string | null), created_at: email_security_timestamp, id: email_security_AllowPolicyId, is_acceptable_sender?: boolean, is_exempt_recipient?: boolean, is_recipient?: boolean, is_regex?: boolean, is_sender?: boolean, is_spoof?: boolean, is_trusted_sender?: boolean, last_modified: email_security_timestamp, modified_at?: email_security_timestamp, pattern?: string, pattern_type?: email_security_PatternType, verify_sender?: boolean }
 export type email_security_AllowPolicyList = Array<email_security_AllowPolicy>
 export type email_security_DispositionLabel = ("MALICIOUS" | "MALICIOUS-BEC" | "SUSPICIOUS" | "SPOOF" | "SPAM" | "BULK" | "ENCRYPTED" | "EXTERNAL" | "UNKNOWN" | "NONE")
 export type email_security_Attachment = { content_type?: (string | null), detection?: ((email_security_DispositionLabel & (string | null)) | null), encrypted?: (boolean | null), filename?: (string | null), md5?: (string | null), name?: (string | null), sha1?: (string | null), sha256?: (string | null), size: number }
 export type email_security_BlockedSenderId = string
-export type email_security_BlockedSender = Partial<{ comments: (string | null), created_at: (email_security_timestamp & unknown), id: (email_security_BlockedSenderId & unknown), is_regex: boolean, last_modified: (email_security_timestamp & unknown), modified_at: (email_security_timestamp & unknown), pattern: string, pattern_type: email_security_PatternType }>
+export type email_security_BlockedSender = Partial<{ comments: (string | null), created_at: email_security_timestamp, id: email_security_BlockedSenderId, is_regex: boolean, last_modified: email_security_timestamp, modified_at: email_security_timestamp, pattern: string, pattern_type: email_security_PatternType }>
 export type email_security_BlockedSenderList = Array<email_security_BlockedSender>
 export type email_security_MailboxDestination = ("Inbox" | "JunkEmail" | "DeletedItems" | "RecoverableItemsDeletions" | "RecoverableItemsPurges")
 export type email_security_BulkMessageActionParams = ({ client_recipient: string, destination: email_security_MailboxDestination, expected_disposition?: email_security_DispositionLabel, type: "MOVE" } | { client_recipient: string, type: "RELEASE" })
@@ -2140,22 +2140,22 @@ export type email_security_BulkSearchParams = Partial<{ action_log: boolean, ale
 export type email_security_BulkActionRequest = { action: ("MOVE" | "RELEASE"), comment?: (string | null), destination?: email_security_MailboxDestination, expected_disposition?: email_security_DispositionLabel, search_params: email_security_BulkSearchParams }
 export type email_security_BulkJobActionParams = ({ destination: email_security_MailboxDestination, expected_disposition?: email_security_DispositionLabel, type: "MOVE" } | { type: "RELEASE" })
 export type email_security_BulkJobDetail = { action_params: email_security_BulkJobActionParams, action_type: ("MOVE" | "RELEASE"), comment?: (string | null), completed_at?: (string | null), created_at: string, job_id: string, messages_failed: number, messages_pending: number, messages_successful: number, search_params: email_security_BulkSearchParams, started_at?: (string | null), status: ("PENDING" | "DISCOVERING" | "PROCESSING" | "COMPLETED" | "FAILED" | "CANCELLED" | "SKIPPED"), status_message?: (string | null), total_messages_discovered: number }
-export type email_security_CreateAllowPolicy = (email_security_AllowPolicy & unknown)
-export type email_security_CreateBlockedSender = (email_security_BlockedSender & unknown)
+export type email_security_CreateAllowPolicy = email_security_AllowPolicy
+export type email_security_CreateBlockedSender = email_security_BlockedSender
 export type email_security_DeliveryMode = ("DIRECT" | "BCC" | "JOURNAL" | "API" | "RETRO_SCAN")
 export type email_security_ScannableFolder = (("AllItems" | "Inbox" | null) | null)
 export type email_security_Region = ("GLOBAL" | "AU" | "DE" | "IN" | "US")
 export type email_security_CreateDomain = { allowed_delivery_modes: Array<email_security_DeliveryMode>, domain: string, drop_dispositions: Array<email_security_DispositionLabel>, folder?: email_security_ScannableFolder, integration_id?: (string | null), ip_restrictions: Array<string>, lookback_hops?: (number | null), regions: Array<email_security_Region>, require_tls_inbound?: (boolean | null), require_tls_outbound?: (boolean | null), transport?: (string | null) }
 export type email_security_ImpersonationRegistryId = string
 export type email_security_Provenance = ("A1S_INTERNAL" | "SNOOPY-CASB_OFFICE_365" | "SNOOPY-OFFICE_365" | "SNOOPY-GOOGLE_DIRECTORY")
-export type email_security_ImpersonationRegistry = Partial<{ comments: (string | null), created_at: (email_security_timestamp & unknown), directory_id: (number | null), directory_node_id: (number | null), email: string, external_directory_node_id: (string | null), id: (email_security_ImpersonationRegistryId & unknown), is_email_regex: boolean, last_modified: (email_security_timestamp & unknown), modified_at: (email_security_timestamp & unknown), name: string, provenance: email_security_Provenance }>
-export type email_security_CreateImpersonationRegistry = (email_security_ImpersonationRegistry & unknown)
+export type email_security_ImpersonationRegistry = Partial<{ comments: (string | null), created_at: email_security_timestamp, directory_id: (number | null), directory_node_id: (number | null), email: string, external_directory_node_id: (string | null), id: email_security_ImpersonationRegistryId, is_email_regex: boolean, last_modified: email_security_timestamp, modified_at: email_security_timestamp, name: string, provenance: email_security_Provenance }>
+export type email_security_CreateImpersonationRegistry = email_security_ImpersonationRegistry
 export type email_security_SendingDomainRestrictionId = string
-export type email_security_SendingDomainRestriction = Partial<{ comments: (string | null), created_at: (email_security_timestamp & unknown), domain: string, exclude: Array<string>, id: (email_security_SendingDomainRestrictionId & unknown), last_modified: (email_security_timestamp & unknown), modified_at: (email_security_timestamp & unknown) }>
-export type email_security_CreateSendingDomainRestriction = (email_security_SendingDomainRestriction & unknown)
+export type email_security_SendingDomainRestriction = Partial<{ comments: (string | null), created_at: email_security_timestamp, domain: string, exclude: Array<string>, id: email_security_SendingDomainRestrictionId, last_modified: email_security_timestamp, modified_at: email_security_timestamp }>
+export type email_security_CreateSendingDomainRestriction = email_security_SendingDomainRestriction
 export type email_security_TrustedDomainId = string
-export type email_security_TrustedDomain = Partial<{ comments: (string | null), created_at: (email_security_timestamp & unknown), id: (email_security_TrustedDomainId & unknown), is_recent: boolean, is_regex: boolean, is_similarity: boolean, last_modified: (email_security_timestamp & unknown), modified_at: (email_security_timestamp & unknown), pattern: string }>
-export type email_security_CreateTrustedDomain = (email_security_TrustedDomain & unknown)
+export type email_security_TrustedDomain = Partial<{ comments: (string | null), created_at: email_security_timestamp, id: email_security_TrustedDomainId, is_recent: boolean, is_regex: boolean, is_similarity: boolean, last_modified: email_security_timestamp, modified_at: email_security_timestamp, pattern: string }>
+export type email_security_CreateTrustedDomain = email_security_TrustedDomain
 export type email_security_CreateUrlIgnorePattern = { comments?: (string | null), pattern: string }
 export type email_security_CursorResultInfo = { count: number, next?: (string | null), page?: number, per_page: number, previous?: (string | null), total_count: number }
 export type email_security_CustomerStatus = (("escalated" | "reviewed" | "unreviewed") | null)
@@ -2173,7 +2173,7 @@ export type email_security_DomainAuthorization = { authorized: boolean, status_m
 export type email_security_EmailsProcessed = { timestamp: string, total_emails_processed: number, total_emails_processed_previous: number }
 export type email_security_SpfStatus = (("none" | "good" | "neutral" | "open" | "invalid" | null) | null)
 export type email_security_DomainStatus = (("pending" | "active" | "failed" | "timeout" | null) | null)
-export type email_security_Domain = Partial<{ allowed_delivery_modes: Array<email_security_DeliveryMode>, authorization: email_security_DomainAuthorization, created_at: (email_security_timestamp & unknown), dmarc_status: email_security_DmarcStatus, domain: string, drop_dispositions: Array<email_security_DispositionLabel>, emails_processed: email_security_EmailsProcessed, folder: email_security_ScannableFolder, id: email_security_DomainId, inbox_provider: (("Microsoft" | "Google" | null) | null), integration_id: (string | null), ip_restrictions: Array<string>, last_modified: (email_security_timestamp & unknown), lookback_hops: number, modified_at: (email_security_timestamp & unknown), o365_tenant_id: (string | null), regions: Array<email_security_Region>, require_tls_inbound: (boolean | null), require_tls_outbound: (boolean | null), spf_status: email_security_SpfStatus, status: email_security_DomainStatus, transport: string }>
+export type email_security_Domain = Partial<{ allowed_delivery_modes: Array<email_security_DeliveryMode>, authorization: email_security_DomainAuthorization, created_at: email_security_timestamp, dmarc_status: email_security_DmarcStatus, domain: string, drop_dispositions: Array<email_security_DispositionLabel>, emails_processed: email_security_EmailsProcessed, folder: email_security_ScannableFolder, id: email_security_DomainId, inbox_provider: (("Microsoft" | "Google" | null) | null), integration_id: (string | null), ip_restrictions: Array<string>, last_modified: email_security_timestamp, lookback_hops: number, modified_at: email_security_timestamp, o365_tenant_id: (string | null), regions: Array<email_security_Region>, require_tls_inbound: (boolean | null), require_tls_outbound: (boolean | null), spf_status: email_security_SpfStatus, status: email_security_DomainStatus, transport: string }>
 export type email_security_DomainList = Array<email_security_Domain>
 export type email_security_DomainVerificationInfo = { last_checked_at: (string | null), status: email_security_DomainStatus, txt_record_name: string, txt_record_value: string }
 export type email_security_ImpersonationRegistryList = Array<email_security_ImpersonationRegistry>
@@ -2183,7 +2183,7 @@ export type email_security_MessageDeliveryMode = ("DIRECT" | "BCC" | "JOURNAL" |
 export type email_security_PostfixId = string
 export type email_security_ValidationStatus = ("pass" | "neutral" | "fail" | "error" | "none")
 export type email_security_Validation = Partial<{ comment: (string | null), dkim: email_security_ValidationStatus, dmarc: email_security_ValidationStatus, spf: email_security_ValidationStatus }>
-export type email_security_MessageDetails = { action_log: Array<email_security_ActionLogEntry>, alert_id?: (string | null), client_recipients: Array<string>, delivery_mode?: email_security_MessageDeliveryMode, delivery_status?: (Array<email_security_MessageDeliveryStatus> | null), detection_reasons: Array<string>, edf_hash?: (string | null), envelope_from?: (string | null), envelope_to?: (Array<string> | null), final_disposition?: email_security_DispositionLabel, findings?: (Array<Partial<{ attachment: (string | null), detail: (string | null), detection: email_security_DispositionLabel, field: (string | null), name: (string | null), portion: (string | null), reason: (string | null), score: (number | null), value: (string | null) }>> | null), from?: (string | null), from_name?: (string | null), htmltext_structure_hash?: (string | null), id: (email_security_InvestigateId & unknown), is_phish_submission: boolean, is_quarantined: boolean, message_id?: (string | null), post_delivery_operations?: (Array<("PREVIEW" | "QUARANTINE_RELEASE" | "SUBMISSION" | "MOVE")> | null), postfix_id: email_security_PostfixId, postfix_id_outbound?: (string | null), properties: Partial<{ allowlisted_pattern: (string | null), allowlisted_pattern_type: (("quarantine_release" | "acceptable_sender" | "allowed_sender" | "allowed_recipient" | "domain_similarity" | "domain_recency" | "managed_acceptable_sender" | "outbound_ndr") | null), blocklisted_message: (boolean | null), blocklisted_pattern: (string | null), whitelisted_pattern_type: (("quarantine_release" | "acceptable_sender" | "allowed_sender" | "allowed_recipient" | "domain_similarity" | "domain_recency" | "managed_acceptable_sender" | "outbound_ndr") | null) }>, replyto?: (string | null), scanned_at?: (string | null), sent_at?: (string | null), sent_date?: (string | null), smtp_helo_server_ip?: (string | null), smtp_previous_hop_ip?: (string | null), subject?: (string | null), threat_categories?: (Array<string> | null), to?: (Array<string> | null), to_name?: (Array<string> | null), ts: string, validation?: email_security_Validation, x_originating_ip?: (string | null) }
+export type email_security_MessageDetails = { action_log: Array<email_security_ActionLogEntry>, alert_id?: (string | null), client_recipients: Array<string>, delivery_mode?: email_security_MessageDeliveryMode, delivery_status?: (Array<email_security_MessageDeliveryStatus> | null), detection_reasons: Array<string>, edf_hash?: (string | null), envelope_from?: (string | null), envelope_to?: (Array<string> | null), final_disposition?: email_security_DispositionLabel, findings?: (Array<Partial<{ attachment: (string | null), detail: (string | null), detection: email_security_DispositionLabel, field: (string | null), name: (string | null), portion: (string | null), reason: (string | null), score: (number | null), value: (string | null) }>> | null), from?: (string | null), from_name?: (string | null), htmltext_structure_hash?: (string | null), id: email_security_InvestigateId, is_phish_submission: boolean, is_quarantined: boolean, message_id?: (string | null), post_delivery_operations?: (Array<("PREVIEW" | "QUARANTINE_RELEASE" | "SUBMISSION" | "MOVE")> | null), postfix_id: email_security_PostfixId, postfix_id_outbound?: (string | null), properties: Partial<{ allowlisted_pattern: (string | null), allowlisted_pattern_type: (("quarantine_release" | "acceptable_sender" | "allowed_sender" | "allowed_recipient" | "domain_similarity" | "domain_recency" | "managed_acceptable_sender" | "outbound_ndr") | null), blocklisted_message: (boolean | null), blocklisted_pattern: (string | null), whitelisted_pattern_type: (("quarantine_release" | "acceptable_sender" | "allowed_sender" | "allowed_recipient" | "domain_similarity" | "domain_recency" | "managed_acceptable_sender" | "outbound_ndr") | null) }>, replyto?: (string | null), scanned_at?: (string | null), sent_at?: (string | null), sent_date?: (string | null), smtp_helo_server_ip?: (string | null), smtp_previous_hop_ip?: (string | null), subject?: (string | null), threat_categories?: (Array<string> | null), to?: (Array<string> | null), to_name?: (Array<string> | null), ts: string, validation?: email_security_Validation, x_originating_ip?: (string | null) }
 export type email_security_MessageHeader = { name: string, value: string }
 export type email_security_ThreatCategory = Partial<{ description: (string | null), id: number, name: (string | null) }>
 export type email_security_MessageDetectionDetails = { action: string, attachments: Array<email_security_Attachment>, final_disposition?: email_security_DispositionLabel, findings: (Array<Partial<{ attachment: (string | null), detail: (string | null), detection: email_security_DispositionLabel, field: (string | null), name: (string | null), portion: (string | null), reason: (string | null), score: (number | null), value: (string | null) }>> | null), headers: Array<email_security_MessageHeader>, links: Array<email_security_Link>, sender_info: Partial<{ as_name: (string | null), as_number: (number | null), geo: (string | null), ip: (string | null), pld: (string | null) }>, threat_categories: Array<email_security_ThreatCategory>, validation: email_security_Validation }
@@ -2197,23 +2197,23 @@ export type email_security_OptionalSubmissionDisposition = ((email_security_Subm
 export type email_security_PhishGuardReportTag = { category: string, value: string }
 export type email_security_PhishGuardReport = { content: string, created_at?: (string | null), disposition: email_security_DispositionLabel, fields: { from?: (string | null), occurred_at?: string, postfix_id?: (string | null), to: Array<string>, ts?: string }, id: number, priority: string, tags?: (Array<email_security_PhishGuardReportTag> | null), title: string, ts?: string, updated_at?: (string | null) }
 export type email_security_ReclassifyRequest = { eml_content?: string, escalated_submission_id?: string, expected_disposition: ("NONE" | "BULK" | "MALICIOUS" | "SPAM" | "SPOOF" | "SUSPICIOUS") }
-export type email_security_ReleaseResponse = { delivered?: (Array<string> | null), failed?: (Array<string> | null), id: (email_security_InvestigateId & unknown), postfix_id?: (email_security_PostfixId & unknown), undelivered?: (Array<string> | null) }
+export type email_security_ReleaseResponse = { delivered?: (Array<string> | null), failed?: (Array<string> | null), id: email_security_InvestigateId, postfix_id?: email_security_PostfixId, undelivered?: (Array<string> | null) }
 export type email_security_ReplaceDomain = { allowed_delivery_modes: Array<email_security_DeliveryMode>, drop_dispositions: Array<email_security_DispositionLabel>, folder?: email_security_ScannableFolder, integration_id?: (string | null), ip_restrictions: Array<string>, lookback_hops: number, regions: Array<email_security_Region>, require_tls_inbound?: (boolean | null), require_tls_outbound?: (boolean | null), transport?: (string | null) }
 export type email_security_SendingDomainRestrictionList = Array<email_security_SendingDomainRestriction>
 export type email_security_Submission = { customer_status?: email_security_CustomerStatus, escalated_as?: email_security_OptionalSubmissionDisposition, escalated_at?: (string | null), escalated_by?: (string | null), escalated_submission_id?: (string | null), original_disposition?: email_security_OptionalSubmissionDisposition, original_edf_hash?: (string | null), original_postfix_id?: (string | null), outcome?: (string | null), outcome_disposition?: email_security_OptionalSubmissionDisposition, requested_at: string, requested_by?: (string | null), requested_disposition?: email_security_OptionalSubmissionDisposition, requested_ts?: string, status?: (string | null), subject?: (string | null), submission_id: string, type?: (("Team" | "User") | null) }
 export type email_security_TrustedDomainList = Array<email_security_TrustedDomain>
-export type email_security_UpdateAllowPolicy = (email_security_AllowPolicy & unknown)
-export type email_security_UpdateBlockedSender = (email_security_BlockedSender & unknown)
+export type email_security_UpdateAllowPolicy = email_security_AllowPolicy
+export type email_security_UpdateBlockedSender = email_security_BlockedSender
 export type email_security_UpdateDomain = Partial<{ allowed_delivery_modes: Array<email_security_DeliveryMode>, domain: string, drop_dispositions: Array<email_security_DispositionLabel>, folder: email_security_ScannableFolder, integration_id: (string | null), ip_restrictions: Array<string>, lookback_hops: number, regions: Array<email_security_Region>, require_tls_inbound: boolean, require_tls_outbound: boolean, transport: string }>
-export type email_security_UpdateImpersonationRegistry = (email_security_ImpersonationRegistry & unknown)
-export type email_security_UpdateSendingDomainRestriction = (email_security_SendingDomainRestriction & unknown)
-export type email_security_UpdateTrustedDomain = (email_security_TrustedDomain & unknown)
+export type email_security_UpdateImpersonationRegistry = email_security_ImpersonationRegistry
+export type email_security_UpdateSendingDomainRestriction = email_security_SendingDomainRestriction
+export type email_security_UpdateTrustedDomain = email_security_TrustedDomain
 export type email_security_UpdateUrlIgnorePattern = Partial<{ comments: (string | null), pattern: string }>
-export type email_security_UrlIgnorePattern = { comments?: (string | null), created_at: string, id: (email_security_UrlIgnorePatternId & unknown), last_modified?: string, modified_at?: string, pattern: string }
+export type email_security_UrlIgnorePattern = { comments?: (string | null), created_at: string, id: email_security_UrlIgnorePatternId, last_modified?: string, modified_at?: string, pattern: string }
 export type email_security_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type email_security_api_response_common = { errors: email_security_messages, messages: email_security_messages, success: true }
 export type email_security_api_response_collection = (email_security_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number }> }> & Record<string, unknown>)
-export type email_security_api_response_common_failure = { errors: (email_security_messages & unknown), messages: (email_security_messages), result: (Record<string, unknown> | null), success: false }
+export type email_security_api_response_common_failure = { errors: email_security_messages, messages: email_security_messages, result: (Record<string, unknown> | null), success: false }
 export type email_security_api_response_single = (email_security_api_response_common & Record<string, unknown>)
 export type email_security_identifier = string
 export type email_sending_EmailAddressObject = { address: string, name?: (string | null) }
@@ -2222,7 +2222,7 @@ export type email_sending_EmailApiError = { errors: Array<{ code: number, messag
 export type email_sending_EmailAttachment = { content: string, disposition: "attachment", filename: string, type: string }
 export type email_sending_EmailInlineAttachment = { content: string, content_id: string, disposition: "inline", filename: string, type: string }
 export type email_sending_NamedRecipientList = (email_sending_EmailAddressString | email_sending_EmailAddressObject | Array<(email_sending_EmailAddressString | email_sending_EmailAddressObject)>)
-export type email_sending_EmailBuilder = { attachments?: Array<(email_sending_EmailInlineAttachment | email_sending_EmailAttachment)>, bcc?: (email_sending_NamedRecipientList & unknown), cc?: (email_sending_NamedRecipientList & unknown), from: (email_sending_EmailAddressString | email_sending_EmailAddressObject), headers?: Record<string, string>, html?: string, reply_to?: (email_sending_EmailAddressString | email_sending_EmailAddressObject), subject: string, text?: string, to?: email_sending_NamedRecipientList }
+export type email_sending_EmailBuilder = { attachments?: Array<(email_sending_EmailInlineAttachment | email_sending_EmailAttachment)>, bcc?: email_sending_NamedRecipientList, cc?: email_sending_NamedRecipientList, from: (email_sending_EmailAddressString | email_sending_EmailAddressObject), headers?: Record<string, string>, html?: string, reply_to?: (email_sending_EmailAddressString | email_sending_EmailAddressObject), subject: string, text?: string, to?: email_sending_NamedRecipientList }
 export type email_sending_EmailSendResponse = { delivered: Array<string>, message_id: string, permanent_bounces: Array<string>, queued: Array<string> }
 export type email_sending_SendRawRequest = { from: string, mime_message: string, recipients: Array<string> }
 export type email_identifier = string
@@ -2298,7 +2298,7 @@ export type email_sending_limits_properties = Partial<{ quota: (Partial<{ unit: 
 export type email_sending_limits_response_single = (email_api_response_single & Partial<{ result: email_sending_limits_properties }>)
 export type email_sending_subdomain_identifier = string
 export type email_sending_subdomain_properties = { created?: email_created, dkim_selector?: string, enabled: boolean, modified?: email_modified, name: string, preview_enabled?: boolean, return_path_domain?: string, tag: email_sending_subdomain_identifier }
-export type email_sending_subdomain = (email_sending_subdomain_properties)
+export type email_sending_subdomain = email_sending_subdomain_properties
 export type email_sending_subdomain_config_error = { code: ("mx.missing" | "mx.foreign" | "spf.missing" | "spf.foreign" | "spf.multiple" | "dkim.missing" | "dkim.conflict" | "dmarc.missing" | "dmarc.multiple" | "domainkey.delegated"), existing?: email_dns_record, missing?: email_dns_record, multiple?: Array<email_dns_record> }
 export type email_sending_subdomain_dns_status_response = (email_api_response_single & Partial<{ result: Partial<{ errors: Array<email_sending_subdomain_config_error>, records: Array<email_dns_record>, status: ("ready" | "unconfigured" | "unlocked" | "misconfigured") }> }>)
 export type email_sending_subdomain_preview_response = (email_api_response_single & Partial<{ result: Partial<{ errors: Array<email_sending_subdomain_config_error>, records: Array<email_dns_record> }> }>)
@@ -2328,12 +2328,12 @@ export type firewall_name = string
 export type firewall_status = "active"
 export type firewall_package_definition = { description: firewall_schemas_description, detection_mode: firewall_detection_mode, id: firewall_identifier, name: firewall_name, status?: firewall_status, zone_id: firewall_identifier }
 export type firewall_sensitivity = ("high" | "medium" | "low" | "off")
-export type firewall_anomaly_package = (firewall_package_definition & Partial<{ action_mode: firewall_action_mode, description: firewall_anomaly_description, detection_mode: firewall_anomaly_detection_mode, name: firewall_anomaly_name, sensitivity: firewall_sensitivity }> & unknown)
+export type firewall_anomaly_package = (firewall_package_definition & Partial<{ action_mode: firewall_action_mode, description: firewall_anomaly_description, detection_mode: firewall_anomaly_detection_mode, name: firewall_anomaly_name, sensitivity: firewall_sensitivity }>)
 export type firewall_messages = Array<{ code: number, message: string }>
 export type firewall_api_response_common = { errors: firewall_messages, messages: firewall_messages, result: (Record<string, unknown> | Array<Record<string, unknown>> | string), success: true }
 export type firewall_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type firewall_api_response_collection = (firewall_api_response_common & Partial<{ result: (Array<Record<string, unknown>> | null), result_info: firewall_result_info }> & Record<string, unknown>)
-export type firewall_api_response_common_failure = { errors: (firewall_messages & unknown), messages: (firewall_messages), result: (Record<string, unknown> | null), success: false }
+export type firewall_api_response_common_failure = { errors: firewall_messages, messages: firewall_messages, result: (Record<string, unknown> | null), success: false }
 export type firewall_api_response_single = (firewall_api_response_common & Partial<{ result: ((Record<string, unknown> | null) | (string | null)) }> & Record<string, unknown>)
 export type firewall_api_response_single_id = (firewall_api_response_common & Partial<{ result: ({ id: firewall_identifier } | null) }> & Record<string, unknown>)
 export type firewall_asn_configuration = Partial<{ target: "asn", value: string }>
@@ -2380,7 +2380,7 @@ export type firewall_products = Array<("zoneLockdown" | "uaBlock" | "bic" | "hot
 export type firewall_ref = string
 export type firewall_filter_rule_base = Partial<{ action: firewall_schemas_action, description: firewall_firewall_rules_components_schemas_description, id: firewall_firewall_rules_components_schemas_id, paused: firewall_components_schemas_paused, priority: firewall_components_schemas_priority, products: firewall_products, ref: firewall_ref }>
 export type firewall_filter_rule_response = (firewall_filter_rule_base & Partial<{ filter: (firewall_filter | firewall_deleted_filter) }> & Record<string, unknown>)
-export type firewall_filter_rule_update_request = (firewall_filter & Partial<{ id: (firewall_filters_components_schemas_id) }>)
+export type firewall_filter_rule_update_request = (firewall_filter & Partial<{ id: firewall_filters_components_schemas_id }>)
 export type firewall_filter_rules_response_collection = (firewall_api_response_collection & { result: Array<firewall_filter_rule_response> })
 export type firewall_filter_rules_response_collection_delete = (firewall_api_response_collection & { result: Array<firewall_filter_rule_response> })
 export type firewall_filter_rules_single_response = (firewall_api_response_single & { result: firewall_filter_rule_response })
@@ -2415,7 +2415,7 @@ export type firewall_priority = number
 export type firewall_waf_rewrite_action = ("challenge" | "block" | "simulate" | "disable" | "default")
 export type firewall_rewrite_action = Partial<{ block: firewall_waf_rewrite_action, challenge: firewall_waf_rewrite_action, default: firewall_waf_rewrite_action, disable: firewall_waf_rewrite_action, simulate: firewall_waf_rewrite_action }>
 export type firewall_waf_action = ("challenge" | "block" | "simulate" | "disable" | "default")
-export type firewall_rules = Record<string, (firewall_waf_action)>
+export type firewall_rules = Record<string, firewall_waf_action>
 export type firewall_urls = Array<string>
 export type firewall_override = Partial<{ description: firewall_components_schemas_description, groups: firewall_groups, id: firewall_overrides_id, paused: firewall_paused, priority: firewall_priority, rewrite_action: firewall_rewrite_action, rules: firewall_rules, urls: firewall_urls }>
 export type firewall_override_response_collection = (firewall_api_response_collection & { result: Array<firewall_override> })
@@ -2466,10 +2466,10 @@ export type flagship_FlagsPage = Array<flagship_Flag>
 export type flagship_ResultInfo = { count: number, cursor: (string | null) }
 export type fraud_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type fraud_api_response_common = { errors: fraud_messages, messages: fraud_messages, success: true }
-export type fraud_api_response_common_failure = { errors: (fraud_messages & unknown), messages: (fraud_messages), result: (Record<string, unknown> | null), success: false }
+export type fraud_api_response_common_failure = { errors: fraud_messages, messages: fraud_messages, result: (Record<string, unknown> | null), success: false }
 export type fraud_api_response_single = (fraud_api_response_common & Record<string, unknown>)
 export type fraud_auth_criteria = { kind: "status_code", status_codes?: Array<number> }
-export type fraud_authentication_settings = Partial<{ failure_criteria: (fraud_auth_criteria), success_criteria: (fraud_auth_criteria) }>
+export type fraud_authentication_settings = Partial<{ failure_criteria: fraud_auth_criteria, success_criteria: fraud_auth_criteria }>
 export type fraud_user_profiles_status = ("enabled" | "disabled")
 export type fraud_username_expressions = Array<string>
 export type fraud_fraud_settings = Partial<{ authentication_settings: fraud_authentication_settings, user_profiles: fraud_user_profiles_status, username_expressions: fraud_username_expressions }>
@@ -2477,7 +2477,7 @@ export type fraud_fraud_settings_response_body = (fraud_api_response_single & Pa
 export type fraud_identifier = string
 export type google_tag_gateway_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type google_tag_gateway_api_response_common = { errors: google_tag_gateway_messages, messages: google_tag_gateway_messages, success: true }
-export type google_tag_gateway_api_response_common_failure = { errors: (google_tag_gateway_messages & unknown), messages: (google_tag_gateway_messages), result: (Record<string, unknown> | null), success: false }
+export type google_tag_gateway_api_response_common_failure = { errors: google_tag_gateway_messages, messages: google_tag_gateway_messages, result: (Record<string, unknown> | null), success: false }
 export type google_tag_gateway_google_tag_gateway_config = { enabled: boolean, endpoint: string, hideOriginalIp: boolean, measurementId: string, setUpTag?: (boolean | null) }
 export type google_tag_gateway_identifier = string
 export type google_tag_gateway_zone_identifier = google_tag_gateway_identifier
@@ -2486,7 +2486,7 @@ export type healthchecks_messages = Array<{ code: number, message: string }>
 export type healthchecks_api_response_common = { errors: healthchecks_messages, messages: healthchecks_messages, result: (Record<string, unknown> | Array<unknown> | string), success: true }
 export type healthchecks_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type healthchecks_api_response_collection = (healthchecks_api_response_common & Partial<{ result: (Array<unknown> | null), result_info: healthchecks_result_info }> & Record<string, unknown>)
-export type healthchecks_api_response_common_failure = { errors: (healthchecks_messages & unknown), messages: (healthchecks_messages), result: (Record<string, unknown> | null), success: false }
+export type healthchecks_api_response_common_failure = { errors: healthchecks_messages, messages: healthchecks_messages, result: (Record<string, unknown> | null), success: false }
 export type healthchecks_api_response_single = (healthchecks_api_response_common & Partial<{ result: (Record<string, unknown> | string) }> & Record<string, unknown>)
 export type healthchecks_check_regions = (Array<("WNAM" | "ENAM" | "WEU" | "EEU" | "NSAM" | "SSAM" | "OC" | "ME" | "NAF" | "SAF" | "IN" | "SEAS" | "NEAS" | "ALL_REGIONS")> | null)
 export type healthchecks_consecutive_fails = number
@@ -2513,7 +2513,7 @@ export type hyperdrive_messages = Array<{ code: number, message: string }>
 export type hyperdrive_api_response_common = { errors: hyperdrive_messages, messages: hyperdrive_messages, result: Record<string, unknown>, success: true }
 export type hyperdrive_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type hyperdrive_api_response_collection = (hyperdrive_api_response_common & Partial<{ result_info: hyperdrive_result_info }> & Record<string, unknown>)
-export type hyperdrive_api_response_common_failure = { errors: (hyperdrive_messages & unknown), messages: (hyperdrive_messages), result: (Record<string, unknown> | null), success: false }
+export type hyperdrive_api_response_common_failure = { errors: hyperdrive_messages, messages: hyperdrive_messages, result: (Record<string, unknown> | null), success: false }
 export type hyperdrive_api_response_single = (hyperdrive_api_response_common & Record<string, unknown>)
 export type hyperdrive_hyperdrive_caching_common = Partial<{ disabled: boolean }>
 export type hyperdrive_hyperdrive_caching_disabled = (hyperdrive_hyperdrive_caching_common & Record<string, unknown>)
@@ -2537,12 +2537,12 @@ export type iam_access = ("allow" | "deny")
 export type iam_common_components_schemas_identifier = string
 export type iam_account_type = ("standard" | "enterprise")
 export type iam_account = { created_on?: string, id: iam_common_components_schemas_identifier, managed_by?: Partial<{ parent_org_id: string, parent_org_name: string }>, name: string, settings?: Partial<{ abuse_contact_email: string, enforce_twofactor: boolean }>, type: iam_account_type }
-export type iam_account_identifier = (iam_common_components_schemas_identifier)
+export type iam_account_identifier = iam_common_components_schemas_identifier
 export type iam_messages_2 = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type iam_api_response_common = { errors: iam_messages_2, messages: iam_messages_2, success: true }
 export type iam_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type iam_api_response_collection = (iam_api_response_common & Partial<{ result_info: iam_result_info }> & Record<string, unknown>)
-export type iam_api_response_common_failure = { errors: (iam_messages_2 & unknown), messages: (iam_messages_2), result: (Record<string, unknown> | null), success: false }
+export type iam_api_response_common_failure = { errors: iam_messages_2, messages: iam_messages_2, result: (Record<string, unknown> | null), success: false }
 export type iam_api_response_single = (iam_api_response_common & Record<string, unknown>)
 export type iam_api_response_single_id = (iam_api_response_common & Partial<{ result: ({ id: iam_common_components_schemas_identifier } | null) }> & Record<string, unknown>)
 export type iam_api_access_enabled = (boolean | null)
@@ -2563,18 +2563,18 @@ export type iam_list_member_policy = Partial<{ access: iam_access, id: iam_polic
 export type iam_role_components_schemas_identifier = string
 export type iam_grants = Partial<{ read: boolean, write: boolean }>
 export type iam_permissions = Partial<{ analytics: iam_grants, billing: iam_grants, cache_purge: iam_grants, dns: iam_grants, dns_records: iam_grants, lb: iam_grants, logs: iam_grants, organization: iam_grants, ssl: iam_grants, waf: iam_grants, zone_settings: iam_grants, zones: iam_grants }>
-export type iam_role = { description: string, id: iam_role_components_schemas_identifier, name: string, permissions: (iam_permissions & unknown) }
+export type iam_role = { description: string, id: iam_role_components_schemas_identifier, name: string, permissions: iam_permissions }
 export type iam_first_name = (string | null)
 export type iam_last_name = (string | null)
 export type iam_two_factor_authentication_enabled = boolean
 export type iam_member_with_policies = Partial<{ email: iam_email, id: iam_membership_components_schemas_identifier, policies: Array<iam_list_member_policy>, roles: Array<iam_role>, status: ("accepted" | "pending"), user: { email: iam_email, first_name?: iam_first_name, id?: iam_common_components_schemas_identifier, last_name?: iam_last_name, two_factor_authentication_enabled?: iam_two_factor_authentication_enabled } }>
 export type iam_collection_member_response_with_policies = (iam_api_response_collection & Partial<{ result: Array<iam_member_with_policies> }>)
-export type iam_schemas_account = (iam_account & unknown)
+export type iam_schemas_account = iam_account
 export type iam_role_names = Array<string>
 export type iam_schemas_status = ("accepted" | "pending" | "rejected")
-export type iam_membership = Partial<{ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: (iam_permissions & unknown), roles: iam_role_names, status: iam_schemas_status }>
+export type iam_membership = Partial<{ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: iam_permissions, roles: iam_role_names, status: iam_schemas_status }>
 export type iam_collection_membership_response = (iam_api_response_collection & Partial<{ result: Array<iam_membership> }>)
-export type iam_membership_with_policies = Partial<{ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: (iam_permissions & unknown), policies: Array<iam_list_member_policy>, roles: iam_role_names, status: iam_schemas_status }>
+export type iam_membership_with_policies = Partial<{ account: iam_schemas_account, api_access_enabled: iam_api_access_enabled, id: iam_membership_components_schemas_identifier, permissions: iam_permissions, policies: Array<iam_list_member_policy>, roles: iam_role_names, status: iam_schemas_status }>
 export type iam_collection_membership_response_with_policies = (iam_api_response_collection & Partial<{ result: Array<iam_membership_with_policies> }>)
 export type iam_oauth_client_grant_types = Array<("authorization_code" | "refresh_token")>
 export type iam_oauth_client_response_types = Array<("token" | "id_token" | "code")>
@@ -2582,7 +2582,7 @@ export type iam_oauth_client_token_endpoint_auth_method = ("none" | "client_secr
 export type iam_oauth_client_common = Partial<{ allowed_cors_origins: Array<string>, client_name: string, client_uri: string, grant_types: iam_oauth_client_grant_types, logo_uri: string, policy_uri: string, post_logout_redirect_uris: Array<string>, redirect_uris: Array<string>, response_types: iam_oauth_client_response_types, scopes: Array<string>, token_endpoint_auth_method: iam_oauth_client_token_endpoint_auth_method, tos_uri: string }>
 export type iam_oauth_client_identifier = string
 export type iam_oauth_client_uri_verification = Partial<{ status: ("pending" | "in_progress" | "verified" | "failed"), text: string }>
-export type iam_oauth_client = (iam_oauth_client_common & { client_id: (iam_oauth_client_identifier & unknown), client_uri_verification?: iam_oauth_client_uri_verification, created_at?: string, has_rotated_secret?: boolean, promoted_at?: string, updated_at?: string, visibility: ("public" | "private") })
+export type iam_oauth_client = (iam_oauth_client_common & { client_id: iam_oauth_client_identifier, client_uri_verification?: iam_oauth_client_uri_verification, created_at?: string, has_rotated_secret?: boolean, promoted_at?: string, updated_at?: string, visibility: ("public" | "private") })
 export type iam_collection_oauth_client_response = (iam_api_response_collection & Partial<{ result: Array<iam_oauth_client> }>)
 export type iam_oauth_scope = { category?: string, id: string, name: string, scopes?: Array<string> }
 export type iam_collection_oauth_scopes_response = (iam_api_response_collection & Partial<{ result: Array<iam_oauth_scope> }>)
@@ -2611,7 +2611,7 @@ export type iam_token_policies = Array<iam_policy_with_permission_groups_and_res
 export type iam_token_status = ("active" | "disabled" | "expired")
 export type iam_token_base = Partial<{ condition: iam_condition, expires_on: iam_expires_on, id: iam_token_identifier, issued_on: iam_issued_on, last_used_on: iam_last_used_on, modified_on: iam_modified_on, name: iam_name, not_before: iam_not_before, policies: iam_token_policies, status: iam_token_status }>
 export type iam_collection_tokens_response = (iam_api_response_collection & Partial<{ result: Array<iam_token_base> }>)
-export type iam_components_schemas_account = (iam_account)
+export type iam_components_schemas_account = iam_account
 export type iam_country = (string | null)
 export type iam_create_account = { name: string, type?: iam_account_type, unit?: Partial<{ id: string }> }
 export type iam_member_permission_group = { id: string }
@@ -2627,9 +2627,9 @@ export type iam_create_resource_group_scope_scope_object_key = unknown
 export type iam_create_resource_group_scope_scope_object = { key: iam_create_resource_group_scope_scope_object_key }
 export type iam_create_scope = { key: iam_create_resource_group_scope_scope_key, objects: Array<iam_create_resource_group_scope_scope_object> }
 export type iam_create_payload = { condition?: iam_condition, expires_on?: iam_expires_on, name: iam_name, not_before?: iam_not_before, policies: iam_token_policies }
-export type iam_permission_group_identifier = (iam_common_components_schemas_identifier)
+export type iam_permission_group_identifier = iam_common_components_schemas_identifier
 export type iam_permission_group_ids = Array<{ id: iam_permission_group_identifier }>
-export type iam_resource_group_identifier = (iam_common_components_schemas_identifier)
+export type iam_resource_group_identifier = iam_common_components_schemas_identifier
 export type iam_resource_group_ids = Array<{ id: iam_resource_group_identifier }>
 export type iam_user_group_policy_write_body = { access: iam_access, permission_groups: iam_permission_group_ids, resource_groups: iam_resource_group_ids }
 export type iam_create_user_group_body = { name: string, policies?: Array<iam_user_group_policy_write_body> }
@@ -2705,30 +2705,30 @@ export type iam_telephone = (string | null)
 export type iam_two_factor_authentication_locked = boolean
 export type iam_zipcode = (string | null)
 export type iam_single_user_response = (iam_api_response_single & Partial<{ result: { betas?: Array<string>, country?: iam_country, email: string, first_name?: iam_first_name, has_business_zones?: boolean, has_enterprise_zones?: boolean, has_pro_zones?: boolean, id: string, last_name?: iam_last_name, organizations?: Array<iam_organization>, suspended?: boolean, telephone?: iam_telephone, two_factor_authentication_enabled?: iam_two_factor_authentication_enabled, two_factor_authentication_locked?: iam_two_factor_authentication_locked, zipcode?: iam_zipcode } }>)
-export type iam_sso_connector_identifier = (iam_common_components_schemas_identifier)
+export type iam_sso_connector_identifier = iam_common_components_schemas_identifier
 export type iam_use_fedramp_language = boolean
 export type iam_sso_connector_verification_info = Partial<{ code: iam_dns_verification_code, status: ("awaiting" | "pending" | "failed" | "verified") }>
 export type iam_sso_connector = Partial<{ created_on: string, email_domain: string, enabled: boolean, id: iam_sso_connector_identifier, updated_on: string, use_fedramp_language: iam_use_fedramp_language, verification: iam_sso_connector_verification_info }>
 export type iam_sso_connector_collection_response = (iam_api_response_collection & Partial<{ result: Array<iam_sso_connector> }>)
 export type iam_sso_connector_response = (iam_api_response_single & Partial<{ result: iam_sso_connector }>)
-export type iam_token_body = (iam_token_base & Record<string, unknown> & unknown)
+export type iam_token_body = (iam_token_base & Record<string, unknown>)
 export type iam_token_verify_response_single_segment = (iam_api_response_single & Partial<{ result: { expires_on?: iam_expires_on, id: iam_token_identifier, not_before?: iam_not_before, status: iam_token_status } }>)
 export type iam_unit_identifier = string
 export type iam_update_member_with_policies = { policies: Array<iam_create_member_policy> }
 export type iam_update_member_with_roles = Partial<{ id: iam_membership_components_schemas_identifier, roles: Array<iam_role>, status: ("accepted" | "pending"), user: { email: iam_email, first_name?: iam_first_name, id?: iam_common_components_schemas_identifier, last_name?: iam_last_name, two_factor_authentication_enabled?: iam_two_factor_authentication_enabled } }>
 export type iam_update_user_group_body = Partial<{ name: string, policies: Array<({ id: string } & iam_user_group_policy_write_body)> }>
-export type iam_user_group_identifier = (iam_common_components_schemas_identifier)
+export type iam_user_group_identifier = iam_common_components_schemas_identifier
 export type iam_user_group = { created_on: string, id: iam_user_group_identifier, modified_on: string, name: string, policies?: Array<Partial<{ access: iam_access, id: iam_policy_identifier, permission_groups: iam_permission_groups, resource_groups: iam_resource_groups }>> }
 export type iam_user_group_member = { email?: iam_email, id: string, status?: ("accepted" | "pending") }
 export type iam_user_group_member_detailed = { created_at?: string, email?: iam_email, id: string, status?: ("accepted" | "pending"), user?: Partial<{ email: iam_email, first_name: string, id: string, last_name: string }> }
-export type iam_user_group_member_identifier = (iam_common_components_schemas_identifier)
+export type iam_user_group_member_identifier = iam_common_components_schemas_identifier
 export type iam_user_groups = Array<iam_user_group>
 export type images_account_identifier = string
 export type images_messages = Array<{ code: number, message: string }>
 export type images_api_response_common = { errors: images_messages, messages: images_messages, result: (Record<string, unknown> | Array<unknown> | string), success: true }
 export type images_images_list_continuation_token = (string | null)
 export type images_api_response_collection_v2 = (images_api_response_common & Partial<{ result: Partial<{ continuation_token: images_images_list_continuation_token }> }> & Record<string, unknown>)
-export type images_api_response_common_failure = { errors: (images_messages & unknown), messages: (images_messages), result: (Record<string, unknown> | null), success: false }
+export type images_api_response_common_failure = { errors: images_messages, messages: images_messages, result: (Record<string, unknown> | null), success: false }
 export type images_api_response_single = (images_api_response_common & Partial<{ result: (Record<string, unknown> | string) }> & Record<string, unknown>)
 export type images_deleted_response = (images_api_response_single & Partial<{ result: Record<string, unknown> }>)
 export type images_image_creator = (string | null)
@@ -2824,12 +2824,12 @@ export type infra_TargetArray = Array<infra_Target>
 export type infra_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type infra_api_response_common = { errors: infra_messages, messages: infra_messages, success: true }
 export type infra_api_response_collection = (infra_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type infra_api_response_common_failure = { errors: (infra_messages & unknown), messages: (infra_messages), result: (Record<string, unknown> | null), success: false }
+export type infra_api_response_common_failure = { errors: infra_messages, messages: infra_messages, result: (Record<string, unknown> | null), success: false }
 export type infra_api_response_single = (infra_api_response_common & Record<string, unknown>)
 export type intel_sinkholes_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type intel_sinkholes_api_response_common = { errors: intel_sinkholes_messages, messages: intel_sinkholes_messages, success: true }
-export type intel_sinkholes_api_response_common_failure = { errors: (intel_sinkholes_messages & unknown), messages: (intel_sinkholes_messages), result: (Record<string, unknown> | null), success: false }
-export type intel_sinkholes_api_response_common_failure_schemas = (intel_sinkholes_api_response_common_failure)
+export type intel_sinkholes_api_response_common_failure = { errors: intel_sinkholes_messages, messages: intel_sinkholes_messages, result: (Record<string, unknown> | null), success: false }
+export type intel_sinkholes_api_response_common_failure_schemas = intel_sinkholes_api_response_common_failure
 export type intel_sinkholes_api_response_single_empty = (intel_sinkholes_api_response_common & Partial<{ result: Record<string, unknown> }>)
 export type intel_sinkholes_identifier = string
 export type intel_sinkholes_ingress_item = Partial<{ cidr: string, created_on: string, id: string, modified_on: string, sinkhole_id: string, zone_tag: string }>
@@ -2845,7 +2845,7 @@ export type intel_messages = Array<{ code: number, message: string }>
 export type intel_api_response_common = { errors: intel_messages, messages: intel_messages, result: (Record<string, unknown> | Array<(string | Record<string, unknown>)> | string), success: true }
 export type intel_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type intel_api_response_collection = (intel_api_response_common & Partial<{ result: (Array<(string | Record<string, unknown>)> | null), result_info: intel_result_info }> & Record<string, unknown>)
-export type intel_api_response_common_failure = { errors: (intel_messages & unknown), messages: (intel_messages), result: (Record<string, unknown> | null), success: boolean }
+export type intel_api_response_common_failure = { errors: intel_messages, messages: intel_messages, result: (Record<string, unknown> | null), success: boolean }
 export type intel_schemas_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type intel_schemas_api_response_common = { errors: intel_schemas_messages, messages: intel_schemas_messages, success: true }
 export type intel_api_response_single = (intel_schemas_api_response_common & Record<string, unknown>)
@@ -2928,7 +2928,7 @@ export type lists_account_id = string
 export type lists_messages = Array<{ code: number, message: string }>
 export type lists_api_response_common = { errors: lists_messages, messages: lists_messages, result: (Record<string, unknown> | Array<Record<string, unknown>>), success: true }
 export type lists_api_response_collection = (Partial<{ result: (Array<Record<string, unknown>> | null) }> & lists_api_response_common & Record<string, unknown>)
-export type lists_api_response_common_failure = { errors: (lists_messages & unknown), messages: (lists_messages), result: (Record<string, unknown> | null), success: false }
+export type lists_api_response_common_failure = { errors: lists_messages, messages: lists_messages, result: (Record<string, unknown> | null), success: false }
 export type lists_operation_id = string
 export type lists_bulk_operation_pending_or_running = { id: lists_operation_id, status: ("pending" | "running") }
 export type lists_completed = string
@@ -2990,7 +2990,7 @@ export type load_balancing_messages = Array<{ code: number, message: string }>
 export type load_balancing_api_response_common = { errors: load_balancing_messages, messages: load_balancing_messages, success: true }
 export type load_balancing_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }>
 export type load_balancing_api_paginated_response_collection = (load_balancing_api_response_common & Partial<{ result_info: load_balancing_result_info }> & Record<string, unknown>)
-export type load_balancing_api_response_common_failure = { errors: (load_balancing_messages & unknown), messages: (load_balancing_messages), result: (Record<string, unknown> | null), success: false }
+export type load_balancing_api_response_common_failure = { errors: load_balancing_messages, messages: load_balancing_messages, result: (Record<string, unknown> | null), success: false }
 export type load_balancing_api_response_single = (load_balancing_api_response_common & Partial<{ result: ((Record<string, unknown> | null) | (string | null)) }> & Record<string, unknown>)
 export type load_balancing_check_regions = (Array<("WNAM" | "ENAM" | "WEU" | "EEU" | "NSAM" | "SSAM" | "OC" | "ME" | "NAF" | "SAF" | "SAS" | "SEAS" | "NEAS" | "ALL_REGIONS")> | null)
 export type load_balancing_components_schemas_description = string
@@ -3064,7 +3064,7 @@ export type load_balancing_monitor = (load_balancing_monitor_editable & Partial<
 export type load_balancing_monitor_group_id = string
 export type load_balancing_monitor_id = string
 export type load_balancing_monitor_group_member = { created_at?: string, enabled: boolean, monitor_id: load_balancing_monitor_id, monitoring_only: boolean, must_be_healthy: boolean, updated_at?: string }
-export type load_balancing_monitor_group = { created_on?: string, description: string, id: (load_balancing_monitor_group_id & unknown), members: Array<load_balancing_monitor_group_member>, modified_on?: string }
+export type load_balancing_monitor_group = { created_on?: string, description: string, id: load_balancing_monitor_group_id, members: Array<load_balancing_monitor_group_member>, modified_on?: string }
 export type load_balancing_monitor_group_references_response = (load_balancing_api_response_common & Partial<{ result: Array<Partial<{ reference_type: ("*" | "referral" | "referrer"), resource_id: string, resource_name: string, resource_type: string }>> }>)
 export type load_balancing_monitor_group_response_collection = (load_balancing_api_response_common & Partial<{ result: Array<load_balancing_monitor_group>, result_info: load_balancing_result_info }>)
 export type load_balancing_monitor_group_single_response = (load_balancing_api_response_common & Partial<{ result: load_balancing_monitor_group }>)
@@ -3111,7 +3111,7 @@ export type logcontrol_account_identifier = logcontrol_identifier
 export type logcontrol_allow_out_of_region_access = boolean
 export type logcontrol_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type logcontrol_api_response_common = { errors: logcontrol_messages, messages: logcontrol_messages, success: true }
-export type logcontrol_api_response_common_failure = { errors: (logcontrol_messages & unknown), messages: (logcontrol_messages), result: (Record<string, unknown> | null), success: false }
+export type logcontrol_api_response_common_failure = { errors: logcontrol_messages, messages: logcontrol_messages, result: (Record<string, unknown> | null), success: false }
 export type logcontrol_api_response_single = (logcontrol_api_response_common & Record<string, unknown>)
 export type logcontrol_regions = string
 export type logcontrol_cmb_config = (Partial<{ allow_out_of_region_access: logcontrol_allow_out_of_region_access, regions: logcontrol_regions }> | null)
@@ -3129,7 +3129,7 @@ export type logpull_SecretAccessKey = string
 export type logpull_TimestampRFC3339 = string
 export type logpush_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type logpush_api_response_common = { errors: logpush_messages, messages: logpush_messages, success: true }
-export type logpush_api_response_common_failure = { errors: (logpush_messages & unknown), messages: (logpush_messages), result: (Record<string, unknown> | null), success: false }
+export type logpush_api_response_common_failure = { errors: logpush_messages, messages: logpush_messages, result: (Record<string, unknown> | null), success: false }
 export type logpush_api_response_single = (logpush_api_response_common & Record<string, unknown>)
 export type logpush_dataset = (("access_requests" | "audit_logs" | "audit_logs_v2" | "biso_user_actions" | "casb_findings" | "device_posture_results" | "dex_application_tests" | "dex_device_state_events" | "dlp_forensic_copies" | "dns_firewall_logs" | "dns_logs" | "email_security_alerts" | "email_security_post_delivery_events" | "firewall_events" | "gateway_dns" | "gateway_http" | "gateway_network" | "http_requests" | "ipsec_logs" | "magic_ids_detections" | "mcp_portal_logs" | "mnm_flow_logs" | "nel_reports" | "network_analytics_logs" | "page_shield_events" | "sinkhole_http_logs" | "spectrum_events" | "ssh_logs" | "turnstile_events" | "warp_config_changes" | "warp_toggle_changes" | "websocket_analytics" | "workers_trace_events" | "zaraz_events" | "zero_trust_network_sessions") | null)
 export type logpush_destination_conf = string
@@ -3166,7 +3166,7 @@ export type logpush_ownership_challenge = string
 export type logpush_validate_ownership_response = (logpush_api_response_common & Partial<{ result: (Partial<{ valid: boolean }> | null) }>)
 export type logpush_validate_response = (logpush_api_response_common & Partial<{ result: (Partial<{ message: string, valid: boolean }> | null) }>)
 export type logshare_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
-export type logshare_api_response_common_failure = { errors: (logshare_messages & unknown), messages: (logshare_messages), result: (Record<string, unknown> | null), success: false }
+export type logshare_api_response_common_failure = { errors: logshare_messages, messages: logshare_messages, result: (Record<string, unknown> | null), success: false }
 export type logshare_count = number
 export type logshare_end = (string | number)
 export type logshare_fields = string
@@ -3180,7 +3180,7 @@ export type logshare_timestamps = ("unix" | "unixnano" | "rfc3339")
 export type logshare_zone_identifier = logshare_identifier
 export type magic_transit_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type magic_transit_api_response_common = { errors: magic_transit_messages, messages: magic_transit_messages, success: true }
-export type magic_transit_api_response_common_failure = { errors: (magic_transit_messages & unknown), messages: (magic_transit_messages), result: (Record<string, unknown> | null), success: false }
+export type magic_transit_api_response_common_failure = { errors: magic_transit_messages, messages: magic_transit_messages, result: (Record<string, unknown> | null), success: false }
 export type magic_transit_asn = string
 export type magic_transit_check_type = "icmp"
 export type magic_transit_colo_city = string
@@ -3225,7 +3225,7 @@ export type magic_visibility_mnm_messages = Array<{ code: number, message: strin
 export type magic_visibility_mnm_api_response_common = { errors: magic_visibility_mnm_messages, messages: magic_visibility_mnm_messages, result: (Record<string, unknown> | Array<unknown> | string), success: true }
 export type magic_visibility_mnm_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type magic_visibility_mnm_api_response_collection = (magic_visibility_mnm_api_response_common & Partial<{ result: (Array<unknown> | null), result_info: magic_visibility_mnm_result_info }> & Record<string, unknown>)
-export type magic_visibility_mnm_api_response_common_failure = { errors: (magic_visibility_mnm_messages & unknown), messages: (magic_visibility_mnm_messages), result: (Record<string, unknown> | null), success: false }
+export type magic_visibility_mnm_api_response_common_failure = { errors: magic_visibility_mnm_messages, messages: magic_visibility_mnm_messages, result: (Record<string, unknown> | null), success: false }
 export type magic_visibility_mnm_api_response_single = (magic_visibility_mnm_api_response_common & Partial<{ result: ((Record<string, unknown> | null) | (string | null)) }> & Record<string, unknown>)
 export type magic_visibility_mnm_mnm_config_default_sampling = number
 export type magic_visibility_mnm_mnm_config_name = string
@@ -3259,7 +3259,7 @@ export type magic_visibility_pcaps_messages = Array<{ code: number, message: str
 export type magic_visibility_pcaps_api_response_common = { errors: magic_visibility_pcaps_messages, messages: magic_visibility_pcaps_messages, result: (Record<string, unknown> | Array<unknown> | string), success: true }
 export type magic_visibility_pcaps_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type magic_visibility_pcaps_api_response_collection = (magic_visibility_pcaps_api_response_common & Partial<{ result: (Array<unknown> | null), result_info: magic_visibility_pcaps_result_info }> & Record<string, unknown>)
-export type magic_visibility_pcaps_api_response_common_failure = { errors: (magic_visibility_pcaps_messages & unknown), messages: (magic_visibility_pcaps_messages), result: (Record<string, unknown> | null), success: false }
+export type magic_visibility_pcaps_api_response_common_failure = { errors: magic_visibility_pcaps_messages, messages: magic_visibility_pcaps_messages, result: (Record<string, unknown> | null), success: false }
 export type magic_visibility_pcaps_api_response_single = (magic_visibility_pcaps_api_response_common & Partial<{ result: (Record<string, unknown> | string) }> & Record<string, unknown>)
 export type magic_visibility_pcaps_identifier = string
 export type magic_visibility_pcaps_pcaps_byte_limit = number
@@ -3294,9 +3294,9 @@ export type magic_visibility_pcaps_pcaps_single_response = (magic_visibility_pca
 export type magic_account_app_id = string
 export type magic_app_hostnames = Array<string>
 export type magic_cidr = string
-export type magic_app_subnets = Array<(magic_cidr & unknown)>
+export type magic_app_subnets = Array<magic_cidr>
 export type magic_app_name = string
-export type magic_app_source_subnets = Array<(magic_cidr & unknown)>
+export type magic_app_source_subnets = Array<magic_cidr>
 export type magic_app_type = string
 export type magic_account_app = { account_app_id: magic_account_app_id, hostnames?: magic_app_hostnames, ip_subnets?: magic_app_subnets, name?: magic_app_name, source_subnets?: magic_app_source_subnets, type?: magic_app_type }
 export type magic_forward_locally = boolean
@@ -3318,7 +3318,7 @@ export type magic_acl_update_request = Partial<{ description: string, forward_lo
 export type magic_acls_add_single_request = { description?: string, forward_locally?: magic_forward_locally, lan_1: magic_lan_acl_configuration, lan_2: magic_lan_acl_configuration, name: string, protocols?: Array<("tcp" | "udp" | "icmp")>, unidirectional?: magic_unidirectional }
 export type magic_acls_collection_response = (magic_api_response_single & Partial<{ result: Array<magic_acl> }>)
 export type magic_allow_null_cipher = boolean
-export type magic_api_response_common_failure = { errors: (magic_messages & unknown), messages: (magic_messages), result: (Record<string, unknown> | null), success: false }
+export type magic_api_response_common_failure = { errors: magic_messages, messages: magic_messages, result: (Record<string, unknown> | null), success: false }
 export type magic_managed_app_id = string
 export type magic_managed_app = { hostnames?: magic_app_hostnames, ip_subnets?: magic_app_subnets, managed_app_id: magic_managed_app_id, name?: magic_app_name, source_subnets?: magic_app_source_subnets, type?: magic_app_type }
 export type magic_app = (magic_account_app | magic_managed_app)
@@ -3346,11 +3346,11 @@ export type magic_bgp_settings = { cloudflare_asn: number, modified_on?: string,
 export type magic_bgp_status_with_state = { bgp_state?: string, cf_speaker_ip?: string, cf_speaker_port?: number, customer_speaker_ip?: string, customer_speaker_port?: number, state: ("BGP_DOWN" | "BGP_UP" | "BGP_ESTABLISHING"), tcp_established: boolean, updated_at: string }
 export type magic_bond_id = number
 export type magic_cf1_site_location = Partial<{ lat: number, long: number, name: string }>
-export type magic_cf1_site = { created_on?: string, description?: string, id?: (magic_identifier & unknown), location?: magic_cf1_site_location, modified_on?: string, name: string }
+export type magic_cf1_site = { created_on?: string, description?: string, id?: magic_identifier, location?: magic_cf1_site_location, modified_on?: string, name: string }
 export type magic_cf1_site_managed_ramp = Partial<{ managed_by: string }>
 export type magic_cf1_site_ramp_type = ("gre" | "gre_interconnect" | "mpls_interconnect" | "mconn" | "ipsec")
 export type magic_cf1_site_ramp = (unknown | unknown | unknown | unknown | unknown)
-export type magic_cf1_site_ramp_body = { source_ramp_id: (magic_identifier), type: magic_cf1_site_ramp_type }
+export type magic_cf1_site_ramp_body = { source_ramp_id: magic_identifier, type: magic_cf1_site_ramp_type }
 export type magic_cf1_site_ramp_single_response = (magic_api_response_single & Partial<{ result: magic_cf1_site_ramp }>)
 export type magic_cf1_site_ramps_collection_response = (magic_api_response_single & Partial<{ result: Array<magic_cf1_site_ramp> }>)
 export type magic_cf1_site_single_response = (magic_api_response_single & Partial<{ result: magic_cf1_site }>)
@@ -3373,7 +3373,7 @@ export type magic_interface_address = string
 export type magic_interface_address6 = string
 export type magic_schemas_modified_on = string
 export type magic_schemas_mtu = number
-export type magic_interconnect = Partial<{ automatic_return_routing: magic_automatic_return_routing, colo_name: magic_components_schemas_name, created_on: magic_schemas_created_on, description: magic_interconnect_components_schemas_description, gre: magic_gre, health_check: magic_health_check_base, id: magic_schemas_identifier, interface_address: magic_interface_address, interface_address6: magic_interface_address6, modified_on: magic_schemas_modified_on, mtu: magic_schemas_mtu, name: magic_components_schemas_name, virtual_port_reservation_id: (magic_schemas_identifier & unknown) }>
+export type magic_interconnect = Partial<{ automatic_return_routing: magic_automatic_return_routing, colo_name: magic_components_schemas_name, created_on: magic_schemas_created_on, description: magic_interconnect_components_schemas_description, gre: magic_gre, health_check: magic_health_check_base, id: magic_schemas_identifier, interface_address: magic_interface_address, interface_address6: magic_interface_address6, modified_on: magic_schemas_modified_on, mtu: magic_schemas_mtu, name: magic_components_schemas_name, virtual_port_reservation_id: magic_schemas_identifier }>
 export type magic_components_schemas_modified_tunnels_collection_response = (magic_api_response_single & Partial<{ result: Partial<{ modified: boolean, modified_interconnects: Array<magic_interconnect> }> }>)
 export type magic_components_schemas_tunnel_modified_response = (magic_api_response_single & Partial<{ result: Partial<{ modified: boolean, modified_interconnect: magic_interconnect }> }>)
 export type magic_components_schemas_tunnel_single_response = (magic_api_response_single & Partial<{ result: Partial<{ interconnect: magic_interconnect }> }>)
@@ -3408,7 +3408,7 @@ export type magic_redundancy_group = Partial<{ created_on: string, description: 
 export type magic_delete_redundancy_group_response = (magic_api_response_single & Partial<{ result: { deleted: boolean, deleted_redundancy_group: magic_redundancy_group } }> & Record<string, unknown>)
 export type magic_dhcp_option = { code: number, type: ("text" | "hex" | "ip" | "byte" | "short" | "integer"), value: string }
 export type magic_gre_tunnel_add_single_request = { automatic_return_routing?: magic_automatic_return_routing, cloudflare_gre_endpoint: magic_cloudflare_gre_endpoint, customer_gre_endpoint: magic_customer_gre_endpoint, description?: magic_schemas_description, health_check?: magic_tunnel_health_check, interface_address: magic_interface_address, interface_address6?: magic_interface_address6, mtu?: magic_mtu, name: magic_gre_tunnel_name, ttl?: magic_ttl }
-export type magic_gre_tunnel_update_request = (magic_gre_tunnel_add_single_request)
+export type magic_gre_tunnel_update_request = magic_gre_tunnel_add_single_request
 export type magic_interconnect_health_check = magic_health_check_base
 export type magic_interconnect_tunnel_update_request = Partial<{ automatic_return_routing: magic_automatic_return_routing, description: magic_interconnect_components_schemas_description, gre: magic_gre, health_check: magic_health_check_base, interface_address: magic_interface_address, interface_address6: magic_interface_address6, mtu: magic_schemas_mtu, name: magic_components_schemas_name }>
 export type magic_ipsec_tunnel_name = string
@@ -3417,10 +3417,10 @@ export type magic_replay_protection = boolean
 export type magic_ipsec_tunnel = { allow_null_cipher?: magic_allow_null_cipher, automatic_return_routing?: magic_automatic_return_routing, bgp?: magic_bgp_config, bgp_status?: magic_bgp_status_with_state, cloudflare_endpoint: magic_cloudflare_ipsec_endpoint, created_on?: magic_schemas_created_on, custom_remote_identities?: magic_custom_remote_identities, customer_endpoint?: magic_customer_ipsec_endpoint, description?: magic_components_schemas_description, health_check?: magic_tunnel_health_check, id: magic_schemas_identifier, interface_address: magic_interface_address, interface_address6?: magic_interface_address6, modified_on?: magic_schemas_modified_on, name: magic_ipsec_tunnel_name, psk_metadata?: magic_psk_metadata, replay_protection?: magic_replay_protection }
 export type magic_psk = string
 export type magic_ipsec_tunnel_add_single_request = { automatic_return_routing?: magic_automatic_return_routing, bgp?: magic_bgp_config, cloudflare_endpoint: magic_cloudflare_ipsec_endpoint, custom_remote_identities?: magic_custom_remote_identities, customer_endpoint?: magic_customer_ipsec_endpoint, description?: magic_components_schemas_description, health_check?: magic_tunnel_health_check, interface_address: magic_interface_address, interface_address6?: magic_interface_address6, name: magic_ipsec_tunnel_name, psk?: magic_psk, replay_protection?: magic_replay_protection }
-export type magic_ipsec_tunnel_add_request = (magic_ipsec_tunnel_add_single_request)
+export type magic_ipsec_tunnel_add_request = magic_ipsec_tunnel_add_single_request
 export type magic_ipsec_tunnel_applied_psk = { ipsec_id: string, ipsec_tunnel_id: magic_identifier, psk: magic_psk, psk_metadata: magic_psk_metadata }
-export type magic_ipsec_tunnel_psk_entry = { id: (magic_identifier), psk: magic_psk }
-export type magic_ipsec_tunnel_update_request = (magic_ipsec_tunnel_add_single_request)
+export type magic_ipsec_tunnel_psk_entry = { id: magic_identifier, psk: magic_psk }
+export type magic_ipsec_tunnel_update_request = magic_ipsec_tunnel_add_single_request
 export type magic_ipsec_tunnels_psk_request = { psks: Array<magic_ipsec_tunnel_psk_entry> }
 export type magic_ipsec_tunnels_psk_response = (magic_api_response_single & Partial<{ result: Partial<{ successfully_applied_psks: Record<string, magic_ipsec_tunnel_applied_psk>, unapplied_psks: Record<string, string> }> }>)
 export type magic_nat = Partial<{ static_prefix: magic_cidr }>
@@ -3452,14 +3452,14 @@ export type magic_redundancy_group_with_members = (magic_redundancy_group & Part
 export type magic_redundancy_group_with_members_response = (magic_api_response_single & Partial<{ result: magic_redundancy_group_with_members }> & Record<string, unknown>)
 export type magic_redundancy_groups_collection_response = (magic_api_response_single & Partial<{ result: Partial<{ redundancy_groups: Array<magic_redundancy_group_with_members> }> }> & Record<string, unknown>)
 export type magic_route_add_single_request = { description?: magic_description, nexthop: magic_nexthop, prefix: magic_prefix, priority: magic_priority, scope?: magic_scope, weight?: magic_weight }
-export type magic_route_delete_id = ({ id: magic_identifier })
+export type magic_route_delete_id = { id: magic_identifier }
 export type magic_route_delete_many_request = { routes: Array<magic_route_delete_id> }
 export type magic_route_deleted_response = (magic_api_response_single & Partial<{ result: Partial<{ deleted: boolean, deleted_route: magic_route }> }>)
 export type magic_route_modified_response = (magic_api_response_single & Partial<{ result: Partial<{ modified: boolean, modified_route: magic_route }> }>)
 export type magic_route_single_response = (magic_api_response_single & Partial<{ result: Partial<{ route: magic_route }> }>)
 export type magic_route_update_single_request = ({ id: magic_identifier } & magic_route_add_single_request)
 export type magic_route_update_many_request = { routes: Array<magic_route_update_single_request> }
-export type magic_route_update_request = (magic_route_add_single_request)
+export type magic_route_update_request = magic_route_add_single_request
 export type magic_routes_collection_response = (magic_api_response_single & Partial<{ result: Partial<{ routes: Array<magic_route> }> }>)
 export type magic_schemas_create_ipsec_tunnel_response = (magic_api_response_single & Partial<{ result: magic_ipsec_tunnel }>)
 export type magic_schemas_modified_tunnels_collection_response = (magic_api_response_single & Partial<{ result: Partial<{ modified: boolean, modified_ipsec_tunnels: Array<magic_ipsec_tunnel> }> }>)
@@ -3739,7 +3739,7 @@ export type observatory_messages = Array<{ code: number, message: string }>
 export type observatory_api_response_common = { errors: observatory_messages, messages: observatory_messages, success: boolean }
 export type observatory_api_response_collection = (observatory_api_response_common & Record<string, unknown>)
 export type observatory_messages_2 = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
-export type observatory_api_response_common_failure = { errors: (observatory_messages_2 & unknown), messages: (observatory_messages_2), result: (Record<string, unknown> | null), success: false }
+export type observatory_api_response_common_failure = { errors: observatory_messages_2, messages: observatory_messages_2, result: (Record<string, unknown> | null), success: false }
 export type observatory_api_response_single = (observatory_api_response_common & Record<string, unknown>)
 export type observatory_plan_properties_info = Partial<{ business: number, enterprise: number, free: number, pro: number }>
 export type observatory_region = ("asia-east1" | "asia-northeast1" | "asia-northeast2" | "asia-south1" | "asia-southeast1" | "australia-southeast1" | "europe-north1" | "europe-southwest1" | "europe-west1" | "europe-west2" | "europe-west3" | "europe-west4" | "europe-west8" | "europe-west9" | "me-west1" | "southamerica-east1" | "us-central1" | "us-east1" | "us-east4" | "us-south1" | "us-west1")
@@ -3776,7 +3776,7 @@ export type one_UseCaseSummary = { display_name: string, id: string }
 export type one_ApplicationList = { auth_methods: Array<one_AuthMethodSummary>, category: string, description: string, display_name: string, dlp_enabled: boolean, id: ("ANTHROPIC" | "BITBUCKET" | "BOX" | "CONFLUENCE" | "DROPBOX" | "GITHUB" | "GOOGLE_CLOUD_PLATFORM" | "GOOGLE_WORKSPACE" | "JIRA" | "MICROSOFT_INTERNAL" | "OPENAI" | "SALESFORCE" | "SLACK"), logo: (string | null), permissions: Array<one_Permission>, supported_environments: Array<string>, use_cases: Array<one_UseCaseSummary> }
 export type one_AuthConfig = { authorization_url: (string | null), client_id: (string | null), requires_pkce: boolean, scopes: Array<string>, url_placeholders: Array<string> }
 export type one_Instructions = { markdown: string }
-export type one_AuthMethodDetail = { display_name: string, human_interaction_required: boolean, id: string, instructions: (one_Instructions), payload_example: (Record<string, unknown> | null), payload_schema: (Record<string, unknown> | null), redirect_url: (string | null) }
+export type one_AuthMethodDetail = { display_name: string, human_interaction_required: boolean, id: string, instructions: one_Instructions, payload_example: (Record<string, unknown> | null), payload_schema: (Record<string, unknown> | null), redirect_url: (string | null) }
 export type one_DynamicContent = { label: string, type: ("copy_block" | "external_link"), url_template?: (string | null), value_from?: (string | null) }
 export type one_FormField = { label: string, name: string, placeholder: (string | null), required: boolean, supported_file_types: (Array<string> | null), type: ("text" | "password" | "email" | "file_upload") }
 export type one_IntegrationV2CreateRequest = { application: ("ANTHROPIC" | "BITBUCKET" | "BOX" | "CONFLUENCE" | "DROPBOX" | "GITHUB" | "GOOGLE_CLOUD_PLATFORM" | "GOOGLE_WORKSPACE" | "JIRA" | "MICROSOFT_INTERNAL" | "OPENAI" | "SALESFORCE" | "SLACK"), auth_method?: (string | null), credentials: Record<string, unknown>, dlp_profiles?: Array<string>, name: string, permissions?: Array<string>, use_cases?: Array<("casb" | "ces" | "auto_remediation")> }
@@ -3784,7 +3784,7 @@ export type one_IntegrationV2Detail = { application: Record<string, (string | nu
 export type one_PaginatedIntegrationV2BaseList = unknown
 export type one_PatchedUpdateIntegrationV2Request = Partial<{ credentials: Record<string, unknown>, dlp_profiles: Array<string>, name: string, permissions: Array<string>, use_cases: Array<("casb" | "ces" | "auto_remediation")> }>
 export type one_SetupFlowStep = { component_id?: (string | null), description?: (string | null), dynamic_content?: (Array<one_DynamicContent> | null), form_fields?: Array<one_FormField>, is_required?: boolean, parameters?: (Record<string, string> | null), title?: string, type: ("component" | "instruction" | "form_input" | "oauth_redirect") }
-export type one_SetupFlow = { auth_config?: (one_AuthConfig), default: boolean, description: string, id: string, name: string, steps: Array<one_SetupFlowStep>, supported_environments: Array<string> }
+export type one_SetupFlow = { auth_config?: one_AuthConfig, default: boolean, description: string, id: string, name: string, steps: Array<one_SetupFlowStep>, supported_environments: Array<string> }
 export type organizations_api_Account = { created_on: string, id: string, name: (string | null), settings: { abuse_contact_email: (string | null), access_approval_expiry: (string | null), api_access_enabled: (boolean | null), default_nameservers: (string | null), enforce_twofactor: (boolean | null), use_account_custom_ns_by_default: (boolean | null) }, type: ("standard" | "enterprise") }
 export type organizations_api_BatchAccountMoveResponse = { statuses: { message?: string, moved: boolean, tag: string } }
 export type organizations_api_CreateSingleMember = { status?: ("active" | "canceled"), user: { email: string } }
@@ -3804,7 +3804,7 @@ export type organizations_api_MoveAccountResponse = { account_id: string, destin
 export type organizations_api_OrganizationID = string
 export type organizations_api_OrganizationFlags = { account_creation: string, account_deletion: string, account_migration: string, account_mobility: string, sub_org_creation: string }
 export type organizations_api_Profile = { business_address: string, business_email: string, business_name: string, business_phone: string, external_metadata: string }
-export type organizations_api_Organization = { create_time: string, id: (organizations_api_OrganizationID & unknown), meta: (Partial<{ flags: (organizations_api_OrganizationFlags), hierarchy_tags: Array<string>, managed_by: string }> & Record<string, Record<string, unknown>>), name: string, parent?: { id: organizations_api_OrganizationID, name: string }, profile?: organizations_api_Profile }
+export type organizations_api_Organization = { create_time: string, id: organizations_api_OrganizationID, meta: (Partial<{ flags: organizations_api_OrganizationFlags, hierarchy_tags: Array<string>, managed_by: string }> & Record<string, Record<string, unknown>>), name: string, parent?: { id: organizations_api_OrganizationID, name: string }, profile?: organizations_api_Profile }
 export type organizations_api_PageTokenResultInfo = Partial<{ next_page_token: string, total_size: number }>
 export type organizations_api_V4Message = { code: number, message: string }
 export type organizations_api_ProfileResponse = { errors: Array<Record<string, unknown>>, messages: Array<organizations_api_V4Message>, result: organizations_api_Profile, success: true }
@@ -3834,15 +3834,15 @@ export type page_shield_policy_enabled = boolean
 export type page_shield_policy_expression = string
 export type page_shield_policy_value = string
 export type page_shield_policy = { action: page_shield_policy_action, description: page_shield_policy_description, enabled: page_shield_policy_enabled, expression: page_shield_policy_expression, value: page_shield_policy_value }
-export type page_shield_policy_with_id = (page_shield_policy & { id: page_shield_id } & unknown)
+export type page_shield_policy_with_id = (page_shield_policy & { id: page_shield_id })
 export type page_shield_get_zone_policy_response = (page_shield_api_get_response_collection & { result: page_shield_policy_with_id })
 export type page_shield_hash = (string | null)
 export type page_shield_js_integrity_score = (number | null)
 export type page_shield_magecart_score = (number | null)
 export type page_shield_malware_score = (number | null)
 export type page_shield_obfuscation_score = (number | null)
-export type page_shield_script = { added_at: string, cryptomining_score?: page_shield_cryptomining_score, dataflow_score?: (page_shield_dataflow_score & unknown), domain_reported_malicious?: boolean, fetched_at?: page_shield_fetched_at, first_page_url?: string, first_seen_at: string, hash?: page_shield_hash, host: string, id: page_shield_id, js_integrity_score?: page_shield_js_integrity_score, last_seen_at: string, magecart_score?: page_shield_magecart_score, malicious_domain_categories?: Array<string>, malicious_url_categories?: Array<string>, malware_score?: page_shield_malware_score, obfuscation_score?: (page_shield_obfuscation_score & unknown), page_urls?: Array<string>, url: string, url_contains_cdn_cgi_path: boolean, url_reported_malicious?: boolean }
-export type page_shield_version = Partial<{ cryptomining_score: page_shield_cryptomining_score, dataflow_score: (page_shield_dataflow_score & unknown), fetched_at: page_shield_fetched_at, hash: page_shield_hash, js_integrity_score: page_shield_js_integrity_score, magecart_score: page_shield_magecart_score, malware_score: page_shield_malware_score, obfuscation_score: (page_shield_obfuscation_score & unknown) }>
+export type page_shield_script = { added_at: string, cryptomining_score?: page_shield_cryptomining_score, dataflow_score?: page_shield_dataflow_score, domain_reported_malicious?: boolean, fetched_at?: page_shield_fetched_at, first_page_url?: string, first_seen_at: string, hash?: page_shield_hash, host: string, id: page_shield_id, js_integrity_score?: page_shield_js_integrity_score, last_seen_at: string, magecart_score?: page_shield_magecart_score, malicious_domain_categories?: Array<string>, malicious_url_categories?: Array<string>, malware_score?: page_shield_malware_score, obfuscation_score?: page_shield_obfuscation_score, page_urls?: Array<string>, url: string, url_contains_cdn_cgi_path: boolean, url_reported_malicious?: boolean }
+export type page_shield_version = Partial<{ cryptomining_score: page_shield_cryptomining_score, dataflow_score: page_shield_dataflow_score, fetched_at: page_shield_fetched_at, hash: page_shield_hash, js_integrity_score: page_shield_js_integrity_score, magecart_score: page_shield_magecart_score, malware_score: page_shield_malware_score, obfuscation_score: page_shield_obfuscation_score }>
 export type page_shield_get_zone_script_response = (page_shield_api_get_response_collection & { result: (page_shield_script & Partial<{ versions: (Array<page_shield_version> | null) }>) })
 export type page_shield_updated_at = string
 export type page_shield_use_cloudflare_reporting_endpoint = boolean
@@ -3857,7 +3857,7 @@ export type page_shield_zone_settings_response_single = (page_shield_api_respons
 export type pages_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type pages_api_response_common = { errors: pages_messages, messages: pages_messages, success: true }
 export type pages_api_response_collection = (pages_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type pages_api_response_common_failure = { errors: (pages_messages & unknown), messages: (pages_messages), result: (Record<string, unknown> | null), success: false }
+export type pages_api_response_common_failure = { errors: pages_messages, messages: pages_messages, result: (Record<string, unknown> | null), success: false }
 export type pages_build_config = { build_caching?: (boolean | null), build_command?: (string | null), destination_dir?: (string | null), root_dir?: (string | null), web_analytics_tag: (string | null), web_analytics_token: (string | null) }
 export type pages_plain_text_env_var = ({ type: "plain_text", value: string } | null)
 export type pages_secret_text_env_var = ({ type: "secret_text", value: string } | null)
@@ -3878,7 +3878,7 @@ export type pages_pages_assets_check_missing_response = (pages_api_response_comm
 export type pages_pages_assets_upload_request = Array<{ base64: boolean, key: string, metadata: { contentType: string }, value: string }>
 export type pages_pages_assets_upsert_hashes_request = { hashes: Array<string> }
 export type pages_pages_upload_token_response = { jwt: string }
-export type pages_project = { build_config?: pages_build_config, canonical_deployment: (pages_deployment & (Record<string, unknown> | null)), created_on: string, deployment_configs: { preview: (pages_deployment_config_values), production: (pages_deployment_config_values) }, domains?: Array<string>, framework: string, framework_version: string, id: string, latest_deployment: (pages_deployment & (Record<string, unknown> | null)), name: pages_project_name, preview_script_name: string, production_branch: string, production_script_name: string, source?: pages_source, subdomain?: string, uses_functions: (boolean | null) }
+export type pages_project = { build_config?: pages_build_config, canonical_deployment: (pages_deployment & (Record<string, unknown> | null)), created_on: string, deployment_configs: { preview: pages_deployment_config_values, production: pages_deployment_config_values }, domains?: Array<string>, framework: string, framework_version: string, id: string, latest_deployment: (pages_deployment & (Record<string, unknown> | null)), name: pages_project_name, preview_script_name: string, production_branch: string, production_script_name: string, source?: pages_source, subdomain?: string, uses_functions: (boolean | null) }
 export type pages_project_object = pages_project
 export type pages_tail = { id: string, url?: string }
 export type pay_per_crawl_BotAccessMode = ("charge" | "bypass")
@@ -3988,7 +3988,7 @@ export type posture_api_webhook_list_response = (posture_api_api_response_common
 export type posture_api_webhook_response = (posture_api_api_response_common & Partial<{ result: posture_api_Webhook }> & Record<string, unknown>)
 export type precursor_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type precursor_api_response_common = { errors: precursor_messages, messages: precursor_messages, success: true }
-export type precursor_api_response_common_failure = { errors: (precursor_messages & unknown), messages: (precursor_messages), result: (Record<string, unknown> | null), success: false }
+export type precursor_api_response_common_failure = { errors: precursor_messages, messages: precursor_messages, result: (Record<string, unknown> | null), success: false }
 export type precursor_api_response_single = (precursor_api_response_common & Record<string, unknown>)
 export type precursor_default_mode = ("off" | "min-friction" | "max-security")
 export type precursor_enforcement_rule_mode = ("min-friction" | "max-security")
@@ -3999,7 +3999,7 @@ export type precursor_precursor_config = Partial<{ default_mode: precursor_defau
 export type precursor_precursor_config_response_body = (precursor_api_response_single & Partial<{ result: precursor_precursor_config }>)
 export type public_ip_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type public_ip_api_response_common = { errors: public_ip_messages, messages: public_ip_messages, success: true }
-export type public_ip_api_response_common_failure = { errors: (public_ip_messages & unknown), messages: (public_ip_messages), result: (Record<string, unknown> | null), success: false }
+export type public_ip_api_response_common_failure = { errors: public_ip_messages, messages: public_ip_messages, result: (Record<string, unknown> | null), success: false }
 export type public_ip_api_response_single = (public_ip_api_response_common & Record<string, unknown>)
 export type public_ip_etag = string
 export type public_ip_ipv4_cidrs = Array<string>
@@ -4027,10 +4027,10 @@ export type r2_data_catalog_catalog_activation_response = { id: string, name: st
 export type r2_data_catalog_catalog_credential_request = { token: string }
 export type r2_data_catalog_catalog_list = { warehouses: Array<r2_data_catalog_catalog> }
 export type r2_data_catalog_catalog_maintenance_config_response = { credential_status: r2_data_catalog_credential_status, maintenance_config: r2_data_catalog_catalog_maintenance_config }
-export type r2_data_catalog_compaction_update_params = Partial<{ state: (r2_data_catalog_catalog_maintenance_state), target_size_mb: (r2_data_catalog_catalog_target_file_size) }>
-export type r2_data_catalog_snapshot_expiration_update_params = Partial<{ max_snapshot_age: string, min_snapshots_to_keep: number, state: (r2_data_catalog_catalog_maintenance_state) }>
+export type r2_data_catalog_compaction_update_params = Partial<{ state: r2_data_catalog_catalog_maintenance_state, target_size_mb: r2_data_catalog_catalog_target_file_size }>
+export type r2_data_catalog_snapshot_expiration_update_params = Partial<{ max_snapshot_age: string, min_snapshots_to_keep: number, state: r2_data_catalog_catalog_maintenance_state }>
 export type r2_data_catalog_maintenance_update_params = Partial<{ compaction: r2_data_catalog_compaction_update_params, snapshot_expiration: r2_data_catalog_snapshot_expiration_update_params }>
-export type r2_data_catalog_catalog_maintenance_update_request = (r2_data_catalog_maintenance_update_params)
+export type r2_data_catalog_catalog_maintenance_update_request = r2_data_catalog_maintenance_update_params
 export type r2_data_catalog_namespace_identifier = Array<string>
 export type r2_data_catalog_table_identifier = { name: string, namespace: r2_data_catalog_namespace_identifier }
 export type r2_data_catalog_table_metadata = Record<string, unknown>
@@ -4042,7 +4042,7 @@ export type r2_data_catalog_table_details = { created_at?: (string | null), iden
 export type r2_data_catalog_table_list_response = { details?: (Array<r2_data_catalog_table_details> | null), identifiers: Array<r2_data_catalog_table_identifier>, next_page_token?: (string | null), table_uuids?: (Array<string> | null) }
 export type r2_data_catalog_table_maintenance_config = Partial<{ compaction: r2_data_catalog_table_compaction_config, snapshot_expiration: r2_data_catalog_snapshot_expiration_config }>
 export type r2_data_catalog_table_maintenance_config_response = { maintenance_config: r2_data_catalog_table_maintenance_config }
-export type r2_data_catalog_table_maintenance_update_request = (r2_data_catalog_maintenance_update_params)
+export type r2_data_catalog_table_maintenance_update_request = r2_data_catalog_maintenance_update_params
 export type r2_slurper_ConnectivityResponse = Partial<{ connectivityStatus: ("success" | "error") }>
 export type r2_slurper_S3LikeCredsSchema = { accessKeyId: string, secretAccessKey: string }
 export type r2_slurper_S3SourceSchema = { bucket: string, endpoint?: (string | null), keys?: (Array<string> | null), pathPrefix?: (string | null), region?: (string | null), secret: r2_slurper_S3LikeCredsSchema, vendor: "s3" }
@@ -4080,7 +4080,7 @@ export type r2_lock_rule_age_condition = { maxAgeSeconds: number, type: "Age" }
 export type r2_lock_rule_date_condition = { date: string, type: "Date" }
 export type r2_lock_rule_indefinite_condition = { type: "Indefinite" }
 export type r2_bucket_lock_rule = { condition: (r2_lock_rule_age_condition | r2_lock_rule_date_condition | r2_lock_rule_indefinite_condition), enabled: boolean, id: string, prefix?: string }
-export type r2_bucket_lock_rule_config = Partial<{ rules: Array<(r2_bucket_lock_rule)> }>
+export type r2_bucket_lock_rule_config = Partial<{ rules: Array<r2_bucket_lock_rule> }>
 export type r2_cors_rule = { allowed: { headers?: Array<string>, methods: Array<("GET" | "PUT" | "POST" | "DELETE" | "HEAD")>, origins: Array<string> }, exposeHeaders?: Array<string>, id?: string, maxAgeSeconds?: number }
 export type r2_domain_name = string
 export type r2_edit_custom_domain_request = Partial<{ ciphers: Array<string>, enabled: boolean, minTLS: ("1.0" | "1.1" | "1.2" | "1.3") }>
@@ -4094,8 +4094,8 @@ export type r2_get_custom_domain_response = { ciphers?: Array<string>, domain: s
 export type r2_lifecycle_age_condition = { maxAge: number, type: "Age" }
 export type r2_lifecycle_date_condition = { date: string, type: "Date" }
 export type r2_lifecycle_storage_transition = { condition: (r2_lifecycle_age_condition | r2_lifecycle_date_condition), storageClass: "InfrequentAccess" }
-export type r2_lifecycle_rule = { abortMultipartUploadsTransition?: Partial<{ condition: (r2_lifecycle_age_condition) }>, conditions: { prefix: string }, deleteObjectsTransition?: Partial<{ condition: (r2_lifecycle_age_condition | r2_lifecycle_date_condition) }>, enabled: boolean, id: string, storageClassTransitions?: Array<(r2_lifecycle_storage_transition)> }
-export type r2_lifecycle_config = Partial<{ rules: Array<(r2_lifecycle_rule)> }>
+export type r2_lifecycle_rule = { abortMultipartUploadsTransition?: Partial<{ condition: r2_lifecycle_age_condition }>, conditions: { prefix: string }, deleteObjectsTransition?: Partial<{ condition: (r2_lifecycle_age_condition | r2_lifecycle_date_condition) }>, enabled: boolean, id: string, storageClassTransitions?: Array<r2_lifecycle_storage_transition> }
+export type r2_lifecycle_config = Partial<{ rules: Array<r2_lifecycle_rule> }>
 export type r2_list_custom_domains_response = { domains: Array<{ ciphers?: Array<string>, domain: string, enabled: boolean, minTLS?: ("1.0" | "1.1" | "1.2" | "1.3"), status: { ownership: ("pending" | "active" | "deactivated" | "blocked" | "error" | "unknown"), ssl: ("initializing" | "pending" | "active" | "deactivated" | "error" | "unknown") }, zoneId?: string, zoneName?: string }> }
 export type r2_local_uploads_configuration = Partial<{ enabled: boolean }>
 export type r2_managed_domain_response = { bucketId: string, domain: string, enabled: boolean }
@@ -4190,7 +4190,7 @@ export type registrar_api_sandbox_messages = Array<{ code: number, message: stri
 export type registrar_api_sandbox_api_response_common = { errors: registrar_api_sandbox_messages, messages: registrar_api_sandbox_messages, result: (Record<string, unknown> | Array<Record<string, unknown>> | string), success: true }
 export type registrar_api_sandbox_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type registrar_api_sandbox_api_response_collection = (registrar_api_sandbox_api_response_common & Partial<{ result: (Array<unknown> | null), result_info: registrar_api_sandbox_result_info }> & Record<string, unknown>)
-export type registrar_api_sandbox_api_response_common_failure = { errors: (registrar_api_sandbox_messages & unknown), messages: (registrar_api_sandbox_messages), result: (Record<string, unknown> | null), success: false }
+export type registrar_api_sandbox_api_response_common_failure = { errors: registrar_api_sandbox_messages, messages: registrar_api_sandbox_messages, result: (Record<string, unknown> | null), success: false }
 export type registrar_api_sandbox_api_response_single = (registrar_api_sandbox_api_response_common & Partial<{ result: (Record<string, unknown> | null) }> & Record<string, unknown>)
 export type registrar_api_sandbox_auto_renew = boolean
 export type registrar_api_sandbox_available = boolean
@@ -4219,7 +4219,7 @@ export type registrar_api_sandbox_domain_identifier = string
 export type registrar_api_sandbox_domain_name = string
 export type registrar_api_sandbox_expires_at = string
 export type registrar_api_sandbox_locked = boolean
-export type registrar_api_sandbox_registrant_contact = (registrar_api_sandbox_contacts)
+export type registrar_api_sandbox_registrant_contact = registrar_api_sandbox_contacts
 export type registrar_api_sandbox_registry_statuses = string
 export type registrar_api_sandbox_supported_tld = boolean
 export type registrar_api_sandbox_transfer_in = Partial<{ accept_foa: ("needed" | "ok"), approve_transfer: ("needed" | "ok" | "pending" | "trying" | "rejected" | "unknown"), can_cancel_transfer: boolean, disable_privacy: ("needed" | "ok" | "unknown"), enter_auth_code: ("needed" | "ok" | "pending" | "trying" | "rejected"), unlock_domain: ("needed" | "ok" | "pending" | "trying" | "unknown") }>
@@ -4247,7 +4247,7 @@ export type registrar_api_sandbox_registration_create_request = { acknowledgemen
 export type registrar_api_sandbox_registration_update_request = Partial<{ auto_renew: boolean }>
 export type registrar_api_sandbox_workflow_error = { code: string, message: string }
 export type registrar_api_sandbox_workflow_links = { resource?: string, self: string }
-export type registrar_api_sandbox_workflow_status = { completed: boolean, context?: Record<string, unknown>, created_at: string, error?: ((registrar_api_sandbox_workflow_error) | null), links: registrar_api_sandbox_workflow_links, state: ("pending" | "in_progress" | "action_required" | "blocked" | "succeeded" | "failed"), updated_at: string }
+export type registrar_api_sandbox_workflow_status = { completed: boolean, context?: Record<string, unknown>, created_at: string, error?: (registrar_api_sandbox_workflow_error | null), links: registrar_api_sandbox_workflow_links, state: ("pending" | "in_progress" | "action_required" | "blocked" | "succeeded" | "failed"), updated_at: string }
 export type registrar_api_sandbox_workflow_status_response_single = (registrar_api_sandbox_api_response_common & Partial<{ result: registrar_api_sandbox_workflow_status }>)
 export type registrar_api_address = string
 export type registrar_api_address2 = string
@@ -4255,7 +4255,7 @@ export type registrar_api_messages = Array<{ code: number, message: string }>
 export type registrar_api_api_response_common = { errors: registrar_api_messages, messages: registrar_api_messages, result: (Record<string, unknown> | Array<Record<string, unknown>> | string), success: true }
 export type registrar_api_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type registrar_api_api_response_collection = (registrar_api_api_response_common & Partial<{ result: (Array<unknown> | null), result_info: registrar_api_result_info }> & Record<string, unknown>)
-export type registrar_api_api_response_common_failure = { errors: (registrar_api_messages & unknown), messages: (registrar_api_messages), result: (Record<string, unknown> | null), success: false }
+export type registrar_api_api_response_common_failure = { errors: registrar_api_messages, messages: registrar_api_messages, result: (Record<string, unknown> | null), success: false }
 export type registrar_api_api_response_single = (registrar_api_api_response_common & Partial<{ result: (Record<string, unknown> | null) }> & Record<string, unknown>)
 export type registrar_api_auto_renew = boolean
 export type registrar_api_available = boolean
@@ -4284,7 +4284,7 @@ export type registrar_api_domain_identifier = string
 export type registrar_api_domain_name = string
 export type registrar_api_expires_at = string
 export type registrar_api_locked = boolean
-export type registrar_api_registrant_contact = (registrar_api_contacts)
+export type registrar_api_registrant_contact = registrar_api_contacts
 export type registrar_api_registry_statuses = string
 export type registrar_api_supported_tld = boolean
 export type registrar_api_transfer_in = Partial<{ accept_foa: ("needed" | "ok"), approve_transfer: ("needed" | "ok" | "pending" | "trying" | "rejected" | "unknown"), can_cancel_transfer: boolean, disable_privacy: ("needed" | "ok" | "unknown"), enter_auth_code: ("needed" | "ok" | "pending" | "trying" | "rejected"), unlock_domain: ("needed" | "ok" | "pending" | "trying" | "unknown") }>
@@ -4312,13 +4312,13 @@ export type registrar_api_registration_create_request = { acknowledgements?: Rec
 export type registrar_api_registration_update_request = Partial<{ auto_renew: boolean }>
 export type registrar_api_workflow_error = { code: string, message: string }
 export type registrar_api_workflow_links = { resource?: string, self: string }
-export type registrar_api_workflow_status = { completed: boolean, context?: Record<string, unknown>, created_at: string, error?: ((registrar_api_workflow_error) | null), links: registrar_api_workflow_links, state: ("pending" | "in_progress" | "action_required" | "blocked" | "succeeded" | "failed"), updated_at: string }
+export type registrar_api_workflow_status = { completed: boolean, context?: Record<string, unknown>, created_at: string, error?: (registrar_api_workflow_error | null), links: registrar_api_workflow_links, state: ("pending" | "in_progress" | "action_required" | "blocked" | "succeeded" | "failed"), updated_at: string }
 export type registrar_api_workflow_status_response_single = (registrar_api_api_response_common & Partial<{ result: registrar_api_workflow_status }>)
 export type request_tracer_identifier = string
 export type request_tracer_account_identifier = request_tracer_identifier
 export type request_tracer_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type request_tracer_api_response_common = { errors: request_tracer_messages, messages: request_tracer_messages, success: true }
-export type request_tracer_api_response_common_failure = { errors: (request_tracer_messages & unknown), messages: (request_tracer_messages), result: (Record<string, unknown> | null), success: false }
+export type request_tracer_api_response_common_failure = { errors: request_tracer_messages, messages: request_tracer_messages, result: (Record<string, unknown> | null), success: false }
 export type request_tracer_trace = Array<Partial<{ action: string, action_parameters: Record<string, unknown>, description: string, expression: string, kind: string, matched: boolean, name: string, step_name: string, trace: request_tracer_trace, type: string }>>
 export type resource_sharing_account_id = string
 export type resource_sharing_account_name = string
@@ -4327,9 +4327,9 @@ export type resource_sharing_v4errors = Array<resource_sharing_v4error>
 export type resource_sharing_api_response_common = { errors: resource_sharing_v4errors, result?: (Record<string, unknown> | Array<unknown> | string), success: boolean }
 export type resource_sharing_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }>
 export type resource_sharing_api_response_collection = (resource_sharing_api_response_common & Partial<{ result: (Array<unknown> | null), result_info: resource_sharing_result_info }> & Record<string, unknown>)
-export type resource_sharing_api_response_common_failure = { errors: (resource_sharing_v4errors & unknown), result: (Record<string, unknown> | null), success: boolean }
+export type resource_sharing_api_response_common_failure = { errors: resource_sharing_v4errors, result: (Record<string, unknown> | null), success: boolean }
 export type resource_sharing_organization_id = string
-export type resource_sharing_create_share_recipient_request = Partial<{ account_id: (resource_sharing_account_id & unknown), organization_id: resource_sharing_organization_id, recipient_account_id: (resource_sharing_account_id) }>
+export type resource_sharing_create_share_recipient_request = Partial<{ account_id: resource_sharing_account_id, organization_id: resource_sharing_organization_id, recipient_account_id: resource_sharing_account_id }>
 export type resource_sharing_share_name = string
 export type resource_sharing_resource_meta = Record<string, unknown>
 export type resource_sharing_resource_resource_id = string
@@ -4364,13 +4364,13 @@ export type resource_sharing_update_share_request = { name: resource_sharing_sha
 export type resource_sharing_update_share_resource_request = { meta: resource_sharing_resource_meta }
 export type resource_tagging_access_application_id = string
 export type resource_tagging_identifier = string
-export type resource_tagging_account_id = (resource_tagging_identifier & unknown)
+export type resource_tagging_account_id = resource_tagging_identifier
 export type resource_tagging_account_resource_type = ("access_application" | "access_group" | "account" | "ai_gateway" | "alerting_policy" | "alerting_webhook" | "cloudflared_tunnel" | "d1_database" | "durable_object_namespace" | "gateway_list" | "gateway_rule" | "image" | "kv_namespace" | "queue" | "r2_bucket" | "resource_share" | "stream_live_input" | "stream_video" | "worker" | "worker_version")
 export type resource_tagging_account_resource_type_base_enum = ("access_application" | "access_group" | "account" | "ai_gateway" | "alerting_policy" | "alerting_webhook" | "cloudflared_tunnel" | "d1_database" | "durable_object_namespace" | "gateway_list" | "gateway_rule" | "image" | "kv_namespace" | "queue" | "r2_bucket" | "resource_share" | "stream_live_input" | "stream_video" | "worker")
 export type resource_tagging_account_resource_type_worker_version_enum = "worker_version"
 export type resource_tagging_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type resource_tagging_api_response_common = { errors: resource_tagging_messages, messages: resource_tagging_messages, success: true }
-export type resource_tagging_api_response_common_failure = { errors: (resource_tagging_messages & unknown), messages: (resource_tagging_messages), result: (Record<string, unknown> | null), success: false }
+export type resource_tagging_api_response_common_failure = { errors: resource_tagging_messages, messages: resource_tagging_messages, result: (Record<string, unknown> | null), success: false }
 export type resource_tagging_cursor_result_info = Partial<{ count: number, cursor: (string | null) }>
 export type resource_tagging_resource_id = string
 export type resource_tagging_delete_tags_request_account_level_base = { resource_id: resource_tagging_resource_id, resource_type: resource_tagging_account_resource_type_base_enum }
@@ -4396,7 +4396,7 @@ export type resource_tagging_tag_keys_response_collection = (resource_tagging_ap
 export type resource_tagging_tag_values_response_collection = (resource_tagging_api_response_common & Partial<{ result: Array<string>, result_info: resource_tagging_cursor_result_info }>)
 export type resource_tagging_tagged_resource_object_account_level_base = { etag: resource_tagging_etag, id: resource_tagging_resource_id, name: resource_tagging_resource_name, tags: resource_tagging_tags }
 export type resource_tagging_tagged_resource_object_access_application = ({ type: "access_application" } & resource_tagging_tagged_resource_object_account_level_base)
-export type resource_tagging_zone_id = (resource_tagging_identifier & unknown)
+export type resource_tagging_zone_id = resource_tagging_identifier
 export type resource_tagging_tagged_resource_object_access_application_policy_base = { access_application_id: resource_tagging_access_application_id, etag: resource_tagging_etag, id: resource_tagging_resource_id, name: resource_tagging_resource_name, tags: resource_tagging_tags, zone_id: resource_tagging_zone_id }
 export type resource_tagging_tagged_resource_object_access_application_policy = ({ type: "access_application_policy" } & resource_tagging_tagged_resource_object_access_application_policy_base)
 export type resource_tagging_tagged_resource_object_access_group = ({ type: "access_group" } & resource_tagging_tagged_resource_object_account_level_base)
@@ -4446,7 +4446,7 @@ export type rulesets_RuleExposedCredentialCheck = { password_expression: string,
 export type rulesets_RuleId = string
 export type rulesets_RuleLogging = { enabled: boolean }
 export type rulesets_RuleRatelimit = { characteristics: Array<string>, counting_expression?: string, mitigation_timeout?: number, period: number, requests_per_period?: number, requests_to_origin?: boolean, score_per_period?: number, score_response_header_name?: string }
-export type rulesets_Rule_schemas = { action?: rulesets_RuleAction, action_parameters?: Record<string, unknown>, categories?: rulesets_RuleCategories, description?: string, enabled?: (rulesets_RuleEnabled & unknown), exposed_credential_check?: rulesets_RuleExposedCredentialCheck, expression?: string, id?: rulesets_RuleId, last_updated: string, logging?: rulesets_RuleLogging, ratelimit?: rulesets_RuleRatelimit, ref?: string, version: string }
+export type rulesets_Rule_schemas = { action?: rulesets_RuleAction, action_parameters?: Record<string, unknown>, categories?: rulesets_RuleCategories, description?: string, enabled?: rulesets_RuleEnabled, exposed_credential_check?: rulesets_RuleExposedCredentialCheck, expression?: string, id?: rulesets_RuleId, last_updated: string, logging?: rulesets_RuleLogging, ratelimit?: rulesets_RuleRatelimit, ref?: string, version: string }
 export type rulesets_BlockRule = (rulesets_Rule_schemas & Partial<{ action: "block", action_parameters: Partial<{ response: { content: string, content_type: string, status_code: number } }>, description: unknown }>)
 export type rulesets_ChallengeRule = (rulesets_Rule_schemas & Partial<{ action: "challenge", description: unknown }>)
 export type rulesets_CompressResponseRule = (rulesets_Rule_schemas & Partial<{ action: "compress_response", action_parameters: { algorithms: Array<Partial<{ name: ("none" | "auto" | "default" | "gzip" | "brotli" | "zstd") }>> }, description: unknown }>)
@@ -4455,12 +4455,12 @@ export type rulesets_DDoSDynamicRule = (rulesets_Rule_schemas & Partial<{ action
 export type rulesets_Message = { code?: number, message: string, source?: { pointer: string } }
 export type rulesets_Errors = Array<rulesets_Message>
 export type rulesets_ExecuteSensitivityLevel = ("default" | "medium" | "low" | "eoff")
-export type rulesets_ExecuteCategoryOverrides = Array<{ action?: (rulesets_RuleAction & unknown), category: (rulesets_RuleCategory & unknown), enabled?: (rulesets_RuleEnabled & unknown), sensitivity_level?: (rulesets_ExecuteSensitivityLevel & unknown) }>
+export type rulesets_ExecuteCategoryOverrides = Array<{ action?: rulesets_RuleAction, category: rulesets_RuleCategory, enabled?: rulesets_RuleEnabled, sensitivity_level?: rulesets_ExecuteSensitivityLevel }>
 export type rulesets_ExecuteMatchedData = { public_key: string }
-export type rulesets_ExecuteRuleOverrides = Array<{ action?: (rulesets_RuleAction & unknown), enabled?: (rulesets_RuleEnabled & unknown), id: (rulesets_RuleId & unknown), score_threshold?: number, sensitivity_level?: (rulesets_ExecuteSensitivityLevel & unknown) }>
-export type rulesets_ExecuteOverrides = Partial<{ action: (rulesets_RuleAction & unknown), categories: rulesets_ExecuteCategoryOverrides, enabled: (rulesets_RuleEnabled & unknown), rules: rulesets_ExecuteRuleOverrides, sensitivity_level: (rulesets_ExecuteSensitivityLevel & unknown) }>
+export type rulesets_ExecuteRuleOverrides = Array<{ action?: rulesets_RuleAction, enabled?: rulesets_RuleEnabled, id: rulesets_RuleId, score_threshold?: number, sensitivity_level?: rulesets_ExecuteSensitivityLevel }>
+export type rulesets_ExecuteOverrides = Partial<{ action: rulesets_RuleAction, categories: rulesets_ExecuteCategoryOverrides, enabled: rulesets_RuleEnabled, rules: rulesets_ExecuteRuleOverrides, sensitivity_level: rulesets_ExecuteSensitivityLevel }>
 export type rulesets_RulesetId = string
-export type rulesets_ExecuteRule = (rulesets_Rule_schemas & Partial<{ action: "execute", action_parameters: { id: (rulesets_RulesetId & unknown), matched_data?: rulesets_ExecuteMatchedData, overrides?: rulesets_ExecuteOverrides }, description: unknown }>)
+export type rulesets_ExecuteRule = (rulesets_Rule_schemas & Partial<{ action: "execute", action_parameters: { id: rulesets_RulesetId, matched_data?: rulesets_ExecuteMatchedData, overrides?: rulesets_ExecuteOverrides }, description: unknown }>)
 export type rulesets_ForceConnectionCloseRule = (rulesets_Rule_schemas & Partial<{ action: "force_connection_close", description: unknown }>)
 export type rulesets_JsChallengeRule = (rulesets_Rule_schemas & Partial<{ action: "js_challenge", description: unknown }>)
 export type rulesets_LogCustomFieldCookieFields = Array<{ name: string }>
@@ -4472,7 +4472,7 @@ export type rulesets_LogCustomFieldRule = (rulesets_Rule_schemas & Partial<{ act
 export type rulesets_LogRule = (rulesets_Rule_schemas & Partial<{ action: "log", description: unknown }>)
 export type rulesets_ManagedChallengeRule = (rulesets_Rule_schemas & Partial<{ action: "managed_challenge", description: unknown }>)
 export type rulesets_ManagedTransformId = string
-export type rulesets_ManagedTransform = { conflicts_with?: Array<(rulesets_ManagedTransformId & unknown)>, enabled: boolean, has_conflict: boolean, id: rulesets_ManagedTransformId }
+export type rulesets_ManagedTransform = { conflicts_with?: Array<rulesets_ManagedTransformId>, enabled: boolean, has_conflict: boolean, id: rulesets_ManagedTransformId }
 export type rulesets_ManagedTransforms_schemas = { managed_request_headers: Array<(rulesets_ManagedTransform & Partial<{ id: unknown }>)>, managed_response_headers: Array<(rulesets_ManagedTransform & Partial<{ id: unknown }>)> }
 export type rulesets_ManagedTransformsPatch = Partial<{ managed_request_headers: Array<(rulesets_ManagedTransform & Partial<{ id: unknown }>)>, managed_response_headers: Array<(rulesets_ManagedTransform & Partial<{ id: unknown }>)> }>
 export type rulesets_Messages = Array<rulesets_Message>
@@ -4539,29 +4539,29 @@ export type rulesets_SetConfigAutominify = Partial<{ css: boolean, html: boolean
 export type rulesets_SetConfigRule = (rulesets_Rule_schemas & Partial<{ action: "set_config", action_parameters: Partial<{ automatic_https_rewrites: boolean, autominify: rulesets_SetConfigAutominify, bic: boolean, content_converter: boolean, disable_apps: true, disable_pay_per_crawl: true, disable_rum: true, disable_zaraz: true, email_obfuscation: boolean, fonts: boolean, hotlink_protection: boolean, mirage: boolean, opportunistic_encryption: boolean, polish: ("off" | "lossless" | "lossy" | "webp"), redirects_for_ai_training: boolean, request_body_buffering: ("none" | "standard" | "full"), response_body_buffering: ("none" | "standard"), rocket_loader: boolean, security_level: ("off" | "essentially_off" | "low" | "medium" | "high" | "under_attack"), server_side_excludes: boolean, ssl: ("off" | "flexible" | "full" | "strict" | "origin_pull"), sxg: boolean }>, description: unknown }>)
 export type rulesets_SkipPhase = "current"
 export type rulesets_RulesetPhase = ("ddos_l4" | "ddos_l7" | "http_config_settings" | "http_custom_errors" | "http_log_custom_fields" | "http_ratelimit" | "http_request_cache_settings" | "http_request_dynamic_redirect" | "http_request_firewall_custom" | "http_request_firewall_managed" | "http_request_late_transform" | "http_request_origin" | "http_request_redirect" | "http_request_sanitize" | "http_request_sbfm" | "http_request_transform" | "http_response_cache_settings" | "http_response_compression" | "http_response_firewall_managed" | "http_response_headers_transform" | "magic_transit" | "magic_transit_ids_managed" | "magic_transit_managed" | "magic_transit_ratelimit")
-export type rulesets_SkipPhases = Array<(rulesets_RulesetPhase & unknown)>
+export type rulesets_SkipPhases = Array<rulesets_RulesetPhase>
 export type rulesets_SkipProducts = Array<("bic" | "hot" | "rateLimit" | "securityLevel" | "uaBlock" | "waf" | "zoneLockdown")>
-export type rulesets_SkipRules = Record<string, Array<(rulesets_RuleId & unknown)>>
+export type rulesets_SkipRules = Record<string, Array<rulesets_RuleId>>
 export type rulesets_SkipRuleset = "current"
-export type rulesets_SkipRulesets = Array<(rulesets_RulesetId & unknown)>
+export type rulesets_SkipRulesets = Array<rulesets_RulesetId>
 export type rulesets_SkipRule = (rulesets_Rule_schemas & Partial<{ action: "skip", action_parameters: Partial<{ phase: rulesets_SkipPhase, phases: rulesets_SkipPhases, products: rulesets_SkipProducts, rules: rulesets_SkipRules, ruleset: rulesets_SkipRuleset, rulesets: rulesets_SkipRulesets }>, description: unknown }>)
 export type rulesets_TransformResponseHTMLRule = (rulesets_Rule_schemas & Partial<{ action: "transform_response_html", action_parameters: { link_maze: Record<string, unknown> }, description: unknown }>)
 export type rulesets_RequestRule = (rulesets_BlockRule | rulesets_ChallengeRule | rulesets_CompressResponseRule | rulesets_DDoSDynamicRule | rulesets_ExecuteRule | rulesets_ForceConnectionCloseRule | rulesets_JsChallengeRule | rulesets_LogRule | rulesets_LogCustomFieldRule | rulesets_ManagedChallengeRule | rulesets_RedirectRule | rulesets_RewriteRule | rulesets_RouteRule | rulesets_ScoreRule | rulesets_ServeErrorRule | rulesets_SetCacheControlRule | rulesets_SetCacheSettingsRule | rulesets_SetCacheTagsRule | rulesets_SetConfigRule | rulesets_SkipRule | rulesets_TransformResponseHTMLRule)
 export type rulesets_RequestRules = Array<rulesets_RequestRule>
 export type rulesets_Response = { errors: rulesets_Errors, messages: rulesets_Messages, result: unknown, success: boolean }
-export type rulesets_ResponseRule = (rulesets_RequestRule & unknown)
+export type rulesets_ResponseRule = rulesets_RequestRule
 export type rulesets_ResponseRules = Array<rulesets_ResponseRule>
-export type rulesets_ResultInfo = Partial<{ cursors: { after: (rulesets_Cursor & unknown) } }>
+export type rulesets_ResultInfo = Partial<{ cursors: { after: rulesets_Cursor } }>
 export type rulesets_RulePosition = Record<string, unknown>
 export type rulesets_RulesetVersion = string
-export type rulesets_Ruleset_schemas = { description?: string, id: (rulesets_RulesetId & unknown), last_updated: string, name?: string, version: (rulesets_RulesetVersion & unknown) }
+export type rulesets_Ruleset_schemas = { description?: string, id: rulesets_RulesetId, last_updated: string, name?: string, version: rulesets_RulesetVersion }
 export type rulesets_RulesetKind = ("managed" | "custom" | "root" | "zone")
 export type rulesets_UrlNormalization_schemas = { scope: ("incoming" | "both" | "none"), type: ("cloudflare" | "rfc3986") }
 export type rulesets_ZoneId = string
 export type rum_messages = Array<{ code: number, message: string }>
 export type rum_api_response_common = { errors: rum_messages, messages: rum_messages, success: boolean }
 export type rum_messages_2 = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
-export type rum_api_response_common_failure = { errors: (rum_messages_2 & unknown), messages: (rum_messages_2), result: (Record<string, unknown> | null), success: false }
+export type rum_api_response_common_failure = { errors: rum_messages_2, messages: rum_messages_2, result: (Record<string, unknown> | null), success: false }
 export type rum_auto_install = boolean
 export type rum_create_rule_request = Partial<{ host: string, inclusive: boolean, is_paused: boolean, paths: Array<string> }>
 export type rum_host = string
@@ -4612,7 +4612,7 @@ export type secondary_dns_algo = string
 export type secondary_dns_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type secondary_dns_api_response_common = { errors: secondary_dns_messages, messages: secondary_dns_messages, success: true }
 export type secondary_dns_api_response_collection = (secondary_dns_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type secondary_dns_api_response_common_failure = { errors: (secondary_dns_messages & unknown), messages: (secondary_dns_messages), result: (Record<string, unknown> | null), success: false }
+export type secondary_dns_api_response_common_failure = { errors: secondary_dns_messages, messages: secondary_dns_messages, result: (Record<string, unknown> | null), success: false }
 export type secondary_dns_api_response_single = (secondary_dns_api_response_common & Record<string, unknown>)
 export type secondary_dns_auto_refresh_seconds = number
 export type secondary_dns_disable_transfer_result = string
@@ -4657,7 +4657,7 @@ export type secrets_store_account_tag_schemas = string
 export type secrets_store_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type secrets_store_api_response_common = { errors: secrets_store_messages, messages: secrets_store_messages, success: true }
 export type secrets_store_api_response_collection = (secrets_store_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type secrets_store_api_response_common_failure = { errors: (secrets_store_messages & unknown), messages: (secrets_store_messages), result: (Record<string, unknown> | null), success: false }
+export type secrets_store_api_response_common_failure = { errors: secrets_store_messages, messages: secrets_store_messages, result: (Record<string, unknown> | null), success: false }
 export type secrets_store_api_response_single = (secrets_store_api_response_common & Record<string, unknown>)
 export type secrets_store_comment = string
 export type secrets_store_secret_name = string
@@ -4689,7 +4689,7 @@ export type secrets_store_stores_response_collection = (secrets_store_api_respon
 export type security_center_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type security_center_api_response_common = { errors: security_center_messages, messages: security_center_messages, success: true }
 export type security_center_ExternalApiResponseCommon = security_center_api_response_common
-export type security_center_api_response_common_failure = { errors: (security_center_messages & unknown), messages: (security_center_messages), result: (Record<string, unknown> | null), success: false }
+export type security_center_api_response_common_failure = { errors: security_center_messages, messages: security_center_messages, result: (Record<string, unknown> | null), success: false }
 export type security_center_ExternalApiResponseCommonFailure = security_center_api_response_common_failure
 export type security_center_api_response_single = (security_center_api_response_common & Record<string, unknown>)
 export type security_center_ExternalApiResponseSingle = security_center_api_response_single
@@ -4725,7 +4725,7 @@ export type smartshield_messages = Array<{ code: number, message: string }>
 export type smartshield_api_response_common = { errors: smartshield_messages, messages: smartshield_messages, result: (Record<string, unknown> | Array<unknown> | string), success: true }
 export type smartshield_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type smartshield_api_response_collection = (smartshield_api_response_common & Partial<{ result: (Array<unknown> | null), result_info: smartshield_result_info }> & Record<string, unknown>)
-export type smartshield_api_response_common_failure = { errors: (smartshield_messages & unknown), messages: (smartshield_messages), result: (Record<string, unknown> | null), success: false }
+export type smartshield_api_response_common_failure = { errors: smartshield_messages, messages: smartshield_messages, result: (Record<string, unknown> | null), success: false }
 export type smartshield_api_response_single = (smartshield_api_response_common & Partial<{ result: (Record<string, unknown> | string) }> & Record<string, unknown>)
 export type smartshield_base = { id: string, modified_on?: (string | null) }
 export type smartshield_cache_reserve_clear = (smartshield_base & Partial<{ id: "cache_reserve_clear" }> & Record<string, unknown>)
@@ -4775,7 +4775,7 @@ export type snippets_SnippetRules_schemas = Array<{ description?: string, enable
 export type snippets_ZoneId = string
 export type spectrum_analytics_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type spectrum_analytics_api_response_common = { errors: spectrum_analytics_messages, messages: spectrum_analytics_messages, success: true }
-export type spectrum_analytics_api_response_common_failure = { errors: (spectrum_analytics_messages & unknown), messages: (spectrum_analytics_messages), result: (Record<string, unknown> | null), success: false }
+export type spectrum_analytics_api_response_common_failure = { errors: spectrum_analytics_messages, messages: spectrum_analytics_messages, result: (Record<string, unknown> | null), success: false }
 export type spectrum_analytics_api_response_single = (spectrum_analytics_api_response_common & Record<string, unknown>)
 export type spectrum_analytics_app_id_param = string
 export type spectrum_analytics_column = Partial<{ dimensions: Array<string>, metrics: (Array<number> | Array<Array<number>>) }>
@@ -4784,24 +4784,24 @@ export type spectrum_analytics_filters = string
 export type spectrum_analytics_identifier = string
 export type spectrum_analytics_metrics = Array<("count" | "bytesIngress" | "bytesEgress" | "durationAvg" | "durationMedian" | "duration90th" | "duration99th")>
 export type spectrum_analytics_timestamp = string
-export type spectrum_analytics_since = (unknown & spectrum_analytics_timestamp)
+export type spectrum_analytics_since = spectrum_analytics_timestamp
 export type spectrum_analytics_sort = Array<string>
-export type spectrum_analytics_until = (unknown & spectrum_analytics_timestamp)
+export type spectrum_analytics_until = spectrum_analytics_timestamp
 export type spectrum_analytics_query = Partial<{ dimensions: spectrum_analytics_dimensions, filters: spectrum_analytics_filters, limit: number, metrics: spectrum_analytics_metrics, since: spectrum_analytics_since, sort: spectrum_analytics_sort, until: spectrum_analytics_until }>
-export type spectrum_analytics_query_response_aggregate = (spectrum_analytics_api_response_single & Partial<{ result: Array<{ appID: (unknown & spectrum_analytics_identifier), bytesEgress: number, bytesIngress: number, connections: number, durationAvg: number }> }>)
+export type spectrum_analytics_query_response_aggregate = (spectrum_analytics_api_response_single & Partial<{ result: Array<{ appID: spectrum_analytics_identifier, bytesEgress: number, bytesIngress: number, connections: number, durationAvg: number }> }>)
 export type spectrum_analytics_stat = Record<string, number>
-export type spectrum_analytics_query_response_single = (spectrum_analytics_api_response_single & Partial<{ result: { data: Array<spectrum_analytics_column>, data_lag: number, max: (unknown & spectrum_analytics_stat), min: (unknown & spectrum_analytics_stat), query: spectrum_analytics_query, rows: number, time_intervals?: Array<Array<spectrum_analytics_timestamp>>, totals: (unknown & spectrum_analytics_stat) } }>)
+export type spectrum_analytics_query_response_single = (spectrum_analytics_api_response_single & Partial<{ result: { data: Array<spectrum_analytics_column>, data_lag: number, max: spectrum_analytics_stat, min: spectrum_analytics_stat, query: spectrum_analytics_query, rows: number, time_intervals?: Array<Array<spectrum_analytics_timestamp>>, totals: spectrum_analytics_stat } }>)
 export type spectrum_config_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type spectrum_config_api_response_common = { errors: spectrum_config_messages, messages: spectrum_config_messages, success: true }
 export type spectrum_config_api_response_collection = (spectrum_config_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type spectrum_config_api_response_common_failure = { errors: (spectrum_config_messages & unknown), messages: (spectrum_config_messages), result: (Record<string, unknown> | null), success: false }
+export type spectrum_config_api_response_common_failure = { errors: spectrum_config_messages, messages: spectrum_config_messages, result: (Record<string, unknown> | null), success: false }
 export type spectrum_config_api_response_single = (spectrum_config_api_response_common & Record<string, unknown>)
 export type spectrum_config_identifier = string
 export type spectrum_config_api_response_single_id = (spectrum_config_api_response_common & Partial<{ result: ({ id: spectrum_config_identifier } | null) }> & Record<string, unknown>)
 export type spectrum_config_timestamp = string
-export type spectrum_config_created = (unknown & unknown & spectrum_config_timestamp)
-export type spectrum_config_app_identifier = (unknown & unknown & spectrum_config_identifier)
-export type spectrum_config_modified = (unknown & unknown & spectrum_config_timestamp)
+export type spectrum_config_created = spectrum_config_timestamp
+export type spectrum_config_app_identifier = spectrum_config_identifier
+export type spectrum_config_modified = spectrum_config_timestamp
 export type spectrum_config_base_app_config = { created_on: spectrum_config_created, id: spectrum_config_app_identifier, modified_on: spectrum_config_modified }
 export type spectrum_config_argo_smart_routing = boolean
 export type spectrum_config_dns_name = string
@@ -4825,10 +4825,10 @@ export type spectrum_config_paygo_app_config = (spectrum_config_base_app_config 
 export type spectrum_config_app_config_collection = (spectrum_config_api_response_collection & Partial<{ result: (Array<spectrum_config_app_config> | Array<spectrum_config_paygo_app_config>) }>)
 export type spectrum_config_app_config_single = (spectrum_config_api_response_single & Partial<{ result: (spectrum_config_app_config | spectrum_config_paygo_app_config) }>)
 export type spectrum_config_update_app_config = (spectrum_config_app_config | spectrum_config_paygo_app_config)
-export type spectrum_config_zone_identifier = (unknown & unknown & spectrum_config_identifier)
+export type spectrum_config_zone_identifier = spectrum_config_identifier
 export type speed_messages = Array<{ code: number, message: string }>
 export type speed_api_response_common = { errors: speed_messages, messages: speed_messages, success: boolean }
-export type speed_api_response_common_failure = { errors: (speed_messages & unknown), messages: (speed_messages), result: (Record<string, unknown> | null), success: boolean }
+export type speed_api_response_common_failure = { errors: speed_messages, messages: speed_messages, result: (Record<string, unknown> | null), success: boolean }
 export type speed_identifier = string
 export type speed_api_response_single_id = (speed_api_response_common & Partial<{ result: ({ id: speed_identifier } | null) }> & Record<string, unknown>)
 export type speed_base = Partial<{ editable: (true | false), id: string, modified_on: (string | null), value: ("on" | "off") }>
@@ -4846,7 +4846,7 @@ export type stream_identifier = string
 export type stream_additionalAudio = Partial<{ default: stream_audio_default, label: stream_audio_label, status: stream_audio_state, uid: stream_identifier }>
 export type stream_addAudioTrackResponse = (stream_api_response_common & Partial<{ result: stream_additionalAudio }>)
 export type stream_allowedOrigins = Array<string>
-export type stream_api_response_common_failure = { errors: (stream_messages & unknown), messages: (stream_messages), result: (Record<string, unknown> | null), success: false }
+export type stream_api_response_common_failure = { errors: stream_messages, messages: stream_messages, result: (Record<string, unknown> | null), success: false }
 export type stream_api_response_single = (stream_api_response_common & Record<string, unknown>)
 export type stream_asc = boolean
 export type stream_audio_identifier = string
@@ -4928,7 +4928,7 @@ export type stream_download_status = ("ready" | "inprogress" | "error")
 export type stream_download_type = ("default" | "audio")
 export type stream_download_url = string
 export type stream_downloads = { percentComplete: stream_download_percent_complete, status: stream_download_status, url?: stream_download_url }
-export type stream_downloads_response = (stream_api_response_single & Partial<{ result: Partial<{ audio: (stream_downloads), default: (stream_downloads) }> }>)
+export type stream_downloads_response = (stream_api_response_single & Partial<{ result: Partial<{ audio: stream_downloads, default: stream_downloads }> }>)
 export type stream_editAudioTrack = Partial<{ default: stream_audio_default, label: stream_audio_label }>
 export type stream_end = string
 export type stream_identifier_2 = string
@@ -5006,7 +5006,7 @@ export type teams_devices_api_response_common = { errors: teams_devices_messages
 export type teams_devices_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type teams_devices_api_response_collection = (teams_devices_api_response_common & Partial<{ result: (Array<Record<string, unknown>> | null), result_info: teams_devices_result_info }> & Record<string, unknown>)
 export type teams_devices_api_response_collection_common = (teams_devices_api_response_common & Partial<{ result: (Array<Record<string, unknown>> | null) }> & Record<string, unknown>)
-export type teams_devices_api_response_common_failure = { errors: (teams_devices_messages & unknown), messages: (teams_devices_messages), result: (Record<string, unknown> | null), success: false }
+export type teams_devices_api_response_common_failure = { errors: teams_devices_messages, messages: teams_devices_messages, result: (Record<string, unknown> | null), success: false }
 export type teams_devices_api_response_single = (teams_devices_api_response_common & Partial<{ result: ((Record<string, unknown> | string) | null) }> & Record<string, unknown>)
 export type teams_devices_application_input_request = { operating_system: ("windows" | "linux" | "mac"), path: string, sha256?: string, thumbprint?: string }
 export type teams_devices_auto_connect = number
@@ -5225,7 +5225,7 @@ export type tls_certificates_and_hostnames_certificate_pack = { certificate_auth
 export type tls_certificates_and_hostnames_advanced_certificate_pack_response_single = (tls_certificates_and_hostnames_api_response_single & Partial<{ result: tls_certificates_and_hostnames_certificate_pack }>)
 export type tls_certificates_and_hostnames_advanced_type = "advanced"
 export type tls_certificates_and_hostnames_api_response_collection = (tls_certificates_and_hostnames_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type tls_certificates_and_hostnames_api_response_common_failure = { errors: (tls_certificates_and_hostnames_messages & unknown), messages: (tls_certificates_and_hostnames_messages), result: (Record<string, unknown> | null), success: false }
+export type tls_certificates_and_hostnames_api_response_common_failure = { errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_messages, result: (Record<string, unknown> | null), success: false }
 export type tls_certificates_and_hostnames_service = string
 export type tls_certificates_and_hostnames_status_10 = string
 export type tls_certificates_and_hostnames_associationObject = Partial<{ service: tls_certificates_and_hostnames_service, status: tls_certificates_and_hostnames_status_10 }>
@@ -5314,7 +5314,7 @@ export type tls_certificates_and_hostnames_certificate_response_single_4 = (tls_
 export type tls_certificates_and_hostnames_certificate_response_single_5 = (tls_certificates_and_hostnames_api_response_single & Partial<{ result: (tls_certificates_and_hostnames_certificateObject_3 & Record<string, unknown>) }>)
 export type tls_certificates_and_hostnames_certificate_response_single_post = (tls_certificates_and_hostnames_api_response_single & Partial<{ result: (tls_certificates_and_hostnames_certificateObjectPost & Record<string, unknown>) }>)
 export type tls_certificates_and_hostnames_revoked_at = string
-export type tls_certificates_and_hostnames_certificate_revoke_response = (Partial<{ result: Partial<{ id: tls_certificates_and_hostnames_identifier, revoked_at: tls_certificates_and_hostnames_revoked_at }> }>)
+export type tls_certificates_and_hostnames_certificate_revoke_response = Partial<{ result: Partial<{ id: tls_certificates_and_hostnames_identifier, revoked_at: tls_certificates_and_hostnames_revoked_at }> }>
 export type tls_certificates_and_hostnames_certificate_status = ("initializing" | "authorizing" | "active" | "expired" | "issuing" | "timing_out" | "pending_deployment")
 export type tls_certificates_and_hostnames_common_name = string
 export type tls_certificates_and_hostnames_country = string
@@ -5376,7 +5376,7 @@ export type tls_certificates_and_hostnames_custom_csr_response_single = (tls_cer
 export type tls_certificates_and_hostnames_custom_csr_response_single_2 = (tls_certificates_and_hostnames_api_response_single & Partial<{ result: tls_certificates_and_hostnames_custom_csr_2 }>)
 export type tls_certificates_and_hostnames_custom_hostname_response_messages = Array<string>
 export type tls_certificates_and_hostnames_custom_hostname_api_response_common = { errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_custom_hostname_response_messages, success: true }
-export type tls_certificates_and_hostnames_custom_hostname_api_response_failure = { errors: (tls_certificates_and_hostnames_messages & unknown), messages: tls_certificates_and_hostnames_custom_hostname_response_messages, result: (Record<string, unknown> | null), success: false }
+export type tls_certificates_and_hostnames_custom_hostname_api_response_failure = { errors: tls_certificates_and_hostnames_messages, messages: tls_certificates_and_hostnames_custom_hostname_response_messages, result: (Record<string, unknown> | null), success: false }
 export type tls_certificates_and_hostnames_custom_hostname_quota = { allocated: number, exceeded: boolean, hard_cap: number, used: number }
 export type tls_certificates_and_hostnames_custom_hostname_quota_response = (tls_certificates_and_hostnames_custom_hostname_api_response_common & Partial<{ result: tls_certificates_and_hostnames_custom_hostname_quota }>)
 export type tls_certificates_and_hostnames_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }>
@@ -5440,7 +5440,7 @@ export type tls_certificates_and_hostnames_verification_info = Partial<{ record_
 export type tls_certificates_and_hostnames_verification_status = boolean
 export type tls_certificates_and_hostnames_verification_type = ("cname" | "meta tag")
 export type tls_certificates_and_hostnames_verification = { brand_check?: tls_certificates_and_hostnames_brand_check, cert_pack_uuid?: tls_certificates_and_hostnames_cert_pack_uuid, certificate_status: tls_certificates_and_hostnames_certificate_status, signature?: tls_certificates_and_hostnames_signature_2, validation_method?: tls_certificates_and_hostnames_validation_method_2, verification_info?: tls_certificates_and_hostnames_verification_info, verification_status?: tls_certificates_and_hostnames_verification_status, verification_type?: tls_certificates_and_hostnames_verification_type }
-export type tls_certificates_and_hostnames_ssl_verification_response_collection = (Partial<{ result: Array<tls_certificates_and_hostnames_verification> }>)
+export type tls_certificates_and_hostnames_ssl_verification_response_collection = Partial<{ result: Array<tls_certificates_and_hostnames_verification> }>
 export type tls_certificates_and_hostnames_sslpost = Partial<{ bundle_method: ("ubiquitous" | "optimal" | "force"), certificate_authority: tls_certificates_and_hostnames_certificate_authority, cloudflare_branding: boolean, custom_cert_bundle: tls_certificates_and_hostnames_custom_cert_bundle, custom_certificate: string, custom_csr_id: string, custom_key: string, method: ("http" | "txt" | "email"), settings: tls_certificates_and_hostnames_sslsettings, type: "dv", wildcard: boolean }>
 export type tls_certificates_and_hostnames_validity_period = 90
 export type tls_certificates_and_hostnames_total_tls_settings_response = (tls_certificates_and_hostnames_api_response_single & Partial<{ result: Partial<{ certificate_authority: tls_certificates_and_hostnames_certificate_authority_3, enabled: tls_certificates_and_hostnames_enabled_3, validity_period: tls_certificates_and_hostnames_validity_period }> }>)
@@ -5454,8 +5454,8 @@ export type tunnel_result_info = Partial<{ count: number, page: number, per_page
 export type tunnel_api_response_collection = (tunnel_api_response_common & Partial<{ result: (Array<unknown> | null), result_info: tunnel_result_info }> & Record<string, unknown>)
 export type tunnel_messages_2 = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type tunnel_api_response_common_2 = { errors: tunnel_messages_2, messages: tunnel_messages_2, success: true }
-export type tunnel_api_response_common_failure = { errors: (tunnel_messages & unknown), messages: (tunnel_messages), result: (Record<string, unknown> | null), success: false }
-export type tunnel_api_response_common_failure_2 = { errors: (tunnel_messages_2 & unknown), messages: (tunnel_messages_2), result: (Record<string, unknown> | null), success: false }
+export type tunnel_api_response_common_failure = { errors: tunnel_messages, messages: tunnel_messages, result: (Record<string, unknown> | null), success: false }
+export type tunnel_api_response_common_failure_2 = { errors: tunnel_messages_2, messages: tunnel_messages_2, result: (Record<string, unknown> | null), success: false }
 export type tunnel_api_response_single = tunnel_api_response_common
 export type tunnel_api_response_single_2 = (tunnel_api_response_common_2 & Record<string, unknown>)
 export type tunnel_arch = string
@@ -5472,7 +5472,7 @@ export type tunnel_config_src = ("local" | "cloudflare")
 export type tunnel_client_id = string
 export type tunnel_version = string
 export type tunnel_ip = string
-export type tunnel_schemas_connection = Partial<{ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, is_pending_reconnect: tunnel_is_pending_reconnect, opened_at: string, origin_ip: (tunnel_ip), uuid: tunnel_connection_id }>
+export type tunnel_schemas_connection = Partial<{ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, is_pending_reconnect: tunnel_is_pending_reconnect, opened_at: string, origin_ip: tunnel_ip, uuid: tunnel_connection_id }>
 export type tunnel_connections_deprecated = Array<tunnel_schemas_connection>
 export type tunnel_conns_active_at = string
 export type tunnel_conns_inactive_at = string
@@ -5534,7 +5534,7 @@ export type tunnel_virtual_network_id = string
 export type tunnel_route = Partial<{ comment: tunnel_route_comment, created_at: tunnel_created_at, deleted_at: tunnel_deleted_at, id: tunnel_route_id, network: tunnel_ip_network, tunnel_id: tunnel_tunnel_id, virtual_network_id: tunnel_virtual_network_id }>
 export type tunnel_route_response_single = (tunnel_api_response_common & Partial<{ result: tunnel_route }>)
 export type tunnel_run_at = string
-export type tunnel_schemas_warp_connector_connection = Partial<{ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, opened_at: string, origin_ip: (tunnel_ip) }>
+export type tunnel_schemas_warp_connector_connection = Partial<{ client_id: tunnel_client_id, client_version: tunnel_version, colo_name: tunnel_colo_name, id: tunnel_connection_id, opened_at: string, origin_ip: tunnel_ip }>
 export type tunnel_subnet_capacity = Partial<{ total: number, used: number }>
 export type tunnel_subnet_comment = string
 export type tunnel_subnet_id = string
@@ -5577,7 +5577,7 @@ export type tunnel_warp_connector_response_single = (tunnel_api_response_common 
 export type tunnel_zero_trust_connectivity_settings_response = (tunnel_api_response_common & Partial<{ result: Partial<{ icmp_proxy_enabled: tunnel_icmp_proxy_enabled, offramp_warp_enabled: tunnel_offramp_warp_enabled }> }>)
 export type turnstile_messages = Array<{ code: number, message: string }>
 export type turnstile_api_response_common = { errors: turnstile_messages, messages: turnstile_messages, success: boolean }
-export type turnstile_api_response_common_failure = { errors: (turnstile_messages & unknown), messages: (turnstile_messages), result: (Record<string, unknown> | null), success: boolean }
+export type turnstile_api_response_common_failure = { errors: turnstile_messages, messages: turnstile_messages, result: (Record<string, unknown> | null), success: boolean }
 export type turnstile_bot_fight_mode = boolean
 export type turnstile_clearance_level = ("no_clearance" | "jschallenge" | "managed" | "interactive")
 export type turnstile_created_on = string
@@ -5609,7 +5609,7 @@ export type vectorize_messages = Array<{ code: number, message: string }>
 export type vectorize_api_response_common = { errors: vectorize_messages, messages: vectorize_messages, result: (Record<string, unknown> | Array<unknown> | string), success: true }
 export type vectorize_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type vectorize_api_response_collection = (vectorize_api_response_common & Partial<{ result: (Array<unknown> | null), result_info: vectorize_result_info }> & Record<string, unknown>)
-export type vectorize_api_response_common_failure = { errors: (vectorize_messages & unknown), messages: (vectorize_messages), result: (Record<string, unknown> | null), success: false }
+export type vectorize_api_response_common_failure = { errors: vectorize_messages, messages: vectorize_messages, result: (Record<string, unknown> | null), success: false }
 export type vectorize_api_response_single = (vectorize_api_response_common & Partial<{ result: ((Record<string, unknown> | string) | null) }> & Record<string, unknown>)
 export type vectorize_index_dimensions = number
 export type vectorize_index_metric = ("cosine" | "euclidean" | "dot-product")
@@ -5619,7 +5619,7 @@ export type vectorize_index_preset_configuration = { preset: vectorize_index_pre
 export type vectorize_index_configuration = (vectorize_index_dimension_configuration | vectorize_index_preset_configuration)
 export type vectorize_index_description = string
 export type vectorize_index_name = string
-export type vectorize_create_index_request = { config: (vectorize_index_configuration), description?: vectorize_index_description, name: vectorize_index_name }
+export type vectorize_create_index_request = { config: vectorize_index_configuration, description?: vectorize_index_description, name: vectorize_index_name }
 export type vectorize_create_index_response = Partial<{ config: vectorize_index_dimension_configuration, created_on: string, description: vectorize_index_description, modified_on: string, name: vectorize_index_name }>
 export type vectorize_create_metadata_index_request = { indexType: ("string" | "number" | "boolean"), propertyName: string }
 export type vectorize_mutation_uuid = unknown
@@ -5649,7 +5649,7 @@ export type vectorize_update_index_request = { description: vectorize_index_desc
 export type vuln_scanner_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type vuln_scanner_api_response_common = { errors: vuln_scanner_messages, messages: vuln_scanner_messages, success: true }
 export type vuln_scanner_api_response_collection = (vuln_scanner_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type vuln_scanner_api_response_common_failure = { errors: (vuln_scanner_messages & unknown), messages: (vuln_scanner_messages), result: (Record<string, unknown> | null), success: false }
+export type vuln_scanner_api_response_common_failure = { errors: vuln_scanner_messages, messages: vuln_scanner_messages, result: (Record<string, unknown> | null), success: false }
 export type vuln_scanner_bola_http_status_range = { max: number, min: number }
 export type vuln_scanner_bola_assertion_kind = { parameters: vuln_scanner_bola_http_status_range, type: "http_status_within_range" }
 export type vuln_scanner_bola_body_response_not_found = { kind: "not_found" }
@@ -5662,17 +5662,17 @@ export type vuln_scanner_bola_credential_sets = { attacker: string, owner: strin
 export type vuln_scanner_bola_method = ("GET" | "DELETE" | "PATCH" | "POST" | "PUT")
 export type vuln_scanner_bola_outcome = ("ok" | "fail" | "inconclusive")
 export type vuln_scanner_bola_verdict = ("ok" | "warning" | "inconclusive")
-export type vuln_scanner_bola_report_summary = { verdict: (vuln_scanner_bola_verdict) }
+export type vuln_scanner_bola_report_summary = { verdict: vuln_scanner_bola_verdict }
 export type vuln_scanner_bola_test_error = { description: string, error_code?: (number | null) }
-export type vuln_scanner_bola_test_assertion = { description: string, kind: (vuln_scanner_bola_assertion_kind), observed: (number | null), outcome: (vuln_scanner_bola_outcome) }
-export type vuln_scanner_bola_test_credential_set = { id: string, role: (vuln_scanner_bola_credential_role) }
+export type vuln_scanner_bola_test_assertion = { description: string, kind: vuln_scanner_bola_assertion_kind, observed: (number | null), outcome: vuln_scanner_bola_outcome }
+export type vuln_scanner_bola_test_credential_set = { id: string, role: vuln_scanner_bola_credential_role }
 export type vuln_scanner_bola_variable_capture = { json_path: string, name: string }
-export type vuln_scanner_bola_test_request = { body?: (Record<string, unknown> | null), credential_set: (vuln_scanner_bola_test_credential_set), header_names: Array<string>, method: (vuln_scanner_bola_method), url: string, variable_captures: Array<vuln_scanner_bola_variable_capture> }
-export type vuln_scanner_bola_test_response = { body: (vuln_scanner_bola_body_response), header_names: Array<string>, status: number, status_text?: (string | null) }
+export type vuln_scanner_bola_test_request = { body?: (Record<string, unknown> | null), credential_set: vuln_scanner_bola_test_credential_set, header_names: Array<string>, method: vuln_scanner_bola_method, url: string, variable_captures: Array<vuln_scanner_bola_variable_capture> }
+export type vuln_scanner_bola_test_response = { body: vuln_scanner_bola_body_response, header_names: Array<string>, status: number, status_text?: (string | null) }
 export type vuln_scanner_bola_test_step = { assertions: Array<vuln_scanner_bola_test_assertion>, errors?: Array<vuln_scanner_bola_test_error>, request?: ((vuln_scanner_bola_test_request & (Record<string, unknown> | null)) | null), response?: ((vuln_scanner_bola_test_response & (Record<string, unknown> | null)) | null) }
-export type vuln_scanner_bola_test = { preflight_errors?: Array<vuln_scanner_bola_test_error>, steps: Array<vuln_scanner_bola_test_step>, verdict: (vuln_scanner_bola_verdict) }
-export type vuln_scanner_bola_report_v1 = { summary: (vuln_scanner_bola_report_summary), tests: Array<vuln_scanner_bola_test> }
-export type vuln_scanner_bola_report = { report: (vuln_scanner_bola_report_v1), report_schema_version: "v1" }
+export type vuln_scanner_bola_test = { preflight_errors?: Array<vuln_scanner_bola_test_error>, steps: Array<vuln_scanner_bola_test_step>, verdict: vuln_scanner_bola_verdict }
+export type vuln_scanner_bola_report_v1 = { summary: vuln_scanner_bola_report_summary, tests: Array<vuln_scanner_bola_test> }
+export type vuln_scanner_bola_report = { report: vuln_scanner_bola_report_v1, report_schema_version: "v1" }
 export type vuln_scanner_create_bola_scan_request = { credential_sets: vuln_scanner_bola_credential_sets, open_api: string, scan_type: "bola", target_environment_id: string }
 export type vuln_scanner_credential_location = ("header" | "cookie")
 export type vuln_scanner_create_credential_request = { location: vuln_scanner_credential_location, location_name: string, name: string, value: string }
@@ -5709,21 +5709,21 @@ export type waf_managed_rules_rule_components_schemas_identifier = string
 export type waf_managed_rules_identifier = string
 export type waf_managed_rules_priority = string
 export type waf_managed_rules_base = Partial<{ description: waf_managed_rules_schemas_description, group: Partial<{ id: waf_managed_rules_components_schemas_identifier, name: waf_managed_rules_name }>, id: waf_managed_rules_rule_components_schemas_identifier, package_id: waf_managed_rules_identifier, priority: waf_managed_rules_priority }>
-export type waf_managed_rules_schemas_base = (waf_managed_rules_base)
+export type waf_managed_rules_schemas_base = waf_managed_rules_base
 export type waf_managed_rules_anomaly_rule = (waf_managed_rules_schemas_base & Partial<{ allowed_modes: waf_managed_rules_allowed_modes_anomaly, mode: waf_managed_rules_mode_anomaly }> & Record<string, unknown>)
 export type waf_managed_rules_messages = Array<{ code: number, message: string }>
 export type waf_managed_rules_api_response_common = { errors: waf_managed_rules_messages, messages: waf_managed_rules_messages, success: true }
 export type waf_managed_rules_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type waf_managed_rules_api_response_collection = (waf_managed_rules_api_response_common & Partial<{ result_info: waf_managed_rules_result_info }> & Record<string, unknown>)
-export type waf_managed_rules_api_response_common_failure = { errors: (waf_managed_rules_messages & unknown), messages: (waf_managed_rules_messages), result: (Record<string, unknown> | null), success: false }
+export type waf_managed_rules_api_response_common_failure = { errors: waf_managed_rules_messages, messages: waf_managed_rules_messages, result: (Record<string, unknown> | null), success: false }
 export type waf_managed_rules_api_response_single = (waf_managed_rules_api_response_common & Partial<{ result: ((Record<string, unknown> | null) | (string | null)) }> & Record<string, unknown>)
 export type waf_managed_rules_default_mode = ("disable" | "simulate" | "block" | "challenge")
 export type waf_managed_rules_description = (string | null)
 export type waf_managed_rules_modified_rules_count = number
 export type waf_managed_rules_rules_count = number
 export type waf_managed_rules_group = Partial<{ description: waf_managed_rules_description, id: waf_managed_rules_components_schemas_identifier, modified_rules_count: waf_managed_rules_modified_rules_count, name: waf_managed_rules_name, package_id: waf_managed_rules_identifier, rules_count: waf_managed_rules_rules_count }>
-export type waf_managed_rules_traditional_deny_rule = (waf_managed_rules_base & Partial<{ allowed_modes: waf_managed_rules_allowed_modes_deny_traditional, default_mode: waf_managed_rules_default_mode, mode: waf_managed_rules_mode_deny_traditional }> & unknown)
-export type waf_managed_rules_traditional_allow_rule = (waf_managed_rules_base & Partial<{ allowed_modes: waf_managed_rules_allowed_modes_allow_traditional, mode: waf_managed_rules_mode_allow_traditional }> & unknown)
+export type waf_managed_rules_traditional_deny_rule = (waf_managed_rules_base & Partial<{ allowed_modes: waf_managed_rules_allowed_modes_deny_traditional, default_mode: waf_managed_rules_default_mode, mode: waf_managed_rules_mode_deny_traditional }>)
+export type waf_managed_rules_traditional_allow_rule = (waf_managed_rules_base & Partial<{ allowed_modes: waf_managed_rules_allowed_modes_allow_traditional, mode: waf_managed_rules_mode_allow_traditional }>)
 export type waf_managed_rules_rule = (waf_managed_rules_anomaly_rule | waf_managed_rules_traditional_deny_rule | waf_managed_rules_traditional_allow_rule)
 export type waf_managed_rules_schemas_group = (waf_managed_rules_group & Partial<{ allowed_modes: waf_managed_rules_allowed_modes, mode: waf_managed_rules_mode }> & Record<string, unknown>)
 export type waf_managed_rules_rule_group_response_collection = (waf_managed_rules_api_response_collection & Partial<{ result: Array<waf_managed_rules_schemas_group> }>)
@@ -5736,15 +5736,15 @@ export type waf_product_api_bundle_api_response_common = { errors: waf_product_a
 export type waf_product_api_bundle_api_response_collection = (waf_product_api_bundle_api_response_common & Partial<{ result: (Array<Record<string, unknown>> | null) }> & Record<string, unknown>)
 export type waf_product_api_bundle_api_response_common_2 = { errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: (Record<string, unknown> | Array<Record<string, unknown>> | (string | null)), success: true }
 export type waf_product_api_bundle_api_response_collection_2 = (waf_product_api_bundle_api_response_common_2 & Partial<{ result: (Array<Record<string, unknown>> | null) }> & Record<string, unknown>)
-export type waf_product_api_bundle_api_response_common_failure = { errors: (waf_product_api_bundle_messages & unknown), messages: (waf_product_api_bundle_messages), result: (Record<string, unknown> | null), success: false }
-export type waf_product_api_bundle_api_response_common_failure_2 = { errors: (waf_product_api_bundle_messages & unknown), messages: (waf_product_api_bundle_messages), result: (Record<string, unknown> | null), success: false }
-export type waf_product_api_bundle_api_response_common_failure_3 = { errors: (waf_product_api_bundle_messages & unknown), messages: (waf_product_api_bundle_messages), result: (Record<string, unknown> | null), success: false }
+export type waf_product_api_bundle_api_response_common_failure = { errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: (Record<string, unknown> | null), success: false }
+export type waf_product_api_bundle_api_response_common_failure_2 = { errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: (Record<string, unknown> | null), success: false }
+export type waf_product_api_bundle_api_response_common_failure_3 = { errors: waf_product_api_bundle_messages, messages: waf_product_api_bundle_messages, result: (Record<string, unknown> | null), success: false }
 export type waf_product_api_bundle_api_response_single = (waf_product_api_bundle_api_response_common & Partial<{ result: ((Record<string, unknown> | null) | (string | null)) }> & Record<string, unknown>)
 export type waf_product_api_bundle_api_response_single_2 = (waf_product_api_bundle_api_response_common_2 & Partial<{ result: ((Record<string, unknown> | null) | (string | null)) }> & Record<string, unknown>)
 export type waf_product_api_bundle_identifier = string
-export type waf_product_api_bundle_detection_id = (waf_product_api_bundle_identifier & unknown)
+export type waf_product_api_bundle_detection_id = waf_product_api_bundle_identifier
 export type waf_product_api_bundle_custom_detection = Partial<{ id: waf_product_api_bundle_detection_id, password: string, username: string }>
-export type waf_product_api_bundle_custom_scan_id = (waf_product_api_bundle_identifier)
+export type waf_product_api_bundle_custom_scan_id = waf_product_api_bundle_identifier
 export type waf_product_api_bundle_custom_scan_payload = string
 export type waf_product_api_bundle_custom_scan = Partial<{ id: waf_product_api_bundle_custom_scan_id, payload: waf_product_api_bundle_custom_scan_payload }>
 export type waf_product_api_bundle_custom_topic = { label: string, topic: string }
@@ -5765,7 +5765,7 @@ export type waitingroom_messages = Array<{ code: number, documentation_url?: str
 export type waitingroom_schemas_api_response_common = { errors: waitingroom_messages, messages: waitingroom_messages, success: true }
 export type waitingroom_api_response_collection = (waitingroom_schemas_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
 export type waitingroom_api_response_common = Record<string, unknown>
-export type waitingroom_api_response_common_failure = { errors: (waitingroom_messages & unknown), messages: (waitingroom_messages), result: (Record<string, unknown> | null), success: false }
+export type waitingroom_api_response_common_failure = { errors: waitingroom_messages, messages: waitingroom_messages, result: (Record<string, unknown> | null), success: false }
 export type waitingroom_api_response_single = (waitingroom_api_response_common & Partial<{ result: (Record<string, unknown> | string) }> & Record<string, unknown>)
 export type waitingroom_cookie_attributes = Partial<{ samesite: ("auto" | "lax" | "none" | "strict"), secure: ("auto" | "always" | "never") }>
 export type waitingroom_cookie_suffix = string
@@ -5854,7 +5854,7 @@ export type web3_messages = Array<{ code: number, message: string }>
 export type web3_api_response_common = { errors: web3_messages, messages: web3_messages, result: (Record<string, unknown> | Array<unknown> | string), success: true }
 export type web3_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type web3_api_response_collection = (web3_api_response_common & Partial<{ result: (Array<unknown> | null), result_info: web3_result_info }> & Record<string, unknown>)
-export type web3_api_response_common_failure = { errors: (web3_messages & unknown), messages: (web3_messages), result: (Record<string, unknown> | null), success: false }
+export type web3_api_response_common_failure = { errors: web3_messages, messages: web3_messages, result: (Record<string, unknown> | null), success: false }
 export type web3_api_response_single = (web3_api_response_common & Partial<{ result_info: ((Record<string, unknown> | null) | (string | null)) }> & Record<string, unknown>)
 export type web3_identifier = string
 export type web3_api_response_single_id = (web3_api_response_common & Partial<{ result: ({ id: web3_identifier } | null) }> & Record<string, unknown>)
@@ -5887,16 +5887,16 @@ export type workers_kv_messages = Array<{ code: number, message: string }>
 export type workers_kv_api_response_common = { errors: workers_kv_messages, messages: workers_kv_messages, success: true }
 export type workers_kv_result_info = Partial<{ count: number, page: number, per_page: number, total_count: number }>
 export type workers_kv_api_response_collection = (workers_kv_api_response_common & Partial<{ result_info: workers_kv_result_info }> & Record<string, unknown>)
-export type workers_kv_api_response_common_failure = { errors: (workers_kv_messages & unknown), messages: (workers_kv_messages), result: (Record<string, unknown> | null), success: false }
+export type workers_kv_api_response_common_failure = { errors: workers_kv_messages, messages: workers_kv_messages, result: (Record<string, unknown> | null), success: false }
 export type workers_kv_api_response_common_no_result = (workers_kv_api_response_common & Partial<{ result: (Record<string, unknown> | null) }>)
 export type workers_kv_bulk_get_result = Partial<{ values: Record<string, (string | number | boolean | Record<string, unknown>)> }>
 export type workers_kv_expiration = number
-export type workers_kv_bulk_get_result_with_metadata = Partial<{ values: Record<string, ({ expiration?: workers_kv_expiration, metadata: (workers_kv_any & unknown), value: (workers_kv_any & unknown) } | null)> }>
+export type workers_kv_bulk_get_result_with_metadata = Partial<{ values: Record<string, ({ expiration?: workers_kv_expiration, metadata: workers_kv_any, value: workers_kv_any } | null)> }>
 export type workers_kv_bulk_result = Partial<{ successful_key_count: number, unsuccessful_keys: Array<string> }>
 export type workers_kv_key_name_bulk = string
 export type workers_kv_bulk_delete = Array<workers_kv_key_name_bulk>
 export type workers_kv_expiration_ttl = number
-export type workers_kv_list_metadata = (workers_kv_any & unknown)
+export type workers_kv_list_metadata = workers_kv_any
 export type workers_kv_bulk_write = Array<{ base64?: boolean, expiration?: workers_kv_expiration, expiration_ttl?: workers_kv_expiration_ttl, key: workers_kv_key_name_bulk, metadata?: workers_kv_list_metadata, value: string }>
 export type workers_kv_namespace_title = string
 export type workers_kv_create_rename_namespace_body = { title: workers_kv_namespace_title }
@@ -5905,7 +5905,7 @@ export type workers_kv_cursor_result_info = Partial<{ count: number, cursor: wor
 export type workers_kv_identifier = string
 export type workers_kv_key_name = string
 export type workers_kv_key = { expiration?: number, metadata?: workers_kv_list_metadata, name: workers_kv_key_name }
-export type workers_kv_metadata = (workers_kv_any & unknown)
+export type workers_kv_metadata = workers_kv_any
 export type workers_kv_namespace_identifier = string
 export type workers_kv_namespace = { id: workers_kv_namespace_identifier, supports_url_encoding?: boolean, title: workers_kv_namespace_title }
 export type workers_kv_value = (string | Blob)
@@ -5978,7 +5978,7 @@ export type workers_compatibility_flags = Array<workers_compatibility_flag>
 export type workers_container_item = { class_name: string }
 export type workers_containers = Array<workers_container_item>
 export type workers_entrypoint_cache_options = { enabled: boolean }
-export type workers_worker_export = { cache?: (workers_entrypoint_cache_options), state?: "created", type: "worker" }
+export type workers_worker_export = { cache?: workers_entrypoint_cache_options, state?: "created", type: "worker" }
 export type workers_export_storage = ("sqlite" | "legacy-kv")
 export type workers_durable_object_export = { container?: string, state?: "created", storage: workers_export_storage, type: "durable-object" }
 export type workers_durable_object_deleted_export = { state: "deleted", type: "durable-object" }
@@ -6001,13 +6001,13 @@ export type workers_single_step_migrations = (workers_migration_tag_conditions &
 export type workers_multiple_step_migrations = (workers_migration_tag_conditions & Partial<{ steps: Array<workers_migration_step> }>)
 export type workers_placement_target = ({ region: string } | { hostname: string } | { host: string })
 export type workers_placement_info_no_status = ({ mode: "smart" } | { region: string } | { hostname: string } | { host: string } | { mode: "targeted", region: string } | { hostname: string, mode: "targeted" } | { host: string, mode: "targeted" } | { mode: "targeted", target: Array<workers_placement_target> })
-export type workers_Version = { annotations?: Partial<{ "workers/message": string, "workers/tag": string, "workers/triggered_by": string }>, assets?: Partial<{ config: Partial<{ html_handling: ("auto-trailing-slash" | "force-trailing-slash" | "drop-trailing-slash" | "none"), not_found_handling: ("none" | "404-page" | "single-page-application"), run_worker_first: (Array<string> | boolean) }>, jwt: string }>, bindings?: workers_bindings, cache_options?: workers_cache_options, compatibility_date?: workers_compatibility_date, compatibility_flags?: workers_compatibility_flags, containers?: workers_containers, created_on: string, exports?: (workers_exports_config_map), exports_reconciliation?: (workers_exports_reconciliation_result), id: string, limits?: Partial<{ cpu_ms: number, subrequests: number }>, main_module?: string, migration_tag?: string, migrations?: (workers_single_step_migrations | workers_multiple_step_migrations), modules?: Array<{ content_base64: Blob, content_type: string, name: string }>, number: number, package_dependencies?: Array<{ installedVersion: string, name: string, packageJsonVersion: string }>, placement?: workers_placement_info_no_status, source?: string, startup_time_ms?: number, urls: Array<string>, usage_model?: ("standard" | "bundled" | "unbound") }
+export type workers_Version = { annotations?: Partial<{ "workers/message": string, "workers/tag": string, "workers/triggered_by": string }>, assets?: Partial<{ config: Partial<{ html_handling: ("auto-trailing-slash" | "force-trailing-slash" | "drop-trailing-slash" | "none"), not_found_handling: ("none" | "404-page" | "single-page-application"), run_worker_first: (Array<string> | boolean) }>, jwt: string }>, bindings?: workers_bindings, cache_options?: workers_cache_options, compatibility_date?: workers_compatibility_date, compatibility_flags?: workers_compatibility_flags, containers?: workers_containers, created_on: string, exports?: workers_exports_config_map, exports_reconciliation?: workers_exports_reconciliation_result, id: string, limits?: Partial<{ cpu_ms: number, subrequests: number }>, main_module?: string, migration_tag?: string, migrations?: (workers_single_step_migrations | workers_multiple_step_migrations), modules?: Array<{ content_base64: Blob, content_type: string, name: string }>, number: number, package_dependencies?: Array<{ installedVersion: string, name: string, packageJsonVersion: string }>, placement?: workers_placement_info_no_status, source?: string, startup_time_ms?: number, urls: Array<string>, usage_model?: ("standard" | "bundled" | "unbound") }
 export type workers_Worker = { created_on: string, deployed_on?: (string | null), id: string, logpush: boolean, name: string, observability: Partial<{ enabled: boolean, head_sampling_rate: number, logs: Partial<{ destinations: Array<string>, enabled: boolean, head_sampling_rate: number, invocation_logs: boolean, persist: boolean }>, traces: Partial<{ destinations: Array<string>, enabled: boolean, head_sampling_rate: number, persist: boolean, propagation_policy: ("authenticated" | "accept") }> }>, references: { dispatch_namespace_outbounds: Array<{ namespace_id: string, namespace_name: string, worker_id: string, worker_name: string }>, domains: Array<{ certificate_id: string, hostname: string, id: string, zone_id: string, zone_name: string }>, durable_objects: Array<{ namespace_id: string, namespace_name: string, worker_id: string, worker_name: string }>, queues: Array<{ queue_consumer_id: string, queue_id: string, queue_name: string }>, workers: Array<{ id: string, name: string }> }, subdomain: Partial<{ enabled: boolean, previews_enabled: boolean }>, tags: Array<string>, tail_consumers: Array<{ name: string }>, updated_on: string }
 export type workers_account_settings = Partial<{ default_usage_model: string, green_compute: boolean }>
 export type workers_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type workers_api_response_common = { errors: workers_messages, messages: workers_messages, success: true }
 export type workers_api_response_collection = (workers_api_response_common & Partial<{ result_info: Partial<{ count: number, page: number, per_page: number, total_count: number, total_pages: number }> }> & Record<string, unknown>)
-export type workers_api_response_common_failure = { errors: (workers_messages & unknown), messages: (workers_messages), result: (Record<string, unknown> | null), success: false }
+export type workers_api_response_common_failure = { errors: workers_messages, messages: workers_messages, result: (Record<string, unknown> | null), success: false }
 export type workers_api_response_null_result = (workers_api_response_common & Partial<{ result: (Record<string, unknown> | null) }>)
 export type workers_api_response_single = (workers_api_response_common & Record<string, unknown>)
 export type workers_assets = Partial<{ config: Partial<{ _headers: string, _redirects: string, html_handling: ("auto-trailing-slash" | "force-trailing-slash" | "drop-trailing-slash" | "none"), not_found_handling: ("none" | "404-page" | "single-page-application"), run_worker_first: (Array<string> | boolean), serve_directly: boolean }>, jwt: string }>
@@ -6035,7 +6035,7 @@ export type workers_placement_info = (({ mode: "smart" } | { region: string } | 
 export type workers_tail_consumers_script = { environment?: string, namespace?: string, service: string }
 export type workers_tail_consumers = (Array<workers_tail_consumers_script> | null)
 export type workers_usage_model = ("standard" | "bundled" | "unbound")
-export type workers_multipart_script = { files?: Array<Blob>, metadata: Partial<{ assets: workers_assets, bindings: workers_bindings, body_part: string, cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, exports: (workers_exports_config_map & unknown), exports_reconciliation: (workers_exports_reconciliation_result), keep_assets: boolean, keep_bindings: Array<string>, limits: workers_limits, logpush: workers_logpush, main_module: string, migrations: (workers_single_step_migrations | workers_multiple_step_migrations), observability: workers_observability, package_dependencies: Array<{ installedVersion: string, name: string, packageJsonVersion: string }>, placement: workers_placement_info, tags: Array<string>, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }> }
+export type workers_multipart_script = { files?: Array<Blob>, metadata: Partial<{ assets: workers_assets, bindings: workers_bindings, body_part: string, cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, keep_assets: boolean, keep_bindings: Array<string>, limits: workers_limits, logpush: workers_logpush, main_module: string, migrations: (workers_single_step_migrations | workers_multiple_step_migrations), observability: workers_observability, package_dependencies: Array<{ installedVersion: string, name: string, packageJsonVersion: string }>, placement: workers_placement_info, tags: Array<string>, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }> }
 export type workers_namespace = Partial<{ class: string, id: string, name: string, script: string, use_sqlite: boolean }>
 export type workers_uuid = string
 export type workers_script_count = number
@@ -6044,10 +6044,10 @@ export type workers_namespace_response = Partial<{ created_by: workers_identifie
 export type workers_namespace_list_response = (workers_api_response_common & Partial<{ result: Array<workers_namespace_response> }>)
 export type workers_tag = string
 export type workers_tags = (Array<workers_tag> | null)
-export type workers_namespace_script_and_version_settings_item = Partial<{ bindings: (workers_bindings & Array<workers_binding_item>), cache_options: workers_cache_options, compatibility_date: (workers_compatibility_date & string), compatibility_flags: (workers_compatibility_flags & Array<string>), exports: (workers_exports_config_map & unknown), exports_reconciliation: (workers_exports_reconciliation_result), limits: workers_limits, logpush: workers_logpush, migrations: (workers_single_step_migrations | workers_multiple_step_migrations), observability: workers_observability, placement: (workers_placement_info_no_status & Record<string, unknown>), tags: (workers_tags & Array<string>), tail_consumers: (workers_tail_consumers & Array<workers_tail_consumers_script>), usage_model: workers_usage_model }>
+export type workers_namespace_script_and_version_settings_item = Partial<{ bindings: (workers_bindings & Array<workers_binding_item>), cache_options: workers_cache_options, compatibility_date: (workers_compatibility_date & string), compatibility_flags: (workers_compatibility_flags & Array<string>), exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, limits: workers_limits, logpush: workers_logpush, migrations: (workers_single_step_migrations | workers_multiple_step_migrations), observability: workers_observability, placement: (workers_placement_info_no_status & Record<string, unknown>), tags: (workers_tags & Array<string>), tail_consumers: (workers_tail_consumers & Array<workers_tail_consumers_script>), usage_model: workers_usage_model }>
 export type workers_namespace_script_delete_bulk_response = Partial<{ deleted: Array<Partial<{ id: workers_uuid }>>, deleted_count: number, has_more: boolean }>
 export type workers_placement_mode = ("smart" | "targeted")
-export type workers_script_response = Partial<{ cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, created_on: workers_created_on, etag: workers_etag, exports: (workers_exports_config_map & unknown), handlers: Array<string>, has_assets: workers_has_assets, has_modules: workers_has_modules, id: string, last_deployed_from: string, logpush: workers_logpush, migration_tag: string, modified_on: workers_modified_on, named_handlers: Array<Partial<{ handlers: Array<string>, name: string }>>, observability: workers_observability, placement: workers_placement_info, placement_mode: (workers_placement_mode & string), placement_status: (workers_placement_status & string), tag: string, tags: workers_tags, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }>
+export type workers_script_response = Partial<{ cache_options: workers_cache_options, compatibility_date: workers_compatibility_date, compatibility_flags: workers_compatibility_flags, created_on: workers_created_on, etag: workers_etag, exports: workers_exports_config_map, handlers: Array<string>, has_assets: workers_has_assets, has_modules: workers_has_modules, id: string, last_deployed_from: string, logpush: workers_logpush, migration_tag: string, modified_on: workers_modified_on, named_handlers: Array<Partial<{ handlers: Array<string>, name: string }>>, observability: workers_observability, placement: workers_placement_info, placement_mode: (workers_placement_mode & string), placement_status: (workers_placement_status & string), tag: string, tags: workers_tags, tail_consumers: workers_tail_consumers, usage_model: workers_usage_model }>
 export type workers_namespace_script_response = Partial<{ created_on: workers_created_on, dispatch_namespace: workers_dispatch_namespace_name, modified_on: workers_modified_on, script: workers_script_response }>
 export type workers_namespace_script_response_single = (workers_api_response_common & { result: workers_namespace_script_response })
 export type workers_namespace_single_response = (workers_api_response_common & Partial<{ result: workers_namespace_response }>)
@@ -6055,10 +6055,10 @@ export type workers_object = Partial<{ hasStoredData: boolean, id: string }>
 export type workers_placement_region = { id: string }
 export type workers_placement_provider = { id: string, regions: Array<workers_placement_region> }
 export type workers_placement_regions_response = { providers: Array<workers_placement_provider> }
-export type workers_route = { id: (workers_identifier & unknown), pattern: string, script?: string }
+export type workers_route = { id: workers_identifier, pattern: string, script?: string }
 export type workers_schedule = { created_on?: string, cron: string, modified_on?: string }
 export type workers_schemas_id = string
-export type workers_script_and_version_settings_item = Partial<{ annotations: Partial<{ "workers/message": string, "workers/tag": string, "workers/triggered_by": string }>, bindings: (workers_bindings & Array<workers_binding_item>), cache_options: workers_cache_options, compatibility_date: (workers_compatibility_date & string), compatibility_flags: (workers_compatibility_flags & Array<string>), exports: (workers_exports_config_map & unknown), exports_reconciliation: (workers_exports_reconciliation_result), limits: workers_limits, logpush: workers_logpush, migrations: (workers_single_step_migrations | workers_multiple_step_migrations), observability: workers_observability, placement: (workers_placement_info_no_status & Record<string, unknown>), tags: (workers_tags & Array<string>), tail_consumers: (workers_tail_consumers & Array<workers_tail_consumers_script>), usage_model: workers_usage_model }>
+export type workers_script_and_version_settings_item = Partial<{ annotations: Partial<{ "workers/message": string, "workers/tag": string, "workers/triggered_by": string }>, bindings: (workers_bindings & Array<workers_binding_item>), cache_options: workers_cache_options, compatibility_date: (workers_compatibility_date & string), compatibility_flags: (workers_compatibility_flags & Array<string>), exports: workers_exports_config_map, exports_reconciliation: workers_exports_reconciliation_result, limits: workers_limits, logpush: workers_logpush, migrations: (workers_single_step_migrations | workers_multiple_step_migrations), observability: workers_observability, placement: (workers_placement_info_no_status & Record<string, unknown>), tags: (workers_tags & Array<string>), tail_consumers: (workers_tail_consumers & Array<workers_tail_consumers_script>), usage_model: workers_usage_model }>
 export type workers_script_and_version_settings_response = (workers_api_response_common & { result: workers_script_and_version_settings_item })
 export type workers_script_response_collection = (workers_api_response_common & { result: Array<(workers_script_response & Partial<{ routes: (Array<workers_route> | null) }>)> })
 export type workers_script_response_single = (workers_api_response_single & { result: workers_script_response })
@@ -6076,20 +6076,20 @@ export type workers_secret_name_url_encoded = boolean
 export type workers_service = string
 export type workers_subdomain = { enabled: boolean, previews_enabled: boolean }
 export type workers_subdomain_2 = { subdomain: string }
-export type workers_tail = { expires_at: string, id: (workers_identifier & unknown), url: string }
+export type workers_tail = { expires_at: string, id: workers_identifier, url: string }
 export type workers_upload_assets_response = (workers_api_response_common & Partial<{ result: Record<string, unknown> }>)
 export type workers_user_limits = (Partial<{ cpu_ms: (number | null) }> | null)
 export type workers_usage_model_response = (workers_api_response_common & { result: Partial<{ usage_model: workers_usage_model, user_limits: workers_user_limits }> })
 export type workers_version_item_short = Partial<{ id: string, metadata: Partial<{ author_email: string, author_id: string, created_on: string, hasPreview: boolean, modified_on: string, source: ("unknown" | "api" | "wrangler" | "terraform" | "dash" | "cf_cli" | "dash_template" | "integration" | "quick_editor" | "playground" | "workersci") }>, number: number }>
-export type workers_version_item_full = (workers_version_item_short & { resources: Partial<{ bindings: (workers_bindings & unknown), script: Partial<{ etag: string, handlers: Array<string>, last_deployed_from: string, named_handlers: Array<Partial<{ handlers: Array<string>, name: string }>> }>, script_runtime: Partial<{ compatibility_date: string, compatibility_flags: Array<string>, exports: (workers_exports_config_map & unknown), limits: Partial<{ cpu_ms: number }>, migration_tag: string, usage_model: ("bundled" | "unbound" | "standard") }> }> })
-export type workers_version_item_uploaded = (workers_version_item_full & { exports_reconciliation?: (workers_exports_reconciliation_result), startup_time_ms?: number })
+export type workers_version_item_full = (workers_version_item_short & { resources: Partial<{ bindings: workers_bindings, script: Partial<{ etag: string, handlers: Array<string>, last_deployed_from: string, named_handlers: Array<Partial<{ handlers: Array<string>, name: string }>> }>, script_runtime: Partial<{ compatibility_date: string, compatibility_flags: Array<string>, exports: workers_exports_config_map, limits: Partial<{ cpu_ms: number }>, migration_tag: string, usage_model: ("bundled" | "unbound" | "standard") }> }> })
+export type workers_version_item_uploaded = (workers_version_item_full & { exports_reconciliation?: workers_exports_reconciliation_result, startup_time_ms?: number })
 export type workers_version_identifier = string
 export type workers_versions_list_response = (workers_api_response_common & { result: Partial<{ items: Array<workers_version_item_short> }> })
 export type workers_versions_single_response = (workers_api_response_common & { result: workers_version_item_full })
 export type workers_versions_upload_response = (workers_api_response_common & { result: workers_version_item_uploaded })
 export type zaraz_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type zaraz_api_response_common = { errors: zaraz_messages, messages: zaraz_messages, success: boolean }
-export type zaraz_api_response_common_failure = { errors: (zaraz_messages & unknown), messages: (zaraz_messages), result: (Record<string, unknown> | null), success: false }
+export type zaraz_api_response_common_failure = { errors: zaraz_messages, messages: zaraz_messages, result: (Record<string, unknown> | null), success: false }
 export type zaraz_base_tool = { blockingTriggers: Array<string>, defaultFields: Record<string, (string | boolean)>, defaultPurpose?: string, enabled: boolean, name: string, vendorName?: string, vendorPolicyUrl?: string }
 export type zaraz_base_mc = (zaraz_base_tool & { actions?: Record<string, { actionType: string, blockingTriggers: Array<string>, data: Record<string, unknown>, firingTriggers: Array<string> }>, component: string, neoEvents?: Array<{ actionType: string, blockingTriggers: Array<string>, data: Record<string, unknown>, firingTriggers: Array<string> }>, permissions: Array<string>, settings: Record<string, (string | boolean)> })
 export type zaraz_click_listener_rule = { action: "clickListener", id: string, settings: { selector: string, type: ("xpath" | "css"), waitForTags: number } }
@@ -6198,7 +6198,7 @@ export type zero_trust_gateway_filters = Array<("http" | "dns" | "l4" | "egress"
 export type zero_trust_gateway_fips_settings = (Partial<{ tls: boolean }> | null)
 export type zero_trust_gateway_gateway_account_egress_cidr = { geolocation: Partial<{ city: string, country: string }>, ipv4: string, ipv4_colo_name: string, ipv6_cidr: string }
 export type zero_trust_gateway_gateway_account_egress_cidr_pair_list_response = (zero_trust_gateway_api_response_single & Partial<{ result: Array<zero_trust_gateway_gateway_account_egress_cidr> }>)
-export type zero_trust_gateway_gateway_account_logging_settings = Partial<{ redact_pii: boolean, settings_by_rule_type: Partial<{ dns: (zero_trust_gateway_account_log_options), http: (zero_trust_gateway_account_log_options), l4: (zero_trust_gateway_account_log_options) }> }>
+export type zero_trust_gateway_gateway_account_logging_settings = Partial<{ redact_pii: boolean, settings_by_rule_type: Partial<{ dns: zero_trust_gateway_account_log_options, http: zero_trust_gateway_account_log_options, l4: zero_trust_gateway_account_log_options }> }>
 export type zero_trust_gateway_gateway_account_logging_settings_response = (zero_trust_gateway_api_response_single & Partial<{ result: zero_trust_gateway_gateway_account_logging_settings }>)
 export type zero_trust_gateway_host_selector_settings = (Partial<{ enabled: (boolean | null) }> | null)
 export type zero_trust_gateway_inspection_settings = (Partial<{ mode: ("static" | "dynamic") }> | null)
@@ -6278,12 +6278,12 @@ export type zero_trust_gateway_single_response_7 = (zero_trust_gateway_api_respo
 export type zero_trust_gateway_single_response_with_list_items = (zero_trust_gateway_api_response_single & Partial<{ result: Partial<{ created_at: zero_trust_gateway_read_only_timestamp, description: zero_trust_gateway_description, id: zero_trust_gateway_uuid_2, items: zero_trust_gateway_items, name: zero_trust_gateway_name, type: zero_trust_gateway_type_2, updated_at: zero_trust_gateway_read_only_timestamp }> }> & Record<string, unknown>)
 export type zone_activation_messages = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type zone_activation_api_response_common = { errors: zone_activation_messages, messages: zone_activation_messages, success: true }
-export type zone_activation_api_response_common_failure = { errors: (zone_activation_messages & unknown), messages: (zone_activation_messages), result: (Record<string, unknown> | null), success: false }
+export type zone_activation_api_response_common_failure = { errors: zone_activation_messages, messages: zone_activation_messages, result: (Record<string, unknown> | null), success: false }
 export type zone_activation_api_response_single = (zone_activation_api_response_common & Record<string, unknown>)
 export type zone_activation_identifier = string
 export type zone_analytics_api_messages = Array<{ code: number, message: string }>
 export type zone_analytics_api_api_response_common = { errors: zone_analytics_api_messages, messages: zone_analytics_api_messages, result: (Record<string, unknown> | Array<unknown> | string), success: true }
-export type zone_analytics_api_api_response_common_failure = { errors: (zone_analytics_api_messages & unknown), messages: (zone_analytics_api_messages), result: (Record<string, unknown> | null), success: false }
+export type zone_analytics_api_api_response_common_failure = { errors: zone_analytics_api_messages, messages: zone_analytics_api_messages, result: (Record<string, unknown> | null), success: false }
 export type zone_analytics_api_api_response_single = (zone_analytics_api_api_response_common & Partial<{ result: ((Record<string, unknown> | null) | (string | null)) }> & Record<string, unknown>)
 export type zone_analytics_api_bandwidth = Partial<{ all: number, cached: number, content_type: Record<string, unknown>, country: Record<string, unknown>, ssl: Partial<{ encrypted: number, unencrypted: number }>, ssl_protocols: Partial<{ TLSv1: number, "TLSv1.1": number, "TLSv1.2": number, "TLSv1.3": number, none: number }>, uncached: number }>
 export type zone_analytics_api_bandwidth_by_colo = Partial<{ all: number, cached: number, uncached: number }>
@@ -6352,16 +6352,16 @@ export type zones_advanced_ddos = (zones_base & Partial<{ id: "advanced_ddos", v
 export type zones_always_online_value = ("on" | "off")
 export type zones_always_online = (zones_base & Partial<{ id: "always_online", value: zones_always_online_value }>)
 export type zones_always_use_https_value = ("on" | "off")
-export type zones_always_use_https_2 = (zones_base & Partial<{ id: "always_use_https", value: zones_always_use_https_value }> & unknown)
+export type zones_always_use_https_2 = (zones_base & Partial<{ id: "always_use_https", value: zones_always_use_https_value }>)
 export type zones_messages = Array<{ code: number, message: string }>
 export type zones_api_response_common = { errors: zones_messages, messages: zones_messages, success: boolean }
 export type zones_messages_2 = Array<{ code: number, documentation_url?: string, message: string, source?: Partial<{ pointer: string }> }>
 export type zones_api_response_common_2 = { errors: zones_messages_2, messages: zones_messages_2, success: true }
 export type zones_api_response_common_3 = { errors: zones_messages, messages: zones_messages, result: (Record<string, unknown> | Array<unknown> | string), success: true }
 export type zones_api_response_common_4 = { errors: zones_messages, messages: zones_messages, success: boolean }
-export type zones_api_response_common_failure = { errors: (zones_messages & unknown), messages: (zones_messages), result: (Record<string, unknown> | null), success: boolean }
-export type zones_api_response_common_failure_2 = { errors: (zones_messages_2 & unknown), messages: (zones_messages_2), result: (Record<string, unknown> | null), success: false }
-export type zones_api_response_common_failure_3 = { errors: (zones_messages & unknown), messages: (zones_messages), result: (Record<string, unknown> | null), success: boolean }
+export type zones_api_response_common_failure = { errors: zones_messages, messages: zones_messages, result: (Record<string, unknown> | null), success: boolean }
+export type zones_api_response_common_failure_2 = { errors: zones_messages_2, messages: zones_messages_2, result: (Record<string, unknown> | null), success: false }
+export type zones_api_response_common_failure_3 = { errors: zones_messages, messages: zones_messages, result: (Record<string, unknown> | null), success: boolean }
 export type zones_api_response_single = (zones_api_response_common_2 & Record<string, unknown>)
 export type zones_api_response_single_2 = (zones_api_response_common_3 & Partial<{ result: (Record<string, unknown> | string) }> & Record<string, unknown>)
 export type zones_identifier = string
@@ -6369,7 +6369,7 @@ export type zones_api_response_single_id = (zones_api_response_common & Partial<
 export type zones_identifier_2 = string
 export type zones_api_response_single_id_2 = (zones_api_response_common_2 & Partial<{ result: ({ id: zones_identifier_2 } | null) }> & Record<string, unknown>)
 export type zones_automatic_https_rewrites_value = ("on" | "off")
-export type zones_automatic_https_rewrites_2 = (zones_base & Partial<{ id: "automatic_https_rewrites", value: zones_automatic_https_rewrites_value }> & unknown)
+export type zones_automatic_https_rewrites_2 = (zones_base & Partial<{ id: "automatic_https_rewrites", value: zones_automatic_https_rewrites_value }>)
 export type zones_automatic_platform_optimization = { cache_by_device_type: boolean, cf: boolean, enabled: boolean, hostnames: Array<string>, wordpress: boolean, wp_plugin: boolean }
 export type zones_base_2 = { editable?: (true | false), id: string, modified_on?: (string | null), value: unknown }
 export type zones_brotli_value = ("off" | "on")
@@ -6392,9 +6392,9 @@ export type zones_challenge_ttl = (zones_base & Partial<{ id: "challenge_ttl", v
 export type zones_china_network_enabled_value = ("on" | "off")
 export type zones_china_network_enabled = (zones_base & Partial<{ id: "china_network_enabled", value: zones_china_network_enabled_value }>)
 export type zones_ciphers_value = Array<string>
-export type zones_ciphers = (zones_base & Partial<{ id: "ciphers", value: zones_ciphers_value }> & unknown)
+export type zones_ciphers = (zones_base & Partial<{ id: "ciphers", value: zones_ciphers_value }>)
 export type zones_cname_flattening_value = ("flatten_at_root" | "flatten_all")
-export type zones_cname_flattening = (zones_base & Partial<{ id: "cname_flattening", value: zones_cname_flattening_value }> & unknown)
+export type zones_cname_flattening = (zones_base & Partial<{ id: "cname_flattening", value: zones_cname_flattening_value }>)
 export type zones_content_converter_value = ("off" | "on")
 export type zones_content_converter = (zones_base & Partial<{ id: "content_converter", value: zones_content_converter_value }>)
 export type zones_created_on = string
@@ -6423,26 +6423,26 @@ export type zones_ipv6 = (zones_base & Partial<{ id: "ipv6", value: zones_ipv6_v
 export type zones_max_upload_value = (100 | 125 | 150 | 175 | 200 | 225 | 250 | 275 | 300 | 325 | 350 | 375 | 400 | 425 | 450 | 475 | 500 | 1000)
 export type zones_max_upload = (zones_base & Partial<{ id: "max_upload", value: zones_max_upload_value }>)
 export type zones_min_tls_version_value = ("1.0" | "1.1" | "1.2" | "1.3")
-export type zones_min_tls_version = (zones_base & Partial<{ id: "min_tls_version", value: zones_min_tls_version_value }> & unknown)
+export type zones_min_tls_version = (zones_base & Partial<{ id: "min_tls_version", value: zones_min_tls_version_value }>)
 export type zones_mirage_value = ("on" | "off")
-export type zones_mirage_2 = (zones_base & Partial<{ id: "mirage", value: zones_mirage_value }> & unknown)
+export type zones_mirage_2 = (zones_base & Partial<{ id: "mirage", value: zones_mirage_value }>)
 export type zones_modified_on = string
 export type zones_nel_value = Partial<{ enabled: boolean }>
 export type zones_nel = (zones_base & Partial<{ id: "nel", value: zones_nel_value }>)
 export type zones_opportunistic_encryption_value = ("on" | "off")
 export type zones_opportunistic_encryption_2 = (zones_base & Partial<{ id: "opportunistic_encryption", value: zones_opportunistic_encryption_value }>)
 export type zones_opportunistic_onion_value = ("on" | "off")
-export type zones_opportunistic_onion = (zones_base & Partial<{ id: "opportunistic_onion", value: zones_opportunistic_onion_value }> & unknown)
+export type zones_opportunistic_onion = (zones_base & Partial<{ id: "opportunistic_onion", value: zones_opportunistic_onion_value }>)
 export type zones_orange_to_orange_value = ("on" | "off")
 export type zones_orange_to_orange = (zones_base & Partial<{ id: "orange_to_orange", value: zones_orange_to_orange_value }>)
 export type zones_origin_error_page_pass_thru_value = ("on" | "off")
-export type zones_origin_error_page_pass_thru_2 = (zones_base & Partial<{ id: "origin_error_page_pass_thru", value: zones_origin_error_page_pass_thru_value }> & unknown)
+export type zones_origin_error_page_pass_thru_2 = (zones_base & Partial<{ id: "origin_error_page_pass_thru", value: zones_origin_error_page_pass_thru_value }>)
 export type zones_polish_value = ("off" | "lossless" | "lossy")
 export type zones_polish_2 = (zones_base & Partial<{ id: "polish", value: zones_polish_value }>)
 export type zones_prefetch_preload_value = ("on" | "off")
-export type zones_prefetch_preload = (zones_base & Partial<{ id: "prefetch_preload", value: zones_prefetch_preload_value }> & unknown)
+export type zones_prefetch_preload = (zones_base & Partial<{ id: "prefetch_preload", value: zones_prefetch_preload_value }>)
 export type zones_privacy_pass_value = ("on" | "off")
-export type zones_privacy_pass = (zones_base & Partial<{ id: "privacy_pass", value: zones_privacy_pass_value }> & unknown)
+export type zones_privacy_pass = (zones_base & Partial<{ id: "privacy_pass", value: zones_privacy_pass_value }>)
 export type zones_proxy_read_timeout_value = number
 export type zones_proxy_read_timeout = (zones_base & Partial<{ id: "proxy_read_timeout", value: zones_proxy_read_timeout_value }>)
 export type zones_pseudo_ipv4_value = ("off" | "add_header" | "overwrite_header")
@@ -6452,7 +6452,7 @@ export type zones_redirects_for_ai_training = (zones_base & Partial<{ id: "redir
 export type zones_replace_insecure_js_value = ("on" | "off")
 export type zones_replace_insecure_js = (zones_base & Partial<{ id: "replace_insecure_js", value: zones_replace_insecure_js_value }>)
 export type zones_response_buffering_value = ("on" | "off")
-export type zones_response_buffering_2 = (zones_base & Partial<{ id: "response_buffering", value: zones_response_buffering_value }> & unknown)
+export type zones_response_buffering_2 = (zones_base & Partial<{ id: "response_buffering", value: zones_response_buffering_value }>)
 export type zones_rocket_loader_value = ("on" | "off")
 export type zones_rocket_loader_2 = (zones_base & Partial<{ id: "rocket_loader", value: zones_rocket_loader_value }>)
 export type zones_schemas_automatic_platform_optimization = (zones_base_2 & Partial<{ id: "automatic_platform_optimization", value: zones_automatic_platform_optimization }>)
@@ -6467,19 +6467,19 @@ export type zones_server_side_exclude = (zones_base & Partial<{ id: "server_side
 export type zones_sha1_support_value = ("off" | "on")
 export type zones_sha1_support = (zones_base & Partial<{ id: "sha1_support", value: zones_sha1_support_value }>)
 export type zones_sort_query_string_for_cache_value = ("on" | "off")
-export type zones_sort_query_string_for_cache_2 = (zones_base & Partial<{ id: "sort_query_string_for_cache", value: zones_sort_query_string_for_cache_value }> & unknown)
+export type zones_sort_query_string_for_cache_2 = (zones_base & Partial<{ id: "sort_query_string_for_cache", value: zones_sort_query_string_for_cache_value }>)
 export type zones_ssl_value = ("off" | "flexible" | "full" | "strict")
 export type zones_ssl_2 = (zones_base & Partial<{ id: "ssl", value: zones_ssl_value }>)
 export type zones_ssl_recommender_enabled = boolean
-export type zones_ssl_recommender = (Partial<{ enabled: zones_ssl_recommender_enabled, id: "ssl_recommender" }>)
+export type zones_ssl_recommender = Partial<{ enabled: zones_ssl_recommender_enabled, id: "ssl_recommender" }>
 export type zones_tls_1_2_only_value = ("off" | "on")
 export type zones_tls_1_2_only = (zones_base & Partial<{ id: "tls_1_2_only", value: zones_tls_1_2_only_value }>)
 export type zones_tls_1_3_value = ("on" | "off" | "zrt")
-export type zones_tls_1_3 = (zones_base & Partial<{ id: "tls_1_3", value: zones_tls_1_3_value }> & unknown)
+export type zones_tls_1_3 = (zones_base & Partial<{ id: "tls_1_3", value: zones_tls_1_3_value }>)
 export type zones_tls_client_auth_value = ("on" | "off")
 export type zones_tls_client_auth = (zones_base & Partial<{ id: "tls_client_auth", value: zones_tls_client_auth_value }>)
 export type zones_true_client_ip_header_value = ("on" | "off")
-export type zones_true_client_ip_header_2 = (zones_base & Partial<{ id: "true_client_ip_header", value: zones_true_client_ip_header_value }> & unknown)
+export type zones_true_client_ip_header_2 = (zones_base & Partial<{ id: "true_client_ip_header", value: zones_true_client_ip_header_value }>)
 export type zones_waf_value = ("on" | "off")
 export type zones_waf_2 = (zones_base & Partial<{ id: "waf", value: zones_waf_value }>)
 export type zones_webp_value = ("off" | "on")
@@ -7394,7 +7394,7 @@ export type patch_Access__applications__patch__update__access__application__sett
         
         body:  Schemas.access_app_settings_request,
           }
-      responses: {202: (Schemas.access_single_response_update),
+      responses: {202: Schemas.access_single_response_update,
 "4XX": Schemas.access_api_response_common_failure,
 },
       
@@ -7411,7 +7411,7 @@ export type put_Access__applications__put__update__access__application__settings
         
         body:  Schemas.access_app_settings_request,
           }
-      responses: {202: (Schemas.access_single_response_update),
+      responses: {202: Schemas.access_single_response_update,
 "4XX": Schemas.access_api_response_common_failure,
 },
       
@@ -9036,7 +9036,7 @@ export type get_Ip__address__management__prefixes__download__loa__document = {
         
           }
       responses: {200: unknown,
-"4XX": (unknown & Schemas.addressing_api_response_common_failure),
+"4XX": Schemas.addressing_api_response_common_failure,
 },
       
     }
@@ -9359,7 +9359,7 @@ export type get_Dls__account__regional__hostnames__list__regions = {
         
           }
       responses: {200: (Schemas.dls_api_response_collection & Partial<{ result: Array<Partial<{ key: Schemas.dls_region_key, label: string }>> }>),
-"4XX": (Schemas.dls_api_response_common_failure),
+"4XX": Schemas.dls_api_response_common_failure,
 },
       
     }
@@ -11724,7 +11724,7 @@ export type get_Notification__alert__types__get__alert__types = {
         
           }
       responses: {200: Schemas.aaa_alerts_response_collection,
-"4XX": (Schemas.aaa_api_response_common_failure_3),
+"4XX": Schemas.aaa_api_response_common_failure_3,
 },
       
     }
@@ -11741,7 +11741,7 @@ export type get_Notification__mechanism__eligibility__get__delivery__mechanism__
         
           }
       responses: {200: Schemas.aaa_schemas_response_collection,
-"4XX": (Schemas.aaa_api_response_common_failure_3),
+"4XX": Schemas.aaa_api_response_common_failure_3,
 },
       
     }
@@ -11758,7 +11758,7 @@ export type delete_Notification__destinations__with__pager__duty__delete__pager_
         
           }
       responses: {200: Schemas.aaa_api_response_common_2,
-"4XX": (Schemas.aaa_api_response_common_failure_3),
+"4XX": Schemas.aaa_api_response_common_failure_3,
 },
       
     }
@@ -11775,7 +11775,7 @@ export type get_Notification__destinations__with__pager__duty__list__pager__duty
         
           }
       responses: {200: Schemas.aaa_components_schemas_response_collection,
-"4XX": (Schemas.aaa_api_response_common_failure_3),
+"4XX": Schemas.aaa_api_response_common_failure_3,
 },
       
     }
@@ -11860,7 +11860,7 @@ export type delete_Notification__webhooks__delete__a__webhook = {
         
           }
       responses: {200: Schemas.aaa_api_response_common_2,
-"4XX": (Schemas.aaa_api_response_common_failure_3),
+"4XX": Schemas.aaa_api_response_common_failure_3,
 },
       
     }
@@ -11928,7 +11928,7 @@ export type get_Notification__policies__list__notification__policies = {
         
           }
       responses: {200: Schemas.aaa_policies_components_schemas_response_collection,
-"4XX": (Schemas.aaa_api_response_common_failure_3),
+"4XX": Schemas.aaa_api_response_common_failure_3,
 },
       
     }
@@ -13601,7 +13601,7 @@ export type post_Brapi__post_Crawl = {
         path:  { account_id: string },
         
         
-        body:  (({ actionTimeout?: number, addScriptTag?: Array<Partial<{ content: string, id: string, type: string, url: string }>>, addStyleTag?: Array<Partial<{ content: string, url: string }>>, allowRequestPattern?: Array<string>, allowResourceTypes?: Array<("document" | "stylesheet" | "image" | "media" | "font" | "script" | "texttrack" | "xhr" | "fetch" | "prefetch" | "eventsource" | "websocket" | "manifest" | "signedexchange" | "ping" | "cspviolationreport" | "preflight" | "other")>, authenticate?: { password: string, username: string }, bestAttempt?: boolean, cookies?: Array<{ domain?: string, expires?: number, httpOnly?: boolean, name: string, partitionKey?: string, path?: string, priority?: ("Low" | "Medium" | "High"), sameParty?: boolean, sameSite?: ("Strict" | "Lax" | "None"), secure?: boolean, sourcePort?: number, sourceScheme?: ("Unset" | "NonSecure" | "Secure"), url?: string, value: string }>, crawlPurposes?: Array<("search" | "ai-input" | "ai-train")>, depth?: number, emulateMediaType?: string, formats?: Array<("html" | "markdown" | "json")>, gotoOptions?: Partial<{ referer: string, referrerPolicy: string, timeout: number, waitUntil: ("load" | "domcontentloaded" | "networkidle0" | "networkidle2" | Array<("load" | "domcontentloaded" | "networkidle0" | "networkidle2")>) }>, jsonOptions?: Partial<{ custom_ai: Array<{ authorization?: string, model: string }>, prompt: string, response_format: { json_schema?: (Record<string, (string | number | boolean | Record<string, unknown> | Array<string>)> | null), type: string } }>, limit?: number, maxAge?: number, modifiedSince?: number, options?: Partial<{ excludePatterns: Array<string>, includeExternalLinks: boolean, includePatterns: Array<string>, includeSubdomains: boolean }>, rejectRequestPattern?: Array<string>, rejectResourceTypes?: Array<("document" | "stylesheet" | "image" | "media" | "font" | "script" | "texttrack" | "xhr" | "fetch" | "prefetch" | "eventsource" | "websocket" | "manifest" | "signedexchange" | "ping" | "cspviolationreport" | "preflight" | "other")>, render?: true, setExtraHTTPHeaders?: Record<string, string>, setJavaScriptEnabled?: boolean, source?: ("sitemaps" | "links" | "all"), url: string, viewport?: { deviceScaleFactor?: number, hasTouch?: boolean, height: number, isLandscape?: boolean, isMobile?: boolean, width: number }, waitForSelector?: { hidden?: true, selector: string, timeout?: number, visible?: true }, waitForTimeout?: number } | { crawlPurposes?: Array<("search" | "ai-input" | "ai-train")>, depth?: number, formats?: Array<("html" | "markdown" | "json")>, jsonOptions?: Partial<{ custom_ai: Array<{ authorization?: string, model: string }>, prompt: string, response_format: { json_schema?: (Record<string, (string | number | boolean | Record<string, unknown> | Array<string>)> | null), type: string } }>, limit?: number, maxAge?: number, modifiedSince?: number, options?: Partial<{ excludePatterns: Array<string>, includeExternalLinks: boolean, includePatterns: Array<string>, includeSubdomains: boolean }>, render: false, source?: ("sitemaps" | "links" | "all"), url: string })),
+        body:  ({ actionTimeout?: number, addScriptTag?: Array<Partial<{ content: string, id: string, type: string, url: string }>>, addStyleTag?: Array<Partial<{ content: string, url: string }>>, allowRequestPattern?: Array<string>, allowResourceTypes?: Array<("document" | "stylesheet" | "image" | "media" | "font" | "script" | "texttrack" | "xhr" | "fetch" | "prefetch" | "eventsource" | "websocket" | "manifest" | "signedexchange" | "ping" | "cspviolationreport" | "preflight" | "other")>, authenticate?: { password: string, username: string }, bestAttempt?: boolean, cookies?: Array<{ domain?: string, expires?: number, httpOnly?: boolean, name: string, partitionKey?: string, path?: string, priority?: ("Low" | "Medium" | "High"), sameParty?: boolean, sameSite?: ("Strict" | "Lax" | "None"), secure?: boolean, sourcePort?: number, sourceScheme?: ("Unset" | "NonSecure" | "Secure"), url?: string, value: string }>, crawlPurposes?: Array<("search" | "ai-input" | "ai-train")>, depth?: number, emulateMediaType?: string, formats?: Array<("html" | "markdown" | "json")>, gotoOptions?: Partial<{ referer: string, referrerPolicy: string, timeout: number, waitUntil: ("load" | "domcontentloaded" | "networkidle0" | "networkidle2" | Array<("load" | "domcontentloaded" | "networkidle0" | "networkidle2")>) }>, jsonOptions?: Partial<{ custom_ai: Array<{ authorization?: string, model: string }>, prompt: string, response_format: { json_schema?: (Record<string, (string | number | boolean | Record<string, unknown> | Array<string>)> | null), type: string } }>, limit?: number, maxAge?: number, modifiedSince?: number, options?: Partial<{ excludePatterns: Array<string>, includeExternalLinks: boolean, includePatterns: Array<string>, includeSubdomains: boolean }>, rejectRequestPattern?: Array<string>, rejectResourceTypes?: Array<("document" | "stylesheet" | "image" | "media" | "font" | "script" | "texttrack" | "xhr" | "fetch" | "prefetch" | "eventsource" | "websocket" | "manifest" | "signedexchange" | "ping" | "cspviolationreport" | "preflight" | "other")>, render?: true, setExtraHTTPHeaders?: Record<string, string>, setJavaScriptEnabled?: boolean, source?: ("sitemaps" | "links" | "all"), url: string, viewport?: { deviceScaleFactor?: number, hasTouch?: boolean, height: number, isLandscape?: boolean, isMobile?: boolean, width: number }, waitForSelector?: { hidden?: true, selector: string, timeout?: number, visible?: true }, waitForTimeout?: number } | { crawlPurposes?: Array<("search" | "ai-input" | "ai-train")>, depth?: number, formats?: Array<("html" | "markdown" | "json")>, jsonOptions?: Partial<{ custom_ai: Array<{ authorization?: string, model: string }>, prompt: string, response_format: { json_schema?: (Record<string, (string | number | boolean | Record<string, unknown> | Array<string>)> | null), type: string } }>, limit?: number, maxAge?: number, modifiedSince?: number, options?: Partial<{ excludePatterns: Array<string>, includeExternalLinks: boolean, includePatterns: Array<string>, includeSubdomains: boolean }>, render: false, source?: ("sitemaps" | "links" | "all"), url: string }),
           }
       responses: {200: { errors?: Array<{ code: number, message: string }>, result: string, success: boolean },
 400: { errors?: Array<{ code: number, message: string }>, success: boolean },
@@ -16580,7 +16580,7 @@ export type get_Cloudforce__one__priority__quota = {
         
         
           }
-      responses: {200: (Schemas.cloudforce_one_requests_api_response_common & Partial<{ result: (Schemas.cloudforce_one_requests_quota) }>),
+      responses: {200: (Schemas.cloudforce_one_requests_api_response_common & Partial<{ result: Schemas.cloudforce_one_requests_quota }>),
 "4XX": Schemas.cloudforce_one_requests_api_response_common_failure,
 },
       
@@ -16614,7 +16614,7 @@ export type get_Cloudforce__one__priority__get = {
         
         
           }
-      responses: {200: (Schemas.cloudforce_one_requests_api_response_common & Partial<{ result: (Schemas.cloudforce_one_requests_request_item) }>),
+      responses: {200: (Schemas.cloudforce_one_requests_api_response_common & Partial<{ result: Schemas.cloudforce_one_requests_request_item }>),
 "4XX": Schemas.cloudforce_one_requests_api_response_common_failure,
 },
       
@@ -16631,7 +16631,7 @@ export type put_Cloudforce__one__priority__update = {
         
         body:  Schemas.cloudforce_one_requests_priority_edit,
           }
-      responses: {200: (Schemas.cloudforce_one_requests_api_response_common & Partial<{ result: (Schemas.cloudforce_one_requests_request_item) }>),
+      responses: {200: (Schemas.cloudforce_one_requests_api_response_common & Partial<{ result: Schemas.cloudforce_one_requests_request_item }>),
 "4XX": Schemas.cloudforce_one_requests_api_response_common_failure,
 },
       
@@ -19976,7 +19976,7 @@ export type post_Devices__create__device__settings__policy = {
         path:  { account_id: Schemas.teams_devices_identifier },
         
         
-        body:  { allow_mode_switch?: Schemas.teams_devices_allow_mode_switch, allow_updates?: Schemas.teams_devices_allow_updates, allowed_to_leave?: Schemas.teams_devices_allowed_to_leave, auto_connect?: Schemas.teams_devices_auto_connect, captive_portal?: Schemas.teams_devices_captive_portal, description?: (Schemas.teams_devices_schemas_description & unknown), disable_auto_fallback?: Schemas.teams_devices_disable_auto_fallback, dns_search_suffixes?: Schemas.teams_devices_dns_search_suffixes, enabled?: boolean, exclude?: Schemas.teams_devices_exclude_request, exclude_office_ips?: Schemas.teams_devices_exclude_office_ips, global_acceleration?: Schemas.teams_devices_global_acceleration, include?: Schemas.teams_devices_include_request, lan_allow_minutes?: Schemas.teams_devices_lan_allow_minutes, lan_allow_subnet_size?: Schemas.teams_devices_lan_allow_subnet_size, match: Schemas.teams_devices_schemas_match, name: string, precedence: Schemas.teams_devices_precedence, register_interface_ip_with_dns?: Schemas.teams_devices_register_interface_ip_with_dns, sccm_vpn_boundary_support?: Schemas.teams_devices_sccm_vpn_boundary_support, service_mode_v2?: Schemas.teams_devices_service_mode_v2, support_url?: Schemas.teams_devices_support_url, switch_locked?: Schemas.teams_devices_switch_locked, tunnel_protocol?: Schemas.teams_devices_tunnel_protocol, virtual_networks?: Schemas.teams_devices_virtual_networks },
+        body:  { allow_mode_switch?: Schemas.teams_devices_allow_mode_switch, allow_updates?: Schemas.teams_devices_allow_updates, allowed_to_leave?: Schemas.teams_devices_allowed_to_leave, auto_connect?: Schemas.teams_devices_auto_connect, captive_portal?: Schemas.teams_devices_captive_portal, description?: Schemas.teams_devices_schemas_description, disable_auto_fallback?: Schemas.teams_devices_disable_auto_fallback, dns_search_suffixes?: Schemas.teams_devices_dns_search_suffixes, enabled?: boolean, exclude?: Schemas.teams_devices_exclude_request, exclude_office_ips?: Schemas.teams_devices_exclude_office_ips, global_acceleration?: Schemas.teams_devices_global_acceleration, include?: Schemas.teams_devices_include_request, lan_allow_minutes?: Schemas.teams_devices_lan_allow_minutes, lan_allow_subnet_size?: Schemas.teams_devices_lan_allow_subnet_size, match: Schemas.teams_devices_schemas_match, name: string, precedence: Schemas.teams_devices_precedence, register_interface_ip_with_dns?: Schemas.teams_devices_register_interface_ip_with_dns, sccm_vpn_boundary_support?: Schemas.teams_devices_sccm_vpn_boundary_support, service_mode_v2?: Schemas.teams_devices_service_mode_v2, support_url?: Schemas.teams_devices_support_url, switch_locked?: Schemas.teams_devices_switch_locked, tunnel_protocol?: Schemas.teams_devices_tunnel_protocol, virtual_networks?: Schemas.teams_devices_virtual_networks },
           }
       responses: {200: Schemas.teams_devices_device_settings_response,
 "4XX": (Schemas.teams_devices_device_settings_response & Schemas.teams_devices_api_response_common_failure),
@@ -20533,7 +20533,7 @@ export type get_Devices__resilience__retrieve__global__warp__override = {
         
           }
       responses: {200: Schemas.teams_devices_global_warp_override_response,
-"4XX": (Schemas.teams_devices_api_response_common_failure),
+"4XX": Schemas.teams_devices_api_response_common_failure,
 },
       
     }
@@ -20550,7 +20550,7 @@ export type post_Devices__resilience__set__global__warp__override = {
         body:  Schemas.teams_devices_global_warp_override_request,
           }
       responses: {200: Schemas.teams_devices_global_warp_override_response,
-"4XX": (Schemas.teams_devices_api_response_common_failure),
+"4XX": Schemas.teams_devices_api_response_common_failure,
 },
       
     }
@@ -21163,7 +21163,7 @@ export type get_Diagnostics__endpoint__healthcheck__list = {
         
           }
       responses: {200: Schemas.magic_transit_endpoint_health_check_response_single,
-"4XX": (Schemas.magic_transit_api_response_common_failure),
+"4XX": Schemas.magic_transit_api_response_common_failure,
 },
       
     }
@@ -21180,7 +21180,7 @@ export type post_Diagnostics__endpoint__healthcheck__create = {
         body:  Schemas.magic_transit_endpoint_health_check,
           }
       responses: {201: Schemas.magic_transit_endpoint_health_check_response_single,
-"4XX": (Schemas.magic_transit_api_response_common_failure),
+"4XX": Schemas.magic_transit_api_response_common_failure,
 },
       
     }
@@ -21197,7 +21197,7 @@ export type delete_Diagnostics__endpoint__healthcheck__delete = {
         
           }
       responses: {200: Schemas.magic_transit_api_response_common,
-"4XX": (Schemas.magic_transit_api_response_common_failure),
+"4XX": Schemas.magic_transit_api_response_common_failure,
 },
       
     }
@@ -21231,7 +21231,7 @@ export type put_Diagnostics__endpoint__healthcheck__update = {
         body:  Schemas.magic_transit_endpoint_health_check,
           }
       responses: {200: Schemas.magic_transit_endpoint_health_check_response_single,
-"4XX": (Schemas.magic_transit_api_response_common_failure),
+"4XX": Schemas.magic_transit_api_response_common_failure,
 },
       
     }
@@ -23595,7 +23595,7 @@ export type get_Email_security_list_allow_policies = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: {
-            query?:  Partial<{ page: number, per_page: number, search: string, order: ("pattern" | "created_at"), direction: ("asc" | "desc"), is_exempt_recipient: boolean, is_trusted_sender: boolean, is_acceptable_sender: boolean, verify_sender: boolean, pattern_type: (Schemas.email_security_PatternType), pattern: string }>,
+            query?:  Partial<{ page: number, per_page: number, search: string, order: ("pattern" | "created_at"), direction: ("asc" | "desc"), is_exempt_recipient: boolean, is_trusted_sender: boolean, is_acceptable_sender: boolean, verify_sender: boolean, pattern_type: Schemas.email_security_PatternType, pattern: string }>,
         path:  { account_id: Schemas.email_security_identifier },
         
         
@@ -23633,7 +23633,7 @@ export type post_Email_security_batch_allow_policies = {
         path:  { account_id: Schemas.email_security_identifier },
         
         
-        body:  { deletes: Array<{ id: Schemas.email_security_AllowPolicyId }>, patches: Array<(Schemas.email_security_UpdateAllowPolicy & { id: (Schemas.email_security_AllowPolicyId) })>, posts: Array<Schemas.email_security_CreateAllowPolicy>, puts: Array<(Schemas.email_security_AllowPolicy & { id: (Schemas.email_security_AllowPolicyId) })> },
+        body:  { deletes: Array<{ id: Schemas.email_security_AllowPolicyId }>, patches: Array<(Schemas.email_security_UpdateAllowPolicy & { id: Schemas.email_security_AllowPolicyId })>, posts: Array<Schemas.email_security_CreateAllowPolicy>, puts: Array<(Schemas.email_security_AllowPolicy & { id: Schemas.email_security_AllowPolicyId })> },
           }
       responses: {200: (Schemas.email_security_api_response_single & Partial<{ result: Partial<{ deletes: Array<Schemas.email_security_DeletedAllowPolicy>, patches: Schemas.email_security_AllowPolicyList, posts: Schemas.email_security_AllowPolicyList, puts: Schemas.email_security_AllowPolicyList }> }>),
 "4XX": Schemas.email_security_api_response_common_failure,
@@ -23697,7 +23697,7 @@ export type get_Email_security_list_blocked_senders = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: {
-            query?:  Partial<{ page: number, per_page: number, search: string, order: ("pattern" | "created_at"), direction: ("asc" | "desc"), pattern_type: (Schemas.email_security_PatternType), pattern: string }>,
+            query?:  Partial<{ page: number, per_page: number, search: string, order: ("pattern" | "created_at"), direction: ("asc" | "desc"), pattern_type: Schemas.email_security_PatternType, pattern: string }>,
         path:  { account_id: Schemas.email_security_identifier },
         
         
@@ -23735,7 +23735,7 @@ export type post_Email_security_batch_blocked_senders = {
         path:  { account_id: Schemas.email_security_identifier },
         
         
-        body:  { deletes: Array<{ id: Schemas.email_security_BlockedSenderId }>, patches: Array<(Schemas.email_security_UpdateBlockedSender & { id: (Schemas.email_security_BlockedSenderId) })>, posts: Array<Schemas.email_security_CreateBlockedSender>, puts: Array<(Schemas.email_security_BlockedSender & { id: (Schemas.email_security_BlockedSenderId) })> },
+        body:  { deletes: Array<{ id: Schemas.email_security_BlockedSenderId }>, patches: Array<(Schemas.email_security_UpdateBlockedSender & { id: Schemas.email_security_BlockedSenderId })>, posts: Array<Schemas.email_security_CreateBlockedSender>, puts: Array<(Schemas.email_security_BlockedSender & { id: Schemas.email_security_BlockedSenderId })> },
           }
       responses: {200: (Schemas.email_security_api_response_single & Partial<{ result: Partial<{ deletes: Array<Schemas.email_security_DeletedBlockedSender>, patches: Schemas.email_security_BlockedSenderList, posts: Schemas.email_security_BlockedSenderList, puts: Schemas.email_security_BlockedSenderList }> }>),
 "4XX": Schemas.email_security_api_response_common_failure,
@@ -24161,7 +24161,7 @@ export type post_Email_security_batch_trusted_domains = {
         path:  { account_id: Schemas.email_security_identifier },
         
         
-        body:  { deletes: Array<{ id: Schemas.email_security_TrustedDomainId }>, patches: Array<(Schemas.email_security_UpdateTrustedDomain & { id: (Schemas.email_security_TrustedDomainId) })>, posts: Array<Schemas.email_security_CreateTrustedDomain>, puts: Array<(Schemas.email_security_TrustedDomain & { id: (Schemas.email_security_TrustedDomainId) })> },
+        body:  { deletes: Array<{ id: Schemas.email_security_TrustedDomainId }>, patches: Array<(Schemas.email_security_UpdateTrustedDomain & { id: Schemas.email_security_TrustedDomainId })>, posts: Array<Schemas.email_security_CreateTrustedDomain>, puts: Array<(Schemas.email_security_TrustedDomain & { id: Schemas.email_security_TrustedDomainId })> },
           }
       responses: {200: (Schemas.email_security_api_response_single & Partial<{ result: Partial<{ deletes: Array<Schemas.email_security_DeletedTrustedDomain>, patches: Schemas.email_security_TrustedDomainList, posts: Schemas.email_security_TrustedDomainList, puts: Schemas.email_security_TrustedDomainList }> }>),
 "4XX": Schemas.email_security_api_response_common_failure,
@@ -24263,7 +24263,7 @@ export type post_Email_security_batch_url_ignore_patterns = {
         path:  { account_id: Schemas.email_security_identifier },
         
         
-        body:  { deletes: Array<{ id: Schemas.email_security_UrlIgnorePatternId }>, patches: Array<(Schemas.email_security_UpdateUrlIgnorePattern & { id: (Schemas.email_security_UrlIgnorePatternId) })>, posts: Array<Schemas.email_security_CreateUrlIgnorePattern>, puts: Array<(Schemas.email_security_CreateUrlIgnorePattern & { id: (Schemas.email_security_UrlIgnorePatternId) })> },
+        body:  { deletes: Array<{ id: Schemas.email_security_UrlIgnorePatternId }>, patches: Array<(Schemas.email_security_UpdateUrlIgnorePattern & { id: Schemas.email_security_UrlIgnorePatternId })>, posts: Array<Schemas.email_security_CreateUrlIgnorePattern>, puts: Array<(Schemas.email_security_CreateUrlIgnorePattern & { id: Schemas.email_security_UrlIgnorePatternId })> },
           }
       responses: {200: (Schemas.email_security_api_response_common & { result: { deletes: Array<Schemas.email_security_DeletedUrlIgnorePattern>, patches: Array<Schemas.email_security_UrlIgnorePattern>, posts: Array<Schemas.email_security_UrlIgnorePattern>, puts: Array<Schemas.email_security_UrlIgnorePattern> } }),
 "4XX": Schemas.email_security_api_response_common_failure,
@@ -24951,7 +24951,7 @@ export type post_Ip__access__rules__for__an__account__create__an__ip__access__ru
         path:  { account_id: Schemas.firewall_account_identifier },
         
         
-        body:  { configuration: Schemas.firewall_configuration, mode: Schemas.firewall_schemas_mode, notes?: (Schemas.firewall_notes & unknown) },
+        body:  { configuration: Schemas.firewall_configuration, mode: Schemas.firewall_schemas_mode, notes?: Schemas.firewall_notes },
           }
       responses: {200: Schemas.firewall_response_single,
 "4XX": (Schemas.firewall_response_single & Schemas.firewall_api_response_common_failure),
@@ -26407,7 +26407,7 @@ export type get_Account__resource__group__list = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: {
-            query?:  Partial<{ id: (Schemas.iam_resource_group_identifier), name: string }>,
+            query?:  Partial<{ id: Schemas.iam_resource_group_identifier, name: string }>,
         path:  { account_id: Schemas.iam_account_identifier },
         
         
@@ -27207,7 +27207,7 @@ export type get_Infra__targets__list = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: {
-            query?:  Partial<{ hostname: (string | null), hostname_contains: (string | null), virtual_network_id: (string | null), ip_v4: (string | null), ip_v6: (string | null), created_before: (string | null), created_after: (string | null), modified_before: (string | null), modified_after: (string | null), ips: Array<string>, target_ids: Array<string>, ip_like: (string | null), ipv4_start: (string | null), ipv4_end: (string | null), ipv6_start: (string | null), ipv6_end: (string | null), page: number, per_page: number, order: ("hostname" | "created_at"), direction: (Schemas.infra_SortingDirection) }>,
+            query?:  Partial<{ hostname: (string | null), hostname_contains: (string | null), virtual_network_id: (string | null), ip_v4: (string | null), ip_v6: (string | null), created_before: (string | null), created_after: (string | null), modified_before: (string | null), modified_after: (string | null), ips: Array<string>, target_ids: Array<string>, ip_like: (string | null), ipv4_start: (string | null), ipv4_end: (string | null), ipv6_start: (string | null), ipv6_end: (string | null), page: number, per_page: number, order: ("hostname" | "created_at"), direction: Schemas.infra_SortingDirection }>,
         path:  { account_id: Schemas.infra_AccountTag },
         
         
@@ -27588,7 +27588,7 @@ export type get_Custom__indicator__feeds__get__indicator__feed__data = {
         
           }
       responses: {200: unknown,
-"4XX": (Schemas.custom_indicator_feeds_api_response_common_failure),
+"4XX": Schemas.custom_indicator_feeds_api_response_common_failure,
 },
       
     }
@@ -27605,7 +27605,7 @@ export type get_Custom__indicator__feeds__download__indicator__feed__data = {
         
           }
       responses: {200: Schemas.custom_indicator_feeds_update_feed_response,
-"4XX": (Schemas.custom_indicator_feeds_api_response_common_failure),
+"4XX": Schemas.custom_indicator_feeds_api_response_common_failure,
 },
       
     }
@@ -27622,8 +27622,8 @@ export type put_Custom__indicator__feeds__update__indicator__feed__data = {
         body?:  Partial<{ source: string }>,
           }
       responses: {200: Schemas.custom_indicator_feeds_update_feed_response,
-413: (Schemas.custom_indicator_feeds_api_response_common_failure),
-"4XX": (Schemas.custom_indicator_feeds_api_response_common_failure),
+413: Schemas.custom_indicator_feeds_api_response_common_failure,
+"4XX": Schemas.custom_indicator_feeds_api_response_common_failure,
 },
       
     }
@@ -28000,7 +28000,7 @@ export type post_Account__load__balancer__monitors__create__monitor = {
         path:  { account_id: Schemas.load_balancing_components_schemas_identifier },
         
         
-        body:  (Schemas.load_balancing_monitor_editable),
+        body:  Schemas.load_balancing_monitor_editable,
           }
       responses: {200: Schemas.load_balancing_monitor_response_single,
 "4XX": (Schemas.load_balancing_monitor_response_single & Schemas.load_balancing_api_response_common_failure),
@@ -28051,7 +28051,7 @@ export type patch_Account__load__balancer__monitors__patch__monitor = {
         path:  { monitor_id: Schemas.load_balancing_identifier, account_id: Schemas.load_balancing_components_schemas_identifier },
         
         
-        body:  (Schemas.load_balancing_monitor_editable),
+        body:  Schemas.load_balancing_monitor_editable,
           }
       responses: {200: Schemas.load_balancing_monitor_response_single,
 "4XX": (Schemas.load_balancing_monitor_response_single & Schemas.load_balancing_api_response_common_failure),
@@ -28068,7 +28068,7 @@ export type put_Account__load__balancer__monitors__update__monitor = {
         path:  { monitor_id: Schemas.load_balancing_identifier, account_id: Schemas.load_balancing_components_schemas_identifier },
         
         
-        body:  (Schemas.load_balancing_monitor_editable),
+        body:  Schemas.load_balancing_monitor_editable,
           }
       responses: {200: Schemas.load_balancing_monitor_response_single,
 "4XX": (Schemas.load_balancing_monitor_response_single & Schemas.load_balancing_api_response_common_failure),
@@ -28085,7 +28085,7 @@ export type post_Account__load__balancer__monitors__preview__monitor = {
         path:  { monitor_id: Schemas.load_balancing_identifier, account_id: Schemas.load_balancing_components_schemas_identifier },
         
         
-        body:  (Schemas.load_balancing_monitor_editable),
+        body:  Schemas.load_balancing_monitor_editable,
           }
       responses: {200: Schemas.load_balancing_preview_response,
 "4XX": (Schemas.load_balancing_preview_response & Schemas.load_balancing_api_response_common_failure),
@@ -28255,7 +28255,7 @@ export type post_Account__load__balancer__pools__preview__pool = {
         path:  { pool_id: Schemas.load_balancing_schemas_identifier, account_id: Schemas.load_balancing_components_schemas_identifier },
         
         
-        body:  (Schemas.load_balancing_monitor_editable),
+        body:  Schemas.load_balancing_monitor_editable,
           }
       responses: {200: Schemas.load_balancing_preview_response,
 "4XX": (Schemas.load_balancing_preview_response & Schemas.load_balancing_api_response_common_failure),
@@ -28408,7 +28408,7 @@ export type patch_Account__load__balancers__patch__account__load__balancer = {
         path:  { account_id: Schemas.load_balancing_components_schemas_identifier, load_balancer_id: Schemas.load_balancing_load_balancer_components_schemas_identifier },
         
         
-        body:  (Schemas.load_balancing_load_balancer_editable),
+        body:  Schemas.load_balancing_load_balancer_editable,
           }
       responses: {200: Schemas.load_balancing_load_balancer_components_schemas_single_response,
 "4XX": (Schemas.load_balancing_load_balancer_components_schemas_single_response & Schemas.load_balancing_api_response_common_failure),
@@ -28445,7 +28445,7 @@ export type get_Get__accounts__account_id__logpush__datasets__dataset_id__fields
         
           }
       responses: {200: Schemas.logpush_logpush_field_response_collection,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -28462,7 +28462,7 @@ export type get_Get__accounts__account_id__logpush__datasets__dataset_id__jobs =
         
           }
       responses: {200: Schemas.logpush_logpush_job_response_collection,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -28479,7 +28479,7 @@ export type get_Get__accounts__account_id__logpush__jobs = {
         
           }
       responses: {200: Schemas.logpush_logpush_job_response_collection,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -28496,7 +28496,7 @@ export type post_Post__accounts__account_id__logpush__jobs = {
         body:  { dataset?: Schemas.logpush_dataset, destination_conf: Schemas.logpush_destination_conf, enabled?: Schemas.logpush_enabled, filter?: Schemas.logpush_filter, frequency?: Schemas.logpush_frequency, kind?: Schemas.logpush_kind, logpull_options?: Schemas.logpush_logpull_options, max_upload_bytes?: Schemas.logpush_max_upload_bytes, max_upload_interval_seconds?: Schemas.logpush_max_upload_interval_seconds, max_upload_records?: Schemas.logpush_max_upload_records, name?: Schemas.logpush_name, output_options?: Schemas.logpush_output_options, ownership_challenge?: Schemas.logpush_ownership_challenge },
           }
       responses: {200: Schemas.logpush_logpush_job_response_single,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -28513,7 +28513,7 @@ export type delete_Delete__accounts__account_id__logpush__jobs__job_id = {
         body:  unknown,
           }
       responses: {200: (Schemas.logpush_api_response_common & Partial<{ result: Partial<{ id: Schemas.logpush_id }> }>),
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -28530,7 +28530,7 @@ export type get_Get__accounts__account_id__logpush__jobs__job_id = {
         
           }
       responses: {200: Schemas.logpush_logpush_job_response_single,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -28547,7 +28547,7 @@ export type put_Put__accounts__account_id__logpush__jobs__job_id = {
         body?:  Partial<{ destination_conf: Schemas.logpush_destination_conf, enabled: Schemas.logpush_enabled, filter: Schemas.logpush_filter, frequency: Schemas.logpush_frequency, kind: Schemas.logpush_kind, logpull_options: Schemas.logpush_logpull_options, max_upload_bytes: Schemas.logpush_max_upload_bytes, max_upload_interval_seconds: Schemas.logpush_max_upload_interval_seconds, max_upload_records: Schemas.logpush_max_upload_records, name: Schemas.logpush_name, output_options: Schemas.logpush_output_options, ownership_challenge: Schemas.logpush_ownership_challenge }>,
           }
       responses: {200: Schemas.logpush_logpush_job_response_single,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -28564,7 +28564,7 @@ export type post_Post__accounts__account_id__logpush__ownership = {
         body:  { destination_conf: Schemas.logpush_destination_conf },
           }
       responses: {200: Schemas.logpush_get_ownership_response,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -28581,7 +28581,7 @@ export type post_Post__accounts__account_id__logpush__ownership__validate = {
         body:  { destination_conf: Schemas.logpush_destination_conf, ownership_challenge: Schemas.logpush_ownership_challenge },
           }
       responses: {200: Schemas.logpush_validate_ownership_response,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -28598,7 +28598,7 @@ export type post_Delete__accounts__account_id__logpush__validate__destination = 
         body:  { destination_conf: Schemas.logpush_destination_conf },
           }
       responses: {200: Schemas.logpush_validate_response,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -28615,7 +28615,7 @@ export type post_Delete__accounts__account_id__logpush__validate__destination__e
         body:  { destination_conf: Schemas.logpush_destination_conf },
           }
       responses: {200: Schemas.logpush_destination_exists_response,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -28632,7 +28632,7 @@ export type post_Post__accounts__account_id__logpush__validate__origin = {
         body:  { logpull_options: Schemas.logpush_logpull_options },
           }
       responses: {200: Schemas.logpush_validate_response,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -28701,7 +28701,7 @@ export type delete_Delete__accounts__account_id__logs__control__cmb__config = {
         body:  unknown,
           }
       responses: {200: (Schemas.logcontrol_api_response_common & Partial<{ result: (Record<string, unknown> | null) }>),
-"4XX": (Schemas.logcontrol_api_response_common_failure),
+"4XX": Schemas.logcontrol_api_response_common_failure,
 },
       
     }
@@ -28718,7 +28718,7 @@ export type get_Get__accounts__account_id__logs__control__cmb__config = {
         
           }
       responses: {200: Schemas.logcontrol_cmb_config_response_single,
-"4XX": (Schemas.logcontrol_api_response_common_failure),
+"4XX": Schemas.logcontrol_api_response_common_failure,
 },
       
     }
@@ -28735,7 +28735,7 @@ export type post_Post__accounts__account_id__logs__control__cmb__config = {
         body:  Schemas.logcontrol_cmb_config,
           }
       responses: {200: Schemas.logcontrol_cmb_config_response_single,
-"4XX": (Schemas.logcontrol_api_response_common_failure),
+"4XX": Schemas.logcontrol_api_response_common_failure,
 },
       
     }
@@ -33099,7 +33099,7 @@ export type post_Pages__project__create__project = {
         path:  { account_id: Schemas.pages_identifier },
         
         
-        body:  { build_config?: Partial<{ build_caching: boolean, build_command: string, destination_dir: string, root_dir: string, web_analytics_tag: (string | null), web_analytics_token: (string | null) }>, deployment_configs?: Partial<{ preview: (Schemas.pages_deployment_config_values_request), production: (Schemas.pages_deployment_config_values_request) }>, name: string, production_branch: string, source?: { config: Partial<{ deployments_enabled: boolean, owner: string, owner_id: string, path_excludes: Array<string>, path_includes: Array<string>, pr_comments_enabled: boolean, preview_branch_excludes: Array<string>, preview_branch_includes: Array<string>, preview_deployment_setting: ("all" | "none" | "custom"), production_branch: string, production_deployments_enabled: boolean, repo_id: string, repo_name: string }>, type: ("github" | "gitlab") } },
+        body:  { build_config?: Partial<{ build_caching: boolean, build_command: string, destination_dir: string, root_dir: string, web_analytics_tag: (string | null), web_analytics_token: (string | null) }>, deployment_configs?: Partial<{ preview: Schemas.pages_deployment_config_values_request, production: Schemas.pages_deployment_config_values_request }>, name: string, production_branch: string, source?: { config: Partial<{ deployments_enabled: boolean, owner: string, owner_id: string, path_excludes: Array<string>, path_includes: Array<string>, pr_comments_enabled: boolean, preview_branch_excludes: Array<string>, preview_branch_includes: Array<string>, preview_deployment_setting: ("all" | "none" | "custom"), production_branch: string, production_deployments_enabled: boolean, repo_id: string, repo_name: string }>, type: ("github" | "gitlab") } },
           }
       responses: {200: (Schemas.pages_api_response_common & { result: Schemas.pages_project }),
 "4XX": Schemas.pages_api_response_common_failure,
@@ -33150,7 +33150,7 @@ export type patch_Pages__project__update__project = {
         path:  { project_name: Schemas.pages_project_name, account_id: Schemas.pages_identifier },
         
         
-        body?:  Partial<{ build_config: Partial<{ build_caching: boolean, build_command: string, destination_dir: string, root_dir: string, web_analytics_tag: (string | null), web_analytics_token: (string | null) }>, deployment_configs: Partial<{ preview: (Schemas.pages_deployment_config_values_request), production: (Schemas.pages_deployment_config_values_request) }>, name: string, production_branch: string, source: { config: Partial<{ deployments_enabled: boolean, owner: string, owner_id: string, path_excludes: Array<string>, path_includes: Array<string>, pr_comments_enabled: boolean, preview_branch_excludes: Array<string>, preview_branch_includes: Array<string>, preview_deployment_setting: ("all" | "none" | "custom"), production_branch: string, production_deployments_enabled: boolean, repo_id: string, repo_name: string }>, type: ("github" | "gitlab") } }>,
+        body?:  Partial<{ build_config: Partial<{ build_caching: boolean, build_command: string, destination_dir: string, root_dir: string, web_analytics_tag: (string | null), web_analytics_token: (string | null) }>, deployment_configs: Partial<{ preview: Schemas.pages_deployment_config_values_request, production: Schemas.pages_deployment_config_values_request }>, name: string, production_branch: string, source: { config: Partial<{ deployments_enabled: boolean, owner: string, owner_id: string, path_excludes: Array<string>, path_includes: Array<string>, pr_comments_enabled: boolean, preview_branch_excludes: Array<string>, preview_branch_includes: Array<string>, preview_deployment_setting: ("all" | "none" | "custom"), production_branch: string, production_deployments_enabled: boolean, repo_id: string, repo_name: string }>, type: ("github" | "gitlab") } }>,
           }
       responses: {200: (Schemas.pages_api_response_common & { result: Schemas.pages_project }),
 "4XX": Schemas.pages_api_response_common_failure,
@@ -34726,7 +34726,7 @@ export type patch_R2__patch__bucket = {
       parameters: {
             
         path:  { account_id: Schemas.r2_account_identifier, bucket_name: Schemas.r2_bucket_name },
-        header:  { "cf-r2-jurisdiction"?: Schemas.r2_jurisdiction, "cf-r2-storage-class": (Schemas.r2_storage_class & unknown) },
+        header:  { "cf-r2-jurisdiction"?: Schemas.r2_jurisdiction, "cf-r2-storage-class": Schemas.r2_storage_class },
         
         
           }
@@ -34849,7 +34849,7 @@ export type get_R2__get__custom__domain__settings = {
         
         
           }
-      responses: {200: (Schemas.r2_v4_response & Partial<{ result: (Schemas.r2_get_custom_domain_response) }>),
+      responses: {200: (Schemas.r2_v4_response & Partial<{ result: Schemas.r2_get_custom_domain_response }>),
 "4XX": Schemas.r2_v4_response_failure,
 },
       
@@ -34866,7 +34866,7 @@ export type put_R2__edit__custom__domain__settings = {
         
         body:  Schemas.r2_edit_custom_domain_request,
           }
-      responses: {200: (Schemas.r2_v4_response & Partial<{ result: (Schemas.r2_edit_custom_domain_response) }>),
+      responses: {200: (Schemas.r2_v4_response & Partial<{ result: Schemas.r2_edit_custom_domain_response }>),
 "4XX": Schemas.r2_v4_response_failure,
 },
       
@@ -36568,7 +36568,7 @@ export type post_Account__request__tracer__request__trace = {
         body:  { body?: Partial<{ base64: string, json: Record<string, unknown>, plain_text: string }>, context?: Partial<{ bot_score: number, geoloc: Partial<{ city: string, continent: string, is_eu_country: boolean, iso_code: string, latitude: number, longitude: number, postal_code: string, region_code: string, subdivision_2_iso_code: string, timezone: string }>, skip_challenge: boolean, threat_score: number }>, cookies?: Record<string, string>, headers?: Record<string, string>, method: string, protocol?: string, skip_response?: boolean, url: string },
           }
       responses: {200: (Schemas.request_tracer_api_response_common & Partial<{ result: Partial<{ status_code: number, trace: Schemas.request_tracer_trace }> }> & Record<string, unknown>),
-"4XX": (Schemas.request_tracer_api_response_common_failure),
+"4XX": Schemas.request_tracer_api_response_common_failure,
 },
       
     }
@@ -37843,7 +37843,7 @@ export type get_Secrets__store__quota = {
         
           }
       responses: {200: Schemas.secrets_store_quota_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -37860,7 +37860,7 @@ export type get_Secrets__store__list = {
         
           }
       responses: {200: Schemas.secrets_store_stores_response_collection,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -37877,7 +37877,7 @@ export type post_Secrets__store__create = {
         body:  Schemas.secrets_store_createStoreObject,
           }
       responses: {200: Schemas.secrets_store_store_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -37894,8 +37894,8 @@ export type delete_Secrets__store__delete__by__id = {
         
           }
       responses: {200: Schemas.secrets_store_delete_response,
-409: (Schemas.secrets_store_api_response_common_failure),
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+409: Schemas.secrets_store_api_response_common_failure,
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -37912,7 +37912,7 @@ export type get_Secrets__store__get__store__by__id = {
         
           }
       responses: {200: Schemas.secrets_store_store_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -37929,7 +37929,7 @@ export type delete_Secrets__store__delete__bulk = {
         body:  Schemas.secrets_store_deleteSecretsRequest,
           }
       responses: {202: Schemas.secrets_store_delete_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -37946,7 +37946,7 @@ export type get_Secrets__store__secrets__list = {
         
           }
       responses: {200: Schemas.secrets_store_secrets_response_collection,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -37963,7 +37963,7 @@ export type post_Secrets__store__secret__create = {
         body:  Array<Schemas.secrets_store_createSecretObject>,
           }
       responses: {200: Schemas.secrets_store_secrets_response_collection,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -37980,7 +37980,7 @@ export type delete_Secrets__store__secret__delete__by__id = {
         
           }
       responses: {202: Schemas.secrets_store_delete_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -37997,7 +37997,7 @@ export type get_Secrets__store__get__by__id = {
         
           }
       responses: {200: Schemas.secrets_store_secret_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -38014,7 +38014,7 @@ export type patch_Secrets__store__patch__by__id = {
         body:  Schemas.secrets_store_patchSecretObject,
           }
       responses: {200: Schemas.secrets_store_secret_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -38031,7 +38031,7 @@ export type post_Secrets__store__duplicate__by__id = {
         body:  Schemas.secrets_store_duplicateSecretObject,
           }
       responses: {200: Schemas.secrets_store_secret_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -38041,7 +38041,7 @@ export type get_Get__security__center__insights = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: {
-            query?:  Partial<{ dismissed: Schemas.security_center_dismissed, issue_class: Schemas.security_center_issueClasses, issue_type: Schemas.security_center_issueTypes, product: Schemas.security_center_products, severity: Schemas.security_center_severityQueryParam, subject: Schemas.security_center_subjects, "issue_class~neq": Schemas.security_center_issueClasses, "issue_type~neq": Schemas.security_center_issueTypes, "product~neq": Schemas.security_center_products, "severity~neq": Schemas.security_center_severityQueryParam, "subject~neq": Schemas.security_center_subjects, page: (Schemas.security_center_page & unknown), per_page: (Schemas.security_center_perPage & unknown) }>,
+            query?:  Partial<{ dismissed: Schemas.security_center_dismissed, issue_class: Schemas.security_center_issueClasses, issue_type: Schemas.security_center_issueTypes, product: Schemas.security_center_products, severity: Schemas.security_center_severityQueryParam, subject: Schemas.security_center_subjects, "issue_class~neq": Schemas.security_center_issueClasses, "issue_type~neq": Schemas.security_center_issueTypes, "product~neq": Schemas.security_center_products, "severity~neq": Schemas.security_center_severityQueryParam, "subject~neq": Schemas.security_center_subjects, page: Schemas.security_center_page, per_page: Schemas.security_center_perPage }>,
         path:  { account_id: Schemas.security_center_identifier },
         
         
@@ -38183,7 +38183,7 @@ export type patch_Update__security__center__insight__classification = {
         
         body:  Schemas.security_center_userClassificationUpdate,
           }
-      responses: {200: (Schemas.security_center_api_response_single),
+      responses: {200: Schemas.security_center_api_response_single,
 "4XX": Schemas.security_center_api_response_common_failure,
 },
       
@@ -38217,7 +38217,7 @@ export type put_Archive__security__center__insight = {
         
         body?:  Partial<{ dismiss: boolean }>,
           }
-      responses: {200: (Schemas.security_center_api_response_single),
+      responses: {200: Schemas.security_center_api_response_single,
 "4XX": Schemas.security_center_api_response_common_failure,
 },
       
@@ -38235,8 +38235,8 @@ export type get_Shares__list = {
         
           }
       responses: {200: Schemas.resource_sharing_share_response_collection,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38253,8 +38253,8 @@ export type post_Share__create = {
         body:  Schemas.resource_sharing_create_share_request,
           }
       responses: {201: Schemas.resource_sharing_share_response_single,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38271,8 +38271,8 @@ export type delete_Share__delete = {
         
           }
       responses: {200: Schemas.resource_sharing_share_response_single,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38289,8 +38289,8 @@ export type get_Shares__get__by__id = {
         
           }
       responses: {200: Schemas.resource_sharing_share_response_single,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38307,8 +38307,8 @@ export type put_Share__update = {
         body:  Schemas.resource_sharing_update_share_request,
           }
       responses: {200: Schemas.resource_sharing_share_response_single,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38325,8 +38325,8 @@ export type get_Share__recipients__list = {
         
           }
       responses: {200: Schemas.resource_sharing_share_recipient_response_collection,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38343,8 +38343,8 @@ export type post_Share__recipient__create = {
         body:  Schemas.resource_sharing_create_share_recipient_request,
           }
       responses: {201: Schemas.resource_sharing_share_recipient_response_single,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38361,8 +38361,8 @@ export type put_Share__recipients__update = {
         body:  Schemas.resource_sharing_update_share_recipients_request,
           }
       responses: {204: unknown,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38379,8 +38379,8 @@ export type delete_Share__recipient__delete = {
         
           }
       responses: {200: Schemas.resource_sharing_share_recipient_response_single,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38397,8 +38397,8 @@ export type get_Share__recipients__get__by__id = {
         
           }
       responses: {200: Schemas.resource_sharing_share_recipient_response_single,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38415,8 +38415,8 @@ export type get_Share__resources__list = {
         
           }
       responses: {200: Schemas.resource_sharing_share_resource_response_collection,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38433,8 +38433,8 @@ export type post_Share__resource__create = {
         body:  Schemas.resource_sharing_create_share_resource_request,
           }
       responses: {201: Schemas.resource_sharing_share_resource_response_single,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38451,8 +38451,8 @@ export type delete_Share__resource__delete = {
         
           }
       responses: {200: Schemas.resource_sharing_share_resource_response_single,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38469,8 +38469,8 @@ export type get_Share__resources__get__by__id = {
         
           }
       responses: {200: Schemas.resource_sharing_share_resource_response_single,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -38487,8 +38487,8 @@ export type put_Share__resource__update = {
         body:  Schemas.resource_sharing_update_share_resource_request,
           }
       responses: {200: Schemas.resource_sharing_share_resource_response_single,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -40059,7 +40059,7 @@ export type get_Tunnel__route__list__tunnel__routes = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: {
-            query?:  Partial<{ comment: Schemas.tunnel_route_comment, is_deleted: boolean, network_subset: (Schemas.tunnel_ip_network), network_superset: (Schemas.tunnel_ip_network), existed_at: Schemas.tunnel_existed_at, tunnel_id: Schemas.tunnel_tunnel_id, route_id: Schemas.tunnel_route_id, tun_types: Schemas.tunnel_tunnel_types, virtual_network_id: Schemas.tunnel_virtual_network_id, per_page: Schemas.tunnel_per_page, page: Schemas.tunnel_page_number }>,
+            query?:  Partial<{ comment: Schemas.tunnel_route_comment, is_deleted: boolean, network_subset: Schemas.tunnel_ip_network, network_superset: Schemas.tunnel_ip_network, existed_at: Schemas.tunnel_existed_at, tunnel_id: Schemas.tunnel_tunnel_id, route_id: Schemas.tunnel_route_id, tun_types: Schemas.tunnel_tunnel_types, virtual_network_id: Schemas.tunnel_virtual_network_id, per_page: Schemas.tunnel_per_page, page: Schemas.tunnel_page_number }>,
         path:  { account_id: Schemas.tunnel_account_id },
         
         
@@ -42845,7 +42845,7 @@ export type post_Worker__versions__upload__version = {
         path:  { account_id: Schemas.workers_identifier, script_name: Schemas.workers_script_name_2 },
         
         
-        body:  { files?: Array<Blob>, metadata: { annotations?: Partial<{ "workers/alias": string, "workers/message": string, "workers/tag": string }>, bindings?: Schemas.workers_bindings, cache_options?: Schemas.workers_cache_options, compatibility_date?: Schemas.workers_compatibility_date, compatibility_flags?: Schemas.workers_compatibility_flags, exports?: (Schemas.workers_exports_config_map & unknown), keep_bindings?: Array<string>, main_module: string, package_dependencies?: Array<{ installedVersion: string, name: string, packageJsonVersion: string }>, usage_model?: Schemas.workers_usage_model } },
+        body:  { files?: Array<Blob>, metadata: { annotations?: Partial<{ "workers/alias": string, "workers/message": string, "workers/tag": string }>, bindings?: Schemas.workers_bindings, cache_options?: Schemas.workers_cache_options, compatibility_date?: Schemas.workers_compatibility_date, compatibility_flags?: Schemas.workers_compatibility_flags, exports?: Schemas.workers_exports_config_map, keep_bindings?: Array<string>, main_module: string, package_dependencies?: Array<{ installedVersion: string, name: string, packageJsonVersion: string }>, usage_model?: Schemas.workers_usage_model } },
           }
       responses: {200: Schemas.workers_versions_upload_response,
 "4XX": ((Schemas.workers_versions_upload_response & Schemas.workers_api_response_common_failure) | Schemas.workers_exports_reconciliation_error_response),
@@ -43624,7 +43624,7 @@ export type get_Zero__trust__networks__subnets__list = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: {
-            query?:  Partial<{ name: Schemas.tunnel_subnet_query_name, comment: Schemas.tunnel_subnet_query_comment, network: (Schemas.tunnel_ip_network_encoded), existed_at: Schemas.tunnel_existed_at, address_family: Schemas.tunnel_address_family, is_default_network: boolean, is_deleted: boolean, sort_order: ("asc" | "desc"), subnet_types: ("cloudflare_source" | "initial_resolved_ip" | "warp"), per_page: Schemas.tunnel_per_page, page: Schemas.tunnel_page_number }>,
+            query?:  Partial<{ name: Schemas.tunnel_subnet_query_name, comment: Schemas.tunnel_subnet_query_comment, network: Schemas.tunnel_ip_network_encoded, existed_at: Schemas.tunnel_existed_at, address_family: Schemas.tunnel_address_family, is_default_network: boolean, is_deleted: boolean, sort_order: ("asc" | "desc"), subnet_types: ("cloudflare_source" | "initial_resolved_ip" | "warp"), per_page: Schemas.tunnel_per_page, page: Schemas.tunnel_page_number }>,
         path:  { account_id: Schemas.tunnel_account_id },
         
         
@@ -44411,8 +44411,8 @@ export type get_Organization__shares__list = {
         
           }
       responses: {200: Schemas.resource_sharing_share_response_collection,
-"4XX": (Schemas.resource_sharing_api_response_common_failure),
-"5XX": (Schemas.resource_sharing_api_response_common_failure),
+"4XX": Schemas.resource_sharing_api_response_common_failure,
+"5XX": Schemas.resource_sharing_api_response_common_failure,
 },
       
     }
@@ -47016,7 +47016,7 @@ export type get_Secrets__store__system__list = {
         
           }
       responses: {200: Schemas.secrets_store_stores_response_collection,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -47033,7 +47033,7 @@ export type post_Secrets__store__system__create = {
         body:  Schemas.secrets_store_createStoreObjectSystem,
           }
       responses: {200: Schemas.secrets_store_store_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -47050,8 +47050,8 @@ export type delete_Secrets__store__system__delete__by__id = {
         
           }
       responses: {200: Schemas.secrets_store_delete_response,
-409: (Schemas.secrets_store_api_response_common_failure),
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+409: Schemas.secrets_store_api_response_common_failure,
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -47068,7 +47068,7 @@ export type get_Secrets__store__system__get__store__by__id = {
         
           }
       responses: {200: Schemas.secrets_store_store_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -47085,7 +47085,7 @@ export type delete_Secrets__store__system__delete__bulk = {
         body:  Schemas.secrets_store_deleteSecretsRequest,
           }
       responses: {202: Schemas.secrets_store_delete_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -47102,7 +47102,7 @@ export type get_Secrets__store__system__secrets__list = {
         
           }
       responses: {200: Schemas.secrets_store_secrets_response_collection,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -47119,7 +47119,7 @@ export type post_Secrets__store__system__secret__create = {
         body:  Array<Schemas.secrets_store_createSecretObject>,
           }
       responses: {200: Schemas.secrets_store_secrets_response_collection,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -47136,7 +47136,7 @@ export type delete_Secrets__store__system__secret__delete__by__id = {
         
           }
       responses: {202: Schemas.secrets_store_delete_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -47153,7 +47153,7 @@ export type get_Secrets__store__system__get__by__id = {
         
           }
       responses: {200: Schemas.secrets_store_secret_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -47170,7 +47170,7 @@ export type patch_Secrets__store__system__patch__by__id = {
         body:  Schemas.secrets_store_patchSecretObject,
           }
       responses: {200: Schemas.secrets_store_secret_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -47187,7 +47187,7 @@ export type post_Secrets__store__system__duplicate__by__id = {
         body:  Schemas.secrets_store_duplicateSecretObject,
           }
       responses: {200: Schemas.secrets_store_secret_response,
-"4XX": (Schemas.secrets_store_api_response_common_failure),
+"4XX": Schemas.secrets_store_api_response_common_failure,
 },
       
     }
@@ -47399,7 +47399,7 @@ export type post_Ip__access__rules__for__a__user__create__an__ip__access__rule =
         
         
         
-        body:  { configuration: Schemas.firewall_configuration, mode: Schemas.firewall_schemas_mode, notes?: (Schemas.firewall_notes & unknown) },
+        body:  { configuration: Schemas.firewall_configuration, mode: Schemas.firewall_schemas_mode, notes?: Schemas.firewall_notes },
           }
       responses: {200: Schemas.firewall_rule_single_response,
 "4XX": (Schemas.firewall_rule_single_response & Schemas.firewall_api_response_common_failure),
@@ -47523,7 +47523,7 @@ export type post_Load__balancer__monitors__create__monitor = {
         
         
         
-        body:  (Schemas.load_balancing_monitor_editable),
+        body:  Schemas.load_balancing_monitor_editable,
           }
       responses: {200: Schemas.load_balancing_monitor_response_single,
 "4XX": (Schemas.load_balancing_monitor_response_single & Schemas.load_balancing_api_response_common_failure),
@@ -47574,7 +47574,7 @@ export type patch_Load__balancer__monitors__patch__monitor = {
         path:  { monitor_id: Schemas.load_balancing_identifier },
         
         
-        body:  (Schemas.load_balancing_monitor_editable),
+        body:  Schemas.load_balancing_monitor_editable,
           }
       responses: {200: Schemas.load_balancing_monitor_response_single,
 "4XX": (Schemas.load_balancing_monitor_response_single & Schemas.load_balancing_api_response_common_failure),
@@ -47591,7 +47591,7 @@ export type put_Load__balancer__monitors__update__monitor = {
         path:  { monitor_id: Schemas.load_balancing_identifier },
         
         
-        body:  (Schemas.load_balancing_monitor_editable),
+        body:  Schemas.load_balancing_monitor_editable,
           }
       responses: {200: Schemas.load_balancing_monitor_response_single,
 "4XX": (Schemas.load_balancing_monitor_response_single & Schemas.load_balancing_api_response_common_failure),
@@ -47608,7 +47608,7 @@ export type post_Load__balancer__monitors__preview__monitor = {
         path:  { monitor_id: Schemas.load_balancing_identifier },
         
         
-        body:  (Schemas.load_balancing_monitor_editable),
+        body:  Schemas.load_balancing_monitor_editable,
           }
       responses: {200: Schemas.load_balancing_preview_response,
 "4XX": (Schemas.load_balancing_preview_response & Schemas.load_balancing_api_response_common_failure),
@@ -47778,7 +47778,7 @@ export type post_Load__balancer__pools__preview__pool = {
         path:  { pool_id: Schemas.load_balancing_schemas_identifier },
         
         
-        body:  (Schemas.load_balancing_monitor_editable),
+        body:  Schemas.load_balancing_monitor_editable,
           }
       responses: {200: Schemas.load_balancing_preview_response,
 "4XX": (Schemas.load_balancing_preview_response & Schemas.load_balancing_api_response_common_failure),
@@ -48579,7 +48579,7 @@ export type patch_Zone__level__access__applications__patch__update__access__appl
         
         body:  Schemas.access_app_settings_request,
           }
-      responses: {202: (Schemas.access_single_response_update),
+      responses: {202: Schemas.access_single_response_update,
 "4XX": Schemas.access_api_response_common_failure,
 },
       
@@ -48596,7 +48596,7 @@ export type put_Zone__level__access__applications__put__update__access__applicat
         
         body:  Schemas.access_app_settings_request,
           }
-      responses: {202: (Schemas.access_single_response_update),
+      responses: {202: Schemas.access_single_response_update,
 "4XX": Schemas.access_api_response_common_failure,
 },
       
@@ -49175,7 +49175,7 @@ export type put_Put__zones__zone_id__activation_check = {
         
           }
       responses: {200: (Schemas.zone_activation_api_response_single & Partial<{ result: Partial<{ id: Schemas.zone_activation_identifier }> }>),
-"4XX": (Schemas.zone_activation_api_response_common_failure),
+"4XX": Schemas.zone_activation_api_response_common_failure,
 },
       
     }
@@ -49192,7 +49192,7 @@ export type get_Dls__zone__regional__hostnames__list = {
         
           }
       responses: {200: (Schemas.dls_api_response_collection & Partial<{ result: Array<Schemas.dls_regional_hostname_response> }>),
-"4XX": (Schemas.dls_api_response_common_failure),
+"4XX": Schemas.dls_api_response_common_failure,
 },
       
     }
@@ -49209,7 +49209,7 @@ export type post_Dls__zone__regional__hostnames__create = {
         body:  { hostname: Schemas.dls_hostname_schemas, region_key: Schemas.dls_region_key, routing?: Schemas.dls_routing },
           }
       responses: {200: (Schemas.dls_api_response_common & Partial<{ result: Schemas.dls_regional_hostname_response }>),
-"4XX": (Schemas.dls_api_response_common_failure),
+"4XX": Schemas.dls_api_response_common_failure,
 },
       
     }
@@ -49225,8 +49225,8 @@ export type delete_Dls__zone__regional__hostnames__delete = {
         
         
           }
-      responses: {200: (Schemas.dls_api_response_common),
-"4XX": (Schemas.dls_api_response_common_failure),
+      responses: {200: Schemas.dls_api_response_common,
+"4XX": Schemas.dls_api_response_common_failure,
 },
       
     }
@@ -49243,7 +49243,7 @@ export type get_Dls__zone__regional__hostnames__fetch = {
         
           }
       responses: {200: (Schemas.dls_api_response_common & Partial<{ result: Schemas.dls_regional_hostname_response }>),
-"4XX": (Schemas.dls_api_response_common_failure),
+"4XX": Schemas.dls_api_response_common_failure,
 },
       
     }
@@ -49260,7 +49260,7 @@ export type patch_Dls__zone__regional__hostnames__patch = {
         body:  { region_key: Schemas.dls_region_key },
           }
       responses: {200: (Schemas.dls_api_response_common & Partial<{ result: Schemas.dls_regional_hostname_response }>),
-"4XX": (Schemas.dls_api_response_common_failure),
+"4XX": Schemas.dls_api_response_common_failure,
 },
       
     }
@@ -49475,7 +49475,7 @@ export type get_Api__shield__api__discovery__retrieve__discovered__operations__o
         
           }
       responses: {200: (Schemas.api_shield_api_response_collection & { result: Array<Schemas.api_shield_discovery_operation> }),
-"4XX": (Schemas.api_shield_api_response_common_failure),
+"4XX": Schemas.api_shield_api_response_common_failure,
 },
       
     }
@@ -49523,7 +49523,7 @@ export type patch_Api__shield__api__patch__discovered__operation = {
         path:  { zone_id: Schemas.api_shield_identifier_2, discovery_id: Schemas.api_shield_uuid_2 },
         
         
-        body?:  Partial<{ state: (Schemas.api_shield_api_discovery_state_patch) }>,
+        body?:  Partial<{ state: Schemas.api_shield_api_discovery_state_patch }>,
           }
       responses: {200: Schemas.api_shield_patch_discovery_response,
 "4XX": Schemas.api_shield_api_response_common_failure,
@@ -49951,7 +49951,7 @@ export type get_Argo__smart__routing__get__argo__smart__routing__setting = {
         
           }
       responses: {200: Schemas.argo_config_api_response_single,
-"4XX": (Schemas.argo_config_api_response_common_failure),
+"4XX": Schemas.argo_config_api_response_common_failure,
 },
       
     }
@@ -49968,7 +49968,7 @@ export type patch_Argo__smart__routing__patch__argo__smart__routing__setting = {
         body:  Schemas.argo_config_patch,
           }
       responses: {200: Schemas.argo_config_api_response_single,
-"4XX": (Schemas.argo_config_api_response_common_failure),
+"4XX": Schemas.argo_config_api_response_common_failure,
 },
       
     }
@@ -50359,7 +50359,7 @@ export type get_Client__certificate__for__a__zone__list__hostname__associations 
         
           }
       responses: {200: Schemas.tls_certificates_and_hostnames_hostname_associations_response,
-"4XX": (Schemas.tls_certificates_and_hostnames_api_response_common_failure),
+"4XX": Schemas.tls_certificates_and_hostnames_api_response_common_failure,
 },
       
     }
@@ -50393,7 +50393,7 @@ export type get_Client__certificate__for__a__zone__list__client__certificates = 
         
           }
       responses: {200: Schemas.tls_certificates_and_hostnames_client_certificate_response_collection,
-"4XX": (Schemas.tls_certificates_and_hostnames_api_response_common_failure),
+"4XX": Schemas.tls_certificates_and_hostnames_api_response_common_failure,
 },
       
     }
@@ -50478,8 +50478,8 @@ export type get_Zone__cloud__connector__rules = {
         
           }
       responses: {200: (Schemas.cloud_connector_api_response_common & Partial<{ result: Schemas.cloud_connector_rules }> & Record<string, unknown>),
-"4XX": (Schemas.cloud_connector_api_response_common_failure),
-"5XX": (Schemas.cloud_connector_api_response_common_failure),
+"4XX": Schemas.cloud_connector_api_response_common_failure,
+"5XX": Schemas.cloud_connector_api_response_common_failure,
 },
       
     }
@@ -50496,8 +50496,8 @@ export type put_Zone__cloud__conenctor__rules__put = {
         body:  Array<Schemas.cloud_connector_rule>,
           }
       responses: {200: (Schemas.cloud_connector_api_response_common & Partial<{ result: Schemas.cloud_connector_rules }> & Record<string, unknown>),
-"4XX": (Schemas.cloud_connector_api_response_common_failure),
-"5XX": (Schemas.cloud_connector_api_response_common_failure),
+"4XX": Schemas.cloud_connector_api_response_common_failure,
+"5XX": Schemas.cloud_connector_api_response_common_failure,
 },
       
     }
@@ -50514,7 +50514,7 @@ export type post_Waf__content__scanning__disable = {
         
           }
       responses: {200: Schemas.waf_product_api_bundle_api_response_common_2,
-"4XX": (Schemas.waf_product_api_bundle_api_response_common_failure_2),
+"4XX": Schemas.waf_product_api_bundle_api_response_common_failure_2,
 },
       
     }
@@ -50531,7 +50531,7 @@ export type post_Waf__content__scanning__enable = {
         
           }
       responses: {200: Schemas.waf_product_api_bundle_api_response_common_2,
-"4XX": (Schemas.waf_product_api_bundle_api_response_common_failure_2),
+"4XX": Schemas.waf_product_api_bundle_api_response_common_failure_2,
 },
       
     }
@@ -52129,7 +52129,7 @@ export type post_Ip__access__rules__for__a__zone__create__an__ip__access__rule =
         path:  { zone_id: Schemas.firewall_identifier },
         
         
-        body:  { configuration: Schemas.firewall_configuration, mode: Schemas.firewall_schemas_mode, notes?: (Schemas.firewall_notes & unknown) },
+        body:  { configuration: Schemas.firewall_configuration, mode: Schemas.firewall_schemas_mode, notes?: Schemas.firewall_notes },
           }
       responses: {200: Schemas.firewall_rule_single_response,
 "4XX": (Schemas.firewall_rule_single_response & Schemas.firewall_api_response_common_failure),
@@ -52176,7 +52176,7 @@ export type get_Zone__lockdown__list__zone__lockdown__rules = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: {
-            query?:  Partial<{ page: number, description: (Schemas.firewall_schemas_description_search), modified_on: (Schemas.firewall_modified_on), ip: (Schemas.firewall_ip_search), priority: (Schemas.firewall_schemas_priority), uri_search: (Schemas.firewall_uri_search), ip_range_search: (Schemas.firewall_ip_range_search), per_page: number, created_on: string, description_search: string, ip_search: string }>,
+            query?:  Partial<{ page: number, description: Schemas.firewall_schemas_description_search, modified_on: Schemas.firewall_modified_on, ip: Schemas.firewall_ip_search, priority: Schemas.firewall_schemas_priority, uri_search: Schemas.firewall_uri_search, ip_range_search: Schemas.firewall_ip_range_search, per_page: number, created_on: string, description_search: string, ip_search: string }>,
         path:  { zone_id: Schemas.firewall_identifier },
         
         
@@ -52261,7 +52261,7 @@ export type get_User__agent__blocking__rules__list__user__agent__blocking__rules
       requestFormat: "json",
       responseFormat: "json",
       parameters: {
-            query?:  Partial<{ page: number, description: (Schemas.firewall_description_search), per_page: number, user_agent: string, paused: boolean }>,
+            query?:  Partial<{ page: number, description: Schemas.firewall_description_search, per_page: number, user_agent: string, paused: boolean }>,
         path:  { zone_id: Schemas.firewall_identifier },
         
         
@@ -52540,7 +52540,7 @@ export type delete_Zones__0__hold__delete = {
         
           }
       responses: {200: (Schemas.zones_api_response_single_2 & Partial<{ result: Partial<{ hold: boolean, hold_after: string, include_subdomains: string }> }>),
-"4XX": (Schemas.zones_api_response_common_failure_2),
+"4XX": Schemas.zones_api_response_common_failure_2,
 },
       
     }
@@ -52557,7 +52557,7 @@ export type get_Zones__0__hold__get = {
         
           }
       responses: {200: (Schemas.zones_api_response_single_2 & Partial<{ result: Partial<{ hold: boolean, hold_after: string, include_subdomains: string }> }>),
-"4XX": (Schemas.zones_api_response_common_failure_2),
+"4XX": Schemas.zones_api_response_common_failure_2,
 },
       
     }
@@ -52574,7 +52574,7 @@ export type patch_Zones__0__hold__patch = {
         body?:  Partial<{ hold_after: (string | null), include_subdomains: boolean }>,
           }
       responses: {200: (Schemas.zones_api_response_single_2 & Partial<{ result: Partial<{ hold: boolean, hold_after: string, include_subdomains: string }> }>),
-"4XX": (Schemas.zones_api_response_common_failure_2),
+"4XX": Schemas.zones_api_response_common_failure_2,
 },
       
     }
@@ -52591,7 +52591,7 @@ export type post_Zones__0__hold__post = {
         
           }
       responses: {200: (Schemas.zones_api_response_single_2 & Partial<{ result: Partial<{ hold: boolean, hold_after: string, include_subdomains: string }> }>),
-"4XX": (Schemas.zones_api_response_common_failure_2),
+"4XX": Schemas.zones_api_response_common_failure_2,
 },
       
     }
@@ -52608,7 +52608,7 @@ export type get_Zones__0__hold__zone__name__get = {
         
           }
       responses: {200: Partial<{ hold: boolean, hold_after: (string | null), include_subdomains: boolean }>,
-"4XX": (Schemas.zones_api_response_common_failure_2),
+"4XX": Schemas.zones_api_response_common_failure_2,
 },
       
     }
@@ -53068,7 +53068,7 @@ export type get_Get__zones__zone_id__logpush__datasets__dataset_id__fields = {
         
           }
       responses: {200: Schemas.logpush_logpush_field_response_collection,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -53085,7 +53085,7 @@ export type get_Get__zones__zone_id__logpush__datasets__dataset_id__jobs = {
         
           }
       responses: {200: Schemas.logpush_logpush_job_response_collection,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -53136,7 +53136,7 @@ export type get_Get__zones__zone_id__logpush__jobs = {
         
           }
       responses: {200: Schemas.logpush_logpush_job_response_collection,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -53153,7 +53153,7 @@ export type post_Post__zones__zone_id__logpush__jobs = {
         body:  { dataset?: Schemas.logpush_dataset, destination_conf: Schemas.logpush_destination_conf, enabled?: Schemas.logpush_enabled, filter?: Schemas.logpush_filter, frequency?: Schemas.logpush_frequency, kind?: Schemas.logpush_kind, logpull_options?: Schemas.logpush_logpull_options, max_upload_bytes?: Schemas.logpush_max_upload_bytes, max_upload_interval_seconds?: Schemas.logpush_max_upload_interval_seconds, max_upload_records?: Schemas.logpush_max_upload_records, name?: Schemas.logpush_name, output_options?: Schemas.logpush_output_options, ownership_challenge?: Schemas.logpush_ownership_challenge },
           }
       responses: {200: Schemas.logpush_logpush_job_response_single,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -53170,7 +53170,7 @@ export type delete_Delete__zones__zone_id__logpush__jobs__job_id = {
         body:  unknown,
           }
       responses: {200: (Schemas.logpush_api_response_common & Partial<{ result: Partial<{ id: Schemas.logpush_id }> }>),
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -53187,7 +53187,7 @@ export type get_Get__zones__zone_id__logpush__jobs__job_id = {
         
           }
       responses: {200: Schemas.logpush_logpush_job_response_single,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -53204,7 +53204,7 @@ export type put_Put__zones__zone_id__logpush__jobs__job_id = {
         body?:  Partial<{ destination_conf: Schemas.logpush_destination_conf, enabled: Schemas.logpush_enabled, filter: Schemas.logpush_filter, frequency: Schemas.logpush_frequency, kind: Schemas.logpush_kind, logpull_options: Schemas.logpush_logpull_options, max_upload_bytes: Schemas.logpush_max_upload_bytes, max_upload_interval_seconds: Schemas.logpush_max_upload_interval_seconds, max_upload_records: Schemas.logpush_max_upload_records, name: Schemas.logpush_name, output_options: Schemas.logpush_output_options, ownership_challenge: Schemas.logpush_ownership_challenge }>,
           }
       responses: {200: Schemas.logpush_logpush_job_response_single,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -53221,7 +53221,7 @@ export type post_Post__zones__zone_id__logpush__ownership = {
         body:  { destination_conf: Schemas.logpush_destination_conf },
           }
       responses: {200: Schemas.logpush_get_ownership_response,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -53238,7 +53238,7 @@ export type post_Post__zones__zone_id__logpush__ownership__validate = {
         body:  { destination_conf: Schemas.logpush_destination_conf, ownership_challenge: Schemas.logpush_ownership_challenge },
           }
       responses: {200: Schemas.logpush_validate_ownership_response,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -53255,7 +53255,7 @@ export type post_Post__zones__zone_id__logpush__validate__destination = {
         body:  { destination_conf: Schemas.logpush_destination_conf },
           }
       responses: {200: Schemas.logpush_validate_response,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -53272,7 +53272,7 @@ export type post_Post__zones__zone_id__logpush__validate__destination__exists = 
         body:  { destination_conf: Schemas.logpush_destination_conf },
           }
       responses: {200: Schemas.logpush_destination_exists_response,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -53289,7 +53289,7 @@ export type post_Post__zones__zone_id__logpush__validate__origin = {
         body:  { logpull_options: Schemas.logpush_logpull_options },
           }
       responses: {200: Schemas.logpush_validate_response,
-"4XX": (Schemas.logpush_api_response_common_failure),
+"4XX": Schemas.logpush_api_response_common_failure,
 },
       
     }
@@ -53306,7 +53306,7 @@ export type get_Get__zones__zone_id__logs__control__retention__flag = {
         
           }
       responses: {200: Schemas.logcontrol_retention_flag_response_single,
-"4XX": (Schemas.logcontrol_api_response_common_failure),
+"4XX": Schemas.logcontrol_api_response_common_failure,
 },
       
     }
@@ -53323,7 +53323,7 @@ export type post_Post__zones__zone_id__logs__control__retention__flag = {
         body:  Schemas.logcontrol_retention_flag,
           }
       responses: {200: Schemas.logcontrol_retention_flag_response_single,
-"4XX": (Schemas.logcontrol_api_response_common_failure),
+"4XX": Schemas.logcontrol_api_response_common_failure,
 },
       
     }
@@ -53456,7 +53456,7 @@ export type get_Get__zones__zone_id__logs__rayids__ray_id = {
         
           }
       responses: {200: Schemas.logshare_logs_response_json_lines,
-"4XX": (Schemas.logshare_api_response_common_failure),
+"4XX": Schemas.logshare_api_response_common_failure,
 },
       
     }
@@ -53473,7 +53473,7 @@ export type get_Get__zones__zone_id__logs__received = {
         
           }
       responses: {200: Schemas.logshare_logs_response_json_lines,
-"4XX": (Schemas.logshare_api_response_common_failure),
+"4XX": Schemas.logshare_api_response_common_failure,
 },
       
     }
@@ -53490,7 +53490,7 @@ export type get_Get__zones__zone_id__logs__received__fields = {
         
           }
       responses: {200: Schemas.logshare_fields_response,
-"4XX": (Schemas.logshare_api_response_common_failure),
+"4XX": Schemas.logshare_api_response_common_failure,
 },
       
     }
@@ -54121,7 +54121,7 @@ export type get_Page__shield__get__script = {
         
           }
       responses: {200: Schemas.page_shield_get_zone_script_response,
-"4XX": (Schemas.page_shield_api_response_common_failure),
+"4XX": Schemas.page_shield_api_response_common_failure,
 },
       
     }
@@ -55103,7 +55103,7 @@ export type get_Get__zone__security__center__insights = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: {
-            query?:  Partial<{ dismissed: Schemas.security_center_dismissed, issue_class: Schemas.security_center_issueClasses, issue_type: Schemas.security_center_issueTypes, product: Schemas.security_center_products, severity: Schemas.security_center_severityQueryParam, subject: Schemas.security_center_subjects, "issue_class~neq": Schemas.security_center_issueClasses, "issue_type~neq": Schemas.security_center_issueTypes, "product~neq": Schemas.security_center_products, "severity~neq": Schemas.security_center_severityQueryParam, "subject~neq": Schemas.security_center_subjects, page: (Schemas.security_center_page & unknown), per_page: (Schemas.security_center_perPage & unknown) }>,
+            query?:  Partial<{ dismissed: Schemas.security_center_dismissed, issue_class: Schemas.security_center_issueClasses, issue_type: Schemas.security_center_issueTypes, product: Schemas.security_center_products, severity: Schemas.security_center_severityQueryParam, subject: Schemas.security_center_subjects, "issue_class~neq": Schemas.security_center_issueClasses, "issue_type~neq": Schemas.security_center_issueTypes, "product~neq": Schemas.security_center_products, "severity~neq": Schemas.security_center_severityQueryParam, "subject~neq": Schemas.security_center_subjects, page: Schemas.security_center_page, per_page: Schemas.security_center_perPage }>,
         path:  { zone_id: Schemas.security_center_identifier },
         
         
@@ -55245,7 +55245,7 @@ export type patch_Update__zone__security__center__insight__classification = {
         
         body:  Schemas.security_center_userClassificationUpdate,
           }
-      responses: {200: (Schemas.security_center_api_response_single),
+      responses: {200: Schemas.security_center_api_response_single,
 "4XX": Schemas.security_center_api_response_common_failure,
 },
       
@@ -55262,7 +55262,7 @@ export type put_Archive__zone__security__center__insight = {
         
         body?:  Partial<{ dismiss: boolean }>,
           }
-      responses: {200: (Schemas.security_center_api_response_single),
+      responses: {200: Schemas.security_center_api_response_single,
 "4XX": Schemas.security_center_api_response_common_failure,
 },
       
@@ -55279,7 +55279,7 @@ export type delete_Delete__security__txt = {
         
         
           }
-      responses: {200: (Schemas.security_center_api_response_single),
+      responses: {200: Schemas.security_center_api_response_single,
 "4XX": Schemas.security_center_api_response_common_failure,
 },
       
@@ -55313,7 +55313,7 @@ export type put_Update__security__txt = {
         
         body:  Schemas.security_center_securityTxt,
           }
-      responses: {200: (Schemas.security_center_api_response_single),
+      responses: {200: Schemas.security_center_api_response_single,
 "4XX": Schemas.security_center_api_response_common_failure,
 },
       
@@ -63094,7 +63094,7 @@ type InferSchemaValue<T> = T;
 type InferSchemaInput<T> = T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
-  ? TResponses extends Record<string, unknown>
+  ? TResponses extends Record<string | number, unknown>
     ? TypedApiResponse<InferSchemaValue<TResponses>, TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never>
     : never
   : never

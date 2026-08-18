@@ -30,6 +30,19 @@ test("getSchemaBox", async () => {
   expect(await getSchemaBox({ type: "array", items: { type: "string" } })).toMatchInlineSnapshot(
     `"export type _Test = Array<string>;"`,
   );
+  expect(
+    await getSchemaBox({
+      type: "array",
+      items: { type: "string" },
+      allOf: [{ minItems: 1 }, { maxItems: 10 }],
+    }),
+  ).toMatchInlineSnapshot(`"export type _Test = Array<string>;"`);
+  expect(
+    await getSchemaBox({
+      type: "object",
+      patternProperties: { "^x": { type: "string" } },
+    }),
+  ).toMatchInlineSnapshot(`"export type _Test = Record<string, string>;"`);
   expect(await getSchemaBox({ type: "object" })).toMatchInlineSnapshot(
     `"export type _Test = Record<string, unknown>;"`,
   );

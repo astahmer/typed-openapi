@@ -581,7 +581,7 @@ type InferSchemaInputRaw<T> = T extends { Encoded: infer I }
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
-  ? TResponses extends Record<string, unknown>
+  ? TResponses extends Record<string | number, unknown>
     ? TypedApiResponse<
         InferSchemaValue<TResponses>,
         TEndpoint extends { responseHeaders: infer THeaders } ? InferSchemaValue<THeaders> : never
@@ -753,11 +753,26 @@ export class EffectApiClient {
     TMethod extends keyof EndpointByMethod,
     TPath extends keyof EndpointByMethod[TMethod],
     TEndpoint extends EndpointByMethod[TMethod][TPath],
+    TParams extends ApiCallParams<TEndpoint>,
   >(
     method: TMethod,
     path: TPath,
-    ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
-  ): Effect.Effect<InferSuccessData<TEndpoint>, TypedStatusError | HttpClientError, never> {
+    ...params: MaybeOptionalArg<TParams>
+  ): Effect.Effect<ApiCallResult<TEndpoint, TParams>, TypedStatusError | HttpClientError, never>;
+
+  request<
+    TMethod extends keyof EndpointByMethod,
+    TPath extends keyof EndpointByMethod[TMethod],
+    TEndpoint extends EndpointByMethod[TMethod][TPath],
+  >(
+    method: TMethod,
+    path: TPath,
+    ...params: [config?: unknown]
+  ): Effect.Effect<
+    SafeApiResponse<TEndpoint> | InferSuccessData<TEndpoint>,
+    TypedStatusError | HttpClientError,
+    never
+  > {
     const self = this;
     return Effect.gen(function* () {
       // Implementation reads a loose param bag; call sites stay typed via MaybeOptionalArg<>.
@@ -936,36 +951,44 @@ export class EffectApiClient {
             new TypedStatusError(typedResponse as TypedErrorResponse<unknown, ErrorStatusCode, unknown>),
           );
         }
-        return (withResponse ? typedResponse : data) as InferSuccessData<TEndpoint>;
+        return (withResponse ? typedResponse : data) as SafeApiResponse<TEndpoint> | InferSuccessData<TEndpoint>;
       }
 
-      return (withResponse ? typedResponse : data) as InferSuccessData<TEndpoint>;
+      return (withResponse ? typedResponse : data) as SafeApiResponse<TEndpoint> | InferSuccessData<TEndpoint>;
     });
   }
 
-  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path]>(
+  put<Path extends keyof PutEndpoints, TEndpoint extends PutEndpoints[Path], TParams extends ApiCallParams<TEndpoint>>(
     path: Path,
-    ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
-  ): Effect.Effect<InferSuccessData<TEndpoint>, TypedStatusError | HttpClientError, never> {
-    return this.request<"put", Path, PutEndpoints[Path]>("put", path, ...params);
+    ...params: MaybeOptionalArg<TParams>
+  ): Effect.Effect<ApiCallResult<TEndpoint, TParams>, TypedStatusError | HttpClientError, never> {
+    return this.request<"put", Path, PutEndpoints[Path], TParams>("put", path, params[0] as never);
   }
-  post<Path extends keyof PostEndpoints, TEndpoint extends PostEndpoints[Path]>(
+  post<
+    Path extends keyof PostEndpoints,
+    TEndpoint extends PostEndpoints[Path],
+    TParams extends ApiCallParams<TEndpoint>,
+  >(
     path: Path,
-    ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
-  ): Effect.Effect<InferSuccessData<TEndpoint>, TypedStatusError | HttpClientError, never> {
-    return this.request<"post", Path, PostEndpoints[Path]>("post", path, ...params);
+    ...params: MaybeOptionalArg<TParams>
+  ): Effect.Effect<ApiCallResult<TEndpoint, TParams>, TypedStatusError | HttpClientError, never> {
+    return this.request<"post", Path, PostEndpoints[Path], TParams>("post", path, params[0] as never);
   }
-  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path]>(
+  get<Path extends keyof GetEndpoints, TEndpoint extends GetEndpoints[Path], TParams extends ApiCallParams<TEndpoint>>(
     path: Path,
-    ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
-  ): Effect.Effect<InferSuccessData<TEndpoint>, TypedStatusError | HttpClientError, never> {
-    return this.request<"get", Path, GetEndpoints[Path]>("get", path, ...params);
+    ...params: MaybeOptionalArg<TParams>
+  ): Effect.Effect<ApiCallResult<TEndpoint, TParams>, TypedStatusError | HttpClientError, never> {
+    return this.request<"get", Path, GetEndpoints[Path], TParams>("get", path, params[0] as never);
   }
-  delete<Path extends keyof DeleteEndpoints, TEndpoint extends DeleteEndpoints[Path]>(
+  delete<
+    Path extends keyof DeleteEndpoints,
+    TEndpoint extends DeleteEndpoints[Path],
+    TParams extends ApiCallParams<TEndpoint>,
+  >(
     path: Path,
-    ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
-  ): Effect.Effect<InferSuccessData<TEndpoint>, TypedStatusError | HttpClientError, never> {
-    return this.request<"delete", Path, DeleteEndpoints[Path]>("delete", path, ...params);
+    ...params: MaybeOptionalArg<TParams>
+  ): Effect.Effect<ApiCallResult<TEndpoint, TParams>, TypedStatusError | HttpClientError, never> {
+    return this.request<"delete", Path, DeleteEndpoints[Path], TParams>("delete", path, params[0] as never);
   }
 }
 
