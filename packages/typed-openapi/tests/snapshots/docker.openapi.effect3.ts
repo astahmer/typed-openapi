@@ -1690,7 +1690,7 @@ export const errorStatusCodes = [400,401,402,403,404,405,406,407,408,409,410,411
 export type ErrorStatusCode = typeof errorStatusCodes[number];
 
 // Taken from https://github.com/unjs/fetchdts/blob/ec4eaeab5d287116171fc1efd61f4a1ad34e4609/src/fetch.ts#L3
-export interface TypedHeaders<TypedHeaderValues extends Record<string, string> | unknown> extends Omit<Headers, 'append' | 'delete' | 'get' | 'getSetCookie' | 'has' | 'set' | 'forEach'> {
+export interface TypedHeaders<TypedHeaderValues = unknown> extends Omit<Headers, 'append' | 'delete' | 'get' | 'getSetCookie' | 'has' | 'set' | 'forEach'> {
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/append) */
   append: <Name extends Extract<keyof TypedHeaderValues, string> | string & {}> (name: Name, value: Lowercase<Name> extends keyof TypedHeaderValues ? TypedHeaderValues[Lowercase<Name>] : string) => void
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/delete) */
@@ -1703,7 +1703,7 @@ export interface TypedHeaders<TypedHeaderValues extends Record<string, string> |
   has: <Name extends Extract<keyof TypedHeaderValues, string> | string & {}> (name: Name) => boolean
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Headers/set) */
   set: <Name extends Extract<keyof TypedHeaderValues, string> | string & {}> (name: Name, value: Lowercase<Name> extends keyof TypedHeaderValues ? TypedHeaderValues[Lowercase<Name>] : string) => void
-  forEach: (callbackfn: (value: TypedHeaderValues[keyof TypedHeaderValues] | string & {}, key: Extract<keyof TypedHeaderValues, string> | string & {}, parent: TypedHeaders<TypedHeaderValues>) => void, thisArg?: any) => void
+  forEach: (callbackfn: (value: TypedHeaderValues[keyof TypedHeaderValues] | string & {}, key: Extract<keyof TypedHeaderValues, string> | string & {}, parent: TypedHeaders<TypedHeaderValues>) => void, thisArg?: unknown) => void
 }
 
 /** @see https://developer.mozilla.org/en-US/docs/Web/API/Response */
@@ -1726,19 +1726,19 @@ export interface TypedErrorResponse<TData, TStatusCode, THeaders> extends Omit<F
   json: () => Promise<TData>;
 }
 
+type StatusCodeFromKey<TKey> = TKey extends `${infer TStatusCode extends number}`
+  ? TStatusCode
+  : TKey extends number
+    ? TKey
+    : never;
+
 export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
-    [K in keyof TAllResponses]: K extends string
-      ? K extends `${infer TStatusCode extends number}`
-        ? TStatusCode extends SuccessStatusCode
-          ? TypedSuccessResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
-          : TypedErrorResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
-        : never
-      : K extends number
-        ? K extends SuccessStatusCode
-          ? TypedSuccessResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
-          : TypedErrorResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
-        : never;
-  }[keyof TAllResponses];
+  [K in keyof TAllResponses]: StatusCodeFromKey<K> extends infer TStatusCode extends number
+    ? TStatusCode extends SuccessStatusCode
+      ? TypedSuccessResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+      : TypedErrorResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+    : never;
+}[keyof TAllResponses];
 
 type OptionalUndefinedKeys<T> = {
   [K in keyof T as undefined extends T[K] ? never : K]: T[K];
@@ -1763,25 +1763,11 @@ export type InferResponseByStatus<TEndpoint, TStatusCode> = Extract<SafeApiRespo
  */
 export type InferSuccessData<TEndpoint> = TEndpoint extends { responses: infer TResponses }
   ? {
-      [K in keyof TResponses]: K extends string
-        ? K extends `${infer TStatusCode extends number}`
-          ? TStatusCode extends SuccessStatusCode
-            ? InferSchemaValue<TResponses[K]> extends infer D
-              ? D extends {}
-                ? D
-                : never
-              : never
-            : never
+      [K in keyof TResponses]: StatusCodeFromKey<K> extends infer TStatusCode extends number
+        ? TStatusCode extends SuccessStatusCode
+          ? Extract<InferSchemaValue<TResponses[K]>, {}>
           : never
-        : K extends number
-          ? K extends SuccessStatusCode
-            ? InferSchemaValue<TResponses[K]> extends infer D
-              ? D extends {}
-                ? D
-                : never
-              : never
-            : never
-          : never;
+        : never;
     }[keyof TResponses]
   : never;
 

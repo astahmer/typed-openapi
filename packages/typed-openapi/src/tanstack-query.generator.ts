@@ -120,9 +120,9 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                 ...params,
                 withResponse: true,
                 throwOnStatusError: false,
-            } as never) as Effect.Effect<MutationResponse<TEndpoint>, unknown>);
+            } as never) as Effect.Effect<MutationResponse, unknown>);
 
-                if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+                if (throwOnStatusError && (errorStatusCodes as readonly number[]).includes(response.status)) {
                     throw new TypedStatusError(response as never);
                 }
 
@@ -137,9 +137,9 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                 ...params,
                 withResponse: true,
                 throwOnStatusError: false,
-            } as never) as MutationResponse<TEndpoint>;
+            } as never) as MutationResponse;
 
-                if (throwOnStatusError && errorStatusCodes.includes(response.status as never)) {
+                if (throwOnStatusError && (errorStatusCodes as readonly number[]).includes(response.status)) {
                     throw new TypedStatusError(response as never);
                 }
 
@@ -155,7 +155,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
 
   return `
   ${effectImport}import { queryOptions, infiniteQueryOptions, type QueryClient } from "@tanstack/react-query"
-  import type { EndpointByMethod, ${apiClientType}, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, TypedSuccessResponse, ApiCallParams } from "${ctx.relativeApiClientPath}"
+  import type { EndpointByMethod, ${apiClientType}, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, ApiCallParams } from "${ctx.relativeApiClientPath}"
   import { errorStatusCodes, TypedStatusError } from "${ctx.relativeApiClientPath}"
 
   type EndpointQueryKeyParams = EndpointParameters & {
@@ -244,15 +244,16 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
 
   type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
 
-  type MutationResponse<TEndpoint> = {
+  type MutationResponse = {
       status: number;
       data: unknown;
   };
 
-  type InferResponseData<TEndpoint, TStatusCode> =  TypedSuccessResponse<any, any, any> extends
-      InferResponseByStatus<TEndpoint, TStatusCode>
-          ? Extract<InferResponseByStatus<TEndpoint, TStatusCode>, { data: {}}>["data"]
-          : Extract<InferResponseByStatus<TEndpoint, TStatusCode>["data"], {}>;
+  type InferResponseData<TEndpoint, TStatusCode> = InferResponseByStatus<TEndpoint, TStatusCode> extends infer TResponse
+      ? TResponse extends { data: infer TData }
+          ? Extract<TData, {}>
+          : never
+      : never;
 
   // </ApiClientTypes>
 

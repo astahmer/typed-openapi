@@ -185,6 +185,8 @@ describe("runtime ApiClient InferSchemaValue", () => {
     expect(out).toContain("z.input<T>");
     expect(out).toContain("InferSchemaInput<UParams>");
     expect(out).toContain("TypedApiResponse<InferSchemaValue<TResponses>");
+    expect(out).not.toContain("MaybeOptionalArg<any>");
+    expect(out).not.toContain("): Promise<any>");
   });
 
   test("zod ApiClient method params typecheck as inferred Pet, not ZodType", { timeout: 30_000 }, () => {

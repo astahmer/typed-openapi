@@ -448,7 +448,7 @@ describe("generator", () => {
       export type ErrorStatusCode = (typeof errorStatusCodes)[number];
 
       // Taken from https://github.com/unjs/fetchdts/blob/ec4eaeab5d287116171fc1efd61f4a1ad34e4609/src/fetch.ts#L3
-      export interface TypedHeaders<TypedHeaderValues extends Record<string, string> | unknown> extends Omit<
+      export interface TypedHeaders<TypedHeaderValues = unknown> extends Omit<
         Headers,
         "append" | "delete" | "get" | "getSetCookie" | "has" | "set" | "forEach"
       > {
@@ -478,7 +478,7 @@ describe("generator", () => {
             key: Extract<keyof TypedHeaderValues, string> | (string & {}),
             parent: TypedHeaders<TypedHeaderValues>,
           ) => void,
-          thisArg?: any,
+          thisArg?: unknown,
         ) => void;
       }
 
@@ -508,18 +508,18 @@ describe("generator", () => {
         json: () => Promise<TData>;
       }
 
+      type StatusCodeFromKey<TKey> = TKey extends \`\${infer TStatusCode extends number}\`
+        ? TStatusCode
+        : TKey extends number
+          ? TKey
+          : never;
+
       export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
-        [K in keyof TAllResponses]: K extends string
-          ? K extends \`\${infer TStatusCode extends number}\`
-            ? TStatusCode extends SuccessStatusCode
-              ? TypedSuccessResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
-              : TypedErrorResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
-            : never
-          : K extends number
-            ? K extends SuccessStatusCode
-              ? TypedSuccessResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
-              : TypedErrorResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
-            : never;
+        [K in keyof TAllResponses]: StatusCodeFromKey<K> extends infer TStatusCode extends number
+          ? TStatusCode extends SuccessStatusCode
+            ? TypedSuccessResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+            : TypedErrorResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+          : never;
       }[keyof TAllResponses];
 
       type InferSchemaValue<T> = T;
@@ -545,25 +545,11 @@ describe("generator", () => {
        */
       export type InferSuccessData<TEndpoint> = TEndpoint extends { responses: infer TResponses }
         ? {
-            [K in keyof TResponses]: K extends string
-              ? K extends \`\${infer TStatusCode extends number}\`
-                ? TStatusCode extends SuccessStatusCode
-                  ? InferSchemaValue<TResponses[K]> extends infer D
-                    ? D extends {}
-                      ? D
-                      : never
-                    : never
-                  : never
+            [K in keyof TResponses]: StatusCodeFromKey<K> extends infer TStatusCode extends number
+              ? TStatusCode extends SuccessStatusCode
+                ? Extract<InferSchemaValue<TResponses[K]>, {}>
                 : never
-              : K extends number
-                ? K extends SuccessStatusCode
-                  ? InferSchemaValue<TResponses[K]> extends infer D
-                    ? D extends {}
-                      ? D
-                      : never
-                    : never
-                  : never
-                : never;
+              : never;
           }[keyof TResponses]
         : never;
 
@@ -755,11 +741,8 @@ describe("generator", () => {
           >
         ): Promise<InferSuccessData<TEndpoint>>;
 
-        put<Path extends keyof PutEndpoints, _TEndpoint extends PutEndpoints[Path]>(
-          path: Path,
-          ...params: MaybeOptionalArg<any>
-        ): Promise<any> {
-          return this.request("put", path, ...params);
+        put<Path extends keyof PutEndpoints>(path: Path, ...params: [config?: unknown]): Promise<unknown> {
+          return this.request("put", path, params[0] as never) as Promise<unknown>;
         }
         // </ApiClient.put>
 
@@ -796,11 +779,8 @@ describe("generator", () => {
           >
         ): Promise<InferSuccessData<TEndpoint>>;
 
-        post<Path extends keyof PostEndpoints, _TEndpoint extends PostEndpoints[Path]>(
-          path: Path,
-          ...params: MaybeOptionalArg<any>
-        ): Promise<any> {
-          return this.request("post", path, ...params);
+        post<Path extends keyof PostEndpoints>(path: Path, ...params: [config?: unknown]): Promise<unknown> {
+          return this.request("post", path, params[0] as never) as Promise<unknown>;
         }
         // </ApiClient.post>
 
@@ -837,11 +817,8 @@ describe("generator", () => {
           >
         ): Promise<InferSuccessData<TEndpoint>>;
 
-        get<Path extends keyof GetEndpoints, _TEndpoint extends GetEndpoints[Path]>(
-          path: Path,
-          ...params: MaybeOptionalArg<any>
-        ): Promise<any> {
-          return this.request("get", path, ...params);
+        get<Path extends keyof GetEndpoints>(path: Path, ...params: [config?: unknown]): Promise<unknown> {
+          return this.request("get", path, params[0] as never) as Promise<unknown>;
         }
         // </ApiClient.get>
 
@@ -878,11 +855,8 @@ describe("generator", () => {
           >
         ): Promise<InferSuccessData<TEndpoint>>;
 
-        delete<Path extends keyof DeleteEndpoints, _TEndpoint extends DeleteEndpoints[Path]>(
-          path: Path,
-          ...params: MaybeOptionalArg<any>
-        ): Promise<any> {
-          return this.request("delete", path, ...params);
+        delete<Path extends keyof DeleteEndpoints>(path: Path, ...params: [config?: unknown]): Promise<unknown> {
+          return this.request("delete", path, params[0] as never) as Promise<unknown>;
         }
         // </ApiClient.delete>
 
@@ -936,9 +910,16 @@ describe("generator", () => {
           TMethod extends keyof EndpointByMethod,
           TPath extends keyof EndpointByMethod[TMethod],
           TEndpoint extends EndpointByMethod[TMethod][TPath],
-        >(method: TMethod, path: TPath, ...params: MaybeOptionalArg<any>): Promise<any> {
+        >(method: TMethod, path: TPath, ...params: [config?: unknown]): Promise<unknown> {
           return (async () => {
-            const requestParams = params[0];
+            const requestParams = params[0] as
+              | (EndpointParameters & {
+                  overrides?: RequestInit;
+                  withResponse?: boolean;
+                  throwOnStatusError?: boolean;
+                  validate?: ValidateSide;
+                })
+              | undefined;
             const withResponse = requestParams?.withResponse;
             const throwOnStatusError = requestParams?.throwOnStatusError ?? (withResponse ? false : true);
             let overrides = requestParams?.overrides;
@@ -992,7 +973,7 @@ describe("generator", () => {
             }
 
             return withResponse ? typedResponse : data;
-          })() as Promise<any>;
+          })();
         }
         // </ApiClient.request>
       }
@@ -1515,7 +1496,7 @@ describe("generator", () => {
       export type ErrorStatusCode = (typeof errorStatusCodes)[number];
 
       // Taken from https://github.com/unjs/fetchdts/blob/ec4eaeab5d287116171fc1efd61f4a1ad34e4609/src/fetch.ts#L3
-      export interface TypedHeaders<TypedHeaderValues extends Record<string, string> | unknown> extends Omit<
+      export interface TypedHeaders<TypedHeaderValues = unknown> extends Omit<
         Headers,
         "append" | "delete" | "get" | "getSetCookie" | "has" | "set" | "forEach"
       > {
@@ -1545,7 +1526,7 @@ describe("generator", () => {
             key: Extract<keyof TypedHeaderValues, string> | (string & {}),
             parent: TypedHeaders<TypedHeaderValues>,
           ) => void,
-          thisArg?: any,
+          thisArg?: unknown,
         ) => void;
       }
 
@@ -1575,18 +1556,18 @@ describe("generator", () => {
         json: () => Promise<TData>;
       }
 
+      type StatusCodeFromKey<TKey> = TKey extends \`\${infer TStatusCode extends number}\`
+        ? TStatusCode
+        : TKey extends number
+          ? TKey
+          : never;
+
       export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
-        [K in keyof TAllResponses]: K extends string
-          ? K extends \`\${infer TStatusCode extends number}\`
-            ? TStatusCode extends SuccessStatusCode
-              ? TypedSuccessResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
-              : TypedErrorResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
-            : never
-          : K extends number
-            ? K extends SuccessStatusCode
-              ? TypedSuccessResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
-              : TypedErrorResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
-            : never;
+        [K in keyof TAllResponses]: StatusCodeFromKey<K> extends infer TStatusCode extends number
+          ? TStatusCode extends SuccessStatusCode
+            ? TypedSuccessResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+            : TypedErrorResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+          : never;
       }[keyof TAllResponses];
 
       type InferSchemaValue<T> = T;
@@ -1612,25 +1593,11 @@ describe("generator", () => {
        */
       export type InferSuccessData<TEndpoint> = TEndpoint extends { responses: infer TResponses }
         ? {
-            [K in keyof TResponses]: K extends string
-              ? K extends \`\${infer TStatusCode extends number}\`
-                ? TStatusCode extends SuccessStatusCode
-                  ? InferSchemaValue<TResponses[K]> extends infer D
-                    ? D extends {}
-                      ? D
-                      : never
-                    : never
-                  : never
+            [K in keyof TResponses]: StatusCodeFromKey<K> extends infer TStatusCode extends number
+              ? TStatusCode extends SuccessStatusCode
+                ? Extract<InferSchemaValue<TResponses[K]>, {}>
                 : never
-              : K extends number
-                ? K extends SuccessStatusCode
-                  ? InferSchemaValue<TResponses[K]> extends infer D
-                    ? D extends {}
-                      ? D
-                      : never
-                    : never
-                  : never
-                : never;
+              : never;
           }[keyof TResponses]
         : never;
 
@@ -1822,11 +1789,8 @@ describe("generator", () => {
           >
         ): Promise<InferSuccessData<TEndpoint>>;
 
-        get<Path extends keyof GetEndpoints, _TEndpoint extends GetEndpoints[Path]>(
-          path: Path,
-          ...params: MaybeOptionalArg<any>
-        ): Promise<any> {
-          return this.request("get", path, ...params);
+        get<Path extends keyof GetEndpoints>(path: Path, ...params: [config?: unknown]): Promise<unknown> {
+          return this.request("get", path, params[0] as never) as Promise<unknown>;
         }
         // </ApiClient.get>
 
@@ -1880,9 +1844,16 @@ describe("generator", () => {
           TMethod extends keyof EndpointByMethod,
           TPath extends keyof EndpointByMethod[TMethod],
           TEndpoint extends EndpointByMethod[TMethod][TPath],
-        >(method: TMethod, path: TPath, ...params: MaybeOptionalArg<any>): Promise<any> {
+        >(method: TMethod, path: TPath, ...params: [config?: unknown]): Promise<unknown> {
           return (async () => {
-            const requestParams = params[0];
+            const requestParams = params[0] as
+              | (EndpointParameters & {
+                  overrides?: RequestInit;
+                  withResponse?: boolean;
+                  throwOnStatusError?: boolean;
+                  validate?: ValidateSide;
+                })
+              | undefined;
             const withResponse = requestParams?.withResponse;
             const throwOnStatusError = requestParams?.throwOnStatusError ?? (withResponse ? false : true);
             let overrides = requestParams?.overrides;
@@ -1936,7 +1907,7 @@ describe("generator", () => {
             }
 
             return withResponse ? typedResponse : data;
-          })() as Promise<any>;
+          })();
         }
         // </ApiClient.request>
       }
@@ -2197,7 +2168,7 @@ describe("generator", () => {
       export type ErrorStatusCode = (typeof errorStatusCodes)[number];
 
       // Taken from https://github.com/unjs/fetchdts/blob/ec4eaeab5d287116171fc1efd61f4a1ad34e4609/src/fetch.ts#L3
-      export interface TypedHeaders<TypedHeaderValues extends Record<string, string> | unknown> extends Omit<
+      export interface TypedHeaders<TypedHeaderValues = unknown> extends Omit<
         Headers,
         "append" | "delete" | "get" | "getSetCookie" | "has" | "set" | "forEach"
       > {
@@ -2227,7 +2198,7 @@ describe("generator", () => {
             key: Extract<keyof TypedHeaderValues, string> | (string & {}),
             parent: TypedHeaders<TypedHeaderValues>,
           ) => void,
-          thisArg?: any,
+          thisArg?: unknown,
         ) => void;
       }
 
@@ -2257,18 +2228,18 @@ describe("generator", () => {
         json: () => Promise<TData>;
       }
 
+      type StatusCodeFromKey<TKey> = TKey extends \`\${infer TStatusCode extends number}\`
+        ? TStatusCode
+        : TKey extends number
+          ? TKey
+          : never;
+
       export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
-        [K in keyof TAllResponses]: K extends string
-          ? K extends \`\${infer TStatusCode extends number}\`
-            ? TStatusCode extends SuccessStatusCode
-              ? TypedSuccessResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
-              : TypedErrorResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
-            : never
-          : K extends number
-            ? K extends SuccessStatusCode
-              ? TypedSuccessResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
-              : TypedErrorResponse<TAllResponses[K], K, K extends keyof THeaders ? THeaders[K] : never>
-            : never;
+        [K in keyof TAllResponses]: StatusCodeFromKey<K> extends infer TStatusCode extends number
+          ? TStatusCode extends SuccessStatusCode
+            ? TypedSuccessResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+            : TypedErrorResponse<TAllResponses[K], TStatusCode, K extends keyof THeaders ? THeaders[K] : never>
+          : never;
       }[keyof TAllResponses];
 
       type InferSchemaValue<T> = T;
@@ -2294,25 +2265,11 @@ describe("generator", () => {
        */
       export type InferSuccessData<TEndpoint> = TEndpoint extends { responses: infer TResponses }
         ? {
-            [K in keyof TResponses]: K extends string
-              ? K extends \`\${infer TStatusCode extends number}\`
-                ? TStatusCode extends SuccessStatusCode
-                  ? InferSchemaValue<TResponses[K]> extends infer D
-                    ? D extends {}
-                      ? D
-                      : never
-                    : never
-                  : never
+            [K in keyof TResponses]: StatusCodeFromKey<K> extends infer TStatusCode extends number
+              ? TStatusCode extends SuccessStatusCode
+                ? Extract<InferSchemaValue<TResponses[K]>, {}>
                 : never
-              : K extends number
-                ? K extends SuccessStatusCode
-                  ? InferSchemaValue<TResponses[K]> extends infer D
-                    ? D extends {}
-                      ? D
-                      : never
-                    : never
-                  : never
-                : never;
+              : never;
           }[keyof TResponses]
         : never;
 
@@ -2504,11 +2461,8 @@ describe("generator", () => {
           >
         ): Promise<InferSuccessData<TEndpoint>>;
 
-        get<Path extends keyof GetEndpoints, _TEndpoint extends GetEndpoints[Path]>(
-          path: Path,
-          ...params: MaybeOptionalArg<any>
-        ): Promise<any> {
-          return this.request("get", path, ...params);
+        get<Path extends keyof GetEndpoints>(path: Path, ...params: [config?: unknown]): Promise<unknown> {
+          return this.request("get", path, params[0] as never) as Promise<unknown>;
         }
         // </ApiClient.get>
 
@@ -2562,9 +2516,16 @@ describe("generator", () => {
           TMethod extends keyof EndpointByMethod,
           TPath extends keyof EndpointByMethod[TMethod],
           TEndpoint extends EndpointByMethod[TMethod][TPath],
-        >(method: TMethod, path: TPath, ...params: MaybeOptionalArg<any>): Promise<any> {
+        >(method: TMethod, path: TPath, ...params: [config?: unknown]): Promise<unknown> {
           return (async () => {
-            const requestParams = params[0];
+            const requestParams = params[0] as
+              | (EndpointParameters & {
+                  overrides?: RequestInit;
+                  withResponse?: boolean;
+                  throwOnStatusError?: boolean;
+                  validate?: ValidateSide;
+                })
+              | undefined;
             const withResponse = requestParams?.withResponse;
             const throwOnStatusError = requestParams?.throwOnStatusError ?? (withResponse ? false : true);
             let overrides = requestParams?.overrides;
@@ -2618,7 +2579,7 @@ describe("generator", () => {
             }
 
             return withResponse ? typedResponse : data;
-          })() as Promise<any>;
+          })();
         }
         // </ApiClient.request>
       }

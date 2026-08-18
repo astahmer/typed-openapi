@@ -35,6 +35,8 @@ describe("tanstack-query.generator", () => {
     expect(file).toContain("queryOptions:");
     expect(file).toContain("mutationOptions:");
     expect(file).toContain("export class TanstackQueryApiClient");
+    expect(file).toContain("TResponse extends { data: infer TData }");
+    expect(file).not.toContain("TypedSuccessResponse<any, any, any>");
     expect(file).not.toContain("this.client as any");
     expect(file).not.toContain("params as any");
   });
