@@ -3,6 +3,7 @@ import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { generateMswFile, openApiPathToMswPath, stubFromSchema } from "../src/msw.generator.ts";
+import { openApiToIr } from "../src/schema-ir/openapi-to-ir.ts";
 import type { SchemaNode } from "../src/schema-ir/types.ts";
 
 describe("msw.generator unit", () => {
@@ -35,6 +36,22 @@ describe("msw.generator unit", () => {
       meta: {},
     };
     expect(stubFromSchema(email, true)).toBe("__FAKER__.internet.email()");
+  });
+
+  test("custom transforms use their encoded fallback for mocks", () => {
+    const dateTime = openApiToIr(
+      { type: "string", format: "date-time" },
+      {
+        getRefName: (ref) => ref,
+        transformSchema: () => ({
+          type: 'import("effect").DateTime.Utc',
+          runtime: "Schema.DateTimeUtcFromString",
+        }),
+      },
+    );
+
+    expect(dateTime.kind).toBe("custom");
+    expect(stubFromSchema(dateTime)).toBe("2020-01-01T00:00:00.000Z");
   });
 
   test("petstore generates handlers and mock factories", async () => {

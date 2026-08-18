@@ -159,8 +159,9 @@ export const stubFromSchema = (
     case "record":
       return {};
     case "custom":
-      // Custom transforms are opaque to MSW stub generation.
-      return null;
+      // Custom transforms may change the in-memory type/runtime while the mock still
+      // needs to emit the original encoded JSON shape (e.g. an ISO date-time string).
+      return node.fallback ? stubFromSchema(node.fallback, ctx) : null;
     case "binary":
       return null;
     case "stream":

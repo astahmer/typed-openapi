@@ -34,6 +34,7 @@ describe("custom schema transforms (transformSchema)", () => {
     if (node.kind === "custom") {
       expect(node.type).toBe('string & { __brand: "foo" }');
       expect(node.runtime).toBe("z.string()");
+      expect(node.fallback?.kind).toBe("number");
     }
   });
 
@@ -65,6 +66,7 @@ describe("custom schema transforms (transformSchema)", () => {
     if (node.kind === "custom") {
       expect(irToTs(node)).toBe("number");
       expect(node.runtime).toBe("z.any()");
+      expect(node.fallback?.kind).toBe("number");
     }
   });
 

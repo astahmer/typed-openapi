@@ -142,8 +142,9 @@ const openApiToIrInternal = (input: unknown, ctx: SchemaIrConvertContext, path: 
       ? ctx.transformSchema(input as LibSchemaObject, transformCtx)
       : undefined;
   if (transformResult && (transformResult.type !== undefined || transformResult.runtime !== undefined)) {
-    // Runtime-only transforms keep the default type; compute the default node as fallback.
-    const fallback = transformResult.type === undefined ? openApiToIrInnerBody(input, ctx, path) : undefined;
+    // Keep the default node as a fallback for every custom transform. Runtime adapters use
+    // the custom type/runtime, while mock generation still needs the encoded JSON shape.
+    const fallback = openApiToIrInnerBody(input, ctx, path);
     return {
       kind: "custom",
       type: transformResult.type,
