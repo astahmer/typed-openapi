@@ -232,6 +232,13 @@ export const generateMswFile = (options: MswGeneratorOptions): string => {
   }
   const methods = [...endpointsByMethod.keys()];
 
+  lines.push(`type MswDefinition = {`);
+  lines.push(`  readonly mswPath: string;`);
+  lines.push(`  readonly status: number;`);
+  lines.push(`  readonly responseFormat: "json" | "sse";`);
+  lines.push(`  readonly response: () => unknown;`);
+  lines.push(`};`);
+  lines.push(``);
   lines.push(`const endpointDefinitions = {`);
   for (const method of methods) {
     lines.push(`  ${method}: {`);
@@ -262,20 +269,18 @@ export const generateMswFile = (options: MswGeneratorOptions): string => {
     }
     lines.push(`  },`);
   }
-  lines.push(`} as const;`);
+  lines.push(`} as const satisfies Record<string, Record<string, MswDefinition>>;`);
   lines.push(``);
   lines.push(`type EndpointDefinitions = typeof endpointDefinitions;`);
   lines.push(`export type MswMethod = keyof EndpointDefinitions;`);
   lines.push(`export type MswPath<M extends MswMethod> = keyof EndpointDefinitions[M] & string;`);
   lines.push(
-    `export type MswResponse<M extends MswMethod, P extends MswPath<M>> = ReturnType<EndpointDefinitions[M][P]["response"]>;`,
+    `export type MswResponse<M extends MswMethod, P extends MswPath<M>> = EndpointDefinitions[M][P] extends { readonly response: () => infer R } ? R : never;`,
   );
   lines.push(``);
-  lines.push(`type MswDefinition = {`);
-  lines.push(`  readonly mswPath: string;`);
-  lines.push(`  readonly status: number;`);
-  lines.push(`  readonly responseFormat: "json" | "sse";`);
-  lines.push(`  readonly response: () => unknown;`);
+  lines.push(`type MswEndpoint<M extends MswMethod, P extends MswPath<M>> = {`);
+  lines.push(`  readonly response: EndpointDefinitions[M][P] extends { readonly response: infer R } ? R : never;`);
+  lines.push(`  readonly handler: (resolver?: HttpResponseResolver) => ReturnType<typeof createHandler>;`);
   lines.push(`};`);
   lines.push(``);
   lines.push(
@@ -298,19 +303,30 @@ export const generateMswFile = (options: MswGeneratorOptions): string => {
   lines.push(`  throw new Error("Unsupported MSW method");`);
   lines.push(`};`);
   lines.push(``);
-  lines.push(`const createEndpoint = <M extends MswMethod, P extends MswPath<M>>(method: M, path: P) => {`);
-  lines.push(`  const definition = endpointDefinitions[method][path] as EndpointDefinitions[M][P] & MswDefinition;`);
+  lines.push(`const createEndpoint = (method: MswMethod, definition: MswDefinition) => {`);
   lines.push(`  return {`);
   lines.push(`    response: definition.response,`);
   lines.push(`    handler: (resolver?: HttpResponseResolver) => createHandler(method, definition, resolver),`);
   lines.push(`  };`);
   lines.push(`};`);
   lines.push(``);
+  for (const method of methods) {
+    const functionName = `${method}Mock`;
+    for (const endpoint of endpointsByMethod.get(method) ?? []) {
+      lines.push(
+        `function ${functionName}(path: ${JSON.stringify(endpoint.path)}): MswEndpoint<${JSON.stringify(method)}, ${JSON.stringify(endpoint.path)}>;`,
+      );
+    }
+    lines.push(`function ${functionName}(path: MswPath<${JSON.stringify(method)}>) {`);
+    lines.push(
+      `  return createEndpoint(${JSON.stringify(method)}, endpointDefinitions[${JSON.stringify(method)}][path]);`,
+    );
+    lines.push(`}`);
+    lines.push(``);
+  }
   lines.push(`export const mock = {`);
   for (const method of methods) {
-    lines.push(
-      `  ${method}: <P extends MswPath<${JSON.stringify(method)}>>(path: P) => createEndpoint(${JSON.stringify(method)}, path),`,
-    );
+    lines.push(`  ${method}: ${method}Mock,`);
   }
   lines.push(`} as const;`);
   lines.push(``);

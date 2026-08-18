@@ -66,10 +66,10 @@ describe("msw.generator unit", () => {
     expect(file).toContain("/pet/:petId");
     expect(file).toContain("HttpResponse.json");
     expect(file).toContain("export const mock = {");
-    expect(file).toContain("get: <P extends MswPath");
+    expect(file).toContain('function getMock(path: "/pet/{petId}")');
     expect(file).toContain('mock.get("/pet/{petId}").handler()');
     expect(file).toContain("export type MswResponse");
-    expect(file).not.toContain("export const getGet");
+    expect(file).not.toMatch(/export const get[A-Za-z0-9_]+Mock/);
     expect(file).not.toContain("@faker-js/faker");
   });
 
