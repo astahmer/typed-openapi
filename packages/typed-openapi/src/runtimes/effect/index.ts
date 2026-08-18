@@ -331,29 +331,24 @@ export const effectAdapter: RuntimeAdapter = {
   never: () => `${S}.Never`,
   emitNamedSchema: (name, node, ctx, typeReference) => {
     const childCtx = { ...ctx, currentSchemaName: name };
-    // Named NullOr wrappers break struct field assign on $ref — keep const as the
-    // inner schema and surface nullability on the exported TypeScript type instead.
     const nullInner = isNullOr(node);
-    let body = emitNode(nullInner ?? node, childCtx);
+    const body = emitNode(node, childCtx);
     if (typeReference) {
-      if (ctx.recursiveNames.has(name)) body = `${S}.suspend(() => ${body})`;
-      return `export type ${name} = ${typeReference};\nexport const ${name} = ${body};`;
+      const lazyBody = ctx.recursiveNames.has(name) ? `${S}.suspend(() => ${body})` : body;
+      return `export type ${name} = ${typeReference};\nexport const ${name} = ${lazyBody};`;
     }
     if (ctx.recursiveNames.has(name)) {
-      body = `${S}.suspend(() => ${body})`;
+      const lazyBody = `${S}.suspend(() => ${body})`;
       if (nullInner) {
-        // Const stays non-null; type is Core | null without circular `typeof` infer.
         const typeDecl = emitExplicitSchemaTypeDecl(name, nullInner, ctx, { readonlyArrays: true });
-        // emitExplicit declares `Name` as the core shape — widen export to include null.
         const widened = typeDecl
           .replace(`export type ${name} = `, `export type ${name}Core = `)
           .replace(`export interface ${name} `, `export interface ${name}Core `);
-        return `${widened}\nexport type ${name} = ${name}Core | null;\nexport const ${name}: ${S}.Schema<${name}Core> = ${body};`;
+        return `${widened}\nexport type ${name} = ${name}Core | null;\nexport const ${name}: ${S}.Schema<${name}> = ${lazyBody};`;
       }
       const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx, { readonlyArrays: true });
-      return `${typeDecl}\nexport const ${name}: ${S}.Schema<${name}> = ${body};`;
+      return `${typeDecl}\nexport const ${name}: ${S}.Schema<${name}> = ${lazyBody};`;
     }
-    const typeExpr = nullInner ? `Schema.Schema.Type<typeof ${name}> | null` : `Schema.Schema.Type<typeof ${name}>`;
-    return `export const ${name} = ${body};\nexport type ${name} = ${typeExpr};`;
+    return `export const ${name} = ${body};\nexport type ${name} = Schema.Schema.Type<typeof ${name}>;`;
   },
 };

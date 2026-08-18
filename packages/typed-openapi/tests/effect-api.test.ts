@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 import { Schema } from "effect";
 import { openApiToIr } from "../src/schema-ir/openapi-to-ir.ts";
 import { effectAdapter } from "../src/runtimes/effect/index.ts";
+import { effect3Adapter } from "../src/runtimes/effect3/index.ts";
 import { createEmitCtx } from "../src/runtimes/types.ts";
 import { resolveValidationPolicy } from "../src/runtimes/validation.ts";
 
@@ -38,5 +39,30 @@ describe("effect adapter API", () => {
     });
     expect(Schema.is(Person)({ email: "a@b.co", age: 1 })).toBe(true);
     expect(Schema.is(Person)({ email: "nope", age: 1 })).toBe(false);
+  });
+
+  test.each([
+    ["effect", effectAdapter, "Schema"],
+    ["effect3", effect3Adapter, "S"],
+  ] as const)("keeps nullable named schemas nullable at runtime (%s)", (_name, adapter, schemaNamespace) => {
+    const node = openApiToIr({ anyOf: [{ type: "string" }, { type: "null" }] }, { getRefName: (r) => r });
+    const ctx = createEmitCtx(resolveValidationPolicy("strict"));
+    const src = adapter.emitNamedSchema("NullableString", node, ctx);
+
+    expect(src).toContain(`${schemaNamespace}.NullOr(${schemaNamespace}.String)`);
+    expect(src).toContain(`export type NullableString = ${schemaNamespace}.Schema.Type<typeof NullableString>;`);
+
+    if (adapter === effectAdapter) {
+      const runtimeSource = src
+        .split("\n")
+        .filter((line) => !line.startsWith("export type "))
+        .join("\n")
+        .replace("export const NullableString", "const NullableString");
+      const NullableString = new Function("Schema", `${runtimeSource}; return NullableString;`)(Schema);
+
+      expect(Schema.is(NullableString)(null)).toBe(true);
+      expect(Schema.is(NullableString)("ok")).toBe(true);
+      expect(Schema.is(NullableString)(42)).toBe(false);
+    }
   });
 });
