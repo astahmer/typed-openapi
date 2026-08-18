@@ -115,7 +115,7 @@ describe("msw handlers e2e", () => {
     writeFileSync(filePath, src);
     const mod = await importGenerated(filePath);
 
-    expect(mod.getGetEchoMock()).toEqual({ msg: "hello-msw" });
+    expect(mod.mock.get("/echo").response()).toEqual({ msg: "hello-msw" });
     server.use(...mod.handlers);
     const res = await fetch("https://example.test/echo");
     expect(await res.json()).toEqual({ msg: "hello-msw" });

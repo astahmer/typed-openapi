@@ -39,7 +39,7 @@ cli
   )
   .option(
     "--msw [name]",
-    "Generate MSW request handlers, defaults to false; optional output name/path next to the main file",
+    "Generate MSW request handlers and a typed method/path facade, defaults to false; optional output name/path next to the main file",
   )
   .option("--msw-faker", "Use @faker-js/faker in generated MSW mock factories (requires the package installed)")
   .option("--msw-base-url <url>", 'Base URL/prefix for MSW handlers (default: "*")')

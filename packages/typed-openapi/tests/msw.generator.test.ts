@@ -54,7 +54,7 @@ describe("msw.generator unit", () => {
     expect(stubFromSchema(dateTime)).toBe("2020-01-01T00:00:00.000Z");
   });
 
-  test("petstore generates handlers and mock factories", async () => {
+  test("petstore generates a scoped mock facade and handlers", async () => {
     const openApiDoc = (await SwaggerParser.parse("./tests/samples/petstore.yaml")) as OpenAPIObject;
     const ctx = mapOpenApiEndpoints(openApiDoc);
     const file = generateMswFile({ endpointList: ctx.endpointList, doc: openApiDoc });
@@ -65,8 +65,11 @@ describe("msw.generator unit", () => {
     expect(file).toContain("http.post");
     expect(file).toContain("/pet/:petId");
     expect(file).toContain("HttpResponse.json");
-    expect(file).toContain("export const get");
-    expect(file).toContain("Mock = () =>");
+    expect(file).toContain("export const mock = {");
+    expect(file).toContain("get: <P extends MswPath");
+    expect(file).toContain('mock.get("/pet/{petId}").handler()');
+    expect(file).toContain("export type MswResponse");
+    expect(file).not.toContain("export const getGet");
     expect(file).not.toContain("@faker-js/faker");
   });
 

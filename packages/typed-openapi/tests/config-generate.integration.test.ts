@@ -135,6 +135,8 @@ describe("generateClientFiles + config file integration", () => {
     const msw = readFileSync(join(tmp, "msw.handlers.ts"), "utf8");
     expect(msw).toContain("https://mini.test");
     expect(msw).toContain("export const handlers");
+    expect(msw).toContain("export const mock = {");
+    expect(msw).not.toContain("export const getGet");
 
     const tanstack = readFileSync(join(tmp, "tanstack.client.ts"), "utf8");
     expect(tanstack).toContain("infiniteQueryOptions");

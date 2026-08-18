@@ -21,7 +21,7 @@ See [the documentation](https://typed-openapi-docs.vercel.app/) or try [the onli
 - **TanStack Query integration**: `queryOptions`, `suspenseQueryOptions`, `infiniteQueryOptions` (with `pageParamKey`),
   `queryKeyFactory`, and `invalidate` / `invalidateEndpoint` helpers — works with promise and Effect clients
   (`Effect.runPromise` when needed)
-- **MSW mocks** (`--msw`): request handlers + mock factories from schemas/examples; optional `--msw-faker` for
+- **MSW mocks** (`--msw`): request handlers + a typed method/path mock facade from schemas/examples; optional `--msw-faker` for
   `@faker-js/faker`
 - **Auth from `securitySchemes`**: default fetcher emits `AuthCredentials` + `configureFetcher({ getAuth })` (apiKey /
   http / oauth2 / openIdConnect)
@@ -153,7 +153,7 @@ Options:
   --success-status-codes <codes>  Comma-separated list of success status codes (defaults to 2xx and 3xx ranges)
   --error-status-codes <codes>    Comma-separated list of error status codes (defaults to 4xx and 5xx ranges)
   --tanstack [name]               Generate tanstack client, defaults to false, can optionally specify a name (will be generated next to the main file) or absolute path for the generated file
-  --msw [name]                    Generate MSW request handlers, defaults to false; optional output name/path next to the main file
+  --msw [name]                    Generate MSW request handlers and a typed method/path facade, defaults to false; optional output name/path next to the main file
   --msw-faker                     Use @faker-js/faker in generated MSW mock factories (requires the package installed)
   --msw-base-url <url>            Base URL/prefix for MSW handlers (default: "*")
   --default-fetcher [name]        Generate default fetcher, defaults to false, can optionally specify a name (will be generated next to the main file) or absolute path for the generated file
@@ -278,7 +278,20 @@ npx typed-openapi api.yaml --msw
 # optional: --msw-faker --msw-base-url https://api.example.com
 ```
 
-Emits `msw.handlers.ts` with `handlers` and per-endpoint `get…Mock()` factories (schema examples/defaults, or faker).
+Emits `msw.handlers.ts` with the standard `handlers` array plus a typed `mock` facade. Resolve a response or create an
+overrideable handler by OpenAPI method/path, without one top-level export per endpoint:
+
+```ts
+import { HttpResponse } from "msw";
+import { handlers, mock } from "./msw.handlers";
+
+const pet = mock.get("/pet/{petId}").response();
+const customPetHandler = mock.get("/pet/{petId}").handler(() => HttpResponse.json(pet));
+server.use(...handlers, customPetHandler);
+```
+
+Responses use schema examples/defaults (or faker with `--msw-faker`), and the generated `MswPath` / `MswResponse` types
+keep method/path and response inference aligned with the OpenAPI document.
 
 ### Auth (`securitySchemes`)
 

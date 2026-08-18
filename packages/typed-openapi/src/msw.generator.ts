@@ -1,7 +1,6 @@
 import type { ExampleObject, MediaTypeObject, OpenAPIObject, ResponseObject } from "openapi3-ts/oas31";
 import type { Endpoint } from "./map-openapi-endpoints.ts";
 import type { SchemaNode } from "./schema-ir/types.ts";
-import { sanitizeName } from "./sanitize-name.ts";
 
 export type MswGeneratorOptions = {
   endpointList: Endpoint[];
@@ -216,61 +215,109 @@ export const generateMswFile = (options: MswGeneratorOptions): string => {
   );
   lines.push(` */`);
   lines.push(`import { http, HttpResponse } from "msw";`);
+  lines.push(`import type { HttpResponseResolver } from "msw";`);
   if (faker) {
     lines.push(`import { faker } from "@faker-js/faker";`);
   }
   lines.push(``);
 
+  const endpointsByMethod = new Map<Endpoint["method"], Endpoint[]>();
   for (const endpoint of endpointList) {
-    const status = pickSuccessStatus(endpoint.responses);
-    const alias = sanitizeName(endpoint.meta.alias, "endpoint");
-    const factoryName = `get${alias.charAt(0).toUpperCase()}${alias.slice(1)}Mock`;
-
-    let bodyExpr: string;
-    if (status) {
-      const fromOp = exampleFromOperation(endpoint, status);
-      if (fromOp !== undefined) {
-        bodyExpr = jsLiteral(fromOp, false);
-      } else {
-        const schema = endpoint.responses![status]!;
-        bodyExpr = jsLiteral(stubFromSchema(schema, stubCtx), faker);
-      }
+    const endpoints = endpointsByMethod.get(endpoint.method);
+    if (endpoints) {
+      endpoints.push(endpoint);
     } else {
-      bodyExpr = "null";
+      endpointsByMethod.set(endpoint.method, [endpoint]);
     }
-
-    lines.push(`export const ${factoryName} = () => (${bodyExpr});`);
   }
+  const methods = [...endpointsByMethod.keys()];
 
+  lines.push(`const endpointDefinitions = {`);
+  for (const method of methods) {
+    lines.push(`  ${method}: {`);
+    for (const endpoint of endpointsByMethod.get(method) ?? []) {
+      const status = pickSuccessStatus(endpoint.responses);
+      const statusNum = Number(status) || 200;
+      const mswPath = joinMswBasePath(baseUrl, openApiPathToMsw(endpoint.path));
+
+      let bodyExpr: string;
+      if (status) {
+        const fromOp = exampleFromOperation(endpoint, status);
+        if (fromOp !== undefined) {
+          bodyExpr = jsLiteral(fromOp, false);
+        } else {
+          const schema = endpoint.responses![status]!;
+          bodyExpr = jsLiteral(stubFromSchema(schema, stubCtx), faker);
+        }
+      } else {
+        bodyExpr = "null";
+      }
+
+      lines.push(`    ${JSON.stringify(endpoint.path)}: {`);
+      lines.push(`      mswPath: ${JSON.stringify(mswPath)},`);
+      lines.push(`      status: ${statusNum},`);
+      lines.push(`      responseFormat: ${JSON.stringify(endpoint.responseFormat)},`);
+      lines.push(`      response: () => (${bodyExpr}),`);
+      lines.push(`    },`);
+    }
+    lines.push(`  },`);
+  }
+  lines.push(`} as const;`);
   lines.push(``);
-  lines.push(`const baseUrl = ${JSON.stringify(baseUrl)};`);
+  lines.push(`type EndpointDefinitions = typeof endpointDefinitions;`);
+  lines.push(`export type MswMethod = keyof EndpointDefinitions;`);
+  lines.push(`export type MswPath<M extends MswMethod> = keyof EndpointDefinitions[M] & string;`);
+  lines.push(
+    `export type MswResponse<M extends MswMethod, P extends MswPath<M>> = ReturnType<EndpointDefinitions[M][P]["response"]>;`,
+  );
+  lines.push(``);
+  lines.push(`type MswDefinition = {`);
+  lines.push(`  readonly mswPath: string;`);
+  lines.push(`  readonly status: number;`);
+  lines.push(`  readonly responseFormat: "json" | "sse";`);
+  lines.push(`  readonly response: () => unknown;`);
+  lines.push(`};`);
+  lines.push(``);
+  lines.push(
+    `const createHandler = (method: MswMethod, definition: MswDefinition, resolver?: HttpResponseResolver) => {`,
+  );
+  lines.push(`  const responseResolver = resolver ?? (`);
+  lines.push(`    definition.responseFormat === "sse"`);
+  lines.push(`      ? () => new HttpResponse("data: {}\\n\\n", {`);
+  lines.push(`          status: definition.status,`);
+  lines.push(`          headers: { "Content-Type": "text/event-stream" },`);
+  lines.push(`        })`);
+  lines.push(`      : () => HttpResponse.json(definition.response() as never, { status: definition.status })`);
+  lines.push(`  );`);
+  lines.push(`  switch (method) {`);
+  for (const method of methods) {
+    lines.push(`    case ${JSON.stringify(method)}:`);
+    lines.push(`      return http.${method}(definition.mswPath, responseResolver);`);
+  }
+  lines.push(`  }`);
+  lines.push(`  throw new Error("Unsupported MSW method");`);
+  lines.push(`};`);
+  lines.push(``);
+  lines.push(`const createEndpoint = <M extends MswMethod, P extends MswPath<M>>(method: M, path: P) => {`);
+  lines.push(`  const definition = endpointDefinitions[method][path] as EndpointDefinitions[M][P] & MswDefinition;`);
+  lines.push(`  return {`);
+  lines.push(`    response: definition.response,`);
+  lines.push(`    handler: (resolver?: HttpResponseResolver) => createHandler(method, definition, resolver),`);
+  lines.push(`  };`);
+  lines.push(`};`);
+  lines.push(``);
+  lines.push(`export const mock = {`);
+  for (const method of methods) {
+    lines.push(
+      `  ${method}: <P extends MswPath<${JSON.stringify(method)}>>(path: P) => createEndpoint(${JSON.stringify(method)}, path),`,
+    );
+  }
+  lines.push(`} as const;`);
   lines.push(``);
   lines.push(`export const handlers = [`);
-
   for (const endpoint of endpointList) {
-    const mswPath = openApiPathToMsw(endpoint.path);
-    const method = endpoint.method.toLowerCase();
-    const alias = sanitizeName(endpoint.meta.alias, "endpoint");
-    const factoryName = `get${alias.charAt(0).toUpperCase()}${alias.slice(1)}Mock`;
-    const status = pickSuccessStatus(endpoint.responses) ?? "200";
-    const statusNum = Number(status) || 200;
-    const patternExpr = baseUrl === "*" ? `\`\${baseUrl}${mswPath}\`` : `\`\${baseUrl.replace(/\\/$/, "")}${mswPath}\``;
-
-    if (endpoint.responseFormat === "sse") {
-      lines.push(`  http.${method}(${patternExpr}, () => {`);
-      lines.push(`    return new HttpResponse("data: {}\\n\\n", {`);
-      lines.push(`      status: ${statusNum},`);
-      lines.push(`      headers: { "Content-Type": "text/event-stream" },`);
-      lines.push(`    });`);
-      lines.push(`  }),`);
-      continue;
-    }
-
-    lines.push(`  http.${method}(${patternExpr}, () => {`);
-    lines.push(`    return HttpResponse.json(${factoryName}() as never, { status: ${statusNum} });`);
-    lines.push(`  }),`);
+    lines.push(`  mock.${endpoint.method}(${JSON.stringify(endpoint.path)}).handler(),`);
   }
-
   lines.push(`];`);
   lines.push(``);
   lines.push(`export const mswWorkerOptions = { onUnhandledRequest: "bypass" as const };`);
