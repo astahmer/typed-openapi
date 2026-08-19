@@ -2349,7 +2349,7 @@ export type TypedApiResponse<TAllResponses = {}, THeaders = {}> = {
     : never;
 }[keyof TAllResponses];
 
-type InferSchemaValue<T> = T;
+export type InferSchemaValue<T> = T;
 type InferSchemaInput<T> = T;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

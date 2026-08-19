@@ -1547,8 +1547,8 @@ export type PostCustomDatevDownloadDocumentPositiveResponse = Schema.Schema.Type
 export const PostCustomDatevDownloadDocumentRequestBody = Schema.Struct({ accounting_month: Schema.String.check(Schema.isPattern(new RegExp("^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"))), document_type: Schema.Literals(["AANB", "ABEG", "BUBE", "DAWE", "KBNW", "KOST", "KOTR", "LKTO", "LOBN", "LJOE", "LOJE", "LOJO", "LOPE", "LOPN", "LOPS", "LORE", "LOWE", "LSTA", "LSTB", "LSTE", "PDAT", "PFAN", "PRZA", "SBNW", "SVNW", "WEAN", "ZABR", "ZAKF", "ZAUW"]), employee_id: Schema.NullOr(Schema.String) });
 export type PostCustomDatevDownloadDocumentRequestBody = Schema.Schema.Type<typeof PostCustomDatevDownloadDocumentRequestBody>;
 
-export const PostCustomDatevEmployeesEmployeeIdDownloadDocumentParameterEmployeeId = Schema.String;
-export type PostCustomDatevEmployeesEmployeeIdDownloadDocumentParameterEmployeeId = Schema.Schema.Type<typeof PostCustomDatevEmployeesEmployeeIdDownloadDocumentParameterEmployeeId> | null;
+export const PostCustomDatevEmployeesEmployeeIdDownloadDocumentParameterEmployeeId = Schema.NullOr(Schema.String);
+export type PostCustomDatevEmployeesEmployeeIdDownloadDocumentParameterEmployeeId = Schema.Schema.Type<typeof PostCustomDatevEmployeesEmployeeIdDownloadDocumentParameterEmployeeId>;
 
 export const PostCustomDatevEmployeesEmployeeIdDownloadDocumentPositiveResponse = Schema.Struct({ status: Schema.Literal("success"), data: Schema.Struct({ data_url: Schema.String, file_name: Schema.String, content_type: Schema.String }), warnings: Schema.Array(Schema.Struct({ message: Schema.String })) });
 export type PostCustomDatevEmployeesEmployeeIdDownloadDocumentPositiveResponse = Schema.Schema.Type<typeof PostCustomDatevEmployeesEmployeeIdDownloadDocumentPositiveResponse>;
@@ -3181,7 +3181,7 @@ type OptionalUndefinedKeys<T> = {
 } & {
   [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<T[K], undefined>;
 };
-type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+export type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
 type InferSchemaInputRaw<T> = T extends { Encoded: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 

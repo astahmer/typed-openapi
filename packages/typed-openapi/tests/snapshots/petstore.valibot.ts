@@ -607,7 +607,7 @@ type OptionalUndefinedKeys<T> = {
 } & {
   [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<T[K], undefined>;
 };
-type InferSchemaValue<T> = T extends v.GenericSchema
+export type InferSchemaValue<T> = T extends v.GenericSchema
   ? v.InferOutput<T>
   : T extends object
     ? { [K in keyof T]: InferSchemaValue<T[K]> }

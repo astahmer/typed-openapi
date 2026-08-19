@@ -77,11 +77,11 @@ export type ResourceObject = S.Schema.Type<typeof ResourceObject>;
 export const HealthConfig = S.Struct({ Test: S.optional(S.Array(S.String)), Interval: S.optional(S.Int), Timeout: S.optional(S.Int), Retries: S.optional(S.Int), StartPeriod: S.optional(S.Int) });
 export type HealthConfig = S.Schema.Type<typeof HealthConfig>;
 
-export const HealthcheckResult = S.Struct({ Start: S.optional(S.String), End: S.optional(S.String), ExitCode: S.optional(S.Int), Output: S.optional(S.String) });
-export type HealthcheckResult = S.Schema.Type<typeof HealthcheckResult> | null;
+export const HealthcheckResult = S.NullOr(S.Struct({ Start: S.optional(S.String), End: S.optional(S.String), ExitCode: S.optional(S.Int), Output: S.optional(S.String) }));
+export type HealthcheckResult = S.Schema.Type<typeof HealthcheckResult>;
 
-export const Health = S.Struct({ Status: S.optional(S.Union(S.Literal("none"), S.Literal("starting"), S.Literal("healthy"), S.Literal("unhealthy"))), FailingStreak: S.optional(S.Int), Log: S.optional(S.Array(HealthcheckResult)) });
-export type Health = S.Schema.Type<typeof Health> | null;
+export const Health = S.NullOr(S.Struct({ Status: S.optional(S.Union(S.Literal("none"), S.Literal("starting"), S.Literal("healthy"), S.Literal("unhealthy"))), FailingStreak: S.optional(S.Int), Log: S.optional(S.Array(HealthcheckResult)) }));
+export type Health = S.Schema.Type<typeof Health>;
 
 export const PortBinding = S.Struct({ HostIp: S.optional(S.String), HostPort: S.optional(S.String) });
 export type PortBinding = S.Schema.Type<typeof PortBinding>;
@@ -95,8 +95,8 @@ export type HostConfig = S.Schema.Type<typeof HostConfig>;
 export const ContainerConfig = S.Struct({ Hostname: S.optional(S.String), Domainname: S.optional(S.String), User: S.optional(S.String), AttachStdin: Boolean_default_false_prop, AttachStdout: Boolean_default_true_prop, AttachStderr: Boolean_default_true_prop, ExposedPorts: S.optional(S.NullOr(S.Record({ key: S.String, value: S.Struct({  }) }))), Tty: Boolean_default_false_prop, OpenStdin: Boolean_default_false_prop, StdinOnce: Boolean_default_false_prop, Env: S.optional(S.Array(S.String)), Cmd: S.optional(S.Array(S.String)), Healthcheck: S.optional(HealthConfig), ArgsEscaped: NullOr_default_false_prop, Image: S.optional(S.String), Volumes: S.optional(S.Record({ key: S.String, value: S.Struct({  }) })), WorkingDir: S.optional(S.String), Entrypoint: S.optional(S.Array(S.String)), NetworkDisabled: S.optional(S.NullOr(S.Boolean)), MacAddress: S.optional(S.NullOr(S.String)), OnBuild: S.optional(S.NullOr(S.Array(S.String))), Labels: S.optional(S.Record({ key: S.String, value: S.String })), StopSignal: S.optional(S.NullOr(S.String)), StopTimeout: S.optional(S.NullOr(S.Int)), Shell: S.optional(S.NullOr(S.Array(S.String))) });
 export type ContainerConfig = S.Schema.Type<typeof ContainerConfig>;
 
-export const EndpointIPAMConfig = S.Struct({ IPv4Address: S.optional(S.String), IPv6Address: S.optional(S.String), LinkLocalIPs: S.optional(S.Array(S.String)) });
-export type EndpointIPAMConfig = S.Schema.Type<typeof EndpointIPAMConfig> | null;
+export const EndpointIPAMConfig = S.NullOr(S.Struct({ IPv4Address: S.optional(S.String), IPv6Address: S.optional(S.String), LinkLocalIPs: S.optional(S.Array(S.String)) }));
+export type EndpointIPAMConfig = S.Schema.Type<typeof EndpointIPAMConfig>;
 
 export const EndpointSettings = S.Struct({ IPAMConfig: S.optional(EndpointIPAMConfig), Links: S.optional(S.Array(S.String)), Aliases: S.optional(S.Array(S.String)), NetworkID: S.optional(S.String), EndpointID: S.optional(S.String), Gateway: S.optional(S.String), IPAddress: S.optional(S.String), IPPrefixLen: S.optional(S.Int), IPv6Gateway: S.optional(S.String), GlobalIPv6Address: S.optional(S.String), GlobalIPv6PrefixLen: S.optional(S.Int), MacAddress: S.optional(S.String), DriverOpts: S.optional(S.NullOr(S.Record({ key: S.String, value: S.String }))) });
 export type EndpointSettings = S.Schema.Type<typeof EndpointSettings>;
@@ -233,8 +233,8 @@ export type NodeStatus = S.Schema.Type<typeof NodeStatus>;
 export const Reachability = S.Union(S.Literal("unknown"), S.Literal("unreachable"), S.Literal("reachable"));
 export type Reachability = S.Schema.Type<typeof Reachability>;
 
-export const ManagerStatus = S.Struct({ Leader: Boolean_default_false_prop, Reachability: S.optional(Reachability), Addr: S.optional(S.String) });
-export type ManagerStatus = S.Schema.Type<typeof ManagerStatus> | null;
+export const ManagerStatus = S.NullOr(S.Struct({ Leader: Boolean_default_false_prop, Reachability: S.optional(Reachability), Addr: S.optional(S.String) }));
+export type ManagerStatus = S.Schema.Type<typeof ManagerStatus>;
 
 export const Node = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(NodeSpec), Description: S.optional(NodeDescription), Status: S.optional(NodeStatus), ManagerStatus: S.optional(ManagerStatus) });
 export type Node = S.Schema.Type<typeof Node>;
@@ -242,8 +242,8 @@ export type Node = S.Schema.Type<typeof Node>;
 export const SwarmSpec = S.Struct({ Name: S.optional(S.String), Labels: S.optional(S.Record({ key: S.String, value: S.String })), Orchestration: S.optional(S.NullOr(S.Struct({ TaskHistoryRetentionLimit: S.optional(S.Int) }))), Raft: S.optional(S.Struct({ SnapshotInterval: S.optional(S.Int), KeepOldSnapshots: S.optional(S.Int), LogEntriesForSlowFollowers: S.optional(S.Int), ElectionTick: S.optional(S.Int), HeartbeatTick: S.optional(S.Int) })), Dispatcher: S.optional(S.NullOr(S.Struct({ HeartbeatPeriod: S.optional(S.Int) }))), CAConfig: S.optional(S.NullOr(S.Struct({ NodeCertExpiry: S.optional(S.Int), ExternalCAs: S.optional(S.Array(S.Struct({ Protocol: S.optional(S.Literal("cfssl")), URL: S.optional(S.String), Options: S.optional(S.Record({ key: S.String, value: S.String })), CACert: S.optional(S.String) }))), SigningCACert: S.optional(S.String), SigningCAKey: S.optional(S.String), ForceRotate: S.optional(S.Int) }))), EncryptionConfig: S.optional(S.Struct({ AutoLockManagers: S.optional(S.Boolean) })), TaskDefaults: S.optional(S.Struct({ LogDriver: S.optional(S.Struct({ Name: S.optional(S.String), Options: S.optional(S.Record({ key: S.String, value: S.String })) })) })) });
 export type SwarmSpec = S.Schema.Type<typeof SwarmSpec>;
 
-export const ClusterInfo = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(SwarmSpec), TLSInfo: S.optional(TLSInfo), RootRotationInProgress: S.optional(S.Boolean), DataPathPort: S.optional(S.Int), DefaultAddrPool: S.optional(S.Array(S.String)), SubnetSize: S.optional(S.Int.pipe(S.lessThanOrEqualTo(29))) });
-export type ClusterInfo = S.Schema.Type<typeof ClusterInfo> | null;
+export const ClusterInfo = S.NullOr(S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(SwarmSpec), TLSInfo: S.optional(TLSInfo), RootRotationInProgress: S.optional(S.Boolean), DataPathPort: S.optional(S.Int), DefaultAddrPool: S.optional(S.Array(S.String)), SubnetSize: S.optional(S.Int.pipe(S.lessThanOrEqualTo(29))) }));
+export type ClusterInfo = S.Schema.Type<typeof ClusterInfo>;
 
 export const JoinTokens = S.Struct({ Worker: S.optional(S.String), Manager: S.optional(S.String) });
 export type JoinTokens = S.Schema.Type<typeof JoinTokens>;
@@ -299,8 +299,8 @@ export type ConfigSpec = S.Schema.Type<typeof ConfigSpec>;
 export const Config = S.Struct({ ID: S.optional(S.String), Version: S.optional(ObjectVersion), CreatedAt: S.optional(S.String), UpdatedAt: S.optional(S.String), Spec: S.optional(ConfigSpec) });
 export type Config = S.Schema.Type<typeof Config>;
 
-export const ContainerState = S.Struct({ Status: S.optional(S.Union(S.Literal("created"), S.Literal("running"), S.Literal("paused"), S.Literal("restarting"), S.Literal("removing"), S.Literal("exited"), S.Literal("dead"))), Running: S.optional(S.Boolean), Paused: S.optional(S.Boolean), Restarting: S.optional(S.Boolean), OOMKilled: S.optional(S.Boolean), Dead: S.optional(S.Boolean), Pid: S.optional(S.Int), ExitCode: S.optional(S.Int), Error: S.optional(S.String), StartedAt: S.optional(S.String), FinishedAt: S.optional(S.String), Health: S.optional(Health) });
-export type ContainerState = S.Schema.Type<typeof ContainerState> | null;
+export const ContainerState = S.NullOr(S.Struct({ Status: S.optional(S.Union(S.Literal("created"), S.Literal("running"), S.Literal("paused"), S.Literal("restarting"), S.Literal("removing"), S.Literal("exited"), S.Literal("dead"))), Running: S.optional(S.Boolean), Paused: S.optional(S.Boolean), Restarting: S.optional(S.Boolean), OOMKilled: S.optional(S.Boolean), Dead: S.optional(S.Boolean), Pid: S.optional(S.Int), ExitCode: S.optional(S.Int), Error: S.optional(S.String), StartedAt: S.optional(S.String), FinishedAt: S.optional(S.String), Health: S.optional(Health) }));
+export type ContainerState = S.Schema.Type<typeof ContainerState>;
 
 export const ContainerCreateResponse = S.Struct({ Id: S.String, Warnings: S.Array(S.String) });
 export type ContainerCreateResponse = S.Schema.Type<typeof ContainerCreateResponse>;
@@ -317,11 +317,11 @@ export type SystemVersion = S.Schema.Type<typeof SystemVersion>;
 export const PluginsInfo = S.Struct({ Volume: S.optional(S.Array(S.String)), Network: S.optional(S.Array(S.String)), Authorization: S.optional(S.Array(S.String)), Log: S.optional(S.Array(S.String)) });
 export type PluginsInfo = S.Schema.Type<typeof PluginsInfo>;
 
-export const IndexInfo = S.Struct({ Name: S.optional(S.String), Mirrors: S.optional(S.Array(S.String)), Secure: S.optional(S.Boolean), Official: S.optional(S.Boolean) });
-export type IndexInfo = S.Schema.Type<typeof IndexInfo> | null;
+export const IndexInfo = S.NullOr(S.Struct({ Name: S.optional(S.String), Mirrors: S.optional(S.Array(S.String)), Secure: S.optional(S.Boolean), Official: S.optional(S.Boolean) }));
+export type IndexInfo = S.Schema.Type<typeof IndexInfo>;
 
-export const RegistryServiceConfig = S.Struct({ AllowNondistributableArtifactsCIDRs: S.optional(S.Array(S.String)), AllowNondistributableArtifactsHostnames: S.optional(S.Array(S.String)), InsecureRegistryCIDRs: S.optional(S.Array(S.String)), IndexConfigs: S.optional(S.Record({ key: S.String, value: IndexInfo })), Mirrors: S.optional(S.Array(S.String)) });
-export type RegistryServiceConfig = S.Schema.Type<typeof RegistryServiceConfig> | null;
+export const RegistryServiceConfig = S.NullOr(S.Struct({ AllowNondistributableArtifactsCIDRs: S.optional(S.Array(S.String)), AllowNondistributableArtifactsHostnames: S.optional(S.Array(S.String)), InsecureRegistryCIDRs: S.optional(S.Array(S.String)), IndexConfigs: S.optional(S.Record({ key: S.String, value: IndexInfo })), Mirrors: S.optional(S.Array(S.String)) }));
+export type RegistryServiceConfig = S.Schema.Type<typeof RegistryServiceConfig>;
 
 export const Runtime = S.Struct({ path: S.optional(S.String), runtimeArgs: S.optional(S.NullOr(S.Array(S.String))) });
 export type Runtime = S.Schema.Type<typeof Runtime>;
@@ -1745,7 +1745,7 @@ type OptionalUndefinedKeys<T> = {
 } & {
   [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<T[K], undefined>;
 };
-type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+export type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
 type InferSchemaInputRaw<T> = T extends { Encoded: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 

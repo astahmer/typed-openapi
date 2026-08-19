@@ -573,7 +573,7 @@ type InferSchemaValueRaw<T> = T extends import("@sinclair/typebox").TSchema
   : T extends object
     ? { [K in keyof T]: InferSchemaValueRaw<T[K]> }
     : T;
-type InferSchemaValue<T> = InferSchemaValueRaw<T>;
+export type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

@@ -1547,8 +1547,8 @@ export type PostCustomDatevDownloadDocumentPositiveResponse = S.Schema.Type<type
 export const PostCustomDatevDownloadDocumentRequestBody = S.Struct({ accounting_month: S.String.pipe(S.pattern(new RegExp("^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?Z?$"))), document_type: S.Union(S.Literal("AANB"), S.Literal("ABEG"), S.Literal("BUBE"), S.Literal("DAWE"), S.Literal("KBNW"), S.Literal("KOST"), S.Literal("KOTR"), S.Literal("LKTO"), S.Literal("LOBN"), S.Literal("LJOE"), S.Literal("LOJE"), S.Literal("LOJO"), S.Literal("LOPE"), S.Literal("LOPN"), S.Literal("LOPS"), S.Literal("LORE"), S.Literal("LOWE"), S.Literal("LSTA"), S.Literal("LSTB"), S.Literal("LSTE"), S.Literal("PDAT"), S.Literal("PFAN"), S.Literal("PRZA"), S.Literal("SBNW"), S.Literal("SVNW"), S.Literal("WEAN"), S.Literal("ZABR"), S.Literal("ZAKF"), S.Literal("ZAUW")), employee_id: S.NullOr(S.String) });
 export type PostCustomDatevDownloadDocumentRequestBody = S.Schema.Type<typeof PostCustomDatevDownloadDocumentRequestBody>;
 
-export const PostCustomDatevEmployeesEmployeeIdDownloadDocumentParameterEmployeeId = S.String;
-export type PostCustomDatevEmployeesEmployeeIdDownloadDocumentParameterEmployeeId = S.Schema.Type<typeof PostCustomDatevEmployeesEmployeeIdDownloadDocumentParameterEmployeeId> | null;
+export const PostCustomDatevEmployeesEmployeeIdDownloadDocumentParameterEmployeeId = S.NullOr(S.String);
+export type PostCustomDatevEmployeesEmployeeIdDownloadDocumentParameterEmployeeId = S.Schema.Type<typeof PostCustomDatevEmployeesEmployeeIdDownloadDocumentParameterEmployeeId>;
 
 export const PostCustomDatevEmployeesEmployeeIdDownloadDocumentPositiveResponse = S.Struct({ status: S.Literal("success"), data: S.Struct({ data_url: S.String, file_name: S.String, content_type: S.String }), warnings: S.Array(S.Struct({ message: S.String })) });
 export type PostCustomDatevEmployeesEmployeeIdDownloadDocumentPositiveResponse = S.Schema.Type<typeof PostCustomDatevEmployeesEmployeeIdDownloadDocumentPositiveResponse>;
@@ -3181,7 +3181,7 @@ type OptionalUndefinedKeys<T> = {
 } & {
   [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<T[K], undefined>;
 };
-type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+export type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
 type InferSchemaInputRaw<T> = T extends { Encoded: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 

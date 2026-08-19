@@ -77,11 +77,11 @@ export type ResourceObject = Schema.Schema.Type<typeof ResourceObject>;
 export const HealthConfig = Schema.Struct({ Test: Schema.optional(Schema.Array(Schema.String)), Interval: Schema.optional(Schema.Int), Timeout: Schema.optional(Schema.Int), Retries: Schema.optional(Schema.Int), StartPeriod: Schema.optional(Schema.Int) });
 export type HealthConfig = Schema.Schema.Type<typeof HealthConfig>;
 
-export const HealthcheckResult = Schema.Struct({ Start: Schema.optional(Schema.String), End: Schema.optional(Schema.String), ExitCode: Schema.optional(Schema.Int), Output: Schema.optional(Schema.String) });
-export type HealthcheckResult = Schema.Schema.Type<typeof HealthcheckResult> | null;
+export const HealthcheckResult = Schema.NullOr(Schema.Struct({ Start: Schema.optional(Schema.String), End: Schema.optional(Schema.String), ExitCode: Schema.optional(Schema.Int), Output: Schema.optional(Schema.String) }));
+export type HealthcheckResult = Schema.Schema.Type<typeof HealthcheckResult>;
 
-export const Health = Schema.Struct({ Status: Schema.optional(Schema.Literals(["none", "starting", "healthy", "unhealthy"])), FailingStreak: Schema.optional(Schema.Int), Log: Schema.optional(Schema.Array(HealthcheckResult)) });
-export type Health = Schema.Schema.Type<typeof Health> | null;
+export const Health = Schema.NullOr(Schema.Struct({ Status: Schema.optional(Schema.Literals(["none", "starting", "healthy", "unhealthy"])), FailingStreak: Schema.optional(Schema.Int), Log: Schema.optional(Schema.Array(HealthcheckResult)) }));
+export type Health = Schema.Schema.Type<typeof Health>;
 
 export const PortBinding = Schema.Struct({ HostIp: Schema.optional(Schema.String), HostPort: Schema.optional(Schema.String) });
 export type PortBinding = Schema.Schema.Type<typeof PortBinding>;
@@ -95,8 +95,8 @@ export type HostConfig = Schema.Schema.Type<typeof HostConfig>;
 export const ContainerConfig = Schema.Struct({ Hostname: Schema.optional(Schema.String), Domainname: Schema.optional(Schema.String), User: Schema.optional(Schema.String), AttachStdin: Boolean_default_false_prop, AttachStdout: Boolean_default_true_prop, AttachStderr: Boolean_default_true_prop, ExposedPorts: Schema.optional(Schema.NullOr(Schema.Record(Schema.String, Schema.Struct({  })))), Tty: Boolean_default_false_prop, OpenStdin: Boolean_default_false_prop, StdinOnce: Boolean_default_false_prop, Env: Schema.optional(Schema.Array(Schema.String)), Cmd: Schema.optional(Schema.Array(Schema.String)), Healthcheck: Schema.optional(HealthConfig), ArgsEscaped: NullOr_default_false_prop, Image: Schema.optional(Schema.String), Volumes: Schema.optional(Schema.Record(Schema.String, Schema.Struct({  }))), WorkingDir: Schema.optional(Schema.String), Entrypoint: Schema.optional(Schema.Array(Schema.String)), NetworkDisabled: Schema.optional(Schema.NullOr(Schema.Boolean)), MacAddress: Schema.optional(Schema.NullOr(Schema.String)), OnBuild: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), StopSignal: Schema.optional(Schema.NullOr(Schema.String)), StopTimeout: Schema.optional(Schema.NullOr(Schema.Int)), Shell: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))) });
 export type ContainerConfig = Schema.Schema.Type<typeof ContainerConfig>;
 
-export const EndpointIPAMConfig = Schema.Struct({ IPv4Address: Schema.optional(Schema.String), IPv6Address: Schema.optional(Schema.String), LinkLocalIPs: Schema.optional(Schema.Array(Schema.String)) });
-export type EndpointIPAMConfig = Schema.Schema.Type<typeof EndpointIPAMConfig> | null;
+export const EndpointIPAMConfig = Schema.NullOr(Schema.Struct({ IPv4Address: Schema.optional(Schema.String), IPv6Address: Schema.optional(Schema.String), LinkLocalIPs: Schema.optional(Schema.Array(Schema.String)) }));
+export type EndpointIPAMConfig = Schema.Schema.Type<typeof EndpointIPAMConfig>;
 
 export const EndpointSettings = Schema.Struct({ IPAMConfig: Schema.optional(EndpointIPAMConfig), Links: Schema.optional(Schema.Array(Schema.String)), Aliases: Schema.optional(Schema.Array(Schema.String)), NetworkID: Schema.optional(Schema.String), EndpointID: Schema.optional(Schema.String), Gateway: Schema.optional(Schema.String), IPAddress: Schema.optional(Schema.String), IPPrefixLen: Schema.optional(Schema.Int), IPv6Gateway: Schema.optional(Schema.String), GlobalIPv6Address: Schema.optional(Schema.String), GlobalIPv6PrefixLen: Schema.optional(Schema.Int), MacAddress: Schema.optional(Schema.String), DriverOpts: Schema.optional(Schema.NullOr(Schema.Record(Schema.String, Schema.String))) });
 export type EndpointSettings = Schema.Schema.Type<typeof EndpointSettings>;
@@ -233,8 +233,8 @@ export type NodeStatus = Schema.Schema.Type<typeof NodeStatus>;
 export const Reachability = Schema.Literals(["unknown", "unreachable", "reachable"]);
 export type Reachability = Schema.Schema.Type<typeof Reachability>;
 
-export const ManagerStatus = Schema.Struct({ Leader: Boolean_default_false_prop, Reachability: Schema.optional(Reachability), Addr: Schema.optional(Schema.String) });
-export type ManagerStatus = Schema.Schema.Type<typeof ManagerStatus> | null;
+export const ManagerStatus = Schema.NullOr(Schema.Struct({ Leader: Boolean_default_false_prop, Reachability: Schema.optional(Reachability), Addr: Schema.optional(Schema.String) }));
+export type ManagerStatus = Schema.Schema.Type<typeof ManagerStatus>;
 
 export const Node = Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(NodeSpec), Description: Schema.optional(NodeDescription), Status: Schema.optional(NodeStatus), ManagerStatus: Schema.optional(ManagerStatus) });
 export type Node = Schema.Schema.Type<typeof Node>;
@@ -242,8 +242,8 @@ export type Node = Schema.Schema.Type<typeof Node>;
 export const SwarmSpec = Schema.Struct({ Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Orchestration: Schema.optional(Schema.NullOr(Schema.Struct({ TaskHistoryRetentionLimit: Schema.optional(Schema.Int) }))), Raft: Schema.optional(Schema.Struct({ SnapshotInterval: Schema.optional(Schema.Int), KeepOldSnapshots: Schema.optional(Schema.Int), LogEntriesForSlowFollowers: Schema.optional(Schema.Int), ElectionTick: Schema.optional(Schema.Int), HeartbeatTick: Schema.optional(Schema.Int) })), Dispatcher: Schema.optional(Schema.NullOr(Schema.Struct({ HeartbeatPeriod: Schema.optional(Schema.Int) }))), CAConfig: Schema.optional(Schema.NullOr(Schema.Struct({ NodeCertExpiry: Schema.optional(Schema.Int), ExternalCAs: Schema.optional(Schema.Array(Schema.Struct({ Protocol: Schema.optional(Schema.Literal("cfssl")), URL: Schema.optional(Schema.String), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)), CACert: Schema.optional(Schema.String) }))), SigningCACert: Schema.optional(Schema.String), SigningCAKey: Schema.optional(Schema.String), ForceRotate: Schema.optional(Schema.Int) }))), EncryptionConfig: Schema.optional(Schema.Struct({ AutoLockManagers: Schema.optional(Schema.Boolean) })), TaskDefaults: Schema.optional(Schema.Struct({ LogDriver: Schema.optional(Schema.Struct({ Name: Schema.optional(Schema.String), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) })) })) });
 export type SwarmSpec = Schema.Schema.Type<typeof SwarmSpec>;
 
-export const ClusterInfo = Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(SwarmSpec), TLSInfo: Schema.optional(TLSInfo), RootRotationInProgress: Schema.optional(Schema.Boolean), DataPathPort: Schema.optional(Schema.Int), DefaultAddrPool: Schema.optional(Schema.Array(Schema.String)), SubnetSize: Schema.optional(Schema.Int.check(Schema.isLessThanOrEqualTo(29))) });
-export type ClusterInfo = Schema.Schema.Type<typeof ClusterInfo> | null;
+export const ClusterInfo = Schema.NullOr(Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(SwarmSpec), TLSInfo: Schema.optional(TLSInfo), RootRotationInProgress: Schema.optional(Schema.Boolean), DataPathPort: Schema.optional(Schema.Int), DefaultAddrPool: Schema.optional(Schema.Array(Schema.String)), SubnetSize: Schema.optional(Schema.Int.check(Schema.isLessThanOrEqualTo(29))) }));
+export type ClusterInfo = Schema.Schema.Type<typeof ClusterInfo>;
 
 export const JoinTokens = Schema.Struct({ Worker: Schema.optional(Schema.String), Manager: Schema.optional(Schema.String) });
 export type JoinTokens = Schema.Schema.Type<typeof JoinTokens>;
@@ -299,8 +299,8 @@ export type ConfigSpec = Schema.Schema.Type<typeof ConfigSpec>;
 export const Config = Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(ConfigSpec) });
 export type Config = Schema.Schema.Type<typeof Config>;
 
-export const ContainerState = Schema.Struct({ Status: Schema.optional(Schema.Literals(["created", "running", "paused", "restarting", "removing", "exited", "dead"])), Running: Schema.optional(Schema.Boolean), Paused: Schema.optional(Schema.Boolean), Restarting: Schema.optional(Schema.Boolean), OOMKilled: Schema.optional(Schema.Boolean), Dead: Schema.optional(Schema.Boolean), Pid: Schema.optional(Schema.Int), ExitCode: Schema.optional(Schema.Int), Error: Schema.optional(Schema.String), StartedAt: Schema.optional(Schema.String), FinishedAt: Schema.optional(Schema.String), Health: Schema.optional(Health) });
-export type ContainerState = Schema.Schema.Type<typeof ContainerState> | null;
+export const ContainerState = Schema.NullOr(Schema.Struct({ Status: Schema.optional(Schema.Literals(["created", "running", "paused", "restarting", "removing", "exited", "dead"])), Running: Schema.optional(Schema.Boolean), Paused: Schema.optional(Schema.Boolean), Restarting: Schema.optional(Schema.Boolean), OOMKilled: Schema.optional(Schema.Boolean), Dead: Schema.optional(Schema.Boolean), Pid: Schema.optional(Schema.Int), ExitCode: Schema.optional(Schema.Int), Error: Schema.optional(Schema.String), StartedAt: Schema.optional(Schema.String), FinishedAt: Schema.optional(Schema.String), Health: Schema.optional(Health) }));
+export type ContainerState = Schema.Schema.Type<typeof ContainerState>;
 
 export const ContainerCreateResponse = Schema.Struct({ Id: Schema.String, Warnings: Schema.Array(Schema.String) });
 export type ContainerCreateResponse = Schema.Schema.Type<typeof ContainerCreateResponse>;
@@ -317,11 +317,11 @@ export type SystemVersion = Schema.Schema.Type<typeof SystemVersion>;
 export const PluginsInfo = Schema.Struct({ Volume: Schema.optional(Schema.Array(Schema.String)), Network: Schema.optional(Schema.Array(Schema.String)), Authorization: Schema.optional(Schema.Array(Schema.String)), Log: Schema.optional(Schema.Array(Schema.String)) });
 export type PluginsInfo = Schema.Schema.Type<typeof PluginsInfo>;
 
-export const IndexInfo = Schema.Struct({ Name: Schema.optional(Schema.String), Mirrors: Schema.optional(Schema.Array(Schema.String)), Secure: Schema.optional(Schema.Boolean), Official: Schema.optional(Schema.Boolean) });
-export type IndexInfo = Schema.Schema.Type<typeof IndexInfo> | null;
+export const IndexInfo = Schema.NullOr(Schema.Struct({ Name: Schema.optional(Schema.String), Mirrors: Schema.optional(Schema.Array(Schema.String)), Secure: Schema.optional(Schema.Boolean), Official: Schema.optional(Schema.Boolean) }));
+export type IndexInfo = Schema.Schema.Type<typeof IndexInfo>;
 
-export const RegistryServiceConfig = Schema.Struct({ AllowNondistributableArtifactsCIDRs: Schema.optional(Schema.Array(Schema.String)), AllowNondistributableArtifactsHostnames: Schema.optional(Schema.Array(Schema.String)), InsecureRegistryCIDRs: Schema.optional(Schema.Array(Schema.String)), IndexConfigs: Schema.optional(Schema.Record(Schema.String, IndexInfo)), Mirrors: Schema.optional(Schema.Array(Schema.String)) });
-export type RegistryServiceConfig = Schema.Schema.Type<typeof RegistryServiceConfig> | null;
+export const RegistryServiceConfig = Schema.NullOr(Schema.Struct({ AllowNondistributableArtifactsCIDRs: Schema.optional(Schema.Array(Schema.String)), AllowNondistributableArtifactsHostnames: Schema.optional(Schema.Array(Schema.String)), InsecureRegistryCIDRs: Schema.optional(Schema.Array(Schema.String)), IndexConfigs: Schema.optional(Schema.Record(Schema.String, IndexInfo)), Mirrors: Schema.optional(Schema.Array(Schema.String)) }));
+export type RegistryServiceConfig = Schema.Schema.Type<typeof RegistryServiceConfig>;
 
 export const Runtime = Schema.Struct({ path: Schema.optional(Schema.String), runtimeArgs: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))) });
 export type Runtime = Schema.Schema.Type<typeof Runtime>;
@@ -1745,7 +1745,7 @@ type OptionalUndefinedKeys<T> = {
 } & {
   [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<T[K], undefined>;
 };
-type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+export type InferSchemaValue<T> = T extends { Type: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
 type InferSchemaInputRaw<T> = T extends { Encoded: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 
