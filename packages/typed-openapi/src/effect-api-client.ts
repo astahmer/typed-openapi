@@ -192,6 +192,7 @@ export class EffectApiClient {
       const requestParams = params[0] as
         | (EndpointParameters & {
             overrides?: RequestInit;
+            queryOptions?: ApiQueryOptions;
             validate?: ValidateSide;
             withResponse?: boolean;
             throwOnStatusError?: boolean;
