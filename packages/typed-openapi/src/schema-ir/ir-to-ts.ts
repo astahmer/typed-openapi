@@ -33,10 +33,14 @@ export const buildIrToTsOptions = (
 
 const escapeCommentText = (text: string) => text.replace(/\*\//g, "*\\/");
 
-const renderDescriptionComment = (description: string, indent = "") => {
-  const lines = description.trim().split(/\r?\n/);
-  return `${indent}/**\n${lines.map((line) => `${indent} * ${escapeCommentText(line)}`).join("\n")}\n${indent} */`;
+const renderComment = (description: string | undefined, deprecated: boolean, indent = "") => {
+  const lines = description ? description.trim().split(/\r?\n/) : [];
+  const descriptionLines = lines.map((line) => `${indent} * ${escapeCommentText(line)}`);
+  const deprecatedLine = deprecated ? `${indent} * @deprecated` : undefined;
+  return `${indent}/**\n${[...descriptionLines, ...(deprecatedLine ? [deprecatedLine] : [])].join("\n")}\n${indent} */`;
 };
+
+const renderDescriptionComment = (description: string, indent = "") => renderComment(description, false, indent);
 
 const indentMultiline = (value: string, indent = "  ") =>
   value.includes("\n")
@@ -124,22 +128,25 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
         const optional = !node.partial && !node.required.includes(prop);
         const value = indentMultiline(irToTs(propNode, options));
         const description = options.jsdoc ? propNode.meta.description : undefined;
+        const deprecated = !!options.jsdoc && propNode.meta.deprecated === true;
         return {
           description,
+          deprecated,
           line: `${wrapWithQuotesIfNeeded(prop)}${optional ? "?" : ""}: ${value};`,
         };
       });
 
       const shouldMultiline =
-        options.jsdoc && rendered.some(({ description, line }) => description || line.includes("\n"));
+        options.jsdoc &&
+        rendered.some(({ description, deprecated, line }) => description || deprecated || line.includes("\n"));
 
       let objectBody: string;
       if (!shouldMultiline) {
         objectBody = `{ ${rendered.map(({ line }) => line.slice(0, -1)).join(", ")} }`;
       } else {
         const propsString = rendered
-          .map(({ description, line }) => {
-            const comment = description ? `${renderDescriptionComment(description, "  ")}\n` : "";
+          .map(({ description, deprecated, line }) => {
+            const comment = description || deprecated ? `${renderComment(description, deprecated, "  ")}\n` : "";
             return `${comment}  ${line}`;
           })
           .join("\n");
