@@ -50,6 +50,7 @@ export const configFileSchema = type({
   "transformDates?": "boolean",
   "transformBigInt?": "boolean",
   "runtimeTypes?": "boolean",
+  "includeDeprecated?": "('endpoints'|'schemas'|'properties')[]",
   /**
    * Custom schema transform (function). Passed through as-is by ArkType (`unknown`).
    * Only expressible in TS/JS config files (via `defineConfig`) — not in JSON configs.
@@ -186,6 +187,7 @@ export const applyGeneratorOptionDefaults = <T extends Record<string, unknown>>(
   if (out["schemasOnly"] === undefined) out["schemasOnly"] = false;
   if (out["includeClient"] === undefined) out["includeClient"] = true;
   if (out["jsdoc"] === undefined) out["jsdoc"] = true;
+  if (out["includeDeprecated"] === undefined) out["includeDeprecated"] = ["schemas", "properties"];
   return out as T;
 };
 

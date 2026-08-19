@@ -15,7 +15,13 @@ import {
   buildIrToTsOptions,
 } from "./schema-ir/ir-to-ts.ts";
 import type { SchemaNode } from "./schema-ir/types.ts";
-import { applySpecFilters, shouldEmitSchema, type SpecFilterOptions } from "./filter-spec.ts";
+import {
+  applySpecFilters,
+  shouldEmitSchema,
+  expandReachableSchemaNames,
+  collectRefNamesFromEndpoints,
+  type SpecFilterOptions,
+} from "./filter-spec.ts";
 import { prepareSchemaNaming, type SchemaNamingOptions } from "./schema-naming.ts";
 import { effectApiClientBody } from "./effect-api-client.ts";
 import { findRecursiveSchemaNames } from "./runtimes/shared.ts";
@@ -63,6 +69,11 @@ export type GeneratorOptions = ReturnType<typeof mapOpenApiEndpoints> &
     transformBigInt?: boolean;
     /** Import path for a generated `.d.ts` sidecar used to type runtime validators. */
     runtimeTypeDeclarations?: string;
+    /**
+     * Which `deprecated: true` OpenAPI members to keep in generated output (tagged `@deprecated`);
+     * anything not listed is omitted entirely. Default: `["schemas", "properties"]`.
+     */
+    includeDeprecated?: Array<"endpoints" | "schemas" | "properties">;
   };
 type GeneratorContext = Required<
   Omit<
@@ -171,13 +182,6 @@ type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;`;
   return `export type InferSchemaValue<T> = T;\ntype InferSchemaInput<T> = T;`;
 };
 
-const escapeCommentText = (text: string) => text.replace(/\*\//g, "*\\/");
-
-const renderDescriptionComment = (description: string, indent = "") => {
-  const lines = description.trim().split(/\r?\n/);
-  return `${indent}/**\n${lines.map((line) => `${indent} * ${escapeCommentText(line)}`).join("\n")}\n${indent} */`;
-};
-
 const indentMultiline = (value: string, indent = "  ") =>
   value.includes("\n")
     ? value
@@ -225,6 +229,7 @@ const createGeneratorContext = (options: GeneratorOptions): GeneratorContext => 
     transformDates: options.transformDates ?? false,
     transformBigInt: options.transformBigInt ?? false,
     usesRuntimeTypeDeclarations: Boolean(options.runtimeTypeDeclarations),
+    includeDeprecated: options.includeDeprecated ?? ["schemas", "properties"],
   } as GeneratorContext;
 };
 
@@ -289,7 +294,8 @@ const generateSchemaList = (ctx: GeneratorContext) => {
   ${runtime === "none" ? "export namespace Schemas {" : ""}
     // <Schemas>
   `;
-  const schemas =
+  const includeDeprecatedSchemas = ctx.includeDeprecated.includes("schemas");
+  const candidates =
     ctx.namedSchemasForEmit ??
     refs
       .getOrderedSchemas()
@@ -297,17 +303,32 @@ const generateSchemaList = (ctx: GeneratorContext) => {
       .filter(([, infos]) => shouldEmitSchema(ctx.keptSchemaNames, infos.normalized))
       .map(([node, infos]) => ({ name: infos.normalized, node }));
 
+  // Deprecated schemas excluded via `includeDeprecated` are only dropped when nothing still
+  // references them — otherwise excluding them would leave a dangling `Schemas.Name` reference.
+  const alwaysKeptNames = new Set(
+    candidates.filter(({ node }) => includeDeprecatedSchemas || node.meta.deprecated !== true).map(({ name }) => name),
+  );
+  const reachableNames = expandReachableSchemaNames(
+    new Set([...collectRefNamesFromEndpoints(ctx.endpointList), ...alwaysKeptNames]),
+    refs,
+  );
+  const schemas = candidates.filter(
+    ({ name, node }) => includeDeprecatedSchemas || node.meta.deprecated !== true || reachableNames.has(name),
+  );
+
   const recursiveNames = findRecursiveSchemaNames(schemas);
   const irOpts = buildIrToTsOptions({
     prefixRefsWithSchemas: false,
     jsdoc: shouldRenderDescriptionComments(ctx),
     transformDates: ctx.transformDates,
     transformBigInt: ctx.transformBigInt,
+    includeDeprecatedProperties: ctx.includeDeprecated.includes("properties"),
   });
 
   for (const { name, node } of schemas) {
     const description = shouldRenderDescriptionComments(ctx) ? node.meta.description : undefined;
-    const jsdoc = renderSchemaJsdoc(description);
+    const deprecated = shouldRenderDescriptionComments(ctx) && node.meta.deprecated === true;
+    const jsdoc = renderSchemaJsdoc(description, deprecated);
 
     // Circular `type` aliases (e.g. Schema4 ↔ Record Schema5) are illegal in TS (TS2456).
     // Emit recursive object/record schemas as interfaces so unions/arrays can alias through them.
@@ -344,6 +365,7 @@ const nodeToString = (
       jsdoc: shouldRenderDescriptionComments(ctx),
       transformDates: ctx.transformDates,
       transformBigInt: ctx.transformBigInt,
+      includeDeprecatedProperties: ctx.includeDeprecated.includes("properties"),
     }),
   );
 };
@@ -379,8 +401,9 @@ const generateEndpointSchemaList = (ctx: GeneratorContext) => {
   ctx.endpointList.map((endpoint) => {
     const parameters = endpoint.parameters ?? {};
     const description = shouldRenderDescriptionComments(ctx) ? endpoint.operation.description : undefined;
+    const deprecated = shouldRenderDescriptionComments(ctx) && endpoint.operation.deprecated === true;
 
-    file += `${description ? `${renderDescriptionComment(description)}\n` : ""}export type ${endpoint.meta.alias} = {
+    file += `${renderSchemaJsdoc(description, deprecated)}export type ${endpoint.meta.alias} = {
       method: "${endpoint.method.toUpperCase()}",
       path: "${endpoint.path}",
       requestFormat: "${endpoint.requestFormat}",

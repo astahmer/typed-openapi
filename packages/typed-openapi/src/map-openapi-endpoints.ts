@@ -36,7 +36,11 @@ type ParamLocation = "query" | "path" | "header" | "cookie";
 
 export const mapOpenApiEndpoints = (
   doc: OpenAPIObject,
-  options?: { nameTransform?: NameTransformOptions; transformSchema?: SchemaTransform },
+  options?: {
+    nameTransform?: NameTransformOptions;
+    transformSchema?: SchemaTransform;
+    includeDeprecatedEndpoints?: boolean;
+  },
 ) => {
   const refs = createRefResolver(doc, options?.nameTransform, options?.transformSchema);
   const irCtx: SchemaIrConvertContext = {
@@ -49,7 +53,7 @@ export const mapOpenApiEndpoints = (
   Object.entries(doc.paths ?? {}).forEach(([path, pathItemObj]) => {
     const pathItem = pick(pathItemObj, ["get", "put", "post", "delete", "options", "head", "patch", "trace"]);
     Object.entries(pathItem).forEach(([method, operation]) => {
-      if (operation.deprecated) return;
+      if (operation.deprecated && !options?.includeDeprecatedEndpoints) return;
 
       let alias = getAlias({ path, method, operation } as Endpoint);
       if (options?.nameTransform?.transformEndpointName) {

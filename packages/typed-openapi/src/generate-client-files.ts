@@ -75,6 +75,7 @@ export const optionsSchema = type({
   "transformDates?": "boolean",
   "transformBigInt?": "boolean",
   "runtimeTypes?": "boolean",
+  "includeDeprecated?": type("('endpoints'|'schemas'|'properties')[]").or("string"),
 });
 
 export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
@@ -125,6 +126,15 @@ const asStringArray = (value: string | string[] | undefined): string[] | undefin
   return Array.isArray(value) ? value : [value];
 };
 
+const parseIncludeDeprecatedOption = (
+  value: GeneratorOptions["includeDeprecated"] | string | undefined,
+): GeneratorOptions["includeDeprecated"] => {
+  if (value === undefined) return undefined;
+  return Array.isArray(value)
+    ? value
+    : (value.split(",").map((item) => item.trim()) as GeneratorOptions["includeDeprecated"]);
+};
+
 const getHttpInputFilename = (input: string): string | undefined => {
   try {
     const url = new URL(input);
@@ -153,9 +163,12 @@ export async function generateClientFiles(input: string | undefined, options: Ge
   }
   const openApiDoc = (await SwaggerParser.bundle(resolvedInput)) as OpenAPIObject;
 
+  const includeDeprecated = parseIncludeDeprecatedOption(merged.includeDeprecated) ?? ["schemas", "properties"];
+
   const ctx = mapOpenApiEndpoints(openApiDoc, {
     ...(merged.nameTransform ? { nameTransform: merged.nameTransform } : {}),
     ...(merged.transformSchema ? { transformSchema: merged.transformSchema } : {}),
+    includeDeprecatedEndpoints: includeDeprecated.includes("endpoints"),
   });
   console.log(`Found ${ctx.endpointList.length} endpoints`);
 
@@ -191,6 +204,7 @@ export async function generateClientFiles(input: string | undefined, options: Ge
     includeClient: includeClient ?? true,
     jsdoc,
     includeDescriptions,
+    includeDeprecated,
     successStatusCodes: successStatusCodes ?? DEFAULT_SUCCESS_STATUS_CODES,
     errorStatusCodes: errorStatusCodes ?? DEFAULT_ERROR_STATUS_CODES,
     ...(endpointPatterns ? { endpointPatterns } : {}),

@@ -70,11 +70,12 @@ cli
     "Map format date-time/date to Date (types + runtime transforms; none-runtime revives ISO strings)",
   )
   .option("--transform-bigint", "Map format int64 to bigint (types + runtime transforms)")
-  .option(
-    "--runtime-types",
-    "Generate a .types.d.ts sidecar for runtime client types (default for runtime clients)",
-  )
+  .option("--runtime-types", "Generate a .types.d.ts sidecar for runtime client types (default for runtime clients)")
   .option("--no-runtime-types", "Do not generate a runtime type declaration sidecar")
+  .option(
+    "--include-deprecated <items>",
+    "Comma-separated list of `deprecated: true` OpenAPI members to keep (tagged @deprecated) instead of omitting: endpoints, schemas, properties (defaults to schemas,properties)",
+  )
   .action(async (input: string | undefined, _options: any) => {
     return generateClientFiles(input, _options);
   });

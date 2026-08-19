@@ -12,6 +12,8 @@ export type IrToTsOptions = {
   transformBigInt?: boolean;
   /** Emit `ReadonlyArray<…>` instead of `Array<…>` (Effect Schema compatibility). */
   readonlyArrays?: boolean;
+  /** Keep properties marked `deprecated: true` in emitted object shapes. Default true. */
+  includeDeprecatedProperties?: boolean;
 };
 
 /** Build IrToTsOptions without assigning explicit `undefined` (exactOptionalPropertyTypes). */
@@ -22,6 +24,7 @@ export const buildIrToTsOptions = (
     transformDates?: boolean | undefined;
     transformBigInt?: boolean | undefined;
     readonlyArrays?: boolean | undefined;
+    includeDeprecatedProperties?: boolean | undefined;
   } = {},
 ): IrToTsOptions => ({
   ...(options.prefixRefsWithSchemas !== undefined ? { prefixRefsWithSchemas: options.prefixRefsWithSchemas } : {}),
@@ -29,6 +32,9 @@ export const buildIrToTsOptions = (
   ...(options.transformDates !== undefined ? { transformDates: options.transformDates } : {}),
   ...(options.transformBigInt !== undefined ? { transformBigInt: options.transformBigInt } : {}),
   ...(options.readonlyArrays !== undefined ? { readonlyArrays: options.readonlyArrays } : {}),
+  ...(options.includeDeprecatedProperties !== undefined
+    ? { includeDeprecatedProperties: options.includeDeprecatedProperties }
+    : {}),
 });
 
 const escapeCommentText = (text: string) => text.replace(/\*\//g, "*\\/");
@@ -39,8 +45,6 @@ const renderComment = (description: string | undefined, deprecated: boolean, ind
   const deprecatedLine = deprecated ? `${indent} * @deprecated` : undefined;
   return `${indent}/**\n${[...descriptionLines, ...(deprecatedLine ? [deprecatedLine] : [])].join("\n")}\n${indent} */`;
 };
-
-const renderDescriptionComment = (description: string, indent = "") => renderComment(description, false, indent);
 
 const indentMultiline = (value: string, indent = "  ") =>
   value.includes("\n")
@@ -122,7 +126,10 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
       // User-supplied transform type; falls back to the default-rendered type when only a runtime transform was given.
       return node.type ?? (node.fallback ? irToTs(node.fallback, options) : "unknown");
     case "object": {
-      const entries = Object.entries(node.properties);
+      const includeDeprecatedProperties = options.includeDeprecatedProperties ?? true;
+      const entries = Object.entries(node.properties).filter(
+        ([, propNode]) => includeDeprecatedProperties || propNode.meta.deprecated !== true,
+      );
       const rendered = entries.map(([prop, propNode]) => {
         // When `partial`, wrap with Partial<> — do not also mark props optional.
         const optional = !node.partial && !node.required.includes(prop);
@@ -168,8 +175,8 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
   }
 };
 
-export const renderSchemaJsdoc = (description: string | undefined) =>
-  description ? `${renderDescriptionComment(description)}\n` : "";
+export const renderSchemaJsdoc = (description: string | undefined, deprecated = false) =>
+  description || deprecated ? `${renderComment(description, deprecated)}\n` : "";
 
 /** Object/record shapes that can be declared as `interface` (breaks TS2456 cycles). */
 export const canEmitAsInterface = (node: SchemaNode): boolean => {

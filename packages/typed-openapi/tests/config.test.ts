@@ -88,6 +88,7 @@ describe("typed-openapi config file", () => {
       schemasOnly: false,
       includeClient: true,
       jsdoc: true,
+      includeDeprecated: ["schemas", "properties"],
     });
   });
 

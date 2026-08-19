@@ -112,6 +112,28 @@ export const defaultTreeShakeSchemas = (options: SpecFilterOptions): boolean => 
   return Boolean(options.filterEndpoints || (options.endpointPatterns && options.endpointPatterns.length > 0));
 };
 
+/** Expand `roots` (normalized schema names) with everything they transitively depend on via `$ref`. */
+export const expandReachableSchemaNames = (roots: Set<string>, refs: RefResolver): Set<string> => {
+  const nameToRef = new Map<string, string>();
+  for (const [, infos] of refs.infos) {
+    if (infos.kind === "schemas") nameToRef.set(infos.normalized, infos.ref);
+  }
+
+  const reachable = new Set(roots);
+  const expand = (name: string) => {
+    const ref = nameToRef.get(name);
+    if (!ref) return;
+    const deps = refs.transitiveDependencies.get(ref);
+    if (!deps) return;
+    for (const depRef of deps) {
+      const infos = refs.getInfosByRef(depRef);
+      if (infos?.kind === "schemas") reachable.add(infos.normalized);
+    }
+  };
+  [...reachable].forEach(expand);
+  return reachable;
+};
+
 export type AppliedSpecFilters = {
   endpointList: Endpoint[];
   /** Normalized schema names to emit; `undefined` means emit all component schemas */
@@ -142,25 +164,7 @@ export const applySpecFilters = (
     return { endpointList: filteredEndpoints, keptSchemaNames: undefined, treeShakeSchemas: false };
   }
 
-  const kept = collectRefNamesFromEndpoints(filteredEndpoints);
-
-  // Expand transitive schema deps (by $ref → normalized name)
-  const nameToRef = new Map<string, string>();
-  for (const [, infos] of refs.infos) {
-    if (infos.kind === "schemas") nameToRef.set(infos.normalized, infos.ref);
-  }
-
-  const expand = (name: string) => {
-    const ref = nameToRef.get(name);
-    if (!ref) return;
-    const deps = refs.transitiveDependencies.get(ref);
-    if (!deps) return;
-    for (const depRef of deps) {
-      const infos = refs.getInfosByRef(depRef);
-      if (infos?.kind === "schemas") kept.add(infos.normalized);
-    }
-  };
-  [...kept].forEach(expand);
+  let kept = expandReachableSchemaNames(collectRefNamesFromEndpoints(filteredEndpoints), refs);
 
   const schemaPatterns = compilePatterns(options.schemaPatterns, "schemaPatterns");
   for (const [ref, infos] of refs.infos) {
@@ -170,8 +174,7 @@ export const applySpecFilters = (
       : false;
     const allowByCb = options.filterSchemas ? options.filterSchemas(infos.normalized, ref) : false;
     if (allowByPattern || allowByCb) {
-      kept.add(infos.normalized);
-      expand(infos.normalized);
+      kept = expandReachableSchemaNames(new Set([...kept, infos.normalized]), refs);
     }
   }
 
