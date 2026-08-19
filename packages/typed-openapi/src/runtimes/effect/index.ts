@@ -29,7 +29,10 @@ const checkFilters = (base: string, filters: string[]): string => {
 /** True only when the emitted schema is a plain Effect Struct with `.fields`/`.mapFields`. */
 const canUseStruct = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()): boolean => {
   const inner = isNullOr(node);
-  if (inner) return canUseStruct(inner, ctx, seen);
+  // A nullable wrapper is not a Struct at runtime, even when its inner schema is.
+  // Keeping it out of the struct-composition path prevents `.mapFields(...)` from
+  // being emitted on `Schema.NullOr(...)` or on a ref to one.
+  if (inner) return false;
   if (node.kind === "object") {
     return (
       node.additionalProperties === false &&

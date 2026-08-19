@@ -63,6 +63,24 @@ const emitNumber = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitCtx)
 
 const emitRecord = (key: string, value: string) => `${S}.Record({ key: ${key}, value: ${value} })`;
 
+/** True only when an intersection member can safely be passed to `Schema.extend`. */
+const canUseStruct = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()): boolean => {
+  if (isNullOr(node)) return false;
+  if (node.kind === "object") {
+    return Object.keys(applyObjectConstraints(node.constraints, ctx.validation)).length === 0;
+  }
+  if (node.kind === "ref") {
+    if (node.generics?.length || ctx.recursiveNames.has(node.name) || seen.has(node.name)) return false;
+    const target = ctx.schemaNodes?.get(node.name);
+    return target ? canUseStruct(target, ctx, new Set(seen).add(node.name)) : false;
+  }
+  if (node.kind !== "intersection") return false;
+  const members = node.members
+    .filter((member) => member.kind !== "null" && member.kind !== "unknown" && member.kind !== "any")
+    .map((member) => isNullOr(member) ?? member);
+  return members.length > 0 && members.every((member) => canUseStruct(member, ctx, seen));
+};
+
 const emitBoolean = (ctx: EmitCtx): string => {
   if (!ctx.coercePrimitives) return `${S}.Boolean`;
   // @effect/schema has no BooleanFromString
@@ -164,7 +182,18 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         );
       }
       if (nonNull.length === 0) return `${S}.Null`;
-      return nonNull.map((m) => emitNode(m, ctx)).reduce((acc, cur) => `${S}.extend(${acc}, ${cur})`);
+      if (canUseStruct(nonNull[0]!, ctx) && nonNull.slice(1).every((member) => canUseStruct(member, ctx))) {
+        return nonNull
+          .slice(1)
+          .reduce((acc, member) => `${S}.extend(${acc}, ${emitNode(member, ctx)})`, emitNode(nonNull[0]!, ctx));
+      }
+      const [baseNode, ...constraintNodes] = nonNull;
+      const baseExpr = emitNode(baseNode!, ctx);
+      if (constraintNodes.length === 0) return baseExpr;
+      const checks = constraintNodes.map(
+        (member) => `${S}.filter((value) => ${S}.is(${emitNode(member, ctx)})(value))`,
+      );
+      return `${baseExpr}.pipe(${checks.join(", ")})`;
     }
     case "not": {
       const inner = emitNode(node.schema, ctx);

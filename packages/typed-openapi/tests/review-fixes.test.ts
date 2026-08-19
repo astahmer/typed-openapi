@@ -176,7 +176,38 @@ describe("nullable recursive explicit types (C003)", () => {
     });
     expect(src).toMatch(/export (?:type|interface) NodeCore/);
     expect(src).toContain("export type Node = NodeCore | null");
-    expect(src).toContain("Schema.Schema<NodeCore>");
+    expect(src).toContain("Schema.Schema<Node>");
+    expect(src).toContain("Schema.NullOr");
+  });
+
+  test.each(["effect", "effect3"] as const)("does not extend a nullable referenced schema", (runtime) => {
+    const src = generateFile({
+      ...mapOpenApiEndpoints({
+        openapi: "3.1.0",
+        info: { title: "t", version: "1" },
+        components: {
+          schemas: {
+            Base: {
+              type: "object",
+              nullable: true,
+              properties: { id: { type: "string" } },
+            },
+            Extra: {
+              type: "object",
+              properties: { label: { type: "string" } },
+            },
+            Combined: {
+              allOf: [{ $ref: "#/components/schemas/Base" }, { $ref: "#/components/schemas/Extra" }],
+            },
+          },
+        },
+        paths: {},
+      } as OpenAPIObject),
+      runtime,
+      schemasOnly: true,
+      includeClient: false,
+    });
+    expect(src).not.toMatch(runtime === "effect" ? /Base\.mapFields/ : /S\.extend\(Base/);
   });
 });
 

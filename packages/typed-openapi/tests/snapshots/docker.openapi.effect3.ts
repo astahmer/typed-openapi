@@ -248,7 +248,7 @@ export type ClusterInfo = S.Schema.Type<typeof ClusterInfo>;
 export const JoinTokens = S.Struct({ Worker: S.optional(S.String), Manager: S.optional(S.String) });
 export type JoinTokens = S.Schema.Type<typeof JoinTokens>;
 
-export const Swarm = S.extend(ClusterInfo, S.Struct({ JoinTokens: S.optional(JoinTokens) }));
+export const Swarm = ClusterInfo.pipe(S.filter((value) => S.is(S.Struct({ JoinTokens: S.optional(JoinTokens) }))(value)));
 export type Swarm = S.Schema.Type<typeof Swarm>;
 
 export const NetworkAttachmentConfig = S.Struct({ Target: S.optional(S.String), Aliases: S.optional(S.Array(S.String)), DriverOpts: S.optional(S.Record({ key: S.String, value: S.String })) });
@@ -1238,7 +1238,7 @@ export const post_ServiceCreate = {
   path: S.Literal("/services/create"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) })), body: S.extend(ServiceSpec, S.Record({ key: S.String, value: S.Unknown })) },
+  parameters: { header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) })), body: ServiceSpec.pipe(S.filter((value) => S.is(S.Record({ key: S.String, value: S.Unknown }))(value))) },
   responses: { 201: S.Struct({ ID: S.optional(S.String), Warning: S.optional(S.String) }), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1268,7 +1268,7 @@ export const post_ServiceUpdate = {
   path: S.Literal("/services/{id}/update"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()), registryAuthFrom: Union_default_spec_prop, rollback: S.optional(S.String) }), path: S.Struct({ id: S.String }), header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) })), body: S.extend(ServiceSpec, S.Record({ key: S.String, value: S.Unknown })) },
+  parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()), registryAuthFrom: Union_default_spec_prop, rollback: S.optional(S.String) }), path: S.Struct({ id: S.String }), header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) })), body: ServiceSpec.pipe(S.filter((value) => S.is(S.Record({ key: S.String, value: S.Unknown }))(value))) },
   responses: { 200: ServiceUpdateResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1328,7 +1328,7 @@ export const post_SecretCreate = {
   path: S.Literal("/secrets/create"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { body: S.extend(SecretSpec, S.Record({ key: S.String, value: S.Unknown })) },
+  parameters: { body: SecretSpec.pipe(S.filter((value) => S.is(S.Record({ key: S.String, value: S.Unknown }))(value))) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1378,7 +1378,7 @@ export const post_ConfigCreate = {
   path: S.Literal("/configs/create"),
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
-  parameters: { body: S.extend(ConfigSpec, S.Record({ key: S.String, value: S.Unknown })) },
+  parameters: { body: ConfigSpec.pipe(S.filter((value) => S.is(S.Record({ key: S.String, value: S.Unknown }))(value))) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 

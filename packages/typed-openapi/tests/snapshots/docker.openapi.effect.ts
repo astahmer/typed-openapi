@@ -248,7 +248,7 @@ export type ClusterInfo = Schema.Schema.Type<typeof ClusterInfo>;
 export const JoinTokens = Schema.Struct({ Worker: Schema.optional(Schema.String), Manager: Schema.optional(Schema.String) });
 export type JoinTokens = Schema.Schema.Type<typeof JoinTokens>;
 
-export const Swarm = ClusterInfo.mapFields(Struct.assign((Schema.Struct({ JoinTokens: Schema.optional(JoinTokens) })).fields));
+export const Swarm = ClusterInfo.check(Schema.makeFilter((value) => Schema.is(Schema.Struct({ JoinTokens: Schema.optional(JoinTokens) }))(value)));
 export type Swarm = Schema.Schema.Type<typeof Swarm>;
 
 export const NetworkAttachmentConfig = Schema.Struct({ Target: Schema.optional(Schema.String), Aliases: Schema.optional(Schema.Array(Schema.String)), DriverOpts: Schema.optional(Schema.Record(Schema.String, Schema.String)) });
