@@ -37,8 +37,7 @@ describe("tanstack-query.generator", () => {
     expect(file).toContain("export class TanstackQueryApiClient");
     expect(file).toContain("export type TanstackQueryApiClientOptions");
     expect(file).toContain("signal: queryContext.signal");
-    expect(file).toContain("ApiCallParams,");
-    expect(file).toContain("ApiQueryOptions,");
+    expect(file).toContain("ApiCallParams");
     expect(file).toContain("endpointQueryOptions?.consumeQuerySignal ?? this.options.consumeQuerySignal");
     expect(file).toContain("const endpointQueryOptions = params[0]?.queryOptions;");
     expect(file).toContain("private readonly options: TanstackQueryApiClientOptions = {}");

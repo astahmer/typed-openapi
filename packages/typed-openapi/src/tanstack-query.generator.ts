@@ -165,7 +165,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
 
   return `
   ${effectImport}import { queryOptions, infiniteQueryOptions, type QueryClient } from "@tanstack/react-query"
-  import type { EndpointByMethod, ${apiClientType}, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, ApiCallParams, ApiQueryOptions } from "${ctx.relativeApiClientPath}"
+  import type { EndpointByMethod, ${apiClientType}, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, ApiCallParams } from "${ctx.relativeApiClientPath}"
   import { errorStatusCodes, TypedStatusError } from "${ctx.relativeApiClientPath}"
 
   type EndpointQueryKeyParams = EndpointParameters & {
