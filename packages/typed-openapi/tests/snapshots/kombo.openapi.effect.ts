@@ -3214,9 +3214,15 @@ type RequiredKeys<T> = {
 type MaybeOptionalArg<T> = RequiredKeys<T> extends never ? [config?: T] : [config: T];
 type NotNever<T> = [T] extends [never] ? false : true;
 
+export type ApiQueryOptions = {
+  /** Override whether a generated TanStack Query consumes TanStack Query's AbortSignal. */
+  consumeQuerySignal?: boolean;
+};
+
 /** Call options merged onto inferred endpoint parameters. */
 type ApiRequestOptions = {
   overrides?: RequestInit;
+  queryOptions?: ApiQueryOptions;
   withResponse?: boolean;
   throwOnStatusError?: boolean;
   validate?: ValidateSide;
@@ -3372,6 +3378,7 @@ export class EffectApiClient {
       const requestParams = params[0] as
         | (EndpointParameters & {
             overrides?: RequestInit;
+            queryOptions?: ApiQueryOptions;
             validate?: ValidateSide;
             withResponse?: boolean;
             throwOnStatusError?: boolean;

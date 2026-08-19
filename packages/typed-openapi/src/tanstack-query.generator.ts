@@ -29,7 +29,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
         ) {
             const queryKey = createQueryKey(path, params[0]);
-            const endpointQueryOptions = (params[0] as { queryOptions?: ApiQueryOptions } | undefined)?.queryOptions;
+            const endpointQueryOptions = params[0]?.queryOptions;
             const endpointParams = { ...(params[0] || {}) } as Record<string, unknown>;
             delete endpointParams["queryOptions"];
             const consumeQuerySignal = endpointQueryOptions?.consumeQuerySignal ?? this.options.consumeQuerySignal;
