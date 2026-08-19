@@ -1,5 +1,34 @@
 # typed-openapi
 
+## 4.0.0
+
+### Major Changes
+
+- 0e97c0b: **Breaking:** Generated TanStack Query clients no longer consume TanStack Query's `AbortSignal` by default. TanStack
+  Query does not cancel unused queries unless the query function consumes this lazy signal; consuming it opts requests
+  into cancellation, which can discard in-flight work and cause duplicate development requests under React StrictMode
+  instead of preserving completed results in the cache. Set `consumeQuerySignal: true` on `TanstackQueryApiClient` when
+  cancelling the underlying request is desired, such as for downloads or large searches. The policy can also be
+  overridden per query with `queryOptions: { consumeQuerySignal: true }` or
+  `queryOptions: { consumeQuerySignal: false }` in the endpoint parameter object; this metadata is not included in the
+  query key or sent to the API client.
+- 8eebe97: Replace generated per-endpoint MSW mock factories with a typed method/path facade. Generated MSW files now expose `mock.<method>(path)` for typed response factories and custom resolvers, alongside the default `handlers` list and `mswWorkerOptions`.
+
+### Minor Changes
+
+- ac47de3: Emit TypeScript `@deprecated` JSDoc tags for OpenAPI schema properties marked `deprecated: true`, preserving
+  descriptions when present.
+
+### Patch Changes
+
+- aad63da: Add `includeDeprecated` option (CLI `--include-deprecated`, config `includeDeprecated`) to control which
+  `deprecated: true` OpenAPI members are kept in generated output: `"endpoints"`, `"schemas"`, `"properties"`. Kept
+  members are tagged `@deprecated`; anything not listed is omitted entirely. Defaults to `["schemas", "properties"]`, so
+  named schemas and object properties keep their previous behavior (present, now tagged) while deprecated operations
+  continue to be dropped from codegen unless `"endpoints"` is opted in.
+- 0db5a8a: Preserve nullable unions in generated Effect and Effect Schema runtime validators for named schemas.
+- f60a416: Preserve endpoint-specific response types in the generated MSW mock facade.
+
 ## 3.3.1
 
 ### Patch Changes
