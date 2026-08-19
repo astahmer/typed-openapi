@@ -29,15 +29,19 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
             ...params: MaybeOptionalArg<ApiCallParams<TEndpoint>>
         ) {
             const queryKey = createQueryKey(path, params[0]);
+            const endpointQueryOptions = (params[0] as { queryOptions?: ApiQueryOptions } | undefined)?.queryOptions;
+            const endpointParams = { ...(params[0] || {}) } as Record<string, unknown>;
+            delete endpointParams["queryOptions"];
+            const consumeQuerySignal = endpointQueryOptions?.consumeQuerySignal ?? this.options.consumeQuerySignal;
             const sharedQueryOptions = queryOptions({
                 queryFn: async (queryContext) => {
                     const { queryKey } = queryContext;
                     const keyParams = { ...(queryKey[2] || {}) } as Record<string, unknown>;
                     delete keyParams["_infinite"];
                     const requestParams = {
-                        ...(params[0] || {}),
+                        ...endpointParams,
                         ...keyParams,
-                        ...(this.options.consumeQuerySignal
+                        ...(consumeQuerySignal
                             ? { overrides: { signal: queryContext.signal } }
                             : {}),
                         withResponse: false as const
@@ -86,7 +90,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                             : {}),
                         queryFn: async (queryContext) => {
                             const { pageParam } = queryContext;
-                            const base = { ...(params[0] || {}) } as Record<string, unknown>;
+                            const base = { ...endpointParams } as Record<string, unknown>;
                             const query = {
                                 ...((base["query"] as Record<string, unknown> | undefined) || {}),
                             };
@@ -96,7 +100,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                             const requestParams = {
                                 ...base,
                                 ...(Object.keys(query).length ? { query } : {}),
-                                ...(this.options.consumeQuerySignal
+                                ...(consumeQuerySignal
                                     ? { overrides: { signal: queryContext.signal } }
                                     : {}),
                                 withResponse: false as const,
@@ -161,7 +165,7 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
 
   return `
   ${effectImport}import { queryOptions, infiniteQueryOptions, type QueryClient } from "@tanstack/react-query"
-  import type { EndpointByMethod, ${apiClientType}, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, ApiCallParams } from "${ctx.relativeApiClientPath}"
+  import type { EndpointByMethod, ${apiClientType}, SuccessStatusCode, ErrorStatusCode, InferResponseByStatus, ApiCallParams, ApiQueryOptions } from "${ctx.relativeApiClientPath}"
   import { errorStatusCodes, TypedStatusError } from "${ctx.relativeApiClientPath}"
 
   type EndpointQueryKeyParams = EndpointParameters & {

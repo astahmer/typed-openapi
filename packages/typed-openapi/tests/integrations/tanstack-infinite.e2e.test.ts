@@ -21,6 +21,7 @@ describe("tanstack infinite / queryKey e2e", () => {
     const ctx = mapOpenApiEndpoints(openApiDoc);
 
     const stubClient = `
+export type ApiQueryOptions = { consumeQuerySignal?: boolean };
 export type SuccessStatusCode = 200 | 201 | 202 | 204;
 export type ErrorStatusCode = 400 | 401 | 403 | 404 | 500;
 export type TypedSuccessResponse<T = unknown, S = number, H = unknown> = { data: T; status: S; headers: H; ok: true };
@@ -84,6 +85,7 @@ export class ApiClient {
     const ctx = mapOpenApiEndpoints(openApiDoc);
 
     const stubClient = `
+export type ApiQueryOptions = { consumeQuerySignal?: boolean };
 export type SuccessStatusCode = 200 | 201 | 202 | 204;
 export type ErrorStatusCode = 400 | 401 | 403 | 404 | 500;
 export type TypedSuccessResponse<T = unknown, S = number, H = unknown> = { data: T; status: S; headers: H; ok: true };
@@ -163,6 +165,49 @@ export class ApiClient {
     await query.queryOptions.queryFn(defaultQueryContext as never);
     expect(defaultSignalRead).toBe(false);
 
+    let perQuerySignalRead = false;
+    const perQuerySignal = new AbortController().signal;
+    const perQueryCancellableQuery = client.get("/pet/findByStatus", {
+      query: { status: "available" },
+      queryOptions: { consumeQuerySignal: true },
+    });
+    const perQueryContext = { queryKey: perQueryCancellableQuery.queryKey } as {
+      queryKey: typeof perQueryCancellableQuery.queryKey;
+      signal: AbortSignal;
+    };
+    Object.defineProperty(perQueryContext, "signal", {
+      get: () => {
+        perQuerySignalRead = true;
+        return perQuerySignal;
+      },
+    });
+    await perQueryCancellableQuery.queryOptions.queryFn(perQueryContext as never);
+    expect(perQuerySignalRead).toBe(true);
+    expect(api.lastParams).toEqual(expect.objectContaining({ overrides: { signal: perQuerySignal } }));
+    expect(api.lastParams).not.toHaveProperty("queryOptions");
+    expect(perQueryCancellableQuery.queryKey).toEqual(query.queryKey);
+
+    let infinitePerQuerySignalRead = false;
+    const infinitePerQuerySignal = new AbortController().signal;
+    const infinitePerQueryOptions = perQueryCancellableQuery.infiniteQueryOptions({
+      initialPageParam: 1,
+      pageParamKey: "page",
+      getNextPageParam: () => undefined,
+    });
+    const infinitePerQueryContext = {
+      pageParam: 3,
+      signal: infinitePerQuerySignal,
+    } as never;
+    Object.defineProperty(infinitePerQueryContext, "signal", {
+      get: () => {
+        infinitePerQuerySignalRead = true;
+        return infinitePerQuerySignal;
+      },
+    });
+    await infinitePerQueryOptions.queryFn(infinitePerQueryContext);
+    expect(infinitePerQuerySignalRead).toBe(true);
+    expect(api.lastParams).toEqual(expect.objectContaining({ overrides: { signal: infinitePerQuerySignal } }));
+
     let cancellableSignalRead = false;
     const signal = new AbortController().signal;
     const cancellableClient = new mod.TanstackQueryApiClient(api, { consumeQuerySignal: true });
@@ -180,6 +225,25 @@ export class ApiClient {
     await cancellableQuery.queryOptions.queryFn(cancellableQueryContext as never);
     expect(cancellableSignalRead).toBe(true);
     expect(api.lastParams).toEqual(expect.objectContaining({ overrides: { signal } }));
+
+    let optedOutSignalRead = false;
+    const optedOutQuery = cancellableClient.get("/pet/findByStatus", {
+      query: { status: "available" },
+      queryOptions: { consumeQuerySignal: false },
+    });
+    const optedOutContext = { queryKey: optedOutQuery.queryKey } as {
+      queryKey: typeof optedOutQuery.queryKey;
+      signal: AbortSignal;
+    };
+    Object.defineProperty(optedOutContext, "signal", {
+      get: () => {
+        optedOutSignalRead = true;
+        return signal;
+      },
+    });
+    await optedOutQuery.queryOptions.queryFn(optedOutContext as never);
+    expect(optedOutSignalRead).toBe(false);
+    expect(api.lastParams).not.toHaveProperty("overrides");
 
     const fromSuspense = await query.suspenseQueryOptions.queryFn({
       queryKey: query.queryKey,
