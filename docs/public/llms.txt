@@ -1,0 +1,34 @@
+# typed-openapi
+
+> Generate type-safe TypeScript clients, runtime validators, and typed API integrations from OpenAPI documents.
+
+typed-openapi is an open-source TypeScript code generator. The documentation covers the CLI, generated clients, runtime validation, Effect, TanStack Query, MSW, filtering, schema naming, and library APIs.
+
+## Start here
+
+- [Documentation home](https://typed-openapi-docs.vercel.app/): Product overview and supported workflows.
+- [Getting started](https://typed-openapi-docs.vercel.app/getting-started/): Install typed-openapi and generate a first client.
+- [Configuration](https://typed-openapi-docs.vercel.app/configuration/): Typed CLI configuration and repeatable generation options.
+- [Playground](https://typed-openapi-docs.vercel.app/playground/): Try generation in the browser.
+- [AI agents](https://typed-openapi-docs.vercel.app/ai/): Use typed-openapi from an agent workflow.
+
+## Developer resources
+
+- [CLI reference](https://typed-openapi-docs.vercel.app/reference/cli/): Every command-line option.
+- [Promise client and fetcher](https://typed-openapi-docs.vercel.app/clients/promise-client/): Generated Fetch clients and custom transports.
+- [Effect-native client](https://typed-openapi-docs.vercel.app/clients/effect-client/): Effect clients with typed error channels.
+- [Request bodies, cookies, and auth](https://typed-openapi-docs.vercel.app/clients/requests-auth-and-bodies/): Generated request encoding and security schemes.
+- [Errors and response modes](https://typed-openapi-docs.vercel.app/clients/errors-and-responses/): Typed status errors and discriminated responses.
+- [Runtime adapters](https://typed-openapi-docs.vercel.app/validation/runtimes/): Zod, Effect, Valibot, ArkType, TypeBox, and Typia.
+- [Validation, coercion, and transforms](https://typed-openapi-docs.vercel.app/validation/input-output/): Input/output validation boundaries and transforms.
+- [TanStack Query](https://typed-openapi-docs.vercel.app/integrations/tanstack-query/): Generated query keys, options, mutations, and invalidation helpers.
+- [MSW mocks](https://typed-openapi-docs.vercel.app/integrations/msw/): Generated handlers and mock factories.
+- [Library API](https://typed-openapi-docs.vercel.app/advanced/library-api/): Programmatic generation for custom tooling.
+- [OpenAPI support](https://typed-openapi-docs.vercel.app/advanced/openapi-support/): Supported specification features and edge cases.
+- [Source repository](https://github.com/astahmer/typed-openapi): Source, tests, releases, and package metadata.
+- [npm package](https://www.npmjs.com/package/typed-openapi): Published package and installation metadata.
+
+## Machine-readable endpoints
+
+- [Sitemap](https://typed-openapi-docs.vercel.app/sitemap-index.xml): XML URL index for this documentation site.
+- [Markdown representation](https://typed-openapi-docs.vercel.app/getting-started/): Send `Accept: text/markdown` to any documentation URL for clean Markdown.
