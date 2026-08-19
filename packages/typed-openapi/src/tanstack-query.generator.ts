@@ -30,13 +30,16 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
         ) {
             const queryKey = createQueryKey(path, params[0]);
             const sharedQueryOptions = queryOptions({
-                queryFn: async ({ queryKey, signal, }) => {
+                queryFn: async (queryContext) => {
+                    const { queryKey } = queryContext;
                     const keyParams = { ...(queryKey[2] || {}) } as Record<string, unknown>;
                     delete keyParams["_infinite"];
                     const requestParams = {
                         ...(params[0] || {}),
                         ...keyParams,
-                        overrides: { signal },
+                        ...(this.options.consumeQuerySignal
+                            ? { overrides: { signal: queryContext.signal } }
+                            : {}),
                         withResponse: false as const
                     };
                     const res = ${callExpr};
@@ -81,7 +84,8 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                         ...(infiniteOpts.getPreviousPageParam
                             ? { getPreviousPageParam: infiniteOpts.getPreviousPageParam }
                             : {}),
-                        queryFn: async ({ pageParam, signal }) => {
+                        queryFn: async (queryContext) => {
+                            const { pageParam } = queryContext;
                             const base = { ...(params[0] || {}) } as Record<string, unknown>;
                             const query = {
                                 ...((base["query"] as Record<string, unknown> | undefined) || {}),
@@ -92,7 +96,9 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
                             const requestParams = {
                                 ...base,
                                 ...(Object.keys(query).length ? { query } : {}),
-                                overrides: { signal },
+                                ...(this.options.consumeQuerySignal
+                                    ? { overrides: { signal: queryContext.signal } }
+                                    : {}),
                                 withResponse: false as const,
                             };
                             const res = ${callExpr};
@@ -249,6 +255,16 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
       data: unknown;
   };
 
+  export type TanstackQueryApiClientOptions = {
+      /**
+       * Pass TanStack Query's AbortSignal to the underlying request.
+       *
+       * Disabled by default so an abandoned query can finish and populate the
+       * cache. Set to true when the request should be cancelled with the query.
+       */
+      consumeQuerySignal?: boolean;
+  };
+
   type InferResponseData<TEndpoint, TStatusCode> = InferResponseByStatus<TEndpoint, TStatusCode> extends infer TResponse
       ? TResponse extends { data: infer TData }
           ? Extract<TData, {}>
@@ -259,7 +275,10 @@ export const generateTanstackQueryFile = async (ctx: GeneratorContext & { relati
 
   // <ApiClient>
   export class TanstackQueryApiClient {
-      constructor(public client: ${apiClientType}) { }
+      constructor(
+          public client: ${apiClientType},
+          private readonly options: TanstackQueryApiClientOptions = {},
+      ) { }
 
       ${methodBlocks}
 

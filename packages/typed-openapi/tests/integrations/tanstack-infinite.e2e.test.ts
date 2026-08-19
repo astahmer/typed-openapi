@@ -147,6 +147,39 @@ export class ApiClient {
         withResponse: false,
       }),
     );
+    expect(api.lastParams).not.toHaveProperty("overrides");
+
+    let defaultSignalRead = false;
+    const defaultQueryContext = { queryKey: query.queryKey } as {
+      queryKey: typeof query.queryKey;
+      signal: AbortSignal;
+    };
+    Object.defineProperty(defaultQueryContext, "signal", {
+      get: () => {
+        defaultSignalRead = true;
+        return new AbortController().signal;
+      },
+    });
+    await query.queryOptions.queryFn(defaultQueryContext as never);
+    expect(defaultSignalRead).toBe(false);
+
+    let cancellableSignalRead = false;
+    const signal = new AbortController().signal;
+    const cancellableClient = new mod.TanstackQueryApiClient(api, { consumeQuerySignal: true });
+    const cancellableQuery = cancellableClient.get("/pet/findByStatus", { query: { status: "available" } });
+    const cancellableQueryContext = { queryKey: cancellableQuery.queryKey } as {
+      queryKey: typeof cancellableQuery.queryKey;
+      signal: AbortSignal;
+    };
+    Object.defineProperty(cancellableQueryContext, "signal", {
+      get: () => {
+        cancellableSignalRead = true;
+        return signal;
+      },
+    });
+    await cancellableQuery.queryOptions.queryFn(cancellableQueryContext as never);
+    expect(cancellableSignalRead).toBe(true);
+    expect(api.lastParams).toEqual(expect.objectContaining({ overrides: { signal } }));
 
     const fromSuspense = await query.suspenseQueryOptions.queryFn({
       queryKey: query.queryKey,
