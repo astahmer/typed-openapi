@@ -17,13 +17,32 @@ export default defineConfig({
   base,
   site,
   output: "server",
-  adapter: vercel(),
+  // Keep Starlight pages prerendered for Pagefind; Vercel edge middleware handles negotiation before delivery.
+  adapter: vercel({ middlewareMode: "edge" }),
   integrations: [
     starlight({
       title: "typed-openapi",
       description: "Generate a type-safe TypeScript API client from an OpenAPI document.",
       favicon: "favicon.png",
       head: [
+        {
+          tag: "script",
+          attrs: { type: "application/ld+json" },
+          content: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "typed-openapi",
+            description: "Generate type-safe TypeScript clients, runtime validators, and typed API integrations from OpenAPI documents.",
+            url: site,
+            applicationCategory: "DeveloperApplication",
+            operatingSystem: "Any",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            sameAs: [
+              "https://github.com/astahmer/typed-openapi",
+              "https://www.npmjs.com/package/typed-openapi",
+            ],
+          }),
+        },
         { tag: "meta", attrs: { property: "og:image", content: socialAsset("og-docs.png") } },
         { tag: "meta", attrs: { property: "og:image:width", content: "1200" } },
         { tag: "meta", attrs: { property: "og:image:height", content: "630" } },
@@ -62,11 +81,11 @@ export default defineConfig({
         }),
       ],
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
-      prerender: false,
+      prerender: true,
       sidebar: [
         {
           label: "Start here",
-          items: ["getting-started", "configuration", "advanced/filtering-and-schema-naming", "playground", "ai"],
+          items: ["getting-started", "configuration", "advanced/filtering-and-schema-naming", "playground", "ai", "developer-resources"],
         },
         {
           label: "Clients",

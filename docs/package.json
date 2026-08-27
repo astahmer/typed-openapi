@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "check": "astro check",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "test": "node tests/agent-readiness.test.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.39.2",

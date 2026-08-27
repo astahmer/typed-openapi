@@ -11,6 +11,7 @@ typed-openapi is an open-source TypeScript code generator. The documentation cov
 - [Configuration](https://typed-openapi-docs.vercel.app/configuration/): Typed CLI configuration and repeatable generation options.
 - [Playground](https://typed-openapi-docs.vercel.app/playground/): Try generation in the browser.
 - [AI agents](https://typed-openapi-docs.vercel.app/ai/): Use typed-openapi from an agent workflow.
+- [Developer resources](https://typed-openapi-docs.vercel.app/developer-resources/): Named links to the API, package, source, and machine-readable resources.
 
 ## Developer resources
 
