@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@astrojs/starlight": "^0.39.2",
+    "@astrojs/vercel": "^11.0.7",
     "astro": "^6.0.0",
     "lucode-starlight": "0.1.6"
   },

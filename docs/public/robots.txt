@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://typed-openapi-docs.vercel.app/sitemap-index.xml

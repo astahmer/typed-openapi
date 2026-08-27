@@ -30,5 +30,5 @@ typed-openapi is an open-source TypeScript code generator. The documentation cov
 
 ## Machine-readable endpoints
 
-- [Sitemap](https://typed-openapi-docs.vercel.app/sitemap-index.xml): XML URL index for this documentation site.
+- [Sitemap](https://typed-openapi-docs.vercel.app/sitemap.xml): XML URL index for this documentation site.
 - [Markdown representation](https://typed-openapi-docs.vercel.app/getting-started/): Send `Accept: text/markdown` to any documentation URL for clean Markdown.

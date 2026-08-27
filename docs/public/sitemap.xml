@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://typed-openapi-docs.vercel.app/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/getting-started/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/configuration/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/ai/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/playground/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/clients/promise-client/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/clients/effect-client/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/clients/errors-and-responses/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/clients/requests-auth-and-bodies/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/validation/runtimes/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/validation/input-output/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/validation/effect-branding-and-decoding/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/integrations/msw/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/integrations/tanstack-query/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/advanced/filtering-and-schema-naming/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/advanced/output-shape/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/advanced/openapi-support/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/advanced/schema-naming/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/advanced/library-api/</loc></url>
+  <url><loc>https://typed-openapi-docs.vercel.app/reference/cli/</loc></url>
+</urlset>

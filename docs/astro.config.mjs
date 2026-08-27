@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import vercel from "@astrojs/vercel";
 import lucode from "lucode-starlight";
 
 const normalizeBase = (value) => {
@@ -8,13 +9,15 @@ const normalizeBase = (value) => {
 };
 
 const base = normalizeBase(process.env.DOCS_BASE ?? process.env.ASTRO_BASE);
-const site = process.env.SITE_URL;
+const site = process.env.SITE_URL ?? "https://typed-openapi-docs.vercel.app";
 const withBase = (path) => `${base}${path.replace(/^\//, "")}`;
 const socialAsset = (path) => (site ? new URL(withBase(path), site).href : withBase(path));
 
 export default defineConfig({
   base,
   site,
+  output: "server",
+  adapter: vercel(),
   integrations: [
     starlight({
       title: "typed-openapi",
@@ -59,6 +62,7 @@ export default defineConfig({
         }),
       ],
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
+      prerender: false,
       sidebar: [
         {
           label: "Start here",
