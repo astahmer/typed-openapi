@@ -14,10 +14,13 @@ describe("gen-tstyche-suites output", () => {
     for (const runtime of runtimes) {
       const promise = readFileSync(join(root, "tests/tstyche/runtimes", `${runtime}.types.tstyche.ts`), "utf8");
       const effect = readFileSync(join(root, "tests/tstyche/effect-client", `${runtime}.types.tstyche.ts`), "utf8");
+      const audit = readFileSync(join(root, "tests/tstyche/typing-audit", `${runtime}.types.tstyche.ts`), "utf8");
       expect(promise.length).toBeGreaterThan(200);
       expect(effect.length).toBeGreaterThan(200);
+      expect(audit.length).toBeGreaterThan(200);
       expect(promise).toContain(`${runtime} `);
       expect(effect).toContain(`${runtime} `);
+      expect(audit).toContain(`../../../tmp/tstyche/typing-audit/${runtime}/client.ts`);
     }
   });
 

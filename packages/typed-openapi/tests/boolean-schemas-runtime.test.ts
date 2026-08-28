@@ -117,4 +117,22 @@ describe("JSON Schema boolean schemas", () => {
     expect(TypeBoxValue.Check(module.StringOnly, "ok")).toBe(true);
     expect(TypeBoxValue.Check(module.StringOnly, 1)).toBe(false);
   });
+
+  test("component-level boolean schemas resolve through the OpenAPI ref resolver", () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "boolean-components", version: "1" },
+      paths: {},
+      components: {
+        schemas: {
+          Forbidden: false,
+          Anything: true,
+        },
+      },
+    } as OpenAPIObject;
+
+    const source = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "typebox", schemasOnly: true });
+    expect(source).toContain("export const Forbidden = Type.Never()");
+    expect(source).toContain("export const Anything = Type.Unknown()");
+  });
 });

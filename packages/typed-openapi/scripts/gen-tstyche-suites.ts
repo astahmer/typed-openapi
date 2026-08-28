@@ -575,12 +575,155 @@ describe("${runtime} EffectApiClient", () => {
 `;
 };
 
+const typingAuditSuite = (runtime: OutputRuntime) => {
+  const base = `../../../tmp/tstyche/typing-audit/${runtime}`;
+  const schemaImports =
+    runtime === "none"
+      ? "type Schemas"
+      : `type Anything,
+  type Closed,
+  type Exclusive,
+  type Forbidden,
+  type Impossible,
+  type OpenMap,
+  type Patterned,
+  type RecursiveNode,
+  type Tuple`;
+  const schemaAliases =
+    runtime === "none"
+      ? `
+type Anything = Schemas.Anything;
+type Closed = Schemas.Closed;
+type Exclusive = Schemas.Exclusive;
+type Forbidden = Schemas.Forbidden;
+type Impossible = Schemas.Impossible;
+type OpenMap = Schemas.OpenMap;
+type Patterned = Schemas.Patterned;
+type RecursiveNode = Schemas.RecursiveNode;
+type Tuple = Schemas.Tuple;
+`
+      : "";
+  const endpointImports =
+    runtime === "none"
+      ? "type Endpoints"
+      : `type get_GetBinary,
+  type get_GetParams,
+  type get_GetRecursive,
+  type get_GetText,
+  type post_PostClosed`;
+  const endpointAliases =
+    runtime === "none"
+      ? `
+type get_GetBinary = Endpoints.get_GetBinary;
+type get_GetParams = Endpoints.get_GetParams;
+type get_GetRecursive = Endpoints.get_GetRecursive;
+type get_GetText = Endpoints.get_GetText;
+type post_PostClosed = Endpoints.post_PostClosed;
+`
+      : "";
+  const sidecarImport =
+    runtime === "none"
+      ? ""
+      : `import type {
+  Anything as SidecarAnything,
+  Closed as SidecarClosed,
+  Exclusive as SidecarExclusive,
+  Forbidden as SidecarForbidden,
+  Impossible as SidecarImpossible,
+  OpenMap as SidecarOpenMap,
+  Patterned as SidecarPatterned,
+  RecursiveNode as SidecarRecursiveNode,
+  Tuple as SidecarTuple,
+} from "${base}/client-sidecar.ts";`;
+  const sidecarAssertion =
+    runtime === "none"
+      ? ""
+      : `
+    expect<SidecarClosed>().type.toBe<{ name: string }>();
+    expect<SidecarOpenMap>().type.toBeAssignableTo<{ name: string }>();
+    expect<{ name: string; count: number }>().type.toBeAssignableTo<SidecarOpenMap>();
+    expect<SidecarPatterned>().type.toBeAssignableTo<{ name: string }>();
+    expect<{ name: string; "x-request-id": string }>().type.toBeAssignableTo<SidecarPatterned>();
+    expect<{ name: string; "x-request-id": number }>().type.not.toBeAssignableTo<SidecarPatterned>();
+    expect<SidecarTuple>().type.toBe<[string, number, ...string[]]>();
+    expect<SidecarRecursiveNode>().type.toBeAssignableTo<{ value: string; child?: SidecarRecursiveNode }>();
+    expect<SidecarExclusive>().type.toBe<string | number>();
+    expect<SidecarImpossible>().type.toBe<never>();
+    expect<SidecarForbidden>().type.toBe<never>();
+    expect<SidecarAnything>().type.toBe<unknown>();`;
+  const coercedInput = ["zod", "zod3", "effect", "effect3", "valibot", "arktype"].includes(runtime)
+    ? `
+    const coercedParams = await api.get<"/params/{id}", get_GetParams>("/params/{id}", { path: { id: "1" }, query: { enabled: "false" } });
+    expect(coercedParams).type.toBe<Closed>();`
+    : "";
+  const parameterId = ["effect", "effect3", "arktype"].includes(runtime) ? '"1"' : "1";
+  return `/**
+ * ${runtime} generated typing audit.
+ * Fixtures: pnpm gen:tstyche-fixtures → tmp/tstyche/typing-audit/${runtime}/
+ */
+import { describe, expect, it } from "tstyche";
+import {
+  createApiClient,
+  ${schemaImports},
+  ${endpointImports},
+} from "${base}/client.ts";
+${schemaAliases}
+${endpointAliases}
+${sidecarImport}
+
+const api = createApiClient({
+  fetch: async () => new Response(null, { status: 204 }),
+});
+
+describe("${runtime} generated typing audit", () => {
+  it("preserves schema output inference for special JSON Schema shapes", () => {
+    expect<Closed>().type.toBeAssignableTo<{ name: string }>();
+    expect<OpenMap>().type.toBeAssignableTo<{ name: string }>();
+    expect<{ name: string; count: number }>().type.toBeAssignableTo<OpenMap>();
+    expect<Patterned>().type.toBeAssignableTo<{ name: string }>();
+    expect<{ name: string; "x-request-id": string }>().type.toBeAssignableTo<Patterned>();
+    expect<Tuple>().type.toBeAssignableTo<readonly [string, number, ...string[]]>();
+    expect<RecursiveNode>().type.toBeAssignableTo<{ value: string; child?: RecursiveNode }>();
+    ${sidecarAssertion}
+    expect<Exclusive>().type.toBe<string | number>();
+    expect<Impossible>().type.toBe<never>();
+    expect<Forbidden>().type.toBe<never>();
+    expect<Anything>().type.toBe<unknown>();
+  });
+
+  it("preserves response body types", async () => {
+    const text = await api.get<"/text", get_GetText>("/text");
+    expect(text).type.toBe<string>();
+    const binary = await api.get<"/binary", get_GetBinary>("/binary");
+    expect(binary).type.toBe<Blob>();
+  });
+
+  it("preserves recursive and parameterized endpoint inference", async () => {
+    const recursive = await api.get<"/recursive", get_GetRecursive>("/recursive");
+    expect(recursive).type.toBe<RecursiveNode>();
+    const params = await api.get<"/params/{id}", get_GetParams>("/params/{id}", { path: { id: ${parameterId} }, query: { enabled: true } });
+    expect(params).type.toBe<Closed>();
+    ${coercedInput}
+    await api.post<"/closed", post_PostClosed>("/closed", { body: { name: "ok" } });
+    // @ts-expect-error! closed request bodies reject undeclared properties
+    await api.post<"/closed", post_PostClosed>("/closed", { body: { name: "ok", extra: true } });
+  });
+
+  it("exposes TRACE through the generated client method set", async () => {
+    expect(api.trace).type.toBeCallableWith("/trace");
+  });
+});
+`;
+};
+
 mkdirSync(join(root, "tests/tstyche/runtimes"), { recursive: true });
 mkdirSync(join(root, "tests/tstyche/effect-client"), { recursive: true });
+mkdirSync(join(root, "tests/tstyche/typing-audit"), { recursive: true });
 
 for (const runtime of runtimes) {
   writeFileSync(join(root, "tests/tstyche/runtimes", `${runtime}.types.tstyche.ts`), promiseSuite(runtime));
   writeFileSync(join(root, "tests/tstyche/effect-client", `${runtime}.types.tstyche.ts`), effectSuite(runtime));
+  writeFileSync(join(root, "tests/tstyche/typing-audit", `${runtime}.types.tstyche.ts`), typingAuditSuite(runtime));
 }
 
 console.log("wrote tstyche suites for", runtimes.length, "runtimes (promise + effect)");

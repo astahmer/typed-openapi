@@ -484,6 +484,8 @@ describe("generator", () => {
           path: string;
           /** How to encode \`parameters.body\` (from OpenAPI requestBody content type). */
           requestFormat: RequestFormat;
+          /** OpenAPI parameter serialization metadata for the current endpoint. */
+          parameterStyles?: EndpointParameterStyles;
           /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
           security?: SecurityRequirements;
           overrides?: RequestInit;
@@ -632,7 +634,7 @@ describe("generator", () => {
 
       /** Parameter bag for an endpoint + request options. */
       export type ApiCallParams<TEndpoint> = TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & ApiRequestOptions
           : ApiRequestOptions
         : ApiRequestOptions;
@@ -783,37 +785,64 @@ describe("generator", () => {
           if (!queryParams || typeof queryParams !== "object") return;
 
           const searchParams = new URLSearchParams();
+          const rawEntries: Array<{ key: string; value: string; allowReserved: boolean }> = [];
+          const append = (key: string, value: unknown, allowReserved = false) => {
+            const stringValue = String(value);
+            searchParams.append(key, stringValue);
+            rawEntries.push({ key, value: stringValue, allowReserved });
+          };
+          const encodeQueryComponent = (value: string, allowReserved: boolean) => {
+            const encoded = encodeURIComponent(value);
+            return allowReserved
+              ? encoded.replace(/%3A|%2F|%3F|%40|%21|%24|%26|%27|%28|%29|%2A|%2B|%2C|%3B|%3D|%5B|%5D/gi, (part) =>
+                  decodeURIComponent(part),
+                )
+              : encoded;
+          };
+          Object.defineProperty(searchParams, "toString", {
+            value: () =>
+              rawEntries
+                .map(
+                  ({ key, value, allowReserved }) =>
+                    \`\${encodeQueryComponent(key, false)}=\${encodeQueryComponent(value, allowReserved)}\`,
+                )
+                .join("&"),
+          });
           Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
             if (value != null) {
               // Skip null/undefined values
               const parameterStyle = styles?.[key];
               const style = parameterStyle?.style ?? "form";
               const explode = parameterStyle?.explode ?? true;
+              const allowReserved = parameterStyle?.allowReserved === true;
               if (Array.isArray(value)) {
                 if (style === "spaceDelimited")
-                  searchParams.append(
+                  append(
                     key,
                     value
                       .filter((item) => item != null)
                       .map(String)
                       .join(" "),
+                    allowReserved,
                   );
                 else if (style === "pipeDelimited")
-                  searchParams.append(
+                  append(
                     key,
                     value
                       .filter((item) => item != null)
                       .map(String)
                       .join("|"),
+                    allowReserved,
                   );
-                else if (explode) value.forEach((val) => val != null && searchParams.append(key, String(val)));
+                else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
                 else
-                  searchParams.append(
+                  append(
                     key,
                     value
                       .filter((item) => item != null)
                       .map(String)
                       .join(","),
+                    allowReserved,
                   );
               } else if (typeof value === "object") {
                 const entries = Object.entries(value as Record<string, unknown>).filter(
@@ -822,19 +851,17 @@ describe("generator", () => {
                 if (style === "deepObject") {
                   for (const [nestedKey, nestedValue] of entries) {
                     if (Array.isArray(nestedValue))
-                      nestedValue.forEach(
-                        (item) => item != null && searchParams.append(\`\${key}[\${nestedKey}]\`, String(item)),
-                      );
-                    else searchParams.append(\`\${key}[\${nestedKey}]\`, String(nestedValue));
+                      nestedValue.forEach((item) => item != null && append(\`\${key}[\${nestedKey}]\`, item, allowReserved));
+                    else append(\`\${key}[\${nestedKey}]\`, nestedValue, allowReserved);
                   }
                 } else if (explode) {
                   for (const [nestedKey, nestedValue] of entries) {
                     if (Array.isArray(nestedValue))
-                      nestedValue.forEach((item) => item != null && searchParams.append(nestedKey, String(item)));
-                    else searchParams.append(nestedKey, String(nestedValue));
+                      nestedValue.forEach((item) => item != null && append(nestedKey, item, allowReserved));
+                    else append(nestedKey, nestedValue, allowReserved);
                   }
                 } else {
-                  searchParams.append(
+                  append(
                     key,
                     entries
                       .flatMap(([nestedKey, nestedValue]) => [
@@ -843,10 +870,11 @@ describe("generator", () => {
                       ])
                       .map(String)
                       .join(","),
+                    allowReserved,
                   );
                 }
               } else {
-                searchParams.append(key, String(value));
+                append(key, value, allowReserved);
               }
             }
           });
@@ -899,7 +927,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -928,7 +956,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -963,7 +991,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -992,7 +1020,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -1027,7 +1055,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -1056,7 +1084,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -1091,7 +1119,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -1120,7 +1148,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -1163,7 +1191,7 @@ describe("generator", () => {
           path: TPath,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -1197,7 +1225,7 @@ describe("generator", () => {
           path: TPath,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -1272,6 +1300,9 @@ describe("generator", () => {
               ...(urlSearchParams ? { urlSearchParams } : {}),
               ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
               requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+              ...(endpointParameterStyles[method]?.[path as string]
+                ? { parameterStyles: endpointParameterStyles[method]?.[path as string] }
+                : {}),
               security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements,
               ...(overrides ? { overrides } : {}),
               throwOnStatusError,
@@ -1819,6 +1850,8 @@ describe("generator", () => {
           path: string;
           /** How to encode \`parameters.body\` (from OpenAPI requestBody content type). */
           requestFormat: RequestFormat;
+          /** OpenAPI parameter serialization metadata for the current endpoint. */
+          parameterStyles?: EndpointParameterStyles;
           /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
           security?: SecurityRequirements;
           overrides?: RequestInit;
@@ -1967,7 +2000,7 @@ describe("generator", () => {
 
       /** Parameter bag for an endpoint + request options. */
       export type ApiCallParams<TEndpoint> = TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & ApiRequestOptions
           : ApiRequestOptions
         : ApiRequestOptions;
@@ -2118,37 +2151,64 @@ describe("generator", () => {
           if (!queryParams || typeof queryParams !== "object") return;
 
           const searchParams = new URLSearchParams();
+          const rawEntries: Array<{ key: string; value: string; allowReserved: boolean }> = [];
+          const append = (key: string, value: unknown, allowReserved = false) => {
+            const stringValue = String(value);
+            searchParams.append(key, stringValue);
+            rawEntries.push({ key, value: stringValue, allowReserved });
+          };
+          const encodeQueryComponent = (value: string, allowReserved: boolean) => {
+            const encoded = encodeURIComponent(value);
+            return allowReserved
+              ? encoded.replace(/%3A|%2F|%3F|%40|%21|%24|%26|%27|%28|%29|%2A|%2B|%2C|%3B|%3D|%5B|%5D/gi, (part) =>
+                  decodeURIComponent(part),
+                )
+              : encoded;
+          };
+          Object.defineProperty(searchParams, "toString", {
+            value: () =>
+              rawEntries
+                .map(
+                  ({ key, value, allowReserved }) =>
+                    \`\${encodeQueryComponent(key, false)}=\${encodeQueryComponent(value, allowReserved)}\`,
+                )
+                .join("&"),
+          });
           Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
             if (value != null) {
               // Skip null/undefined values
               const parameterStyle = styles?.[key];
               const style = parameterStyle?.style ?? "form";
               const explode = parameterStyle?.explode ?? true;
+              const allowReserved = parameterStyle?.allowReserved === true;
               if (Array.isArray(value)) {
                 if (style === "spaceDelimited")
-                  searchParams.append(
+                  append(
                     key,
                     value
                       .filter((item) => item != null)
                       .map(String)
                       .join(" "),
+                    allowReserved,
                   );
                 else if (style === "pipeDelimited")
-                  searchParams.append(
+                  append(
                     key,
                     value
                       .filter((item) => item != null)
                       .map(String)
                       .join("|"),
+                    allowReserved,
                   );
-                else if (explode) value.forEach((val) => val != null && searchParams.append(key, String(val)));
+                else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
                 else
-                  searchParams.append(
+                  append(
                     key,
                     value
                       .filter((item) => item != null)
                       .map(String)
                       .join(","),
+                    allowReserved,
                   );
               } else if (typeof value === "object") {
                 const entries = Object.entries(value as Record<string, unknown>).filter(
@@ -2157,19 +2217,17 @@ describe("generator", () => {
                 if (style === "deepObject") {
                   for (const [nestedKey, nestedValue] of entries) {
                     if (Array.isArray(nestedValue))
-                      nestedValue.forEach(
-                        (item) => item != null && searchParams.append(\`\${key}[\${nestedKey}]\`, String(item)),
-                      );
-                    else searchParams.append(\`\${key}[\${nestedKey}]\`, String(nestedValue));
+                      nestedValue.forEach((item) => item != null && append(\`\${key}[\${nestedKey}]\`, item, allowReserved));
+                    else append(\`\${key}[\${nestedKey}]\`, nestedValue, allowReserved);
                   }
                 } else if (explode) {
                   for (const [nestedKey, nestedValue] of entries) {
                     if (Array.isArray(nestedValue))
-                      nestedValue.forEach((item) => item != null && searchParams.append(nestedKey, String(item)));
-                    else searchParams.append(nestedKey, String(nestedValue));
+                      nestedValue.forEach((item) => item != null && append(nestedKey, item, allowReserved));
+                    else append(nestedKey, nestedValue, allowReserved);
                   }
                 } else {
-                  searchParams.append(
+                  append(
                     key,
                     entries
                       .flatMap(([nestedKey, nestedValue]) => [
@@ -2178,10 +2236,11 @@ describe("generator", () => {
                       ])
                       .map(String)
                       .join(","),
+                    allowReserved,
                   );
                 }
               } else {
-                searchParams.append(key, String(value));
+                append(key, value, allowReserved);
               }
             }
           });
@@ -2234,7 +2293,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -2263,7 +2322,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -2306,7 +2365,7 @@ describe("generator", () => {
           path: TPath,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -2340,7 +2399,7 @@ describe("generator", () => {
           path: TPath,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -2415,6 +2474,9 @@ describe("generator", () => {
               ...(urlSearchParams ? { urlSearchParams } : {}),
               ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
               requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+              ...(endpointParameterStyles[method]?.[path as string]
+                ? { parameterStyles: endpointParameterStyles[method]?.[path as string] }
+                : {}),
               security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements,
               ...(overrides ? { overrides } : {}),
               throwOnStatusError,
@@ -2701,6 +2763,8 @@ describe("generator", () => {
           path: string;
           /** How to encode \`parameters.body\` (from OpenAPI requestBody content type). */
           requestFormat: RequestFormat;
+          /** OpenAPI parameter serialization metadata for the current endpoint. */
+          parameterStyles?: EndpointParameterStyles;
           /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
           security?: SecurityRequirements;
           overrides?: RequestInit;
@@ -2849,7 +2913,7 @@ describe("generator", () => {
 
       /** Parameter bag for an endpoint + request options. */
       export type ApiCallParams<TEndpoint> = TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & ApiRequestOptions
           : ApiRequestOptions
         : ApiRequestOptions;
@@ -3000,37 +3064,64 @@ describe("generator", () => {
           if (!queryParams || typeof queryParams !== "object") return;
 
           const searchParams = new URLSearchParams();
+          const rawEntries: Array<{ key: string; value: string; allowReserved: boolean }> = [];
+          const append = (key: string, value: unknown, allowReserved = false) => {
+            const stringValue = String(value);
+            searchParams.append(key, stringValue);
+            rawEntries.push({ key, value: stringValue, allowReserved });
+          };
+          const encodeQueryComponent = (value: string, allowReserved: boolean) => {
+            const encoded = encodeURIComponent(value);
+            return allowReserved
+              ? encoded.replace(/%3A|%2F|%3F|%40|%21|%24|%26|%27|%28|%29|%2A|%2B|%2C|%3B|%3D|%5B|%5D/gi, (part) =>
+                  decodeURIComponent(part),
+                )
+              : encoded;
+          };
+          Object.defineProperty(searchParams, "toString", {
+            value: () =>
+              rawEntries
+                .map(
+                  ({ key, value, allowReserved }) =>
+                    \`\${encodeQueryComponent(key, false)}=\${encodeQueryComponent(value, allowReserved)}\`,
+                )
+                .join("&"),
+          });
           Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
             if (value != null) {
               // Skip null/undefined values
               const parameterStyle = styles?.[key];
               const style = parameterStyle?.style ?? "form";
               const explode = parameterStyle?.explode ?? true;
+              const allowReserved = parameterStyle?.allowReserved === true;
               if (Array.isArray(value)) {
                 if (style === "spaceDelimited")
-                  searchParams.append(
+                  append(
                     key,
                     value
                       .filter((item) => item != null)
                       .map(String)
                       .join(" "),
+                    allowReserved,
                   );
                 else if (style === "pipeDelimited")
-                  searchParams.append(
+                  append(
                     key,
                     value
                       .filter((item) => item != null)
                       .map(String)
                       .join("|"),
+                    allowReserved,
                   );
-                else if (explode) value.forEach((val) => val != null && searchParams.append(key, String(val)));
+                else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
                 else
-                  searchParams.append(
+                  append(
                     key,
                     value
                       .filter((item) => item != null)
                       .map(String)
                       .join(","),
+                    allowReserved,
                   );
               } else if (typeof value === "object") {
                 const entries = Object.entries(value as Record<string, unknown>).filter(
@@ -3039,19 +3130,17 @@ describe("generator", () => {
                 if (style === "deepObject") {
                   for (const [nestedKey, nestedValue] of entries) {
                     if (Array.isArray(nestedValue))
-                      nestedValue.forEach(
-                        (item) => item != null && searchParams.append(\`\${key}[\${nestedKey}]\`, String(item)),
-                      );
-                    else searchParams.append(\`\${key}[\${nestedKey}]\`, String(nestedValue));
+                      nestedValue.forEach((item) => item != null && append(\`\${key}[\${nestedKey}]\`, item, allowReserved));
+                    else append(\`\${key}[\${nestedKey}]\`, nestedValue, allowReserved);
                   }
                 } else if (explode) {
                   for (const [nestedKey, nestedValue] of entries) {
                     if (Array.isArray(nestedValue))
-                      nestedValue.forEach((item) => item != null && searchParams.append(nestedKey, String(item)));
-                    else searchParams.append(nestedKey, String(nestedValue));
+                      nestedValue.forEach((item) => item != null && append(nestedKey, item, allowReserved));
+                    else append(nestedKey, nestedValue, allowReserved);
                   }
                 } else {
-                  searchParams.append(
+                  append(
                     key,
                     entries
                       .flatMap(([nestedKey, nestedValue]) => [
@@ -3060,10 +3149,11 @@ describe("generator", () => {
                       ])
                       .map(String)
                       .join(","),
+                    allowReserved,
                   );
                 }
               } else {
-                searchParams.append(key, String(value));
+                append(key, value, allowReserved);
               }
             }
           });
@@ -3116,7 +3206,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -3145,7 +3235,7 @@ describe("generator", () => {
           path: Path,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -3188,7 +3278,7 @@ describe("generator", () => {
           path: TPath,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -3222,7 +3312,7 @@ describe("generator", () => {
           path: TPath,
           ...params: MaybeOptionalArg<
             TEndpoint extends { parameters: infer UParams }
-              ? NotNever<UParams> extends true
+              ? NotNever<InferSchemaInput<UParams>> extends true
                 ? InferSchemaInput<UParams> & {
                     overrides?: RequestInit;
                     queryOptions?: ApiQueryOptions;
@@ -3297,6 +3387,9 @@ describe("generator", () => {
               ...(urlSearchParams ? { urlSearchParams } : {}),
               ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
               requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+              ...(endpointParameterStyles[method]?.[path as string]
+                ? { parameterStyles: endpointParameterStyles[method]?.[path as string] }
+                : {}),
               security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements,
               ...(overrides ? { overrides } : {}),
               throwOnStatusError,
