@@ -87,6 +87,35 @@ const containsPatternProperties = (node: SchemaNode): boolean => {
   }
 };
 
+const containsOneOf = (node: SchemaNode): boolean => {
+  switch (node.kind) {
+    case "union":
+      return Boolean(node.exclusive) || node.members.some(containsOneOf);
+    case "object":
+      return (
+        Object.values(node.properties).some(containsOneOf) ||
+        (typeof node.additionalProperties === "object" && containsOneOf(node.additionalProperties)) ||
+        Object.values(node.patternProperties ?? {}).some(containsOneOf)
+      );
+    case "array":
+      return containsOneOf(node.items);
+    case "tuple":
+      return node.items.some(containsOneOf) || (node.rest ? containsOneOf(node.rest) : false);
+    case "intersection":
+      return node.members.some(containsOneOf);
+    case "not":
+      return containsOneOf(node.schema);
+    case "record":
+      return containsOneOf(node.key) || containsOneOf(node.value);
+    case "ref":
+      return node.generics?.some(containsOneOf) ?? false;
+    case "custom":
+      return node.fallback ? containsOneOf(node.fallback) : false;
+    default:
+      return false;
+  }
+};
+
 /** Make an all-optional param group itself optional (`query?: …`) for InferSchemaInput. */
 const wrapOptionalParamGroup = (adapter: RuntimeAdapter, expr: string): string => {
   switch (adapter.name) {
@@ -215,6 +244,18 @@ export const emitRuntimeFile = ({
             ...Object.values(endpoint.responseHeaders ?? {}),
           ])),
     ].some(containsPatternProperties);
+  const oneOf =
+    adapter.name === "typebox" &&
+    [
+      ...namedSchemas.map(({ node }) => node),
+      ...(schemasOnly
+        ? []
+        : endpointList.flatMap((endpoint) => [
+            ...Object.values(endpoint.parameters ?? {}),
+            ...Object.values(endpoint.responses ?? {}),
+            ...Object.values(endpoint.responseHeaders ?? {}),
+          ])),
+    ].some(containsOneOf);
 
   let schemasBlock = `// <Schemas>\n`;
   if (adapter.emitNamedSchemas) {
@@ -325,6 +366,19 @@ const __typedOpenapiObjectWithPatterns = <T extends import("@sinclair/typebox").
   >;
 // </ObjectWithPatterns>
 
+    `;
+  }
+  if (oneOf) {
+    body += `// <OneOf>
+const __TypedOpenapiOneOf = TypeSystem.Type<unknown, { members: import("@sinclair/typebox").TSchema[] }>(
+  "TypedOpenapiOneOf_" + Math.random().toString(36).slice(2),
+  (options, value) => options.members.filter((schema) => Value.Check(schema, value)).length === 1,
+);
+
+const __typedOpenapiOneOf = <T extends import("@sinclair/typebox").TSchema[]>(members: [...T]) =>
+  __TypedOpenapiOneOf({ members }) as unknown as import("@sinclair/typebox").TUnsafe<Static<T[number]>>;
+// </OneOf>
+
 `;
   }
   body += schemasBlock + endpointsBlock;
@@ -338,5 +392,5 @@ const __typedOpenapiObjectWithPatterns = <T extends import("@sinclair/typebox").
     return `import { ${names.join(", ")} } from "effect";\n\n${body}`;
   }
 
-  return `${adapter.imports({ tupleWithRest, objectWithPatterns })}\n\n${body}`;
+  return `${adapter.imports({ tupleWithRest, objectWithPatterns, oneOf })}\n\n${body}`;
 };

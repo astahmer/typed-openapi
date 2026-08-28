@@ -97,7 +97,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       }
       return `Type.Tuple([${node.items.map((item) => emitNode(item, ctx)).join(", ")}])`;
     case "union":
-      return `Type.Union([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`;
+      return node.exclusive
+        ? `__typedOpenapiOneOf([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`
+        : `Type.Union([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`;
     case "intersection":
       return `Type.Intersect([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`;
     case "not":
@@ -204,8 +206,8 @@ const containsCrossRecursiveRef = (node: SchemaNode, currentName: string, recurs
 
 export const typeboxAdapter: RuntimeAdapter = {
   name: "typebox",
-  imports: ({ tupleWithRest = false, objectWithPatterns = false } = {}) =>
-    `import { Type, type Static } from "@sinclair/typebox";${tupleWithRest || objectWithPatterns ? `\nimport { TypeSystem } from "@sinclair/typebox/system";` : ""}\nimport { Value } from "@sinclair/typebox/value";`,
+  imports: ({ tupleWithRest = false, objectWithPatterns = false, oneOf = false } = {}) =>
+    `import { Type, type Static } from "@sinclair/typebox";${tupleWithRest || objectWithPatterns || oneOf ? `\nimport { TypeSystem } from "@sinclair/typebox/system";` : ""}\nimport { Value } from "@sinclair/typebox/value";`,
   inferType: (expr) => `Static<typeof ${expr}>`,
   schemaType: (typeReference) => `import("@sinclair/typebox").TSchema & __TypedOpenapiSchema<${typeReference}>`,
   annotateSchema: (schemaExpr, typeReference) =>

@@ -183,14 +183,17 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         }
       }
       const members = node.members.map((m) => emitNode(m, ctx));
+      const exclusiveCheck = node.exclusive
+        ? `.narrow((data) => [${node.members.map((m) => `${asTypeExpr(emitNode(m, ctx))}.allows(data)`).join(", ")}].filter(Boolean).length === 1)`
+        : "";
       if (ctx.moduleSchemaNames) {
         // Inside type.module, `type()` / `.or()` leave scope and break `"SchemaN"` refs.
         // Prefer nested binary `[A, "|", [B, "|", C]]` — flat `[A, "|", B, "|", C]` trips
         // ArkType's TS tuple assignability (TS2322: source has 5 elems, target allows 3).
-        if (members.length === 1) return members[0]!;
-        return members.reduceRight((acc, m) => `[${m}, "|", ${acc}]`);
+        if (members.length === 1) return `${members[0]}${exclusiveCheck}`;
+        return `${members.reduceRight((acc, m) => `[${m}, "|", ${acc}]`)}${exclusiveCheck}`;
       }
-      return members.map(asTypeExpr).reduce((a, b) => `${a}.or(${b})`);
+      return `${members.map(asTypeExpr).reduce((a, b) => `${a}.or(${b})`)}${exclusiveCheck}`;
     }
     case "intersection":
       return node.members.map((m) => asTypeExpr(emitNode(m, ctx))).reduce((a, b) => `${a}.and(${b})`);

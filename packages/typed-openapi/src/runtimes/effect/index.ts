@@ -37,6 +37,7 @@ const canUseStruct = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()):
   if (node.kind === "object") {
     return (
       node.additionalProperties === false &&
+      (!node.patternProperties || Object.keys(node.patternProperties).length === 0) &&
       Object.keys(applyObjectConstraints(node.constraints, ctx.validation)).length === 0
     );
   }
@@ -58,6 +59,7 @@ function canMergeableMember(node: SchemaNode, ctx: EmitCtx, seen = new Set<strin
     const hasNoChecks = Object.keys(applyObjectConstraints(node.constraints, ctx.validation)).length === 0;
     return (
       hasNoChecks &&
+      (!node.patternProperties || Object.keys(node.patternProperties).length === 0) &&
       (node.additionalProperties === false ||
         (Boolean(node.additionalProperties) && Object.keys(node.properties).length === 0))
     );
@@ -165,7 +167,11 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           }
         }
       }
-      return `${S}.Union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
+      const members = node.members.map((m) => emitNode(m, ctx));
+      const union = `${S}.Union([${members.join(", ")}])`;
+      return node.exclusive
+        ? `${union}.check(${S}.makeFilter((data) => [${node.members.map((m) => `${S}.is(${emitNode(m, ctx)})(data)`).join(", ")}].filter(Boolean).length === 1))`
+        : union;
     }
     case "intersection": {
       const nonNull = node.members.filter((m) => m.kind !== "null").map((m) => isNullOr(m) ?? m);
@@ -183,6 +189,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           (member) => Object.keys(applyObjectConstraints(member.constraints, ctx.validation)).length === 0,
         ) &&
         objectAdditionalProperties.size === 1 &&
+        objectMembers.every(
+          (member) => !member.patternProperties || Object.keys(member.patternProperties).length === 0,
+        ) &&
         [...objectAdditionalProperties].every((value) => typeof value === "boolean");
       if (canMergeObjectShapes) {
         const objs = objectMembers;

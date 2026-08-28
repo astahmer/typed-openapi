@@ -80,6 +80,7 @@ const withNullable = (node: SchemaNode, schema: LibSchemaObject): SchemaNode => 
       kind: "union",
       members: [stripDefault(node), { kind: "null", meta: emptyMeta() }],
       meta: node.meta,
+      ...(node.kind === "union" && node.exclusive ? { exclusive: true } : {}),
     };
   }
   return node;
@@ -223,6 +224,7 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
         kind: "union",
         members: schema.oneOf.map((prop: unknown, i) => openApiToIrInternal(prop, ctx, [...path, "oneOf", String(i)])),
         meta,
+        exclusive: true,
         ...(discriminator ? { discriminator } : {}),
       },
       schema,

@@ -70,12 +70,14 @@ export type SchemaNode =
       kind: "union";
       members: SchemaNode[];
       meta: SchemaMeta;
+      /** True for OpenAPI oneOf: exactly one member must accept the value. */
+      exclusive?: boolean;
       discriminator?: { propertyName: string; mapping?: Record<string, string> };
     }
   | { kind: "intersection"; members: SchemaNode[]; meta: SchemaMeta }
   | { kind: "not"; schema: SchemaNode; meta: SchemaMeta }
   | { kind: "ref"; name: string; generics?: SchemaNode[]; meta: SchemaMeta }
-  | { kind: "record"; key: SchemaNode; value: SchemaNode; pattern?: string; meta: SchemaMeta }
+  | { kind: "record"; key: SchemaNode; value: SchemaNode; meta: SchemaMeta }
   /** OAS `type: string, format: binary|byte` — typed as Blob for uploads/downloads */
   | { kind: "binary"; meta: SchemaMeta }
   /** OAS `text/event-stream` response body — typed as ReadableStream */

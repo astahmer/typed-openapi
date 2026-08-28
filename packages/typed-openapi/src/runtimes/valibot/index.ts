@@ -126,7 +126,13 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           }
         }
       }
-      return `v.union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
+      const members = node.members.map((m) => emitNode(m, ctx));
+      const union = `v.union([${members.join(", ")}])`;
+      return node.exclusive
+        ? pipe(union, [
+            `v.check((data) => [${node.members.map((m) => `v.safeParse(${emitNode(m, ctx)}, data).success`).join(", ")}].filter(Boolean).length === 1, "oneOf")`,
+          ])
+        : union;
     }
     case "intersection":
       return `v.intersect([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;

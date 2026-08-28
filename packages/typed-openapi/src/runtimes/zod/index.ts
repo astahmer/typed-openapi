@@ -131,7 +131,11 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           return nullable ? `z.union([${disc}, z.null()])` : disc;
         }
       }
-      return `z.union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
+      const members = node.members.map((m) => emitNode(m, ctx));
+      const union = `z.union([${members.join(", ")}])`;
+      return node.exclusive
+        ? `${union}.refine((data) => [${node.members.map((m) => `${emitNode(m, ctx)}.safeParse(data).success`).join(", ")}].filter(Boolean).length === 1, { message: "oneOf" })`
+        : union;
     }
     case "intersection":
       return node.members.map((m) => emitNode(m, ctx)).reduce((acc, cur) => `${acc}.and(${cur})`);

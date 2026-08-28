@@ -68,7 +68,10 @@ const emitRecord = (key: string, value: string) => `${S}.Record({ key: ${key}, v
 const canUseStruct = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()): boolean => {
   if (isNullOr(node)) return false;
   if (node.kind === "object") {
-    return Object.keys(applyObjectConstraints(node.constraints, ctx.validation)).length === 0;
+    return (
+      Object.keys(applyObjectConstraints(node.constraints, ctx.validation)).length === 0 &&
+      (!node.patternProperties || Object.keys(node.patternProperties).length === 0)
+    );
   }
   if (node.kind === "ref") {
     if (node.generics?.length || ctx.recursiveNames.has(node.name) || seen.has(node.name)) return false;
@@ -147,11 +150,20 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           }
         }
       }
-      return `${S}.Union(${node.members.map((m) => emitNode(m, ctx)).join(", ")})`;
+      const members = node.members.map((m) => emitNode(m, ctx));
+      const union = `${S}.Union(${members.join(", ")})`;
+      return node.exclusive
+        ? `${union}.pipe(${S}.filter((data) => [${node.members.map((m) => `${S}.is(${emitNode(m, ctx)})(data)`).join(", ")}].filter(Boolean).length === 1))`
+        : union;
     }
     case "intersection": {
       const nonNull = node.members.filter((m) => m.kind !== "null").map((m) => isNullOr(m) ?? m);
-      if (nonNull.length > 0 && nonNull.every((m) => m.kind === "object")) {
+      if (
+        nonNull.length > 0 &&
+        nonNull.every(
+          (m) => m.kind === "object" && (!m.patternProperties || Object.keys(m.patternProperties).length === 0),
+        )
+      ) {
         const objs = nonNull as Extract<SchemaNode, { kind: "object" }>[];
         const properties: Record<string, SchemaNode> = {};
         for (const obj of objs) {
