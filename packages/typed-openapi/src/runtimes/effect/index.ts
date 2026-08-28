@@ -326,6 +326,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
         const rest = emitNode(node.additionalProperties, ctx);
         expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, `${S}.Unknown`)}]).check(${S}.makeFilter((data) => Object.entries(data).every(([key, value]) => ${namedKeys}.includes(key) || ${S}.is(${rest})(value))))`;
+      } else if (node.additionalProperties === false) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        expr = `${expr}.check(${S}.makeFilter((data) => Object.keys(data).every((key) => ${namedKeys}.includes(key))))`;
       }
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       const filters: string[] = [];

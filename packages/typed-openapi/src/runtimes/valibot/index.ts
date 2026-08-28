@@ -164,7 +164,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           ? `v.objectWithRest({ ${body} }, v.unknown())`
           : typeof node.additionalProperties === "object"
             ? `v.objectWithRest({ ${body} }, ${emitNode(node.additionalProperties, ctx)})`
-            : `v.object({ ${body} })`;
+            : `v.strictObject({ ${body} })`;
       if (node.partial) expr = `v.partial(${expr})`;
       if (patterns.length > 0) {
         const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;

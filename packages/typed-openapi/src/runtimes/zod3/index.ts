@@ -180,7 +180,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       } else if (node.additionalProperties === true) expr += ".catchall(z.unknown())";
       else if (typeof node.additionalProperties === "object") {
         expr += `.catchall(${emitNode(node.additionalProperties, ctx)})`;
-      }
+      } else expr += ".strict()";
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       if (oc.minProperties !== undefined) {
         expr += `.refine((obj) => Object.keys(obj).length >= ${oc.minProperties}, { message: "minProperties" })`;

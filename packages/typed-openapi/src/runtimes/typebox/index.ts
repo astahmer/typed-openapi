@@ -136,7 +136,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
               ? "true"
               : typeof node.additionalProperties === "object"
                 ? emitNode(node.additionalProperties, ctx)
-                : undefined,
+                : node.additionalProperties === false
+                  ? "false"
+                  : undefined,
       });
       let expr = opts ? `Type.Object({ ${body} }, ${opts})` : `Type.Object({ ${body} })`;
       if (node.partial) expr = `Type.Partial(${expr})`;

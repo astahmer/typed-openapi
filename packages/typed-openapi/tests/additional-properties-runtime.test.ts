@@ -54,6 +54,11 @@ const implicitAdditionalPropertiesSchema = {
   required: ["name"],
 } as const;
 
+const emptyObjectSchema = {
+  type: "object",
+  additionalProperties: false,
+} as const;
+
 const allOfPatternSchema = {
   allOf: [
     {
@@ -110,6 +115,42 @@ const accepts = (runtime: string, schema: unknown, value: unknown): boolean => {
 };
 
 describe("typed additionalProperties with named properties", () => {
+  test.each([
+    ["zod", zodAdapter],
+    ["zod3", zod3Adapter],
+    ["effect", effectAdapter],
+    ["effect3", effect3Adapter],
+    ["valibot", valibotAdapter],
+    ["arktype", arktypeAdapter],
+  ] as const)("%s rejects properties for an explicitly empty object", (runtime, adapter) => {
+    const node = openApiToIr(emptyObjectSchema, { getRefName: (ref) => ref });
+    const source = adapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+    const schema = parseResult(runtime, source);
+
+    expect(accepts(runtime, schema, {})).toBe(true);
+    expect(accepts(runtime, schema, { unexpected: true })).toBe(false);
+  });
+
+  test("typebox rejects properties for an explicitly empty object", async () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "empty-object", version: "1" },
+      paths: {},
+      components: { schemas: { EmptyObject: emptyObjectSchema } },
+    } as OpenAPIObject;
+    const source = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "typebox", schemasOnly: true });
+    const directory = join(__dirname, "tmp/empty-object");
+    mkdirSync(directory, { recursive: true });
+    const file = join(directory, "schemas.ts");
+    writeFileSync(file, source);
+    const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
+      EmptyObject: Parameters<typeof TypeBoxValue.Check>[0];
+    };
+
+    expect(TypeBoxValue.Check(module.EmptyObject, {})).toBe(true);
+    expect(TypeBoxValue.Check(module.EmptyObject, { unexpected: true })).toBe(false);
+  });
+
   test.each([
     ["zod", zodAdapter],
     ["zod3", zod3Adapter],

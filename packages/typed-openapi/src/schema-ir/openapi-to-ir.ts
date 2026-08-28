@@ -317,7 +317,7 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
   }
 
   if (schemaType === "object" || schema.properties || schema.additionalProperties || schema.patternProperties) {
-    if (!schema.properties && !schema.patternProperties) {
+    if (!schema.properties && !schema.patternProperties && schema.additionalProperties !== false) {
       if (typeof schema.additionalProperties === "object") {
         return withNullable(
           {
@@ -341,7 +341,7 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
     }
 
     // OpenAPI and JSON Schema default additionalProperties to true when omitted.
-    let additionalProperties: boolean | SchemaNode = true;
+    let additionalProperties: boolean | SchemaNode = schema.additionalProperties === false ? false : true;
     if (
       schema.additionalProperties === true ||
       (typeof schema.additionalProperties === "object" && Object.keys(schema.additionalProperties).length === 0)

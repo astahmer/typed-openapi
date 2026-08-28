@@ -266,6 +266,9 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
         const rest = emitNode(node.additionalProperties, ctx);
         expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${namedKeys}.includes(key) || ${rest}.allows(value)))`;
+      } else if (node.additionalProperties === false) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        expr = `${expr}.narrow((data) => Object.keys(data).every((key) => ${namedKeys}.includes(key)))`;
       }
       return expr;
     }
