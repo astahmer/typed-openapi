@@ -120,7 +120,7 @@ ${validateHelpers}
 
 export type EffectFetcher = {
   decodePathParams?: (path: string, pathParams: unknown) => string;
-  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
+  encodeSearchParams?: (searchParams: unknown, styles?: Record<string, ParameterSerialization>) => URLSearchParams | undefined;
   encodeCookies?: (cookies: unknown, headers: Headers) => void;
   parseResponseData?: (response: FetcherResponse) => Promise<unknown>;
   fetch: (input: Parameters<Fetcher["fetch"]>[0]) => Effect.Effect<FetcherResponse, HttpClientError, never>;
@@ -236,13 +236,35 @@ export class EffectApiClient {
         });
       const encodeSearch =
         self.effectFetcher.encodeSearchParams ??
-        ((queryParams: unknown) => {
+        ((queryParams: unknown, styles?: Record<string, ParameterSerialization>) => {
           if (!queryParams || typeof queryParams !== "object") return undefined;
           const searchParams = new URLSearchParams();
           Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
             if (value != null) {
-              if (Array.isArray(value)) value.forEach((val) => val != null && searchParams.append(key, String(val)));
-              else searchParams.append(key, String(value));
+              const parameterStyle = styles?.[key];
+              const style = parameterStyle?.style ?? "form";
+              const explode = parameterStyle?.explode ?? true;
+              if (Array.isArray(value)) {
+                if (style === "spaceDelimited") searchParams.append(key, value.filter((item) => item != null).map(String).join(" "));
+                else if (style === "pipeDelimited") searchParams.append(key, value.filter((item) => item != null).map(String).join("|"));
+                else if (explode) value.forEach((val) => val != null && searchParams.append(key, String(val)));
+                else searchParams.append(key, value.filter((item) => item != null).map(String).join(","));
+              } else if (typeof value === "object") {
+                const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
+                if (style === "deepObject") {
+                  for (const [nestedKey, nestedValue] of entries) {
+                    if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && searchParams.append(\`\${key}[\${nestedKey}]\`, String(item)));
+                    else searchParams.append(\`\${key}[\${nestedKey}]\`, String(nestedValue));
+                  }
+                } else if (explode) {
+                  for (const [nestedKey, nestedValue] of entries) {
+                    if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && searchParams.append(nestedKey, String(item)));
+                    else searchParams.append(nestedKey, String(nestedValue));
+                  }
+                } else {
+                  searchParams.append(key, entries.flatMap(([nestedKey, nestedValue]) => [nestedKey, ...(Array.isArray(nestedValue) ? nestedValue : [nestedValue])]).map(String).join(","));
+                }
+              } else searchParams.append(key, String(value));
             }
           });
           return searchParams;
@@ -282,7 +304,7 @@ export class EffectApiClient {
 
       const resolvedPath = decodePath(self.baseUrl + (path as string), parametersToSend.path ?? {});
       const url = new URL(resolvedPath);
-      const urlSearchParams = encodeSearch(parametersToSend.query);
+      const urlSearchParams = encodeSearch(parametersToSend.query, endpointParameterStyles[method]?.[path]?.query);
 
       let overrides = requestParams?.overrides as RequestInit | undefined;
       if (parametersToSend.cookie) {

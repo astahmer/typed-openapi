@@ -504,6 +504,28 @@ const generateEndpointRequestFormats = (ctx: GeneratorContext) => {
     `;
 };
 
+/** Parameter serialization metadata needed by the default query encoder. */
+const generateEndpointParameterStyles = (ctx: GeneratorContext) => {
+  const styles: Record<string, Record<string, Record<string, Record<string, unknown>>>> = {};
+  for (const endpoint of ctx.endpointList) {
+    if (!endpoint.parameterStyles) continue;
+    const methodStyles = (styles[endpoint.method] ??= {});
+    const pathStyles: Record<string, Record<string, unknown>> = {};
+    for (const [location, entries] of Object.entries(endpoint.parameterStyles)) {
+      if (Object.keys(entries).length > 0) pathStyles[location] = entries;
+    }
+    if (Object.keys(pathStyles).length > 0) methodStyles[endpoint.path] = pathStyles;
+  }
+  return `
+    // <EndpointParameterStyles>
+    export type ParameterSerialization = { style: string; explode: boolean; allowReserved: boolean };
+    export type EndpointParameterStyles = Partial<Record<"query" | "path" | "header" | "cookie", Record<string, ParameterSerialization>>>;
+    /** OpenAPI parameter styles used by the built-in encoders. */
+    export const endpointParameterStyles = ${JSON.stringify(styles)} as Partial<Record<string, Partial<Record<string, EndpointParameterStyles>>>>;
+    // </EndpointParameterStyles>
+    `;
+};
+
 /** Effective OpenAPI security requirements for each operation. */
 const generateEndpointSecurityRequirements = (ctx: GeneratorContext) => {
   const endpointRequirements = ctx.endpointList.map((endpoint) => ({
@@ -737,6 +759,7 @@ export type ResponseFormat = "json" | "sse";
 export type SecurityRequirements = readonly (readonly string[])[];
 
 ${generateEndpointRequestFormats(ctx)}
+${generateEndpointParameterStyles(ctx)}
 ${generateEndpointResponseFormats(ctx)}
 ${generateEndpointSecurityRequirements(ctx)}
 
@@ -784,7 +807,7 @@ export interface FetcherResponse {
 
 export interface Fetcher {
     decodePathParams?: (path: string, pathParams: unknown) => string
-  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined
+  encodeSearchParams?: (searchParams: unknown, styles?: Record<string, ParameterSerialization>) => URLSearchParams | undefined
   /** Merge cookie params into request headers (default: Cookie header). */
   encodeCookies?: (cookies: unknown, headers: Headers) => void
     //
@@ -999,15 +1022,36 @@ export class ApiClient {
   }
 
   /** Uses URLSearchParams, skips null/undefined values */
-  defaultEncodeSearchParams = (queryParams: unknown): URLSearchParams | undefined => {
+  defaultEncodeSearchParams = (queryParams: unknown, styles?: Record<string, ParameterSerialization>): URLSearchParams | undefined => {
     if (!queryParams || typeof queryParams !== "object") return;
 
     const searchParams = new URLSearchParams();
     Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
       if (value != null) {
         // Skip null/undefined values
+        const parameterStyle = styles?.[key];
+        const style = parameterStyle?.style ?? "form";
+        const explode = parameterStyle?.explode ?? true;
         if (Array.isArray(value)) {
-          value.forEach((val) => val != null && searchParams.append(key, String(val)));
+          if (style === "spaceDelimited") searchParams.append(key, value.filter((item) => item != null).map(String).join(" "));
+          else if (style === "pipeDelimited") searchParams.append(key, value.filter((item) => item != null).map(String).join("|"));
+          else if (explode) value.forEach((val) => val != null && searchParams.append(key, String(val)));
+          else searchParams.append(key, value.filter((item) => item != null).map(String).join(","));
+        } else if (typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
+          if (style === "deepObject") {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && searchParams.append(\`\${key}[\${nestedKey}]\`, String(item)));
+              else searchParams.append(\`\${key}[\${nestedKey}]\`, String(nestedValue));
+            }
+          } else if (explode) {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && searchParams.append(nestedKey, String(item)));
+              else searchParams.append(nestedKey, String(nestedValue));
+            }
+          } else {
+            searchParams.append(key, entries.flatMap(([nestedKey, nestedValue]) => [nestedKey, ...(Array.isArray(nestedValue) ? nestedValue : [nestedValue])]).map(String).join(","));
+          }
         } else {
           searchParams.append(key, String(value));
         }
@@ -1190,7 +1234,10 @@ export class ApiClient {
 
       const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(this.baseUrl + (path as string), parametersToSend.path ?? {});
       const url = new URL(resolvedPath);
-      const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(parametersToSend.query);
+      const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
+        parametersToSend.query,
+        endpointParameterStyles[method]?.[path]?.query,
+      );
 
       if (parametersToSend.cookie) {
         const headers = new Headers((overrides as RequestInit | undefined)?.headers);
