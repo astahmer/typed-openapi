@@ -81,6 +81,13 @@ describe("generated path parameters", () => {
             responses: { "200": { description: "ok" } },
           },
         },
+        "/objects-exploded/{filter}": {
+          get: {
+            operationId: "getExplodedObject",
+            parameters: [{ name: "filter", in: "path", style: "simple", explode: true, required: true, schema: { type: "object" } }],
+            responses: { "200": { description: "ok" } },
+          },
+        },
         "/matrix/{id}": {
           get: {
             operationId: "getMatrix",
@@ -110,7 +117,12 @@ describe("generated path parameters", () => {
     );
 
     await api.get("/objects/{filter}", { path: { filter: { role: "admin", active: "true" } } });
+    await api.get("/objects-exploded/{filter}", { path: { filter: { role: "admin", active: "true" } } });
     await api.get("/matrix/{id}", { path: { id: ["a", "b"] } });
-    expect(requestedUrls).toEqual(["http://example.com/objects/role,admin,active,true", "http://example.com/matrix/;id=a,b"]);
+    expect(requestedUrls).toEqual([
+      "http://example.com/objects/role,admin,active,true",
+      "http://example.com/objects-exploded/role=admin,active=true",
+      "http://example.com/matrix/;id=a,b",
+    ]);
   });
 });

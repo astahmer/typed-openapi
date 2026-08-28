@@ -1037,7 +1037,8 @@ export class ApiClient {
       if (value && typeof value === "object") {
         return Object.entries(value as Record<string, unknown>)
           .filter(([, item]) => item != null)
-          .flatMap(([name, item]) => [encode(name), encode(item)])
+          .map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)])
+          .flat()
           .join(",");
       }
       return encode(value);

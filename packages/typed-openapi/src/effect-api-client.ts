@@ -248,7 +248,7 @@ export class EffectApiClient {
               return ";" + key + "=" + encode(value);
             }
             if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
-            if (value && typeof value === "object") return Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null).flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
+            if (value && typeof value === "object") return Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null).map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)]).flat().join(",");
             return encode(value);
           };
           return url
