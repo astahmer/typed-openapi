@@ -75,7 +75,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     case "number":
       return emitNumber(node, ctx);
     case "boolean":
-      return ctx.coercePrimitives ? "z.coerce.boolean()" : "z.boolean()";
+      return ctx.coercePrimitives
+        ? `z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1")`
+        : "z.boolean()";
     case "null":
       return "z.null()";
     case "unknown":

@@ -39,12 +39,17 @@ describe("coerce primitives", () => {
     const ctx = createEmitCtx(resolveValidationPolicy("strict"), new Set(), { coercePrimitives: true });
     const src = zodAdapter.emitNode(node, ctx);
     expect(src).toContain("z.coerce.number().int()");
-    expect(src).toContain("z.coerce.boolean()");
+    expect(src).toContain("z.union([z.boolean(), z.string(), z.number()])");
     expect(src).toContain("z.coerce.number()");
     const schema = new Function("z", `return ${src}`)(z) as z.ZodType;
     expect(schema.parse({ id: "42", active: "true", version: "1.5" })).toEqual({
       id: 42,
       active: true,
+      version: 1.5,
+    });
+    expect(schema.parse({ id: "42", active: "false", version: "1.5" })).toEqual({
+      id: 42,
+      active: false,
       version: 1.5,
     });
   });
