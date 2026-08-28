@@ -224,8 +224,12 @@ export class EffectApiClient {
         ((url: string, p: unknown) => {
           const record = (p ?? {}) as Record<string, unknown>;
           return url
-            .replace(/{(\\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : \`{\${key}}\`))
-            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : \`:\${key}\`));
+            .replace(/{([^}]+)}/g, (_, key: string) =>
+              record[key] != null ? encodeURIComponent(String(record[key])) : \`{\${key}}\`,
+            )
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+              record[key] != null ? encodeURIComponent(String(record[key])) : \`:\${key}\`,
+            );
         });
       const encodeSearch =
         self.effectFetcher.encodeSearchParams ??
