@@ -18,23 +18,34 @@ describe("attest generated client types", () => {
   test("zod Pet", () => {
     type Pet = import("../tmp/attest-generated/zod-promise/client.ts").Pet;
     attest({} as Pet).type.toString.snap(`{
+  [x: string]: unknown
   name: string
-  tag?: { id?: string | undefined } | undefined
+  tag?:
+    | { [x: string]: unknown; id?: string | undefined }
+    | undefined
 }`);
   });
   test("zod3 Pet", () => {
     type Pet = import("../tmp/attest-generated/zod3-promise/client.ts").Pet;
     attest({} as Pet).type.toString.snap(`{
+  [x: string]: unknown
   name: string
-  tag?: { id?: string | undefined } | undefined
+  tag?:
+    | { [x: string]: unknown; id?: string | undefined }
+    | undefined
 }`);
   });
   test("effect Pet", () => {
     type Pet = import("../tmp/attest-generated/effect-promise/client.ts").Pet;
     attest({} as Pet).type.toString.snap(`{
+  readonly [x: string]: unknown
   readonly name: string
   readonly tag?:
-    { readonly id?: string | undefined } | undefined
+    | {
+        readonly [x: string]: unknown
+        readonly id?: string | undefined
+      }
+    | undefined
 }`);
   });
   test("effect3 Pet", () => {
@@ -42,15 +53,22 @@ describe("attest generated client types", () => {
     attest({} as Pet).type.toString.snap(`{
   readonly name: string
   readonly tag?:
-    { readonly id?: string | undefined } | undefined
-}`);
+    | ({ readonly id?: string | undefined } & {
+        readonly [x: string]: unknown
+      })
+    | undefined
+} & { readonly [x: string]: unknown }`);
   });
   test("valibot Pet", () => {
     type Pet = import("../tmp/attest-generated/valibot-promise/client.ts").Pet;
     attest({} as Pet).type.toString.snap(`{
   name: string
-  tag?: { id?: string | undefined } | undefined
-}`);
+  tag?:
+    | ({ id?: string | undefined } & {
+        [key: string]: unknown
+      })
+    | undefined
+} & { [key: string]: unknown }`);
   });
   test("arktype Pet", () => {
     type Pet = import("../tmp/attest-generated/arktype-promise/client.ts").Pet;
