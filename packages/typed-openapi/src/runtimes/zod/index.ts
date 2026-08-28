@@ -14,6 +14,7 @@ import {
   objectProps,
   partitionNullUnionMembers,
   quote,
+  shouldDeferNamedSchemaRef,
   withZodDefault,
   withZodDescription,
 } from "../shared.ts";
@@ -149,6 +150,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (ctx.recursiveNames.has(node.name) && ctx.currentSchemaName === node.name) {
         return node.name;
       }
+      if (shouldDeferNamedSchemaRef(node.name, ctx)) return `z.lazy(() => ${node.name})`;
       return node.name;
     }
     case "record":

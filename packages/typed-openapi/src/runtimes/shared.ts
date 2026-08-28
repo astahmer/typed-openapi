@@ -143,6 +143,17 @@ export const containsNamedRef = (node: SchemaNode): boolean => {
   }
 };
 
+/** True when a named schema reference points at a later declaration. */
+export const shouldDeferNamedSchemaRef = (
+  name: string,
+  ctx: Pick<EmitCtx, "currentSchemaName" | "schemaOrder">,
+): boolean => {
+  if (!ctx.currentSchemaName || !ctx.schemaOrder) return false;
+  const currentIndex = ctx.schemaOrder.get(ctx.currentSchemaName);
+  const referencedIndex = ctx.schemaOrder.get(name);
+  return currentIndex !== undefined && referencedIndex !== undefined && referencedIndex > currentIndex;
+};
+
 /** Turn a schema expr + default literal into a stable helper name, e.g. `Boolean_default_false`. */
 export const effectDefaultHelperName = (baseExpr: string, lit: string): string => {
   const simple = baseExpr.match(/^(?:Schema|S)\.([A-Za-z][A-Za-z0-9]*)$/);

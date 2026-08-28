@@ -13,6 +13,7 @@ import {
   objectKey,
   objectProps,
   quote,
+  shouldDeferNamedSchemaRef,
   withValibotDefault,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
@@ -135,6 +136,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.name === "Record" && node.generics?.length === 2) {
         return `v.record(${emitNode(node.generics[0]!, ctx)}, ${emitNode(node.generics[1]!, ctx)})`;
       }
+      if (shouldDeferNamedSchemaRef(node.name, ctx)) return `v.lazy(() => ${node.name})`;
       return node.name;
     }
     case "record":

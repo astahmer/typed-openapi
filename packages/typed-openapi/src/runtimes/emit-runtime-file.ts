@@ -125,11 +125,13 @@ export const emitRuntimeFile = ({
       .map(([node, infos]) => ({ name: infos.normalized, node }));
 
   const recursiveNames = findRecursiveSchemaNames(namedSchemas);
+  const schemaOrder = new Map(namedSchemas.map(({ name }, index) => [name, index] as const));
   const ctx = createEmitCtx(validation, recursiveNames, {
     transformDates,
     transformBigInt,
     includeDescriptions,
     schemaNodes: new Map(namedSchemas.map(({ name, node }) => [name, node])),
+    schemaOrder,
   });
 
   let schemasBlock = `// <Schemas>\n`;

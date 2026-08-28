@@ -7,6 +7,9 @@ import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
 import { generateFile } from "../src/generator.ts";
 import { findRecursiveSchemaNames } from "../src/runtimes/shared.ts";
+import { emitRuntimeFile } from "../src/runtimes/emit-runtime-file.ts";
+import { getRuntimeAdapter } from "../src/runtimes/registry.ts";
+import { resolveValidationPolicy } from "../src/runtimes/validation.ts";
 import { openApiToIr } from "../src/schema-ir/openapi-to-ir.ts";
 
 const fixturePath = `${__dirname}/samples/recursive.openapi.yaml`;
@@ -67,6 +70,110 @@ describe("recursive runtime schemas", async () => {
     const body = stripModuleNoise(src);
     const Category = new Function("z", `${body}\nreturn Category;`)(z) as z.ZodType;
     expect(Category.safeParse({ name: "root", children: [{ name: "child", children: [] }] }).success).toBe(true);
+  });
+
+  test("zod runtime sidecars load mutually recursive schemas", () => {
+    const doc = {
+      openapi: "3.0.3",
+      info: { title: "mutual recursion", version: "1" },
+      paths: {},
+      components: {
+        schemas: {
+          Left: {
+            type: "object",
+            properties: { right: { $ref: "#/components/schemas/Right" } },
+          },
+          Right: {
+            type: "object",
+            properties: { left: { $ref: "#/components/schemas/Left" } },
+          },
+        },
+      },
+    } as OpenAPIObject;
+    const generated = generateFile({
+      ...mapOpenApiEndpoints(doc),
+      runtime: "zod",
+      schemasOnly: true,
+      runtimeTypeDeclarations: "./mutual.types.js",
+    });
+
+    const body = stripModuleNoise(generated);
+    const { Left, Right } = new Function("z", `${body}\nreturn { Left, Right };`)(z) as {
+      Left: z.ZodType;
+      Right: z.ZodType;
+    };
+    expect(Left.safeParse({ right: { left: { right: {} } } }).success).toBe(true);
+    expect(Right.safeParse({ left: { right: { left: {} } } }).success).toBe(true);
+  });
+
+  test("zod runtime sidecars load nullable recursive schemas", () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "nullable recursion", version: "1" },
+      paths: {},
+      components: {
+        schemas: {
+          Node: {
+            type: "object",
+            nullable: true,
+            required: ["value"],
+            properties: {
+              value: { type: "string" },
+              child: { $ref: "#/components/schemas/Node" },
+            },
+          },
+        },
+      },
+    } as OpenAPIObject;
+    const generated = generateFile({
+      ...mapOpenApiEndpoints(doc),
+      runtime: "zod",
+      schemasOnly: true,
+      runtimeTypeDeclarations: "./nullable.types.js",
+    });
+
+    const body = stripModuleNoise(generated);
+    const { Node } = new Function("z", `${body}\nreturn { Node };`)(z) as { Node: z.ZodType };
+    expect(Node.safeParse(null).success).toBe(true);
+    expect(Node.safeParse({ value: "root", child: { value: "leaf" } }).success).toBe(true);
+  });
+
+  test("zod defers a later schema reference even when declaration order is supplied externally", () => {
+    const doc = {
+      openapi: "3.0.3",
+      info: { title: "forward reference", version: "1" },
+      paths: {},
+      components: {
+        schemas: {
+          First: {
+            type: "object",
+            required: ["second"],
+            properties: { second: { $ref: "#/components/schemas/Second" } },
+          },
+          Second: { type: "object", properties: { value: { type: "string" } } },
+        },
+      },
+    } as OpenAPIObject;
+    const ctx = mapOpenApiEndpoints(doc);
+    const namedSchemas = ctx.refs
+      .getOrderedSchemas()
+      .filter(([, infos]) => infos.kind === "schemas")
+      .map(([node, infos]) => ({ name: infos.normalized, node }))
+      .reverse();
+    const generated = emitRuntimeFile({
+      adapter: getRuntimeAdapter("zod"),
+      refs: ctx.refs,
+      endpointList: [],
+      validation: resolveValidationPolicy("strict"),
+      schemasOnly: true,
+      namedSchemas,
+      typeNamespace: "__TypedOpenapi",
+    });
+
+    expect(generated).toContain("second: z.lazy(() => Second)");
+    const body = stripModuleNoise(generated);
+    const { First } = new Function("z", `${body}\nreturn { First };`)(z) as { First: z.ZodType };
+    expect(First.safeParse({ second: { value: "ok" } }).success).toBe(true);
   });
 
   test("effect emits Schema.suspend", () => {

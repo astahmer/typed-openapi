@@ -157,12 +157,34 @@ describe("runtime ApiClient InferSchemaValue", () => {
     writeFileSync(
       join(dir, "usage.ts"),
       `
-import type { InferSchemaValue } from "./client";
+import type { ApiCallParams, InferSchemaValue } from "./client";
 
-declare const parsed: InferSchemaValue<{ createdAt: Date }>;
+declare const parsed: InferSchemaValue<{
+  createdAt: Date;
+  blob: Blob;
+  map: Map<string, Date>;
+  set: Set<Date>;
+}>;
 const createdAt: Date = parsed.createdAt;
 parsed.createdAt.getTime();
+const blob: Blob = parsed.blob;
+const mapValue: Date | undefined = parsed.map.get("created");
+const setValue: Date | undefined = [...parsed.set][0];
+
+declare const input: ApiCallParams<{
+  parameters: { body: { createdAt: Date; blob: Blob; map: Map<string, Date> } };
+}>;
+const inputDate: Date = input.body.createdAt;
+input.body.createdAt.getTime();
+const inputBlob: Blob = input.body.blob;
+const inputMapValue: Date | undefined = input.body.map.get("created");
 void createdAt;
+void blob;
+void mapValue;
+void setValue;
+void inputDate;
+void inputBlob;
+void inputMapValue;
 `,
     );
     writeFileSync(

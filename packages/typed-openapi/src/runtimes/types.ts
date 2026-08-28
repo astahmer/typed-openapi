@@ -27,6 +27,8 @@ export type EmitCtx = {
   schemaNodes?: ReadonlyMap<string, SchemaNode>;
   /** Currently emitting schema name (for lazy detection) */
   currentSchemaName?: string;
+  /** Declaration order of named schemas, used to defer references to later declarations. */
+  schemaOrder?: ReadonlyMap<string, number>;
   /**
    * When set, named schema refs emit as ArkType/module string defs (`"Foo"` / `"Foo[]"`)
    * so they resolve inside `type.module({ ... })`.
@@ -97,6 +99,7 @@ export const createEmitCtx = (
     transformDates?: boolean;
     transformBigInt?: boolean;
     includeDescriptions?: boolean;
+    schemaOrder?: ReadonlyMap<string, number>;
     schemaNodes?: ReadonlyMap<string, SchemaNode>;
   },
 ): EmitCtx => ({
@@ -105,6 +108,7 @@ export const createEmitCtx = (
   indent: "  ",
   internedDefaults: new Map(),
   ...(options?.schemaNodes ? { schemaNodes: options.schemaNodes } : {}),
+  ...(options?.schemaOrder ? { schemaOrder: options.schemaOrder } : {}),
   ...(options?.coercePrimitives ? { coercePrimitives: true } : {}),
   ...(options?.transformDates ? { transformDates: true } : {}),
   ...(options?.transformBigInt ? { transformBigInt: true } : {}),

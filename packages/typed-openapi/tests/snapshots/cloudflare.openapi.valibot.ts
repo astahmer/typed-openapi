@@ -4215,10 +4215,10 @@ export type cloudflare_pipelines_TimestampField = v.InferOutput<typeof cloudflar
 export const cloudflare_pipelines_TimestampField = v.partial(v.object({ unit: cloudflare_pipelines_TimestampUnit }));
 
 export interface cloudflare_pipelines_ListField { items: cloudflare_pipelines_SourceField }
-export const cloudflare_pipelines_ListField: v.GenericSchema<cloudflare_pipelines_ListField> = v.lazy(() => v.object({ items: cloudflare_pipelines_SourceField }));
+export const cloudflare_pipelines_ListField: v.GenericSchema<cloudflare_pipelines_ListField> = v.lazy(() => v.object({ items: v.lazy(() => cloudflare_pipelines_SourceField) }));
 
 export interface cloudflare_pipelines_StructField { fields: Array<cloudflare_pipelines_SourceField>, name?: (string | null) }
-export const cloudflare_pipelines_StructField: v.GenericSchema<cloudflare_pipelines_StructField> = v.lazy(() => v.object({ fields: v.array(cloudflare_pipelines_SourceField), name: v.optional(v.nullable(v.string())) }));
+export const cloudflare_pipelines_StructField: v.GenericSchema<cloudflare_pipelines_StructField> = v.lazy(() => v.object({ fields: v.array(v.lazy(() => cloudflare_pipelines_SourceField)), name: v.optional(v.nullable(v.string())) }));
 
 export type cloudflare_pipelines_FieldType = ({ type: "int32" } | { type: "int64" } | { type: "float32" } | { type: "float64" } | { type: "bool" } | { type: "string" } | { type: "binary" } | (cloudflare_pipelines_TimestampField & { type: "timestamp" }) | { type: "json" } | (cloudflare_pipelines_StructField & { type: "struct" }) | (cloudflare_pipelines_ListField & { type: "list" }))
 export const cloudflare_pipelines_FieldType: v.GenericSchema<cloudflare_pipelines_FieldType> = v.lazy(() => v.union([v.object({ type: v.literal("int32") }), v.object({ type: v.literal("int64") }), v.object({ type: v.literal("float32") }), v.object({ type: v.literal("float64") }), v.object({ type: v.literal("bool") }), v.object({ type: v.literal("string") }), v.object({ type: v.literal("binary") }), v.intersect([cloudflare_pipelines_TimestampField, v.object({ type: v.literal("timestamp") })]), v.object({ type: v.literal("json") }), v.intersect([cloudflare_pipelines_StructField, v.object({ type: v.literal("struct") })]), v.intersect([cloudflare_pipelines_ListField, v.object({ type: v.literal("list") })])]));
@@ -6333,7 +6333,7 @@ export type email_auth_SpfResult = v.InferOutput<typeof email_auth_SpfResult>;
 export const email_auth_SpfResult = v.picklist(["pass", "neutral", "fail", "soft_fail", "none", "temp_error", "perm_error"]);
 
 export interface email_auth_SpfTree { components: Array<email_auth_SpfComponent>, domain: string, errors?: Array<email_auth_InspectError>, record: string, total_lookups: number }
-export const email_auth_SpfTree: v.GenericSchema<email_auth_SpfTree> = v.lazy(() => v.object({ components: v.array(email_auth_SpfComponent), domain: v.string(), errors: v.optional(v.array(email_auth_InspectError)), record: v.string(), total_lookups: v.pipe(v.number(), v.integer()) }));
+export const email_auth_SpfTree: v.GenericSchema<email_auth_SpfTree> = v.lazy(() => v.object({ components: v.array(v.lazy(() => email_auth_SpfComponent)), domain: v.string(), errors: v.optional(v.array(email_auth_InspectError)), record: v.string(), total_lookups: v.pipe(v.number(), v.integer()) }));
 
 export interface email_auth_SpfComponent { lookup_count: number, nested?: email_auth_SpfTree, result: email_auth_SpfResult, type: ("ALL" | "A" | "MX" | "IP4" | "IP6" | "EXISTS" | "INCLUDE" | "PTR" | "REDIRECT"), value: string }
 export const email_auth_SpfComponent: v.GenericSchema<email_auth_SpfComponent> = v.lazy(() => v.object({ lookup_count: v.pipe(v.number(), v.integer()), nested: v.optional(email_auth_SpfTree), result: email_auth_SpfResult, type: v.picklist(["ALL", "A", "MX", "IP4", "IP6", "EXISTS", "INCLUDE", "PTR", "REDIRECT"]), value: v.string() }));
