@@ -22,7 +22,9 @@ const isExactObject = (node: SchemaNode): boolean =>
 
 const createGuard = (typeExpr: string, exact: boolean, node?: SchemaNode) => {
   if (!exact || node?.kind !== "object") return createIs(typeExpr);
-  const keys = Object.keys(node.properties).map(JSON.stringify).join(", ");
+  const keys = Object.keys(node.properties)
+    .map((key) => JSON.stringify(key))
+    .join(", ");
   return `((input: unknown): input is ${typeExpr} => typia.createIs<${typeExpr}>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => [${keys}].includes(key)))`;
 };
 
