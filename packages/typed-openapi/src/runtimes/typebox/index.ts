@@ -101,7 +101,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     case "intersection":
       return `Type.Intersect([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`;
     case "not":
-      return "Type.Unknown()";
+      return `Type.Not(${emitNode(node.schema, ctx)})`;
     case "ref": {
       if (node.name === "Partial" && node.generics?.[0]) {
         return `Type.Partial(${emitNode(node.generics[0], ctx)})`;

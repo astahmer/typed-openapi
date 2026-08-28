@@ -1,7 +1,13 @@
 import { describe, expect, test } from "vitest";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
+import { Type as TypeBox } from "@sinclair/typebox";
+import { Value as TypeBoxValue } from "@sinclair/typebox/value";
 import { generateFile } from "../src/generator.ts";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
+import { openApiToIr } from "../src/schema-ir/openapi-to-ir.ts";
+import { createEmitCtx } from "../src/runtimes/types.ts";
+import { resolveValidationPolicy } from "../src/runtimes/validation.ts";
+import { typeboxAdapter } from "../src/runtimes/typebox/index.ts";
 
 const minimalDoc = (paths: OpenAPIObject["paths"], schemas?: Record<string, unknown>): OpenAPIObject =>
   ({
@@ -138,5 +144,15 @@ describe("typebox and typia runtimes", () => {
     const file = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "typebox", includeClient: true });
     expect(file).toContain("type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;");
     expect(file).toContain("Type.Optional(Type.Partial(Type.Object({ status: Type.Union(");
+  });
+
+  test("typebox enforces not schemas at runtime", () => {
+    const node = openApiToIr({ not: { type: "string" } }, { getRefName: (ref) => ref });
+    const source = typeboxAdapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+    const schema = new Function("Type", `return ${source}`)(TypeBox);
+
+    expect(source).toContain("Type.Not(Type.String())");
+    expect(TypeBoxValue.Check(schema, 42)).toBe(true);
+    expect(TypeBoxValue.Check(schema, "not-allowed")).toBe(false);
   });
 });
