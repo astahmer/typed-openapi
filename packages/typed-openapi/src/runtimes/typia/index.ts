@@ -73,6 +73,11 @@ const typiaTypeExpr = (node: SchemaNode, ctx: EmitCtx): string => {
 };
 
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
+  if (node.kind === "union" && node.exclusive) {
+    const typeExpr = toTs(node, ctx);
+    const checks = node.members.map((member) => `typia.createIs<${typiaTypeExpr(member, ctx)}>()(input)`).join(", ");
+    return `((input: unknown): input is ${typeExpr} => [${checks}].filter(Boolean).length === 1)`;
+  }
   if (node.kind === "ref" && !node.generics?.length && node.name !== "Partial" && node.name !== "Record") {
     return `is${node.name}`;
   }

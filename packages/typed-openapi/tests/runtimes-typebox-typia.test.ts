@@ -8,6 +8,7 @@ import { openApiToIr } from "../src/schema-ir/openapi-to-ir.ts";
 import { createEmitCtx } from "../src/runtimes/types.ts";
 import { resolveValidationPolicy } from "../src/runtimes/validation.ts";
 import { typeboxAdapter } from "../src/runtimes/typebox/index.ts";
+import { typiaAdapter } from "../src/runtimes/typia/index.ts";
 
 const minimalDoc = (paths: OpenAPIObject["paths"], schemas?: Record<string, unknown>): OpenAPIObject =>
   ({
@@ -94,6 +95,16 @@ describe("typebox and typia runtimes", () => {
     expect(file).toContain("export const assertPet = typia.createAssert<Pet>();");
     expect(file).toContain("export const validatePet = typia.createValidate<Pet>();");
     expect(file).toContain("responses: { 200: isPet }");
+  });
+
+  test("typia preserves oneOf exclusivity in the emitted guard", () => {
+    const node = openApiToIr(
+      { oneOf: [{ type: "string" }, { type: "string", minLength: 2 }] },
+      { getRefName: (ref) => ref },
+    );
+    const source = typiaAdapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+
+    expect(source).toContain("filter(Boolean).length === 1");
   });
 
   test("binary schemas map to Blob in both runtimes", () => {
