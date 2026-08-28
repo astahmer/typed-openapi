@@ -5,6 +5,7 @@ dist/
 
 # Built from packages/web by the documentation prebuild step.
 docs/public/playground/
+docs/public/__markdown/
 
 # dependencies
 node_modules/

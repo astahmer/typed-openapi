@@ -26,3 +26,4 @@ run("pnpm", ["--filter", "typed-openapi-web", "build"], {
   VITE_OG_URL: absoluteUrl("playground/app/index.html"),
 });
 run(process.execPath, ["./scripts/embed-playground.mjs"]);
+run(process.execPath, ["./scripts/build-markdown.mjs"]);
