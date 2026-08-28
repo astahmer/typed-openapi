@@ -84,14 +84,31 @@ describe("generated path parameters", () => {
         "/objects-exploded/{filter}": {
           get: {
             operationId: "getExplodedObject",
-            parameters: [{ name: "filter", in: "path", style: "simple", explode: true, required: true, schema: { type: "object" } }],
+            parameters: [
+              {
+                name: "filter",
+                in: "path",
+                style: "simple",
+                explode: true,
+                required: true,
+                schema: { type: "object" },
+              },
+            ],
             responses: { "200": { description: "ok" } },
           },
         },
         "/matrix/{id}": {
           get: {
             operationId: "getMatrix",
-            parameters: [{ name: "id", in: "path", style: "matrix", required: true, schema: { type: "array", items: { type: "string" } } }],
+            parameters: [
+              {
+                name: "id",
+                in: "path",
+                style: "matrix",
+                required: true,
+                schema: { type: "array", items: { type: "string" } },
+              },
+            ],
             responses: { "200": { description: "ok" } },
           },
         },
@@ -103,7 +120,10 @@ describe("generated path parameters", () => {
     const file = join(directory, "styled-client.ts");
     writeFileSync(file, source);
     const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
-      createApiClient: (fetcher: unknown, baseUrl: string) => { get: (path: string, params: unknown) => Promise<unknown> };
+      createApiClient: (
+        fetcher: unknown,
+        baseUrl: string,
+      ) => { get: (path: string, params: unknown) => Promise<unknown> };
     };
     const requestedUrls: string[] = [];
     const api = module.createApiClient(

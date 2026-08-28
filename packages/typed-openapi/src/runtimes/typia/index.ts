@@ -16,10 +16,11 @@ const toTs = (node: SchemaNode, ctx?: EmitCtx) =>
 const createIs = (typeExpr: string) => `typia.createIs<${typeExpr}>()`;
 
 const isExactObject = (node: SchemaNode): boolean =>
-  node.kind === "object" && node.additionalProperties === false && Object.keys(node.patternProperties ?? {}).length === 0;
+  node.kind === "object" &&
+  node.additionalProperties === false &&
+  Object.keys(node.patternProperties ?? {}).length === 0;
 
-const createGuard = (typeExpr: string, exact: boolean) =>
-  `typia.${exact ? "createEquals" : "createIs"}<${typeExpr}>()`;
+const createGuard = (typeExpr: string, exact: boolean) => `typia.${exact ? "createEquals" : "createIs"}<${typeExpr}>()`;
 
 /** Build a Typia-friendly type expression with `tags.*` constraints when validation allows. */
 const typiaTypeExpr = (node: SchemaNode, ctx: EmitCtx): string => {

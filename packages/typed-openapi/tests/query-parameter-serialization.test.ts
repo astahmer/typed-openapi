@@ -38,7 +38,13 @@ const styledDoc = {
       get: {
         operationId: "styledSearch",
         parameters: [
-          { name: "tags", in: "query", style: "pipeDelimited", explode: false, schema: { type: "array", items: { type: "string" } } },
+          {
+            name: "tags",
+            in: "query",
+            style: "pipeDelimited",
+            explode: false,
+            schema: { type: "array", items: { type: "string" } },
+          },
           {
             name: "filter",
             in: "query",
@@ -75,7 +81,10 @@ describe("default query parameter serialization", () => {
     const file = join(directory, "client.ts");
     writeFileSync(file, source);
     const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
-      createApiClient: (fetcher: unknown, baseUrl?: string) => {
+      createApiClient: (
+        fetcher: unknown,
+        baseUrl?: string,
+      ) => {
         get: (path: string, params: unknown) => Promise<unknown>;
       };
     };
@@ -102,7 +111,10 @@ describe("default query parameter serialization", () => {
     const file = join(directory, "effect-client.ts");
     writeFileSync(file, source);
     const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
-      createEffectApiClient: (fetcher: unknown, baseUrl?: string) => {
+      createEffectApiClient: (
+        fetcher: unknown,
+        baseUrl?: string,
+      ) => {
         get: (path: string, params: unknown) => Effect.Effect<unknown>;
       };
     };
@@ -129,7 +141,10 @@ describe("default query parameter serialization", () => {
     const file = join(directory, "styled-client.ts");
     writeFileSync(file, source);
     const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
-      createApiClient: (fetcher: unknown, baseUrl?: string) => {
+      createApiClient: (
+        fetcher: unknown,
+        baseUrl?: string,
+      ) => {
         get: (path: string, params: unknown) => Promise<unknown>;
       };
     };
@@ -156,7 +171,10 @@ describe("default query parameter serialization", () => {
     const file = join(directory, "reserved-client.ts");
     writeFileSync(file, source);
     const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
-      createApiClient: (fetcher: unknown, baseUrl?: string) => {
+      createApiClient: (
+        fetcher: unknown,
+        baseUrl?: string,
+      ) => {
         get: (path: string, params: unknown) => Promise<unknown>;
       };
     };
@@ -179,7 +197,10 @@ describe("default query parameter serialization", () => {
     const effectFile = join(directory, "reserved-effect-client.ts");
     writeFileSync(effectFile, effectSource);
     const effectModule = (await import(pathToFileURL(effectFile).href + `?t=${Date.now()}`)) as {
-      createEffectApiClient: (fetcher: unknown, baseUrl?: string) => {
+      createEffectApiClient: (
+        fetcher: unknown,
+        baseUrl?: string,
+      ) => {
         get: (path: string, params: unknown) => Effect.Effect<unknown>;
       };
     };

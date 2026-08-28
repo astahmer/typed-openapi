@@ -158,7 +158,7 @@ export const createApiClient = (config: { fetch: Fetcher["fetch"] }, baseUrl: st
           requestFormat: "json",
           security: [],
         })
-    ).ok,
+      ).ok,
     ).toBe(true);
   });
 
