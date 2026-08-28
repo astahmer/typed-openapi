@@ -150,6 +150,11 @@ const createRuntimeGuard = (node: SchemaNode, ctx: EmitCtx): string => {
   return `((input: unknown): input is ${typeExpr} => ${checks.join(" && ")})`;
 };
 
+const semanticHelpers = (name: string, typeExpr: string) => [
+  `export const assert${name} = (input: unknown): ${typeExpr} => { if (!is${name}(input)) throw new Error("typia validation failed"); return input as ${typeExpr}; };`,
+  `export const validate${name} = (input: unknown): typia.IValidation<${typeExpr}> => is${name}(input) ? { success: true, data: input as ${typeExpr} } : { success: false, data: input, errors: [] };`,
+];
+
 /** Build a Typia-friendly type expression with `tags.*` constraints when validation allows. */
 const typiaTypeExpr = (node: SchemaNode, ctx: EmitCtx): string => {
   switch (node.kind) {
@@ -237,12 +242,17 @@ export const typiaAdapter: RuntimeAdapter = {
     });
     if (typeReference) {
       const exact = isExactObject(node);
-      const is = containsRuntimeSemantics(node, ctx) ? emitNode(node, ctx) : undefined;
+      const semantic = containsRuntimeSemantics(node, ctx);
+      const is = semantic ? emitNode(node, ctx) : undefined;
       return [
         `export type ${name} = ${typeReference};`,
         `export const is${name} = ${is ?? createGuard(typeReference, exact, node)};`,
-        `export const assert${name} = typia.createAssert<${typeReference}>();`,
-        `export const validate${name} = typia.createValidate<${typeReference}>();`,
+        ...(semantic
+          ? semanticHelpers(name, typeReference)
+          : [
+              `export const assert${name} = typia.createAssert<${typeReference}>();`,
+              `export const validate${name} = typia.createValidate<${typeReference}>();`,
+            ]),
       ].join("\n");
     }
     // Recursive record/object as interface — same TS2456 fix as none-runtime.
@@ -250,13 +260,16 @@ export const typiaAdapter: RuntimeAdapter = {
       ctx.recursiveNames.has(name) && canEmitAsInterface(node)
         ? emitNamedInterface(name, node, irOpts)
         : `export type ${name} = ${typiaTypeExpr(node, ctx)};`;
+    const semantic = containsRuntimeSemantics(node, ctx);
     return [
       typeDecl,
-      `export const is${name} = ${
-        containsRuntimeSemantics(node, ctx) ? emitNode(node, ctx) : createGuard(name, isExactObject(node), node)
-      };`,
-      `export const assert${name} = typia.createAssert<${name}>();`,
-      `export const validate${name} = typia.createValidate<${name}>();`,
+      `export const is${name} = ${semantic ? emitNode(node, ctx) : createGuard(name, isExactObject(node), node)};`,
+      ...(semantic
+        ? semanticHelpers(name, name)
+        : [
+            `export const assert${name} = typia.createAssert<${name}>();`,
+            `export const validate${name} = typia.createValidate<${name}>();`,
+          ]),
     ].join("\n");
   },
 };

@@ -212,6 +212,8 @@ describe("typebox and typia runtimes", () => {
     expect(source).toContain("export const isNotString = ((input: unknown): input is unknown");
     expect(source).toContain("typia.createIs<string>()");
     expect(source).not.toContain("export const isNotString = typia.createIs<NotString>()");
+    expect(source).not.toContain("typia.createAssert<NotString>()");
+    expect(source).toContain("typia.IValidation<NotString>");
   });
 
   test("typia preserves nested not semantics in object guards", () => {
