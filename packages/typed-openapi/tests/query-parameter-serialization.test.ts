@@ -53,6 +53,20 @@ const styledDoc = {
   },
 } satisfies OpenAPIObject;
 
+const reservedDoc = {
+  openapi: "3.0.3",
+  info: { title: "reserved query serialization", version: "1" },
+  paths: {
+    "/search": {
+      get: {
+        operationId: "reservedSearch",
+        parameters: [{ name: "q", in: "query", allowReserved: true, schema: { type: "string" } }],
+        responses: { "200": { description: "ok" } },
+      },
+    },
+  },
+} satisfies OpenAPIObject;
+
 describe("default query parameter serialization", () => {
   test("serializes default form/explode object parameters as separate fields", async () => {
     const source = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "none" });
@@ -133,5 +147,53 @@ describe("default query parameter serialization", () => {
 
     await api.get("/search", { query: { tags: ["a", "b"], filter: { role: "admin" } } });
     expect(requestedUrl).toBe("http://example.com/search?tags=a%7Cb&filter%5Brole%5D=admin");
+  });
+
+  test("preserves reserved characters when allowReserved is true", async () => {
+    const source = generateFile({ ...mapOpenApiEndpoints(reservedDoc), runtime: "none" });
+    const directory = join(__dirname, "tmp/query-parameter-serialization");
+    mkdirSync(directory, { recursive: true });
+    const file = join(directory, "reserved-client.ts");
+    writeFileSync(file, source);
+    const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
+      createApiClient: (fetcher: unknown, baseUrl?: string) => {
+        get: (path: string, params: unknown) => Promise<unknown>;
+      };
+    };
+    let requestedUrl = "";
+    const api = module.createApiClient(
+      {
+        fetch: async (input: { url: URL; urlSearchParams?: URLSearchParams }) => {
+          if (input.urlSearchParams) input.url.search = input.urlSearchParams.toString();
+          requestedUrl = input.url.toString();
+          return new Response("ok", { status: 200, headers: { "content-type": "text/plain" } });
+        },
+      },
+      "http://example.com",
+    );
+
+    await api.get("/search", { query: { q: "a/b?c=d" } });
+    expect(requestedUrl).toBe("http://example.com/search?q=a/b?c=d");
+
+    const effectSource = generateFile({ ...mapOpenApiEndpoints(reservedDoc), runtime: "none", client: "effect" });
+    const effectFile = join(directory, "reserved-effect-client.ts");
+    writeFileSync(effectFile, effectSource);
+    const effectModule = (await import(pathToFileURL(effectFile).href + `?t=${Date.now()}`)) as {
+      createEffectApiClient: (fetcher: unknown, baseUrl?: string) => {
+        get: (path: string, params: unknown) => Effect.Effect<unknown>;
+      };
+    };
+    const effectApi = effectModule.createEffectApiClient(
+      {
+        fetch: async (input: { url: URL; urlSearchParams?: URLSearchParams }) => {
+          if (input.urlSearchParams) input.url.search = input.urlSearchParams.toString();
+          requestedUrl = input.url.toString();
+          return new Response("ok", { status: 200, headers: { "content-type": "text/plain" } });
+        },
+      },
+      "http://example.com",
+    );
+    await Effect.runPromise(effectApi.get("/search", { query: { q: "a/b?c=d" } }));
+    expect(requestedUrl).toBe("http://example.com/search?q=a/b?c=d");
   });
 });
