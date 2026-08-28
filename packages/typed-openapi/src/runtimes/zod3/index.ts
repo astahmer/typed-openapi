@@ -8,6 +8,7 @@ import {
   emitExplicitSchemaTypeDecl,
   emitStreamCheck,
   findMappedUnionMember,
+  hasObjectRestTyping,
   isNullOr,
   literalValue,
   objectKey,
@@ -228,6 +229,10 @@ export const zod3Adapter: RuntimeAdapter = {
       body = `z.lazy(() => ${body})`;
       const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
       return `${typeDecl}\nexport const ${name}: z.ZodType<${name}> = ${body};`;
+    }
+    if (hasObjectRestTyping(node)) {
+      const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
+      return `${typeDecl}\nexport const ${name} = ${body} as unknown as z.ZodType<${name}>;`;
     }
     return `export type ${name} = z.infer<typeof ${name}>;\nexport const ${name} = ${body};`;
   },

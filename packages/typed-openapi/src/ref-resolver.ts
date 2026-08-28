@@ -93,7 +93,7 @@ export const createRefResolver = (
 
     // doc.components.schemas["Something.jsonld"]
     const schema = map[name] as T;
-    if (!schema) {
+    if (schema === undefined) {
       throw new Error(`Unresolved ref "${name}" not found in "${path}"`);
     }
 
@@ -184,9 +184,9 @@ export const createRefResolver = (
 
 export interface RefResolver extends ReturnType<typeof createRefResolver> {}
 
-const setSchemaDependencies = (schema: LibSchemaObject, deps: Set<string>) => {
-  const visit = (schema: LibSchemaObject | ReferenceObject): void => {
-    if (!schema) return;
+const setSchemaDependencies = (schema: LibSchemaObject | boolean, deps: Set<string>) => {
+  const visit = (schema: LibSchemaObject | ReferenceObject | boolean): void => {
+    if (typeof schema === "boolean") return;
 
     if (isReferenceObject(schema)) {
       deps.add(schema.$ref);
@@ -226,9 +226,11 @@ const setSchemaDependencies = (schema: LibSchemaObject, deps: Set<string>) => {
       }
     }
 
-    const patternProperties = (schema as LibSchemaObject & {
-      patternProperties?: Record<string, LibSchemaObject | ReferenceObject>;
-    }).patternProperties;
+    const patternProperties = (
+      schema as LibSchemaObject & {
+        patternProperties?: Record<string, LibSchemaObject | ReferenceObject>;
+      }
+    ).patternProperties;
     if (patternProperties) {
       for (const patternProperty of Object.values(patternProperties)) {
         visit(patternProperty);

@@ -518,3 +518,34 @@ export const emitExplicitSchemaTypeDecl = (
     ? emitNamedInterface(name, node, irOpts)
     : `export type ${name} = ${irToTs(node, irOpts)}`;
 };
+
+/**
+ * Runtime validator libraries generally infer object rest/pattern schemas too
+ * narrowly (or with an impossible index signature). Keep named schema output
+ * aligned with the IR type declaration in those cases.
+ */
+export const hasObjectRestTyping = (node: SchemaNode): boolean => {
+  switch (node.kind) {
+    case "object":
+      return (
+        typeof node.additionalProperties === "object" ||
+        Object.keys(node.patternProperties ?? {}).length > 0 ||
+        Object.values(node.properties).some(hasObjectRestTyping)
+      );
+    case "array":
+      return hasObjectRestTyping(node.items);
+    case "tuple":
+      return node.items.some(hasObjectRestTyping) || (node.rest ? hasObjectRestTyping(node.rest) : false);
+    case "union":
+    case "intersection":
+      return node.members.some(hasObjectRestTyping);
+    case "not":
+      return hasObjectRestTyping(node.schema);
+    case "record":
+      return hasObjectRestTyping(node.key) || hasObjectRestTyping(node.value);
+    case "custom":
+      return node.fallback ? hasObjectRestTyping(node.fallback) : false;
+    default:
+      return false;
+  }
+};

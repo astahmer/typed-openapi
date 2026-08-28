@@ -8,6 +8,7 @@ import {
   emitExplicitSchemaTypeDecl,
   emitStreamCheck,
   findMappedUnionMember,
+  hasObjectRestTyping,
   isNullOr,
   literalValue,
   objectKey,
@@ -231,6 +232,10 @@ export const valibotAdapter: RuntimeAdapter = {
       body = `v.lazy(() => ${body})`;
       const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
       return `${typeDecl}\nexport const ${name}: v.GenericSchema<${name}> = ${body};`;
+    }
+    if (hasObjectRestTyping(node)) {
+      const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
+      return `${typeDecl}\nexport const ${name} = ${body} as unknown as v.GenericSchema<${name}>;`;
     }
     return `export type ${name} = v.InferOutput<typeof ${name}>;\nexport const ${name} = ${body};`;
   },

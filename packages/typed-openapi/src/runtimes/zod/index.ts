@@ -7,6 +7,7 @@ import {
   emitBinaryBlobCheck,
   emitExplicitSchemaTypeDecl,
   emitStreamCheck,
+  hasObjectRestTyping,
   isNullOr,
   literalValue,
   findMappedUnionMember,
@@ -243,6 +244,10 @@ export const zodAdapter: RuntimeAdapter = {
       // including nullable recursive schemas.
       const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
       return `${typeDecl}\nexport const ${name}: z.ZodType<${name}> = ${body};`;
+    }
+    if (hasObjectRestTyping(node)) {
+      const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
+      return `${typeDecl}\nexport const ${name} = ${body} as unknown as z.ZodType<${name}>;`;
     }
     return `export type ${name} = z.infer<typeof ${name}>;\nexport const ${name} = ${body};`;
   },
