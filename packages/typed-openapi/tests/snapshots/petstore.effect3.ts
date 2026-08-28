@@ -602,6 +602,8 @@ export interface Fetcher {
     path: string;
     /** How to encode `parameters.body` (from OpenAPI requestBody content type). */
     requestFormat: RequestFormat;
+    /** OpenAPI parameter serialization metadata for the current endpoint. */
+    parameterStyles?: EndpointParameterStyles;
     /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
     security?: SecurityRequirements;
     overrides?: RequestInit;
@@ -1185,6 +1187,7 @@ export class EffectApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+        parameterStyles: endpointParameterStyles[method]?.[path],
         security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements,
         ...(overrides ? { overrides } : {}),
       });
