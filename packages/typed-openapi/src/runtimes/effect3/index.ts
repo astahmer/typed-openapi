@@ -232,7 +232,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.additionalProperties === true) {
         expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, `${S}.Unknown`)})`;
       } else if (typeof node.additionalProperties === "object") {
-        expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, emitNode(node.additionalProperties, ctx))})`;
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const rest = emitNode(node.additionalProperties, ctx);
+        expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, `${S}.Unknown`)}).pipe(S.filter((data) => Object.entries(data).every(([key, value]) => ${namedKeys}.includes(key) || ${S}.is(${rest})(value))))`;
       }
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       const filters: string[] = [];

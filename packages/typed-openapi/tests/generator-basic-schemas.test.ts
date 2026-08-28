@@ -119,7 +119,7 @@ test("getSchemaBox", async () => {
       properties: { str: { type: "string" } },
       additionalProperties: { type: "number" },
     }),
-  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ str: string }> & Record<string, number>;"`);
+  ).toMatchInlineSnapshot(`"export type _Test = Partial<{ str: string }> & Record<string, string | number>;"`);
 
   // ObjectWithNestedRecordBoolean
   expect(
@@ -129,7 +129,7 @@ test("getSchemaBox", async () => {
       additionalProperties: { type: "object", properties: { prop: { type: "boolean" } } },
     }),
   ).toMatchInlineSnapshot(
-    `"export type _Test = Partial<{ str: string }> & Record<string, Partial<{ prop: boolean }>>;"`,
+    `"export type _Test = Partial<{ str: string }> & Record<string, string | Partial<{ prop: boolean }>>;"`,
   );
 
   expect(

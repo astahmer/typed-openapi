@@ -242,6 +242,11 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       }
       let expr = `type({ ${body} })`;
       if (node.partial) expr = `${expr}.partial()`;
+      if (typeof node.additionalProperties === "object") {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const rest = emitNode(node.additionalProperties, ctx);
+        expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${namedKeys}.includes(key) || ${rest}.allows(value)))`;
+      }
       return expr;
     }
     case "custom":

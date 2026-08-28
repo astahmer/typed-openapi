@@ -367,20 +367,12 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
       kind: "object",
       properties,
       required,
-      additionalProperties: typeof additionalProperties === "object" ? false : additionalProperties,
+      additionalProperties,
       constraints: objectConstraints(schema),
       meta,
       partial: isPartial,
     };
     const records = [...patternPropertyRecords];
-    if (typeof additionalProperties === "object") {
-      records.push({
-        kind: "record",
-        key: { kind: "string", constraints: {}, meta: emptyMeta() },
-        value: additionalProperties,
-        meta: emptyMeta(),
-      });
-    }
     return records.length > 0
       ? simplifyIntersection([objectNode, ...records], meta, schema)
       : withNullable(objectNode, schema);

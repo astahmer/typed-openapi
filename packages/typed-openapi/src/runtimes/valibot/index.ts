@@ -152,7 +152,12 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           return `${objectKey(key)}: ${optional && !hasDefault ? `v.optional(${expr})` : expr}`;
         })
         .join(", ");
-      let expr = `v.object({ ${body} })`;
+      let expr =
+        node.additionalProperties === true
+          ? `v.objectWithRest({ ${body} }, v.unknown())`
+          : typeof node.additionalProperties === "object"
+            ? `v.objectWithRest({ ${body} }, ${emitNode(node.additionalProperties, ctx)})`
+            : `v.object({ ${body} })`;
       if (node.partial) expr = `v.partial(${expr})`;
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       const actions: string[] = [];

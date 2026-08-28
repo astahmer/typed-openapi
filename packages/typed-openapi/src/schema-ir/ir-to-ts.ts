@@ -160,9 +160,13 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
         objectBody = `{\n${propsString}\n}`;
       }
 
-      if (node.partial) {
-        return `Partial<${objectBody}>`;
+      if (typeof node.additionalProperties === "object") {
+        const declaredTypes = entries.map(([, propNode]) => irToTs(propNode, options));
+        const indexValue = [...declaredTypes, irToTs(node.additionalProperties, options)].join(" | ");
+        const propertiesType = node.partial ? `Partial<${objectBody}>` : objectBody;
+        return `(${propertiesType} & Record<string, ${indexValue}>)`;
       }
+      if (node.partial) return `Partial<${objectBody}>`;
       if (node.additionalProperties === true) {
         return `(${objectBody} & Record<string, unknown>)`;
       }
