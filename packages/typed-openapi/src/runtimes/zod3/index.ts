@@ -154,7 +154,24 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         .join(", ");
       let expr = `z.object({ ${body} })`;
       if (node.partial) expr += ".partial()";
-      if (node.additionalProperties === true) expr += ".catchall(z.unknown())";
+      const patterns = Object.entries(node.patternProperties ?? {});
+      if (patterns.length > 0) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
+        const patternChecks = patterns
+          .map(
+            ([pattern, patternNode]) =>
+              `(!new RegExp(${quote(pattern)}).test(key) || ${emitNode(patternNode, ctx)}.safeParse(value).success)`,
+          )
+          .join(" && ");
+        const additionalCheck =
+          node.additionalProperties === true
+            ? "true"
+            : typeof node.additionalProperties === "object"
+              ? `${emitNode(node.additionalProperties, ctx)}.safeParse(value).success`
+              : "false";
+        expr += `.catchall(z.unknown()).refine((obj) => Object.entries(obj).every(([key, value]) => ${patternChecks} && (${namedKeys}.includes(key) || ${matching} || ${additionalCheck})))`;
+      } else if (node.additionalProperties === true) expr += ".catchall(z.unknown())";
       else if (typeof node.additionalProperties === "object") {
         expr += `.catchall(${emitNode(node.additionalProperties, ctx)})`;
       }

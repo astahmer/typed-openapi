@@ -126,7 +126,8 @@ export const containsNamedRef = (node: SchemaNode): boolean => {
     case "object":
       return (
         Object.values(node.properties).some(containsNamedRef) ||
-        (typeof node.additionalProperties === "object" && containsNamedRef(node.additionalProperties))
+        (typeof node.additionalProperties === "object" && containsNamedRef(node.additionalProperties)) ||
+        Object.values(node.patternProperties ?? {}).some(containsNamedRef)
       );
     case "union":
     case "intersection":
@@ -175,7 +176,8 @@ export const containsDeferredNamedRef = (
     case "object":
       return (
         Object.values(node.properties).some((property) => containsDeferredNamedRef(property, ctx)) ||
-        (typeof node.additionalProperties === "object" && containsDeferredNamedRef(node.additionalProperties, ctx))
+        (typeof node.additionalProperties === "object" && containsDeferredNamedRef(node.additionalProperties, ctx)) ||
+        Object.values(node.patternProperties ?? {}).some((property) => containsDeferredNamedRef(property, ctx))
       );
     case "union":
     case "intersection":
@@ -408,6 +410,7 @@ export const findRecursiveSchemaNames = (schemas: Array<{ name: string; node: Sc
       case "object":
         Object.values(node.properties).forEach((p) => refsIn(p, into));
         if (typeof node.additionalProperties === "object") refsIn(node.additionalProperties, into);
+        Object.values(node.patternProperties ?? {}).forEach((p) => refsIn(p, into));
         break;
       case "union":
       case "intersection":

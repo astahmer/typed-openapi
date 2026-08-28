@@ -601,6 +601,9 @@ const collectTransformFieldKeys = (
       if (typeof node.additionalProperties === "object") {
         collectTransformFieldKeys(node.additionalProperties, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
       }
+      for (const pattern of Object.values(node.patternProperties ?? {})) {
+        collectTransformFieldKeys(pattern, dateKeys, bigintKeys, schemaByName, resolving, currentKey);
+      }
       return;
     case "array":
       collectTransformFieldKeys(node.items, dateKeys, bigintKeys, schemaByName, resolving, currentKey);

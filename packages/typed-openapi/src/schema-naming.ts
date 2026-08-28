@@ -109,6 +109,14 @@ export const inlineSchemaRefs = (
           typeof node.additionalProperties === "object"
             ? inlineSchemaRefs(node.additionalProperties, byName, inlineNames, stack)
             : node.additionalProperties,
+        patternProperties: node.patternProperties
+          ? Object.fromEntries(
+              Object.entries(node.patternProperties).map(([pattern, value]) => [
+                pattern,
+                inlineSchemaRefs(value, byName, inlineNames, stack),
+              ]),
+            )
+          : undefined,
       };
     case "union":
     case "intersection":

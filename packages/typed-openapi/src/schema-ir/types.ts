@@ -59,6 +59,8 @@ export type SchemaNode =
       properties: Record<string, SchemaNode>;
       required: string[];
       additionalProperties: boolean | SchemaNode;
+      /** JSON Schema regex-scoped properties, validated before additionalProperties. */
+      patternProperties?: Record<string, SchemaNode>;
       constraints: ObjectConstraints;
       meta: SchemaMeta;
       /** When true, emit as Partial&lt;{...}&gt; / all props optional */
@@ -73,7 +75,7 @@ export type SchemaNode =
   | { kind: "intersection"; members: SchemaNode[]; meta: SchemaMeta }
   | { kind: "not"; schema: SchemaNode; meta: SchemaMeta }
   | { kind: "ref"; name: string; generics?: SchemaNode[]; meta: SchemaMeta }
-  | { kind: "record"; key: SchemaNode; value: SchemaNode; meta: SchemaMeta }
+  | { kind: "record"; key: SchemaNode; value: SchemaNode; pattern?: string; meta: SchemaMeta }
   /** OAS `type: string, format: binary|byte` — typed as Blob for uploads/downloads */
   | { kind: "binary"; meta: SchemaMeta }
   /** OAS `text/event-stream` response body — typed as ReadableStream */

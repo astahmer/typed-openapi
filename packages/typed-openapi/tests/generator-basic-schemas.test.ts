@@ -50,14 +50,14 @@ test("getSchemaBox", async () => {
       required: ["known"],
       patternProperties: { "^x": { type: "string" } },
     }),
-  ).toMatchInlineSnapshot(`"export type _Test = { known: boolean } & Record<string, string>;"`);
+  ).toMatchInlineSnapshot(`"export type _Test = { known: boolean } & Record<string, boolean | string>;"`);
   expect(
     await getSchemaBox({
       type: "object",
       patternProperties: { "^x": { type: "string" } },
       additionalProperties: { type: "number" },
     }),
-  ).toMatchInlineSnapshot(`"export type _Test = Record<string, string> & Record<string, number>;"`);
+  ).toMatchInlineSnapshot(`"export type _Test = Record<string, string | number>;"`);
   expect(await getSchemaBox({ type: "object" })).toMatchInlineSnapshot(
     `"export type _Test = Record<string, unknown>;"`,
   );

@@ -312,25 +312,17 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
   }
 
   if (schemaType === "object" || schema.properties || schema.additionalProperties || schema.patternProperties) {
-    const patternPropertyRecords = Object.entries(schema.patternProperties ?? {}).map(([pattern, value]) => ({
-      kind: "record" as const,
-      key: { kind: "string" as const, constraints: {}, meta: emptyMeta() },
-      value: openApiToIrInternal(value, ctx, [...path, "patternProperties", pattern]),
-      meta: emptyMeta(),
-    }));
-
-    if (!schema.properties) {
-      const records = [...patternPropertyRecords];
+    if (!schema.properties && !schema.patternProperties) {
       if (typeof schema.additionalProperties === "object") {
-        records.push({
-          kind: "record",
-          key: { kind: "string", constraints: {}, meta: emptyMeta() },
-          value: openApiToIrInternal(schema.additionalProperties, ctx, [...path, "additionalProperties"]),
-          meta: emptyMeta(),
-        });
-      }
-      if (records.length > 0) {
-        return simplifyIntersection(records, meta, schema);
+        return withNullable(
+          {
+            kind: "record",
+            key: { kind: "string", constraints: {}, meta: emptyMeta() },
+            value: openApiToIrInternal(schema.additionalProperties, ctx, [...path, "additionalProperties"]),
+            meta,
+          },
+          schema,
+        );
       }
       return withNullable(
         {
@@ -354,10 +346,10 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
     }
 
     const hasRequiredArray = Boolean(schema.required && schema.required.length > 0);
-    const isPartial = !schema.required?.length;
+    const isPartial = Boolean(schema.properties) && !schema.required?.length;
 
     const properties: Record<string, SchemaNode> = {};
-    for (const [prop, propSchema] of Object.entries(schema.properties)) {
+    for (const [prop, propSchema] of Object.entries(schema.properties ?? {})) {
       properties[prop] = openApiToIrInternal(propSchema, ctx, [...path, "properties", prop]);
     }
 
@@ -368,14 +360,20 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
       properties,
       required,
       additionalProperties,
+      patternProperties:
+        Object.keys(schema.patternProperties ?? {}).length > 0
+          ? Object.fromEntries(
+              Object.entries(schema.patternProperties ?? {}).map(([pattern, value]) => [
+                pattern,
+                openApiToIrInternal(value, ctx, [...path, "patternProperties", pattern]),
+              ]),
+            )
+          : undefined,
       constraints: objectConstraints(schema),
       meta,
       partial: isPartial,
     };
-    const records = [...patternPropertyRecords];
-    return records.length > 0
-      ? simplifyIntersection([objectNode, ...records], meta, schema)
-      : withNullable(objectNode, schema);
+    return withNullable(objectNode, schema);
   }
 
   if (!schemaType) {

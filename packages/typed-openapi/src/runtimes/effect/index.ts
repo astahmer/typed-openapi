@@ -294,7 +294,24 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         })
         .join(", ");
       let expr = `${S}.Struct({ ${body} })`;
-      if (node.additionalProperties === true) {
+      const patterns = Object.entries(node.patternProperties ?? {});
+      if (patterns.length > 0) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
+        const patternChecks = patterns
+          .map(
+            ([pattern, patternNode]) =>
+              `(!new RegExp(${quote(pattern)}).test(key) || ${S}.is(${emitNode(patternNode, ctx)})(value))`,
+          )
+          .join(" && ");
+        const additionalCheck =
+          node.additionalProperties === true
+            ? "true"
+            : typeof node.additionalProperties === "object"
+              ? `${S}.is(${emitNode(node.additionalProperties, ctx)})(value)`
+              : "false";
+        expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, `${S}.Unknown`)}]).check(${S}.makeFilter((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${namedKeys}.includes(key) || ${matching} || ${additionalCheck}))))`;
+      } else if (node.additionalProperties === true) {
         expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, `${S}.Unknown`)}])`;
       } else if (typeof node.additionalProperties === "object") {
         const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;

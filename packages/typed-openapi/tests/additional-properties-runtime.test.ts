@@ -34,6 +34,20 @@ const missingExtra = { name: "typed-openapi" };
 const wrongExtra = { name: "typed-openapi", count: "one" };
 const wrongNamedProperty = { name: 123, count: 1 };
 
+const patternedObjectSchema = {
+  type: "object",
+  properties: { name: { type: "string" } },
+  required: ["name"],
+  patternProperties: { "^x-": { type: "number" } },
+  additionalProperties: { type: "boolean" },
+} as const;
+
+const patternOnlyObjectSchema = {
+  type: "object",
+  patternProperties: { "^x-": { type: "number" } },
+  additionalProperties: { type: "boolean" },
+} as const;
+
 const parseResult = (runtime: string, source: string) => {
   switch (runtime) {
     case "zod":
@@ -110,5 +124,89 @@ describe("typed additionalProperties with named properties", () => {
     expect(TypeBoxValue.Check(module.NamedObject, missingExtra)).toBe(true);
     expect(TypeBoxValue.Check(module.NamedObject, wrongExtra)).toBe(false);
     expect(TypeBoxValue.Check(module.NamedObject, wrongNamedProperty)).toBe(false);
+  });
+
+  test.each([
+    ["zod", zodAdapter],
+    ["zod3", zod3Adapter],
+    ["effect", effectAdapter],
+    ["effect3", effect3Adapter],
+    ["valibot", valibotAdapter],
+    ["arktype", arktypeAdapter],
+  ] as const)("%s applies patternProperties only to matching keys", (runtime, adapter) => {
+    const node = openApiToIr(patternedObjectSchema, { getRefName: (ref) => ref });
+    const source = adapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+    const schema = parseResult(runtime, source);
+
+    expect(accepts(runtime, schema, { name: "typed-openapi", "x-count": 1, enabled: true })).toBe(true);
+    expect(accepts(runtime, schema, { name: "typed-openapi", "x-count": "one", enabled: true })).toBe(false);
+    expect(accepts(runtime, schema, { name: "typed-openapi", enabled: true })).toBe(true);
+    expect(accepts(runtime, schema, { name: "typed-openapi", enabled: 1 })).toBe(false);
+  });
+
+  test("typebox applies patternProperties only to matching keys", async () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "pattern-properties", version: "1" },
+      paths: {},
+      components: { schemas: { PatternedObject: patternedObjectSchema } },
+    } as OpenAPIObject;
+    const source = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "typebox", schemasOnly: true });
+    const directory = join(__dirname, "tmp/pattern-properties");
+    mkdirSync(directory, { recursive: true });
+    const file = join(directory, "schemas.ts");
+    writeFileSync(file, source);
+    const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
+      PatternedObject: Parameters<typeof TypeBoxValue.Check>[0];
+    };
+
+    expect(TypeBoxValue.Check(module.PatternedObject, { name: "typed-openapi", "x-count": 1, enabled: true })).toBe(
+      true,
+    );
+    expect(TypeBoxValue.Check(module.PatternedObject, { name: "typed-openapi", "x-count": "one", enabled: true })).toBe(
+      false,
+    );
+    expect(TypeBoxValue.Check(module.PatternedObject, { name: "typed-openapi", enabled: true })).toBe(true);
+    expect(TypeBoxValue.Check(module.PatternedObject, { name: "typed-openapi", enabled: 1 })).toBe(false);
+  });
+
+  test.each([
+    ["zod", zodAdapter],
+    ["zod3", zod3Adapter],
+    ["effect", effectAdapter],
+    ["effect3", effect3Adapter],
+    ["valibot", valibotAdapter],
+    ["arktype", arktypeAdapter],
+  ] as const)("%s handles patternProperties on objects without named properties", (runtime, adapter) => {
+    const node = openApiToIr(patternOnlyObjectSchema, { getRefName: (ref) => ref });
+    const source = adapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+    const schema = parseResult(runtime, source);
+
+    expect(accepts(runtime, schema, { "x-count": 1, enabled: true })).toBe(true);
+    expect(accepts(runtime, schema, { "x-count": "one", enabled: true })).toBe(false);
+    expect(accepts(runtime, schema, { enabled: true })).toBe(true);
+    expect(accepts(runtime, schema, { enabled: 1 })).toBe(false);
+  });
+
+  test("typebox handles patternProperties on objects without named properties", async () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "pattern-only-properties", version: "1" },
+      paths: {},
+      components: { schemas: { PatternOnlyObject: patternOnlyObjectSchema } },
+    } as OpenAPIObject;
+    const source = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "typebox", schemasOnly: true });
+    const directory = join(__dirname, "tmp/pattern-only-properties");
+    mkdirSync(directory, { recursive: true });
+    const file = join(directory, "schemas.ts");
+    writeFileSync(file, source);
+    const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
+      PatternOnlyObject: Parameters<typeof TypeBoxValue.Check>[0];
+    };
+
+    expect(TypeBoxValue.Check(module.PatternOnlyObject, { "x-count": 1, enabled: true })).toBe(true);
+    expect(TypeBoxValue.Check(module.PatternOnlyObject, { "x-count": "one", enabled: true })).toBe(false);
+    expect(TypeBoxValue.Check(module.PatternOnlyObject, { enabled: true })).toBe(true);
+    expect(TypeBoxValue.Check(module.PatternOnlyObject, { enabled: 1 })).toBe(false);
   });
 });

@@ -152,13 +152,33 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           return `${objectKey(key)}: ${optional && !hasDefault ? `v.optional(${expr})` : expr}`;
         })
         .join(", ");
+      const patterns = Object.entries(node.patternProperties ?? {});
       let expr =
-        node.additionalProperties === true
+        patterns.length > 0 || node.additionalProperties === true
           ? `v.objectWithRest({ ${body} }, v.unknown())`
           : typeof node.additionalProperties === "object"
             ? `v.objectWithRest({ ${body} }, ${emitNode(node.additionalProperties, ctx)})`
             : `v.object({ ${body} })`;
       if (node.partial) expr = `v.partial(${expr})`;
+      if (patterns.length > 0) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
+        const patternChecks = patterns
+          .map(
+            ([pattern, patternNode]) =>
+              `(!new RegExp(${quote(pattern)}).test(key) || v.safeParse(${emitNode(patternNode, ctx)}, value).success)`,
+          )
+          .join(" && ");
+        const additionalCheck =
+          node.additionalProperties === true
+            ? "true"
+            : typeof node.additionalProperties === "object"
+              ? `v.safeParse(${emitNode(node.additionalProperties, ctx)}, value).success`
+              : "false";
+        expr = pipe(expr, [
+          `v.check((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${namedKeys}.includes(key) || ${matching} || ${additionalCheck})))`,
+        ]);
+      }
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       const actions: string[] = [];
       if (oc.minProperties !== undefined) {

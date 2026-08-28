@@ -242,7 +242,24 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       }
       let expr = `type({ ${body} })`;
       if (node.partial) expr = `${expr}.partial()`;
-      if (typeof node.additionalProperties === "object") {
+      const patterns = Object.entries(node.patternProperties ?? {});
+      if (patterns.length > 0) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
+        const patternChecks = patterns
+          .map(
+            ([pattern, patternNode]) =>
+              `(!new RegExp(${quote(pattern)}).test(key) || ${emitNode(patternNode, ctx)}.allows(value))`,
+          )
+          .join(" && ");
+        const additionalCheck =
+          node.additionalProperties === true
+            ? "true"
+            : typeof node.additionalProperties === "object"
+              ? `${emitNode(node.additionalProperties, ctx)}.allows(value)`
+              : "false";
+        expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${namedKeys}.includes(key) || ${matching} || ${additionalCheck})))`;
+      } else if (typeof node.additionalProperties === "object") {
         const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
         const rest = emitNode(node.additionalProperties, ctx);
         expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${namedKeys}.includes(key) || ${rest}.allows(value)))`;

@@ -123,18 +123,33 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         .map(({ key, optional, expr }) => `${objectKey(key)}: ${optional ? `Type.Optional(${expr})` : expr}`)
         .join(", ");
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
+      const patterns = Object.entries(node.patternProperties ?? {});
       const opts = renderOptions({
         minProperties: oc.minProperties,
         maxProperties: oc.maxProperties,
         additionalProperties:
+          patterns.length > 0
+            ? "true"
+            : node.additionalProperties === true
+              ? "true"
+              : typeof node.additionalProperties === "object"
+                ? emitNode(node.additionalProperties, ctx)
+                : undefined,
+      });
+      let expr = opts ? `Type.Object({ ${body} }, ${opts})` : `Type.Object({ ${body} })`;
+      if (node.partial) expr = `Type.Partial(${expr})`;
+      if (patterns.length > 0) {
+        const patternEntries = patterns
+          .map(([pattern, patternNode]) => `${quote(pattern)}: ${emitNode(patternNode, ctx)}`)
+          .join(", ");
+        const additional =
           node.additionalProperties === true
             ? "true"
             : typeof node.additionalProperties === "object"
               ? emitNode(node.additionalProperties, ctx)
-              : undefined,
-      });
-      let expr = opts ? `Type.Object({ ${body} }, ${opts})` : `Type.Object({ ${body} })`;
-      if (node.partial) expr = `Type.Partial(${expr})`;
+              : "false";
+        expr = `__typedOpenapiObjectWithPatterns(${expr}, [${Object.keys(node.properties).map(quote).join(", ")}], { ${patternEntries} }, ${additional})`;
+      }
       return expr;
     }
     case "custom":
@@ -189,8 +204,8 @@ const containsCrossRecursiveRef = (node: SchemaNode, currentName: string, recurs
 
 export const typeboxAdapter: RuntimeAdapter = {
   name: "typebox",
-  imports: ({ tupleWithRest = false } = {}) =>
-    `import { Type, type Static } from "@sinclair/typebox";${tupleWithRest ? `\nimport { TypeSystem } from "@sinclair/typebox/system";` : ""}\nimport { Value } from "@sinclair/typebox/value";`,
+  imports: ({ tupleWithRest = false, objectWithPatterns = false } = {}) =>
+    `import { Type, type Static } from "@sinclair/typebox";${tupleWithRest || objectWithPatterns ? `\nimport { TypeSystem } from "@sinclair/typebox/system";` : ""}\nimport { Value } from "@sinclair/typebox/value";`,
   inferType: (expr) => `Static<typeof ${expr}>`,
   schemaType: (typeReference) => `import("@sinclair/typebox").TSchema & __TypedOpenapiSchema<${typeReference}>`,
   annotateSchema: (schemaExpr, typeReference) =>

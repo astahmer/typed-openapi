@@ -67,7 +67,7 @@ export type NamedSchema = { name: string; node: SchemaNode };
 
 export type RuntimeAdapter = {
   name: Exclude<OutputRuntime, "none">;
-  imports: (options?: { tupleWithRest?: boolean }) => string;
+  imports: (options?: { tupleWithRest?: boolean; objectWithPatterns?: boolean }) => string;
   /** Wrap a schema expression for type inference export */
   inferType: (schemaExpr: string) => string;
   /** Broad runtime schema type whose output comes from a generated declaration sidecar. */

@@ -39,7 +39,8 @@ const containsTupleWithRest = (node: SchemaNode): boolean => {
     case "object":
       return (
         Object.values(node.properties).some(containsTupleWithRest) ||
-        (typeof node.additionalProperties === "object" && containsTupleWithRest(node.additionalProperties))
+        (typeof node.additionalProperties === "object" && containsTupleWithRest(node.additionalProperties)) ||
+        Object.values(node.patternProperties ?? {}).some(containsTupleWithRest)
       );
     case "union":
     case "intersection":
@@ -52,6 +53,35 @@ const containsTupleWithRest = (node: SchemaNode): boolean => {
       return node.generics?.some(containsTupleWithRest) ?? false;
     case "custom":
       return node.fallback ? containsTupleWithRest(node.fallback) : false;
+    default:
+      return false;
+  }
+};
+
+const containsPatternProperties = (node: SchemaNode): boolean => {
+  switch (node.kind) {
+    case "object":
+      return (
+        Object.keys(node.patternProperties ?? {}).length > 0 ||
+        Object.values(node.properties).some(containsPatternProperties) ||
+        (typeof node.additionalProperties === "object" && containsPatternProperties(node.additionalProperties)) ||
+        Object.values(node.patternProperties ?? {}).some(containsPatternProperties)
+      );
+    case "array":
+      return containsPatternProperties(node.items);
+    case "tuple":
+      return node.items.some(containsPatternProperties) || (node.rest ? containsPatternProperties(node.rest) : false);
+    case "union":
+    case "intersection":
+      return node.members.some(containsPatternProperties);
+    case "not":
+      return containsPatternProperties(node.schema);
+    case "record":
+      return containsPatternProperties(node.key) || containsPatternProperties(node.value);
+    case "ref":
+      return node.generics?.some(containsPatternProperties) ?? false;
+    case "custom":
+      return node.fallback ? containsPatternProperties(node.fallback) : false;
     default:
       return false;
   }
@@ -173,6 +203,18 @@ export const emitRuntimeFile = ({
             ...Object.values(endpoint.responseHeaders ?? {}),
           ])),
     ].some(containsTupleWithRest);
+  const objectWithPatterns =
+    adapter.name === "typebox" &&
+    [
+      ...namedSchemas.map(({ node }) => node),
+      ...(schemasOnly
+        ? []
+        : endpointList.flatMap((endpoint) => [
+            ...Object.values(endpoint.parameters ?? {}),
+            ...Object.values(endpoint.responses ?? {}),
+            ...Object.values(endpoint.responseHeaders ?? {}),
+          ])),
+    ].some(containsPatternProperties);
 
   let schemasBlock = `// <Schemas>\n`;
   if (adapter.emitNamedSchemas) {
@@ -244,6 +286,47 @@ const __typedOpenapiTupleWithRest = <
 
 `;
   }
+  if (objectWithPatterns) {
+    body += `// <ObjectWithPatterns>
+const __TypedOpenapiObjectWithPatterns = TypeSystem.Type<object, {
+  object: import("@sinclair/typebox").TSchema;
+  properties: string[];
+  patterns: Record<string, import("@sinclair/typebox").TSchema>;
+  additional: import("@sinclair/typebox").TSchema | boolean;
+}>(
+  "TypedOpenapiObjectWithPatterns_" + Math.random().toString(36).slice(2),
+  (options, value) => {
+    if (!Value.Check(options.object, value)) return false;
+    for (const [key, item] of Object.entries(value as Record<string, unknown>)) {
+      let matched = false;
+      for (const [pattern, schema] of Object.entries(options.patterns)) {
+        if (new RegExp(pattern).test(key)) {
+          matched = true;
+          if (!Value.Check(schema, item)) return false;
+        }
+      }
+      if (!options.properties.includes(key) && !matched) {
+        if (options.additional === false) return false;
+        if (options.additional !== true && !Value.Check(options.additional, item)) return false;
+      }
+    }
+    return true;
+  },
+);
+
+const __typedOpenapiObjectWithPatterns = <T extends import("@sinclair/typebox").TSchema>(
+  object: T,
+  properties: string[],
+  patterns: Record<string, import("@sinclair/typebox").TSchema>,
+  additional: import("@sinclair/typebox").TSchema | boolean,
+) =>
+  __TypedOpenapiObjectWithPatterns({ object, properties, patterns, additional }) as unknown as import("@sinclair/typebox").TUnsafe<
+    Static<T>
+  >;
+// </ObjectWithPatterns>
+
+`;
+  }
   body += schemasBlock + endpointsBlock;
 
   // Effect: only import SchemaTransformation/Struct when referenced.
@@ -255,5 +338,5 @@ const __typedOpenapiTupleWithRest = <
     return `import { ${names.join(", ")} } from "effect";\n\n${body}`;
   }
 
-  return `${adapter.imports({ tupleWithRest })}\n\n${body}`;
+  return `${adapter.imports({ tupleWithRest, objectWithPatterns })}\n\n${body}`;
 };
