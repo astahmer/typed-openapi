@@ -316,7 +316,12 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
     return withNullable({ kind: "array", items, constraints: arrayConstraints(schema), meta }, schema);
   }
 
-  if (schemaType === "object" || schema.properties || schema.additionalProperties || schema.patternProperties) {
+  if (
+    schemaType === "object" ||
+    schema.properties ||
+    schema.additionalProperties !== undefined ||
+    schema.patternProperties
+  ) {
     if (!schema.properties && !schema.patternProperties && schema.additionalProperties !== false) {
       if (typeof schema.additionalProperties === "object") {
         return withNullable(
