@@ -158,7 +158,62 @@ export const createApiClient = (config: { fetch: Fetcher["fetch"] }, baseUrl: st
           requestFormat: "json",
           security: [],
         })
-      ).ok,
+    ).ok,
     ).toBe(true);
+  });
+
+  test("default fetcher serializes object header and cookie parameters", async () => {
+    rmSync(tmp, { recursive: true, force: true });
+    mkdirSync(tmp, { recursive: true });
+
+    const clientStub = `
+export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
+export type Fetcher = {
+  fetch: (input: {
+    method: string;
+    url: URL;
+    urlSearchParams?: URLSearchParams;
+    parameters?: { body?: unknown; header?: Record<string, unknown>; cookie?: Record<string, unknown> };
+    parameterStyles?: Record<string, unknown>;
+    requestFormat?: RequestFormat;
+    security?: readonly (readonly string[])[];
+    overrides?: RequestInit;
+  }) => Promise<Response>;
+};
+export const createApiClient = (config: { fetch: Fetcher["fetch"] }, baseUrl: string) => ({
+  fetch: config.fetch,
+  baseUrl,
+});
+`;
+    const fetcherSrc = await prettify(generateDefaultFetcher({ clientPath: "./api.client.ts" }));
+    writeFileSync(join(tmp, "api.client.ts"), clientStub);
+    const fetcherPath = join(tmp, "parameters-fetcher.ts");
+    writeFileSync(fetcherPath, fetcherSrc);
+    const mod = await import(pathToFileURL(fetcherPath).href + `?t=${Date.now()}`);
+
+    let seenHeader: string | null = null;
+    let seenCookie: string | null = null;
+    server.use(
+      http.get("https://petstore.test/parameters", ({ request }) => {
+        seenHeader = request.headers.get("X-Filter");
+        seenCookie = request.headers.get("cookie");
+        return HttpResponse.json({ ok: true });
+      }),
+    );
+
+    await mod.defaultFetcher({
+      method: "get",
+      url: new URL("https://petstore.test/parameters"),
+      parameters: {
+        header: { "X-Filter": { role: "admin", active: true } },
+        cookie: { filter: { role: "admin", active: true } },
+      },
+      parameterStyles: {
+        header: { "X-Filter": { style: "simple", explode: true, allowReserved: false } },
+        cookie: { filter: { style: "form", explode: true, allowReserved: false } },
+      },
+    });
+    expect(seenHeader).toBe("role=admin,active=true");
+    expect(seenCookie).toBe("role=admin; active=true");
   });
 });

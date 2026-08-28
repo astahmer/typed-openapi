@@ -117,13 +117,48 @@ ${authApplyBlock}
     }
   }
 
+  const serializeParameterValue = (value: unknown, style: string, explode: boolean): string => {
+    if (Array.isArray(value)) return value.filter((item) => item != null).map(String).join(",");
+    if (value && typeof value === "object") {
+      const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+      return explode
+        ? entries.map(([key, item]) => key + "=" + String(item)).join(",")
+        : entries.flatMap(([key, item]) => [key, String(item)]).join(",");
+    }
+    return String(value);
+  };
+
   // Add custom headers
   if (input.parameters?.header && typeof input.parameters.header === "object") {
     Object.entries(input.parameters.header).forEach(([key, value]) => {
       if (value != null) {
-        headers.set(key, String(value));
+        const style = input.parameterStyles?.header?.[key];
+        headers.set(key, serializeParameterValue(value, style?.style ?? "simple", style?.explode ?? false));
       }
     });
+  }
+
+  // Add cookie parameters using their OpenAPI form serialization.
+  if (input.parameters?.cookie && typeof input.parameters.cookie === "object") {
+    const cookieParts: string[] = [];
+    Object.entries(input.parameters.cookie).forEach(([key, value]) => {
+      if (value == null) return;
+      const style = input.parameterStyles?.cookie?.[key];
+      const explode = style?.explode ?? true;
+      if (style?.style === "form" && explode && value && typeof value === "object" && !Array.isArray(value)) {
+        Object.entries(value as Record<string, unknown>).forEach(([nestedKey, nestedValue]) => {
+          if (nestedValue != null) cookieParts.push(nestedKey + "=" + String(nestedValue));
+        });
+      } else if (style?.style === "form" && explode && Array.isArray(value)) {
+        value.forEach((item) => item != null && cookieParts.push(key + "=" + String(item)));
+      } else {
+        cookieParts.push(key + "=" + serializeParameterValue(value, style?.style ?? "form", explode));
+      }
+    });
+    if (cookieParts.length) {
+      const existing = headers.get("cookie");
+      headers.set("cookie", existing ? existing + "; " + cookieParts.join("; ") : cookieParts.join("; "));
+    }
   }
 
   const response = await fetch(input.url, {
