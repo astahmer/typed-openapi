@@ -806,7 +806,7 @@ export interface FetcherResponse {
 }
 
 export interface Fetcher {
-    decodePathParams?: (path: string, pathParams: unknown) => string
+    decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string
   encodeSearchParams?: (searchParams: unknown, styles?: Record<string, ParameterSerialization>) => URLSearchParams | undefined
   /** Merge cookie params into request headers (default: Cookie header). */
   encodeCookies?: (cookies: unknown, headers: Headers) => void
@@ -1010,14 +1010,44 @@ export class ApiClient {
    * Replace path parameters in URL
    * Supports both OpenAPI format {param} and Express format :param
    */
-  defaultDecodePathParams = (url: string, params: unknown): string => {
+  defaultDecodePathParams = (url: string, params: unknown, styles?: Record<string, ParameterSerialization>): string => {
     const record = (params ?? {}) as Record<string, unknown>;
+    const encode = (value: unknown) => encodeURIComponent(String(value));
+    const serialize = (key: string, value: unknown): string => {
+      const parameterStyle = styles?.[key];
+      const style = parameterStyle?.style ?? "simple";
+      const explode = parameterStyle?.explode ?? false;
+      if (style === "label") {
+        if (Array.isArray(value)) return "." + value.filter((item) => item != null).map(encode).join(explode ? "." : ",");
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return "." + (explode ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".") : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","));
+        }
+        return "." + encode(value);
+      }
+      if (style === "matrix") {
+        if (Array.isArray(value)) return explode ? value.filter((item) => item != null).map((item) => ";" + key + "=" + encode(item)).join("") : ";" + key + "=" + value.filter((item) => item != null).map(encode).join(",");
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return explode ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("") : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
+        }
+        return ";" + key + "=" + encode(value);
+      }
+      if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
+      if (value && typeof value === "object") {
+        return Object.entries(value as Record<string, unknown>)
+          .filter(([, item]) => item != null)
+          .flatMap(([name, item]) => [encode(name), encode(item)])
+          .join(",");
+      }
+      return encode(value);
+    };
     return url
       .replace(/{([^}]+)}/g, (_, key: string) =>
-        record[key] != null ? encodeURIComponent(String(record[key])) : \`{\${key}}\`,
+        record[key] != null ? serialize(key, record[key]) : \`{\${key}}\`,
       )
       .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
-        record[key] != null ? encodeURIComponent(String(record[key])) : \`:\${key}\`,
+        record[key] != null ? serialize(key, record[key]) : \`:\${key}\`,
       );
   }
 
@@ -1232,7 +1262,11 @@ export class ApiClient {
           : ""
       }
 
-      const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(this.baseUrl + (path as string), parametersToSend.path ?? {});
+      const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
+        this.baseUrl + (path as string),
+        parametersToSend.path ?? {},
+        endpointParameterStyles[method]?.[path]?.path,
+      );
       const url = new URL(resolvedPath);
       const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
         parametersToSend.query,
