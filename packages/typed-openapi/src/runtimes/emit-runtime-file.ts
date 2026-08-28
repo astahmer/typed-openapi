@@ -30,6 +30,92 @@ export type EmitRuntimeFileArgs = {
 
 const coerceParamKeys = new Set(["query", "path", "header", "cookie"]);
 
+const containsTupleWithRest = (node: SchemaNode): boolean => {
+  switch (node.kind) {
+    case "tuple":
+      return Boolean(node.rest) || node.items.some(containsTupleWithRest);
+    case "array":
+      return containsTupleWithRest(node.items);
+    case "object":
+      return (
+        Object.values(node.properties).some(containsTupleWithRest) ||
+        (typeof node.additionalProperties === "object" && containsTupleWithRest(node.additionalProperties)) ||
+        Object.values(node.patternProperties ?? {}).some(containsTupleWithRest)
+      );
+    case "union":
+    case "intersection":
+      return node.members.some(containsTupleWithRest);
+    case "not":
+      return containsTupleWithRest(node.schema);
+    case "record":
+      return containsTupleWithRest(node.key) || containsTupleWithRest(node.value);
+    case "ref":
+      return node.generics?.some(containsTupleWithRest) ?? false;
+    case "custom":
+      return node.fallback ? containsTupleWithRest(node.fallback) : false;
+    default:
+      return false;
+  }
+};
+
+const containsPatternProperties = (node: SchemaNode): boolean => {
+  switch (node.kind) {
+    case "object":
+      return (
+        Object.keys(node.patternProperties ?? {}).length > 0 ||
+        Object.values(node.properties).some(containsPatternProperties) ||
+        (typeof node.additionalProperties === "object" && containsPatternProperties(node.additionalProperties)) ||
+        Object.values(node.patternProperties ?? {}).some(containsPatternProperties)
+      );
+    case "array":
+      return containsPatternProperties(node.items);
+    case "tuple":
+      return node.items.some(containsPatternProperties) || (node.rest ? containsPatternProperties(node.rest) : false);
+    case "union":
+    case "intersection":
+      return node.members.some(containsPatternProperties);
+    case "not":
+      return containsPatternProperties(node.schema);
+    case "record":
+      return containsPatternProperties(node.key) || containsPatternProperties(node.value);
+    case "ref":
+      return node.generics?.some(containsPatternProperties) ?? false;
+    case "custom":
+      return node.fallback ? containsPatternProperties(node.fallback) : false;
+    default:
+      return false;
+  }
+};
+
+const containsOneOf = (node: SchemaNode): boolean => {
+  switch (node.kind) {
+    case "union":
+      return Boolean(node.exclusive) || node.members.some(containsOneOf);
+    case "object":
+      return (
+        Object.values(node.properties).some(containsOneOf) ||
+        (typeof node.additionalProperties === "object" && containsOneOf(node.additionalProperties)) ||
+        Object.values(node.patternProperties ?? {}).some(containsOneOf)
+      );
+    case "array":
+      return containsOneOf(node.items);
+    case "tuple":
+      return node.items.some(containsOneOf) || (node.rest ? containsOneOf(node.rest) : false);
+    case "intersection":
+      return node.members.some(containsOneOf);
+    case "not":
+      return containsOneOf(node.schema);
+    case "record":
+      return containsOneOf(node.key) || containsOneOf(node.value);
+    case "ref":
+      return node.generics?.some(containsOneOf) ?? false;
+    case "custom":
+      return node.fallback ? containsOneOf(node.fallback) : false;
+    default:
+      return false;
+  }
+};
+
 /** Make an all-optional param group itself optional (`query?: …`) for InferSchemaInput. */
 const wrapOptionalParamGroup = (adapter: RuntimeAdapter, expr: string): string => {
   switch (adapter.name) {
@@ -125,12 +211,51 @@ export const emitRuntimeFile = ({
       .map(([node, infos]) => ({ name: infos.normalized, node }));
 
   const recursiveNames = findRecursiveSchemaNames(namedSchemas);
+  const schemaOrder = new Map(namedSchemas.map(({ name }, index) => [name, index] as const));
   const ctx = createEmitCtx(validation, recursiveNames, {
     transformDates,
     transformBigInt,
     includeDescriptions,
     schemaNodes: new Map(namedSchemas.map(({ name, node }) => [name, node])),
+    schemaOrder,
   });
+
+  const tupleWithRest =
+    adapter.name === "typebox" &&
+    [
+      ...namedSchemas.map(({ node }) => node),
+      ...(schemasOnly
+        ? []
+        : endpointList.flatMap((endpoint) => [
+            ...Object.values(endpoint.parameters ?? {}),
+            ...Object.values(endpoint.responses ?? {}),
+            ...Object.values(endpoint.responseHeaders ?? {}),
+          ])),
+    ].some(containsTupleWithRest);
+  const objectWithPatterns =
+    adapter.name === "typebox" &&
+    [
+      ...namedSchemas.map(({ node }) => node),
+      ...(schemasOnly
+        ? []
+        : endpointList.flatMap((endpoint) => [
+            ...Object.values(endpoint.parameters ?? {}),
+            ...Object.values(endpoint.responses ?? {}),
+            ...Object.values(endpoint.responseHeaders ?? {}),
+          ])),
+    ].some(containsPatternProperties);
+  const oneOf =
+    adapter.name === "typebox" &&
+    [
+      ...namedSchemas.map(({ node }) => node),
+      ...(schemasOnly
+        ? []
+        : endpointList.flatMap((endpoint) => [
+            ...Object.values(endpoint.parameters ?? {}),
+            ...Object.values(endpoint.responses ?? {}),
+            ...Object.values(endpoint.responseHeaders ?? {}),
+          ])),
+    ].some(containsOneOf);
 
   let schemasBlock = `// <Schemas>\n`;
   if (adapter.emitNamedSchemas) {
@@ -180,6 +305,82 @@ export const emitRuntimeFile = ({
   if (helpers) {
     body += `// <DefaultSchemas>\n${helpers}// </DefaultSchemas>\n\n`;
   }
+  if (tupleWithRest) {
+    body += `// <TupleWithRest>
+const __TypedOpenapiTupleWithRest = TypeSystem.Type<unknown[], { items: import("@sinclair/typebox").TSchema[]; rest: import("@sinclair/typebox").TSchema }>(
+  "TypedOpenapiTupleWithRest_" + Math.random().toString(36).slice(2),
+  (options, value) =>
+    Array.isArray(value) &&
+    value.length >= options.items.length &&
+    options.items.every((schema, index) => Value.Check(schema, value[index])) &&
+    value.slice(options.items.length).every((item) => Value.Check(options.rest, item)),
+);
+
+const __typedOpenapiTupleWithRest = <
+  T extends import("@sinclair/typebox").TSchema[],
+  R extends import("@sinclair/typebox").TSchema
+>(items: [...T], rest: R) =>
+  __TypedOpenapiTupleWithRest({ items, rest }) as unknown as import("@sinclair/typebox").TUnsafe<
+    [...{ [K in keyof T]: Static<T[K]> }, ...Array<Static<R>>]
+  >;
+// </TupleWithRest>
+
+`;
+  }
+  if (objectWithPatterns) {
+    body += `// <ObjectWithPatterns>
+const __TypedOpenapiObjectWithPatterns = TypeSystem.Type<object, {
+  object: import("@sinclair/typebox").TSchema;
+  properties: string[];
+  patterns: Record<string, import("@sinclair/typebox").TSchema>;
+  additional: import("@sinclair/typebox").TSchema | boolean;
+}>(
+  "TypedOpenapiObjectWithPatterns_" + Math.random().toString(36).slice(2),
+  (options, value) => {
+    if (!Value.Check(options.object, value)) return false;
+    for (const [key, item] of Object.entries(value as Record<string, unknown>)) {
+      let matched = false;
+      for (const [pattern, schema] of Object.entries(options.patterns)) {
+        if (new RegExp(pattern).test(key)) {
+          matched = true;
+          if (!Value.Check(schema, item)) return false;
+        }
+      }
+      if (!options.properties.includes(key) && !matched) {
+        if (options.additional === false) return false;
+        if (options.additional !== true && !Value.Check(options.additional, item)) return false;
+      }
+    }
+    return true;
+  },
+);
+
+const __typedOpenapiObjectWithPatterns = <T extends import("@sinclair/typebox").TSchema>(
+  object: T,
+  properties: string[],
+  patterns: Record<string, import("@sinclair/typebox").TSchema>,
+  additional: import("@sinclair/typebox").TSchema | boolean,
+) =>
+  __TypedOpenapiObjectWithPatterns({ object, properties, patterns, additional }) as unknown as import("@sinclair/typebox").TUnsafe<
+    Static<T>
+  >;
+// </ObjectWithPatterns>
+
+    `;
+  }
+  if (oneOf) {
+    body += `// <OneOf>
+const __TypedOpenapiOneOf = TypeSystem.Type<unknown, { members: import("@sinclair/typebox").TSchema[] }>(
+  "TypedOpenapiOneOf_" + Math.random().toString(36).slice(2),
+  (options, value) => options.members.filter((schema) => Value.Check(schema, value)).length === 1,
+);
+
+const __typedOpenapiOneOf = <T extends import("@sinclair/typebox").TSchema[]>(members: [...T]) =>
+  __TypedOpenapiOneOf({ members }) as unknown as import("@sinclair/typebox").TUnsafe<Static<T[number]>>;
+// </OneOf>
+
+`;
+  }
   body += schemasBlock + endpointsBlock;
 
   // Effect: only import SchemaTransformation/Struct when referenced.
@@ -191,5 +392,5 @@ export const emitRuntimeFile = ({
     return `import { ${names.join(", ")} } from "effect";\n\n${body}`;
   }
 
-  return `${adapter.imports()}\n\n${body}`;
+  return `${adapter.imports({ tupleWithRest, objectWithPatterns, oneOf })}\n\n${body}`;
 };

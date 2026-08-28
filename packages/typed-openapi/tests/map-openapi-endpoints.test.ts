@@ -1710,6 +1710,18 @@ describe("map-openapi-endpoints", () => {
                 "pet",
               ],
             },
+            "parameterStyles": {
+              "cookie": {},
+              "header": {},
+              "path": {},
+              "query": {
+                "status": {
+                  "allowReserved": false,
+                  "explode": true,
+                  "style": "form",
+                },
+              },
+            },
             "parameters": {
               "query": {
                 "additionalProperties": false,
@@ -1752,7 +1764,7 @@ describe("map-openapi-endpoints", () => {
                 "meta": {},
               },
               "400": {
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "constraints": {},
                 "kind": "object",
                 "meta": {},
@@ -1864,6 +1876,18 @@ describe("map-openapi-endpoints", () => {
               "tags": [
                 "pet",
               ],
+            },
+            "parameterStyles": {
+              "cookie": {},
+              "header": {},
+              "path": {},
+              "query": {
+                "tags": {
+                  "allowReserved": false,
+                  "explode": true,
+                  "style": "form",
+                },
+              },
             },
             "parameters": {
               "query": {
@@ -2036,6 +2060,18 @@ describe("map-openapi-endpoints", () => {
                 "pet",
               ],
             },
+            "parameterStyles": {
+              "cookie": {},
+              "header": {},
+              "path": {
+                "petId": {
+                  "allowReserved": false,
+                  "explode": false,
+                  "style": "simple",
+                },
+              },
+              "query": {},
+            },
             "parameters": {
               "path": {
                 "additionalProperties": false,
@@ -2068,7 +2104,7 @@ describe("map-openapi-endpoints", () => {
                 "name": "Pet",
               },
               "400": {
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "constraints": {},
                 "kind": "object",
                 "meta": {},
@@ -2100,7 +2136,7 @@ describe("map-openapi-endpoints", () => {
                 ],
               },
               "404": {
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "constraints": {},
                 "kind": "object",
                 "meta": {},
@@ -2188,6 +2224,29 @@ describe("map-openapi-endpoints", () => {
               "tags": [
                 "pet",
               ],
+            },
+            "parameterStyles": {
+              "cookie": {},
+              "header": {},
+              "path": {
+                "petId": {
+                  "allowReserved": false,
+                  "explode": false,
+                  "style": "simple",
+                },
+              },
+              "query": {
+                "name": {
+                  "allowReserved": false,
+                  "explode": true,
+                  "style": "form",
+                },
+                "status": {
+                  "allowReserved": false,
+                  "explode": true,
+                  "style": "form",
+                },
+              },
             },
             "parameters": {
               "path": {
@@ -2289,6 +2348,24 @@ describe("map-openapi-endpoints", () => {
               "tags": [
                 "pet",
               ],
+            },
+            "parameterStyles": {
+              "cookie": {},
+              "header": {
+                "api_key": {
+                  "allowReserved": false,
+                  "explode": false,
+                  "style": "simple",
+                },
+              },
+              "path": {
+                "petId": {
+                  "allowReserved": false,
+                  "explode": false,
+                  "style": "simple",
+                },
+              },
+              "query": {},
             },
             "parameters": {
               "header": {
@@ -2402,6 +2479,24 @@ describe("map-openapi-endpoints", () => {
               "tags": [
                 "pet",
               ],
+            },
+            "parameterStyles": {
+              "cookie": {},
+              "header": {},
+              "path": {
+                "petId": {
+                  "allowReserved": false,
+                  "explode": false,
+                  "style": "simple",
+                },
+              },
+              "query": {
+                "additionalMetadata": {
+                  "allowReserved": false,
+                  "explode": true,
+                  "style": "form",
+                },
+              },
             },
             "parameters": {
               "body": {
@@ -2635,6 +2730,18 @@ describe("map-openapi-endpoints", () => {
                 "store",
               ],
             },
+            "parameterStyles": {
+              "cookie": {},
+              "header": {},
+              "path": {
+                "orderId": {
+                  "allowReserved": false,
+                  "explode": false,
+                  "style": "simple",
+                },
+              },
+              "query": {},
+            },
             "parameters": {
               "path": {
                 "additionalProperties": false,
@@ -2710,6 +2817,18 @@ describe("map-openapi-endpoints", () => {
               "tags": [
                 "store",
               ],
+            },
+            "parameterStyles": {
+              "cookie": {},
+              "header": {},
+              "path": {
+                "orderId": {
+                  "allowReserved": false,
+                  "explode": false,
+                  "style": "simple",
+                },
+              },
+              "query": {},
             },
             "parameters": {
               "path": {
@@ -2970,6 +3089,23 @@ describe("map-openapi-endpoints", () => {
                 "user",
               ],
             },
+            "parameterStyles": {
+              "cookie": {},
+              "header": {},
+              "path": {},
+              "query": {
+                "password": {
+                  "allowReserved": false,
+                  "explode": true,
+                  "style": "form",
+                },
+                "username": {
+                  "allowReserved": false,
+                  "explode": true,
+                  "style": "form",
+                },
+              },
+            },
             "parameters": {
               "query": {
                 "additionalProperties": false,
@@ -3175,6 +3311,18 @@ describe("map-openapi-endpoints", () => {
                 "user",
               ],
             },
+            "parameterStyles": {
+              "cookie": {},
+              "header": {},
+              "path": {
+                "username": {
+                  "allowReserved": false,
+                  "explode": false,
+                  "style": "simple",
+                },
+              },
+              "query": {},
+            },
             "parameters": {
               "path": {
                 "additionalProperties": false,
@@ -3204,7 +3352,7 @@ describe("map-openapi-endpoints", () => {
                 "name": "User",
               },
               "201": {
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "constraints": {},
                 "kind": "object",
                 "meta": {},
@@ -3228,7 +3376,7 @@ describe("map-openapi-endpoints", () => {
                 ],
               },
               "400": {
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "constraints": {},
                 "kind": "object",
                 "meta": {},
@@ -3308,6 +3456,18 @@ describe("map-openapi-endpoints", () => {
                 "user",
               ],
             },
+            "parameterStyles": {
+              "cookie": {},
+              "header": {},
+              "path": {
+                "username": {
+                  "allowReserved": false,
+                  "explode": false,
+                  "style": "simple",
+                },
+              },
+              "query": {},
+            },
             "parameters": {
               "body": {
                 "kind": "ref",
@@ -3375,6 +3535,18 @@ describe("map-openapi-endpoints", () => {
               "tags": [
                 "user",
               ],
+            },
+            "parameterStyles": {
+              "cookie": {},
+              "header": {},
+              "path": {
+                "username": {
+                  "allowReserved": false,
+                  "explode": false,
+                  "style": "simple",
+                },
+              },
+              "query": {},
             },
             "parameters": {
               "path": {
@@ -3652,6 +3824,24 @@ describe("map-openapi-endpoints", () => {
             },
             "summary": "Gets a user by ID",
           },
+          "parameterStyles": {
+            "cookie": {},
+            "header": {},
+            "path": {
+              "id": {
+                "allowReserved": false,
+                "explode": false,
+                "style": "simple",
+              },
+            },
+            "query": {
+              "metadata": {
+                "allowReserved": false,
+                "explode": true,
+                "style": "form",
+              },
+            },
+          },
           "parameters": {
             "path": {
               "additionalProperties": false,
@@ -3896,7 +4086,7 @@ describe("map-openapi-endpoints", () => {
           },
           "parameters": {
             "body": {
-              "additionalProperties": false,
+              "additionalProperties": true,
               "constraints": {},
               "kind": "object",
               "meta": {},

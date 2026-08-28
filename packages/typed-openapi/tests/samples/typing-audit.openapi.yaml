@@ -1,0 +1,129 @@
+openapi: 3.1.0
+info:
+  title: Typing audit fixture
+  version: 1.0.0
+paths:
+  /text:
+    get:
+      operationId: getText
+      responses:
+        "200":
+          description: Plain text
+          content:
+            text/plain:
+              schema:
+                type: string
+  /binary:
+    get:
+      operationId: getBinary
+      responses:
+        "200":
+          description: Binary body
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  /trace:
+    trace:
+      operationId: traceAudit
+      responses:
+        "204":
+          description: No content
+  /params/{id}:
+    get:
+      operationId: getParams
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: enabled
+          required: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Closed object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Closed"
+  /recursive:
+    get:
+      operationId: getRecursive
+      responses:
+        "200":
+          description: Recursive body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecursiveNode"
+  /closed:
+    post:
+      operationId: postClosed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Closed"
+      responses:
+        "200":
+          description: Closed object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Closed"
+components:
+  schemas:
+    Closed:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name:
+          type: string
+    OpenMap:
+      type: object
+      additionalProperties:
+        type: number
+      required: [name]
+      properties:
+        name:
+          type: string
+    Patterned:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name:
+          type: string
+      patternProperties:
+        "^x-":
+          type: string
+    Tuple:
+      type: array
+      prefixItems:
+        - type: string
+        - type: integer
+      items:
+        type: string
+    RecursiveNode:
+      type: object
+      required: [value]
+      properties:
+        value:
+          type: string
+        child:
+          $ref: "#/components/schemas/RecursiveNode"
+    Exclusive:
+      oneOf:
+        - type: string
+        - type: number
+    Impossible:
+      oneOf: []
+    Forbidden: false
+    Anything: true

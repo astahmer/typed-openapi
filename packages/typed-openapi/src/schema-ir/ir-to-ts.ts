@@ -160,9 +160,24 @@ export const irToTs = (node: SchemaNode, options: IrToTsOptions = {}): string =>
         objectBody = `{\n${propsString}\n}`;
       }
 
-      if (node.partial) {
-        return `Partial<${objectBody}>`;
+      if (typeof node.additionalProperties === "object") {
+        const declaredTypes = entries.map(([, propNode]) => irToTs(propNode, options));
+        const patternTypes = Object.values(node.patternProperties ?? {}).map((patternNode) =>
+          irToTs(patternNode, options),
+        );
+        const indexValue = [...declaredTypes, ...patternTypes, irToTs(node.additionalProperties, options)].join(" | ");
+        if (entries.length === 0) return `Record<string, ${indexValue}>`;
+        const propertiesType = node.partial ? `Partial<${objectBody}>` : objectBody;
+        return `(${propertiesType} & Record<string, ${indexValue}>)`;
       }
+      if (node.patternProperties && Object.keys(node.patternProperties).length > 0) {
+        const declaredTypes = entries.map(([, propNode]) => irToTs(propNode, options));
+        const patternTypes = Object.values(node.patternProperties).map((patternNode) => irToTs(patternNode, options));
+        if (entries.length === 0) return `Record<string, ${patternTypes.join(" | ")}>`;
+        const propertiesType = node.partial ? `Partial<${objectBody}>` : objectBody;
+        return `(${propertiesType} & Record<string, ${[...declaredTypes, ...patternTypes].join(" | ")}>)`;
+      }
+      if (node.partial) return `Partial<${objectBody}>`;
       if (node.additionalProperties === true) {
         return `(${objectBody} & Record<string, unknown>)`;
       }
@@ -182,7 +197,13 @@ export const renderSchemaJsdoc = (description: string | undefined, deprecated = 
 export const canEmitAsInterface = (node: SchemaNode): boolean => {
   if (node.kind === "record") return true;
   if (node.kind === "custom") return false;
-  if (node.kind === "object" && !node.partial && node.additionalProperties === false) return true;
+  if (
+    node.kind === "object" &&
+    !node.partial &&
+    node.additionalProperties === false &&
+    (!node.patternProperties || Object.keys(node.patternProperties).length === 0)
+  )
+    return true;
   return false;
 };
 

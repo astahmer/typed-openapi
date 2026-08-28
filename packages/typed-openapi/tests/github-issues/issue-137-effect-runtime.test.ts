@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { describe, expect, test } from "vitest";
 import { Schema } from "effect";
+import * as LegacySchema from "@effect/schema/Schema";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
 import { generateFile } from "../../src/generator.ts";
@@ -162,6 +163,17 @@ describe("issue #137 — effect runtime codegen bugs", () => {
     expect(Schema.decodeUnknownSync(config)({})).toEqual({ path_mappings: [] });
   });
 
+  test("Bug 2: effect3 also defers defaulted $refs past component declarations", async () => {
+    const src = generateFile({ ...mapOpenApiEndpoints(bug2Spec), runtime: "effect3", schemasOnly: true });
+    const output = await prettify(src);
+
+    expect(output).toContain("S.suspend(() => S.Array(PathMapping))");
+
+    const mod = await loadGenerated("bug2-effect3", src);
+    const config = mod.Config as LegacySchema.Schema<unknown>;
+    expect(LegacySchema.decodeUnknownSync(config)({})).toEqual({ path_mappings: [] });
+  });
+
   test("Bug 3: narrowed enum in allOf remains enforced", async () => {
     const src = generateFile({ ...mapOpenApiEndpoints(bug3Spec), runtime: "effect", schemasOnly: true });
     const mod = await loadGenerated("bug3", src);
@@ -189,5 +201,11 @@ describe("issue #137 — effect runtime codegen bugs", () => {
     const extended = mod.ExtendedPayload as Schema.Schema<unknown>;
     expect(Schema.is(extended)({ id: "id", extra: "extra" })).toBe(true);
     expect(Schema.is(extended)({ id: "id", extra: 1 })).toBe(false);
+
+    const src3 = generateFile({ ...mapOpenApiEndpoints(bug5Spec), runtime: "effect3", schemasOnly: true });
+    const mod3 = await loadGenerated("bug5-effect3", src3);
+    const extended3 = mod3.ExtendedPayload as LegacySchema.Schema<unknown>;
+    expect(LegacySchema.is(extended3)({ id: "id", extra: "extra" })).toBe(true);
+    expect(LegacySchema.is(extended3)({ id: "id", extra: 1 })).toBe(false);
   });
 });

@@ -8,11 +8,13 @@ import {
   emitExplicitSchemaTypeDecl,
   emitStreamCheck,
   findMappedUnionMember,
+  hasObjectRestTyping,
   isNullOr,
   literalValue,
   objectKey,
   objectProps,
   quote,
+  shouldDeferNamedSchemaRef,
   withValibotDefault,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
@@ -104,8 +106,11 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       }
       return pipe(`v.array(${emitNode(node.items, ctx)})`, actions);
     }
-    case "tuple":
-      return `v.tuple([${node.items.map((i) => emitNode(i, ctx)).join(", ")}])`;
+    case "tuple": {
+      const items = node.items.map((i) => emitNode(i, ctx)).join(", ");
+      if (node.rest) return `v.tupleWithRest([${items}], ${emitNode(node.rest, ctx)})`;
+      return `v.tuple([${items}])`;
+    }
     case "union": {
       if (node.discriminator?.propertyName) {
         const prop = node.discriminator.propertyName;
@@ -122,7 +127,13 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           }
         }
       }
-      return `v.union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
+      const members = node.members.map((m) => emitNode(m, ctx));
+      const union = `v.union([${members.join(", ")}])`;
+      return node.exclusive
+        ? pipe(union, [
+            `v.check((data) => [${node.members.map((m) => `v.safeParse(${emitNode(m, ctx)}, data).success`).join(", ")}].filter(Boolean).length === 1, "oneOf")`,
+          ])
+        : union;
     }
     case "intersection":
       return `v.intersect([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
@@ -135,6 +146,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.name === "Record" && node.generics?.length === 2) {
         return `v.record(${emitNode(node.generics[0]!, ctx)}, ${emitNode(node.generics[1]!, ctx)})`;
       }
+      if (shouldDeferNamedSchemaRef(node.name, ctx)) return `v.lazy(() => ${node.name})`;
       return node.name;
     }
     case "record":
@@ -147,8 +159,33 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           return `${objectKey(key)}: ${optional && !hasDefault ? `v.optional(${expr})` : expr}`;
         })
         .join(", ");
-      let expr = `v.object({ ${body} })`;
+      const patterns = Object.entries(node.patternProperties ?? {});
+      let expr =
+        patterns.length > 0 || node.additionalProperties === true
+          ? `v.objectWithRest({ ${body} }, v.unknown())`
+          : typeof node.additionalProperties === "object"
+            ? `v.objectWithRest({ ${body} }, ${emitNode(node.additionalProperties, ctx)})`
+            : `v.strictObject({ ${body} })`;
       if (node.partial) expr = `v.partial(${expr})`;
+      if (patterns.length > 0) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
+        const patternChecks = patterns
+          .map(
+            ([pattern, patternNode]) =>
+              `(!new RegExp(${quote(pattern)}).test(key) || v.safeParse(${emitNode(patternNode, ctx)}, value).success)`,
+          )
+          .join(" && ");
+        const additionalCheck =
+          node.additionalProperties === true
+            ? "true"
+            : typeof node.additionalProperties === "object"
+              ? `v.safeParse(${emitNode(node.additionalProperties, ctx)}, value).success`
+              : "false";
+        expr = pipe(expr, [
+          `v.check((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${namedKeys}.includes(key) || ${matching} || ${additionalCheck})))`,
+        ]);
+      }
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       const actions: string[] = [];
       if (oc.minProperties !== undefined) {
@@ -188,12 +225,17 @@ export const valibotAdapter: RuntimeAdapter = {
     const childCtx = { ...ctx, currentSchemaName: name };
     let body = emitNode(node, childCtx);
     if (typeReference) {
+      if (ctx.recursiveNames.has(name)) body = `v.lazy(() => ${body})`;
       return `export type ${name} = ${typeReference};\nexport const ${name} = ${body};`;
     }
     if (ctx.recursiveNames.has(name)) {
       body = `v.lazy(() => ${body})`;
       const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
       return `${typeDecl}\nexport const ${name}: v.GenericSchema<${name}> = ${body};`;
+    }
+    if (hasObjectRestTyping(node)) {
+      const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
+      return `${typeDecl}\nexport const ${name} = ${body} as unknown as v.GenericSchema<${name}>;`;
     }
     return `export type ${name} = v.InferOutput<typeof ${name}>;\nexport const ${name} = ${body};`;
   },

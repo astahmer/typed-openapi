@@ -54,7 +54,7 @@ export type Pet = {
   photoUrls: Array<string>;
   tags?: Array<Tag>;
   status?: "available" | "pending" | "sold";
-};
+} & Record<string, unknown>;
 export const isPet = typia.createIs<Pet>();
 export const assertPet = typia.createAssert<Pet>();
 export const validatePet = typia.createValidate<Pet>();
@@ -98,11 +98,17 @@ export const get_FindPetsByStatus = {
   path: typia.createIs<"/pet/findByStatus">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ status: "available" | "pending" | "sold" }>>() },
+  parameters: {
+    query: (input: unknown): input is Partial<{ status: "available" | "pending" | "sold" }> =>
+      typia.createIs<Partial<{ status: "available" | "pending" | "sold" }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["status"].includes(key)),
+  },
   responses: {
     200: typia.createIs<Array<Pet>>(),
     304: typia.createIs<unknown>(),
-    400: typia.createIs<{ code: number; message: string }>(),
+    400: typia.createIs<{ code: number; message: string } & Record<string, unknown>>(),
   },
 };
 
@@ -112,7 +118,13 @@ export const get_FindPetsByTags = {
   path: typia.createIs<"/pet/findByTags">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ tags: Array<string> }>>() },
+  parameters: {
+    query: (input: unknown): input is Partial<{ tags: Array<string> }> =>
+      typia.createIs<Partial<{ tags: Array<string> }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["tags"].includes(key)),
+  },
   responses: { 200: typia.createIs<Array<Pet> | Array<User> | Array<Tag>>(), 400: typia.createIs<unknown>() },
 };
 
@@ -122,11 +134,17 @@ export const get_GetPetById = {
   path: typia.createIs<"/pet/{petId}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ petId: number }>() },
+  parameters: {
+    path: (input: unknown): input is { petId: number } =>
+      typia.createIs<{ petId: number }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["petId"].includes(key)),
+  },
   responses: {
     200: isPet,
-    400: typia.createIs<{ code: number; message: string }>(),
-    404: typia.createIs<{ code: number; message: string }>(),
+    400: typia.createIs<{ code: number; message: string } & Record<string, unknown>>(),
+    404: typia.createIs<{ code: number; message: string } & Record<string, unknown>>(),
   },
 };
 
@@ -137,8 +155,16 @@ export const post_UpdatePetWithForm = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: {
-    query: typia.createIs<Partial<{ name: string; status: string }>>(),
-    path: typia.createIs<{ petId: number }>(),
+    query: (input: unknown): input is Partial<{ name: string; status: string }> =>
+      typia.createIs<Partial<{ name: string; status: string }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["name", "status"].includes(key)),
+    path: (input: unknown): input is { petId: number } =>
+      typia.createIs<{ petId: number }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["petId"].includes(key)),
   },
   responses: { 405: typia.createIs<unknown>() },
 };
@@ -149,7 +175,18 @@ export const delete_DeletePet = {
   path: typia.createIs<"/pet/{petId}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ petId: number }>(), header: typia.createIs<Partial<{ api_key: string }>>() },
+  parameters: {
+    path: (input: unknown): input is { petId: number } =>
+      typia.createIs<{ petId: number }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["petId"].includes(key)),
+    header: (input: unknown): input is Partial<{ api_key: string }> =>
+      typia.createIs<Partial<{ api_key: string }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["api_key"].includes(key)),
+  },
   responses: { 400: typia.createIs<unknown>() },
 };
 
@@ -160,8 +197,16 @@ export const post_UploadFile = {
   requestFormat: typia.createIs<"binary">(),
   responseFormat: typia.createIs<"json">(),
   parameters: {
-    query: typia.createIs<Partial<{ additionalMetadata: string }>>(),
-    path: typia.createIs<{ petId: number }>(),
+    query: (input: unknown): input is Partial<{ additionalMetadata: string }> =>
+      typia.createIs<Partial<{ additionalMetadata: string }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["additionalMetadata"].includes(key)),
+    path: (input: unknown): input is { petId: number } =>
+      typia.createIs<{ petId: number }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["petId"].includes(key)),
     body: typia.createIs<Blob>(),
   },
   responses: { 200: isApiResponse },
@@ -193,7 +238,13 @@ export const get_GetOrderById = {
   path: typia.createIs<"/store/order/{orderId}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ orderId: number }>() },
+  parameters: {
+    path: (input: unknown): input is { orderId: number } =>
+      typia.createIs<{ orderId: number }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["orderId"].includes(key)),
+  },
   responses: { 200: isOrder, 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>() },
 };
 
@@ -203,7 +254,13 @@ export const delete_DeleteOrder = {
   path: typia.createIs<"/store/order/{orderId}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ orderId: number }>() },
+  parameters: {
+    path: (input: unknown): input is { orderId: number } =>
+      typia.createIs<{ orderId: number }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["orderId"].includes(key)),
+  },
   responses: { 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>() },
 };
 
@@ -233,11 +290,25 @@ export const get_LoginUser = {
   path: typia.createIs<"/user/login">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ username: string; password: string }>>() },
+  parameters: {
+    query: (input: unknown): input is Partial<{ username: string; password: string }> =>
+      typia.createIs<Partial<{ username: string; password: string }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["username", "password"].includes(key)),
+  },
   responses: { 200: typia.createIs<string>(), 400: typia.createIs<unknown>() },
   responseHeaders: {
-    200: typia.createIs<{ "X-Rate-Limit": number; "X-Expires-After": string }>(),
-    400: typia.createIs<{ "X-Error": string }>(),
+    200: (input: unknown): input is { "X-Rate-Limit": number; "X-Expires-After": string } =>
+      typia.createIs<{ "X-Rate-Limit": number; "X-Expires-After": string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["X-Rate-Limit", "X-Expires-After"].includes(key)),
+    400: (input: unknown): input is { "X-Error": string } =>
+      typia.createIs<{ "X-Error": string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["X-Error"].includes(key)),
   },
 };
 
@@ -257,11 +328,17 @@ export const get_GetUserByName = {
   path: typia.createIs<"/user/{username}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ username: string }>() },
+  parameters: {
+    path: (input: unknown): input is { username: string } =>
+      typia.createIs<{ username: string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["username"].includes(key)),
+  },
   responses: {
     200: isUser,
-    201: typia.createIs<{ id: number; username: string }>(),
-    400: typia.createIs<{ code: number; message: string }>(),
+    201: typia.createIs<{ id: number; username: string } & Record<string, unknown>>(),
+    400: typia.createIs<{ code: number; message: string } & Record<string, unknown>>(),
     404: typia.createIs<unknown>(),
   },
 };
@@ -272,7 +349,14 @@ export const put_UpdateUser = {
   path: typia.createIs<"/user/{username}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ username: string }>(), body: isUser },
+  parameters: {
+    path: (input: unknown): input is { username: string } =>
+      typia.createIs<{ username: string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["username"].includes(key)),
+    body: isUser,
+  },
   responses: { default: typia.createIs<unknown>() },
 };
 
@@ -282,7 +366,13 @@ export const delete_DeleteUser = {
   path: typia.createIs<"/user/{username}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ username: string }>() },
+  parameters: {
+    path: (input: unknown): input is { username: string } =>
+      typia.createIs<{ username: string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["username"].includes(key)),
+  },
   responses: { 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>() },
 };
 
@@ -371,7 +461,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | "head" | "options" | MutationMethod;
+export type Method = "get" | "head" | "options" | "trace" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type ResponseFormat = "json" | "sse";
@@ -385,6 +475,51 @@ export const endpointRequestFormats = {
   },
 } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
+
+// <EndpointParameterStyles>
+export type ParameterSerialization = { style: string; explode: boolean; allowReserved: boolean };
+export type EndpointParameterStyles = Partial<
+  Record<"query" | "path" | "header" | "cookie", Record<string, ParameterSerialization>>
+>;
+/** OpenAPI parameter styles used by the built-in encoders. */
+export const endpointParameterStyles = {
+  get: {
+    "/pet/findByStatus": { query: { status: { style: "form", explode: true, allowReserved: false } } },
+    "/pet/findByTags": { query: { tags: { style: "form", explode: true, allowReserved: false } } },
+    "/pet/{petId}": { path: { petId: { style: "simple", explode: false, allowReserved: false } } },
+    "/store/order/{orderId}": { path: { orderId: { style: "simple", explode: false, allowReserved: false } } },
+    "/user/login": {
+      query: {
+        username: { style: "form", explode: true, allowReserved: false },
+        password: { style: "form", explode: true, allowReserved: false },
+      },
+    },
+    "/user/{username}": { path: { username: { style: "simple", explode: false, allowReserved: false } } },
+  },
+  post: {
+    "/pet/{petId}": {
+      query: {
+        name: { style: "form", explode: true, allowReserved: false },
+        status: { style: "form", explode: true, allowReserved: false },
+      },
+      path: { petId: { style: "simple", explode: false, allowReserved: false } },
+    },
+    "/pet/{petId}/uploadImage": {
+      query: { additionalMetadata: { style: "form", explode: true, allowReserved: false } },
+      path: { petId: { style: "simple", explode: false, allowReserved: false } },
+    },
+  },
+  delete: {
+    "/pet/{petId}": {
+      path: { petId: { style: "simple", explode: false, allowReserved: false } },
+      header: { api_key: { style: "simple", explode: false, allowReserved: false } },
+    },
+    "/store/order/{orderId}": { path: { orderId: { style: "simple", explode: false, allowReserved: false } } },
+    "/user/{username}": { path: { username: { style: "simple", explode: false, allowReserved: false } } },
+  },
+  put: { "/user/{username}": { path: { username: { style: "simple", explode: false, allowReserved: false } } } },
+} as Partial<Record<string, Partial<Record<string, EndpointParameterStyles>>>>;
+// </EndpointParameterStyles>
 
 // <EndpointResponseFormats>
 /** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
@@ -457,8 +592,11 @@ export interface FetcherResponse {
 }
 
 export interface Fetcher {
-  decodePathParams?: (path: string, pathParams: unknown) => string;
-  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
+  decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string;
+  encodeSearchParams?: (
+    searchParams: unknown,
+    styles?: Record<string, ParameterSerialization>,
+  ) => URLSearchParams | undefined;
   /** Merge cookie params into request headers (default: Cookie header). */
   encodeCookies?: (cookies: unknown, headers: Headers) => void;
   //
@@ -470,6 +608,8 @@ export interface Fetcher {
     path: string;
     /** How to encode `parameters.body` (from OpenAPI requestBody content type). */
     requestFormat: RequestFormat;
+    /** OpenAPI parameter serialization metadata for the current endpoint. */
+    parameterStyles?: EndpointParameterStyles;
     /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
     security?: SecurityRequirements;
     overrides?: RequestInit;
@@ -571,9 +711,11 @@ type OptionalUndefinedKeys<T> = {
 };
 type InferSchemaValueRaw<T> = T extends ((input: unknown) => input is infer U)
   ? U
-  : T extends object
-    ? { [K in keyof T]: InferSchemaValueRaw<T[K]> }
-    : T;
+  : T extends (...args: never[]) => unknown
+    ? T
+    : T extends object
+      ? { [K in keyof T]: InferSchemaValueRaw<T[K]> }
+      : T;
 export type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;
 
@@ -628,7 +770,7 @@ type ApiRequestOptions = {
 
 /** Parameter bag for an endpoint + request options. */
 export type ApiCallParams<TEndpoint> = TEndpoint extends { parameters: infer UParams }
-  ? NotNever<UParams> extends true
+  ? NotNever<InferSchemaInput<UParams>> extends true
     ? InferSchemaInput<UParams> & ApiRequestOptions
     : ApiRequestOptions
   : ApiRequestOptions;
@@ -723,25 +865,174 @@ export class ApiClient {
    * Replace path parameters in URL
    * Supports both OpenAPI format {param} and Express format :param
    */
-  defaultDecodePathParams = (url: string, params: unknown): string => {
+  defaultDecodePathParams = (url: string, params: unknown, styles?: Record<string, ParameterSerialization>): string => {
     const record = (params ?? {}) as Record<string, unknown>;
+    const encode = (value: unknown) => encodeURIComponent(String(value));
+    const serialize = (key: string, value: unknown): string => {
+      const parameterStyle = styles?.[key];
+      const style = parameterStyle?.style ?? "simple";
+      const explode = parameterStyle?.explode ?? false;
+      if (style === "label") {
+        if (Array.isArray(value))
+          return (
+            "." +
+            value
+              .filter((item) => item != null)
+              .map(encode)
+              .join(explode ? "." : ",")
+          );
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return (
+            "." +
+            (explode
+              ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".")
+              : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","))
+          );
+        }
+        return "." + encode(value);
+      }
+      if (style === "matrix") {
+        if (Array.isArray(value))
+          return explode
+            ? value
+                .filter((item) => item != null)
+                .map((item) => ";" + key + "=" + encode(item))
+                .join("")
+            : ";" +
+                key +
+                "=" +
+                value
+                  .filter((item) => item != null)
+                  .map(encode)
+                  .join(",");
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return explode
+            ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("")
+            : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
+        }
+        return ";" + key + "=" + encode(value);
+      }
+      if (Array.isArray(value))
+        return value
+          .filter((item) => item != null)
+          .map(encode)
+          .join(",");
+      if (value && typeof value === "object") {
+        return Object.entries(value as Record<string, unknown>)
+          .filter(([, item]) => item != null)
+          .map(([name, item]) => (explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)]))
+          .flat()
+          .join(",");
+      }
+      return encode(value);
+    };
     return url
-      .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
+      .replace(/{([^}]+)}/g, (_, key: string) => (record[key] != null ? serialize(key, record[key]) : `{${key}}`))
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+        record[key] != null ? serialize(key, record[key]) : `:${key}`,
+      );
   };
 
   /** Uses URLSearchParams, skips null/undefined values */
-  defaultEncodeSearchParams = (queryParams: unknown): URLSearchParams | undefined => {
+  defaultEncodeSearchParams = (
+    queryParams: unknown,
+    styles?: Record<string, ParameterSerialization>,
+  ): URLSearchParams | undefined => {
     if (!queryParams || typeof queryParams !== "object") return;
 
     const searchParams = new URLSearchParams();
+    const rawEntries: Array<{ key: string; value: string; allowReserved: boolean }> = [];
+    const append = (key: string, value: unknown, allowReserved = false) => {
+      const stringValue = String(value);
+      searchParams.append(key, stringValue);
+      rawEntries.push({ key, value: stringValue, allowReserved });
+    };
+    const encodeQueryComponent = (value: string, allowReserved: boolean) => {
+      const encoded = encodeURIComponent(value);
+      return allowReserved
+        ? encoded.replace(/%3A|%2F|%3F|%40|%21|%24|%26|%27|%28|%29|%2A|%2B|%2C|%3B|%3D|%5B|%5D/gi, (part) =>
+            decodeURIComponent(part),
+          )
+        : encoded;
+    };
+    Object.defineProperty(searchParams, "toString", {
+      value: () =>
+        rawEntries
+          .map(
+            ({ key, value, allowReserved }) =>
+              `${encodeQueryComponent(key, false)}=${encodeQueryComponent(value, allowReserved)}`,
+          )
+          .join("&"),
+    });
     Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
       if (value != null) {
         // Skip null/undefined values
+        const parameterStyle = styles?.[key];
+        const style = parameterStyle?.style ?? "form";
+        const explode = parameterStyle?.explode ?? true;
+        const allowReserved = parameterStyle?.allowReserved === true;
         if (Array.isArray(value)) {
-          value.forEach((val) => val != null && searchParams.append(key, String(val)));
+          if (style === "spaceDelimited")
+            append(
+              key,
+              value
+                .filter((item) => item != null)
+                .map(String)
+                .join(" "),
+              allowReserved,
+            );
+          else if (style === "pipeDelimited")
+            append(
+              key,
+              value
+                .filter((item) => item != null)
+                .map(String)
+                .join("|"),
+              allowReserved,
+            );
+          else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
+          else
+            append(
+              key,
+              value
+                .filter((item) => item != null)
+                .map(String)
+                .join(","),
+              allowReserved,
+            );
+        } else if (typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(
+            ([, nestedValue]) => nestedValue != null,
+          );
+          if (style === "deepObject") {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue))
+                nestedValue.forEach((item) => item != null && append(`${key}[${nestedKey}]`, item, allowReserved));
+              else append(`${key}[${nestedKey}]`, nestedValue, allowReserved);
+            }
+          } else if (explode) {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue))
+                nestedValue.forEach((item) => item != null && append(nestedKey, item, allowReserved));
+              else append(nestedKey, nestedValue, allowReserved);
+            }
+          } else {
+            append(
+              key,
+              entries
+                .flatMap(([nestedKey, nestedValue]) => [
+                  nestedKey,
+                  ...(Array.isArray(nestedValue) ? nestedValue : [nestedValue]),
+                ])
+                .map(String)
+                .join(","),
+              allowReserved,
+            );
+          }
         } else {
-          searchParams.append(key, String(value));
+          append(key, value, allowReserved);
         }
       }
     });
@@ -762,21 +1053,22 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
-    if (contentType.includes("text/event-stream")) {
+    const normalizedContentType = contentType.toLowerCase();
+    if (normalizedContentType.includes("text/event-stream")) {
       return response.body ?? null;
     }
-    if (contentType.startsWith("text/")) {
+    if (normalizedContentType.startsWith("text/")) {
       return await response.text();
     }
 
-    if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+    if (normalizedContentType.startsWith("application/octet-stream")) {
       return new Blob([await response.arrayBuffer()]);
     }
 
     if (
-      contentType.includes("application/json") ||
-      (contentType.includes("application/") && contentType.includes("json")) ||
-      contentType === "*/*"
+      normalizedContentType.includes("application/json") ||
+      (normalizedContentType.includes("application/") && normalizedContentType.includes("json")) ||
+      normalizedContentType === "*/*"
     ) {
       try {
         return await response.json();
@@ -793,7 +1085,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -822,7 +1114,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -857,7 +1149,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -886,7 +1178,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -921,7 +1213,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -950,7 +1242,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -985,7 +1277,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -1014,7 +1306,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -1057,7 +1349,7 @@ export class ApiClient {
     path: TPath,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -1091,7 +1383,7 @@ export class ApiClient {
     path: TPath,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -1170,10 +1462,12 @@ export class ApiClient {
       const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
         this.baseUrl + (path as string),
         parametersToSend.path ?? {},
+        endpointParameterStyles[method]?.[path]?.path,
       );
       const url = new URL(resolvedPath);
       const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
         parametersToSend.query,
+        endpointParameterStyles[method]?.[path]?.query,
       );
 
       if (parametersToSend.cookie) {
@@ -1182,6 +1476,7 @@ export class ApiClient {
         overrides = { ...overrides, headers };
       }
 
+      const parameterStyles = endpointParameterStyles[method]?.[path as string];
       const response = await this.fetcher.fetch({
         method: method,
         path: path as string,
@@ -1189,6 +1484,7 @@ export class ApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+        ...(parameterStyles ? { parameterStyles } : {}),
         security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements,
         ...(overrides ? { overrides } : {}),
         throwOnStatusError,
@@ -1199,8 +1495,17 @@ export class ApiClient {
           ? (response.body ?? null)
           : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
       const shouldValidateOutput = validateSide === "output" || validateSide === "both";
-      if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
-        const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+      if (
+        shouldValidateOutput &&
+        responseFormat !== "sse" &&
+        (response.ok || !(errorStatusCodes as readonly number[]).includes(response.status)) &&
+        endpointSchema?.responses
+      ) {
+        const responseSchema =
+          endpointSchema.responses[String(response.status)] ??
+          endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??
+          endpointSchema.responses[String(Math.floor(response.status / 100)) + "XX"] ??
+          endpointSchema.responses["default"];
         if (responseSchema) {
           data = await runValidate({
             side: "output",

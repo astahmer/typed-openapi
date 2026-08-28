@@ -59,6 +59,8 @@ export type SchemaNode =
       properties: Record<string, SchemaNode>;
       required: string[];
       additionalProperties: boolean | SchemaNode;
+      /** JSON Schema regex-scoped properties, validated before additionalProperties. */
+      patternProperties?: Record<string, SchemaNode>;
       constraints: ObjectConstraints;
       meta: SchemaMeta;
       /** When true, emit as Partial&lt;{...}&gt; / all props optional */
@@ -68,6 +70,8 @@ export type SchemaNode =
       kind: "union";
       members: SchemaNode[];
       meta: SchemaMeta;
+      /** True for OpenAPI oneOf: exactly one member must accept the value. */
+      exclusive?: boolean;
       discriminator?: { propertyName: string; mapping?: Record<string, string> };
     }
   | { kind: "intersection"; members: SchemaNode[]; meta: SchemaMeta }

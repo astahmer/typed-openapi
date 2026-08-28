@@ -146,6 +146,75 @@ const effectBrandTransform: SchemaTransform = (schema) =>
       : undefined;
 
 describe("runtime ApiClient InferSchemaValue", () => {
+  test("preserves class-instance members while recursively mapping runtime values", () => {
+    const output = generateFile({ ...mapOpenApiEndpoints(miniDoc), runtime: "zod", includeClient: true });
+    expect(output).toContain("T extends (...args: never[]) => unknown ? T :");
+    expect(output).toContain("type InferSchemaInputRaw<T> =");
+
+    const dir = join(__dirname, "../tmp/runtime-apiclient-class-instance");
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, "client.ts"), output);
+    writeFileSync(
+      join(dir, "usage.ts"),
+      `
+import type { ApiCallParams, InferSchemaValue } from "./client";
+
+declare const parsed: InferSchemaValue<{
+  createdAt: Date;
+  blob: Blob;
+  map: Map<string, Date>;
+  set: Set<Date>;
+}>;
+const createdAt: Date = parsed.createdAt;
+parsed.createdAt.getTime();
+const blob: Blob = parsed.blob;
+const mapValue: Date | undefined = parsed.map.get("created");
+const setValue: Date | undefined = [...parsed.set][0];
+
+declare const input: ApiCallParams<{
+  parameters: { body: { createdAt: Date; blob: Blob; map: Map<string, Date> } };
+}>;
+const inputDate: Date = input.body.createdAt;
+input.body.createdAt.getTime();
+const inputBlob: Blob = input.body.blob;
+const inputMapValue: Date | undefined = input.body.map.get("created");
+void createdAt;
+void blob;
+void mapValue;
+void setValue;
+void inputDate;
+void inputBlob;
+void inputMapValue;
+`,
+    );
+    writeFileSync(
+      join(dir, "tsconfig.json"),
+      JSON.stringify({
+        compilerOptions: {
+          strict: true,
+          noEmit: true,
+          skipLibCheck: true,
+          module: "ESNext",
+          moduleResolution: "bundler",
+          target: "ES2022",
+          lib: ["ES2022", "DOM"],
+          types: [],
+        },
+        include: ["client.ts", "usage.ts"],
+      }),
+    );
+
+    try {
+      execFileSync(process.execPath, [tscBin, "-p", dir, "--pretty", "false"], {
+        cwd: join(__dirname, ".."),
+        stdio: ["ignore", "pipe", "pipe"],
+        encoding: "utf8",
+      });
+    } catch (err: any) {
+      expect.fail(`tsc failed for class-instance inference:\n${err.stdout ?? ""}${err.stderr ?? ""}`);
+    }
+  });
+
   test("runtime endpoint maps validate their sidecar paths without broad casts", () => {
     const ctx = mapOpenApiEndpoints(miniDoc);
     const output = generateFile({

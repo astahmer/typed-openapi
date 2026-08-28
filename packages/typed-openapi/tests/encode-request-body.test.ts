@@ -68,6 +68,7 @@ describe("default fetcher + client requestFormat wiring", () => {
     expect(src).toContain('case "binary"');
     expect(src).toContain("type RequestFormat");
     expect(src).toContain('typeof input.parameters.header === "object"');
+    expect(src).not.toContain("style: string");
   });
 
   test("generated client passes requestFormat from endpointRequestFormats", () => {
@@ -115,6 +116,12 @@ describe("default fetcher + client requestFormat wiring", () => {
     expect(file).not.toMatch(/"\/upload": "json"/);
     expect(file).toContain('requestFormat: endpointRequestFormats[method]?.[path] ?? "json"');
     expect(file).toContain("export type RequestFormat");
+    expect(file).toContain("const parameterStyles = endpointParameterStyles[method]?.[path as string]");
+    expect(file).toContain("...(parameterStyles ? { parameterStyles } : {})");
+
+    const effectFile = generateFile({ ...ctx, runtime: "none", includeClient: true, client: "effect" });
+    expect(effectFile).toContain("const parameterStyles = endpointParameterStyles[method]?.[path as string]");
+    expect(effectFile).toContain("...(parameterStyles ? { parameterStyles } : {})");
   });
 
   test("all-json specs emit an empty endpointRequestFormats map", () => {

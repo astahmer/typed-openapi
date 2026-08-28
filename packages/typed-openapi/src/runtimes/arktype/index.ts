@@ -3,6 +3,7 @@ import {
   applyNumberConstraints,
   applyStringConstraints,
   arktypeDefaultDef,
+  containsDeferredNamedRef,
   emitBinaryBlobCheck,
   emitStreamCheck,
   findMappedUnionMember,
@@ -74,7 +75,9 @@ const emitNumberDef = (node: Extract<SchemaNode, { kind: "number" }>, ctx: EmitC
 
 /** Open maps: index signature. `type("Record", …)` is not a valid arity. */
 const emitRecord = (valueExpr: string, ctx?: EmitCtx) =>
-  ctx?.moduleSchemaNames ? `{ "[string]": ${valueExpr} }` : `type({ "[string]": ${valueExpr} })`;
+  ctx?.moduleSchemaNames && !ctx.moduleRuntimeRefs
+    ? `{ "[string]": ${valueExpr} }`
+    : `type({ "[string]": ${valueExpr} })`;
 
 /** ArkType string defs for unit types: "'active'", "null", "true", "1" */
 const arkUnitDef = (value: LiteralValue): string => {
@@ -86,6 +89,35 @@ const arkUnitDef = (value: LiteralValue): string => {
 /** Module string defs look like `"Category"` / `"Category[]"` / `"Category | null"`. */
 const isModuleStringDef = (expr: string): boolean =>
   expr.length >= 2 && expr.startsWith('"') && expr.endsWith('"') && !expr.includes("type(");
+
+const containsExclusiveUnion = (node: SchemaNode): boolean => {
+  switch (node.kind) {
+    case "union":
+      return Boolean(node.exclusive) || node.members.some(containsExclusiveUnion);
+    case "object":
+      return (
+        Object.values(node.properties).some(containsExclusiveUnion) ||
+        (typeof node.additionalProperties === "object" && containsExclusiveUnion(node.additionalProperties)) ||
+        Object.values(node.patternProperties ?? {}).some(containsExclusiveUnion)
+      );
+    case "array":
+      return containsExclusiveUnion(node.items);
+    case "tuple":
+      return node.items.some(containsExclusiveUnion) || (node.rest ? containsExclusiveUnion(node.rest) : false);
+    case "intersection":
+      return node.members.some(containsExclusiveUnion);
+    case "not":
+      return containsExclusiveUnion(node.schema);
+    case "record":
+      return containsExclusiveUnion(node.key) || containsExclusiveUnion(node.value);
+    case "ref":
+      return node.generics?.some(containsExclusiveUnion) ?? false;
+    case "custom":
+      return node.fallback ? containsExclusiveUnion(node.fallback) : false;
+    default:
+      return false;
+  }
+};
 
 const unquote = (expr: string): string => expr.slice(1, -1);
 
@@ -100,7 +132,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
   if (nullInner) {
     const inner = emitNode(nullInner, ctx);
-    if (ctx.moduleSchemaNames && isModuleStringDef(inner)) {
+    if (ctx.moduleSchemaNames && !ctx.moduleRuntimeRefs && isModuleStringDef(inner)) {
       return quote(`${unquote(inner)} | null`);
     }
     return `${asTypeExpr(inner)}.or(type("null"))`;
@@ -149,13 +181,23 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         .join(", ")})`;
     case "array": {
       const items = emitNode(node.items, ctx);
-      if (ctx.moduleSchemaNames && isModuleStringDef(items)) {
+      if (ctx.moduleSchemaNames && !ctx.moduleRuntimeRefs && isModuleStringDef(items)) {
         return quote(`${unquote(items)}[]`);
       }
       return `${asTypeExpr(items)}.array()`;
     }
-    case "tuple":
-      return `type([${node.items.map((i) => emitNode(i, ctx)).join(", ")}])`;
+    case "tuple": {
+      const items = node.items.map((i) => emitNode(i, ctx));
+      if (node.rest) {
+        const rest = emitNode(node.rest, ctx);
+        const restArray =
+          ctx.moduleSchemaNames && !ctx.moduleRuntimeRefs && isModuleStringDef(rest)
+            ? quote(`${unquote(rest)}[]`)
+            : `${asTypeExpr(rest)}.array()`;
+        return `type([${items.join(", ")}${items.length ? ", " : ""}"...", ${restArray}])`;
+      }
+      return `type([${items.join(", ")}])`;
+    }
     case "union": {
       if (node.discriminator?.propertyName) {
         const prop = node.discriminator.propertyName;
@@ -174,14 +216,23 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         }
       }
       const members = node.members.map((m) => emitNode(m, ctx));
-      if (ctx.moduleSchemaNames) {
+      if (ctx.moduleSchemaNames && !ctx.moduleRuntimeRefs) {
         // Inside type.module, `type()` / `.or()` leave scope and break `"SchemaN"` refs.
         // Prefer nested binary `[A, "|", [B, "|", C]]` — flat `[A, "|", B, "|", C]` trips
         // ArkType's TS tuple assignability (TS2322: source has 5 elems, target allows 3).
         if (members.length === 1) return members[0]!;
-        return members.reduceRight((acc, m) => `[${m}, "|", ${acc}]`);
+        const union = members.reduceRight((acc, m) => `[${m}, "|", ${acc}]`);
+        if (!node.exclusive) return union;
+        const predicateCtx = { ...ctx, moduleRuntimeRefs: true };
+        const checks = node.members
+          .map((member) => `${asTypeExpr(emitNode(member, predicateCtx))}.allows(data)`)
+          .join(", ");
+        return `[${union}, ":", (data) => [${checks}].filter(Boolean).length === 1]`;
       }
-      return members.map(asTypeExpr).reduce((a, b) => `${a}.or(${b})`);
+      const exclusiveCheck = node.exclusive
+        ? `.narrow((data) => [${node.members.map((m) => `${asTypeExpr(emitNode(m, ctx))}.allows(data)`).join(", ")}].filter(Boolean).length === 1)`
+        : "";
+      return `${members.map(asTypeExpr).reduce((a, b) => `${a}.or(${b})`)}${exclusiveCheck}`;
     }
     case "intersection":
       return node.members.map((m) => asTypeExpr(emitNode(m, ctx))).reduce((a, b) => `${a}.and(${b})`);
@@ -196,15 +247,18 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.name === "Record" && node.generics?.length === 2) {
         return emitRecord(emitNode(node.generics[1]!, ctx), ctx);
       }
-      if (ctx.moduleSchemaNames?.has(node.name)) {
+      if (ctx.moduleSchemaNames?.has(node.name) && !ctx.moduleRuntimeRefs) {
         return quote(node.name);
+      }
+      if (ctx.moduleRuntimeRefs && ctx.moduleSchemaNames?.has(node.name)) {
+        return `__moduleSchemas.${node.name}`;
       }
       return node.name;
     }
     case "record":
       return emitRecord(emitNode(node.value, ctx), ctx);
     case "object": {
-      const forceOptional = Boolean(node.partial && ctx.moduleSchemaNames);
+      const forceOptional = Boolean(node.partial && ctx.moduleSchemaNames && !ctx.moduleRuntimeRefs);
       const props = objectProps(node, emitNode, ctx);
       const body = props
         .map(({ key, optional, expr, meta }) => {
@@ -228,11 +282,36 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         .join(", ");
       // Inside type.module, always use raw object literals so sibling string refs resolve
       // at any nesting depth (wrapping with type({...}) leaves the module scope).
-      if (ctx.moduleSchemaNames) {
+      if (ctx.moduleSchemaNames && !ctx.moduleRuntimeRefs) {
         return `{ ${body} }`;
       }
       let expr = `type({ ${body} })`;
       if (node.partial) expr = `${expr}.partial()`;
+      const patterns = Object.entries(node.patternProperties ?? {});
+      if (patterns.length > 0) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
+        const patternChecks = patterns
+          .map(
+            ([pattern, patternNode]) =>
+              `(!new RegExp(${quote(pattern)}).test(key) || ${emitNode(patternNode, ctx)}.allows(value))`,
+          )
+          .join(" && ");
+        const additionalCheck =
+          node.additionalProperties === true
+            ? "true"
+            : typeof node.additionalProperties === "object"
+              ? `${emitNode(node.additionalProperties, ctx)}.allows(value)`
+              : "false";
+        expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${namedKeys}.includes(key) || ${matching} || ${additionalCheck})))`;
+      } else if (typeof node.additionalProperties === "object") {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const rest = emitNode(node.additionalProperties, ctx);
+        expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${namedKeys}.includes(key) || ${rest}.allows(value)))`;
+      } else if (node.additionalProperties === false) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        expr = `${expr}.narrow((data) => Object.keys(data).every((key) => ${namedKeys}.includes(key)))`;
+      }
       return expr;
     }
     case "custom":
@@ -259,12 +338,16 @@ const emitNamedSchemas = (
   ctx: EmitCtx,
   typeReferenceForName?: (name: string) => string,
 ): string => {
-  if (ctx.recursiveNames.size === 0 || schemas.length === 0) {
+  const needsModule =
+    ctx.recursiveNames.size > 0 ||
+    schemas.some(({ name, node }) => containsDeferredNamedRef(node, { ...ctx, currentSchemaName: name }));
+  if (!needsModule || schemas.length === 0) {
     return schemas.map(({ name, node }) => emitNamedSchema(name, node, ctx, typeReferenceForName?.(name))).join("\n\n");
   }
 
   const moduleSchemaNames = new Set(schemas.map((s) => s.name));
   const moduleCtx: EmitCtx = { ...ctx, moduleSchemaNames };
+  const hasExclusiveUnion = schemas.some(({ node }) => containsExclusiveUnion(node));
 
   const entries = schemas
     .map(({ name, node }) => {
@@ -273,7 +356,7 @@ const emitNamedSchemas = (
     })
     .join("\n");
 
-  let out = `const __schemas = type.module({\n${entries}\n});\n\n`;
+  let out = `${hasExclusiveUnion ? "let __moduleSchemas: any;\n" : ""}const __schemas = type.module({\n${entries}\n});\n${hasExclusiveUnion ? "__moduleSchemas = __schemas;\n" : ""}\n`;
   for (const { name } of schemas) {
     const typeReference = typeReferenceForName?.(name);
     out += typeReference

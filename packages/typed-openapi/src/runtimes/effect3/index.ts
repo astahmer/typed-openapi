@@ -15,6 +15,7 @@ import {
   objectKey,
   objectProps,
   quote,
+  shouldDeferNamedSchemaRef,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
@@ -67,7 +68,11 @@ const emitRecord = (key: string, value: string) => `${S}.Record({ key: ${key}, v
 const canUseStruct = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()): boolean => {
   if (isNullOr(node)) return false;
   if (node.kind === "object") {
-    return Object.keys(applyObjectConstraints(node.constraints, ctx.validation)).length === 0;
+    return (
+      Object.keys(applyObjectConstraints(node.constraints, ctx.validation)).length === 0 &&
+      node.additionalProperties === false &&
+      (!node.patternProperties || Object.keys(node.patternProperties).length === 0)
+    );
   }
   if (node.kind === "ref") {
     if (node.generics?.length || ctx.recursiveNames.has(node.name) || seen.has(node.name)) return false;
@@ -127,7 +132,8 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     }
     case "tuple": {
       const items = node.items.map((i) => emitNode(i, ctx)).join(", ");
-      return `${S}.Tuple(${items})`;
+      if (node.rest) return `${S}.Tuple([${items}], ${emitNode(node.rest, ctx)})`;
+      return `${S}.Tuple([${items}])`;
     }
     case "union": {
       if (node.discriminator?.propertyName) {
@@ -145,11 +151,20 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           }
         }
       }
-      return `${S}.Union(${node.members.map((m) => emitNode(m, ctx)).join(", ")})`;
+      const members = node.members.map((m) => emitNode(m, ctx));
+      const union = `${S}.Union(${members.join(", ")})`;
+      return node.exclusive
+        ? `${union}.pipe(${S}.filter((data) => [${node.members.map((m) => `${S}.is(${emitNode(m, ctx)})(data)`).join(", ")}].filter(Boolean).length === 1))`
+        : union;
     }
     case "intersection": {
       const nonNull = node.members.filter((m) => m.kind !== "null").map((m) => isNullOr(m) ?? m);
-      if (nonNull.length > 0 && nonNull.every((m) => m.kind === "object")) {
+      if (
+        nonNull.length > 0 &&
+        nonNull.every(
+          (m) => m.kind === "object" && (!m.patternProperties || Object.keys(m.patternProperties).length === 0),
+        )
+      ) {
         const objs = nonNull as Extract<SchemaNode, { kind: "object" }>[];
         const properties: Record<string, SchemaNode> = {};
         for (const obj of objs) {
@@ -207,6 +222,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.name === "Record" && node.generics?.length === 2) {
         return emitRecord(emitNode(node.generics[0]!, ctx), emitNode(node.generics[1]!, ctx));
       }
+      if (shouldDeferNamedSchemaRef(node.name, ctx)) return `${S}.suspend(() => ${node.name})`;
       return node.name;
     }
     case "record":
@@ -219,17 +235,39 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         .map(({ key, optional, expr, meta }) => {
           const lit = jsLiteral(meta.default);
           if (lit !== undefined) {
-            const named = internEffectDefault(expr, meta, S, ctx, "prop");
+            const named = internEffectDefault(expr, meta, S, ctx, "prop", "v3", node.properties[key]);
             return `${objectKey(key)}: ${named ?? `${S}.optionalWith(${expr}, { default: () => ${lit} })`}`;
           }
           return `${objectKey(key)}: ${optional || forceOptional ? `${S}.optional(${expr})` : expr}`;
         })
         .join(", ");
       let expr = `${S}.Struct({ ${body} })`;
-      if (node.additionalProperties === true) {
+      const patterns = Object.entries(node.patternProperties ?? {});
+      if (patterns.length > 0) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
+        const patternChecks = patterns
+          .map(
+            ([pattern, patternNode]) =>
+              `(!new RegExp(${quote(pattern)}).test(key) || ${S}.is(${emitNode(patternNode, ctx)})(value))`,
+          )
+          .join(" && ");
+        const additionalCheck =
+          node.additionalProperties === true
+            ? "true"
+            : typeof node.additionalProperties === "object"
+              ? `${S}.is(${emitNode(node.additionalProperties, ctx)})(value)`
+              : "false";
+        expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, `${S}.Unknown`)}).pipe(${S}.filter((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${namedKeys}.includes(key) || ${matching} || ${additionalCheck}))))`;
+      } else if (node.additionalProperties === true) {
         expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, `${S}.Unknown`)})`;
       } else if (typeof node.additionalProperties === "object") {
-        expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, emitNode(node.additionalProperties, ctx))})`;
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const rest = emitNode(node.additionalProperties, ctx);
+        expr = `${S}.extend(${expr}, ${emitRecord(`${S}.String`, `${S}.Unknown`)}).pipe(S.filter((data) => Object.entries(data).every(([key, value]) => ${namedKeys}.includes(key) || ${S}.is(${rest})(value))))`;
+      } else if (node.additionalProperties === false) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        expr = `${expr}.pipe(S.filter((data) => Object.keys(data).every((key) => ${namedKeys}.includes(key))))`;
       }
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       const filters: string[] = [];
@@ -255,7 +293,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const inner = emitNodeInner(node, ctx);
   if (ctx.omitDefaults || node.meta.default === undefined || node.kind === "custom") return inner;
   if (node.kind === "object") return inner;
-  return internEffectDefault(inner, node.meta, S, ctx, "value") ?? inner;
+  return internEffectDefault(inner, node.meta, S, ctx, "value", "v3", node) ?? inner;
 };
 
 export const effect3Adapter: RuntimeAdapter = {

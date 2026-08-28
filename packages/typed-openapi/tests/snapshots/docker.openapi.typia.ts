@@ -2,7 +2,7 @@
   import typia, { tags } from "typia";
 
 // <Schemas>
-export type Port = { IP?: string, PrivatePort: number, PublicPort?: number, Type: ("tcp" | "udp" | "sctp") };
+export type Port = ({ IP?: string, PrivatePort: number, PublicPort?: number, Type: ("tcp" | "udp" | "sctp") } & Record<string, unknown>);
 export const isPort = typia.createIs<Port>();
 export const assertPort = typia.createAssert<Port>();
 export const validatePort = typia.createValidate<Port>();
@@ -117,7 +117,7 @@ export const isNetworkSettings = typia.createIs<NetworkSettings>();
 export const assertNetworkSettings = typia.createAssert<NetworkSettings>();
 export const validateNetworkSettings = typia.createValidate<NetworkSettings>();
 
-export type GraphDriverData = { Name: string, Data: Record<string, string> };
+export type GraphDriverData = ({ Name: string, Data: Record<string, string> } & Record<string, unknown>);
 export const isGraphDriverData = typia.createIs<GraphDriverData>();
 export const assertGraphDriverData = typia.createAssert<GraphDriverData>();
 export const validateGraphDriverData = typia.createValidate<GraphDriverData>();
@@ -127,17 +127,17 @@ export const isChangeType = typia.createIs<ChangeType>();
 export const assertChangeType = typia.createAssert<ChangeType>();
 export const validateChangeType = typia.createValidate<ChangeType>();
 
-export type FilesystemChange = { Path: string, Kind: ChangeType };
+export type FilesystemChange = ({ Path: string, Kind: ChangeType } & Record<string, unknown>);
 export const isFilesystemChange = typia.createIs<FilesystemChange>();
 export const assertFilesystemChange = typia.createAssert<FilesystemChange>();
 export const validateFilesystemChange = typia.createValidate<FilesystemChange>();
 
-export type ImageInspect = Partial<{ Id: string, RepoTags: Array<string>, RepoDigests: Array<string>, Parent: string, Comment: string, Created: string, Container: string, ContainerConfig: ContainerConfig, DockerVersion: string, Author: string, Config: ContainerConfig, Architecture: string, Variant: (string | null), Os: string, OsVersion: (string | null), Size: number, VirtualSize: number, GraphDriver: GraphDriverData, RootFS: { Type: string, Layers?: Array<string> }, Metadata: Partial<{ LastTagTime: (string | null) }> }>;
+export type ImageInspect = Partial<{ Id: string, RepoTags: Array<string>, RepoDigests: Array<string>, Parent: string, Comment: string, Created: string, Container: string, ContainerConfig: ContainerConfig, DockerVersion: string, Author: string, Config: ContainerConfig, Architecture: string, Variant: (string | null), Os: string, OsVersion: (string | null), Size: number, VirtualSize: number, GraphDriver: GraphDriverData, RootFS: ({ Type: string, Layers?: Array<string> } & Record<string, unknown>), Metadata: Partial<{ LastTagTime: (string | null) }> }>;
 export const isImageInspect = typia.createIs<ImageInspect>();
 export const assertImageInspect = typia.createAssert<ImageInspect>();
 export const validateImageInspect = typia.createValidate<ImageInspect>();
 
-export type ImageSummary = { Id: string, ParentId: string, RepoTags: Array<string>, RepoDigests: Array<string>, Created: number, Size: number, SharedSize: number, VirtualSize?: number, Labels: Record<string, string>, Containers: number };
+export type ImageSummary = ({ Id: string, ParentId: string, RepoTags: Array<string>, RepoDigests: Array<string>, Created: number, Size: number, SharedSize: number, VirtualSize?: number, Labels: Record<string, string>, Containers: number } & Record<string, unknown>);
 export const isImageSummary = typia.createIs<ImageSummary>();
 export const assertImageSummary = typia.createAssert<ImageSummary>();
 export const validateImageSummary = typia.createValidate<ImageSummary>();
@@ -172,7 +172,7 @@ export const isClusterVolume = typia.createIs<ClusterVolume>();
 export const assertClusterVolume = typia.createAssert<ClusterVolume>();
 export const validateClusterVolume = typia.createValidate<ClusterVolume>();
 
-export type Volume = { Name: string, Driver: string, Mountpoint: string, CreatedAt?: string, Status?: Record<string, Partial<{  }>>, Labels: Record<string, string>, Scope: ("local" | "global"), ClusterVolume?: ClusterVolume, Options: Record<string, string>, UsageData?: ({ Size: number, RefCount: number } | null) };
+export type Volume = ({ Name: string, Driver: string, Mountpoint: string, CreatedAt?: string, Status?: Record<string, Partial<{  }>>, Labels: Record<string, string>, Scope: ("local" | "global"), ClusterVolume?: ClusterVolume, Options: Record<string, string>, UsageData?: (({ Size: number, RefCount: number } & Record<string, unknown>) | null) } & Record<string, unknown>);
 export const isVolume = typia.createIs<Volume>();
 export const assertVolume = typia.createAssert<Volume>();
 export const validateVolume = typia.createValidate<Volume>();
@@ -242,32 +242,32 @@ export const isPushImageInfo = typia.createIs<PushImageInfo>();
 export const assertPushImageInfo = typia.createAssert<PushImageInfo>();
 export const validatePushImageInfo = typia.createValidate<PushImageInfo>();
 
-export type ErrorResponse = { message: string };
+export type ErrorResponse = ({ message: string } & Record<string, unknown>);
 export const isErrorResponse = typia.createIs<ErrorResponse>();
 export const assertErrorResponse = typia.createAssert<ErrorResponse>();
 export const validateErrorResponse = typia.createValidate<ErrorResponse>();
 
-export type IdResponse = { Id: string };
+export type IdResponse = ({ Id: string } & Record<string, unknown>);
 export const isIdResponse = typia.createIs<IdResponse>();
 export const assertIdResponse = typia.createAssert<IdResponse>();
 export const validateIdResponse = typia.createValidate<IdResponse>();
 
-export type PluginMount = { Name: string, Description: string, Settable: Array<string>, Source: string, Destination: string, Type: string, Options: Array<string> };
+export type PluginMount = ({ Name: string, Description: string, Settable: Array<string>, Source: string, Destination: string, Type: string, Options: Array<string> } & Record<string, unknown>);
 export const isPluginMount = typia.createIs<PluginMount>();
 export const assertPluginMount = typia.createAssert<PluginMount>();
 export const validatePluginMount = typia.createValidate<PluginMount>();
 
-export type PluginDevice = { Name: string, Description: string, Settable: Array<string>, Path: string };
+export type PluginDevice = ({ Name: string, Description: string, Settable: Array<string>, Path: string } & Record<string, unknown>);
 export const isPluginDevice = typia.createIs<PluginDevice>();
 export const assertPluginDevice = typia.createAssert<PluginDevice>();
 export const validatePluginDevice = typia.createValidate<PluginDevice>();
 
-export type PluginEnv = { Name: string, Description: string, Settable: Array<string>, Value: string };
+export type PluginEnv = ({ Name: string, Description: string, Settable: Array<string>, Value: string } & Record<string, unknown>);
 export const isPluginEnv = typia.createIs<PluginEnv>();
 export const assertPluginEnv = typia.createAssert<PluginEnv>();
 export const validatePluginEnv = typia.createValidate<PluginEnv>();
 
-export type PluginInterfaceType = { Prefix: string, Capability: string, Version: string };
+export type PluginInterfaceType = ({ Prefix: string, Capability: string, Version: string } & Record<string, unknown>);
 export const isPluginInterfaceType = typia.createIs<PluginInterfaceType>();
 export const assertPluginInterfaceType = typia.createAssert<PluginInterfaceType>();
 export const validatePluginInterfaceType = typia.createValidate<PluginInterfaceType>();
@@ -277,7 +277,7 @@ export const isPluginPrivilege = typia.createIs<PluginPrivilege>();
 export const assertPluginPrivilege = typia.createAssert<PluginPrivilege>();
 export const validatePluginPrivilege = typia.createValidate<PluginPrivilege>();
 
-export type Plugin = { Id?: string, Name: string, Enabled: boolean, Settings: { Mounts: Array<PluginMount>, Env: Array<string>, Args: Array<string>, Devices: Array<PluginDevice> }, PluginReference?: string, Config: { DockerVersion?: string, Description: string, Documentation: string, Interface: { Types: Array<PluginInterfaceType>, Socket: string, ProtocolScheme?: ("" | "moby.plugins.http/v1") }, Entrypoint: Array<string>, WorkDir: string, User?: Partial<{ UID: number, GID: number }>, Network: { Type: string }, Linux: { Capabilities: Array<string>, AllowAllDevices: boolean, Devices: Array<PluginDevice> }, PropagatedMount: string, IpcHost: boolean, PidHost: boolean, Mounts: Array<PluginMount>, Env: Array<PluginEnv>, Args: { Name: string, Description: string, Settable: Array<string>, Value: Array<string> }, rootfs?: Partial<{ type: string, diff_ids: Array<string> }> } };
+export type Plugin = ({ Id?: string, Name: string, Enabled: boolean, Settings: ({ Mounts: Array<PluginMount>, Env: Array<string>, Args: Array<string>, Devices: Array<PluginDevice> } & Record<string, unknown>), PluginReference?: string, Config: ({ DockerVersion?: string, Description: string, Documentation: string, Interface: ({ Types: Array<PluginInterfaceType>, Socket: string, ProtocolScheme?: ("" | "moby.plugins.http/v1") } & Record<string, unknown>), Entrypoint: Array<string>, WorkDir: string, User?: Partial<{ UID: number, GID: number }>, Network: ({ Type: string } & Record<string, unknown>), Linux: ({ Capabilities: Array<string>, AllowAllDevices: boolean, Devices: Array<PluginDevice> } & Record<string, unknown>), PropagatedMount: string, IpcHost: boolean, PidHost: boolean, Mounts: Array<PluginMount>, Env: Array<PluginEnv>, Args: ({ Name: string, Description: string, Settable: Array<string>, Value: Array<string> } & Record<string, unknown>), rootfs?: Partial<{ type: string, diff_ids: Array<string> }> } & Record<string, unknown>) } & Record<string, unknown>);
 export const isPlugin = typia.createIs<Plugin>();
 export const assertPlugin = typia.createAssert<Plugin>();
 export const validatePlugin = typia.createValidate<Plugin>();
@@ -407,7 +407,7 @@ export const isContainerSummary = typia.createIs<ContainerSummary>();
 export const assertContainerSummary = typia.createAssert<ContainerSummary>();
 export const validateContainerSummary = typia.createValidate<ContainerSummary>();
 
-export type Driver = { Name: string, Options?: Record<string, string> };
+export type Driver = ({ Name: string, Options?: Record<string, string> } & Record<string, unknown>);
 export const isDriver = typia.createIs<Driver>();
 export const assertDriver = typia.createAssert<Driver>();
 export const validateDriver = typia.createValidate<Driver>();
@@ -437,7 +437,7 @@ export const isContainerState = typia.createIs<ContainerState>();
 export const assertContainerState = typia.createAssert<ContainerState>();
 export const validateContainerState = typia.createValidate<ContainerState>();
 
-export type ContainerCreateResponse = { Id: string, Warnings: Array<string> };
+export type ContainerCreateResponse = ({ Id: string, Warnings: Array<string> } & Record<string, unknown>);
 export const isContainerCreateResponse = typia.createIs<ContainerCreateResponse>();
 export const assertContainerCreateResponse = typia.createAssert<ContainerCreateResponse>();
 export const validateContainerCreateResponse = typia.createValidate<ContainerCreateResponse>();
@@ -447,12 +447,12 @@ export const isContainerWaitExitError = typia.createIs<ContainerWaitExitError>()
 export const assertContainerWaitExitError = typia.createAssert<ContainerWaitExitError>();
 export const validateContainerWaitExitError = typia.createValidate<ContainerWaitExitError>();
 
-export type ContainerWaitResponse = { StatusCode: number, Error?: ContainerWaitExitError };
+export type ContainerWaitResponse = ({ StatusCode: number, Error?: ContainerWaitExitError } & Record<string, unknown>);
 export const isContainerWaitResponse = typia.createIs<ContainerWaitResponse>();
 export const assertContainerWaitResponse = typia.createAssert<ContainerWaitResponse>();
 export const validateContainerWaitResponse = typia.createValidate<ContainerWaitResponse>();
 
-export type SystemVersion = Partial<{ Platform: { Name: string }, Components: Array<{ Name: string, Version: string, Details?: (Partial<{  }> | null) }>, Version: string, ApiVersion: string, MinAPIVersion: string, GitCommit: string, GoVersion: string, Os: string, Arch: string, KernelVersion: string, Experimental: boolean, BuildTime: string }>;
+export type SystemVersion = Partial<{ Platform: ({ Name: string } & Record<string, unknown>), Components: Array<({ Name: string, Version: string, Details?: (Partial<{  }> | null) } & Record<string, unknown>)>, Version: string, ApiVersion: string, MinAPIVersion: string, GitCommit: string, GoVersion: string, Os: string, Arch: string, KernelVersion: string, Experimental: boolean, BuildTime: string }>;
 export const isSystemVersion = typia.createIs<SystemVersion>();
 export const assertSystemVersion = typia.createAssert<SystemVersion>();
 export const validateSystemVersion = typia.createValidate<SystemVersion>();
@@ -522,7 +522,7 @@ export const isOCIPlatform = typia.createIs<OCIPlatform>();
 export const assertOCIPlatform = typia.createAssert<OCIPlatform>();
 export const validateOCIPlatform = typia.createValidate<OCIPlatform>();
 
-export type DistributionInspect = { Descriptor: OCIDescriptor, Platforms: Array<OCIPlatform> };
+export type DistributionInspect = ({ Descriptor: OCIDescriptor, Platforms: Array<OCIPlatform> } & Record<string, unknown>);
 export const isDistributionInspect = typia.createIs<DistributionInspect>();
 export const assertDistributionInspect = typia.createAssert<DistributionInspect>();
 export const validateDistributionInspect = typia.createValidate<DistributionInspect>();
@@ -536,7 +536,7 @@ export const get_ContainerList = {
   path: typia.createIs<"/containers/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ all: boolean, limit: number, size: boolean, filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ all: boolean, limit: number, size: boolean, filters: string }> => typia.createIs<Partial<{ all: boolean, limit: number, size: boolean, filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["all", "limit", "size", "filters"].includes(key))) },
   responses: { 200: typia.createIs<Array<ContainerSummary>>(), 400: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -546,7 +546,7 @@ export const post_ContainerCreate = {
   path: typia.createIs<"/containers/create">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ name: string, platform: string }>>(), body: typia.createIs<(ContainerConfig & Partial<{ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }>)>() },
+  parameters: { query: ((input: unknown): input is Partial<{ name: string, platform: string }> => typia.createIs<Partial<{ name: string, platform: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name", "platform"].includes(key))), body: typia.createIs<(ContainerConfig & Partial<{ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }>)>() },
   responses: { 201: isContainerCreateResponse, 400: isErrorResponse, 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -556,7 +556,7 @@ export const get_ContainerInspect = {
   path: typia.createIs<"/containers/{id}/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ size: boolean }>>(), path: typia.createIs<{ id: string }>() },
+  parameters: { query: ((input: unknown): input is Partial<{ size: boolean }> => typia.createIs<Partial<{ size: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["size"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: typia.createIs<Partial<{ Id: string, Created: string, Path: string, Args: Array<string>, State: ContainerState, Image: string, ResolvConfPath: string, HostnamePath: string, HostsPath: string, LogPath: string, Name: string, RestartCount: number, Driver: string, Platform: string, MountLabel: string, ProcessLabel: string, AppArmorProfile: string, ExecIDs: (Array<string> | null), HostConfig: HostConfig, GraphDriver: GraphDriverData, SizeRw: number, SizeRootFs: number, Mounts: Array<MountPoint>, Config: ContainerConfig, NetworkSettings: NetworkSettings }>>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -566,8 +566,8 @@ export const get_ContainerTop = {
   path: typia.createIs<"/containers/{id}/top">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ ps_args: string }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }>>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ ps_args: string }> => typia.createIs<Partial<{ ps_args: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["ps_args"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 200: typia.createIs<(Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }> | Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }>)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -576,7 +576,7 @@ export const get_ContainerLogs = {
   path: typia.createIs<"/containers/{id}/logs">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ follow: boolean, stdout: boolean, stderr: boolean, since: number, until: number, timestamps: boolean, tail: string }>>(), path: typia.createIs<{ id: string }>() },
+  parameters: { query: ((input: unknown): input is Partial<{ follow: boolean, stdout: boolean, stderr: boolean, since: number, until: number, timestamps: boolean, tail: string }> => typia.createIs<Partial<{ follow: boolean, stdout: boolean, stderr: boolean, since: number, until: number, timestamps: boolean, tail: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["follow", "stdout", "stderr", "since", "until", "timestamps", "tail"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
 };
 
@@ -586,7 +586,7 @@ export const get_ContainerChanges = {
   path: typia.createIs<"/containers/{id}/changes">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: typia.createIs<Array<FilesystemChange>>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -596,8 +596,8 @@ export const get_ContainerExport = {
   path: typia.createIs<"/containers/{id}/export">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | unknown)>(), 500: isErrorResponse },
 };
 
 export type get_ContainerStats = typeof get_ContainerStats;
@@ -606,7 +606,7 @@ export const get_ContainerStats = {
   path: typia.createIs<"/containers/{id}/stats">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ stream: boolean, "one-shot": boolean }>>(), path: typia.createIs<{ id: string }>() },
+  parameters: { query: ((input: unknown): input is Partial<{ stream: boolean, "one-shot": boolean }> => typia.createIs<Partial<{ stream: boolean, "one-shot": boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["stream", "one-shot"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: typia.createIs<Record<string, unknown>>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -616,8 +616,8 @@ export const post_ContainerResize = {
   path: typia.createIs<"/containers/{id}/resize">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ h: number, w: number }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
+  parameters: { query: ((input: unknown): input is Partial<{ h: number, w: number }> => typia.createIs<Partial<{ h: number, w: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["h", "w"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | unknown)>(), 500: isErrorResponse },
 };
 
 export type post_ContainerStart = typeof post_ContainerStart;
@@ -626,8 +626,8 @@ export const post_ContainerStart = {
   path: typia.createIs<"/containers/{id}/start">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ detachKeys: string }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ detachKeys: string }> => typia.createIs<Partial<{ detachKeys: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["detachKeys"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerStop = typeof post_ContainerStop;
@@ -636,8 +636,8 @@ export const post_ContainerStop = {
   path: typia.createIs<"/containers/{id}/stop">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ signal: string, t: number }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ signal: string, t: number }> => typia.createIs<Partial<{ signal: string, t: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["signal", "t"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerRestart = typeof post_ContainerRestart;
@@ -646,8 +646,8 @@ export const post_ContainerRestart = {
   path: typia.createIs<"/containers/{id}/restart">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ signal: string, t: number }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ signal: string, t: number }> => typia.createIs<Partial<{ signal: string, t: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["signal", "t"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerKill = typeof post_ContainerKill;
@@ -656,8 +656,8 @@ export const post_ContainerKill = {
   path: typia.createIs<"/containers/{id}/kill">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ signal: string }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ signal: string }> => typia.createIs<Partial<{ signal: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["signal"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerUpdate = typeof post_ContainerUpdate;
@@ -666,7 +666,7 @@ export const post_ContainerUpdate = {
   path: typia.createIs<"/containers/{id}/update">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>(), body: typia.createIs<(Resources & Partial<{ RestartPolicy: RestartPolicy }>)>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: typia.createIs<(Resources & Partial<{ RestartPolicy: RestartPolicy }>)>() },
   responses: { 200: typia.createIs<Partial<{ Warnings: Array<string> }>>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -676,8 +676,8 @@ export const post_ContainerRename = {
   path: typia.createIs<"/containers/{id}/rename">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ name: string }>(), path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerPause = typeof post_ContainerPause;
@@ -686,8 +686,8 @@ export const post_ContainerPause = {
   path: typia.createIs<"/containers/{id}/pause">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerUnpause = typeof post_ContainerUnpause;
@@ -696,8 +696,8 @@ export const post_ContainerUnpause = {
   path: typia.createIs<"/containers/{id}/unpause">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerAttach = typeof post_ContainerAttach;
@@ -706,7 +706,7 @@ export const post_ContainerAttach = {
   path: typia.createIs<"/containers/{id}/attach">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }>>(), path: typia.createIs<{ id: string }>() },
+  parameters: { query: ((input: unknown): input is Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }> => typia.createIs<Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["detachKeys", "logs", "stream", "stdin", "stdout", "stderr"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 101: typia.createIs<unknown>(), 200: typia.createIs<unknown>(), 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
 };
 
@@ -716,8 +716,8 @@ export const get_ContainerAttachWebsocket = {
   path: typia.createIs<"/containers/{id}/attach/ws">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 101: typia.createIs<unknown>(), 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }> => typia.createIs<Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["detachKeys", "logs", "stream", "stdin", "stdout", "stderr"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 101: typia.createIs<unknown>(), 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerWait = typeof post_ContainerWait;
@@ -726,7 +726,7 @@ export const post_ContainerWait = {
   path: typia.createIs<"/containers/{id}/wait">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ condition: ("not-running" | "next-exit" | "removed") }>>(), path: typia.createIs<{ id: string }>() },
+  parameters: { query: ((input: unknown): input is Partial<{ condition: ("not-running" | "next-exit" | "removed") }> => typia.createIs<Partial<{ condition: ("not-running" | "next-exit" | "removed") }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["condition"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: isContainerWaitResponse, 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -736,8 +736,8 @@ export const delete_ContainerDelete = {
   path: typia.createIs<"/containers/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ v: boolean, force: boolean, link: boolean }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ v: boolean, force: boolean, link: boolean }> => typia.createIs<Partial<{ v: boolean, force: boolean, link: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["v", "force", "link"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 204: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_ContainerArchive = typeof get_ContainerArchive;
@@ -746,7 +746,7 @@ export const get_ContainerArchive = {
   path: typia.createIs<"/containers/{id}/archive">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ path: string }>(), path: typia.createIs<{ id: string }>() },
+  parameters: { query: ((input: unknown): input is { path: string } => typia.createIs<{ path: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["path"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
 };
 
@@ -756,8 +756,8 @@ export const put_PutContainerArchive = {
   path: typia.createIs<"/containers/{id}/archive">(),
   requestFormat: typia.createIs<"binary">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ path: string, noOverwriteDirNonDir?: string, copyUIDGID?: string }>(), path: typia.createIs<{ id: string }>(), body: typia.createIs<Blob>() },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is { path: string, noOverwriteDirNonDir?: string, copyUIDGID?: string } => typia.createIs<{ path: string, noOverwriteDirNonDir?: string, copyUIDGID?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["path", "noOverwriteDirNonDir", "copyUIDGID"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: typia.createIs<Blob>() },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
@@ -766,9 +766,9 @@ export const head_ContainerArchiveInfo = {
   path: typia.createIs<"/containers/{id}/archive">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ path: string }>(), path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
-  responseHeaders: { 200: typia.createIs<{ "X-Docker-Container-Path-Stat": string }>() },
+  parameters: { query: ((input: unknown): input is { path: string } => typia.createIs<{ path: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["path"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
+  responseHeaders: { 200: ((input: unknown): input is { "X-Docker-Container-Path-Stat": string } => typia.createIs<{ "X-Docker-Container-Path-Stat": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Docker-Container-Path-Stat"].includes(key))) },
 };
 
 export type post_ContainerPrune = typeof post_ContainerPrune;
@@ -777,7 +777,7 @@ export const post_ContainerPrune = {
   path: typia.createIs<"/containers/prune">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
   responses: { 200: typia.createIs<Partial<{ ContainersDeleted: Array<string>, SpaceReclaimed: number }>>(), 500: isErrorResponse },
 };
 
@@ -787,7 +787,7 @@ export const get_ImageList = {
   path: typia.createIs<"/images/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ all: boolean, filters: string, "shared-size": boolean, digests: boolean }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ all: boolean, filters: string, "shared-size": boolean, digests: boolean }> => typia.createIs<Partial<{ all: boolean, filters: string, "shared-size": boolean, digests: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["all", "filters", "shared-size", "digests"].includes(key))) },
   responses: { 200: typia.createIs<Array<ImageSummary>>(), 500: isErrorResponse },
 };
 
@@ -797,7 +797,7 @@ export const post_ImageBuild = {
   path: typia.createIs<"/build">(),
   requestFormat: typia.createIs<"binary">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ dockerfile: string, t: string, extrahosts: string, remote: string, q: boolean, nocache: boolean, cachefrom: string, pull: string, rm: boolean, forcerm: boolean, memory: number, memswap: number, cpushares: number, cpusetcpus: string, cpuperiod: number, cpuquota: number, buildargs: string, shmsize: number, squash: boolean, labels: string, networkmode: string, platform: string, target: string, outputs: string }>>(), header: typia.createIs<Partial<{ "Content-type": "application/x-tar", "X-Registry-Config": string }>>(), body: typia.createIs<Blob>() },
+  parameters: { query: ((input: unknown): input is Partial<{ dockerfile: string, t: string, extrahosts: string, remote: string, q: boolean, nocache: boolean, cachefrom: string, pull: string, rm: boolean, forcerm: boolean, memory: number, memswap: number, cpushares: number, cpusetcpus: string, cpuperiod: number, cpuquota: number, buildargs: string, shmsize: number, squash: boolean, labels: string, networkmode: string, platform: string, target: string, outputs: string }> => typia.createIs<Partial<{ dockerfile: string, t: string, extrahosts: string, remote: string, q: boolean, nocache: boolean, cachefrom: string, pull: string, rm: boolean, forcerm: boolean, memory: number, memswap: number, cpushares: number, cpusetcpus: string, cpuperiod: number, cpuquota: number, buildargs: string, shmsize: number, squash: boolean, labels: string, networkmode: string, platform: string, target: string, outputs: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["dockerfile", "t", "extrahosts", "remote", "q", "nocache", "cachefrom", "pull", "rm", "forcerm", "memory", "memswap", "cpushares", "cpusetcpus", "cpuperiod", "cpuquota", "buildargs", "shmsize", "squash", "labels", "networkmode", "platform", "target", "outputs"].includes(key))), header: ((input: unknown): input is Partial<{ "Content-type": "application/x-tar", "X-Registry-Config": string }> => typia.createIs<Partial<{ "Content-type": "application/x-tar", "X-Registry-Config": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["Content-type", "X-Registry-Config"].includes(key))), body: typia.createIs<Blob>() },
   responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -807,7 +807,7 @@ export const post_BuildPrune = {
   path: typia.createIs<"/build/prune">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ "keep-storage": number, all: boolean, filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ "keep-storage": number, all: boolean, filters: string }> => typia.createIs<Partial<{ "keep-storage": number, all: boolean, filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["keep-storage", "all", "filters"].includes(key))) },
   responses: { 200: typia.createIs<Partial<{ CachesDeleted: Array<string>, SpaceReclaimed: number }>>(), 500: isErrorResponse },
 };
 
@@ -817,7 +817,7 @@ export const post_ImageCreate = {
   path: typia.createIs<"/images/create">(),
   requestFormat: typia.createIs<"text">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ fromImage: string, fromSrc: string, repo: string, tag: string, message: string, changes: Array<string>, platform: string }>>(), header: typia.createIs<Partial<{ "X-Registry-Auth": string }>>(), body: typia.createIs<string>() },
+  parameters: { query: ((input: unknown): input is Partial<{ fromImage: string, fromSrc: string, repo: string, tag: string, message: string, changes: Array<string>, platform: string }> => typia.createIs<Partial<{ fromImage: string, fromSrc: string, repo: string, tag: string, message: string, changes: Array<string>, platform: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["fromImage", "fromSrc", "repo", "tag", "message", "changes", "platform"].includes(key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Registry-Auth"].includes(key))), body: typia.createIs<string>() },
   responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -827,7 +827,7 @@ export const get_ImageInspect = {
   path: typia.createIs<"/images/{name}/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ name: string }>() },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
   responses: { 200: isImageInspect, 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -837,8 +837,8 @@ export const get_ImageHistory = {
   path: typia.createIs<"/images/{name}/history">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ name: string }>() },
-  responses: { 200: typia.createIs<Array<{ Id: string, Created: number, CreatedBy: string, Tags: Array<string>, Size: number, Comment: string }>>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  responses: { 200: typia.createIs<Array<({ Id: string, Created: number, CreatedBy: string, Tags: Array<string>, Size: number, Comment: string } & Record<string, unknown>)>>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_ImagePush = typeof post_ImagePush;
@@ -847,8 +847,8 @@ export const post_ImagePush = {
   path: typia.createIs<"/images/{name}/push">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ tag: string }>>(), path: typia.createIs<{ name: string }>(), header: typia.createIs<{ "X-Registry-Auth": string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ tag: string }> => typia.createIs<Partial<{ tag: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["tag"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))), header: ((input: unknown): input is { "X-Registry-Auth": string } => typia.createIs<{ "X-Registry-Auth": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Registry-Auth"].includes(key))) },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ImageTag = typeof post_ImageTag;
@@ -857,8 +857,8 @@ export const post_ImageTag = {
   path: typia.createIs<"/images/{name}/tag">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ repo: string, tag: string }>>(), path: typia.createIs<{ name: string }>() },
-  responses: { 201: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ repo: string, tag: string }> => typia.createIs<Partial<{ repo: string, tag: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["repo", "tag"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  responses: { 201: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type delete_ImageDelete = typeof delete_ImageDelete;
@@ -867,7 +867,7 @@ export const delete_ImageDelete = {
   path: typia.createIs<"/images/{name}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ force: boolean, noprune: boolean }>>(), path: typia.createIs<{ name: string }>() },
+  parameters: { query: ((input: unknown): input is Partial<{ force: boolean, noprune: boolean }> => typia.createIs<Partial<{ force: boolean, noprune: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["force", "noprune"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
   responses: { 200: typia.createIs<Array<ImageDeleteResponseItem>>(), 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -877,7 +877,7 @@ export const get_ImageSearch = {
   path: typia.createIs<"/images/search">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ term: string, limit?: number, filters?: string }>() },
+  parameters: { query: ((input: unknown): input is { term: string, limit?: number, filters?: string } => typia.createIs<{ term: string, limit?: number, filters?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["term", "limit", "filters"].includes(key))) },
   responses: { 200: typia.createIs<Array<Partial<{ description: string, is_official: boolean, is_automated: boolean, name: string, star_count: number }>>>(), 500: isErrorResponse },
 };
 
@@ -887,7 +887,7 @@ export const post_ImagePrune = {
   path: typia.createIs<"/images/prune">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
   responses: { 200: typia.createIs<Partial<{ ImagesDeleted: Array<ImageDeleteResponseItem>, SpaceReclaimed: number }>>(), 500: isErrorResponse },
 };
 
@@ -898,7 +898,7 @@ export const post_SystemAuth = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { body: isAuthConfig },
-  responses: { 200: typia.createIs<{ Status: string, IdentityToken?: string }>(), 204: typia.createIs<unknown>(), 401: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<({ Status: string, IdentityToken?: string } & Record<string, unknown>)>(), 204: typia.createIs<unknown>(), 401: isErrorResponse, 500: isErrorResponse },
 };
 
 export type get_SystemInfo = typeof get_SystemInfo;
@@ -928,8 +928,8 @@ export const get_SystemPing = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: typia.createIs<never>(),
-  responses: { 200: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
-  responseHeaders: { 200: typia.createIs<{ Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string }>(), 500: typia.createIs<{ "Cache-Control": string, Pragma: string }>() },
+  responses: { 200: typia.createIs<string>(), 500: isErrorResponse },
+  responseHeaders: { 200: ((input: unknown): input is { Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string } => typia.createIs<{ Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["Swarm", "Docker-Experimental", "Cache-Control", "Pragma", "API-Version", "Builder-Version"].includes(key))), 500: ((input: unknown): input is { "Cache-Control": string, Pragma: string } => typia.createIs<{ "Cache-Control": string, Pragma: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["Cache-Control", "Pragma"].includes(key))) },
 };
 
 export type head_SystemPingHead = typeof head_SystemPingHead;
@@ -939,8 +939,8 @@ export const head_SystemPingHead = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: typia.createIs<never>(),
-  responses: { 200: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
-  responseHeaders: { 200: typia.createIs<{ Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string }>() },
+  responses: { 200: typia.createIs<string>(), 500: isErrorResponse },
+  responseHeaders: { 200: ((input: unknown): input is { Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string } => typia.createIs<{ Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["Swarm", "Docker-Experimental", "Cache-Control", "Pragma", "API-Version", "Builder-Version"].includes(key))) },
 };
 
 export type post_ImageCommit = typeof post_ImageCommit;
@@ -949,7 +949,7 @@ export const post_ImageCommit = {
   path: typia.createIs<"/commit">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ container: string, repo: string, tag: string, comment: string, author: string, pause: boolean, changes: string }>>(), body: isContainerConfig },
+  parameters: { query: ((input: unknown): input is Partial<{ container: string, repo: string, tag: string, comment: string, author: string, pause: boolean, changes: string }> => typia.createIs<Partial<{ container: string, repo: string, tag: string, comment: string, author: string, pause: boolean, changes: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["container", "repo", "tag", "comment", "author", "pause", "changes"].includes(key))), body: isContainerConfig },
   responses: { 201: isIdResponse, 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -959,7 +959,7 @@ export const get_SystemEvents = {
   path: typia.createIs<"/events">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ since: string, until: string, filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ since: string, until: string, filters: string }> => typia.createIs<Partial<{ since: string, until: string, filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["since", "until", "filters"].includes(key))) },
   responses: { 200: isEventMessage, 400: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -969,8 +969,8 @@ export const get_SystemDataUsage = {
   path: typia.createIs<"/system/df">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ type: Array<("container" | "image" | "volume" | "build-cache")> }>>() },
-  responses: { 200: typia.createIs<Partial<{ LayersSize: number, Images: Array<ImageSummary>, Containers: Array<ContainerSummary>, Volumes: Array<Volume>, BuildCache: Array<BuildCache> }>>(), 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ type: Array<("container" | "image" | "volume" | "build-cache")> }> => typia.createIs<Partial<{ type: Array<("container" | "image" | "volume" | "build-cache")> }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["type"].includes(key))) },
+  responses: { 200: typia.createIs<(Partial<{ LayersSize: number, Images: Array<ImageSummary>, Containers: Array<ContainerSummary>, Volumes: Array<Volume>, BuildCache: Array<BuildCache> }> | Partial<{ LayersSize: number, Images: Array<ImageSummary>, Containers: Array<ContainerSummary>, Volumes: Array<Volume>, BuildCache: Array<BuildCache> }>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -979,7 +979,7 @@ export const get_ImageGet = {
   path: typia.createIs<"/images/{name}/get">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ name: string }>() },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
   responses: { 200: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
 };
 
@@ -989,7 +989,7 @@ export const get_ImageGetAll = {
   path: typia.createIs<"/images/get">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ names: Array<string> }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ names: Array<string> }> => typia.createIs<Partial<{ names: Array<string> }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["names"].includes(key))) },
   responses: { 200: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
 };
 
@@ -999,7 +999,7 @@ export const post_ImageLoad = {
   path: typia.createIs<"/images/load">(),
   requestFormat: typia.createIs<"text">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ quiet: boolean }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ quiet: boolean }> => typia.createIs<Partial<{ quiet: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["quiet"].includes(key))) },
   responses: { 200: typia.createIs<unknown>(), 500: isErrorResponse },
 };
 
@@ -1009,7 +1009,7 @@ export const post_ContainerExec = {
   path: typia.createIs<"/containers/{id}/exec">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>(), body: typia.createIs<Partial<{ AttachStdin: boolean, AttachStdout: boolean, AttachStderr: boolean, ConsoleSize: (Array<number> | null), DetachKeys: string, Tty: boolean, Env: Array<string>, Cmd: Array<string>, Privileged: boolean, User: string, WorkingDir: string }>>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: typia.createIs<Partial<{ AttachStdin: boolean, AttachStdout: boolean, AttachStderr: boolean, ConsoleSize: (Array<number> | null), DetachKeys: string, Tty: boolean, Env: Array<string>, Cmd: Array<string>, Privileged: boolean, User: string, WorkingDir: string }>>() },
   responses: { 201: isIdResponse, 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -1019,7 +1019,7 @@ export const post_ExecStart = {
   path: typia.createIs<"/exec/{id}/start">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>(), body: typia.createIs<Partial<{ Detach: boolean, Tty: boolean, ConsoleSize: (Array<number> | null) }>>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: typia.createIs<Partial<{ Detach: boolean, Tty: boolean, ConsoleSize: (Array<number> | null) }>>() },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 409: typia.createIs<unknown>() },
 };
 
@@ -1029,8 +1029,8 @@ export const post_ExecResize = {
   path: typia.createIs<"/exec/{id}/resize">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ h: number, w: number }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ h: number, w: number }> => typia.createIs<Partial<{ h: number, w: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["h", "w"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_ExecInspect = typeof get_ExecInspect;
@@ -1039,7 +1039,7 @@ export const get_ExecInspect = {
   path: typia.createIs<"/exec/{id}/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: typia.createIs<Partial<{ CanRemove: boolean, DetachKeys: string, ID: string, Running: boolean, ExitCode: number, ProcessConfig: ProcessConfig, OpenStdin: boolean, OpenStderr: boolean, OpenStdout: boolean, ContainerID: string, Pid: number }>>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -1049,7 +1049,7 @@ export const get_VolumeList = {
   path: typia.createIs<"/volumes">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
   responses: { 200: isVolumeListResponse, 500: isErrorResponse },
 };
 
@@ -1069,7 +1069,7 @@ export const get_VolumeInspect = {
   path: typia.createIs<"/volumes/{name}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ name: string }>() },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
   responses: { 200: isVolume, 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -1079,7 +1079,7 @@ export const put_VolumeUpdate = {
   path: typia.createIs<"/volumes/{name}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ version: number }>(), path: typia.createIs<{ name: string }>(), body: typia.createIs<Partial<{ Spec: ClusterVolumeSpec }>>() },
+  parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["version"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))), body: typia.createIs<Partial<{ Spec: ClusterVolumeSpec }>>() },
   responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1089,8 +1089,8 @@ export const delete_VolumeDelete = {
   path: typia.createIs<"/volumes/{name}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ force: boolean }>>(), path: typia.createIs<{ name: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["force"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_VolumePrune = typeof post_VolumePrune;
@@ -1099,7 +1099,7 @@ export const post_VolumePrune = {
   path: typia.createIs<"/volumes/prune">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
   responses: { 200: typia.createIs<Partial<{ VolumesDeleted: Array<string>, SpaceReclaimed: number }>>(), 500: isErrorResponse },
 };
 
@@ -1109,7 +1109,7 @@ export const get_NetworkList = {
   path: typia.createIs<"/networks">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
   responses: { 200: typia.createIs<Array<Network>>(), 500: isErrorResponse },
 };
 
@@ -1119,7 +1119,7 @@ export const get_NetworkInspect = {
   path: typia.createIs<"/networks/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ verbose: boolean, scope: string }>>(), path: typia.createIs<{ id: string }>() },
+  parameters: { query: ((input: unknown): input is Partial<{ verbose: boolean, scope: string }> => typia.createIs<Partial<{ verbose: boolean, scope: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["verbose", "scope"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: isNetwork, 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -1129,8 +1129,8 @@ export const delete_NetworkDelete = {
   path: typia.createIs<"/networks/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 204: typia.createIs<unknown>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_NetworkCreate = typeof post_NetworkCreate;
@@ -1139,7 +1139,7 @@ export const post_NetworkCreate = {
   path: typia.createIs<"/networks/create">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { body: typia.createIs<{ Name: string, CheckDuplicate?: boolean, Driver?: string, Internal?: boolean, Attachable?: boolean, Ingress?: boolean, IPAM?: IPAM, EnableIPv6?: boolean, Options?: Record<string, string>, Labels?: Record<string, string> }>() },
+  parameters: { body: typia.createIs<({ Name: string, CheckDuplicate?: boolean, Driver?: string, Internal?: boolean, Attachable?: boolean, Ingress?: boolean, IPAM?: IPAM, EnableIPv6?: boolean, Options?: Record<string, string>, Labels?: Record<string, string> } & Record<string, unknown>)>() },
   responses: { 201: typia.createIs<Partial<{ Id: string, Warning: string }>>(), 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -1149,8 +1149,8 @@ export const post_NetworkConnect = {
   path: typia.createIs<"/networks/{id}/connect">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>(), body: typia.createIs<Partial<{ Container: string, EndpointConfig: EndpointSettings }>>() },
-  responses: { 200: typia.createIs<unknown>(), 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: typia.createIs<Partial<{ Container: string, EndpointConfig: EndpointSettings }>>() },
+  responses: { 200: typia.createIs<unknown>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
@@ -1159,8 +1159,8 @@ export const post_NetworkDisconnect = {
   path: typia.createIs<"/networks/{id}/disconnect">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>(), body: typia.createIs<Partial<{ Container: string, Force: boolean }>>() },
-  responses: { 200: typia.createIs<unknown>(), 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: typia.createIs<Partial<{ Container: string, Force: boolean }>>() },
+  responses: { 200: typia.createIs<unknown>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_NetworkPrune = typeof post_NetworkPrune;
@@ -1169,7 +1169,7 @@ export const post_NetworkPrune = {
   path: typia.createIs<"/networks/prune">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
   responses: { 200: typia.createIs<Partial<{ NetworksDeleted: Array<string> }>>(), 500: isErrorResponse },
 };
 
@@ -1179,7 +1179,7 @@ export const get_PluginList = {
   path: typia.createIs<"/plugins">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
   responses: { 200: typia.createIs<Array<Plugin>>(), 500: isErrorResponse },
 };
 
@@ -1189,8 +1189,8 @@ export const get_GetPluginPrivileges = {
   path: typia.createIs<"/plugins/privileges">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ remote: string }>() },
-  responses: { 200: typia.createIs<Array<PluginPrivilege>>(), 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is { remote: string } => typia.createIs<{ remote: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["remote"].includes(key))) },
+  responses: { 200: typia.createIs<(Array<PluginPrivilege> | Array<PluginPrivilege>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginPull = typeof post_PluginPull;
@@ -1199,7 +1199,7 @@ export const post_PluginPull = {
   path: typia.createIs<"/plugins/pull">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ remote: string, name?: string }>(), header: typia.createIs<Partial<{ "X-Registry-Auth": string }>>(), body: typia.createIs<Array<PluginPrivilege>>() },
+  parameters: { query: ((input: unknown): input is { remote: string, name?: string } => typia.createIs<{ remote: string, name?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["remote", "name"].includes(key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Registry-Auth"].includes(key))), body: typia.createIs<Array<PluginPrivilege>>() },
   responses: { 204: typia.createIs<unknown>(), 500: isErrorResponse },
 };
 
@@ -1209,8 +1209,8 @@ export const get_PluginInspect = {
   path: typia.createIs<"/plugins/{name}/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ name: string }>() },
-  responses: { 200: isPlugin, 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  responses: { 200: typia.createIs<(Plugin | Plugin)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type delete_PluginDelete = typeof delete_PluginDelete;
@@ -1219,8 +1219,8 @@ export const delete_PluginDelete = {
   path: typia.createIs<"/plugins/{name}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ force: boolean }>>(), path: typia.createIs<{ name: string }>() },
-  responses: { 200: isPlugin, 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["force"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  responses: { 200: typia.createIs<(Plugin | Plugin)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginEnable = typeof post_PluginEnable;
@@ -1229,8 +1229,8 @@ export const post_PluginEnable = {
   path: typia.createIs<"/plugins/{name}/enable">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ timeout: number }>>(), path: typia.createIs<{ name: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ timeout: number }> => typia.createIs<Partial<{ timeout: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["timeout"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginDisable = typeof post_PluginDisable;
@@ -1239,8 +1239,8 @@ export const post_PluginDisable = {
   path: typia.createIs<"/plugins/{name}/disable">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ force: boolean }>>(), path: typia.createIs<{ name: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["force"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginUpgrade = typeof post_PluginUpgrade;
@@ -1249,8 +1249,8 @@ export const post_PluginUpgrade = {
   path: typia.createIs<"/plugins/{name}/upgrade">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ remote: string }>(), path: typia.createIs<{ name: string }>(), header: typia.createIs<Partial<{ "X-Registry-Auth": string }>>(), body: typia.createIs<Array<PluginPrivilege>>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is { remote: string } => typia.createIs<{ remote: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["remote"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Registry-Auth"].includes(key))), body: typia.createIs<Array<PluginPrivilege>>() },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginCreate = typeof post_PluginCreate;
@@ -1259,8 +1259,8 @@ export const post_PluginCreate = {
   path: typia.createIs<"/plugins/create">(),
   requestFormat: typia.createIs<"text">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ name: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  responses: { 204: typia.createIs<unknown>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginPush = typeof post_PluginPush;
@@ -1269,8 +1269,8 @@ export const post_PluginPush = {
   path: typia.createIs<"/plugins/{name}/push">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ name: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginSet = typeof post_PluginSet;
@@ -1279,8 +1279,8 @@ export const post_PluginSet = {
   path: typia.createIs<"/plugins/{name}/set">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ name: string }>(), body: typia.createIs<Array<string>>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))), body: typia.createIs<Array<string>>() },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_NodeList = typeof get_NodeList;
@@ -1289,8 +1289,8 @@ export const get_NodeList = {
   path: typia.createIs<"/nodes">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ filters: string }>>() },
-  responses: { 200: typia.createIs<Array<Node>>(), 500: isErrorResponse, 503: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
+  responses: { 200: typia.createIs<(Array<Node> | Array<Node>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_NodeInspect = typeof get_NodeInspect;
@@ -1299,8 +1299,8 @@ export const get_NodeInspect = {
   path: typia.createIs<"/nodes/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
-  responses: { 200: isNode, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 200: typia.createIs<(Node | Node)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type delete_NodeDelete = typeof delete_NodeDelete;
@@ -1309,8 +1309,8 @@ export const delete_NodeDelete = {
   path: typia.createIs<"/nodes/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ force: boolean }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["force"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_NodeUpdate = typeof post_NodeUpdate;
@@ -1319,8 +1319,8 @@ export const post_NodeUpdate = {
   path: typia.createIs<"/nodes/{id}/update">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ version: number }>(), path: typia.createIs<{ id: string }>(), body: isNodeSpec },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["version"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: isNodeSpec },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_SwarmInspect = typeof get_SwarmInspect;
@@ -1330,7 +1330,7 @@ export const get_SwarmInspect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: typia.createIs<never>(),
-  responses: { 200: isSwarm, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<(Swarm | Swarm)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_SwarmInit = typeof post_SwarmInit;
@@ -1340,7 +1340,7 @@ export const post_SwarmInit = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { body: typia.createIs<Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, DataPathPort: number, DefaultAddrPool: Array<string>, ForceNewCluster: boolean, SubnetSize: number, Spec: SwarmSpec }>>() },
-  responses: { 200: typia.createIs<string>(), 400: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<(string | string)>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_SwarmJoin = typeof post_SwarmJoin;
@@ -1350,7 +1350,7 @@ export const post_SwarmJoin = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { body: typia.createIs<Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, RemoteAddrs: Array<string>, JoinToken: string }>>() },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_SwarmLeave = typeof post_SwarmLeave;
@@ -1359,8 +1359,8 @@ export const post_SwarmLeave = {
   path: typia.createIs<"/swarm/leave">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ force: boolean }>>() },
-  responses: { 200: typia.createIs<unknown>(), 500: isErrorResponse, 503: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["force"].includes(key))) },
+  responses: { 200: typia.createIs<unknown>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_SwarmUpdate = typeof post_SwarmUpdate;
@@ -1369,8 +1369,8 @@ export const post_SwarmUpdate = {
   path: typia.createIs<"/swarm/update">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ version: number, rotateWorkerToken?: boolean, rotateManagerToken?: boolean, rotateManagerUnlockKey?: boolean }>(), body: isSwarmSpec },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  parameters: { query: ((input: unknown): input is { version: number, rotateWorkerToken?: boolean, rotateManagerToken?: boolean, rotateManagerUnlockKey?: boolean } => typia.createIs<{ version: number, rotateWorkerToken?: boolean, rotateManagerToken?: boolean, rotateManagerUnlockKey?: boolean }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["version", "rotateWorkerToken", "rotateManagerToken", "rotateManagerUnlockKey"].includes(key))), body: isSwarmSpec },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
@@ -1380,7 +1380,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: typia.createIs<never>(),
-  responses: { 200: typia.createIs<Partial<{ UnlockKey: string }>>(), 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<(Partial<{ UnlockKey: string }> | Partial<{ UnlockKey: string }>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1399,8 +1399,8 @@ export const get_ServiceList = {
   path: typia.createIs<"/services">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ filters: string, status: boolean }>>() },
-  responses: { 200: typia.createIs<Array<Service>>(), 500: isErrorResponse, 503: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string, status: boolean }> => typia.createIs<Partial<{ filters: string, status: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters", "status"].includes(key))) },
+  responses: { 200: typia.createIs<(Array<Service> | Array<Service>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ServiceCreate = typeof post_ServiceCreate;
@@ -1409,7 +1409,7 @@ export const post_ServiceCreate = {
   path: typia.createIs<"/services/create">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { header: typia.createIs<Partial<{ "X-Registry-Auth": string }>>(), body: typia.createIs<(ServiceSpec & Record<string, unknown>)>() },
+  parameters: { header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Registry-Auth"].includes(key))), body: typia.createIs<(ServiceSpec & Record<string, unknown>)>() },
   responses: { 201: typia.createIs<Partial<{ ID: string, Warning: string }>>(), 400: isErrorResponse, 403: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1419,8 +1419,8 @@ export const get_ServiceInspect = {
   path: typia.createIs<"/services/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ insertDefaults: boolean }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 200: isService, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ insertDefaults: boolean }> => typia.createIs<Partial<{ insertDefaults: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["insertDefaults"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 200: typia.createIs<(Service | Service)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type delete_ServiceDelete = typeof delete_ServiceDelete;
@@ -1429,8 +1429,8 @@ export const delete_ServiceDelete = {
   path: typia.createIs<"/services/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ServiceUpdate = typeof post_ServiceUpdate;
@@ -1439,7 +1439,7 @@ export const post_ServiceUpdate = {
   path: typia.createIs<"/services/{id}/update">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ version: number, registryAuthFrom?: ("spec" | "previous-spec"), rollback?: string }>(), path: typia.createIs<{ id: string }>(), header: typia.createIs<Partial<{ "X-Registry-Auth": string }>>(), body: typia.createIs<(ServiceSpec & Record<string, unknown>)>() },
+  parameters: { query: ((input: unknown): input is { version: number, registryAuthFrom?: ("spec" | "previous-spec"), rollback?: string } => typia.createIs<{ version: number, registryAuthFrom?: ("spec" | "previous-spec"), rollback?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["version", "registryAuthFrom", "rollback"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Registry-Auth"].includes(key))), body: typia.createIs<(ServiceSpec & Record<string, unknown>)>() },
   responses: { 200: isServiceUpdateResponse, 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1449,7 +1449,7 @@ export const get_ServiceLogs = {
   path: typia.createIs<"/services/{id}/logs">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }>>(), path: typia.createIs<{ id: string }>() },
+  parameters: { query: ((input: unknown): input is Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }> => typia.createIs<Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["details", "follow", "stdout", "stderr", "since", "timestamps", "tail"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>(), 503: typia.createIs<unknown>() },
 };
 
@@ -1459,7 +1459,7 @@ export const get_TaskList = {
   path: typia.createIs<"/tasks">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
   responses: { 200: typia.createIs<Array<Task>>(), 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1469,7 +1469,7 @@ export const get_TaskInspect = {
   path: typia.createIs<"/tasks/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: isTask, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1479,7 +1479,7 @@ export const get_TaskLogs = {
   path: typia.createIs<"/tasks/{id}/logs">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }>>(), path: typia.createIs<{ id: string }>() },
+  parameters: { query: ((input: unknown): input is Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }> => typia.createIs<Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["details", "follow", "stdout", "stderr", "since", "timestamps", "tail"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>(), 503: typia.createIs<unknown>() },
 };
 
@@ -1489,7 +1489,7 @@ export const get_SecretList = {
   path: typia.createIs<"/secrets">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
   responses: { 200: typia.createIs<Array<Secret>>(), 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1509,7 +1509,7 @@ export const get_SecretInspect = {
   path: typia.createIs<"/secrets/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: isSecret, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1519,7 +1519,7 @@ export const delete_SecretDelete = {
   path: typia.createIs<"/secrets/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1529,8 +1529,8 @@ export const post_SecretUpdate = {
   path: typia.createIs<"/secrets/{id}/update">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ version: number }>(), path: typia.createIs<{ id: string }>(), body: isSecretSpec },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["version"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: isSecretSpec },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_ConfigList = typeof get_ConfigList;
@@ -1539,7 +1539,7 @@ export const get_ConfigList = {
   path: typia.createIs<"/configs">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<Partial<{ filters: string }>>() },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
   responses: { 200: typia.createIs<Array<Config>>(), 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1559,7 +1559,7 @@ export const get_ConfigInspect = {
   path: typia.createIs<"/configs/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 200: isConfig, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1569,7 +1569,7 @@ export const delete_ConfigDelete = {
   path: typia.createIs<"/configs/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ id: string }>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
   responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1579,8 +1579,8 @@ export const post_ConfigUpdate = {
   path: typia.createIs<"/configs/{id}/update">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createIs<{ version: number }>(), path: typia.createIs<{ id: string }>(), body: isConfigSpec },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["version"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: isConfigSpec },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_DistributionInspect = typeof get_DistributionInspect;
@@ -1589,7 +1589,7 @@ export const get_DistributionInspect = {
   path: typia.createIs<"/distribution/{name}/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createIs<{ name: string }>() },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
   responses: { 200: isDistributionInspect, 401: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -1749,7 +1749,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | "head" | "options" | MutationMethod;
+export type Method = "get" | "head" | "options" | "trace" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type ResponseFormat = "json" | "sse";
@@ -1770,6 +1770,14 @@ put: {
         }
     } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
     // </EndpointRequestFormats>
+    
+
+    // <EndpointParameterStyles>
+    export type ParameterSerialization = { style: string; explode: boolean; allowReserved: boolean };
+    export type EndpointParameterStyles = Partial<Record<"query" | "path" | "header" | "cookie", Record<string, ParameterSerialization>>>;
+    /** OpenAPI parameter styles used by the built-in encoders. */
+    export const endpointParameterStyles = {"get":{"/containers/json":{"query":{"all":{"style":"form","explode":true,"allowReserved":false},"limit":{"style":"form","explode":true,"allowReserved":false},"size":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/containers/{id}/json":{"query":{"size":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/top":{"query":{"ps_args":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/logs":{"query":{"follow":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false},"since":{"style":"form","explode":true,"allowReserved":false},"until":{"style":"form","explode":true,"allowReserved":false},"timestamps":{"style":"form","explode":true,"allowReserved":false},"tail":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/changes":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/export":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/stats":{"query":{"stream":{"style":"form","explode":true,"allowReserved":false},"one-shot":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/attach/ws":{"query":{"detachKeys":{"style":"form","explode":true,"allowReserved":false},"logs":{"style":"form","explode":true,"allowReserved":false},"stream":{"style":"form","explode":true,"allowReserved":false},"stdin":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/archive":{"query":{"path":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/images/json":{"query":{"all":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false},"shared-size":{"style":"form","explode":true,"allowReserved":false},"digests":{"style":"form","explode":true,"allowReserved":false}}},"/images/{name}/json":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}/history":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/search":{"query":{"term":{"style":"form","explode":true,"allowReserved":false},"limit":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/events":{"query":{"since":{"style":"form","explode":true,"allowReserved":false},"until":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/system/df":{"query":{"type":{"style":"form","explode":true,"allowReserved":false}}},"/images/{name}/get":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/get":{"query":{"names":{"style":"form","explode":false,"allowReserved":false}}},"/exec/{id}/json":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/volumes/{name}":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/networks":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/networks/{id}":{"query":{"verbose":{"style":"form","explode":true,"allowReserved":false},"scope":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/privileges":{"query":{"remote":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/{name}/json":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/nodes":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/nodes/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/services":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false},"status":{"style":"form","explode":true,"allowReserved":false}}},"/services/{id}":{"query":{"insertDefaults":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/services/{id}/logs":{"query":{"details":{"style":"form","explode":true,"allowReserved":false},"follow":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false},"since":{"style":"form","explode":true,"allowReserved":false},"timestamps":{"style":"form","explode":true,"allowReserved":false},"tail":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/tasks":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/tasks/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/tasks/{id}/logs":{"query":{"details":{"style":"form","explode":true,"allowReserved":false},"follow":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false},"since":{"style":"form","explode":true,"allowReserved":false},"timestamps":{"style":"form","explode":true,"allowReserved":false},"tail":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/secrets":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/secrets/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/configs":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/configs/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/distribution/{name}/json":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}}},"post":{"/containers/create":{"query":{"name":{"style":"form","explode":true,"allowReserved":false},"platform":{"style":"form","explode":true,"allowReserved":false}}},"/containers/{id}/resize":{"query":{"h":{"style":"form","explode":true,"allowReserved":false},"w":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/start":{"query":{"detachKeys":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/stop":{"query":{"signal":{"style":"form","explode":true,"allowReserved":false},"t":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/restart":{"query":{"signal":{"style":"form","explode":true,"allowReserved":false},"t":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/kill":{"query":{"signal":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/update":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/rename":{"query":{"name":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/pause":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/unpause":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/attach":{"query":{"detachKeys":{"style":"form","explode":true,"allowReserved":false},"logs":{"style":"form","explode":true,"allowReserved":false},"stream":{"style":"form","explode":true,"allowReserved":false},"stdin":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/wait":{"query":{"condition":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/build":{"query":{"dockerfile":{"style":"form","explode":true,"allowReserved":false},"t":{"style":"form","explode":true,"allowReserved":false},"extrahosts":{"style":"form","explode":true,"allowReserved":false},"remote":{"style":"form","explode":true,"allowReserved":false},"q":{"style":"form","explode":true,"allowReserved":false},"nocache":{"style":"form","explode":true,"allowReserved":false},"cachefrom":{"style":"form","explode":true,"allowReserved":false},"pull":{"style":"form","explode":true,"allowReserved":false},"rm":{"style":"form","explode":true,"allowReserved":false},"forcerm":{"style":"form","explode":true,"allowReserved":false},"memory":{"style":"form","explode":true,"allowReserved":false},"memswap":{"style":"form","explode":true,"allowReserved":false},"cpushares":{"style":"form","explode":true,"allowReserved":false},"cpusetcpus":{"style":"form","explode":true,"allowReserved":false},"cpuperiod":{"style":"form","explode":true,"allowReserved":false},"cpuquota":{"style":"form","explode":true,"allowReserved":false},"buildargs":{"style":"form","explode":true,"allowReserved":false},"shmsize":{"style":"form","explode":true,"allowReserved":false},"squash":{"style":"form","explode":true,"allowReserved":false},"labels":{"style":"form","explode":true,"allowReserved":false},"networkmode":{"style":"form","explode":true,"allowReserved":false},"platform":{"style":"form","explode":true,"allowReserved":false},"target":{"style":"form","explode":true,"allowReserved":false},"outputs":{"style":"form","explode":true,"allowReserved":false}},"header":{"Content-type":{"style":"simple","explode":false,"allowReserved":false},"X-Registry-Config":{"style":"simple","explode":false,"allowReserved":false}}},"/build/prune":{"query":{"keep-storage":{"style":"form","explode":true,"allowReserved":false},"all":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/images/create":{"query":{"fromImage":{"style":"form","explode":true,"allowReserved":false},"fromSrc":{"style":"form","explode":true,"allowReserved":false},"repo":{"style":"form","explode":true,"allowReserved":false},"tag":{"style":"form","explode":true,"allowReserved":false},"message":{"style":"form","explode":true,"allowReserved":false},"changes":{"style":"form","explode":false,"allowReserved":false},"platform":{"style":"form","explode":true,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}/push":{"query":{"tag":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}/tag":{"query":{"repo":{"style":"form","explode":true,"allowReserved":false},"tag":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/commit":{"query":{"container":{"style":"form","explode":true,"allowReserved":false},"repo":{"style":"form","explode":true,"allowReserved":false},"tag":{"style":"form","explode":true,"allowReserved":false},"comment":{"style":"form","explode":true,"allowReserved":false},"author":{"style":"form","explode":true,"allowReserved":false},"pause":{"style":"form","explode":true,"allowReserved":false},"changes":{"style":"form","explode":true,"allowReserved":false}}},"/images/load":{"query":{"quiet":{"style":"form","explode":true,"allowReserved":false}}},"/containers/{id}/exec":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/exec/{id}/start":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/exec/{id}/resize":{"query":{"h":{"style":"form","explode":true,"allowReserved":false},"w":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/networks/{id}/connect":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/networks/{id}/disconnect":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/networks/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/pull":{"query":{"remote":{"style":"form","explode":true,"allowReserved":false},"name":{"style":"form","explode":true,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/enable":{"query":{"timeout":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/disable":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/upgrade":{"query":{"remote":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/create":{"query":{"name":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/{name}/push":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/set":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/nodes/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/swarm/leave":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}}},"/swarm/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false},"rotateWorkerToken":{"style":"form","explode":true,"allowReserved":false},"rotateManagerToken":{"style":"form","explode":true,"allowReserved":false},"rotateManagerUnlockKey":{"style":"form","explode":true,"allowReserved":false}}},"/services/create":{"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/services/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false},"registryAuthFrom":{"style":"form","explode":true,"allowReserved":false},"rollback":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/secrets/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/configs/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}}},"delete":{"/containers/{id}":{"query":{"v":{"style":"form","explode":true,"allowReserved":false},"force":{"style":"form","explode":true,"allowReserved":false},"link":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false},"noprune":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes/{name}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/networks/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/nodes/{id}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/services/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/secrets/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/configs/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}}},"put":{"/containers/{id}/archive":{"query":{"path":{"style":"form","explode":true,"allowReserved":false},"noOverwriteDirNonDir":{"style":"form","explode":true,"allowReserved":false},"copyUIDGID":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes/{name}":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}}},"head":{"/containers/{id}/archive":{"query":{"path":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}}}} as Partial<Record<string, Partial<Record<string, EndpointParameterStyles>>>>;
+    // </EndpointParameterStyles>
     
 
     // <EndpointResponseFormats>
@@ -1833,8 +1841,8 @@ export interface FetcherResponse {
 }
 
 export interface Fetcher {
-    decodePathParams?: (path: string, pathParams: unknown) => string
-  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined
+    decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string
+  encodeSearchParams?: (searchParams: unknown, styles?: Record<string, ParameterSerialization>) => URLSearchParams | undefined
   /** Merge cookie params into request headers (default: Cookie header). */
   encodeCookies?: (cookies: unknown, headers: Headers) => void
     //
@@ -1846,6 +1854,8 @@ export interface Fetcher {
       path: string;
       /** How to encode `parameters.body` (from OpenAPI requestBody content type). */
       requestFormat: RequestFormat;
+      /** OpenAPI parameter serialization metadata for the current endpoint. */
+      parameterStyles?: EndpointParameterStyles;
       /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
       security?: SecurityRequirements;
       overrides?: RequestInit;
@@ -1916,7 +1926,7 @@ type OptionalUndefinedKeys<T> = {
 } & {
   [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<T[K], undefined>;
 };
-type InferSchemaValueRaw<T> = T extends (input: unknown) => input is infer U ? U : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
+type InferSchemaValueRaw<T> = T extends (input: unknown) => input is infer U ? U : T extends (...args: never[]) => unknown ? T : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
 export type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;
 
@@ -1965,7 +1975,7 @@ type ApiRequestOptions = {
 
 /** Parameter bag for an endpoint + request options. */
 export type ApiCallParams<TEndpoint> = TEndpoint extends { parameters: infer UParams }
-  ? NotNever<UParams> extends true
+  ? NotNever<InferSchemaInput<UParams>> extends true
     ? InferSchemaInput<UParams> & ApiRequestOptions
     : ApiRequestOptions
   : ApiRequestOptions;
@@ -2059,25 +2069,97 @@ export class ApiClient {
    * Replace path parameters in URL
    * Supports both OpenAPI format {param} and Express format :param
    */
-  defaultDecodePathParams = (url: string, params: unknown): string => {
+  defaultDecodePathParams = (url: string, params: unknown, styles?: Record<string, ParameterSerialization>): string => {
     const record = (params ?? {}) as Record<string, unknown>;
+    const encode = (value: unknown) => encodeURIComponent(String(value));
+    const serialize = (key: string, value: unknown): string => {
+      const parameterStyle = styles?.[key];
+      const style = parameterStyle?.style ?? "simple";
+      const explode = parameterStyle?.explode ?? false;
+      if (style === "label") {
+        if (Array.isArray(value)) return "." + value.filter((item) => item != null).map(encode).join(explode ? "." : ",");
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return "." + (explode ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".") : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","));
+        }
+        return "." + encode(value);
+      }
+      if (style === "matrix") {
+        if (Array.isArray(value)) return explode ? value.filter((item) => item != null).map((item) => ";" + key + "=" + encode(item)).join("") : ";" + key + "=" + value.filter((item) => item != null).map(encode).join(",");
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return explode ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("") : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
+        }
+        return ";" + key + "=" + encode(value);
+      }
+      if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
+      if (value && typeof value === "object") {
+        return Object.entries(value as Record<string, unknown>)
+          .filter(([, item]) => item != null)
+          .map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)])
+          .flat()
+          .join(",");
+      }
+      return encode(value);
+    };
     return url
-      .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
+      .replace(/{([^}]+)}/g, (_, key: string) =>
+        record[key] != null ? serialize(key, record[key]) : `{${key}}`,
+      )
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+        record[key] != null ? serialize(key, record[key]) : `:${key}`,
+      );
   }
 
   /** Uses URLSearchParams, skips null/undefined values */
-  defaultEncodeSearchParams = (queryParams: unknown): URLSearchParams | undefined => {
+  defaultEncodeSearchParams = (queryParams: unknown, styles?: Record<string, ParameterSerialization>): URLSearchParams | undefined => {
     if (!queryParams || typeof queryParams !== "object") return;
 
     const searchParams = new URLSearchParams();
+    const rawEntries: Array<{ key: string; value: string; allowReserved: boolean }> = [];
+    const append = (key: string, value: unknown, allowReserved = false) => {
+      const stringValue = String(value);
+      searchParams.append(key, stringValue);
+      rawEntries.push({ key, value: stringValue, allowReserved });
+    };
+    const encodeQueryComponent = (value: string, allowReserved: boolean) => {
+      const encoded = encodeURIComponent(value);
+      return allowReserved
+        ? encoded.replace(/%3A|%2F|%3F|%40|%21|%24|%26|%27|%28|%29|%2A|%2B|%2C|%3B|%3D|%5B|%5D/gi, (part) => decodeURIComponent(part))
+        : encoded;
+    };
+    Object.defineProperty(searchParams, "toString", {
+      value: () => rawEntries.map(({ key, value, allowReserved }) => `${encodeQueryComponent(key, false)}=${encodeQueryComponent(value, allowReserved)}`).join("&"),
+    });
     Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
       if (value != null) {
         // Skip null/undefined values
+        const parameterStyle = styles?.[key];
+        const style = parameterStyle?.style ?? "form";
+        const explode = parameterStyle?.explode ?? true;
+        const allowReserved = parameterStyle?.allowReserved === true;
         if (Array.isArray(value)) {
-          value.forEach((val) => val != null && searchParams.append(key, String(val)));
+          if (style === "spaceDelimited") append(key, value.filter((item) => item != null).map(String).join(" "), allowReserved);
+          else if (style === "pipeDelimited") append(key, value.filter((item) => item != null).map(String).join("|"), allowReserved);
+          else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
+          else append(key, value.filter((item) => item != null).map(String).join(","), allowReserved);
+        } else if (typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
+          if (style === "deepObject") {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && append(`${key}[${nestedKey}]`, item, allowReserved));
+              else append(`${key}[${nestedKey}]`, nestedValue, allowReserved);
+            }
+          } else if (explode) {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && append(nestedKey, item, allowReserved));
+              else append(nestedKey, nestedValue, allowReserved);
+            }
+          } else {
+            append(key, entries.flatMap(([nestedKey, nestedValue]) => [nestedKey, ...(Array.isArray(nestedValue) ? nestedValue : [nestedValue])]).map(String).join(","), allowReserved);
+          }
         } else {
-          searchParams.append(key, String(value));
+          append(key, value, allowReserved);
         }
       }
     });
@@ -2098,21 +2180,22 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
-    if (contentType.includes("text/event-stream")) {
+    const normalizedContentType = contentType.toLowerCase();
+    if (normalizedContentType.includes("text/event-stream")) {
       return response.body ?? null;
     }
-    if (contentType.startsWith("text/")) {
+    if (normalizedContentType.startsWith("text/")) {
       return (await response.text())
     }
 
-    if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+    if (normalizedContentType.startsWith("application/octet-stream")) {
       return new Blob([await response.arrayBuffer()])
     }
 
     if (
-      contentType.includes("application/json") ||
-      (contentType.includes("application/") && contentType.includes("json")) ||
-      contentType === "*/*"
+      normalizedContentType.includes("application/json") ||
+      (normalizedContentType.includes("application/") && normalizedContentType.includes("json")) ||
+      normalizedContentType === "*/*"
       ) {
       try {
         return await response.json();
@@ -2129,7 +2212,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -2138,7 +2221,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<InferSuccessData<TEndpoint>>;
@@ -2156,7 +2239,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -2165,7 +2248,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<InferSuccessData<TEndpoint>>;
@@ -2183,7 +2266,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -2192,7 +2275,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<InferSuccessData<TEndpoint>>;
@@ -2210,7 +2293,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -2219,7 +2302,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<InferSuccessData<TEndpoint>>;
@@ -2237,7 +2320,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -2246,7 +2329,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<InferSuccessData<TEndpoint>>;
@@ -2273,7 +2356,7 @@ export class ApiClient {
       path: TPath,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -2287,7 +2370,7 @@ export class ApiClient {
       path: TPath,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<InferSuccessData<TEndpoint>>;
@@ -2347,9 +2430,16 @@ export class ApiClient {
         }
       }
 
-      const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(this.baseUrl + (path as string), parametersToSend.path ?? {});
+      const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
+        this.baseUrl + (path as string),
+        parametersToSend.path ?? {},
+        endpointParameterStyles[method]?.[path]?.path,
+      );
       const url = new URL(resolvedPath);
-      const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(parametersToSend.query);
+      const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
+        parametersToSend.query,
+        endpointParameterStyles[method]?.[path]?.query,
+      );
 
       if (parametersToSend.cookie) {
         const headers = new Headers((overrides as RequestInit | undefined)?.headers);
@@ -2357,6 +2447,7 @@ export class ApiClient {
         overrides = { ...overrides, headers };
       }
 
+      const parameterStyles = endpointParameterStyles[method]?.[path as string];
       const response = await this.fetcher.fetch({
         method: method,
         path: (path as string),
@@ -2364,6 +2455,7 @@ export class ApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+        ...(parameterStyles ? { parameterStyles } : {}),
         security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements,
         ...(overrides ? { overrides } : {}),
         throwOnStatusError
@@ -2374,8 +2466,17 @@ export class ApiClient {
               ? (response.body ?? null)
               : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
           const shouldValidateOutput = validateSide === "output" || validateSide === "both";
-          if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
-            const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+          if (
+            shouldValidateOutput &&
+            responseFormat !== "sse" &&
+            (response.ok || !(errorStatusCodes as readonly number[]).includes(response.status)) &&
+            endpointSchema?.responses
+          ) {
+            const responseSchema =
+              endpointSchema.responses[String(response.status)] ??
+              endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??
+              endpointSchema.responses[String(Math.floor(response.status / 100)) + "XX"] ??
+              endpointSchema.responses["default"];
             if (responseSchema) {
               data = await runValidate({
                 side: "output",

@@ -8,64 +8,88 @@ const Schema_default_available_prop = Schema.Literals(["available", "pending", "
 // </DefaultSchemas>
 
 // <Schemas>
-export const Order = Schema.Struct({
-  id: Schema.optional(Schema.Int),
-  petId: Schema.optional(Schema.Int),
-  quantity: Schema.optional(Schema.Int),
-  shipDate: Schema.optional(Schema.String),
-  status: Schema.optional(Schema.Literals(["placed", "approved", "delivered"])),
-  complete: Schema.optional(Schema.Boolean),
-});
+export const Order = Schema.StructWithRest(
+  Schema.Struct({
+    id: Schema.optional(Schema.Int),
+    petId: Schema.optional(Schema.Int),
+    quantity: Schema.optional(Schema.Int),
+    shipDate: Schema.optional(Schema.String),
+    status: Schema.optional(Schema.Literals(["placed", "approved", "delivered"])),
+    complete: Schema.optional(Schema.Boolean),
+  }),
+  [Schema.Record(Schema.String, Schema.Unknown)],
+);
 export type Order = Schema.Schema.Type<typeof Order>;
 
-export const Address = Schema.Struct({
-  street: Schema.optional(Schema.String),
-  city: Schema.optional(Schema.String),
-  state: Schema.optional(Schema.String),
-  zip: Schema.optional(Schema.String),
-});
+export const Address = Schema.StructWithRest(
+  Schema.Struct({
+    street: Schema.optional(Schema.String),
+    city: Schema.optional(Schema.String),
+    state: Schema.optional(Schema.String),
+    zip: Schema.optional(Schema.String),
+  }),
+  [Schema.Record(Schema.String, Schema.Unknown)],
+);
 export type Address = Schema.Schema.Type<typeof Address>;
 
-export const Customer = Schema.Struct({
-  id: Schema.optional(Schema.Int),
-  username: Schema.optional(Schema.String),
-  address: Schema.optional(Schema.Array(Address)),
-});
+export const Customer = Schema.StructWithRest(
+  Schema.Struct({
+    id: Schema.optional(Schema.Int),
+    username: Schema.optional(Schema.String),
+    address: Schema.optional(Schema.Array(Address)),
+  }),
+  [Schema.Record(Schema.String, Schema.Unknown)],
+);
 export type Customer = Schema.Schema.Type<typeof Customer>;
 
-export const Category = Schema.Struct({ id: Schema.optional(Schema.Int), name: Schema.optional(Schema.String) });
+export const Category = Schema.StructWithRest(
+  Schema.Struct({ id: Schema.optional(Schema.Int), name: Schema.optional(Schema.String) }),
+  [Schema.Record(Schema.String, Schema.Unknown)],
+);
 export type Category = Schema.Schema.Type<typeof Category>;
 
-export const User = Schema.Struct({
-  id: Schema.optional(Schema.Int),
-  username: Schema.optional(Schema.String),
-  firstName: Schema.optional(Schema.String),
-  lastName: Schema.optional(Schema.String),
-  email: Schema.optional(Schema.String),
-  password: Schema.optional(Schema.String),
-  phone: Schema.optional(Schema.String),
-  userStatus: Schema.optional(Schema.Int),
-});
+export const User = Schema.StructWithRest(
+  Schema.Struct({
+    id: Schema.optional(Schema.Int),
+    username: Schema.optional(Schema.String),
+    firstName: Schema.optional(Schema.String),
+    lastName: Schema.optional(Schema.String),
+    email: Schema.optional(Schema.String),
+    password: Schema.optional(Schema.String),
+    phone: Schema.optional(Schema.String),
+    userStatus: Schema.optional(Schema.Int),
+  }),
+  [Schema.Record(Schema.String, Schema.Unknown)],
+);
 export type User = Schema.Schema.Type<typeof User>;
 
-export const Tag = Schema.Struct({ id: Schema.optional(Schema.Int), name: Schema.optional(Schema.String) });
+export const Tag = Schema.StructWithRest(
+  Schema.Struct({ id: Schema.optional(Schema.Int), name: Schema.optional(Schema.String) }),
+  [Schema.Record(Schema.String, Schema.Unknown)],
+);
 export type Tag = Schema.Schema.Type<typeof Tag>;
 
-export const Pet = Schema.Struct({
-  id: Schema.optional(Schema.Int),
-  name: Schema.String,
-  category: Schema.optional(Category),
-  photoUrls: Schema.Array(Schema.String),
-  tags: Schema.optional(Schema.Array(Tag)),
-  status: Schema.optional(Schema.Literals(["available", "pending", "sold"])),
-});
+export const Pet = Schema.StructWithRest(
+  Schema.Struct({
+    id: Schema.optional(Schema.Int),
+    name: Schema.String,
+    category: Schema.optional(Category),
+    photoUrls: Schema.Array(Schema.String),
+    tags: Schema.optional(Schema.Array(Tag)),
+    status: Schema.optional(Schema.Literals(["available", "pending", "sold"])),
+  }),
+  [Schema.Record(Schema.String, Schema.Unknown)],
+);
 export type Pet = Schema.Schema.Type<typeof Pet>;
 
-export const ApiResponse = Schema.Struct({
-  code: Schema.optional(Schema.Int),
-  type: Schema.optional(Schema.String),
-  message: Schema.optional(Schema.String),
-});
+export const ApiResponse = Schema.StructWithRest(
+  Schema.Struct({
+    code: Schema.optional(Schema.Int),
+    type: Schema.optional(Schema.String),
+    message: Schema.optional(Schema.String),
+  }),
+  [Schema.Record(Schema.String, Schema.Unknown)],
+);
 export type ApiResponse = Schema.Schema.Type<typeof ApiResponse>;
 
 // </Schemas>
@@ -97,11 +121,19 @@ export const get_FindPetsByStatus = {
   path: Schema.Literal("/pet/findByStatus"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ status: Schema_default_available_prop })) },
+  parameters: {
+    query: Schema.optional(
+      Schema.Struct({ status: Schema_default_available_prop }).check(
+        Schema.makeFilter((data) => Object.keys(data).every((key) => ["status"].includes(key))),
+      ),
+    ),
+  },
   responses: {
     200: Schema.Array(Pet),
     304: Schema.Unknown,
-    400: Schema.Struct({ code: Schema.Int, message: Schema.String }),
+    400: Schema.StructWithRest(Schema.Struct({ code: Schema.Int, message: Schema.String }), [
+      Schema.Record(Schema.String, Schema.Unknown),
+    ]),
   },
 };
 
@@ -111,7 +143,13 @@ export const get_FindPetsByTags = {
   path: Schema.Literal("/pet/findByTags"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ tags: Schema.optional(Schema.Array(Schema.String)) })) },
+  parameters: {
+    query: Schema.optional(
+      Schema.Struct({ tags: Schema.optional(Schema.Array(Schema.String)) }).check(
+        Schema.makeFilter((data) => Object.keys(data).every((key) => ["tags"].includes(key))),
+      ),
+    ),
+  },
   responses: { 200: Schema.Union([Schema.Array(Pet), Schema.Array(User), Schema.Array(Tag)]), 400: Schema.Unknown },
 };
 
@@ -121,11 +159,19 @@ export const get_GetPetById = {
   path: Schema.Literal("/pet/{petId}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }) },
+  parameters: {
+    path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => ["petId"].includes(key))),
+    ),
+  },
   responses: {
     200: Pet,
-    400: Schema.Struct({ code: Schema.Int, message: Schema.String }),
-    404: Schema.Struct({ code: Schema.Int, message: Schema.String }),
+    400: Schema.StructWithRest(Schema.Struct({ code: Schema.Int, message: Schema.String }), [
+      Schema.Record(Schema.String, Schema.Unknown),
+    ]),
+    404: Schema.StructWithRest(Schema.Struct({ code: Schema.Int, message: Schema.String }), [
+      Schema.Record(Schema.String, Schema.Unknown),
+    ]),
   },
 };
 
@@ -137,9 +183,13 @@ export const post_UpdatePetWithForm = {
   responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
-      Schema.Struct({ name: Schema.optional(Schema.String), status: Schema.optional(Schema.String) }),
+      Schema.Struct({ name: Schema.optional(Schema.String), status: Schema.optional(Schema.String) }).check(
+        Schema.makeFilter((data) => Object.keys(data).every((key) => ["name", "status"].includes(key))),
+      ),
     ),
-    path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }),
+    path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => ["petId"].includes(key))),
+    ),
   },
   responses: { 405: Schema.Unknown },
 };
@@ -151,8 +201,14 @@ export const delete_DeletePet = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: {
-    path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }),
-    header: Schema.optional(Schema.Struct({ api_key: Schema.optional(Schema.String) })),
+    path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => ["petId"].includes(key))),
+    ),
+    header: Schema.optional(
+      Schema.Struct({ api_key: Schema.optional(Schema.String) }).check(
+        Schema.makeFilter((data) => Object.keys(data).every((key) => ["api_key"].includes(key))),
+      ),
+    ),
   },
   responses: { 400: Schema.Unknown },
 };
@@ -164,8 +220,14 @@ export const post_UploadFile = {
   requestFormat: Schema.Literal("binary"),
   responseFormat: Schema.Literal("json"),
   parameters: {
-    query: Schema.optional(Schema.Struct({ additionalMetadata: Schema.optional(Schema.String) })),
-    path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }),
+    query: Schema.optional(
+      Schema.Struct({ additionalMetadata: Schema.optional(Schema.String) }).check(
+        Schema.makeFilter((data) => Object.keys(data).every((key) => ["additionalMetadata"].includes(key))),
+      ),
+    ),
+    path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => ["petId"].includes(key))),
+    ),
     body: Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob),
   },
   responses: { 200: ApiResponse },
@@ -197,7 +259,11 @@ export const get_GetOrderById = {
   path: Schema.Literal("/store/order/{orderId}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ orderId: Schema.NumberFromString.check(Schema.isInt()) }) },
+  parameters: {
+    path: Schema.Struct({ orderId: Schema.NumberFromString.check(Schema.isInt()) }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => ["orderId"].includes(key))),
+    ),
+  },
   responses: { 200: Order, 400: Schema.Unknown, 404: Schema.Unknown },
 };
 
@@ -207,7 +273,11 @@ export const delete_DeleteOrder = {
   path: Schema.Literal("/store/order/{orderId}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ orderId: Schema.NumberFromString.check(Schema.isInt()) }) },
+  parameters: {
+    path: Schema.Struct({ orderId: Schema.NumberFromString.check(Schema.isInt()) }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => ["orderId"].includes(key))),
+    ),
+  },
   responses: { 400: Schema.Unknown, 404: Schema.Unknown },
 };
 
@@ -239,13 +309,19 @@ export const get_LoginUser = {
   responseFormat: Schema.Literal("json"),
   parameters: {
     query: Schema.optional(
-      Schema.Struct({ username: Schema.optional(Schema.String), password: Schema.optional(Schema.String) }),
+      Schema.Struct({ username: Schema.optional(Schema.String), password: Schema.optional(Schema.String) }).check(
+        Schema.makeFilter((data) => Object.keys(data).every((key) => ["username", "password"].includes(key))),
+      ),
     ),
   },
   responses: { 200: Schema.String, 400: Schema.Unknown },
   responseHeaders: {
-    200: Schema.Struct({ "X-Rate-Limit": Schema.Int, "X-Expires-After": Schema.String }),
-    400: Schema.Struct({ "X-Error": Schema.String }),
+    200: Schema.Struct({ "X-Rate-Limit": Schema.Int, "X-Expires-After": Schema.String }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => ["X-Rate-Limit", "X-Expires-After"].includes(key))),
+    ),
+    400: Schema.Struct({ "X-Error": Schema.String }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => ["X-Error"].includes(key))),
+    ),
   },
 };
 
@@ -265,11 +341,19 @@ export const get_GetUserByName = {
   path: Schema.Literal("/user/{username}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ username: Schema.String }) },
+  parameters: {
+    path: Schema.Struct({ username: Schema.String }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => ["username"].includes(key))),
+    ),
+  },
   responses: {
     200: User,
-    201: Schema.Struct({ id: Schema.Int, username: Schema.String }),
-    400: Schema.Struct({ code: Schema.Int, message: Schema.String }),
+    201: Schema.StructWithRest(Schema.Struct({ id: Schema.Int, username: Schema.String }), [
+      Schema.Record(Schema.String, Schema.Unknown),
+    ]),
+    400: Schema.StructWithRest(Schema.Struct({ code: Schema.Int, message: Schema.String }), [
+      Schema.Record(Schema.String, Schema.Unknown),
+    ]),
     404: Schema.Unknown,
   },
 };
@@ -280,7 +364,12 @@ export const put_UpdateUser = {
   path: Schema.Literal("/user/{username}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ username: Schema.String }), body: User },
+  parameters: {
+    path: Schema.Struct({ username: Schema.String }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => ["username"].includes(key))),
+    ),
+    body: User,
+  },
   responses: { default: Schema.Unknown },
 };
 
@@ -290,7 +379,11 @@ export const delete_DeleteUser = {
   path: Schema.Literal("/user/{username}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ username: Schema.String }) },
+  parameters: {
+    path: Schema.Struct({ username: Schema.String }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => ["username"].includes(key))),
+    ),
+  },
   responses: { 400: Schema.Unknown, 404: Schema.Unknown },
 };
 
@@ -379,7 +472,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | "head" | "options" | MutationMethod;
+export type Method = "get" | "head" | "options" | "trace" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type ResponseFormat = "json" | "sse";
@@ -393,6 +486,51 @@ export const endpointRequestFormats = {
   },
 } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
+
+// <EndpointParameterStyles>
+export type ParameterSerialization = { style: string; explode: boolean; allowReserved: boolean };
+export type EndpointParameterStyles = Partial<
+  Record<"query" | "path" | "header" | "cookie", Record<string, ParameterSerialization>>
+>;
+/** OpenAPI parameter styles used by the built-in encoders. */
+export const endpointParameterStyles = {
+  get: {
+    "/pet/findByStatus": { query: { status: { style: "form", explode: true, allowReserved: false } } },
+    "/pet/findByTags": { query: { tags: { style: "form", explode: true, allowReserved: false } } },
+    "/pet/{petId}": { path: { petId: { style: "simple", explode: false, allowReserved: false } } },
+    "/store/order/{orderId}": { path: { orderId: { style: "simple", explode: false, allowReserved: false } } },
+    "/user/login": {
+      query: {
+        username: { style: "form", explode: true, allowReserved: false },
+        password: { style: "form", explode: true, allowReserved: false },
+      },
+    },
+    "/user/{username}": { path: { username: { style: "simple", explode: false, allowReserved: false } } },
+  },
+  post: {
+    "/pet/{petId}": {
+      query: {
+        name: { style: "form", explode: true, allowReserved: false },
+        status: { style: "form", explode: true, allowReserved: false },
+      },
+      path: { petId: { style: "simple", explode: false, allowReserved: false } },
+    },
+    "/pet/{petId}/uploadImage": {
+      query: { additionalMetadata: { style: "form", explode: true, allowReserved: false } },
+      path: { petId: { style: "simple", explode: false, allowReserved: false } },
+    },
+  },
+  delete: {
+    "/pet/{petId}": {
+      path: { petId: { style: "simple", explode: false, allowReserved: false } },
+      header: { api_key: { style: "simple", explode: false, allowReserved: false } },
+    },
+    "/store/order/{orderId}": { path: { orderId: { style: "simple", explode: false, allowReserved: false } } },
+    "/user/{username}": { path: { username: { style: "simple", explode: false, allowReserved: false } } },
+  },
+  put: { "/user/{username}": { path: { username: { style: "simple", explode: false, allowReserved: false } } } },
+} as Partial<Record<string, Partial<Record<string, EndpointParameterStyles>>>>;
+// </EndpointParameterStyles>
 
 // <EndpointResponseFormats>
 /** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
@@ -465,8 +603,11 @@ export interface FetcherResponse {
 }
 
 export interface Fetcher {
-  decodePathParams?: (path: string, pathParams: unknown) => string;
-  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
+  decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string;
+  encodeSearchParams?: (
+    searchParams: unknown,
+    styles?: Record<string, ParameterSerialization>,
+  ) => URLSearchParams | undefined;
   /** Merge cookie params into request headers (default: Cookie header). */
   encodeCookies?: (cookies: unknown, headers: Headers) => void;
   //
@@ -478,6 +619,8 @@ export interface Fetcher {
     path: string;
     /** How to encode `parameters.body` (from OpenAPI requestBody content type). */
     requestFormat: RequestFormat;
+    /** OpenAPI parameter serialization metadata for the current endpoint. */
+    parameterStyles?: EndpointParameterStyles;
     /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
     security?: SecurityRequirements;
     overrides?: RequestInit;
@@ -579,14 +722,18 @@ type OptionalUndefinedKeys<T> = {
 };
 export type InferSchemaValue<T> = T extends { Type: infer O }
   ? O
-  : T extends object
-    ? { [K in keyof T]: InferSchemaValue<T[K]> }
-    : T;
+  : T extends (...args: never[]) => unknown
+    ? T
+    : T extends object
+      ? { [K in keyof T]: InferSchemaValue<T[K]> }
+      : T;
 type InferSchemaInputRaw<T> = T extends { Encoded: infer I }
   ? I
-  : T extends object
-    ? { [K in keyof T]: InferSchemaInputRaw<T[K]> }
-    : T;
+  : T extends (...args: never[]) => unknown
+    ? T
+    : T extends object
+      ? { [K in keyof T]: InferSchemaInputRaw<T[K]> }
+      : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
@@ -640,7 +787,7 @@ type ApiRequestOptions = {
 
 /** Parameter bag for an endpoint + request options. */
 export type ApiCallParams<TEndpoint> = TEndpoint extends { parameters: infer UParams }
-  ? NotNever<UParams> extends true
+  ? NotNever<InferSchemaInput<UParams>> extends true
     ? InferSchemaInput<UParams> & ApiRequestOptions
     : ApiRequestOptions
   : ApiRequestOptions;
@@ -706,8 +853,11 @@ const runValidate = async (ctx: {
 // </ValidateHelpers>
 
 export type EffectFetcher = {
-  decodePathParams?: (path: string, pathParams: unknown) => string;
-  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
+  decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string;
+  encodeSearchParams?: (
+    searchParams: unknown,
+    styles?: Record<string, ParameterSerialization>,
+  ) => URLSearchParams | undefined;
   encodeCookies?: (cookies: unknown, headers: Headers) => void;
   parseResponseData?: (response: FetcherResponse) => Promise<unknown>;
   fetch: (input: Parameters<Fetcher["fetch"]>[0]) => Effect.Effect<FetcherResponse, HttpClientError, never>;
@@ -829,21 +979,169 @@ export class EffectApiClient {
 
       const decodePath =
         self.effectFetcher.decodePathParams ??
-        ((url: string, p: unknown) => {
+        ((url: string, p: unknown, styles?: Record<string, ParameterSerialization>) => {
           const record = (p ?? {}) as Record<string, unknown>;
+          const encode = (value: unknown) => encodeURIComponent(String(value));
+          const serialize = (key: string, value: unknown): string => {
+            const parameterStyle = styles?.[key];
+            const style = parameterStyle?.style ?? "simple";
+            const explode = parameterStyle?.explode ?? false;
+            if (style === "label") {
+              if (Array.isArray(value))
+                return (
+                  "." +
+                  value
+                    .filter((item) => item != null)
+                    .map(encode)
+                    .join(explode ? "." : ",")
+                );
+              if (value && typeof value === "object") {
+                const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+                return (
+                  "." +
+                  (explode
+                    ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".")
+                    : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","))
+                );
+              }
+              return "." + encode(value);
+            }
+            if (style === "matrix") {
+              if (Array.isArray(value))
+                return explode
+                  ? value
+                      .filter((item) => item != null)
+                      .map((item) => ";" + key + "=" + encode(item))
+                      .join("")
+                  : ";" +
+                      key +
+                      "=" +
+                      value
+                        .filter((item) => item != null)
+                        .map(encode)
+                        .join(",");
+              if (value && typeof value === "object") {
+                const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+                return explode
+                  ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("")
+                  : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
+              }
+              return ";" + key + "=" + encode(value);
+            }
+            if (Array.isArray(value))
+              return value
+                .filter((item) => item != null)
+                .map(encode)
+                .join(",");
+            if (value && typeof value === "object")
+              return Object.entries(value as Record<string, unknown>)
+                .filter(([, item]) => item != null)
+                .map(([name, item]) => (explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)]))
+                .flat()
+                .join(",");
+            return encode(value);
+          };
           return url
-            .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
-            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
+            .replace(/{([^}]+)}/g, (_, key: string) => (record[key] != null ? serialize(key, record[key]) : `{${key}}`))
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+              record[key] != null ? serialize(key, record[key]) : `:${key}`,
+            );
         });
       const encodeSearch =
         self.effectFetcher.encodeSearchParams ??
-        ((queryParams: unknown) => {
+        ((queryParams: unknown, styles?: Record<string, ParameterSerialization>) => {
           if (!queryParams || typeof queryParams !== "object") return undefined;
           const searchParams = new URLSearchParams();
+          const rawEntries: Array<{ key: string; value: string; allowReserved: boolean }> = [];
+          const append = (key: string, value: unknown, allowReserved = false) => {
+            const stringValue = String(value);
+            searchParams.append(key, stringValue);
+            rawEntries.push({ key, value: stringValue, allowReserved });
+          };
+          const encodeQueryComponent = (value: string, allowReserved: boolean) => {
+            const encoded = encodeURIComponent(value);
+            return allowReserved
+              ? encoded.replace(/%3A|%2F|%3F|%40|%21|%24|%26|%27|%28|%29|%2A|%2B|%2C|%3B|%3D|%5B|%5D/gi, (part) =>
+                  decodeURIComponent(part),
+                )
+              : encoded;
+          };
+          Object.defineProperty(searchParams, "toString", {
+            value: () =>
+              rawEntries
+                .map(
+                  ({ key, value, allowReserved }) =>
+                    `${encodeQueryComponent(key, false)}=${encodeQueryComponent(value, allowReserved)}`,
+                )
+                .join("&"),
+          });
           Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
             if (value != null) {
-              if (Array.isArray(value)) value.forEach((val) => val != null && searchParams.append(key, String(val)));
-              else searchParams.append(key, String(value));
+              const parameterStyle = styles?.[key];
+              const style = parameterStyle?.style ?? "form";
+              const explode = parameterStyle?.explode ?? true;
+              const allowReserved = parameterStyle?.allowReserved === true;
+              if (Array.isArray(value)) {
+                if (style === "spaceDelimited")
+                  append(
+                    key,
+                    value
+                      .filter((item) => item != null)
+                      .map(String)
+                      .join(" "),
+                    allowReserved,
+                  );
+                else if (style === "pipeDelimited")
+                  append(
+                    key,
+                    value
+                      .filter((item) => item != null)
+                      .map(String)
+                      .join("|"),
+                    allowReserved,
+                  );
+                else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
+                else
+                  append(
+                    key,
+                    value
+                      .filter((item) => item != null)
+                      .map(String)
+                      .join(","),
+                    allowReserved,
+                  );
+              } else if (typeof value === "object") {
+                const entries = Object.entries(value as Record<string, unknown>).filter(
+                  ([, nestedValue]) => nestedValue != null,
+                );
+                if (style === "deepObject") {
+                  for (const [nestedKey, nestedValue] of entries) {
+                    if (Array.isArray(nestedValue))
+                      nestedValue.forEach(
+                        (item) => item != null && append(`${key}[${nestedKey}]`, item, allowReserved),
+                      );
+                    else append(`${key}[${nestedKey}]`, nestedValue, allowReserved);
+                  }
+                } else if (explode) {
+                  for (const [nestedKey, nestedValue] of entries) {
+                    if (Array.isArray(nestedValue))
+                      nestedValue.forEach((item) => item != null && append(nestedKey, item, allowReserved));
+                    else append(nestedKey, nestedValue, allowReserved);
+                  }
+                } else {
+                  append(
+                    key,
+                    entries
+                      .flatMap(([nestedKey, nestedValue]) => [
+                        nestedKey,
+                        ...(Array.isArray(nestedValue) ? nestedValue : [nestedValue]),
+                      ])
+                      .map(String)
+                      .join(","),
+                    allowReserved,
+                  );
+                }
+              } else append(key, value, allowReserved);
             }
           });
           return searchParams;
@@ -863,23 +1161,31 @@ export class EffectApiClient {
         self.effectFetcher.parseResponseData ??
         (async (response: FetcherResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
-          if (contentType.includes("text/event-stream")) {
+          const normalizedContentType = contentType.toLowerCase();
+          if (normalizedContentType.includes("text/event-stream")) {
             return response.body ?? null;
           }
-          if (contentType.includes("json") || contentType === "*/*") {
+          if (normalizedContentType.startsWith("application/octet-stream")) {
+            return new Blob([await response.arrayBuffer()]);
+          }
+          if (normalizedContentType.includes("json") || normalizedContentType === "*/*") {
             try {
               return await response.json();
             } catch {
               return undefined;
             }
           }
-          if (contentType.startsWith("text/")) return response.text();
+          if (normalizedContentType.startsWith("text/")) return response.text();
           return undefined;
         });
 
-      const resolvedPath = decodePath(self.baseUrl + (path as string), parametersToSend.path ?? {});
+      const resolvedPath = decodePath(
+        self.baseUrl + (path as string),
+        parametersToSend.path ?? {},
+        endpointParameterStyles[method]?.[path]?.path,
+      );
       const url = new URL(resolvedPath);
-      const urlSearchParams = encodeSearch(parametersToSend.query);
+      const urlSearchParams = encodeSearch(parametersToSend.query, endpointParameterStyles[method]?.[path]?.query);
 
       let overrides = requestParams?.overrides as RequestInit | undefined;
       if (parametersToSend.cookie) {
@@ -888,6 +1194,7 @@ export class EffectApiClient {
         overrides = { ...overrides, headers };
       }
 
+      const parameterStyles = endpointParameterStyles[method]?.[path as string];
       const response = yield* self.effectFetcher.fetch({
         method: method as Method,
         path: path as string,
@@ -895,6 +1202,7 @@ export class EffectApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+        ...(parameterStyles ? { parameterStyles } : {}),
         security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements,
         ...(overrides ? { overrides } : {}),
       });
@@ -911,10 +1219,14 @@ export class EffectApiClient {
       if (
         responseFormat !== "sse" &&
         (validateSide === "output" || validateSide === "both") &&
-        response.ok &&
+        (response.ok || !(errorStatusCodes as readonly number[]).includes(response.status)) &&
         endpointSchema?.responses
       ) {
-        const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+        const responseSchema =
+          endpointSchema.responses[String(response.status)] ??
+          endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??
+          endpointSchema.responses[String(Math.floor(response.status / 100)) + "XX"] ??
+          endpointSchema.responses["default"];
         if (responseSchema) {
           if (self.onValidate) {
             const onValidate = self.onValidate;

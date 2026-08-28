@@ -80,6 +80,7 @@ const withNullable = (node: SchemaNode, schema: LibSchemaObject): SchemaNode => 
       kind: "union",
       members: [stripDefault(node), { kind: "null", meta: emptyMeta() }],
       meta: node.meta,
+      ...(node.kind === "union" && node.exclusive ? { exclusive: true } : {}),
     };
   }
   return node;
@@ -131,6 +132,7 @@ const literalFromEnumValue = (value: unknown): SchemaNode => {
 
 /** Primitive enums stay `kind: "enum"`; object/array members become a union of literals. */
 const enumToIr = (values: unknown[], meta: SchemaMeta): SchemaNode => {
+  if (values.length === 0) return { kind: "never", meta };
   if (values.length === 1) return literalFromEnumValue(values[0]);
   if (values.every(isLiteralEnumValue)) {
     return { kind: "enum", values: values as Array<string | number | boolean | null>, meta };
@@ -143,7 +145,10 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
 };
 
 const openApiToIrInternal = (input: unknown, ctx: SchemaIrConvertContext, path: string[]): SchemaNode => {
-  if (!input) {
+  if (input === false) {
+    return { kind: "never", meta: emptyMeta() };
+  }
+  if (input === true || input === undefined || input === null) {
     return { kind: "unknown", meta: emptyMeta() };
   }
 
@@ -215,6 +220,9 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
       : undefined;
 
   if (schema.oneOf) {
+    if (schema.oneOf.length === 0) {
+      return withNullable({ kind: "never", meta }, schema);
+    }
     if (schema.oneOf.length === 1) {
       return withNullable(openApiToIrInternal(schema.oneOf[0]!, ctx, [...path, "oneOf", "0"]), schema);
     }
@@ -223,6 +231,7 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
         kind: "union",
         members: schema.oneOf.map((prop: unknown, i) => openApiToIrInternal(prop, ctx, [...path, "oneOf", String(i)])),
         meta,
+        exclusive: true,
         ...(discriminator ? { discriminator } : {}),
       },
       schema,
@@ -230,6 +239,9 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
   }
 
   if (schema.anyOf) {
+    if (schema.anyOf.length === 0) {
+      return withNullable({ kind: "never", meta }, schema);
+    }
     if (schema.anyOf.length === 1) {
       return withNullable(openApiToIrInternal(schema.anyOf[0]!, ctx, [...path, "anyOf", "0"]), schema);
     }
@@ -305,32 +317,30 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
   }
 
   if (schemaType === "array") {
-    const items = schema.items
-      ? openApiToIrInternal(schema.items, ctx, [...path, "items"])
-      : ({ kind: "any", meta: emptyMeta() } as SchemaNode);
+    const items =
+      schema.items !== undefined
+        ? openApiToIrInternal(schema.items, ctx, [...path, "items"])
+        : ({ kind: "any", meta: emptyMeta() } as SchemaNode);
     return withNullable({ kind: "array", items, constraints: arrayConstraints(schema), meta }, schema);
   }
 
-  if (schemaType === "object" || schema.properties || schema.additionalProperties || schema.patternProperties) {
-    const patternPropertyRecords = Object.entries(schema.patternProperties ?? {}).map(([pattern, value]) => ({
-      kind: "record" as const,
-      key: { kind: "string" as const, constraints: {}, meta: emptyMeta() },
-      value: openApiToIrInternal(value, ctx, [...path, "patternProperties", pattern]),
-      meta: emptyMeta(),
-    }));
-
-    if (!schema.properties) {
-      const records = [...patternPropertyRecords];
+  if (
+    schemaType === "object" ||
+    schema.properties ||
+    schema.additionalProperties !== undefined ||
+    schema.patternProperties
+  ) {
+    if (!schema.properties && !schema.patternProperties && schema.additionalProperties !== false) {
       if (typeof schema.additionalProperties === "object") {
-        records.push({
-          kind: "record",
-          key: { kind: "string", constraints: {}, meta: emptyMeta() },
-          value: openApiToIrInternal(schema.additionalProperties, ctx, [...path, "additionalProperties"]),
-          meta: emptyMeta(),
-        });
-      }
-      if (records.length > 0) {
-        return simplifyIntersection(records, meta, schema);
+        return withNullable(
+          {
+            kind: "record",
+            key: { kind: "string", constraints: {}, meta: emptyMeta() },
+            value: openApiToIrInternal(schema.additionalProperties, ctx, [...path, "additionalProperties"]),
+            meta,
+          },
+          schema,
+        );
       }
       return withNullable(
         {
@@ -343,7 +353,8 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
       );
     }
 
-    let additionalProperties: boolean | SchemaNode = false;
+    // OpenAPI and JSON Schema default additionalProperties to true when omitted.
+    let additionalProperties: boolean | SchemaNode = schema.additionalProperties === false ? false : true;
     if (
       schema.additionalProperties === true ||
       (typeof schema.additionalProperties === "object" && Object.keys(schema.additionalProperties).length === 0)
@@ -354,10 +365,10 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
     }
 
     const hasRequiredArray = Boolean(schema.required && schema.required.length > 0);
-    const isPartial = !schema.required?.length;
+    const isPartial = Boolean(schema.properties) && !schema.required?.length;
 
     const properties: Record<string, SchemaNode> = {};
-    for (const [prop, propSchema] of Object.entries(schema.properties)) {
+    for (const [prop, propSchema] of Object.entries(schema.properties ?? {})) {
       properties[prop] = openApiToIrInternal(propSchema, ctx, [...path, "properties", prop]);
     }
 
@@ -367,23 +378,22 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
       kind: "object",
       properties,
       required,
-      additionalProperties: typeof additionalProperties === "object" ? false : additionalProperties,
+      additionalProperties,
+      ...(Object.keys(schema.patternProperties ?? {}).length > 0
+        ? {
+            patternProperties: Object.fromEntries(
+              Object.entries(schema.patternProperties ?? {}).map(([pattern, value]) => [
+                pattern,
+                openApiToIrInternal(value, ctx, [...path, "patternProperties", pattern]),
+              ]),
+            ),
+          }
+        : {}),
       constraints: objectConstraints(schema),
       meta,
       partial: isPartial,
     };
-    const records = [...patternPropertyRecords];
-    if (typeof additionalProperties === "object") {
-      records.push({
-        kind: "record",
-        key: { kind: "string", constraints: {}, meta: emptyMeta() },
-        value: additionalProperties,
-        meta: emptyMeta(),
-      });
-    }
-    return records.length > 0
-      ? simplifyIntersection([objectNode, ...records], meta, schema)
-      : withNullable(objectNode, schema);
+    return withNullable(objectNode, schema);
   }
 
   if (!schemaType) {

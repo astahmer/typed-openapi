@@ -3,59 +3,73 @@ import * as v from "valibot";
 // <Schemas>
 export type Order = v.InferOutput<typeof Order>;
 export const Order = v.partial(
-  v.object({
-    id: v.pipe(v.number(), v.integer()),
-    petId: v.pipe(v.number(), v.integer()),
-    quantity: v.pipe(v.number(), v.integer()),
-    shipDate: v.string(),
-    status: v.picklist(["placed", "approved", "delivered"]),
-    complete: v.boolean(),
-  }),
+  v.objectWithRest(
+    {
+      id: v.pipe(v.number(), v.integer()),
+      petId: v.pipe(v.number(), v.integer()),
+      quantity: v.pipe(v.number(), v.integer()),
+      shipDate: v.string(),
+      status: v.picklist(["placed", "approved", "delivered"]),
+      complete: v.boolean(),
+    },
+    v.unknown(),
+  ),
 );
 
 export type Address = v.InferOutput<typeof Address>;
 export const Address = v.partial(
-  v.object({ street: v.string(), city: v.string(), state: v.string(), zip: v.string() }),
+  v.objectWithRest({ street: v.string(), city: v.string(), state: v.string(), zip: v.string() }, v.unknown()),
 );
 
 export type Customer = v.InferOutput<typeof Customer>;
 export const Customer = v.partial(
-  v.object({ id: v.pipe(v.number(), v.integer()), username: v.string(), address: v.array(Address) }),
+  v.objectWithRest(
+    { id: v.pipe(v.number(), v.integer()), username: v.string(), address: v.array(Address) },
+    v.unknown(),
+  ),
 );
 
 export type Category = v.InferOutput<typeof Category>;
-export const Category = v.partial(v.object({ id: v.pipe(v.number(), v.integer()), name: v.string() }));
+export const Category = v.partial(
+  v.objectWithRest({ id: v.pipe(v.number(), v.integer()), name: v.string() }, v.unknown()),
+);
 
 export type User = v.InferOutput<typeof User>;
 export const User = v.partial(
-  v.object({
-    id: v.pipe(v.number(), v.integer()),
-    username: v.string(),
-    firstName: v.string(),
-    lastName: v.string(),
-    email: v.string(),
-    password: v.string(),
-    phone: v.string(),
-    userStatus: v.pipe(v.number(), v.integer()),
-  }),
+  v.objectWithRest(
+    {
+      id: v.pipe(v.number(), v.integer()),
+      username: v.string(),
+      firstName: v.string(),
+      lastName: v.string(),
+      email: v.string(),
+      password: v.string(),
+      phone: v.string(),
+      userStatus: v.pipe(v.number(), v.integer()),
+    },
+    v.unknown(),
+  ),
 );
 
 export type Tag = v.InferOutput<typeof Tag>;
-export const Tag = v.partial(v.object({ id: v.pipe(v.number(), v.integer()), name: v.string() }));
+export const Tag = v.partial(v.objectWithRest({ id: v.pipe(v.number(), v.integer()), name: v.string() }, v.unknown()));
 
 export type Pet = v.InferOutput<typeof Pet>;
-export const Pet = v.object({
-  id: v.optional(v.pipe(v.number(), v.integer())),
-  name: v.string(),
-  category: v.optional(Category),
-  photoUrls: v.array(v.string()),
-  tags: v.optional(v.array(Tag)),
-  status: v.optional(v.picklist(["available", "pending", "sold"])),
-});
+export const Pet = v.objectWithRest(
+  {
+    id: v.optional(v.pipe(v.number(), v.integer())),
+    name: v.string(),
+    category: v.optional(Category),
+    photoUrls: v.array(v.string()),
+    tags: v.optional(v.array(Tag)),
+    status: v.optional(v.picklist(["available", "pending", "sold"])),
+  },
+  v.unknown(),
+);
 
 export type ApiResponse = v.InferOutput<typeof ApiResponse>;
 export const ApiResponse = v.partial(
-  v.object({ code: v.pipe(v.number(), v.integer()), type: v.string(), message: v.string() }),
+  v.objectWithRest({ code: v.pipe(v.number(), v.integer()), type: v.string(), message: v.string() }, v.unknown()),
 );
 
 // </Schemas>
@@ -89,13 +103,13 @@ export const get_FindPetsByStatus = {
   responseFormat: v.literal("json"),
   parameters: {
     query: v.optional(
-      v.partial(v.object({ status: v.optional(v.picklist(["available", "pending", "sold"]), "available") })),
+      v.partial(v.strictObject({ status: v.optional(v.picklist(["available", "pending", "sold"]), "available") })),
     ),
   },
   responses: {
     200: v.array(Pet),
     304: v.unknown(),
-    400: v.object({ code: v.pipe(v.number(), v.integer()), message: v.string() }),
+    400: v.objectWithRest({ code: v.pipe(v.number(), v.integer()), message: v.string() }, v.unknown()),
   },
 };
 
@@ -105,7 +119,7 @@ export const get_FindPetsByTags = {
   path: v.literal("/pet/findByTags"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ tags: v.array(v.string()) }))) },
+  parameters: { query: v.optional(v.partial(v.strictObject({ tags: v.array(v.string()) }))) },
   responses: { 200: v.union([v.array(Pet), v.array(User), v.array(Tag)]), 400: v.unknown() },
 };
 
@@ -116,7 +130,7 @@ export const get_GetPetById = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: {
-    path: v.object({
+    path: v.strictObject({
       petId: v.pipe(
         v.union([v.string(), v.number()]),
         v.transform((x) => Number(x)),
@@ -126,8 +140,8 @@ export const get_GetPetById = {
   },
   responses: {
     200: Pet,
-    400: v.object({ code: v.pipe(v.number(), v.integer()), message: v.string() }),
-    404: v.object({ code: v.pipe(v.number(), v.integer()), message: v.string() }),
+    400: v.objectWithRest({ code: v.pipe(v.number(), v.integer()), message: v.string() }, v.unknown()),
+    404: v.objectWithRest({ code: v.pipe(v.number(), v.integer()), message: v.string() }, v.unknown()),
   },
 };
 
@@ -138,8 +152,8 @@ export const post_UpdatePetWithForm = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: {
-    query: v.optional(v.partial(v.object({ name: v.string(), status: v.string() }))),
-    path: v.object({
+    query: v.optional(v.partial(v.strictObject({ name: v.string(), status: v.string() }))),
+    path: v.strictObject({
       petId: v.pipe(
         v.union([v.string(), v.number()]),
         v.transform((x) => Number(x)),
@@ -157,14 +171,14 @@ export const delete_DeletePet = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: {
-    path: v.object({
+    path: v.strictObject({
       petId: v.pipe(
         v.union([v.string(), v.number()]),
         v.transform((x) => Number(x)),
         v.pipe(v.number(), v.integer()),
       ),
     }),
-    header: v.optional(v.partial(v.object({ api_key: v.string() }))),
+    header: v.optional(v.partial(v.strictObject({ api_key: v.string() }))),
   },
   responses: { 400: v.unknown() },
 };
@@ -176,8 +190,8 @@ export const post_UploadFile = {
   requestFormat: v.literal("binary"),
   responseFormat: v.literal("json"),
   parameters: {
-    query: v.optional(v.partial(v.object({ additionalMetadata: v.string() }))),
-    path: v.object({
+    query: v.optional(v.partial(v.strictObject({ additionalMetadata: v.string() }))),
+    path: v.strictObject({
       petId: v.pipe(
         v.union([v.string(), v.number()]),
         v.transform((x) => Number(x)),
@@ -216,7 +230,7 @@ export const get_GetOrderById = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: {
-    path: v.object({
+    path: v.strictObject({
       orderId: v.pipe(
         v.union([v.string(), v.number()]),
         v.transform((x) => Number(x)),
@@ -234,7 +248,7 @@ export const delete_DeleteOrder = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: {
-    path: v.object({
+    path: v.strictObject({
       orderId: v.pipe(
         v.union([v.string(), v.number()]),
         v.transform((x) => Number(x)),
@@ -271,11 +285,11 @@ export const get_LoginUser = {
   path: v.literal("/user/login"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.object({ username: v.string(), password: v.string() }))) },
+  parameters: { query: v.optional(v.partial(v.strictObject({ username: v.string(), password: v.string() }))) },
   responses: { 200: v.string(), 400: v.unknown() },
   responseHeaders: {
-    200: v.object({ "X-Rate-Limit": v.pipe(v.number(), v.integer()), "X-Expires-After": v.string() }),
-    400: v.object({ "X-Error": v.string() }),
+    200: v.strictObject({ "X-Rate-Limit": v.pipe(v.number(), v.integer()), "X-Expires-After": v.string() }),
+    400: v.strictObject({ "X-Error": v.string() }),
   },
 };
 
@@ -295,11 +309,11 @@ export const get_GetUserByName = {
   path: v.literal("/user/{username}"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ username: v.string() }) },
+  parameters: { path: v.strictObject({ username: v.string() }) },
   responses: {
     200: User,
-    201: v.object({ id: v.pipe(v.number(), v.integer()), username: v.string() }),
-    400: v.object({ code: v.pipe(v.number(), v.integer()), message: v.string() }),
+    201: v.objectWithRest({ id: v.pipe(v.number(), v.integer()), username: v.string() }, v.unknown()),
+    400: v.objectWithRest({ code: v.pipe(v.number(), v.integer()), message: v.string() }, v.unknown()),
     404: v.unknown(),
   },
 };
@@ -310,7 +324,7 @@ export const put_UpdateUser = {
   path: v.literal("/user/{username}"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ username: v.string() }), body: User },
+  parameters: { path: v.strictObject({ username: v.string() }), body: User },
   responses: { default: v.unknown() },
 };
 
@@ -320,7 +334,7 @@ export const delete_DeleteUser = {
   path: v.literal("/user/{username}"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.object({ username: v.string() }) },
+  parameters: { path: v.strictObject({ username: v.string() }) },
   responses: { 400: v.unknown(), 404: v.unknown() },
 };
 
@@ -409,7 +423,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | "head" | "options" | MutationMethod;
+export type Method = "get" | "head" | "options" | "trace" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type ResponseFormat = "json" | "sse";
@@ -423,6 +437,51 @@ export const endpointRequestFormats = {
   },
 } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
 // </EndpointRequestFormats>
+
+// <EndpointParameterStyles>
+export type ParameterSerialization = { style: string; explode: boolean; allowReserved: boolean };
+export type EndpointParameterStyles = Partial<
+  Record<"query" | "path" | "header" | "cookie", Record<string, ParameterSerialization>>
+>;
+/** OpenAPI parameter styles used by the built-in encoders. */
+export const endpointParameterStyles = {
+  get: {
+    "/pet/findByStatus": { query: { status: { style: "form", explode: true, allowReserved: false } } },
+    "/pet/findByTags": { query: { tags: { style: "form", explode: true, allowReserved: false } } },
+    "/pet/{petId}": { path: { petId: { style: "simple", explode: false, allowReserved: false } } },
+    "/store/order/{orderId}": { path: { orderId: { style: "simple", explode: false, allowReserved: false } } },
+    "/user/login": {
+      query: {
+        username: { style: "form", explode: true, allowReserved: false },
+        password: { style: "form", explode: true, allowReserved: false },
+      },
+    },
+    "/user/{username}": { path: { username: { style: "simple", explode: false, allowReserved: false } } },
+  },
+  post: {
+    "/pet/{petId}": {
+      query: {
+        name: { style: "form", explode: true, allowReserved: false },
+        status: { style: "form", explode: true, allowReserved: false },
+      },
+      path: { petId: { style: "simple", explode: false, allowReserved: false } },
+    },
+    "/pet/{petId}/uploadImage": {
+      query: { additionalMetadata: { style: "form", explode: true, allowReserved: false } },
+      path: { petId: { style: "simple", explode: false, allowReserved: false } },
+    },
+  },
+  delete: {
+    "/pet/{petId}": {
+      path: { petId: { style: "simple", explode: false, allowReserved: false } },
+      header: { api_key: { style: "simple", explode: false, allowReserved: false } },
+    },
+    "/store/order/{orderId}": { path: { orderId: { style: "simple", explode: false, allowReserved: false } } },
+    "/user/{username}": { path: { username: { style: "simple", explode: false, allowReserved: false } } },
+  },
+  put: { "/user/{username}": { path: { username: { style: "simple", explode: false, allowReserved: false } } } },
+} as Partial<Record<string, Partial<Record<string, EndpointParameterStyles>>>>;
+// </EndpointParameterStyles>
 
 // <EndpointResponseFormats>
 /** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
@@ -495,8 +554,11 @@ export interface FetcherResponse {
 }
 
 export interface Fetcher {
-  decodePathParams?: (path: string, pathParams: unknown) => string;
-  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
+  decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string;
+  encodeSearchParams?: (
+    searchParams: unknown,
+    styles?: Record<string, ParameterSerialization>,
+  ) => URLSearchParams | undefined;
   /** Merge cookie params into request headers (default: Cookie header). */
   encodeCookies?: (cookies: unknown, headers: Headers) => void;
   //
@@ -508,6 +570,8 @@ export interface Fetcher {
     path: string;
     /** How to encode `parameters.body` (from OpenAPI requestBody content type). */
     requestFormat: RequestFormat;
+    /** OpenAPI parameter serialization metadata for the current endpoint. */
+    parameterStyles?: EndpointParameterStyles;
     /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
     security?: SecurityRequirements;
     overrides?: RequestInit;
@@ -609,14 +673,18 @@ type OptionalUndefinedKeys<T> = {
 };
 export type InferSchemaValue<T> = T extends v.GenericSchema
   ? v.InferOutput<T>
-  : T extends object
-    ? { [K in keyof T]: InferSchemaValue<T[K]> }
-    : T;
+  : T extends (...args: never[]) => unknown
+    ? T
+    : T extends object
+      ? { [K in keyof T]: InferSchemaValue<T[K]> }
+      : T;
 type InferSchemaInputRaw<T> = T extends v.GenericSchema
   ? v.InferInput<T>
-  : T extends object
-    ? { [K in keyof T]: InferSchemaInputRaw<T[K]> }
-    : T;
+  : T extends (...args: never[]) => unknown
+    ? T
+    : T extends object
+      ? { [K in keyof T]: InferSchemaInputRaw<T[K]> }
+      : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }
@@ -670,7 +738,7 @@ type ApiRequestOptions = {
 
 /** Parameter bag for an endpoint + request options. */
 export type ApiCallParams<TEndpoint> = TEndpoint extends { parameters: infer UParams }
-  ? NotNever<UParams> extends true
+  ? NotNever<InferSchemaInput<UParams>> extends true
     ? InferSchemaInput<UParams> & ApiRequestOptions
     : ApiRequestOptions
   : ApiRequestOptions;
@@ -761,25 +829,174 @@ export class ApiClient {
    * Replace path parameters in URL
    * Supports both OpenAPI format {param} and Express format :param
    */
-  defaultDecodePathParams = (url: string, params: unknown): string => {
+  defaultDecodePathParams = (url: string, params: unknown, styles?: Record<string, ParameterSerialization>): string => {
     const record = (params ?? {}) as Record<string, unknown>;
+    const encode = (value: unknown) => encodeURIComponent(String(value));
+    const serialize = (key: string, value: unknown): string => {
+      const parameterStyle = styles?.[key];
+      const style = parameterStyle?.style ?? "simple";
+      const explode = parameterStyle?.explode ?? false;
+      if (style === "label") {
+        if (Array.isArray(value))
+          return (
+            "." +
+            value
+              .filter((item) => item != null)
+              .map(encode)
+              .join(explode ? "." : ",")
+          );
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return (
+            "." +
+            (explode
+              ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".")
+              : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","))
+          );
+        }
+        return "." + encode(value);
+      }
+      if (style === "matrix") {
+        if (Array.isArray(value))
+          return explode
+            ? value
+                .filter((item) => item != null)
+                .map((item) => ";" + key + "=" + encode(item))
+                .join("")
+            : ";" +
+                key +
+                "=" +
+                value
+                  .filter((item) => item != null)
+                  .map(encode)
+                  .join(",");
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return explode
+            ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("")
+            : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
+        }
+        return ";" + key + "=" + encode(value);
+      }
+      if (Array.isArray(value))
+        return value
+          .filter((item) => item != null)
+          .map(encode)
+          .join(",");
+      if (value && typeof value === "object") {
+        return Object.entries(value as Record<string, unknown>)
+          .filter(([, item]) => item != null)
+          .map(([name, item]) => (explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)]))
+          .flat()
+          .join(",");
+      }
+      return encode(value);
+    };
     return url
-      .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
+      .replace(/{([^}]+)}/g, (_, key: string) => (record[key] != null ? serialize(key, record[key]) : `{${key}}`))
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+        record[key] != null ? serialize(key, record[key]) : `:${key}`,
+      );
   };
 
   /** Uses URLSearchParams, skips null/undefined values */
-  defaultEncodeSearchParams = (queryParams: unknown): URLSearchParams | undefined => {
+  defaultEncodeSearchParams = (
+    queryParams: unknown,
+    styles?: Record<string, ParameterSerialization>,
+  ): URLSearchParams | undefined => {
     if (!queryParams || typeof queryParams !== "object") return;
 
     const searchParams = new URLSearchParams();
+    const rawEntries: Array<{ key: string; value: string; allowReserved: boolean }> = [];
+    const append = (key: string, value: unknown, allowReserved = false) => {
+      const stringValue = String(value);
+      searchParams.append(key, stringValue);
+      rawEntries.push({ key, value: stringValue, allowReserved });
+    };
+    const encodeQueryComponent = (value: string, allowReserved: boolean) => {
+      const encoded = encodeURIComponent(value);
+      return allowReserved
+        ? encoded.replace(/%3A|%2F|%3F|%40|%21|%24|%26|%27|%28|%29|%2A|%2B|%2C|%3B|%3D|%5B|%5D/gi, (part) =>
+            decodeURIComponent(part),
+          )
+        : encoded;
+    };
+    Object.defineProperty(searchParams, "toString", {
+      value: () =>
+        rawEntries
+          .map(
+            ({ key, value, allowReserved }) =>
+              `${encodeQueryComponent(key, false)}=${encodeQueryComponent(value, allowReserved)}`,
+          )
+          .join("&"),
+    });
     Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
       if (value != null) {
         // Skip null/undefined values
+        const parameterStyle = styles?.[key];
+        const style = parameterStyle?.style ?? "form";
+        const explode = parameterStyle?.explode ?? true;
+        const allowReserved = parameterStyle?.allowReserved === true;
         if (Array.isArray(value)) {
-          value.forEach((val) => val != null && searchParams.append(key, String(val)));
+          if (style === "spaceDelimited")
+            append(
+              key,
+              value
+                .filter((item) => item != null)
+                .map(String)
+                .join(" "),
+              allowReserved,
+            );
+          else if (style === "pipeDelimited")
+            append(
+              key,
+              value
+                .filter((item) => item != null)
+                .map(String)
+                .join("|"),
+              allowReserved,
+            );
+          else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
+          else
+            append(
+              key,
+              value
+                .filter((item) => item != null)
+                .map(String)
+                .join(","),
+              allowReserved,
+            );
+        } else if (typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(
+            ([, nestedValue]) => nestedValue != null,
+          );
+          if (style === "deepObject") {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue))
+                nestedValue.forEach((item) => item != null && append(`${key}[${nestedKey}]`, item, allowReserved));
+              else append(`${key}[${nestedKey}]`, nestedValue, allowReserved);
+            }
+          } else if (explode) {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue))
+                nestedValue.forEach((item) => item != null && append(nestedKey, item, allowReserved));
+              else append(nestedKey, nestedValue, allowReserved);
+            }
+          } else {
+            append(
+              key,
+              entries
+                .flatMap(([nestedKey, nestedValue]) => [
+                  nestedKey,
+                  ...(Array.isArray(nestedValue) ? nestedValue : [nestedValue]),
+                ])
+                .map(String)
+                .join(","),
+              allowReserved,
+            );
+          }
         } else {
-          searchParams.append(key, String(value));
+          append(key, value, allowReserved);
         }
       }
     });
@@ -800,21 +1017,22 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
-    if (contentType.includes("text/event-stream")) {
+    const normalizedContentType = contentType.toLowerCase();
+    if (normalizedContentType.includes("text/event-stream")) {
       return response.body ?? null;
     }
-    if (contentType.startsWith("text/")) {
+    if (normalizedContentType.startsWith("text/")) {
       return await response.text();
     }
 
-    if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+    if (normalizedContentType.startsWith("application/octet-stream")) {
       return new Blob([await response.arrayBuffer()]);
     }
 
     if (
-      contentType.includes("application/json") ||
-      (contentType.includes("application/") && contentType.includes("json")) ||
-      contentType === "*/*"
+      normalizedContentType.includes("application/json") ||
+      (normalizedContentType.includes("application/") && normalizedContentType.includes("json")) ||
+      normalizedContentType === "*/*"
     ) {
       try {
         return await response.json();
@@ -831,7 +1049,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -860,7 +1078,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -895,7 +1113,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -924,7 +1142,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -959,7 +1177,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -988,7 +1206,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -1023,7 +1241,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -1052,7 +1270,7 @@ export class ApiClient {
     path: Path,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -1095,7 +1313,7 @@ export class ApiClient {
     path: TPath,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -1129,7 +1347,7 @@ export class ApiClient {
     path: TPath,
     ...params: MaybeOptionalArg<
       TEndpoint extends { parameters: infer UParams }
-        ? NotNever<UParams> extends true
+        ? NotNever<InferSchemaInput<UParams>> extends true
           ? InferSchemaInput<UParams> & {
               overrides?: RequestInit;
               queryOptions?: ApiQueryOptions;
@@ -1208,10 +1426,12 @@ export class ApiClient {
       const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
         this.baseUrl + (path as string),
         parametersToSend.path ?? {},
+        endpointParameterStyles[method]?.[path]?.path,
       );
       const url = new URL(resolvedPath);
       const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
         parametersToSend.query,
+        endpointParameterStyles[method]?.[path]?.query,
       );
 
       if (parametersToSend.cookie) {
@@ -1220,6 +1440,7 @@ export class ApiClient {
         overrides = { ...overrides, headers };
       }
 
+      const parameterStyles = endpointParameterStyles[method]?.[path as string];
       const response = await this.fetcher.fetch({
         method: method,
         path: path as string,
@@ -1227,6 +1448,7 @@ export class ApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+        ...(parameterStyles ? { parameterStyles } : {}),
         security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements,
         ...(overrides ? { overrides } : {}),
         throwOnStatusError,
@@ -1237,8 +1459,17 @@ export class ApiClient {
           ? (response.body ?? null)
           : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
       const shouldValidateOutput = validateSide === "output" || validateSide === "both";
-      if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
-        const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+      if (
+        shouldValidateOutput &&
+        responseFormat !== "sse" &&
+        (response.ok || !(errorStatusCodes as readonly number[]).includes(response.status)) &&
+        endpointSchema?.responses
+      ) {
+        const responseSchema =
+          endpointSchema.responses[String(response.status)] ??
+          endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??
+          endpointSchema.responses[String(Math.floor(response.status / 100)) + "XX"] ??
+          endpointSchema.responses["default"];
         if (responseSchema) {
           data = await runValidate({
             side: "output",

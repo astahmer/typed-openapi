@@ -2,7 +2,7 @@
   
   export namespace Schemas {
     // <Schemas>
-  export type Port = { IP?: string, PrivatePort: number, PublicPort?: number, Type: ("tcp" | "udp" | "sctp") }
+  export type Port = ({ IP?: string, PrivatePort: number, PublicPort?: number, Type: ("tcp" | "udp" | "sctp") } & Record<string, unknown>)
 export type MountPoint = Partial<{ Type: ("bind" | "volume" | "tmpfs" | "npipe" | "cluster"), Name: string, Source: string, Destination: string, Driver: string, Mode: string, RW: boolean, Propagation: string }>
 export type DeviceMapping = Partial<{ PathOnHost: string, PathInContainer: string, CgroupPermissions: string }>
 export type DeviceRequest = Partial<{ Driver: string, Count: number, DeviceIDs: Array<string>, Capabilities: Array<Array<string>>, Options: Record<string, string> }>
@@ -25,18 +25,18 @@ export type EndpointSettings = Partial<{ IPAMConfig: EndpointIPAMConfig, Links: 
 export type NetworkingConfig = Partial<{ EndpointsConfig: Record<string, EndpointSettings> }>
 export type Address = Partial<{ Addr: string, PrefixLen: number }>
 export type NetworkSettings = Partial<{ Bridge: string, SandboxID: string, HairpinMode: boolean, LinkLocalIPv6Address: string, LinkLocalIPv6PrefixLen: number, Ports: PortMap, SandboxKey: string, SecondaryIPAddresses: (Array<Address> | null), SecondaryIPv6Addresses: (Array<Address> | null), EndpointID: string, Gateway: string, GlobalIPv6Address: string, GlobalIPv6PrefixLen: number, IPAddress: string, IPPrefixLen: number, IPv6Gateway: string, MacAddress: string, Networks: Record<string, EndpointSettings> }>
-export type GraphDriverData = { Name: string, Data: Record<string, string> }
+export type GraphDriverData = ({ Name: string, Data: Record<string, string> } & Record<string, unknown>)
 export type ChangeType = (0 | 1 | 2)
-export type FilesystemChange = { Path: string, Kind: ChangeType }
-export type ImageInspect = Partial<{ Id: string, RepoTags: Array<string>, RepoDigests: Array<string>, Parent: string, Comment: string, Created: string, Container: string, ContainerConfig: ContainerConfig, DockerVersion: string, Author: string, Config: ContainerConfig, Architecture: string, Variant: (string | null), Os: string, OsVersion: (string | null), Size: number, VirtualSize: number, GraphDriver: GraphDriverData, RootFS: { Type: string, Layers?: Array<string> }, Metadata: Partial<{ LastTagTime: (string | null) }> }>
-export type ImageSummary = { Id: string, ParentId: string, RepoTags: Array<string>, RepoDigests: Array<string>, Created: number, Size: number, SharedSize: number, VirtualSize?: number, Labels: Record<string, string>, Containers: number }
+export type FilesystemChange = ({ Path: string, Kind: ChangeType } & Record<string, unknown>)
+export type ImageInspect = Partial<{ Id: string, RepoTags: Array<string>, RepoDigests: Array<string>, Parent: string, Comment: string, Created: string, Container: string, ContainerConfig: ContainerConfig, DockerVersion: string, Author: string, Config: ContainerConfig, Architecture: string, Variant: (string | null), Os: string, OsVersion: (string | null), Size: number, VirtualSize: number, GraphDriver: GraphDriverData, RootFS: ({ Type: string, Layers?: Array<string> } & Record<string, unknown>), Metadata: Partial<{ LastTagTime: (string | null) }> }>
+export type ImageSummary = ({ Id: string, ParentId: string, RepoTags: Array<string>, RepoDigests: Array<string>, Created: number, Size: number, SharedSize: number, VirtualSize?: number, Labels: Record<string, string>, Containers: number } & Record<string, unknown>)
 export type AuthConfig = Partial<{ username: string, password: string, email: string, serveraddress: string }>
 export type ProcessConfig = Partial<{ privileged: boolean, user: string, tty: boolean, entrypoint: string, arguments: Array<string> }>
 export type ObjectVersion = Partial<{ Index: number }>
 export type Topology = Record<string, string>
 export type ClusterVolumeSpec = Partial<{ Group: string, AccessMode: Partial<{ Scope: ("single" | "multi"), Sharing: ("none" | "readonly" | "onewriter" | "all"), MountVolume: Partial<{  }>, Secrets: Array<Partial<{ Key: string, Secret: string }>>, AccessibilityRequirements: Partial<{ Requisite: Array<Topology>, Preferred: Array<Topology> }>, CapacityRange: Partial<{ RequiredBytes: number, LimitBytes: number }>, Availability: ("active" | "pause" | "drain") }> }>
 export type ClusterVolume = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: string, UpdatedAt: string, Spec: ClusterVolumeSpec, Info: Partial<{ CapacityBytes: number, VolumeContext: Record<string, string>, VolumeID: string, AccessibleTopology: Array<Topology> }>, PublishStatus: Array<Partial<{ NodeID: string, State: ("pending-publish" | "published" | "pending-node-unpublish" | "pending-controller-unpublish"), PublishContext: Record<string, string> }>> }>
-export type Volume = { Name: string, Driver: string, Mountpoint: string, CreatedAt?: string, Status?: Record<string, Partial<{  }>>, Labels: Record<string, string>, Scope: ("local" | "global"), ClusterVolume?: ClusterVolume, Options: Record<string, string>, UsageData?: ({ Size: number, RefCount: number } | null) }
+export type Volume = ({ Name: string, Driver: string, Mountpoint: string, CreatedAt?: string, Status?: Record<string, Partial<{  }>>, Labels: Record<string, string>, Scope: ("local" | "global"), ClusterVolume?: ClusterVolume, Options: Record<string, string>, UsageData?: (({ Size: number, RefCount: number } & Record<string, unknown>) | null) } & Record<string, unknown>)
 export type VolumeCreateOptions = Partial<{ Name: string, Driver: string, DriverOpts: Record<string, string>, Labels: Record<string, string>, ClusterVolumeSpec: ClusterVolumeSpec }>
 export type VolumeListResponse = Partial<{ Volumes: Array<Volume>, Warnings: Array<string> }>
 export type IPAMConfig = Partial<{ Subnet: string, IPRange: string, Gateway: string, AuxiliaryAddresses: Record<string, string> }>
@@ -50,14 +50,14 @@ export type BuildInfo = Partial<{ id: string, stream: string, error: string, err
 export type BuildCache = Partial<{ ID: string, Parent: (string | null), Parents: (Array<string> | null), Type: ("internal" | "frontend" | "source.local" | "source.git.checkout" | "exec.cachemount" | "regular"), Description: string, InUse: boolean, Shared: boolean, Size: number, CreatedAt: string, LastUsedAt: (string | null), UsageCount: number }>
 export type CreateImageInfo = Partial<{ id: string, error: string, errorDetail: ErrorDetail, status: string, progress: string, progressDetail: ProgressDetail }>
 export type PushImageInfo = Partial<{ error: string, status: string, progress: string, progressDetail: ProgressDetail }>
-export type ErrorResponse = { message: string }
-export type IdResponse = { Id: string }
-export type PluginMount = { Name: string, Description: string, Settable: Array<string>, Source: string, Destination: string, Type: string, Options: Array<string> }
-export type PluginDevice = { Name: string, Description: string, Settable: Array<string>, Path: string }
-export type PluginEnv = { Name: string, Description: string, Settable: Array<string>, Value: string }
-export type PluginInterfaceType = { Prefix: string, Capability: string, Version: string }
+export type ErrorResponse = ({ message: string } & Record<string, unknown>)
+export type IdResponse = ({ Id: string } & Record<string, unknown>)
+export type PluginMount = ({ Name: string, Description: string, Settable: Array<string>, Source: string, Destination: string, Type: string, Options: Array<string> } & Record<string, unknown>)
+export type PluginDevice = ({ Name: string, Description: string, Settable: Array<string>, Path: string } & Record<string, unknown>)
+export type PluginEnv = ({ Name: string, Description: string, Settable: Array<string>, Value: string } & Record<string, unknown>)
+export type PluginInterfaceType = ({ Prefix: string, Capability: string, Version: string } & Record<string, unknown>)
 export type PluginPrivilege = Partial<{ Name: string, Description: string, Value: Array<string> }>
-export type Plugin = { Id?: string, Name: string, Enabled: boolean, Settings: { Mounts: Array<PluginMount>, Env: Array<string>, Args: Array<string>, Devices: Array<PluginDevice> }, PluginReference?: string, Config: { DockerVersion?: string, Description: string, Documentation: string, Interface: { Types: Array<PluginInterfaceType>, Socket: string, ProtocolScheme?: ("" | "moby.plugins.http/v1") }, Entrypoint: Array<string>, WorkDir: string, User?: Partial<{ UID: number, GID: number }>, Network: { Type: string }, Linux: { Capabilities: Array<string>, AllowAllDevices: boolean, Devices: Array<PluginDevice> }, PropagatedMount: string, IpcHost: boolean, PidHost: boolean, Mounts: Array<PluginMount>, Env: Array<PluginEnv>, Args: { Name: string, Description: string, Settable: Array<string>, Value: Array<string> }, rootfs?: Partial<{ type: string, diff_ids: Array<string> }> } }
+export type Plugin = ({ Id?: string, Name: string, Enabled: boolean, Settings: ({ Mounts: Array<PluginMount>, Env: Array<string>, Args: Array<string>, Devices: Array<PluginDevice> } & Record<string, unknown>), PluginReference?: string, Config: ({ DockerVersion?: string, Description: string, Documentation: string, Interface: ({ Types: Array<PluginInterfaceType>, Socket: string, ProtocolScheme?: ("" | "moby.plugins.http/v1") } & Record<string, unknown>), Entrypoint: Array<string>, WorkDir: string, User?: Partial<{ UID: number, GID: number }>, Network: ({ Type: string } & Record<string, unknown>), Linux: ({ Capabilities: Array<string>, AllowAllDevices: boolean, Devices: Array<PluginDevice> } & Record<string, unknown>), PropagatedMount: string, IpcHost: boolean, PidHost: boolean, Mounts: Array<PluginMount>, Env: Array<PluginEnv>, Args: ({ Name: string, Description: string, Settable: Array<string>, Value: Array<string> } & Record<string, unknown>), rootfs?: Partial<{ type: string, diff_ids: Array<string> }> } & Record<string, unknown>) } & Record<string, unknown>)
 export type NodeSpec = Partial<{ Name: string, Labels: Record<string, string>, Role: ("worker" | "manager"), Availability: ("active" | "pause" | "drain") }>
 export type Platform = Partial<{ Architecture: string, OS: string }>
 export type EngineDescription = Partial<{ EngineVersion: string, Labels: Record<string, string>, Plugins: Array<Partial<{ Type: string, Name: string }>> }>
@@ -83,16 +83,16 @@ export type Service = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: s
 export type ImageDeleteResponseItem = Partial<{ Untagged: string, Deleted: string }>
 export type ServiceUpdateResponse = Partial<{ Warnings: Array<string> }>
 export type ContainerSummary = Partial<{ Id: string, Names: Array<string>, Image: string, ImageID: string, Command: string, Created: number, Ports: Array<Port>, SizeRw: number, SizeRootFs: number, Labels: Record<string, string>, State: string, Status: string, HostConfig: Partial<{ NetworkMode: string }>, NetworkSettings: Partial<{ Networks: Record<string, EndpointSettings> }>, Mounts: Array<MountPoint> }>
-export type Driver = { Name: string, Options?: Record<string, string> }
+export type Driver = ({ Name: string, Options?: Record<string, string> } & Record<string, unknown>)
 export type SecretSpec = Partial<{ Name: string, Labels: Record<string, string>, Data: string, Driver: Driver, Templating: Driver }>
 export type Secret = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: string, UpdatedAt: string, Spec: SecretSpec }>
 export type ConfigSpec = Partial<{ Name: string, Labels: Record<string, string>, Data: string, Templating: Driver }>
 export type Config = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: string, UpdatedAt: string, Spec: ConfigSpec }>
 export type ContainerState = (Partial<{ Status: ("created" | "running" | "paused" | "restarting" | "removing" | "exited" | "dead"), Running: boolean, Paused: boolean, Restarting: boolean, OOMKilled: boolean, Dead: boolean, Pid: number, ExitCode: number, Error: string, StartedAt: string, FinishedAt: string, Health: Health }> | null)
-export type ContainerCreateResponse = { Id: string, Warnings: Array<string> }
+export type ContainerCreateResponse = ({ Id: string, Warnings: Array<string> } & Record<string, unknown>)
 export type ContainerWaitExitError = Partial<{ Message: string }>
-export type ContainerWaitResponse = { StatusCode: number, Error?: ContainerWaitExitError }
-export type SystemVersion = Partial<{ Platform: { Name: string }, Components: Array<{ Name: string, Version: string, Details?: (Partial<{  }> | null) }>, Version: string, ApiVersion: string, MinAPIVersion: string, GitCommit: string, GoVersion: string, Os: string, Arch: string, KernelVersion: string, Experimental: boolean, BuildTime: string }>
+export type ContainerWaitResponse = ({ StatusCode: number, Error?: ContainerWaitExitError } & Record<string, unknown>)
+export type SystemVersion = Partial<{ Platform: ({ Name: string } & Record<string, unknown>), Components: Array<({ Name: string, Version: string, Details?: (Partial<{  }> | null) } & Record<string, unknown>)>, Version: string, ApiVersion: string, MinAPIVersion: string, GitCommit: string, GoVersion: string, Os: string, Arch: string, KernelVersion: string, Experimental: boolean, BuildTime: string }>
 export type PluginsInfo = Partial<{ Volume: Array<string>, Network: Array<string>, Authorization: Array<string>, Log: Array<string> }>
 export type IndexInfo = (Partial<{ Name: string, Mirrors: Array<string>, Secure: boolean, Official: boolean }> | null)
 export type RegistryServiceConfig = (Partial<{ AllowNondistributableArtifactsCIDRs: Array<string>, AllowNondistributableArtifactsHostnames: Array<string>, InsecureRegistryCIDRs: Array<string>, IndexConfigs: Record<string, IndexInfo>, Mirrors: Array<string> }> | null)
@@ -106,7 +106,7 @@ export type EventActor = Partial<{ ID: string, Attributes: Record<string, string
 export type EventMessage = Partial<{ Type: ("builder" | "config" | "container" | "daemon" | "image" | "network" | "node" | "plugin" | "secret" | "service" | "volume"), Action: string, Actor: EventActor, scope: ("local" | "swarm"), time: number, timeNano: number }>
 export type OCIDescriptor = Partial<{ mediaType: string, digest: string, size: number }>
 export type OCIPlatform = Partial<{ architecture: string, os: string, "os.version": string, "os.features": Array<string>, variant: string }>
-export type DistributionInspect = { Descriptor: OCIDescriptor, Platforms: Array<OCIPlatform> }
+export type DistributionInspect = ({ Descriptor: OCIDescriptor, Platforms: Array<OCIPlatform> } & Record<string, unknown>)
 
     // </Schemas>
     }
@@ -182,9 +182,9 @@ export type get_ContainerTop = {
         
         
           }
-      responses: {200: Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }>,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+      responses: {200: (Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }> | Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }>),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -237,8 +237,8 @@ export type get_ContainerExport = {
         
           }
       responses: {200: unknown,
-404: unknown,
-500: unknown,
+404: (Schemas.ErrorResponse | unknown),
+500: Schemas.ErrorResponse,
 },
       
     }
@@ -273,8 +273,8 @@ export type post_ContainerResize = {
         
           }
       responses: {200: unknown,
-404: unknown,
-500: unknown,
+404: (Schemas.ErrorResponse | unknown),
+500: Schemas.ErrorResponse,
 },
       
     }
@@ -292,8 +292,8 @@ export type post_ContainerStart = {
           }
       responses: {204: unknown,
 304: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -311,8 +311,8 @@ export type post_ContainerStop = {
           }
       responses: {204: unknown,
 304: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -329,8 +329,8 @@ export type post_ContainerRestart = {
         
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -347,9 +347,9 @@ export type post_ContainerKill = {
         
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-409: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+409: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -384,9 +384,9 @@ export type post_ContainerRename = {
         
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-409: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+409: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -403,8 +403,8 @@ export type post_ContainerPause = {
         
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -421,8 +421,8 @@ export type post_ContainerUnpause = {
         
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -460,9 +460,9 @@ export type get_ContainerAttachWebsocket = {
           }
       responses: {101: unknown,
 200: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -498,10 +498,10 @@ export type delete_ContainerDelete = {
         
           }
       responses: {204: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-409: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+409: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -537,10 +537,10 @@ export type put_PutContainerArchive = {
         body:  Blob,
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-403: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+403: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -557,9 +557,9 @@ export type head_ContainerArchiveInfo = {
         
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       responseHeaders: {200: { "X-Docker-Container-Path-Stat": string },
 },
@@ -681,7 +681,7 @@ export type get_ImageHistory = {
         
         
           }
-      responses: {200: Array<{ Id: string, Created: number, CreatedBy: string, Tags: Array<string>, Size: number, Comment: string }>,
+      responses: {200: Array<({ Id: string, Created: number, CreatedBy: string, Tags: Array<string>, Size: number, Comment: string } & Record<string, unknown>)>,
 404: Schemas.ErrorResponse,
 500: Schemas.ErrorResponse,
 },
@@ -700,8 +700,8 @@ export type post_ImagePush = {
         
           }
       responses: {200: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -718,10 +718,10 @@ export type post_ImageTag = {
         
           }
       responses: {201: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-409: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+409: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -790,7 +790,7 @@ export type post_SystemAuth = {
         
         body:  Schemas.AuthConfig,
           }
-      responses: {200: { Status: string, IdentityToken?: string },
+      responses: {200: ({ Status: string, IdentityToken?: string } & Record<string, unknown>),
 204: unknown,
 401: Schemas.ErrorResponse,
 500: Schemas.ErrorResponse,
@@ -825,8 +825,8 @@ export type get_SystemPing = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: never,
-      responses: {200: unknown,
-500: unknown,
+      responses: {200: string,
+500: Schemas.ErrorResponse,
 },
       responseHeaders: {200: { Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string },
 500: { "Cache-Control": string, Pragma: string },
@@ -838,8 +838,8 @@ export type head_SystemPingHead = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: never,
-      responses: {200: unknown,
-500: unknown,
+      responses: {200: string,
+500: Schemas.ErrorResponse,
 },
       responseHeaders: {200: { Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string },
 },
@@ -892,8 +892,8 @@ export type get_SystemDataUsage = {
         
         
           }
-      responses: {200: Partial<{ LayersSize: number, Images: Array<Schemas.ImageSummary>, Containers: Array<Schemas.ContainerSummary>, Volumes: Array<Schemas.Volume>, BuildCache: Array<Schemas.BuildCache> }>,
-500: Schemas.ErrorResponse,
+      responses: {200: (Partial<{ LayersSize: number, Images: Array<Schemas.ImageSummary>, Containers: Array<Schemas.ContainerSummary>, Volumes: Array<Schemas.Volume>, BuildCache: Array<Schemas.BuildCache> }> | Partial<{ LayersSize: number, Images: Array<Schemas.ImageSummary>, Containers: Array<Schemas.ContainerSummary>, Volumes: Array<Schemas.Volume>, BuildCache: Array<Schemas.BuildCache> }>),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -998,9 +998,9 @@ export type post_ExecResize = {
         
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1107,9 +1107,9 @@ export type delete_VolumeDelete = {
         
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-409: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+409: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1178,9 +1178,9 @@ export type delete_NetworkDelete = {
         
           }
       responses: {204: unknown,
-403: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+403: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1194,7 +1194,7 @@ export type post_NetworkCreate = {
         
         
         
-        body:  { Name: string, CheckDuplicate?: boolean, Driver?: string, Internal?: boolean, Attachable?: boolean, Ingress?: boolean, IPAM?: Schemas.IPAM, EnableIPv6?: boolean, Options?: Record<string, string>, Labels?: Record<string, string> },
+        body:  ({ Name: string, CheckDuplicate?: boolean, Driver?: string, Internal?: boolean, Attachable?: boolean, Ingress?: boolean, IPAM?: Schemas.IPAM, EnableIPv6?: boolean, Options?: Record<string, string>, Labels?: Record<string, string> } & Record<string, unknown>),
           }
       responses: {201: Partial<{ Id: string, Warning: string }>,
 403: Schemas.ErrorResponse,
@@ -1216,9 +1216,9 @@ export type post_NetworkConnect = {
         body?:  Partial<{ Container: string, EndpointConfig: Schemas.EndpointSettings }>,
           }
       responses: {200: unknown,
-403: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+403: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1235,9 +1235,9 @@ export type post_NetworkDisconnect = {
         body?:  Partial<{ Container: string, Force: boolean }>,
           }
       responses: {200: unknown,
-403: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+403: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1287,8 +1287,8 @@ export type get_GetPluginPrivileges = {
         
         
           }
-      responses: {200: Array<Schemas.PluginPrivilege>,
-500: Schemas.ErrorResponse,
+      responses: {200: (Array<Schemas.PluginPrivilege> | Array<Schemas.PluginPrivilege>),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1321,9 +1321,9 @@ export type get_PluginInspect = {
         
         
           }
-      responses: {200: Schemas.Plugin,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+      responses: {200: (Schemas.Plugin | Schemas.Plugin),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1339,9 +1339,9 @@ export type delete_PluginDelete = {
         
         
           }
-      responses: {200: Schemas.Plugin,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+      responses: {200: (Schemas.Plugin | Schemas.Plugin),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1358,8 +1358,8 @@ export type post_PluginEnable = {
         
           }
       responses: {200: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1376,8 +1376,8 @@ export type post_PluginDisable = {
         
           }
       responses: {200: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1394,8 +1394,8 @@ export type post_PluginUpgrade = {
         body:  Array<Schemas.PluginPrivilege>,
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1412,7 +1412,7 @@ export type post_PluginCreate = {
         
           }
       responses: {204: unknown,
-500: Schemas.ErrorResponse,
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1429,8 +1429,8 @@ export type post_PluginPush = {
         
           }
       responses: {200: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1447,8 +1447,8 @@ export type post_PluginSet = {
         body:  Array<string>,
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1464,9 +1464,9 @@ export type get_NodeList = {
         
         
           }
-      responses: {200: Array<Schemas.Node>,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (Array<Schemas.Node> | Array<Schemas.Node>),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1482,10 +1482,10 @@ export type get_NodeInspect = {
         
         
           }
-      responses: {200: Schemas.Node,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (Schemas.Node | Schemas.Node),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1502,9 +1502,9 @@ export type delete_NodeDelete = {
         
           }
       responses: {200: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1521,10 +1521,10 @@ export type post_NodeUpdate = {
         body:  Schemas.NodeSpec,
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1534,10 +1534,10 @@ export type get_SwarmInspect = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: never,
-      responses: {200: Schemas.Swarm,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (Schemas.Swarm | Schemas.Swarm),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1553,10 +1553,10 @@ export type post_SwarmInit = {
         
         body?:  Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, DataPathPort: number, DefaultAddrPool: Array<string>, ForceNewCluster: boolean, SubnetSize: number, Spec: Schemas.SwarmSpec }>,
           }
-      responses: {200: string,
-400: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (string | string),
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1573,9 +1573,9 @@ export type post_SwarmJoin = {
         body?:  Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, RemoteAddrs: Array<string>, JoinToken: string }>,
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1592,8 +1592,8 @@ export type post_SwarmLeave = {
         
           }
       responses: {200: unknown,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1610,9 +1610,9 @@ export type post_SwarmUpdate = {
         body:  Schemas.SwarmSpec,
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1622,9 +1622,9 @@ export type get_SwarmUnlockkey = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: never,
-      responses: {200: Partial<{ UnlockKey: string }>,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (Partial<{ UnlockKey: string }> | Partial<{ UnlockKey: string }>),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1658,9 +1658,9 @@ export type get_ServiceList = {
         
         
           }
-      responses: {200: Array<Schemas.Service>,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (Array<Schemas.Service> | Array<Schemas.Service>),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1697,10 +1697,10 @@ export type get_ServiceInspect = {
         
         
           }
-      responses: {200: Schemas.Service,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (Schemas.Service | Schemas.Service),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1717,9 +1717,9 @@ export type delete_ServiceDelete = {
         
           }
       responses: {200: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1906,10 +1906,10 @@ export type post_SecretUpdate = {
         body:  Schemas.SecretSpec,
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -2001,10 +2001,10 @@ export type post_ConfigUpdate = {
         body:  Schemas.ConfigSpec,
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -2187,7 +2187,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | "head" | "options" | MutationMethod;
+export type Method = "get" | "head" | "options" | "trace" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type ResponseFormat = "json" | "sse";
@@ -2208,6 +2208,14 @@ put: {
         }
     } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
     // </EndpointRequestFormats>
+    
+
+    // <EndpointParameterStyles>
+    export type ParameterSerialization = { style: string; explode: boolean; allowReserved: boolean };
+    export type EndpointParameterStyles = Partial<Record<"query" | "path" | "header" | "cookie", Record<string, ParameterSerialization>>>;
+    /** OpenAPI parameter styles used by the built-in encoders. */
+    export const endpointParameterStyles = {"get":{"/containers/json":{"query":{"all":{"style":"form","explode":true,"allowReserved":false},"limit":{"style":"form","explode":true,"allowReserved":false},"size":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/containers/{id}/json":{"query":{"size":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/top":{"query":{"ps_args":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/logs":{"query":{"follow":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false},"since":{"style":"form","explode":true,"allowReserved":false},"until":{"style":"form","explode":true,"allowReserved":false},"timestamps":{"style":"form","explode":true,"allowReserved":false},"tail":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/changes":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/export":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/stats":{"query":{"stream":{"style":"form","explode":true,"allowReserved":false},"one-shot":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/attach/ws":{"query":{"detachKeys":{"style":"form","explode":true,"allowReserved":false},"logs":{"style":"form","explode":true,"allowReserved":false},"stream":{"style":"form","explode":true,"allowReserved":false},"stdin":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/archive":{"query":{"path":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/images/json":{"query":{"all":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false},"shared-size":{"style":"form","explode":true,"allowReserved":false},"digests":{"style":"form","explode":true,"allowReserved":false}}},"/images/{name}/json":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}/history":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/search":{"query":{"term":{"style":"form","explode":true,"allowReserved":false},"limit":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/events":{"query":{"since":{"style":"form","explode":true,"allowReserved":false},"until":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/system/df":{"query":{"type":{"style":"form","explode":true,"allowReserved":false}}},"/images/{name}/get":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/get":{"query":{"names":{"style":"form","explode":false,"allowReserved":false}}},"/exec/{id}/json":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/volumes/{name}":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/networks":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/networks/{id}":{"query":{"verbose":{"style":"form","explode":true,"allowReserved":false},"scope":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/privileges":{"query":{"remote":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/{name}/json":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/nodes":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/nodes/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/services":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false},"status":{"style":"form","explode":true,"allowReserved":false}}},"/services/{id}":{"query":{"insertDefaults":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/services/{id}/logs":{"query":{"details":{"style":"form","explode":true,"allowReserved":false},"follow":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false},"since":{"style":"form","explode":true,"allowReserved":false},"timestamps":{"style":"form","explode":true,"allowReserved":false},"tail":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/tasks":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/tasks/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/tasks/{id}/logs":{"query":{"details":{"style":"form","explode":true,"allowReserved":false},"follow":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false},"since":{"style":"form","explode":true,"allowReserved":false},"timestamps":{"style":"form","explode":true,"allowReserved":false},"tail":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/secrets":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/secrets/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/configs":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/configs/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/distribution/{name}/json":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}}},"post":{"/containers/create":{"query":{"name":{"style":"form","explode":true,"allowReserved":false},"platform":{"style":"form","explode":true,"allowReserved":false}}},"/containers/{id}/resize":{"query":{"h":{"style":"form","explode":true,"allowReserved":false},"w":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/start":{"query":{"detachKeys":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/stop":{"query":{"signal":{"style":"form","explode":true,"allowReserved":false},"t":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/restart":{"query":{"signal":{"style":"form","explode":true,"allowReserved":false},"t":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/kill":{"query":{"signal":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/update":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/rename":{"query":{"name":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/pause":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/unpause":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/attach":{"query":{"detachKeys":{"style":"form","explode":true,"allowReserved":false},"logs":{"style":"form","explode":true,"allowReserved":false},"stream":{"style":"form","explode":true,"allowReserved":false},"stdin":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/wait":{"query":{"condition":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/build":{"query":{"dockerfile":{"style":"form","explode":true,"allowReserved":false},"t":{"style":"form","explode":true,"allowReserved":false},"extrahosts":{"style":"form","explode":true,"allowReserved":false},"remote":{"style":"form","explode":true,"allowReserved":false},"q":{"style":"form","explode":true,"allowReserved":false},"nocache":{"style":"form","explode":true,"allowReserved":false},"cachefrom":{"style":"form","explode":true,"allowReserved":false},"pull":{"style":"form","explode":true,"allowReserved":false},"rm":{"style":"form","explode":true,"allowReserved":false},"forcerm":{"style":"form","explode":true,"allowReserved":false},"memory":{"style":"form","explode":true,"allowReserved":false},"memswap":{"style":"form","explode":true,"allowReserved":false},"cpushares":{"style":"form","explode":true,"allowReserved":false},"cpusetcpus":{"style":"form","explode":true,"allowReserved":false},"cpuperiod":{"style":"form","explode":true,"allowReserved":false},"cpuquota":{"style":"form","explode":true,"allowReserved":false},"buildargs":{"style":"form","explode":true,"allowReserved":false},"shmsize":{"style":"form","explode":true,"allowReserved":false},"squash":{"style":"form","explode":true,"allowReserved":false},"labels":{"style":"form","explode":true,"allowReserved":false},"networkmode":{"style":"form","explode":true,"allowReserved":false},"platform":{"style":"form","explode":true,"allowReserved":false},"target":{"style":"form","explode":true,"allowReserved":false},"outputs":{"style":"form","explode":true,"allowReserved":false}},"header":{"Content-type":{"style":"simple","explode":false,"allowReserved":false},"X-Registry-Config":{"style":"simple","explode":false,"allowReserved":false}}},"/build/prune":{"query":{"keep-storage":{"style":"form","explode":true,"allowReserved":false},"all":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/images/create":{"query":{"fromImage":{"style":"form","explode":true,"allowReserved":false},"fromSrc":{"style":"form","explode":true,"allowReserved":false},"repo":{"style":"form","explode":true,"allowReserved":false},"tag":{"style":"form","explode":true,"allowReserved":false},"message":{"style":"form","explode":true,"allowReserved":false},"changes":{"style":"form","explode":false,"allowReserved":false},"platform":{"style":"form","explode":true,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}/push":{"query":{"tag":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}/tag":{"query":{"repo":{"style":"form","explode":true,"allowReserved":false},"tag":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/commit":{"query":{"container":{"style":"form","explode":true,"allowReserved":false},"repo":{"style":"form","explode":true,"allowReserved":false},"tag":{"style":"form","explode":true,"allowReserved":false},"comment":{"style":"form","explode":true,"allowReserved":false},"author":{"style":"form","explode":true,"allowReserved":false},"pause":{"style":"form","explode":true,"allowReserved":false},"changes":{"style":"form","explode":true,"allowReserved":false}}},"/images/load":{"query":{"quiet":{"style":"form","explode":true,"allowReserved":false}}},"/containers/{id}/exec":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/exec/{id}/start":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/exec/{id}/resize":{"query":{"h":{"style":"form","explode":true,"allowReserved":false},"w":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/networks/{id}/connect":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/networks/{id}/disconnect":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/networks/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/pull":{"query":{"remote":{"style":"form","explode":true,"allowReserved":false},"name":{"style":"form","explode":true,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/enable":{"query":{"timeout":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/disable":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/upgrade":{"query":{"remote":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/create":{"query":{"name":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/{name}/push":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/set":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/nodes/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/swarm/leave":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}}},"/swarm/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false},"rotateWorkerToken":{"style":"form","explode":true,"allowReserved":false},"rotateManagerToken":{"style":"form","explode":true,"allowReserved":false},"rotateManagerUnlockKey":{"style":"form","explode":true,"allowReserved":false}}},"/services/create":{"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/services/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false},"registryAuthFrom":{"style":"form","explode":true,"allowReserved":false},"rollback":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/secrets/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/configs/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}}},"delete":{"/containers/{id}":{"query":{"v":{"style":"form","explode":true,"allowReserved":false},"force":{"style":"form","explode":true,"allowReserved":false},"link":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false},"noprune":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes/{name}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/networks/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/nodes/{id}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/services/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/secrets/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/configs/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}}},"put":{"/containers/{id}/archive":{"query":{"path":{"style":"form","explode":true,"allowReserved":false},"noOverwriteDirNonDir":{"style":"form","explode":true,"allowReserved":false},"copyUIDGID":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes/{name}":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}}},"head":{"/containers/{id}/archive":{"query":{"path":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}}}} as Partial<Record<string, Partial<Record<string, EndpointParameterStyles>>>>;
+    // </EndpointParameterStyles>
     
 
     // <EndpointResponseFormats>
@@ -2271,8 +2279,8 @@ export interface FetcherResponse {
 }
 
 export interface Fetcher {
-    decodePathParams?: (path: string, pathParams: unknown) => string
-  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined
+    decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string
+  encodeSearchParams?: (searchParams: unknown, styles?: Record<string, ParameterSerialization>) => URLSearchParams | undefined
   /** Merge cookie params into request headers (default: Cookie header). */
   encodeCookies?: (cookies: unknown, headers: Headers) => void
     //
@@ -2284,6 +2292,8 @@ export interface Fetcher {
       path: string;
       /** How to encode `parameters.body` (from OpenAPI requestBody content type). */
       requestFormat: RequestFormat;
+      /** OpenAPI parameter serialization metadata for the current endpoint. */
+      parameterStyles?: EndpointParameterStyles;
       /** OpenAPI security requirements for this operation. Empty means no credentials are required. */
       security?: SecurityRequirements;
       overrides?: RequestInit;
@@ -2397,7 +2407,7 @@ type ApiRequestOptions = {
 
 /** Parameter bag for an endpoint + request options. */
 export type ApiCallParams<TEndpoint> = TEndpoint extends { parameters: infer UParams }
-  ? NotNever<UParams> extends true
+  ? NotNever<InferSchemaInput<UParams>> extends true
     ? InferSchemaInput<UParams> & ApiRequestOptions
     : ApiRequestOptions
   : ApiRequestOptions;
@@ -2473,25 +2483,97 @@ export class ApiClient {
    * Replace path parameters in URL
    * Supports both OpenAPI format {param} and Express format :param
    */
-  defaultDecodePathParams = (url: string, params: unknown): string => {
+  defaultDecodePathParams = (url: string, params: unknown, styles?: Record<string, ParameterSerialization>): string => {
     const record = (params ?? {}) as Record<string, unknown>;
+    const encode = (value: unknown) => encodeURIComponent(String(value));
+    const serialize = (key: string, value: unknown): string => {
+      const parameterStyle = styles?.[key];
+      const style = parameterStyle?.style ?? "simple";
+      const explode = parameterStyle?.explode ?? false;
+      if (style === "label") {
+        if (Array.isArray(value)) return "." + value.filter((item) => item != null).map(encode).join(explode ? "." : ",");
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return "." + (explode ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".") : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","));
+        }
+        return "." + encode(value);
+      }
+      if (style === "matrix") {
+        if (Array.isArray(value)) return explode ? value.filter((item) => item != null).map((item) => ";" + key + "=" + encode(item)).join("") : ";" + key + "=" + value.filter((item) => item != null).map(encode).join(",");
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return explode ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("") : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
+        }
+        return ";" + key + "=" + encode(value);
+      }
+      if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
+      if (value && typeof value === "object") {
+        return Object.entries(value as Record<string, unknown>)
+          .filter(([, item]) => item != null)
+          .map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)])
+          .flat()
+          .join(",");
+      }
+      return encode(value);
+    };
     return url
-      .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
+      .replace(/{([^}]+)}/g, (_, key: string) =>
+        record[key] != null ? serialize(key, record[key]) : `{${key}}`,
+      )
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+        record[key] != null ? serialize(key, record[key]) : `:${key}`,
+      );
   }
 
   /** Uses URLSearchParams, skips null/undefined values */
-  defaultEncodeSearchParams = (queryParams: unknown): URLSearchParams | undefined => {
+  defaultEncodeSearchParams = (queryParams: unknown, styles?: Record<string, ParameterSerialization>): URLSearchParams | undefined => {
     if (!queryParams || typeof queryParams !== "object") return;
 
     const searchParams = new URLSearchParams();
+    const rawEntries: Array<{ key: string; value: string; allowReserved: boolean }> = [];
+    const append = (key: string, value: unknown, allowReserved = false) => {
+      const stringValue = String(value);
+      searchParams.append(key, stringValue);
+      rawEntries.push({ key, value: stringValue, allowReserved });
+    };
+    const encodeQueryComponent = (value: string, allowReserved: boolean) => {
+      const encoded = encodeURIComponent(value);
+      return allowReserved
+        ? encoded.replace(/%3A|%2F|%3F|%40|%21|%24|%26|%27|%28|%29|%2A|%2B|%2C|%3B|%3D|%5B|%5D/gi, (part) => decodeURIComponent(part))
+        : encoded;
+    };
+    Object.defineProperty(searchParams, "toString", {
+      value: () => rawEntries.map(({ key, value, allowReserved }) => `${encodeQueryComponent(key, false)}=${encodeQueryComponent(value, allowReserved)}`).join("&"),
+    });
     Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
       if (value != null) {
         // Skip null/undefined values
+        const parameterStyle = styles?.[key];
+        const style = parameterStyle?.style ?? "form";
+        const explode = parameterStyle?.explode ?? true;
+        const allowReserved = parameterStyle?.allowReserved === true;
         if (Array.isArray(value)) {
-          value.forEach((val) => val != null && searchParams.append(key, String(val)));
+          if (style === "spaceDelimited") append(key, value.filter((item) => item != null).map(String).join(" "), allowReserved);
+          else if (style === "pipeDelimited") append(key, value.filter((item) => item != null).map(String).join("|"), allowReserved);
+          else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
+          else append(key, value.filter((item) => item != null).map(String).join(","), allowReserved);
+        } else if (typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
+          if (style === "deepObject") {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && append(`${key}[${nestedKey}]`, item, allowReserved));
+              else append(`${key}[${nestedKey}]`, nestedValue, allowReserved);
+            }
+          } else if (explode) {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && append(nestedKey, item, allowReserved));
+              else append(nestedKey, nestedValue, allowReserved);
+            }
+          } else {
+            append(key, entries.flatMap(([nestedKey, nestedValue]) => [nestedKey, ...(Array.isArray(nestedValue) ? nestedValue : [nestedValue])]).map(String).join(","), allowReserved);
+          }
         } else {
-          searchParams.append(key, String(value));
+          append(key, value, allowReserved);
         }
       }
     });
@@ -2512,21 +2594,22 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
-    if (contentType.includes("text/event-stream")) {
+    const normalizedContentType = contentType.toLowerCase();
+    if (normalizedContentType.includes("text/event-stream")) {
       return response.body ?? null;
     }
-    if (contentType.startsWith("text/")) {
+    if (normalizedContentType.startsWith("text/")) {
       return (await response.text())
     }
 
-    if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+    if (normalizedContentType.startsWith("application/octet-stream")) {
       return new Blob([await response.arrayBuffer()])
     }
 
     if (
-      contentType.includes("application/json") ||
-      (contentType.includes("application/") && contentType.includes("json")) ||
-      contentType === "*/*"
+      normalizedContentType.includes("application/json") ||
+      (normalizedContentType.includes("application/") && normalizedContentType.includes("json")) ||
+      normalizedContentType === "*/*"
       ) {
       try {
         return await response.json();
@@ -2543,7 +2626,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -2552,7 +2635,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<InferSuccessData<TEndpoint>>;
@@ -2570,7 +2653,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -2579,7 +2662,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<InferSuccessData<TEndpoint>>;
@@ -2597,7 +2680,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -2606,7 +2689,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<InferSuccessData<TEndpoint>>;
@@ -2624,7 +2707,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -2633,7 +2716,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<InferSuccessData<TEndpoint>>;
@@ -2651,7 +2734,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -2660,7 +2743,7 @@ export class ApiClient {
       path: Path,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<InferSuccessData<TEndpoint>>;
@@ -2687,7 +2770,7 @@ export class ApiClient {
       path: TPath,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse: true; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<SafeApiResponse<TEndpoint>>;
@@ -2701,7 +2784,7 @@ export class ApiClient {
       path: TPath,
       ...params: MaybeOptionalArg<
         (TEndpoint extends { parameters: infer UParams }
-          ? NotNever<UParams> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
+          ? NotNever<InferSchemaInput<UParams>> extends true ? InferSchemaInput<UParams> & { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide } : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide }
           : { overrides?: RequestInit; queryOptions?: ApiQueryOptions; withResponse?: false; throwOnStatusError?: boolean; validate?: ValidateSide })
       >
     ): Promise<InferSuccessData<TEndpoint>>;
@@ -2739,9 +2822,16 @@ export class ApiClient {
 
       
 
-      const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(this.baseUrl + (path as string), parametersToSend.path ?? {});
+      const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
+        this.baseUrl + (path as string),
+        parametersToSend.path ?? {},
+        endpointParameterStyles[method]?.[path]?.path,
+      );
       const url = new URL(resolvedPath);
-      const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(parametersToSend.query);
+      const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
+        parametersToSend.query,
+        endpointParameterStyles[method]?.[path]?.query,
+      );
 
       if (parametersToSend.cookie) {
         const headers = new Headers((overrides as RequestInit | undefined)?.headers);
@@ -2749,6 +2839,7 @@ export class ApiClient {
         overrides = { ...overrides, headers };
       }
 
+      const parameterStyles = endpointParameterStyles[method]?.[path as string];
       const response = await this.fetcher.fetch({
         method: method,
         path: (path as string),
@@ -2756,6 +2847,7 @@ export class ApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
+        ...(parameterStyles ? { parameterStyles } : {}),
         security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements,
         ...(overrides ? { overrides } : {}),
         throwOnStatusError

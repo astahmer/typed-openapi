@@ -150,7 +150,7 @@ describe("GitHub issue regressions", () => {
     expect(none).toMatch(/query\?:\s*Partial</);
 
     const zod = generateFile({ ...ctx, runtime: "zod", includeClient: true });
-    expect(zod).toContain(".partial().optional()");
+    expect(zod).toContain(".partial().strict().optional()");
   });
 
   test("#27 nested swagger definitions do not crash", async () => {
@@ -194,7 +194,7 @@ describe("GitHub issue regressions", () => {
     );
     const ctx = mapOpenApiEndpoints(doc);
     const file = generateFile({ ...ctx, runtime: "typia", includeClient: false, schemaNaming: "always-name" });
-    expect(file).toContain("export type Pet = { name: string };");
+    expect(file).toContain("export type Pet = ({ name: string } & Record<string, unknown>);");
     expect(file).toContain("export const isPet = typia.createIs<Pet>();");
     expect(file).toContain("responses: { 200: isPet }");
   });
@@ -216,7 +216,7 @@ describe("GitHub issue regressions", () => {
     const ctx = mapOpenApiEndpoints(doc);
     const file = generateFile({ ...ctx, runtime: "zod", includeClient: true, coerce: true });
     expect(file).toContain("z.coerce.number().int()");
-    expect(file).toContain("z.coerce.boolean()");
+    expect(file).toContain("z.union([z.boolean(), z.string(), z.number()]).transform");
     expect(file).toContain("z.coerce.number()");
   });
 

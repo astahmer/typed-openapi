@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
-import { generateFile, type OutputRuntime } from "../src/generator.ts";
+import { generateFile, generateRuntimeTypeDeclarations, type OutputRuntime } from "../src/generator.ts";
 import { generateTanstackQueryFile } from "../src/tanstack-query.generator.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -32,8 +32,12 @@ const filterCtx = mapOpenApiEndpoints(filterFixture);
 const docker = (await SwaggerParser.parse(join(root, "tests/samples/docker.openapi.yaml"))) as OpenAPIObject;
 const dockerCtx = mapOpenApiEndpoints(docker);
 
+const typingAudit = (await SwaggerParser.parse(join(root, "tests/samples/typing-audit.openapi.yaml"))) as OpenAPIObject;
+const typingAuditCtx = mapOpenApiEndpoints(typingAudit);
+
 mkdirSync(join(root, "tmp/tstyche/runtimes"), { recursive: true });
 mkdirSync(join(root, "tmp/tstyche/effect-client"), { recursive: true });
+mkdirSync(join(root, "tmp/tstyche/typing-audit"), { recursive: true });
 
 for (const runtime of runtimes) {
   const promiseDir = join(root, "tmp/tstyche/runtimes", runtime);
@@ -75,6 +79,21 @@ for (const runtime of runtimes) {
       client: "effect",
     }),
   );
+
+  const typingAuditOptions = {
+    ...typingAuditCtx,
+    runtime,
+    client: "promise" as const,
+    includeClient: true,
+  };
+  const typingAuditDir = join(root, "tmp/tstyche/typing-audit", runtime);
+  mkdirSync(typingAuditDir, { recursive: true });
+  writeFileSync(join(typingAuditDir, "client.ts"), generateFile(typingAuditOptions));
+  if (runtime !== "none") {
+    const sidecarOptions = { ...typingAuditOptions, runtimeTypeDeclarations: "./client-sidecar.types.js" };
+    writeFileSync(join(typingAuditDir, "client-sidecar.ts"), generateFile(sidecarOptions));
+    writeFileSync(join(typingAuditDir, "client-sidecar.types.d.ts"), generateRuntimeTypeDeclarations(sidecarOptions));
+  }
 }
 
 // Compact effect fixture for legacy effect-client tstyche path + filter smoke
@@ -102,4 +121,4 @@ writeFileSync(
   }),
 );
 
-console.log("wrote tmp/tstyche fixtures for", runtimes.length, "runtimes + docker-effect");
+console.log("wrote tmp/tstyche fixtures for", runtimes.length, "runtimes + docker-effect + typing-audit");

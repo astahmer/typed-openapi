@@ -126,7 +126,8 @@ export const containsNamedRef = (node: SchemaNode): boolean => {
     case "object":
       return (
         Object.values(node.properties).some(containsNamedRef) ||
-        (typeof node.additionalProperties === "object" && containsNamedRef(node.additionalProperties))
+        (typeof node.additionalProperties === "object" && containsNamedRef(node.additionalProperties)) ||
+        Object.values(node.patternProperties ?? {}).some(containsNamedRef)
       );
     case "union":
     case "intersection":
@@ -138,6 +139,53 @@ export const containsNamedRef = (node: SchemaNode): boolean => {
     case "custom":
       // Custom nodes are opaque strings — no named refs to resolve inside them.
       return false;
+    default:
+      return false;
+  }
+};
+
+/** True when a named schema reference points at a later declaration. */
+export const shouldDeferNamedSchemaRef = (
+  name: string,
+  ctx: Pick<EmitCtx, "currentSchemaName" | "schemaOrder">,
+): boolean => {
+  if (!ctx.currentSchemaName || !ctx.schemaOrder) return false;
+  const currentIndex = ctx.schemaOrder.get(ctx.currentSchemaName);
+  const referencedIndex = ctx.schemaOrder.get(name);
+  return currentIndex !== undefined && referencedIndex !== undefined && referencedIndex > currentIndex;
+};
+
+/** True when a schema contains a reference to a component declared later in the emitted file. */
+export const containsDeferredNamedRef = (
+  node: SchemaNode,
+  ctx: Pick<EmitCtx, "currentSchemaName" | "schemaOrder">,
+): boolean => {
+  switch (node.kind) {
+    case "ref":
+      return (
+        shouldDeferNamedSchemaRef(node.name, ctx) ||
+        (node.generics?.some((generic) => containsDeferredNamedRef(generic, ctx)) ?? false)
+      );
+    case "array":
+      return containsDeferredNamedRef(node.items, ctx);
+    case "tuple":
+      return (
+        node.items.some((item) => containsDeferredNamedRef(item, ctx)) ||
+        (node.rest ? containsDeferredNamedRef(node.rest, ctx) : false)
+      );
+    case "object":
+      return (
+        Object.values(node.properties).some((property) => containsDeferredNamedRef(property, ctx)) ||
+        (typeof node.additionalProperties === "object" && containsDeferredNamedRef(node.additionalProperties, ctx)) ||
+        Object.values(node.patternProperties ?? {}).some((property) => containsDeferredNamedRef(property, ctx))
+      );
+    case "union":
+    case "intersection":
+      return node.members.some((member) => containsDeferredNamedRef(member, ctx));
+    case "not":
+      return containsDeferredNamedRef(node.schema, ctx);
+    case "record":
+      return containsDeferredNamedRef(node.key, ctx) || containsDeferredNamedRef(node.value, ctx);
     default:
       return false;
   }
@@ -169,8 +217,8 @@ export const effectDefaultHelperName = (baseExpr: string, lit: string): string =
  * - v4 (`effect`): `withDecodingDefaultType(Effect.succeed(...))` for both
  *
  * Default helper consts are emitted before component schemas, so referencing a named schema here
- * would hit the temporal dead zone at module load. In v4, such expressions are deferred with
- * `Schema.suspend(() => ...)` when the underlying node contains a component `ref`.
+ * would hit the temporal dead zone at module load. Such expressions are deferred with the
+ * adapter's suspend helper when the underlying node contains a component `ref`.
  */
 export const internEffectDefault = (
   baseExpr: string,
@@ -195,13 +243,13 @@ export const internEffectDefault = (
     name = `${name}_${map.size}`;
   }
 
-  const base = api === "v4" && node && containsNamedRef(node) ? `Schema.suspend(() => ${baseExpr})` : baseExpr;
+  const base = node && containsNamedRef(node) ? `${schemaNs}.suspend(() => ${baseExpr})` : baseExpr;
   const decl =
     api === "v4"
       ? `const ${name} = ${base}.pipe(${schemaNs}.withDecodingDefaultType(Effect.succeed(${lit})));`
       : kind === "prop"
-        ? `const ${name} = ${schemaNs}.optionalWith(${baseExpr}, { default: () => ${lit} });`
-        : `const ${name} = ${schemaNs}.transform(${schemaNs}.UndefinedOr(${baseExpr}), ${baseExpr}, { strict: true, decode: (i) => (i === undefined ? ${lit} : i), encode: (a) => a });`;
+        ? `const ${name} = ${schemaNs}.optionalWith(${base}, { default: () => ${lit} });`
+        : `const ${name} = ${schemaNs}.transform(${schemaNs}.UndefinedOr(${base}), ${base}, { strict: true, decode: (i) => (i === undefined ? ${lit} : i), encode: (a) => a });`;
 
   map.set(key, { name, decl });
   return name;
@@ -362,6 +410,7 @@ export const findRecursiveSchemaNames = (schemas: Array<{ name: string; node: Sc
       case "object":
         Object.values(node.properties).forEach((p) => refsIn(p, into));
         if (typeof node.additionalProperties === "object") refsIn(node.additionalProperties, into);
+        Object.values(node.patternProperties ?? {}).forEach((p) => refsIn(p, into));
         break;
       case "union":
       case "intersection":
@@ -468,4 +517,35 @@ export const emitExplicitSchemaTypeDecl = (
   return canEmitAsInterface(node)
     ? emitNamedInterface(name, node, irOpts)
     : `export type ${name} = ${irToTs(node, irOpts)}`;
+};
+
+/**
+ * Runtime validator libraries generally infer object rest/pattern schemas too
+ * narrowly (or with an impossible index signature). Keep named schema output
+ * aligned with the IR type declaration in those cases.
+ */
+export const hasObjectRestTyping = (node: SchemaNode): boolean => {
+  switch (node.kind) {
+    case "object":
+      return (
+        typeof node.additionalProperties === "object" ||
+        Object.keys(node.patternProperties ?? {}).length > 0 ||
+        Object.values(node.properties).some(hasObjectRestTyping)
+      );
+    case "array":
+      return hasObjectRestTyping(node.items);
+    case "tuple":
+      return node.items.some(hasObjectRestTyping) || (node.rest ? hasObjectRestTyping(node.rest) : false);
+    case "union":
+    case "intersection":
+      return node.members.some(hasObjectRestTyping);
+    case "not":
+      return hasObjectRestTyping(node.schema);
+    case "record":
+      return hasObjectRestTyping(node.key) || hasObjectRestTyping(node.value);
+    case "custom":
+      return node.fallback ? hasObjectRestTyping(node.fallback) : false;
+    default:
+      return false;
+  }
 };

@@ -4,7 +4,9 @@ import {
   applyNumberConstraints,
   applyObjectConstraints,
   applyStringConstraints,
+  containsDeferredNamedRef,
   emitBinaryBlobCheck,
+  emitExplicitSchemaTypeDecl,
   emitStreamCheck,
   isNullOr,
   literalValue,
@@ -12,7 +14,7 @@ import {
   objectProps,
   quote,
 } from "../shared.ts";
-import type { EmitCtx, RuntimeAdapter } from "../types.ts";
+import type { EmitCtx, NamedSchema, RuntimeAdapter } from "../types.ts";
 
 const renderOptions = (options: Record<string, string | number | boolean | undefined>): string => {
   const entries = Object.entries(options).filter(([, value]) => value !== undefined);
@@ -91,16 +93,17 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     }
     case "tuple":
       if (node.rest) {
-        const members = [...node.items, node.rest].map((item) => emitNode(item, ctx)).join(", ");
-        return `Type.Array(Type.Union([${members}]))`;
+        return `__typedOpenapiTupleWithRest([${node.items.map((item) => emitNode(item, ctx)).join(", ")}], ${emitNode(node.rest, ctx)})`;
       }
       return `Type.Tuple([${node.items.map((item) => emitNode(item, ctx)).join(", ")}])`;
     case "union":
-      return `Type.Union([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`;
+      return node.exclusive
+        ? `__typedOpenapiOneOf([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`
+        : `Type.Union([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`;
     case "intersection":
       return `Type.Intersect([${node.members.map((member) => emitNode(member, ctx)).join(", ")}])`;
     case "not":
-      return "Type.Unknown()";
+      return `Type.Not(${emitNode(node.schema, ctx)})`;
     case "ref": {
       if (node.name === "Partial" && node.generics?.[0]) {
         return `Type.Partial(${emitNode(node.generics[0], ctx)})`;
@@ -108,12 +111,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.name === "Record" && node.generics?.length === 2) {
         return `Type.Record(${emitNode(node.generics[0]!, ctx)}, ${emitNode(node.generics[1]!, ctx)})`;
       }
+      if (ctx.moduleSchemaNames?.has(node.name)) return `Type.Ref(${quote(node.name)})`;
       if (ctx.recursiveNames.has(node.name) && ctx.currentSchemaName === node.name) {
         return "This";
-      }
-      // Forward refs to other recursive schemas: defer evaluation to avoid TDZ on mutual recursion.
-      if (ctx.recursiveNames.has(node.name) && ctx.currentSchemaName !== node.name) {
-        return `Type.Unsafe(() => ${node.name})`;
       }
       return node.name;
     }
@@ -125,18 +125,35 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         .map(({ key, optional, expr }) => `${objectKey(key)}: ${optional ? `Type.Optional(${expr})` : expr}`)
         .join(", ");
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
+      const patterns = Object.entries(node.patternProperties ?? {});
       const opts = renderOptions({
         minProperties: oc.minProperties,
         maxProperties: oc.maxProperties,
         additionalProperties:
+          patterns.length > 0
+            ? "true"
+            : node.additionalProperties === true
+              ? "true"
+              : typeof node.additionalProperties === "object"
+                ? emitNode(node.additionalProperties, ctx)
+                : node.additionalProperties === false
+                  ? "false"
+                  : undefined,
+      });
+      let expr = opts ? `Type.Object({ ${body} }, ${opts})` : `Type.Object({ ${body} })`;
+      if (node.partial) expr = `Type.Partial(${expr})`;
+      if (patterns.length > 0) {
+        const patternEntries = patterns
+          .map(([pattern, patternNode]) => `${quote(pattern)}: ${emitNode(patternNode, ctx)}`)
+          .join(", ");
+        const additional =
           node.additionalProperties === true
             ? "true"
             : typeof node.additionalProperties === "object"
               ? emitNode(node.additionalProperties, ctx)
-              : undefined,
-      });
-      let expr = opts ? `Type.Object({ ${body} }, ${opts})` : `Type.Object({ ${body} })`;
-      if (node.partial) expr = `Type.Partial(${expr})`;
+              : "false";
+        expr = `__typedOpenapiObjectWithPatterns(${expr}, [${Object.keys(node.properties).map(quote).join(", ")}], { ${patternEntries} }, ${additional})`;
+      }
       return expr;
     }
     case "custom":
@@ -152,10 +169,47 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
 
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => emitNodeInner(node, ctx);
 
+const containsCrossRecursiveRef = (node: SchemaNode, currentName: string, recursiveNames: Set<string>): boolean => {
+  switch (node.kind) {
+    case "ref":
+      return (
+        (recursiveNames.has(node.name) && node.name !== currentName) ||
+        (node.generics?.some((generic) => containsCrossRecursiveRef(generic, currentName, recursiveNames)) ?? false)
+      );
+    case "array":
+      return containsCrossRecursiveRef(node.items, currentName, recursiveNames);
+    case "tuple":
+      return (
+        node.items.some((item) => containsCrossRecursiveRef(item, currentName, recursiveNames)) ||
+        (node.rest ? containsCrossRecursiveRef(node.rest, currentName, recursiveNames) : false)
+      );
+    case "object":
+      return (
+        Object.values(node.properties).some((property) =>
+          containsCrossRecursiveRef(property, currentName, recursiveNames),
+        ) ||
+        (typeof node.additionalProperties === "object" &&
+          containsCrossRecursiveRef(node.additionalProperties, currentName, recursiveNames))
+      );
+    case "union":
+    case "intersection":
+      return node.members.some((member) => containsCrossRecursiveRef(member, currentName, recursiveNames));
+    case "not":
+      return containsCrossRecursiveRef(node.schema, currentName, recursiveNames);
+    case "record":
+      return (
+        containsCrossRecursiveRef(node.key, currentName, recursiveNames) ||
+        containsCrossRecursiveRef(node.value, currentName, recursiveNames)
+      );
+    default:
+      return false;
+  }
+};
+
 export const typeboxAdapter: RuntimeAdapter = {
   name: "typebox",
-  imports: () =>
-    `import { Type, type Static } from "@sinclair/typebox";\nimport { Value } from "@sinclair/typebox/value";`,
+  imports: ({ tupleWithRest = false, objectWithPatterns = false, oneOf = false } = {}) =>
+    `import { Type, type Static } from "@sinclair/typebox";${tupleWithRest || objectWithPatterns || oneOf ? `\nimport { TypeSystem } from "@sinclair/typebox/system";` : ""}\nimport { Value } from "@sinclair/typebox/value";`,
   inferType: (expr) => `Static<typeof ${expr}>`,
   schemaType: (typeReference) => `import("@sinclair/typebox").TSchema & __TypedOpenapiSchema<${typeReference}>`,
   annotateSchema: (schemaExpr, typeReference) =>
@@ -174,5 +228,29 @@ export const typeboxAdapter: RuntimeAdapter = {
       return `export type ${name} = ${typeReference};\nexport const ${name} = ${body};`;
     }
     return `export type ${name} = Static<typeof ${name}>;\nexport const ${name} = ${body};`;
+  },
+  emitNamedSchemas: (schemas: NamedSchema[], ctx, typeReferenceForName) => {
+    const needsModule =
+      schemas.some(({ name, node }) => containsCrossRecursiveRef(node, name, ctx.recursiveNames)) ||
+      schemas.some(({ name, node }) => containsDeferredNamedRef(node, { ...ctx, currentSchemaName: name }));
+    if (!needsModule || schemas.length === 0) {
+      return schemas
+        .map(({ name, node }) => typeboxAdapter.emitNamedSchema(name, node, ctx, typeReferenceForName?.(name)))
+        .join("\n\n");
+    }
+
+    const moduleSchemaNames = new Set(schemas.map(({ name }) => name));
+    const moduleCtx = { ...ctx, moduleSchemaNames };
+    const entries = schemas
+      .map(({ name, node }) => `  ${name}: ${emitNode(node, { ...moduleCtx, currentSchemaName: name })},`)
+      .join("\n");
+    let out = `const __schemas = Type.Module({\n${entries}\n});\n\n`;
+    for (const { name } of schemas) {
+      const typeReference = typeReferenceForName?.(name);
+      out += typeReference
+        ? `export type ${name} = ${typeReference};\nexport const ${name} = __schemas.Import(${quote(name)});\n\n`
+        : `${emitExplicitSchemaTypeDecl(name, schemas.find((schema) => schema.name === name)!.node, ctx)}\nexport const ${name} = __schemas.Import(${quote(name)});\n\n`;
+    }
+    return out.trimEnd();
   },
 };

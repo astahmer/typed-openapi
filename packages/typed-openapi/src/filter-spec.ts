@@ -41,6 +41,7 @@ export const collectRefNamesFromNode = (node: SchemaNode, into: Set<string> = ne
       if (typeof node.additionalProperties === "object") {
         collectRefNamesFromNode(node.additionalProperties, into);
       }
+      Object.values(node.patternProperties ?? {}).forEach((p) => collectRefNamesFromNode(p, into));
       break;
     case "union":
     case "intersection":

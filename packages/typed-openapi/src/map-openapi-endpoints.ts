@@ -34,6 +34,12 @@ const schemaFromParameter = (param: ParameterObject): unknown => {
 
 type ParamLocation = "query" | "path" | "header" | "cookie";
 
+export type ParameterSerialization = {
+  style: string;
+  explode: boolean;
+  allowReserved: boolean;
+};
+
 export const mapOpenApiEndpoints = (
   doc: OpenAPIObject,
   options?: {
@@ -83,6 +89,12 @@ export const mapOpenApiEndpoints = (
         header: [] as ParameterObject[],
         cookie: [] as ParameterObject[],
       };
+      const parameterStyles = {
+        query: {} as Record<string, ParameterSerialization>,
+        path: {} as Record<string, ParameterSerialization>,
+        header: {} as Record<string, ParameterSerialization>,
+        cookie: {} as Record<string, ParameterSerialization>,
+      };
       const parametersByLocationAndName = new Map<string, ParameterObject>();
       for (const paramOrRef of [...(pathItemObj.parameters ?? []), ...(operation.parameters ?? [])]) {
         const param = refs.unwrap(paramOrRef);
@@ -100,6 +112,12 @@ export const mapOpenApiEndpoints = (
           if (loc === "query" || loc === "path" || loc === "header" || loc === "cookie") {
             lists[loc].push(param);
             acc[loc][param.name] = node;
+            const style = param.style ?? (loc === "query" || loc === "cookie" ? "form" : "simple");
+            parameterStyles[loc][param.name] = {
+              style,
+              explode: param.explode ?? style === "form",
+              allowReserved: param.allowReserved === true,
+            };
           }
 
           return acc;
@@ -139,12 +157,13 @@ export const mapOpenApiEndpoints = (
         const requestBody = refs.unwrap(operation.requestBody ?? {});
         const content = requestBody.content;
         const matchingMediaType = Object.keys(content).find(isAllowedParamMediaTypes);
+        const normalizedMatchingMediaType = matchingMediaType?.toLowerCase();
 
         if (matchingMediaType && content[matchingMediaType]) {
           params.body = stripReadWrite(openApiToIr(content[matchingMediaType]?.schema ?? {}, irCtx), "request");
         }
 
-        endpoint.requestFormat = match(matchingMediaType)
+        endpoint.requestFormat = match(normalizedMatchingMediaType)
           .with("application/octet-stream", () => "binary" as const)
           .with("multipart/form-data", () => "form-data" as const)
           .with("application/x-www-form-urlencoded", () => "form-url" as const)
@@ -153,6 +172,9 @@ export const mapOpenApiEndpoints = (
       }
 
       if (Object.keys(params).length) endpoint.parameters = params;
+      if (Object.values(parameterStyles).some((styles) => Object.keys(styles).length > 0)) {
+        endpoint.parameterStyles = parameterStyles;
+      }
 
       const allResponses: Record<string, SchemaNode> = {};
       const allResponseHeaders: Record<string, SchemaNode> = {};
@@ -226,16 +248,22 @@ const allowedParamMediaTypes = [
 const isAllowedParamMediaTypes = (
   mediaType: string,
 ): mediaType is (typeof allowedParamMediaTypes)[number] | `application/${string}json${string}` | `text/${string}` =>
-  (mediaType.includes("application/") && mediaType.includes("json")) ||
+  ((mediaType = mediaType.toLowerCase()).includes("application/") && mediaType.includes("json")) ||
   allowedParamMediaTypes.includes(mediaType as any) ||
   mediaType.includes("text/");
 
-const isSseMediaType = (mediaType: string) => mediaType.includes("text/event-stream");
+const isSseMediaType = (mediaType: string) => mediaType.toLowerCase().includes("text/event-stream");
 
-const isResponseMediaType = (mediaType: string) =>
-  mediaType === "*/*" ||
-  (mediaType.includes("application/") && mediaType.includes("json")) ||
-  isSseMediaType(mediaType);
+const isResponseMediaType = (mediaType: string) => {
+  const normalized = mediaType.toLowerCase();
+  return (
+    normalized === "*/*" ||
+    (normalized.includes("application/") && normalized.includes("json")) ||
+    normalized.startsWith("text/") ||
+    normalized.startsWith("application/octet-stream") ||
+    isSseMediaType(normalized)
+  );
+};
 const getAlias = ({ path, method, operation }: Endpoint) =>
   sanitizeName(
     (method + "_" + capitalize(operation.operationId ?? pathToVariableName(path))).replace(/-/g, "__"),
@@ -243,7 +271,7 @@ const getAlias = ({ path, method, operation }: Endpoint) =>
   );
 
 type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | "head" | "options" | MutationMethod;
+export type Method = "get" | "head" | "options" | "trace" | MutationMethod;
 
 export type EndpointParameters = {
   body?: SchemaNode;
@@ -258,6 +286,7 @@ type ResponseFormat = "json" | "sse";
 
 type DefaultEndpoint = {
   parameters?: EndpointParameters | undefined;
+  parameterStyles?: Record<ParamLocation, Record<string, ParameterSerialization>>;
   responses?: Record<string, SchemaNode>;
   responseHeaders?: Record<string, SchemaNode>;
 };
@@ -267,6 +296,7 @@ export type Endpoint<TConfig extends DefaultEndpoint = DefaultEndpoint> = {
   method: Method;
   path: string;
   parameters?: TConfig["parameters"];
+  parameterStyles?: TConfig["parameterStyles"];
   requestFormat: RequestFormat;
   /** How to consume the success response body (SSE skips JSON parse + output validation). */
   responseFormat: ResponseFormat;

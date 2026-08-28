@@ -27,11 +27,18 @@ export type EmitCtx = {
   schemaNodes?: ReadonlyMap<string, SchemaNode>;
   /** Currently emitting schema name (for lazy detection) */
   currentSchemaName?: string;
+  /** Declaration order of named schemas, used to defer references to later declarations. */
+  schemaOrder?: ReadonlyMap<string, number>;
   /**
    * When set, named schema refs emit as ArkType/module string defs (`"Foo"` / `"Foo[]"`)
    * so they resolve inside `type.module({ ... })`.
    */
   moduleSchemaNames?: Set<string>;
+  /**
+   * When true, emit runtime ArkType expressions that resolve module refs through
+   * `__schemas` rather than raw module definitions. Used by module predicates.
+   */
+  moduleRuntimeRefs?: boolean;
   /**
    * When true, emit number/boolean (and integer) schemas with string coercion —
    * for path/query/cookie/header params that arrive as strings over HTTP.
@@ -65,7 +72,7 @@ export type NamedSchema = { name: string; node: SchemaNode };
 
 export type RuntimeAdapter = {
   name: Exclude<OutputRuntime, "none">;
-  imports: () => string;
+  imports: (options?: { tupleWithRest?: boolean; objectWithPatterns?: boolean; oneOf?: boolean }) => string;
   /** Wrap a schema expression for type inference export */
   inferType: (schemaExpr: string) => string;
   /** Broad runtime schema type whose output comes from a generated declaration sidecar. */
@@ -97,6 +104,7 @@ export const createEmitCtx = (
     transformDates?: boolean;
     transformBigInt?: boolean;
     includeDescriptions?: boolean;
+    schemaOrder?: ReadonlyMap<string, number>;
     schemaNodes?: ReadonlyMap<string, SchemaNode>;
   },
 ): EmitCtx => ({
@@ -105,6 +113,7 @@ export const createEmitCtx = (
   indent: "  ",
   internedDefaults: new Map(),
   ...(options?.schemaNodes ? { schemaNodes: options.schemaNodes } : {}),
+  ...(options?.schemaOrder ? { schemaOrder: options.schemaOrder } : {}),
   ...(options?.coercePrimitives ? { coercePrimitives: true } : {}),
   ...(options?.transformDates ? { transformDates: true } : {}),
   ...(options?.transformBigInt ? { transformBigInt: true } : {}),

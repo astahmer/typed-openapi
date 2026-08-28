@@ -8,12 +8,14 @@ import {
   emitExplicitSchemaTypeDecl,
   emitStreamCheck,
   findMappedUnionMember,
+  hasObjectRestTyping,
   isNullOr,
   literalValue,
   objectKey,
   objectProps,
   partitionNullUnionMembers,
   quote,
+  shouldDeferNamedSchemaRef,
   withZodDefault,
   withZodDescription,
 } from "../shared.ts";
@@ -74,7 +76,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     case "number":
       return emitNumber(node, ctx);
     case "boolean":
-      return ctx.coercePrimitives ? "z.coerce.boolean()" : "z.boolean()";
+      return ctx.coercePrimitives
+        ? `z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1")`
+        : "z.boolean()";
     case "null":
       return "z.null()";
     case "unknown":
@@ -125,7 +129,11 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           return nullable ? `z.union([${disc}, z.null()])` : disc;
         }
       }
-      return `z.union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
+      const members = node.members.map((m) => emitNode(m, ctx));
+      const union = `z.union([${members.join(", ")}])`;
+      return node.exclusive
+        ? `${union}.refine((data) => [${node.members.map((m) => `${emitNode(m, ctx)}.safeParse(data).success`).join(", ")}].filter(Boolean).length === 1, { message: "oneOf" })`
+        : union;
     }
     case "intersection":
       return node.members.map((m) => emitNode(m, ctx)).reduce((acc, cur) => `${acc}.and(${cur})`);
@@ -138,6 +146,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.name === "Record" && node.generics?.length === 2) {
         return `z.record(${emitNode(node.generics[0]!, ctx)}, ${emitNode(node.generics[1]!, ctx)})`;
       }
+      if (shouldDeferNamedSchemaRef(node.name, ctx)) return `z.lazy(() => ${node.name})`;
       return node.name;
     }
     case "record":
@@ -152,10 +161,27 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         .join(", ");
       let expr = `z.object({ ${body} })`;
       if (node.partial) expr += ".partial()";
-      if (node.additionalProperties === true) expr += ".catchall(z.unknown())";
+      const patterns = Object.entries(node.patternProperties ?? {});
+      if (patterns.length > 0) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
+        const patternChecks = patterns
+          .map(
+            ([pattern, patternNode]) =>
+              `(!new RegExp(${quote(pattern)}).test(key) || ${emitNode(patternNode, ctx)}.safeParse(value).success)`,
+          )
+          .join(" && ");
+        const additionalCheck =
+          node.additionalProperties === true
+            ? "true"
+            : typeof node.additionalProperties === "object"
+              ? `${emitNode(node.additionalProperties, ctx)}.safeParse(value).success`
+              : "false";
+        expr += `.catchall(z.unknown()).refine((obj) => Object.entries(obj).every(([key, value]) => ${patternChecks} && (${namedKeys}.includes(key) || ${matching} || ${additionalCheck})))`;
+      } else if (node.additionalProperties === true) expr += ".catchall(z.unknown())";
       else if (typeof node.additionalProperties === "object") {
         expr += `.catchall(${emitNode(node.additionalProperties, ctx)})`;
-      }
+      } else expr += ".strict()";
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       if (oc.minProperties !== undefined) {
         expr += `.refine((obj) => Object.keys(obj).length >= ${oc.minProperties}, { message: "minProperties" })`;
@@ -196,12 +222,17 @@ export const zod3Adapter: RuntimeAdapter = {
     const childCtx = { ...ctx, currentSchemaName: name };
     let body = emitNode(node, childCtx);
     if (typeReference) {
+      if (ctx.recursiveNames.has(name)) body = `z.lazy(() => ${body})`;
       return `export type ${name} = ${typeReference};\nexport const ${name} = ${body};`;
     }
     if (ctx.recursiveNames.has(name)) {
       body = `z.lazy(() => ${body})`;
       const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
       return `${typeDecl}\nexport const ${name}: z.ZodType<${name}> = ${body};`;
+    }
+    if (hasObjectRestTyping(node)) {
+      const typeDecl = emitExplicitSchemaTypeDecl(name, node, ctx);
+      return `${typeDecl}\nexport const ${name} = ${body} as unknown as z.ZodType<${name}>;`;
     }
     return `export type ${name} = z.infer<typeof ${name}>;\nexport const ${name} = ${body};`;
   },

@@ -18,7 +18,7 @@ type AssertWarm = _Warm;
 
 bench("petstore client-only Pet", () => {
   return {} as ClientPet;
-}).types([0, "instantiations"]);
+}).types([2, "instantiations"]);
 
 bench("petstore zod Pet", () => {
   return {} as ZodPet;

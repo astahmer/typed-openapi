@@ -15,6 +15,7 @@ import {
   objectKey,
   objectProps,
   quote,
+  shouldDeferNamedSchemaRef,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
@@ -36,6 +37,7 @@ const canUseStruct = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()):
   if (node.kind === "object") {
     return (
       node.additionalProperties === false &&
+      (!node.patternProperties || Object.keys(node.patternProperties).length === 0) &&
       Object.keys(applyObjectConstraints(node.constraints, ctx.validation)).length === 0
     );
   }
@@ -57,6 +59,7 @@ function canMergeableMember(node: SchemaNode, ctx: EmitCtx, seen = new Set<strin
     const hasNoChecks = Object.keys(applyObjectConstraints(node.constraints, ctx.validation)).length === 0;
     return (
       hasNoChecks &&
+      (!node.patternProperties || Object.keys(node.patternProperties).length === 0) &&
       (node.additionalProperties === false ||
         (Boolean(node.additionalProperties) && Object.keys(node.properties).length === 0))
     );
@@ -145,7 +148,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     }
     case "tuple": {
       const items = node.items.map((i) => emitNode(i, ctx)).join(", ");
-      if (node.rest) return `${S}.Tuple([${items}], ${emitNode(node.rest, ctx)})`;
+      if (node.rest) return `${S}.TupleWithRest(${S}.Tuple([${items}]), [${emitNode(node.rest, ctx)}])`;
       return `${S}.Tuple([${items}])`;
     }
     case "union": {
@@ -164,7 +167,11 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           }
         }
       }
-      return `${S}.Union([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
+      const members = node.members.map((m) => emitNode(m, ctx));
+      const union = `${S}.Union([${members.join(", ")}])`;
+      return node.exclusive
+        ? `${union}.check(${S}.makeFilter((data) => [${node.members.map((m) => `${S}.is(${emitNode(m, ctx)})(data)`).join(", ")}].filter(Boolean).length === 1))`
+        : union;
     }
     case "intersection": {
       const nonNull = node.members.filter((m) => m.kind !== "null").map((m) => isNullOr(m) ?? m);
@@ -182,6 +189,9 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           (member) => Object.keys(applyObjectConstraints(member.constraints, ctx.validation)).length === 0,
         ) &&
         objectAdditionalProperties.size === 1 &&
+        objectMembers.every(
+          (member) => !member.patternProperties || Object.keys(member.patternProperties).length === 0,
+        ) &&
         [...objectAdditionalProperties].every((value) => typeof value === "boolean");
       if (canMergeObjectShapes) {
         const objs = objectMembers;
@@ -273,6 +283,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.name === "Record" && node.generics?.length === 2) {
         return emitRecord(emitNode(node.generics[0]!, ctx), emitNode(node.generics[1]!, ctx));
       }
+      if (shouldDeferNamedSchemaRef(node.name, ctx)) return `${S}.suspend(() => ${node.name})`;
       return node.name;
     }
     case "record":
@@ -292,10 +303,32 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         })
         .join(", ");
       let expr = `${S}.Struct({ ${body} })`;
-      if (node.additionalProperties === true) {
+      const patterns = Object.entries(node.patternProperties ?? {});
+      if (patterns.length > 0) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
+        const patternChecks = patterns
+          .map(
+            ([pattern, patternNode]) =>
+              `(!new RegExp(${quote(pattern)}).test(key) || ${S}.is(${emitNode(patternNode, ctx)})(value))`,
+          )
+          .join(" && ");
+        const additionalCheck =
+          node.additionalProperties === true
+            ? "true"
+            : typeof node.additionalProperties === "object"
+              ? `${S}.is(${emitNode(node.additionalProperties, ctx)})(value)`
+              : "false";
+        expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, `${S}.Unknown`)}]).check(${S}.makeFilter((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${namedKeys}.includes(key) || ${matching} || ${additionalCheck}))))`;
+      } else if (node.additionalProperties === true) {
         expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, `${S}.Unknown`)}])`;
       } else if (typeof node.additionalProperties === "object") {
-        expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, emitNode(node.additionalProperties, ctx))}])`;
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        const rest = emitNode(node.additionalProperties, ctx);
+        expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, `${S}.Unknown`)}]).check(${S}.makeFilter((data) => Object.entries(data).every(([key, value]) => ${namedKeys}.includes(key) || ${S}.is(${rest})(value))))`;
+      } else if (node.additionalProperties === false) {
+        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
+        expr = `${expr}.check(${S}.makeFilter((data) => Object.keys(data).every((key) => ${namedKeys}.includes(key))))`;
       }
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       const filters: string[] = [];
