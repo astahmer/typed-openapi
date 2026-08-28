@@ -325,7 +325,7 @@ export const get_ContainerList = {
   path: type("'/containers/json'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ all: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), limit: type("string.integer.parse"), size: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), filters: type("string") }).partial().optional() },
+  parameters: { query: type({ all: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), limit: type("string.integer.parse"), size: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["all", "limit", "size", "filters"].includes(key))).optional() },
   responses: { 200: ContainerSummary.array(), 400: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -335,7 +335,7 @@ export const post_ContainerCreate = {
   path: type("'/containers/create'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ name: type("string").narrow((s) => typeof s === "string" && new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$").test(s)), platform: type("string") }).partial().optional(), body: ContainerConfig.and(type({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }).partial()) },
+  parameters: { query: type({ name: type("string").narrow((s) => typeof s === "string" && new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$").test(s)), platform: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["name", "platform"].includes(key))).optional(), body: ContainerConfig.and(type({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }).partial()) },
   responses: { 201: ContainerCreateResponse, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -345,7 +345,7 @@ export const get_ContainerInspect = {
   path: type("'/containers/{id}/json'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ size: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ size: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["size"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type({ Id: type("string"), Created: type("string"), Path: type("string"), Args: type("string").array(), State: ContainerState, Image: type("string"), ResolvConfPath: type("string"), HostnamePath: type("string"), HostsPath: type("string"), LogPath: type("string"), Name: type("string"), RestartCount: type("number.integer"), Driver: type("string"), Platform: type("string"), MountLabel: type("string"), ProcessLabel: type("string"), AppArmorProfile: type("string"), ExecIDs: type("string").array().or(type("null")), HostConfig: HostConfig, GraphDriver: GraphDriverData, SizeRw: type("number.integer"), SizeRootFs: type("number.integer"), Mounts: MountPoint.array(), Config: ContainerConfig, NetworkSettings: NetworkSettings }).partial(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -355,7 +355,7 @@ export const get_ContainerTop = {
   path: type("'/containers/{id}/top'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ ps_args: "string = \"-ef\"" }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ ps_args: "string = \"-ef\"" }).partial().narrow((data) => Object.keys(data).every((key) => ["ps_args"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type({ Titles: type("string").array(), Processes: type("string").array().array() }).partial().or(type({ Titles: type("string").array(), Processes: type("string").array().array() }).partial()), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -365,7 +365,7 @@ export const get_ContainerLogs = {
   path: type("'/containers/{id}/logs'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ follow: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdout: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stderr: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), since: type("string.integer.parse"), until: type("string.integer.parse"), timestamps: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), tail: "string = \"all\"" }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ follow: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdout: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stderr: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), since: type("string.integer.parse"), until: type("string.integer.parse"), timestamps: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), tail: "string = \"all\"" }).partial().narrow((data) => Object.keys(data).every((key) => ["follow", "stdout", "stderr", "since", "until", "timestamps", "tail"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type("unknown"), 404: type("unknown"), 500: type("unknown") },
 };
 
@@ -375,7 +375,7 @@ export const get_ContainerChanges = {
   path: type("'/containers/{id}/changes'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: FilesystemChange.array(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -385,7 +385,7 @@ export const get_ContainerExport = {
   path: type("'/containers/{id}/export'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type("unknown"), 404: ErrorResponse.or(type("unknown")), 500: ErrorResponse },
 };
 
@@ -395,7 +395,7 @@ export const get_ContainerStats = {
   path: type("'/containers/{id}/stats'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ stream: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), "one-shot": type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ stream: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), "one-shot": type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["stream", "one-shot"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type({ "[string]": type("unknown") }), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -405,7 +405,7 @@ export const post_ContainerResize = {
   path: type("'/containers/{id}/resize'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ h: type("string.integer.parse"), w: type("string.integer.parse") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ h: type("string.integer.parse"), w: type("string.integer.parse") }).partial().narrow((data) => Object.keys(data).every((key) => ["h", "w"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type("unknown"), 404: ErrorResponse.or(type("unknown")), 500: ErrorResponse },
 };
 
@@ -415,7 +415,7 @@ export const post_ContainerStart = {
   path: type("'/containers/{id}/start'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ detachKeys: type("string") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ detachKeys: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["detachKeys"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 204: type("unknown"), 304: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -425,7 +425,7 @@ export const post_ContainerStop = {
   path: type("'/containers/{id}/stop'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ signal: type("string"), t: type("string.integer.parse") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ signal: type("string"), t: type("string.integer.parse") }).partial().narrow((data) => Object.keys(data).every((key) => ["signal", "t"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 204: type("unknown"), 304: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -435,7 +435,7 @@ export const post_ContainerRestart = {
   path: type("'/containers/{id}/restart'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ signal: type("string"), t: type("string.integer.parse") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ signal: type("string"), t: type("string.integer.parse") }).partial().narrow((data) => Object.keys(data).every((key) => ["signal", "t"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -445,7 +445,7 @@ export const post_ContainerKill = {
   path: type("'/containers/{id}/kill'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ signal: "string = \"SIGKILL\"" }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ signal: "string = \"SIGKILL\"" }).partial().narrow((data) => Object.keys(data).every((key) => ["signal"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 409: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -455,7 +455,7 @@ export const post_ContainerUpdate = {
   path: type("'/containers/{id}/update'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }), body: Resources.and(type({ RestartPolicy: RestartPolicy }).partial()) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))), body: Resources.and(type({ RestartPolicy: RestartPolicy }).partial()) },
   responses: { 200: type({ Warnings: type("string").array() }).partial(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -465,7 +465,7 @@ export const post_ContainerRename = {
   path: type("'/containers/{id}/rename'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ name: type("string") }), path: type({ id: type("string") }) },
+  parameters: { query: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 409: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -475,7 +475,7 @@ export const post_ContainerPause = {
   path: type("'/containers/{id}/pause'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -485,7 +485,7 @@ export const post_ContainerUnpause = {
   path: type("'/containers/{id}/unpause'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -495,7 +495,7 @@ export const post_ContainerAttach = {
   path: type("'/containers/{id}/attach'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ detachKeys: type("string"), logs: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stream: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdin: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdout: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stderr: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ detachKeys: type("string"), logs: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stream: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdin: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdout: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stderr: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["detachKeys", "logs", "stream", "stdin", "stdout", "stderr"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 101: type("unknown"), 200: type("unknown"), 400: type("unknown"), 404: type("unknown"), 500: type("unknown") },
 };
 
@@ -505,7 +505,7 @@ export const get_ContainerAttachWebsocket = {
   path: type("'/containers/{id}/attach/ws'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ detachKeys: type("string"), logs: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stream: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdin: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdout: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stderr: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ detachKeys: type("string"), logs: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stream: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdin: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdout: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stderr: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["detachKeys", "logs", "stream", "stdin", "stdout", "stderr"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 101: type("unknown"), 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -515,7 +515,7 @@ export const post_ContainerWait = {
   path: type("'/containers/{id}/wait'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ condition: type.enumerated("not-running", "next-exit", "removed") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ condition: type.enumerated("not-running", "next-exit", "removed") }).partial().narrow((data) => Object.keys(data).every((key) => ["condition"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: ContainerWaitResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -525,7 +525,7 @@ export const delete_ContainerDelete = {
   path: type("'/containers/{id}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ v: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), link: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ v: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), link: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["v", "force", "link"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 204: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 409: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -535,7 +535,7 @@ export const get_ContainerArchive = {
   path: type("'/containers/{id}/archive'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ path: type("string") }), path: type({ id: type("string") }) },
+  parameters: { query: type({ path: type("string") }).narrow((data) => Object.keys(data).every((key) => ["path"].includes(key))), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type("unknown"), 400: type("unknown"), 404: type("unknown"), 500: type("unknown") },
 };
 
@@ -545,7 +545,7 @@ export const put_PutContainerArchive = {
   path: type("'/containers/{id}/archive'"),
   requestFormat: type("'binary'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ path: type("string"), "noOverwriteDirNonDir?": type("string"), "copyUIDGID?": type("string") }), path: type({ id: type("string") }), body: type.instanceOf(Blob) },
+  parameters: { query: type({ path: type("string"), "noOverwriteDirNonDir?": type("string"), "copyUIDGID?": type("string") }).narrow((data) => Object.keys(data).every((key) => ["path", "noOverwriteDirNonDir", "copyUIDGID"].includes(key))), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))), body: type.instanceOf(Blob) },
   responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 403: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -555,9 +555,9 @@ export const head_ContainerArchiveInfo = {
   path: type("'/containers/{id}/archive'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ path: type("string") }), path: type({ id: type("string") }) },
+  parameters: { query: type({ path: type("string") }).narrow((data) => Object.keys(data).every((key) => ["path"].includes(key))), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
-  responseHeaders: { 200: type({ "X-Docker-Container-Path-Stat": type("string") }) },
+  responseHeaders: { 200: type({ "X-Docker-Container-Path-Stat": type("string") }).narrow((data) => Object.keys(data).every((key) => ["X-Docker-Container-Path-Stat"].includes(key))) },
 };
 
 export type post_ContainerPrune = typeof post_ContainerPrune;
@@ -566,7 +566,7 @@ export const post_ContainerPrune = {
   path: type("'/containers/prune'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ filters: type("string") }).partial().optional() },
+  parameters: { query: type({ filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["filters"].includes(key))).optional() },
   responses: { 200: type({ ContainersDeleted: type("string").array(), SpaceReclaimed: type("number.integer") }).partial(), 500: ErrorResponse },
 };
 
@@ -576,7 +576,7 @@ export const get_ImageList = {
   path: type("'/images/json'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ all: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), filters: type("string"), "shared-size": type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), digests: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional() },
+  parameters: { query: type({ all: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), filters: type("string"), "shared-size": type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), digests: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["all", "filters", "shared-size", "digests"].includes(key))).optional() },
   responses: { 200: ImageSummary.array(), 500: ErrorResponse },
 };
 
@@ -586,7 +586,7 @@ export const post_ImageBuild = {
   path: type("'/build'"),
   requestFormat: type("'binary'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ dockerfile: "string = \"Dockerfile\"", t: type("string"), extrahosts: type("string"), remote: type("string"), q: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), nocache: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), cachefrom: type("string"), pull: type("string"), rm: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), forcerm: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), memory: type("string.integer.parse"), memswap: type("string.integer.parse"), cpushares: type("string.integer.parse"), cpusetcpus: type("string"), cpuperiod: type("string.integer.parse"), cpuquota: type("string.integer.parse"), buildargs: type("string"), shmsize: type("string.integer.parse"), squash: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), labels: type("string"), networkmode: type("string"), platform: type("string"), target: type("string"), outputs: type("string") }).partial().optional(), header: type({ "Content-type": type("'application/x-tar'"), "X-Registry-Config": type("string") }).partial().optional(), body: type.instanceOf(Blob) },
+  parameters: { query: type({ dockerfile: "string = \"Dockerfile\"", t: type("string"), extrahosts: type("string"), remote: type("string"), q: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), nocache: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), cachefrom: type("string"), pull: type("string"), rm: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), forcerm: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), memory: type("string.integer.parse"), memswap: type("string.integer.parse"), cpushares: type("string.integer.parse"), cpusetcpus: type("string"), cpuperiod: type("string.integer.parse"), cpuquota: type("string.integer.parse"), buildargs: type("string"), shmsize: type("string.integer.parse"), squash: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), labels: type("string"), networkmode: type("string"), platform: type("string"), target: type("string"), outputs: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["dockerfile", "t", "extrahosts", "remote", "q", "nocache", "cachefrom", "pull", "rm", "forcerm", "memory", "memswap", "cpushares", "cpusetcpus", "cpuperiod", "cpuquota", "buildargs", "shmsize", "squash", "labels", "networkmode", "platform", "target", "outputs"].includes(key))).optional(), header: type({ "Content-type": type("'application/x-tar'"), "X-Registry-Config": type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["Content-type", "X-Registry-Config"].includes(key))).optional(), body: type.instanceOf(Blob) },
   responses: { 200: type("unknown"), 400: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -596,7 +596,7 @@ export const post_BuildPrune = {
   path: type("'/build/prune'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ "keep-storage": type("string.integer.parse"), all: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), filters: type("string") }).partial().optional() },
+  parameters: { query: type({ "keep-storage": type("string.integer.parse"), all: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["keep-storage", "all", "filters"].includes(key))).optional() },
   responses: { 200: type({ CachesDeleted: type("string").array(), SpaceReclaimed: type("number.integer") }).partial(), 500: ErrorResponse },
 };
 
@@ -606,7 +606,7 @@ export const post_ImageCreate = {
   path: type("'/images/create'"),
   requestFormat: type("'text'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ fromImage: type("string"), fromSrc: type("string"), repo: type("string"), tag: type("string"), message: type("string"), changes: type("string").array(), platform: type("string") }).partial().optional(), header: type({ "X-Registry-Auth": type("string") }).partial().optional(), body: type("string") },
+  parameters: { query: type({ fromImage: type("string"), fromSrc: type("string"), repo: type("string"), tag: type("string"), message: type("string"), changes: type("string").array(), platform: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["fromImage", "fromSrc", "repo", "tag", "message", "changes", "platform"].includes(key))).optional(), header: type({ "X-Registry-Auth": type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["X-Registry-Auth"].includes(key))).optional(), body: type("string") },
   responses: { 200: type("unknown"), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -616,7 +616,7 @@ export const get_ImageInspect = {
   path: type("'/images/{name}/json'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ name: type("string") }) },
+  parameters: { path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 200: ImageInspect, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -626,7 +626,7 @@ export const get_ImageHistory = {
   path: type("'/images/{name}/history'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ name: type("string") }) },
+  parameters: { path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 200: type({ Id: type("string"), Created: type("number.integer"), CreatedBy: type("string"), Tags: type("string").array(), Size: type("number.integer"), Comment: type("string") }).array(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -636,7 +636,7 @@ export const post_ImagePush = {
   path: type("'/images/{name}/push'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ tag: type("string") }).partial().optional(), path: type({ name: type("string") }), header: type({ "X-Registry-Auth": type("string") }) },
+  parameters: { query: type({ tag: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["tag"].includes(key))).optional(), path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))), header: type({ "X-Registry-Auth": type("string") }).narrow((data) => Object.keys(data).every((key) => ["X-Registry-Auth"].includes(key))) },
   responses: { 200: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -646,7 +646,7 @@ export const post_ImageTag = {
   path: type("'/images/{name}/tag'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ repo: type("string"), tag: type("string") }).partial().optional(), path: type({ name: type("string") }) },
+  parameters: { query: type({ repo: type("string"), tag: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["repo", "tag"].includes(key))).optional(), path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 201: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 409: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -656,7 +656,7 @@ export const delete_ImageDelete = {
   path: type("'/images/{name}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), noprune: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ name: type("string") }) },
+  parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), noprune: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["force", "noprune"].includes(key))).optional(), path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 200: ImageDeleteResponseItem.array(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -666,7 +666,7 @@ export const get_ImageSearch = {
   path: type("'/images/search'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ term: type("string"), "limit?": type("string.integer.parse"), "filters?": type("string") }) },
+  parameters: { query: type({ term: type("string"), "limit?": type("string.integer.parse"), "filters?": type("string") }).narrow((data) => Object.keys(data).every((key) => ["term", "limit", "filters"].includes(key))) },
   responses: { 200: type({ description: type("string"), is_official: type("boolean"), is_automated: type("boolean"), name: type("string"), star_count: type("number.integer") }).partial().array(), 500: ErrorResponse },
 };
 
@@ -676,7 +676,7 @@ export const post_ImagePrune = {
   path: type("'/images/prune'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ filters: type("string") }).partial().optional() },
+  parameters: { query: type({ filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["filters"].includes(key))).optional() },
   responses: { 200: type({ ImagesDeleted: ImageDeleteResponseItem.array(), SpaceReclaimed: type("number.integer") }).partial(), 500: ErrorResponse },
 };
 
@@ -718,7 +718,7 @@ export const get_SystemPing = {
   responseFormat: type("'json'"),
   parameters: type("never"),
   responses: { 200: type("string"), 500: ErrorResponse },
-  responseHeaders: { 200: type({ Swarm: type.enumerated("inactive", "pending", "error", "locked", "active/worker", "active/manager"), "Docker-Experimental": type("boolean"), "Cache-Control": "string = \"no-cache, no-store, must-revalidate\"", Pragma: "string = \"no-cache\"", "API-Version": type("string"), "Builder-Version": "string = \"2\"" }), 500: type({ "Cache-Control": "string = \"no-cache, no-store, must-revalidate\"", Pragma: "string = \"no-cache\"" }) },
+  responseHeaders: { 200: type({ Swarm: type.enumerated("inactive", "pending", "error", "locked", "active/worker", "active/manager"), "Docker-Experimental": type("boolean"), "Cache-Control": "string = \"no-cache, no-store, must-revalidate\"", Pragma: "string = \"no-cache\"", "API-Version": type("string"), "Builder-Version": "string = \"2\"" }).narrow((data) => Object.keys(data).every((key) => ["Swarm", "Docker-Experimental", "Cache-Control", "Pragma", "API-Version", "Builder-Version"].includes(key))), 500: type({ "Cache-Control": "string = \"no-cache, no-store, must-revalidate\"", Pragma: "string = \"no-cache\"" }).narrow((data) => Object.keys(data).every((key) => ["Cache-Control", "Pragma"].includes(key))) },
 };
 
 export type head_SystemPingHead = typeof head_SystemPingHead;
@@ -729,7 +729,7 @@ export const head_SystemPingHead = {
   responseFormat: type("'json'"),
   parameters: type("never"),
   responses: { 200: type("string"), 500: ErrorResponse },
-  responseHeaders: { 200: type({ Swarm: type.enumerated("inactive", "pending", "error", "locked", "active/worker", "active/manager"), "Docker-Experimental": type("boolean"), "Cache-Control": "string = \"no-cache, no-store, must-revalidate\"", Pragma: "string = \"no-cache\"", "API-Version": type("string"), "Builder-Version": type("string") }) },
+  responseHeaders: { 200: type({ Swarm: type.enumerated("inactive", "pending", "error", "locked", "active/worker", "active/manager"), "Docker-Experimental": type("boolean"), "Cache-Control": "string = \"no-cache, no-store, must-revalidate\"", Pragma: "string = \"no-cache\"", "API-Version": type("string"), "Builder-Version": type("string") }).narrow((data) => Object.keys(data).every((key) => ["Swarm", "Docker-Experimental", "Cache-Control", "Pragma", "API-Version", "Builder-Version"].includes(key))) },
 };
 
 export type post_ImageCommit = typeof post_ImageCommit;
@@ -738,7 +738,7 @@ export const post_ImageCommit = {
   path: type("'/commit'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ container: type("string"), repo: type("string"), tag: type("string"), comment: type("string"), author: type("string"), pause: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), changes: type("string") }).partial().optional(), body: ContainerConfig },
+  parameters: { query: type({ container: type("string"), repo: type("string"), tag: type("string"), comment: type("string"), author: type("string"), pause: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), changes: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["container", "repo", "tag", "comment", "author", "pause", "changes"].includes(key))).optional(), body: ContainerConfig },
   responses: { 201: IdResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -748,7 +748,7 @@ export const get_SystemEvents = {
   path: type("'/events'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ since: type("string"), until: type("string"), filters: type("string") }).partial().optional() },
+  parameters: { query: type({ since: type("string"), until: type("string"), filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["since", "until", "filters"].includes(key))).optional() },
   responses: { 200: EventMessage, 400: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -758,7 +758,7 @@ export const get_SystemDataUsage = {
   path: type("'/system/df'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ type: type.enumerated("container", "image", "volume", "build-cache").array() }).partial().optional() },
+  parameters: { query: type({ type: type.enumerated("container", "image", "volume", "build-cache").array() }).partial().narrow((data) => Object.keys(data).every((key) => ["type"].includes(key))).optional() },
   responses: { 200: type({ LayersSize: type("number.integer"), Images: ImageSummary.array(), Containers: ContainerSummary.array(), Volumes: Volume.array(), BuildCache: BuildCache.array() }).partial().or(type({ LayersSize: type("number.integer"), Images: ImageSummary.array(), Containers: ContainerSummary.array(), Volumes: Volume.array(), BuildCache: BuildCache.array() }).partial()), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -768,7 +768,7 @@ export const get_ImageGet = {
   path: type("'/images/{name}/get'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ name: type("string") }) },
+  parameters: { path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 200: type("unknown"), 500: type("unknown") },
 };
 
@@ -778,7 +778,7 @@ export const get_ImageGetAll = {
   path: type("'/images/get'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ names: type("string").array() }).partial().optional() },
+  parameters: { query: type({ names: type("string").array() }).partial().narrow((data) => Object.keys(data).every((key) => ["names"].includes(key))).optional() },
   responses: { 200: type("unknown"), 500: type("unknown") },
 };
 
@@ -788,7 +788,7 @@ export const post_ImageLoad = {
   path: type("'/images/load'"),
   requestFormat: type("'text'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ quiet: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional() },
+  parameters: { query: type({ quiet: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["quiet"].includes(key))).optional() },
   responses: { 200: type("unknown"), 500: ErrorResponse },
 };
 
@@ -798,7 +798,7 @@ export const post_ContainerExec = {
   path: type("'/containers/{id}/exec'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }), body: type({ AttachStdin: type("boolean"), AttachStdout: type("boolean"), AttachStderr: type("boolean"), ConsoleSize: type("number.integer >= 0").array().or(type("null")), DetachKeys: type("string"), Tty: type("boolean"), Env: type("string").array(), Cmd: type("string").array(), Privileged: "boolean = false", User: type("string"), WorkingDir: type("string") }).partial().optional() },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))), body: type({ AttachStdin: type("boolean"), AttachStdout: type("boolean"), AttachStderr: type("boolean"), ConsoleSize: type("number.integer >= 0").array().or(type("null")), DetachKeys: type("string"), Tty: type("boolean"), Env: type("string").array(), Cmd: type("string").array(), Privileged: "boolean = false", User: type("string"), WorkingDir: type("string") }).partial().optional() },
   responses: { 201: IdResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -808,7 +808,7 @@ export const post_ExecStart = {
   path: type("'/exec/{id}/start'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }), body: type({ Detach: type("boolean"), Tty: type("boolean"), ConsoleSize: type("number.integer >= 0").array().or(type("null")) }).partial().optional() },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))), body: type({ Detach: type("boolean"), Tty: type("boolean"), ConsoleSize: type("number.integer >= 0").array().or(type("null")) }).partial().optional() },
   responses: { 200: type("unknown"), 404: type("unknown"), 409: type("unknown") },
 };
 
@@ -818,7 +818,7 @@ export const post_ExecResize = {
   path: type("'/exec/{id}/resize'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ h: type("string.integer.parse"), w: type("string.integer.parse") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ h: type("string.integer.parse"), w: type("string.integer.parse") }).partial().narrow((data) => Object.keys(data).every((key) => ["h", "w"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -828,7 +828,7 @@ export const get_ExecInspect = {
   path: type("'/exec/{id}/json'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type({ CanRemove: type("boolean"), DetachKeys: type("string"), ID: type("string"), Running: type("boolean"), ExitCode: type("number.integer"), ProcessConfig: ProcessConfig, OpenStdin: type("boolean"), OpenStderr: type("boolean"), OpenStdout: type("boolean"), ContainerID: type("string"), Pid: type("number.integer") }).partial(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -838,7 +838,7 @@ export const get_VolumeList = {
   path: type("'/volumes'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ filters: type("string") }).partial().optional() },
+  parameters: { query: type({ filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["filters"].includes(key))).optional() },
   responses: { 200: VolumeListResponse, 500: ErrorResponse },
 };
 
@@ -858,7 +858,7 @@ export const get_VolumeInspect = {
   path: type("'/volumes/{name}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ name: type("string") }) },
+  parameters: { path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 200: Volume, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -868,7 +868,7 @@ export const put_VolumeUpdate = {
   path: type("'/volumes/{name}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ version: type("string.integer.parse") }), path: type({ name: type("string") }), body: type({ Spec: ClusterVolumeSpec }).partial().optional() },
+  parameters: { query: type({ version: type("string.integer.parse") }).narrow((data) => Object.keys(data).every((key) => ["version"].includes(key))), path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))), body: type({ Spec: ClusterVolumeSpec }).partial().optional() },
   responses: { 200: type("unknown"), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -878,7 +878,7 @@ export const delete_VolumeDelete = {
   path: type("'/volumes/{name}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ name: type("string") }) },
+  parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["force"].includes(key))).optional(), path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 409: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -888,7 +888,7 @@ export const post_VolumePrune = {
   path: type("'/volumes/prune'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ filters: type("string") }).partial().optional() },
+  parameters: { query: type({ filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["filters"].includes(key))).optional() },
   responses: { 200: type({ VolumesDeleted: type("string").array(), SpaceReclaimed: type("number.integer") }).partial(), 500: ErrorResponse },
 };
 
@@ -898,7 +898,7 @@ export const get_NetworkList = {
   path: type("'/networks'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ filters: type("string") }).partial().optional() },
+  parameters: { query: type({ filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["filters"].includes(key))).optional() },
   responses: { 200: Network.array(), 500: ErrorResponse },
 };
 
@@ -908,7 +908,7 @@ export const get_NetworkInspect = {
   path: type("'/networks/{id}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ verbose: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), scope: type("string") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ verbose: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), scope: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["verbose", "scope"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: Network, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -918,7 +918,7 @@ export const delete_NetworkDelete = {
   path: type("'/networks/{id}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 204: type("unknown"), 403: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -938,7 +938,7 @@ export const post_NetworkConnect = {
   path: type("'/networks/{id}/connect'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }), body: type({ Container: type("string"), EndpointConfig: EndpointSettings }).partial().optional() },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))), body: type({ Container: type("string"), EndpointConfig: EndpointSettings }).partial().optional() },
   responses: { 200: type("unknown"), 403: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -948,7 +948,7 @@ export const post_NetworkDisconnect = {
   path: type("'/networks/{id}/disconnect'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }), body: type({ Container: type("string"), Force: type("boolean") }).partial().optional() },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))), body: type({ Container: type("string"), Force: type("boolean") }).partial().optional() },
   responses: { 200: type("unknown"), 403: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -958,7 +958,7 @@ export const post_NetworkPrune = {
   path: type("'/networks/prune'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ filters: type("string") }).partial().optional() },
+  parameters: { query: type({ filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["filters"].includes(key))).optional() },
   responses: { 200: type({ NetworksDeleted: type("string").array() }).partial(), 500: ErrorResponse },
 };
 
@@ -968,7 +968,7 @@ export const get_PluginList = {
   path: type("'/plugins'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ filters: type("string") }).partial().optional() },
+  parameters: { query: type({ filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["filters"].includes(key))).optional() },
   responses: { 200: Plugin.array(), 500: ErrorResponse },
 };
 
@@ -978,7 +978,7 @@ export const get_GetPluginPrivileges = {
   path: type("'/plugins/privileges'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ remote: type("string") }) },
+  parameters: { query: type({ remote: type("string") }).narrow((data) => Object.keys(data).every((key) => ["remote"].includes(key))) },
   responses: { 200: PluginPrivilege.array().or(PluginPrivilege.array()), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -988,7 +988,7 @@ export const post_PluginPull = {
   path: type("'/plugins/pull'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ remote: type("string"), "name?": type("string") }), header: type({ "X-Registry-Auth": type("string") }).partial().optional(), body: PluginPrivilege.array() },
+  parameters: { query: type({ remote: type("string"), "name?": type("string") }).narrow((data) => Object.keys(data).every((key) => ["remote", "name"].includes(key))), header: type({ "X-Registry-Auth": type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["X-Registry-Auth"].includes(key))).optional(), body: PluginPrivilege.array() },
   responses: { 204: type("unknown"), 500: ErrorResponse },
 };
 
@@ -998,7 +998,7 @@ export const get_PluginInspect = {
   path: type("'/plugins/{name}/json'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ name: type("string") }) },
+  parameters: { path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 200: Plugin.or(Plugin), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1008,7 +1008,7 @@ export const delete_PluginDelete = {
   path: type("'/plugins/{name}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ name: type("string") }) },
+  parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["force"].includes(key))).optional(), path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 200: Plugin.or(Plugin), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1018,7 +1018,7 @@ export const post_PluginEnable = {
   path: type("'/plugins/{name}/enable'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ timeout: type("string.integer.parse") }).partial().optional(), path: type({ name: type("string") }) },
+  parameters: { query: type({ timeout: type("string.integer.parse") }).partial().narrow((data) => Object.keys(data).every((key) => ["timeout"].includes(key))).optional(), path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 200: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1028,7 +1028,7 @@ export const post_PluginDisable = {
   path: type("'/plugins/{name}/disable'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ name: type("string") }) },
+  parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["force"].includes(key))).optional(), path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 200: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1038,7 +1038,7 @@ export const post_PluginUpgrade = {
   path: type("'/plugins/{name}/upgrade'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ remote: type("string") }), path: type({ name: type("string") }), header: type({ "X-Registry-Auth": type("string") }).partial().optional(), body: PluginPrivilege.array() },
+  parameters: { query: type({ remote: type("string") }).narrow((data) => Object.keys(data).every((key) => ["remote"].includes(key))), path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))), header: type({ "X-Registry-Auth": type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["X-Registry-Auth"].includes(key))).optional(), body: PluginPrivilege.array() },
   responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1048,7 +1048,7 @@ export const post_PluginCreate = {
   path: type("'/plugins/create'"),
   requestFormat: type("'text'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ name: type("string") }) },
+  parameters: { query: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 204: type("unknown"), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1058,7 +1058,7 @@ export const post_PluginPush = {
   path: type("'/plugins/{name}/push'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ name: type("string") }) },
+  parameters: { path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 200: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1068,7 +1068,7 @@ export const post_PluginSet = {
   path: type("'/plugins/{name}/set'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ name: type("string") }), body: type("string").array() },
+  parameters: { path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))), body: type("string").array() },
   responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1078,7 +1078,7 @@ export const get_NodeList = {
   path: type("'/nodes'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ filters: type("string") }).partial().optional() },
+  parameters: { query: type({ filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["filters"].includes(key))).optional() },
   responses: { 200: Node.array().or(Node.array()), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1088,7 +1088,7 @@ export const get_NodeInspect = {
   path: type("'/nodes/{id}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: Node.or(Node), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1098,7 +1098,7 @@ export const delete_NodeDelete = {
   path: type("'/nodes/{id}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["force"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1108,7 +1108,7 @@ export const post_NodeUpdate = {
   path: type("'/nodes/{id}/update'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ version: type("string.integer.parse") }), path: type({ id: type("string") }), body: NodeSpec },
+  parameters: { query: type({ version: type("string.integer.parse") }).narrow((data) => Object.keys(data).every((key) => ["version"].includes(key))), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))), body: NodeSpec },
   responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1148,7 +1148,7 @@ export const post_SwarmLeave = {
   path: type("'/swarm/leave'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional() },
+  parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["force"].includes(key))).optional() },
   responses: { 200: type("unknown"), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1158,7 +1158,7 @@ export const post_SwarmUpdate = {
   path: type("'/swarm/update'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ version: type("string.integer.parse"), rotateWorkerToken: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), rotateManagerToken: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), rotateManagerUnlockKey: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }), body: SwarmSpec },
+  parameters: { query: type({ version: type("string.integer.parse"), rotateWorkerToken: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), rotateManagerToken: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), rotateManagerUnlockKey: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).narrow((data) => Object.keys(data).every((key) => ["version", "rotateWorkerToken", "rotateManagerToken", "rotateManagerUnlockKey"].includes(key))), body: SwarmSpec },
   responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1188,7 +1188,7 @@ export const get_ServiceList = {
   path: type("'/services'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ filters: type("string"), status: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional() },
+  parameters: { query: type({ filters: type("string"), status: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["filters", "status"].includes(key))).optional() },
   responses: { 200: Service.array().or(Service.array()), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1198,7 +1198,7 @@ export const post_ServiceCreate = {
   path: type("'/services/create'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { header: type({ "X-Registry-Auth": type("string") }).partial().optional(), body: ServiceSpec.and(type({ "[string]": type("unknown") })) },
+  parameters: { header: type({ "X-Registry-Auth": type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["X-Registry-Auth"].includes(key))).optional(), body: ServiceSpec.and(type({ "[string]": type("unknown") })) },
   responses: { 201: type({ ID: type("string"), Warning: type("string") }).partial(), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1208,7 +1208,7 @@ export const get_ServiceInspect = {
   path: type("'/services/{id}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ insertDefaults: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ insertDefaults: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().narrow((data) => Object.keys(data).every((key) => ["insertDefaults"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: Service.or(Service), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1218,7 +1218,7 @@ export const delete_ServiceDelete = {
   path: type("'/services/{id}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1228,7 +1228,7 @@ export const post_ServiceUpdate = {
   path: type("'/services/{id}/update'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ version: type("string.integer.parse"), registryAuthFrom: type.enumerated("spec", "previous-spec"), "rollback?": type("string") }), path: type({ id: type("string") }), header: type({ "X-Registry-Auth": type("string") }).partial().optional(), body: ServiceSpec.and(type({ "[string]": type("unknown") })) },
+  parameters: { query: type({ version: type("string.integer.parse"), registryAuthFrom: type.enumerated("spec", "previous-spec"), "rollback?": type("string") }).narrow((data) => Object.keys(data).every((key) => ["version", "registryAuthFrom", "rollback"].includes(key))), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))), header: type({ "X-Registry-Auth": type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["X-Registry-Auth"].includes(key))).optional(), body: ServiceSpec.and(type({ "[string]": type("unknown") })) },
   responses: { 200: ServiceUpdateResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1238,7 +1238,7 @@ export const get_ServiceLogs = {
   path: type("'/services/{id}/logs'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ details: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), follow: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdout: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stderr: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), since: type("string.integer.parse"), timestamps: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), tail: "string = \"all\"" }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ details: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), follow: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdout: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stderr: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), since: type("string.integer.parse"), timestamps: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), tail: "string = \"all\"" }).partial().narrow((data) => Object.keys(data).every((key) => ["details", "follow", "stdout", "stderr", "since", "timestamps", "tail"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type("unknown"), 404: type("unknown"), 500: type("unknown"), 503: type("unknown") },
 };
 
@@ -1248,7 +1248,7 @@ export const get_TaskList = {
   path: type("'/tasks'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ filters: type("string") }).partial().optional() },
+  parameters: { query: type({ filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["filters"].includes(key))).optional() },
   responses: { 200: Task.array(), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1258,7 +1258,7 @@ export const get_TaskInspect = {
   path: type("'/tasks/{id}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: Task, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1268,7 +1268,7 @@ export const get_TaskLogs = {
   path: type("'/tasks/{id}/logs'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ details: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), follow: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdout: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stderr: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), since: type("string.integer.parse"), timestamps: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), tail: "string = \"all\"" }).partial().optional(), path: type({ id: type("string") }) },
+  parameters: { query: type({ details: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), follow: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdout: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stderr: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), since: type("string.integer.parse"), timestamps: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), tail: "string = \"all\"" }).partial().narrow((data) => Object.keys(data).every((key) => ["details", "follow", "stdout", "stderr", "since", "timestamps", "tail"].includes(key))).optional(), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: type("unknown"), 404: type("unknown"), 500: type("unknown"), 503: type("unknown") },
 };
 
@@ -1278,7 +1278,7 @@ export const get_SecretList = {
   path: type("'/secrets'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ filters: type("string") }).partial().optional() },
+  parameters: { query: type({ filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["filters"].includes(key))).optional() },
   responses: { 200: Secret.array(), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1298,7 +1298,7 @@ export const get_SecretInspect = {
   path: type("'/secrets/{id}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: Secret, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1308,7 +1308,7 @@ export const delete_SecretDelete = {
   path: type("'/secrets/{id}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 204: type("unknown"), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1318,7 +1318,7 @@ export const post_SecretUpdate = {
   path: type("'/secrets/{id}/update'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ version: type("string.integer.parse") }), path: type({ id: type("string") }), body: SecretSpec },
+  parameters: { query: type({ version: type("string.integer.parse") }).narrow((data) => Object.keys(data).every((key) => ["version"].includes(key))), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))), body: SecretSpec },
   responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1328,7 +1328,7 @@ export const get_ConfigList = {
   path: type("'/configs'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ filters: type("string") }).partial().optional() },
+  parameters: { query: type({ filters: type("string") }).partial().narrow((data) => Object.keys(data).every((key) => ["filters"].includes(key))).optional() },
   responses: { 200: Config.array(), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1348,7 +1348,7 @@ export const get_ConfigInspect = {
   path: type("'/configs/{id}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 200: Config, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1358,7 +1358,7 @@ export const delete_ConfigDelete = {
   path: type("'/configs/{id}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ id: type("string") }) },
+  parameters: { path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))) },
   responses: { 204: type("unknown"), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1368,7 +1368,7 @@ export const post_ConfigUpdate = {
   path: type("'/configs/{id}/update'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { query: type({ version: type("string.integer.parse") }), path: type({ id: type("string") }), body: ConfigSpec },
+  parameters: { query: type({ version: type("string.integer.parse") }).narrow((data) => Object.keys(data).every((key) => ["version"].includes(key))), path: type({ id: type("string") }).narrow((data) => Object.keys(data).every((key) => ["id"].includes(key))), body: ConfigSpec },
   responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
@@ -1378,7 +1378,7 @@ export const get_DistributionInspect = {
   path: type("'/distribution/{name}/json'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: { path: type({ name: type("string") }) },
+  parameters: { path: type({ name: type("string") }).narrow((data) => Object.keys(data).every((key) => ["name"].includes(key))) },
   responses: { 200: DistributionInspect, 401: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -1538,7 +1538,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | "head" | "options" | MutationMethod;
+export type Method = "get" | "head" | "options" | "trace" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type ResponseFormat = "json" | "sse";
@@ -1559,6 +1559,14 @@ put: {
         }
     } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
     // </EndpointRequestFormats>
+    
+
+    // <EndpointParameterStyles>
+    export type ParameterSerialization = { style: string; explode: boolean; allowReserved: boolean };
+    export type EndpointParameterStyles = Partial<Record<"query" | "path" | "header" | "cookie", Record<string, ParameterSerialization>>>;
+    /** OpenAPI parameter styles used by the built-in encoders. */
+    export const endpointParameterStyles = {"get":{"/containers/json":{"query":{"all":{"style":"form","explode":true,"allowReserved":false},"limit":{"style":"form","explode":true,"allowReserved":false},"size":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/containers/{id}/json":{"query":{"size":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/top":{"query":{"ps_args":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/logs":{"query":{"follow":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false},"since":{"style":"form","explode":true,"allowReserved":false},"until":{"style":"form","explode":true,"allowReserved":false},"timestamps":{"style":"form","explode":true,"allowReserved":false},"tail":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/changes":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/export":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/stats":{"query":{"stream":{"style":"form","explode":true,"allowReserved":false},"one-shot":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/attach/ws":{"query":{"detachKeys":{"style":"form","explode":true,"allowReserved":false},"logs":{"style":"form","explode":true,"allowReserved":false},"stream":{"style":"form","explode":true,"allowReserved":false},"stdin":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/archive":{"query":{"path":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/images/json":{"query":{"all":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false},"shared-size":{"style":"form","explode":true,"allowReserved":false},"digests":{"style":"form","explode":true,"allowReserved":false}}},"/images/{name}/json":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}/history":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/search":{"query":{"term":{"style":"form","explode":true,"allowReserved":false},"limit":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/events":{"query":{"since":{"style":"form","explode":true,"allowReserved":false},"until":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/system/df":{"query":{"type":{"style":"form","explode":true,"allowReserved":false}}},"/images/{name}/get":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/get":{"query":{"names":{"style":"form","explode":false,"allowReserved":false}}},"/exec/{id}/json":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/volumes/{name}":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/networks":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/networks/{id}":{"query":{"verbose":{"style":"form","explode":true,"allowReserved":false},"scope":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/privileges":{"query":{"remote":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/{name}/json":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/nodes":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/nodes/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/services":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false},"status":{"style":"form","explode":true,"allowReserved":false}}},"/services/{id}":{"query":{"insertDefaults":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/services/{id}/logs":{"query":{"details":{"style":"form","explode":true,"allowReserved":false},"follow":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false},"since":{"style":"form","explode":true,"allowReserved":false},"timestamps":{"style":"form","explode":true,"allowReserved":false},"tail":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/tasks":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/tasks/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/tasks/{id}/logs":{"query":{"details":{"style":"form","explode":true,"allowReserved":false},"follow":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false},"since":{"style":"form","explode":true,"allowReserved":false},"timestamps":{"style":"form","explode":true,"allowReserved":false},"tail":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/secrets":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/secrets/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/configs":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/configs/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/distribution/{name}/json":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}}},"post":{"/containers/create":{"query":{"name":{"style":"form","explode":true,"allowReserved":false},"platform":{"style":"form","explode":true,"allowReserved":false}}},"/containers/{id}/resize":{"query":{"h":{"style":"form","explode":true,"allowReserved":false},"w":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/start":{"query":{"detachKeys":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/stop":{"query":{"signal":{"style":"form","explode":true,"allowReserved":false},"t":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/restart":{"query":{"signal":{"style":"form","explode":true,"allowReserved":false},"t":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/kill":{"query":{"signal":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/update":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/rename":{"query":{"name":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/pause":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/unpause":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/attach":{"query":{"detachKeys":{"style":"form","explode":true,"allowReserved":false},"logs":{"style":"form","explode":true,"allowReserved":false},"stream":{"style":"form","explode":true,"allowReserved":false},"stdin":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/wait":{"query":{"condition":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/build":{"query":{"dockerfile":{"style":"form","explode":true,"allowReserved":false},"t":{"style":"form","explode":true,"allowReserved":false},"extrahosts":{"style":"form","explode":true,"allowReserved":false},"remote":{"style":"form","explode":true,"allowReserved":false},"q":{"style":"form","explode":true,"allowReserved":false},"nocache":{"style":"form","explode":true,"allowReserved":false},"cachefrom":{"style":"form","explode":true,"allowReserved":false},"pull":{"style":"form","explode":true,"allowReserved":false},"rm":{"style":"form","explode":true,"allowReserved":false},"forcerm":{"style":"form","explode":true,"allowReserved":false},"memory":{"style":"form","explode":true,"allowReserved":false},"memswap":{"style":"form","explode":true,"allowReserved":false},"cpushares":{"style":"form","explode":true,"allowReserved":false},"cpusetcpus":{"style":"form","explode":true,"allowReserved":false},"cpuperiod":{"style":"form","explode":true,"allowReserved":false},"cpuquota":{"style":"form","explode":true,"allowReserved":false},"buildargs":{"style":"form","explode":true,"allowReserved":false},"shmsize":{"style":"form","explode":true,"allowReserved":false},"squash":{"style":"form","explode":true,"allowReserved":false},"labels":{"style":"form","explode":true,"allowReserved":false},"networkmode":{"style":"form","explode":true,"allowReserved":false},"platform":{"style":"form","explode":true,"allowReserved":false},"target":{"style":"form","explode":true,"allowReserved":false},"outputs":{"style":"form","explode":true,"allowReserved":false}},"header":{"Content-type":{"style":"simple","explode":false,"allowReserved":false},"X-Registry-Config":{"style":"simple","explode":false,"allowReserved":false}}},"/build/prune":{"query":{"keep-storage":{"style":"form","explode":true,"allowReserved":false},"all":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/images/create":{"query":{"fromImage":{"style":"form","explode":true,"allowReserved":false},"fromSrc":{"style":"form","explode":true,"allowReserved":false},"repo":{"style":"form","explode":true,"allowReserved":false},"tag":{"style":"form","explode":true,"allowReserved":false},"message":{"style":"form","explode":true,"allowReserved":false},"changes":{"style":"form","explode":false,"allowReserved":false},"platform":{"style":"form","explode":true,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}/push":{"query":{"tag":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}/tag":{"query":{"repo":{"style":"form","explode":true,"allowReserved":false},"tag":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/commit":{"query":{"container":{"style":"form","explode":true,"allowReserved":false},"repo":{"style":"form","explode":true,"allowReserved":false},"tag":{"style":"form","explode":true,"allowReserved":false},"comment":{"style":"form","explode":true,"allowReserved":false},"author":{"style":"form","explode":true,"allowReserved":false},"pause":{"style":"form","explode":true,"allowReserved":false},"changes":{"style":"form","explode":true,"allowReserved":false}}},"/images/load":{"query":{"quiet":{"style":"form","explode":true,"allowReserved":false}}},"/containers/{id}/exec":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/exec/{id}/start":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/exec/{id}/resize":{"query":{"h":{"style":"form","explode":true,"allowReserved":false},"w":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/networks/{id}/connect":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/networks/{id}/disconnect":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/networks/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/pull":{"query":{"remote":{"style":"form","explode":true,"allowReserved":false},"name":{"style":"form","explode":true,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/enable":{"query":{"timeout":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/disable":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/upgrade":{"query":{"remote":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/create":{"query":{"name":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/{name}/push":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/set":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/nodes/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/swarm/leave":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}}},"/swarm/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false},"rotateWorkerToken":{"style":"form","explode":true,"allowReserved":false},"rotateManagerToken":{"style":"form","explode":true,"allowReserved":false},"rotateManagerUnlockKey":{"style":"form","explode":true,"allowReserved":false}}},"/services/create":{"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/services/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false},"registryAuthFrom":{"style":"form","explode":true,"allowReserved":false},"rollback":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/secrets/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/configs/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}}},"delete":{"/containers/{id}":{"query":{"v":{"style":"form","explode":true,"allowReserved":false},"force":{"style":"form","explode":true,"allowReserved":false},"link":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false},"noprune":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes/{name}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/networks/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/nodes/{id}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/services/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/secrets/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/configs/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}}},"put":{"/containers/{id}/archive":{"query":{"path":{"style":"form","explode":true,"allowReserved":false},"noOverwriteDirNonDir":{"style":"form","explode":true,"allowReserved":false},"copyUIDGID":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes/{name}":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}}},"head":{"/containers/{id}/archive":{"query":{"path":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}}}} as Partial<Record<string, Partial<Record<string, EndpointParameterStyles>>>>;
+    // </EndpointParameterStyles>
     
 
     // <EndpointResponseFormats>
@@ -1622,8 +1630,8 @@ export interface FetcherResponse {
 }
 
 export interface Fetcher {
-    decodePathParams?: (path: string, pathParams: unknown) => string
-  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined
+    decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string
+  encodeSearchParams?: (searchParams: unknown, styles?: Record<string, ParameterSerialization>) => URLSearchParams | undefined
   /** Merge cookie params into request headers (default: Cookie header). */
   encodeCookies?: (cookies: unknown, headers: Headers) => void
     //
@@ -1848,27 +1856,79 @@ export class ApiClient {
    * Replace path parameters in URL
    * Supports both OpenAPI format {param} and Express format :param
    */
-  defaultDecodePathParams = (url: string, params: unknown): string => {
+  defaultDecodePathParams = (url: string, params: unknown, styles?: Record<string, ParameterSerialization>): string => {
     const record = (params ?? {}) as Record<string, unknown>;
+    const encode = (value: unknown) => encodeURIComponent(String(value));
+    const serialize = (key: string, value: unknown): string => {
+      const parameterStyle = styles?.[key];
+      const style = parameterStyle?.style ?? "simple";
+      const explode = parameterStyle?.explode ?? false;
+      if (style === "label") {
+        if (Array.isArray(value)) return "." + value.filter((item) => item != null).map(encode).join(explode ? "." : ",");
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return "." + (explode ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".") : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","));
+        }
+        return "." + encode(value);
+      }
+      if (style === "matrix") {
+        if (Array.isArray(value)) return explode ? value.filter((item) => item != null).map((item) => ";" + key + "=" + encode(item)).join("") : ";" + key + "=" + value.filter((item) => item != null).map(encode).join(",");
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return explode ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("") : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
+        }
+        return ";" + key + "=" + encode(value);
+      }
+      if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
+      if (value && typeof value === "object") {
+        return Object.entries(value as Record<string, unknown>)
+          .filter(([, item]) => item != null)
+          .map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)])
+          .flat()
+          .join(",");
+      }
+      return encode(value);
+    };
     return url
       .replace(/{([^}]+)}/g, (_, key: string) =>
-        record[key] != null ? encodeURIComponent(String(record[key])) : `{${key}}`,
+        record[key] != null ? serialize(key, record[key]) : `{${key}}`,
       )
       .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
-        record[key] != null ? encodeURIComponent(String(record[key])) : `:${key}`,
+        record[key] != null ? serialize(key, record[key]) : `:${key}`,
       );
   }
 
   /** Uses URLSearchParams, skips null/undefined values */
-  defaultEncodeSearchParams = (queryParams: unknown): URLSearchParams | undefined => {
+  defaultEncodeSearchParams = (queryParams: unknown, styles?: Record<string, ParameterSerialization>): URLSearchParams | undefined => {
     if (!queryParams || typeof queryParams !== "object") return;
 
     const searchParams = new URLSearchParams();
     Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
       if (value != null) {
         // Skip null/undefined values
+        const parameterStyle = styles?.[key];
+        const style = parameterStyle?.style ?? "form";
+        const explode = parameterStyle?.explode ?? true;
         if (Array.isArray(value)) {
-          value.forEach((val) => val != null && searchParams.append(key, String(val)));
+          if (style === "spaceDelimited") searchParams.append(key, value.filter((item) => item != null).map(String).join(" "));
+          else if (style === "pipeDelimited") searchParams.append(key, value.filter((item) => item != null).map(String).join("|"));
+          else if (explode) value.forEach((val) => val != null && searchParams.append(key, String(val)));
+          else searchParams.append(key, value.filter((item) => item != null).map(String).join(","));
+        } else if (typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
+          if (style === "deepObject") {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && searchParams.append(`${key}[${nestedKey}]`, String(item)));
+              else searchParams.append(`${key}[${nestedKey}]`, String(nestedValue));
+            }
+          } else if (explode) {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && searchParams.append(nestedKey, String(item)));
+              else searchParams.append(nestedKey, String(nestedValue));
+            }
+          } else {
+            searchParams.append(key, entries.flatMap(([nestedKey, nestedValue]) => [nestedKey, ...(Array.isArray(nestedValue) ? nestedValue : [nestedValue])]).map(String).join(","));
+          }
         } else {
           searchParams.append(key, String(value));
         }
@@ -2141,9 +2201,16 @@ export class ApiClient {
         }
       }
 
-      const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(this.baseUrl + (path as string), parametersToSend.path ?? {});
+      const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
+        this.baseUrl + (path as string),
+        parametersToSend.path ?? {},
+        endpointParameterStyles[method]?.[path]?.path,
+      );
       const url = new URL(resolvedPath);
-      const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(parametersToSend.query);
+      const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
+        parametersToSend.query,
+        endpointParameterStyles[method]?.[path]?.query,
+      );
 
       if (parametersToSend.cookie) {
         const headers = new Headers((overrides as RequestInit | undefined)?.headers);
@@ -2168,7 +2235,12 @@ export class ApiClient {
               ? (response.body ?? null)
               : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
           const shouldValidateOutput = validateSide === "output" || validateSide === "both";
-          if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
+          if (
+            shouldValidateOutput &&
+            responseFormat !== "sse" &&
+            (response.ok || !(errorStatusCodes as readonly number[]).includes(response.status)) &&
+            endpointSchema?.responses
+          ) {
             const responseSchema =
               endpointSchema.responses[String(response.status)] ??
               endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??

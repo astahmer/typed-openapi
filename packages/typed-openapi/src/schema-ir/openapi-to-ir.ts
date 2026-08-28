@@ -132,6 +132,7 @@ const literalFromEnumValue = (value: unknown): SchemaNode => {
 
 /** Primitive enums stay `kind: "enum"`; object/array members become a union of literals. */
 const enumToIr = (values: unknown[], meta: SchemaMeta): SchemaNode => {
+  if (values.length === 0) return { kind: "never", meta };
   if (values.length === 1) return literalFromEnumValue(values[0]);
   if (values.every(isLiteralEnumValue)) {
     return { kind: "enum", values: values as Array<string | number | boolean | null>, meta };
@@ -219,6 +220,9 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
       : undefined;
 
   if (schema.oneOf) {
+    if (schema.oneOf.length === 0) {
+      return withNullable({ kind: "never", meta }, schema);
+    }
     if (schema.oneOf.length === 1) {
       return withNullable(openApiToIrInternal(schema.oneOf[0]!, ctx, [...path, "oneOf", "0"]), schema);
     }
@@ -235,6 +239,9 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
   }
 
   if (schema.anyOf) {
+    if (schema.anyOf.length === 0) {
+      return withNullable({ kind: "never", meta }, schema);
+    }
     if (schema.anyOf.length === 1) {
       return withNullable(openApiToIrInternal(schema.anyOf[0]!, ctx, [...path, "anyOf", "0"]), schema);
     }

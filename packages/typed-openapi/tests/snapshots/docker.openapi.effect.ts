@@ -1,5 +1,5 @@
 
-  import { Effect, Schema, SchemaTransformation, Struct } from "effect";
+  import { Effect, Schema, SchemaTransformation } from "effect";
 
 // <DefaultSchemas>
 const Boolean_default_false_prop = Schema.Boolean.pipe(Schema.withDecodingDefaultType(Effect.succeed(false)));
@@ -41,319 +41,319 @@ const Schema_default_spec_prop = Schema.Literals(["spec", "previous-spec"]).pipe
 // </DefaultSchemas>
 
 // <Schemas>
-export const Port = Schema.Struct({ IP: Schema.optional(Schema.String), PrivatePort: Schema.Int, PublicPort: Schema.optional(Schema.Int), Type: Schema.Literals(["tcp", "udp", "sctp"]) });
+export const Port = Schema.StructWithRest(Schema.Struct({ IP: Schema.optional(Schema.String), PrivatePort: Schema.Int, PublicPort: Schema.optional(Schema.Int), Type: Schema.Literals(["tcp", "udp", "sctp"]) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Port = Schema.Schema.Type<typeof Port>;
 
-export const MountPoint = Schema.Struct({ Type: Schema.optional(Schema.Literals(["bind", "volume", "tmpfs", "npipe", "cluster"])), Name: Schema.optional(Schema.String), Source: Schema.optional(Schema.String), Destination: Schema.optional(Schema.String), Driver: Schema.optional(Schema.String), Mode: Schema.optional(Schema.String), RW: Schema.optional(Schema.Boolean), Propagation: Schema.optional(Schema.String) });
+export const MountPoint = Schema.StructWithRest(Schema.Struct({ Type: Schema.optional(Schema.Literals(["bind", "volume", "tmpfs", "npipe", "cluster"])), Name: Schema.optional(Schema.String), Source: Schema.optional(Schema.String), Destination: Schema.optional(Schema.String), Driver: Schema.optional(Schema.String), Mode: Schema.optional(Schema.String), RW: Schema.optional(Schema.Boolean), Propagation: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type MountPoint = Schema.Schema.Type<typeof MountPoint>;
 
-export const DeviceMapping = Schema.Struct({ PathOnHost: Schema.optional(Schema.String), PathInContainer: Schema.optional(Schema.String), CgroupPermissions: Schema.optional(Schema.String) });
+export const DeviceMapping = Schema.StructWithRest(Schema.Struct({ PathOnHost: Schema.optional(Schema.String), PathInContainer: Schema.optional(Schema.String), CgroupPermissions: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type DeviceMapping = Schema.Schema.Type<typeof DeviceMapping>;
 
-export const DeviceRequest = Schema.Struct({ Driver: Schema.optional(Schema.String), Count: Schema.optional(Schema.Int), DeviceIDs: Schema.optional(Schema.Array(Schema.String)), Capabilities: Schema.optional(Schema.Array(Schema.Array(Schema.String))), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) });
+export const DeviceRequest = Schema.StructWithRest(Schema.Struct({ Driver: Schema.optional(Schema.String), Count: Schema.optional(Schema.Int), DeviceIDs: Schema.optional(Schema.Array(Schema.String)), Capabilities: Schema.optional(Schema.Array(Schema.Array(Schema.String))), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type DeviceRequest = Schema.Schema.Type<typeof DeviceRequest>;
 
-export const ThrottleDevice = Schema.Struct({ Path: Schema.optional(Schema.String), Rate: Schema.optional(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))) });
+export const ThrottleDevice = Schema.StructWithRest(Schema.Struct({ Path: Schema.optional(Schema.String), Rate: Schema.optional(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ThrottleDevice = Schema.Schema.Type<typeof ThrottleDevice>;
 
-export const Mount = Schema.Struct({ Target: Schema.optional(Schema.String), Source: Schema.optional(Schema.String), Type: Schema.optional(Schema.Literals(["bind", "volume", "tmpfs", "npipe", "cluster"])), ReadOnly: Schema.optional(Schema.Boolean), Consistency: Schema.optional(Schema.String), BindOptions: Schema.optional(Schema.Struct({ Propagation: Schema.optional(Schema.Literals(["private", "rprivate", "shared", "rshared", "slave", "rslave"])), NonRecursive: Boolean_default_false_prop, CreateMountpoint: Boolean_default_false_prop })), VolumeOptions: Schema.optional(Schema.Struct({ NoCopy: Boolean_default_false_prop, Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), DriverConfig: Schema.optional(Schema.Struct({ Name: Schema.optional(Schema.String), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) })) })), TmpfsOptions: Schema.optional(Schema.Struct({ SizeBytes: Schema.optional(Schema.Int), Mode: Schema.optional(Schema.Int) })) });
+export const Mount = Schema.StructWithRest(Schema.Struct({ Target: Schema.optional(Schema.String), Source: Schema.optional(Schema.String), Type: Schema.optional(Schema.Literals(["bind", "volume", "tmpfs", "npipe", "cluster"])), ReadOnly: Schema.optional(Schema.Boolean), Consistency: Schema.optional(Schema.String), BindOptions: Schema.optional(Schema.StructWithRest(Schema.Struct({ Propagation: Schema.optional(Schema.Literals(["private", "rprivate", "shared", "rshared", "slave", "rslave"])), NonRecursive: Boolean_default_false_prop, CreateMountpoint: Boolean_default_false_prop }), [Schema.Record(Schema.String, Schema.Unknown)])), VolumeOptions: Schema.optional(Schema.StructWithRest(Schema.Struct({ NoCopy: Boolean_default_false_prop, Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), DriverConfig: Schema.optional(Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)])), TmpfsOptions: Schema.optional(Schema.StructWithRest(Schema.Struct({ SizeBytes: Schema.optional(Schema.Int), Mode: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Mount = Schema.Schema.Type<typeof Mount>;
 
-export const RestartPolicy = Schema.Struct({ Name: Schema.optional(Schema.Literals(["", "no", "always", "unless-stopped", "on-failure"])), MaximumRetryCount: Schema.optional(Schema.Int) });
+export const RestartPolicy = Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.Literals(["", "no", "always", "unless-stopped", "on-failure"])), MaximumRetryCount: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type RestartPolicy = Schema.Schema.Type<typeof RestartPolicy>;
 
-export const Resources = Schema.Struct({ CpuShares: Schema.optional(Schema.Int), Memory: Int_default_0_prop, CgroupParent: Schema.optional(Schema.String), BlkioWeight: Schema.optional(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0), Schema.isLessThanOrEqualTo(1000))), BlkioWeightDevice: Schema.optional(Schema.Array(Schema.Struct({ Path: Schema.optional(Schema.String), Weight: Schema.optional(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))) }))), BlkioDeviceReadBps: Schema.optional(Schema.Array(ThrottleDevice)), BlkioDeviceWriteBps: Schema.optional(Schema.Array(ThrottleDevice)), BlkioDeviceReadIOps: Schema.optional(Schema.Array(ThrottleDevice)), BlkioDeviceWriteIOps: Schema.optional(Schema.Array(ThrottleDevice)), CpuPeriod: Schema.optional(Schema.Int), CpuQuota: Schema.optional(Schema.Int), CpuRealtimePeriod: Schema.optional(Schema.Int), CpuRealtimeRuntime: Schema.optional(Schema.Int), CpusetCpus: Schema.optional(Schema.String), CpusetMems: Schema.optional(Schema.String), Devices: Schema.optional(Schema.Array(DeviceMapping)), DeviceCgroupRules: Schema.optional(Schema.Array(Schema.String)), DeviceRequests: Schema.optional(Schema.Array(DeviceRequest)), KernelMemoryTCP: Schema.optional(Schema.Int), MemoryReservation: Schema.optional(Schema.Int), MemorySwap: Schema.optional(Schema.Int), MemorySwappiness: Schema.optional(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0), Schema.isLessThanOrEqualTo(100))), NanoCpus: Schema.optional(Schema.Int), OomKillDisable: Schema.optional(Schema.Boolean), Init: Schema.optional(Schema.NullOr(Schema.Boolean)), PidsLimit: Schema.optional(Schema.NullOr(Schema.Int)), Ulimits: Schema.optional(Schema.Array(Schema.Struct({ Name: Schema.optional(Schema.String), Soft: Schema.optional(Schema.Int), Hard: Schema.optional(Schema.Int) }))), CpuCount: Schema.optional(Schema.Int), CpuPercent: Schema.optional(Schema.Int), IOMaximumIOps: Schema.optional(Schema.Int), IOMaximumBandwidth: Schema.optional(Schema.Int) });
+export const Resources = Schema.StructWithRest(Schema.Struct({ CpuShares: Schema.optional(Schema.Int), Memory: Int_default_0_prop, CgroupParent: Schema.optional(Schema.String), BlkioWeight: Schema.optional(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0), Schema.isLessThanOrEqualTo(1000))), BlkioWeightDevice: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ Path: Schema.optional(Schema.String), Weight: Schema.optional(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))) }), [Schema.Record(Schema.String, Schema.Unknown)]))), BlkioDeviceReadBps: Schema.optional(Schema.Array(ThrottleDevice)), BlkioDeviceWriteBps: Schema.optional(Schema.Array(ThrottleDevice)), BlkioDeviceReadIOps: Schema.optional(Schema.Array(ThrottleDevice)), BlkioDeviceWriteIOps: Schema.optional(Schema.Array(ThrottleDevice)), CpuPeriod: Schema.optional(Schema.Int), CpuQuota: Schema.optional(Schema.Int), CpuRealtimePeriod: Schema.optional(Schema.Int), CpuRealtimeRuntime: Schema.optional(Schema.Int), CpusetCpus: Schema.optional(Schema.String), CpusetMems: Schema.optional(Schema.String), Devices: Schema.optional(Schema.Array(DeviceMapping)), DeviceCgroupRules: Schema.optional(Schema.Array(Schema.String)), DeviceRequests: Schema.optional(Schema.Array(DeviceRequest)), KernelMemoryTCP: Schema.optional(Schema.Int), MemoryReservation: Schema.optional(Schema.Int), MemorySwap: Schema.optional(Schema.Int), MemorySwappiness: Schema.optional(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0), Schema.isLessThanOrEqualTo(100))), NanoCpus: Schema.optional(Schema.Int), OomKillDisable: Schema.optional(Schema.Boolean), Init: Schema.optional(Schema.NullOr(Schema.Boolean)), PidsLimit: Schema.optional(Schema.NullOr(Schema.Int)), Ulimits: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Soft: Schema.optional(Schema.Int), Hard: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]))), CpuCount: Schema.optional(Schema.Int), CpuPercent: Schema.optional(Schema.Int), IOMaximumIOps: Schema.optional(Schema.Int), IOMaximumBandwidth: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Resources = Schema.Schema.Type<typeof Resources>;
 
-export const Limit = Schema.Struct({ NanoCPUs: Schema.optional(Schema.Int), MemoryBytes: Schema.optional(Schema.Int), Pids: Int_default_0_prop });
+export const Limit = Schema.StructWithRest(Schema.Struct({ NanoCPUs: Schema.optional(Schema.Int), MemoryBytes: Schema.optional(Schema.Int), Pids: Int_default_0_prop }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Limit = Schema.Schema.Type<typeof Limit>;
 
-export const GenericResources = Schema.Array(Schema.Struct({ NamedResourceSpec: Schema.optional(Schema.Struct({ Kind: Schema.optional(Schema.String), Value: Schema.optional(Schema.String) })), DiscreteResourceSpec: Schema.optional(Schema.Struct({ Kind: Schema.optional(Schema.String), Value: Schema.optional(Schema.Int) })) }));
+export const GenericResources = Schema.Array(Schema.StructWithRest(Schema.Struct({ NamedResourceSpec: Schema.optional(Schema.StructWithRest(Schema.Struct({ Kind: Schema.optional(Schema.String), Value: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)])), DiscreteResourceSpec: Schema.optional(Schema.StructWithRest(Schema.Struct({ Kind: Schema.optional(Schema.String), Value: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)]));
 export type GenericResources = Schema.Schema.Type<typeof GenericResources>;
 
-export const ResourceObject = Schema.Struct({ NanoCPUs: Schema.optional(Schema.Int), MemoryBytes: Schema.optional(Schema.Int), GenericResources: Schema.optional(GenericResources) });
+export const ResourceObject = Schema.StructWithRest(Schema.Struct({ NanoCPUs: Schema.optional(Schema.Int), MemoryBytes: Schema.optional(Schema.Int), GenericResources: Schema.optional(GenericResources) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ResourceObject = Schema.Schema.Type<typeof ResourceObject>;
 
-export const HealthConfig = Schema.Struct({ Test: Schema.optional(Schema.Array(Schema.String)), Interval: Schema.optional(Schema.Int), Timeout: Schema.optional(Schema.Int), Retries: Schema.optional(Schema.Int), StartPeriod: Schema.optional(Schema.Int) });
+export const HealthConfig = Schema.StructWithRest(Schema.Struct({ Test: Schema.optional(Schema.Array(Schema.String)), Interval: Schema.optional(Schema.Int), Timeout: Schema.optional(Schema.Int), Retries: Schema.optional(Schema.Int), StartPeriod: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type HealthConfig = Schema.Schema.Type<typeof HealthConfig>;
 
-export const HealthcheckResult = Schema.NullOr(Schema.Struct({ Start: Schema.optional(Schema.String), End: Schema.optional(Schema.String), ExitCode: Schema.optional(Schema.Int), Output: Schema.optional(Schema.String) }));
+export const HealthcheckResult = Schema.NullOr(Schema.StructWithRest(Schema.Struct({ Start: Schema.optional(Schema.String), End: Schema.optional(Schema.String), ExitCode: Schema.optional(Schema.Int), Output: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]));
 export type HealthcheckResult = Schema.Schema.Type<typeof HealthcheckResult>;
 
-export const Health = Schema.NullOr(Schema.Struct({ Status: Schema.optional(Schema.Literals(["none", "starting", "healthy", "unhealthy"])), FailingStreak: Schema.optional(Schema.Int), Log: Schema.optional(Schema.Array(HealthcheckResult)) }));
+export const Health = Schema.NullOr(Schema.StructWithRest(Schema.Struct({ Status: Schema.optional(Schema.Literals(["none", "starting", "healthy", "unhealthy"])), FailingStreak: Schema.optional(Schema.Int), Log: Schema.optional(Schema.Array(HealthcheckResult)) }), [Schema.Record(Schema.String, Schema.Unknown)]));
 export type Health = Schema.Schema.Type<typeof Health>;
 
-export const PortBinding = Schema.Struct({ HostIp: Schema.optional(Schema.String), HostPort: Schema.optional(Schema.String) });
+export const PortBinding = Schema.StructWithRest(Schema.Struct({ HostIp: Schema.optional(Schema.String), HostPort: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type PortBinding = Schema.Schema.Type<typeof PortBinding>;
 
 export const PortMap = Schema.Record(Schema.String, Schema.NullOr(Schema.Array(PortBinding)));
 export type PortMap = Schema.Schema.Type<typeof PortMap>;
 
-export const HostConfig = Resources.mapFields(Struct.assign((Schema.Struct({ Binds: Schema.optional(Schema.Array(Schema.String)), ContainerIDFile: Schema.optional(Schema.String), LogConfig: Schema.optional(Schema.Struct({ Type: Schema.optional(Schema.Literals(["json-file", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "none"])), Config: Schema.optional(Schema.Record(Schema.String, Schema.String)) })), NetworkMode: Schema.optional(Schema.String), PortBindings: Schema.optional(PortMap), RestartPolicy: Schema.optional(RestartPolicy), AutoRemove: Schema.optional(Schema.Boolean), VolumeDriver: Schema.optional(Schema.String), VolumesFrom: Schema.optional(Schema.Array(Schema.String)), Mounts: Schema.optional(Schema.Array(Mount)), ConsoleSize: Schema.optional(Schema.NullOr(Schema.Array(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))).check(Schema.isMinLength(2), Schema.isMaxLength(2)))), Annotations: Schema.optional(Schema.Record(Schema.String, Schema.String)), CapAdd: Schema.optional(Schema.Array(Schema.String)), CapDrop: Schema.optional(Schema.Array(Schema.String)), CgroupnsMode: Schema.optional(Schema.Literals(["private", "host"])), Dns: Schema.optional(Schema.Array(Schema.String)), DnsOptions: Schema.optional(Schema.Array(Schema.String)), DnsSearch: Schema.optional(Schema.Array(Schema.String)), ExtraHosts: Schema.optional(Schema.Array(Schema.String)), GroupAdd: Schema.optional(Schema.Array(Schema.String)), IpcMode: Schema.optional(Schema.String), Cgroup: Schema.optional(Schema.String), Links: Schema.optional(Schema.Array(Schema.String)), OomScoreAdj: Schema.optional(Schema.Int), PidMode: Schema.optional(Schema.String), Privileged: Schema.optional(Schema.Boolean), PublishAllPorts: Schema.optional(Schema.Boolean), ReadonlyRootfs: Schema.optional(Schema.Boolean), SecurityOpt: Schema.optional(Schema.Array(Schema.String)), StorageOpt: Schema.optional(Schema.Record(Schema.String, Schema.String)), Tmpfs: Schema.optional(Schema.Record(Schema.String, Schema.String)), UTSMode: Schema.optional(Schema.String), UsernsMode: Schema.optional(Schema.String), ShmSize: Schema.optional(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))), Sysctls: Schema.optional(Schema.Record(Schema.String, Schema.String)), Runtime: Schema.optional(Schema.String), Isolation: Schema.optional(Schema.Literals(["default", "process", "hyperv"])), MaskedPaths: Schema.optional(Schema.Array(Schema.String)), ReadonlyPaths: Schema.optional(Schema.Array(Schema.String)) })).fields));
+export const HostConfig = Resources.check(Schema.makeFilter((value) => Schema.is(Schema.StructWithRest(Schema.Struct({ Binds: Schema.optional(Schema.Array(Schema.String)), ContainerIDFile: Schema.optional(Schema.String), LogConfig: Schema.optional(Schema.StructWithRest(Schema.Struct({ Type: Schema.optional(Schema.Literals(["json-file", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "none"])), Config: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)])), NetworkMode: Schema.optional(Schema.String), PortBindings: Schema.optional(PortMap), RestartPolicy: Schema.optional(RestartPolicy), AutoRemove: Schema.optional(Schema.Boolean), VolumeDriver: Schema.optional(Schema.String), VolumesFrom: Schema.optional(Schema.Array(Schema.String)), Mounts: Schema.optional(Schema.Array(Mount)), ConsoleSize: Schema.optional(Schema.NullOr(Schema.Array(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))).check(Schema.isMinLength(2), Schema.isMaxLength(2)))), Annotations: Schema.optional(Schema.Record(Schema.String, Schema.String)), CapAdd: Schema.optional(Schema.Array(Schema.String)), CapDrop: Schema.optional(Schema.Array(Schema.String)), CgroupnsMode: Schema.optional(Schema.Literals(["private", "host"])), Dns: Schema.optional(Schema.Array(Schema.String)), DnsOptions: Schema.optional(Schema.Array(Schema.String)), DnsSearch: Schema.optional(Schema.Array(Schema.String)), ExtraHosts: Schema.optional(Schema.Array(Schema.String)), GroupAdd: Schema.optional(Schema.Array(Schema.String)), IpcMode: Schema.optional(Schema.String), Cgroup: Schema.optional(Schema.String), Links: Schema.optional(Schema.Array(Schema.String)), OomScoreAdj: Schema.optional(Schema.Int), PidMode: Schema.optional(Schema.String), Privileged: Schema.optional(Schema.Boolean), PublishAllPorts: Schema.optional(Schema.Boolean), ReadonlyRootfs: Schema.optional(Schema.Boolean), SecurityOpt: Schema.optional(Schema.Array(Schema.String)), StorageOpt: Schema.optional(Schema.Record(Schema.String, Schema.String)), Tmpfs: Schema.optional(Schema.Record(Schema.String, Schema.String)), UTSMode: Schema.optional(Schema.String), UsernsMode: Schema.optional(Schema.String), ShmSize: Schema.optional(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))), Sysctls: Schema.optional(Schema.Record(Schema.String, Schema.String)), Runtime: Schema.optional(Schema.String), Isolation: Schema.optional(Schema.Literals(["default", "process", "hyperv"])), MaskedPaths: Schema.optional(Schema.Array(Schema.String)), ReadonlyPaths: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]))(value)));
 export type HostConfig = Schema.Schema.Type<typeof HostConfig>;
 
-export const ContainerConfig = Schema.Struct({ Hostname: Schema.optional(Schema.String), Domainname: Schema.optional(Schema.String), User: Schema.optional(Schema.String), AttachStdin: Boolean_default_false_prop, AttachStdout: Boolean_default_true_prop, AttachStderr: Boolean_default_true_prop, ExposedPorts: Schema.optional(Schema.NullOr(Schema.Record(Schema.String, Schema.Struct({  })))), Tty: Boolean_default_false_prop, OpenStdin: Boolean_default_false_prop, StdinOnce: Boolean_default_false_prop, Env: Schema.optional(Schema.Array(Schema.String)), Cmd: Schema.optional(Schema.Array(Schema.String)), Healthcheck: Schema.optional(HealthConfig), ArgsEscaped: NullOr_default_false_prop, Image: Schema.optional(Schema.String), Volumes: Schema.optional(Schema.Record(Schema.String, Schema.Struct({  }))), WorkingDir: Schema.optional(Schema.String), Entrypoint: Schema.optional(Schema.Array(Schema.String)), NetworkDisabled: Schema.optional(Schema.NullOr(Schema.Boolean)), MacAddress: Schema.optional(Schema.NullOr(Schema.String)), OnBuild: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), StopSignal: Schema.optional(Schema.NullOr(Schema.String)), StopTimeout: Schema.optional(Schema.NullOr(Schema.Int)), Shell: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))) });
+export const ContainerConfig = Schema.StructWithRest(Schema.Struct({ Hostname: Schema.optional(Schema.String), Domainname: Schema.optional(Schema.String), User: Schema.optional(Schema.String), AttachStdin: Boolean_default_false_prop, AttachStdout: Boolean_default_true_prop, AttachStderr: Boolean_default_true_prop, ExposedPorts: Schema.optional(Schema.NullOr(Schema.Record(Schema.String, Schema.StructWithRest(Schema.Struct({  }), [Schema.Record(Schema.String, Schema.Unknown)])))), Tty: Boolean_default_false_prop, OpenStdin: Boolean_default_false_prop, StdinOnce: Boolean_default_false_prop, Env: Schema.optional(Schema.Array(Schema.String)), Cmd: Schema.optional(Schema.Array(Schema.String)), Healthcheck: Schema.optional(HealthConfig), ArgsEscaped: NullOr_default_false_prop, Image: Schema.optional(Schema.String), Volumes: Schema.optional(Schema.Record(Schema.String, Schema.StructWithRest(Schema.Struct({  }), [Schema.Record(Schema.String, Schema.Unknown)]))), WorkingDir: Schema.optional(Schema.String), Entrypoint: Schema.optional(Schema.Array(Schema.String)), NetworkDisabled: Schema.optional(Schema.NullOr(Schema.Boolean)), MacAddress: Schema.optional(Schema.NullOr(Schema.String)), OnBuild: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), StopSignal: Schema.optional(Schema.NullOr(Schema.String)), StopTimeout: Schema.optional(Schema.NullOr(Schema.Int)), Shell: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ContainerConfig = Schema.Schema.Type<typeof ContainerConfig>;
 
-export const EndpointIPAMConfig = Schema.NullOr(Schema.Struct({ IPv4Address: Schema.optional(Schema.String), IPv6Address: Schema.optional(Schema.String), LinkLocalIPs: Schema.optional(Schema.Array(Schema.String)) }));
+export const EndpointIPAMConfig = Schema.NullOr(Schema.StructWithRest(Schema.Struct({ IPv4Address: Schema.optional(Schema.String), IPv6Address: Schema.optional(Schema.String), LinkLocalIPs: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]));
 export type EndpointIPAMConfig = Schema.Schema.Type<typeof EndpointIPAMConfig>;
 
-export const EndpointSettings = Schema.Struct({ IPAMConfig: Schema.optional(EndpointIPAMConfig), Links: Schema.optional(Schema.Array(Schema.String)), Aliases: Schema.optional(Schema.Array(Schema.String)), NetworkID: Schema.optional(Schema.String), EndpointID: Schema.optional(Schema.String), Gateway: Schema.optional(Schema.String), IPAddress: Schema.optional(Schema.String), IPPrefixLen: Schema.optional(Schema.Int), IPv6Gateway: Schema.optional(Schema.String), GlobalIPv6Address: Schema.optional(Schema.String), GlobalIPv6PrefixLen: Schema.optional(Schema.Int), MacAddress: Schema.optional(Schema.String), DriverOpts: Schema.optional(Schema.NullOr(Schema.Record(Schema.String, Schema.String))) });
+export const EndpointSettings = Schema.StructWithRest(Schema.Struct({ IPAMConfig: Schema.optional(EndpointIPAMConfig), Links: Schema.optional(Schema.Array(Schema.String)), Aliases: Schema.optional(Schema.Array(Schema.String)), NetworkID: Schema.optional(Schema.String), EndpointID: Schema.optional(Schema.String), Gateway: Schema.optional(Schema.String), IPAddress: Schema.optional(Schema.String), IPPrefixLen: Schema.optional(Schema.Int), IPv6Gateway: Schema.optional(Schema.String), GlobalIPv6Address: Schema.optional(Schema.String), GlobalIPv6PrefixLen: Schema.optional(Schema.Int), MacAddress: Schema.optional(Schema.String), DriverOpts: Schema.optional(Schema.NullOr(Schema.Record(Schema.String, Schema.String))) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type EndpointSettings = Schema.Schema.Type<typeof EndpointSettings>;
 
-export const NetworkingConfig = Schema.Struct({ EndpointsConfig: Schema.optional(Schema.Record(Schema.String, EndpointSettings)) });
+export const NetworkingConfig = Schema.StructWithRest(Schema.Struct({ EndpointsConfig: Schema.optional(Schema.Record(Schema.String, EndpointSettings)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type NetworkingConfig = Schema.Schema.Type<typeof NetworkingConfig>;
 
-export const Address = Schema.Struct({ Addr: Schema.optional(Schema.String), PrefixLen: Schema.optional(Schema.Int) });
+export const Address = Schema.StructWithRest(Schema.Struct({ Addr: Schema.optional(Schema.String), PrefixLen: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Address = Schema.Schema.Type<typeof Address>;
 
-export const NetworkSettings = Schema.Struct({ Bridge: Schema.optional(Schema.String), SandboxID: Schema.optional(Schema.String), HairpinMode: Schema.optional(Schema.Boolean), LinkLocalIPv6Address: Schema.optional(Schema.String), LinkLocalIPv6PrefixLen: Schema.optional(Schema.Int), Ports: Schema.optional(PortMap), SandboxKey: Schema.optional(Schema.String), SecondaryIPAddresses: Schema.optional(Schema.NullOr(Schema.Array(Address))), SecondaryIPv6Addresses: Schema.optional(Schema.NullOr(Schema.Array(Address))), EndpointID: Schema.optional(Schema.String), Gateway: Schema.optional(Schema.String), GlobalIPv6Address: Schema.optional(Schema.String), GlobalIPv6PrefixLen: Schema.optional(Schema.Int), IPAddress: Schema.optional(Schema.String), IPPrefixLen: Schema.optional(Schema.Int), IPv6Gateway: Schema.optional(Schema.String), MacAddress: Schema.optional(Schema.String), Networks: Schema.optional(Schema.Record(Schema.String, EndpointSettings)) });
+export const NetworkSettings = Schema.StructWithRest(Schema.Struct({ Bridge: Schema.optional(Schema.String), SandboxID: Schema.optional(Schema.String), HairpinMode: Schema.optional(Schema.Boolean), LinkLocalIPv6Address: Schema.optional(Schema.String), LinkLocalIPv6PrefixLen: Schema.optional(Schema.Int), Ports: Schema.optional(PortMap), SandboxKey: Schema.optional(Schema.String), SecondaryIPAddresses: Schema.optional(Schema.NullOr(Schema.Array(Address))), SecondaryIPv6Addresses: Schema.optional(Schema.NullOr(Schema.Array(Address))), EndpointID: Schema.optional(Schema.String), Gateway: Schema.optional(Schema.String), GlobalIPv6Address: Schema.optional(Schema.String), GlobalIPv6PrefixLen: Schema.optional(Schema.Int), IPAddress: Schema.optional(Schema.String), IPPrefixLen: Schema.optional(Schema.Int), IPv6Gateway: Schema.optional(Schema.String), MacAddress: Schema.optional(Schema.String), Networks: Schema.optional(Schema.Record(Schema.String, EndpointSettings)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type NetworkSettings = Schema.Schema.Type<typeof NetworkSettings>;
 
-export const GraphDriverData = Schema.Struct({ Name: Schema.String, Data: Schema.Record(Schema.String, Schema.String) });
+export const GraphDriverData = Schema.StructWithRest(Schema.Struct({ Name: Schema.String, Data: Schema.Record(Schema.String, Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type GraphDriverData = Schema.Schema.Type<typeof GraphDriverData>;
 
 export const ChangeType = Schema.Literals([0, 1, 2]);
 export type ChangeType = Schema.Schema.Type<typeof ChangeType>;
 
-export const FilesystemChange = Schema.Struct({ Path: Schema.String, Kind: ChangeType });
+export const FilesystemChange = Schema.StructWithRest(Schema.Struct({ Path: Schema.String, Kind: ChangeType }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type FilesystemChange = Schema.Schema.Type<typeof FilesystemChange>;
 
-export const ImageInspect = Schema.Struct({ Id: Schema.optional(Schema.String), RepoTags: Schema.optional(Schema.Array(Schema.String)), RepoDigests: Schema.optional(Schema.Array(Schema.String)), Parent: Schema.optional(Schema.String), Comment: Schema.optional(Schema.String), Created: Schema.optional(Schema.String), Container: Schema.optional(Schema.String), ContainerConfig: Schema.optional(ContainerConfig), DockerVersion: Schema.optional(Schema.String), Author: Schema.optional(Schema.String), Config: Schema.optional(ContainerConfig), Architecture: Schema.optional(Schema.String), Variant: Schema.optional(Schema.NullOr(Schema.String)), Os: Schema.optional(Schema.String), OsVersion: Schema.optional(Schema.NullOr(Schema.String)), Size: Schema.optional(Schema.Int), VirtualSize: Schema.optional(Schema.Int), GraphDriver: Schema.optional(GraphDriverData), RootFS: Schema.optional(Schema.Struct({ Type: Schema.String, Layers: Schema.optional(Schema.Array(Schema.String)) })), Metadata: Schema.optional(Schema.Struct({ LastTagTime: Schema.optional(Schema.NullOr(Schema.String)) })) });
+export const ImageInspect = Schema.StructWithRest(Schema.Struct({ Id: Schema.optional(Schema.String), RepoTags: Schema.optional(Schema.Array(Schema.String)), RepoDigests: Schema.optional(Schema.Array(Schema.String)), Parent: Schema.optional(Schema.String), Comment: Schema.optional(Schema.String), Created: Schema.optional(Schema.String), Container: Schema.optional(Schema.String), ContainerConfig: Schema.optional(ContainerConfig), DockerVersion: Schema.optional(Schema.String), Author: Schema.optional(Schema.String), Config: Schema.optional(ContainerConfig), Architecture: Schema.optional(Schema.String), Variant: Schema.optional(Schema.NullOr(Schema.String)), Os: Schema.optional(Schema.String), OsVersion: Schema.optional(Schema.NullOr(Schema.String)), Size: Schema.optional(Schema.Int), VirtualSize: Schema.optional(Schema.Int), GraphDriver: Schema.optional(GraphDriverData), RootFS: Schema.optional(Schema.StructWithRest(Schema.Struct({ Type: Schema.String, Layers: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)])), Metadata: Schema.optional(Schema.StructWithRest(Schema.Struct({ LastTagTime: Schema.optional(Schema.NullOr(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ImageInspect = Schema.Schema.Type<typeof ImageInspect>;
 
-export const ImageSummary = Schema.Struct({ Id: Schema.String, ParentId: Schema.String, RepoTags: Schema.Array(Schema.String), RepoDigests: Schema.Array(Schema.String), Created: Schema.Int, Size: Schema.Int, SharedSize: Schema.Int, VirtualSize: Schema.optional(Schema.Int), Labels: Schema.Record(Schema.String, Schema.String), Containers: Schema.Int });
+export const ImageSummary = Schema.StructWithRest(Schema.Struct({ Id: Schema.String, ParentId: Schema.String, RepoTags: Schema.Array(Schema.String), RepoDigests: Schema.Array(Schema.String), Created: Schema.Int, Size: Schema.Int, SharedSize: Schema.Int, VirtualSize: Schema.optional(Schema.Int), Labels: Schema.Record(Schema.String, Schema.String), Containers: Schema.Int }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ImageSummary = Schema.Schema.Type<typeof ImageSummary>;
 
-export const AuthConfig = Schema.Struct({ username: Schema.optional(Schema.String), password: Schema.optional(Schema.String), email: Schema.optional(Schema.String), serveraddress: Schema.optional(Schema.String) });
+export const AuthConfig = Schema.StructWithRest(Schema.Struct({ username: Schema.optional(Schema.String), password: Schema.optional(Schema.String), email: Schema.optional(Schema.String), serveraddress: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type AuthConfig = Schema.Schema.Type<typeof AuthConfig>;
 
-export const ProcessConfig = Schema.Struct({ privileged: Schema.optional(Schema.Boolean), user: Schema.optional(Schema.String), tty: Schema.optional(Schema.Boolean), entrypoint: Schema.optional(Schema.String), arguments: Schema.optional(Schema.Array(Schema.String)) });
+export const ProcessConfig = Schema.StructWithRest(Schema.Struct({ privileged: Schema.optional(Schema.Boolean), user: Schema.optional(Schema.String), tty: Schema.optional(Schema.Boolean), entrypoint: Schema.optional(Schema.String), arguments: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ProcessConfig = Schema.Schema.Type<typeof ProcessConfig>;
 
-export const ObjectVersion = Schema.Struct({ Index: Schema.optional(Schema.Int) });
+export const ObjectVersion = Schema.StructWithRest(Schema.Struct({ Index: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ObjectVersion = Schema.Schema.Type<typeof ObjectVersion>;
 
 export const Topology = Schema.Record(Schema.String, Schema.String);
 export type Topology = Schema.Schema.Type<typeof Topology>;
 
-export const ClusterVolumeSpec = Schema.Struct({ Group: Schema.optional(Schema.String), AccessMode: Schema.optional(Schema.Struct({ Scope: Schema_default_single_prop, Sharing: Schema_default_none_prop, MountVolume: Schema.optional(Schema.Struct({  })), Secrets: Schema.optional(Schema.Array(Schema.Struct({ Key: Schema.optional(Schema.String), Secret: Schema.optional(Schema.String) }))), AccessibilityRequirements: Schema.optional(Schema.Struct({ Requisite: Schema.optional(Schema.Array(Topology)), Preferred: Schema.optional(Schema.Array(Topology)) })), CapacityRange: Schema.optional(Schema.Struct({ RequiredBytes: Schema.optional(Schema.Int), LimitBytes: Schema.optional(Schema.Int) })), Availability: Schema_default_active_prop })) });
+export const ClusterVolumeSpec = Schema.StructWithRest(Schema.Struct({ Group: Schema.optional(Schema.String), AccessMode: Schema.optional(Schema.StructWithRest(Schema.Struct({ Scope: Schema_default_single_prop, Sharing: Schema_default_none_prop, MountVolume: Schema.optional(Schema.StructWithRest(Schema.Struct({  }), [Schema.Record(Schema.String, Schema.Unknown)])), Secrets: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ Key: Schema.optional(Schema.String), Secret: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]))), AccessibilityRequirements: Schema.optional(Schema.StructWithRest(Schema.Struct({ Requisite: Schema.optional(Schema.Array(Topology)), Preferred: Schema.optional(Schema.Array(Topology)) }), [Schema.Record(Schema.String, Schema.Unknown)])), CapacityRange: Schema.optional(Schema.StructWithRest(Schema.Struct({ RequiredBytes: Schema.optional(Schema.Int), LimitBytes: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)])), Availability: Schema_default_active_prop }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ClusterVolumeSpec = Schema.Schema.Type<typeof ClusterVolumeSpec>;
 
-export const ClusterVolume = Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(ClusterVolumeSpec), Info: Schema.optional(Schema.Struct({ CapacityBytes: Schema.optional(Schema.Int), VolumeContext: Schema.optional(Schema.Record(Schema.String, Schema.String)), VolumeID: Schema.optional(Schema.String), AccessibleTopology: Schema.optional(Schema.Array(Topology)) })), PublishStatus: Schema.optional(Schema.Array(Schema.Struct({ NodeID: Schema.optional(Schema.String), State: Schema.optional(Schema.Literals(["pending-publish", "published", "pending-node-unpublish", "pending-controller-unpublish"])), PublishContext: Schema.optional(Schema.Record(Schema.String, Schema.String)) }))) });
+export const ClusterVolume = Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(ClusterVolumeSpec), Info: Schema.optional(Schema.StructWithRest(Schema.Struct({ CapacityBytes: Schema.optional(Schema.Int), VolumeContext: Schema.optional(Schema.Record(Schema.String, Schema.String)), VolumeID: Schema.optional(Schema.String), AccessibleTopology: Schema.optional(Schema.Array(Topology)) }), [Schema.Record(Schema.String, Schema.Unknown)])), PublishStatus: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ NodeID: Schema.optional(Schema.String), State: Schema.optional(Schema.Literals(["pending-publish", "published", "pending-node-unpublish", "pending-controller-unpublish"])), PublishContext: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]))) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ClusterVolume = Schema.Schema.Type<typeof ClusterVolume>;
 
-export const Volume = Schema.Struct({ Name: Schema.String, Driver: Schema.String, Mountpoint: Schema.String, CreatedAt: Schema.optional(Schema.String), Status: Schema.optional(Schema.Record(Schema.String, Schema.Struct({  }))), Labels: Schema.Record(Schema.String, Schema.String), Scope: Schema_default_local_prop, ClusterVolume: Schema.optional(ClusterVolume), Options: Schema.Record(Schema.String, Schema.String), UsageData: Schema.optional(Schema.NullOr(Schema.Struct({ Size: Int_default_neg_1_prop, RefCount: Int_default_neg_1_prop }))) });
+export const Volume = Schema.StructWithRest(Schema.Struct({ Name: Schema.String, Driver: Schema.String, Mountpoint: Schema.String, CreatedAt: Schema.optional(Schema.String), Status: Schema.optional(Schema.Record(Schema.String, Schema.StructWithRest(Schema.Struct({  }), [Schema.Record(Schema.String, Schema.Unknown)]))), Labels: Schema.Record(Schema.String, Schema.String), Scope: Schema_default_local_prop, ClusterVolume: Schema.optional(ClusterVolume), Options: Schema.Record(Schema.String, Schema.String), UsageData: Schema.optional(Schema.NullOr(Schema.StructWithRest(Schema.Struct({ Size: Int_default_neg_1_prop, RefCount: Int_default_neg_1_prop }), [Schema.Record(Schema.String, Schema.Unknown)]))) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Volume = Schema.Schema.Type<typeof Volume>;
 
-export const VolumeCreateOptions = Schema.Struct({ Name: Schema.optional(Schema.String), Driver: String_default_local_prop, DriverOpts: Schema.optional(Schema.Record(Schema.String, Schema.String)), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), ClusterVolumeSpec: Schema.optional(ClusterVolumeSpec) });
+export const VolumeCreateOptions = Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Driver: String_default_local_prop, DriverOpts: Schema.optional(Schema.Record(Schema.String, Schema.String)), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), ClusterVolumeSpec: Schema.optional(ClusterVolumeSpec) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type VolumeCreateOptions = Schema.Schema.Type<typeof VolumeCreateOptions>;
 
-export const VolumeListResponse = Schema.Struct({ Volumes: Schema.optional(Schema.Array(Volume)), Warnings: Schema.optional(Schema.Array(Schema.String)) });
+export const VolumeListResponse = Schema.StructWithRest(Schema.Struct({ Volumes: Schema.optional(Schema.Array(Volume)), Warnings: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type VolumeListResponse = Schema.Schema.Type<typeof VolumeListResponse>;
 
-export const IPAMConfig = Schema.Struct({ Subnet: Schema.optional(Schema.String), IPRange: Schema.optional(Schema.String), Gateway: Schema.optional(Schema.String), AuxiliaryAddresses: Schema.optional(Schema.Record(Schema.String, Schema.String)) });
+export const IPAMConfig = Schema.StructWithRest(Schema.Struct({ Subnet: Schema.optional(Schema.String), IPRange: Schema.optional(Schema.String), Gateway: Schema.optional(Schema.String), AuxiliaryAddresses: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type IPAMConfig = Schema.Schema.Type<typeof IPAMConfig>;
 
-export const IPAM = Schema.Struct({ Driver: String_default_default_prop, Config: Schema.optional(Schema.Array(IPAMConfig)), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) });
+export const IPAM = Schema.StructWithRest(Schema.Struct({ Driver: String_default_default_prop, Config: Schema.optional(Schema.Array(IPAMConfig)), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type IPAM = Schema.Schema.Type<typeof IPAM>;
 
-export const NetworkContainer = Schema.Struct({ Name: Schema.optional(Schema.String), EndpointID: Schema.optional(Schema.String), MacAddress: Schema.optional(Schema.String), IPv4Address: Schema.optional(Schema.String), IPv6Address: Schema.optional(Schema.String) });
+export const NetworkContainer = Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), EndpointID: Schema.optional(Schema.String), MacAddress: Schema.optional(Schema.String), IPv4Address: Schema.optional(Schema.String), IPv6Address: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type NetworkContainer = Schema.Schema.Type<typeof NetworkContainer>;
 
-export const Network = Schema.Struct({ Name: Schema.optional(Schema.String), Id: Schema.optional(Schema.String), Created: Schema.optional(Schema.String), Scope: Schema.optional(Schema.String), Driver: Schema.optional(Schema.String), EnableIPv6: Schema.optional(Schema.Boolean), IPAM: Schema.optional(IPAM), Internal: Schema.optional(Schema.Boolean), Attachable: Schema.optional(Schema.Boolean), Ingress: Schema.optional(Schema.Boolean), Containers: Schema.optional(Schema.Record(Schema.String, NetworkContainer)), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)) });
+export const Network = Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Id: Schema.optional(Schema.String), Created: Schema.optional(Schema.String), Scope: Schema.optional(Schema.String), Driver: Schema.optional(Schema.String), EnableIPv6: Schema.optional(Schema.Boolean), IPAM: Schema.optional(IPAM), Internal: Schema.optional(Schema.Boolean), Attachable: Schema.optional(Schema.Boolean), Ingress: Schema.optional(Schema.Boolean), Containers: Schema.optional(Schema.Record(Schema.String, NetworkContainer)), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Network = Schema.Schema.Type<typeof Network>;
 
-export const ErrorDetail = Schema.Struct({ code: Schema.optional(Schema.Int), message: Schema.optional(Schema.String) });
+export const ErrorDetail = Schema.StructWithRest(Schema.Struct({ code: Schema.optional(Schema.Int), message: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ErrorDetail = Schema.Schema.Type<typeof ErrorDetail>;
 
-export const ProgressDetail = Schema.Struct({ current: Schema.optional(Schema.Int), total: Schema.optional(Schema.Int) });
+export const ProgressDetail = Schema.StructWithRest(Schema.Struct({ current: Schema.optional(Schema.Int), total: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ProgressDetail = Schema.Schema.Type<typeof ProgressDetail>;
 
-export const ImageID = Schema.Struct({ ID: Schema.optional(Schema.String) });
+export const ImageID = Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ImageID = Schema.Schema.Type<typeof ImageID>;
 
-export const BuildInfo = Schema.Struct({ id: Schema.optional(Schema.String), stream: Schema.optional(Schema.String), error: Schema.optional(Schema.String), errorDetail: Schema.optional(ErrorDetail), status: Schema.optional(Schema.String), progress: Schema.optional(Schema.String), progressDetail: Schema.optional(ProgressDetail), aux: Schema.optional(ImageID) });
+export const BuildInfo = Schema.StructWithRest(Schema.Struct({ id: Schema.optional(Schema.String), stream: Schema.optional(Schema.String), error: Schema.optional(Schema.String), errorDetail: Schema.optional(ErrorDetail), status: Schema.optional(Schema.String), progress: Schema.optional(Schema.String), progressDetail: Schema.optional(ProgressDetail), aux: Schema.optional(ImageID) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type BuildInfo = Schema.Schema.Type<typeof BuildInfo>;
 
-export const BuildCache = Schema.Struct({ ID: Schema.optional(Schema.String), Parent: Schema.optional(Schema.NullOr(Schema.String)), Parents: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))), Type: Schema.optional(Schema.Literals(["internal", "frontend", "source.local", "source.git.checkout", "exec.cachemount", "regular"])), Description: Schema.optional(Schema.String), InUse: Schema.optional(Schema.Boolean), Shared: Schema.optional(Schema.Boolean), Size: Schema.optional(Schema.Int), CreatedAt: Schema.optional(Schema.String), LastUsedAt: Schema.optional(Schema.NullOr(Schema.String)), UsageCount: Schema.optional(Schema.Int) });
+export const BuildCache = Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String), Parent: Schema.optional(Schema.NullOr(Schema.String)), Parents: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))), Type: Schema.optional(Schema.Literals(["internal", "frontend", "source.local", "source.git.checkout", "exec.cachemount", "regular"])), Description: Schema.optional(Schema.String), InUse: Schema.optional(Schema.Boolean), Shared: Schema.optional(Schema.Boolean), Size: Schema.optional(Schema.Int), CreatedAt: Schema.optional(Schema.String), LastUsedAt: Schema.optional(Schema.NullOr(Schema.String)), UsageCount: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type BuildCache = Schema.Schema.Type<typeof BuildCache>;
 
-export const CreateImageInfo = Schema.Struct({ id: Schema.optional(Schema.String), error: Schema.optional(Schema.String), errorDetail: Schema.optional(ErrorDetail), status: Schema.optional(Schema.String), progress: Schema.optional(Schema.String), progressDetail: Schema.optional(ProgressDetail) });
+export const CreateImageInfo = Schema.StructWithRest(Schema.Struct({ id: Schema.optional(Schema.String), error: Schema.optional(Schema.String), errorDetail: Schema.optional(ErrorDetail), status: Schema.optional(Schema.String), progress: Schema.optional(Schema.String), progressDetail: Schema.optional(ProgressDetail) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type CreateImageInfo = Schema.Schema.Type<typeof CreateImageInfo>;
 
-export const PushImageInfo = Schema.Struct({ error: Schema.optional(Schema.String), status: Schema.optional(Schema.String), progress: Schema.optional(Schema.String), progressDetail: Schema.optional(ProgressDetail) });
+export const PushImageInfo = Schema.StructWithRest(Schema.Struct({ error: Schema.optional(Schema.String), status: Schema.optional(Schema.String), progress: Schema.optional(Schema.String), progressDetail: Schema.optional(ProgressDetail) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type PushImageInfo = Schema.Schema.Type<typeof PushImageInfo>;
 
-export const ErrorResponse = Schema.Struct({ message: Schema.String });
+export const ErrorResponse = Schema.StructWithRest(Schema.Struct({ message: Schema.String }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ErrorResponse = Schema.Schema.Type<typeof ErrorResponse>;
 
-export const IdResponse = Schema.Struct({ Id: Schema.String });
+export const IdResponse = Schema.StructWithRest(Schema.Struct({ Id: Schema.String }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type IdResponse = Schema.Schema.Type<typeof IdResponse>;
 
-export const PluginMount = Schema.Struct({ Name: Schema.String, Description: Schema.String, Settable: Schema.Array(Schema.String), Source: Schema.String, Destination: Schema.String, Type: Schema.String, Options: Schema.Array(Schema.String) });
+export const PluginMount = Schema.StructWithRest(Schema.Struct({ Name: Schema.String, Description: Schema.String, Settable: Schema.Array(Schema.String), Source: Schema.String, Destination: Schema.String, Type: Schema.String, Options: Schema.Array(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type PluginMount = Schema.Schema.Type<typeof PluginMount>;
 
-export const PluginDevice = Schema.Struct({ Name: Schema.String, Description: Schema.String, Settable: Schema.Array(Schema.String), Path: Schema.String });
+export const PluginDevice = Schema.StructWithRest(Schema.Struct({ Name: Schema.String, Description: Schema.String, Settable: Schema.Array(Schema.String), Path: Schema.String }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type PluginDevice = Schema.Schema.Type<typeof PluginDevice>;
 
-export const PluginEnv = Schema.Struct({ Name: Schema.String, Description: Schema.String, Settable: Schema.Array(Schema.String), Value: Schema.String });
+export const PluginEnv = Schema.StructWithRest(Schema.Struct({ Name: Schema.String, Description: Schema.String, Settable: Schema.Array(Schema.String), Value: Schema.String }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type PluginEnv = Schema.Schema.Type<typeof PluginEnv>;
 
-export const PluginInterfaceType = Schema.Struct({ Prefix: Schema.String, Capability: Schema.String, Version: Schema.String });
+export const PluginInterfaceType = Schema.StructWithRest(Schema.Struct({ Prefix: Schema.String, Capability: Schema.String, Version: Schema.String }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type PluginInterfaceType = Schema.Schema.Type<typeof PluginInterfaceType>;
 
-export const PluginPrivilege = Schema.Struct({ Name: Schema.optional(Schema.String), Description: Schema.optional(Schema.String), Value: Schema.optional(Schema.Array(Schema.String)) });
+export const PluginPrivilege = Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Description: Schema.optional(Schema.String), Value: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type PluginPrivilege = Schema.Schema.Type<typeof PluginPrivilege>;
 
-export const Plugin = Schema.Struct({ Id: Schema.optional(Schema.String), Name: Schema.String, Enabled: Schema.Boolean, Settings: Schema.Struct({ Mounts: Schema.Array(PluginMount), Env: Schema.Array(Schema.String), Args: Schema.Array(Schema.String), Devices: Schema.Array(PluginDevice) }), PluginReference: Schema.optional(Schema.String), Config: Schema.Struct({ DockerVersion: Schema.optional(Schema.String), Description: Schema.String, Documentation: Schema.String, Interface: Schema.Struct({ Types: Schema.Array(PluginInterfaceType), Socket: Schema.String, ProtocolScheme: Schema.optional(Schema.Literals(["", "moby.plugins.http/v1"])) }), Entrypoint: Schema.Array(Schema.String), WorkDir: Schema.String, User: Schema.optional(Schema.Struct({ UID: Schema.optional(Schema.Int), GID: Schema.optional(Schema.Int) })), Network: Schema.Struct({ Type: Schema.String }), Linux: Schema.Struct({ Capabilities: Schema.Array(Schema.String), AllowAllDevices: Schema.Boolean, Devices: Schema.Array(PluginDevice) }), PropagatedMount: Schema.String, IpcHost: Schema.Boolean, PidHost: Schema.Boolean, Mounts: Schema.Array(PluginMount), Env: Schema.Array(PluginEnv), Args: Schema.Struct({ Name: Schema.String, Description: Schema.String, Settable: Schema.Array(Schema.String), Value: Schema.Array(Schema.String) }), rootfs: Schema.optional(Schema.Struct({ type: Schema.optional(Schema.String), diff_ids: Schema.optional(Schema.Array(Schema.String)) })) }) });
+export const Plugin = Schema.StructWithRest(Schema.Struct({ Id: Schema.optional(Schema.String), Name: Schema.String, Enabled: Schema.Boolean, Settings: Schema.StructWithRest(Schema.Struct({ Mounts: Schema.Array(PluginMount), Env: Schema.Array(Schema.String), Args: Schema.Array(Schema.String), Devices: Schema.Array(PluginDevice) }), [Schema.Record(Schema.String, Schema.Unknown)]), PluginReference: Schema.optional(Schema.String), Config: Schema.StructWithRest(Schema.Struct({ DockerVersion: Schema.optional(Schema.String), Description: Schema.String, Documentation: Schema.String, Interface: Schema.StructWithRest(Schema.Struct({ Types: Schema.Array(PluginInterfaceType), Socket: Schema.String, ProtocolScheme: Schema.optional(Schema.Literals(["", "moby.plugins.http/v1"])) }), [Schema.Record(Schema.String, Schema.Unknown)]), Entrypoint: Schema.Array(Schema.String), WorkDir: Schema.String, User: Schema.optional(Schema.StructWithRest(Schema.Struct({ UID: Schema.optional(Schema.Int), GID: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)])), Network: Schema.StructWithRest(Schema.Struct({ Type: Schema.String }), [Schema.Record(Schema.String, Schema.Unknown)]), Linux: Schema.StructWithRest(Schema.Struct({ Capabilities: Schema.Array(Schema.String), AllowAllDevices: Schema.Boolean, Devices: Schema.Array(PluginDevice) }), [Schema.Record(Schema.String, Schema.Unknown)]), PropagatedMount: Schema.String, IpcHost: Schema.Boolean, PidHost: Schema.Boolean, Mounts: Schema.Array(PluginMount), Env: Schema.Array(PluginEnv), Args: Schema.StructWithRest(Schema.Struct({ Name: Schema.String, Description: Schema.String, Settable: Schema.Array(Schema.String), Value: Schema.Array(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]), rootfs: Schema.optional(Schema.StructWithRest(Schema.Struct({ type: Schema.optional(Schema.String), diff_ids: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)]) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Plugin = Schema.Schema.Type<typeof Plugin>;
 
-export const NodeSpec = Schema.Struct({ Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Role: Schema.optional(Schema.Literals(["worker", "manager"])), Availability: Schema.optional(Schema.Literals(["active", "pause", "drain"])) });
+export const NodeSpec = Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Role: Schema.optional(Schema.Literals(["worker", "manager"])), Availability: Schema.optional(Schema.Literals(["active", "pause", "drain"])) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type NodeSpec = Schema.Schema.Type<typeof NodeSpec>;
 
-export const Platform = Schema.Struct({ Architecture: Schema.optional(Schema.String), OS: Schema.optional(Schema.String) });
+export const Platform = Schema.StructWithRest(Schema.Struct({ Architecture: Schema.optional(Schema.String), OS: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Platform = Schema.Schema.Type<typeof Platform>;
 
-export const EngineDescription = Schema.Struct({ EngineVersion: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Plugins: Schema.optional(Schema.Array(Schema.Struct({ Type: Schema.optional(Schema.String), Name: Schema.optional(Schema.String) }))) });
+export const EngineDescription = Schema.StructWithRest(Schema.Struct({ EngineVersion: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Plugins: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ Type: Schema.optional(Schema.String), Name: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]))) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type EngineDescription = Schema.Schema.Type<typeof EngineDescription>;
 
-export const TLSInfo = Schema.Struct({ TrustRoot: Schema.optional(Schema.String), CertIssuerSubject: Schema.optional(Schema.String), CertIssuerPublicKey: Schema.optional(Schema.String) });
+export const TLSInfo = Schema.StructWithRest(Schema.Struct({ TrustRoot: Schema.optional(Schema.String), CertIssuerSubject: Schema.optional(Schema.String), CertIssuerPublicKey: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type TLSInfo = Schema.Schema.Type<typeof TLSInfo>;
 
-export const NodeDescription = Schema.Struct({ Hostname: Schema.optional(Schema.String), Platform: Schema.optional(Platform), Resources: Schema.optional(ResourceObject), Engine: Schema.optional(EngineDescription), TLSInfo: Schema.optional(TLSInfo) });
+export const NodeDescription = Schema.StructWithRest(Schema.Struct({ Hostname: Schema.optional(Schema.String), Platform: Schema.optional(Platform), Resources: Schema.optional(ResourceObject), Engine: Schema.optional(EngineDescription), TLSInfo: Schema.optional(TLSInfo) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type NodeDescription = Schema.Schema.Type<typeof NodeDescription>;
 
 export const NodeState = Schema.Literals(["unknown", "down", "ready", "disconnected"]);
 export type NodeState = Schema.Schema.Type<typeof NodeState>;
 
-export const NodeStatus = Schema.Struct({ State: Schema.optional(NodeState), Message: Schema.optional(Schema.String), Addr: Schema.optional(Schema.String) });
+export const NodeStatus = Schema.StructWithRest(Schema.Struct({ State: Schema.optional(NodeState), Message: Schema.optional(Schema.String), Addr: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type NodeStatus = Schema.Schema.Type<typeof NodeStatus>;
 
 export const Reachability = Schema.Literals(["unknown", "unreachable", "reachable"]);
 export type Reachability = Schema.Schema.Type<typeof Reachability>;
 
-export const ManagerStatus = Schema.NullOr(Schema.Struct({ Leader: Boolean_default_false_prop, Reachability: Schema.optional(Reachability), Addr: Schema.optional(Schema.String) }));
+export const ManagerStatus = Schema.NullOr(Schema.StructWithRest(Schema.Struct({ Leader: Boolean_default_false_prop, Reachability: Schema.optional(Reachability), Addr: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]));
 export type ManagerStatus = Schema.Schema.Type<typeof ManagerStatus>;
 
-export const Node = Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(NodeSpec), Description: Schema.optional(NodeDescription), Status: Schema.optional(NodeStatus), ManagerStatus: Schema.optional(ManagerStatus) });
+export const Node = Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(NodeSpec), Description: Schema.optional(NodeDescription), Status: Schema.optional(NodeStatus), ManagerStatus: Schema.optional(ManagerStatus) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Node = Schema.Schema.Type<typeof Node>;
 
-export const SwarmSpec = Schema.Struct({ Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Orchestration: Schema.optional(Schema.NullOr(Schema.Struct({ TaskHistoryRetentionLimit: Schema.optional(Schema.Int) }))), Raft: Schema.optional(Schema.Struct({ SnapshotInterval: Schema.optional(Schema.Int), KeepOldSnapshots: Schema.optional(Schema.Int), LogEntriesForSlowFollowers: Schema.optional(Schema.Int), ElectionTick: Schema.optional(Schema.Int), HeartbeatTick: Schema.optional(Schema.Int) })), Dispatcher: Schema.optional(Schema.NullOr(Schema.Struct({ HeartbeatPeriod: Schema.optional(Schema.Int) }))), CAConfig: Schema.optional(Schema.NullOr(Schema.Struct({ NodeCertExpiry: Schema.optional(Schema.Int), ExternalCAs: Schema.optional(Schema.Array(Schema.Struct({ Protocol: Schema.optional(Schema.Literal("cfssl")), URL: Schema.optional(Schema.String), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)), CACert: Schema.optional(Schema.String) }))), SigningCACert: Schema.optional(Schema.String), SigningCAKey: Schema.optional(Schema.String), ForceRotate: Schema.optional(Schema.Int) }))), EncryptionConfig: Schema.optional(Schema.Struct({ AutoLockManagers: Schema.optional(Schema.Boolean) })), TaskDefaults: Schema.optional(Schema.Struct({ LogDriver: Schema.optional(Schema.Struct({ Name: Schema.optional(Schema.String), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) })) })) });
+export const SwarmSpec = Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Orchestration: Schema.optional(Schema.NullOr(Schema.StructWithRest(Schema.Struct({ TaskHistoryRetentionLimit: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]))), Raft: Schema.optional(Schema.StructWithRest(Schema.Struct({ SnapshotInterval: Schema.optional(Schema.Int), KeepOldSnapshots: Schema.optional(Schema.Int), LogEntriesForSlowFollowers: Schema.optional(Schema.Int), ElectionTick: Schema.optional(Schema.Int), HeartbeatTick: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)])), Dispatcher: Schema.optional(Schema.NullOr(Schema.StructWithRest(Schema.Struct({ HeartbeatPeriod: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]))), CAConfig: Schema.optional(Schema.NullOr(Schema.StructWithRest(Schema.Struct({ NodeCertExpiry: Schema.optional(Schema.Int), ExternalCAs: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ Protocol: Schema.optional(Schema.Literal("cfssl")), URL: Schema.optional(Schema.String), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)), CACert: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]))), SigningCACert: Schema.optional(Schema.String), SigningCAKey: Schema.optional(Schema.String), ForceRotate: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]))), EncryptionConfig: Schema.optional(Schema.StructWithRest(Schema.Struct({ AutoLockManagers: Schema.optional(Schema.Boolean) }), [Schema.Record(Schema.String, Schema.Unknown)])), TaskDefaults: Schema.optional(Schema.StructWithRest(Schema.Struct({ LogDriver: Schema.optional(Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type SwarmSpec = Schema.Schema.Type<typeof SwarmSpec>;
 
-export const ClusterInfo = Schema.NullOr(Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(SwarmSpec), TLSInfo: Schema.optional(TLSInfo), RootRotationInProgress: Schema.optional(Schema.Boolean), DataPathPort: Schema.optional(Schema.Int), DefaultAddrPool: Schema.optional(Schema.Array(Schema.String)), SubnetSize: Schema.optional(Schema.Int.check(Schema.isLessThanOrEqualTo(29))) }));
+export const ClusterInfo = Schema.NullOr(Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(SwarmSpec), TLSInfo: Schema.optional(TLSInfo), RootRotationInProgress: Schema.optional(Schema.Boolean), DataPathPort: Schema.optional(Schema.Int), DefaultAddrPool: Schema.optional(Schema.Array(Schema.String)), SubnetSize: Schema.optional(Schema.Int.check(Schema.isLessThanOrEqualTo(29))) }), [Schema.Record(Schema.String, Schema.Unknown)]));
 export type ClusterInfo = Schema.Schema.Type<typeof ClusterInfo>;
 
-export const JoinTokens = Schema.Struct({ Worker: Schema.optional(Schema.String), Manager: Schema.optional(Schema.String) });
+export const JoinTokens = Schema.StructWithRest(Schema.Struct({ Worker: Schema.optional(Schema.String), Manager: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type JoinTokens = Schema.Schema.Type<typeof JoinTokens>;
 
-export const Swarm = ClusterInfo.check(Schema.makeFilter((value) => Schema.is(Schema.Struct({ JoinTokens: Schema.optional(JoinTokens) }))(value)));
+export const Swarm = ClusterInfo.check(Schema.makeFilter((value) => Schema.is(Schema.StructWithRest(Schema.Struct({ JoinTokens: Schema.optional(JoinTokens) }), [Schema.Record(Schema.String, Schema.Unknown)]))(value)));
 export type Swarm = Schema.Schema.Type<typeof Swarm>;
 
-export const NetworkAttachmentConfig = Schema.Struct({ Target: Schema.optional(Schema.String), Aliases: Schema.optional(Schema.Array(Schema.String)), DriverOpts: Schema.optional(Schema.Record(Schema.String, Schema.String)) });
+export const NetworkAttachmentConfig = Schema.StructWithRest(Schema.Struct({ Target: Schema.optional(Schema.String), Aliases: Schema.optional(Schema.Array(Schema.String)), DriverOpts: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type NetworkAttachmentConfig = Schema.Schema.Type<typeof NetworkAttachmentConfig>;
 
-export const TaskSpec = Schema.Struct({ PluginSpec: Schema.optional(Schema.Struct({ Name: Schema.optional(Schema.String), Remote: Schema.optional(Schema.String), Disabled: Schema.optional(Schema.Boolean), PluginPrivilege: Schema.optional(Schema.Array(PluginPrivilege)) })), ContainerSpec: Schema.optional(Schema.Struct({ Image: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Command: Schema.optional(Schema.Array(Schema.String)), Args: Schema.optional(Schema.Array(Schema.String)), Hostname: Schema.optional(Schema.String), Env: Schema.optional(Schema.Array(Schema.String)), Dir: Schema.optional(Schema.String), User: Schema.optional(Schema.String), Groups: Schema.optional(Schema.Array(Schema.String)), Privileges: Schema.optional(Schema.Struct({ CredentialSpec: Schema.optional(Schema.Struct({ Config: Schema.optional(Schema.String), File: Schema.optional(Schema.String), Registry: Schema.optional(Schema.String) })), SELinuxContext: Schema.optional(Schema.Struct({ Disable: Schema.optional(Schema.Boolean), User: Schema.optional(Schema.String), Role: Schema.optional(Schema.String), Type: Schema.optional(Schema.String), Level: Schema.optional(Schema.String) })) })), TTY: Schema.optional(Schema.Boolean), OpenStdin: Schema.optional(Schema.Boolean), ReadOnly: Schema.optional(Schema.Boolean), Mounts: Schema.optional(Schema.Array(Mount)), StopSignal: Schema.optional(Schema.String), StopGracePeriod: Schema.optional(Schema.Int), HealthCheck: Schema.optional(HealthConfig), Hosts: Schema.optional(Schema.Array(Schema.String)), DNSConfig: Schema.optional(Schema.Struct({ Nameservers: Schema.optional(Schema.Array(Schema.String)), Search: Schema.optional(Schema.Array(Schema.String)), Options: Schema.optional(Schema.Array(Schema.String)) })), Secrets: Schema.optional(Schema.Array(Schema.Struct({ File: Schema.optional(Schema.Struct({ Name: Schema.optional(Schema.String), UID: Schema.optional(Schema.String), GID: Schema.optional(Schema.String), Mode: Schema.optional(Schema.Int) })), SecretID: Schema.optional(Schema.String), SecretName: Schema.optional(Schema.String) }))), Configs: Schema.optional(Schema.Array(Schema.Struct({ File: Schema.optional(Schema.Struct({ Name: Schema.optional(Schema.String), UID: Schema.optional(Schema.String), GID: Schema.optional(Schema.String), Mode: Schema.optional(Schema.Int) })), Runtime: Schema.optional(Schema.Struct({  })), ConfigID: Schema.optional(Schema.String), ConfigName: Schema.optional(Schema.String) }))), Isolation: Schema.optional(Schema.Literals(["default", "process", "hyperv"])), Init: Schema.optional(Schema.NullOr(Schema.Boolean)), Sysctls: Schema.optional(Schema.Record(Schema.String, Schema.String)), CapabilityAdd: Schema.optional(Schema.Array(Schema.String)), CapabilityDrop: Schema.optional(Schema.Array(Schema.String)), Ulimits: Schema.optional(Schema.Array(Schema.Struct({ Name: Schema.optional(Schema.String), Soft: Schema.optional(Schema.Int), Hard: Schema.optional(Schema.Int) }))) })), NetworkAttachmentSpec: Schema.optional(Schema.Struct({ ContainerID: Schema.optional(Schema.String) })), Resources: Schema.optional(Schema.Struct({ Limits: Schema.optional(Limit), Reservations: Schema.optional(ResourceObject) })), RestartPolicy: Schema.optional(Schema.Struct({ Condition: Schema.optional(Schema.Literals(["none", "on-failure", "any"])), Delay: Schema.optional(Schema.Int), MaxAttempts: Int_default_0_prop, Window: Int_default_0_prop })), Placement: Schema.optional(Schema.Struct({ Constraints: Schema.optional(Schema.Array(Schema.String)), Preferences: Schema.optional(Schema.Array(Schema.Struct({ Spread: Schema.optional(Schema.Struct({ SpreadDescriptor: Schema.optional(Schema.String) })) }))), MaxReplicas: Int_default_0_prop, Platforms: Schema.optional(Schema.Array(Platform)) })), ForceUpdate: Schema.optional(Schema.Int), Runtime: Schema.optional(Schema.String), Networks: Schema.optional(Schema.Array(NetworkAttachmentConfig)), LogDriver: Schema.optional(Schema.Struct({ Name: Schema.optional(Schema.String), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) })) });
+export const TaskSpec = Schema.StructWithRest(Schema.Struct({ PluginSpec: Schema.optional(Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Remote: Schema.optional(Schema.String), Disabled: Schema.optional(Schema.Boolean), PluginPrivilege: Schema.optional(Schema.Array(PluginPrivilege)) }), [Schema.Record(Schema.String, Schema.Unknown)])), ContainerSpec: Schema.optional(Schema.StructWithRest(Schema.Struct({ Image: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Command: Schema.optional(Schema.Array(Schema.String)), Args: Schema.optional(Schema.Array(Schema.String)), Hostname: Schema.optional(Schema.String), Env: Schema.optional(Schema.Array(Schema.String)), Dir: Schema.optional(Schema.String), User: Schema.optional(Schema.String), Groups: Schema.optional(Schema.Array(Schema.String)), Privileges: Schema.optional(Schema.StructWithRest(Schema.Struct({ CredentialSpec: Schema.optional(Schema.StructWithRest(Schema.Struct({ Config: Schema.optional(Schema.String), File: Schema.optional(Schema.String), Registry: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)])), SELinuxContext: Schema.optional(Schema.StructWithRest(Schema.Struct({ Disable: Schema.optional(Schema.Boolean), User: Schema.optional(Schema.String), Role: Schema.optional(Schema.String), Type: Schema.optional(Schema.String), Level: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)])), TTY: Schema.optional(Schema.Boolean), OpenStdin: Schema.optional(Schema.Boolean), ReadOnly: Schema.optional(Schema.Boolean), Mounts: Schema.optional(Schema.Array(Mount)), StopSignal: Schema.optional(Schema.String), StopGracePeriod: Schema.optional(Schema.Int), HealthCheck: Schema.optional(HealthConfig), Hosts: Schema.optional(Schema.Array(Schema.String)), DNSConfig: Schema.optional(Schema.StructWithRest(Schema.Struct({ Nameservers: Schema.optional(Schema.Array(Schema.String)), Search: Schema.optional(Schema.Array(Schema.String)), Options: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)])), Secrets: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ File: Schema.optional(Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), UID: Schema.optional(Schema.String), GID: Schema.optional(Schema.String), Mode: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)])), SecretID: Schema.optional(Schema.String), SecretName: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]))), Configs: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ File: Schema.optional(Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), UID: Schema.optional(Schema.String), GID: Schema.optional(Schema.String), Mode: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)])), Runtime: Schema.optional(Schema.StructWithRest(Schema.Struct({  }), [Schema.Record(Schema.String, Schema.Unknown)])), ConfigID: Schema.optional(Schema.String), ConfigName: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]))), Isolation: Schema.optional(Schema.Literals(["default", "process", "hyperv"])), Init: Schema.optional(Schema.NullOr(Schema.Boolean)), Sysctls: Schema.optional(Schema.Record(Schema.String, Schema.String)), CapabilityAdd: Schema.optional(Schema.Array(Schema.String)), CapabilityDrop: Schema.optional(Schema.Array(Schema.String)), Ulimits: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Soft: Schema.optional(Schema.Int), Hard: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]))) }), [Schema.Record(Schema.String, Schema.Unknown)])), NetworkAttachmentSpec: Schema.optional(Schema.StructWithRest(Schema.Struct({ ContainerID: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)])), Resources: Schema.optional(Schema.StructWithRest(Schema.Struct({ Limits: Schema.optional(Limit), Reservations: Schema.optional(ResourceObject) }), [Schema.Record(Schema.String, Schema.Unknown)])), RestartPolicy: Schema.optional(Schema.StructWithRest(Schema.Struct({ Condition: Schema.optional(Schema.Literals(["none", "on-failure", "any"])), Delay: Schema.optional(Schema.Int), MaxAttempts: Int_default_0_prop, Window: Int_default_0_prop }), [Schema.Record(Schema.String, Schema.Unknown)])), Placement: Schema.optional(Schema.StructWithRest(Schema.Struct({ Constraints: Schema.optional(Schema.Array(Schema.String)), Preferences: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ Spread: Schema.optional(Schema.StructWithRest(Schema.Struct({ SpreadDescriptor: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)]))), MaxReplicas: Int_default_0_prop, Platforms: Schema.optional(Schema.Array(Platform)) }), [Schema.Record(Schema.String, Schema.Unknown)])), ForceUpdate: Schema.optional(Schema.Int), Runtime: Schema.optional(Schema.String), Networks: Schema.optional(Schema.Array(NetworkAttachmentConfig)), LogDriver: Schema.optional(Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type TaskSpec = Schema.Schema.Type<typeof TaskSpec>;
 
 export const TaskState = Schema.Literals(["new", "allocated", "pending", "assigned", "accepted", "preparing", "ready", "starting", "running", "complete", "shutdown", "failed", "rejected", "remove", "orphaned"]);
 export type TaskState = Schema.Schema.Type<typeof TaskState>;
 
-export const Task = Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Spec: Schema.optional(TaskSpec), ServiceID: Schema.optional(Schema.String), Slot: Schema.optional(Schema.Int), NodeID: Schema.optional(Schema.String), AssignedGenericResources: Schema.optional(GenericResources), Status: Schema.optional(Schema.Struct({ Timestamp: Schema.optional(Schema.String), State: Schema.optional(TaskState), Message: Schema.optional(Schema.String), Err: Schema.optional(Schema.String), ContainerStatus: Schema.optional(Schema.Struct({ ContainerID: Schema.optional(Schema.String), PID: Schema.optional(Schema.Int), ExitCode: Schema.optional(Schema.Int) })) })), DesiredState: Schema.optional(TaskState), JobIteration: Schema.optional(ObjectVersion) });
+export const Task = Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Spec: Schema.optional(TaskSpec), ServiceID: Schema.optional(Schema.String), Slot: Schema.optional(Schema.Int), NodeID: Schema.optional(Schema.String), AssignedGenericResources: Schema.optional(GenericResources), Status: Schema.optional(Schema.StructWithRest(Schema.Struct({ Timestamp: Schema.optional(Schema.String), State: Schema.optional(TaskState), Message: Schema.optional(Schema.String), Err: Schema.optional(Schema.String), ContainerStatus: Schema.optional(Schema.StructWithRest(Schema.Struct({ ContainerID: Schema.optional(Schema.String), PID: Schema.optional(Schema.Int), ExitCode: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)])), DesiredState: Schema.optional(TaskState), JobIteration: Schema.optional(ObjectVersion) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Task = Schema.Schema.Type<typeof Task>;
 
-export const EndpointPortConfig = Schema.Struct({ Name: Schema.optional(Schema.String), Protocol: Schema.optional(Schema.Literals(["tcp", "udp", "sctp"])), TargetPort: Schema.optional(Schema.Int), PublishedPort: Schema.optional(Schema.Int), PublishMode: Schema_default_ingress_prop });
+export const EndpointPortConfig = Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Protocol: Schema.optional(Schema.Literals(["tcp", "udp", "sctp"])), TargetPort: Schema.optional(Schema.Int), PublishedPort: Schema.optional(Schema.Int), PublishMode: Schema_default_ingress_prop }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type EndpointPortConfig = Schema.Schema.Type<typeof EndpointPortConfig>;
 
-export const EndpointSpec = Schema.Struct({ Mode: Schema_default_vip_prop, Ports: Schema.optional(Schema.Array(EndpointPortConfig)) });
+export const EndpointSpec = Schema.StructWithRest(Schema.Struct({ Mode: Schema_default_vip_prop, Ports: Schema.optional(Schema.Array(EndpointPortConfig)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type EndpointSpec = Schema.Schema.Type<typeof EndpointSpec>;
 
-export const ServiceSpec = Schema.Struct({ Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), TaskTemplate: Schema.optional(TaskSpec), Mode: Schema.optional(Schema.Struct({ Replicated: Schema.optional(Schema.Struct({ Replicas: Schema.optional(Schema.Int) })), Global: Schema.optional(Schema.Struct({  })), ReplicatedJob: Schema.optional(Schema.Struct({ MaxConcurrent: Int_default_1_prop, TotalCompletions: Schema.optional(Schema.Int) })), GlobalJob: Schema.optional(Schema.Struct({  })) })), UpdateConfig: Schema.optional(Schema.Struct({ Parallelism: Schema.optional(Schema.Int), Delay: Schema.optional(Schema.Int), FailureAction: Schema.optional(Schema.Literals(["continue", "pause", "rollback"])), Monitor: Schema.optional(Schema.Int), MaxFailureRatio: Schema.optional(Schema.Number), Order: Schema.optional(Schema.Literals(["stop-first", "start-first"])) })), RollbackConfig: Schema.optional(Schema.Struct({ Parallelism: Schema.optional(Schema.Int), Delay: Schema.optional(Schema.Int), FailureAction: Schema.optional(Schema.Literals(["continue", "pause"])), Monitor: Schema.optional(Schema.Int), MaxFailureRatio: Schema.optional(Schema.Number), Order: Schema.optional(Schema.Literals(["stop-first", "start-first"])) })), Networks: Schema.optional(Schema.Array(NetworkAttachmentConfig)), EndpointSpec: Schema.optional(EndpointSpec) });
+export const ServiceSpec = Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), TaskTemplate: Schema.optional(TaskSpec), Mode: Schema.optional(Schema.StructWithRest(Schema.Struct({ Replicated: Schema.optional(Schema.StructWithRest(Schema.Struct({ Replicas: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)])), Global: Schema.optional(Schema.StructWithRest(Schema.Struct({  }), [Schema.Record(Schema.String, Schema.Unknown)])), ReplicatedJob: Schema.optional(Schema.StructWithRest(Schema.Struct({ MaxConcurrent: Int_default_1_prop, TotalCompletions: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)])), GlobalJob: Schema.optional(Schema.StructWithRest(Schema.Struct({  }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)])), UpdateConfig: Schema.optional(Schema.StructWithRest(Schema.Struct({ Parallelism: Schema.optional(Schema.Int), Delay: Schema.optional(Schema.Int), FailureAction: Schema.optional(Schema.Literals(["continue", "pause", "rollback"])), Monitor: Schema.optional(Schema.Int), MaxFailureRatio: Schema.optional(Schema.Number), Order: Schema.optional(Schema.Literals(["stop-first", "start-first"])) }), [Schema.Record(Schema.String, Schema.Unknown)])), RollbackConfig: Schema.optional(Schema.StructWithRest(Schema.Struct({ Parallelism: Schema.optional(Schema.Int), Delay: Schema.optional(Schema.Int), FailureAction: Schema.optional(Schema.Literals(["continue", "pause"])), Monitor: Schema.optional(Schema.Int), MaxFailureRatio: Schema.optional(Schema.Number), Order: Schema.optional(Schema.Literals(["stop-first", "start-first"])) }), [Schema.Record(Schema.String, Schema.Unknown)])), Networks: Schema.optional(Schema.Array(NetworkAttachmentConfig)), EndpointSpec: Schema.optional(EndpointSpec) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ServiceSpec = Schema.Schema.Type<typeof ServiceSpec>;
 
-export const Service = Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(ServiceSpec), Endpoint: Schema.optional(Schema.Struct({ Spec: Schema.optional(EndpointSpec), Ports: Schema.optional(Schema.Array(EndpointPortConfig)), VirtualIPs: Schema.optional(Schema.Array(Schema.Struct({ NetworkID: Schema.optional(Schema.String), Addr: Schema.optional(Schema.String) }))) })), UpdateStatus: Schema.optional(Schema.Struct({ State: Schema.optional(Schema.Literals(["updating", "paused", "completed"])), StartedAt: Schema.optional(Schema.String), CompletedAt: Schema.optional(Schema.String), Message: Schema.optional(Schema.String) })), ServiceStatus: Schema.optional(Schema.Struct({ RunningTasks: Schema.optional(Schema.Int), DesiredTasks: Schema.optional(Schema.Int), CompletedTasks: Schema.optional(Schema.Int) })), JobStatus: Schema.optional(Schema.Struct({ JobIteration: Schema.optional(ObjectVersion), LastExecution: Schema.optional(Schema.String) })) });
+export const Service = Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(ServiceSpec), Endpoint: Schema.optional(Schema.StructWithRest(Schema.Struct({ Spec: Schema.optional(EndpointSpec), Ports: Schema.optional(Schema.Array(EndpointPortConfig)), VirtualIPs: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ NetworkID: Schema.optional(Schema.String), Addr: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]))) }), [Schema.Record(Schema.String, Schema.Unknown)])), UpdateStatus: Schema.optional(Schema.StructWithRest(Schema.Struct({ State: Schema.optional(Schema.Literals(["updating", "paused", "completed"])), StartedAt: Schema.optional(Schema.String), CompletedAt: Schema.optional(Schema.String), Message: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)])), ServiceStatus: Schema.optional(Schema.StructWithRest(Schema.Struct({ RunningTasks: Schema.optional(Schema.Int), DesiredTasks: Schema.optional(Schema.Int), CompletedTasks: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)])), JobStatus: Schema.optional(Schema.StructWithRest(Schema.Struct({ JobIteration: Schema.optional(ObjectVersion), LastExecution: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)])) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Service = Schema.Schema.Type<typeof Service>;
 
-export const ImageDeleteResponseItem = Schema.Struct({ Untagged: Schema.optional(Schema.String), Deleted: Schema.optional(Schema.String) });
+export const ImageDeleteResponseItem = Schema.StructWithRest(Schema.Struct({ Untagged: Schema.optional(Schema.String), Deleted: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ImageDeleteResponseItem = Schema.Schema.Type<typeof ImageDeleteResponseItem>;
 
-export const ServiceUpdateResponse = Schema.Struct({ Warnings: Schema.optional(Schema.Array(Schema.String)) });
+export const ServiceUpdateResponse = Schema.StructWithRest(Schema.Struct({ Warnings: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ServiceUpdateResponse = Schema.Schema.Type<typeof ServiceUpdateResponse>;
 
-export const ContainerSummary = Schema.Struct({ Id: Schema.optional(Schema.String), Names: Schema.optional(Schema.Array(Schema.String)), Image: Schema.optional(Schema.String), ImageID: Schema.optional(Schema.String), Command: Schema.optional(Schema.String), Created: Schema.optional(Schema.Int), Ports: Schema.optional(Schema.Array(Port)), SizeRw: Schema.optional(Schema.Int), SizeRootFs: Schema.optional(Schema.Int), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), State: Schema.optional(Schema.String), Status: Schema.optional(Schema.String), HostConfig: Schema.optional(Schema.Struct({ NetworkMode: Schema.optional(Schema.String) })), NetworkSettings: Schema.optional(Schema.Struct({ Networks: Schema.optional(Schema.Record(Schema.String, EndpointSettings)) })), Mounts: Schema.optional(Schema.Array(MountPoint)) });
+export const ContainerSummary = Schema.StructWithRest(Schema.Struct({ Id: Schema.optional(Schema.String), Names: Schema.optional(Schema.Array(Schema.String)), Image: Schema.optional(Schema.String), ImageID: Schema.optional(Schema.String), Command: Schema.optional(Schema.String), Created: Schema.optional(Schema.Int), Ports: Schema.optional(Schema.Array(Port)), SizeRw: Schema.optional(Schema.Int), SizeRootFs: Schema.optional(Schema.Int), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), State: Schema.optional(Schema.String), Status: Schema.optional(Schema.String), HostConfig: Schema.optional(Schema.StructWithRest(Schema.Struct({ NetworkMode: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)])), NetworkSettings: Schema.optional(Schema.StructWithRest(Schema.Struct({ Networks: Schema.optional(Schema.Record(Schema.String, EndpointSettings)) }), [Schema.Record(Schema.String, Schema.Unknown)])), Mounts: Schema.optional(Schema.Array(MountPoint)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ContainerSummary = Schema.Schema.Type<typeof ContainerSummary>;
 
-export const Driver = Schema.Struct({ Name: Schema.String, Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) });
+export const Driver = Schema.StructWithRest(Schema.Struct({ Name: Schema.String, Options: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Driver = Schema.Schema.Type<typeof Driver>;
 
-export const SecretSpec = Schema.Struct({ Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Data: Schema.optional(Schema.String), Driver: Schema.optional(Driver), Templating: Schema.optional(Driver) });
+export const SecretSpec = Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Data: Schema.optional(Schema.String), Driver: Schema.optional(Driver), Templating: Schema.optional(Driver) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type SecretSpec = Schema.Schema.Type<typeof SecretSpec>;
 
-export const Secret = Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(SecretSpec) });
+export const Secret = Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(SecretSpec) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Secret = Schema.Schema.Type<typeof Secret>;
 
-export const ConfigSpec = Schema.Struct({ Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Data: Schema.optional(Schema.String), Templating: Schema.optional(Driver) });
+export const ConfigSpec = Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)), Data: Schema.optional(Schema.String), Templating: Schema.optional(Driver) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ConfigSpec = Schema.Schema.Type<typeof ConfigSpec>;
 
-export const Config = Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(ConfigSpec) });
+export const Config = Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String), Version: Schema.optional(ObjectVersion), CreatedAt: Schema.optional(Schema.String), UpdatedAt: Schema.optional(Schema.String), Spec: Schema.optional(ConfigSpec) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Config = Schema.Schema.Type<typeof Config>;
 
-export const ContainerState = Schema.NullOr(Schema.Struct({ Status: Schema.optional(Schema.Literals(["created", "running", "paused", "restarting", "removing", "exited", "dead"])), Running: Schema.optional(Schema.Boolean), Paused: Schema.optional(Schema.Boolean), Restarting: Schema.optional(Schema.Boolean), OOMKilled: Schema.optional(Schema.Boolean), Dead: Schema.optional(Schema.Boolean), Pid: Schema.optional(Schema.Int), ExitCode: Schema.optional(Schema.Int), Error: Schema.optional(Schema.String), StartedAt: Schema.optional(Schema.String), FinishedAt: Schema.optional(Schema.String), Health: Schema.optional(Health) }));
+export const ContainerState = Schema.NullOr(Schema.StructWithRest(Schema.Struct({ Status: Schema.optional(Schema.Literals(["created", "running", "paused", "restarting", "removing", "exited", "dead"])), Running: Schema.optional(Schema.Boolean), Paused: Schema.optional(Schema.Boolean), Restarting: Schema.optional(Schema.Boolean), OOMKilled: Schema.optional(Schema.Boolean), Dead: Schema.optional(Schema.Boolean), Pid: Schema.optional(Schema.Int), ExitCode: Schema.optional(Schema.Int), Error: Schema.optional(Schema.String), StartedAt: Schema.optional(Schema.String), FinishedAt: Schema.optional(Schema.String), Health: Schema.optional(Health) }), [Schema.Record(Schema.String, Schema.Unknown)]));
 export type ContainerState = Schema.Schema.Type<typeof ContainerState>;
 
-export const ContainerCreateResponse = Schema.Struct({ Id: Schema.String, Warnings: Schema.Array(Schema.String) });
+export const ContainerCreateResponse = Schema.StructWithRest(Schema.Struct({ Id: Schema.String, Warnings: Schema.Array(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ContainerCreateResponse = Schema.Schema.Type<typeof ContainerCreateResponse>;
 
-export const ContainerWaitExitError = Schema.Struct({ Message: Schema.optional(Schema.String) });
+export const ContainerWaitExitError = Schema.StructWithRest(Schema.Struct({ Message: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ContainerWaitExitError = Schema.Schema.Type<typeof ContainerWaitExitError>;
 
-export const ContainerWaitResponse = Schema.Struct({ StatusCode: Schema.Int, Error: Schema.optional(ContainerWaitExitError) });
+export const ContainerWaitResponse = Schema.StructWithRest(Schema.Struct({ StatusCode: Schema.Int, Error: Schema.optional(ContainerWaitExitError) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type ContainerWaitResponse = Schema.Schema.Type<typeof ContainerWaitResponse>;
 
-export const SystemVersion = Schema.Struct({ Platform: Schema.optional(Schema.Struct({ Name: Schema.String })), Components: Schema.optional(Schema.Array(Schema.Struct({ Name: Schema.String, Version: Schema.String, Details: Schema.optional(Schema.NullOr(Schema.Struct({  }))) }))), Version: Schema.optional(Schema.String), ApiVersion: Schema.optional(Schema.String), MinAPIVersion: Schema.optional(Schema.String), GitCommit: Schema.optional(Schema.String), GoVersion: Schema.optional(Schema.String), Os: Schema.optional(Schema.String), Arch: Schema.optional(Schema.String), KernelVersion: Schema.optional(Schema.String), Experimental: Schema.optional(Schema.Boolean), BuildTime: Schema.optional(Schema.String) });
+export const SystemVersion = Schema.StructWithRest(Schema.Struct({ Platform: Schema.optional(Schema.StructWithRest(Schema.Struct({ Name: Schema.String }), [Schema.Record(Schema.String, Schema.Unknown)])), Components: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ Name: Schema.String, Version: Schema.String, Details: Schema.optional(Schema.NullOr(Schema.StructWithRest(Schema.Struct({  }), [Schema.Record(Schema.String, Schema.Unknown)]))) }), [Schema.Record(Schema.String, Schema.Unknown)]))), Version: Schema.optional(Schema.String), ApiVersion: Schema.optional(Schema.String), MinAPIVersion: Schema.optional(Schema.String), GitCommit: Schema.optional(Schema.String), GoVersion: Schema.optional(Schema.String), Os: Schema.optional(Schema.String), Arch: Schema.optional(Schema.String), KernelVersion: Schema.optional(Schema.String), Experimental: Schema.optional(Schema.Boolean), BuildTime: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type SystemVersion = Schema.Schema.Type<typeof SystemVersion>;
 
-export const PluginsInfo = Schema.Struct({ Volume: Schema.optional(Schema.Array(Schema.String)), Network: Schema.optional(Schema.Array(Schema.String)), Authorization: Schema.optional(Schema.Array(Schema.String)), Log: Schema.optional(Schema.Array(Schema.String)) });
+export const PluginsInfo = Schema.StructWithRest(Schema.Struct({ Volume: Schema.optional(Schema.Array(Schema.String)), Network: Schema.optional(Schema.Array(Schema.String)), Authorization: Schema.optional(Schema.Array(Schema.String)), Log: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type PluginsInfo = Schema.Schema.Type<typeof PluginsInfo>;
 
-export const IndexInfo = Schema.NullOr(Schema.Struct({ Name: Schema.optional(Schema.String), Mirrors: Schema.optional(Schema.Array(Schema.String)), Secure: Schema.optional(Schema.Boolean), Official: Schema.optional(Schema.Boolean) }));
+export const IndexInfo = Schema.NullOr(Schema.StructWithRest(Schema.Struct({ Name: Schema.optional(Schema.String), Mirrors: Schema.optional(Schema.Array(Schema.String)), Secure: Schema.optional(Schema.Boolean), Official: Schema.optional(Schema.Boolean) }), [Schema.Record(Schema.String, Schema.Unknown)]));
 export type IndexInfo = Schema.Schema.Type<typeof IndexInfo>;
 
-export const RegistryServiceConfig = Schema.NullOr(Schema.Struct({ AllowNondistributableArtifactsCIDRs: Schema.optional(Schema.Array(Schema.String)), AllowNondistributableArtifactsHostnames: Schema.optional(Schema.Array(Schema.String)), InsecureRegistryCIDRs: Schema.optional(Schema.Array(Schema.String)), IndexConfigs: Schema.optional(Schema.Record(Schema.String, IndexInfo)), Mirrors: Schema.optional(Schema.Array(Schema.String)) }));
+export const RegistryServiceConfig = Schema.NullOr(Schema.StructWithRest(Schema.Struct({ AllowNondistributableArtifactsCIDRs: Schema.optional(Schema.Array(Schema.String)), AllowNondistributableArtifactsHostnames: Schema.optional(Schema.Array(Schema.String)), InsecureRegistryCIDRs: Schema.optional(Schema.Array(Schema.String)), IndexConfigs: Schema.optional(Schema.Record(Schema.String, IndexInfo)), Mirrors: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]));
 export type RegistryServiceConfig = Schema.Schema.Type<typeof RegistryServiceConfig>;
 
-export const Runtime = Schema.Struct({ path: Schema.optional(Schema.String), runtimeArgs: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))) });
+export const Runtime = Schema.StructWithRest(Schema.Struct({ path: Schema.optional(Schema.String), runtimeArgs: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Runtime = Schema.Schema.Type<typeof Runtime>;
 
 export const LocalNodeState = Schema_default_value;
 export type LocalNodeState = Schema.Schema.Type<typeof LocalNodeState>;
 
-export const PeerNode = Schema.Struct({ NodeID: Schema.optional(Schema.String), Addr: Schema.optional(Schema.String) });
+export const PeerNode = Schema.StructWithRest(Schema.Struct({ NodeID: Schema.optional(Schema.String), Addr: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type PeerNode = Schema.Schema.Type<typeof PeerNode>;
 
-export const SwarmInfo = Schema.Struct({ NodeID: String_default_value_prop, NodeAddr: String_default_value_prop, LocalNodeState: Schema.optional(LocalNodeState), ControlAvailable: Boolean_default_false_prop, Error: String_default_value_prop, RemoteManagers: Schema.optional(Schema.NullOr(Schema.Array(PeerNode))), Nodes: Schema.optional(Schema.NullOr(Schema.Int)), Managers: Schema.optional(Schema.NullOr(Schema.Int)), Cluster: Schema.optional(ClusterInfo) });
+export const SwarmInfo = Schema.StructWithRest(Schema.Struct({ NodeID: String_default_value_prop, NodeAddr: String_default_value_prop, LocalNodeState: Schema.optional(LocalNodeState), ControlAvailable: Boolean_default_false_prop, Error: String_default_value_prop, RemoteManagers: Schema.optional(Schema.NullOr(Schema.Array(PeerNode))), Nodes: Schema.optional(Schema.NullOr(Schema.Int)), Managers: Schema.optional(Schema.NullOr(Schema.Int)), Cluster: Schema.optional(ClusterInfo) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type SwarmInfo = Schema.Schema.Type<typeof SwarmInfo>;
 
-export const Commit = Schema.Struct({ ID: Schema.optional(Schema.String), Expected: Schema.optional(Schema.String) });
+export const Commit = Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String), Expected: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type Commit = Schema.Schema.Type<typeof Commit>;
 
-export const SystemInfo = Schema.Struct({ ID: Schema.optional(Schema.String), Containers: Schema.optional(Schema.Int), ContainersRunning: Schema.optional(Schema.Int), ContainersPaused: Schema.optional(Schema.Int), ContainersStopped: Schema.optional(Schema.Int), Images: Schema.optional(Schema.Int), Driver: Schema.optional(Schema.String), DriverStatus: Schema.optional(Schema.Array(Schema.Array(Schema.String))), DockerRootDir: Schema.optional(Schema.String), Plugins: Schema.optional(PluginsInfo), MemoryLimit: Schema.optional(Schema.Boolean), SwapLimit: Schema.optional(Schema.Boolean), KernelMemoryTCP: Schema.optional(Schema.Boolean), CpuCfsPeriod: Schema.optional(Schema.Boolean), CpuCfsQuota: Schema.optional(Schema.Boolean), CPUShares: Schema.optional(Schema.Boolean), CPUSet: Schema.optional(Schema.Boolean), PidsLimit: Schema.optional(Schema.Boolean), OomKillDisable: Schema.optional(Schema.Boolean), IPv4Forwarding: Schema.optional(Schema.Boolean), BridgeNfIptables: Schema.optional(Schema.Boolean), BridgeNfIp6tables: Schema.optional(Schema.Boolean), Debug: Schema.optional(Schema.Boolean), NFd: Schema.optional(Schema.Int), NGoroutines: Schema.optional(Schema.Int), SystemTime: Schema.optional(Schema.String), LoggingDriver: Schema.optional(Schema.String), CgroupDriver: Schema_default_cgroupfs_prop, CgroupVersion: Schema_default_1_prop, NEventsListener: Schema.optional(Schema.Int), KernelVersion: Schema.optional(Schema.String), OperatingSystem: Schema.optional(Schema.String), OSVersion: Schema.optional(Schema.String), OSType: Schema.optional(Schema.String), Architecture: Schema.optional(Schema.String), NCPU: Schema.optional(Schema.Int), MemTotal: Schema.optional(Schema.Int), IndexServerAddress: String_default_https_index_docker_io_v1_prop, RegistryConfig: Schema.optional(RegistryServiceConfig), GenericResources: Schema.optional(GenericResources), HttpProxy: Schema.optional(Schema.String), HttpsProxy: Schema.optional(Schema.String), NoProxy: Schema.optional(Schema.String), Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Array(Schema.String)), ExperimentalBuild: Schema.optional(Schema.Boolean), ServerVersion: Schema.optional(Schema.String), Runtimes: Schema.optional(Schema.Record(Schema.String, Runtime)), DefaultRuntime: String_default_runc_prop, Swarm: Schema.optional(SwarmInfo), LiveRestoreEnabled: Boolean_default_false_prop, Isolation: Schema_default_default_prop, InitBinary: Schema.optional(Schema.String), ContainerdCommit: Schema.optional(Commit), RuncCommit: Schema.optional(Commit), InitCommit: Schema.optional(Commit), SecurityOptions: Schema.optional(Schema.Array(Schema.String)), ProductLicense: Schema.optional(Schema.String), DefaultAddressPools: Schema.optional(Schema.Array(Schema.Struct({ Base: Schema.optional(Schema.String), Size: Schema.optional(Schema.Int) }))), Warnings: Schema.optional(Schema.Array(Schema.String)) });
+export const SystemInfo = Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String), Containers: Schema.optional(Schema.Int), ContainersRunning: Schema.optional(Schema.Int), ContainersPaused: Schema.optional(Schema.Int), ContainersStopped: Schema.optional(Schema.Int), Images: Schema.optional(Schema.Int), Driver: Schema.optional(Schema.String), DriverStatus: Schema.optional(Schema.Array(Schema.Array(Schema.String))), DockerRootDir: Schema.optional(Schema.String), Plugins: Schema.optional(PluginsInfo), MemoryLimit: Schema.optional(Schema.Boolean), SwapLimit: Schema.optional(Schema.Boolean), KernelMemoryTCP: Schema.optional(Schema.Boolean), CpuCfsPeriod: Schema.optional(Schema.Boolean), CpuCfsQuota: Schema.optional(Schema.Boolean), CPUShares: Schema.optional(Schema.Boolean), CPUSet: Schema.optional(Schema.Boolean), PidsLimit: Schema.optional(Schema.Boolean), OomKillDisable: Schema.optional(Schema.Boolean), IPv4Forwarding: Schema.optional(Schema.Boolean), BridgeNfIptables: Schema.optional(Schema.Boolean), BridgeNfIp6tables: Schema.optional(Schema.Boolean), Debug: Schema.optional(Schema.Boolean), NFd: Schema.optional(Schema.Int), NGoroutines: Schema.optional(Schema.Int), SystemTime: Schema.optional(Schema.String), LoggingDriver: Schema.optional(Schema.String), CgroupDriver: Schema_default_cgroupfs_prop, CgroupVersion: Schema_default_1_prop, NEventsListener: Schema.optional(Schema.Int), KernelVersion: Schema.optional(Schema.String), OperatingSystem: Schema.optional(Schema.String), OSVersion: Schema.optional(Schema.String), OSType: Schema.optional(Schema.String), Architecture: Schema.optional(Schema.String), NCPU: Schema.optional(Schema.Int), MemTotal: Schema.optional(Schema.Int), IndexServerAddress: String_default_https_index_docker_io_v1_prop, RegistryConfig: Schema.optional(RegistryServiceConfig), GenericResources: Schema.optional(GenericResources), HttpProxy: Schema.optional(Schema.String), HttpsProxy: Schema.optional(Schema.String), NoProxy: Schema.optional(Schema.String), Name: Schema.optional(Schema.String), Labels: Schema.optional(Schema.Array(Schema.String)), ExperimentalBuild: Schema.optional(Schema.Boolean), ServerVersion: Schema.optional(Schema.String), Runtimes: Schema.optional(Schema.Record(Schema.String, Runtime)), DefaultRuntime: String_default_runc_prop, Swarm: Schema.optional(SwarmInfo), LiveRestoreEnabled: Boolean_default_false_prop, Isolation: Schema_default_default_prop, InitBinary: Schema.optional(Schema.String), ContainerdCommit: Schema.optional(Commit), RuncCommit: Schema.optional(Commit), InitCommit: Schema.optional(Commit), SecurityOptions: Schema.optional(Schema.Array(Schema.String)), ProductLicense: Schema.optional(Schema.String), DefaultAddressPools: Schema.optional(Schema.Array(Schema.StructWithRest(Schema.Struct({ Base: Schema.optional(Schema.String), Size: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]))), Warnings: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type SystemInfo = Schema.Schema.Type<typeof SystemInfo>;
 
-export const EventActor = Schema.Struct({ ID: Schema.optional(Schema.String), Attributes: Schema.optional(Schema.Record(Schema.String, Schema.String)) });
+export const EventActor = Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String), Attributes: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type EventActor = Schema.Schema.Type<typeof EventActor>;
 
-export const EventMessage = Schema.Struct({ Type: Schema.optional(Schema.Literals(["builder", "config", "container", "daemon", "image", "network", "node", "plugin", "secret", "service", "volume"])), Action: Schema.optional(Schema.String), Actor: Schema.optional(EventActor), scope: Schema.optional(Schema.Literals(["local", "swarm"])), time: Schema.optional(Schema.Int), timeNano: Schema.optional(Schema.Int) });
+export const EventMessage = Schema.StructWithRest(Schema.Struct({ Type: Schema.optional(Schema.Literals(["builder", "config", "container", "daemon", "image", "network", "node", "plugin", "secret", "service", "volume"])), Action: Schema.optional(Schema.String), Actor: Schema.optional(EventActor), scope: Schema.optional(Schema.Literals(["local", "swarm"])), time: Schema.optional(Schema.Int), timeNano: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type EventMessage = Schema.Schema.Type<typeof EventMessage>;
 
-export const OCIDescriptor = Schema.Struct({ mediaType: Schema.optional(Schema.String), digest: Schema.optional(Schema.String), size: Schema.optional(Schema.Int) });
+export const OCIDescriptor = Schema.StructWithRest(Schema.Struct({ mediaType: Schema.optional(Schema.String), digest: Schema.optional(Schema.String), size: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type OCIDescriptor = Schema.Schema.Type<typeof OCIDescriptor>;
 
-export const OCIPlatform = Schema.Struct({ architecture: Schema.optional(Schema.String), os: Schema.optional(Schema.String), "os.version": Schema.optional(Schema.String), "os.features": Schema.optional(Schema.Array(Schema.String)), variant: Schema.optional(Schema.String) });
+export const OCIPlatform = Schema.StructWithRest(Schema.Struct({ architecture: Schema.optional(Schema.String), os: Schema.optional(Schema.String), "os.version": Schema.optional(Schema.String), "os.features": Schema.optional(Schema.Array(Schema.String)), variant: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type OCIPlatform = Schema.Schema.Type<typeof OCIPlatform>;
 
-export const DistributionInspect = Schema.Struct({ Descriptor: OCIDescriptor, Platforms: Schema.Array(OCIPlatform) });
+export const DistributionInspect = Schema.StructWithRest(Schema.Struct({ Descriptor: OCIDescriptor, Platforms: Schema.Array(OCIPlatform) }), [Schema.Record(Schema.String, Schema.Unknown)]);
 export type DistributionInspect = Schema.Schema.Type<typeof DistributionInspect>;
 
 // </Schemas>
@@ -365,7 +365,7 @@ export const get_ContainerList = {
   path: Schema.Literal("/containers/json"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ all: Union_default_false_prop, limit: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), size: Union_default_false_prop, filters: Schema.optional(Schema.String) })) },
+  parameters: { query: Schema.optional(Schema.Struct({ all: Union_default_false_prop, limit: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), size: Union_default_false_prop, filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["all", "limit", "size", "filters"].includes(key))))) },
   responses: { 200: Schema.Array(ContainerSummary), 400: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -375,7 +375,7 @@ export const post_ContainerCreate = {
   path: Schema.Literal("/containers/create"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ name: Schema.optional(Schema.String.check(Schema.isPattern(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$")))), platform: Schema.optional(Schema.String) })), body: ContainerConfig.mapFields(Struct.assign((Schema.Struct({ HostConfig: Schema.optional(HostConfig), NetworkingConfig: Schema.optional(NetworkingConfig) })).fields)) },
+  parameters: { query: Schema.optional(Schema.Struct({ name: Schema.optional(Schema.String.check(Schema.isPattern(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$")))), platform: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name", "platform"].includes(key))))), body: ContainerConfig.check(Schema.makeFilter((value) => Schema.is(Schema.StructWithRest(Schema.Struct({ HostConfig: Schema.optional(HostConfig), NetworkingConfig: Schema.optional(NetworkingConfig) }), [Schema.Record(Schema.String, Schema.Unknown)]))(value))) },
   responses: { 201: ContainerCreateResponse, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -385,8 +385,8 @@ export const get_ContainerInspect = {
   path: Schema.Literal("/containers/{id}/json"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ size: Union_default_false_prop })), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 200: Schema.Struct({ Id: Schema.optional(Schema.String), Created: Schema.optional(Schema.String), Path: Schema.optional(Schema.String), Args: Schema.optional(Schema.Array(Schema.String)), State: Schema.optional(ContainerState), Image: Schema.optional(Schema.String), ResolvConfPath: Schema.optional(Schema.String), HostnamePath: Schema.optional(Schema.String), HostsPath: Schema.optional(Schema.String), LogPath: Schema.optional(Schema.String), Name: Schema.optional(Schema.String), RestartCount: Schema.optional(Schema.Int), Driver: Schema.optional(Schema.String), Platform: Schema.optional(Schema.String), MountLabel: Schema.optional(Schema.String), ProcessLabel: Schema.optional(Schema.String), AppArmorProfile: Schema.optional(Schema.String), ExecIDs: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))), HostConfig: Schema.optional(HostConfig), GraphDriver: Schema.optional(GraphDriverData), SizeRw: Schema.optional(Schema.Int), SizeRootFs: Schema.optional(Schema.Int), Mounts: Schema.optional(Schema.Array(MountPoint)), Config: Schema.optional(ContainerConfig), NetworkSettings: Schema.optional(NetworkSettings) }), 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { query: Schema.optional(Schema.Struct({ size: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["size"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
+  responses: { 200: Schema.StructWithRest(Schema.Struct({ Id: Schema.optional(Schema.String), Created: Schema.optional(Schema.String), Path: Schema.optional(Schema.String), Args: Schema.optional(Schema.Array(Schema.String)), State: Schema.optional(ContainerState), Image: Schema.optional(Schema.String), ResolvConfPath: Schema.optional(Schema.String), HostnamePath: Schema.optional(Schema.String), HostsPath: Schema.optional(Schema.String), LogPath: Schema.optional(Schema.String), Name: Schema.optional(Schema.String), RestartCount: Schema.optional(Schema.Int), Driver: Schema.optional(Schema.String), Platform: Schema.optional(Schema.String), MountLabel: Schema.optional(Schema.String), ProcessLabel: Schema.optional(Schema.String), AppArmorProfile: Schema.optional(Schema.String), ExecIDs: Schema.optional(Schema.NullOr(Schema.Array(Schema.String))), HostConfig: Schema.optional(HostConfig), GraphDriver: Schema.optional(GraphDriverData), SizeRw: Schema.optional(Schema.Int), SizeRootFs: Schema.optional(Schema.Int), Mounts: Schema.optional(Schema.Array(MountPoint)), Config: Schema.optional(ContainerConfig), NetworkSettings: Schema.optional(NetworkSettings) }), [Schema.Record(Schema.String, Schema.Unknown)]), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ContainerTop = typeof get_ContainerTop;
@@ -395,8 +395,8 @@ export const get_ContainerTop = {
   path: Schema.Literal("/containers/{id}/top"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ ps_args: String_default_neg_ef_prop })), path: Schema.Struct({ id: Schema.String }) },
-  responses: { 200: Schema.Union([Schema.Struct({ Titles: Schema.optional(Schema.Array(Schema.String)), Processes: Schema.optional(Schema.Array(Schema.Array(Schema.String))) }), Schema.Struct({ Titles: Schema.optional(Schema.Array(Schema.String)), Processes: Schema.optional(Schema.Array(Schema.Array(Schema.String))) })]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  parameters: { query: Schema.optional(Schema.Struct({ ps_args: String_default_neg_ef_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["ps_args"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
+  responses: { 200: Schema.Union([Schema.StructWithRest(Schema.Struct({ Titles: Schema.optional(Schema.Array(Schema.String)), Processes: Schema.optional(Schema.Array(Schema.Array(Schema.String))) }), [Schema.Record(Schema.String, Schema.Unknown)]), Schema.StructWithRest(Schema.Struct({ Titles: Schema.optional(Schema.Array(Schema.String)), Processes: Schema.optional(Schema.Array(Schema.Array(Schema.String))) }), [Schema.Record(Schema.String, Schema.Unknown)])]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -405,7 +405,7 @@ export const get_ContainerLogs = {
   path: Schema.Literal("/containers/{id}/logs"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ follow: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop, since: Schema_default_0_prop, until: Schema_default_0_prop, timestamps: Union_default_false_prop, tail: String_default_all_prop })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ follow: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop, since: Schema_default_0_prop, until: Schema_default_0_prop, timestamps: Union_default_false_prop, tail: String_default_all_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["follow", "stdout", "stderr", "since", "until", "timestamps", "tail"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown },
 };
 
@@ -415,7 +415,7 @@ export const get_ContainerChanges = {
   path: Schema.Literal("/containers/{id}/changes"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Array(FilesystemChange), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -425,7 +425,7 @@ export const get_ContainerExport = {
   path: Schema.Literal("/containers/{id}/export"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, Schema.Unknown]), 500: ErrorResponse },
 };
 
@@ -435,7 +435,7 @@ export const get_ContainerStats = {
   path: Schema.Literal("/containers/{id}/stats"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ stream: Union_default_true_prop, "one-shot": Union_default_false_prop })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ stream: Union_default_true_prop, "one-shot": Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["stream", "one-shot"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Record(Schema.String, Schema.Unknown), 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -445,7 +445,7 @@ export const post_ContainerResize = {
   path: Schema.Literal("/containers/{id}/resize"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ h: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), w: Schema.optional(Schema.NumberFromString.check(Schema.isInt())) })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ h: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), w: Schema.optional(Schema.NumberFromString.check(Schema.isInt())) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["h", "w"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, Schema.Unknown]), 500: ErrorResponse },
 };
 
@@ -455,7 +455,7 @@ export const post_ContainerStart = {
   path: Schema.Literal("/containers/{id}/start"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ detachKeys: Schema.optional(Schema.String) })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ detachKeys: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["detachKeys"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 204: Schema.Unknown, 304: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -465,7 +465,7 @@ export const post_ContainerStop = {
   path: Schema.Literal("/containers/{id}/stop"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ signal: Schema.optional(Schema.String), t: Schema.optional(Schema.NumberFromString.check(Schema.isInt())) })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ signal: Schema.optional(Schema.String), t: Schema.optional(Schema.NumberFromString.check(Schema.isInt())) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["signal", "t"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 204: Schema.Unknown, 304: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -475,7 +475,7 @@ export const post_ContainerRestart = {
   path: Schema.Literal("/containers/{id}/restart"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ signal: Schema.optional(Schema.String), t: Schema.optional(Schema.NumberFromString.check(Schema.isInt())) })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ signal: Schema.optional(Schema.String), t: Schema.optional(Schema.NumberFromString.check(Schema.isInt())) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["signal", "t"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -485,7 +485,7 @@ export const post_ContainerKill = {
   path: Schema.Literal("/containers/{id}/kill"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ signal: String_default_SIGKILL_prop })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ signal: String_default_SIGKILL_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["signal"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 409: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -495,8 +495,8 @@ export const post_ContainerUpdate = {
   path: Schema.Literal("/containers/{id}/update"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }), body: Resources.mapFields(Struct.assign((Schema.Struct({ RestartPolicy: Schema.optional(RestartPolicy) })).fields)) },
-  responses: { 200: Schema.Struct({ Warnings: Schema.optional(Schema.Array(Schema.String)) }), 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))), body: Resources.check(Schema.makeFilter((value) => Schema.is(Schema.StructWithRest(Schema.Struct({ RestartPolicy: Schema.optional(RestartPolicy) }), [Schema.Record(Schema.String, Schema.Unknown)]))(value))) },
+  responses: { 200: Schema.StructWithRest(Schema.Struct({ Warnings: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerRename = typeof post_ContainerRename;
@@ -505,7 +505,7 @@ export const post_ContainerRename = {
   path: Schema.Literal("/containers/{id}/rename"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ name: Schema.String }), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 409: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -515,7 +515,7 @@ export const post_ContainerPause = {
   path: Schema.Literal("/containers/{id}/pause"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -525,7 +525,7 @@ export const post_ContainerUnpause = {
   path: Schema.Literal("/containers/{id}/unpause"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -535,7 +535,7 @@ export const post_ContainerAttach = {
   path: Schema.Literal("/containers/{id}/attach"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ detachKeys: Schema.optional(Schema.String), logs: Union_default_false_prop, stream: Union_default_false_prop, stdin: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ detachKeys: Schema.optional(Schema.String), logs: Union_default_false_prop, stream: Union_default_false_prop, stdin: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["detachKeys", "logs", "stream", "stdin", "stdout", "stderr"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 101: Schema.Unknown, 200: Schema.Unknown, 400: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown },
 };
 
@@ -545,7 +545,7 @@ export const get_ContainerAttachWebsocket = {
   path: Schema.Literal("/containers/{id}/attach/ws"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ detachKeys: Schema.optional(Schema.String), logs: Union_default_false_prop, stream: Union_default_false_prop, stdin: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ detachKeys: Schema.optional(Schema.String), logs: Union_default_false_prop, stream: Union_default_false_prop, stdin: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["detachKeys", "logs", "stream", "stdin", "stdout", "stderr"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 101: Schema.Unknown, 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -555,7 +555,7 @@ export const post_ContainerWait = {
   path: Schema.Literal("/containers/{id}/wait"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ condition: Schema_default_notneg_running_prop })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ condition: Schema_default_notneg_running_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["condition"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: ContainerWaitResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -565,7 +565,7 @@ export const delete_ContainerDelete = {
   path: Schema.Literal("/containers/{id}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ v: Union_default_false_prop, force: Union_default_false_prop, link: Union_default_false_prop })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ v: Union_default_false_prop, force: Union_default_false_prop, link: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["v", "force", "link"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 204: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 409: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -575,7 +575,7 @@ export const get_ContainerArchive = {
   path: Schema.Literal("/containers/{id}/archive"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ path: Schema.String }), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.Struct({ path: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["path"].includes(key)))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Unknown, 400: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown },
 };
 
@@ -585,7 +585,7 @@ export const put_PutContainerArchive = {
   path: Schema.Literal("/containers/{id}/archive"),
   requestFormat: Schema.Literal("binary"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ path: Schema.String, noOverwriteDirNonDir: Schema.optional(Schema.String), copyUIDGID: Schema.optional(Schema.String) }), path: Schema.Struct({ id: Schema.String }), body: Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob) },
+  parameters: { query: Schema.Struct({ path: Schema.String, noOverwriteDirNonDir: Schema.optional(Schema.String), copyUIDGID: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["path", "noOverwriteDirNonDir", "copyUIDGID"].includes(key)))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))), body: Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob) },
   responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 403: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -595,9 +595,9 @@ export const head_ContainerArchiveInfo = {
   path: Schema.Literal("/containers/{id}/archive"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ path: Schema.String }), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.Struct({ path: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["path"].includes(key)))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
-  responseHeaders: { 200: Schema.Struct({ "X-Docker-Container-Path-Stat": Schema.String }) },
+  responseHeaders: { 200: Schema.Struct({ "X-Docker-Container-Path-Stat": Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["X-Docker-Container-Path-Stat"].includes(key)))) },
 };
 
 export type post_ContainerPrune = typeof post_ContainerPrune;
@@ -606,8 +606,8 @@ export const post_ContainerPrune = {
   path: Schema.Literal("/containers/prune"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) })) },
-  responses: { 200: Schema.Struct({ ContainersDeleted: Schema.optional(Schema.Array(Schema.String)), SpaceReclaimed: Schema.optional(Schema.Int) }), 500: ErrorResponse },
+  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["filters"].includes(key))))) },
+  responses: { 200: Schema.StructWithRest(Schema.Struct({ ContainersDeleted: Schema.optional(Schema.Array(Schema.String)), SpaceReclaimed: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]), 500: ErrorResponse },
 };
 
 export type get_ImageList = typeof get_ImageList;
@@ -616,7 +616,7 @@ export const get_ImageList = {
   path: Schema.Literal("/images/json"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ all: Union_default_false_prop, filters: Schema.optional(Schema.String), "shared-size": Union_default_false_prop, digests: Union_default_false_prop })) },
+  parameters: { query: Schema.optional(Schema.Struct({ all: Union_default_false_prop, filters: Schema.optional(Schema.String), "shared-size": Union_default_false_prop, digests: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["all", "filters", "shared-size", "digests"].includes(key))))) },
   responses: { 200: Schema.Array(ImageSummary), 500: ErrorResponse },
 };
 
@@ -626,7 +626,7 @@ export const post_ImageBuild = {
   path: Schema.Literal("/build"),
   requestFormat: Schema.Literal("binary"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ dockerfile: String_default_Dockerfile_prop, t: Schema.optional(Schema.String), extrahosts: Schema.optional(Schema.String), remote: Schema.optional(Schema.String), q: Union_default_false_prop, nocache: Union_default_false_prop, cachefrom: Schema.optional(Schema.String), pull: Schema.optional(Schema.String), rm: Union_default_true_prop, forcerm: Union_default_false_prop, memory: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), memswap: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), cpushares: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), cpusetcpus: Schema.optional(Schema.String), cpuperiod: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), cpuquota: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), buildargs: Schema.optional(Schema.String), shmsize: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), squash: Schema.optional(Schema.Union([Schema.Boolean, Schema.String, Schema.Number]).pipe(Schema.decodeTo(Schema.Boolean, SchemaTransformation.transform({ decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })))), labels: Schema.optional(Schema.String), networkmode: Schema.optional(Schema.String), platform: Schema.optional(Schema.String), target: Schema.optional(Schema.String), outputs: Schema.optional(Schema.String) })), header: Schema.optional(Schema.Struct({ "Content-type": Schema.optional(Schema.Literal("application/x-tar")), "X-Registry-Config": Schema.optional(Schema.String) })), body: Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob) },
+  parameters: { query: Schema.optional(Schema.Struct({ dockerfile: String_default_Dockerfile_prop, t: Schema.optional(Schema.String), extrahosts: Schema.optional(Schema.String), remote: Schema.optional(Schema.String), q: Union_default_false_prop, nocache: Union_default_false_prop, cachefrom: Schema.optional(Schema.String), pull: Schema.optional(Schema.String), rm: Union_default_true_prop, forcerm: Union_default_false_prop, memory: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), memswap: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), cpushares: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), cpusetcpus: Schema.optional(Schema.String), cpuperiod: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), cpuquota: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), buildargs: Schema.optional(Schema.String), shmsize: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), squash: Schema.optional(Schema.Union([Schema.Boolean, Schema.String, Schema.Number]).pipe(Schema.decodeTo(Schema.Boolean, SchemaTransformation.transform({ decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })))), labels: Schema.optional(Schema.String), networkmode: Schema.optional(Schema.String), platform: Schema.optional(Schema.String), target: Schema.optional(Schema.String), outputs: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["dockerfile", "t", "extrahosts", "remote", "q", "nocache", "cachefrom", "pull", "rm", "forcerm", "memory", "memswap", "cpushares", "cpusetcpus", "cpuperiod", "cpuquota", "buildargs", "shmsize", "squash", "labels", "networkmode", "platform", "target", "outputs"].includes(key))))), header: Schema.optional(Schema.Struct({ "Content-type": Schema.optional(Schema.Literal("application/x-tar")), "X-Registry-Config": Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["Content-type", "X-Registry-Config"].includes(key))))), body: Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob) },
   responses: { 200: Schema.Unknown, 400: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -636,8 +636,8 @@ export const post_BuildPrune = {
   path: Schema.Literal("/build/prune"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ "keep-storage": Schema.optional(Schema.NumberFromString.check(Schema.isInt())), all: Schema.optional(Schema.Union([Schema.Boolean, Schema.String, Schema.Number]).pipe(Schema.decodeTo(Schema.Boolean, SchemaTransformation.transform({ decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })))), filters: Schema.optional(Schema.String) })) },
-  responses: { 200: Schema.Struct({ CachesDeleted: Schema.optional(Schema.Array(Schema.String)), SpaceReclaimed: Schema.optional(Schema.Int) }), 500: ErrorResponse },
+  parameters: { query: Schema.optional(Schema.Struct({ "keep-storage": Schema.optional(Schema.NumberFromString.check(Schema.isInt())), all: Schema.optional(Schema.Union([Schema.Boolean, Schema.String, Schema.Number]).pipe(Schema.decodeTo(Schema.Boolean, SchemaTransformation.transform({ decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })))), filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["keep-storage", "all", "filters"].includes(key))))) },
+  responses: { 200: Schema.StructWithRest(Schema.Struct({ CachesDeleted: Schema.optional(Schema.Array(Schema.String)), SpaceReclaimed: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]), 500: ErrorResponse },
 };
 
 export type post_ImageCreate = typeof post_ImageCreate;
@@ -646,7 +646,7 @@ export const post_ImageCreate = {
   path: Schema.Literal("/images/create"),
   requestFormat: Schema.Literal("text"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ fromImage: Schema.optional(Schema.String), fromSrc: Schema.optional(Schema.String), repo: Schema.optional(Schema.String), tag: Schema.optional(Schema.String), message: Schema.optional(Schema.String), changes: Schema.optional(Schema.Array(Schema.String)), platform: Schema.optional(Schema.String) })), header: Schema.optional(Schema.Struct({ "X-Registry-Auth": Schema.optional(Schema.String) })), body: Schema.String },
+  parameters: { query: Schema.optional(Schema.Struct({ fromImage: Schema.optional(Schema.String), fromSrc: Schema.optional(Schema.String), repo: Schema.optional(Schema.String), tag: Schema.optional(Schema.String), message: Schema.optional(Schema.String), changes: Schema.optional(Schema.Array(Schema.String)), platform: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["fromImage", "fromSrc", "repo", "tag", "message", "changes", "platform"].includes(key))))), header: Schema.optional(Schema.Struct({ "X-Registry-Auth": Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["X-Registry-Auth"].includes(key))))), body: Schema.String },
   responses: { 200: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -656,7 +656,7 @@ export const get_ImageInspect = {
   path: Schema.Literal("/images/{name}/json"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  parameters: { path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 200: ImageInspect, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -666,8 +666,8 @@ export const get_ImageHistory = {
   path: Schema.Literal("/images/{name}/history"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ name: Schema.String }) },
-  responses: { 200: Schema.Array(Schema.Struct({ Id: Schema.String, Created: Schema.Int, CreatedBy: Schema.String, Tags: Schema.Array(Schema.String), Size: Schema.Int, Comment: Schema.String })), 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
+  responses: { 200: Schema.Array(Schema.StructWithRest(Schema.Struct({ Id: Schema.String, Created: Schema.Int, CreatedBy: Schema.String, Tags: Schema.Array(Schema.String), Size: Schema.Int, Comment: Schema.String }), [Schema.Record(Schema.String, Schema.Unknown)])), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ImagePush = typeof post_ImagePush;
@@ -676,7 +676,7 @@ export const post_ImagePush = {
   path: Schema.Literal("/images/{name}/push"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ tag: Schema.optional(Schema.String) })), path: Schema.Struct({ name: Schema.String }), header: Schema.Struct({ "X-Registry-Auth": Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ tag: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["tag"].includes(key))))), path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))), header: Schema.Struct({ "X-Registry-Auth": Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["X-Registry-Auth"].includes(key)))) },
   responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -686,7 +686,7 @@ export const post_ImageTag = {
   path: Schema.Literal("/images/{name}/tag"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ repo: Schema.optional(Schema.String), tag: Schema.optional(Schema.String) })), path: Schema.Struct({ name: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ repo: Schema.optional(Schema.String), tag: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["repo", "tag"].includes(key))))), path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 201: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 409: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -696,7 +696,7 @@ export const delete_ImageDelete = {
   path: Schema.Literal("/images/{name}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop, noprune: Union_default_false_prop })), path: Schema.Struct({ name: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop, noprune: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["force", "noprune"].includes(key))))), path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 200: Schema.Array(ImageDeleteResponseItem), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -706,8 +706,8 @@ export const get_ImageSearch = {
   path: Schema.Literal("/images/search"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ term: Schema.String, limit: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), filters: Schema.optional(Schema.String) }) },
-  responses: { 200: Schema.Array(Schema.Struct({ description: Schema.optional(Schema.String), is_official: Schema.optional(Schema.Boolean), is_automated: Schema.optional(Schema.Boolean), name: Schema.optional(Schema.String), star_count: Schema.optional(Schema.Int) })), 500: ErrorResponse },
+  parameters: { query: Schema.Struct({ term: Schema.String, limit: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["term", "limit", "filters"].includes(key)))) },
+  responses: { 200: Schema.Array(Schema.StructWithRest(Schema.Struct({ description: Schema.optional(Schema.String), is_official: Schema.optional(Schema.Boolean), is_automated: Schema.optional(Schema.Boolean), name: Schema.optional(Schema.String), star_count: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)])), 500: ErrorResponse },
 };
 
 export type post_ImagePrune = typeof post_ImagePrune;
@@ -716,8 +716,8 @@ export const post_ImagePrune = {
   path: Schema.Literal("/images/prune"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) })) },
-  responses: { 200: Schema.Struct({ ImagesDeleted: Schema.optional(Schema.Array(ImageDeleteResponseItem)), SpaceReclaimed: Schema.optional(Schema.Int) }), 500: ErrorResponse },
+  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["filters"].includes(key))))) },
+  responses: { 200: Schema.StructWithRest(Schema.Struct({ ImagesDeleted: Schema.optional(Schema.Array(ImageDeleteResponseItem)), SpaceReclaimed: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]), 500: ErrorResponse },
 };
 
 export type post_SystemAuth = typeof post_SystemAuth;
@@ -727,7 +727,7 @@ export const post_SystemAuth = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: { body: AuthConfig },
-  responses: { 200: Schema.Struct({ Status: Schema.String, IdentityToken: Schema.optional(Schema.String) }), 204: Schema.Unknown, 401: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: Schema.StructWithRest(Schema.Struct({ Status: Schema.String, IdentityToken: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]), 204: Schema.Unknown, 401: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_SystemInfo = typeof get_SystemInfo;
@@ -758,7 +758,7 @@ export const get_SystemPing = {
   responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { 200: Schema.String, 500: ErrorResponse },
-  responseHeaders: { 200: Schema.Struct({ Swarm: Schema_default_inactive_prop, "Docker-Experimental": Schema.Boolean, "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop, "API-Version": Schema.String, "Builder-Version": String_default_2_prop }), 500: Schema.Struct({ "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop }) },
+  responseHeaders: { 200: Schema.Struct({ Swarm: Schema_default_inactive_prop, "Docker-Experimental": Schema.Boolean, "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop, "API-Version": Schema.String, "Builder-Version": String_default_2_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["Swarm", "Docker-Experimental", "Cache-Control", "Pragma", "API-Version", "Builder-Version"].includes(key)))), 500: Schema.Struct({ "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["Cache-Control", "Pragma"].includes(key)))) },
 };
 
 export type head_SystemPingHead = typeof head_SystemPingHead;
@@ -769,7 +769,7 @@ export const head_SystemPingHead = {
   responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
   responses: { 200: Schema.String, 500: ErrorResponse },
-  responseHeaders: { 200: Schema.Struct({ Swarm: Schema_default_inactive_prop, "Docker-Experimental": Schema.Boolean, "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop, "API-Version": Schema.String, "Builder-Version": Schema.String }) },
+  responseHeaders: { 200: Schema.Struct({ Swarm: Schema_default_inactive_prop, "Docker-Experimental": Schema.Boolean, "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop, "API-Version": Schema.String, "Builder-Version": Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["Swarm", "Docker-Experimental", "Cache-Control", "Pragma", "API-Version", "Builder-Version"].includes(key)))) },
 };
 
 export type post_ImageCommit = typeof post_ImageCommit;
@@ -778,7 +778,7 @@ export const post_ImageCommit = {
   path: Schema.Literal("/commit"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ container: Schema.optional(Schema.String), repo: Schema.optional(Schema.String), tag: Schema.optional(Schema.String), comment: Schema.optional(Schema.String), author: Schema.optional(Schema.String), pause: Union_default_true_prop, changes: Schema.optional(Schema.String) })), body: ContainerConfig },
+  parameters: { query: Schema.optional(Schema.Struct({ container: Schema.optional(Schema.String), repo: Schema.optional(Schema.String), tag: Schema.optional(Schema.String), comment: Schema.optional(Schema.String), author: Schema.optional(Schema.String), pause: Union_default_true_prop, changes: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["container", "repo", "tag", "comment", "author", "pause", "changes"].includes(key))))), body: ContainerConfig },
   responses: { 201: IdResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -788,7 +788,7 @@ export const get_SystemEvents = {
   path: Schema.Literal("/events"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ since: Schema.optional(Schema.String), until: Schema.optional(Schema.String), filters: Schema.optional(Schema.String) })) },
+  parameters: { query: Schema.optional(Schema.Struct({ since: Schema.optional(Schema.String), until: Schema.optional(Schema.String), filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["since", "until", "filters"].includes(key))))) },
   responses: { 200: EventMessage, 400: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -798,8 +798,8 @@ export const get_SystemDataUsage = {
   path: Schema.Literal("/system/df"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ type: Schema.optional(Schema.Array(Schema.Literals(["container", "image", "volume", "build-cache"]))) })) },
-  responses: { 200: Schema.Union([Schema.Struct({ LayersSize: Schema.optional(Schema.Int), Images: Schema.optional(Schema.Array(ImageSummary)), Containers: Schema.optional(Schema.Array(ContainerSummary)), Volumes: Schema.optional(Schema.Array(Volume)), BuildCache: Schema.optional(Schema.Array(BuildCache)) }), Schema.Struct({ LayersSize: Schema.optional(Schema.Int), Images: Schema.optional(Schema.Array(ImageSummary)), Containers: Schema.optional(Schema.Array(ContainerSummary)), Volumes: Schema.optional(Schema.Array(Volume)), BuildCache: Schema.optional(Schema.Array(BuildCache)) })]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
+  parameters: { query: Schema.optional(Schema.Struct({ type: Schema.optional(Schema.Array(Schema.Literals(["container", "image", "volume", "build-cache"]))) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["type"].includes(key))))) },
+  responses: { 200: Schema.Union([Schema.StructWithRest(Schema.Struct({ LayersSize: Schema.optional(Schema.Int), Images: Schema.optional(Schema.Array(ImageSummary)), Containers: Schema.optional(Schema.Array(ContainerSummary)), Volumes: Schema.optional(Schema.Array(Volume)), BuildCache: Schema.optional(Schema.Array(BuildCache)) }), [Schema.Record(Schema.String, Schema.Unknown)]), Schema.StructWithRest(Schema.Struct({ LayersSize: Schema.optional(Schema.Int), Images: Schema.optional(Schema.Array(ImageSummary)), Containers: Schema.optional(Schema.Array(ContainerSummary)), Volumes: Schema.optional(Schema.Array(Volume)), BuildCache: Schema.optional(Schema.Array(BuildCache)) }), [Schema.Record(Schema.String, Schema.Unknown)])]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -808,7 +808,7 @@ export const get_ImageGet = {
   path: Schema.Literal("/images/{name}/get"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  parameters: { path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 200: Schema.Unknown, 500: Schema.Unknown },
 };
 
@@ -818,7 +818,7 @@ export const get_ImageGetAll = {
   path: Schema.Literal("/images/get"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ names: Schema.optional(Schema.Array(Schema.String)) })) },
+  parameters: { query: Schema.optional(Schema.Struct({ names: Schema.optional(Schema.Array(Schema.String)) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["names"].includes(key))))) },
   responses: { 200: Schema.Unknown, 500: Schema.Unknown },
 };
 
@@ -828,7 +828,7 @@ export const post_ImageLoad = {
   path: Schema.Literal("/images/load"),
   requestFormat: Schema.Literal("text"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ quiet: Union_default_false_prop })) },
+  parameters: { query: Schema.optional(Schema.Struct({ quiet: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["quiet"].includes(key))))) },
   responses: { 200: Schema.Unknown, 500: ErrorResponse },
 };
 
@@ -838,7 +838,7 @@ export const post_ContainerExec = {
   path: Schema.Literal("/containers/{id}/exec"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }), body: Schema.optional(Schema.Struct({ AttachStdin: Schema.optional(Schema.Boolean), AttachStdout: Schema.optional(Schema.Boolean), AttachStderr: Schema.optional(Schema.Boolean), ConsoleSize: Schema.optional(Schema.NullOr(Schema.Array(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))).check(Schema.isMinLength(2), Schema.isMaxLength(2)))), DetachKeys: Schema.optional(Schema.String), Tty: Schema.optional(Schema.Boolean), Env: Schema.optional(Schema.Array(Schema.String)), Cmd: Schema.optional(Schema.Array(Schema.String)), Privileged: Boolean_default_false_prop, User: Schema.optional(Schema.String), WorkingDir: Schema.optional(Schema.String) })) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))), body: Schema.optional(Schema.StructWithRest(Schema.Struct({ AttachStdin: Schema.optional(Schema.Boolean), AttachStdout: Schema.optional(Schema.Boolean), AttachStderr: Schema.optional(Schema.Boolean), ConsoleSize: Schema.optional(Schema.NullOr(Schema.Array(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))).check(Schema.isMinLength(2), Schema.isMaxLength(2)))), DetachKeys: Schema.optional(Schema.String), Tty: Schema.optional(Schema.Boolean), Env: Schema.optional(Schema.Array(Schema.String)), Cmd: Schema.optional(Schema.Array(Schema.String)), Privileged: Boolean_default_false_prop, User: Schema.optional(Schema.String), WorkingDir: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)])) },
   responses: { 201: IdResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -848,7 +848,7 @@ export const post_ExecStart = {
   path: Schema.Literal("/exec/{id}/start"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }), body: Schema.optional(Schema.Struct({ Detach: Schema.optional(Schema.Boolean), Tty: Schema.optional(Schema.Boolean), ConsoleSize: Schema.optional(Schema.NullOr(Schema.Array(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))).check(Schema.isMinLength(2), Schema.isMaxLength(2)))) })) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))), body: Schema.optional(Schema.StructWithRest(Schema.Struct({ Detach: Schema.optional(Schema.Boolean), Tty: Schema.optional(Schema.Boolean), ConsoleSize: Schema.optional(Schema.NullOr(Schema.Array(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))).check(Schema.isMinLength(2), Schema.isMaxLength(2)))) }), [Schema.Record(Schema.String, Schema.Unknown)])) },
   responses: { 200: Schema.Unknown, 404: Schema.Unknown, 409: Schema.Unknown },
 };
 
@@ -858,7 +858,7 @@ export const post_ExecResize = {
   path: Schema.Literal("/exec/{id}/resize"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ h: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), w: Schema.optional(Schema.NumberFromString.check(Schema.isInt())) })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ h: Schema.optional(Schema.NumberFromString.check(Schema.isInt())), w: Schema.optional(Schema.NumberFromString.check(Schema.isInt())) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["h", "w"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -868,8 +868,8 @@ export const get_ExecInspect = {
   path: Schema.Literal("/exec/{id}/json"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
-  responses: { 200: Schema.Struct({ CanRemove: Schema.optional(Schema.Boolean), DetachKeys: Schema.optional(Schema.String), ID: Schema.optional(Schema.String), Running: Schema.optional(Schema.Boolean), ExitCode: Schema.optional(Schema.Int), ProcessConfig: Schema.optional(ProcessConfig), OpenStdin: Schema.optional(Schema.Boolean), OpenStderr: Schema.optional(Schema.Boolean), OpenStdout: Schema.optional(Schema.Boolean), ContainerID: Schema.optional(Schema.String), Pid: Schema.optional(Schema.Int) }), 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
+  responses: { 200: Schema.StructWithRest(Schema.Struct({ CanRemove: Schema.optional(Schema.Boolean), DetachKeys: Schema.optional(Schema.String), ID: Schema.optional(Schema.String), Running: Schema.optional(Schema.Boolean), ExitCode: Schema.optional(Schema.Int), ProcessConfig: Schema.optional(ProcessConfig), OpenStdin: Schema.optional(Schema.Boolean), OpenStderr: Schema.optional(Schema.Boolean), OpenStdout: Schema.optional(Schema.Boolean), ContainerID: Schema.optional(Schema.String), Pid: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_VolumeList = typeof get_VolumeList;
@@ -878,7 +878,7 @@ export const get_VolumeList = {
   path: Schema.Literal("/volumes"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) })) },
+  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["filters"].includes(key))))) },
   responses: { 200: VolumeListResponse, 500: ErrorResponse },
 };
 
@@ -898,7 +898,7 @@ export const get_VolumeInspect = {
   path: Schema.Literal("/volumes/{name}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  parameters: { path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 200: Volume, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -908,7 +908,7 @@ export const put_VolumeUpdate = {
   path: Schema.Literal("/volumes/{name}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()) }), path: Schema.Struct({ name: Schema.String }), body: Schema.optional(Schema.Struct({ Spec: Schema.optional(ClusterVolumeSpec) })) },
+  parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["version"].includes(key)))), path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))), body: Schema.optional(Schema.StructWithRest(Schema.Struct({ Spec: Schema.optional(ClusterVolumeSpec) }), [Schema.Record(Schema.String, Schema.Unknown)])) },
   responses: { 200: Schema.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -918,7 +918,7 @@ export const delete_VolumeDelete = {
   path: Schema.Literal("/volumes/{name}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop })), path: Schema.Struct({ name: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["force"].includes(key))))), path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 409: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -928,8 +928,8 @@ export const post_VolumePrune = {
   path: Schema.Literal("/volumes/prune"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) })) },
-  responses: { 200: Schema.Struct({ VolumesDeleted: Schema.optional(Schema.Array(Schema.String)), SpaceReclaimed: Schema.optional(Schema.Int) }), 500: ErrorResponse },
+  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["filters"].includes(key))))) },
+  responses: { 200: Schema.StructWithRest(Schema.Struct({ VolumesDeleted: Schema.optional(Schema.Array(Schema.String)), SpaceReclaimed: Schema.optional(Schema.Int) }), [Schema.Record(Schema.String, Schema.Unknown)]), 500: ErrorResponse },
 };
 
 export type get_NetworkList = typeof get_NetworkList;
@@ -938,7 +938,7 @@ export const get_NetworkList = {
   path: Schema.Literal("/networks"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) })) },
+  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["filters"].includes(key))))) },
   responses: { 200: Schema.Array(Network), 500: ErrorResponse },
 };
 
@@ -948,7 +948,7 @@ export const get_NetworkInspect = {
   path: Schema.Literal("/networks/{id}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ verbose: Union_default_false_prop, scope: Schema.optional(Schema.String) })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ verbose: Union_default_false_prop, scope: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["verbose", "scope"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Network, 404: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -958,7 +958,7 @@ export const delete_NetworkDelete = {
   path: Schema.Literal("/networks/{id}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 204: Schema.Unknown, 403: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -968,8 +968,8 @@ export const post_NetworkCreate = {
   path: Schema.Literal("/networks/create"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { body: Schema.Struct({ Name: Schema.String, CheckDuplicate: Schema.optional(Schema.Boolean), Driver: String_default_bridge_prop, Internal: Schema.optional(Schema.Boolean), Attachable: Schema.optional(Schema.Boolean), Ingress: Schema.optional(Schema.Boolean), IPAM: Schema.optional(IPAM), EnableIPv6: Schema.optional(Schema.Boolean), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)) }) },
-  responses: { 201: Schema.Struct({ Id: Schema.optional(Schema.String), Warning: Schema.optional(Schema.String) }), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { body: Schema.StructWithRest(Schema.Struct({ Name: Schema.String, CheckDuplicate: Schema.optional(Schema.Boolean), Driver: String_default_bridge_prop, Internal: Schema.optional(Schema.Boolean), Attachable: Schema.optional(Schema.Boolean), Ingress: Schema.optional(Schema.Boolean), IPAM: Schema.optional(IPAM), EnableIPv6: Schema.optional(Schema.Boolean), Options: Schema.optional(Schema.Record(Schema.String, Schema.String)), Labels: Schema.optional(Schema.Record(Schema.String, Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]) },
+  responses: { 201: Schema.StructWithRest(Schema.Struct({ Id: Schema.optional(Schema.String), Warning: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkConnect = typeof post_NetworkConnect;
@@ -978,7 +978,7 @@ export const post_NetworkConnect = {
   path: Schema.Literal("/networks/{id}/connect"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }), body: Schema.optional(Schema.Struct({ Container: Schema.optional(Schema.String), EndpointConfig: Schema.optional(EndpointSettings) })) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))), body: Schema.optional(Schema.StructWithRest(Schema.Struct({ Container: Schema.optional(Schema.String), EndpointConfig: Schema.optional(EndpointSettings) }), [Schema.Record(Schema.String, Schema.Unknown)])) },
   responses: { 200: Schema.Unknown, 403: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -988,7 +988,7 @@ export const post_NetworkDisconnect = {
   path: Schema.Literal("/networks/{id}/disconnect"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }), body: Schema.optional(Schema.Struct({ Container: Schema.optional(Schema.String), Force: Schema.optional(Schema.Boolean) })) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))), body: Schema.optional(Schema.StructWithRest(Schema.Struct({ Container: Schema.optional(Schema.String), Force: Schema.optional(Schema.Boolean) }), [Schema.Record(Schema.String, Schema.Unknown)])) },
   responses: { 200: Schema.Unknown, 403: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -998,8 +998,8 @@ export const post_NetworkPrune = {
   path: Schema.Literal("/networks/prune"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) })) },
-  responses: { 200: Schema.Struct({ NetworksDeleted: Schema.optional(Schema.Array(Schema.String)) }), 500: ErrorResponse },
+  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["filters"].includes(key))))) },
+  responses: { 200: Schema.StructWithRest(Schema.Struct({ NetworksDeleted: Schema.optional(Schema.Array(Schema.String)) }), [Schema.Record(Schema.String, Schema.Unknown)]), 500: ErrorResponse },
 };
 
 export type get_PluginList = typeof get_PluginList;
@@ -1008,7 +1008,7 @@ export const get_PluginList = {
   path: Schema.Literal("/plugins"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) })) },
+  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["filters"].includes(key))))) },
   responses: { 200: Schema.Array(Plugin), 500: ErrorResponse },
 };
 
@@ -1018,7 +1018,7 @@ export const get_GetPluginPrivileges = {
   path: Schema.Literal("/plugins/privileges"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ remote: Schema.String }) },
+  parameters: { query: Schema.Struct({ remote: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["remote"].includes(key)))) },
   responses: { 200: Schema.Union([Schema.Array(PluginPrivilege), Schema.Array(PluginPrivilege)]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1028,7 +1028,7 @@ export const post_PluginPull = {
   path: Schema.Literal("/plugins/pull"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ remote: Schema.String, name: Schema.optional(Schema.String) }), header: Schema.optional(Schema.Struct({ "X-Registry-Auth": Schema.optional(Schema.String) })), body: Schema.Array(PluginPrivilege) },
+  parameters: { query: Schema.Struct({ remote: Schema.String, name: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["remote", "name"].includes(key)))), header: Schema.optional(Schema.Struct({ "X-Registry-Auth": Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["X-Registry-Auth"].includes(key))))), body: Schema.Array(PluginPrivilege) },
   responses: { 204: Schema.Unknown, 500: ErrorResponse },
 };
 
@@ -1038,7 +1038,7 @@ export const get_PluginInspect = {
   path: Schema.Literal("/plugins/{name}/json"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  parameters: { path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 200: Schema.Union([Plugin, Plugin]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1048,7 +1048,7 @@ export const delete_PluginDelete = {
   path: Schema.Literal("/plugins/{name}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop })), path: Schema.Struct({ name: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["force"].includes(key))))), path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 200: Schema.Union([Plugin, Plugin]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1058,7 +1058,7 @@ export const post_PluginEnable = {
   path: Schema.Literal("/plugins/{name}/enable"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ timeout: Schema_default_0_prop })), path: Schema.Struct({ name: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ timeout: Schema_default_0_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["timeout"].includes(key))))), path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1068,7 +1068,7 @@ export const post_PluginDisable = {
   path: Schema.Literal("/plugins/{name}/disable"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ force: Schema.optional(Schema.Union([Schema.Boolean, Schema.String, Schema.Number]).pipe(Schema.decodeTo(Schema.Boolean, SchemaTransformation.transform({ decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })))) })), path: Schema.Struct({ name: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ force: Schema.optional(Schema.Union([Schema.Boolean, Schema.String, Schema.Number]).pipe(Schema.decodeTo(Schema.Boolean, SchemaTransformation.transform({ decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })))) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["force"].includes(key))))), path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1078,7 +1078,7 @@ export const post_PluginUpgrade = {
   path: Schema.Literal("/plugins/{name}/upgrade"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ remote: Schema.String }), path: Schema.Struct({ name: Schema.String }), header: Schema.optional(Schema.Struct({ "X-Registry-Auth": Schema.optional(Schema.String) })), body: Schema.Array(PluginPrivilege) },
+  parameters: { query: Schema.Struct({ remote: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["remote"].includes(key)))), path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))), header: Schema.optional(Schema.Struct({ "X-Registry-Auth": Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["X-Registry-Auth"].includes(key))))), body: Schema.Array(PluginPrivilege) },
   responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1088,7 +1088,7 @@ export const post_PluginCreate = {
   path: Schema.Literal("/plugins/create"),
   requestFormat: Schema.Literal("text"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ name: Schema.String }) },
+  parameters: { query: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 204: Schema.Unknown, 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1098,7 +1098,7 @@ export const post_PluginPush = {
   path: Schema.Literal("/plugins/{name}/push"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  parameters: { path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1108,7 +1108,7 @@ export const post_PluginSet = {
   path: Schema.Literal("/plugins/{name}/set"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ name: Schema.String }), body: Schema.Array(Schema.String) },
+  parameters: { path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))), body: Schema.Array(Schema.String) },
   responses: { 204: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1118,7 +1118,7 @@ export const get_NodeList = {
   path: Schema.Literal("/nodes"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) })) },
+  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["filters"].includes(key))))) },
   responses: { 200: Schema.Union([Schema.Array(Node), Schema.Array(Node)]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1128,7 +1128,7 @@ export const get_NodeInspect = {
   path: Schema.Literal("/nodes/{id}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Union([Node, Node]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1138,7 +1138,7 @@ export const delete_NodeDelete = {
   path: Schema.Literal("/nodes/{id}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["force"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1148,7 +1148,7 @@ export const post_NodeUpdate = {
   path: Schema.Literal("/nodes/{id}/update"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()) }), path: Schema.Struct({ id: Schema.String }), body: NodeSpec },
+  parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["version"].includes(key)))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))), body: NodeSpec },
   responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1168,7 +1168,7 @@ export const post_SwarmInit = {
   path: Schema.Literal("/swarm/init"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { body: Schema.optional(Schema.Struct({ ListenAddr: Schema.optional(Schema.String), AdvertiseAddr: Schema.optional(Schema.String), DataPathAddr: Schema.optional(Schema.String), DataPathPort: Schema.optional(Schema.Int), DefaultAddrPool: Schema.optional(Schema.Array(Schema.String)), ForceNewCluster: Schema.optional(Schema.Boolean), SubnetSize: Schema.optional(Schema.Int), Spec: Schema.optional(SwarmSpec) })) },
+  parameters: { body: Schema.optional(Schema.StructWithRest(Schema.Struct({ ListenAddr: Schema.optional(Schema.String), AdvertiseAddr: Schema.optional(Schema.String), DataPathAddr: Schema.optional(Schema.String), DataPathPort: Schema.optional(Schema.Int), DefaultAddrPool: Schema.optional(Schema.Array(Schema.String)), ForceNewCluster: Schema.optional(Schema.Boolean), SubnetSize: Schema.optional(Schema.Int), Spec: Schema.optional(SwarmSpec) }), [Schema.Record(Schema.String, Schema.Unknown)])) },
   responses: { 200: Schema.Union([Schema.String, Schema.String]), 400: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1178,7 +1178,7 @@ export const post_SwarmJoin = {
   path: Schema.Literal("/swarm/join"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { body: Schema.optional(Schema.Struct({ ListenAddr: Schema.optional(Schema.String), AdvertiseAddr: Schema.optional(Schema.String), DataPathAddr: Schema.optional(Schema.String), RemoteAddrs: Schema.optional(Schema.Array(Schema.String)), JoinToken: Schema.optional(Schema.String) })) },
+  parameters: { body: Schema.optional(Schema.StructWithRest(Schema.Struct({ ListenAddr: Schema.optional(Schema.String), AdvertiseAddr: Schema.optional(Schema.String), DataPathAddr: Schema.optional(Schema.String), RemoteAddrs: Schema.optional(Schema.Array(Schema.String)), JoinToken: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)])) },
   responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1188,7 +1188,7 @@ export const post_SwarmLeave = {
   path: Schema.Literal("/swarm/leave"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop })) },
+  parameters: { query: Schema.optional(Schema.Struct({ force: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["force"].includes(key))))) },
   responses: { 200: Schema.Unknown, 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1198,7 +1198,7 @@ export const post_SwarmUpdate = {
   path: Schema.Literal("/swarm/update"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()), rotateWorkerToken: Union_default_false_prop, rotateManagerToken: Union_default_false_prop, rotateManagerUnlockKey: Union_default_false_prop }), body: SwarmSpec },
+  parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()), rotateWorkerToken: Union_default_false_prop, rotateManagerToken: Union_default_false_prop, rotateManagerUnlockKey: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["version", "rotateWorkerToken", "rotateManagerToken", "rotateManagerUnlockKey"].includes(key)))), body: SwarmSpec },
   responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1209,7 +1209,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
   parameters: Schema.Never,
-  responses: { 200: Schema.Union([Schema.Struct({ UnlockKey: Schema.optional(Schema.String) }), Schema.Struct({ UnlockKey: Schema.optional(Schema.String) })]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Schema.Union([Schema.StructWithRest(Schema.Struct({ UnlockKey: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]), Schema.StructWithRest(Schema.Struct({ UnlockKey: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)])]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1218,7 +1218,7 @@ export const post_SwarmUnlock = {
   path: Schema.Literal("/swarm/unlock"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { body: Schema.optional(Schema.Struct({ UnlockKey: Schema.optional(Schema.String) })) },
+  parameters: { body: Schema.optional(Schema.StructWithRest(Schema.Struct({ UnlockKey: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)])) },
   responses: { 200: Schema.Unknown, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1228,7 +1228,7 @@ export const get_ServiceList = {
   path: Schema.Literal("/services"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String), status: Schema.optional(Schema.Union([Schema.Boolean, Schema.String, Schema.Number]).pipe(Schema.decodeTo(Schema.Boolean, SchemaTransformation.transform({ decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })))) })) },
+  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String), status: Schema.optional(Schema.Union([Schema.Boolean, Schema.String, Schema.Number]).pipe(Schema.decodeTo(Schema.Boolean, SchemaTransformation.transform({ decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })))) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["filters", "status"].includes(key))))) },
   responses: { 200: Schema.Union([Schema.Array(Service), Schema.Array(Service)]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1238,8 +1238,8 @@ export const post_ServiceCreate = {
   path: Schema.Literal("/services/create"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { header: Schema.optional(Schema.Struct({ "X-Registry-Auth": Schema.optional(Schema.String) })), body: Schema.StructWithRest(ServiceSpec, [Schema.Record(Schema.String, Schema.Unknown)]) },
-  responses: { 201: Schema.Struct({ ID: Schema.optional(Schema.String), Warning: Schema.optional(Schema.String) }), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  parameters: { header: Schema.optional(Schema.Struct({ "X-Registry-Auth": Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["X-Registry-Auth"].includes(key))))), body: ServiceSpec.check(Schema.makeFilter((value) => Schema.is(Schema.Record(Schema.String, Schema.Unknown))(value))) },
+  responses: { 201: Schema.StructWithRest(Schema.Struct({ ID: Schema.optional(Schema.String), Warning: Schema.optional(Schema.String) }), [Schema.Record(Schema.String, Schema.Unknown)]), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_ServiceInspect = typeof get_ServiceInspect;
@@ -1248,7 +1248,7 @@ export const get_ServiceInspect = {
   path: Schema.Literal("/services/{id}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ insertDefaults: Union_default_false_prop })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ insertDefaults: Union_default_false_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["insertDefaults"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Union([Service, Service]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1258,7 +1258,7 @@ export const delete_ServiceDelete = {
   path: Schema.Literal("/services/{id}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Unknown, 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1268,7 +1268,7 @@ export const post_ServiceUpdate = {
   path: Schema.Literal("/services/{id}/update"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()), registryAuthFrom: Schema_default_spec_prop, rollback: Schema.optional(Schema.String) }), path: Schema.Struct({ id: Schema.String }), header: Schema.optional(Schema.Struct({ "X-Registry-Auth": Schema.optional(Schema.String) })), body: Schema.StructWithRest(ServiceSpec, [Schema.Record(Schema.String, Schema.Unknown)]) },
+  parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()), registryAuthFrom: Schema_default_spec_prop, rollback: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["version", "registryAuthFrom", "rollback"].includes(key)))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))), header: Schema.optional(Schema.Struct({ "X-Registry-Auth": Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["X-Registry-Auth"].includes(key))))), body: ServiceSpec.check(Schema.makeFilter((value) => Schema.is(Schema.Record(Schema.String, Schema.Unknown))(value))) },
   responses: { 200: ServiceUpdateResponse, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1278,7 +1278,7 @@ export const get_ServiceLogs = {
   path: Schema.Literal("/services/{id}/logs"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ details: Union_default_false_prop, follow: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop, since: Schema_default_0_prop, timestamps: Union_default_false_prop, tail: String_default_all_prop })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ details: Union_default_false_prop, follow: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop, since: Schema_default_0_prop, timestamps: Union_default_false_prop, tail: String_default_all_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["details", "follow", "stdout", "stderr", "since", "timestamps", "tail"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown, 503: Schema.Unknown },
 };
 
@@ -1288,7 +1288,7 @@ export const get_TaskList = {
   path: Schema.Literal("/tasks"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) })) },
+  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["filters"].includes(key))))) },
   responses: { 200: Schema.Array(Task), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1298,7 +1298,7 @@ export const get_TaskInspect = {
   path: Schema.Literal("/tasks/{id}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Task, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1308,7 +1308,7 @@ export const get_TaskLogs = {
   path: Schema.Literal("/tasks/{id}/logs"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ details: Union_default_false_prop, follow: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop, since: Schema_default_0_prop, timestamps: Union_default_false_prop, tail: String_default_all_prop })), path: Schema.Struct({ id: Schema.String }) },
+  parameters: { query: Schema.optional(Schema.Struct({ details: Union_default_false_prop, follow: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop, since: Schema_default_0_prop, timestamps: Union_default_false_prop, tail: String_default_all_prop }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["details", "follow", "stdout", "stderr", "since", "timestamps", "tail"].includes(key))))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Schema.Unknown, 404: Schema.Unknown, 500: Schema.Unknown, 503: Schema.Unknown },
 };
 
@@ -1318,7 +1318,7 @@ export const get_SecretList = {
   path: Schema.Literal("/secrets"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) })) },
+  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["filters"].includes(key))))) },
   responses: { 200: Schema.Array(Secret), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1328,7 +1328,7 @@ export const post_SecretCreate = {
   path: Schema.Literal("/secrets/create"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { body: Schema.StructWithRest(SecretSpec, [Schema.Record(Schema.String, Schema.Unknown)]) },
+  parameters: { body: SecretSpec.check(Schema.makeFilter((value) => Schema.is(Schema.Record(Schema.String, Schema.Unknown))(value))) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1338,7 +1338,7 @@ export const get_SecretInspect = {
   path: Schema.Literal("/secrets/{id}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Secret, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1348,7 +1348,7 @@ export const delete_SecretDelete = {
   path: Schema.Literal("/secrets/{id}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1358,7 +1358,7 @@ export const post_SecretUpdate = {
   path: Schema.Literal("/secrets/{id}/update"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()) }), path: Schema.Struct({ id: Schema.String }), body: SecretSpec },
+  parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["version"].includes(key)))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))), body: SecretSpec },
   responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1368,7 +1368,7 @@ export const get_ConfigList = {
   path: Schema.Literal("/configs"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) })) },
+  parameters: { query: Schema.optional(Schema.Struct({ filters: Schema.optional(Schema.String) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["filters"].includes(key))))) },
   responses: { 200: Schema.Array(Config), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1378,7 +1378,7 @@ export const post_ConfigCreate = {
   path: Schema.Literal("/configs/create"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { body: Schema.StructWithRest(ConfigSpec, [Schema.Record(Schema.String, Schema.Unknown)]) },
+  parameters: { body: ConfigSpec.check(Schema.makeFilter((value) => Schema.is(Schema.Record(Schema.String, Schema.Unknown))(value))) },
   responses: { 201: IdResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1388,7 +1388,7 @@ export const get_ConfigInspect = {
   path: Schema.Literal("/configs/{id}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 200: Config, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1398,7 +1398,7 @@ export const delete_ConfigDelete = {
   path: Schema.Literal("/configs/{id}"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ id: Schema.String }) },
+  parameters: { path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))) },
   responses: { 204: Schema.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1408,7 +1408,7 @@ export const post_ConfigUpdate = {
   path: Schema.Literal("/configs/{id}/update"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()) }), path: Schema.Struct({ id: Schema.String }), body: ConfigSpec },
+  parameters: { query: Schema.Struct({ version: Schema.NumberFromString.check(Schema.isInt()) }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["version"].includes(key)))), path: Schema.Struct({ id: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["id"].includes(key)))), body: ConfigSpec },
   responses: { 200: Schema.Unknown, 400: Schema.Union([ErrorResponse, ErrorResponse]), 404: Schema.Union([ErrorResponse, ErrorResponse]), 500: Schema.Union([ErrorResponse, ErrorResponse]), 503: Schema.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1418,7 +1418,7 @@ export const get_DistributionInspect = {
   path: Schema.Literal("/distribution/{name}/json"),
   requestFormat: Schema.Literal("json"),
   responseFormat: Schema.Literal("json"),
-  parameters: { path: Schema.Struct({ name: Schema.String }) },
+  parameters: { path: Schema.Struct({ name: Schema.String }).check(Schema.makeFilter((data) => Object.keys(data).every((key) => ["name"].includes(key)))) },
   responses: { 200: DistributionInspect, 401: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -1578,7 +1578,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | "head" | "options" | MutationMethod;
+export type Method = "get" | "head" | "options" | "trace" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type ResponseFormat = "json" | "sse";
@@ -1599,6 +1599,14 @@ put: {
         }
     } as Partial<{ [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }> }>;
     // </EndpointRequestFormats>
+    
+
+    // <EndpointParameterStyles>
+    export type ParameterSerialization = { style: string; explode: boolean; allowReserved: boolean };
+    export type EndpointParameterStyles = Partial<Record<"query" | "path" | "header" | "cookie", Record<string, ParameterSerialization>>>;
+    /** OpenAPI parameter styles used by the built-in encoders. */
+    export const endpointParameterStyles = {"get":{"/containers/json":{"query":{"all":{"style":"form","explode":true,"allowReserved":false},"limit":{"style":"form","explode":true,"allowReserved":false},"size":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/containers/{id}/json":{"query":{"size":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/top":{"query":{"ps_args":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/logs":{"query":{"follow":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false},"since":{"style":"form","explode":true,"allowReserved":false},"until":{"style":"form","explode":true,"allowReserved":false},"timestamps":{"style":"form","explode":true,"allowReserved":false},"tail":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/changes":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/export":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/stats":{"query":{"stream":{"style":"form","explode":true,"allowReserved":false},"one-shot":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/attach/ws":{"query":{"detachKeys":{"style":"form","explode":true,"allowReserved":false},"logs":{"style":"form","explode":true,"allowReserved":false},"stream":{"style":"form","explode":true,"allowReserved":false},"stdin":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/archive":{"query":{"path":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/images/json":{"query":{"all":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false},"shared-size":{"style":"form","explode":true,"allowReserved":false},"digests":{"style":"form","explode":true,"allowReserved":false}}},"/images/{name}/json":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}/history":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/search":{"query":{"term":{"style":"form","explode":true,"allowReserved":false},"limit":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/events":{"query":{"since":{"style":"form","explode":true,"allowReserved":false},"until":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/system/df":{"query":{"type":{"style":"form","explode":true,"allowReserved":false}}},"/images/{name}/get":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/get":{"query":{"names":{"style":"form","explode":false,"allowReserved":false}}},"/exec/{id}/json":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/volumes/{name}":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/networks":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/networks/{id}":{"query":{"verbose":{"style":"form","explode":true,"allowReserved":false},"scope":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/privileges":{"query":{"remote":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/{name}/json":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/nodes":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/nodes/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/services":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false},"status":{"style":"form","explode":true,"allowReserved":false}}},"/services/{id}":{"query":{"insertDefaults":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/services/{id}/logs":{"query":{"details":{"style":"form","explode":true,"allowReserved":false},"follow":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false},"since":{"style":"form","explode":true,"allowReserved":false},"timestamps":{"style":"form","explode":true,"allowReserved":false},"tail":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/tasks":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/tasks/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/tasks/{id}/logs":{"query":{"details":{"style":"form","explode":true,"allowReserved":false},"follow":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false},"since":{"style":"form","explode":true,"allowReserved":false},"timestamps":{"style":"form","explode":true,"allowReserved":false},"tail":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/secrets":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/secrets/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/configs":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/configs/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/distribution/{name}/json":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}}},"post":{"/containers/create":{"query":{"name":{"style":"form","explode":true,"allowReserved":false},"platform":{"style":"form","explode":true,"allowReserved":false}}},"/containers/{id}/resize":{"query":{"h":{"style":"form","explode":true,"allowReserved":false},"w":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/start":{"query":{"detachKeys":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/stop":{"query":{"signal":{"style":"form","explode":true,"allowReserved":false},"t":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/restart":{"query":{"signal":{"style":"form","explode":true,"allowReserved":false},"t":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/kill":{"query":{"signal":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/update":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/rename":{"query":{"name":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/pause":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/unpause":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/attach":{"query":{"detachKeys":{"style":"form","explode":true,"allowReserved":false},"logs":{"style":"form","explode":true,"allowReserved":false},"stream":{"style":"form","explode":true,"allowReserved":false},"stdin":{"style":"form","explode":true,"allowReserved":false},"stdout":{"style":"form","explode":true,"allowReserved":false},"stderr":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/{id}/wait":{"query":{"condition":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/containers/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/build":{"query":{"dockerfile":{"style":"form","explode":true,"allowReserved":false},"t":{"style":"form","explode":true,"allowReserved":false},"extrahosts":{"style":"form","explode":true,"allowReserved":false},"remote":{"style":"form","explode":true,"allowReserved":false},"q":{"style":"form","explode":true,"allowReserved":false},"nocache":{"style":"form","explode":true,"allowReserved":false},"cachefrom":{"style":"form","explode":true,"allowReserved":false},"pull":{"style":"form","explode":true,"allowReserved":false},"rm":{"style":"form","explode":true,"allowReserved":false},"forcerm":{"style":"form","explode":true,"allowReserved":false},"memory":{"style":"form","explode":true,"allowReserved":false},"memswap":{"style":"form","explode":true,"allowReserved":false},"cpushares":{"style":"form","explode":true,"allowReserved":false},"cpusetcpus":{"style":"form","explode":true,"allowReserved":false},"cpuperiod":{"style":"form","explode":true,"allowReserved":false},"cpuquota":{"style":"form","explode":true,"allowReserved":false},"buildargs":{"style":"form","explode":true,"allowReserved":false},"shmsize":{"style":"form","explode":true,"allowReserved":false},"squash":{"style":"form","explode":true,"allowReserved":false},"labels":{"style":"form","explode":true,"allowReserved":false},"networkmode":{"style":"form","explode":true,"allowReserved":false},"platform":{"style":"form","explode":true,"allowReserved":false},"target":{"style":"form","explode":true,"allowReserved":false},"outputs":{"style":"form","explode":true,"allowReserved":false}},"header":{"Content-type":{"style":"simple","explode":false,"allowReserved":false},"X-Registry-Config":{"style":"simple","explode":false,"allowReserved":false}}},"/build/prune":{"query":{"keep-storage":{"style":"form","explode":true,"allowReserved":false},"all":{"style":"form","explode":true,"allowReserved":false},"filters":{"style":"form","explode":true,"allowReserved":false}}},"/images/create":{"query":{"fromImage":{"style":"form","explode":true,"allowReserved":false},"fromSrc":{"style":"form","explode":true,"allowReserved":false},"repo":{"style":"form","explode":true,"allowReserved":false},"tag":{"style":"form","explode":true,"allowReserved":false},"message":{"style":"form","explode":true,"allowReserved":false},"changes":{"style":"form","explode":false,"allowReserved":false},"platform":{"style":"form","explode":true,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}/push":{"query":{"tag":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}/tag":{"query":{"repo":{"style":"form","explode":true,"allowReserved":false},"tag":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/images/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/commit":{"query":{"container":{"style":"form","explode":true,"allowReserved":false},"repo":{"style":"form","explode":true,"allowReserved":false},"tag":{"style":"form","explode":true,"allowReserved":false},"comment":{"style":"form","explode":true,"allowReserved":false},"author":{"style":"form","explode":true,"allowReserved":false},"pause":{"style":"form","explode":true,"allowReserved":false},"changes":{"style":"form","explode":true,"allowReserved":false}}},"/images/load":{"query":{"quiet":{"style":"form","explode":true,"allowReserved":false}}},"/containers/{id}/exec":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/exec/{id}/start":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/exec/{id}/resize":{"query":{"h":{"style":"form","explode":true,"allowReserved":false},"w":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/networks/{id}/connect":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/networks/{id}/disconnect":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/networks/prune":{"query":{"filters":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/pull":{"query":{"remote":{"style":"form","explode":true,"allowReserved":false},"name":{"style":"form","explode":true,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/enable":{"query":{"timeout":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/disable":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/upgrade":{"query":{"remote":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/create":{"query":{"name":{"style":"form","explode":true,"allowReserved":false}}},"/plugins/{name}/push":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}/set":{"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/nodes/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/swarm/leave":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}}},"/swarm/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false},"rotateWorkerToken":{"style":"form","explode":true,"allowReserved":false},"rotateManagerToken":{"style":"form","explode":true,"allowReserved":false},"rotateManagerUnlockKey":{"style":"form","explode":true,"allowReserved":false}}},"/services/create":{"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/services/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false},"registryAuthFrom":{"style":"form","explode":true,"allowReserved":false},"rollback":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}},"header":{"X-Registry-Auth":{"style":"simple","explode":false,"allowReserved":false}}},"/secrets/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/configs/{id}/update":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}}},"delete":{"/containers/{id}":{"query":{"v":{"style":"form","explode":true,"allowReserved":false},"force":{"style":"form","explode":true,"allowReserved":false},"link":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/images/{name}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false},"noprune":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes/{name}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/networks/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/plugins/{name}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}},"/nodes/{id}":{"query":{"force":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/services/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/secrets/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/configs/{id}":{"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}}},"put":{"/containers/{id}/archive":{"query":{"path":{"style":"form","explode":true,"allowReserved":false},"noOverwriteDirNonDir":{"style":"form","explode":true,"allowReserved":false},"copyUIDGID":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}},"/volumes/{name}":{"query":{"version":{"style":"form","explode":true,"allowReserved":false}},"path":{"name":{"style":"simple","explode":false,"allowReserved":false}}}},"head":{"/containers/{id}/archive":{"query":{"path":{"style":"form","explode":true,"allowReserved":false}},"path":{"id":{"style":"simple","explode":false,"allowReserved":false}}}}} as Partial<Record<string, Partial<Record<string, EndpointParameterStyles>>>>;
+    // </EndpointParameterStyles>
     
 
     // <EndpointResponseFormats>
@@ -1662,8 +1670,8 @@ export interface FetcherResponse {
 }
 
 export interface Fetcher {
-    decodePathParams?: (path: string, pathParams: unknown) => string
-  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined
+    decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string
+  encodeSearchParams?: (searchParams: unknown, styles?: Record<string, ParameterSerialization>) => URLSearchParams | undefined
   /** Merge cookie params into request headers (default: Cookie header). */
   encodeCookies?: (cookies: unknown, headers: Headers) => void
     //
@@ -1866,8 +1874,8 @@ const runValidate = async (ctx: {
 
 
 export type EffectFetcher = {
-  decodePathParams?: (path: string, pathParams: unknown) => string;
-  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
+  decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string;
+  encodeSearchParams?: (searchParams: unknown, styles?: Record<string, ParameterSerialization>) => URLSearchParams | undefined;
   encodeCookies?: (cookies: unknown, headers: Headers) => void;
   parseResponseData?: (response: FetcherResponse) => Promise<unknown>;
   fetch: (input: Parameters<Fetcher["fetch"]>[0]) => Effect.Effect<FetcherResponse, HttpClientError, never>;
@@ -1994,25 +2002,72 @@ export class EffectApiClient {
 
       const decodePath =
         self.effectFetcher.decodePathParams ??
-        ((url: string, p: unknown) => {
+        ((url: string, p: unknown, styles?: Record<string, ParameterSerialization>) => {
           const record = (p ?? {}) as Record<string, unknown>;
+          const encode = (value: unknown) => encodeURIComponent(String(value));
+          const serialize = (key: string, value: unknown): string => {
+            const parameterStyle = styles?.[key];
+            const style = parameterStyle?.style ?? "simple";
+            const explode = parameterStyle?.explode ?? false;
+            if (style === "label") {
+              if (Array.isArray(value)) return "." + value.filter((item) => item != null).map(encode).join(explode ? "." : ",");
+              if (value && typeof value === "object") {
+                const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+                return "." + (explode ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".") : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","));
+              }
+              return "." + encode(value);
+            }
+            if (style === "matrix") {
+              if (Array.isArray(value)) return explode ? value.filter((item) => item != null).map((item) => ";" + key + "=" + encode(item)).join("") : ";" + key + "=" + value.filter((item) => item != null).map(encode).join(",");
+              if (value && typeof value === "object") {
+                const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+                return explode ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("") : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
+              }
+              return ";" + key + "=" + encode(value);
+            }
+            if (Array.isArray(value)) return value.filter((item) => item != null).map(encode).join(",");
+            if (value && typeof value === "object") return Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null).map(([name, item]) => explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)]).flat().join(",");
+            return encode(value);
+          };
           return url
             .replace(/{([^}]+)}/g, (_, key: string) =>
-              record[key] != null ? encodeURIComponent(String(record[key])) : `{${key}}`,
+              record[key] != null ? serialize(key, record[key]) : `{${key}}`,
             )
             .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
-              record[key] != null ? encodeURIComponent(String(record[key])) : `:${key}`,
+              record[key] != null ? serialize(key, record[key]) : `:${key}`,
             );
         });
       const encodeSearch =
         self.effectFetcher.encodeSearchParams ??
-        ((queryParams: unknown) => {
+        ((queryParams: unknown, styles?: Record<string, ParameterSerialization>) => {
           if (!queryParams || typeof queryParams !== "object") return undefined;
           const searchParams = new URLSearchParams();
           Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
             if (value != null) {
-              if (Array.isArray(value)) value.forEach((val) => val != null && searchParams.append(key, String(val)));
-              else searchParams.append(key, String(value));
+              const parameterStyle = styles?.[key];
+              const style = parameterStyle?.style ?? "form";
+              const explode = parameterStyle?.explode ?? true;
+              if (Array.isArray(value)) {
+                if (style === "spaceDelimited") searchParams.append(key, value.filter((item) => item != null).map(String).join(" "));
+                else if (style === "pipeDelimited") searchParams.append(key, value.filter((item) => item != null).map(String).join("|"));
+                else if (explode) value.forEach((val) => val != null && searchParams.append(key, String(val)));
+                else searchParams.append(key, value.filter((item) => item != null).map(String).join(","));
+              } else if (typeof value === "object") {
+                const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
+                if (style === "deepObject") {
+                  for (const [nestedKey, nestedValue] of entries) {
+                    if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && searchParams.append(`${key}[${nestedKey}]`, String(item)));
+                    else searchParams.append(`${key}[${nestedKey}]`, String(nestedValue));
+                  }
+                } else if (explode) {
+                  for (const [nestedKey, nestedValue] of entries) {
+                    if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && searchParams.append(nestedKey, String(item)));
+                    else searchParams.append(nestedKey, String(nestedValue));
+                  }
+                } else {
+                  searchParams.append(key, entries.flatMap(([nestedKey, nestedValue]) => [nestedKey, ...(Array.isArray(nestedValue) ? nestedValue : [nestedValue])]).map(String).join(","));
+                }
+              } else searchParams.append(key, String(value));
             }
           });
           return searchParams;
@@ -2050,9 +2105,13 @@ export class EffectApiClient {
           return undefined;
         });
 
-      const resolvedPath = decodePath(self.baseUrl + (path as string), parametersToSend.path ?? {});
+      const resolvedPath = decodePath(
+        self.baseUrl + (path as string),
+        parametersToSend.path ?? {},
+        endpointParameterStyles[method]?.[path]?.path,
+      );
       const url = new URL(resolvedPath);
-      const urlSearchParams = encodeSearch(parametersToSend.query);
+      const urlSearchParams = encodeSearch(parametersToSend.query, endpointParameterStyles[method]?.[path]?.query);
 
       let overrides = requestParams?.overrides as RequestInit | undefined;
       if (parametersToSend.cookie) {
@@ -2081,7 +2140,7 @@ export class EffectApiClient {
               catch: (cause) => new HttpClientError("parse failed", cause),
             });
 
-      if (responseFormat !== "sse" && (validateSide === "output" || validateSide === "both") && response.ok && endpointSchema?.responses) {
+      if (responseFormat !== "sse" && (validateSide === "output" || validateSide === "both") && (response.ok || !(errorStatusCodes as readonly number[]).includes(response.status)) && endpointSchema?.responses) {
         const responseSchema =
           endpointSchema.responses[String(response.status)] ??
           endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??

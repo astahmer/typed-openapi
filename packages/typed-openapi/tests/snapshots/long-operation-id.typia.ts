@@ -54,7 +54,7 @@ export type EndpointParameters = {
 };
 
 export type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | "head" | "options" | MutationMethod;
+export type Method = "get" | "head" | "options" | "trace" | MutationMethod;
 
 export type RequestFormat = "json" | "form-data" | "form-url" | "binary" | "text";
 export type ResponseFormat = "json" | "sse";
@@ -66,6 +66,15 @@ export const endpointRequestFormats = {} as Partial<{
   [M in keyof EndpointByMethod]: Partial<{ [P in keyof EndpointByMethod[M]]: RequestFormat }>;
 }>;
 // </EndpointRequestFormats>
+
+// <EndpointParameterStyles>
+export type ParameterSerialization = { style: string; explode: boolean; allowReserved: boolean };
+export type EndpointParameterStyles = Partial<
+  Record<"query" | "path" | "header" | "cookie", Record<string, ParameterSerialization>>
+>;
+/** OpenAPI parameter styles used by the built-in encoders. */
+export const endpointParameterStyles = {} as Partial<Record<string, Partial<Record<string, EndpointParameterStyles>>>>;
+// </EndpointParameterStyles>
 
 // <EndpointResponseFormats>
 /** Non-json response body modes; missing entries default to `"json"`. SSE skips JSON parse + output validation. */
@@ -126,8 +135,11 @@ export interface FetcherResponse {
 }
 
 export interface Fetcher {
-  decodePathParams?: (path: string, pathParams: unknown) => string;
-  encodeSearchParams?: (searchParams: unknown) => URLSearchParams | undefined;
+  decodePathParams?: (path: string, pathParams: unknown, styles?: Record<string, ParameterSerialization>) => string;
+  encodeSearchParams?: (
+    searchParams: unknown,
+    styles?: Record<string, ParameterSerialization>,
+  ) => URLSearchParams | undefined;
   /** Merge cookie params into request headers (default: Cookie header). */
   encodeCookies?: (cookies: unknown, headers: Headers) => void;
   //
@@ -394,27 +406,146 @@ export class ApiClient {
    * Replace path parameters in URL
    * Supports both OpenAPI format {param} and Express format :param
    */
-  defaultDecodePathParams = (url: string, params: unknown): string => {
+  defaultDecodePathParams = (url: string, params: unknown, styles?: Record<string, ParameterSerialization>): string => {
     const record = (params ?? {}) as Record<string, unknown>;
+    const encode = (value: unknown) => encodeURIComponent(String(value));
+    const serialize = (key: string, value: unknown): string => {
+      const parameterStyle = styles?.[key];
+      const style = parameterStyle?.style ?? "simple";
+      const explode = parameterStyle?.explode ?? false;
+      if (style === "label") {
+        if (Array.isArray(value))
+          return (
+            "." +
+            value
+              .filter((item) => item != null)
+              .map(encode)
+              .join(explode ? "." : ",")
+          );
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return (
+            "." +
+            (explode
+              ? entries.map(([name, item]) => encode(name) + "=" + encode(item)).join(".")
+              : entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(","))
+          );
+        }
+        return "." + encode(value);
+      }
+      if (style === "matrix") {
+        if (Array.isArray(value))
+          return explode
+            ? value
+                .filter((item) => item != null)
+                .map((item) => ";" + key + "=" + encode(item))
+                .join("")
+            : ";" +
+                key +
+                "=" +
+                value
+                  .filter((item) => item != null)
+                  .map(encode)
+                  .join(",");
+        if (value && typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
+          return explode
+            ? entries.map(([name, item]) => ";" + encode(name) + "=" + encode(item)).join("")
+            : ";" + key + "=" + entries.flatMap(([name, item]) => [encode(name), encode(item)]).join(",");
+        }
+        return ";" + key + "=" + encode(value);
+      }
+      if (Array.isArray(value))
+        return value
+          .filter((item) => item != null)
+          .map(encode)
+          .join(",");
+      if (value && typeof value === "object") {
+        return Object.entries(value as Record<string, unknown>)
+          .filter(([, item]) => item != null)
+          .map(([name, item]) => (explode ? encode(name) + "=" + encode(item) : [encode(name), encode(item)]))
+          .flat()
+          .join(",");
+      }
+      return encode(value);
+    };
     return url
-      .replace(/{([^}]+)}/g, (_, key: string) =>
-        record[key] != null ? encodeURIComponent(String(record[key])) : `{${key}}`,
-      )
+      .replace(/{([^}]+)}/g, (_, key: string) => (record[key] != null ? serialize(key, record[key]) : `{${key}}`))
       .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
-        record[key] != null ? encodeURIComponent(String(record[key])) : `:${key}`,
+        record[key] != null ? serialize(key, record[key]) : `:${key}`,
       );
   };
 
   /** Uses URLSearchParams, skips null/undefined values */
-  defaultEncodeSearchParams = (queryParams: unknown): URLSearchParams | undefined => {
+  defaultEncodeSearchParams = (
+    queryParams: unknown,
+    styles?: Record<string, ParameterSerialization>,
+  ): URLSearchParams | undefined => {
     if (!queryParams || typeof queryParams !== "object") return;
 
     const searchParams = new URLSearchParams();
     Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
       if (value != null) {
         // Skip null/undefined values
+        const parameterStyle = styles?.[key];
+        const style = parameterStyle?.style ?? "form";
+        const explode = parameterStyle?.explode ?? true;
         if (Array.isArray(value)) {
-          value.forEach((val) => val != null && searchParams.append(key, String(val)));
+          if (style === "spaceDelimited")
+            searchParams.append(
+              key,
+              value
+                .filter((item) => item != null)
+                .map(String)
+                .join(" "),
+            );
+          else if (style === "pipeDelimited")
+            searchParams.append(
+              key,
+              value
+                .filter((item) => item != null)
+                .map(String)
+                .join("|"),
+            );
+          else if (explode) value.forEach((val) => val != null && searchParams.append(key, String(val)));
+          else
+            searchParams.append(
+              key,
+              value
+                .filter((item) => item != null)
+                .map(String)
+                .join(","),
+            );
+        } else if (typeof value === "object") {
+          const entries = Object.entries(value as Record<string, unknown>).filter(
+            ([, nestedValue]) => nestedValue != null,
+          );
+          if (style === "deepObject") {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue))
+                nestedValue.forEach(
+                  (item) => item != null && searchParams.append(`${key}[${nestedKey}]`, String(item)),
+                );
+              else searchParams.append(`${key}[${nestedKey}]`, String(nestedValue));
+            }
+          } else if (explode) {
+            for (const [nestedKey, nestedValue] of entries) {
+              if (Array.isArray(nestedValue))
+                nestedValue.forEach((item) => item != null && searchParams.append(nestedKey, String(item)));
+              else searchParams.append(nestedKey, String(nestedValue));
+            }
+          } else {
+            searchParams.append(
+              key,
+              entries
+                .flatMap(([nestedKey, nestedValue]) => [
+                  nestedKey,
+                  ...(Array.isArray(nestedValue) ? nestedValue : [nestedValue]),
+                ])
+                .map(String)
+                .join(","),
+            );
+          }
         } else {
           searchParams.append(key, String(value));
         }
@@ -718,10 +849,12 @@ export class ApiClient {
       const resolvedPath = (this.fetcher.decodePathParams ?? this.defaultDecodePathParams)(
         this.baseUrl + (path as string),
         parametersToSend.path ?? {},
+        endpointParameterStyles[method]?.[path]?.path,
       );
       const url = new URL(resolvedPath);
       const urlSearchParams = (this.fetcher.encodeSearchParams ?? this.defaultEncodeSearchParams)(
         parametersToSend.query,
+        endpointParameterStyles[method]?.[path]?.query,
       );
 
       if (parametersToSend.cookie) {
@@ -747,7 +880,12 @@ export class ApiClient {
           ? (response.body ?? null)
           : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
       const shouldValidateOutput = validateSide === "output" || validateSide === "both";
-      if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
+      if (
+        shouldValidateOutput &&
+        responseFormat !== "sse" &&
+        (response.ok || !(errorStatusCodes as readonly number[]).includes(response.status)) &&
+        endpointSchema?.responses
+      ) {
         const responseSchema =
           endpointSchema.responses[String(response.status)] ??
           endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??
