@@ -90,7 +90,7 @@ describe("typebox and typia runtimes", () => {
       schemaNaming: "always-name",
     });
     expect(file).toContain("import typia");
-    expect(file).toContain("export type Pet = { name: string };");
+    expect(file).toContain("export type Pet = ({ name: string } & Record<string, unknown>);");
     expect(file).toContain("export const isPet = typia.createIs<Pet>();");
     expect(file).toContain("export const assertPet = typia.createAssert<Pet>();");
     expect(file).toContain("export const validatePet = typia.createValidate<Pet>();");
