@@ -249,7 +249,7 @@ const getAlias = ({ path, method, operation }: Endpoint) =>
   );
 
 type MutationMethod = "post" | "put" | "patch" | "delete";
-export type Method = "get" | "head" | "options" | MutationMethod;
+export type Method = "get" | "head" | "options" | "trace" | MutationMethod;
 
 export type EndpointParameters = {
   body?: SchemaNode;
