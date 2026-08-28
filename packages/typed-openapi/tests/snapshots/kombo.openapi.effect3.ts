@@ -3575,6 +3575,7 @@ export class EffectApiClient {
         overrides = { ...overrides, headers };
       }
 
+      const parameterStyles = endpointParameterStyles[method]?.[path as string];
       const response = yield* self.effectFetcher.fetch({
         method: method as Method,
         path: path as string,
@@ -3582,9 +3583,7 @@ export class EffectApiClient {
         ...(urlSearchParams ? { urlSearchParams } : {}),
         ...(Object.keys(parametersToSend).length ? { parameters: parametersToSend } : {}),
         requestFormat: endpointRequestFormats[method]?.[path] ?? "json",
-        ...(endpointParameterStyles[method]?.[path as string]
-          ? { parameterStyles: endpointParameterStyles[method]?.[path as string] }
-          : {}),
+        ...(parameterStyles ? { parameterStyles } : {}),
         security: endpointSecurityRequirements[method]?.[path] ?? defaultSecurityRequirements,
         ...(overrides ? { overrides } : {}),
       });
