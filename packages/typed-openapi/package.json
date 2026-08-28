@@ -31,7 +31,7 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "test": "ATTEST_skipTypes=1 vitest",
-    "test:unit": "TEST_UNIT=1 ATTEST_skipTypes=1 vitest run",
+    "test:unit": "TEST_UNIT=1 ATTEST_skipTypes=1 vitest run --no-file-parallelism --maxWorkers=1",
     "gen:runtime": "node bin.js ./tests/samples/petstore.yaml --output ./tmp/generated-client.ts --tanstack generated-tanstack.ts --default-fetcher",
     "gen:tstyche-fixtures": "tsx scripts/gen-tstyche-fixtures.ts && tsx scripts/gen-tstyche-suites.ts",
     "gen:fixtures": "pnpm run gen:runtime && pnpm run gen:tstyche-fixtures",
