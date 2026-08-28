@@ -110,6 +110,33 @@ describe("typebox and typia runtimes", () => {
     expect(source).toContain("filter(Boolean).length === 1");
   });
 
+  test("typia preserves not semantics inside oneOf members", () => {
+    const node = openApiToIr(
+      { oneOf: [{ not: { type: "string" } }, { type: "string" }] },
+      { getRefName: (ref) => ref },
+    );
+    const source = typiaAdapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+
+    expect(source).toContain("typia.createIs<string>()");
+    expect(source).not.toContain("typia.createIs<unknown>()(input)");
+  });
+
+  test("typia keeps named oneOf schemas exclusive", () => {
+    const node = openApiToIr(
+      { oneOf: [{ type: "string" }, { type: "string", minLength: 2 }] },
+      { getRefName: (ref) => ref },
+    );
+    const source = typiaAdapter.emitNamedSchema(
+      "ExclusiveString",
+      node,
+      createEmitCtx(resolveValidationPolicy("strict")),
+    );
+
+    expect(source).toContain("export const isExclusiveString = ((input: unknown)");
+    expect(source).toContain("filter(Boolean).length === 1");
+    expect(source).not.toContain("export const isExclusiveString = typia.createIs<ExclusiveString>()");
+  });
+
   test("binary schemas map to Blob in both runtimes", () => {
     const doc = minimalDoc({
       "/upload": {
@@ -168,6 +195,38 @@ describe("typebox and typia runtimes", () => {
     expect(source).toContain("Type.Not(Type.String())");
     expect(TypeBoxValue.Check(schema, 42)).toBe(true);
     expect(TypeBoxValue.Check(schema, "not-allowed")).toBe(false);
+  });
+
+  test("typia enforces not schemas in the emitted guard", () => {
+    const node = openApiToIr({ not: { type: "string" } }, { getRefName: (ref) => ref });
+    const source = typiaAdapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+
+    expect(source).toContain("typia.createIs<string>()");
+    expect(source).not.toContain("typia.createIs<unknown>()");
+  });
+
+  test("typia keeps named not schemas as rejecting guards", () => {
+    const node = openApiToIr({ not: { type: "string" } }, { getRefName: (ref) => ref });
+    const source = typiaAdapter.emitNamedSchema("NotString", node, createEmitCtx(resolveValidationPolicy("strict")));
+
+    expect(source).toContain("export const isNotString = ((input: unknown): input is unknown");
+    expect(source).toContain("typia.createIs<string>()");
+    expect(source).not.toContain("export const isNotString = typia.createIs<NotString>()");
+  });
+
+  test("typia preserves nested not semantics in object guards", () => {
+    const node = openApiToIr(
+      {
+        type: "object",
+        required: ["value"],
+        properties: { value: { not: { type: "string" } } },
+      },
+      { getRefName: (ref) => ref },
+    );
+    const source = typiaAdapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+
+    expect(source).toContain('Object.prototype.hasOwnProperty.call(input, "value")');
+    expect(source).toContain("typia.createIs<string>()");
   });
 
   test("typia uses exact guards for closed objects", () => {

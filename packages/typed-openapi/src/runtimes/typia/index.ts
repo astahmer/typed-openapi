@@ -28,6 +28,128 @@ const createGuard = (typeExpr: string, exact: boolean, node?: SchemaNode) => {
   return `((input: unknown): input is ${typeExpr} => typia.createIs<${typeExpr}>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => [${keys}].includes(key)))`;
 };
 
+const containsRuntimeSemantics = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()): boolean => {
+  switch (node.kind) {
+    case "not":
+      return true;
+    case "union":
+      return Boolean(node.exclusive) || node.members.some((member) => containsRuntimeSemantics(member, ctx, seen));
+    case "intersection":
+      return node.members.some((member) => containsRuntimeSemantics(member, ctx, seen));
+    case "object":
+      return (
+        Object.keys(node.patternProperties ?? {}).length > 0 ||
+        Object.values(node.properties).some((property) => containsRuntimeSemantics(property, ctx, seen)) ||
+        (typeof node.additionalProperties === "object" &&
+          containsRuntimeSemantics(node.additionalProperties, ctx, seen)) ||
+        Object.values(node.patternProperties ?? {}).some((property) => containsRuntimeSemantics(property, ctx, seen))
+      );
+    case "array":
+      return containsRuntimeSemantics(node.items, ctx, seen);
+    case "tuple":
+      return (
+        node.items.some((item) => containsRuntimeSemantics(item, ctx, seen)) ||
+        (node.rest ? containsRuntimeSemantics(node.rest, ctx, seen) : false)
+      );
+    case "record":
+      return containsRuntimeSemantics(node.key, ctx, seen) || containsRuntimeSemantics(node.value, ctx, seen);
+    case "ref": {
+      if (!ctx.schemaNodes || seen.has(node.name)) return false;
+      const target = ctx.schemaNodes.get(node.name);
+      return target ? containsRuntimeSemantics(target, ctx, new Set(seen).add(node.name)) : false;
+    }
+    case "custom":
+      return node.fallback ? containsRuntimeSemantics(node.fallback, ctx, seen) : false;
+    default:
+      return false;
+  }
+};
+
+const guardCall = (node: SchemaNode, value: string, ctx: EmitCtx): string => `(${emitNode(node, ctx)})(${value})`;
+
+const runtimeChecks = (node: SchemaNode, value: string, ctx: EmitCtx): string[] => {
+  switch (node.kind) {
+    case "not":
+      return [`!(${guardCall(node.schema, value, ctx)})`];
+    case "union": {
+      const checks = node.members.map((member) => guardCall(member, value, ctx)).join(", ");
+      return [`[${checks}].filter(Boolean).length ${node.exclusive ? "=== 1" : "> 0"}`];
+    }
+    case "intersection":
+      return node.members.flatMap((member) =>
+        containsRuntimeSemantics(member, ctx) ? runtimeChecks(member, value, ctx) : [],
+      );
+    case "object": {
+      const checks: string[] = [];
+      for (const [key, property] of Object.entries(node.properties)) {
+        if (containsRuntimeSemantics(property, ctx)) {
+          const propertyValue = `(input as Record<string, unknown>)[${JSON.stringify(key)}]`;
+          checks.push(
+            `(!Object.prototype.hasOwnProperty.call(${value}, ${JSON.stringify(key)}) || ${guardCall(property, propertyValue, ctx)})`,
+          );
+        }
+      }
+      const patterns = Object.entries(node.patternProperties ?? {});
+      const namedKeys = Object.keys(node.properties)
+        .map((key) => JSON.stringify(key))
+        .join(", ");
+      const patternChecks = patterns
+        .filter(([, property]) => containsRuntimeSemantics(property, ctx) || patterns.length > 0)
+        .map(
+          ([pattern, property]) =>
+            `(!new RegExp(${JSON.stringify(pattern)}).test(key) || ${guardCall(property, "value", ctx)})`,
+        );
+      const additional =
+        node.additionalProperties === false
+          ? "false"
+          : node.additionalProperties === true
+            ? "true"
+            : guardCall(node.additionalProperties, "value", ctx);
+      if (patterns.length > 0 || node.additionalProperties !== true) {
+        const matching = patterns.map(([pattern]) => `new RegExp(${JSON.stringify(pattern)}).test(key)`).join(" || ");
+        const allowed = [
+          `(${namedKeys ? `[${namedKeys}].includes(key)` : "false"})`,
+          ...(matching ? [`(${matching})`] : []),
+        ].join(" || ");
+        checks.push(
+          `Object.entries(${value} as Record<string, unknown>).every(([key, value]) => ${allowed} || ${additional})`,
+        );
+      }
+      if (patternChecks.length > 0) {
+        checks.push(
+          `Object.entries(${value} as Record<string, unknown>).every(([key, value]) => ${patternChecks.join(" && ")})`,
+        );
+      }
+      return checks;
+    }
+    case "array":
+      return [`(${value} as unknown[]).every((item) => ${guardCall(node.items, "item", ctx)})`];
+    case "tuple": {
+      const checks = node.items.map((item, index) => guardCall(item, `${value}[${index}]`, ctx));
+      if (node.rest)
+        checks.push(
+          `(${value} as unknown[]).slice(${node.items.length}).every((item) => ${guardCall(node.rest, "item", ctx)})`,
+        );
+      return checks;
+    }
+    case "record":
+      return [
+        `Object.values(${value} as Record<string, unknown>).every((item) => ${guardCall(node.value, "item", ctx)})`,
+      ];
+    default:
+      return [];
+  }
+};
+
+const createRuntimeGuard = (node: SchemaNode, ctx: EmitCtx): string => {
+  const typeExpr = typiaTypeExpr(node, ctx);
+  if (node.kind === "not") {
+    return `((input: unknown): input is ${typeExpr} => ${runtimeChecks(node, "input", ctx)[0]})`;
+  }
+  const checks = [`${createIs(typeExpr)}(input)`, ...runtimeChecks(node, "input", ctx)];
+  return `((input: unknown): input is ${typeExpr} => ${checks.join(" && ")})`;
+};
+
 /** Build a Typia-friendly type expression with `tags.*` constraints when validation allows. */
 const typiaTypeExpr = (node: SchemaNode, ctx: EmitCtx): string => {
   switch (node.kind) {
@@ -86,11 +208,7 @@ const typiaTypeExpr = (node: SchemaNode, ctx: EmitCtx): string => {
 };
 
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
-  if (node.kind === "union" && node.exclusive) {
-    const typeExpr = toTs(node, ctx);
-    const checks = node.members.map((member) => `typia.createIs<${typiaTypeExpr(member, ctx)}>()(input)`).join(", ");
-    return `((input: unknown): input is ${typeExpr} => [${checks}].filter(Boolean).length === 1)`;
-  }
+  if (containsRuntimeSemantics(node, ctx)) return createRuntimeGuard(node, ctx);
   if (isExactObject(node)) {
     return createGuard(typiaTypeExpr(node, ctx), true, node);
   }
@@ -119,9 +237,10 @@ export const typiaAdapter: RuntimeAdapter = {
     });
     if (typeReference) {
       const exact = isExactObject(node);
+      const is = containsRuntimeSemantics(node, ctx) ? emitNode(node, ctx) : undefined;
       return [
         `export type ${name} = ${typeReference};`,
-        `export const is${name} = ${createGuard(typeReference, exact, node)};`,
+        `export const is${name} = ${is ?? createGuard(typeReference, exact, node)};`,
         `export const assert${name} = typia.createAssert<${typeReference}>();`,
         `export const validate${name} = typia.createValidate<${typeReference}>();`,
       ].join("\n");
@@ -133,7 +252,9 @@ export const typiaAdapter: RuntimeAdapter = {
         : `export type ${name} = ${typiaTypeExpr(node, ctx)};`;
     return [
       typeDecl,
-      `export const is${name} = ${createGuard(name, isExactObject(node), node)};`,
+      `export const is${name} = ${
+        containsRuntimeSemantics(node, ctx) ? emitNode(node, ctx) : createGuard(name, isExactObject(node), node)
+      };`,
       `export const assert${name} = typia.createAssert<${name}>();`,
       `export const validate${name} = typia.createValidate<${name}>();`,
     ].join("\n");
