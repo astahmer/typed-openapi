@@ -94,6 +94,9 @@ describe("typebox and typia runtimes", () => {
     expect(file).toContain("export const isPet = typia.createIs<Pet>();");
     expect(file).toContain("export const assertPet = typia.createAssert<Pet>();");
     expect(file).toContain("export const validatePet = typia.createValidate<Pet>();");
+    expect(file).not.toContain("createEquals");
+    expect(file).not.toContain("createAssertEquals");
+    expect(file).not.toContain("createValidateEquals");
     expect(file).toContain("responses: { 200: isPet }");
   });
 
@@ -174,6 +177,8 @@ describe("typebox and typia runtimes", () => {
     );
     const source = typiaAdapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
 
-    expect(source).toBe("typia.createEquals<{ name: string }>()");
+    expect(source).toContain("typia.createIs<{ name: string }>()");
+    expect(source).toContain('Object.keys(input).every((key) => ["name"].includes(key))');
+    expect(source).not.toContain("createEquals");
   });
 });

@@ -21,6 +21,7 @@ import {
   type post_PostClosed,
 } from "../../../tmp/tstyche/typing-audit/zod3/client.ts";
 
+
 import type {
   Anything as SidecarAnything,
   Closed as SidecarClosed,
@@ -46,7 +47,7 @@ describe("zod3 generated typing audit", () => {
     expect<{ name: string; "x-request-id": string }>().type.toBeAssignableTo<Patterned>();
     expect<Tuple>().type.toBeAssignableTo<readonly [string, number, ...string[]]>();
     expect<RecursiveNode>().type.toBeAssignableTo<{ value: string; child?: RecursiveNode }>();
-
+    
     expect<SidecarClosed>().type.toBe<{ name: string }>();
     expect<SidecarOpenMap>().type.toBeAssignableTo<{ name: string }>();
     expect<{ name: string; count: number }>().type.toBeAssignableTo<SidecarOpenMap>();
@@ -75,16 +76,10 @@ describe("zod3 generated typing audit", () => {
   it("preserves recursive and parameterized endpoint inference", async () => {
     const recursive = await api.get<"/recursive", get_GetRecursive>("/recursive");
     expect(recursive).type.toBe<RecursiveNode>();
-    const params = await api.get<"/params/{id}", get_GetParams>("/params/{id}", {
-      path: { id: 1 },
-      query: { enabled: true },
-    });
+    const params = await api.get<"/params/{id}", get_GetParams>("/params/{id}", { path: { id: 1 }, query: { enabled: true } });
     expect(params).type.toBe<Closed>();
-
-    const coercedParams = await api.get<"/params/{id}", get_GetParams>("/params/{id}", {
-      path: { id: "1" },
-      query: { enabled: "false" },
-    });
+    
+    const coercedParams = await api.get<"/params/{id}", get_GetParams>("/params/{id}", { path: { id: "1" }, query: { enabled: "false" } });
     expect(coercedParams).type.toBe<Closed>();
     await api.post<"/closed", post_PostClosed>("/closed", { body: { name: "ok" } });
     // @ts-expect-error! closed request bodies reject undeclared properties

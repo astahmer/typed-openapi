@@ -201,5 +201,11 @@ describe("issue #137 — effect runtime codegen bugs", () => {
     const extended = mod.ExtendedPayload as Schema.Schema<unknown>;
     expect(Schema.is(extended)({ id: "id", extra: "extra" })).toBe(true);
     expect(Schema.is(extended)({ id: "id", extra: 1 })).toBe(false);
+
+    const src3 = generateFile({ ...mapOpenApiEndpoints(bug5Spec), runtime: "effect3", schemasOnly: true });
+    const mod3 = await loadGenerated("bug5-effect3", src3);
+    const extended3 = mod3.ExtendedPayload as LegacySchema.Schema<unknown>;
+    expect(LegacySchema.is(extended3)({ id: "id", extra: "extra" })).toBe(true);
+    expect(LegacySchema.is(extended3)({ id: "id", extra: 1 })).toBe(false);
   });
 });

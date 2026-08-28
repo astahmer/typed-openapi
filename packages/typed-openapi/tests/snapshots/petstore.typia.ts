@@ -98,7 +98,13 @@ export const get_FindPetsByStatus = {
   path: typia.createIs<"/pet/findByStatus">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createEquals<Partial<{ status: "available" | "pending" | "sold" }>>() },
+  parameters: {
+    query: (input: unknown): input is Partial<{ status: "available" | "pending" | "sold" }> =>
+      typia.createIs<Partial<{ status: "available" | "pending" | "sold" }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["status"].includes(key)),
+  },
   responses: {
     200: typia.createIs<Array<Pet>>(),
     304: typia.createIs<unknown>(),
@@ -112,7 +118,13 @@ export const get_FindPetsByTags = {
   path: typia.createIs<"/pet/findByTags">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createEquals<Partial<{ tags: Array<string> }>>() },
+  parameters: {
+    query: (input: unknown): input is Partial<{ tags: Array<string> }> =>
+      typia.createIs<Partial<{ tags: Array<string> }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["tags"].includes(key)),
+  },
   responses: { 200: typia.createIs<Array<Pet> | Array<User> | Array<Tag>>(), 400: typia.createIs<unknown>() },
 };
 
@@ -122,7 +134,13 @@ export const get_GetPetById = {
   path: typia.createIs<"/pet/{petId}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createEquals<{ petId: number }>() },
+  parameters: {
+    path: (input: unknown): input is { petId: number } =>
+      typia.createIs<{ petId: number }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["petId"].includes(key)),
+  },
   responses: {
     200: isPet,
     400: typia.createIs<{ code: number; message: string } & Record<string, unknown>>(),
@@ -137,8 +155,16 @@ export const post_UpdatePetWithForm = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: {
-    query: typia.createEquals<Partial<{ name: string; status: string }>>(),
-    path: typia.createEquals<{ petId: number }>(),
+    query: (input: unknown): input is Partial<{ name: string; status: string }> =>
+      typia.createIs<Partial<{ name: string; status: string }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["name", "status"].includes(key)),
+    path: (input: unknown): input is { petId: number } =>
+      typia.createIs<{ petId: number }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["petId"].includes(key)),
   },
   responses: { 405: typia.createIs<unknown>() },
 };
@@ -150,8 +176,16 @@ export const delete_DeletePet = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: {
-    path: typia.createEquals<{ petId: number }>(),
-    header: typia.createEquals<Partial<{ api_key: string }>>(),
+    path: (input: unknown): input is { petId: number } =>
+      typia.createIs<{ petId: number }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["petId"].includes(key)),
+    header: (input: unknown): input is Partial<{ api_key: string }> =>
+      typia.createIs<Partial<{ api_key: string }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["api_key"].includes(key)),
   },
   responses: { 400: typia.createIs<unknown>() },
 };
@@ -163,8 +197,16 @@ export const post_UploadFile = {
   requestFormat: typia.createIs<"binary">(),
   responseFormat: typia.createIs<"json">(),
   parameters: {
-    query: typia.createEquals<Partial<{ additionalMetadata: string }>>(),
-    path: typia.createEquals<{ petId: number }>(),
+    query: (input: unknown): input is Partial<{ additionalMetadata: string }> =>
+      typia.createIs<Partial<{ additionalMetadata: string }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["additionalMetadata"].includes(key)),
+    path: (input: unknown): input is { petId: number } =>
+      typia.createIs<{ petId: number }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["petId"].includes(key)),
     body: typia.createIs<Blob>(),
   },
   responses: { 200: isApiResponse },
@@ -196,7 +238,13 @@ export const get_GetOrderById = {
   path: typia.createIs<"/store/order/{orderId}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createEquals<{ orderId: number }>() },
+  parameters: {
+    path: (input: unknown): input is { orderId: number } =>
+      typia.createIs<{ orderId: number }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["orderId"].includes(key)),
+  },
   responses: { 200: isOrder, 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>() },
 };
 
@@ -206,7 +254,13 @@ export const delete_DeleteOrder = {
   path: typia.createIs<"/store/order/{orderId}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createEquals<{ orderId: number }>() },
+  parameters: {
+    path: (input: unknown): input is { orderId: number } =>
+      typia.createIs<{ orderId: number }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["orderId"].includes(key)),
+  },
   responses: { 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>() },
 };
 
@@ -236,11 +290,25 @@ export const get_LoginUser = {
   path: typia.createIs<"/user/login">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: typia.createEquals<Partial<{ username: string; password: string }>>() },
+  parameters: {
+    query: (input: unknown): input is Partial<{ username: string; password: string }> =>
+      typia.createIs<Partial<{ username: string; password: string }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["username", "password"].includes(key)),
+  },
   responses: { 200: typia.createIs<string>(), 400: typia.createIs<unknown>() },
   responseHeaders: {
-    200: typia.createEquals<{ "X-Rate-Limit": number; "X-Expires-After": string }>(),
-    400: typia.createEquals<{ "X-Error": string }>(),
+    200: (input: unknown): input is { "X-Rate-Limit": number; "X-Expires-After": string } =>
+      typia.createIs<{ "X-Rate-Limit": number; "X-Expires-After": string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["X-Rate-Limit", "X-Expires-After"].includes(key)),
+    400: (input: unknown): input is { "X-Error": string } =>
+      typia.createIs<{ "X-Error": string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["X-Error"].includes(key)),
   },
 };
 
@@ -260,7 +328,13 @@ export const get_GetUserByName = {
   path: typia.createIs<"/user/{username}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createEquals<{ username: string }>() },
+  parameters: {
+    path: (input: unknown): input is { username: string } =>
+      typia.createIs<{ username: string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["username"].includes(key)),
+  },
   responses: {
     200: isUser,
     201: typia.createIs<{ id: number; username: string } & Record<string, unknown>>(),
@@ -275,7 +349,14 @@ export const put_UpdateUser = {
   path: typia.createIs<"/user/{username}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createEquals<{ username: string }>(), body: isUser },
+  parameters: {
+    path: (input: unknown): input is { username: string } =>
+      typia.createIs<{ username: string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["username"].includes(key)),
+    body: isUser,
+  },
   responses: { default: typia.createIs<unknown>() },
 };
 
@@ -285,7 +366,13 @@ export const delete_DeleteUser = {
   path: typia.createIs<"/user/{username}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: typia.createEquals<{ username: string }>() },
+  parameters: {
+    path: (input: unknown): input is { username: string } =>
+      typia.createIs<{ username: string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => ["username"].includes(key)),
+  },
   responses: { 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>() },
 };
 
