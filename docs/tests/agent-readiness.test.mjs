@@ -48,3 +48,16 @@ test("publishes agent navigation and machine-readable discovery files", async ()
   assert.match(config, /https:\/\/schema\.org/);
   assert.match(config, /https:\/\/typed-openapi-docs\.vercel\.app/);
 });
+
+test("keeps Vercel Markdown negotiation out of Astro Edge middleware", async () => {
+  const [middleware, config, buildScript] = await Promise.all([
+    read("middleware.ts"),
+    read("astro.config.mjs"),
+    read("scripts/build-playground.mjs"),
+  ]);
+
+  assert.match(middleware, /@vercel\/functions/);
+  assert.doesNotMatch(middleware, /astro:middleware/);
+  assert.doesNotMatch(config, /middlewareMode/);
+  assert.match(buildScript, /build-markdown\.mjs/);
+});
