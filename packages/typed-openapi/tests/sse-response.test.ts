@@ -127,7 +127,7 @@ describe("SSE / text/event-stream responses", () => {
     } as OpenAPIObject;
 
     const file = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "none" });
-    expect(file).toContain('contentType.toLowerCase().startsWith("application/octet-stream")');
+    expect(file).toContain('normalizedContentType.startsWith("application/octet-stream")');
     expect(file).toContain("new Blob([await response.arrayBuffer()])");
   });
 });
