@@ -210,4 +210,101 @@ describe("spec filters + treeShakeSchemas", () => {
     expect(src).toMatch(/Array<TagReversed>/);
     expect(src).not.toContain("export type Unused");
   });
+
+  test("tree-shake keeps $ref schemas under OAS 3.1 tuple prefixItems", () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "tuple-deps", version: "1.0.0" },
+      paths: {
+        "/tuple": {
+          get: {
+            operationId: "getTuple",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "application/json": {
+                    schema: { $ref: "#/components/schemas/Tuple" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      components: {
+        schemas: {
+          Tuple: {
+            type: "array",
+            prefixItems: [
+              { $ref: "#/components/schemas/First" },
+              { $ref: "#/components/schemas/Second" },
+            ],
+          },
+          First: { type: "string" },
+          Second: { type: "integer" },
+          Unused: { type: "boolean" },
+        },
+      },
+    } as OpenAPIObject;
+
+    const ctx = mapOpenApiEndpoints(doc);
+    const filtered = applySpecFilters(ctx.endpointList, ctx.refs, {
+      endpointPatterns: ["/tuple"],
+    });
+    expect([...filtered.keptSchemaNames!].sort()).toEqual(["First", "Second", "Tuple"]);
+
+    const src = generateFile({
+      ...ctx,
+      endpointPatterns: ["/tuple"],
+      schemasOnly: true,
+      includeClient: false,
+    });
+    expect(src).toContain("export type First");
+    expect(src).toContain("export type Second");
+    expect(src).toContain("export type Tuple");
+    expect(src).not.toContain("export type Unused");
+  });
+
+  test("tree-shake keeps $ref schemas under patternProperties", () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "pattern-deps", version: "1.0.0" },
+      paths: {
+        "/pattern": {
+          get: {
+            operationId: "getPattern",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "application/json": {
+                    schema: { $ref: "#/components/schemas/Patterned" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      components: {
+        schemas: {
+          Patterned: {
+            type: "object",
+            patternProperties: {
+              "^item": { $ref: "#/components/schemas/Item" },
+            },
+          },
+          Item: { type: "string" },
+          Unused: { type: "boolean" },
+        },
+      },
+    } as OpenAPIObject;
+
+    const ctx = mapOpenApiEndpoints(doc);
+    const filtered = applySpecFilters(ctx.endpointList, ctx.refs, {
+      endpointPatterns: ["/pattern"],
+    });
+    expect([...filtered.keptSchemaNames!].sort()).toEqual(["Item", "Patterned"]);
+  });
 });

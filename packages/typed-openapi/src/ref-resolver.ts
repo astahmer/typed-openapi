@@ -219,6 +219,22 @@ const setSchemaDependencies = (schema: LibSchemaObject, deps: Set<string>) => {
       visit(schema.items);
     }
 
+    const prefixItems = (schema as LibSchemaObject & { prefixItems?: unknown }).prefixItems;
+    if (Array.isArray(prefixItems)) {
+      for (const prefixItem of prefixItems) {
+        visit(prefixItem as LibSchemaObject | ReferenceObject);
+      }
+    }
+
+    const patternProperties = (schema as LibSchemaObject & {
+      patternProperties?: Record<string, LibSchemaObject | ReferenceObject>;
+    }).patternProperties;
+    if (patternProperties) {
+      for (const patternProperty of Object.values(patternProperties)) {
+        visit(patternProperty);
+      }
+    }
+
     if (schema.type === "object" || schema.properties || schema.additionalProperties) {
       if (schema.properties) {
         for (const property in schema.properties) {
