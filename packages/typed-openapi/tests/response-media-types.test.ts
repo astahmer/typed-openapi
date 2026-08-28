@@ -92,4 +92,37 @@ describe("response media type mapping", () => {
     expect(result).toBeInstanceOf(Blob);
     expect([...new Uint8Array(await (result as Blob).arrayBuffer())]).toEqual([1, 2, 3]);
   });
+
+  test("matches media types case-insensitively for request bodies and SSE", () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "case-insensitive media types", version: "1" },
+      paths: {
+        "/upload": {
+          post: {
+            operationId: "upload",
+            requestBody: {
+              required: true,
+              content: { "APPLICATION/JSON": { schema: { type: "object", properties: { ok: { type: "boolean" } } } } },
+            },
+            responses: { "204": { description: "ok" } },
+          },
+        },
+        "/events": {
+          get: {
+            operationId: "events",
+            responses: {
+              "200": { description: "events", content: { "TEXT/EVENT-STREAM": { schema: { type: "string" } } } },
+            },
+          },
+        },
+      },
+    } satisfies OpenAPIObject;
+
+    const { endpointList } = mapOpenApiEndpoints(doc);
+    expect(endpointList[0]?.requestFormat).toBe("json");
+    expect(endpointList[0]?.parameters?.body).toMatchObject({ kind: "object" });
+    expect(endpointList[1]?.responseFormat).toBe("sse");
+    expect(endpointList[1]?.responses?.["200"]).toMatchObject({ kind: "stream" });
+  });
 });

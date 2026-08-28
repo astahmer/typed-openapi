@@ -157,12 +157,13 @@ export const mapOpenApiEndpoints = (
         const requestBody = refs.unwrap(operation.requestBody ?? {});
         const content = requestBody.content;
         const matchingMediaType = Object.keys(content).find(isAllowedParamMediaTypes);
+        const normalizedMatchingMediaType = matchingMediaType?.toLowerCase();
 
         if (matchingMediaType && content[matchingMediaType]) {
           params.body = stripReadWrite(openApiToIr(content[matchingMediaType]?.schema ?? {}, irCtx), "request");
         }
 
-        endpoint.requestFormat = match(matchingMediaType)
+        endpoint.requestFormat = match(normalizedMatchingMediaType)
           .with("application/octet-stream", () => "binary" as const)
           .with("multipart/form-data", () => "form-data" as const)
           .with("application/x-www-form-urlencoded", () => "form-url" as const)
@@ -247,11 +248,11 @@ const allowedParamMediaTypes = [
 const isAllowedParamMediaTypes = (
   mediaType: string,
 ): mediaType is (typeof allowedParamMediaTypes)[number] | `application/${string}json${string}` | `text/${string}` =>
-  (mediaType.includes("application/") && mediaType.includes("json")) ||
+  ((mediaType = mediaType.toLowerCase()).includes("application/") && mediaType.includes("json")) ||
   allowedParamMediaTypes.includes(mediaType as any) ||
   mediaType.includes("text/");
 
-const isSseMediaType = (mediaType: string) => mediaType.includes("text/event-stream");
+const isSseMediaType = (mediaType: string) => mediaType.toLowerCase().includes("text/event-stream");
 
 const isResponseMediaType = (mediaType: string) => {
   const normalized = mediaType.toLowerCase();
