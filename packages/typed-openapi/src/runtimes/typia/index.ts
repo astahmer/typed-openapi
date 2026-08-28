@@ -15,6 +15,12 @@ const toTs = (node: SchemaNode, ctx?: EmitCtx) =>
 
 const createIs = (typeExpr: string) => `typia.createIs<${typeExpr}>()`;
 
+const isExactObject = (node: SchemaNode): boolean =>
+  node.kind === "object" && node.additionalProperties === false && Object.keys(node.patternProperties ?? {}).length === 0;
+
+const createGuard = (typeExpr: string, exact: boolean) =>
+  `typia.${exact ? "createEquals" : "createIs"}<${typeExpr}>()`;
+
 /** Build a Typia-friendly type expression with `tags.*` constraints when validation allows. */
 const typiaTypeExpr = (node: SchemaNode, ctx: EmitCtx): string => {
   switch (node.kind) {
@@ -78,6 +84,9 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
     const checks = node.members.map((member) => `typia.createIs<${typiaTypeExpr(member, ctx)}>()(input)`).join(", ");
     return `((input: unknown): input is ${typeExpr} => [${checks}].filter(Boolean).length === 1)`;
   }
+  if (isExactObject(node)) {
+    return createGuard(typiaTypeExpr(node, ctx), true);
+  }
   if (node.kind === "ref" && !node.generics?.length && node.name !== "Partial" && node.name !== "Record") {
     return `is${node.name}`;
   }
@@ -102,11 +111,12 @@ export const typiaAdapter: RuntimeAdapter = {
       transformBigInt: ctx.transformBigInt,
     });
     if (typeReference) {
+      const exact = isExactObject(node);
       return [
         `export type ${name} = ${typeReference};`,
-        `export const is${name} = typia.createIs<${typeReference}>();`,
-        `export const assert${name} = typia.createAssert<${typeReference}>();`,
-        `export const validate${name} = typia.createValidate<${typeReference}>();`,
+        `export const is${name} = ${createGuard(typeReference, exact)};`,
+        `export const assert${name} = typia.${exact ? "createAssertEquals" : "createAssert"}<${typeReference}>();`,
+        `export const validate${name} = typia.${exact ? "createValidateEquals" : "createValidate"}<${typeReference}>();`,
       ].join("\n");
     }
     // Recursive record/object as interface — same TS2456 fix as none-runtime.
@@ -116,9 +126,9 @@ export const typiaAdapter: RuntimeAdapter = {
         : `export type ${name} = ${typiaTypeExpr(node, ctx)};`;
     return [
       typeDecl,
-      `export const is${name} = typia.createIs<${name}>();`,
-      `export const assert${name} = typia.createAssert<${name}>();`,
-      `export const validate${name} = typia.createValidate<${name}>();`,
+      `export const is${name} = ${createGuard(name, isExactObject(node))};`,
+      `export const assert${name} = typia.${isExactObject(node) ? "createAssertEquals" : "createAssert"}<${name}>();`,
+      `export const validate${name} = typia.${isExactObject(node) ? "createValidateEquals" : "createValidate"}<${name}>();`,
     ].join("\n");
   },
 };

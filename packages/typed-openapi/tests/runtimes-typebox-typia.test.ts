@@ -166,4 +166,14 @@ describe("typebox and typia runtimes", () => {
     expect(TypeBoxValue.Check(schema, 42)).toBe(true);
     expect(TypeBoxValue.Check(schema, "not-allowed")).toBe(false);
   });
+
+  test("typia uses exact guards for closed objects", () => {
+    const node = openApiToIr(
+      { type: "object", properties: { name: { type: "string" } }, required: ["name"], additionalProperties: false },
+      { getRefName: (ref) => ref },
+    );
+    const source = typiaAdapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+
+    expect(source).toBe("typia.createEquals<{ name: string }>()");
+  });
 });
