@@ -70,6 +70,7 @@ const canUseStruct = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()):
   if (node.kind === "object") {
     return (
       Object.keys(applyObjectConstraints(node.constraints, ctx.validation)).length === 0 &&
+      node.additionalProperties === false &&
       (!node.patternProperties || Object.keys(node.patternProperties).length === 0)
     );
   }
