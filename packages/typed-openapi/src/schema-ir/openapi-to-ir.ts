@@ -144,7 +144,10 @@ export const openApiToIr = (input: unknown, ctx: SchemaIrConvertContext): Schema
 };
 
 const openApiToIrInternal = (input: unknown, ctx: SchemaIrConvertContext, path: string[]): SchemaNode => {
-  if (!input) {
+  if (input === false) {
+    return { kind: "never", meta: emptyMeta() };
+  }
+  if (input === true || input === undefined || input === null) {
     return { kind: "unknown", meta: emptyMeta() };
   }
 
@@ -307,7 +310,7 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
   }
 
   if (schemaType === "array") {
-    const items = schema.items
+    const items = schema.items !== undefined
       ? openApiToIrInternal(schema.items, ctx, [...path, "items"])
       : ({ kind: "any", meta: emptyMeta() } as SchemaNode);
     return withNullable({ kind: "array", items, constraints: arrayConstraints(schema), meta }, schema);
