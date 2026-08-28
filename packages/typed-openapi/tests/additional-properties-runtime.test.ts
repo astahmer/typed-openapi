@@ -48,6 +48,24 @@ const patternOnlyObjectSchema = {
   additionalProperties: { type: "boolean" },
 } as const;
 
+const allOfPatternSchema = {
+  allOf: [
+    {
+      type: "object",
+      properties: { name: { type: "string" } },
+      required: ["name"],
+      patternProperties: { "^x-": { type: "number" } },
+      additionalProperties: true,
+    },
+    {
+      type: "object",
+      properties: { id: { type: "number" } },
+      required: ["id"],
+      additionalProperties: true,
+    },
+  ],
+} as const;
+
 const parseResult = (runtime: string, source: string) => {
   switch (runtime) {
     case "zod":
@@ -208,5 +226,45 @@ describe("typed additionalProperties with named properties", () => {
     expect(TypeBoxValue.Check(module.PatternOnlyObject, { "x-count": "one", enabled: true })).toBe(false);
     expect(TypeBoxValue.Check(module.PatternOnlyObject, { enabled: true })).toBe(true);
     expect(TypeBoxValue.Check(module.PatternOnlyObject, { enabled: 1 })).toBe(false);
+  });
+
+  test.each([
+    ["zod", zodAdapter],
+    ["zod3", zod3Adapter],
+    ["effect", effectAdapter],
+    ["effect3", effect3Adapter],
+    ["valibot", valibotAdapter],
+    ["arktype", arktypeAdapter],
+  ] as const)("%s preserves patternProperties through allOf", (runtime, adapter) => {
+    const node = openApiToIr(allOfPatternSchema, { getRefName: (ref) => ref });
+    const source = adapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+    const schema = parseResult(runtime, source);
+
+    expect(accepts(runtime, schema, { name: "typed-openapi", id: 1, "x-count": 2, enabled: true })).toBe(true);
+    expect(accepts(runtime, schema, { name: "typed-openapi", id: 1, "x-count": "two", enabled: true })).toBe(false);
+  });
+
+  test("typebox preserves patternProperties through allOf", async () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "allof-pattern-properties", version: "1" },
+      paths: {},
+      components: { schemas: { AllOfPattern: allOfPatternSchema } },
+    } as OpenAPIObject;
+    const source = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "typebox", schemasOnly: true });
+    const directory = join(__dirname, "tmp/allof-pattern-properties");
+    mkdirSync(directory, { recursive: true });
+    const file = join(directory, "schemas.ts");
+    writeFileSync(file, source);
+    const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
+      AllOfPattern: Parameters<typeof TypeBoxValue.Check>[0];
+    };
+
+    expect(TypeBoxValue.Check(module.AllOfPattern, { name: "typed-openapi", id: 1, "x-count": 2, enabled: true })).toBe(
+      true,
+    );
+    expect(
+      TypeBoxValue.Check(module.AllOfPattern, { name: "typed-openapi", id: 1, "x-count": "two", enabled: true }),
+    ).toBe(false);
   });
 });
