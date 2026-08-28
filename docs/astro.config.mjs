@@ -17,8 +17,8 @@ export default defineConfig({
   base,
   site,
   output: "server",
-  // Keep Starlight pages prerendered for Pagefind; Vercel edge middleware handles negotiation before delivery.
-  adapter: vercel({ middlewareMode: "edge" }),
+  // Keep Starlight pages prerendered for Pagefind; Vercel's root middleware handles negotiation before delivery.
+  adapter: vercel(),
   integrations: [
     starlight({
       title: "typed-openapi",
@@ -85,7 +85,14 @@ export default defineConfig({
       sidebar: [
         {
           label: "Start here",
-          items: ["getting-started", "configuration", "advanced/filtering-and-schema-naming", "playground", "ai", "developer-resources"],
+          items: [
+            "getting-started",
+            "configuration",
+            "advanced/filtering-and-schema-naming",
+            "playground",
+            "ai",
+            "developer-resources",
+          ],
         },
         {
           label: "Clients",

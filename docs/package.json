@@ -13,8 +13,9 @@
     "test": "node tests/agent-readiness.test.mjs"
   },
   "dependencies": {
+    "@vercel/functions": "^3.9.5",
     "@astrojs/starlight": "^0.39.2",
-    "@astrojs/vercel": "^11.0.7",
+    "@astrojs/vercel": "^10.0.8",
     "astro": "^6.0.0",
     "lucode-starlight": "0.1.6"
   },

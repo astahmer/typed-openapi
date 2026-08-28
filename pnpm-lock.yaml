@@ -29,16 +29,19 @@ importers:
     dependencies:
       '@astrojs/starlight':
         specifier: ^0.39.2
-        version: 0.39.3(astro@6.4.8)(typescript@6.0.3)
+        version: 0.39.3(astro@6.4.8(@vercel/functions@3.9.5))(typescript@6.0.3)
       '@astrojs/vercel':
-        specifier: ^11.0.7
-        version: 11.0.8(astro@6.4.8)
+        specifier: ^10.0.8
+        version: 10.0.8(astro@6.4.8(@vercel/functions@3.9.5))
+      '@vercel/functions':
+        specifier: ^3.9.5
+        version: 3.9.5
       astro:
         specifier: ^6.0.0
-        version: 6.4.8
+        version: 6.4.8(@vercel/functions@3.9.5)
       lucode-starlight:
         specifier: 0.1.6
-        version: 0.1.6(@astrojs/starlight@0.39.3(astro@6.4.8)(typescript@6.0.3))
+        version: 0.1.6(@astrojs/starlight@0.39.3(astro@6.4.8(@vercel/functions@3.9.5))(typescript@6.0.3))
     devDependencies:
       '@astrojs/check':
         specifier: 0.9.9
@@ -326,9 +329,6 @@ packages:
   '@astrojs/internal-helpers@0.10.1':
     resolution: {integrity: sha512-5phcroT/vmOOrYuuAxtkbPixy5hePtlz9i8K4OeDv3dNK6/UQRuXPOSRTxIOBbUY5Sonw2UaxjbuVc43Mcir6Q==}
 
-  '@astrojs/internal-helpers@0.10.4':
-    resolution: {integrity: sha512-nozZSy/mKYLqe4YrqbKtdOszedAfXYCtw3wZ0d+CAjz4GqQ4L9rl1ltIL5BlgwmYVinJg/RZ0MgGuWOdlyRZlA==}
-
   '@astrojs/internal-helpers@0.9.1':
     resolution: {integrity: sha512-1pWuARqYom/TzuU3+0ZugsTrKlUydWKuULmDqSMTuonY+9IRDUEGKX/8PXQ1nBxRq3w85uGtd9q9SXfqEldMIQ==}
 
@@ -401,10 +401,10 @@ packages:
     resolution: {integrity: sha512-j8DNruA8ors99Al39RYZPJK4DC1bKkoNm93mAMuBhY9TCNC4R8n1q7ovFnJ5qhGh5Lsh7pa1gpQVpYpsJPeTHQ==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0}
 
-  '@astrojs/vercel@11.0.8':
-    resolution: {integrity: sha512-ZOlWI7qkt69BJI6b/upCOOSMGvzChvnRFRYdNhiky3fn4D6ecQXaTV2UTkJqAG6lc6ORY6mb+81bo5p3SL22Xg==}
+  '@astrojs/vercel@10.0.8':
+    resolution: {integrity: sha512-usxmHwMEWI+yaYioSB9eFZbmuFKPnMPmQlX2e9PZ3+v79Xo4IFiKVqblspV+CuOE3u/CtgcHdnC9khKjZlbMyA==}
     peerDependencies:
-      astro: ^7.0.0
+      astro: ^6.0.0
 
   '@astrojs/webapi@2.2.0':
     resolution: {integrity: sha512-mHAOApWyjqSe5AQMOUD9rsZJqbMQqe3Wosb1a40JV6Okvyxj1G6GTlthwYadWCymq/lbgwh0PLiY8Fr4eFxtuQ==}
@@ -7598,17 +7598,6 @@ snapshots:
       smol-toml: 1.7.0
       unified: 11.0.5
 
-  '@astrojs/internal-helpers@0.10.4':
-    dependencies:
-      '@types/hast': 3.0.5
-      '@types/mdast': 4.0.4
-      js-yaml: 4.3.0
-      picomatch: 4.0.5
-      retext-smartypants: 6.2.0
-      shiki: 4.3.1
-      smol-toml: 1.7.0
-      unified: 11.0.5
-
   '@astrojs/internal-helpers@0.9.1':
     dependencies:
       picomatch: 4.0.5
@@ -7741,12 +7730,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@5.0.6(astro@6.4.8)':
+  '@astrojs/mdx@5.0.6(astro@6.4.8(@vercel/functions@3.9.5))':
     dependencies:
       '@astrojs/markdown-remark': 7.1.2
       '@mdx-js/mdx': 3.1.1
       acorn: 8.17.0
-      astro: 6.4.8
+      astro: 6.4.8(@vercel/functions@3.9.5)
       es-module-lexer: 2.3.1
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -7785,17 +7774,17 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 4.4.3
 
-  '@astrojs/starlight@0.39.3(astro@6.4.8)(typescript@6.0.3)':
+  '@astrojs/starlight@0.39.3(astro@6.4.8(@vercel/functions@3.9.5))(typescript@6.0.3)':
     dependencies:
       '@astrojs/markdown-remark': 7.2.1
-      '@astrojs/mdx': 5.0.6(astro@6.4.8)
+      '@astrojs/mdx': 5.0.6(astro@6.4.8(@vercel/functions@3.9.5))
       '@astrojs/sitemap': 3.7.3
       '@pagefind/default-ui': 1.5.2
       '@types/hast': 3.0.5
       '@types/js-yaml': 4.0.9
       '@types/mdast': 4.0.4
-      astro: 6.4.8
-      astro-expressive-code: 0.42.0(astro@6.4.8)
+      astro: 6.4.8(@vercel/functions@3.9.5)
+      astro-expressive-code: 0.42.0(astro@6.4.8(@vercel/functions@3.9.5))
       bcp-47: 2.1.1
       hast-util-from-html: 2.0.3
       hast-util-select: 6.0.4
@@ -7841,15 +7830,15 @@ snapshots:
       is-wsl: 3.1.1
       which-pm-runs: 1.1.0
 
-  '@astrojs/vercel@11.0.8(astro@6.4.8)':
+  '@astrojs/vercel@10.0.8(astro@6.4.8(@vercel/functions@3.9.5))':
     dependencies:
-      '@astrojs/internal-helpers': 0.10.4
+      '@astrojs/internal-helpers': 0.10.0
       '@vercel/analytics': 1.6.1
       '@vercel/functions': 3.9.5
       '@vercel/nft': 1.11.0
       '@vercel/routing-utils': 5.3.3
-      astro: 6.4.8
-      esbuild: 0.28.1
+      astro: 6.4.8(@vercel/functions@3.9.5)
+      esbuild: 0.27.7
       tinyglobby: 0.2.17
     transitivePeerDependencies:
       - '@aws-sdk/credential-provider-web-identity'
@@ -11666,9 +11655,9 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-expressive-code@0.42.0(astro@6.4.8):
+  astro-expressive-code@0.42.0(astro@6.4.8(@vercel/functions@3.9.5)):
     dependencies:
-      astro: 6.4.8
+      astro: 6.4.8(@vercel/functions@3.9.5)
       rehype-expressive-code: 0.42.0
 
   astro@2.9.6(@types/node@24.13.3)(lightningcss@1.33.0)(supports-color@7.2.0):
@@ -11741,7 +11730,7 @@ snapshots:
       - supports-color
       - terser
 
-  astro@6.4.8:
+  astro@6.4.8(@vercel/functions@3.9.5):
     dependencies:
       '@astrojs/compiler': 4.0.0
       '@astrojs/internal-helpers': 0.10.0
@@ -11791,7 +11780,7 @@ snapshots:
       ultrahtml: 1.7.0
       unifont: 0.7.4
       unist-util-visit: 5.1.0
-      unstorage: 1.17.5
+      unstorage: 1.17.5(@vercel/functions@3.9.5)
       vfile: 6.0.3
       vite: 7.3.6
       vitefu: 1.1.3(vite@7.3.6)
@@ -13536,9 +13525,9 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucode-starlight@0.1.6(@astrojs/starlight@0.39.3(astro@6.4.8)(typescript@6.0.3)):
+  lucode-starlight@0.1.6(@astrojs/starlight@0.39.3(astro@6.4.8(@vercel/functions@3.9.5))(typescript@6.0.3)):
     dependencies:
-      '@astrojs/starlight': 0.39.3(astro@6.4.8)(typescript@6.0.3)
+      '@astrojs/starlight': 0.39.3(astro@6.4.8(@vercel/functions@3.9.5))(typescript@6.0.3)
       '@pagefind/default-ui': 1.5.2
       marked: 18.0.7
 
@@ -16075,7 +16064,7 @@ snapshots:
 
   unpipe@1.0.0: {}
 
-  unstorage@1.17.5:
+  unstorage@1.17.5(@vercel/functions@3.9.5):
     dependencies:
       anymatch: 3.1.3
       chokidar: 5.0.0
@@ -16085,6 +16074,8 @@ snapshots:
       node-fetch-native: 1.6.7
       ofetch: 1.5.1
       ufo: 1.6.4
+    optionalDependencies:
+      '@vercel/functions': 3.9.5
 
   until-async@3.0.2: {}
 
