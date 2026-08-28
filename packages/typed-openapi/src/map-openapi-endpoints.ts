@@ -232,10 +232,16 @@ const isAllowedParamMediaTypes = (
 
 const isSseMediaType = (mediaType: string) => mediaType.includes("text/event-stream");
 
-const isResponseMediaType = (mediaType: string) =>
-  mediaType === "*/*" ||
-  (mediaType.includes("application/") && mediaType.includes("json")) ||
-  isSseMediaType(mediaType);
+const isResponseMediaType = (mediaType: string) => {
+  const normalized = mediaType.toLowerCase();
+  return (
+    normalized === "*/*" ||
+    (normalized.includes("application/") && normalized.includes("json")) ||
+    normalized.startsWith("text/") ||
+    normalized.startsWith("application/octet-stream") ||
+    isSseMediaType(normalized)
+  );
+};
 const getAlias = ({ path, method, operation }: Endpoint) =>
   sanitizeName(
     (method + "_" + capitalize(operation.operationId ?? pathToVariableName(path))).replace(/-/g, "__"),

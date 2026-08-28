@@ -255,17 +255,21 @@ export class EffectApiClient {
         self.effectFetcher.parseResponseData ??
         (async (response: FetcherResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
-          if (contentType.includes("text/event-stream")) {
+          const normalizedContentType = contentType.toLowerCase();
+          if (normalizedContentType.includes("text/event-stream")) {
             return response.body ?? null;
           }
-          if (contentType.includes("json") || contentType === "*/*") {
+          if (normalizedContentType.startsWith("application/octet-stream")) {
+            return new Blob([await response.arrayBuffer()]);
+          }
+          if (normalizedContentType.includes("json") || normalizedContentType === "*/*") {
             try {
               return await response.json();
             } catch {
               return undefined;
             }
           }
-          if (contentType.startsWith("text/")) return response.text();
+          if (normalizedContentType.startsWith("text/")) return response.text();
           return undefined;
         });
 
