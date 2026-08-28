@@ -53,6 +53,22 @@ describe("recursive runtime schemas", async () => {
     expect(Category.safeParse({ name: 1 }).success).toBe(false);
   });
 
+  test("zod runtime sidecars keep recursive schemas lazy at module load", () => {
+    const src = generateFile({
+      ...ctx,
+      runtime: "zod",
+      schemasOnly: true,
+      validation: "loose",
+      runtimeTypeDeclarations: "./recursive.types.js",
+    });
+    expect(src).toContain("export type Category = __TypedOpenapi.Schemas.Category;");
+    expect(src).toMatch(/export const Category = z\.lazy\(\(\) =>/);
+
+    const body = stripModuleNoise(src);
+    const Category = new Function("z", `${body}\nreturn Category;`)(z) as z.ZodType;
+    expect(Category.safeParse({ name: "root", children: [{ name: "child", children: [] }] }).success).toBe(true);
+  });
+
   test("effect emits Schema.suspend", () => {
     const src = generateFile({ ...ctx, runtime: "effect", schemasOnly: true, validation: "loose" });
     expect(src).toContain("Schema.suspend(() =>");
