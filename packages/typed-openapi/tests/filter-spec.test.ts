@@ -236,10 +236,7 @@ describe("spec filters + treeShakeSchemas", () => {
         schemas: {
           Tuple: {
             type: "array",
-            prefixItems: [
-              { $ref: "#/components/schemas/First" },
-              { $ref: "#/components/schemas/Second" },
-            ],
+            prefixItems: [{ $ref: "#/components/schemas/First" }, { $ref: "#/components/schemas/Second" }],
           },
           First: { type: "string" },
           Second: { type: "integer" },

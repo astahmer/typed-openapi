@@ -93,8 +93,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     }
     case "tuple":
       if (node.rest) {
-        const members = [...node.items, node.rest].map((item) => emitNode(item, ctx)).join(", ");
-        return `Type.Array(Type.Union([${members}]))`;
+        return `__typedOpenapiTupleWithRest([${node.items.map((item) => emitNode(item, ctx)).join(", ")}], ${emitNode(node.rest, ctx)})`;
       }
       return `Type.Tuple([${node.items.map((item) => emitNode(item, ctx)).join(", ")}])`;
     case "union":
@@ -190,8 +189,8 @@ const containsCrossRecursiveRef = (node: SchemaNode, currentName: string, recurs
 
 export const typeboxAdapter: RuntimeAdapter = {
   name: "typebox",
-  imports: () =>
-    `import { Type, type Static } from "@sinclair/typebox";\nimport { Value } from "@sinclair/typebox/value";`,
+  imports: ({ tupleWithRest = false } = {}) =>
+    `import { Type, type Static } from "@sinclair/typebox";${tupleWithRest ? `\nimport { TypeSystem } from "@sinclair/typebox/system";` : ""}\nimport { Value } from "@sinclair/typebox/value";`,
   inferType: (expr) => `Static<typeof ${expr}>`,
   schemaType: (typeReference) => `import("@sinclair/typebox").TSchema & __TypedOpenapiSchema<${typeReference}>`,
   annotateSchema: (schemaExpr, typeReference) =>

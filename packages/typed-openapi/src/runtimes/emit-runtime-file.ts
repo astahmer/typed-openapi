@@ -30,6 +30,33 @@ export type EmitRuntimeFileArgs = {
 
 const coerceParamKeys = new Set(["query", "path", "header", "cookie"]);
 
+const containsTupleWithRest = (node: SchemaNode): boolean => {
+  switch (node.kind) {
+    case "tuple":
+      return Boolean(node.rest) || node.items.some(containsTupleWithRest);
+    case "array":
+      return containsTupleWithRest(node.items);
+    case "object":
+      return (
+        Object.values(node.properties).some(containsTupleWithRest) ||
+        (typeof node.additionalProperties === "object" && containsTupleWithRest(node.additionalProperties))
+      );
+    case "union":
+    case "intersection":
+      return node.members.some(containsTupleWithRest);
+    case "not":
+      return containsTupleWithRest(node.schema);
+    case "record":
+      return containsTupleWithRest(node.key) || containsTupleWithRest(node.value);
+    case "ref":
+      return node.generics?.some(containsTupleWithRest) ?? false;
+    case "custom":
+      return node.fallback ? containsTupleWithRest(node.fallback) : false;
+    default:
+      return false;
+  }
+};
+
 /** Make an all-optional param group itself optional (`query?: …`) for InferSchemaInput. */
 const wrapOptionalParamGroup = (adapter: RuntimeAdapter, expr: string): string => {
   switch (adapter.name) {
@@ -134,6 +161,19 @@ export const emitRuntimeFile = ({
     schemaOrder,
   });
 
+  const tupleWithRest =
+    adapter.name === "typebox" &&
+    [
+      ...namedSchemas.map(({ node }) => node),
+      ...(schemasOnly
+        ? []
+        : endpointList.flatMap((endpoint) => [
+            ...Object.values(endpoint.parameters ?? {}),
+            ...Object.values(endpoint.responses ?? {}),
+            ...Object.values(endpoint.responseHeaders ?? {}),
+          ])),
+    ].some(containsTupleWithRest);
+
   let schemasBlock = `// <Schemas>\n`;
   if (adapter.emitNamedSchemas) {
     schemasBlock += `${adapter.emitNamedSchemas(
@@ -182,6 +222,28 @@ export const emitRuntimeFile = ({
   if (helpers) {
     body += `// <DefaultSchemas>\n${helpers}// </DefaultSchemas>\n\n`;
   }
+  if (tupleWithRest) {
+    body += `// <TupleWithRest>
+const __TypedOpenapiTupleWithRest = TypeSystem.Type<unknown[], { items: import("@sinclair/typebox").TSchema[]; rest: import("@sinclair/typebox").TSchema }>(
+  "TypedOpenapiTupleWithRest_" + Math.random().toString(36).slice(2),
+  (options, value) =>
+    Array.isArray(value) &&
+    value.length >= options.items.length &&
+    options.items.every((schema, index) => Value.Check(schema, value[index])) &&
+    value.slice(options.items.length).every((item) => Value.Check(options.rest, item)),
+);
+
+const __typedOpenapiTupleWithRest = <
+  T extends import("@sinclair/typebox").TSchema[],
+  R extends import("@sinclair/typebox").TSchema
+>(items: [...T], rest: R) =>
+  __TypedOpenapiTupleWithRest({ items, rest }) as unknown as import("@sinclair/typebox").TUnsafe<
+    [...{ [K in keyof T]: Static<T[K]> }, ...Array<Static<R>>]
+  >;
+// </TupleWithRest>
+
+`;
+  }
   body += schemasBlock + endpointsBlock;
 
   // Effect: only import SchemaTransformation/Struct when referenced.
@@ -193,5 +255,5 @@ export const emitRuntimeFile = ({
     return `import { ${names.join(", ")} } from "effect";\n\n${body}`;
   }
 
-  return `${adapter.imports()}\n\n${body}`;
+  return `${adapter.imports({ tupleWithRest })}\n\n${body}`;
 };

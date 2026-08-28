@@ -155,8 +155,16 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       }
       return `${asTypeExpr(items)}.array()`;
     }
-    case "tuple":
-      return `type([${node.items.map((i) => emitNode(i, ctx)).join(", ")}])`;
+    case "tuple": {
+      const items = node.items.map((i) => emitNode(i, ctx));
+      if (node.rest) {
+        const rest = emitNode(node.rest, ctx);
+        const restArray =
+          ctx.moduleSchemaNames && isModuleStringDef(rest) ? quote(`${unquote(rest)}[]`) : `${rest}.array()`;
+        return `type([${items.join(", ")}${items.length ? ", " : ""}"...", ${restArray}])`;
+      }
+      return `type([${items.join(", ")}])`;
+    }
     case "union": {
       if (node.discriminator?.propertyName) {
         const prop = node.discriminator.propertyName;

@@ -105,8 +105,11 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       }
       return pipe(`v.array(${emitNode(node.items, ctx)})`, actions);
     }
-    case "tuple":
-      return `v.tuple([${node.items.map((i) => emitNode(i, ctx)).join(", ")}])`;
+    case "tuple": {
+      const items = node.items.map((i) => emitNode(i, ctx)).join(", ");
+      if (node.rest) return `v.tupleWithRest([${items}], ${emitNode(node.rest, ctx)})`;
+      return `v.tuple([${items}])`;
+    }
     case "union": {
       if (node.discriminator?.propertyName) {
         const prop = node.discriminator.propertyName;

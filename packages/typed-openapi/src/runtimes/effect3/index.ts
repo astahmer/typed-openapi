@@ -128,7 +128,8 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
     }
     case "tuple": {
       const items = node.items.map((i) => emitNode(i, ctx)).join(", ");
-      return `${S}.Tuple(${items})`;
+      if (node.rest) return `${S}.Tuple([${items}], ${emitNode(node.rest, ctx)})`;
+      return `${S}.Tuple([${items}])`;
     }
     case "union": {
       if (node.discriminator?.propertyName) {
