@@ -91,7 +91,10 @@ ${validateValue("input", "value", "schema", "parametersToSend[key] =")}
   const outputBlock = hasRuntime
     ? `if (responseFormat !== "sse" && (validateSide === "output" || validateSide === "both") && response.ok && endpointSchema?.responses) {
         const responseSchema =
-          endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+          endpointSchema.responses[String(response.status)] ??
+          endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??
+          endpointSchema.responses[String(Math.floor(response.status / 100)) + "XX"] ??
+          endpointSchema.responses["default"];
         if (responseSchema) {
 ${validateValue("output", "data", "responseSchema", "data =")}
         }

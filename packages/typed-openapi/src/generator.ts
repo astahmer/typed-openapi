@@ -1218,7 +1218,11 @@ export class ApiClient {
             ctx.runtime !== "none"
               ? `const shouldValidateOutput = validateSide === "output" || validateSide === "both";
           if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
-            const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+            const responseSchema =
+              endpointSchema.responses[String(response.status)] ??
+              endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??
+              endpointSchema.responses[String(Math.floor(response.status / 100)) + "XX"] ??
+              endpointSchema.responses["default"];
             if (responseSchema) {
               data = await runValidate({
                 side: "output",
