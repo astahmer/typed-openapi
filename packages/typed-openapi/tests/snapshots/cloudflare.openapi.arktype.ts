@@ -61147,34 +61147,50 @@ export class ApiClient {
     if (!queryParams || typeof queryParams !== "object") return;
 
     const searchParams = new URLSearchParams();
+    const rawEntries: Array<{ key: string; value: string; allowReserved: boolean }> = [];
+    const append = (key: string, value: unknown, allowReserved = false) => {
+      const stringValue = String(value);
+      searchParams.append(key, stringValue);
+      rawEntries.push({ key, value: stringValue, allowReserved });
+    };
+    const encodeQueryComponent = (value: string, allowReserved: boolean) => {
+      const encoded = encodeURIComponent(value);
+      return allowReserved
+        ? encoded.replace(/%3A|%2F|%3F|%40|%21|%24|%26|%27|%28|%29|%2A|%2B|%2C|%3B|%3D|%5B|%5D/gi, (part) => decodeURIComponent(part))
+        : encoded;
+    };
+    Object.defineProperty(searchParams, "toString", {
+      value: () => rawEntries.map(({ key, value, allowReserved }) => `${encodeQueryComponent(key, false)}=${encodeQueryComponent(value, allowReserved)}`).join("&"),
+    });
     Object.entries(queryParams as Record<string, unknown>).forEach(([key, value]) => {
       if (value != null) {
         // Skip null/undefined values
         const parameterStyle = styles?.[key];
         const style = parameterStyle?.style ?? "form";
         const explode = parameterStyle?.explode ?? true;
+        const allowReserved = parameterStyle?.allowReserved === true;
         if (Array.isArray(value)) {
-          if (style === "spaceDelimited") searchParams.append(key, value.filter((item) => item != null).map(String).join(" "));
-          else if (style === "pipeDelimited") searchParams.append(key, value.filter((item) => item != null).map(String).join("|"));
-          else if (explode) value.forEach((val) => val != null && searchParams.append(key, String(val)));
-          else searchParams.append(key, value.filter((item) => item != null).map(String).join(","));
+          if (style === "spaceDelimited") append(key, value.filter((item) => item != null).map(String).join(" "), allowReserved);
+          else if (style === "pipeDelimited") append(key, value.filter((item) => item != null).map(String).join("|"), allowReserved);
+          else if (explode) value.forEach((val) => val != null && append(key, val, allowReserved));
+          else append(key, value.filter((item) => item != null).map(String).join(","), allowReserved);
         } else if (typeof value === "object") {
           const entries = Object.entries(value as Record<string, unknown>).filter(([, nestedValue]) => nestedValue != null);
           if (style === "deepObject") {
             for (const [nestedKey, nestedValue] of entries) {
-              if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && searchParams.append(`${key}[${nestedKey}]`, String(item)));
-              else searchParams.append(`${key}[${nestedKey}]`, String(nestedValue));
+              if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && append(`${key}[${nestedKey}]`, item, allowReserved));
+              else append(`${key}[${nestedKey}]`, nestedValue, allowReserved);
             }
           } else if (explode) {
             for (const [nestedKey, nestedValue] of entries) {
-              if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && searchParams.append(nestedKey, String(item)));
-              else searchParams.append(nestedKey, String(nestedValue));
+              if (Array.isArray(nestedValue)) nestedValue.forEach((item) => item != null && append(nestedKey, item, allowReserved));
+              else append(nestedKey, nestedValue, allowReserved);
             }
           } else {
-            searchParams.append(key, entries.flatMap(([nestedKey, nestedValue]) => [nestedKey, ...(Array.isArray(nestedValue) ? nestedValue : [nestedValue])]).map(String).join(","));
+            append(key, entries.flatMap(([nestedKey, nestedValue]) => [nestedKey, ...(Array.isArray(nestedValue) ? nestedValue : [nestedValue])]).map(String).join(","), allowReserved);
           }
         } else {
-          searchParams.append(key, String(value));
+          append(key, value, allowReserved);
         }
       }
     });
