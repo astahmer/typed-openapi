@@ -101,4 +101,41 @@ describe("oneOf runtime schemas", () => {
     expect(TypeBoxValue.Check(module.OneOfValue, "ab")).toBe(false);
     expect(TypeBoxValue.Check(module.OneOfValue, 1)).toBe(false);
   });
+
+  test("arktype preserves oneOf checks inside recursive modules", async () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "recursive-one-of", version: "1" },
+      paths: {},
+      components: {
+        schemas: {
+          Node: {
+            oneOf: [
+              { type: "string" },
+              {
+                anyOf: [
+                  { type: "string", minLength: 2 },
+                  { type: "array", items: { $ref: "#/components/schemas/Node" } },
+                ],
+              },
+            ],
+          },
+        },
+      },
+    } as OpenAPIObject;
+    const source = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "arktype", schemasOnly: true });
+    const directory = join(__dirname, "tmp/recursive-one-of");
+    mkdirSync(directory, { recursive: true });
+    const file = join(directory, "schemas.ts");
+    writeFileSync(file, source);
+    const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
+      Node: (value: unknown) => unknown;
+    };
+    const acceptsNode = (value: unknown) => !(module.Node(value) instanceof type.errors);
+
+    expect(acceptsNode("a")).toBe(true);
+    expect(acceptsNode("ab")).toBe(false);
+    expect(acceptsNode(["a"])).toBe(true);
+    expect(acceptsNode(1)).toBe(false);
+  });
 });

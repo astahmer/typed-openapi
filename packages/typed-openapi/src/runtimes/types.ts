@@ -35,6 +35,11 @@ export type EmitCtx = {
    */
   moduleSchemaNames?: Set<string>;
   /**
+   * When true, emit runtime ArkType expressions that resolve module refs through
+   * `__schemas` rather than raw module definitions. Used by module predicates.
+   */
+  moduleRuntimeRefs?: boolean;
+  /**
    * When true, emit number/boolean (and integer) schemas with string coercion —
    * for path/query/cookie/header params that arrive as strings over HTTP.
    */
