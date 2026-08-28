@@ -464,8 +464,12 @@ describe("multiple success responses", () => {
         defaultDecodePathParams = (url: string, params: unknown): string => {
           const record = (params ?? {}) as Record<string, unknown>;
           return url
-            .replace(/{(\\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : \`{\${key}}\`))
-            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : \`:\${key}\`));
+            .replace(/{([^}]+)}/g, (_, key: string) =>
+              record[key] != null ? encodeURIComponent(String(record[key])) : \`{\${key}}\`,
+            )
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+              record[key] != null ? encodeURIComponent(String(record[key])) : \`:\${key}\`,
+            );
         };
 
         /** Uses URLSearchParams, skips null/undefined values */
@@ -500,21 +504,22 @@ describe("multiple success responses", () => {
 
         defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
           const contentType = response.headers.get("content-type") ?? "";
-          if (contentType.includes("text/event-stream")) {
+          const normalizedContentType = contentType.toLowerCase();
+          if (normalizedContentType.includes("text/event-stream")) {
             return response.body ?? null;
           }
-          if (contentType.startsWith("text/")) {
+          if (normalizedContentType.startsWith("text/")) {
             return await response.text();
           }
 
-          if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+          if (normalizedContentType.startsWith("application/octet-stream")) {
             return new Blob([await response.arrayBuffer()]);
           }
 
           if (
-            contentType.includes("application/json") ||
-            (contentType.includes("application/") && contentType.includes("json")) ||
-            contentType === "*/*"
+            normalizedContentType.includes("application/json") ||
+            (normalizedContentType.includes("application/") && normalizedContentType.includes("json")) ||
+            normalizedContentType === "*/*"
           ) {
             try {
               return await response.json();

@@ -21,11 +21,16 @@ export const stripReadWrite = (node: SchemaNode, mode: ReadWriteMode): SchemaNod
       return {
         ...node,
         properties,
-        patternProperties: node.patternProperties
-          ? Object.fromEntries(
-              Object.entries(node.patternProperties).map(([pattern, value]) => [pattern, stripReadWrite(value, mode)]),
-            )
-          : undefined,
+        ...(node.patternProperties
+          ? {
+              patternProperties: Object.fromEntries(
+                Object.entries(node.patternProperties).map(([pattern, value]) => [
+                  pattern,
+                  stripReadWrite(value, mode),
+                ]),
+              ),
+            }
+          : {}),
         required: node.required.filter((name) => name in properties),
       };
     }

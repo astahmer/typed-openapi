@@ -357,7 +357,7 @@ export const get_ContainerTop = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ ps_args: v.optional(v.string(), "-ef") }))), path: v.object({ id: v.string() }) },
-  responses: { 200: v.partial(v.object({ Titles: v.array(v.string()), Processes: v.array(v.array(v.string())) })), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.union([v.partial(v.object({ Titles: v.array(v.string()), Processes: v.array(v.array(v.string())) })), v.partial(v.object({ Titles: v.array(v.string()), Processes: v.array(v.array(v.string())) }))]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -387,7 +387,7 @@ export const get_ContainerExport = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
-  responses: { 200: v.unknown(), 404: v.unknown(), 500: v.unknown() },
+  responses: { 200: v.unknown(), 404: v.union([ErrorResponse, v.unknown()]), 500: ErrorResponse },
 };
 
 export type get_ContainerStats = typeof get_ContainerStats;
@@ -407,7 +407,7 @@ export const post_ContainerResize = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ h: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())), w: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())) }))), path: v.object({ id: v.string() }) },
-  responses: { 200: v.unknown(), 404: v.unknown(), 500: v.unknown() },
+  responses: { 200: v.unknown(), 404: v.union([ErrorResponse, v.unknown()]), 500: ErrorResponse },
 };
 
 export type post_ContainerStart = typeof post_ContainerStart;
@@ -417,7 +417,7 @@ export const post_ContainerStart = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ detachKeys: v.string() }))), path: v.object({ id: v.string() }) },
-  responses: { 204: v.unknown(), 304: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: v.unknown(), 304: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_ContainerStop = typeof post_ContainerStop;
@@ -427,7 +427,7 @@ export const post_ContainerStop = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ signal: v.string(), t: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())) }))), path: v.object({ id: v.string() }) },
-  responses: { 204: v.unknown(), 304: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: v.unknown(), 304: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_ContainerRestart = typeof post_ContainerRestart;
@@ -437,7 +437,7 @@ export const post_ContainerRestart = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ signal: v.string(), t: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())) }))), path: v.object({ id: v.string() }) },
-  responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_ContainerKill = typeof post_ContainerKill;
@@ -447,7 +447,7 @@ export const post_ContainerKill = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ signal: v.optional(v.string(), "SIGKILL") }))), path: v.object({ id: v.string() }) },
-  responses: { 204: v.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 409: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_ContainerUpdate = typeof post_ContainerUpdate;
@@ -467,7 +467,7 @@ export const post_ContainerRename = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.object({ name: v.string() }), path: v.object({ id: v.string() }) },
-  responses: { 204: v.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 409: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_ContainerPause = typeof post_ContainerPause;
@@ -477,7 +477,7 @@ export const post_ContainerPause = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
-  responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_ContainerUnpause = typeof post_ContainerUnpause;
@@ -487,7 +487,7 @@ export const post_ContainerUnpause = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
-  responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_ContainerAttach = typeof post_ContainerAttach;
@@ -507,7 +507,7 @@ export const get_ContainerAttachWebsocket = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ detachKeys: v.string(), logs: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false), stream: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false), stdin: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false), stdout: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false), stderr: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false) }))), path: v.object({ id: v.string() }) },
-  responses: { 101: v.unknown(), 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 101: v.unknown(), 200: v.unknown(), 400: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_ContainerWait = typeof post_ContainerWait;
@@ -527,7 +527,7 @@ export const delete_ContainerDelete = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ v: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false), force: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false), link: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false) }))), path: v.object({ id: v.string() }) },
-  responses: { 204: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: v.unknown(), 400: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 409: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ContainerArchive = typeof get_ContainerArchive;
@@ -547,7 +547,7 @@ export const put_PutContainerArchive = {
   requestFormat: v.literal("binary"),
   responseFormat: v.literal("json"),
   parameters: { query: v.object({ path: v.string(), noOverwriteDirNonDir: v.optional(v.string()), copyUIDGID: v.optional(v.string()) }), path: v.object({ id: v.string() }), body: v.custom<Blob>((v) => typeof Blob !== "undefined" && v instanceof Blob) },
-  responses: { 200: v.unknown(), 400: ErrorResponse, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.unknown(), 400: v.union([ErrorResponse, ErrorResponse]), 403: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
@@ -557,7 +557,7 @@ export const head_ContainerArchiveInfo = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.object({ path: v.string() }), path: v.object({ id: v.string() }) },
-  responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.unknown(), 400: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
   responseHeaders: { 200: v.object({ "X-Docker-Container-Path-Stat": v.string() }) },
 };
 
@@ -638,7 +638,7 @@ export const post_ImagePush = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ tag: v.string() }))), path: v.object({ name: v.string() }), header: v.object({ "X-Registry-Auth": v.string() }) },
-  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_ImageTag = typeof post_ImageTag;
@@ -648,7 +648,7 @@ export const post_ImageTag = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ repo: v.string(), tag: v.string() }))), path: v.object({ name: v.string() }) },
-  responses: { 201: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 201: v.unknown(), 400: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 409: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type delete_ImageDelete = typeof delete_ImageDelete;
@@ -718,7 +718,7 @@ export const get_SystemPing = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: v.never(),
-  responses: { 200: v.unknown(), 500: v.unknown() },
+  responses: { 200: v.string(), 500: ErrorResponse },
   responseHeaders: { 200: v.object({ Swarm: v.optional(v.picklist(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]), "inactive"), "Docker-Experimental": v.boolean(), "Cache-Control": v.optional(v.string(), "no-cache, no-store, must-revalidate"), Pragma: v.optional(v.string(), "no-cache"), "API-Version": v.string(), "Builder-Version": v.optional(v.string(), "2") }), 500: v.object({ "Cache-Control": v.optional(v.string(), "no-cache, no-store, must-revalidate"), Pragma: v.optional(v.string(), "no-cache") }) },
 };
 
@@ -729,7 +729,7 @@ export const head_SystemPingHead = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: v.never(),
-  responses: { 200: v.unknown(), 500: v.unknown() },
+  responses: { 200: v.string(), 500: ErrorResponse },
   responseHeaders: { 200: v.object({ Swarm: v.optional(v.picklist(["inactive", "pending", "error", "locked", "active/worker", "active/manager"]), "inactive"), "Docker-Experimental": v.boolean(), "Cache-Control": v.optional(v.string(), "no-cache, no-store, must-revalidate"), Pragma: v.optional(v.string(), "no-cache"), "API-Version": v.string(), "Builder-Version": v.string() }) },
 };
 
@@ -760,7 +760,7 @@ export const get_SystemDataUsage = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ type: v.array(v.picklist(["container", "image", "volume", "build-cache"])) }))) },
-  responses: { 200: v.partial(v.object({ LayersSize: v.pipe(v.number(), v.integer()), Images: v.array(ImageSummary), Containers: v.array(ContainerSummary), Volumes: v.array(Volume), BuildCache: v.array(BuildCache) })), 500: ErrorResponse },
+  responses: { 200: v.union([v.partial(v.object({ LayersSize: v.pipe(v.number(), v.integer()), Images: v.array(ImageSummary), Containers: v.array(ContainerSummary), Volumes: v.array(Volume), BuildCache: v.array(BuildCache) })), v.partial(v.object({ LayersSize: v.pipe(v.number(), v.integer()), Images: v.array(ImageSummary), Containers: v.array(ContainerSummary), Volumes: v.array(Volume), BuildCache: v.array(BuildCache) }))]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -820,7 +820,7 @@ export const post_ExecResize = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ h: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())), w: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())) }))), path: v.object({ id: v.string() }) },
-  responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.unknown(), 400: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ExecInspect = typeof get_ExecInspect;
@@ -880,7 +880,7 @@ export const delete_VolumeDelete = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ force: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false) }))), path: v.object({ name: v.string() }) },
-  responses: { 204: v.unknown(), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 409: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_VolumePrune = typeof post_VolumePrune;
@@ -920,7 +920,7 @@ export const delete_NetworkDelete = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
-  responses: { 204: v.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: v.unknown(), 403: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_NetworkCreate = typeof post_NetworkCreate;
@@ -940,7 +940,7 @@ export const post_NetworkConnect = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }), body: v.optional(v.partial(v.object({ Container: v.string(), EndpointConfig: EndpointSettings }))) },
-  responses: { 200: v.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.unknown(), 403: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
@@ -950,7 +950,7 @@ export const post_NetworkDisconnect = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }), body: v.optional(v.partial(v.object({ Container: v.string(), Force: v.boolean() }))) },
-  responses: { 200: v.unknown(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.unknown(), 403: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_NetworkPrune = typeof post_NetworkPrune;
@@ -980,7 +980,7 @@ export const get_GetPluginPrivileges = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.object({ remote: v.string() }) },
-  responses: { 200: v.array(PluginPrivilege), 500: ErrorResponse },
+  responses: { 200: v.union([v.array(PluginPrivilege), v.array(PluginPrivilege)]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_PluginPull = typeof post_PluginPull;
@@ -1000,7 +1000,7 @@ export const get_PluginInspect = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ name: v.string() }) },
-  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.union([Plugin, Plugin]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type delete_PluginDelete = typeof delete_PluginDelete;
@@ -1010,7 +1010,7 @@ export const delete_PluginDelete = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ force: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false) }))), path: v.object({ name: v.string() }) },
-  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.union([Plugin, Plugin]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_PluginEnable = typeof post_PluginEnable;
@@ -1020,7 +1020,7 @@ export const post_PluginEnable = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ timeout: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())), 0) }))), path: v.object({ name: v.string() }) },
-  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_PluginDisable = typeof post_PluginDisable;
@@ -1030,7 +1030,7 @@ export const post_PluginDisable = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ force: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")) }))), path: v.object({ name: v.string() }) },
-  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_PluginUpgrade = typeof post_PluginUpgrade;
@@ -1040,7 +1040,7 @@ export const post_PluginUpgrade = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.object({ remote: v.string() }), path: v.object({ name: v.string() }), header: v.optional(v.partial(v.object({ "X-Registry-Auth": v.string() }))), body: v.array(PluginPrivilege) },
-  responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_PluginCreate = typeof post_PluginCreate;
@@ -1050,7 +1050,7 @@ export const post_PluginCreate = {
   requestFormat: v.literal("text"),
   responseFormat: v.literal("json"),
   parameters: { query: v.object({ name: v.string() }) },
-  responses: { 204: v.unknown(), 500: ErrorResponse },
+  responses: { 204: v.unknown(), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_PluginPush = typeof post_PluginPush;
@@ -1060,7 +1060,7 @@ export const post_PluginPush = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ name: v.string() }) },
-  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_PluginSet = typeof post_PluginSet;
@@ -1070,7 +1070,7 @@ export const post_PluginSet = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ name: v.string() }), body: v.array(v.string()) },
-  responses: { 204: v.unknown(), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_NodeList = typeof get_NodeList;
@@ -1080,7 +1080,7 @@ export const get_NodeList = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string() }))) },
-  responses: { 200: v.array(Node), 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.union([v.array(Node), v.array(Node)]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_NodeInspect = typeof get_NodeInspect;
@@ -1090,7 +1090,7 @@ export const get_NodeInspect = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
-  responses: { 200: Node, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.union([Node, Node]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type delete_NodeDelete = typeof delete_NodeDelete;
@@ -1100,7 +1100,7 @@ export const delete_NodeDelete = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ force: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false) }))), path: v.object({ id: v.string() }) },
-  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_NodeUpdate = typeof post_NodeUpdate;
@@ -1110,7 +1110,7 @@ export const post_NodeUpdate = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.object({ version: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())) }), path: v.object({ id: v.string() }), body: NodeSpec },
-  responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.unknown(), 400: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_SwarmInspect = typeof get_SwarmInspect;
@@ -1120,7 +1120,7 @@ export const get_SwarmInspect = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: v.never(),
-  responses: { 200: Swarm, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.union([Swarm, Swarm]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_SwarmInit = typeof post_SwarmInit;
@@ -1130,7 +1130,7 @@ export const post_SwarmInit = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { body: v.optional(v.partial(v.object({ ListenAddr: v.string(), AdvertiseAddr: v.string(), DataPathAddr: v.string(), DataPathPort: v.pipe(v.number(), v.integer()), DefaultAddrPool: v.array(v.string()), ForceNewCluster: v.boolean(), SubnetSize: v.pipe(v.number(), v.integer()), Spec: SwarmSpec }))) },
-  responses: { 200: v.string(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.union([v.string(), v.string()]), 400: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_SwarmJoin = typeof post_SwarmJoin;
@@ -1140,7 +1140,7 @@ export const post_SwarmJoin = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { body: v.optional(v.partial(v.object({ ListenAddr: v.string(), AdvertiseAddr: v.string(), DataPathAddr: v.string(), RemoteAddrs: v.array(v.string()), JoinToken: v.string() }))) },
-  responses: { 200: v.unknown(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.unknown(), 400: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_SwarmLeave = typeof post_SwarmLeave;
@@ -1150,7 +1150,7 @@ export const post_SwarmLeave = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ force: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false) }))) },
-  responses: { 200: v.unknown(), 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.unknown(), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_SwarmUpdate = typeof post_SwarmUpdate;
@@ -1160,7 +1160,7 @@ export const post_SwarmUpdate = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.object({ version: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())), rotateWorkerToken: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false), rotateManagerToken: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false), rotateManagerUnlockKey: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false) }), body: SwarmSpec },
-  responses: { 200: v.unknown(), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.unknown(), 400: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
@@ -1170,7 +1170,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: v.never(),
-  responses: { 200: v.partial(v.object({ UnlockKey: v.string() })), 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.union([v.partial(v.object({ UnlockKey: v.string() })), v.partial(v.object({ UnlockKey: v.string() }))]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1190,7 +1190,7 @@ export const get_ServiceList = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ filters: v.string(), status: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")) }))) },
-  responses: { 200: v.array(Service), 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.union([v.array(Service), v.array(Service)]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_ServiceCreate = typeof post_ServiceCreate;
@@ -1210,7 +1210,7 @@ export const get_ServiceInspect = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.object({ insertDefaults: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false) }))), path: v.object({ id: v.string() }) },
-  responses: { 200: Service, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.union([Service, Service]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type delete_ServiceDelete = typeof delete_ServiceDelete;
@@ -1220,7 +1220,7 @@ export const delete_ServiceDelete = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.object({ id: v.string() }) },
-  responses: { 200: v.unknown(), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.unknown(), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_ServiceUpdate = typeof post_ServiceUpdate;
@@ -1320,7 +1320,7 @@ export const post_SecretUpdate = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.object({ version: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())) }), path: v.object({ id: v.string() }), body: SecretSpec },
-  responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.unknown(), 400: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ConfigList = typeof get_ConfigList;
@@ -1370,7 +1370,7 @@ export const post_ConfigUpdate = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.object({ version: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())) }), path: v.object({ id: v.string() }), body: ConfigSpec },
-  responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: v.unknown(), 400: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_DistributionInspect = typeof get_DistributionInspect;
@@ -1852,8 +1852,12 @@ export class ApiClient {
   defaultDecodePathParams = (url: string, params: unknown): string => {
     const record = (params ?? {}) as Record<string, unknown>;
     return url
-      .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
+      .replace(/{([^}]+)}/g, (_, key: string) =>
+        record[key] != null ? encodeURIComponent(String(record[key])) : `{${key}}`,
+      )
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+        record[key] != null ? encodeURIComponent(String(record[key])) : `:${key}`,
+      );
   }
 
   /** Uses URLSearchParams, skips null/undefined values */
@@ -1888,21 +1892,22 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
-    if (contentType.includes("text/event-stream")) {
+    const normalizedContentType = contentType.toLowerCase();
+    if (normalizedContentType.includes("text/event-stream")) {
       return response.body ?? null;
     }
-    if (contentType.startsWith("text/")) {
+    if (normalizedContentType.startsWith("text/")) {
       return (await response.text())
     }
 
-    if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+    if (normalizedContentType.startsWith("application/octet-stream")) {
       return new Blob([await response.arrayBuffer()])
     }
 
     if (
-      contentType.includes("application/json") ||
-      (contentType.includes("application/") && contentType.includes("json")) ||
-      contentType === "*/*"
+      normalizedContentType.includes("application/json") ||
+      (normalizedContentType.includes("application/") && normalizedContentType.includes("json")) ||
+      normalizedContentType === "*/*"
       ) {
       try {
         return await response.json();
@@ -2165,7 +2170,11 @@ export class ApiClient {
               : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
           const shouldValidateOutput = validateSide === "output" || validateSide === "both";
           if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
-            const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+            const responseSchema =
+              endpointSchema.responses[String(response.status)] ??
+              endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??
+              endpointSchema.responses[String(Math.floor(response.status / 100)) + "XX"] ??
+              endpointSchema.responses["default"];
             if (responseSchema) {
               data = await runValidate({
                 side: "output",

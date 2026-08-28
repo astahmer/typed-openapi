@@ -567,7 +567,7 @@ export const get_ContainerTop = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ ps_args: string }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }>>(), 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<(Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }> | Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }>)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -597,7 +597,7 @@ export const get_ContainerExport = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | unknown)>(), 500: isErrorResponse },
 };
 
 export type get_ContainerStats = typeof get_ContainerStats;
@@ -617,7 +617,7 @@ export const post_ContainerResize = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ h: number, w: number }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | unknown)>(), 500: isErrorResponse },
 };
 
 export type post_ContainerStart = typeof post_ContainerStart;
@@ -627,7 +627,7 @@ export const post_ContainerStart = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ detachKeys: string }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerStop = typeof post_ContainerStop;
@@ -637,7 +637,7 @@ export const post_ContainerStop = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ signal: string, t: number }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerRestart = typeof post_ContainerRestart;
@@ -647,7 +647,7 @@ export const post_ContainerRestart = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ signal: string, t: number }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerKill = typeof post_ContainerKill;
@@ -657,7 +657,7 @@ export const post_ContainerKill = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ signal: string }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerUpdate = typeof post_ContainerUpdate;
@@ -677,7 +677,7 @@ export const post_ContainerRename = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<{ name: string }>(), path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerPause = typeof post_ContainerPause;
@@ -687,7 +687,7 @@ export const post_ContainerPause = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerUnpause = typeof post_ContainerUnpause;
@@ -697,7 +697,7 @@ export const post_ContainerUnpause = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerAttach = typeof post_ContainerAttach;
@@ -717,7 +717,7 @@ export const get_ContainerAttachWebsocket = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 101: typia.createIs<unknown>(), 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 101: typia.createIs<unknown>(), 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ContainerWait = typeof post_ContainerWait;
@@ -737,7 +737,7 @@ export const delete_ContainerDelete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ v: boolean, force: boolean, link: boolean }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_ContainerArchive = typeof get_ContainerArchive;
@@ -757,7 +757,7 @@ export const put_PutContainerArchive = {
   requestFormat: typia.createIs<"binary">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<{ path: string, noOverwriteDirNonDir?: string, copyUIDGID?: string }>(), path: typia.createIs<{ id: string }>(), body: typia.createIs<Blob>() },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
@@ -767,7 +767,7 @@ export const head_ContainerArchiveInfo = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<{ path: string }>(), path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
   responseHeaders: { 200: typia.createIs<{ "X-Docker-Container-Path-Stat": string }>() },
 };
 
@@ -848,7 +848,7 @@ export const post_ImagePush = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ tag: string }>>(), path: typia.createIs<{ name: string }>(), header: typia.createIs<{ "X-Registry-Auth": string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ImageTag = typeof post_ImageTag;
@@ -858,7 +858,7 @@ export const post_ImageTag = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ repo: string, tag: string }>>(), path: typia.createIs<{ name: string }>() },
-  responses: { 201: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
+  responses: { 201: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type delete_ImageDelete = typeof delete_ImageDelete;
@@ -928,7 +928,7 @@ export const get_SystemPing = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: typia.createIs<never>(),
-  responses: { 200: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
+  responses: { 200: typia.createIs<string>(), 500: isErrorResponse },
   responseHeaders: { 200: typia.createIs<{ Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string }>(), 500: typia.createIs<{ "Cache-Control": string, Pragma: string }>() },
 };
 
@@ -939,7 +939,7 @@ export const head_SystemPingHead = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: typia.createIs<never>(),
-  responses: { 200: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
+  responses: { 200: typia.createIs<string>(), 500: isErrorResponse },
   responseHeaders: { 200: typia.createIs<{ Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string }>() },
 };
 
@@ -970,7 +970,7 @@ export const get_SystemDataUsage = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ type: Array<("container" | "image" | "volume" | "build-cache")> }>>() },
-  responses: { 200: typia.createIs<Partial<{ LayersSize: number, Images: Array<ImageSummary>, Containers: Array<ContainerSummary>, Volumes: Array<Volume>, BuildCache: Array<BuildCache> }>>(), 500: isErrorResponse },
+  responses: { 200: typia.createIs<(Partial<{ LayersSize: number, Images: Array<ImageSummary>, Containers: Array<ContainerSummary>, Volumes: Array<Volume>, BuildCache: Array<BuildCache> }> | Partial<{ LayersSize: number, Images: Array<ImageSummary>, Containers: Array<ContainerSummary>, Volumes: Array<Volume>, BuildCache: Array<BuildCache> }>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -1030,7 +1030,7 @@ export const post_ExecResize = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ h: number, w: number }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_ExecInspect = typeof get_ExecInspect;
@@ -1090,7 +1090,7 @@ export const delete_VolumeDelete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ force: boolean }>>(), path: typia.createIs<{ name: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_VolumePrune = typeof post_VolumePrune;
@@ -1130,7 +1130,7 @@ export const delete_NetworkDelete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ id: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_NetworkCreate = typeof post_NetworkCreate;
@@ -1150,7 +1150,7 @@ export const post_NetworkConnect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ id: string }>(), body: typia.createIs<Partial<{ Container: string, EndpointConfig: EndpointSettings }>>() },
-  responses: { 200: typia.createIs<unknown>(), 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
@@ -1160,7 +1160,7 @@ export const post_NetworkDisconnect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ id: string }>(), body: typia.createIs<Partial<{ Container: string, Force: boolean }>>() },
-  responses: { 200: typia.createIs<unknown>(), 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_NetworkPrune = typeof post_NetworkPrune;
@@ -1190,7 +1190,7 @@ export const get_GetPluginPrivileges = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<{ remote: string }>() },
-  responses: { 200: typia.createIs<Array<PluginPrivilege>>(), 500: isErrorResponse },
+  responses: { 200: typia.createIs<(Array<PluginPrivilege> | Array<PluginPrivilege>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginPull = typeof post_PluginPull;
@@ -1210,7 +1210,7 @@ export const get_PluginInspect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ name: string }>() },
-  responses: { 200: isPlugin, 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<(Plugin | Plugin)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type delete_PluginDelete = typeof delete_PluginDelete;
@@ -1220,7 +1220,7 @@ export const delete_PluginDelete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ force: boolean }>>(), path: typia.createIs<{ name: string }>() },
-  responses: { 200: isPlugin, 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<(Plugin | Plugin)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginEnable = typeof post_PluginEnable;
@@ -1230,7 +1230,7 @@ export const post_PluginEnable = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ timeout: number }>>(), path: typia.createIs<{ name: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginDisable = typeof post_PluginDisable;
@@ -1240,7 +1240,7 @@ export const post_PluginDisable = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ force: boolean }>>(), path: typia.createIs<{ name: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginUpgrade = typeof post_PluginUpgrade;
@@ -1250,7 +1250,7 @@ export const post_PluginUpgrade = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<{ remote: string }>(), path: typia.createIs<{ name: string }>(), header: typia.createIs<Partial<{ "X-Registry-Auth": string }>>(), body: typia.createIs<Array<PluginPrivilege>>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginCreate = typeof post_PluginCreate;
@@ -1260,7 +1260,7 @@ export const post_PluginCreate = {
   requestFormat: typia.createIs<"text">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<{ name: string }>() },
-  responses: { 204: typia.createIs<unknown>(), 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginPush = typeof post_PluginPush;
@@ -1270,7 +1270,7 @@ export const post_PluginPush = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ name: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_PluginSet = typeof post_PluginSet;
@@ -1280,7 +1280,7 @@ export const post_PluginSet = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ name: string }>(), body: typia.createIs<Array<string>>() },
-  responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
+  responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_NodeList = typeof get_NodeList;
@@ -1290,7 +1290,7 @@ export const get_NodeList = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ filters: string }>>() },
-  responses: { 200: typia.createIs<Array<Node>>(), 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<(Array<Node> | Array<Node>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_NodeInspect = typeof get_NodeInspect;
@@ -1300,7 +1300,7 @@ export const get_NodeInspect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ id: string }>() },
-  responses: { 200: isNode, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<(Node | Node)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type delete_NodeDelete = typeof delete_NodeDelete;
@@ -1310,7 +1310,7 @@ export const delete_NodeDelete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ force: boolean }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_NodeUpdate = typeof post_NodeUpdate;
@@ -1320,7 +1320,7 @@ export const post_NodeUpdate = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<{ version: number }>(), path: typia.createIs<{ id: string }>(), body: isNodeSpec },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_SwarmInspect = typeof get_SwarmInspect;
@@ -1330,7 +1330,7 @@ export const get_SwarmInspect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: typia.createIs<never>(),
-  responses: { 200: isSwarm, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<(Swarm | Swarm)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_SwarmInit = typeof post_SwarmInit;
@@ -1340,7 +1340,7 @@ export const post_SwarmInit = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { body: typia.createIs<Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, DataPathPort: number, DefaultAddrPool: Array<string>, ForceNewCluster: boolean, SubnetSize: number, Spec: SwarmSpec }>>() },
-  responses: { 200: typia.createIs<string>(), 400: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<(string | string)>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_SwarmJoin = typeof post_SwarmJoin;
@@ -1350,7 +1350,7 @@ export const post_SwarmJoin = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { body: typia.createIs<Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, RemoteAddrs: Array<string>, JoinToken: string }>>() },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_SwarmLeave = typeof post_SwarmLeave;
@@ -1360,7 +1360,7 @@ export const post_SwarmLeave = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ force: boolean }>>() },
-  responses: { 200: typia.createIs<unknown>(), 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_SwarmUpdate = typeof post_SwarmUpdate;
@@ -1370,7 +1370,7 @@ export const post_SwarmUpdate = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<{ version: number, rotateWorkerToken?: boolean, rotateManagerToken?: boolean, rotateManagerUnlockKey?: boolean }>(), body: isSwarmSpec },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
@@ -1380,7 +1380,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: typia.createIs<never>(),
-  responses: { 200: typia.createIs<Partial<{ UnlockKey: string }>>(), 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<(Partial<{ UnlockKey: string }> | Partial<{ UnlockKey: string }>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1400,7 +1400,7 @@ export const get_ServiceList = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ filters: string, status: boolean }>>() },
-  responses: { 200: typia.createIs<Array<Service>>(), 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<(Array<Service> | Array<Service>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ServiceCreate = typeof post_ServiceCreate;
@@ -1420,7 +1420,7 @@ export const get_ServiceInspect = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<Partial<{ insertDefaults: boolean }>>(), path: typia.createIs<{ id: string }>() },
-  responses: { 200: isService, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<(Service | Service)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type delete_ServiceDelete = typeof delete_ServiceDelete;
@@ -1430,7 +1430,7 @@ export const delete_ServiceDelete = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { path: typia.createIs<{ id: string }>() },
-  responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type post_ServiceUpdate = typeof post_ServiceUpdate;
@@ -1530,7 +1530,7 @@ export const post_SecretUpdate = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<{ version: number }>(), path: typia.createIs<{ id: string }>(), body: isSecretSpec },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_ConfigList = typeof get_ConfigList;
@@ -1580,7 +1580,7 @@ export const post_ConfigUpdate = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { query: typia.createIs<{ version: number }>(), path: typia.createIs<{ id: string }>(), body: isConfigSpec },
-  responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
 export type get_DistributionInspect = typeof get_DistributionInspect;
@@ -2062,8 +2062,12 @@ export class ApiClient {
   defaultDecodePathParams = (url: string, params: unknown): string => {
     const record = (params ?? {}) as Record<string, unknown>;
     return url
-      .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
+      .replace(/{([^}]+)}/g, (_, key: string) =>
+        record[key] != null ? encodeURIComponent(String(record[key])) : `{${key}}`,
+      )
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+        record[key] != null ? encodeURIComponent(String(record[key])) : `:${key}`,
+      );
   }
 
   /** Uses URLSearchParams, skips null/undefined values */
@@ -2098,21 +2102,22 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
-    if (contentType.includes("text/event-stream")) {
+    const normalizedContentType = contentType.toLowerCase();
+    if (normalizedContentType.includes("text/event-stream")) {
       return response.body ?? null;
     }
-    if (contentType.startsWith("text/")) {
+    if (normalizedContentType.startsWith("text/")) {
       return (await response.text())
     }
 
-    if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+    if (normalizedContentType.startsWith("application/octet-stream")) {
       return new Blob([await response.arrayBuffer()])
     }
 
     if (
-      contentType.includes("application/json") ||
-      (contentType.includes("application/") && contentType.includes("json")) ||
-      contentType === "*/*"
+      normalizedContentType.includes("application/json") ||
+      (normalizedContentType.includes("application/") && normalizedContentType.includes("json")) ||
+      normalizedContentType === "*/*"
       ) {
       try {
         return await response.json();
@@ -2375,7 +2380,11 @@ export class ApiClient {
               : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
           const shouldValidateOutput = validateSide === "output" || validateSide === "both";
           if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
-            const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+            const responseSchema =
+              endpointSchema.responses[String(response.status)] ??
+              endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??
+              endpointSchema.responses[String(Math.floor(response.status / 100)) + "XX"] ??
+              endpointSchema.responses["default"];
             if (responseSchema) {
               data = await runValidate({
                 side: "output",

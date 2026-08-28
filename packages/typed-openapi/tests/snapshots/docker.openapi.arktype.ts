@@ -356,7 +356,7 @@ export const get_ContainerTop = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ ps_args: "string = \"-ef\"" }).partial().optional(), path: type({ id: type("string") }) },
-  responses: { 200: type({ Titles: type("string").array(), Processes: type("string").array().array() }).partial(), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: type({ Titles: type("string").array(), Processes: type("string").array().array() }).partial().or(type({ Titles: type("string").array(), Processes: type("string").array().array() }).partial()), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -386,7 +386,7 @@ export const get_ContainerExport = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { path: type({ id: type("string") }) },
-  responses: { 200: type("unknown"), 404: type("unknown"), 500: type("unknown") },
+  responses: { 200: type("unknown"), 404: ErrorResponse.or(type("unknown")), 500: ErrorResponse },
 };
 
 export type get_ContainerStats = typeof get_ContainerStats;
@@ -406,7 +406,7 @@ export const post_ContainerResize = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ h: type("string.integer.parse"), w: type("string.integer.parse") }).partial().optional(), path: type({ id: type("string") }) },
-  responses: { 200: type("unknown"), 404: type("unknown"), 500: type("unknown") },
+  responses: { 200: type("unknown"), 404: ErrorResponse.or(type("unknown")), 500: ErrorResponse },
 };
 
 export type post_ContainerStart = typeof post_ContainerStart;
@@ -416,7 +416,7 @@ export const post_ContainerStart = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ detachKeys: type("string") }).partial().optional(), path: type({ id: type("string") }) },
-  responses: { 204: type("unknown"), 304: type("unknown"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: type("unknown"), 304: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_ContainerStop = typeof post_ContainerStop;
@@ -426,7 +426,7 @@ export const post_ContainerStop = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ signal: type("string"), t: type("string.integer.parse") }).partial().optional(), path: type({ id: type("string") }) },
-  responses: { 204: type("unknown"), 304: type("unknown"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: type("unknown"), 304: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_ContainerRestart = typeof post_ContainerRestart;
@@ -436,7 +436,7 @@ export const post_ContainerRestart = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ signal: type("string"), t: type("string.integer.parse") }).partial().optional(), path: type({ id: type("string") }) },
-  responses: { 204: type("unknown"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_ContainerKill = typeof post_ContainerKill;
@@ -446,7 +446,7 @@ export const post_ContainerKill = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ signal: "string = \"SIGKILL\"" }).partial().optional(), path: type({ id: type("string") }) },
-  responses: { 204: type("unknown"), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 409: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_ContainerUpdate = typeof post_ContainerUpdate;
@@ -466,7 +466,7 @@ export const post_ContainerRename = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ name: type("string") }), path: type({ id: type("string") }) },
-  responses: { 204: type("unknown"), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 409: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_ContainerPause = typeof post_ContainerPause;
@@ -476,7 +476,7 @@ export const post_ContainerPause = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { path: type({ id: type("string") }) },
-  responses: { 204: type("unknown"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_ContainerUnpause = typeof post_ContainerUnpause;
@@ -486,7 +486,7 @@ export const post_ContainerUnpause = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { path: type({ id: type("string") }) },
-  responses: { 204: type("unknown"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_ContainerAttach = typeof post_ContainerAttach;
@@ -506,7 +506,7 @@ export const get_ContainerAttachWebsocket = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ detachKeys: type("string"), logs: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stream: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdin: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stdout: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), stderr: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ id: type("string") }) },
-  responses: { 101: type("unknown"), 200: type("unknown"), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 101: type("unknown"), 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_ContainerWait = typeof post_ContainerWait;
@@ -526,7 +526,7 @@ export const delete_ContainerDelete = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ v: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), link: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ id: type("string") }) },
-  responses: { 204: type("unknown"), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 409: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type get_ContainerArchive = typeof get_ContainerArchive;
@@ -546,7 +546,7 @@ export const put_PutContainerArchive = {
   requestFormat: type("'binary'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ path: type("string"), "noOverwriteDirNonDir?": type("string"), "copyUIDGID?": type("string") }), path: type({ id: type("string") }), body: type.instanceOf(Blob) },
-  responses: { 200: type("unknown"), 400: ErrorResponse, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 403: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
@@ -556,7 +556,7 @@ export const head_ContainerArchiveInfo = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ path: type("string") }), path: type({ id: type("string") }) },
-  responses: { 200: type("unknown"), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
   responseHeaders: { 200: type({ "X-Docker-Container-Path-Stat": type("string") }) },
 };
 
@@ -637,7 +637,7 @@ export const post_ImagePush = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ tag: type("string") }).partial().optional(), path: type({ name: type("string") }), header: type({ "X-Registry-Auth": type("string") }) },
-  responses: { 200: type("unknown"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_ImageTag = typeof post_ImageTag;
@@ -647,7 +647,7 @@ export const post_ImageTag = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ repo: type("string"), tag: type("string") }).partial().optional(), path: type({ name: type("string") }) },
-  responses: { 201: type("unknown"), 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 201: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 409: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type delete_ImageDelete = typeof delete_ImageDelete;
@@ -717,7 +717,7 @@ export const get_SystemPing = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: type("never"),
-  responses: { 200: type("unknown"), 500: type("unknown") },
+  responses: { 200: type("string"), 500: ErrorResponse },
   responseHeaders: { 200: type({ Swarm: type.enumerated("inactive", "pending", "error", "locked", "active/worker", "active/manager"), "Docker-Experimental": type("boolean"), "Cache-Control": "string = \"no-cache, no-store, must-revalidate\"", Pragma: "string = \"no-cache\"", "API-Version": type("string"), "Builder-Version": "string = \"2\"" }), 500: type({ "Cache-Control": "string = \"no-cache, no-store, must-revalidate\"", Pragma: "string = \"no-cache\"" }) },
 };
 
@@ -728,7 +728,7 @@ export const head_SystemPingHead = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: type("never"),
-  responses: { 200: type("unknown"), 500: type("unknown") },
+  responses: { 200: type("string"), 500: ErrorResponse },
   responseHeaders: { 200: type({ Swarm: type.enumerated("inactive", "pending", "error", "locked", "active/worker", "active/manager"), "Docker-Experimental": type("boolean"), "Cache-Control": "string = \"no-cache, no-store, must-revalidate\"", Pragma: "string = \"no-cache\"", "API-Version": type("string"), "Builder-Version": type("string") }) },
 };
 
@@ -759,7 +759,7 @@ export const get_SystemDataUsage = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ type: type.enumerated("container", "image", "volume", "build-cache").array() }).partial().optional() },
-  responses: { 200: type({ LayersSize: type("number.integer"), Images: ImageSummary.array(), Containers: ContainerSummary.array(), Volumes: Volume.array(), BuildCache: BuildCache.array() }).partial(), 500: ErrorResponse },
+  responses: { 200: type({ LayersSize: type("number.integer"), Images: ImageSummary.array(), Containers: ContainerSummary.array(), Volumes: Volume.array(), BuildCache: BuildCache.array() }).partial().or(type({ LayersSize: type("number.integer"), Images: ImageSummary.array(), Containers: ContainerSummary.array(), Volumes: Volume.array(), BuildCache: BuildCache.array() }).partial()), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -819,7 +819,7 @@ export const post_ExecResize = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ h: type("string.integer.parse"), w: type("string.integer.parse") }).partial().optional(), path: type({ id: type("string") }) },
-  responses: { 200: type("unknown"), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type get_ExecInspect = typeof get_ExecInspect;
@@ -879,7 +879,7 @@ export const delete_VolumeDelete = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ name: type("string") }) },
-  responses: { 204: type("unknown"), 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 409: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_VolumePrune = typeof post_VolumePrune;
@@ -919,7 +919,7 @@ export const delete_NetworkDelete = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { path: type({ id: type("string") }) },
-  responses: { 204: type("unknown"), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: type("unknown"), 403: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_NetworkCreate = typeof post_NetworkCreate;
@@ -939,7 +939,7 @@ export const post_NetworkConnect = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { path: type({ id: type("string") }), body: type({ Container: type("string"), EndpointConfig: EndpointSettings }).partial().optional() },
-  responses: { 200: type("unknown"), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: type("unknown"), 403: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
@@ -949,7 +949,7 @@ export const post_NetworkDisconnect = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { path: type({ id: type("string") }), body: type({ Container: type("string"), Force: type("boolean") }).partial().optional() },
-  responses: { 200: type("unknown"), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: type("unknown"), 403: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_NetworkPrune = typeof post_NetworkPrune;
@@ -979,7 +979,7 @@ export const get_GetPluginPrivileges = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ remote: type("string") }) },
-  responses: { 200: PluginPrivilege.array(), 500: ErrorResponse },
+  responses: { 200: PluginPrivilege.array().or(PluginPrivilege.array()), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_PluginPull = typeof post_PluginPull;
@@ -999,7 +999,7 @@ export const get_PluginInspect = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { path: type({ name: type("string") }) },
-  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: Plugin.or(Plugin), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type delete_PluginDelete = typeof delete_PluginDelete;
@@ -1009,7 +1009,7 @@ export const delete_PluginDelete = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ name: type("string") }) },
-  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: Plugin.or(Plugin), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_PluginEnable = typeof post_PluginEnable;
@@ -1019,7 +1019,7 @@ export const post_PluginEnable = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ timeout: type("string.integer.parse") }).partial().optional(), path: type({ name: type("string") }) },
-  responses: { 200: type("unknown"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_PluginDisable = typeof post_PluginDisable;
@@ -1029,7 +1029,7 @@ export const post_PluginDisable = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ name: type("string") }) },
-  responses: { 200: type("unknown"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_PluginUpgrade = typeof post_PluginUpgrade;
@@ -1039,7 +1039,7 @@ export const post_PluginUpgrade = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ remote: type("string") }), path: type({ name: type("string") }), header: type({ "X-Registry-Auth": type("string") }).partial().optional(), body: PluginPrivilege.array() },
-  responses: { 204: type("unknown"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_PluginCreate = typeof post_PluginCreate;
@@ -1049,7 +1049,7 @@ export const post_PluginCreate = {
   requestFormat: type("'text'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ name: type("string") }) },
-  responses: { 204: type("unknown"), 500: ErrorResponse },
+  responses: { 204: type("unknown"), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_PluginPush = typeof post_PluginPush;
@@ -1059,7 +1059,7 @@ export const post_PluginPush = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { path: type({ name: type("string") }) },
-  responses: { 200: type("unknown"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_PluginSet = typeof post_PluginSet;
@@ -1069,7 +1069,7 @@ export const post_PluginSet = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { path: type({ name: type("string") }), body: type("string").array() },
-  responses: { 204: type("unknown"), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse) },
 };
 
 export type get_NodeList = typeof get_NodeList;
@@ -1079,7 +1079,7 @@ export const get_NodeList = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ filters: type("string") }).partial().optional() },
-  responses: { 200: Node.array(), 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: Node.array().or(Node.array()), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type get_NodeInspect = typeof get_NodeInspect;
@@ -1089,7 +1089,7 @@ export const get_NodeInspect = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { path: type({ id: type("string") }) },
-  responses: { 200: Node, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: Node.or(Node), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type delete_NodeDelete = typeof delete_NodeDelete;
@@ -1099,7 +1099,7 @@ export const delete_NodeDelete = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ id: type("string") }) },
-  responses: { 200: type("unknown"), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_NodeUpdate = typeof post_NodeUpdate;
@@ -1109,7 +1109,7 @@ export const post_NodeUpdate = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ version: type("string.integer.parse") }), path: type({ id: type("string") }), body: NodeSpec },
-  responses: { 200: type("unknown"), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type get_SwarmInspect = typeof get_SwarmInspect;
@@ -1119,7 +1119,7 @@ export const get_SwarmInspect = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: type("never"),
-  responses: { 200: Swarm, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: Swarm.or(Swarm), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_SwarmInit = typeof post_SwarmInit;
@@ -1129,7 +1129,7 @@ export const post_SwarmInit = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { body: type({ ListenAddr: type("string"), AdvertiseAddr: type("string"), DataPathAddr: type("string"), DataPathPort: type("number.integer"), DefaultAddrPool: type("string").array(), ForceNewCluster: type("boolean"), SubnetSize: type("number.integer"), Spec: SwarmSpec }).partial().optional() },
-  responses: { 200: type("string"), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: type("string").or(type("string")), 400: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_SwarmJoin = typeof post_SwarmJoin;
@@ -1139,7 +1139,7 @@ export const post_SwarmJoin = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { body: type({ ListenAddr: type("string"), AdvertiseAddr: type("string"), DataPathAddr: type("string"), RemoteAddrs: type("string").array(), JoinToken: type("string") }).partial().optional() },
-  responses: { 200: type("unknown"), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_SwarmLeave = typeof post_SwarmLeave;
@@ -1149,7 +1149,7 @@ export const post_SwarmLeave = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ force: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional() },
-  responses: { 200: type("unknown"), 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: type("unknown"), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_SwarmUpdate = typeof post_SwarmUpdate;
@@ -1159,7 +1159,7 @@ export const post_SwarmUpdate = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ version: type("string.integer.parse"), rotateWorkerToken: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), rotateManagerToken: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1"), rotateManagerUnlockKey: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }), body: SwarmSpec },
-  responses: { 200: type("unknown"), 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
@@ -1169,7 +1169,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: type("never"),
-  responses: { 200: type({ UnlockKey: type("string") }).partial(), 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: type({ UnlockKey: type("string") }).partial().or(type({ UnlockKey: type("string") }).partial()), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1189,7 +1189,7 @@ export const get_ServiceList = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ filters: type("string"), status: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional() },
-  responses: { 200: Service.array(), 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: Service.array().or(Service.array()), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_ServiceCreate = typeof post_ServiceCreate;
@@ -1209,7 +1209,7 @@ export const get_ServiceInspect = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ insertDefaults: type("boolean | string | number").pipe((x) => x === true || x === "true" || x === 1 || x === "1") }).partial().optional(), path: type({ id: type("string") }) },
-  responses: { 200: Service, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: Service.or(Service), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type delete_ServiceDelete = typeof delete_ServiceDelete;
@@ -1219,7 +1219,7 @@ export const delete_ServiceDelete = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { path: type({ id: type("string") }) },
-  responses: { 200: type("unknown"), 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: type("unknown"), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type post_ServiceUpdate = typeof post_ServiceUpdate;
@@ -1319,7 +1319,7 @@ export const post_SecretUpdate = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ version: type("string.integer.parse") }), path: type({ id: type("string") }), body: SecretSpec },
-  responses: { 200: type("unknown"), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type get_ConfigList = typeof get_ConfigList;
@@ -1369,7 +1369,7 @@ export const post_ConfigUpdate = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: { query: type({ version: type("string.integer.parse") }), path: type({ id: type("string") }), body: ConfigSpec },
-  responses: { 200: type("unknown"), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: type("unknown"), 400: ErrorResponse.or(ErrorResponse), 404: ErrorResponse.or(ErrorResponse), 500: ErrorResponse.or(ErrorResponse), 503: ErrorResponse.or(ErrorResponse) },
 };
 
 export type get_DistributionInspect = typeof get_DistributionInspect;
@@ -1851,8 +1851,12 @@ export class ApiClient {
   defaultDecodePathParams = (url: string, params: unknown): string => {
     const record = (params ?? {}) as Record<string, unknown>;
     return url
-      .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
+      .replace(/{([^}]+)}/g, (_, key: string) =>
+        record[key] != null ? encodeURIComponent(String(record[key])) : `{${key}}`,
+      )
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+        record[key] != null ? encodeURIComponent(String(record[key])) : `:${key}`,
+      );
   }
 
   /** Uses URLSearchParams, skips null/undefined values */
@@ -1887,21 +1891,22 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
-    if (contentType.includes("text/event-stream")) {
+    const normalizedContentType = contentType.toLowerCase();
+    if (normalizedContentType.includes("text/event-stream")) {
       return response.body ?? null;
     }
-    if (contentType.startsWith("text/")) {
+    if (normalizedContentType.startsWith("text/")) {
       return (await response.text())
     }
 
-    if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+    if (normalizedContentType.startsWith("application/octet-stream")) {
       return new Blob([await response.arrayBuffer()])
     }
 
     if (
-      contentType.includes("application/json") ||
-      (contentType.includes("application/") && contentType.includes("json")) ||
-      contentType === "*/*"
+      normalizedContentType.includes("application/json") ||
+      (normalizedContentType.includes("application/") && normalizedContentType.includes("json")) ||
+      normalizedContentType === "*/*"
       ) {
       try {
         return await response.json();
@@ -2164,7 +2169,11 @@ export class ApiClient {
               : await (this.fetcher.parseResponseData ?? this.defaultParseResponseData)(response);
           const shouldValidateOutput = validateSide === "output" || validateSide === "both";
           if (shouldValidateOutput && responseFormat !== "sse" && response.ok && endpointSchema?.responses) {
-            const responseSchema = endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+            const responseSchema =
+              endpointSchema.responses[String(response.status)] ??
+              endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??
+              endpointSchema.responses[String(Math.floor(response.status / 100)) + "XX"] ??
+              endpointSchema.responses["default"];
             if (responseSchema) {
               data = await runValidate({
                 side: "output",

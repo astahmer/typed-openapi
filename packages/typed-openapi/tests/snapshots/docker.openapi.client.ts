@@ -182,9 +182,9 @@ export type get_ContainerTop = {
         
         
           }
-      responses: {200: Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }>,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+      responses: {200: (Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }> | Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }>),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -237,8 +237,8 @@ export type get_ContainerExport = {
         
           }
       responses: {200: unknown,
-404: unknown,
-500: unknown,
+404: (Schemas.ErrorResponse | unknown),
+500: Schemas.ErrorResponse,
 },
       
     }
@@ -273,8 +273,8 @@ export type post_ContainerResize = {
         
           }
       responses: {200: unknown,
-404: unknown,
-500: unknown,
+404: (Schemas.ErrorResponse | unknown),
+500: Schemas.ErrorResponse,
 },
       
     }
@@ -292,8 +292,8 @@ export type post_ContainerStart = {
           }
       responses: {204: unknown,
 304: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -311,8 +311,8 @@ export type post_ContainerStop = {
           }
       responses: {204: unknown,
 304: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -329,8 +329,8 @@ export type post_ContainerRestart = {
         
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -347,9 +347,9 @@ export type post_ContainerKill = {
         
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-409: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+409: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -384,9 +384,9 @@ export type post_ContainerRename = {
         
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-409: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+409: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -403,8 +403,8 @@ export type post_ContainerPause = {
         
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -421,8 +421,8 @@ export type post_ContainerUnpause = {
         
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -460,9 +460,9 @@ export type get_ContainerAttachWebsocket = {
           }
       responses: {101: unknown,
 200: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -498,10 +498,10 @@ export type delete_ContainerDelete = {
         
           }
       responses: {204: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-409: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+409: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -537,10 +537,10 @@ export type put_PutContainerArchive = {
         body:  Blob,
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-403: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+403: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -557,9 +557,9 @@ export type head_ContainerArchiveInfo = {
         
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       responseHeaders: {200: { "X-Docker-Container-Path-Stat": string },
 },
@@ -700,8 +700,8 @@ export type post_ImagePush = {
         
           }
       responses: {200: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -718,10 +718,10 @@ export type post_ImageTag = {
         
           }
       responses: {201: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-409: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+409: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -825,8 +825,8 @@ export type get_SystemPing = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: never,
-      responses: {200: unknown,
-500: unknown,
+      responses: {200: string,
+500: Schemas.ErrorResponse,
 },
       responseHeaders: {200: { Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string },
 500: { "Cache-Control": string, Pragma: string },
@@ -838,8 +838,8 @@ export type head_SystemPingHead = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: never,
-      responses: {200: unknown,
-500: unknown,
+      responses: {200: string,
+500: Schemas.ErrorResponse,
 },
       responseHeaders: {200: { Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string },
 },
@@ -892,8 +892,8 @@ export type get_SystemDataUsage = {
         
         
           }
-      responses: {200: Partial<{ LayersSize: number, Images: Array<Schemas.ImageSummary>, Containers: Array<Schemas.ContainerSummary>, Volumes: Array<Schemas.Volume>, BuildCache: Array<Schemas.BuildCache> }>,
-500: Schemas.ErrorResponse,
+      responses: {200: (Partial<{ LayersSize: number, Images: Array<Schemas.ImageSummary>, Containers: Array<Schemas.ContainerSummary>, Volumes: Array<Schemas.Volume>, BuildCache: Array<Schemas.BuildCache> }> | Partial<{ LayersSize: number, Images: Array<Schemas.ImageSummary>, Containers: Array<Schemas.ContainerSummary>, Volumes: Array<Schemas.Volume>, BuildCache: Array<Schemas.BuildCache> }>),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -998,9 +998,9 @@ export type post_ExecResize = {
         
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1107,9 +1107,9 @@ export type delete_VolumeDelete = {
         
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-409: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+409: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1178,9 +1178,9 @@ export type delete_NetworkDelete = {
         
           }
       responses: {204: unknown,
-403: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+403: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1216,9 +1216,9 @@ export type post_NetworkConnect = {
         body?:  Partial<{ Container: string, EndpointConfig: Schemas.EndpointSettings }>,
           }
       responses: {200: unknown,
-403: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+403: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1235,9 +1235,9 @@ export type post_NetworkDisconnect = {
         body?:  Partial<{ Container: string, Force: boolean }>,
           }
       responses: {200: unknown,
-403: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+403: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1287,8 +1287,8 @@ export type get_GetPluginPrivileges = {
         
         
           }
-      responses: {200: Array<Schemas.PluginPrivilege>,
-500: Schemas.ErrorResponse,
+      responses: {200: (Array<Schemas.PluginPrivilege> | Array<Schemas.PluginPrivilege>),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1321,9 +1321,9 @@ export type get_PluginInspect = {
         
         
           }
-      responses: {200: Schemas.Plugin,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+      responses: {200: (Schemas.Plugin | Schemas.Plugin),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1339,9 +1339,9 @@ export type delete_PluginDelete = {
         
         
           }
-      responses: {200: Schemas.Plugin,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+      responses: {200: (Schemas.Plugin | Schemas.Plugin),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1358,8 +1358,8 @@ export type post_PluginEnable = {
         
           }
       responses: {200: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1376,8 +1376,8 @@ export type post_PluginDisable = {
         
           }
       responses: {200: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1394,8 +1394,8 @@ export type post_PluginUpgrade = {
         body:  Array<Schemas.PluginPrivilege>,
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1412,7 +1412,7 @@ export type post_PluginCreate = {
         
           }
       responses: {204: unknown,
-500: Schemas.ErrorResponse,
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1429,8 +1429,8 @@ export type post_PluginPush = {
         
           }
       responses: {200: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1447,8 +1447,8 @@ export type post_PluginSet = {
         body:  Array<string>,
           }
       responses: {204: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1464,9 +1464,9 @@ export type get_NodeList = {
         
         
           }
-      responses: {200: Array<Schemas.Node>,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (Array<Schemas.Node> | Array<Schemas.Node>),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1482,10 +1482,10 @@ export type get_NodeInspect = {
         
         
           }
-      responses: {200: Schemas.Node,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (Schemas.Node | Schemas.Node),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1502,9 +1502,9 @@ export type delete_NodeDelete = {
         
           }
       responses: {200: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1521,10 +1521,10 @@ export type post_NodeUpdate = {
         body:  Schemas.NodeSpec,
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1534,10 +1534,10 @@ export type get_SwarmInspect = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: never,
-      responses: {200: Schemas.Swarm,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (Schemas.Swarm | Schemas.Swarm),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1553,10 +1553,10 @@ export type post_SwarmInit = {
         
         body?:  Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, DataPathPort: number, DefaultAddrPool: Array<string>, ForceNewCluster: boolean, SubnetSize: number, Spec: Schemas.SwarmSpec }>,
           }
-      responses: {200: string,
-400: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (string | string),
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1573,9 +1573,9 @@ export type post_SwarmJoin = {
         body?:  Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, RemoteAddrs: Array<string>, JoinToken: string }>,
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1592,8 +1592,8 @@ export type post_SwarmLeave = {
         
           }
       responses: {200: unknown,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1610,9 +1610,9 @@ export type post_SwarmUpdate = {
         body:  Schemas.SwarmSpec,
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1622,9 +1622,9 @@ export type get_SwarmUnlockkey = {
       requestFormat: "json",
       responseFormat: "json",
       parameters: never,
-      responses: {200: Partial<{ UnlockKey: string }>,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (Partial<{ UnlockKey: string }> | Partial<{ UnlockKey: string }>),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1658,9 +1658,9 @@ export type get_ServiceList = {
         
         
           }
-      responses: {200: Array<Schemas.Service>,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (Array<Schemas.Service> | Array<Schemas.Service>),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1697,10 +1697,10 @@ export type get_ServiceInspect = {
         
         
           }
-      responses: {200: Schemas.Service,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+      responses: {200: (Schemas.Service | Schemas.Service),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1717,9 +1717,9 @@ export type delete_ServiceDelete = {
         
           }
       responses: {200: unknown,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -1906,10 +1906,10 @@ export type post_SecretUpdate = {
         body:  Schemas.SecretSpec,
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -2001,10 +2001,10 @@ export type post_ConfigUpdate = {
         body:  Schemas.ConfigSpec,
           }
       responses: {200: unknown,
-400: Schemas.ErrorResponse,
-404: Schemas.ErrorResponse,
-500: Schemas.ErrorResponse,
-503: Schemas.ErrorResponse,
+400: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+404: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+500: (Schemas.ErrorResponse | Schemas.ErrorResponse),
+503: (Schemas.ErrorResponse | Schemas.ErrorResponse),
 },
       
     }
@@ -2476,8 +2476,12 @@ export class ApiClient {
   defaultDecodePathParams = (url: string, params: unknown): string => {
     const record = (params ?? {}) as Record<string, unknown>;
     return url
-      .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
-      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
+      .replace(/{([^}]+)}/g, (_, key: string) =>
+        record[key] != null ? encodeURIComponent(String(record[key])) : `{${key}}`,
+      )
+      .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+        record[key] != null ? encodeURIComponent(String(record[key])) : `:${key}`,
+      );
   }
 
   /** Uses URLSearchParams, skips null/undefined values */
@@ -2512,21 +2516,22 @@ export class ApiClient {
 
   defaultParseResponseData = async (response: FetcherResponse): Promise<unknown> => {
     const contentType = response.headers.get("content-type") ?? "";
-    if (contentType.includes("text/event-stream")) {
+    const normalizedContentType = contentType.toLowerCase();
+    if (normalizedContentType.includes("text/event-stream")) {
       return response.body ?? null;
     }
-    if (contentType.startsWith("text/")) {
+    if (normalizedContentType.startsWith("text/")) {
       return (await response.text())
     }
 
-    if (contentType.toLowerCase().startsWith("application/octet-stream")) {
+    if (normalizedContentType.startsWith("application/octet-stream")) {
       return new Blob([await response.arrayBuffer()])
     }
 
     if (
-      contentType.includes("application/json") ||
-      (contentType.includes("application/") && contentType.includes("json")) ||
-      contentType === "*/*"
+      normalizedContentType.includes("application/json") ||
+      (normalizedContentType.includes("application/") && normalizedContentType.includes("json")) ||
+      normalizedContentType === "*/*"
       ) {
       try {
         return await response.json();

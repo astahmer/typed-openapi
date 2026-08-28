@@ -396,7 +396,7 @@ export const get_ContainerTop = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ ps_args: String_default_neg_ef_prop })), path: S.Struct({ id: S.String }) },
-  responses: { 200: S.Struct({ Titles: S.optional(S.Array(S.String)), Processes: S.optional(S.Array(S.Array(S.String))) }), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Union(S.Struct({ Titles: S.optional(S.Array(S.String)), Processes: S.optional(S.Array(S.Array(S.String))) }), S.Struct({ Titles: S.optional(S.Array(S.String)), Processes: S.optional(S.Array(S.Array(S.String))) })), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -426,7 +426,7 @@ export const get_ContainerExport = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ id: S.String }) },
-  responses: { 200: S.Unknown, 404: S.Unknown, 500: S.Unknown },
+  responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, S.Unknown), 500: ErrorResponse },
 };
 
 export type get_ContainerStats = typeof get_ContainerStats;
@@ -446,7 +446,7 @@ export const post_ContainerResize = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ h: S.optional(S.NumberFromString.pipe(S.int())), w: S.optional(S.NumberFromString.pipe(S.int())) })), path: S.Struct({ id: S.String }) },
-  responses: { 200: S.Unknown, 404: S.Unknown, 500: S.Unknown },
+  responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, S.Unknown), 500: ErrorResponse },
 };
 
 export type post_ContainerStart = typeof post_ContainerStart;
@@ -456,7 +456,7 @@ export const post_ContainerStart = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ detachKeys: S.optional(S.String) })), path: S.Struct({ id: S.String }) },
-  responses: { 204: S.Unknown, 304: S.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 304: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_ContainerStop = typeof post_ContainerStop;
@@ -466,7 +466,7 @@ export const post_ContainerStop = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ signal: S.optional(S.String), t: S.optional(S.NumberFromString.pipe(S.int())) })), path: S.Struct({ id: S.String }) },
-  responses: { 204: S.Unknown, 304: S.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 304: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_ContainerRestart = typeof post_ContainerRestart;
@@ -476,7 +476,7 @@ export const post_ContainerRestart = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ signal: S.optional(S.String), t: S.optional(S.NumberFromString.pipe(S.int())) })), path: S.Struct({ id: S.String }) },
-  responses: { 204: S.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_ContainerKill = typeof post_ContainerKill;
@@ -486,7 +486,7 @@ export const post_ContainerKill = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ signal: String_default_SIGKILL_prop })), path: S.Struct({ id: S.String }) },
-  responses: { 204: S.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 409: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_ContainerUpdate = typeof post_ContainerUpdate;
@@ -506,7 +506,7 @@ export const post_ContainerRename = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.Struct({ name: S.String }), path: S.Struct({ id: S.String }) },
-  responses: { 204: S.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 409: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_ContainerPause = typeof post_ContainerPause;
@@ -516,7 +516,7 @@ export const post_ContainerPause = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ id: S.String }) },
-  responses: { 204: S.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_ContainerUnpause = typeof post_ContainerUnpause;
@@ -526,7 +526,7 @@ export const post_ContainerUnpause = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ id: S.String }) },
-  responses: { 204: S.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_ContainerAttach = typeof post_ContainerAttach;
@@ -546,7 +546,7 @@ export const get_ContainerAttachWebsocket = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ detachKeys: S.optional(S.String), logs: Union_default_false_prop, stream: Union_default_false_prop, stdin: Union_default_false_prop, stdout: Union_default_false_prop, stderr: Union_default_false_prop })), path: S.Struct({ id: S.String }) },
-  responses: { 101: S.Unknown, 200: S.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 101: S.Unknown, 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_ContainerWait = typeof post_ContainerWait;
@@ -566,7 +566,7 @@ export const delete_ContainerDelete = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ v: Union_default_false_prop, force: Union_default_false_prop, link: Union_default_false_prop })), path: S.Struct({ id: S.String }) },
-  responses: { 204: S.Unknown, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 409: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type get_ContainerArchive = typeof get_ContainerArchive;
@@ -586,7 +586,7 @@ export const put_PutContainerArchive = {
   requestFormat: S.Literal("binary"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.Struct({ path: S.String, noOverwriteDirNonDir: S.optional(S.String), copyUIDGID: S.optional(S.String) }), path: S.Struct({ id: S.String }), body: S.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob) },
-  responses: { 200: S.Unknown, 400: ErrorResponse, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 403: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type head_ContainerArchiveInfo = typeof head_ContainerArchiveInfo;
@@ -596,7 +596,7 @@ export const head_ContainerArchiveInfo = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.Struct({ path: S.String }), path: S.Struct({ id: S.String }) },
-  responses: { 200: S.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
   responseHeaders: { 200: S.Struct({ "X-Docker-Container-Path-Stat": S.String }) },
 };
 
@@ -677,7 +677,7 @@ export const post_ImagePush = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ tag: S.optional(S.String) })), path: S.Struct({ name: S.String }), header: S.Struct({ "X-Registry-Auth": S.String }) },
-  responses: { 200: S.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_ImageTag = typeof post_ImageTag;
@@ -687,7 +687,7 @@ export const post_ImageTag = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ repo: S.optional(S.String), tag: S.optional(S.String) })), path: S.Struct({ name: S.String }) },
-  responses: { 201: S.Unknown, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 201: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 409: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type delete_ImageDelete = typeof delete_ImageDelete;
@@ -757,7 +757,7 @@ export const get_SystemPing = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: S.Never,
-  responses: { 200: S.Unknown, 500: S.Unknown },
+  responses: { 200: S.String, 500: ErrorResponse },
   responseHeaders: { 200: S.Struct({ Swarm: Union_default_inactive_prop, "Docker-Experimental": S.Boolean, "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop, "API-Version": S.String, "Builder-Version": String_default_2_prop }), 500: S.Struct({ "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop }) },
 };
 
@@ -768,7 +768,7 @@ export const head_SystemPingHead = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: S.Never,
-  responses: { 200: S.Unknown, 500: S.Unknown },
+  responses: { 200: S.String, 500: ErrorResponse },
   responseHeaders: { 200: S.Struct({ Swarm: Union_default_inactive_prop, "Docker-Experimental": S.Boolean, "Cache-Control": String_default_noneg_cache_noneg_store_mustneg_revalida_prop, Pragma: String_default_noneg_cache_prop, "API-Version": S.String, "Builder-Version": S.String }) },
 };
 
@@ -799,7 +799,7 @@ export const get_SystemDataUsage = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ type: S.optional(S.Array(S.Union(S.Literal("container"), S.Literal("image"), S.Literal("volume"), S.Literal("build-cache")))) })) },
-  responses: { 200: S.Struct({ LayersSize: S.optional(S.Int), Images: S.optional(S.Array(ImageSummary)), Containers: S.optional(S.Array(ContainerSummary)), Volumes: S.optional(S.Array(Volume)), BuildCache: S.optional(S.Array(BuildCache)) }), 500: ErrorResponse },
+  responses: { 200: S.Union(S.Struct({ LayersSize: S.optional(S.Int), Images: S.optional(S.Array(ImageSummary)), Containers: S.optional(S.Array(ContainerSummary)), Volumes: S.optional(S.Array(Volume)), BuildCache: S.optional(S.Array(BuildCache)) }), S.Struct({ LayersSize: S.optional(S.Int), Images: S.optional(S.Array(ImageSummary)), Containers: S.optional(S.Array(ContainerSummary)), Volumes: S.optional(S.Array(Volume)), BuildCache: S.optional(S.Array(BuildCache)) })), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -859,7 +859,7 @@ export const post_ExecResize = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ h: S.optional(S.NumberFromString.pipe(S.int())), w: S.optional(S.NumberFromString.pipe(S.int())) })), path: S.Struct({ id: S.String }) },
-  responses: { 200: S.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type get_ExecInspect = typeof get_ExecInspect;
@@ -919,7 +919,7 @@ export const delete_VolumeDelete = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop })), path: S.Struct({ name: S.String }) },
-  responses: { 204: S.Unknown, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 409: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_VolumePrune = typeof post_VolumePrune;
@@ -959,7 +959,7 @@ export const delete_NetworkDelete = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ id: S.String }) },
-  responses: { 204: S.Unknown, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 403: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_NetworkCreate = typeof post_NetworkCreate;
@@ -979,7 +979,7 @@ export const post_NetworkConnect = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ id: S.String }), body: S.optional(S.Struct({ Container: S.optional(S.String), EndpointConfig: S.optional(EndpointSettings) })) },
-  responses: { 200: S.Unknown, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Unknown, 403: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_NetworkDisconnect = typeof post_NetworkDisconnect;
@@ -989,7 +989,7 @@ export const post_NetworkDisconnect = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ id: S.String }), body: S.optional(S.Struct({ Container: S.optional(S.String), Force: S.optional(S.Boolean) })) },
-  responses: { 200: S.Unknown, 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Unknown, 403: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_NetworkPrune = typeof post_NetworkPrune;
@@ -1019,7 +1019,7 @@ export const get_GetPluginPrivileges = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.Struct({ remote: S.String }) },
-  responses: { 200: S.Array(PluginPrivilege), 500: ErrorResponse },
+  responses: { 200: S.Union(S.Array(PluginPrivilege), S.Array(PluginPrivilege)), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_PluginPull = typeof post_PluginPull;
@@ -1039,7 +1039,7 @@ export const get_PluginInspect = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ name: S.String }) },
-  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Union(Plugin, Plugin), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type delete_PluginDelete = typeof delete_PluginDelete;
@@ -1049,7 +1049,7 @@ export const delete_PluginDelete = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop })), path: S.Struct({ name: S.String }) },
-  responses: { 200: Plugin, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Union(Plugin, Plugin), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_PluginEnable = typeof post_PluginEnable;
@@ -1059,7 +1059,7 @@ export const post_PluginEnable = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ timeout: Schema_default_0_prop })), path: S.Struct({ name: S.String }) },
-  responses: { 200: S.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_PluginDisable = typeof post_PluginDisable;
@@ -1069,7 +1069,7 @@ export const post_PluginDisable = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ force: S.optional(S.transform(S.Union(S.Boolean, S.String, S.Number), S.Boolean, { decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })) })), path: S.Struct({ name: S.String }) },
-  responses: { 200: S.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_PluginUpgrade = typeof post_PluginUpgrade;
@@ -1079,7 +1079,7 @@ export const post_PluginUpgrade = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.Struct({ remote: S.String }), path: S.Struct({ name: S.String }), header: S.optional(S.Struct({ "X-Registry-Auth": S.optional(S.String) })), body: S.Array(PluginPrivilege) },
-  responses: { 204: S.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_PluginCreate = typeof post_PluginCreate;
@@ -1089,7 +1089,7 @@ export const post_PluginCreate = {
   requestFormat: S.Literal("text"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.Struct({ name: S.String }) },
-  responses: { 204: S.Unknown, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_PluginPush = typeof post_PluginPush;
@@ -1099,7 +1099,7 @@ export const post_PluginPush = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ name: S.String }) },
-  responses: { 200: S.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_PluginSet = typeof post_PluginSet;
@@ -1109,7 +1109,7 @@ export const post_PluginSet = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ name: S.String }), body: S.Array(S.String) },
-  responses: { 204: S.Unknown, 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 204: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type get_NodeList = typeof get_NodeList;
@@ -1119,7 +1119,7 @@ export const get_NodeList = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String) })) },
-  responses: { 200: S.Array(Node), 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Union(S.Array(Node), S.Array(Node)), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type get_NodeInspect = typeof get_NodeInspect;
@@ -1129,7 +1129,7 @@ export const get_NodeInspect = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ id: S.String }) },
-  responses: { 200: Node, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Union(Node, Node), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type delete_NodeDelete = typeof delete_NodeDelete;
@@ -1139,7 +1139,7 @@ export const delete_NodeDelete = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop })), path: S.Struct({ id: S.String }) },
-  responses: { 200: S.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_NodeUpdate = typeof post_NodeUpdate;
@@ -1149,7 +1149,7 @@ export const post_NodeUpdate = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()) }), path: S.Struct({ id: S.String }), body: NodeSpec },
-  responses: { 200: S.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type get_SwarmInspect = typeof get_SwarmInspect;
@@ -1159,7 +1159,7 @@ export const get_SwarmInspect = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: S.Never,
-  responses: { 200: Swarm, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Union(Swarm, Swarm), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_SwarmInit = typeof post_SwarmInit;
@@ -1169,7 +1169,7 @@ export const post_SwarmInit = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { body: S.optional(S.Struct({ ListenAddr: S.optional(S.String), AdvertiseAddr: S.optional(S.String), DataPathAddr: S.optional(S.String), DataPathPort: S.optional(S.Int), DefaultAddrPool: S.optional(S.Array(S.String)), ForceNewCluster: S.optional(S.Boolean), SubnetSize: S.optional(S.Int), Spec: S.optional(SwarmSpec) })) },
-  responses: { 200: S.String, 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Union(S.String, S.String), 400: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_SwarmJoin = typeof post_SwarmJoin;
@@ -1179,7 +1179,7 @@ export const post_SwarmJoin = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { body: S.optional(S.Struct({ ListenAddr: S.optional(S.String), AdvertiseAddr: S.optional(S.String), DataPathAddr: S.optional(S.String), RemoteAddrs: S.optional(S.Array(S.String)), JoinToken: S.optional(S.String) })) },
-  responses: { 200: S.Unknown, 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_SwarmLeave = typeof post_SwarmLeave;
@@ -1189,7 +1189,7 @@ export const post_SwarmLeave = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ force: Union_default_false_prop })) },
-  responses: { 200: S.Unknown, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Unknown, 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_SwarmUpdate = typeof post_SwarmUpdate;
@@ -1199,7 +1199,7 @@ export const post_SwarmUpdate = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()), rotateWorkerToken: Union_default_false_prop, rotateManagerToken: Union_default_false_prop, rotateManagerUnlockKey: Union_default_false_prop }), body: SwarmSpec },
-  responses: { 200: S.Unknown, 400: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type get_SwarmUnlockkey = typeof get_SwarmUnlockkey;
@@ -1209,7 +1209,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: S.Never,
-  responses: { 200: S.Struct({ UnlockKey: S.optional(S.String) }), 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Union(S.Struct({ UnlockKey: S.optional(S.String) }), S.Struct({ UnlockKey: S.optional(S.String) })), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1229,7 +1229,7 @@ export const get_ServiceList = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ filters: S.optional(S.String), status: S.optional(S.transform(S.Union(S.Boolean, S.String, S.Number), S.Boolean, { decode: (x) => x === true || x === "true" || x === 1 || x === "1", encode: (a) => a })) })) },
-  responses: { 200: S.Array(Service), 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Union(S.Array(Service), S.Array(Service)), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_ServiceCreate = typeof post_ServiceCreate;
@@ -1249,7 +1249,7 @@ export const get_ServiceInspect = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.optional(S.Struct({ insertDefaults: Union_default_false_prop })), path: S.Struct({ id: S.String }) },
-  responses: { 200: Service, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Union(Service, Service), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type delete_ServiceDelete = typeof delete_ServiceDelete;
@@ -1259,7 +1259,7 @@ export const delete_ServiceDelete = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { path: S.Struct({ id: S.String }) },
-  responses: { 200: S.Unknown, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Unknown, 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type post_ServiceUpdate = typeof post_ServiceUpdate;
@@ -1359,7 +1359,7 @@ export const post_SecretUpdate = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()) }), path: S.Struct({ id: S.String }), body: SecretSpec },
-  responses: { 200: S.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type get_ConfigList = typeof get_ConfigList;
@@ -1409,7 +1409,7 @@ export const post_ConfigUpdate = {
   requestFormat: S.Literal("json"),
   responseFormat: S.Literal("json"),
   parameters: { query: S.Struct({ version: S.NumberFromString.pipe(S.int()) }), path: S.Struct({ id: S.String }), body: ConfigSpec },
-  responses: { 200: S.Unknown, 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 200: S.Unknown, 400: S.Union(ErrorResponse, ErrorResponse), 404: S.Union(ErrorResponse, ErrorResponse), 500: S.Union(ErrorResponse, ErrorResponse), 503: S.Union(ErrorResponse, ErrorResponse) },
 };
 
 export type get_DistributionInspect = typeof get_DistributionInspect;
@@ -1998,8 +1998,12 @@ export class EffectApiClient {
         ((url: string, p: unknown) => {
           const record = (p ?? {}) as Record<string, unknown>;
           return url
-            .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
-            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
+            .replace(/{([^}]+)}/g, (_, key: string) =>
+              record[key] != null ? encodeURIComponent(String(record[key])) : `{${key}}`,
+            )
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+              record[key] != null ? encodeURIComponent(String(record[key])) : `:${key}`,
+            );
         });
       const encodeSearch =
         self.effectFetcher.encodeSearchParams ??
@@ -2029,17 +2033,21 @@ export class EffectApiClient {
         self.effectFetcher.parseResponseData ??
         (async (response: FetcherResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
-          if (contentType.includes("text/event-stream")) {
+          const normalizedContentType = contentType.toLowerCase();
+          if (normalizedContentType.includes("text/event-stream")) {
             return response.body ?? null;
           }
-          if (contentType.includes("json") || contentType === "*/*") {
+          if (normalizedContentType.startsWith("application/octet-stream")) {
+            return new Blob([await response.arrayBuffer()]);
+          }
+          if (normalizedContentType.includes("json") || normalizedContentType === "*/*") {
             try {
               return await response.json();
             } catch {
               return undefined;
             }
           }
-          if (contentType.startsWith("text/")) return response.text();
+          if (normalizedContentType.startsWith("text/")) return response.text();
           return undefined;
         });
 
@@ -2076,7 +2084,10 @@ export class EffectApiClient {
 
       if (responseFormat !== "sse" && (validateSide === "output" || validateSide === "both") && response.ok && endpointSchema?.responses) {
         const responseSchema =
-          endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+          endpointSchema.responses[String(response.status)] ??
+          endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??
+          endpointSchema.responses[String(Math.floor(response.status / 100)) + "XX"] ??
+          endpointSchema.responses["default"];
         if (responseSchema) {
 
           if (self.onValidate) {

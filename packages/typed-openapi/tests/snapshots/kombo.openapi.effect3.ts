@@ -3434,8 +3434,12 @@ export class EffectApiClient {
         ((url: string, p: unknown) => {
           const record = (p ?? {}) as Record<string, unknown>;
           return url
-            .replace(/{(\w+)}/g, (_, key: string) => (record[key] != null ? String(record[key]) : `{${key}}`))
-            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) => (record[key] != null ? String(record[key]) : `:${key}`));
+            .replace(/{([^}]+)}/g, (_, key: string) =>
+              record[key] != null ? encodeURIComponent(String(record[key])) : `{${key}}`,
+            )
+            .replace(/:([a-zA-Z0-9_]+)/g, (_, key: string) =>
+              record[key] != null ? encodeURIComponent(String(record[key])) : `:${key}`,
+            );
         });
       const encodeSearch =
         self.effectFetcher.encodeSearchParams ??
@@ -3465,17 +3469,21 @@ export class EffectApiClient {
         self.effectFetcher.parseResponseData ??
         (async (response: FetcherResponse) => {
           const contentType = response.headers.get("content-type") ?? "";
-          if (contentType.includes("text/event-stream")) {
+          const normalizedContentType = contentType.toLowerCase();
+          if (normalizedContentType.includes("text/event-stream")) {
             return response.body ?? null;
           }
-          if (contentType.includes("json") || contentType === "*/*") {
+          if (normalizedContentType.startsWith("application/octet-stream")) {
+            return new Blob([await response.arrayBuffer()]);
+          }
+          if (normalizedContentType.includes("json") || normalizedContentType === "*/*") {
             try {
               return await response.json();
             } catch {
               return undefined;
             }
           }
-          if (contentType.startsWith("text/")) return response.text();
+          if (normalizedContentType.startsWith("text/")) return response.text();
           return undefined;
         });
 
@@ -3512,7 +3520,10 @@ export class EffectApiClient {
 
       if (responseFormat !== "sse" && (validateSide === "output" || validateSide === "both") && response.ok && endpointSchema?.responses) {
         const responseSchema =
-          endpointSchema.responses[String(response.status)] ?? endpointSchema.responses["default"];
+          endpointSchema.responses[String(response.status)] ??
+          endpointSchema.responses[String(Math.floor(response.status / 100)) + "xx"] ??
+          endpointSchema.responses[String(Math.floor(response.status / 100)) + "XX"] ??
+          endpointSchema.responses["default"];
         if (responseSchema) {
 
           if (self.onValidate) {

@@ -360,15 +360,16 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
       properties,
       required,
       additionalProperties,
-      patternProperties:
-        Object.keys(schema.patternProperties ?? {}).length > 0
-          ? Object.fromEntries(
+      ...(Object.keys(schema.patternProperties ?? {}).length > 0
+        ? {
+            patternProperties: Object.fromEntries(
               Object.entries(schema.patternProperties ?? {}).map(([pattern, value]) => [
                 pattern,
                 openApiToIrInternal(value, ctx, [...path, "patternProperties", pattern]),
               ]),
-            )
-          : undefined,
+            ),
+          }
+        : {}),
       constraints: objectConstraints(schema),
       meta,
       partial: isPartial,
