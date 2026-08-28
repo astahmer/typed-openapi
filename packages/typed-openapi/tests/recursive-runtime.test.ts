@@ -1,7 +1,11 @@
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
+import { z as z3 } from "zod/v3";
 import { Schema } from "effect";
+import * as effect3Schema from "@effect/schema/Schema";
 import * as v from "valibot";
+import { Type as TypeBox, type TSchema } from "@sinclair/typebox";
+import { Value as TypeBoxValue } from "@sinclair/typebox/value";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../src/map-openapi-endpoints.ts";
@@ -17,13 +21,41 @@ const fixturePath = `${__dirname}/samples/recursive.openapi.yaml`;
 const stripModuleNoise = (src: string) =>
   src
     .replace(/import[\s\S]*?from\s+["'][^"']+["'];?\s*/g, "")
-    .replace(/export type [\s\S]*?;\s*/g, "")
+    .replace(/^export type [^\n]*(?:\n|$)/gm, "")
     .replace(/export interface [\s\S]*?\}\s*/g, "")
     .replace(/: z\.ZodType<[^>]+>/g, "")
     .replace(/: v\.GenericSchema<[^>]+>/g, "")
     .replace(/: Schema\.Schema<[^>]+>/g, "")
     .replace(/: S\.Schema<[^>]+>/g, "")
     .replace(/\bexport\s+/g, "");
+
+const forwardReferenceDoc = {
+  openapi: "3.0.3",
+  info: { title: "forward reference", version: "1" },
+  paths: {},
+  components: {
+    schemas: {
+      First: {
+        type: "object",
+        required: ["second"],
+        properties: { second: { $ref: "#/components/schemas/Second" } },
+      },
+      Second: { type: "object", properties: { value: { type: "string" } } },
+    },
+  },
+} as OpenAPIObject;
+
+const reversedNamedSchemas = () => {
+  const ctx = mapOpenApiEndpoints(forwardReferenceDoc);
+  return {
+    ctx,
+    namedSchemas: ctx.refs
+      .getOrderedSchemas()
+      .filter(([, infos]) => infos.kind === "schemas")
+      .map(([node, infos]) => ({ name: infos.normalized, node }))
+      .reverse(),
+  };
+};
 
 describe("recursive runtime schemas", async () => {
   const openApiDoc = (await SwaggerParser.parse(fixturePath)) as OpenAPIObject;
@@ -139,27 +171,7 @@ describe("recursive runtime schemas", async () => {
   });
 
   test("zod defers a later schema reference even when declaration order is supplied externally", () => {
-    const doc = {
-      openapi: "3.0.3",
-      info: { title: "forward reference", version: "1" },
-      paths: {},
-      components: {
-        schemas: {
-          First: {
-            type: "object",
-            required: ["second"],
-            properties: { second: { $ref: "#/components/schemas/Second" } },
-          },
-          Second: { type: "object", properties: { value: { type: "string" } } },
-        },
-      },
-    } as OpenAPIObject;
-    const ctx = mapOpenApiEndpoints(doc);
-    const namedSchemas = ctx.refs
-      .getOrderedSchemas()
-      .filter(([, infos]) => infos.kind === "schemas")
-      .map(([node, infos]) => ({ name: infos.normalized, node }))
-      .reverse();
+    const { ctx, namedSchemas } = reversedNamedSchemas();
     const generated = emitRuntimeFile({
       adapter: getRuntimeAdapter("zod"),
       refs: ctx.refs,
@@ -174,6 +186,87 @@ describe("recursive runtime schemas", async () => {
     const body = stripModuleNoise(generated);
     const { First } = new Function("z", `${body}\nreturn { First };`)(z) as { First: z.ZodType };
     expect(First.safeParse({ second: { value: "ok" } }).success).toBe(true);
+  });
+
+  test.each(["zod", "zod3", "effect", "effect3", "valibot", "arktype", "typebox"] as const)(
+    "%s defers externally reversed forward references at runtime",
+    async (runtime) => {
+      const { ctx, namedSchemas } = reversedNamedSchemas();
+      const generated = emitRuntimeFile({
+        adapter: getRuntimeAdapter(runtime),
+        refs: ctx.refs,
+        endpointList: [],
+        validation: resolveValidationPolicy("strict"),
+        schemasOnly: true,
+        namedSchemas,
+        typeNamespace: "__TypedOpenapi",
+      });
+      const body = stripModuleNoise(generated);
+
+      const First =
+        runtime === "zod"
+          ? new Function("z", `${body}\nreturn First;`)(z)
+          : runtime === "zod3"
+            ? new Function("z", `${body}\nreturn First;`)(z3)
+            : runtime === "effect"
+              ? new Function("Schema", `${body}\nreturn First;`)(Schema)
+              : runtime === "effect3"
+                ? new Function("S", `${body}\nreturn First;`)(effect3Schema)
+                : runtime === "valibot"
+                  ? new Function("v", `${body}\nreturn First;`)(v)
+                  : runtime === "arktype"
+                    ? new Function("type", `${body}\nreturn First;`)((await import("arktype")).type)
+                    : new Function("Type", `${body}\nreturn First;`)(TypeBox);
+
+      if (runtime === "zod" || runtime === "zod3") {
+        expect(First.safeParse({ second: { value: "ok" } }).success).toBe(true);
+      } else if (runtime === "effect" || runtime === "effect3") {
+        const schemaNamespace = runtime === "effect" ? Schema : effect3Schema;
+        expect(schemaNamespace.is(First)({ second: { value: "ok" } })).toBe(true);
+      } else if (runtime === "valibot") {
+        expect(v.safeParse(First, { second: { value: "ok" } }).success).toBe(true);
+      } else if (runtime === "arktype") {
+        expect(First({ second: { value: "ok" } }).second.value).toBe("ok");
+      } else {
+        expect(TypeBoxValue.Check(First, { second: { value: "ok" } })).toBe(true);
+      }
+    },
+  );
+
+  test("typebox modules keep mutually recursive schemas as real runtime refs", () => {
+    const doc = {
+      openapi: "3.0.3",
+      info: { title: "mutual recursion", version: "1" },
+      paths: {},
+      components: {
+        schemas: {
+          Left: {
+            type: "object",
+            properties: { right: { $ref: "#/components/schemas/Right" } },
+          },
+          Right: {
+            type: "object",
+            properties: { left: { $ref: "#/components/schemas/Left" } },
+          },
+        },
+      },
+    } as OpenAPIObject;
+    const generated = generateFile({
+      ...mapOpenApiEndpoints(doc),
+      runtime: "typebox",
+      schemasOnly: true,
+      validation: "loose",
+    });
+
+    expect(generated).toContain("Type.Module({");
+    expect(generated).toContain('Type.Ref("Right")');
+    const body = stripModuleNoise(generated);
+    const { Left, Right } = new Function("Type", `${body}\nreturn { Left, Right };`)(TypeBox) as {
+      Left: TSchema;
+      Right: TSchema;
+    };
+    expect(TypeBoxValue.Check(Left, { right: { left: { right: {} } } })).toBe(true);
+    expect(TypeBoxValue.Check(Right, { left: { right: { left: {} } } })).toBe(true);
   });
 
   test("effect emits Schema.suspend", () => {

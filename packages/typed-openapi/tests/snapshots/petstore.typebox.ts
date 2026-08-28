@@ -58,7 +58,6 @@ export type ApiResponse = Static<typeof ApiResponse>;
 export const ApiResponse = Type.Partial(
   Type.Object({ code: Type.Integer(), type: Type.String(), message: Type.String() }),
 );
-
 // </Schemas>
 
 // <Endpoints>

@@ -317,7 +317,6 @@ export const OCIPlatform = Type.Partial(Type.Object({ architecture: Type.String(
 
 export type DistributionInspect = Static<typeof DistributionInspect>;
 export const DistributionInspect = Type.Object({ Descriptor: OCIDescriptor, Platforms: Type.Array(OCIPlatform) });
-
 // </Schemas>
 
 // <Endpoints>

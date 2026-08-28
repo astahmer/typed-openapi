@@ -3,6 +3,7 @@ import {
   applyNumberConstraints,
   applyStringConstraints,
   arktypeDefaultDef,
+  containsDeferredNamedRef,
   emitBinaryBlobCheck,
   emitStreamCheck,
   findMappedUnionMember,
@@ -259,7 +260,10 @@ const emitNamedSchemas = (
   ctx: EmitCtx,
   typeReferenceForName?: (name: string) => string,
 ): string => {
-  if (ctx.recursiveNames.size === 0 || schemas.length === 0) {
+  const needsModule =
+    ctx.recursiveNames.size > 0 ||
+    schemas.some(({ name, node }) => containsDeferredNamedRef(node, { ...ctx, currentSchemaName: name }));
+  if (!needsModule || schemas.length === 0) {
     return schemas.map(({ name, node }) => emitNamedSchema(name, node, ctx, typeReferenceForName?.(name))).join("\n\n");
   }
 

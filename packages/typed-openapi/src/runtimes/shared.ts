@@ -154,6 +154,41 @@ export const shouldDeferNamedSchemaRef = (
   return currentIndex !== undefined && referencedIndex !== undefined && referencedIndex > currentIndex;
 };
 
+/** True when a schema contains a reference to a component declared later in the emitted file. */
+export const containsDeferredNamedRef = (
+  node: SchemaNode,
+  ctx: Pick<EmitCtx, "currentSchemaName" | "schemaOrder">,
+): boolean => {
+  switch (node.kind) {
+    case "ref":
+      return (
+        shouldDeferNamedSchemaRef(node.name, ctx) ||
+        (node.generics?.some((generic) => containsDeferredNamedRef(generic, ctx)) ?? false)
+      );
+    case "array":
+      return containsDeferredNamedRef(node.items, ctx);
+    case "tuple":
+      return (
+        node.items.some((item) => containsDeferredNamedRef(item, ctx)) ||
+        (node.rest ? containsDeferredNamedRef(node.rest, ctx) : false)
+      );
+    case "object":
+      return (
+        Object.values(node.properties).some((property) => containsDeferredNamedRef(property, ctx)) ||
+        (typeof node.additionalProperties === "object" && containsDeferredNamedRef(node.additionalProperties, ctx))
+      );
+    case "union":
+    case "intersection":
+      return node.members.some((member) => containsDeferredNamedRef(member, ctx));
+    case "not":
+      return containsDeferredNamedRef(node.schema, ctx);
+    case "record":
+      return containsDeferredNamedRef(node.key, ctx) || containsDeferredNamedRef(node.value, ctx);
+    default:
+      return false;
+  }
+};
+
 /** Turn a schema expr + default literal into a stable helper name, e.g. `Boolean_default_false`. */
 export const effectDefaultHelperName = (baseExpr: string, lit: string): string => {
   const simple = baseExpr.match(/^(?:Schema|S)\.([A-Za-z][A-Za-z0-9]*)$/);
@@ -180,8 +215,8 @@ export const effectDefaultHelperName = (baseExpr: string, lit: string): string =
  * - v4 (`effect`): `withDecodingDefaultType(Effect.succeed(...))` for both
  *
  * Default helper consts are emitted before component schemas, so referencing a named schema here
- * would hit the temporal dead zone at module load. In v4, such expressions are deferred with
- * `Schema.suspend(() => ...)` when the underlying node contains a component `ref`.
+ * would hit the temporal dead zone at module load. Such expressions are deferred with the
+ * adapter's suspend helper when the underlying node contains a component `ref`.
  */
 export const internEffectDefault = (
   baseExpr: string,
@@ -206,13 +241,13 @@ export const internEffectDefault = (
     name = `${name}_${map.size}`;
   }
 
-  const base = api === "v4" && node && containsNamedRef(node) ? `Schema.suspend(() => ${baseExpr})` : baseExpr;
+  const base = node && containsNamedRef(node) ? `${schemaNs}.suspend(() => ${baseExpr})` : baseExpr;
   const decl =
     api === "v4"
       ? `const ${name} = ${base}.pipe(${schemaNs}.withDecodingDefaultType(Effect.succeed(${lit})));`
       : kind === "prop"
-        ? `const ${name} = ${schemaNs}.optionalWith(${baseExpr}, { default: () => ${lit} });`
-        : `const ${name} = ${schemaNs}.transform(${schemaNs}.UndefinedOr(${baseExpr}), ${baseExpr}, { strict: true, decode: (i) => (i === undefined ? ${lit} : i), encode: (a) => a });`;
+        ? `const ${name} = ${schemaNs}.optionalWith(${base}, { default: () => ${lit} });`
+        : `const ${name} = ${schemaNs}.transform(${schemaNs}.UndefinedOr(${base}), ${base}, { strict: true, decode: (i) => (i === undefined ? ${lit} : i), encode: (a) => a });`;
 
   map.set(key, { name, decl });
   return name;

@@ -15,6 +15,7 @@ import {
   objectKey,
   objectProps,
   quote,
+  shouldDeferNamedSchemaRef,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
@@ -207,6 +208,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.name === "Record" && node.generics?.length === 2) {
         return emitRecord(emitNode(node.generics[0]!, ctx), emitNode(node.generics[1]!, ctx));
       }
+      if (shouldDeferNamedSchemaRef(node.name, ctx)) return `${S}.suspend(() => ${node.name})`;
       return node.name;
     }
     case "record":
@@ -219,7 +221,7 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         .map(({ key, optional, expr, meta }) => {
           const lit = jsLiteral(meta.default);
           if (lit !== undefined) {
-            const named = internEffectDefault(expr, meta, S, ctx, "prop");
+            const named = internEffectDefault(expr, meta, S, ctx, "prop", "v3", node.properties[key]);
             return `${objectKey(key)}: ${named ?? `${S}.optionalWith(${expr}, { default: () => ${lit} })`}`;
           }
           return `${objectKey(key)}: ${optional || forceOptional ? `${S}.optional(${expr})` : expr}`;
@@ -255,7 +257,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const inner = emitNodeInner(node, ctx);
   if (ctx.omitDefaults || node.meta.default === undefined || node.kind === "custom") return inner;
   if (node.kind === "object") return inner;
-  return internEffectDefault(inner, node.meta, S, ctx, "value") ?? inner;
+  return internEffectDefault(inner, node.meta, S, ctx, "value", "v3", node) ?? inner;
 };
 
 export const effect3Adapter: RuntimeAdapter = {

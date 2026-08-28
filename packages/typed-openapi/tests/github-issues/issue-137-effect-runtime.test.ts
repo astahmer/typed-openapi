@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { describe, expect, test } from "vitest";
 import { Schema } from "effect";
+import * as LegacySchema from "@effect/schema/Schema";
 import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { mapOpenApiEndpoints } from "../../src/map-openapi-endpoints.ts";
 import { generateFile } from "../../src/generator.ts";
@@ -160,6 +161,17 @@ describe("issue #137 — effect runtime codegen bugs", () => {
     const mod = await loadGenerated("bug2", src);
     const config = mod.Config as Schema.Schema<unknown>;
     expect(Schema.decodeUnknownSync(config)({})).toEqual({ path_mappings: [] });
+  });
+
+  test("Bug 2: effect3 also defers defaulted $refs past component declarations", async () => {
+    const src = generateFile({ ...mapOpenApiEndpoints(bug2Spec), runtime: "effect3", schemasOnly: true });
+    const output = await prettify(src);
+
+    expect(output).toContain("S.suspend(() => S.Array(PathMapping))");
+
+    const mod = await loadGenerated("bug2-effect3", src);
+    const config = mod.Config as LegacySchema.Schema<unknown>;
+    expect(LegacySchema.decodeUnknownSync(config)({})).toEqual({ path_mappings: [] });
   });
 
   test("Bug 3: narrowed enum in allOf remains enforced", async () => {

@@ -2,6 +2,7 @@ import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 
 // <Schemas>
+
 // </Schemas>
 
 // <Endpoints>

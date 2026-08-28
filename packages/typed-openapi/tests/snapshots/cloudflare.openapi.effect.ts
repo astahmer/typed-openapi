@@ -4669,10 +4669,10 @@ export const cloudflare_pipelines_TimestampField = Schema.Struct({ unit: Schema.
 export type cloudflare_pipelines_TimestampField = Schema.Schema.Type<typeof cloudflare_pipelines_TimestampField>;
 
 export interface cloudflare_pipelines_ListField { items: cloudflare_pipelines_SourceField }
-export const cloudflare_pipelines_ListField: Schema.Schema<cloudflare_pipelines_ListField> = Schema.suspend(() => Schema.Struct({ items: cloudflare_pipelines_SourceField }));
+export const cloudflare_pipelines_ListField: Schema.Schema<cloudflare_pipelines_ListField> = Schema.suspend(() => Schema.Struct({ items: Schema.suspend(() => cloudflare_pipelines_SourceField) }));
 
 export interface cloudflare_pipelines_StructField { fields: ReadonlyArray<cloudflare_pipelines_SourceField>, name?: (string | null) }
-export const cloudflare_pipelines_StructField: Schema.Schema<cloudflare_pipelines_StructField> = Schema.suspend(() => Schema.Struct({ fields: Schema.Array(cloudflare_pipelines_SourceField), name: Schema.optional(Schema.NullOr(Schema.String)) }));
+export const cloudflare_pipelines_StructField: Schema.Schema<cloudflare_pipelines_StructField> = Schema.suspend(() => Schema.Struct({ fields: Schema.Array(Schema.suspend(() => cloudflare_pipelines_SourceField)), name: Schema.optional(Schema.NullOr(Schema.String)) }));
 
 export type cloudflare_pipelines_FieldType = ({ type: "int32" } | { type: "int64" } | { type: "float32" } | { type: "float64" } | { type: "bool" } | { type: "string" } | { type: "binary" } | (cloudflare_pipelines_TimestampField & { type: "timestamp" }) | { type: "json" } | (cloudflare_pipelines_StructField & { type: "struct" }) | (cloudflare_pipelines_ListField & { type: "list" }))
 export const cloudflare_pipelines_FieldType: Schema.Schema<cloudflare_pipelines_FieldType> = Schema.suspend(() => Schema.Union([Schema.Struct({ type: Schema.Literal("int32") }), Schema.Struct({ type: Schema.Literal("int64") }), Schema.Struct({ type: Schema.Literal("float32") }), Schema.Struct({ type: Schema.Literal("float64") }), Schema.Struct({ type: Schema.Literal("bool") }), Schema.Struct({ type: Schema.Literal("string") }), Schema.Struct({ type: Schema.Literal("binary") }), cloudflare_pipelines_TimestampField.mapFields(Struct.assign((Schema.Struct({ type: Schema.Literal("timestamp") })).fields)), Schema.Struct({ type: Schema.Literal("json") }), cloudflare_pipelines_StructField.check(Schema.makeFilter((value) => Schema.is(Schema.Struct({ type: Schema.Literal("struct") }))(value))), cloudflare_pipelines_ListField.check(Schema.makeFilter((value) => Schema.is(Schema.Struct({ type: Schema.Literal("list") }))(value)))]));
@@ -6787,7 +6787,7 @@ export const email_auth_SpfResult = Schema.Literals(["pass", "neutral", "fail", 
 export type email_auth_SpfResult = Schema.Schema.Type<typeof email_auth_SpfResult>;
 
 export interface email_auth_SpfTree { components: ReadonlyArray<email_auth_SpfComponent>, domain: string, errors?: ReadonlyArray<email_auth_InspectError>, record: string, total_lookups: number }
-export const email_auth_SpfTree: Schema.Schema<email_auth_SpfTree> = Schema.suspend(() => Schema.Struct({ components: Schema.Array(email_auth_SpfComponent), domain: Schema.String, errors: Schema.optional(Schema.Array(email_auth_InspectError)), record: Schema.String, total_lookups: Schema.Int }));
+export const email_auth_SpfTree: Schema.Schema<email_auth_SpfTree> = Schema.suspend(() => Schema.Struct({ components: Schema.Array(Schema.suspend(() => email_auth_SpfComponent)), domain: Schema.String, errors: Schema.optional(Schema.Array(email_auth_InspectError)), record: Schema.String, total_lookups: Schema.Int }));
 
 export interface email_auth_SpfComponent { lookup_count: number, nested?: email_auth_SpfTree, result: email_auth_SpfResult, type: ("ALL" | "A" | "MX" | "IP4" | "IP6" | "EXISTS" | "INCLUDE" | "PTR" | "REDIRECT"), value: string }
 export const email_auth_SpfComponent: Schema.Schema<email_auth_SpfComponent> = Schema.suspend(() => Schema.Struct({ lookup_count: Schema.Int, nested: Schema.optional(email_auth_SpfTree), result: email_auth_SpfResult, type: Schema.Literals(["ALL", "A", "MX", "IP4", "IP6", "EXISTS", "INCLUDE", "PTR", "REDIRECT"]), value: Schema.String }));
