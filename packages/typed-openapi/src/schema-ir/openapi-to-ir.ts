@@ -340,7 +340,8 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
       );
     }
 
-    let additionalProperties: boolean | SchemaNode = false;
+    // OpenAPI and JSON Schema default additionalProperties to true when omitted.
+    let additionalProperties: boolean | SchemaNode = true;
     if (
       schema.additionalProperties === true ||
       (typeof schema.additionalProperties === "object" && Object.keys(schema.additionalProperties).length === 0)

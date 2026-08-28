@@ -48,6 +48,12 @@ const patternOnlyObjectSchema = {
   additionalProperties: { type: "boolean" },
 } as const;
 
+const implicitAdditionalPropertiesSchema = {
+  type: "object",
+  properties: { name: { type: "string" } },
+  required: ["name"],
+} as const;
+
 const allOfPatternSchema = {
   allOf: [
     {
@@ -104,6 +110,40 @@ const accepts = (runtime: string, schema: unknown, value: unknown): boolean => {
 };
 
 describe("typed additionalProperties with named properties", () => {
+  test.each([
+    ["zod", zodAdapter],
+    ["zod3", zod3Adapter],
+    ["effect", effectAdapter],
+    ["effect3", effect3Adapter],
+    ["valibot", valibotAdapter],
+    ["arktype", arktypeAdapter],
+  ] as const)("%s allows extra properties when additionalProperties is omitted", (runtime, adapter) => {
+    const node = openApiToIr(implicitAdditionalPropertiesSchema, { getRefName: (ref) => ref });
+    const source = adapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+    const schema = parseResult(runtime, source);
+
+    expect(accepts(runtime, schema, { name: "typed-openapi", extra: true })).toBe(true);
+  });
+
+  test("typebox allows extra properties when additionalProperties is omitted", async () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "implicit-additional-properties", version: "1" },
+      paths: {},
+      components: { schemas: { ImplicitObject: implicitAdditionalPropertiesSchema } },
+    } as OpenAPIObject;
+    const source = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "typebox", schemasOnly: true });
+    const directory = join(__dirname, "tmp/implicit-additional-properties");
+    mkdirSync(directory, { recursive: true });
+    const file = join(directory, "schemas.ts");
+    writeFileSync(file, source);
+    const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
+      ImplicitObject: Parameters<typeof TypeBoxValue.Check>[0];
+    };
+
+    expect(TypeBoxValue.Check(module.ImplicitObject, { name: "typed-openapi", extra: true })).toBe(true);
+  });
+
   test.each([
     ["zod", zodAdapter],
     ["zod3", zod3Adapter],
