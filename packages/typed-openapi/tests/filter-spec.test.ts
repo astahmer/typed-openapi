@@ -133,4 +133,81 @@ describe("spec filters + treeShakeSchemas", () => {
     expect(src).toContain("export type Forbidden");
     expect(src).not.toContain("export type Unused");
   });
+
+  test("tree-shake keeps $ref item schemas under OAS 3.1 nullable arrays", () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "nullable-array-deps", version: "1.0.0" },
+      paths: {
+        "/items": {
+          get: {
+            operationId: "listItems",
+            responses: {
+              "200": {
+                description: "ok",
+                content: {
+                  "application/json": {
+                    schema: { $ref: "#/components/schemas/Item" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      components: {
+        schemas: {
+          Item: {
+            type: "object",
+            properties: {
+              tags: {
+                type: ["array", "null"],
+                items: { $ref: "#/components/schemas/Tag" },
+              },
+              tagsReversed: {
+                type: ["null", "array"],
+                items: { $ref: "#/components/schemas/TagReversed" },
+              },
+              tagsNoType: {
+                items: { $ref: "#/components/schemas/TagNoType" },
+              },
+            },
+          },
+          Tag: {
+            type: "object",
+            properties: { id: { type: "integer" } },
+          },
+          TagReversed: {
+            type: "object",
+            properties: { id: { type: "integer" } },
+          },
+          TagNoType: {
+            type: "object",
+            properties: { id: { type: "integer" } },
+          },
+          Unused: { type: "string" },
+        },
+      },
+    } as OpenAPIObject;
+
+    const ctx = mapOpenApiEndpoints(doc);
+    const filtered = applySpecFilters(ctx.endpointList, ctx.refs, {
+      endpointPatterns: ["/items"],
+    });
+    expect([...filtered.keptSchemaNames!].sort()).toEqual(["Item", "Tag", "TagNoType", "TagReversed"]);
+
+    const src = generateFile({
+      ...ctx,
+      endpointPatterns: ["/items"],
+      schemasOnly: true,
+      includeClient: false,
+    });
+    expect(src).toContain("export type Item");
+    expect(src).toContain("export type Tag");
+    expect(src).toContain("export type TagReversed");
+    expect(src).toContain("export type TagNoType");
+    expect(src).toMatch(/Array<Tag>/);
+    expect(src).toMatch(/Array<TagReversed>/);
+    expect(src).not.toContain("export type Unused");
+  });
 });

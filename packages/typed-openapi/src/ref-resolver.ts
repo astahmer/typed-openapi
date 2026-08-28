@@ -215,8 +215,8 @@ const setSchemaDependencies = (schema: LibSchemaObject, deps: Set<string>) => {
       visit(schema.not as LibSchemaObject | ReferenceObject);
     }
 
-    if (schema.type === "array") {
-      if (schema.items) visit(schema.items);
+    if (schema.items) {
+      visit(schema.items);
     }
 
     if (schema.type === "object" || schema.properties || schema.additionalProperties) {
