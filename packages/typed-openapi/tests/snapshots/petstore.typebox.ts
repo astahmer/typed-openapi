@@ -570,9 +570,11 @@ type OptionalUndefinedKeys<T> = {
 };
 type InferSchemaValueRaw<T> = T extends import("@sinclair/typebox").TSchema
   ? import("@sinclair/typebox").Static<T>
-  : T extends object
-    ? { [K in keyof T]: InferSchemaValueRaw<T[K]> }
-    : T;
+  : T extends (...args: never[]) => unknown
+    ? T
+    : T extends object
+      ? { [K in keyof T]: InferSchemaValueRaw<T[K]> }
+      : T;
 export type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;
 

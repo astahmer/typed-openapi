@@ -563,14 +563,18 @@ type OptionalUndefinedKeys<T> = {
 };
 export type InferSchemaValue<T> = T extends z.ZodType
   ? z.infer<T>
-  : T extends object
-    ? { [K in keyof T]: InferSchemaValue<T[K]> }
-    : T;
+  : T extends (...args: never[]) => unknown
+    ? T
+    : T extends object
+      ? { [K in keyof T]: InferSchemaValue<T[K]> }
+      : T;
 type InferSchemaInputRaw<T> = T extends z.ZodType
   ? z.input<T>
-  : T extends object
-    ? { [K in keyof T]: InferSchemaInputRaw<T[K]> }
-    : T;
+  : T extends (...args: never[]) => unknown
+    ? T
+    : T extends object
+      ? { [K in keyof T]: InferSchemaInputRaw<T[K]> }
+      : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

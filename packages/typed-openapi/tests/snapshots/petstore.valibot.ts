@@ -609,14 +609,18 @@ type OptionalUndefinedKeys<T> = {
 };
 export type InferSchemaValue<T> = T extends v.GenericSchema
   ? v.InferOutput<T>
-  : T extends object
-    ? { [K in keyof T]: InferSchemaValue<T[K]> }
-    : T;
+  : T extends (...args: never[]) => unknown
+    ? T
+    : T extends object
+      ? { [K in keyof T]: InferSchemaValue<T[K]> }
+      : T;
 type InferSchemaInputRaw<T> = T extends v.GenericSchema
   ? v.InferInput<T>
-  : T extends object
-    ? { [K in keyof T]: InferSchemaInputRaw<T[K]> }
-    : T;
+  : T extends (...args: never[]) => unknown
+    ? T
+    : T extends object
+      ? { [K in keyof T]: InferSchemaInputRaw<T[K]> }
+      : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;
 
 export type SafeApiResponse<TEndpoint> = TEndpoint extends { responses: infer TResponses }

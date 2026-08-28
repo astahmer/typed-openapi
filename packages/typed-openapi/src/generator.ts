@@ -142,40 +142,41 @@ const runtimeInferHelper = (runtime: OutputRuntime, usesSidecarTypes = false): s
   const effectInputCheck = usesSidecarTypes
     ? "T extends { readonly Type: unknown; readonly Encoded: infer I } ? I : "
     : "T extends { Encoded: infer I } ? I : ";
+  const functionCheck = "T extends (...args: never[]) => unknown ? T : ";
 
   if (runtime === "zod" || runtime === "zod3") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-export type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends z.ZodType ? z.infer<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}T extends z.ZodType ? z.input<T> : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+export type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends z.ZodType ? z.infer<T> : ${functionCheck}T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}T extends z.ZodType ? z.input<T> : ${functionCheck.replaceAll("InferSchemaValue", "InferSchemaInputRaw")}T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "valibot") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-export type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends v.GenericSchema ? v.InferOutput<T> : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}T extends v.GenericSchema ? v.InferInput<T> : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+export type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends v.GenericSchema ? v.InferOutput<T> : ${functionCheck}T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}T extends v.GenericSchema ? v.InferInput<T> : ${functionCheck.replaceAll("InferSchemaValue", "InferSchemaInputRaw")}T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "effect" || runtime === "effect3") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-export type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}${effectOutputCheck}T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}${effectInputCheck}T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+export type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}${effectOutputCheck}${functionCheck}T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}${effectInputCheck}${functionCheck.replaceAll("InferSchemaValue", "InferSchemaInputRaw")}T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "arktype") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-export type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends { infer: infer O } ? O : T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
-type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}T extends { inferIn: infer I } ? I : T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
+export type InferSchemaValue<T> = ${primitiveCheck}${outputCheck}T extends { infer: infer O } ? O : ${functionCheck}T extends object ? { [K in keyof T]: InferSchemaValue<T[K]> } : T;
+type InferSchemaInputRaw<T> = ${primitiveCheck}${inputCheck}T extends { inferIn: infer I } ? I : ${functionCheck.replaceAll("InferSchemaValue", "InferSchemaInputRaw")}T extends object ? { [K in keyof T]: InferSchemaInputRaw<T[K]> } : T;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaInputRaw<T>>;`;
   }
   if (runtime === "typebox") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-type InferSchemaValueRaw<T> = ${primitiveCheck}${outputCheck}T extends import("@sinclair/typebox").TSchema ? import("@sinclair/typebox").Static<T> : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
+type InferSchemaValueRaw<T> = ${primitiveCheck}${outputCheck}T extends import("@sinclair/typebox").TSchema ? import("@sinclair/typebox").Static<T> : ${functionCheck.replaceAll("InferSchemaValue", "InferSchemaValueRaw")}T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
 export type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;`;
   }
   if (runtime === "typia") {
     return `${sidecarPrefix}${optionalUndefinedKeys}
-type InferSchemaValueRaw<T> = ${primitiveCheck}${outputCheck}T extends (input: unknown) => input is infer U ? U : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
+type InferSchemaValueRaw<T> = ${primitiveCheck}${outputCheck}T extends (input: unknown) => input is infer U ? U : ${functionCheck.replaceAll("InferSchemaValue", "InferSchemaValueRaw")}T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
 export type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;`;
   }

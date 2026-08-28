@@ -67450,7 +67450,7 @@ type OptionalUndefinedKeys<T> = {
 } & {
   [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<T[K], undefined>;
 };
-type InferSchemaValueRaw<T> = T extends (input: unknown) => input is infer U ? U : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
+type InferSchemaValueRaw<T> = T extends (input: unknown) => input is infer U ? U : T extends (...args: never[]) => unknown ? T : T extends object ? { [K in keyof T]: InferSchemaValueRaw<T[K]> } : T;
 export type InferSchemaValue<T> = InferSchemaValueRaw<T>;
 type InferSchemaInput<T> = OptionalUndefinedKeys<InferSchemaValueRaw<T>>;
 
