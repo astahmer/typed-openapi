@@ -117,7 +117,7 @@ ${authApplyBlock}
     }
   }
 
-  const serializeParameterValue = (value: unknown, style: string, explode: boolean): string => {
+  const serializeParameterValue = (value: unknown, explode: boolean): string => {
     if (Array.isArray(value)) return value.filter((item) => item != null).map(String).join(",");
     if (value && typeof value === "object") {
       const entries = Object.entries(value as Record<string, unknown>).filter(([, item]) => item != null);
@@ -133,7 +133,7 @@ ${authApplyBlock}
     Object.entries(input.parameters.header).forEach(([key, value]) => {
       if (value != null) {
         const style = input.parameterStyles?.header?.[key];
-        headers.set(key, serializeParameterValue(value, style?.style ?? "simple", style?.explode ?? false));
+        headers.set(key, serializeParameterValue(value, style?.explode ?? false));
       }
     });
   }
@@ -152,7 +152,7 @@ ${authApplyBlock}
       } else if (style?.style === "form" && explode && Array.isArray(value)) {
         value.forEach((item) => item != null && cookieParts.push(key + "=" + String(item)));
       } else {
-        cookieParts.push(key + "=" + serializeParameterValue(value, style?.style ?? "form", explode));
+        cookieParts.push(key + "=" + serializeParameterValue(value, explode));
       }
     });
     if (cookieParts.length) {

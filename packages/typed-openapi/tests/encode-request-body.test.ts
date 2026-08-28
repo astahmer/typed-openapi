@@ -68,6 +68,7 @@ describe("default fetcher + client requestFormat wiring", () => {
     expect(src).toContain('case "binary"');
     expect(src).toContain("type RequestFormat");
     expect(src).toContain('typeof input.parameters.header === "object"');
+    expect(src).not.toContain("style: string");
   });
 
   test("generated client passes requestFormat from endpointRequestFormats", () => {
