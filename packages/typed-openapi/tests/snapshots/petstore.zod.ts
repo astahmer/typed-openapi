@@ -12,22 +12,22 @@ export const Order = z
     complete: z.boolean(),
   })
   .partial()
-  .catchall(z.unknown());
+  .strict();
 
 export type Address = z.infer<typeof Address>;
 export const Address = z
   .object({ street: z.string(), city: z.string(), state: z.string(), zip: z.string() })
   .partial()
-  .catchall(z.unknown());
+  .strict();
 
 export type Customer = z.infer<typeof Customer>;
 export const Customer = z
   .object({ id: z.number().int(), username: z.string(), address: z.array(Address) })
   .partial()
-  .catchall(z.unknown());
+  .strict();
 
 export type Category = z.infer<typeof Category>;
-export const Category = z.object({ id: z.number().int(), name: z.string() }).partial().catchall(z.unknown());
+export const Category = z.object({ id: z.number().int(), name: z.string() }).partial().strict();
 
 export type User = z.infer<typeof User>;
 export const User = z
@@ -42,10 +42,10 @@ export const User = z
     userStatus: z.number().int(),
   })
   .partial()
-  .catchall(z.unknown());
+  .strict();
 
 export type Tag = z.infer<typeof Tag>;
-export const Tag = z.object({ id: z.number().int(), name: z.string() }).partial().catchall(z.unknown());
+export const Tag = z.object({ id: z.number().int(), name: z.string() }).partial().strict();
 
 export type Pet = z.infer<typeof Pet>;
 export const Pet = z
@@ -57,13 +57,13 @@ export const Pet = z
     tags: z.array(Tag).optional(),
     status: z.enum(["available", "pending", "sold"]).optional(),
   })
-  .catchall(z.unknown());
+  .strict();
 
 export type ApiResponse = z.infer<typeof ApiResponse>;
 export const ApiResponse = z
   .object({ code: z.number().int(), type: z.string(), message: z.string() })
   .partial()
-  .catchall(z.unknown());
+  .strict();
 
 // </Schemas>
 
@@ -104,7 +104,7 @@ export const get_FindPetsByStatus = {
   responses: {
     200: z.array(Pet),
     304: z.unknown(),
-    400: z.object({ code: z.number().int(), message: z.string() }).catchall(z.unknown()),
+    400: z.object({ code: z.number().int(), message: z.string() }).strict(),
   },
 };
 
@@ -133,8 +133,8 @@ export const get_GetPetById = {
   parameters: { path: z.object({ petId: z.coerce.number().int() }).strict() },
   responses: {
     200: Pet,
-    400: z.object({ code: z.number().int(), message: z.string() }).catchall(z.unknown()),
-    404: z.object({ code: z.number().int(), message: z.string() }).catchall(z.unknown()),
+    400: z.object({ code: z.number().int(), message: z.string() }).strict(),
+    404: z.object({ code: z.number().int(), message: z.string() }).strict(),
   },
 };
 
@@ -271,8 +271,8 @@ export const get_GetUserByName = {
   parameters: { path: z.object({ username: z.string() }).strict() },
   responses: {
     200: User,
-    201: z.object({ id: z.number().int(), username: z.string() }).catchall(z.unknown()),
-    400: z.object({ code: z.number().int(), message: z.string() }).catchall(z.unknown()),
+    201: z.object({ id: z.number().int(), username: z.string() }).strict(),
+    400: z.object({ code: z.number().int(), message: z.string() }).strict(),
     404: z.unknown(),
   },
 };

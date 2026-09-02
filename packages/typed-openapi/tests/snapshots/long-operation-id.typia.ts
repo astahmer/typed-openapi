@@ -21,7 +21,13 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   path: typia.createIs<"/users">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { body: typia.createIs<Partial<{ username: string }>>() },
+  parameters: {
+    body: (input: unknown): input is Partial<{ username: string }> =>
+      typia.createIs<Partial<{ username: string }>>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => Object.hasOwn({ username: 1 }, key)),
+  },
   responses: { 201: typia.createIs<unknown>() },
 };
 

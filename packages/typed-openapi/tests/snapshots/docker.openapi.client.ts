@@ -2,7 +2,7 @@
   
   export namespace Schemas {
     // <Schemas>
-  export type Port = ({ IP?: string, PrivatePort: number, PublicPort?: number, Type: ("tcp" | "udp" | "sctp") } & Record<string, unknown>)
+  export type Port = { IP?: string, PrivatePort: number, PublicPort?: number, Type: ("tcp" | "udp" | "sctp") }
 export type MountPoint = Partial<{ Type: ("bind" | "volume" | "tmpfs" | "npipe" | "cluster"), Name: string, Source: string, Destination: string, Driver: string, Mode: string, RW: boolean, Propagation: string }>
 export type DeviceMapping = Partial<{ PathOnHost: string, PathInContainer: string, CgroupPermissions: string }>
 export type DeviceRequest = Partial<{ Driver: string, Count: number, DeviceIDs: Array<string>, Capabilities: Array<Array<string>>, Options: Record<string, string> }>
@@ -25,18 +25,18 @@ export type EndpointSettings = Partial<{ IPAMConfig: EndpointIPAMConfig, Links: 
 export type NetworkingConfig = Partial<{ EndpointsConfig: Record<string, EndpointSettings> }>
 export type Address = Partial<{ Addr: string, PrefixLen: number }>
 export type NetworkSettings = Partial<{ Bridge: string, SandboxID: string, HairpinMode: boolean, LinkLocalIPv6Address: string, LinkLocalIPv6PrefixLen: number, Ports: PortMap, SandboxKey: string, SecondaryIPAddresses: (Array<Address> | null), SecondaryIPv6Addresses: (Array<Address> | null), EndpointID: string, Gateway: string, GlobalIPv6Address: string, GlobalIPv6PrefixLen: number, IPAddress: string, IPPrefixLen: number, IPv6Gateway: string, MacAddress: string, Networks: Record<string, EndpointSettings> }>
-export type GraphDriverData = ({ Name: string, Data: Record<string, string> } & Record<string, unknown>)
+export type GraphDriverData = { Name: string, Data: Record<string, string> }
 export type ChangeType = (0 | 1 | 2)
-export type FilesystemChange = ({ Path: string, Kind: ChangeType } & Record<string, unknown>)
-export type ImageInspect = Partial<{ Id: string, RepoTags: Array<string>, RepoDigests: Array<string>, Parent: string, Comment: string, Created: string, Container: string, ContainerConfig: ContainerConfig, DockerVersion: string, Author: string, Config: ContainerConfig, Architecture: string, Variant: (string | null), Os: string, OsVersion: (string | null), Size: number, VirtualSize: number, GraphDriver: GraphDriverData, RootFS: ({ Type: string, Layers?: Array<string> } & Record<string, unknown>), Metadata: Partial<{ LastTagTime: (string | null) }> }>
-export type ImageSummary = ({ Id: string, ParentId: string, RepoTags: Array<string>, RepoDigests: Array<string>, Created: number, Size: number, SharedSize: number, VirtualSize?: number, Labels: Record<string, string>, Containers: number } & Record<string, unknown>)
+export type FilesystemChange = { Path: string, Kind: ChangeType }
+export type ImageInspect = Partial<{ Id: string, RepoTags: Array<string>, RepoDigests: Array<string>, Parent: string, Comment: string, Created: string, Container: string, ContainerConfig: ContainerConfig, DockerVersion: string, Author: string, Config: ContainerConfig, Architecture: string, Variant: (string | null), Os: string, OsVersion: (string | null), Size: number, VirtualSize: number, GraphDriver: GraphDriverData, RootFS: { Type: string, Layers?: Array<string> }, Metadata: Partial<{ LastTagTime: (string | null) }> }>
+export type ImageSummary = { Id: string, ParentId: string, RepoTags: Array<string>, RepoDigests: Array<string>, Created: number, Size: number, SharedSize: number, VirtualSize?: number, Labels: Record<string, string>, Containers: number }
 export type AuthConfig = Partial<{ username: string, password: string, email: string, serveraddress: string }>
 export type ProcessConfig = Partial<{ privileged: boolean, user: string, tty: boolean, entrypoint: string, arguments: Array<string> }>
 export type ObjectVersion = Partial<{ Index: number }>
 export type Topology = Record<string, string>
 export type ClusterVolumeSpec = Partial<{ Group: string, AccessMode: Partial<{ Scope: ("single" | "multi"), Sharing: ("none" | "readonly" | "onewriter" | "all"), MountVolume: Partial<{  }>, Secrets: Array<Partial<{ Key: string, Secret: string }>>, AccessibilityRequirements: Partial<{ Requisite: Array<Topology>, Preferred: Array<Topology> }>, CapacityRange: Partial<{ RequiredBytes: number, LimitBytes: number }>, Availability: ("active" | "pause" | "drain") }> }>
 export type ClusterVolume = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: string, UpdatedAt: string, Spec: ClusterVolumeSpec, Info: Partial<{ CapacityBytes: number, VolumeContext: Record<string, string>, VolumeID: string, AccessibleTopology: Array<Topology> }>, PublishStatus: Array<Partial<{ NodeID: string, State: ("pending-publish" | "published" | "pending-node-unpublish" | "pending-controller-unpublish"), PublishContext: Record<string, string> }>> }>
-export type Volume = ({ Name: string, Driver: string, Mountpoint: string, CreatedAt?: string, Status?: Record<string, Partial<{  }>>, Labels: Record<string, string>, Scope: ("local" | "global"), ClusterVolume?: ClusterVolume, Options: Record<string, string>, UsageData?: (({ Size: number, RefCount: number } & Record<string, unknown>) | null) } & Record<string, unknown>)
+export type Volume = { Name: string, Driver: string, Mountpoint: string, CreatedAt?: string, Status?: Record<string, Partial<{  }>>, Labels: Record<string, string>, Scope: ("local" | "global"), ClusterVolume?: ClusterVolume, Options: Record<string, string>, UsageData?: ({ Size: number, RefCount: number } | null) }
 export type VolumeCreateOptions = Partial<{ Name: string, Driver: string, DriverOpts: Record<string, string>, Labels: Record<string, string>, ClusterVolumeSpec: ClusterVolumeSpec }>
 export type VolumeListResponse = Partial<{ Volumes: Array<Volume>, Warnings: Array<string> }>
 export type IPAMConfig = Partial<{ Subnet: string, IPRange: string, Gateway: string, AuxiliaryAddresses: Record<string, string> }>
@@ -50,14 +50,14 @@ export type BuildInfo = Partial<{ id: string, stream: string, error: string, err
 export type BuildCache = Partial<{ ID: string, Parent: (string | null), Parents: (Array<string> | null), Type: ("internal" | "frontend" | "source.local" | "source.git.checkout" | "exec.cachemount" | "regular"), Description: string, InUse: boolean, Shared: boolean, Size: number, CreatedAt: string, LastUsedAt: (string | null), UsageCount: number }>
 export type CreateImageInfo = Partial<{ id: string, error: string, errorDetail: ErrorDetail, status: string, progress: string, progressDetail: ProgressDetail }>
 export type PushImageInfo = Partial<{ error: string, status: string, progress: string, progressDetail: ProgressDetail }>
-export type ErrorResponse = ({ message: string } & Record<string, unknown>)
-export type IdResponse = ({ Id: string } & Record<string, unknown>)
-export type PluginMount = ({ Name: string, Description: string, Settable: Array<string>, Source: string, Destination: string, Type: string, Options: Array<string> } & Record<string, unknown>)
-export type PluginDevice = ({ Name: string, Description: string, Settable: Array<string>, Path: string } & Record<string, unknown>)
-export type PluginEnv = ({ Name: string, Description: string, Settable: Array<string>, Value: string } & Record<string, unknown>)
-export type PluginInterfaceType = ({ Prefix: string, Capability: string, Version: string } & Record<string, unknown>)
+export type ErrorResponse = { message: string }
+export type IdResponse = { Id: string }
+export type PluginMount = { Name: string, Description: string, Settable: Array<string>, Source: string, Destination: string, Type: string, Options: Array<string> }
+export type PluginDevice = { Name: string, Description: string, Settable: Array<string>, Path: string }
+export type PluginEnv = { Name: string, Description: string, Settable: Array<string>, Value: string }
+export type PluginInterfaceType = { Prefix: string, Capability: string, Version: string }
 export type PluginPrivilege = Partial<{ Name: string, Description: string, Value: Array<string> }>
-export type Plugin = ({ Id?: string, Name: string, Enabled: boolean, Settings: ({ Mounts: Array<PluginMount>, Env: Array<string>, Args: Array<string>, Devices: Array<PluginDevice> } & Record<string, unknown>), PluginReference?: string, Config: ({ DockerVersion?: string, Description: string, Documentation: string, Interface: ({ Types: Array<PluginInterfaceType>, Socket: string, ProtocolScheme?: ("" | "moby.plugins.http/v1") } & Record<string, unknown>), Entrypoint: Array<string>, WorkDir: string, User?: Partial<{ UID: number, GID: number }>, Network: ({ Type: string } & Record<string, unknown>), Linux: ({ Capabilities: Array<string>, AllowAllDevices: boolean, Devices: Array<PluginDevice> } & Record<string, unknown>), PropagatedMount: string, IpcHost: boolean, PidHost: boolean, Mounts: Array<PluginMount>, Env: Array<PluginEnv>, Args: ({ Name: string, Description: string, Settable: Array<string>, Value: Array<string> } & Record<string, unknown>), rootfs?: Partial<{ type: string, diff_ids: Array<string> }> } & Record<string, unknown>) } & Record<string, unknown>)
+export type Plugin = { Id?: string, Name: string, Enabled: boolean, Settings: { Mounts: Array<PluginMount>, Env: Array<string>, Args: Array<string>, Devices: Array<PluginDevice> }, PluginReference?: string, Config: { DockerVersion?: string, Description: string, Documentation: string, Interface: { Types: Array<PluginInterfaceType>, Socket: string, ProtocolScheme?: ("" | "moby.plugins.http/v1") }, Entrypoint: Array<string>, WorkDir: string, User?: Partial<{ UID: number, GID: number }>, Network: { Type: string }, Linux: { Capabilities: Array<string>, AllowAllDevices: boolean, Devices: Array<PluginDevice> }, PropagatedMount: string, IpcHost: boolean, PidHost: boolean, Mounts: Array<PluginMount>, Env: Array<PluginEnv>, Args: { Name: string, Description: string, Settable: Array<string>, Value: Array<string> }, rootfs?: Partial<{ type: string, diff_ids: Array<string> }> } }
 export type NodeSpec = Partial<{ Name: string, Labels: Record<string, string>, Role: ("worker" | "manager"), Availability: ("active" | "pause" | "drain") }>
 export type Platform = Partial<{ Architecture: string, OS: string }>
 export type EngineDescription = Partial<{ EngineVersion: string, Labels: Record<string, string>, Plugins: Array<Partial<{ Type: string, Name: string }>> }>
@@ -83,16 +83,16 @@ export type Service = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: s
 export type ImageDeleteResponseItem = Partial<{ Untagged: string, Deleted: string }>
 export type ServiceUpdateResponse = Partial<{ Warnings: Array<string> }>
 export type ContainerSummary = Partial<{ Id: string, Names: Array<string>, Image: string, ImageID: string, Command: string, Created: number, Ports: Array<Port>, SizeRw: number, SizeRootFs: number, Labels: Record<string, string>, State: string, Status: string, HostConfig: Partial<{ NetworkMode: string }>, NetworkSettings: Partial<{ Networks: Record<string, EndpointSettings> }>, Mounts: Array<MountPoint> }>
-export type Driver = ({ Name: string, Options?: Record<string, string> } & Record<string, unknown>)
+export type Driver = { Name: string, Options?: Record<string, string> }
 export type SecretSpec = Partial<{ Name: string, Labels: Record<string, string>, Data: string, Driver: Driver, Templating: Driver }>
 export type Secret = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: string, UpdatedAt: string, Spec: SecretSpec }>
 export type ConfigSpec = Partial<{ Name: string, Labels: Record<string, string>, Data: string, Templating: Driver }>
 export type Config = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: string, UpdatedAt: string, Spec: ConfigSpec }>
 export type ContainerState = (Partial<{ Status: ("created" | "running" | "paused" | "restarting" | "removing" | "exited" | "dead"), Running: boolean, Paused: boolean, Restarting: boolean, OOMKilled: boolean, Dead: boolean, Pid: number, ExitCode: number, Error: string, StartedAt: string, FinishedAt: string, Health: Health }> | null)
-export type ContainerCreateResponse = ({ Id: string, Warnings: Array<string> } & Record<string, unknown>)
+export type ContainerCreateResponse = { Id: string, Warnings: Array<string> }
 export type ContainerWaitExitError = Partial<{ Message: string }>
-export type ContainerWaitResponse = ({ StatusCode: number, Error?: ContainerWaitExitError } & Record<string, unknown>)
-export type SystemVersion = Partial<{ Platform: ({ Name: string } & Record<string, unknown>), Components: Array<({ Name: string, Version: string, Details?: (Partial<{  }> | null) } & Record<string, unknown>)>, Version: string, ApiVersion: string, MinAPIVersion: string, GitCommit: string, GoVersion: string, Os: string, Arch: string, KernelVersion: string, Experimental: boolean, BuildTime: string }>
+export type ContainerWaitResponse = { StatusCode: number, Error?: ContainerWaitExitError }
+export type SystemVersion = Partial<{ Platform: { Name: string }, Components: Array<{ Name: string, Version: string, Details?: (Partial<{  }> | null) }>, Version: string, ApiVersion: string, MinAPIVersion: string, GitCommit: string, GoVersion: string, Os: string, Arch: string, KernelVersion: string, Experimental: boolean, BuildTime: string }>
 export type PluginsInfo = Partial<{ Volume: Array<string>, Network: Array<string>, Authorization: Array<string>, Log: Array<string> }>
 export type IndexInfo = (Partial<{ Name: string, Mirrors: Array<string>, Secure: boolean, Official: boolean }> | null)
 export type RegistryServiceConfig = (Partial<{ AllowNondistributableArtifactsCIDRs: Array<string>, AllowNondistributableArtifactsHostnames: Array<string>, InsecureRegistryCIDRs: Array<string>, IndexConfigs: Record<string, IndexInfo>, Mirrors: Array<string> }> | null)
@@ -106,7 +106,7 @@ export type EventActor = Partial<{ ID: string, Attributes: Record<string, string
 export type EventMessage = Partial<{ Type: ("builder" | "config" | "container" | "daemon" | "image" | "network" | "node" | "plugin" | "secret" | "service" | "volume"), Action: string, Actor: EventActor, scope: ("local" | "swarm"), time: number, timeNano: number }>
 export type OCIDescriptor = Partial<{ mediaType: string, digest: string, size: number }>
 export type OCIPlatform = Partial<{ architecture: string, os: string, "os.version": string, "os.features": Array<string>, variant: string }>
-export type DistributionInspect = ({ Descriptor: OCIDescriptor, Platforms: Array<OCIPlatform> } & Record<string, unknown>)
+export type DistributionInspect = { Descriptor: OCIDescriptor, Platforms: Array<OCIPlatform> }
 
     // </Schemas>
     }
@@ -681,7 +681,7 @@ export type get_ImageHistory = {
         
         
           }
-      responses: {200: Array<({ Id: string, Created: number, CreatedBy: string, Tags: Array<string>, Size: number, Comment: string } & Record<string, unknown>)>,
+      responses: {200: Array<{ Id: string, Created: number, CreatedBy: string, Tags: Array<string>, Size: number, Comment: string }>,
 404: Schemas.ErrorResponse,
 500: Schemas.ErrorResponse,
 },
@@ -790,7 +790,7 @@ export type post_SystemAuth = {
         
         body:  Schemas.AuthConfig,
           }
-      responses: {200: ({ Status: string, IdentityToken?: string } & Record<string, unknown>),
+      responses: {200: { Status: string, IdentityToken?: string },
 204: unknown,
 401: Schemas.ErrorResponse,
 500: Schemas.ErrorResponse,
@@ -1194,7 +1194,7 @@ export type post_NetworkCreate = {
         
         
         
-        body:  ({ Name: string, CheckDuplicate?: boolean, Driver?: string, Internal?: boolean, Attachable?: boolean, Ingress?: boolean, IPAM?: Schemas.IPAM, EnableIPv6?: boolean, Options?: Record<string, string>, Labels?: Record<string, string> } & Record<string, unknown>),
+        body:  { Name: string, CheckDuplicate?: boolean, Driver?: string, Internal?: boolean, Attachable?: boolean, Ingress?: boolean, IPAM?: Schemas.IPAM, EnableIPv6?: boolean, Options?: Record<string, string>, Labels?: Record<string, string> },
           }
       responses: {201: Partial<{ Id: string, Warning: string }>,
 403: Schemas.ErrorResponse,

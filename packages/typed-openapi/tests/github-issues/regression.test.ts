@@ -194,8 +194,8 @@ describe("GitHub issue regressions", () => {
     );
     const ctx = mapOpenApiEndpoints(doc);
     const file = generateFile({ ...ctx, runtime: "typia", includeClient: false, schemaNaming: "always-name" });
-    expect(file).toContain("export type Pet = ({ name: string } & Record<string, unknown>);");
-    expect(file).toContain("export const isPet = typia.createIs<Pet>();");
+    expect(file).toContain("export type Pet = { name: string };");
+    expect(file).toContain("export const isPet =");
     expect(file).toContain("responses: { 200: isPet }");
   });
 
@@ -363,5 +363,28 @@ void api.get("/pet/findByStatus");
     } catch (err: any) {
       expect.fail(`tsc failed:\n${err.stdout ?? ""}${err.stderr ?? ""}`);
     }
+  });
+
+  test("#153 omitted additionalProperties is closed unless additionalPropertiesDefault is true", () => {
+    const user = {
+      type: "object",
+      properties: { id: { type: "integer" }, name: { type: "string" } },
+      required: ["id", "name"],
+    };
+    const closed = openApiToIr(user, irCtx);
+    expect(closed).toMatchObject({ kind: "object", additionalProperties: false });
+    expect(zodAdapter.emitNode(closed, createEmitCtx(resolveValidationPolicy("strict")))).not.toContain("catchall");
+
+    const open = openApiToIr(user, { ...irCtx, additionalPropertiesDefault: true });
+    expect(open).toMatchObject({ kind: "object", additionalProperties: true });
+    expect(zodAdapter.emitNode(open, createEmitCtx(resolveValidationPolicy("strict")))).toContain(
+      "catchall(z.unknown())",
+    );
+
+    const explicitOpen = openApiToIr({ ...user, additionalProperties: true }, irCtx);
+    expect(explicitOpen).toMatchObject({ kind: "object", additionalProperties: true });
+
+    const bag = openApiToIr({ type: "object" }, irCtx);
+    expect(bag).toMatchObject({ kind: "record" });
   });
 });

@@ -23,7 +23,9 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   responseFormat: S.Literal("json"),
   parameters: {
     body: S.optional(
-      S.extend(S.Struct({ username: S.optional(S.String) }), S.Record({ key: S.String, value: S.Unknown })),
+      S.Struct({ username: S.optional(S.String) }).pipe(
+        S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ username: 1 }, key))),
+      ),
     ),
   },
   responses: { 201: S.Unknown },

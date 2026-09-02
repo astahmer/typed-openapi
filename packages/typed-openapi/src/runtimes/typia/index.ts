@@ -1,4 +1,4 @@
-import { applyArrayConstraints, applyNumberConstraints, applyStringConstraints } from "../shared.ts";
+import { applyArrayConstraints, applyNumberConstraints, applyStringConstraints, emitKeyAllowed } from "../shared.ts";
 import type { SchemaNode } from "../../schema-ir/types.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 import { canEmitAsInterface, emitNamedInterface, irToTs, buildIrToTsOptions } from "../../schema-ir/ir-to-ts.ts";
@@ -22,10 +22,7 @@ const isExactObject = (node: SchemaNode): boolean =>
 
 const createGuard = (typeExpr: string, exact: boolean, node?: SchemaNode) => {
   if (!exact || node?.kind !== "object") return createIs(typeExpr);
-  const keys = Object.keys(node.properties)
-    .map((key) => JSON.stringify(key))
-    .join(", ");
-  return `((input: unknown): input is ${typeExpr} => typia.createIs<${typeExpr}>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => [${keys}].includes(key)))`;
+  return `((input: unknown): input is ${typeExpr} => typia.createIs<${typeExpr}>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ${emitKeyAllowed(Object.keys(node.properties))}))`;
 };
 
 const containsRuntimeSemantics = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()): boolean => {
@@ -90,9 +87,6 @@ const runtimeChecks = (node: SchemaNode, value: string, ctx: EmitCtx): string[] 
         }
       }
       const patterns = Object.entries(node.patternProperties ?? {});
-      const namedKeys = Object.keys(node.properties)
-        .map((key) => JSON.stringify(key))
-        .join(", ");
       const patternChecks = patterns
         .filter(([, property]) => containsRuntimeSemantics(property, ctx) || patterns.length > 0)
         .map(
@@ -107,10 +101,9 @@ const runtimeChecks = (node: SchemaNode, value: string, ctx: EmitCtx): string[] 
             : guardCall(node.additionalProperties, "value", ctx);
       if (patterns.length > 0 || node.additionalProperties !== true) {
         const matching = patterns.map(([pattern]) => `new RegExp(${JSON.stringify(pattern)}).test(key)`).join(" || ");
-        const allowed = [
-          `(${namedKeys ? `[${namedKeys}].includes(key)` : "false"})`,
-          ...(matching ? [`(${matching})`] : []),
-        ].join(" || ");
+        const allowed = [emitKeyAllowed(Object.keys(node.properties)), ...(matching ? [`(${matching})`] : [])].join(
+          " || ",
+        );
         checks.push(
           `Object.entries(${value} as Record<string, unknown>).every(([key, value]) => ${allowed} || ${additional})`,
         );

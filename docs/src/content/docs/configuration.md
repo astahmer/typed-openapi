@@ -25,6 +25,15 @@ export default defineConfig({
 });
 ```
 
+Named objects are closed when `additionalProperties` is omitted. Set `openapi.additionalPropertiesDefault: true` to follow the OpenAPI default (`true` when omitted):
+
+```ts
+export default defineConfig({
+  input: "./openapi.yaml",
+  openapi: { additionalPropertiesDefault: true },
+});
+```
+
 Now one short command regenerates every configured output:
 
 ```sh

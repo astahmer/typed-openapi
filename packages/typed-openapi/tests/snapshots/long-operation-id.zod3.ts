@@ -21,7 +21,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   path: z.literal("/users"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { body: z.object({ username: z.string() }).partial().catchall(z.unknown()).optional() },
+  parameters: { body: z.object({ username: z.string() }).partial().strict().optional() },
   responses: { 201: z.unknown() },
 };
 

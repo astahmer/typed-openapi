@@ -153,19 +153,50 @@ describe("typed additionalProperties with named properties", () => {
   test.each([
     ["zod", zodAdapter],
     ["zod3", zod3Adapter],
-    ["effect", effectAdapter],
-    ["effect3", effect3Adapter],
     ["valibot", valibotAdapter],
     ["arktype", arktypeAdapter],
-  ] as const)("%s allows extra properties when additionalProperties is omitted", (runtime, adapter) => {
+  ] as const)("%s rejects extra properties when additionalProperties is omitted", (runtime, adapter) => {
     const node = openApiToIr(implicitAdditionalPropertiesSchema, { getRefName: (ref) => ref });
     const source = adapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
     const schema = parseResult(runtime, source);
 
-    expect(accepts(runtime, schema, { name: "typed-openapi", extra: true })).toBe(true);
+    expect(accepts(runtime, schema, { name: "typed-openapi" })).toBe(true);
+    expect(accepts(runtime, schema, { name: "typed-openapi", extra: true })).toBe(false);
   });
 
-  test("typebox allows extra properties when additionalProperties is omitted", async () => {
+  test.each([
+    ["effect", effectAdapter],
+    ["effect3", effect3Adapter],
+  ] as const)("%s emits a closed object when additionalProperties is omitted", (_runtime, adapter) => {
+    const node = openApiToIr(implicitAdditionalPropertiesSchema, { getRefName: (ref) => ref });
+    const source = adapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+    expect(source).toContain("Object.keys");
+    expect(source).not.toContain("StructWithRest");
+    expect(source).not.toContain("Schema.extend");
+  });
+
+  test.each([
+    ["zod", zodAdapter],
+    ["zod3", zod3Adapter],
+    ["effect", effectAdapter],
+    ["effect3", effect3Adapter],
+    ["valibot", valibotAdapter],
+    ["arktype", arktypeAdapter],
+  ] as const)(
+    "%s allows extra properties when additionalProperties is omitted and openapi.additionalPropertiesDefault is true",
+    (runtime, adapter) => {
+      const node = openApiToIr(implicitAdditionalPropertiesSchema, {
+        getRefName: (ref) => ref,
+        additionalPropertiesDefault: true,
+      });
+      const source = adapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
+      const schema = parseResult(runtime, source);
+
+      expect(accepts(runtime, schema, { name: "typed-openapi", extra: true })).toBe(true);
+    },
+  );
+
+  test("typebox rejects extra properties when additionalProperties is omitted", async () => {
     const doc = {
       openapi: "3.1.0",
       info: { title: "implicit-additional-properties", version: "1" },
@@ -174,6 +205,30 @@ describe("typed additionalProperties with named properties", () => {
     } as OpenAPIObject;
     const source = generateFile({ ...mapOpenApiEndpoints(doc), runtime: "typebox", schemasOnly: true });
     const directory = join(__dirname, "tmp/implicit-additional-properties");
+    mkdirSync(directory, { recursive: true });
+    const file = join(directory, "schemas.ts");
+    writeFileSync(file, source);
+    const module = (await import(pathToFileURL(file).href + `?t=${Date.now()}`)) as {
+      ImplicitObject: Parameters<typeof TypeBoxValue.Check>[0];
+    };
+
+    expect(TypeBoxValue.Check(module.ImplicitObject, { name: "typed-openapi" })).toBe(true);
+    expect(TypeBoxValue.Check(module.ImplicitObject, { name: "typed-openapi", extra: true })).toBe(false);
+  });
+
+  test("typebox allows extra properties when openapi.additionalPropertiesDefault is true", async () => {
+    const doc = {
+      openapi: "3.1.0",
+      info: { title: "implicit-additional-properties-openapi", version: "1" },
+      paths: {},
+      components: { schemas: { ImplicitObject: implicitAdditionalPropertiesSchema } },
+    } as OpenAPIObject;
+    const source = generateFile({
+      ...mapOpenApiEndpoints(doc, { openapi: { additionalPropertiesDefault: true } }),
+      runtime: "typebox",
+      schemasOnly: true,
+    });
+    const directory = join(__dirname, "tmp/implicit-additional-properties-openapi");
     mkdirSync(directory, { recursive: true });
     const file = join(directory, "schemas.ts");
     writeFileSync(file, source);

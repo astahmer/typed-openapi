@@ -1764,7 +1764,7 @@ describe("map-openapi-endpoints", () => {
                 "meta": {},
               },
               "400": {
-                "additionalProperties": true,
+                "additionalProperties": false,
                 "constraints": {},
                 "kind": "object",
                 "meta": {},
@@ -2104,7 +2104,7 @@ describe("map-openapi-endpoints", () => {
                 "name": "Pet",
               },
               "400": {
-                "additionalProperties": true,
+                "additionalProperties": false,
                 "constraints": {},
                 "kind": "object",
                 "meta": {},
@@ -2136,7 +2136,7 @@ describe("map-openapi-endpoints", () => {
                 ],
               },
               "404": {
-                "additionalProperties": true,
+                "additionalProperties": false,
                 "constraints": {},
                 "kind": "object",
                 "meta": {},
@@ -3352,7 +3352,7 @@ describe("map-openapi-endpoints", () => {
                 "name": "User",
               },
               "201": {
-                "additionalProperties": true,
+                "additionalProperties": false,
                 "constraints": {},
                 "kind": "object",
                 "meta": {},
@@ -3376,7 +3376,7 @@ describe("map-openapi-endpoints", () => {
                 ],
               },
               "400": {
-                "additionalProperties": true,
+                "additionalProperties": false,
                 "constraints": {},
                 "kind": "object",
                 "meta": {},
@@ -4086,7 +4086,7 @@ describe("map-openapi-endpoints", () => {
           },
           "parameters": {
             "body": {
-              "additionalProperties": true,
+              "additionalProperties": false,
               "constraints": {},
               "kind": "object",
               "meta": {},

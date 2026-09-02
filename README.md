@@ -25,6 +25,10 @@ See [the documentation](https://typed-openapi-docs.vercel.app/) or try [the onli
   `@faker-js/faker`
 - **Auth from `securitySchemes`**: default fetcher emits `AuthCredentials` + `configureFetcher({ getAuth })` (apiKey /
   http / oauth2 / openIdConnect)
+- **Closed objects by default**: omitted `additionalProperties` is treated as `false`
+  so generated types and validators don't silently accept unknown keys. Opt into the
+  OpenAPI/JSON Schema default with `--openapi-additional-properties-default` /
+  `openapi: { additionalPropertiesDefault: true }`.
 - **Date / bigint transforms** (`--transform-dates`, `--transform-bigint`): `format: date-time|date` → `Date`,
   `format: int64` → `bigint` (types + runtime schema transforms; none-runtime revives ISO date strings)
 - **Typed config**: `defineConfig` + `typed-openapi.config.ts` (also JSON); auto-loaded when present
@@ -90,6 +94,15 @@ export default defineConfig({
   msw: "msw.ts",
   transformDates: true,
   format: true,
+});
+```
+
+Objects are closed when `additionalProperties` is omitted. Set `openapi.additionalPropertiesDefault: true` to follow the OpenAPI default (`true` when omitted):
+
+```ts
+export default defineConfig({
+  input: "./openapi.yaml",
+  openapi: { additionalPropertiesDefault: true },
 });
 ```
 
@@ -170,6 +183,7 @@ Options:
   --transform-bigint              Map format int64 to bigint (types + runtime transforms)
   --runtime-types                 Generate a .types.d.ts sidecar for runtime client types (default for runtime clients)
   --no-runtime-types              Do not generate a runtime type declaration sidecar
+  --openapi-additional-properties-default When additionalProperties is omitted, use OpenAPI/JSON Schema's default (`true`). Default: omitted additionalProperties is `false` so named objects stay closed
   -h, --help                      Display this message
   -v, --version                   Display version number
 

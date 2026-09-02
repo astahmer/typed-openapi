@@ -4,7 +4,7 @@ import { extname, resolve } from "pathe";
 import { type } from "arktype";
 import type { ValidationPreset, ValidationPolicy } from "./runtimes/validation.ts";
 import { resolveValidationPolicy } from "./runtimes/validation.ts";
-import type { SchemaTransform } from "./types.ts";
+import type { OpenapiConfig, SchemaTransform } from "./types.ts";
 
 const validationOverrideSchema = type({
   "preset?": "'loose' | 'formats' | 'strict'",
@@ -51,6 +51,9 @@ export const configFileSchema = type({
   "transformBigInt?": "boolean",
   "runtimeTypes?": "boolean",
   "includeDeprecated?": "('endpoints'|'schemas'|'properties')[]",
+  "openapi?": type({
+    "additionalPropertiesDefault?": "boolean",
+  }),
   /**
    * Custom schema transform (function). Passed through as-is by ArkType (`unknown`).
    * Only expressible in TS/JS config files (via `defineConfig`) — not in JSON configs.
@@ -61,6 +64,8 @@ export const configFileSchema = type({
 export type TypedOpenapiConfigFile = typeof configFileSchema.infer & {
   /** Custom schema transform; see `SchemaTransform`. */
   transformSchema?: SchemaTransform;
+  /** OpenAPI schema interpretation (omitted-keyword defaults, etc.). */
+  openapi?: OpenapiConfig;
 };
 
 /** Full config type for `defineConfig` / `typed-openapi.config.ts`. */

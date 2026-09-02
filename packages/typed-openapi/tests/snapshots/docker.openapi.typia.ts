@@ -2,48 +2,48 @@
   import typia, { tags } from "typia";
 
 // <Schemas>
-export type Port = ({ IP?: string, PrivatePort: number, PublicPort?: number, Type: ("tcp" | "udp" | "sctp") } & Record<string, unknown>);
-export const isPort = typia.createIs<Port>();
+export type Port = { IP?: string, PrivatePort: number, PublicPort?: number, Type: ("tcp" | "udp" | "sctp") };
+export const isPort = ((input: unknown): input is Port => typia.createIs<Port>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "IP": 1, "PrivatePort": 1, "PublicPort": 1, "Type": 1 }, key)));
 export const assertPort = typia.createAssert<Port>();
 export const validatePort = typia.createValidate<Port>();
 
 export type MountPoint = Partial<{ Type: ("bind" | "volume" | "tmpfs" | "npipe" | "cluster"), Name: string, Source: string, Destination: string, Driver: string, Mode: string, RW: boolean, Propagation: string }>;
-export const isMountPoint = typia.createIs<MountPoint>();
+export const isMountPoint = ((input: unknown): input is MountPoint => typia.createIs<MountPoint>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Type": 1, "Name": 1, "Source": 1, "Destination": 1, "Driver": 1, "Mode": 1, "RW": 1, "Propagation": 1 }, key)));
 export const assertMountPoint = typia.createAssert<MountPoint>();
 export const validateMountPoint = typia.createValidate<MountPoint>();
 
 export type DeviceMapping = Partial<{ PathOnHost: string, PathInContainer: string, CgroupPermissions: string }>;
-export const isDeviceMapping = typia.createIs<DeviceMapping>();
+export const isDeviceMapping = ((input: unknown): input is DeviceMapping => typia.createIs<DeviceMapping>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "PathOnHost": 1, "PathInContainer": 1, "CgroupPermissions": 1 }, key)));
 export const assertDeviceMapping = typia.createAssert<DeviceMapping>();
 export const validateDeviceMapping = typia.createValidate<DeviceMapping>();
 
 export type DeviceRequest = Partial<{ Driver: string, Count: number, DeviceIDs: Array<string>, Capabilities: Array<Array<string>>, Options: Record<string, string> }>;
-export const isDeviceRequest = typia.createIs<DeviceRequest>();
+export const isDeviceRequest = ((input: unknown): input is DeviceRequest => typia.createIs<DeviceRequest>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Driver": 1, "Count": 1, "DeviceIDs": 1, "Capabilities": 1, "Options": 1 }, key)));
 export const assertDeviceRequest = typia.createAssert<DeviceRequest>();
 export const validateDeviceRequest = typia.createValidate<DeviceRequest>();
 
 export type ThrottleDevice = Partial<{ Path: string, Rate: number }>;
-export const isThrottleDevice = typia.createIs<ThrottleDevice>();
+export const isThrottleDevice = ((input: unknown): input is ThrottleDevice => typia.createIs<ThrottleDevice>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Path": 1, "Rate": 1 }, key)));
 export const assertThrottleDevice = typia.createAssert<ThrottleDevice>();
 export const validateThrottleDevice = typia.createValidate<ThrottleDevice>();
 
 export type Mount = Partial<{ Target: string, Source: string, Type: ("bind" | "volume" | "tmpfs" | "npipe" | "cluster"), ReadOnly: boolean, Consistency: string, BindOptions: Partial<{ Propagation: ("private" | "rprivate" | "shared" | "rshared" | "slave" | "rslave"), NonRecursive: boolean, CreateMountpoint: boolean }>, VolumeOptions: Partial<{ NoCopy: boolean, Labels: Record<string, string>, DriverConfig: Partial<{ Name: string, Options: Record<string, string> }> }>, TmpfsOptions: Partial<{ SizeBytes: number, Mode: number }> }>;
-export const isMount = typia.createIs<Mount>();
+export const isMount = ((input: unknown): input is Mount => typia.createIs<Mount>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Target": 1, "Source": 1, "Type": 1, "ReadOnly": 1, "Consistency": 1, "BindOptions": 1, "VolumeOptions": 1, "TmpfsOptions": 1 }, key)));
 export const assertMount = typia.createAssert<Mount>();
 export const validateMount = typia.createValidate<Mount>();
 
 export type RestartPolicy = Partial<{ Name: ("" | "no" | "always" | "unless-stopped" | "on-failure"), MaximumRetryCount: number }>;
-export const isRestartPolicy = typia.createIs<RestartPolicy>();
+export const isRestartPolicy = ((input: unknown): input is RestartPolicy => typia.createIs<RestartPolicy>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "MaximumRetryCount": 1 }, key)));
 export const assertRestartPolicy = typia.createAssert<RestartPolicy>();
 export const validateRestartPolicy = typia.createValidate<RestartPolicy>();
 
 export type Resources = Partial<{ CpuShares: number, Memory: number, CgroupParent: string, BlkioWeight: number, BlkioWeightDevice: Array<Partial<{ Path: string, Weight: number }>>, BlkioDeviceReadBps: Array<ThrottleDevice>, BlkioDeviceWriteBps: Array<ThrottleDevice>, BlkioDeviceReadIOps: Array<ThrottleDevice>, BlkioDeviceWriteIOps: Array<ThrottleDevice>, CpuPeriod: number, CpuQuota: number, CpuRealtimePeriod: number, CpuRealtimeRuntime: number, CpusetCpus: string, CpusetMems: string, Devices: Array<DeviceMapping>, DeviceCgroupRules: Array<string>, DeviceRequests: Array<DeviceRequest>, KernelMemoryTCP: number, MemoryReservation: number, MemorySwap: number, MemorySwappiness: number, NanoCpus: number, OomKillDisable: boolean, Init: (boolean | null), PidsLimit: (number | null), Ulimits: Array<Partial<{ Name: string, Soft: number, Hard: number }>>, CpuCount: number, CpuPercent: number, IOMaximumIOps: number, IOMaximumBandwidth: number }>;
-export const isResources = typia.createIs<Resources>();
+export const isResources = ((input: unknown): input is Resources => typia.createIs<Resources>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "CpuShares": 1, "Memory": 1, "CgroupParent": 1, "BlkioWeight": 1, "BlkioWeightDevice": 1, "BlkioDeviceReadBps": 1, "BlkioDeviceWriteBps": 1, "BlkioDeviceReadIOps": 1, "BlkioDeviceWriteIOps": 1, "CpuPeriod": 1, "CpuQuota": 1, "CpuRealtimePeriod": 1, "CpuRealtimeRuntime": 1, "CpusetCpus": 1, "CpusetMems": 1, "Devices": 1, "DeviceCgroupRules": 1, "DeviceRequests": 1, "KernelMemoryTCP": 1, "MemoryReservation": 1, "MemorySwap": 1, "MemorySwappiness": 1, "NanoCpus": 1, "OomKillDisable": 1, "Init": 1, "PidsLimit": 1, "Ulimits": 1, "CpuCount": 1, "CpuPercent": 1, "IOMaximumIOps": 1, "IOMaximumBandwidth": 1 }, key)));
 export const assertResources = typia.createAssert<Resources>();
 export const validateResources = typia.createValidate<Resources>();
 
 export type Limit = Partial<{ NanoCPUs: number, MemoryBytes: number, Pids: number }>;
-export const isLimit = typia.createIs<Limit>();
+export const isLimit = ((input: unknown): input is Limit => typia.createIs<Limit>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "NanoCPUs": 1, "MemoryBytes": 1, "Pids": 1 }, key)));
 export const assertLimit = typia.createAssert<Limit>();
 export const validateLimit = typia.createValidate<Limit>();
 
@@ -53,12 +53,12 @@ export const assertGenericResources = typia.createAssert<GenericResources>();
 export const validateGenericResources = typia.createValidate<GenericResources>();
 
 export type ResourceObject = Partial<{ NanoCPUs: number, MemoryBytes: number, GenericResources: GenericResources }>;
-export const isResourceObject = typia.createIs<ResourceObject>();
+export const isResourceObject = ((input: unknown): input is ResourceObject => typia.createIs<ResourceObject>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "NanoCPUs": 1, "MemoryBytes": 1, "GenericResources": 1 }, key)));
 export const assertResourceObject = typia.createAssert<ResourceObject>();
 export const validateResourceObject = typia.createValidate<ResourceObject>();
 
 export type HealthConfig = Partial<{ Test: Array<string>, Interval: number, Timeout: number, Retries: number, StartPeriod: number }>;
-export const isHealthConfig = typia.createIs<HealthConfig>();
+export const isHealthConfig = ((input: unknown): input is HealthConfig => typia.createIs<HealthConfig>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Test": 1, "Interval": 1, "Timeout": 1, "Retries": 1, "StartPeriod": 1 }, key)));
 export const assertHealthConfig = typia.createAssert<HealthConfig>();
 export const validateHealthConfig = typia.createValidate<HealthConfig>();
 
@@ -73,7 +73,7 @@ export const assertHealth = typia.createAssert<Health>();
 export const validateHealth = typia.createValidate<Health>();
 
 export type PortBinding = Partial<{ HostIp: string, HostPort: string }>;
-export const isPortBinding = typia.createIs<PortBinding>();
+export const isPortBinding = ((input: unknown): input is PortBinding => typia.createIs<PortBinding>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "HostIp": 1, "HostPort": 1 }, key)));
 export const assertPortBinding = typia.createAssert<PortBinding>();
 export const validatePortBinding = typia.createValidate<PortBinding>();
 
@@ -88,7 +88,7 @@ export const assertHostConfig = typia.createAssert<HostConfig>();
 export const validateHostConfig = typia.createValidate<HostConfig>();
 
 export type ContainerConfig = Partial<{ Hostname: string, Domainname: string, User: string, AttachStdin: boolean, AttachStdout: boolean, AttachStderr: boolean, ExposedPorts: (Record<string, Partial<{  }>> | null), Tty: boolean, OpenStdin: boolean, StdinOnce: boolean, Env: Array<string>, Cmd: Array<string>, Healthcheck: HealthConfig, ArgsEscaped: (boolean | null), Image: string, Volumes: Record<string, Partial<{  }>>, WorkingDir: string, Entrypoint: Array<string>, NetworkDisabled: (boolean | null), MacAddress: (string | null), OnBuild: (Array<string> | null), Labels: Record<string, string>, StopSignal: (string | null), StopTimeout: (number | null), Shell: (Array<string> | null) }>;
-export const isContainerConfig = typia.createIs<ContainerConfig>();
+export const isContainerConfig = ((input: unknown): input is ContainerConfig => typia.createIs<ContainerConfig>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Hostname": 1, "Domainname": 1, "User": 1, "AttachStdin": 1, "AttachStdout": 1, "AttachStderr": 1, "ExposedPorts": 1, "Tty": 1, "OpenStdin": 1, "StdinOnce": 1, "Env": 1, "Cmd": 1, "Healthcheck": 1, "ArgsEscaped": 1, "Image": 1, "Volumes": 1, "WorkingDir": 1, "Entrypoint": 1, "NetworkDisabled": 1, "MacAddress": 1, "OnBuild": 1, "Labels": 1, "StopSignal": 1, "StopTimeout": 1, "Shell": 1 }, key)));
 export const assertContainerConfig = typia.createAssert<ContainerConfig>();
 export const validateContainerConfig = typia.createValidate<ContainerConfig>();
 
@@ -98,27 +98,27 @@ export const assertEndpointIPAMConfig = typia.createAssert<EndpointIPAMConfig>()
 export const validateEndpointIPAMConfig = typia.createValidate<EndpointIPAMConfig>();
 
 export type EndpointSettings = Partial<{ IPAMConfig: EndpointIPAMConfig, Links: Array<string>, Aliases: Array<string>, NetworkID: string, EndpointID: string, Gateway: string, IPAddress: string, IPPrefixLen: number, IPv6Gateway: string, GlobalIPv6Address: string, GlobalIPv6PrefixLen: number, MacAddress: string, DriverOpts: (Record<string, string> | null) }>;
-export const isEndpointSettings = typia.createIs<EndpointSettings>();
+export const isEndpointSettings = ((input: unknown): input is EndpointSettings => typia.createIs<EndpointSettings>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "IPAMConfig": 1, "Links": 1, "Aliases": 1, "NetworkID": 1, "EndpointID": 1, "Gateway": 1, "IPAddress": 1, "IPPrefixLen": 1, "IPv6Gateway": 1, "GlobalIPv6Address": 1, "GlobalIPv6PrefixLen": 1, "MacAddress": 1, "DriverOpts": 1 }, key)));
 export const assertEndpointSettings = typia.createAssert<EndpointSettings>();
 export const validateEndpointSettings = typia.createValidate<EndpointSettings>();
 
 export type NetworkingConfig = Partial<{ EndpointsConfig: Record<string, EndpointSettings> }>;
-export const isNetworkingConfig = typia.createIs<NetworkingConfig>();
+export const isNetworkingConfig = ((input: unknown): input is NetworkingConfig => typia.createIs<NetworkingConfig>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "EndpointsConfig": 1 }, key)));
 export const assertNetworkingConfig = typia.createAssert<NetworkingConfig>();
 export const validateNetworkingConfig = typia.createValidate<NetworkingConfig>();
 
 export type Address = Partial<{ Addr: string, PrefixLen: number }>;
-export const isAddress = typia.createIs<Address>();
+export const isAddress = ((input: unknown): input is Address => typia.createIs<Address>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Addr": 1, "PrefixLen": 1 }, key)));
 export const assertAddress = typia.createAssert<Address>();
 export const validateAddress = typia.createValidate<Address>();
 
 export type NetworkSettings = Partial<{ Bridge: string, SandboxID: string, HairpinMode: boolean, LinkLocalIPv6Address: string, LinkLocalIPv6PrefixLen: number, Ports: PortMap, SandboxKey: string, SecondaryIPAddresses: (Array<Address> | null), SecondaryIPv6Addresses: (Array<Address> | null), EndpointID: string, Gateway: string, GlobalIPv6Address: string, GlobalIPv6PrefixLen: number, IPAddress: string, IPPrefixLen: number, IPv6Gateway: string, MacAddress: string, Networks: Record<string, EndpointSettings> }>;
-export const isNetworkSettings = typia.createIs<NetworkSettings>();
+export const isNetworkSettings = ((input: unknown): input is NetworkSettings => typia.createIs<NetworkSettings>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Bridge": 1, "SandboxID": 1, "HairpinMode": 1, "LinkLocalIPv6Address": 1, "LinkLocalIPv6PrefixLen": 1, "Ports": 1, "SandboxKey": 1, "SecondaryIPAddresses": 1, "SecondaryIPv6Addresses": 1, "EndpointID": 1, "Gateway": 1, "GlobalIPv6Address": 1, "GlobalIPv6PrefixLen": 1, "IPAddress": 1, "IPPrefixLen": 1, "IPv6Gateway": 1, "MacAddress": 1, "Networks": 1 }, key)));
 export const assertNetworkSettings = typia.createAssert<NetworkSettings>();
 export const validateNetworkSettings = typia.createValidate<NetworkSettings>();
 
-export type GraphDriverData = ({ Name: string, Data: Record<string, string> } & Record<string, unknown>);
-export const isGraphDriverData = typia.createIs<GraphDriverData>();
+export type GraphDriverData = { Name: string, Data: Record<string, string> };
+export const isGraphDriverData = ((input: unknown): input is GraphDriverData => typia.createIs<GraphDriverData>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Data": 1 }, key)));
 export const assertGraphDriverData = typia.createAssert<GraphDriverData>();
 export const validateGraphDriverData = typia.createValidate<GraphDriverData>();
 
@@ -127,33 +127,33 @@ export const isChangeType = typia.createIs<ChangeType>();
 export const assertChangeType = typia.createAssert<ChangeType>();
 export const validateChangeType = typia.createValidate<ChangeType>();
 
-export type FilesystemChange = ({ Path: string, Kind: ChangeType } & Record<string, unknown>);
-export const isFilesystemChange = typia.createIs<FilesystemChange>();
+export type FilesystemChange = { Path: string, Kind: ChangeType };
+export const isFilesystemChange = ((input: unknown): input is FilesystemChange => typia.createIs<FilesystemChange>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Path": 1, "Kind": 1 }, key)));
 export const assertFilesystemChange = typia.createAssert<FilesystemChange>();
 export const validateFilesystemChange = typia.createValidate<FilesystemChange>();
 
-export type ImageInspect = Partial<{ Id: string, RepoTags: Array<string>, RepoDigests: Array<string>, Parent: string, Comment: string, Created: string, Container: string, ContainerConfig: ContainerConfig, DockerVersion: string, Author: string, Config: ContainerConfig, Architecture: string, Variant: (string | null), Os: string, OsVersion: (string | null), Size: number, VirtualSize: number, GraphDriver: GraphDriverData, RootFS: ({ Type: string, Layers?: Array<string> } & Record<string, unknown>), Metadata: Partial<{ LastTagTime: (string | null) }> }>;
-export const isImageInspect = typia.createIs<ImageInspect>();
+export type ImageInspect = Partial<{ Id: string, RepoTags: Array<string>, RepoDigests: Array<string>, Parent: string, Comment: string, Created: string, Container: string, ContainerConfig: ContainerConfig, DockerVersion: string, Author: string, Config: ContainerConfig, Architecture: string, Variant: (string | null), Os: string, OsVersion: (string | null), Size: number, VirtualSize: number, GraphDriver: GraphDriverData, RootFS: { Type: string, Layers?: Array<string> }, Metadata: Partial<{ LastTagTime: (string | null) }> }>;
+export const isImageInspect = ((input: unknown): input is ImageInspect => typia.createIs<ImageInspect>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Id": 1, "RepoTags": 1, "RepoDigests": 1, "Parent": 1, "Comment": 1, "Created": 1, "Container": 1, "ContainerConfig": 1, "DockerVersion": 1, "Author": 1, "Config": 1, "Architecture": 1, "Variant": 1, "Os": 1, "OsVersion": 1, "Size": 1, "VirtualSize": 1, "GraphDriver": 1, "RootFS": 1, "Metadata": 1 }, key)));
 export const assertImageInspect = typia.createAssert<ImageInspect>();
 export const validateImageInspect = typia.createValidate<ImageInspect>();
 
-export type ImageSummary = ({ Id: string, ParentId: string, RepoTags: Array<string>, RepoDigests: Array<string>, Created: number, Size: number, SharedSize: number, VirtualSize?: number, Labels: Record<string, string>, Containers: number } & Record<string, unknown>);
-export const isImageSummary = typia.createIs<ImageSummary>();
+export type ImageSummary = { Id: string, ParentId: string, RepoTags: Array<string>, RepoDigests: Array<string>, Created: number, Size: number, SharedSize: number, VirtualSize?: number, Labels: Record<string, string>, Containers: number };
+export const isImageSummary = ((input: unknown): input is ImageSummary => typia.createIs<ImageSummary>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Id": 1, "ParentId": 1, "RepoTags": 1, "RepoDigests": 1, "Created": 1, "Size": 1, "SharedSize": 1, "VirtualSize": 1, "Labels": 1, "Containers": 1 }, key)));
 export const assertImageSummary = typia.createAssert<ImageSummary>();
 export const validateImageSummary = typia.createValidate<ImageSummary>();
 
 export type AuthConfig = Partial<{ username: string, password: string, email: string, serveraddress: string }>;
-export const isAuthConfig = typia.createIs<AuthConfig>();
+export const isAuthConfig = ((input: unknown): input is AuthConfig => typia.createIs<AuthConfig>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "username": 1, "password": 1, "email": 1, "serveraddress": 1 }, key)));
 export const assertAuthConfig = typia.createAssert<AuthConfig>();
 export const validateAuthConfig = typia.createValidate<AuthConfig>();
 
 export type ProcessConfig = Partial<{ privileged: boolean, user: string, tty: boolean, entrypoint: string, arguments: Array<string> }>;
-export const isProcessConfig = typia.createIs<ProcessConfig>();
+export const isProcessConfig = ((input: unknown): input is ProcessConfig => typia.createIs<ProcessConfig>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "privileged": 1, "user": 1, "tty": 1, "entrypoint": 1, "arguments": 1 }, key)));
 export const assertProcessConfig = typia.createAssert<ProcessConfig>();
 export const validateProcessConfig = typia.createValidate<ProcessConfig>();
 
 export type ObjectVersion = Partial<{ Index: number }>;
-export const isObjectVersion = typia.createIs<ObjectVersion>();
+export const isObjectVersion = ((input: unknown): input is ObjectVersion => typia.createIs<ObjectVersion>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Index": 1 }, key)));
 export const assertObjectVersion = typia.createAssert<ObjectVersion>();
 export const validateObjectVersion = typia.createValidate<ObjectVersion>();
 
@@ -163,147 +163,147 @@ export const assertTopology = typia.createAssert<Topology>();
 export const validateTopology = typia.createValidate<Topology>();
 
 export type ClusterVolumeSpec = Partial<{ Group: string, AccessMode: Partial<{ Scope: ("single" | "multi"), Sharing: ("none" | "readonly" | "onewriter" | "all"), MountVolume: Partial<{  }>, Secrets: Array<Partial<{ Key: string, Secret: string }>>, AccessibilityRequirements: Partial<{ Requisite: Array<Topology>, Preferred: Array<Topology> }>, CapacityRange: Partial<{ RequiredBytes: number, LimitBytes: number }>, Availability: ("active" | "pause" | "drain") }> }>;
-export const isClusterVolumeSpec = typia.createIs<ClusterVolumeSpec>();
+export const isClusterVolumeSpec = ((input: unknown): input is ClusterVolumeSpec => typia.createIs<ClusterVolumeSpec>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Group": 1, "AccessMode": 1 }, key)));
 export const assertClusterVolumeSpec = typia.createAssert<ClusterVolumeSpec>();
 export const validateClusterVolumeSpec = typia.createValidate<ClusterVolumeSpec>();
 
 export type ClusterVolume = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: string, UpdatedAt: string, Spec: ClusterVolumeSpec, Info: Partial<{ CapacityBytes: number, VolumeContext: Record<string, string>, VolumeID: string, AccessibleTopology: Array<Topology> }>, PublishStatus: Array<Partial<{ NodeID: string, State: ("pending-publish" | "published" | "pending-node-unpublish" | "pending-controller-unpublish"), PublishContext: Record<string, string> }>> }>;
-export const isClusterVolume = typia.createIs<ClusterVolume>();
+export const isClusterVolume = ((input: unknown): input is ClusterVolume => typia.createIs<ClusterVolume>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1, "Info": 1, "PublishStatus": 1 }, key)));
 export const assertClusterVolume = typia.createAssert<ClusterVolume>();
 export const validateClusterVolume = typia.createValidate<ClusterVolume>();
 
-export type Volume = ({ Name: string, Driver: string, Mountpoint: string, CreatedAt?: string, Status?: Record<string, Partial<{  }>>, Labels: Record<string, string>, Scope: ("local" | "global"), ClusterVolume?: ClusterVolume, Options: Record<string, string>, UsageData?: (({ Size: number, RefCount: number } & Record<string, unknown>) | null) } & Record<string, unknown>);
-export const isVolume = typia.createIs<Volume>();
+export type Volume = { Name: string, Driver: string, Mountpoint: string, CreatedAt?: string, Status?: Record<string, Partial<{  }>>, Labels: Record<string, string>, Scope: ("local" | "global"), ClusterVolume?: ClusterVolume, Options: Record<string, string>, UsageData?: ({ Size: number, RefCount: number } | null) };
+export const isVolume = ((input: unknown): input is Volume => typia.createIs<Volume>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Driver": 1, "Mountpoint": 1, "CreatedAt": 1, "Status": 1, "Labels": 1, "Scope": 1, "ClusterVolume": 1, "Options": 1, "UsageData": 1 }, key)));
 export const assertVolume = typia.createAssert<Volume>();
 export const validateVolume = typia.createValidate<Volume>();
 
 export type VolumeCreateOptions = Partial<{ Name: string, Driver: string, DriverOpts: Record<string, string>, Labels: Record<string, string>, ClusterVolumeSpec: ClusterVolumeSpec }>;
-export const isVolumeCreateOptions = typia.createIs<VolumeCreateOptions>();
+export const isVolumeCreateOptions = ((input: unknown): input is VolumeCreateOptions => typia.createIs<VolumeCreateOptions>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Driver": 1, "DriverOpts": 1, "Labels": 1, "ClusterVolumeSpec": 1 }, key)));
 export const assertVolumeCreateOptions = typia.createAssert<VolumeCreateOptions>();
 export const validateVolumeCreateOptions = typia.createValidate<VolumeCreateOptions>();
 
 export type VolumeListResponse = Partial<{ Volumes: Array<Volume>, Warnings: Array<string> }>;
-export const isVolumeListResponse = typia.createIs<VolumeListResponse>();
+export const isVolumeListResponse = ((input: unknown): input is VolumeListResponse => typia.createIs<VolumeListResponse>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Volumes": 1, "Warnings": 1 }, key)));
 export const assertVolumeListResponse = typia.createAssert<VolumeListResponse>();
 export const validateVolumeListResponse = typia.createValidate<VolumeListResponse>();
 
 export type IPAMConfig = Partial<{ Subnet: string, IPRange: string, Gateway: string, AuxiliaryAddresses: Record<string, string> }>;
-export const isIPAMConfig = typia.createIs<IPAMConfig>();
+export const isIPAMConfig = ((input: unknown): input is IPAMConfig => typia.createIs<IPAMConfig>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Subnet": 1, "IPRange": 1, "Gateway": 1, "AuxiliaryAddresses": 1 }, key)));
 export const assertIPAMConfig = typia.createAssert<IPAMConfig>();
 export const validateIPAMConfig = typia.createValidate<IPAMConfig>();
 
 export type IPAM = Partial<{ Driver: string, Config: Array<IPAMConfig>, Options: Record<string, string> }>;
-export const isIPAM = typia.createIs<IPAM>();
+export const isIPAM = ((input: unknown): input is IPAM => typia.createIs<IPAM>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Driver": 1, "Config": 1, "Options": 1 }, key)));
 export const assertIPAM = typia.createAssert<IPAM>();
 export const validateIPAM = typia.createValidate<IPAM>();
 
 export type NetworkContainer = Partial<{ Name: string, EndpointID: string, MacAddress: string, IPv4Address: string, IPv6Address: string }>;
-export const isNetworkContainer = typia.createIs<NetworkContainer>();
+export const isNetworkContainer = ((input: unknown): input is NetworkContainer => typia.createIs<NetworkContainer>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "EndpointID": 1, "MacAddress": 1, "IPv4Address": 1, "IPv6Address": 1 }, key)));
 export const assertNetworkContainer = typia.createAssert<NetworkContainer>();
 export const validateNetworkContainer = typia.createValidate<NetworkContainer>();
 
 export type Network = Partial<{ Name: string, Id: string, Created: string, Scope: string, Driver: string, EnableIPv6: boolean, IPAM: IPAM, Internal: boolean, Attachable: boolean, Ingress: boolean, Containers: Record<string, NetworkContainer>, Options: Record<string, string>, Labels: Record<string, string> }>;
-export const isNetwork = typia.createIs<Network>();
+export const isNetwork = ((input: unknown): input is Network => typia.createIs<Network>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Id": 1, "Created": 1, "Scope": 1, "Driver": 1, "EnableIPv6": 1, "IPAM": 1, "Internal": 1, "Attachable": 1, "Ingress": 1, "Containers": 1, "Options": 1, "Labels": 1 }, key)));
 export const assertNetwork = typia.createAssert<Network>();
 export const validateNetwork = typia.createValidate<Network>();
 
 export type ErrorDetail = Partial<{ code: number, message: string }>;
-export const isErrorDetail = typia.createIs<ErrorDetail>();
+export const isErrorDetail = ((input: unknown): input is ErrorDetail => typia.createIs<ErrorDetail>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "code": 1, "message": 1 }, key)));
 export const assertErrorDetail = typia.createAssert<ErrorDetail>();
 export const validateErrorDetail = typia.createValidate<ErrorDetail>();
 
 export type ProgressDetail = Partial<{ current: number, total: number }>;
-export const isProgressDetail = typia.createIs<ProgressDetail>();
+export const isProgressDetail = ((input: unknown): input is ProgressDetail => typia.createIs<ProgressDetail>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "current": 1, "total": 1 }, key)));
 export const assertProgressDetail = typia.createAssert<ProgressDetail>();
 export const validateProgressDetail = typia.createValidate<ProgressDetail>();
 
 export type ImageID = Partial<{ ID: string }>;
-export const isImageID = typia.createIs<ImageID>();
+export const isImageID = ((input: unknown): input is ImageID => typia.createIs<ImageID>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ID": 1 }, key)));
 export const assertImageID = typia.createAssert<ImageID>();
 export const validateImageID = typia.createValidate<ImageID>();
 
 export type BuildInfo = Partial<{ id: string, stream: string, error: string, errorDetail: ErrorDetail, status: string, progress: string, progressDetail: ProgressDetail, aux: ImageID }>;
-export const isBuildInfo = typia.createIs<BuildInfo>();
+export const isBuildInfo = ((input: unknown): input is BuildInfo => typia.createIs<BuildInfo>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1, "stream": 1, "error": 1, "errorDetail": 1, "status": 1, "progress": 1, "progressDetail": 1, "aux": 1 }, key)));
 export const assertBuildInfo = typia.createAssert<BuildInfo>();
 export const validateBuildInfo = typia.createValidate<BuildInfo>();
 
 export type BuildCache = Partial<{ ID: string, Parent: (string | null), Parents: (Array<string> | null), Type: ("internal" | "frontend" | "source.local" | "source.git.checkout" | "exec.cachemount" | "regular"), Description: string, InUse: boolean, Shared: boolean, Size: number, CreatedAt: string, LastUsedAt: (string | null), UsageCount: number }>;
-export const isBuildCache = typia.createIs<BuildCache>();
+export const isBuildCache = ((input: unknown): input is BuildCache => typia.createIs<BuildCache>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ID": 1, "Parent": 1, "Parents": 1, "Type": 1, "Description": 1, "InUse": 1, "Shared": 1, "Size": 1, "CreatedAt": 1, "LastUsedAt": 1, "UsageCount": 1 }, key)));
 export const assertBuildCache = typia.createAssert<BuildCache>();
 export const validateBuildCache = typia.createValidate<BuildCache>();
 
 export type CreateImageInfo = Partial<{ id: string, error: string, errorDetail: ErrorDetail, status: string, progress: string, progressDetail: ProgressDetail }>;
-export const isCreateImageInfo = typia.createIs<CreateImageInfo>();
+export const isCreateImageInfo = ((input: unknown): input is CreateImageInfo => typia.createIs<CreateImageInfo>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1, "error": 1, "errorDetail": 1, "status": 1, "progress": 1, "progressDetail": 1 }, key)));
 export const assertCreateImageInfo = typia.createAssert<CreateImageInfo>();
 export const validateCreateImageInfo = typia.createValidate<CreateImageInfo>();
 
 export type PushImageInfo = Partial<{ error: string, status: string, progress: string, progressDetail: ProgressDetail }>;
-export const isPushImageInfo = typia.createIs<PushImageInfo>();
+export const isPushImageInfo = ((input: unknown): input is PushImageInfo => typia.createIs<PushImageInfo>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "error": 1, "status": 1, "progress": 1, "progressDetail": 1 }, key)));
 export const assertPushImageInfo = typia.createAssert<PushImageInfo>();
 export const validatePushImageInfo = typia.createValidate<PushImageInfo>();
 
-export type ErrorResponse = ({ message: string } & Record<string, unknown>);
-export const isErrorResponse = typia.createIs<ErrorResponse>();
+export type ErrorResponse = { message: string };
+export const isErrorResponse = ((input: unknown): input is ErrorResponse => typia.createIs<ErrorResponse>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "message": 1 }, key)));
 export const assertErrorResponse = typia.createAssert<ErrorResponse>();
 export const validateErrorResponse = typia.createValidate<ErrorResponse>();
 
-export type IdResponse = ({ Id: string } & Record<string, unknown>);
-export const isIdResponse = typia.createIs<IdResponse>();
+export type IdResponse = { Id: string };
+export const isIdResponse = ((input: unknown): input is IdResponse => typia.createIs<IdResponse>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Id": 1 }, key)));
 export const assertIdResponse = typia.createAssert<IdResponse>();
 export const validateIdResponse = typia.createValidate<IdResponse>();
 
-export type PluginMount = ({ Name: string, Description: string, Settable: Array<string>, Source: string, Destination: string, Type: string, Options: Array<string> } & Record<string, unknown>);
-export const isPluginMount = typia.createIs<PluginMount>();
+export type PluginMount = { Name: string, Description: string, Settable: Array<string>, Source: string, Destination: string, Type: string, Options: Array<string> };
+export const isPluginMount = ((input: unknown): input is PluginMount => typia.createIs<PluginMount>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Description": 1, "Settable": 1, "Source": 1, "Destination": 1, "Type": 1, "Options": 1 }, key)));
 export const assertPluginMount = typia.createAssert<PluginMount>();
 export const validatePluginMount = typia.createValidate<PluginMount>();
 
-export type PluginDevice = ({ Name: string, Description: string, Settable: Array<string>, Path: string } & Record<string, unknown>);
-export const isPluginDevice = typia.createIs<PluginDevice>();
+export type PluginDevice = { Name: string, Description: string, Settable: Array<string>, Path: string };
+export const isPluginDevice = ((input: unknown): input is PluginDevice => typia.createIs<PluginDevice>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Description": 1, "Settable": 1, "Path": 1 }, key)));
 export const assertPluginDevice = typia.createAssert<PluginDevice>();
 export const validatePluginDevice = typia.createValidate<PluginDevice>();
 
-export type PluginEnv = ({ Name: string, Description: string, Settable: Array<string>, Value: string } & Record<string, unknown>);
-export const isPluginEnv = typia.createIs<PluginEnv>();
+export type PluginEnv = { Name: string, Description: string, Settable: Array<string>, Value: string };
+export const isPluginEnv = ((input: unknown): input is PluginEnv => typia.createIs<PluginEnv>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Description": 1, "Settable": 1, "Value": 1 }, key)));
 export const assertPluginEnv = typia.createAssert<PluginEnv>();
 export const validatePluginEnv = typia.createValidate<PluginEnv>();
 
-export type PluginInterfaceType = ({ Prefix: string, Capability: string, Version: string } & Record<string, unknown>);
-export const isPluginInterfaceType = typia.createIs<PluginInterfaceType>();
+export type PluginInterfaceType = { Prefix: string, Capability: string, Version: string };
+export const isPluginInterfaceType = ((input: unknown): input is PluginInterfaceType => typia.createIs<PluginInterfaceType>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Prefix": 1, "Capability": 1, "Version": 1 }, key)));
 export const assertPluginInterfaceType = typia.createAssert<PluginInterfaceType>();
 export const validatePluginInterfaceType = typia.createValidate<PluginInterfaceType>();
 
 export type PluginPrivilege = Partial<{ Name: string, Description: string, Value: Array<string> }>;
-export const isPluginPrivilege = typia.createIs<PluginPrivilege>();
+export const isPluginPrivilege = ((input: unknown): input is PluginPrivilege => typia.createIs<PluginPrivilege>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Description": 1, "Value": 1 }, key)));
 export const assertPluginPrivilege = typia.createAssert<PluginPrivilege>();
 export const validatePluginPrivilege = typia.createValidate<PluginPrivilege>();
 
-export type Plugin = ({ Id?: string, Name: string, Enabled: boolean, Settings: ({ Mounts: Array<PluginMount>, Env: Array<string>, Args: Array<string>, Devices: Array<PluginDevice> } & Record<string, unknown>), PluginReference?: string, Config: ({ DockerVersion?: string, Description: string, Documentation: string, Interface: ({ Types: Array<PluginInterfaceType>, Socket: string, ProtocolScheme?: ("" | "moby.plugins.http/v1") } & Record<string, unknown>), Entrypoint: Array<string>, WorkDir: string, User?: Partial<{ UID: number, GID: number }>, Network: ({ Type: string } & Record<string, unknown>), Linux: ({ Capabilities: Array<string>, AllowAllDevices: boolean, Devices: Array<PluginDevice> } & Record<string, unknown>), PropagatedMount: string, IpcHost: boolean, PidHost: boolean, Mounts: Array<PluginMount>, Env: Array<PluginEnv>, Args: ({ Name: string, Description: string, Settable: Array<string>, Value: Array<string> } & Record<string, unknown>), rootfs?: Partial<{ type: string, diff_ids: Array<string> }> } & Record<string, unknown>) } & Record<string, unknown>);
-export const isPlugin = typia.createIs<Plugin>();
+export type Plugin = { Id?: string, Name: string, Enabled: boolean, Settings: { Mounts: Array<PluginMount>, Env: Array<string>, Args: Array<string>, Devices: Array<PluginDevice> }, PluginReference?: string, Config: { DockerVersion?: string, Description: string, Documentation: string, Interface: { Types: Array<PluginInterfaceType>, Socket: string, ProtocolScheme?: ("" | "moby.plugins.http/v1") }, Entrypoint: Array<string>, WorkDir: string, User?: Partial<{ UID: number, GID: number }>, Network: { Type: string }, Linux: { Capabilities: Array<string>, AllowAllDevices: boolean, Devices: Array<PluginDevice> }, PropagatedMount: string, IpcHost: boolean, PidHost: boolean, Mounts: Array<PluginMount>, Env: Array<PluginEnv>, Args: { Name: string, Description: string, Settable: Array<string>, Value: Array<string> }, rootfs?: Partial<{ type: string, diff_ids: Array<string> }> } };
+export const isPlugin = ((input: unknown): input is Plugin => typia.createIs<Plugin>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Id": 1, "Name": 1, "Enabled": 1, "Settings": 1, "PluginReference": 1, "Config": 1 }, key)));
 export const assertPlugin = typia.createAssert<Plugin>();
 export const validatePlugin = typia.createValidate<Plugin>();
 
 export type NodeSpec = Partial<{ Name: string, Labels: Record<string, string>, Role: ("worker" | "manager"), Availability: ("active" | "pause" | "drain") }>;
-export const isNodeSpec = typia.createIs<NodeSpec>();
+export const isNodeSpec = ((input: unknown): input is NodeSpec => typia.createIs<NodeSpec>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Labels": 1, "Role": 1, "Availability": 1 }, key)));
 export const assertNodeSpec = typia.createAssert<NodeSpec>();
 export const validateNodeSpec = typia.createValidate<NodeSpec>();
 
 export type Platform = Partial<{ Architecture: string, OS: string }>;
-export const isPlatform = typia.createIs<Platform>();
+export const isPlatform = ((input: unknown): input is Platform => typia.createIs<Platform>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Architecture": 1, "OS": 1 }, key)));
 export const assertPlatform = typia.createAssert<Platform>();
 export const validatePlatform = typia.createValidate<Platform>();
 
 export type EngineDescription = Partial<{ EngineVersion: string, Labels: Record<string, string>, Plugins: Array<Partial<{ Type: string, Name: string }>> }>;
-export const isEngineDescription = typia.createIs<EngineDescription>();
+export const isEngineDescription = ((input: unknown): input is EngineDescription => typia.createIs<EngineDescription>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "EngineVersion": 1, "Labels": 1, "Plugins": 1 }, key)));
 export const assertEngineDescription = typia.createAssert<EngineDescription>();
 export const validateEngineDescription = typia.createValidate<EngineDescription>();
 
 export type TLSInfo = Partial<{ TrustRoot: string, CertIssuerSubject: string, CertIssuerPublicKey: string }>;
-export const isTLSInfo = typia.createIs<TLSInfo>();
+export const isTLSInfo = ((input: unknown): input is TLSInfo => typia.createIs<TLSInfo>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "TrustRoot": 1, "CertIssuerSubject": 1, "CertIssuerPublicKey": 1 }, key)));
 export const assertTLSInfo = typia.createAssert<TLSInfo>();
 export const validateTLSInfo = typia.createValidate<TLSInfo>();
 
 export type NodeDescription = Partial<{ Hostname: string, Platform: Platform, Resources: ResourceObject, Engine: EngineDescription, TLSInfo: TLSInfo }>;
-export const isNodeDescription = typia.createIs<NodeDescription>();
+export const isNodeDescription = ((input: unknown): input is NodeDescription => typia.createIs<NodeDescription>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Hostname": 1, "Platform": 1, "Resources": 1, "Engine": 1, "TLSInfo": 1 }, key)));
 export const assertNodeDescription = typia.createAssert<NodeDescription>();
 export const validateNodeDescription = typia.createValidate<NodeDescription>();
 
@@ -313,7 +313,7 @@ export const assertNodeState = typia.createAssert<NodeState>();
 export const validateNodeState = typia.createValidate<NodeState>();
 
 export type NodeStatus = Partial<{ State: NodeState, Message: string, Addr: string }>;
-export const isNodeStatus = typia.createIs<NodeStatus>();
+export const isNodeStatus = ((input: unknown): input is NodeStatus => typia.createIs<NodeStatus>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "State": 1, "Message": 1, "Addr": 1 }, key)));
 export const assertNodeStatus = typia.createAssert<NodeStatus>();
 export const validateNodeStatus = typia.createValidate<NodeStatus>();
 
@@ -328,12 +328,12 @@ export const assertManagerStatus = typia.createAssert<ManagerStatus>();
 export const validateManagerStatus = typia.createValidate<ManagerStatus>();
 
 export type Node = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: string, UpdatedAt: string, Spec: NodeSpec, Description: NodeDescription, Status: NodeStatus, ManagerStatus: ManagerStatus }>;
-export const isNode = typia.createIs<Node>();
+export const isNode = ((input: unknown): input is Node => typia.createIs<Node>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1, "Description": 1, "Status": 1, "ManagerStatus": 1 }, key)));
 export const assertNode = typia.createAssert<Node>();
 export const validateNode = typia.createValidate<Node>();
 
 export type SwarmSpec = Partial<{ Name: string, Labels: Record<string, string>, Orchestration: (Partial<{ TaskHistoryRetentionLimit: number }> | null), Raft: Partial<{ SnapshotInterval: number, KeepOldSnapshots: number, LogEntriesForSlowFollowers: number, ElectionTick: number, HeartbeatTick: number }>, Dispatcher: (Partial<{ HeartbeatPeriod: number }> | null), CAConfig: (Partial<{ NodeCertExpiry: number, ExternalCAs: Array<Partial<{ Protocol: "cfssl", URL: string, Options: Record<string, string>, CACert: string }>>, SigningCACert: string, SigningCAKey: string, ForceRotate: number }> | null), EncryptionConfig: Partial<{ AutoLockManagers: boolean }>, TaskDefaults: Partial<{ LogDriver: Partial<{ Name: string, Options: Record<string, string> }> }> }>;
-export const isSwarmSpec = typia.createIs<SwarmSpec>();
+export const isSwarmSpec = ((input: unknown): input is SwarmSpec => typia.createIs<SwarmSpec>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Labels": 1, "Orchestration": 1, "Raft": 1, "Dispatcher": 1, "CAConfig": 1, "EncryptionConfig": 1, "TaskDefaults": 1 }, key)));
 export const assertSwarmSpec = typia.createAssert<SwarmSpec>();
 export const validateSwarmSpec = typia.createValidate<SwarmSpec>();
 
@@ -343,7 +343,7 @@ export const assertClusterInfo = typia.createAssert<ClusterInfo>();
 export const validateClusterInfo = typia.createValidate<ClusterInfo>();
 
 export type JoinTokens = Partial<{ Worker: string, Manager: string }>;
-export const isJoinTokens = typia.createIs<JoinTokens>();
+export const isJoinTokens = ((input: unknown): input is JoinTokens => typia.createIs<JoinTokens>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Worker": 1, "Manager": 1 }, key)));
 export const assertJoinTokens = typia.createAssert<JoinTokens>();
 export const validateJoinTokens = typia.createValidate<JoinTokens>();
 
@@ -353,12 +353,12 @@ export const assertSwarm = typia.createAssert<Swarm>();
 export const validateSwarm = typia.createValidate<Swarm>();
 
 export type NetworkAttachmentConfig = Partial<{ Target: string, Aliases: Array<string>, DriverOpts: Record<string, string> }>;
-export const isNetworkAttachmentConfig = typia.createIs<NetworkAttachmentConfig>();
+export const isNetworkAttachmentConfig = ((input: unknown): input is NetworkAttachmentConfig => typia.createIs<NetworkAttachmentConfig>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Target": 1, "Aliases": 1, "DriverOpts": 1 }, key)));
 export const assertNetworkAttachmentConfig = typia.createAssert<NetworkAttachmentConfig>();
 export const validateNetworkAttachmentConfig = typia.createValidate<NetworkAttachmentConfig>();
 
 export type TaskSpec = Partial<{ PluginSpec: Partial<{ Name: string, Remote: string, Disabled: boolean, PluginPrivilege: Array<PluginPrivilege> }>, ContainerSpec: Partial<{ Image: string, Labels: Record<string, string>, Command: Array<string>, Args: Array<string>, Hostname: string, Env: Array<string>, Dir: string, User: string, Groups: Array<string>, Privileges: Partial<{ CredentialSpec: Partial<{ Config: string, File: string, Registry: string }>, SELinuxContext: Partial<{ Disable: boolean, User: string, Role: string, Type: string, Level: string }> }>, TTY: boolean, OpenStdin: boolean, ReadOnly: boolean, Mounts: Array<Mount>, StopSignal: string, StopGracePeriod: number, HealthCheck: HealthConfig, Hosts: Array<string>, DNSConfig: Partial<{ Nameservers: Array<string>, Search: Array<string>, Options: Array<string> }>, Secrets: Array<Partial<{ File: Partial<{ Name: string, UID: string, GID: string, Mode: number }>, SecretID: string, SecretName: string }>>, Configs: Array<Partial<{ File: Partial<{ Name: string, UID: string, GID: string, Mode: number }>, Runtime: Partial<{  }>, ConfigID: string, ConfigName: string }>>, Isolation: ("default" | "process" | "hyperv"), Init: (boolean | null), Sysctls: Record<string, string>, CapabilityAdd: Array<string>, CapabilityDrop: Array<string>, Ulimits: Array<Partial<{ Name: string, Soft: number, Hard: number }>> }>, NetworkAttachmentSpec: Partial<{ ContainerID: string }>, Resources: Partial<{ Limits: Limit, Reservations: ResourceObject }>, RestartPolicy: Partial<{ Condition: ("none" | "on-failure" | "any"), Delay: number, MaxAttempts: number, Window: number }>, Placement: Partial<{ Constraints: Array<string>, Preferences: Array<Partial<{ Spread: Partial<{ SpreadDescriptor: string }> }>>, MaxReplicas: number, Platforms: Array<Platform> }>, ForceUpdate: number, Runtime: string, Networks: Array<NetworkAttachmentConfig>, LogDriver: Partial<{ Name: string, Options: Record<string, string> }> }>;
-export const isTaskSpec = typia.createIs<TaskSpec>();
+export const isTaskSpec = ((input: unknown): input is TaskSpec => typia.createIs<TaskSpec>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "PluginSpec": 1, "ContainerSpec": 1, "NetworkAttachmentSpec": 1, "Resources": 1, "RestartPolicy": 1, "Placement": 1, "ForceUpdate": 1, "Runtime": 1, "Networks": 1, "LogDriver": 1 }, key)));
 export const assertTaskSpec = typia.createAssert<TaskSpec>();
 export const validateTaskSpec = typia.createValidate<TaskSpec>();
 
@@ -368,67 +368,67 @@ export const assertTaskState = typia.createAssert<TaskState>();
 export const validateTaskState = typia.createValidate<TaskState>();
 
 export type Task = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: string, UpdatedAt: string, Name: string, Labels: Record<string, string>, Spec: TaskSpec, ServiceID: string, Slot: number, NodeID: string, AssignedGenericResources: GenericResources, Status: Partial<{ Timestamp: string, State: TaskState, Message: string, Err: string, ContainerStatus: Partial<{ ContainerID: string, PID: number, ExitCode: number }> }>, DesiredState: TaskState, JobIteration: ObjectVersion }>;
-export const isTask = typia.createIs<Task>();
+export const isTask = ((input: unknown): input is Task => typia.createIs<Task>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Name": 1, "Labels": 1, "Spec": 1, "ServiceID": 1, "Slot": 1, "NodeID": 1, "AssignedGenericResources": 1, "Status": 1, "DesiredState": 1, "JobIteration": 1 }, key)));
 export const assertTask = typia.createAssert<Task>();
 export const validateTask = typia.createValidate<Task>();
 
 export type EndpointPortConfig = Partial<{ Name: string, Protocol: ("tcp" | "udp" | "sctp"), TargetPort: number, PublishedPort: number, PublishMode: ("ingress" | "host") }>;
-export const isEndpointPortConfig = typia.createIs<EndpointPortConfig>();
+export const isEndpointPortConfig = ((input: unknown): input is EndpointPortConfig => typia.createIs<EndpointPortConfig>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Protocol": 1, "TargetPort": 1, "PublishedPort": 1, "PublishMode": 1 }, key)));
 export const assertEndpointPortConfig = typia.createAssert<EndpointPortConfig>();
 export const validateEndpointPortConfig = typia.createValidate<EndpointPortConfig>();
 
 export type EndpointSpec = Partial<{ Mode: ("vip" | "dnsrr"), Ports: Array<EndpointPortConfig> }>;
-export const isEndpointSpec = typia.createIs<EndpointSpec>();
+export const isEndpointSpec = ((input: unknown): input is EndpointSpec => typia.createIs<EndpointSpec>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Mode": 1, "Ports": 1 }, key)));
 export const assertEndpointSpec = typia.createAssert<EndpointSpec>();
 export const validateEndpointSpec = typia.createValidate<EndpointSpec>();
 
 export type ServiceSpec = Partial<{ Name: string, Labels: Record<string, string>, TaskTemplate: TaskSpec, Mode: Partial<{ Replicated: Partial<{ Replicas: number }>, Global: Partial<{  }>, ReplicatedJob: Partial<{ MaxConcurrent: number, TotalCompletions: number }>, GlobalJob: Partial<{  }> }>, UpdateConfig: Partial<{ Parallelism: number, Delay: number, FailureAction: ("continue" | "pause" | "rollback"), Monitor: number, MaxFailureRatio: number, Order: ("stop-first" | "start-first") }>, RollbackConfig: Partial<{ Parallelism: number, Delay: number, FailureAction: ("continue" | "pause"), Monitor: number, MaxFailureRatio: number, Order: ("stop-first" | "start-first") }>, Networks: Array<NetworkAttachmentConfig>, EndpointSpec: EndpointSpec }>;
-export const isServiceSpec = typia.createIs<ServiceSpec>();
+export const isServiceSpec = ((input: unknown): input is ServiceSpec => typia.createIs<ServiceSpec>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Labels": 1, "TaskTemplate": 1, "Mode": 1, "UpdateConfig": 1, "RollbackConfig": 1, "Networks": 1, "EndpointSpec": 1 }, key)));
 export const assertServiceSpec = typia.createAssert<ServiceSpec>();
 export const validateServiceSpec = typia.createValidate<ServiceSpec>();
 
 export type Service = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: string, UpdatedAt: string, Spec: ServiceSpec, Endpoint: Partial<{ Spec: EndpointSpec, Ports: Array<EndpointPortConfig>, VirtualIPs: Array<Partial<{ NetworkID: string, Addr: string }>> }>, UpdateStatus: Partial<{ State: ("updating" | "paused" | "completed"), StartedAt: string, CompletedAt: string, Message: string }>, ServiceStatus: Partial<{ RunningTasks: number, DesiredTasks: number, CompletedTasks: number }>, JobStatus: Partial<{ JobIteration: ObjectVersion, LastExecution: string }> }>;
-export const isService = typia.createIs<Service>();
+export const isService = ((input: unknown): input is Service => typia.createIs<Service>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1, "Endpoint": 1, "UpdateStatus": 1, "ServiceStatus": 1, "JobStatus": 1 }, key)));
 export const assertService = typia.createAssert<Service>();
 export const validateService = typia.createValidate<Service>();
 
 export type ImageDeleteResponseItem = Partial<{ Untagged: string, Deleted: string }>;
-export const isImageDeleteResponseItem = typia.createIs<ImageDeleteResponseItem>();
+export const isImageDeleteResponseItem = ((input: unknown): input is ImageDeleteResponseItem => typia.createIs<ImageDeleteResponseItem>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Untagged": 1, "Deleted": 1 }, key)));
 export const assertImageDeleteResponseItem = typia.createAssert<ImageDeleteResponseItem>();
 export const validateImageDeleteResponseItem = typia.createValidate<ImageDeleteResponseItem>();
 
 export type ServiceUpdateResponse = Partial<{ Warnings: Array<string> }>;
-export const isServiceUpdateResponse = typia.createIs<ServiceUpdateResponse>();
+export const isServiceUpdateResponse = ((input: unknown): input is ServiceUpdateResponse => typia.createIs<ServiceUpdateResponse>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Warnings": 1 }, key)));
 export const assertServiceUpdateResponse = typia.createAssert<ServiceUpdateResponse>();
 export const validateServiceUpdateResponse = typia.createValidate<ServiceUpdateResponse>();
 
 export type ContainerSummary = Partial<{ Id: string, Names: Array<string>, Image: string, ImageID: string, Command: string, Created: number, Ports: Array<Port>, SizeRw: number, SizeRootFs: number, Labels: Record<string, string>, State: string, Status: string, HostConfig: Partial<{ NetworkMode: string }>, NetworkSettings: Partial<{ Networks: Record<string, EndpointSettings> }>, Mounts: Array<MountPoint> }>;
-export const isContainerSummary = typia.createIs<ContainerSummary>();
+export const isContainerSummary = ((input: unknown): input is ContainerSummary => typia.createIs<ContainerSummary>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Id": 1, "Names": 1, "Image": 1, "ImageID": 1, "Command": 1, "Created": 1, "Ports": 1, "SizeRw": 1, "SizeRootFs": 1, "Labels": 1, "State": 1, "Status": 1, "HostConfig": 1, "NetworkSettings": 1, "Mounts": 1 }, key)));
 export const assertContainerSummary = typia.createAssert<ContainerSummary>();
 export const validateContainerSummary = typia.createValidate<ContainerSummary>();
 
-export type Driver = ({ Name: string, Options?: Record<string, string> } & Record<string, unknown>);
-export const isDriver = typia.createIs<Driver>();
+export type Driver = { Name: string, Options?: Record<string, string> };
+export const isDriver = ((input: unknown): input is Driver => typia.createIs<Driver>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Options": 1 }, key)));
 export const assertDriver = typia.createAssert<Driver>();
 export const validateDriver = typia.createValidate<Driver>();
 
 export type SecretSpec = Partial<{ Name: string, Labels: Record<string, string>, Data: string, Driver: Driver, Templating: Driver }>;
-export const isSecretSpec = typia.createIs<SecretSpec>();
+export const isSecretSpec = ((input: unknown): input is SecretSpec => typia.createIs<SecretSpec>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Labels": 1, "Data": 1, "Driver": 1, "Templating": 1 }, key)));
 export const assertSecretSpec = typia.createAssert<SecretSpec>();
 export const validateSecretSpec = typia.createValidate<SecretSpec>();
 
 export type Secret = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: string, UpdatedAt: string, Spec: SecretSpec }>;
-export const isSecret = typia.createIs<Secret>();
+export const isSecret = ((input: unknown): input is Secret => typia.createIs<Secret>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1 }, key)));
 export const assertSecret = typia.createAssert<Secret>();
 export const validateSecret = typia.createValidate<Secret>();
 
 export type ConfigSpec = Partial<{ Name: string, Labels: Record<string, string>, Data: string, Templating: Driver }>;
-export const isConfigSpec = typia.createIs<ConfigSpec>();
+export const isConfigSpec = ((input: unknown): input is ConfigSpec => typia.createIs<ConfigSpec>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "Labels": 1, "Data": 1, "Templating": 1 }, key)));
 export const assertConfigSpec = typia.createAssert<ConfigSpec>();
 export const validateConfigSpec = typia.createValidate<ConfigSpec>();
 
 export type Config = Partial<{ ID: string, Version: ObjectVersion, CreatedAt: string, UpdatedAt: string, Spec: ConfigSpec }>;
-export const isConfig = typia.createIs<Config>();
+export const isConfig = ((input: unknown): input is Config => typia.createIs<Config>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ID": 1, "Version": 1, "CreatedAt": 1, "UpdatedAt": 1, "Spec": 1 }, key)));
 export const assertConfig = typia.createAssert<Config>();
 export const validateConfig = typia.createValidate<Config>();
 
@@ -437,28 +437,28 @@ export const isContainerState = typia.createIs<ContainerState>();
 export const assertContainerState = typia.createAssert<ContainerState>();
 export const validateContainerState = typia.createValidate<ContainerState>();
 
-export type ContainerCreateResponse = ({ Id: string, Warnings: Array<string> } & Record<string, unknown>);
-export const isContainerCreateResponse = typia.createIs<ContainerCreateResponse>();
+export type ContainerCreateResponse = { Id: string, Warnings: Array<string> };
+export const isContainerCreateResponse = ((input: unknown): input is ContainerCreateResponse => typia.createIs<ContainerCreateResponse>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Id": 1, "Warnings": 1 }, key)));
 export const assertContainerCreateResponse = typia.createAssert<ContainerCreateResponse>();
 export const validateContainerCreateResponse = typia.createValidate<ContainerCreateResponse>();
 
 export type ContainerWaitExitError = Partial<{ Message: string }>;
-export const isContainerWaitExitError = typia.createIs<ContainerWaitExitError>();
+export const isContainerWaitExitError = ((input: unknown): input is ContainerWaitExitError => typia.createIs<ContainerWaitExitError>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Message": 1 }, key)));
 export const assertContainerWaitExitError = typia.createAssert<ContainerWaitExitError>();
 export const validateContainerWaitExitError = typia.createValidate<ContainerWaitExitError>();
 
-export type ContainerWaitResponse = ({ StatusCode: number, Error?: ContainerWaitExitError } & Record<string, unknown>);
-export const isContainerWaitResponse = typia.createIs<ContainerWaitResponse>();
+export type ContainerWaitResponse = { StatusCode: number, Error?: ContainerWaitExitError };
+export const isContainerWaitResponse = ((input: unknown): input is ContainerWaitResponse => typia.createIs<ContainerWaitResponse>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "StatusCode": 1, "Error": 1 }, key)));
 export const assertContainerWaitResponse = typia.createAssert<ContainerWaitResponse>();
 export const validateContainerWaitResponse = typia.createValidate<ContainerWaitResponse>();
 
-export type SystemVersion = Partial<{ Platform: ({ Name: string } & Record<string, unknown>), Components: Array<({ Name: string, Version: string, Details?: (Partial<{  }> | null) } & Record<string, unknown>)>, Version: string, ApiVersion: string, MinAPIVersion: string, GitCommit: string, GoVersion: string, Os: string, Arch: string, KernelVersion: string, Experimental: boolean, BuildTime: string }>;
-export const isSystemVersion = typia.createIs<SystemVersion>();
+export type SystemVersion = Partial<{ Platform: { Name: string }, Components: Array<{ Name: string, Version: string, Details?: (Partial<{  }> | null) }>, Version: string, ApiVersion: string, MinAPIVersion: string, GitCommit: string, GoVersion: string, Os: string, Arch: string, KernelVersion: string, Experimental: boolean, BuildTime: string }>;
+export const isSystemVersion = ((input: unknown): input is SystemVersion => typia.createIs<SystemVersion>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Platform": 1, "Components": 1, "Version": 1, "ApiVersion": 1, "MinAPIVersion": 1, "GitCommit": 1, "GoVersion": 1, "Os": 1, "Arch": 1, "KernelVersion": 1, "Experimental": 1, "BuildTime": 1 }, key)));
 export const assertSystemVersion = typia.createAssert<SystemVersion>();
 export const validateSystemVersion = typia.createValidate<SystemVersion>();
 
 export type PluginsInfo = Partial<{ Volume: Array<string>, Network: Array<string>, Authorization: Array<string>, Log: Array<string> }>;
-export const isPluginsInfo = typia.createIs<PluginsInfo>();
+export const isPluginsInfo = ((input: unknown): input is PluginsInfo => typia.createIs<PluginsInfo>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Volume": 1, "Network": 1, "Authorization": 1, "Log": 1 }, key)));
 export const assertPluginsInfo = typia.createAssert<PluginsInfo>();
 export const validatePluginsInfo = typia.createValidate<PluginsInfo>();
 
@@ -473,7 +473,7 @@ export const assertRegistryServiceConfig = typia.createAssert<RegistryServiceCon
 export const validateRegistryServiceConfig = typia.createValidate<RegistryServiceConfig>();
 
 export type Runtime = Partial<{ path: string, runtimeArgs: (Array<string> | null) }>;
-export const isRuntime = typia.createIs<Runtime>();
+export const isRuntime = ((input: unknown): input is Runtime => typia.createIs<Runtime>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "path": 1, "runtimeArgs": 1 }, key)));
 export const assertRuntime = typia.createAssert<Runtime>();
 export const validateRuntime = typia.createValidate<Runtime>();
 
@@ -483,47 +483,47 @@ export const assertLocalNodeState = typia.createAssert<LocalNodeState>();
 export const validateLocalNodeState = typia.createValidate<LocalNodeState>();
 
 export type PeerNode = Partial<{ NodeID: string, Addr: string }>;
-export const isPeerNode = typia.createIs<PeerNode>();
+export const isPeerNode = ((input: unknown): input is PeerNode => typia.createIs<PeerNode>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "NodeID": 1, "Addr": 1 }, key)));
 export const assertPeerNode = typia.createAssert<PeerNode>();
 export const validatePeerNode = typia.createValidate<PeerNode>();
 
 export type SwarmInfo = Partial<{ NodeID: string, NodeAddr: string, LocalNodeState: LocalNodeState, ControlAvailable: boolean, Error: string, RemoteManagers: (Array<PeerNode> | null), Nodes: (number | null), Managers: (number | null), Cluster: ClusterInfo }>;
-export const isSwarmInfo = typia.createIs<SwarmInfo>();
+export const isSwarmInfo = ((input: unknown): input is SwarmInfo => typia.createIs<SwarmInfo>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "NodeID": 1, "NodeAddr": 1, "LocalNodeState": 1, "ControlAvailable": 1, "Error": 1, "RemoteManagers": 1, "Nodes": 1, "Managers": 1, "Cluster": 1 }, key)));
 export const assertSwarmInfo = typia.createAssert<SwarmInfo>();
 export const validateSwarmInfo = typia.createValidate<SwarmInfo>();
 
 export type Commit = Partial<{ ID: string, Expected: string }>;
-export const isCommit = typia.createIs<Commit>();
+export const isCommit = ((input: unknown): input is Commit => typia.createIs<Commit>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ID": 1, "Expected": 1 }, key)));
 export const assertCommit = typia.createAssert<Commit>();
 export const validateCommit = typia.createValidate<Commit>();
 
 export type SystemInfo = Partial<{ ID: string, Containers: number, ContainersRunning: number, ContainersPaused: number, ContainersStopped: number, Images: number, Driver: string, DriverStatus: Array<Array<string>>, DockerRootDir: string, Plugins: PluginsInfo, MemoryLimit: boolean, SwapLimit: boolean, KernelMemoryTCP: boolean, CpuCfsPeriod: boolean, CpuCfsQuota: boolean, CPUShares: boolean, CPUSet: boolean, PidsLimit: boolean, OomKillDisable: boolean, IPv4Forwarding: boolean, BridgeNfIptables: boolean, BridgeNfIp6tables: boolean, Debug: boolean, NFd: number, NGoroutines: number, SystemTime: string, LoggingDriver: string, CgroupDriver: ("cgroupfs" | "systemd" | "none"), CgroupVersion: ("1" | "2"), NEventsListener: number, KernelVersion: string, OperatingSystem: string, OSVersion: string, OSType: string, Architecture: string, NCPU: number, MemTotal: number, IndexServerAddress: string, RegistryConfig: RegistryServiceConfig, GenericResources: GenericResources, HttpProxy: string, HttpsProxy: string, NoProxy: string, Name: string, Labels: Array<string>, ExperimentalBuild: boolean, ServerVersion: string, Runtimes: Record<string, Runtime>, DefaultRuntime: string, Swarm: SwarmInfo, LiveRestoreEnabled: boolean, Isolation: ("default" | "hyperv" | "process"), InitBinary: string, ContainerdCommit: Commit, RuncCommit: Commit, InitCommit: Commit, SecurityOptions: Array<string>, ProductLicense: string, DefaultAddressPools: Array<Partial<{ Base: string, Size: number }>>, Warnings: Array<string> }>;
-export const isSystemInfo = typia.createIs<SystemInfo>();
+export const isSystemInfo = ((input: unknown): input is SystemInfo => typia.createIs<SystemInfo>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ID": 1, "Containers": 1, "ContainersRunning": 1, "ContainersPaused": 1, "ContainersStopped": 1, "Images": 1, "Driver": 1, "DriverStatus": 1, "DockerRootDir": 1, "Plugins": 1, "MemoryLimit": 1, "SwapLimit": 1, "KernelMemoryTCP": 1, "CpuCfsPeriod": 1, "CpuCfsQuota": 1, "CPUShares": 1, "CPUSet": 1, "PidsLimit": 1, "OomKillDisable": 1, "IPv4Forwarding": 1, "BridgeNfIptables": 1, "BridgeNfIp6tables": 1, "Debug": 1, "NFd": 1, "NGoroutines": 1, "SystemTime": 1, "LoggingDriver": 1, "CgroupDriver": 1, "CgroupVersion": 1, "NEventsListener": 1, "KernelVersion": 1, "OperatingSystem": 1, "OSVersion": 1, "OSType": 1, "Architecture": 1, "NCPU": 1, "MemTotal": 1, "IndexServerAddress": 1, "RegistryConfig": 1, "GenericResources": 1, "HttpProxy": 1, "HttpsProxy": 1, "NoProxy": 1, "Name": 1, "Labels": 1, "ExperimentalBuild": 1, "ServerVersion": 1, "Runtimes": 1, "DefaultRuntime": 1, "Swarm": 1, "LiveRestoreEnabled": 1, "Isolation": 1, "InitBinary": 1, "ContainerdCommit": 1, "RuncCommit": 1, "InitCommit": 1, "SecurityOptions": 1, "ProductLicense": 1, "DefaultAddressPools": 1, "Warnings": 1 }, key)));
 export const assertSystemInfo = typia.createAssert<SystemInfo>();
 export const validateSystemInfo = typia.createValidate<SystemInfo>();
 
 export type EventActor = Partial<{ ID: string, Attributes: Record<string, string> }>;
-export const isEventActor = typia.createIs<EventActor>();
+export const isEventActor = ((input: unknown): input is EventActor => typia.createIs<EventActor>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ID": 1, "Attributes": 1 }, key)));
 export const assertEventActor = typia.createAssert<EventActor>();
 export const validateEventActor = typia.createValidate<EventActor>();
 
 export type EventMessage = Partial<{ Type: ("builder" | "config" | "container" | "daemon" | "image" | "network" | "node" | "plugin" | "secret" | "service" | "volume"), Action: string, Actor: EventActor, scope: ("local" | "swarm"), time: number, timeNano: number }>;
-export const isEventMessage = typia.createIs<EventMessage>();
+export const isEventMessage = ((input: unknown): input is EventMessage => typia.createIs<EventMessage>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Type": 1, "Action": 1, "Actor": 1, "scope": 1, "time": 1, "timeNano": 1 }, key)));
 export const assertEventMessage = typia.createAssert<EventMessage>();
 export const validateEventMessage = typia.createValidate<EventMessage>();
 
 export type OCIDescriptor = Partial<{ mediaType: string, digest: string, size: number }>;
-export const isOCIDescriptor = typia.createIs<OCIDescriptor>();
+export const isOCIDescriptor = ((input: unknown): input is OCIDescriptor => typia.createIs<OCIDescriptor>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "mediaType": 1, "digest": 1, "size": 1 }, key)));
 export const assertOCIDescriptor = typia.createAssert<OCIDescriptor>();
 export const validateOCIDescriptor = typia.createValidate<OCIDescriptor>();
 
 export type OCIPlatform = Partial<{ architecture: string, os: string, "os.version": string, "os.features": Array<string>, variant: string }>;
-export const isOCIPlatform = typia.createIs<OCIPlatform>();
+export const isOCIPlatform = ((input: unknown): input is OCIPlatform => typia.createIs<OCIPlatform>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "architecture": 1, "os": 1, "os.version": 1, "os.features": 1, "variant": 1 }, key)));
 export const assertOCIPlatform = typia.createAssert<OCIPlatform>();
 export const validateOCIPlatform = typia.createValidate<OCIPlatform>();
 
-export type DistributionInspect = ({ Descriptor: OCIDescriptor, Platforms: Array<OCIPlatform> } & Record<string, unknown>);
-export const isDistributionInspect = typia.createIs<DistributionInspect>();
+export type DistributionInspect = { Descriptor: OCIDescriptor, Platforms: Array<OCIPlatform> };
+export const isDistributionInspect = ((input: unknown): input is DistributionInspect => typia.createIs<DistributionInspect>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Descriptor": 1, "Platforms": 1 }, key)));
 export const assertDistributionInspect = typia.createAssert<DistributionInspect>();
 export const validateDistributionInspect = typia.createValidate<DistributionInspect>();
 
@@ -536,7 +536,7 @@ export const get_ContainerList = {
   path: typia.createIs<"/containers/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ all: boolean, limit: number, size: boolean, filters: string }> => typia.createIs<Partial<{ all: boolean, limit: number, size: boolean, filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["all", "limit", "size", "filters"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ all: boolean, limit: number, size: boolean, filters: string }> => typia.createIs<Partial<{ all: boolean, limit: number, size: boolean, filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "all": 1, "limit": 1, "size": 1, "filters": 1 }, key))) },
   responses: { 200: typia.createIs<Array<ContainerSummary>>(), 400: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -546,7 +546,7 @@ export const post_ContainerCreate = {
   path: typia.createIs<"/containers/create">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ name: string, platform: string }> => typia.createIs<Partial<{ name: string, platform: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name", "platform"].includes(key))), body: typia.createIs<(ContainerConfig & Partial<{ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }>)>() },
+  parameters: { query: ((input: unknown): input is Partial<{ name: string, platform: string }> => typia.createIs<Partial<{ name: string, platform: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1, "platform": 1 }, key))), body: typia.createIs<(ContainerConfig & Partial<{ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }>)>() },
   responses: { 201: isContainerCreateResponse, 400: isErrorResponse, 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -556,8 +556,8 @@ export const get_ContainerInspect = {
   path: typia.createIs<"/containers/{id}/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ size: boolean }> => typia.createIs<Partial<{ size: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["size"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
-  responses: { 200: typia.createIs<Partial<{ Id: string, Created: string, Path: string, Args: Array<string>, State: ContainerState, Image: string, ResolvConfPath: string, HostnamePath: string, HostsPath: string, LogPath: string, Name: string, RestartCount: number, Driver: string, Platform: string, MountLabel: string, ProcessLabel: string, AppArmorProfile: string, ExecIDs: (Array<string> | null), HostConfig: HostConfig, GraphDriver: GraphDriverData, SizeRw: number, SizeRootFs: number, Mounts: Array<MountPoint>, Config: ContainerConfig, NetworkSettings: NetworkSettings }>>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ size: boolean }> => typia.createIs<Partial<{ size: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "size": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
+  responses: { 200: ((input: unknown): input is Partial<{ Id: string, Created: string, Path: string, Args: Array<string>, State: ContainerState, Image: string, ResolvConfPath: string, HostnamePath: string, HostsPath: string, LogPath: string, Name: string, RestartCount: number, Driver: string, Platform: string, MountLabel: string, ProcessLabel: string, AppArmorProfile: string, ExecIDs: (Array<string> | null), HostConfig: HostConfig, GraphDriver: GraphDriverData, SizeRw: number, SizeRootFs: number, Mounts: Array<MountPoint>, Config: ContainerConfig, NetworkSettings: NetworkSettings }> => typia.createIs<Partial<{ Id: string, Created: string, Path: string, Args: Array<string>, State: ContainerState, Image: string, ResolvConfPath: string, HostnamePath: string, HostsPath: string, LogPath: string, Name: string, RestartCount: number, Driver: string, Platform: string, MountLabel: string, ProcessLabel: string, AppArmorProfile: string, ExecIDs: (Array<string> | null), HostConfig: HostConfig, GraphDriver: GraphDriverData, SizeRw: number, SizeRootFs: number, Mounts: Array<MountPoint>, Config: ContainerConfig, NetworkSettings: NetworkSettings }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Id": 1, "Created": 1, "Path": 1, "Args": 1, "State": 1, "Image": 1, "ResolvConfPath": 1, "HostnamePath": 1, "HostsPath": 1, "LogPath": 1, "Name": 1, "RestartCount": 1, "Driver": 1, "Platform": 1, "MountLabel": 1, "ProcessLabel": 1, "AppArmorProfile": 1, "ExecIDs": 1, "HostConfig": 1, "GraphDriver": 1, "SizeRw": 1, "SizeRootFs": 1, "Mounts": 1, "Config": 1, "NetworkSettings": 1 }, key))), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type get_ContainerTop = typeof get_ContainerTop;
@@ -566,7 +566,7 @@ export const get_ContainerTop = {
   path: typia.createIs<"/containers/{id}/top">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ ps_args: string }> => typia.createIs<Partial<{ ps_args: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["ps_args"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ ps_args: string }> => typia.createIs<Partial<{ ps_args: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ps_args": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<(Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }> | Partial<{ Titles: Array<string>, Processes: Array<Array<string>> }>)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -576,7 +576,7 @@ export const get_ContainerLogs = {
   path: typia.createIs<"/containers/{id}/logs">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ follow: boolean, stdout: boolean, stderr: boolean, since: number, until: number, timestamps: boolean, tail: string }> => typia.createIs<Partial<{ follow: boolean, stdout: boolean, stderr: boolean, since: number, until: number, timestamps: boolean, tail: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["follow", "stdout", "stderr", "since", "until", "timestamps", "tail"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ follow: boolean, stdout: boolean, stderr: boolean, since: number, until: number, timestamps: boolean, tail: string }> => typia.createIs<Partial<{ follow: boolean, stdout: boolean, stderr: boolean, since: number, until: number, timestamps: boolean, tail: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "follow": 1, "stdout": 1, "stderr": 1, "since": 1, "until": 1, "timestamps": 1, "tail": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
 };
 
@@ -586,7 +586,7 @@ export const get_ContainerChanges = {
   path: typia.createIs<"/containers/{id}/changes">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<Array<FilesystemChange>>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -596,7 +596,7 @@ export const get_ContainerExport = {
   path: typia.createIs<"/containers/{id}/export">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | unknown)>(), 500: isErrorResponse },
 };
 
@@ -606,7 +606,7 @@ export const get_ContainerStats = {
   path: typia.createIs<"/containers/{id}/stats">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ stream: boolean, "one-shot": boolean }> => typia.createIs<Partial<{ stream: boolean, "one-shot": boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["stream", "one-shot"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ stream: boolean, "one-shot": boolean }> => typia.createIs<Partial<{ stream: boolean, "one-shot": boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "stream": 1, "one-shot": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<Record<string, unknown>>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -616,7 +616,7 @@ export const post_ContainerResize = {
   path: typia.createIs<"/containers/{id}/resize">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ h: number, w: number }> => typia.createIs<Partial<{ h: number, w: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["h", "w"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ h: number, w: number }> => typia.createIs<Partial<{ h: number, w: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "h": 1, "w": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | unknown)>(), 500: isErrorResponse },
 };
 
@@ -626,7 +626,7 @@ export const post_ContainerStart = {
   path: typia.createIs<"/containers/{id}/start">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ detachKeys: string }> => typia.createIs<Partial<{ detachKeys: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["detachKeys"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ detachKeys: string }> => typia.createIs<Partial<{ detachKeys: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "detachKeys": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -636,7 +636,7 @@ export const post_ContainerStop = {
   path: typia.createIs<"/containers/{id}/stop">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ signal: string, t: number }> => typia.createIs<Partial<{ signal: string, t: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["signal", "t"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ signal: string, t: number }> => typia.createIs<Partial<{ signal: string, t: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "signal": 1, "t": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 304: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -646,7 +646,7 @@ export const post_ContainerRestart = {
   path: typia.createIs<"/containers/{id}/restart">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ signal: string, t: number }> => typia.createIs<Partial<{ signal: string, t: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["signal", "t"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ signal: string, t: number }> => typia.createIs<Partial<{ signal: string, t: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "signal": 1, "t": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -656,7 +656,7 @@ export const post_ContainerKill = {
   path: typia.createIs<"/containers/{id}/kill">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ signal: string }> => typia.createIs<Partial<{ signal: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["signal"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ signal: string }> => typia.createIs<Partial<{ signal: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "signal": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -666,8 +666,8 @@ export const post_ContainerUpdate = {
   path: typia.createIs<"/containers/{id}/update">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: typia.createIs<(Resources & Partial<{ RestartPolicy: RestartPolicy }>)>() },
-  responses: { 200: typia.createIs<Partial<{ Warnings: Array<string> }>>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))), body: typia.createIs<(Resources & Partial<{ RestartPolicy: RestartPolicy }>)>() },
+  responses: { 200: ((input: unknown): input is Partial<{ Warnings: Array<string> }> => typia.createIs<Partial<{ Warnings: Array<string> }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Warnings": 1 }, key))), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_ContainerRename = typeof post_ContainerRename;
@@ -676,7 +676,7 @@ export const post_ContainerRename = {
   path: typia.createIs<"/containers/{id}/rename">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -686,7 +686,7 @@ export const post_ContainerPause = {
   path: typia.createIs<"/containers/{id}/pause">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -696,7 +696,7 @@ export const post_ContainerUnpause = {
   path: typia.createIs<"/containers/{id}/unpause">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -706,7 +706,7 @@ export const post_ContainerAttach = {
   path: typia.createIs<"/containers/{id}/attach">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }> => typia.createIs<Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["detachKeys", "logs", "stream", "stdin", "stdout", "stderr"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }> => typia.createIs<Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "detachKeys": 1, "logs": 1, "stream": 1, "stdin": 1, "stdout": 1, "stderr": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 101: typia.createIs<unknown>(), 200: typia.createIs<unknown>(), 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
 };
 
@@ -716,7 +716,7 @@ export const get_ContainerAttachWebsocket = {
   path: typia.createIs<"/containers/{id}/attach/ws">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }> => typia.createIs<Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["detachKeys", "logs", "stream", "stdin", "stdout", "stderr"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }> => typia.createIs<Partial<{ detachKeys: string, logs: boolean, stream: boolean, stdin: boolean, stdout: boolean, stderr: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "detachKeys": 1, "logs": 1, "stream": 1, "stdin": 1, "stdout": 1, "stderr": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 101: typia.createIs<unknown>(), 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -726,7 +726,7 @@ export const post_ContainerWait = {
   path: typia.createIs<"/containers/{id}/wait">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ condition: ("not-running" | "next-exit" | "removed") }> => typia.createIs<Partial<{ condition: ("not-running" | "next-exit" | "removed") }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["condition"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ condition: ("not-running" | "next-exit" | "removed") }> => typia.createIs<Partial<{ condition: ("not-running" | "next-exit" | "removed") }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "condition": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: isContainerWaitResponse, 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -736,7 +736,7 @@ export const delete_ContainerDelete = {
   path: typia.createIs<"/containers/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ v: boolean, force: boolean, link: boolean }> => typia.createIs<Partial<{ v: boolean, force: boolean, link: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["v", "force", "link"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ v: boolean, force: boolean, link: boolean }> => typia.createIs<Partial<{ v: boolean, force: boolean, link: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "v": 1, "force": 1, "link": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -746,7 +746,7 @@ export const get_ContainerArchive = {
   path: typia.createIs<"/containers/{id}/archive">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { path: string } => typia.createIs<{ path: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["path"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is { path: string } => typia.createIs<{ path: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "path": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
 };
 
@@ -756,7 +756,7 @@ export const put_PutContainerArchive = {
   path: typia.createIs<"/containers/{id}/archive">(),
   requestFormat: typia.createIs<"binary">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { path: string, noOverwriteDirNonDir?: string, copyUIDGID?: string } => typia.createIs<{ path: string, noOverwriteDirNonDir?: string, copyUIDGID?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["path", "noOverwriteDirNonDir", "copyUIDGID"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: typia.createIs<Blob>() },
+  parameters: { query: ((input: unknown): input is { path: string, noOverwriteDirNonDir?: string, copyUIDGID?: string } => typia.createIs<{ path: string, noOverwriteDirNonDir?: string, copyUIDGID?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "path": 1, "noOverwriteDirNonDir": 1, "copyUIDGID": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))), body: typia.createIs<Blob>() },
   responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -766,9 +766,9 @@ export const head_ContainerArchiveInfo = {
   path: typia.createIs<"/containers/{id}/archive">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { path: string } => typia.createIs<{ path: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["path"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is { path: string } => typia.createIs<{ path: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "path": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
-  responseHeaders: { 200: ((input: unknown): input is { "X-Docker-Container-Path-Stat": string } => typia.createIs<{ "X-Docker-Container-Path-Stat": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Docker-Container-Path-Stat"].includes(key))) },
+  responseHeaders: { 200: ((input: unknown): input is { "X-Docker-Container-Path-Stat": string } => typia.createIs<{ "X-Docker-Container-Path-Stat": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "X-Docker-Container-Path-Stat": 1 }, key))) },
 };
 
 export type post_ContainerPrune = typeof post_ContainerPrune;
@@ -777,8 +777,8 @@ export const post_ContainerPrune = {
   path: typia.createIs<"/containers/prune">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
-  responses: { 200: typia.createIs<Partial<{ ContainersDeleted: Array<string>, SpaceReclaimed: number }>>(), 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "filters": 1 }, key))) },
+  responses: { 200: ((input: unknown): input is Partial<{ ContainersDeleted: Array<string>, SpaceReclaimed: number }> => typia.createIs<Partial<{ ContainersDeleted: Array<string>, SpaceReclaimed: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ContainersDeleted": 1, "SpaceReclaimed": 1 }, key))), 500: isErrorResponse },
 };
 
 export type get_ImageList = typeof get_ImageList;
@@ -787,7 +787,7 @@ export const get_ImageList = {
   path: typia.createIs<"/images/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ all: boolean, filters: string, "shared-size": boolean, digests: boolean }> => typia.createIs<Partial<{ all: boolean, filters: string, "shared-size": boolean, digests: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["all", "filters", "shared-size", "digests"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ all: boolean, filters: string, "shared-size": boolean, digests: boolean }> => typia.createIs<Partial<{ all: boolean, filters: string, "shared-size": boolean, digests: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "all": 1, "filters": 1, "shared-size": 1, "digests": 1 }, key))) },
   responses: { 200: typia.createIs<Array<ImageSummary>>(), 500: isErrorResponse },
 };
 
@@ -797,7 +797,7 @@ export const post_ImageBuild = {
   path: typia.createIs<"/build">(),
   requestFormat: typia.createIs<"binary">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ dockerfile: string, t: string, extrahosts: string, remote: string, q: boolean, nocache: boolean, cachefrom: string, pull: string, rm: boolean, forcerm: boolean, memory: number, memswap: number, cpushares: number, cpusetcpus: string, cpuperiod: number, cpuquota: number, buildargs: string, shmsize: number, squash: boolean, labels: string, networkmode: string, platform: string, target: string, outputs: string }> => typia.createIs<Partial<{ dockerfile: string, t: string, extrahosts: string, remote: string, q: boolean, nocache: boolean, cachefrom: string, pull: string, rm: boolean, forcerm: boolean, memory: number, memswap: number, cpushares: number, cpusetcpus: string, cpuperiod: number, cpuquota: number, buildargs: string, shmsize: number, squash: boolean, labels: string, networkmode: string, platform: string, target: string, outputs: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["dockerfile", "t", "extrahosts", "remote", "q", "nocache", "cachefrom", "pull", "rm", "forcerm", "memory", "memswap", "cpushares", "cpusetcpus", "cpuperiod", "cpuquota", "buildargs", "shmsize", "squash", "labels", "networkmode", "platform", "target", "outputs"].includes(key))), header: ((input: unknown): input is Partial<{ "Content-type": "application/x-tar", "X-Registry-Config": string }> => typia.createIs<Partial<{ "Content-type": "application/x-tar", "X-Registry-Config": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["Content-type", "X-Registry-Config"].includes(key))), body: typia.createIs<Blob>() },
+  parameters: { query: ((input: unknown): input is Partial<{ dockerfile: string, t: string, extrahosts: string, remote: string, q: boolean, nocache: boolean, cachefrom: string, pull: string, rm: boolean, forcerm: boolean, memory: number, memswap: number, cpushares: number, cpusetcpus: string, cpuperiod: number, cpuquota: number, buildargs: string, shmsize: number, squash: boolean, labels: string, networkmode: string, platform: string, target: string, outputs: string }> => typia.createIs<Partial<{ dockerfile: string, t: string, extrahosts: string, remote: string, q: boolean, nocache: boolean, cachefrom: string, pull: string, rm: boolean, forcerm: boolean, memory: number, memswap: number, cpushares: number, cpusetcpus: string, cpuperiod: number, cpuquota: number, buildargs: string, shmsize: number, squash: boolean, labels: string, networkmode: string, platform: string, target: string, outputs: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "dockerfile": 1, "t": 1, "extrahosts": 1, "remote": 1, "q": 1, "nocache": 1, "cachefrom": 1, "pull": 1, "rm": 1, "forcerm": 1, "memory": 1, "memswap": 1, "cpushares": 1, "cpusetcpus": 1, "cpuperiod": 1, "cpuquota": 1, "buildargs": 1, "shmsize": 1, "squash": 1, "labels": 1, "networkmode": 1, "platform": 1, "target": 1, "outputs": 1 }, key))), header: ((input: unknown): input is Partial<{ "Content-type": "application/x-tar", "X-Registry-Config": string }> => typia.createIs<Partial<{ "Content-type": "application/x-tar", "X-Registry-Config": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Content-type": 1, "X-Registry-Config": 1 }, key))), body: typia.createIs<Blob>() },
   responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -807,8 +807,8 @@ export const post_BuildPrune = {
   path: typia.createIs<"/build/prune">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ "keep-storage": number, all: boolean, filters: string }> => typia.createIs<Partial<{ "keep-storage": number, all: boolean, filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["keep-storage", "all", "filters"].includes(key))) },
-  responses: { 200: typia.createIs<Partial<{ CachesDeleted: Array<string>, SpaceReclaimed: number }>>(), 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ "keep-storage": number, all: boolean, filters: string }> => typia.createIs<Partial<{ "keep-storage": number, all: boolean, filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "keep-storage": 1, "all": 1, "filters": 1 }, key))) },
+  responses: { 200: ((input: unknown): input is Partial<{ CachesDeleted: Array<string>, SpaceReclaimed: number }> => typia.createIs<Partial<{ CachesDeleted: Array<string>, SpaceReclaimed: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "CachesDeleted": 1, "SpaceReclaimed": 1 }, key))), 500: isErrorResponse },
 };
 
 export type post_ImageCreate = typeof post_ImageCreate;
@@ -817,7 +817,7 @@ export const post_ImageCreate = {
   path: typia.createIs<"/images/create">(),
   requestFormat: typia.createIs<"text">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ fromImage: string, fromSrc: string, repo: string, tag: string, message: string, changes: Array<string>, platform: string }> => typia.createIs<Partial<{ fromImage: string, fromSrc: string, repo: string, tag: string, message: string, changes: Array<string>, platform: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["fromImage", "fromSrc", "repo", "tag", "message", "changes", "platform"].includes(key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Registry-Auth"].includes(key))), body: typia.createIs<string>() },
+  parameters: { query: ((input: unknown): input is Partial<{ fromImage: string, fromSrc: string, repo: string, tag: string, message: string, changes: Array<string>, platform: string }> => typia.createIs<Partial<{ fromImage: string, fromSrc: string, repo: string, tag: string, message: string, changes: Array<string>, platform: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "fromImage": 1, "fromSrc": 1, "repo": 1, "tag": 1, "message": 1, "changes": 1, "platform": 1 }, key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "X-Registry-Auth": 1 }, key))), body: typia.createIs<string>() },
   responses: { 200: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -827,7 +827,7 @@ export const get_ImageInspect = {
   path: typia.createIs<"/images/{name}/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 200: isImageInspect, 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -837,8 +837,8 @@ export const get_ImageHistory = {
   path: typia.createIs<"/images/{name}/history">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
-  responses: { 200: typia.createIs<Array<({ Id: string, Created: number, CreatedBy: string, Tags: Array<string>, Size: number, Comment: string } & Record<string, unknown>)>>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
+  responses: { 200: typia.createIs<Array<{ Id: string, Created: number, CreatedBy: string, Tags: Array<string>, Size: number, Comment: string }>>(), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_ImagePush = typeof post_ImagePush;
@@ -847,7 +847,7 @@ export const post_ImagePush = {
   path: typia.createIs<"/images/{name}/push">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ tag: string }> => typia.createIs<Partial<{ tag: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["tag"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))), header: ((input: unknown): input is { "X-Registry-Auth": string } => typia.createIs<{ "X-Registry-Auth": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Registry-Auth"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ tag: string }> => typia.createIs<Partial<{ tag: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "tag": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))), header: ((input: unknown): input is { "X-Registry-Auth": string } => typia.createIs<{ "X-Registry-Auth": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "X-Registry-Auth": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -857,7 +857,7 @@ export const post_ImageTag = {
   path: typia.createIs<"/images/{name}/tag">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ repo: string, tag: string }> => typia.createIs<Partial<{ repo: string, tag: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["repo", "tag"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ repo: string, tag: string }> => typia.createIs<Partial<{ repo: string, tag: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "repo": 1, "tag": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 201: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -867,7 +867,7 @@ export const delete_ImageDelete = {
   path: typia.createIs<"/images/{name}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ force: boolean, noprune: boolean }> => typia.createIs<Partial<{ force: boolean, noprune: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["force", "noprune"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ force: boolean, noprune: boolean }> => typia.createIs<Partial<{ force: boolean, noprune: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "force": 1, "noprune": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 200: typia.createIs<Array<ImageDeleteResponseItem>>(), 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -877,7 +877,7 @@ export const get_ImageSearch = {
   path: typia.createIs<"/images/search">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { term: string, limit?: number, filters?: string } => typia.createIs<{ term: string, limit?: number, filters?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["term", "limit", "filters"].includes(key))) },
+  parameters: { query: ((input: unknown): input is { term: string, limit?: number, filters?: string } => typia.createIs<{ term: string, limit?: number, filters?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "term": 1, "limit": 1, "filters": 1 }, key))) },
   responses: { 200: typia.createIs<Array<Partial<{ description: string, is_official: boolean, is_automated: boolean, name: string, star_count: number }>>>(), 500: isErrorResponse },
 };
 
@@ -887,8 +887,8 @@ export const post_ImagePrune = {
   path: typia.createIs<"/images/prune">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
-  responses: { 200: typia.createIs<Partial<{ ImagesDeleted: Array<ImageDeleteResponseItem>, SpaceReclaimed: number }>>(), 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "filters": 1 }, key))) },
+  responses: { 200: ((input: unknown): input is Partial<{ ImagesDeleted: Array<ImageDeleteResponseItem>, SpaceReclaimed: number }> => typia.createIs<Partial<{ ImagesDeleted: Array<ImageDeleteResponseItem>, SpaceReclaimed: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ImagesDeleted": 1, "SpaceReclaimed": 1 }, key))), 500: isErrorResponse },
 };
 
 export type post_SystemAuth = typeof post_SystemAuth;
@@ -898,7 +898,7 @@ export const post_SystemAuth = {
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
   parameters: { body: isAuthConfig },
-  responses: { 200: typia.createIs<({ Status: string, IdentityToken?: string } & Record<string, unknown>)>(), 204: typia.createIs<unknown>(), 401: isErrorResponse, 500: isErrorResponse },
+  responses: { 200: ((input: unknown): input is { Status: string, IdentityToken?: string } => typia.createIs<{ Status: string, IdentityToken?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Status": 1, "IdentityToken": 1 }, key))), 204: typia.createIs<unknown>(), 401: isErrorResponse, 500: isErrorResponse },
 };
 
 export type get_SystemInfo = typeof get_SystemInfo;
@@ -929,7 +929,7 @@ export const get_SystemPing = {
   responseFormat: typia.createIs<"json">(),
   parameters: typia.createIs<never>(),
   responses: { 200: typia.createIs<string>(), 500: isErrorResponse },
-  responseHeaders: { 200: ((input: unknown): input is { Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string } => typia.createIs<{ Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["Swarm", "Docker-Experimental", "Cache-Control", "Pragma", "API-Version", "Builder-Version"].includes(key))), 500: ((input: unknown): input is { "Cache-Control": string, Pragma: string } => typia.createIs<{ "Cache-Control": string, Pragma: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["Cache-Control", "Pragma"].includes(key))) },
+  responseHeaders: { 200: ((input: unknown): input is { Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string } => typia.createIs<{ Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Swarm": 1, "Docker-Experimental": 1, "Cache-Control": 1, "Pragma": 1, "API-Version": 1, "Builder-Version": 1 }, key))), 500: ((input: unknown): input is { "Cache-Control": string, Pragma: string } => typia.createIs<{ "Cache-Control": string, Pragma: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Cache-Control": 1, "Pragma": 1 }, key))) },
 };
 
 export type head_SystemPingHead = typeof head_SystemPingHead;
@@ -940,7 +940,7 @@ export const head_SystemPingHead = {
   responseFormat: typia.createIs<"json">(),
   parameters: typia.createIs<never>(),
   responses: { 200: typia.createIs<string>(), 500: isErrorResponse },
-  responseHeaders: { 200: ((input: unknown): input is { Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string } => typia.createIs<{ Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["Swarm", "Docker-Experimental", "Cache-Control", "Pragma", "API-Version", "Builder-Version"].includes(key))) },
+  responseHeaders: { 200: ((input: unknown): input is { Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string } => typia.createIs<{ Swarm: ("inactive" | "pending" | "error" | "locked" | "active/worker" | "active/manager"), "Docker-Experimental": boolean, "Cache-Control": string, Pragma: string, "API-Version": string, "Builder-Version": string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Swarm": 1, "Docker-Experimental": 1, "Cache-Control": 1, "Pragma": 1, "API-Version": 1, "Builder-Version": 1 }, key))) },
 };
 
 export type post_ImageCommit = typeof post_ImageCommit;
@@ -949,7 +949,7 @@ export const post_ImageCommit = {
   path: typia.createIs<"/commit">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ container: string, repo: string, tag: string, comment: string, author: string, pause: boolean, changes: string }> => typia.createIs<Partial<{ container: string, repo: string, tag: string, comment: string, author: string, pause: boolean, changes: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["container", "repo", "tag", "comment", "author", "pause", "changes"].includes(key))), body: isContainerConfig },
+  parameters: { query: ((input: unknown): input is Partial<{ container: string, repo: string, tag: string, comment: string, author: string, pause: boolean, changes: string }> => typia.createIs<Partial<{ container: string, repo: string, tag: string, comment: string, author: string, pause: boolean, changes: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "container": 1, "repo": 1, "tag": 1, "comment": 1, "author": 1, "pause": 1, "changes": 1 }, key))), body: isContainerConfig },
   responses: { 201: isIdResponse, 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -959,7 +959,7 @@ export const get_SystemEvents = {
   path: typia.createIs<"/events">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ since: string, until: string, filters: string }> => typia.createIs<Partial<{ since: string, until: string, filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["since", "until", "filters"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ since: string, until: string, filters: string }> => typia.createIs<Partial<{ since: string, until: string, filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "since": 1, "until": 1, "filters": 1 }, key))) },
   responses: { 200: isEventMessage, 400: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -969,7 +969,7 @@ export const get_SystemDataUsage = {
   path: typia.createIs<"/system/df">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ type: Array<("container" | "image" | "volume" | "build-cache")> }> => typia.createIs<Partial<{ type: Array<("container" | "image" | "volume" | "build-cache")> }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["type"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ type: Array<("container" | "image" | "volume" | "build-cache")> }> => typia.createIs<Partial<{ type: Array<("container" | "image" | "volume" | "build-cache")> }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "type": 1 }, key))) },
   responses: { 200: typia.createIs<(Partial<{ LayersSize: number, Images: Array<ImageSummary>, Containers: Array<ContainerSummary>, Volumes: Array<Volume>, BuildCache: Array<BuildCache> }> | Partial<{ LayersSize: number, Images: Array<ImageSummary>, Containers: Array<ContainerSummary>, Volumes: Array<Volume>, BuildCache: Array<BuildCache> }>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -979,7 +979,7 @@ export const get_ImageGet = {
   path: typia.createIs<"/images/{name}/get">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
 };
 
@@ -989,7 +989,7 @@ export const get_ImageGetAll = {
   path: typia.createIs<"/images/get">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ names: Array<string> }> => typia.createIs<Partial<{ names: Array<string> }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["names"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ names: Array<string> }> => typia.createIs<Partial<{ names: Array<string> }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "names": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 500: typia.createIs<unknown>() },
 };
 
@@ -999,7 +999,7 @@ export const post_ImageLoad = {
   path: typia.createIs<"/images/load">(),
   requestFormat: typia.createIs<"text">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ quiet: boolean }> => typia.createIs<Partial<{ quiet: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["quiet"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ quiet: boolean }> => typia.createIs<Partial<{ quiet: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "quiet": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 500: isErrorResponse },
 };
 
@@ -1009,7 +1009,7 @@ export const post_ContainerExec = {
   path: typia.createIs<"/containers/{id}/exec">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: typia.createIs<Partial<{ AttachStdin: boolean, AttachStdout: boolean, AttachStderr: boolean, ConsoleSize: (Array<number> | null), DetachKeys: string, Tty: boolean, Env: Array<string>, Cmd: Array<string>, Privileged: boolean, User: string, WorkingDir: string }>>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))), body: ((input: unknown): input is Partial<{ AttachStdin: boolean, AttachStdout: boolean, AttachStderr: boolean, ConsoleSize: (Array<number> | null), DetachKeys: string, Tty: boolean, Env: Array<string>, Cmd: Array<string>, Privileged: boolean, User: string, WorkingDir: string }> => typia.createIs<Partial<{ AttachStdin: boolean, AttachStdout: boolean, AttachStderr: boolean, ConsoleSize: (Array<number> | null), DetachKeys: string, Tty: boolean, Env: Array<string>, Cmd: Array<string>, Privileged: boolean, User: string, WorkingDir: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "AttachStdin": 1, "AttachStdout": 1, "AttachStderr": 1, "ConsoleSize": 1, "DetachKeys": 1, "Tty": 1, "Env": 1, "Cmd": 1, "Privileged": 1, "User": 1, "WorkingDir": 1 }, key))) },
   responses: { 201: isIdResponse, 404: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -1019,7 +1019,7 @@ export const post_ExecStart = {
   path: typia.createIs<"/exec/{id}/start">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: typia.createIs<Partial<{ Detach: boolean, Tty: boolean, ConsoleSize: (Array<number> | null) }>>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))), body: ((input: unknown): input is Partial<{ Detach: boolean, Tty: boolean, ConsoleSize: (Array<number> | null) }> => typia.createIs<Partial<{ Detach: boolean, Tty: boolean, ConsoleSize: (Array<number> | null) }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Detach": 1, "Tty": 1, "ConsoleSize": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 409: typia.createIs<unknown>() },
 };
 
@@ -1029,7 +1029,7 @@ export const post_ExecResize = {
   path: typia.createIs<"/exec/{id}/resize">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ h: number, w: number }> => typia.createIs<Partial<{ h: number, w: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["h", "w"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ h: number, w: number }> => typia.createIs<Partial<{ h: number, w: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "h": 1, "w": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1039,8 +1039,8 @@ export const get_ExecInspect = {
   path: typia.createIs<"/exec/{id}/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
-  responses: { 200: typia.createIs<Partial<{ CanRemove: boolean, DetachKeys: string, ID: string, Running: boolean, ExitCode: number, ProcessConfig: ProcessConfig, OpenStdin: boolean, OpenStderr: boolean, OpenStdout: boolean, ContainerID: string, Pid: number }>>(), 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
+  responses: { 200: ((input: unknown): input is Partial<{ CanRemove: boolean, DetachKeys: string, ID: string, Running: boolean, ExitCode: number, ProcessConfig: ProcessConfig, OpenStdin: boolean, OpenStderr: boolean, OpenStdout: boolean, ContainerID: string, Pid: number }> => typia.createIs<Partial<{ CanRemove: boolean, DetachKeys: string, ID: string, Running: boolean, ExitCode: number, ProcessConfig: ProcessConfig, OpenStdin: boolean, OpenStderr: boolean, OpenStdout: boolean, ContainerID: string, Pid: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "CanRemove": 1, "DetachKeys": 1, "ID": 1, "Running": 1, "ExitCode": 1, "ProcessConfig": 1, "OpenStdin": 1, "OpenStderr": 1, "OpenStdout": 1, "ContainerID": 1, "Pid": 1 }, key))), 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type get_VolumeList = typeof get_VolumeList;
@@ -1049,7 +1049,7 @@ export const get_VolumeList = {
   path: typia.createIs<"/volumes">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "filters": 1 }, key))) },
   responses: { 200: isVolumeListResponse, 500: isErrorResponse },
 };
 
@@ -1069,7 +1069,7 @@ export const get_VolumeInspect = {
   path: typia.createIs<"/volumes/{name}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 200: isVolume, 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -1079,7 +1079,7 @@ export const put_VolumeUpdate = {
   path: typia.createIs<"/volumes/{name}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["version"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))), body: typia.createIs<Partial<{ Spec: ClusterVolumeSpec }>>() },
+  parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "version": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))), body: ((input: unknown): input is Partial<{ Spec: ClusterVolumeSpec }> => typia.createIs<Partial<{ Spec: ClusterVolumeSpec }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Spec": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1089,7 +1089,7 @@ export const delete_VolumeDelete = {
   path: typia.createIs<"/volumes/{name}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["force"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "force": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 409: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1099,8 +1099,8 @@ export const post_VolumePrune = {
   path: typia.createIs<"/volumes/prune">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
-  responses: { 200: typia.createIs<Partial<{ VolumesDeleted: Array<string>, SpaceReclaimed: number }>>(), 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "filters": 1 }, key))) },
+  responses: { 200: ((input: unknown): input is Partial<{ VolumesDeleted: Array<string>, SpaceReclaimed: number }> => typia.createIs<Partial<{ VolumesDeleted: Array<string>, SpaceReclaimed: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "VolumesDeleted": 1, "SpaceReclaimed": 1 }, key))), 500: isErrorResponse },
 };
 
 export type get_NetworkList = typeof get_NetworkList;
@@ -1109,7 +1109,7 @@ export const get_NetworkList = {
   path: typia.createIs<"/networks">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "filters": 1 }, key))) },
   responses: { 200: typia.createIs<Array<Network>>(), 500: isErrorResponse },
 };
 
@@ -1119,7 +1119,7 @@ export const get_NetworkInspect = {
   path: typia.createIs<"/networks/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ verbose: boolean, scope: string }> => typia.createIs<Partial<{ verbose: boolean, scope: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["verbose", "scope"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ verbose: boolean, scope: string }> => typia.createIs<Partial<{ verbose: boolean, scope: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "verbose": 1, "scope": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: isNetwork, 404: isErrorResponse, 500: isErrorResponse },
 };
 
@@ -1129,7 +1129,7 @@ export const delete_NetworkDelete = {
   path: typia.createIs<"/networks/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1139,8 +1139,8 @@ export const post_NetworkCreate = {
   path: typia.createIs<"/networks/create">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { body: typia.createIs<({ Name: string, CheckDuplicate?: boolean, Driver?: string, Internal?: boolean, Attachable?: boolean, Ingress?: boolean, IPAM?: IPAM, EnableIPv6?: boolean, Options?: Record<string, string>, Labels?: Record<string, string> } & Record<string, unknown>)>() },
-  responses: { 201: typia.createIs<Partial<{ Id: string, Warning: string }>>(), 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
+  parameters: { body: ((input: unknown): input is { Name: string, CheckDuplicate?: boolean, Driver?: string, Internal?: boolean, Attachable?: boolean, Ingress?: boolean, IPAM?: IPAM, EnableIPv6?: boolean, Options?: Record<string, string>, Labels?: Record<string, string> } => typia.createIs<{ Name: string, CheckDuplicate?: boolean, Driver?: string, Internal?: boolean, Attachable?: boolean, Ingress?: boolean, IPAM?: IPAM, EnableIPv6?: boolean, Options?: Record<string, string>, Labels?: Record<string, string> }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Name": 1, "CheckDuplicate": 1, "Driver": 1, "Internal": 1, "Attachable": 1, "Ingress": 1, "IPAM": 1, "EnableIPv6": 1, "Options": 1, "Labels": 1 }, key))) },
+  responses: { 201: ((input: unknown): input is Partial<{ Id: string, Warning: string }> => typia.createIs<Partial<{ Id: string, Warning: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Id": 1, "Warning": 1 }, key))), 403: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse },
 };
 
 export type post_NetworkConnect = typeof post_NetworkConnect;
@@ -1149,7 +1149,7 @@ export const post_NetworkConnect = {
   path: typia.createIs<"/networks/{id}/connect">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: typia.createIs<Partial<{ Container: string, EndpointConfig: EndpointSettings }>>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))), body: ((input: unknown): input is Partial<{ Container: string, EndpointConfig: EndpointSettings }> => typia.createIs<Partial<{ Container: string, EndpointConfig: EndpointSettings }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Container": 1, "EndpointConfig": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1159,7 +1159,7 @@ export const post_NetworkDisconnect = {
   path: typia.createIs<"/networks/{id}/disconnect">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: typia.createIs<Partial<{ Container: string, Force: boolean }>>() },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))), body: ((input: unknown): input is Partial<{ Container: string, Force: boolean }> => typia.createIs<Partial<{ Container: string, Force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "Container": 1, "Force": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 403: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1169,8 +1169,8 @@ export const post_NetworkPrune = {
   path: typia.createIs<"/networks/prune">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
-  responses: { 200: typia.createIs<Partial<{ NetworksDeleted: Array<string> }>>(), 500: isErrorResponse },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "filters": 1 }, key))) },
+  responses: { 200: ((input: unknown): input is Partial<{ NetworksDeleted: Array<string> }> => typia.createIs<Partial<{ NetworksDeleted: Array<string> }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "NetworksDeleted": 1 }, key))), 500: isErrorResponse },
 };
 
 export type get_PluginList = typeof get_PluginList;
@@ -1179,7 +1179,7 @@ export const get_PluginList = {
   path: typia.createIs<"/plugins">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "filters": 1 }, key))) },
   responses: { 200: typia.createIs<Array<Plugin>>(), 500: isErrorResponse },
 };
 
@@ -1189,7 +1189,7 @@ export const get_GetPluginPrivileges = {
   path: typia.createIs<"/plugins/privileges">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { remote: string } => typia.createIs<{ remote: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["remote"].includes(key))) },
+  parameters: { query: ((input: unknown): input is { remote: string } => typia.createIs<{ remote: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "remote": 1 }, key))) },
   responses: { 200: typia.createIs<(Array<PluginPrivilege> | Array<PluginPrivilege>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1199,7 +1199,7 @@ export const post_PluginPull = {
   path: typia.createIs<"/plugins/pull">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { remote: string, name?: string } => typia.createIs<{ remote: string, name?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["remote", "name"].includes(key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Registry-Auth"].includes(key))), body: typia.createIs<Array<PluginPrivilege>>() },
+  parameters: { query: ((input: unknown): input is { remote: string, name?: string } => typia.createIs<{ remote: string, name?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "remote": 1, "name": 1 }, key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "X-Registry-Auth": 1 }, key))), body: typia.createIs<Array<PluginPrivilege>>() },
   responses: { 204: typia.createIs<unknown>(), 500: isErrorResponse },
 };
 
@@ -1209,7 +1209,7 @@ export const get_PluginInspect = {
   path: typia.createIs<"/plugins/{name}/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 200: typia.createIs<(Plugin | Plugin)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1219,7 +1219,7 @@ export const delete_PluginDelete = {
   path: typia.createIs<"/plugins/{name}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["force"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "force": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 200: typia.createIs<(Plugin | Plugin)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1229,7 +1229,7 @@ export const post_PluginEnable = {
   path: typia.createIs<"/plugins/{name}/enable">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ timeout: number }> => typia.createIs<Partial<{ timeout: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["timeout"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ timeout: number }> => typia.createIs<Partial<{ timeout: number }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "timeout": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1239,7 +1239,7 @@ export const post_PluginDisable = {
   path: typia.createIs<"/plugins/{name}/disable">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["force"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "force": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1249,7 +1249,7 @@ export const post_PluginUpgrade = {
   path: typia.createIs<"/plugins/{name}/upgrade">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { remote: string } => typia.createIs<{ remote: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["remote"].includes(key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Registry-Auth"].includes(key))), body: typia.createIs<Array<PluginPrivilege>>() },
+  parameters: { query: ((input: unknown): input is { remote: string } => typia.createIs<{ remote: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "remote": 1 }, key))), path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "X-Registry-Auth": 1 }, key))), body: typia.createIs<Array<PluginPrivilege>>() },
   responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1259,7 +1259,7 @@ export const post_PluginCreate = {
   path: typia.createIs<"/plugins/create">(),
   requestFormat: typia.createIs<"text">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { query: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1269,7 +1269,7 @@ export const post_PluginPush = {
   path: typia.createIs<"/plugins/{name}/push">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1279,7 +1279,7 @@ export const post_PluginSet = {
   path: typia.createIs<"/plugins/{name}/set">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))), body: typia.createIs<Array<string>>() },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))), body: typia.createIs<Array<string>>() },
   responses: { 204: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1289,7 +1289,7 @@ export const get_NodeList = {
   path: typia.createIs<"/nodes">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "filters": 1 }, key))) },
   responses: { 200: typia.createIs<(Array<Node> | Array<Node>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1299,7 +1299,7 @@ export const get_NodeInspect = {
   path: typia.createIs<"/nodes/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<(Node | Node)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1309,7 +1309,7 @@ export const delete_NodeDelete = {
   path: typia.createIs<"/nodes/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["force"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "force": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1319,7 +1319,7 @@ export const post_NodeUpdate = {
   path: typia.createIs<"/nodes/{id}/update">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["version"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: isNodeSpec },
+  parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "version": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))), body: isNodeSpec },
   responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1339,7 +1339,7 @@ export const post_SwarmInit = {
   path: typia.createIs<"/swarm/init">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { body: typia.createIs<Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, DataPathPort: number, DefaultAddrPool: Array<string>, ForceNewCluster: boolean, SubnetSize: number, Spec: SwarmSpec }>>() },
+  parameters: { body: ((input: unknown): input is Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, DataPathPort: number, DefaultAddrPool: Array<string>, ForceNewCluster: boolean, SubnetSize: number, Spec: SwarmSpec }> => typia.createIs<Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, DataPathPort: number, DefaultAddrPool: Array<string>, ForceNewCluster: boolean, SubnetSize: number, Spec: SwarmSpec }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ListenAddr": 1, "AdvertiseAddr": 1, "DataPathAddr": 1, "DataPathPort": 1, "DefaultAddrPool": 1, "ForceNewCluster": 1, "SubnetSize": 1, "Spec": 1 }, key))) },
   responses: { 200: typia.createIs<(string | string)>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1349,7 +1349,7 @@ export const post_SwarmJoin = {
   path: typia.createIs<"/swarm/join">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { body: typia.createIs<Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, RemoteAddrs: Array<string>, JoinToken: string }>>() },
+  parameters: { body: ((input: unknown): input is Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, RemoteAddrs: Array<string>, JoinToken: string }> => typia.createIs<Partial<{ ListenAddr: string, AdvertiseAddr: string, DataPathAddr: string, RemoteAddrs: Array<string>, JoinToken: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ListenAddr": 1, "AdvertiseAddr": 1, "DataPathAddr": 1, "RemoteAddrs": 1, "JoinToken": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1359,7 +1359,7 @@ export const post_SwarmLeave = {
   path: typia.createIs<"/swarm/leave">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["force"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ force: boolean }> => typia.createIs<Partial<{ force: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "force": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1369,7 +1369,7 @@ export const post_SwarmUpdate = {
   path: typia.createIs<"/swarm/update">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { version: number, rotateWorkerToken?: boolean, rotateManagerToken?: boolean, rotateManagerUnlockKey?: boolean } => typia.createIs<{ version: number, rotateWorkerToken?: boolean, rotateManagerToken?: boolean, rotateManagerUnlockKey?: boolean }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["version", "rotateWorkerToken", "rotateManagerToken", "rotateManagerUnlockKey"].includes(key))), body: isSwarmSpec },
+  parameters: { query: ((input: unknown): input is { version: number, rotateWorkerToken?: boolean, rotateManagerToken?: boolean, rotateManagerUnlockKey?: boolean } => typia.createIs<{ version: number, rotateWorkerToken?: boolean, rotateManagerToken?: boolean, rotateManagerUnlockKey?: boolean }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "version": 1, "rotateWorkerToken": 1, "rotateManagerToken": 1, "rotateManagerUnlockKey": 1 }, key))), body: isSwarmSpec },
   responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1389,7 +1389,7 @@ export const post_SwarmUnlock = {
   path: typia.createIs<"/swarm/unlock">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { body: typia.createIs<Partial<{ UnlockKey: string }>>() },
+  parameters: { body: ((input: unknown): input is Partial<{ UnlockKey: string }> => typia.createIs<Partial<{ UnlockKey: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "UnlockKey": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1399,7 +1399,7 @@ export const get_ServiceList = {
   path: typia.createIs<"/services">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ filters: string, status: boolean }> => typia.createIs<Partial<{ filters: string, status: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters", "status"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string, status: boolean }> => typia.createIs<Partial<{ filters: string, status: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "filters": 1, "status": 1 }, key))) },
   responses: { 200: typia.createIs<(Array<Service> | Array<Service>)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1409,8 +1409,8 @@ export const post_ServiceCreate = {
   path: typia.createIs<"/services/create">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Registry-Auth"].includes(key))), body: typia.createIs<(ServiceSpec & Record<string, unknown>)>() },
-  responses: { 201: typia.createIs<Partial<{ ID: string, Warning: string }>>(), 400: isErrorResponse, 403: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
+  parameters: { header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "X-Registry-Auth": 1 }, key))), body: typia.createIs<(ServiceSpec & Record<string, unknown>)>() },
+  responses: { 201: ((input: unknown): input is Partial<{ ID: string, Warning: string }> => typia.createIs<Partial<{ ID: string, Warning: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "ID": 1, "Warning": 1 }, key))), 400: isErrorResponse, 403: isErrorResponse, 409: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
 export type get_ServiceInspect = typeof get_ServiceInspect;
@@ -1419,7 +1419,7 @@ export const get_ServiceInspect = {
   path: typia.createIs<"/services/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ insertDefaults: boolean }> => typia.createIs<Partial<{ insertDefaults: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["insertDefaults"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ insertDefaults: boolean }> => typia.createIs<Partial<{ insertDefaults: boolean }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "insertDefaults": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<(Service | Service)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1429,7 +1429,7 @@ export const delete_ServiceDelete = {
   path: typia.createIs<"/services/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1439,7 +1439,7 @@ export const post_ServiceUpdate = {
   path: typia.createIs<"/services/{id}/update">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { version: number, registryAuthFrom?: ("spec" | "previous-spec"), rollback?: string } => typia.createIs<{ version: number, registryAuthFrom?: ("spec" | "previous-spec"), rollback?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["version", "registryAuthFrom", "rollback"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["X-Registry-Auth"].includes(key))), body: typia.createIs<(ServiceSpec & Record<string, unknown>)>() },
+  parameters: { query: ((input: unknown): input is { version: number, registryAuthFrom?: ("spec" | "previous-spec"), rollback?: string } => typia.createIs<{ version: number, registryAuthFrom?: ("spec" | "previous-spec"), rollback?: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "version": 1, "registryAuthFrom": 1, "rollback": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))), header: ((input: unknown): input is Partial<{ "X-Registry-Auth": string }> => typia.createIs<Partial<{ "X-Registry-Auth": string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "X-Registry-Auth": 1 }, key))), body: typia.createIs<(ServiceSpec & Record<string, unknown>)>() },
   responses: { 200: isServiceUpdateResponse, 400: isErrorResponse, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1449,7 +1449,7 @@ export const get_ServiceLogs = {
   path: typia.createIs<"/services/{id}/logs">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }> => typia.createIs<Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["details", "follow", "stdout", "stderr", "since", "timestamps", "tail"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }> => typia.createIs<Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "details": 1, "follow": 1, "stdout": 1, "stderr": 1, "since": 1, "timestamps": 1, "tail": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>(), 503: typia.createIs<unknown>() },
 };
 
@@ -1459,7 +1459,7 @@ export const get_TaskList = {
   path: typia.createIs<"/tasks">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "filters": 1 }, key))) },
   responses: { 200: typia.createIs<Array<Task>>(), 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1469,7 +1469,7 @@ export const get_TaskInspect = {
   path: typia.createIs<"/tasks/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: isTask, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1479,7 +1479,7 @@ export const get_TaskLogs = {
   path: typia.createIs<"/tasks/{id}/logs">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }> => typia.createIs<Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["details", "follow", "stdout", "stderr", "since", "timestamps", "tail"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }> => typia.createIs<Partial<{ details: boolean, follow: boolean, stdout: boolean, stderr: boolean, since: number, timestamps: boolean, tail: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "details": 1, "follow": 1, "stdout": 1, "stderr": 1, "since": 1, "timestamps": 1, "tail": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: typia.createIs<unknown>(), 404: typia.createIs<unknown>(), 500: typia.createIs<unknown>(), 503: typia.createIs<unknown>() },
 };
 
@@ -1489,7 +1489,7 @@ export const get_SecretList = {
   path: typia.createIs<"/secrets">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "filters": 1 }, key))) },
   responses: { 200: typia.createIs<Array<Secret>>(), 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1509,7 +1509,7 @@ export const get_SecretInspect = {
   path: typia.createIs<"/secrets/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: isSecret, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1519,7 +1519,7 @@ export const delete_SecretDelete = {
   path: typia.createIs<"/secrets/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1529,7 +1529,7 @@ export const post_SecretUpdate = {
   path: typia.createIs<"/secrets/{id}/update">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["version"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: isSecretSpec },
+  parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "version": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))), body: isSecretSpec },
   responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1539,7 +1539,7 @@ export const get_ConfigList = {
   path: typia.createIs<"/configs">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["filters"].includes(key))) },
+  parameters: { query: ((input: unknown): input is Partial<{ filters: string }> => typia.createIs<Partial<{ filters: string }>>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "filters": 1 }, key))) },
   responses: { 200: typia.createIs<Array<Config>>(), 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1559,7 +1559,7 @@ export const get_ConfigInspect = {
   path: typia.createIs<"/configs/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 200: isConfig, 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1569,7 +1569,7 @@ export const delete_ConfigDelete = {
   path: typia.createIs<"/configs/{id}">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))) },
   responses: { 204: typia.createIs<unknown>(), 404: isErrorResponse, 500: isErrorResponse, 503: isErrorResponse },
 };
 
@@ -1579,7 +1579,7 @@ export const post_ConfigUpdate = {
   path: typia.createIs<"/configs/{id}/update">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["version"].includes(key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["id"].includes(key))), body: isConfigSpec },
+  parameters: { query: ((input: unknown): input is { version: number } => typia.createIs<{ version: number }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "version": 1 }, key))), path: ((input: unknown): input is { id: string } => typia.createIs<{ id: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "id": 1 }, key))), body: isConfigSpec },
   responses: { 200: typia.createIs<unknown>(), 400: typia.createIs<(ErrorResponse | ErrorResponse)>(), 404: typia.createIs<(ErrorResponse | ErrorResponse)>(), 500: typia.createIs<(ErrorResponse | ErrorResponse)>(), 503: typia.createIs<(ErrorResponse | ErrorResponse)>() },
 };
 
@@ -1589,7 +1589,7 @@ export const get_DistributionInspect = {
   path: typia.createIs<"/distribution/{name}/json">(),
   requestFormat: typia.createIs<"json">(),
   responseFormat: typia.createIs<"json">(),
-  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ["name"].includes(key))) },
+  parameters: { path: ((input: unknown): input is { name: string } => typia.createIs<{ name: string }>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => Object.hasOwn({ "name": 1 }, key))) },
   responses: { 200: isDistributionInspect, 401: isErrorResponse, 500: isErrorResponse },
 };
 

@@ -353,15 +353,20 @@ const openApiToIrInnerBody = (input: unknown, ctx: SchemaIrConvertContext, path:
       );
     }
 
-    // OpenAPI and JSON Schema default additionalProperties to true when omitted.
-    let additionalProperties: boolean | SchemaNode = schema.additionalProperties === false ? false : true;
-    if (
+    // Explicit additionalProperties always win. Omitted defaults to closed objects (`false`)
+    // unless `additionalPropertiesDefault` is true (OpenAPI/JSON Schema default).
+    let additionalProperties: boolean | SchemaNode;
+    if (schema.additionalProperties === false) {
+      additionalProperties = false;
+    } else if (
       schema.additionalProperties === true ||
       (typeof schema.additionalProperties === "object" && Object.keys(schema.additionalProperties).length === 0)
     ) {
       additionalProperties = true;
     } else if (typeof schema.additionalProperties === "object") {
       additionalProperties = openApiToIrInternal(schema.additionalProperties, ctx, [...path, "additionalProperties"]);
+    } else {
+      additionalProperties = ctx.additionalPropertiesDefault === true;
     }
 
     const hasRequiredArray = Boolean(schema.required && schema.required.length > 0);

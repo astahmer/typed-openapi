@@ -3,73 +3,59 @@ import * as v from "valibot";
 // <Schemas>
 export type Order = v.InferOutput<typeof Order>;
 export const Order = v.partial(
-  v.objectWithRest(
-    {
-      id: v.pipe(v.number(), v.integer()),
-      petId: v.pipe(v.number(), v.integer()),
-      quantity: v.pipe(v.number(), v.integer()),
-      shipDate: v.string(),
-      status: v.picklist(["placed", "approved", "delivered"]),
-      complete: v.boolean(),
-    },
-    v.unknown(),
-  ),
+  v.strictObject({
+    id: v.pipe(v.number(), v.integer()),
+    petId: v.pipe(v.number(), v.integer()),
+    quantity: v.pipe(v.number(), v.integer()),
+    shipDate: v.string(),
+    status: v.picklist(["placed", "approved", "delivered"]),
+    complete: v.boolean(),
+  }),
 );
 
 export type Address = v.InferOutput<typeof Address>;
 export const Address = v.partial(
-  v.objectWithRest({ street: v.string(), city: v.string(), state: v.string(), zip: v.string() }, v.unknown()),
+  v.strictObject({ street: v.string(), city: v.string(), state: v.string(), zip: v.string() }),
 );
 
 export type Customer = v.InferOutput<typeof Customer>;
 export const Customer = v.partial(
-  v.objectWithRest(
-    { id: v.pipe(v.number(), v.integer()), username: v.string(), address: v.array(Address) },
-    v.unknown(),
-  ),
+  v.strictObject({ id: v.pipe(v.number(), v.integer()), username: v.string(), address: v.array(Address) }),
 );
 
 export type Category = v.InferOutput<typeof Category>;
-export const Category = v.partial(
-  v.objectWithRest({ id: v.pipe(v.number(), v.integer()), name: v.string() }, v.unknown()),
-);
+export const Category = v.partial(v.strictObject({ id: v.pipe(v.number(), v.integer()), name: v.string() }));
 
 export type User = v.InferOutput<typeof User>;
 export const User = v.partial(
-  v.objectWithRest(
-    {
-      id: v.pipe(v.number(), v.integer()),
-      username: v.string(),
-      firstName: v.string(),
-      lastName: v.string(),
-      email: v.string(),
-      password: v.string(),
-      phone: v.string(),
-      userStatus: v.pipe(v.number(), v.integer()),
-    },
-    v.unknown(),
-  ),
+  v.strictObject({
+    id: v.pipe(v.number(), v.integer()),
+    username: v.string(),
+    firstName: v.string(),
+    lastName: v.string(),
+    email: v.string(),
+    password: v.string(),
+    phone: v.string(),
+    userStatus: v.pipe(v.number(), v.integer()),
+  }),
 );
 
 export type Tag = v.InferOutput<typeof Tag>;
-export const Tag = v.partial(v.objectWithRest({ id: v.pipe(v.number(), v.integer()), name: v.string() }, v.unknown()));
+export const Tag = v.partial(v.strictObject({ id: v.pipe(v.number(), v.integer()), name: v.string() }));
 
 export type Pet = v.InferOutput<typeof Pet>;
-export const Pet = v.objectWithRest(
-  {
-    id: v.optional(v.pipe(v.number(), v.integer())),
-    name: v.string(),
-    category: v.optional(Category),
-    photoUrls: v.array(v.string()),
-    tags: v.optional(v.array(Tag)),
-    status: v.optional(v.picklist(["available", "pending", "sold"])),
-  },
-  v.unknown(),
-);
+export const Pet = v.strictObject({
+  id: v.optional(v.pipe(v.number(), v.integer())),
+  name: v.string(),
+  category: v.optional(Category),
+  photoUrls: v.array(v.string()),
+  tags: v.optional(v.array(Tag)),
+  status: v.optional(v.picklist(["available", "pending", "sold"])),
+});
 
 export type ApiResponse = v.InferOutput<typeof ApiResponse>;
 export const ApiResponse = v.partial(
-  v.objectWithRest({ code: v.pipe(v.number(), v.integer()), type: v.string(), message: v.string() }, v.unknown()),
+  v.strictObject({ code: v.pipe(v.number(), v.integer()), type: v.string(), message: v.string() }),
 );
 
 // </Schemas>
@@ -109,7 +95,7 @@ export const get_FindPetsByStatus = {
   responses: {
     200: v.array(Pet),
     304: v.unknown(),
-    400: v.objectWithRest({ code: v.pipe(v.number(), v.integer()), message: v.string() }, v.unknown()),
+    400: v.strictObject({ code: v.pipe(v.number(), v.integer()), message: v.string() }),
   },
 };
 
@@ -140,8 +126,8 @@ export const get_GetPetById = {
   },
   responses: {
     200: Pet,
-    400: v.objectWithRest({ code: v.pipe(v.number(), v.integer()), message: v.string() }, v.unknown()),
-    404: v.objectWithRest({ code: v.pipe(v.number(), v.integer()), message: v.string() }, v.unknown()),
+    400: v.strictObject({ code: v.pipe(v.number(), v.integer()), message: v.string() }),
+    404: v.strictObject({ code: v.pipe(v.number(), v.integer()), message: v.string() }),
   },
 };
 
@@ -312,8 +298,8 @@ export const get_GetUserByName = {
   parameters: { path: v.strictObject({ username: v.string() }) },
   responses: {
     200: User,
-    201: v.objectWithRest({ id: v.pipe(v.number(), v.integer()), username: v.string() }, v.unknown()),
-    400: v.objectWithRest({ code: v.pipe(v.number(), v.integer()), message: v.string() }, v.unknown()),
+    201: v.strictObject({ id: v.pipe(v.number(), v.integer()), username: v.string() }),
+    400: v.strictObject({ code: v.pipe(v.number(), v.integer()), message: v.string() }),
     404: v.unknown(),
   },
 };

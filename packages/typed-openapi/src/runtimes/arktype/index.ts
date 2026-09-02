@@ -11,6 +11,7 @@ import {
   objectKey,
   objectProps,
   quote,
+  emitKeyAllowed,
 } from "../shared.ts";
 import type { EmitCtx, NamedSchema, RuntimeAdapter } from "../types.ts";
 
@@ -289,7 +290,6 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
       if (node.partial) expr = `${expr}.partial()`;
       const patterns = Object.entries(node.patternProperties ?? {});
       if (patterns.length > 0) {
-        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
         const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
         const patternChecks = patterns
           .map(
@@ -303,14 +303,12 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
             : typeof node.additionalProperties === "object"
               ? `${emitNode(node.additionalProperties, ctx)}.allows(value)`
               : "false";
-        expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${namedKeys}.includes(key) || ${matching} || ${additionalCheck})))`;
+        expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${emitKeyAllowed(Object.keys(node.properties))} || ${matching} || ${additionalCheck})))`;
       } else if (typeof node.additionalProperties === "object") {
-        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
         const rest = emitNode(node.additionalProperties, ctx);
-        expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${namedKeys}.includes(key) || ${rest}.allows(value)))`;
+        expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${emitKeyAllowed(Object.keys(node.properties))} || ${rest}.allows(value)))`;
       } else if (node.additionalProperties === false) {
-        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
-        expr = `${expr}.narrow((data) => Object.keys(data).every((key) => ${namedKeys}.includes(key)))`;
+        expr = `${expr}.narrow((data) => Object.keys(data).every((key) => ${emitKeyAllowed(Object.keys(node.properties))}))`;
       }
       return expr;
     }

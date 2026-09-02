@@ -247,4 +247,43 @@ describe("generateClientFiles + config file integration", () => {
     expect(out).toContain('"/real"');
     expect(out).not.toContain('"/fake"');
   });
+
+  test("openapi.additionalPropertiesDefault opts into OpenAPI open objects", async () => {
+    rmSync(tmp, { recursive: true, force: true });
+    mkdirSync(tmp, { recursive: true });
+    const specPath = join(tmp, "objects.openapi.json");
+    writeFileSync(
+      specPath,
+      JSON.stringify({
+        openapi: "3.0.3",
+        info: { title: "objects", version: "1" },
+        paths: {},
+        components: {
+          schemas: {
+            User: {
+              type: "object",
+              required: ["id", "name"],
+              properties: { id: { type: "integer" }, name: { type: "string" } },
+            },
+          },
+        },
+      }),
+    );
+
+    const closedOut = join(tmp, "closed.ts");
+    await generateClientFiles(specPath, { output: closedOut, runtime: "zod", schemasOnly: true, format: false });
+    const closed = readFileSync(closedOut, "utf8");
+    expect(closed).toContain("export const User");
+    expect(closed).not.toContain("catchall");
+
+    const openOut = join(tmp, "open.ts");
+    await generateClientFiles(specPath, {
+      output: openOut,
+      runtime: "zod",
+      schemasOnly: true,
+      format: false,
+      openapi: { additionalPropertiesDefault: true },
+    });
+    expect(readFileSync(openOut, "utf8")).toContain("catchall(z.unknown())");
+  });
 });

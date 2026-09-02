@@ -3,319 +3,319 @@
 
 // <Schemas>
 export type Port = z.infer<typeof Port>;
-export const Port = z.object({ IP: z.string().optional(), PrivatePort: z.number().int(), PublicPort: z.number().int().optional(), Type: z.enum(["tcp", "udp", "sctp"]) }).catchall(z.unknown());
+export const Port = z.object({ IP: z.string().optional(), PrivatePort: z.number().int(), PublicPort: z.number().int().optional(), Type: z.enum(["tcp", "udp", "sctp"]) }).strict();
 
 export type MountPoint = z.infer<typeof MountPoint>;
-export const MountPoint = z.object({ Type: z.enum(["bind", "volume", "tmpfs", "npipe", "cluster"]), Name: z.string(), Source: z.string(), Destination: z.string(), Driver: z.string(), Mode: z.string(), RW: z.boolean(), Propagation: z.string() }).partial().catchall(z.unknown());
+export const MountPoint = z.object({ Type: z.enum(["bind", "volume", "tmpfs", "npipe", "cluster"]), Name: z.string(), Source: z.string(), Destination: z.string(), Driver: z.string(), Mode: z.string(), RW: z.boolean(), Propagation: z.string() }).partial().strict();
 
 export type DeviceMapping = z.infer<typeof DeviceMapping>;
-export const DeviceMapping = z.object({ PathOnHost: z.string(), PathInContainer: z.string(), CgroupPermissions: z.string() }).partial().catchall(z.unknown());
+export const DeviceMapping = z.object({ PathOnHost: z.string(), PathInContainer: z.string(), CgroupPermissions: z.string() }).partial().strict();
 
 export type DeviceRequest = z.infer<typeof DeviceRequest>;
-export const DeviceRequest = z.object({ Driver: z.string(), Count: z.number().int(), DeviceIDs: z.array(z.string()), Capabilities: z.array(z.array(z.string())), Options: z.record(z.string(), z.string()) }).partial().catchall(z.unknown());
+export const DeviceRequest = z.object({ Driver: z.string(), Count: z.number().int(), DeviceIDs: z.array(z.string()), Capabilities: z.array(z.array(z.string())), Options: z.record(z.string(), z.string()) }).partial().strict();
 
 export type ThrottleDevice = z.infer<typeof ThrottleDevice>;
-export const ThrottleDevice = z.object({ Path: z.string(), Rate: z.number().int().min(0) }).partial().catchall(z.unknown());
+export const ThrottleDevice = z.object({ Path: z.string(), Rate: z.number().int().min(0) }).partial().strict();
 
 export type Mount = z.infer<typeof Mount>;
-export const Mount = z.object({ Target: z.string(), Source: z.string(), Type: z.enum(["bind", "volume", "tmpfs", "npipe", "cluster"]), ReadOnly: z.boolean(), Consistency: z.string(), BindOptions: z.object({ Propagation: z.enum(["private", "rprivate", "shared", "rshared", "slave", "rslave"]), NonRecursive: z.boolean().default(false), CreateMountpoint: z.boolean().default(false) }).partial().catchall(z.unknown()), VolumeOptions: z.object({ NoCopy: z.boolean().default(false), Labels: z.record(z.string(), z.string()), DriverConfig: z.object({ Name: z.string(), Options: z.record(z.string(), z.string()) }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown()), TmpfsOptions: z.object({ SizeBytes: z.number().int(), Mode: z.number().int() }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown());
+export const Mount = z.object({ Target: z.string(), Source: z.string(), Type: z.enum(["bind", "volume", "tmpfs", "npipe", "cluster"]), ReadOnly: z.boolean(), Consistency: z.string(), BindOptions: z.object({ Propagation: z.enum(["private", "rprivate", "shared", "rshared", "slave", "rslave"]), NonRecursive: z.boolean().default(false), CreateMountpoint: z.boolean().default(false) }).partial().strict(), VolumeOptions: z.object({ NoCopy: z.boolean().default(false), Labels: z.record(z.string(), z.string()), DriverConfig: z.object({ Name: z.string(), Options: z.record(z.string(), z.string()) }).partial().strict() }).partial().strict(), TmpfsOptions: z.object({ SizeBytes: z.number().int(), Mode: z.number().int() }).partial().strict() }).partial().strict();
 
 export type RestartPolicy = z.infer<typeof RestartPolicy>;
-export const RestartPolicy = z.object({ Name: z.enum(["", "no", "always", "unless-stopped", "on-failure"]), MaximumRetryCount: z.number().int() }).partial().catchall(z.unknown());
+export const RestartPolicy = z.object({ Name: z.enum(["", "no", "always", "unless-stopped", "on-failure"]), MaximumRetryCount: z.number().int() }).partial().strict();
 
 export type Resources = z.infer<typeof Resources>;
-export const Resources = z.object({ CpuShares: z.number().int(), Memory: z.number().int().default(0), CgroupParent: z.string(), BlkioWeight: z.number().int().min(0).max(1000), BlkioWeightDevice: z.array(z.object({ Path: z.string(), Weight: z.number().int().min(0) }).partial().catchall(z.unknown())), BlkioDeviceReadBps: z.array(ThrottleDevice), BlkioDeviceWriteBps: z.array(ThrottleDevice), BlkioDeviceReadIOps: z.array(ThrottleDevice), BlkioDeviceWriteIOps: z.array(ThrottleDevice), CpuPeriod: z.number().int(), CpuQuota: z.number().int(), CpuRealtimePeriod: z.number().int(), CpuRealtimeRuntime: z.number().int(), CpusetCpus: z.string(), CpusetMems: z.string(), Devices: z.array(DeviceMapping), DeviceCgroupRules: z.array(z.string()), DeviceRequests: z.array(DeviceRequest), KernelMemoryTCP: z.number().int(), MemoryReservation: z.number().int(), MemorySwap: z.number().int(), MemorySwappiness: z.number().int().min(0).max(100), NanoCpus: z.number().int(), OomKillDisable: z.boolean(), Init: z.boolean().nullable(), PidsLimit: z.number().int().nullable(), Ulimits: z.array(z.object({ Name: z.string(), Soft: z.number().int(), Hard: z.number().int() }).partial().catchall(z.unknown())), CpuCount: z.number().int(), CpuPercent: z.number().int(), IOMaximumIOps: z.number().int(), IOMaximumBandwidth: z.number().int() }).partial().catchall(z.unknown());
+export const Resources = z.object({ CpuShares: z.number().int(), Memory: z.number().int().default(0), CgroupParent: z.string(), BlkioWeight: z.number().int().min(0).max(1000), BlkioWeightDevice: z.array(z.object({ Path: z.string(), Weight: z.number().int().min(0) }).partial().strict()), BlkioDeviceReadBps: z.array(ThrottleDevice), BlkioDeviceWriteBps: z.array(ThrottleDevice), BlkioDeviceReadIOps: z.array(ThrottleDevice), BlkioDeviceWriteIOps: z.array(ThrottleDevice), CpuPeriod: z.number().int(), CpuQuota: z.number().int(), CpuRealtimePeriod: z.number().int(), CpuRealtimeRuntime: z.number().int(), CpusetCpus: z.string(), CpusetMems: z.string(), Devices: z.array(DeviceMapping), DeviceCgroupRules: z.array(z.string()), DeviceRequests: z.array(DeviceRequest), KernelMemoryTCP: z.number().int(), MemoryReservation: z.number().int(), MemorySwap: z.number().int(), MemorySwappiness: z.number().int().min(0).max(100), NanoCpus: z.number().int(), OomKillDisable: z.boolean(), Init: z.boolean().nullable(), PidsLimit: z.number().int().nullable(), Ulimits: z.array(z.object({ Name: z.string(), Soft: z.number().int(), Hard: z.number().int() }).partial().strict()), CpuCount: z.number().int(), CpuPercent: z.number().int(), IOMaximumIOps: z.number().int(), IOMaximumBandwidth: z.number().int() }).partial().strict();
 
 export type Limit = z.infer<typeof Limit>;
-export const Limit = z.object({ NanoCPUs: z.number().int(), MemoryBytes: z.number().int(), Pids: z.number().int().default(0) }).partial().catchall(z.unknown());
+export const Limit = z.object({ NanoCPUs: z.number().int(), MemoryBytes: z.number().int(), Pids: z.number().int().default(0) }).partial().strict();
 
 export type GenericResources = z.infer<typeof GenericResources>;
-export const GenericResources = z.array(z.object({ NamedResourceSpec: z.object({ Kind: z.string(), Value: z.string() }).partial().catchall(z.unknown()), DiscreteResourceSpec: z.object({ Kind: z.string(), Value: z.number().int() }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown()));
+export const GenericResources = z.array(z.object({ NamedResourceSpec: z.object({ Kind: z.string(), Value: z.string() }).partial().strict(), DiscreteResourceSpec: z.object({ Kind: z.string(), Value: z.number().int() }).partial().strict() }).partial().strict());
 
 export type ResourceObject = z.infer<typeof ResourceObject>;
-export const ResourceObject = z.object({ NanoCPUs: z.number().int(), MemoryBytes: z.number().int(), GenericResources: GenericResources }).partial().catchall(z.unknown());
+export const ResourceObject = z.object({ NanoCPUs: z.number().int(), MemoryBytes: z.number().int(), GenericResources: GenericResources }).partial().strict();
 
 export type HealthConfig = z.infer<typeof HealthConfig>;
-export const HealthConfig = z.object({ Test: z.array(z.string()), Interval: z.number().int(), Timeout: z.number().int(), Retries: z.number().int(), StartPeriod: z.number().int() }).partial().catchall(z.unknown());
+export const HealthConfig = z.object({ Test: z.array(z.string()), Interval: z.number().int(), Timeout: z.number().int(), Retries: z.number().int(), StartPeriod: z.number().int() }).partial().strict();
 
 export type HealthcheckResult = z.infer<typeof HealthcheckResult>;
-export const HealthcheckResult = z.object({ Start: z.string().datetime(), End: z.string(), ExitCode: z.number().int(), Output: z.string() }).partial().catchall(z.unknown()).nullable();
+export const HealthcheckResult = z.object({ Start: z.string().datetime(), End: z.string(), ExitCode: z.number().int(), Output: z.string() }).partial().strict().nullable();
 
 export type Health = z.infer<typeof Health>;
-export const Health = z.object({ Status: z.enum(["none", "starting", "healthy", "unhealthy"]), FailingStreak: z.number().int(), Log: z.array(HealthcheckResult) }).partial().catchall(z.unknown()).nullable();
+export const Health = z.object({ Status: z.enum(["none", "starting", "healthy", "unhealthy"]), FailingStreak: z.number().int(), Log: z.array(HealthcheckResult) }).partial().strict().nullable();
 
 export type PortBinding = z.infer<typeof PortBinding>;
-export const PortBinding = z.object({ HostIp: z.string(), HostPort: z.string() }).partial().catchall(z.unknown());
+export const PortBinding = z.object({ HostIp: z.string(), HostPort: z.string() }).partial().strict();
 
 export type PortMap = z.infer<typeof PortMap>;
 export const PortMap = z.record(z.string(), z.array(PortBinding).nullable());
 
 export type HostConfig = z.infer<typeof HostConfig>;
-export const HostConfig = Resources.and(z.object({ Binds: z.array(z.string()), ContainerIDFile: z.string(), LogConfig: z.object({ Type: z.enum(["json-file", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "none"]), Config: z.record(z.string(), z.string()) }).partial().catchall(z.unknown()), NetworkMode: z.string(), PortBindings: PortMap, RestartPolicy: RestartPolicy, AutoRemove: z.boolean(), VolumeDriver: z.string(), VolumesFrom: z.array(z.string()), Mounts: z.array(Mount), ConsoleSize: z.array(z.number().int().min(0)).min(2).max(2).nullable(), Annotations: z.record(z.string(), z.string()), CapAdd: z.array(z.string()), CapDrop: z.array(z.string()), CgroupnsMode: z.enum(["private", "host"]), Dns: z.array(z.string()), DnsOptions: z.array(z.string()), DnsSearch: z.array(z.string()), ExtraHosts: z.array(z.string()), GroupAdd: z.array(z.string()), IpcMode: z.string(), Cgroup: z.string(), Links: z.array(z.string()), OomScoreAdj: z.number().int(), PidMode: z.string(), Privileged: z.boolean(), PublishAllPorts: z.boolean(), ReadonlyRootfs: z.boolean(), SecurityOpt: z.array(z.string()), StorageOpt: z.record(z.string(), z.string()), Tmpfs: z.record(z.string(), z.string()), UTSMode: z.string(), UsernsMode: z.string(), ShmSize: z.number().int().min(0), Sysctls: z.record(z.string(), z.string()), Runtime: z.string(), Isolation: z.enum(["default", "process", "hyperv"]), MaskedPaths: z.array(z.string()), ReadonlyPaths: z.array(z.string()) }).partial().catchall(z.unknown()));
+export const HostConfig = Resources.and(z.object({ Binds: z.array(z.string()), ContainerIDFile: z.string(), LogConfig: z.object({ Type: z.enum(["json-file", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "none"]), Config: z.record(z.string(), z.string()) }).partial().strict(), NetworkMode: z.string(), PortBindings: PortMap, RestartPolicy: RestartPolicy, AutoRemove: z.boolean(), VolumeDriver: z.string(), VolumesFrom: z.array(z.string()), Mounts: z.array(Mount), ConsoleSize: z.array(z.number().int().min(0)).min(2).max(2).nullable(), Annotations: z.record(z.string(), z.string()), CapAdd: z.array(z.string()), CapDrop: z.array(z.string()), CgroupnsMode: z.enum(["private", "host"]), Dns: z.array(z.string()), DnsOptions: z.array(z.string()), DnsSearch: z.array(z.string()), ExtraHosts: z.array(z.string()), GroupAdd: z.array(z.string()), IpcMode: z.string(), Cgroup: z.string(), Links: z.array(z.string()), OomScoreAdj: z.number().int(), PidMode: z.string(), Privileged: z.boolean(), PublishAllPorts: z.boolean(), ReadonlyRootfs: z.boolean(), SecurityOpt: z.array(z.string()), StorageOpt: z.record(z.string(), z.string()), Tmpfs: z.record(z.string(), z.string()), UTSMode: z.string(), UsernsMode: z.string(), ShmSize: z.number().int().min(0), Sysctls: z.record(z.string(), z.string()), Runtime: z.string(), Isolation: z.enum(["default", "process", "hyperv"]), MaskedPaths: z.array(z.string()), ReadonlyPaths: z.array(z.string()) }).partial().strict());
 
 export type ContainerConfig = z.infer<typeof ContainerConfig>;
-export const ContainerConfig = z.object({ Hostname: z.string(), Domainname: z.string(), User: z.string(), AttachStdin: z.boolean().default(false), AttachStdout: z.boolean().default(true), AttachStderr: z.boolean().default(true), ExposedPorts: z.record(z.string(), z.object({  }).partial().catchall(z.unknown())).nullable(), Tty: z.boolean().default(false), OpenStdin: z.boolean().default(false), StdinOnce: z.boolean().default(false), Env: z.array(z.string()), Cmd: z.array(z.string()), Healthcheck: HealthConfig, ArgsEscaped: z.boolean().nullable().default(false), Image: z.string(), Volumes: z.record(z.string(), z.object({  }).partial().catchall(z.unknown())), WorkingDir: z.string(), Entrypoint: z.array(z.string()), NetworkDisabled: z.boolean().nullable(), MacAddress: z.string().nullable(), OnBuild: z.array(z.string()).nullable(), Labels: z.record(z.string(), z.string()), StopSignal: z.string().nullable(), StopTimeout: z.number().int().nullable(), Shell: z.array(z.string()).nullable() }).partial().catchall(z.unknown());
+export const ContainerConfig = z.object({ Hostname: z.string(), Domainname: z.string(), User: z.string(), AttachStdin: z.boolean().default(false), AttachStdout: z.boolean().default(true), AttachStderr: z.boolean().default(true), ExposedPorts: z.record(z.string(), z.object({  }).partial().strict()).nullable(), Tty: z.boolean().default(false), OpenStdin: z.boolean().default(false), StdinOnce: z.boolean().default(false), Env: z.array(z.string()), Cmd: z.array(z.string()), Healthcheck: HealthConfig, ArgsEscaped: z.boolean().nullable().default(false), Image: z.string(), Volumes: z.record(z.string(), z.object({  }).partial().strict()), WorkingDir: z.string(), Entrypoint: z.array(z.string()), NetworkDisabled: z.boolean().nullable(), MacAddress: z.string().nullable(), OnBuild: z.array(z.string()).nullable(), Labels: z.record(z.string(), z.string()), StopSignal: z.string().nullable(), StopTimeout: z.number().int().nullable(), Shell: z.array(z.string()).nullable() }).partial().strict();
 
 export type EndpointIPAMConfig = z.infer<typeof EndpointIPAMConfig>;
-export const EndpointIPAMConfig = z.object({ IPv4Address: z.string(), IPv6Address: z.string(), LinkLocalIPs: z.array(z.string()) }).partial().catchall(z.unknown()).nullable();
+export const EndpointIPAMConfig = z.object({ IPv4Address: z.string(), IPv6Address: z.string(), LinkLocalIPs: z.array(z.string()) }).partial().strict().nullable();
 
 export type EndpointSettings = z.infer<typeof EndpointSettings>;
-export const EndpointSettings = z.object({ IPAMConfig: EndpointIPAMConfig, Links: z.array(z.string()), Aliases: z.array(z.string()), NetworkID: z.string(), EndpointID: z.string(), Gateway: z.string(), IPAddress: z.string(), IPPrefixLen: z.number().int(), IPv6Gateway: z.string(), GlobalIPv6Address: z.string(), GlobalIPv6PrefixLen: z.number().int(), MacAddress: z.string(), DriverOpts: z.record(z.string(), z.string()).nullable() }).partial().catchall(z.unknown());
+export const EndpointSettings = z.object({ IPAMConfig: EndpointIPAMConfig, Links: z.array(z.string()), Aliases: z.array(z.string()), NetworkID: z.string(), EndpointID: z.string(), Gateway: z.string(), IPAddress: z.string(), IPPrefixLen: z.number().int(), IPv6Gateway: z.string(), GlobalIPv6Address: z.string(), GlobalIPv6PrefixLen: z.number().int(), MacAddress: z.string(), DriverOpts: z.record(z.string(), z.string()).nullable() }).partial().strict();
 
 export type NetworkingConfig = z.infer<typeof NetworkingConfig>;
-export const NetworkingConfig = z.object({ EndpointsConfig: z.record(z.string(), EndpointSettings) }).partial().catchall(z.unknown());
+export const NetworkingConfig = z.object({ EndpointsConfig: z.record(z.string(), EndpointSettings) }).partial().strict();
 
 export type Address = z.infer<typeof Address>;
-export const Address = z.object({ Addr: z.string(), PrefixLen: z.number().int() }).partial().catchall(z.unknown());
+export const Address = z.object({ Addr: z.string(), PrefixLen: z.number().int() }).partial().strict();
 
 export type NetworkSettings = z.infer<typeof NetworkSettings>;
-export const NetworkSettings = z.object({ Bridge: z.string(), SandboxID: z.string(), HairpinMode: z.boolean(), LinkLocalIPv6Address: z.string(), LinkLocalIPv6PrefixLen: z.number().int(), Ports: PortMap, SandboxKey: z.string(), SecondaryIPAddresses: z.array(Address).nullable(), SecondaryIPv6Addresses: z.array(Address).nullable(), EndpointID: z.string(), Gateway: z.string(), GlobalIPv6Address: z.string(), GlobalIPv6PrefixLen: z.number().int(), IPAddress: z.string(), IPPrefixLen: z.number().int(), IPv6Gateway: z.string(), MacAddress: z.string(), Networks: z.record(z.string(), EndpointSettings) }).partial().catchall(z.unknown());
+export const NetworkSettings = z.object({ Bridge: z.string(), SandboxID: z.string(), HairpinMode: z.boolean(), LinkLocalIPv6Address: z.string(), LinkLocalIPv6PrefixLen: z.number().int(), Ports: PortMap, SandboxKey: z.string(), SecondaryIPAddresses: z.array(Address).nullable(), SecondaryIPv6Addresses: z.array(Address).nullable(), EndpointID: z.string(), Gateway: z.string(), GlobalIPv6Address: z.string(), GlobalIPv6PrefixLen: z.number().int(), IPAddress: z.string(), IPPrefixLen: z.number().int(), IPv6Gateway: z.string(), MacAddress: z.string(), Networks: z.record(z.string(), EndpointSettings) }).partial().strict();
 
 export type GraphDriverData = z.infer<typeof GraphDriverData>;
-export const GraphDriverData = z.object({ Name: z.string(), Data: z.record(z.string(), z.string()) }).catchall(z.unknown());
+export const GraphDriverData = z.object({ Name: z.string(), Data: z.record(z.string(), z.string()) }).strict();
 
 export type ChangeType = z.infer<typeof ChangeType>;
 export const ChangeType = z.union([z.literal(0), z.literal(1), z.literal(2)]);
 
 export type FilesystemChange = z.infer<typeof FilesystemChange>;
-export const FilesystemChange = z.object({ Path: z.string(), Kind: ChangeType }).catchall(z.unknown());
+export const FilesystemChange = z.object({ Path: z.string(), Kind: ChangeType }).strict();
 
 export type ImageInspect = z.infer<typeof ImageInspect>;
-export const ImageInspect = z.object({ Id: z.string(), RepoTags: z.array(z.string()), RepoDigests: z.array(z.string()), Parent: z.string(), Comment: z.string(), Created: z.string(), Container: z.string(), ContainerConfig: ContainerConfig, DockerVersion: z.string(), Author: z.string(), Config: ContainerConfig, Architecture: z.string(), Variant: z.string().nullable(), Os: z.string(), OsVersion: z.string().nullable(), Size: z.number().int(), VirtualSize: z.number().int(), GraphDriver: GraphDriverData, RootFS: z.object({ Type: z.string(), Layers: z.array(z.string()).optional() }).catchall(z.unknown()), Metadata: z.object({ LastTagTime: z.string().nullable() }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown());
+export const ImageInspect = z.object({ Id: z.string(), RepoTags: z.array(z.string()), RepoDigests: z.array(z.string()), Parent: z.string(), Comment: z.string(), Created: z.string(), Container: z.string(), ContainerConfig: ContainerConfig, DockerVersion: z.string(), Author: z.string(), Config: ContainerConfig, Architecture: z.string(), Variant: z.string().nullable(), Os: z.string(), OsVersion: z.string().nullable(), Size: z.number().int(), VirtualSize: z.number().int(), GraphDriver: GraphDriverData, RootFS: z.object({ Type: z.string(), Layers: z.array(z.string()).optional() }).strict(), Metadata: z.object({ LastTagTime: z.string().nullable() }).partial().strict() }).partial().strict();
 
 export type ImageSummary = z.infer<typeof ImageSummary>;
-export const ImageSummary = z.object({ Id: z.string(), ParentId: z.string(), RepoTags: z.array(z.string()), RepoDigests: z.array(z.string()), Created: z.number().int(), Size: z.number().int(), SharedSize: z.number().int(), VirtualSize: z.number().int().optional(), Labels: z.record(z.string(), z.string()), Containers: z.number().int() }).catchall(z.unknown());
+export const ImageSummary = z.object({ Id: z.string(), ParentId: z.string(), RepoTags: z.array(z.string()), RepoDigests: z.array(z.string()), Created: z.number().int(), Size: z.number().int(), SharedSize: z.number().int(), VirtualSize: z.number().int().optional(), Labels: z.record(z.string(), z.string()), Containers: z.number().int() }).strict();
 
 export type AuthConfig = z.infer<typeof AuthConfig>;
-export const AuthConfig = z.object({ username: z.string(), password: z.string(), email: z.string(), serveraddress: z.string() }).partial().catchall(z.unknown());
+export const AuthConfig = z.object({ username: z.string(), password: z.string(), email: z.string(), serveraddress: z.string() }).partial().strict();
 
 export type ProcessConfig = z.infer<typeof ProcessConfig>;
-export const ProcessConfig = z.object({ privileged: z.boolean(), user: z.string(), tty: z.boolean(), entrypoint: z.string(), arguments: z.array(z.string()) }).partial().catchall(z.unknown());
+export const ProcessConfig = z.object({ privileged: z.boolean(), user: z.string(), tty: z.boolean(), entrypoint: z.string(), arguments: z.array(z.string()) }).partial().strict();
 
 export type ObjectVersion = z.infer<typeof ObjectVersion>;
-export const ObjectVersion = z.object({ Index: z.number().int() }).partial().catchall(z.unknown());
+export const ObjectVersion = z.object({ Index: z.number().int() }).partial().strict();
 
 export type Topology = z.infer<typeof Topology>;
 export const Topology = z.record(z.string(), z.string());
 
 export type ClusterVolumeSpec = z.infer<typeof ClusterVolumeSpec>;
-export const ClusterVolumeSpec = z.object({ Group: z.string(), AccessMode: z.object({ Scope: z.enum(["single", "multi"]).default("single"), Sharing: z.enum(["none", "readonly", "onewriter", "all"]).default("none"), MountVolume: z.object({  }).partial().catchall(z.unknown()), Secrets: z.array(z.object({ Key: z.string(), Secret: z.string() }).partial().catchall(z.unknown())), AccessibilityRequirements: z.object({ Requisite: z.array(Topology), Preferred: z.array(Topology) }).partial().catchall(z.unknown()), CapacityRange: z.object({ RequiredBytes: z.number().int(), LimitBytes: z.number().int() }).partial().catchall(z.unknown()), Availability: z.enum(["active", "pause", "drain"]).default("active") }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown());
+export const ClusterVolumeSpec = z.object({ Group: z.string(), AccessMode: z.object({ Scope: z.enum(["single", "multi"]).default("single"), Sharing: z.enum(["none", "readonly", "onewriter", "all"]).default("none"), MountVolume: z.object({  }).partial().strict(), Secrets: z.array(z.object({ Key: z.string(), Secret: z.string() }).partial().strict()), AccessibilityRequirements: z.object({ Requisite: z.array(Topology), Preferred: z.array(Topology) }).partial().strict(), CapacityRange: z.object({ RequiredBytes: z.number().int(), LimitBytes: z.number().int() }).partial().strict(), Availability: z.enum(["active", "pause", "drain"]).default("active") }).partial().strict() }).partial().strict();
 
 export type ClusterVolume = z.infer<typeof ClusterVolume>;
-export const ClusterVolume = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Spec: ClusterVolumeSpec, Info: z.object({ CapacityBytes: z.number().int(), VolumeContext: z.record(z.string(), z.string()), VolumeID: z.string(), AccessibleTopology: z.array(Topology) }).partial().catchall(z.unknown()), PublishStatus: z.array(z.object({ NodeID: z.string(), State: z.enum(["pending-publish", "published", "pending-node-unpublish", "pending-controller-unpublish"]), PublishContext: z.record(z.string(), z.string()) }).partial().catchall(z.unknown())) }).partial().catchall(z.unknown());
+export const ClusterVolume = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Spec: ClusterVolumeSpec, Info: z.object({ CapacityBytes: z.number().int(), VolumeContext: z.record(z.string(), z.string()), VolumeID: z.string(), AccessibleTopology: z.array(Topology) }).partial().strict(), PublishStatus: z.array(z.object({ NodeID: z.string(), State: z.enum(["pending-publish", "published", "pending-node-unpublish", "pending-controller-unpublish"]), PublishContext: z.record(z.string(), z.string()) }).partial().strict()) }).partial().strict();
 
 export type Volume = z.infer<typeof Volume>;
-export const Volume = z.object({ Name: z.string(), Driver: z.string(), Mountpoint: z.string(), CreatedAt: z.string().optional(), Status: z.record(z.string(), z.object({  }).partial().catchall(z.unknown())).optional(), Labels: z.record(z.string(), z.string()), Scope: z.enum(["local", "global"]).default("local"), ClusterVolume: ClusterVolume.optional(), Options: z.record(z.string(), z.string()), UsageData: z.object({ Size: z.number().int().default(-1), RefCount: z.number().int().default(-1) }).catchall(z.unknown()).nullable().optional() }).catchall(z.unknown());
+export const Volume = z.object({ Name: z.string(), Driver: z.string(), Mountpoint: z.string(), CreatedAt: z.string().optional(), Status: z.record(z.string(), z.object({  }).partial().strict()).optional(), Labels: z.record(z.string(), z.string()), Scope: z.enum(["local", "global"]).default("local"), ClusterVolume: ClusterVolume.optional(), Options: z.record(z.string(), z.string()), UsageData: z.object({ Size: z.number().int().default(-1), RefCount: z.number().int().default(-1) }).strict().nullable().optional() }).strict();
 
 export type VolumeCreateOptions = z.infer<typeof VolumeCreateOptions>;
-export const VolumeCreateOptions = z.object({ Name: z.string(), Driver: z.string().default("local"), DriverOpts: z.record(z.string(), z.string()), Labels: z.record(z.string(), z.string()), ClusterVolumeSpec: ClusterVolumeSpec }).partial().catchall(z.unknown());
+export const VolumeCreateOptions = z.object({ Name: z.string(), Driver: z.string().default("local"), DriverOpts: z.record(z.string(), z.string()), Labels: z.record(z.string(), z.string()), ClusterVolumeSpec: ClusterVolumeSpec }).partial().strict();
 
 export type VolumeListResponse = z.infer<typeof VolumeListResponse>;
-export const VolumeListResponse = z.object({ Volumes: z.array(Volume), Warnings: z.array(z.string()) }).partial().catchall(z.unknown());
+export const VolumeListResponse = z.object({ Volumes: z.array(Volume), Warnings: z.array(z.string()) }).partial().strict();
 
 export type IPAMConfig = z.infer<typeof IPAMConfig>;
-export const IPAMConfig = z.object({ Subnet: z.string(), IPRange: z.string(), Gateway: z.string(), AuxiliaryAddresses: z.record(z.string(), z.string()) }).partial().catchall(z.unknown());
+export const IPAMConfig = z.object({ Subnet: z.string(), IPRange: z.string(), Gateway: z.string(), AuxiliaryAddresses: z.record(z.string(), z.string()) }).partial().strict();
 
 export type IPAM = z.infer<typeof IPAM>;
-export const IPAM = z.object({ Driver: z.string().default("default"), Config: z.array(IPAMConfig), Options: z.record(z.string(), z.string()) }).partial().catchall(z.unknown());
+export const IPAM = z.object({ Driver: z.string().default("default"), Config: z.array(IPAMConfig), Options: z.record(z.string(), z.string()) }).partial().strict();
 
 export type NetworkContainer = z.infer<typeof NetworkContainer>;
-export const NetworkContainer = z.object({ Name: z.string(), EndpointID: z.string(), MacAddress: z.string(), IPv4Address: z.string(), IPv6Address: z.string() }).partial().catchall(z.unknown());
+export const NetworkContainer = z.object({ Name: z.string(), EndpointID: z.string(), MacAddress: z.string(), IPv4Address: z.string(), IPv6Address: z.string() }).partial().strict();
 
 export type Network = z.infer<typeof Network>;
-export const Network = z.object({ Name: z.string(), Id: z.string(), Created: z.string(), Scope: z.string(), Driver: z.string(), EnableIPv6: z.boolean(), IPAM: IPAM, Internal: z.boolean(), Attachable: z.boolean(), Ingress: z.boolean(), Containers: z.record(z.string(), NetworkContainer), Options: z.record(z.string(), z.string()), Labels: z.record(z.string(), z.string()) }).partial().catchall(z.unknown());
+export const Network = z.object({ Name: z.string(), Id: z.string(), Created: z.string(), Scope: z.string(), Driver: z.string(), EnableIPv6: z.boolean(), IPAM: IPAM, Internal: z.boolean(), Attachable: z.boolean(), Ingress: z.boolean(), Containers: z.record(z.string(), NetworkContainer), Options: z.record(z.string(), z.string()), Labels: z.record(z.string(), z.string()) }).partial().strict();
 
 export type ErrorDetail = z.infer<typeof ErrorDetail>;
-export const ErrorDetail = z.object({ code: z.number().int(), message: z.string() }).partial().catchall(z.unknown());
+export const ErrorDetail = z.object({ code: z.number().int(), message: z.string() }).partial().strict();
 
 export type ProgressDetail = z.infer<typeof ProgressDetail>;
-export const ProgressDetail = z.object({ current: z.number().int(), total: z.number().int() }).partial().catchall(z.unknown());
+export const ProgressDetail = z.object({ current: z.number().int(), total: z.number().int() }).partial().strict();
 
 export type ImageID = z.infer<typeof ImageID>;
-export const ImageID = z.object({ ID: z.string() }).partial().catchall(z.unknown());
+export const ImageID = z.object({ ID: z.string() }).partial().strict();
 
 export type BuildInfo = z.infer<typeof BuildInfo>;
-export const BuildInfo = z.object({ id: z.string(), stream: z.string(), error: z.string(), errorDetail: ErrorDetail, status: z.string(), progress: z.string(), progressDetail: ProgressDetail, aux: ImageID }).partial().catchall(z.unknown());
+export const BuildInfo = z.object({ id: z.string(), stream: z.string(), error: z.string(), errorDetail: ErrorDetail, status: z.string(), progress: z.string(), progressDetail: ProgressDetail, aux: ImageID }).partial().strict();
 
 export type BuildCache = z.infer<typeof BuildCache>;
-export const BuildCache = z.object({ ID: z.string(), Parent: z.string().nullable(), Parents: z.array(z.string()).nullable(), Type: z.enum(["internal", "frontend", "source.local", "source.git.checkout", "exec.cachemount", "regular"]), Description: z.string(), InUse: z.boolean(), Shared: z.boolean(), Size: z.number().int(), CreatedAt: z.string(), LastUsedAt: z.string().nullable(), UsageCount: z.number().int() }).partial().catchall(z.unknown());
+export const BuildCache = z.object({ ID: z.string(), Parent: z.string().nullable(), Parents: z.array(z.string()).nullable(), Type: z.enum(["internal", "frontend", "source.local", "source.git.checkout", "exec.cachemount", "regular"]), Description: z.string(), InUse: z.boolean(), Shared: z.boolean(), Size: z.number().int(), CreatedAt: z.string(), LastUsedAt: z.string().nullable(), UsageCount: z.number().int() }).partial().strict();
 
 export type CreateImageInfo = z.infer<typeof CreateImageInfo>;
-export const CreateImageInfo = z.object({ id: z.string(), error: z.string(), errorDetail: ErrorDetail, status: z.string(), progress: z.string(), progressDetail: ProgressDetail }).partial().catchall(z.unknown());
+export const CreateImageInfo = z.object({ id: z.string(), error: z.string(), errorDetail: ErrorDetail, status: z.string(), progress: z.string(), progressDetail: ProgressDetail }).partial().strict();
 
 export type PushImageInfo = z.infer<typeof PushImageInfo>;
-export const PushImageInfo = z.object({ error: z.string(), status: z.string(), progress: z.string(), progressDetail: ProgressDetail }).partial().catchall(z.unknown());
+export const PushImageInfo = z.object({ error: z.string(), status: z.string(), progress: z.string(), progressDetail: ProgressDetail }).partial().strict();
 
 export type ErrorResponse = z.infer<typeof ErrorResponse>;
-export const ErrorResponse = z.object({ message: z.string() }).catchall(z.unknown());
+export const ErrorResponse = z.object({ message: z.string() }).strict();
 
 export type IdResponse = z.infer<typeof IdResponse>;
-export const IdResponse = z.object({ Id: z.string() }).catchall(z.unknown());
+export const IdResponse = z.object({ Id: z.string() }).strict();
 
 export type PluginMount = z.infer<typeof PluginMount>;
-export const PluginMount = z.object({ Name: z.string(), Description: z.string(), Settable: z.array(z.string()), Source: z.string(), Destination: z.string(), Type: z.string(), Options: z.array(z.string()) }).catchall(z.unknown());
+export const PluginMount = z.object({ Name: z.string(), Description: z.string(), Settable: z.array(z.string()), Source: z.string(), Destination: z.string(), Type: z.string(), Options: z.array(z.string()) }).strict();
 
 export type PluginDevice = z.infer<typeof PluginDevice>;
-export const PluginDevice = z.object({ Name: z.string(), Description: z.string(), Settable: z.array(z.string()), Path: z.string() }).catchall(z.unknown());
+export const PluginDevice = z.object({ Name: z.string(), Description: z.string(), Settable: z.array(z.string()), Path: z.string() }).strict();
 
 export type PluginEnv = z.infer<typeof PluginEnv>;
-export const PluginEnv = z.object({ Name: z.string(), Description: z.string(), Settable: z.array(z.string()), Value: z.string() }).catchall(z.unknown());
+export const PluginEnv = z.object({ Name: z.string(), Description: z.string(), Settable: z.array(z.string()), Value: z.string() }).strict();
 
 export type PluginInterfaceType = z.infer<typeof PluginInterfaceType>;
-export const PluginInterfaceType = z.object({ Prefix: z.string(), Capability: z.string(), Version: z.string() }).catchall(z.unknown());
+export const PluginInterfaceType = z.object({ Prefix: z.string(), Capability: z.string(), Version: z.string() }).strict();
 
 export type PluginPrivilege = z.infer<typeof PluginPrivilege>;
-export const PluginPrivilege = z.object({ Name: z.string(), Description: z.string(), Value: z.array(z.string()) }).partial().catchall(z.unknown());
+export const PluginPrivilege = z.object({ Name: z.string(), Description: z.string(), Value: z.array(z.string()) }).partial().strict();
 
 export type Plugin = z.infer<typeof Plugin>;
-export const Plugin = z.object({ Id: z.string().optional(), Name: z.string(), Enabled: z.boolean(), Settings: z.object({ Mounts: z.array(PluginMount), Env: z.array(z.string()), Args: z.array(z.string()), Devices: z.array(PluginDevice) }).catchall(z.unknown()), PluginReference: z.string().optional(), Config: z.object({ DockerVersion: z.string().optional(), Description: z.string(), Documentation: z.string(), Interface: z.object({ Types: z.array(PluginInterfaceType), Socket: z.string(), ProtocolScheme: z.enum(["", "moby.plugins.http/v1"]).optional() }).catchall(z.unknown()), Entrypoint: z.array(z.string()), WorkDir: z.string(), User: z.object({ UID: z.number().int(), GID: z.number().int() }).partial().catchall(z.unknown()).optional(), Network: z.object({ Type: z.string() }).catchall(z.unknown()), Linux: z.object({ Capabilities: z.array(z.string()), AllowAllDevices: z.boolean(), Devices: z.array(PluginDevice) }).catchall(z.unknown()), PropagatedMount: z.string(), IpcHost: z.boolean(), PidHost: z.boolean(), Mounts: z.array(PluginMount), Env: z.array(PluginEnv), Args: z.object({ Name: z.string(), Description: z.string(), Settable: z.array(z.string()), Value: z.array(z.string()) }).catchall(z.unknown()), rootfs: z.object({ type: z.string(), diff_ids: z.array(z.string()) }).partial().catchall(z.unknown()).optional() }).catchall(z.unknown()) }).catchall(z.unknown());
+export const Plugin = z.object({ Id: z.string().optional(), Name: z.string(), Enabled: z.boolean(), Settings: z.object({ Mounts: z.array(PluginMount), Env: z.array(z.string()), Args: z.array(z.string()), Devices: z.array(PluginDevice) }).strict(), PluginReference: z.string().optional(), Config: z.object({ DockerVersion: z.string().optional(), Description: z.string(), Documentation: z.string(), Interface: z.object({ Types: z.array(PluginInterfaceType), Socket: z.string(), ProtocolScheme: z.enum(["", "moby.plugins.http/v1"]).optional() }).strict(), Entrypoint: z.array(z.string()), WorkDir: z.string(), User: z.object({ UID: z.number().int(), GID: z.number().int() }).partial().strict().optional(), Network: z.object({ Type: z.string() }).strict(), Linux: z.object({ Capabilities: z.array(z.string()), AllowAllDevices: z.boolean(), Devices: z.array(PluginDevice) }).strict(), PropagatedMount: z.string(), IpcHost: z.boolean(), PidHost: z.boolean(), Mounts: z.array(PluginMount), Env: z.array(PluginEnv), Args: z.object({ Name: z.string(), Description: z.string(), Settable: z.array(z.string()), Value: z.array(z.string()) }).strict(), rootfs: z.object({ type: z.string(), diff_ids: z.array(z.string()) }).partial().strict().optional() }).strict() }).strict();
 
 export type NodeSpec = z.infer<typeof NodeSpec>;
-export const NodeSpec = z.object({ Name: z.string(), Labels: z.record(z.string(), z.string()), Role: z.enum(["worker", "manager"]), Availability: z.enum(["active", "pause", "drain"]) }).partial().catchall(z.unknown());
+export const NodeSpec = z.object({ Name: z.string(), Labels: z.record(z.string(), z.string()), Role: z.enum(["worker", "manager"]), Availability: z.enum(["active", "pause", "drain"]) }).partial().strict();
 
 export type Platform = z.infer<typeof Platform>;
-export const Platform = z.object({ Architecture: z.string(), OS: z.string() }).partial().catchall(z.unknown());
+export const Platform = z.object({ Architecture: z.string(), OS: z.string() }).partial().strict();
 
 export type EngineDescription = z.infer<typeof EngineDescription>;
-export const EngineDescription = z.object({ EngineVersion: z.string(), Labels: z.record(z.string(), z.string()), Plugins: z.array(z.object({ Type: z.string(), Name: z.string() }).partial().catchall(z.unknown())) }).partial().catchall(z.unknown());
+export const EngineDescription = z.object({ EngineVersion: z.string(), Labels: z.record(z.string(), z.string()), Plugins: z.array(z.object({ Type: z.string(), Name: z.string() }).partial().strict()) }).partial().strict();
 
 export type TLSInfo = z.infer<typeof TLSInfo>;
-export const TLSInfo = z.object({ TrustRoot: z.string(), CertIssuerSubject: z.string(), CertIssuerPublicKey: z.string() }).partial().catchall(z.unknown());
+export const TLSInfo = z.object({ TrustRoot: z.string(), CertIssuerSubject: z.string(), CertIssuerPublicKey: z.string() }).partial().strict();
 
 export type NodeDescription = z.infer<typeof NodeDescription>;
-export const NodeDescription = z.object({ Hostname: z.string(), Platform: Platform, Resources: ResourceObject, Engine: EngineDescription, TLSInfo: TLSInfo }).partial().catchall(z.unknown());
+export const NodeDescription = z.object({ Hostname: z.string(), Platform: Platform, Resources: ResourceObject, Engine: EngineDescription, TLSInfo: TLSInfo }).partial().strict();
 
 export type NodeState = z.infer<typeof NodeState>;
 export const NodeState = z.enum(["unknown", "down", "ready", "disconnected"]);
 
 export type NodeStatus = z.infer<typeof NodeStatus>;
-export const NodeStatus = z.object({ State: NodeState, Message: z.string(), Addr: z.string() }).partial().catchall(z.unknown());
+export const NodeStatus = z.object({ State: NodeState, Message: z.string(), Addr: z.string() }).partial().strict();
 
 export type Reachability = z.infer<typeof Reachability>;
 export const Reachability = z.enum(["unknown", "unreachable", "reachable"]);
 
 export type ManagerStatus = z.infer<typeof ManagerStatus>;
-export const ManagerStatus = z.object({ Leader: z.boolean().default(false), Reachability: Reachability, Addr: z.string() }).partial().catchall(z.unknown()).nullable();
+export const ManagerStatus = z.object({ Leader: z.boolean().default(false), Reachability: Reachability, Addr: z.string() }).partial().strict().nullable();
 
 export type Node = z.infer<typeof Node>;
-export const Node = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Spec: NodeSpec, Description: NodeDescription, Status: NodeStatus, ManagerStatus: ManagerStatus }).partial().catchall(z.unknown());
+export const Node = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Spec: NodeSpec, Description: NodeDescription, Status: NodeStatus, ManagerStatus: ManagerStatus }).partial().strict();
 
 export type SwarmSpec = z.infer<typeof SwarmSpec>;
-export const SwarmSpec = z.object({ Name: z.string(), Labels: z.record(z.string(), z.string()), Orchestration: z.object({ TaskHistoryRetentionLimit: z.number().int() }).partial().catchall(z.unknown()).nullable(), Raft: z.object({ SnapshotInterval: z.number().int(), KeepOldSnapshots: z.number().int(), LogEntriesForSlowFollowers: z.number().int(), ElectionTick: z.number().int(), HeartbeatTick: z.number().int() }).partial().catchall(z.unknown()), Dispatcher: z.object({ HeartbeatPeriod: z.number().int() }).partial().catchall(z.unknown()).nullable(), CAConfig: z.object({ NodeCertExpiry: z.number().int(), ExternalCAs: z.array(z.object({ Protocol: z.literal("cfssl"), URL: z.string(), Options: z.record(z.string(), z.string()), CACert: z.string() }).partial().catchall(z.unknown())), SigningCACert: z.string(), SigningCAKey: z.string(), ForceRotate: z.number().int() }).partial().catchall(z.unknown()).nullable(), EncryptionConfig: z.object({ AutoLockManagers: z.boolean() }).partial().catchall(z.unknown()), TaskDefaults: z.object({ LogDriver: z.object({ Name: z.string(), Options: z.record(z.string(), z.string()) }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown());
+export const SwarmSpec = z.object({ Name: z.string(), Labels: z.record(z.string(), z.string()), Orchestration: z.object({ TaskHistoryRetentionLimit: z.number().int() }).partial().strict().nullable(), Raft: z.object({ SnapshotInterval: z.number().int(), KeepOldSnapshots: z.number().int(), LogEntriesForSlowFollowers: z.number().int(), ElectionTick: z.number().int(), HeartbeatTick: z.number().int() }).partial().strict(), Dispatcher: z.object({ HeartbeatPeriod: z.number().int() }).partial().strict().nullable(), CAConfig: z.object({ NodeCertExpiry: z.number().int(), ExternalCAs: z.array(z.object({ Protocol: z.literal("cfssl"), URL: z.string(), Options: z.record(z.string(), z.string()), CACert: z.string() }).partial().strict()), SigningCACert: z.string(), SigningCAKey: z.string(), ForceRotate: z.number().int() }).partial().strict().nullable(), EncryptionConfig: z.object({ AutoLockManagers: z.boolean() }).partial().strict(), TaskDefaults: z.object({ LogDriver: z.object({ Name: z.string(), Options: z.record(z.string(), z.string()) }).partial().strict() }).partial().strict() }).partial().strict();
 
 export type ClusterInfo = z.infer<typeof ClusterInfo>;
-export const ClusterInfo = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Spec: SwarmSpec, TLSInfo: TLSInfo, RootRotationInProgress: z.boolean(), DataPathPort: z.number().int(), DefaultAddrPool: z.array(z.string()), SubnetSize: z.number().int().max(29) }).partial().catchall(z.unknown()).nullable();
+export const ClusterInfo = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Spec: SwarmSpec, TLSInfo: TLSInfo, RootRotationInProgress: z.boolean(), DataPathPort: z.number().int(), DefaultAddrPool: z.array(z.string()), SubnetSize: z.number().int().max(29) }).partial().strict().nullable();
 
 export type JoinTokens = z.infer<typeof JoinTokens>;
-export const JoinTokens = z.object({ Worker: z.string(), Manager: z.string() }).partial().catchall(z.unknown());
+export const JoinTokens = z.object({ Worker: z.string(), Manager: z.string() }).partial().strict();
 
 export type Swarm = z.infer<typeof Swarm>;
-export const Swarm = ClusterInfo.and(z.object({ JoinTokens: JoinTokens }).partial().catchall(z.unknown()));
+export const Swarm = ClusterInfo.and(z.object({ JoinTokens: JoinTokens }).partial().strict());
 
 export type NetworkAttachmentConfig = z.infer<typeof NetworkAttachmentConfig>;
-export const NetworkAttachmentConfig = z.object({ Target: z.string(), Aliases: z.array(z.string()), DriverOpts: z.record(z.string(), z.string()) }).partial().catchall(z.unknown());
+export const NetworkAttachmentConfig = z.object({ Target: z.string(), Aliases: z.array(z.string()), DriverOpts: z.record(z.string(), z.string()) }).partial().strict();
 
 export type TaskSpec = z.infer<typeof TaskSpec>;
-export const TaskSpec = z.object({ PluginSpec: z.object({ Name: z.string(), Remote: z.string(), Disabled: z.boolean(), PluginPrivilege: z.array(PluginPrivilege) }).partial().catchall(z.unknown()), ContainerSpec: z.object({ Image: z.string(), Labels: z.record(z.string(), z.string()), Command: z.array(z.string()), Args: z.array(z.string()), Hostname: z.string(), Env: z.array(z.string()), Dir: z.string(), User: z.string(), Groups: z.array(z.string()), Privileges: z.object({ CredentialSpec: z.object({ Config: z.string(), File: z.string(), Registry: z.string() }).partial().catchall(z.unknown()), SELinuxContext: z.object({ Disable: z.boolean(), User: z.string(), Role: z.string(), Type: z.string(), Level: z.string() }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown()), TTY: z.boolean(), OpenStdin: z.boolean(), ReadOnly: z.boolean(), Mounts: z.array(Mount), StopSignal: z.string(), StopGracePeriod: z.number().int(), HealthCheck: HealthConfig, Hosts: z.array(z.string()), DNSConfig: z.object({ Nameservers: z.array(z.string()), Search: z.array(z.string()), Options: z.array(z.string()) }).partial().catchall(z.unknown()), Secrets: z.array(z.object({ File: z.object({ Name: z.string(), UID: z.string(), GID: z.string(), Mode: z.number().int() }).partial().catchall(z.unknown()), SecretID: z.string(), SecretName: z.string() }).partial().catchall(z.unknown())), Configs: z.array(z.object({ File: z.object({ Name: z.string(), UID: z.string(), GID: z.string(), Mode: z.number().int() }).partial().catchall(z.unknown()), Runtime: z.object({  }).partial().catchall(z.unknown()), ConfigID: z.string(), ConfigName: z.string() }).partial().catchall(z.unknown())), Isolation: z.enum(["default", "process", "hyperv"]), Init: z.boolean().nullable(), Sysctls: z.record(z.string(), z.string()), CapabilityAdd: z.array(z.string()), CapabilityDrop: z.array(z.string()), Ulimits: z.array(z.object({ Name: z.string(), Soft: z.number().int(), Hard: z.number().int() }).partial().catchall(z.unknown())) }).partial().catchall(z.unknown()), NetworkAttachmentSpec: z.object({ ContainerID: z.string() }).partial().catchall(z.unknown()), Resources: z.object({ Limits: Limit, Reservations: ResourceObject }).partial().catchall(z.unknown()), RestartPolicy: z.object({ Condition: z.enum(["none", "on-failure", "any"]), Delay: z.number().int(), MaxAttempts: z.number().int().default(0), Window: z.number().int().default(0) }).partial().catchall(z.unknown()), Placement: z.object({ Constraints: z.array(z.string()), Preferences: z.array(z.object({ Spread: z.object({ SpreadDescriptor: z.string() }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown())), MaxReplicas: z.number().int().default(0), Platforms: z.array(Platform) }).partial().catchall(z.unknown()), ForceUpdate: z.number().int(), Runtime: z.string(), Networks: z.array(NetworkAttachmentConfig), LogDriver: z.object({ Name: z.string(), Options: z.record(z.string(), z.string()) }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown());
+export const TaskSpec = z.object({ PluginSpec: z.object({ Name: z.string(), Remote: z.string(), Disabled: z.boolean(), PluginPrivilege: z.array(PluginPrivilege) }).partial().strict(), ContainerSpec: z.object({ Image: z.string(), Labels: z.record(z.string(), z.string()), Command: z.array(z.string()), Args: z.array(z.string()), Hostname: z.string(), Env: z.array(z.string()), Dir: z.string(), User: z.string(), Groups: z.array(z.string()), Privileges: z.object({ CredentialSpec: z.object({ Config: z.string(), File: z.string(), Registry: z.string() }).partial().strict(), SELinuxContext: z.object({ Disable: z.boolean(), User: z.string(), Role: z.string(), Type: z.string(), Level: z.string() }).partial().strict() }).partial().strict(), TTY: z.boolean(), OpenStdin: z.boolean(), ReadOnly: z.boolean(), Mounts: z.array(Mount), StopSignal: z.string(), StopGracePeriod: z.number().int(), HealthCheck: HealthConfig, Hosts: z.array(z.string()), DNSConfig: z.object({ Nameservers: z.array(z.string()), Search: z.array(z.string()), Options: z.array(z.string()) }).partial().strict(), Secrets: z.array(z.object({ File: z.object({ Name: z.string(), UID: z.string(), GID: z.string(), Mode: z.number().int() }).partial().strict(), SecretID: z.string(), SecretName: z.string() }).partial().strict()), Configs: z.array(z.object({ File: z.object({ Name: z.string(), UID: z.string(), GID: z.string(), Mode: z.number().int() }).partial().strict(), Runtime: z.object({  }).partial().strict(), ConfigID: z.string(), ConfigName: z.string() }).partial().strict()), Isolation: z.enum(["default", "process", "hyperv"]), Init: z.boolean().nullable(), Sysctls: z.record(z.string(), z.string()), CapabilityAdd: z.array(z.string()), CapabilityDrop: z.array(z.string()), Ulimits: z.array(z.object({ Name: z.string(), Soft: z.number().int(), Hard: z.number().int() }).partial().strict()) }).partial().strict(), NetworkAttachmentSpec: z.object({ ContainerID: z.string() }).partial().strict(), Resources: z.object({ Limits: Limit, Reservations: ResourceObject }).partial().strict(), RestartPolicy: z.object({ Condition: z.enum(["none", "on-failure", "any"]), Delay: z.number().int(), MaxAttempts: z.number().int().default(0), Window: z.number().int().default(0) }).partial().strict(), Placement: z.object({ Constraints: z.array(z.string()), Preferences: z.array(z.object({ Spread: z.object({ SpreadDescriptor: z.string() }).partial().strict() }).partial().strict()), MaxReplicas: z.number().int().default(0), Platforms: z.array(Platform) }).partial().strict(), ForceUpdate: z.number().int(), Runtime: z.string(), Networks: z.array(NetworkAttachmentConfig), LogDriver: z.object({ Name: z.string(), Options: z.record(z.string(), z.string()) }).partial().strict() }).partial().strict();
 
 export type TaskState = z.infer<typeof TaskState>;
 export const TaskState = z.enum(["new", "allocated", "pending", "assigned", "accepted", "preparing", "ready", "starting", "running", "complete", "shutdown", "failed", "rejected", "remove", "orphaned"]);
 
 export type Task = z.infer<typeof Task>;
-export const Task = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Name: z.string(), Labels: z.record(z.string(), z.string()), Spec: TaskSpec, ServiceID: z.string(), Slot: z.number().int(), NodeID: z.string(), AssignedGenericResources: GenericResources, Status: z.object({ Timestamp: z.string(), State: TaskState, Message: z.string(), Err: z.string(), ContainerStatus: z.object({ ContainerID: z.string(), PID: z.number().int(), ExitCode: z.number().int() }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown()), DesiredState: TaskState, JobIteration: ObjectVersion }).partial().catchall(z.unknown());
+export const Task = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Name: z.string(), Labels: z.record(z.string(), z.string()), Spec: TaskSpec, ServiceID: z.string(), Slot: z.number().int(), NodeID: z.string(), AssignedGenericResources: GenericResources, Status: z.object({ Timestamp: z.string(), State: TaskState, Message: z.string(), Err: z.string(), ContainerStatus: z.object({ ContainerID: z.string(), PID: z.number().int(), ExitCode: z.number().int() }).partial().strict() }).partial().strict(), DesiredState: TaskState, JobIteration: ObjectVersion }).partial().strict();
 
 export type EndpointPortConfig = z.infer<typeof EndpointPortConfig>;
-export const EndpointPortConfig = z.object({ Name: z.string(), Protocol: z.enum(["tcp", "udp", "sctp"]), TargetPort: z.number().int(), PublishedPort: z.number().int(), PublishMode: z.enum(["ingress", "host"]).default("ingress") }).partial().catchall(z.unknown());
+export const EndpointPortConfig = z.object({ Name: z.string(), Protocol: z.enum(["tcp", "udp", "sctp"]), TargetPort: z.number().int(), PublishedPort: z.number().int(), PublishMode: z.enum(["ingress", "host"]).default("ingress") }).partial().strict();
 
 export type EndpointSpec = z.infer<typeof EndpointSpec>;
-export const EndpointSpec = z.object({ Mode: z.enum(["vip", "dnsrr"]).default("vip"), Ports: z.array(EndpointPortConfig) }).partial().catchall(z.unknown());
+export const EndpointSpec = z.object({ Mode: z.enum(["vip", "dnsrr"]).default("vip"), Ports: z.array(EndpointPortConfig) }).partial().strict();
 
 export type ServiceSpec = z.infer<typeof ServiceSpec>;
-export const ServiceSpec = z.object({ Name: z.string(), Labels: z.record(z.string(), z.string()), TaskTemplate: TaskSpec, Mode: z.object({ Replicated: z.object({ Replicas: z.number().int() }).partial().catchall(z.unknown()), Global: z.object({  }).partial().catchall(z.unknown()), ReplicatedJob: z.object({ MaxConcurrent: z.number().int().default(1), TotalCompletions: z.number().int() }).partial().catchall(z.unknown()), GlobalJob: z.object({  }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown()), UpdateConfig: z.object({ Parallelism: z.number().int(), Delay: z.number().int(), FailureAction: z.enum(["continue", "pause", "rollback"]), Monitor: z.number().int(), MaxFailureRatio: z.number(), Order: z.enum(["stop-first", "start-first"]) }).partial().catchall(z.unknown()), RollbackConfig: z.object({ Parallelism: z.number().int(), Delay: z.number().int(), FailureAction: z.enum(["continue", "pause"]), Monitor: z.number().int(), MaxFailureRatio: z.number(), Order: z.enum(["stop-first", "start-first"]) }).partial().catchall(z.unknown()), Networks: z.array(NetworkAttachmentConfig), EndpointSpec: EndpointSpec }).partial().catchall(z.unknown());
+export const ServiceSpec = z.object({ Name: z.string(), Labels: z.record(z.string(), z.string()), TaskTemplate: TaskSpec, Mode: z.object({ Replicated: z.object({ Replicas: z.number().int() }).partial().strict(), Global: z.object({  }).partial().strict(), ReplicatedJob: z.object({ MaxConcurrent: z.number().int().default(1), TotalCompletions: z.number().int() }).partial().strict(), GlobalJob: z.object({  }).partial().strict() }).partial().strict(), UpdateConfig: z.object({ Parallelism: z.number().int(), Delay: z.number().int(), FailureAction: z.enum(["continue", "pause", "rollback"]), Monitor: z.number().int(), MaxFailureRatio: z.number(), Order: z.enum(["stop-first", "start-first"]) }).partial().strict(), RollbackConfig: z.object({ Parallelism: z.number().int(), Delay: z.number().int(), FailureAction: z.enum(["continue", "pause"]), Monitor: z.number().int(), MaxFailureRatio: z.number(), Order: z.enum(["stop-first", "start-first"]) }).partial().strict(), Networks: z.array(NetworkAttachmentConfig), EndpointSpec: EndpointSpec }).partial().strict();
 
 export type Service = z.infer<typeof Service>;
-export const Service = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Spec: ServiceSpec, Endpoint: z.object({ Spec: EndpointSpec, Ports: z.array(EndpointPortConfig), VirtualIPs: z.array(z.object({ NetworkID: z.string(), Addr: z.string() }).partial().catchall(z.unknown())) }).partial().catchall(z.unknown()), UpdateStatus: z.object({ State: z.enum(["updating", "paused", "completed"]), StartedAt: z.string(), CompletedAt: z.string(), Message: z.string() }).partial().catchall(z.unknown()), ServiceStatus: z.object({ RunningTasks: z.number().int(), DesiredTasks: z.number().int(), CompletedTasks: z.number().int() }).partial().catchall(z.unknown()), JobStatus: z.object({ JobIteration: ObjectVersion, LastExecution: z.string() }).partial().catchall(z.unknown()) }).partial().catchall(z.unknown());
+export const Service = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Spec: ServiceSpec, Endpoint: z.object({ Spec: EndpointSpec, Ports: z.array(EndpointPortConfig), VirtualIPs: z.array(z.object({ NetworkID: z.string(), Addr: z.string() }).partial().strict()) }).partial().strict(), UpdateStatus: z.object({ State: z.enum(["updating", "paused", "completed"]), StartedAt: z.string(), CompletedAt: z.string(), Message: z.string() }).partial().strict(), ServiceStatus: z.object({ RunningTasks: z.number().int(), DesiredTasks: z.number().int(), CompletedTasks: z.number().int() }).partial().strict(), JobStatus: z.object({ JobIteration: ObjectVersion, LastExecution: z.string() }).partial().strict() }).partial().strict();
 
 export type ImageDeleteResponseItem = z.infer<typeof ImageDeleteResponseItem>;
-export const ImageDeleteResponseItem = z.object({ Untagged: z.string(), Deleted: z.string() }).partial().catchall(z.unknown());
+export const ImageDeleteResponseItem = z.object({ Untagged: z.string(), Deleted: z.string() }).partial().strict();
 
 export type ServiceUpdateResponse = z.infer<typeof ServiceUpdateResponse>;
-export const ServiceUpdateResponse = z.object({ Warnings: z.array(z.string()) }).partial().catchall(z.unknown());
+export const ServiceUpdateResponse = z.object({ Warnings: z.array(z.string()) }).partial().strict();
 
 export type ContainerSummary = z.infer<typeof ContainerSummary>;
-export const ContainerSummary = z.object({ Id: z.string(), Names: z.array(z.string()), Image: z.string(), ImageID: z.string(), Command: z.string(), Created: z.number().int(), Ports: z.array(Port), SizeRw: z.number().int(), SizeRootFs: z.number().int(), Labels: z.record(z.string(), z.string()), State: z.string(), Status: z.string(), HostConfig: z.object({ NetworkMode: z.string() }).partial().catchall(z.unknown()), NetworkSettings: z.object({ Networks: z.record(z.string(), EndpointSettings) }).partial().catchall(z.unknown()), Mounts: z.array(MountPoint) }).partial().catchall(z.unknown());
+export const ContainerSummary = z.object({ Id: z.string(), Names: z.array(z.string()), Image: z.string(), ImageID: z.string(), Command: z.string(), Created: z.number().int(), Ports: z.array(Port), SizeRw: z.number().int(), SizeRootFs: z.number().int(), Labels: z.record(z.string(), z.string()), State: z.string(), Status: z.string(), HostConfig: z.object({ NetworkMode: z.string() }).partial().strict(), NetworkSettings: z.object({ Networks: z.record(z.string(), EndpointSettings) }).partial().strict(), Mounts: z.array(MountPoint) }).partial().strict();
 
 export type Driver = z.infer<typeof Driver>;
-export const Driver = z.object({ Name: z.string(), Options: z.record(z.string(), z.string()).optional() }).catchall(z.unknown());
+export const Driver = z.object({ Name: z.string(), Options: z.record(z.string(), z.string()).optional() }).strict();
 
 export type SecretSpec = z.infer<typeof SecretSpec>;
-export const SecretSpec = z.object({ Name: z.string(), Labels: z.record(z.string(), z.string()), Data: z.string(), Driver: Driver, Templating: Driver }).partial().catchall(z.unknown());
+export const SecretSpec = z.object({ Name: z.string(), Labels: z.record(z.string(), z.string()), Data: z.string(), Driver: Driver, Templating: Driver }).partial().strict();
 
 export type Secret = z.infer<typeof Secret>;
-export const Secret = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Spec: SecretSpec }).partial().catchall(z.unknown());
+export const Secret = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Spec: SecretSpec }).partial().strict();
 
 export type ConfigSpec = z.infer<typeof ConfigSpec>;
-export const ConfigSpec = z.object({ Name: z.string(), Labels: z.record(z.string(), z.string()), Data: z.string(), Templating: Driver }).partial().catchall(z.unknown());
+export const ConfigSpec = z.object({ Name: z.string(), Labels: z.record(z.string(), z.string()), Data: z.string(), Templating: Driver }).partial().strict();
 
 export type Config = z.infer<typeof Config>;
-export const Config = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Spec: ConfigSpec }).partial().catchall(z.unknown());
+export const Config = z.object({ ID: z.string(), Version: ObjectVersion, CreatedAt: z.string(), UpdatedAt: z.string(), Spec: ConfigSpec }).partial().strict();
 
 export type ContainerState = z.infer<typeof ContainerState>;
-export const ContainerState = z.object({ Status: z.enum(["created", "running", "paused", "restarting", "removing", "exited", "dead"]), Running: z.boolean(), Paused: z.boolean(), Restarting: z.boolean(), OOMKilled: z.boolean(), Dead: z.boolean(), Pid: z.number().int(), ExitCode: z.number().int(), Error: z.string(), StartedAt: z.string(), FinishedAt: z.string(), Health: Health }).partial().catchall(z.unknown()).nullable();
+export const ContainerState = z.object({ Status: z.enum(["created", "running", "paused", "restarting", "removing", "exited", "dead"]), Running: z.boolean(), Paused: z.boolean(), Restarting: z.boolean(), OOMKilled: z.boolean(), Dead: z.boolean(), Pid: z.number().int(), ExitCode: z.number().int(), Error: z.string(), StartedAt: z.string(), FinishedAt: z.string(), Health: Health }).partial().strict().nullable();
 
 export type ContainerCreateResponse = z.infer<typeof ContainerCreateResponse>;
-export const ContainerCreateResponse = z.object({ Id: z.string(), Warnings: z.array(z.string()) }).catchall(z.unknown());
+export const ContainerCreateResponse = z.object({ Id: z.string(), Warnings: z.array(z.string()) }).strict();
 
 export type ContainerWaitExitError = z.infer<typeof ContainerWaitExitError>;
-export const ContainerWaitExitError = z.object({ Message: z.string() }).partial().catchall(z.unknown());
+export const ContainerWaitExitError = z.object({ Message: z.string() }).partial().strict();
 
 export type ContainerWaitResponse = z.infer<typeof ContainerWaitResponse>;
-export const ContainerWaitResponse = z.object({ StatusCode: z.number().int(), Error: ContainerWaitExitError.optional() }).catchall(z.unknown());
+export const ContainerWaitResponse = z.object({ StatusCode: z.number().int(), Error: ContainerWaitExitError.optional() }).strict();
 
 export type SystemVersion = z.infer<typeof SystemVersion>;
-export const SystemVersion = z.object({ Platform: z.object({ Name: z.string() }).catchall(z.unknown()), Components: z.array(z.object({ Name: z.string(), Version: z.string(), Details: z.object({  }).partial().catchall(z.unknown()).nullable().optional() }).catchall(z.unknown())), Version: z.string(), ApiVersion: z.string(), MinAPIVersion: z.string(), GitCommit: z.string(), GoVersion: z.string(), Os: z.string(), Arch: z.string(), KernelVersion: z.string(), Experimental: z.boolean(), BuildTime: z.string() }).partial().catchall(z.unknown());
+export const SystemVersion = z.object({ Platform: z.object({ Name: z.string() }).strict(), Components: z.array(z.object({ Name: z.string(), Version: z.string(), Details: z.object({  }).partial().strict().nullable().optional() }).strict()), Version: z.string(), ApiVersion: z.string(), MinAPIVersion: z.string(), GitCommit: z.string(), GoVersion: z.string(), Os: z.string(), Arch: z.string(), KernelVersion: z.string(), Experimental: z.boolean(), BuildTime: z.string() }).partial().strict();
 
 export type PluginsInfo = z.infer<typeof PluginsInfo>;
-export const PluginsInfo = z.object({ Volume: z.array(z.string()), Network: z.array(z.string()), Authorization: z.array(z.string()), Log: z.array(z.string()) }).partial().catchall(z.unknown());
+export const PluginsInfo = z.object({ Volume: z.array(z.string()), Network: z.array(z.string()), Authorization: z.array(z.string()), Log: z.array(z.string()) }).partial().strict();
 
 export type IndexInfo = z.infer<typeof IndexInfo>;
-export const IndexInfo = z.object({ Name: z.string(), Mirrors: z.array(z.string()), Secure: z.boolean(), Official: z.boolean() }).partial().catchall(z.unknown()).nullable();
+export const IndexInfo = z.object({ Name: z.string(), Mirrors: z.array(z.string()), Secure: z.boolean(), Official: z.boolean() }).partial().strict().nullable();
 
 export type RegistryServiceConfig = z.infer<typeof RegistryServiceConfig>;
-export const RegistryServiceConfig = z.object({ AllowNondistributableArtifactsCIDRs: z.array(z.string()), AllowNondistributableArtifactsHostnames: z.array(z.string()), InsecureRegistryCIDRs: z.array(z.string()), IndexConfigs: z.record(z.string(), IndexInfo), Mirrors: z.array(z.string()) }).partial().catchall(z.unknown()).nullable();
+export const RegistryServiceConfig = z.object({ AllowNondistributableArtifactsCIDRs: z.array(z.string()), AllowNondistributableArtifactsHostnames: z.array(z.string()), InsecureRegistryCIDRs: z.array(z.string()), IndexConfigs: z.record(z.string(), IndexInfo), Mirrors: z.array(z.string()) }).partial().strict().nullable();
 
 export type Runtime = z.infer<typeof Runtime>;
-export const Runtime = z.object({ path: z.string(), runtimeArgs: z.array(z.string()).nullable() }).partial().catchall(z.unknown());
+export const Runtime = z.object({ path: z.string(), runtimeArgs: z.array(z.string()).nullable() }).partial().strict();
 
 export type LocalNodeState = z.infer<typeof LocalNodeState>;
 export const LocalNodeState = z.enum(["", "inactive", "pending", "active", "error", "locked"]).default("");
 
 export type PeerNode = z.infer<typeof PeerNode>;
-export const PeerNode = z.object({ NodeID: z.string(), Addr: z.string() }).partial().catchall(z.unknown());
+export const PeerNode = z.object({ NodeID: z.string(), Addr: z.string() }).partial().strict();
 
 export type SwarmInfo = z.infer<typeof SwarmInfo>;
-export const SwarmInfo = z.object({ NodeID: z.string().default(""), NodeAddr: z.string().default(""), LocalNodeState: LocalNodeState, ControlAvailable: z.boolean().default(false), Error: z.string().default(""), RemoteManagers: z.array(PeerNode).nullable(), Nodes: z.number().int().nullable(), Managers: z.number().int().nullable(), Cluster: ClusterInfo }).partial().catchall(z.unknown());
+export const SwarmInfo = z.object({ NodeID: z.string().default(""), NodeAddr: z.string().default(""), LocalNodeState: LocalNodeState, ControlAvailable: z.boolean().default(false), Error: z.string().default(""), RemoteManagers: z.array(PeerNode).nullable(), Nodes: z.number().int().nullable(), Managers: z.number().int().nullable(), Cluster: ClusterInfo }).partial().strict();
 
 export type Commit = z.infer<typeof Commit>;
-export const Commit = z.object({ ID: z.string(), Expected: z.string() }).partial().catchall(z.unknown());
+export const Commit = z.object({ ID: z.string(), Expected: z.string() }).partial().strict();
 
 export type SystemInfo = z.infer<typeof SystemInfo>;
-export const SystemInfo = z.object({ ID: z.string(), Containers: z.number().int(), ContainersRunning: z.number().int(), ContainersPaused: z.number().int(), ContainersStopped: z.number().int(), Images: z.number().int(), Driver: z.string(), DriverStatus: z.array(z.array(z.string())), DockerRootDir: z.string(), Plugins: PluginsInfo, MemoryLimit: z.boolean(), SwapLimit: z.boolean(), KernelMemoryTCP: z.boolean(), CpuCfsPeriod: z.boolean(), CpuCfsQuota: z.boolean(), CPUShares: z.boolean(), CPUSet: z.boolean(), PidsLimit: z.boolean(), OomKillDisable: z.boolean(), IPv4Forwarding: z.boolean(), BridgeNfIptables: z.boolean(), BridgeNfIp6tables: z.boolean(), Debug: z.boolean(), NFd: z.number().int(), NGoroutines: z.number().int(), SystemTime: z.string(), LoggingDriver: z.string(), CgroupDriver: z.enum(["cgroupfs", "systemd", "none"]).default("cgroupfs"), CgroupVersion: z.enum(["1", "2"]).default("1"), NEventsListener: z.number().int(), KernelVersion: z.string(), OperatingSystem: z.string(), OSVersion: z.string(), OSType: z.string(), Architecture: z.string(), NCPU: z.number().int(), MemTotal: z.number().int(), IndexServerAddress: z.string().default("https://index.docker.io/v1/"), RegistryConfig: RegistryServiceConfig, GenericResources: GenericResources, HttpProxy: z.string(), HttpsProxy: z.string(), NoProxy: z.string(), Name: z.string(), Labels: z.array(z.string()), ExperimentalBuild: z.boolean(), ServerVersion: z.string(), Runtimes: z.record(z.string(), Runtime), DefaultRuntime: z.string().default("runc"), Swarm: SwarmInfo, LiveRestoreEnabled: z.boolean().default(false), Isolation: z.enum(["default", "hyperv", "process"]).default("default"), InitBinary: z.string(), ContainerdCommit: Commit, RuncCommit: Commit, InitCommit: Commit, SecurityOptions: z.array(z.string()), ProductLicense: z.string(), DefaultAddressPools: z.array(z.object({ Base: z.string(), Size: z.number().int() }).partial().catchall(z.unknown())), Warnings: z.array(z.string()) }).partial().catchall(z.unknown());
+export const SystemInfo = z.object({ ID: z.string(), Containers: z.number().int(), ContainersRunning: z.number().int(), ContainersPaused: z.number().int(), ContainersStopped: z.number().int(), Images: z.number().int(), Driver: z.string(), DriverStatus: z.array(z.array(z.string())), DockerRootDir: z.string(), Plugins: PluginsInfo, MemoryLimit: z.boolean(), SwapLimit: z.boolean(), KernelMemoryTCP: z.boolean(), CpuCfsPeriod: z.boolean(), CpuCfsQuota: z.boolean(), CPUShares: z.boolean(), CPUSet: z.boolean(), PidsLimit: z.boolean(), OomKillDisable: z.boolean(), IPv4Forwarding: z.boolean(), BridgeNfIptables: z.boolean(), BridgeNfIp6tables: z.boolean(), Debug: z.boolean(), NFd: z.number().int(), NGoroutines: z.number().int(), SystemTime: z.string(), LoggingDriver: z.string(), CgroupDriver: z.enum(["cgroupfs", "systemd", "none"]).default("cgroupfs"), CgroupVersion: z.enum(["1", "2"]).default("1"), NEventsListener: z.number().int(), KernelVersion: z.string(), OperatingSystem: z.string(), OSVersion: z.string(), OSType: z.string(), Architecture: z.string(), NCPU: z.number().int(), MemTotal: z.number().int(), IndexServerAddress: z.string().default("https://index.docker.io/v1/"), RegistryConfig: RegistryServiceConfig, GenericResources: GenericResources, HttpProxy: z.string(), HttpsProxy: z.string(), NoProxy: z.string(), Name: z.string(), Labels: z.array(z.string()), ExperimentalBuild: z.boolean(), ServerVersion: z.string(), Runtimes: z.record(z.string(), Runtime), DefaultRuntime: z.string().default("runc"), Swarm: SwarmInfo, LiveRestoreEnabled: z.boolean().default(false), Isolation: z.enum(["default", "hyperv", "process"]).default("default"), InitBinary: z.string(), ContainerdCommit: Commit, RuncCommit: Commit, InitCommit: Commit, SecurityOptions: z.array(z.string()), ProductLicense: z.string(), DefaultAddressPools: z.array(z.object({ Base: z.string(), Size: z.number().int() }).partial().strict()), Warnings: z.array(z.string()) }).partial().strict();
 
 export type EventActor = z.infer<typeof EventActor>;
-export const EventActor = z.object({ ID: z.string(), Attributes: z.record(z.string(), z.string()) }).partial().catchall(z.unknown());
+export const EventActor = z.object({ ID: z.string(), Attributes: z.record(z.string(), z.string()) }).partial().strict();
 
 export type EventMessage = z.infer<typeof EventMessage>;
-export const EventMessage = z.object({ Type: z.enum(["builder", "config", "container", "daemon", "image", "network", "node", "plugin", "secret", "service", "volume"]), Action: z.string(), Actor: EventActor, scope: z.enum(["local", "swarm"]), time: z.number().int(), timeNano: z.number().int() }).partial().catchall(z.unknown());
+export const EventMessage = z.object({ Type: z.enum(["builder", "config", "container", "daemon", "image", "network", "node", "plugin", "secret", "service", "volume"]), Action: z.string(), Actor: EventActor, scope: z.enum(["local", "swarm"]), time: z.number().int(), timeNano: z.number().int() }).partial().strict();
 
 export type OCIDescriptor = z.infer<typeof OCIDescriptor>;
-export const OCIDescriptor = z.object({ mediaType: z.string(), digest: z.string(), size: z.number().int() }).partial().catchall(z.unknown());
+export const OCIDescriptor = z.object({ mediaType: z.string(), digest: z.string(), size: z.number().int() }).partial().strict();
 
 export type OCIPlatform = z.infer<typeof OCIPlatform>;
-export const OCIPlatform = z.object({ architecture: z.string(), os: z.string(), "os.version": z.string(), "os.features": z.array(z.string()), variant: z.string() }).partial().catchall(z.unknown());
+export const OCIPlatform = z.object({ architecture: z.string(), os: z.string(), "os.version": z.string(), "os.features": z.array(z.string()), variant: z.string() }).partial().strict();
 
 export type DistributionInspect = z.infer<typeof DistributionInspect>;
-export const DistributionInspect = z.object({ Descriptor: OCIDescriptor, Platforms: z.array(OCIPlatform) }).catchall(z.unknown());
+export const DistributionInspect = z.object({ Descriptor: OCIDescriptor, Platforms: z.array(OCIPlatform) }).strict();
 
 // </Schemas>
 
@@ -336,7 +336,7 @@ export const post_ContainerCreate = {
   path: z.literal("/containers/create"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { query: z.object({ name: z.string().regex(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$")), platform: z.string() }).partial().strict().optional(), body: ContainerConfig.and(z.object({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }).partial().catchall(z.unknown())) },
+  parameters: { query: z.object({ name: z.string().regex(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$")), platform: z.string() }).partial().strict().optional(), body: ContainerConfig.and(z.object({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }).partial().strict()) },
   responses: { 201: ContainerCreateResponse, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -347,7 +347,7 @@ export const get_ContainerInspect = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.object({ size: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1").default(false) }).partial().strict().optional(), path: z.object({ id: z.string() }).strict() },
-  responses: { 200: z.object({ Id: z.string(), Created: z.string(), Path: z.string(), Args: z.array(z.string()), State: ContainerState, Image: z.string(), ResolvConfPath: z.string(), HostnamePath: z.string(), HostsPath: z.string(), LogPath: z.string(), Name: z.string(), RestartCount: z.number().int(), Driver: z.string(), Platform: z.string(), MountLabel: z.string(), ProcessLabel: z.string(), AppArmorProfile: z.string(), ExecIDs: z.array(z.string()).nullable(), HostConfig: HostConfig, GraphDriver: GraphDriverData, SizeRw: z.number().int(), SizeRootFs: z.number().int(), Mounts: z.array(MountPoint), Config: ContainerConfig, NetworkSettings: NetworkSettings }).partial().catchall(z.unknown()), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: z.object({ Id: z.string(), Created: z.string(), Path: z.string(), Args: z.array(z.string()), State: ContainerState, Image: z.string(), ResolvConfPath: z.string(), HostnamePath: z.string(), HostsPath: z.string(), LogPath: z.string(), Name: z.string(), RestartCount: z.number().int(), Driver: z.string(), Platform: z.string(), MountLabel: z.string(), ProcessLabel: z.string(), AppArmorProfile: z.string(), ExecIDs: z.array(z.string()).nullable(), HostConfig: HostConfig, GraphDriver: GraphDriverData, SizeRw: z.number().int(), SizeRootFs: z.number().int(), Mounts: z.array(MountPoint), Config: ContainerConfig, NetworkSettings: NetworkSettings }).partial().strict(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ContainerTop = typeof get_ContainerTop;
@@ -357,7 +357,7 @@ export const get_ContainerTop = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.object({ ps_args: z.string().default("-ef") }).partial().strict().optional(), path: z.object({ id: z.string() }).strict() },
-  responses: { 200: z.union([z.object({ Titles: z.array(z.string()), Processes: z.array(z.array(z.string())) }).partial().catchall(z.unknown()), z.object({ Titles: z.array(z.string()), Processes: z.array(z.array(z.string())) }).partial().catchall(z.unknown())]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.union([z.object({ Titles: z.array(z.string()), Processes: z.array(z.array(z.string())) }).partial().strict(), z.object({ Titles: z.array(z.string()), Processes: z.array(z.array(z.string())) }).partial().strict()]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -456,8 +456,8 @@ export const post_ContainerUpdate = {
   path: z.literal("/containers/{id}/update"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ id: z.string() }).strict(), body: Resources.and(z.object({ RestartPolicy: RestartPolicy }).partial().catchall(z.unknown())) },
-  responses: { 200: z.object({ Warnings: z.array(z.string()) }).partial().catchall(z.unknown()), 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { path: z.object({ id: z.string() }).strict(), body: Resources.and(z.object({ RestartPolicy: RestartPolicy }).partial().strict()) },
+  responses: { 200: z.object({ Warnings: z.array(z.string()) }).partial().strict(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerRename = typeof post_ContainerRename;
@@ -568,7 +568,7 @@ export const post_ContainerPrune = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().strict().optional() },
-  responses: { 200: z.object({ ContainersDeleted: z.array(z.string()), SpaceReclaimed: z.number().int() }).partial().catchall(z.unknown()), 500: ErrorResponse },
+  responses: { 200: z.object({ ContainersDeleted: z.array(z.string()), SpaceReclaimed: z.number().int() }).partial().strict(), 500: ErrorResponse },
 };
 
 export type get_ImageList = typeof get_ImageList;
@@ -598,7 +598,7 @@ export const post_BuildPrune = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.object({ "keep-storage": z.coerce.number().int(), all: z.union([z.boolean(), z.string(), z.number()]).transform((x) => x === true || x === "true" || x === 1 || x === "1"), filters: z.string() }).partial().strict().optional() },
-  responses: { 200: z.object({ CachesDeleted: z.array(z.string()), SpaceReclaimed: z.number().int() }).partial().catchall(z.unknown()), 500: ErrorResponse },
+  responses: { 200: z.object({ CachesDeleted: z.array(z.string()), SpaceReclaimed: z.number().int() }).partial().strict(), 500: ErrorResponse },
 };
 
 export type post_ImageCreate = typeof post_ImageCreate;
@@ -628,7 +628,7 @@ export const get_ImageHistory = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.object({ name: z.string() }).strict() },
-  responses: { 200: z.array(z.object({ Id: z.string(), Created: z.number().int(), CreatedBy: z.string(), Tags: z.array(z.string()), Size: z.number().int(), Comment: z.string() }).catchall(z.unknown())), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: z.array(z.object({ Id: z.string(), Created: z.number().int(), CreatedBy: z.string(), Tags: z.array(z.string()), Size: z.number().int(), Comment: z.string() }).strict()), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ImagePush = typeof post_ImagePush;
@@ -668,7 +668,7 @@ export const get_ImageSearch = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.object({ term: z.string(), limit: z.coerce.number().int().optional(), filters: z.string().optional() }).strict() },
-  responses: { 200: z.array(z.object({ description: z.string(), is_official: z.boolean(), is_automated: z.boolean(), name: z.string(), star_count: z.number().int() }).partial().catchall(z.unknown())), 500: ErrorResponse },
+  responses: { 200: z.array(z.object({ description: z.string(), is_official: z.boolean(), is_automated: z.boolean(), name: z.string(), star_count: z.number().int() }).partial().strict()), 500: ErrorResponse },
 };
 
 export type post_ImagePrune = typeof post_ImagePrune;
@@ -678,7 +678,7 @@ export const post_ImagePrune = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().strict().optional() },
-  responses: { 200: z.object({ ImagesDeleted: z.array(ImageDeleteResponseItem), SpaceReclaimed: z.number().int() }).partial().catchall(z.unknown()), 500: ErrorResponse },
+  responses: { 200: z.object({ ImagesDeleted: z.array(ImageDeleteResponseItem), SpaceReclaimed: z.number().int() }).partial().strict(), 500: ErrorResponse },
 };
 
 export type post_SystemAuth = typeof post_SystemAuth;
@@ -688,7 +688,7 @@ export const post_SystemAuth = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { body: AuthConfig },
-  responses: { 200: z.object({ Status: z.string(), IdentityToken: z.string().optional() }).catchall(z.unknown()), 204: z.unknown(), 401: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: z.object({ Status: z.string(), IdentityToken: z.string().optional() }).strict(), 204: z.unknown(), 401: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_SystemInfo = typeof get_SystemInfo;
@@ -760,7 +760,7 @@ export const get_SystemDataUsage = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.object({ type: z.array(z.enum(["container", "image", "volume", "build-cache"])) }).partial().strict().optional() },
-  responses: { 200: z.union([z.object({ LayersSize: z.number().int(), Images: z.array(ImageSummary), Containers: z.array(ContainerSummary), Volumes: z.array(Volume), BuildCache: z.array(BuildCache) }).partial().catchall(z.unknown()), z.object({ LayersSize: z.number().int(), Images: z.array(ImageSummary), Containers: z.array(ContainerSummary), Volumes: z.array(Volume), BuildCache: z.array(BuildCache) }).partial().catchall(z.unknown())]), 500: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.union([z.object({ LayersSize: z.number().int(), Images: z.array(ImageSummary), Containers: z.array(ContainerSummary), Volumes: z.array(Volume), BuildCache: z.array(BuildCache) }).partial().strict(), z.object({ LayersSize: z.number().int(), Images: z.array(ImageSummary), Containers: z.array(ContainerSummary), Volumes: z.array(Volume), BuildCache: z.array(BuildCache) }).partial().strict()]), 500: z.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -799,7 +799,7 @@ export const post_ContainerExec = {
   path: z.literal("/containers/{id}/exec"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ id: z.string() }).strict(), body: z.object({ AttachStdin: z.boolean(), AttachStdout: z.boolean(), AttachStderr: z.boolean(), ConsoleSize: z.array(z.number().int().min(0)).min(2).max(2).nullable(), DetachKeys: z.string(), Tty: z.boolean(), Env: z.array(z.string()), Cmd: z.array(z.string()), Privileged: z.boolean().default(false), User: z.string(), WorkingDir: z.string() }).partial().catchall(z.unknown()).optional() },
+  parameters: { path: z.object({ id: z.string() }).strict(), body: z.object({ AttachStdin: z.boolean(), AttachStdout: z.boolean(), AttachStderr: z.boolean(), ConsoleSize: z.array(z.number().int().min(0)).min(2).max(2).nullable(), DetachKeys: z.string(), Tty: z.boolean(), Env: z.array(z.string()), Cmd: z.array(z.string()), Privileged: z.boolean().default(false), User: z.string(), WorkingDir: z.string() }).partial().strict().optional() },
   responses: { 201: IdResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -809,7 +809,7 @@ export const post_ExecStart = {
   path: z.literal("/exec/{id}/start"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ id: z.string() }).strict(), body: z.object({ Detach: z.boolean(), Tty: z.boolean(), ConsoleSize: z.array(z.number().int().min(0)).min(2).max(2).nullable() }).partial().catchall(z.unknown()).optional() },
+  parameters: { path: z.object({ id: z.string() }).strict(), body: z.object({ Detach: z.boolean(), Tty: z.boolean(), ConsoleSize: z.array(z.number().int().min(0)).min(2).max(2).nullable() }).partial().strict().optional() },
   responses: { 200: z.unknown(), 404: z.unknown(), 409: z.unknown() },
 };
 
@@ -830,7 +830,7 @@ export const get_ExecInspect = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { path: z.object({ id: z.string() }).strict() },
-  responses: { 200: z.object({ CanRemove: z.boolean(), DetachKeys: z.string(), ID: z.string(), Running: z.boolean(), ExitCode: z.number().int(), ProcessConfig: ProcessConfig, OpenStdin: z.boolean(), OpenStderr: z.boolean(), OpenStdout: z.boolean(), ContainerID: z.string(), Pid: z.number().int() }).partial().catchall(z.unknown()), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: z.object({ CanRemove: z.boolean(), DetachKeys: z.string(), ID: z.string(), Running: z.boolean(), ExitCode: z.number().int(), ProcessConfig: ProcessConfig, OpenStdin: z.boolean(), OpenStderr: z.boolean(), OpenStdout: z.boolean(), ContainerID: z.string(), Pid: z.number().int() }).partial().strict(), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_VolumeList = typeof get_VolumeList;
@@ -869,7 +869,7 @@ export const put_VolumeUpdate = {
   path: z.literal("/volumes/{name}"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { query: z.object({ version: z.coerce.number().int() }).strict(), path: z.object({ name: z.string() }).strict(), body: z.object({ Spec: ClusterVolumeSpec }).partial().catchall(z.unknown()).optional() },
+  parameters: { query: z.object({ version: z.coerce.number().int() }).strict(), path: z.object({ name: z.string() }).strict(), body: z.object({ Spec: ClusterVolumeSpec }).partial().strict().optional() },
   responses: { 200: z.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -890,7 +890,7 @@ export const post_VolumePrune = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().strict().optional() },
-  responses: { 200: z.object({ VolumesDeleted: z.array(z.string()), SpaceReclaimed: z.number().int() }).partial().catchall(z.unknown()), 500: ErrorResponse },
+  responses: { 200: z.object({ VolumesDeleted: z.array(z.string()), SpaceReclaimed: z.number().int() }).partial().strict(), 500: ErrorResponse },
 };
 
 export type get_NetworkList = typeof get_NetworkList;
@@ -929,8 +929,8 @@ export const post_NetworkCreate = {
   path: z.literal("/networks/create"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { body: z.object({ Name: z.string(), CheckDuplicate: z.boolean().optional(), Driver: z.string().default("bridge"), Internal: z.boolean().optional(), Attachable: z.boolean().optional(), Ingress: z.boolean().optional(), IPAM: IPAM.optional(), EnableIPv6: z.boolean().optional(), Options: z.record(z.string(), z.string()).optional(), Labels: z.record(z.string(), z.string()).optional() }).catchall(z.unknown()) },
-  responses: { 201: z.object({ Id: z.string(), Warning: z.string() }).partial().catchall(z.unknown()), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { body: z.object({ Name: z.string(), CheckDuplicate: z.boolean().optional(), Driver: z.string().default("bridge"), Internal: z.boolean().optional(), Attachable: z.boolean().optional(), Ingress: z.boolean().optional(), IPAM: IPAM.optional(), EnableIPv6: z.boolean().optional(), Options: z.record(z.string(), z.string()).optional(), Labels: z.record(z.string(), z.string()).optional() }).strict() },
+  responses: { 201: z.object({ Id: z.string(), Warning: z.string() }).partial().strict(), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkConnect = typeof post_NetworkConnect;
@@ -939,7 +939,7 @@ export const post_NetworkConnect = {
   path: z.literal("/networks/{id}/connect"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ id: z.string() }).strict(), body: z.object({ Container: z.string(), EndpointConfig: EndpointSettings }).partial().catchall(z.unknown()).optional() },
+  parameters: { path: z.object({ id: z.string() }).strict(), body: z.object({ Container: z.string(), EndpointConfig: EndpointSettings }).partial().strict().optional() },
   responses: { 200: z.unknown(), 403: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -949,7 +949,7 @@ export const post_NetworkDisconnect = {
   path: z.literal("/networks/{id}/disconnect"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { path: z.object({ id: z.string() }).strict(), body: z.object({ Container: z.string(), Force: z.boolean() }).partial().catchall(z.unknown()).optional() },
+  parameters: { path: z.object({ id: z.string() }).strict(), body: z.object({ Container: z.string(), Force: z.boolean() }).partial().strict().optional() },
   responses: { 200: z.unknown(), 403: z.union([ErrorResponse, ErrorResponse]), 404: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -960,7 +960,7 @@ export const post_NetworkPrune = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { query: z.object({ filters: z.string() }).partial().strict().optional() },
-  responses: { 200: z.object({ NetworksDeleted: z.array(z.string()) }).partial().catchall(z.unknown()), 500: ErrorResponse },
+  responses: { 200: z.object({ NetworksDeleted: z.array(z.string()) }).partial().strict(), 500: ErrorResponse },
 };
 
 export type get_PluginList = typeof get_PluginList;
@@ -1129,7 +1129,7 @@ export const post_SwarmInit = {
   path: z.literal("/swarm/init"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { body: z.object({ ListenAddr: z.string(), AdvertiseAddr: z.string(), DataPathAddr: z.string(), DataPathPort: z.number().int(), DefaultAddrPool: z.array(z.string()), ForceNewCluster: z.boolean(), SubnetSize: z.number().int(), Spec: SwarmSpec }).partial().catchall(z.unknown()).optional() },
+  parameters: { body: z.object({ ListenAddr: z.string(), AdvertiseAddr: z.string(), DataPathAddr: z.string(), DataPathPort: z.number().int(), DefaultAddrPool: z.array(z.string()), ForceNewCluster: z.boolean(), SubnetSize: z.number().int(), Spec: SwarmSpec }).partial().strict().optional() },
   responses: { 200: z.union([z.string(), z.string()]), 400: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1139,7 +1139,7 @@ export const post_SwarmJoin = {
   path: z.literal("/swarm/join"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { body: z.object({ ListenAddr: z.string(), AdvertiseAddr: z.string(), DataPathAddr: z.string(), RemoteAddrs: z.array(z.string()), JoinToken: z.string() }).partial().catchall(z.unknown()).optional() },
+  parameters: { body: z.object({ ListenAddr: z.string(), AdvertiseAddr: z.string(), DataPathAddr: z.string(), RemoteAddrs: z.array(z.string()), JoinToken: z.string() }).partial().strict().optional() },
   responses: { 200: z.unknown(), 400: z.union([ErrorResponse, ErrorResponse]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1170,7 +1170,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: z.never(),
-  responses: { 200: z.union([z.object({ UnlockKey: z.string() }).partial().catchall(z.unknown()), z.object({ UnlockKey: z.string() }).partial().catchall(z.unknown())]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: z.union([z.object({ UnlockKey: z.string() }).partial().strict(), z.object({ UnlockKey: z.string() }).partial().strict()]), 500: z.union([ErrorResponse, ErrorResponse]), 503: z.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1179,7 +1179,7 @@ export const post_SwarmUnlock = {
   path: z.literal("/swarm/unlock"),
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
-  parameters: { body: z.object({ UnlockKey: z.string() }).partial().catchall(z.unknown()).optional() },
+  parameters: { body: z.object({ UnlockKey: z.string() }).partial().strict().optional() },
   responses: { 200: z.unknown(), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1200,7 +1200,7 @@ export const post_ServiceCreate = {
   requestFormat: z.literal("json"),
   responseFormat: z.literal("json"),
   parameters: { header: z.object({ "X-Registry-Auth": z.string() }).partial().strict().optional(), body: ServiceSpec.and(z.record(z.string(), z.unknown())) },
-  responses: { 201: z.object({ ID: z.string(), Warning: z.string() }).partial().catchall(z.unknown()), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 201: z.object({ ID: z.string(), Warning: z.string() }).partial().strict(), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_ServiceInspect = typeof get_ServiceInspect;

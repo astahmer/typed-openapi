@@ -8,87 +8,96 @@ const Schema_default_available_prop = Schema.Literals(["available", "pending", "
 // </DefaultSchemas>
 
 // <Schemas>
-export const Order = Schema.StructWithRest(
-  Schema.Struct({
-    id: Schema.optional(Schema.Int),
-    petId: Schema.optional(Schema.Int),
-    quantity: Schema.optional(Schema.Int),
-    shipDate: Schema.optional(Schema.String),
-    status: Schema.optional(Schema.Literals(["placed", "approved", "delivered"])),
-    complete: Schema.optional(Schema.Boolean),
-  }),
-  [Schema.Record(Schema.String, Schema.Unknown)],
+export const Order = Schema.Struct({
+  id: Schema.optional(Schema.Int),
+  petId: Schema.optional(Schema.Int),
+  quantity: Schema.optional(Schema.Int),
+  shipDate: Schema.optional(Schema.String),
+  status: Schema.optional(Schema.Literals(["placed", "approved", "delivered"])),
+  complete: Schema.optional(Schema.Boolean),
+}).check(
+  Schema.makeFilter((data) =>
+    Object.keys(data).every((key) =>
+      Object.hasOwn({ id: 1, petId: 1, quantity: 1, shipDate: 1, status: 1, complete: 1 }, key),
+    ),
+  ),
 );
 export type Order = Schema.Schema.Type<typeof Order>;
 
-export const Address = Schema.StructWithRest(
-  Schema.Struct({
-    street: Schema.optional(Schema.String),
-    city: Schema.optional(Schema.String),
-    state: Schema.optional(Schema.String),
-    zip: Schema.optional(Schema.String),
-  }),
-  [Schema.Record(Schema.String, Schema.Unknown)],
+export const Address = Schema.Struct({
+  street: Schema.optional(Schema.String),
+  city: Schema.optional(Schema.String),
+  state: Schema.optional(Schema.String),
+  zip: Schema.optional(Schema.String),
+}).check(
+  Schema.makeFilter((data) =>
+    Object.keys(data).every((key) => Object.hasOwn({ street: 1, city: 1, state: 1, zip: 1 }, key)),
+  ),
 );
 export type Address = Schema.Schema.Type<typeof Address>;
 
-export const Customer = Schema.StructWithRest(
-  Schema.Struct({
-    id: Schema.optional(Schema.Int),
-    username: Schema.optional(Schema.String),
-    address: Schema.optional(Schema.Array(Address)),
-  }),
-  [Schema.Record(Schema.String, Schema.Unknown)],
+export const Customer = Schema.Struct({
+  id: Schema.optional(Schema.Int),
+  username: Schema.optional(Schema.String),
+  address: Schema.optional(Schema.Array(Address)),
+}).check(
+  Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ id: 1, username: 1, address: 1 }, key))),
 );
 export type Customer = Schema.Schema.Type<typeof Customer>;
 
-export const Category = Schema.StructWithRest(
-  Schema.Struct({ id: Schema.optional(Schema.Int), name: Schema.optional(Schema.String) }),
-  [Schema.Record(Schema.String, Schema.Unknown)],
+export const Category = Schema.Struct({ id: Schema.optional(Schema.Int), name: Schema.optional(Schema.String) }).check(
+  Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ id: 1, name: 1 }, key))),
 );
 export type Category = Schema.Schema.Type<typeof Category>;
 
-export const User = Schema.StructWithRest(
-  Schema.Struct({
-    id: Schema.optional(Schema.Int),
-    username: Schema.optional(Schema.String),
-    firstName: Schema.optional(Schema.String),
-    lastName: Schema.optional(Schema.String),
-    email: Schema.optional(Schema.String),
-    password: Schema.optional(Schema.String),
-    phone: Schema.optional(Schema.String),
-    userStatus: Schema.optional(Schema.Int),
-  }),
-  [Schema.Record(Schema.String, Schema.Unknown)],
+export const User = Schema.Struct({
+  id: Schema.optional(Schema.Int),
+  username: Schema.optional(Schema.String),
+  firstName: Schema.optional(Schema.String),
+  lastName: Schema.optional(Schema.String),
+  email: Schema.optional(Schema.String),
+  password: Schema.optional(Schema.String),
+  phone: Schema.optional(Schema.String),
+  userStatus: Schema.optional(Schema.Int),
+}).check(
+  Schema.makeFilter((data) =>
+    Object.keys(data).every((key) =>
+      Object.hasOwn(
+        { id: 1, username: 1, firstName: 1, lastName: 1, email: 1, password: 1, phone: 1, userStatus: 1 },
+        key,
+      ),
+    ),
+  ),
 );
 export type User = Schema.Schema.Type<typeof User>;
 
-export const Tag = Schema.StructWithRest(
-  Schema.Struct({ id: Schema.optional(Schema.Int), name: Schema.optional(Schema.String) }),
-  [Schema.Record(Schema.String, Schema.Unknown)],
+export const Tag = Schema.Struct({ id: Schema.optional(Schema.Int), name: Schema.optional(Schema.String) }).check(
+  Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ id: 1, name: 1 }, key))),
 );
 export type Tag = Schema.Schema.Type<typeof Tag>;
 
-export const Pet = Schema.StructWithRest(
-  Schema.Struct({
-    id: Schema.optional(Schema.Int),
-    name: Schema.String,
-    category: Schema.optional(Category),
-    photoUrls: Schema.Array(Schema.String),
-    tags: Schema.optional(Schema.Array(Tag)),
-    status: Schema.optional(Schema.Literals(["available", "pending", "sold"])),
-  }),
-  [Schema.Record(Schema.String, Schema.Unknown)],
+export const Pet = Schema.Struct({
+  id: Schema.optional(Schema.Int),
+  name: Schema.String,
+  category: Schema.optional(Category),
+  photoUrls: Schema.Array(Schema.String),
+  tags: Schema.optional(Schema.Array(Tag)),
+  status: Schema.optional(Schema.Literals(["available", "pending", "sold"])),
+}).check(
+  Schema.makeFilter((data) =>
+    Object.keys(data).every((key) =>
+      Object.hasOwn({ id: 1, name: 1, category: 1, photoUrls: 1, tags: 1, status: 1 }, key),
+    ),
+  ),
 );
 export type Pet = Schema.Schema.Type<typeof Pet>;
 
-export const ApiResponse = Schema.StructWithRest(
-  Schema.Struct({
-    code: Schema.optional(Schema.Int),
-    type: Schema.optional(Schema.String),
-    message: Schema.optional(Schema.String),
-  }),
-  [Schema.Record(Schema.String, Schema.Unknown)],
+export const ApiResponse = Schema.Struct({
+  code: Schema.optional(Schema.Int),
+  type: Schema.optional(Schema.String),
+  message: Schema.optional(Schema.String),
+}).check(
+  Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ code: 1, type: 1, message: 1 }, key))),
 );
 export type ApiResponse = Schema.Schema.Type<typeof ApiResponse>;
 
@@ -124,16 +133,16 @@ export const get_FindPetsByStatus = {
   parameters: {
     query: Schema.optional(
       Schema.Struct({ status: Schema_default_available_prop }).check(
-        Schema.makeFilter((data) => Object.keys(data).every((key) => ["status"].includes(key))),
+        Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ status: 1 }, key))),
       ),
     ),
   },
   responses: {
     200: Schema.Array(Pet),
     304: Schema.Unknown,
-    400: Schema.StructWithRest(Schema.Struct({ code: Schema.Int, message: Schema.String }), [
-      Schema.Record(Schema.String, Schema.Unknown),
-    ]),
+    400: Schema.Struct({ code: Schema.Int, message: Schema.String }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ code: 1, message: 1 }, key))),
+    ),
   },
 };
 
@@ -146,7 +155,7 @@ export const get_FindPetsByTags = {
   parameters: {
     query: Schema.optional(
       Schema.Struct({ tags: Schema.optional(Schema.Array(Schema.String)) }).check(
-        Schema.makeFilter((data) => Object.keys(data).every((key) => ["tags"].includes(key))),
+        Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ tags: 1 }, key))),
       ),
     ),
   },
@@ -161,17 +170,17 @@ export const get_GetPetById = {
   responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }).check(
-      Schema.makeFilter((data) => Object.keys(data).every((key) => ["petId"].includes(key))),
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ petId: 1 }, key))),
     ),
   },
   responses: {
     200: Pet,
-    400: Schema.StructWithRest(Schema.Struct({ code: Schema.Int, message: Schema.String }), [
-      Schema.Record(Schema.String, Schema.Unknown),
-    ]),
-    404: Schema.StructWithRest(Schema.Struct({ code: Schema.Int, message: Schema.String }), [
-      Schema.Record(Schema.String, Schema.Unknown),
-    ]),
+    400: Schema.Struct({ code: Schema.Int, message: Schema.String }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ code: 1, message: 1 }, key))),
+    ),
+    404: Schema.Struct({ code: Schema.Int, message: Schema.String }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ code: 1, message: 1 }, key))),
+    ),
   },
 };
 
@@ -184,11 +193,11 @@ export const post_UpdatePetWithForm = {
   parameters: {
     query: Schema.optional(
       Schema.Struct({ name: Schema.optional(Schema.String), status: Schema.optional(Schema.String) }).check(
-        Schema.makeFilter((data) => Object.keys(data).every((key) => ["name", "status"].includes(key))),
+        Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ name: 1, status: 1 }, key))),
       ),
     ),
     path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }).check(
-      Schema.makeFilter((data) => Object.keys(data).every((key) => ["petId"].includes(key))),
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ petId: 1 }, key))),
     ),
   },
   responses: { 405: Schema.Unknown },
@@ -202,11 +211,11 @@ export const delete_DeletePet = {
   responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }).check(
-      Schema.makeFilter((data) => Object.keys(data).every((key) => ["petId"].includes(key))),
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ petId: 1 }, key))),
     ),
     header: Schema.optional(
       Schema.Struct({ api_key: Schema.optional(Schema.String) }).check(
-        Schema.makeFilter((data) => Object.keys(data).every((key) => ["api_key"].includes(key))),
+        Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ api_key: 1 }, key))),
       ),
     ),
   },
@@ -222,11 +231,11 @@ export const post_UploadFile = {
   parameters: {
     query: Schema.optional(
       Schema.Struct({ additionalMetadata: Schema.optional(Schema.String) }).check(
-        Schema.makeFilter((data) => Object.keys(data).every((key) => ["additionalMetadata"].includes(key))),
+        Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ additionalMetadata: 1 }, key))),
       ),
     ),
     path: Schema.Struct({ petId: Schema.NumberFromString.check(Schema.isInt()) }).check(
-      Schema.makeFilter((data) => Object.keys(data).every((key) => ["petId"].includes(key))),
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ petId: 1 }, key))),
     ),
     body: Schema.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob),
   },
@@ -261,7 +270,7 @@ export const get_GetOrderById = {
   responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ orderId: Schema.NumberFromString.check(Schema.isInt()) }).check(
-      Schema.makeFilter((data) => Object.keys(data).every((key) => ["orderId"].includes(key))),
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ orderId: 1 }, key))),
     ),
   },
   responses: { 200: Order, 400: Schema.Unknown, 404: Schema.Unknown },
@@ -275,7 +284,7 @@ export const delete_DeleteOrder = {
   responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ orderId: Schema.NumberFromString.check(Schema.isInt()) }).check(
-      Schema.makeFilter((data) => Object.keys(data).every((key) => ["orderId"].includes(key))),
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ orderId: 1 }, key))),
     ),
   },
   responses: { 400: Schema.Unknown, 404: Schema.Unknown },
@@ -310,17 +319,19 @@ export const get_LoginUser = {
   parameters: {
     query: Schema.optional(
       Schema.Struct({ username: Schema.optional(Schema.String), password: Schema.optional(Schema.String) }).check(
-        Schema.makeFilter((data) => Object.keys(data).every((key) => ["username", "password"].includes(key))),
+        Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ username: 1, password: 1 }, key))),
       ),
     ),
   },
   responses: { 200: Schema.String, 400: Schema.Unknown },
   responseHeaders: {
     200: Schema.Struct({ "X-Rate-Limit": Schema.Int, "X-Expires-After": Schema.String }).check(
-      Schema.makeFilter((data) => Object.keys(data).every((key) => ["X-Rate-Limit", "X-Expires-After"].includes(key))),
+      Schema.makeFilter((data) =>
+        Object.keys(data).every((key) => Object.hasOwn({ "X-Rate-Limit": 1, "X-Expires-After": 1 }, key)),
+      ),
     ),
     400: Schema.Struct({ "X-Error": Schema.String }).check(
-      Schema.makeFilter((data) => Object.keys(data).every((key) => ["X-Error"].includes(key))),
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ "X-Error": 1 }, key))),
     ),
   },
 };
@@ -343,17 +354,17 @@ export const get_GetUserByName = {
   responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ username: Schema.String }).check(
-      Schema.makeFilter((data) => Object.keys(data).every((key) => ["username"].includes(key))),
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ username: 1 }, key))),
     ),
   },
   responses: {
     200: User,
-    201: Schema.StructWithRest(Schema.Struct({ id: Schema.Int, username: Schema.String }), [
-      Schema.Record(Schema.String, Schema.Unknown),
-    ]),
-    400: Schema.StructWithRest(Schema.Struct({ code: Schema.Int, message: Schema.String }), [
-      Schema.Record(Schema.String, Schema.Unknown),
-    ]),
+    201: Schema.Struct({ id: Schema.Int, username: Schema.String }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ id: 1, username: 1 }, key))),
+    ),
+    400: Schema.Struct({ code: Schema.Int, message: Schema.String }).check(
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ code: 1, message: 1 }, key))),
+    ),
     404: Schema.Unknown,
   },
 };
@@ -366,7 +377,7 @@ export const put_UpdateUser = {
   responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ username: Schema.String }).check(
-      Schema.makeFilter((data) => Object.keys(data).every((key) => ["username"].includes(key))),
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ username: 1 }, key))),
     ),
     body: User,
   },
@@ -381,7 +392,7 @@ export const delete_DeleteUser = {
   responseFormat: Schema.Literal("json"),
   parameters: {
     path: Schema.Struct({ username: Schema.String }).check(
-      Schema.makeFilter((data) => Object.keys(data).every((key) => ["username"].includes(key))),
+      Schema.makeFilter((data) => Object.keys(data).every((key) => Object.hasOwn({ username: 1 }, key))),
     ),
   },
   responses: { 400: Schema.Unknown, 404: Schema.Unknown },

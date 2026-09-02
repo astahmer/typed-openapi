@@ -13,7 +13,7 @@ export const Order = Type.Partial(
       status: Type.Union([Type.Literal("placed"), Type.Literal("approved"), Type.Literal("delivered")]),
       complete: Type.Boolean(),
     },
-    { additionalProperties: true },
+    { additionalProperties: false },
   ),
 );
 
@@ -21,7 +21,7 @@ export type Address = Static<typeof Address>;
 export const Address = Type.Partial(
   Type.Object(
     { street: Type.String(), city: Type.String(), state: Type.String(), zip: Type.String() },
-    { additionalProperties: true },
+    { additionalProperties: false },
   ),
 );
 
@@ -29,13 +29,13 @@ export type Customer = Static<typeof Customer>;
 export const Customer = Type.Partial(
   Type.Object(
     { id: Type.Integer(), username: Type.String(), address: Type.Array(Address) },
-    { additionalProperties: true },
+    { additionalProperties: false },
   ),
 );
 
 export type Category = Static<typeof Category>;
 export const Category = Type.Partial(
-  Type.Object({ id: Type.Integer(), name: Type.String() }, { additionalProperties: true }),
+  Type.Object({ id: Type.Integer(), name: Type.String() }, { additionalProperties: false }),
 );
 
 export type User = Static<typeof User>;
@@ -51,13 +51,13 @@ export const User = Type.Partial(
       phone: Type.String(),
       userStatus: Type.Integer(),
     },
-    { additionalProperties: true },
+    { additionalProperties: false },
   ),
 );
 
 export type Tag = Static<typeof Tag>;
 export const Tag = Type.Partial(
-  Type.Object({ id: Type.Integer(), name: Type.String() }, { additionalProperties: true }),
+  Type.Object({ id: Type.Integer(), name: Type.String() }, { additionalProperties: false }),
 );
 
 export type Pet = Static<typeof Pet>;
@@ -70,12 +70,12 @@ export const Pet = Type.Object(
     tags: Type.Optional(Type.Array(Tag)),
     status: Type.Optional(Type.Union([Type.Literal("available"), Type.Literal("pending"), Type.Literal("sold")])),
   },
-  { additionalProperties: true },
+  { additionalProperties: false },
 );
 
 export type ApiResponse = Static<typeof ApiResponse>;
 export const ApiResponse = Type.Partial(
-  Type.Object({ code: Type.Integer(), type: Type.String(), message: Type.String() }, { additionalProperties: true }),
+  Type.Object({ code: Type.Integer(), type: Type.String(), message: Type.String() }, { additionalProperties: false }),
 );
 // </Schemas>
 
@@ -119,7 +119,7 @@ export const get_FindPetsByStatus = {
   responses: {
     200: Type.Array(Pet),
     304: Type.Unknown(),
-    400: Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: true }),
+    400: Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: false }),
   },
 };
 
@@ -146,8 +146,8 @@ export const get_GetPetById = {
   parameters: { path: Type.Object({ petId: Type.Integer() }, { additionalProperties: false }) },
   responses: {
     200: Pet,
-    400: Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: true }),
-    404: Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: true }),
+    400: Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: false }),
+    404: Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: false }),
   },
 };
 
@@ -295,8 +295,8 @@ export const get_GetUserByName = {
   parameters: { path: Type.Object({ username: Type.String() }, { additionalProperties: false }) },
   responses: {
     200: User,
-    201: Type.Object({ id: Type.Integer(), username: Type.String() }, { additionalProperties: true }),
-    400: Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: true }),
+    201: Type.Object({ id: Type.Integer(), username: Type.String() }, { additionalProperties: false }),
+    400: Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: false }),
     404: Type.Unknown(),
   },
 };

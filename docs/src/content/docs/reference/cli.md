@@ -36,6 +36,7 @@ Flags use kebab-case; the equivalent config keys use camelCase. For example, `--
 | `--runtime-types` / `--no-runtime-types` | Runtime clients create a `.types.d.ts` type sidecar by default. Opt out to keep one checked generated file. Types-only clients never create a sidecar. |
 | `--transform-dates` | Map `date` and `date-time` formats to `Date`. |
 | `--transform-bigint` | Map `int64` to `bigint`. |
+| `--openapi-additional-properties-default` | Follow OpenAPI’s default that omitted `additionalProperties` means `true`. Without this flag, omitted `additionalProperties` on named objects is treated as `false`. |
 
 ## Optional companion files
 

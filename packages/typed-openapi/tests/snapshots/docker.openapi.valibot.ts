@@ -3,319 +3,319 @@
 
 // <Schemas>
 export type Port = v.InferOutput<typeof Port>;
-export const Port = v.objectWithRest({ IP: v.optional(v.string()), PrivatePort: v.pipe(v.number(), v.integer()), PublicPort: v.optional(v.pipe(v.number(), v.integer())), Type: v.picklist(["tcp", "udp", "sctp"]) }, v.unknown());
+export const Port = v.strictObject({ IP: v.optional(v.string()), PrivatePort: v.pipe(v.number(), v.integer()), PublicPort: v.optional(v.pipe(v.number(), v.integer())), Type: v.picklist(["tcp", "udp", "sctp"]) });
 
 export type MountPoint = v.InferOutput<typeof MountPoint>;
-export const MountPoint = v.partial(v.objectWithRest({ Type: v.picklist(["bind", "volume", "tmpfs", "npipe", "cluster"]), Name: v.string(), Source: v.string(), Destination: v.string(), Driver: v.string(), Mode: v.string(), RW: v.boolean(), Propagation: v.string() }, v.unknown()));
+export const MountPoint = v.partial(v.strictObject({ Type: v.picklist(["bind", "volume", "tmpfs", "npipe", "cluster"]), Name: v.string(), Source: v.string(), Destination: v.string(), Driver: v.string(), Mode: v.string(), RW: v.boolean(), Propagation: v.string() }));
 
 export type DeviceMapping = v.InferOutput<typeof DeviceMapping>;
-export const DeviceMapping = v.partial(v.objectWithRest({ PathOnHost: v.string(), PathInContainer: v.string(), CgroupPermissions: v.string() }, v.unknown()));
+export const DeviceMapping = v.partial(v.strictObject({ PathOnHost: v.string(), PathInContainer: v.string(), CgroupPermissions: v.string() }));
 
 export type DeviceRequest = v.InferOutput<typeof DeviceRequest>;
-export const DeviceRequest = v.partial(v.objectWithRest({ Driver: v.string(), Count: v.pipe(v.number(), v.integer()), DeviceIDs: v.array(v.string()), Capabilities: v.array(v.array(v.string())), Options: v.record(v.string(), v.string()) }, v.unknown()));
+export const DeviceRequest = v.partial(v.strictObject({ Driver: v.string(), Count: v.pipe(v.number(), v.integer()), DeviceIDs: v.array(v.string()), Capabilities: v.array(v.array(v.string())), Options: v.record(v.string(), v.string()) }));
 
 export type ThrottleDevice = v.InferOutput<typeof ThrottleDevice>;
-export const ThrottleDevice = v.partial(v.objectWithRest({ Path: v.string(), Rate: v.pipe(v.number(), v.integer(), v.minValue(0)) }, v.unknown()));
+export const ThrottleDevice = v.partial(v.strictObject({ Path: v.string(), Rate: v.pipe(v.number(), v.integer(), v.minValue(0)) }));
 
 export type Mount = v.InferOutput<typeof Mount>;
-export const Mount = v.partial(v.objectWithRest({ Target: v.string(), Source: v.string(), Type: v.picklist(["bind", "volume", "tmpfs", "npipe", "cluster"]), ReadOnly: v.boolean(), Consistency: v.string(), BindOptions: v.partial(v.objectWithRest({ Propagation: v.picklist(["private", "rprivate", "shared", "rshared", "slave", "rslave"]), NonRecursive: v.optional(v.boolean(), false), CreateMountpoint: v.optional(v.boolean(), false) }, v.unknown())), VolumeOptions: v.partial(v.objectWithRest({ NoCopy: v.optional(v.boolean(), false), Labels: v.record(v.string(), v.string()), DriverConfig: v.partial(v.objectWithRest({ Name: v.string(), Options: v.record(v.string(), v.string()) }, v.unknown())) }, v.unknown())), TmpfsOptions: v.partial(v.objectWithRest({ SizeBytes: v.pipe(v.number(), v.integer()), Mode: v.pipe(v.number(), v.integer()) }, v.unknown())) }, v.unknown()));
+export const Mount = v.partial(v.strictObject({ Target: v.string(), Source: v.string(), Type: v.picklist(["bind", "volume", "tmpfs", "npipe", "cluster"]), ReadOnly: v.boolean(), Consistency: v.string(), BindOptions: v.partial(v.strictObject({ Propagation: v.picklist(["private", "rprivate", "shared", "rshared", "slave", "rslave"]), NonRecursive: v.optional(v.boolean(), false), CreateMountpoint: v.optional(v.boolean(), false) })), VolumeOptions: v.partial(v.strictObject({ NoCopy: v.optional(v.boolean(), false), Labels: v.record(v.string(), v.string()), DriverConfig: v.partial(v.strictObject({ Name: v.string(), Options: v.record(v.string(), v.string()) })) })), TmpfsOptions: v.partial(v.strictObject({ SizeBytes: v.pipe(v.number(), v.integer()), Mode: v.pipe(v.number(), v.integer()) })) }));
 
 export type RestartPolicy = v.InferOutput<typeof RestartPolicy>;
-export const RestartPolicy = v.partial(v.objectWithRest({ Name: v.picklist(["", "no", "always", "unless-stopped", "on-failure"]), MaximumRetryCount: v.pipe(v.number(), v.integer()) }, v.unknown()));
+export const RestartPolicy = v.partial(v.strictObject({ Name: v.picklist(["", "no", "always", "unless-stopped", "on-failure"]), MaximumRetryCount: v.pipe(v.number(), v.integer()) }));
 
 export type Resources = v.InferOutput<typeof Resources>;
-export const Resources = v.partial(v.objectWithRest({ CpuShares: v.pipe(v.number(), v.integer()), Memory: v.optional(v.pipe(v.number(), v.integer()), 0), CgroupParent: v.string(), BlkioWeight: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(1000)), BlkioWeightDevice: v.array(v.partial(v.objectWithRest({ Path: v.string(), Weight: v.pipe(v.number(), v.integer(), v.minValue(0)) }, v.unknown()))), BlkioDeviceReadBps: v.array(ThrottleDevice), BlkioDeviceWriteBps: v.array(ThrottleDevice), BlkioDeviceReadIOps: v.array(ThrottleDevice), BlkioDeviceWriteIOps: v.array(ThrottleDevice), CpuPeriod: v.pipe(v.number(), v.integer()), CpuQuota: v.pipe(v.number(), v.integer()), CpuRealtimePeriod: v.pipe(v.number(), v.integer()), CpuRealtimeRuntime: v.pipe(v.number(), v.integer()), CpusetCpus: v.string(), CpusetMems: v.string(), Devices: v.array(DeviceMapping), DeviceCgroupRules: v.array(v.string()), DeviceRequests: v.array(DeviceRequest), KernelMemoryTCP: v.pipe(v.number(), v.integer()), MemoryReservation: v.pipe(v.number(), v.integer()), MemorySwap: v.pipe(v.number(), v.integer()), MemorySwappiness: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(100)), NanoCpus: v.pipe(v.number(), v.integer()), OomKillDisable: v.boolean(), Init: v.nullable(v.boolean()), PidsLimit: v.nullable(v.pipe(v.number(), v.integer())), Ulimits: v.array(v.partial(v.objectWithRest({ Name: v.string(), Soft: v.pipe(v.number(), v.integer()), Hard: v.pipe(v.number(), v.integer()) }, v.unknown()))), CpuCount: v.pipe(v.number(), v.integer()), CpuPercent: v.pipe(v.number(), v.integer()), IOMaximumIOps: v.pipe(v.number(), v.integer()), IOMaximumBandwidth: v.pipe(v.number(), v.integer()) }, v.unknown()));
+export const Resources = v.partial(v.strictObject({ CpuShares: v.pipe(v.number(), v.integer()), Memory: v.optional(v.pipe(v.number(), v.integer()), 0), CgroupParent: v.string(), BlkioWeight: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(1000)), BlkioWeightDevice: v.array(v.partial(v.strictObject({ Path: v.string(), Weight: v.pipe(v.number(), v.integer(), v.minValue(0)) }))), BlkioDeviceReadBps: v.array(ThrottleDevice), BlkioDeviceWriteBps: v.array(ThrottleDevice), BlkioDeviceReadIOps: v.array(ThrottleDevice), BlkioDeviceWriteIOps: v.array(ThrottleDevice), CpuPeriod: v.pipe(v.number(), v.integer()), CpuQuota: v.pipe(v.number(), v.integer()), CpuRealtimePeriod: v.pipe(v.number(), v.integer()), CpuRealtimeRuntime: v.pipe(v.number(), v.integer()), CpusetCpus: v.string(), CpusetMems: v.string(), Devices: v.array(DeviceMapping), DeviceCgroupRules: v.array(v.string()), DeviceRequests: v.array(DeviceRequest), KernelMemoryTCP: v.pipe(v.number(), v.integer()), MemoryReservation: v.pipe(v.number(), v.integer()), MemorySwap: v.pipe(v.number(), v.integer()), MemorySwappiness: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(100)), NanoCpus: v.pipe(v.number(), v.integer()), OomKillDisable: v.boolean(), Init: v.nullable(v.boolean()), PidsLimit: v.nullable(v.pipe(v.number(), v.integer())), Ulimits: v.array(v.partial(v.strictObject({ Name: v.string(), Soft: v.pipe(v.number(), v.integer()), Hard: v.pipe(v.number(), v.integer()) }))), CpuCount: v.pipe(v.number(), v.integer()), CpuPercent: v.pipe(v.number(), v.integer()), IOMaximumIOps: v.pipe(v.number(), v.integer()), IOMaximumBandwidth: v.pipe(v.number(), v.integer()) }));
 
 export type Limit = v.InferOutput<typeof Limit>;
-export const Limit = v.partial(v.objectWithRest({ NanoCPUs: v.pipe(v.number(), v.integer()), MemoryBytes: v.pipe(v.number(), v.integer()), Pids: v.optional(v.pipe(v.number(), v.integer()), 0) }, v.unknown()));
+export const Limit = v.partial(v.strictObject({ NanoCPUs: v.pipe(v.number(), v.integer()), MemoryBytes: v.pipe(v.number(), v.integer()), Pids: v.optional(v.pipe(v.number(), v.integer()), 0) }));
 
 export type GenericResources = v.InferOutput<typeof GenericResources>;
-export const GenericResources = v.array(v.partial(v.objectWithRest({ NamedResourceSpec: v.partial(v.objectWithRest({ Kind: v.string(), Value: v.string() }, v.unknown())), DiscreteResourceSpec: v.partial(v.objectWithRest({ Kind: v.string(), Value: v.pipe(v.number(), v.integer()) }, v.unknown())) }, v.unknown())));
+export const GenericResources = v.array(v.partial(v.strictObject({ NamedResourceSpec: v.partial(v.strictObject({ Kind: v.string(), Value: v.string() })), DiscreteResourceSpec: v.partial(v.strictObject({ Kind: v.string(), Value: v.pipe(v.number(), v.integer()) })) })));
 
 export type ResourceObject = v.InferOutput<typeof ResourceObject>;
-export const ResourceObject = v.partial(v.objectWithRest({ NanoCPUs: v.pipe(v.number(), v.integer()), MemoryBytes: v.pipe(v.number(), v.integer()), GenericResources: GenericResources }, v.unknown()));
+export const ResourceObject = v.partial(v.strictObject({ NanoCPUs: v.pipe(v.number(), v.integer()), MemoryBytes: v.pipe(v.number(), v.integer()), GenericResources: GenericResources }));
 
 export type HealthConfig = v.InferOutput<typeof HealthConfig>;
-export const HealthConfig = v.partial(v.objectWithRest({ Test: v.array(v.string()), Interval: v.pipe(v.number(), v.integer()), Timeout: v.pipe(v.number(), v.integer()), Retries: v.pipe(v.number(), v.integer()), StartPeriod: v.pipe(v.number(), v.integer()) }, v.unknown()));
+export const HealthConfig = v.partial(v.strictObject({ Test: v.array(v.string()), Interval: v.pipe(v.number(), v.integer()), Timeout: v.pipe(v.number(), v.integer()), Retries: v.pipe(v.number(), v.integer()), StartPeriod: v.pipe(v.number(), v.integer()) }));
 
 export type HealthcheckResult = v.InferOutput<typeof HealthcheckResult>;
-export const HealthcheckResult = v.nullable(v.partial(v.objectWithRest({ Start: v.string(), End: v.string(), ExitCode: v.pipe(v.number(), v.integer()), Output: v.string() }, v.unknown())));
+export const HealthcheckResult = v.nullable(v.partial(v.strictObject({ Start: v.string(), End: v.string(), ExitCode: v.pipe(v.number(), v.integer()), Output: v.string() })));
 
 export type Health = v.InferOutput<typeof Health>;
-export const Health = v.nullable(v.partial(v.objectWithRest({ Status: v.picklist(["none", "starting", "healthy", "unhealthy"]), FailingStreak: v.pipe(v.number(), v.integer()), Log: v.array(HealthcheckResult) }, v.unknown())));
+export const Health = v.nullable(v.partial(v.strictObject({ Status: v.picklist(["none", "starting", "healthy", "unhealthy"]), FailingStreak: v.pipe(v.number(), v.integer()), Log: v.array(HealthcheckResult) })));
 
 export type PortBinding = v.InferOutput<typeof PortBinding>;
-export const PortBinding = v.partial(v.objectWithRest({ HostIp: v.string(), HostPort: v.string() }, v.unknown()));
+export const PortBinding = v.partial(v.strictObject({ HostIp: v.string(), HostPort: v.string() }));
 
 export type PortMap = v.InferOutput<typeof PortMap>;
 export const PortMap = v.record(v.string(), v.nullable(v.array(PortBinding)));
 
 export type HostConfig = v.InferOutput<typeof HostConfig>;
-export const HostConfig = v.intersect([Resources, v.partial(v.objectWithRest({ Binds: v.array(v.string()), ContainerIDFile: v.string(), LogConfig: v.partial(v.objectWithRest({ Type: v.picklist(["json-file", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "none"]), Config: v.record(v.string(), v.string()) }, v.unknown())), NetworkMode: v.string(), PortBindings: PortMap, RestartPolicy: RestartPolicy, AutoRemove: v.boolean(), VolumeDriver: v.string(), VolumesFrom: v.array(v.string()), Mounts: v.array(Mount), ConsoleSize: v.nullable(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2))), Annotations: v.record(v.string(), v.string()), CapAdd: v.array(v.string()), CapDrop: v.array(v.string()), CgroupnsMode: v.picklist(["private", "host"]), Dns: v.array(v.string()), DnsOptions: v.array(v.string()), DnsSearch: v.array(v.string()), ExtraHosts: v.array(v.string()), GroupAdd: v.array(v.string()), IpcMode: v.string(), Cgroup: v.string(), Links: v.array(v.string()), OomScoreAdj: v.pipe(v.number(), v.integer()), PidMode: v.string(), Privileged: v.boolean(), PublishAllPorts: v.boolean(), ReadonlyRootfs: v.boolean(), SecurityOpt: v.array(v.string()), StorageOpt: v.record(v.string(), v.string()), Tmpfs: v.record(v.string(), v.string()), UTSMode: v.string(), UsernsMode: v.string(), ShmSize: v.pipe(v.number(), v.integer(), v.minValue(0)), Sysctls: v.record(v.string(), v.string()), Runtime: v.string(), Isolation: v.picklist(["default", "process", "hyperv"]), MaskedPaths: v.array(v.string()), ReadonlyPaths: v.array(v.string()) }, v.unknown()))]);
+export const HostConfig = v.intersect([Resources, v.partial(v.strictObject({ Binds: v.array(v.string()), ContainerIDFile: v.string(), LogConfig: v.partial(v.strictObject({ Type: v.picklist(["json-file", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "none"]), Config: v.record(v.string(), v.string()) })), NetworkMode: v.string(), PortBindings: PortMap, RestartPolicy: RestartPolicy, AutoRemove: v.boolean(), VolumeDriver: v.string(), VolumesFrom: v.array(v.string()), Mounts: v.array(Mount), ConsoleSize: v.nullable(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2))), Annotations: v.record(v.string(), v.string()), CapAdd: v.array(v.string()), CapDrop: v.array(v.string()), CgroupnsMode: v.picklist(["private", "host"]), Dns: v.array(v.string()), DnsOptions: v.array(v.string()), DnsSearch: v.array(v.string()), ExtraHosts: v.array(v.string()), GroupAdd: v.array(v.string()), IpcMode: v.string(), Cgroup: v.string(), Links: v.array(v.string()), OomScoreAdj: v.pipe(v.number(), v.integer()), PidMode: v.string(), Privileged: v.boolean(), PublishAllPorts: v.boolean(), ReadonlyRootfs: v.boolean(), SecurityOpt: v.array(v.string()), StorageOpt: v.record(v.string(), v.string()), Tmpfs: v.record(v.string(), v.string()), UTSMode: v.string(), UsernsMode: v.string(), ShmSize: v.pipe(v.number(), v.integer(), v.minValue(0)), Sysctls: v.record(v.string(), v.string()), Runtime: v.string(), Isolation: v.picklist(["default", "process", "hyperv"]), MaskedPaths: v.array(v.string()), ReadonlyPaths: v.array(v.string()) }))]);
 
 export type ContainerConfig = v.InferOutput<typeof ContainerConfig>;
-export const ContainerConfig = v.partial(v.objectWithRest({ Hostname: v.string(), Domainname: v.string(), User: v.string(), AttachStdin: v.optional(v.boolean(), false), AttachStdout: v.optional(v.boolean(), true), AttachStderr: v.optional(v.boolean(), true), ExposedPorts: v.nullable(v.record(v.string(), v.partial(v.objectWithRest({  }, v.unknown())))), Tty: v.optional(v.boolean(), false), OpenStdin: v.optional(v.boolean(), false), StdinOnce: v.optional(v.boolean(), false), Env: v.array(v.string()), Cmd: v.array(v.string()), Healthcheck: HealthConfig, ArgsEscaped: v.optional(v.nullable(v.boolean()), false), Image: v.string(), Volumes: v.record(v.string(), v.partial(v.objectWithRest({  }, v.unknown()))), WorkingDir: v.string(), Entrypoint: v.array(v.string()), NetworkDisabled: v.nullable(v.boolean()), MacAddress: v.nullable(v.string()), OnBuild: v.nullable(v.array(v.string())), Labels: v.record(v.string(), v.string()), StopSignal: v.nullable(v.string()), StopTimeout: v.nullable(v.pipe(v.number(), v.integer())), Shell: v.nullable(v.array(v.string())) }, v.unknown()));
+export const ContainerConfig = v.partial(v.strictObject({ Hostname: v.string(), Domainname: v.string(), User: v.string(), AttachStdin: v.optional(v.boolean(), false), AttachStdout: v.optional(v.boolean(), true), AttachStderr: v.optional(v.boolean(), true), ExposedPorts: v.nullable(v.record(v.string(), v.partial(v.strictObject({  })))), Tty: v.optional(v.boolean(), false), OpenStdin: v.optional(v.boolean(), false), StdinOnce: v.optional(v.boolean(), false), Env: v.array(v.string()), Cmd: v.array(v.string()), Healthcheck: HealthConfig, ArgsEscaped: v.optional(v.nullable(v.boolean()), false), Image: v.string(), Volumes: v.record(v.string(), v.partial(v.strictObject({  }))), WorkingDir: v.string(), Entrypoint: v.array(v.string()), NetworkDisabled: v.nullable(v.boolean()), MacAddress: v.nullable(v.string()), OnBuild: v.nullable(v.array(v.string())), Labels: v.record(v.string(), v.string()), StopSignal: v.nullable(v.string()), StopTimeout: v.nullable(v.pipe(v.number(), v.integer())), Shell: v.nullable(v.array(v.string())) }));
 
 export type EndpointIPAMConfig = v.InferOutput<typeof EndpointIPAMConfig>;
-export const EndpointIPAMConfig = v.nullable(v.partial(v.objectWithRest({ IPv4Address: v.string(), IPv6Address: v.string(), LinkLocalIPs: v.array(v.string()) }, v.unknown())));
+export const EndpointIPAMConfig = v.nullable(v.partial(v.strictObject({ IPv4Address: v.string(), IPv6Address: v.string(), LinkLocalIPs: v.array(v.string()) })));
 
 export type EndpointSettings = v.InferOutput<typeof EndpointSettings>;
-export const EndpointSettings = v.partial(v.objectWithRest({ IPAMConfig: EndpointIPAMConfig, Links: v.array(v.string()), Aliases: v.array(v.string()), NetworkID: v.string(), EndpointID: v.string(), Gateway: v.string(), IPAddress: v.string(), IPPrefixLen: v.pipe(v.number(), v.integer()), IPv6Gateway: v.string(), GlobalIPv6Address: v.string(), GlobalIPv6PrefixLen: v.pipe(v.number(), v.integer()), MacAddress: v.string(), DriverOpts: v.nullable(v.record(v.string(), v.string())) }, v.unknown()));
+export const EndpointSettings = v.partial(v.strictObject({ IPAMConfig: EndpointIPAMConfig, Links: v.array(v.string()), Aliases: v.array(v.string()), NetworkID: v.string(), EndpointID: v.string(), Gateway: v.string(), IPAddress: v.string(), IPPrefixLen: v.pipe(v.number(), v.integer()), IPv6Gateway: v.string(), GlobalIPv6Address: v.string(), GlobalIPv6PrefixLen: v.pipe(v.number(), v.integer()), MacAddress: v.string(), DriverOpts: v.nullable(v.record(v.string(), v.string())) }));
 
 export type NetworkingConfig = v.InferOutput<typeof NetworkingConfig>;
-export const NetworkingConfig = v.partial(v.objectWithRest({ EndpointsConfig: v.record(v.string(), EndpointSettings) }, v.unknown()));
+export const NetworkingConfig = v.partial(v.strictObject({ EndpointsConfig: v.record(v.string(), EndpointSettings) }));
 
 export type Address = v.InferOutput<typeof Address>;
-export const Address = v.partial(v.objectWithRest({ Addr: v.string(), PrefixLen: v.pipe(v.number(), v.integer()) }, v.unknown()));
+export const Address = v.partial(v.strictObject({ Addr: v.string(), PrefixLen: v.pipe(v.number(), v.integer()) }));
 
 export type NetworkSettings = v.InferOutput<typeof NetworkSettings>;
-export const NetworkSettings = v.partial(v.objectWithRest({ Bridge: v.string(), SandboxID: v.string(), HairpinMode: v.boolean(), LinkLocalIPv6Address: v.string(), LinkLocalIPv6PrefixLen: v.pipe(v.number(), v.integer()), Ports: PortMap, SandboxKey: v.string(), SecondaryIPAddresses: v.nullable(v.array(Address)), SecondaryIPv6Addresses: v.nullable(v.array(Address)), EndpointID: v.string(), Gateway: v.string(), GlobalIPv6Address: v.string(), GlobalIPv6PrefixLen: v.pipe(v.number(), v.integer()), IPAddress: v.string(), IPPrefixLen: v.pipe(v.number(), v.integer()), IPv6Gateway: v.string(), MacAddress: v.string(), Networks: v.record(v.string(), EndpointSettings) }, v.unknown()));
+export const NetworkSettings = v.partial(v.strictObject({ Bridge: v.string(), SandboxID: v.string(), HairpinMode: v.boolean(), LinkLocalIPv6Address: v.string(), LinkLocalIPv6PrefixLen: v.pipe(v.number(), v.integer()), Ports: PortMap, SandboxKey: v.string(), SecondaryIPAddresses: v.nullable(v.array(Address)), SecondaryIPv6Addresses: v.nullable(v.array(Address)), EndpointID: v.string(), Gateway: v.string(), GlobalIPv6Address: v.string(), GlobalIPv6PrefixLen: v.pipe(v.number(), v.integer()), IPAddress: v.string(), IPPrefixLen: v.pipe(v.number(), v.integer()), IPv6Gateway: v.string(), MacAddress: v.string(), Networks: v.record(v.string(), EndpointSettings) }));
 
 export type GraphDriverData = v.InferOutput<typeof GraphDriverData>;
-export const GraphDriverData = v.objectWithRest({ Name: v.string(), Data: v.record(v.string(), v.string()) }, v.unknown());
+export const GraphDriverData = v.strictObject({ Name: v.string(), Data: v.record(v.string(), v.string()) });
 
 export type ChangeType = v.InferOutput<typeof ChangeType>;
 export const ChangeType = v.union([v.literal(0), v.literal(1), v.literal(2)]);
 
 export type FilesystemChange = v.InferOutput<typeof FilesystemChange>;
-export const FilesystemChange = v.objectWithRest({ Path: v.string(), Kind: ChangeType }, v.unknown());
+export const FilesystemChange = v.strictObject({ Path: v.string(), Kind: ChangeType });
 
 export type ImageInspect = v.InferOutput<typeof ImageInspect>;
-export const ImageInspect = v.partial(v.objectWithRest({ Id: v.string(), RepoTags: v.array(v.string()), RepoDigests: v.array(v.string()), Parent: v.string(), Comment: v.string(), Created: v.string(), Container: v.string(), ContainerConfig: ContainerConfig, DockerVersion: v.string(), Author: v.string(), Config: ContainerConfig, Architecture: v.string(), Variant: v.nullable(v.string()), Os: v.string(), OsVersion: v.nullable(v.string()), Size: v.pipe(v.number(), v.integer()), VirtualSize: v.pipe(v.number(), v.integer()), GraphDriver: GraphDriverData, RootFS: v.objectWithRest({ Type: v.string(), Layers: v.optional(v.array(v.string())) }, v.unknown()), Metadata: v.partial(v.objectWithRest({ LastTagTime: v.nullable(v.string()) }, v.unknown())) }, v.unknown()));
+export const ImageInspect = v.partial(v.strictObject({ Id: v.string(), RepoTags: v.array(v.string()), RepoDigests: v.array(v.string()), Parent: v.string(), Comment: v.string(), Created: v.string(), Container: v.string(), ContainerConfig: ContainerConfig, DockerVersion: v.string(), Author: v.string(), Config: ContainerConfig, Architecture: v.string(), Variant: v.nullable(v.string()), Os: v.string(), OsVersion: v.nullable(v.string()), Size: v.pipe(v.number(), v.integer()), VirtualSize: v.pipe(v.number(), v.integer()), GraphDriver: GraphDriverData, RootFS: v.strictObject({ Type: v.string(), Layers: v.optional(v.array(v.string())) }), Metadata: v.partial(v.strictObject({ LastTagTime: v.nullable(v.string()) })) }));
 
 export type ImageSummary = v.InferOutput<typeof ImageSummary>;
-export const ImageSummary = v.objectWithRest({ Id: v.string(), ParentId: v.string(), RepoTags: v.array(v.string()), RepoDigests: v.array(v.string()), Created: v.pipe(v.number(), v.integer()), Size: v.pipe(v.number(), v.integer()), SharedSize: v.pipe(v.number(), v.integer()), VirtualSize: v.optional(v.pipe(v.number(), v.integer())), Labels: v.record(v.string(), v.string()), Containers: v.pipe(v.number(), v.integer()) }, v.unknown());
+export const ImageSummary = v.strictObject({ Id: v.string(), ParentId: v.string(), RepoTags: v.array(v.string()), RepoDigests: v.array(v.string()), Created: v.pipe(v.number(), v.integer()), Size: v.pipe(v.number(), v.integer()), SharedSize: v.pipe(v.number(), v.integer()), VirtualSize: v.optional(v.pipe(v.number(), v.integer())), Labels: v.record(v.string(), v.string()), Containers: v.pipe(v.number(), v.integer()) });
 
 export type AuthConfig = v.InferOutput<typeof AuthConfig>;
-export const AuthConfig = v.partial(v.objectWithRest({ username: v.string(), password: v.string(), email: v.string(), serveraddress: v.string() }, v.unknown()));
+export const AuthConfig = v.partial(v.strictObject({ username: v.string(), password: v.string(), email: v.string(), serveraddress: v.string() }));
 
 export type ProcessConfig = v.InferOutput<typeof ProcessConfig>;
-export const ProcessConfig = v.partial(v.objectWithRest({ privileged: v.boolean(), user: v.string(), tty: v.boolean(), entrypoint: v.string(), arguments: v.array(v.string()) }, v.unknown()));
+export const ProcessConfig = v.partial(v.strictObject({ privileged: v.boolean(), user: v.string(), tty: v.boolean(), entrypoint: v.string(), arguments: v.array(v.string()) }));
 
 export type ObjectVersion = v.InferOutput<typeof ObjectVersion>;
-export const ObjectVersion = v.partial(v.objectWithRest({ Index: v.pipe(v.number(), v.integer()) }, v.unknown()));
+export const ObjectVersion = v.partial(v.strictObject({ Index: v.pipe(v.number(), v.integer()) }));
 
 export type Topology = v.InferOutput<typeof Topology>;
 export const Topology = v.record(v.string(), v.string());
 
 export type ClusterVolumeSpec = v.InferOutput<typeof ClusterVolumeSpec>;
-export const ClusterVolumeSpec = v.partial(v.objectWithRest({ Group: v.string(), AccessMode: v.partial(v.objectWithRest({ Scope: v.optional(v.picklist(["single", "multi"]), "single"), Sharing: v.optional(v.picklist(["none", "readonly", "onewriter", "all"]), "none"), MountVolume: v.partial(v.objectWithRest({  }, v.unknown())), Secrets: v.array(v.partial(v.objectWithRest({ Key: v.string(), Secret: v.string() }, v.unknown()))), AccessibilityRequirements: v.partial(v.objectWithRest({ Requisite: v.array(Topology), Preferred: v.array(Topology) }, v.unknown())), CapacityRange: v.partial(v.objectWithRest({ RequiredBytes: v.pipe(v.number(), v.integer()), LimitBytes: v.pipe(v.number(), v.integer()) }, v.unknown())), Availability: v.optional(v.picklist(["active", "pause", "drain"]), "active") }, v.unknown())) }, v.unknown()));
+export const ClusterVolumeSpec = v.partial(v.strictObject({ Group: v.string(), AccessMode: v.partial(v.strictObject({ Scope: v.optional(v.picklist(["single", "multi"]), "single"), Sharing: v.optional(v.picklist(["none", "readonly", "onewriter", "all"]), "none"), MountVolume: v.partial(v.strictObject({  })), Secrets: v.array(v.partial(v.strictObject({ Key: v.string(), Secret: v.string() }))), AccessibilityRequirements: v.partial(v.strictObject({ Requisite: v.array(Topology), Preferred: v.array(Topology) })), CapacityRange: v.partial(v.strictObject({ RequiredBytes: v.pipe(v.number(), v.integer()), LimitBytes: v.pipe(v.number(), v.integer()) })), Availability: v.optional(v.picklist(["active", "pause", "drain"]), "active") })) }));
 
 export type ClusterVolume = v.InferOutput<typeof ClusterVolume>;
-export const ClusterVolume = v.partial(v.objectWithRest({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: ClusterVolumeSpec, Info: v.partial(v.objectWithRest({ CapacityBytes: v.pipe(v.number(), v.integer()), VolumeContext: v.record(v.string(), v.string()), VolumeID: v.string(), AccessibleTopology: v.array(Topology) }, v.unknown())), PublishStatus: v.array(v.partial(v.objectWithRest({ NodeID: v.string(), State: v.picklist(["pending-publish", "published", "pending-node-unpublish", "pending-controller-unpublish"]), PublishContext: v.record(v.string(), v.string()) }, v.unknown()))) }, v.unknown()));
+export const ClusterVolume = v.partial(v.strictObject({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: ClusterVolumeSpec, Info: v.partial(v.strictObject({ CapacityBytes: v.pipe(v.number(), v.integer()), VolumeContext: v.record(v.string(), v.string()), VolumeID: v.string(), AccessibleTopology: v.array(Topology) })), PublishStatus: v.array(v.partial(v.strictObject({ NodeID: v.string(), State: v.picklist(["pending-publish", "published", "pending-node-unpublish", "pending-controller-unpublish"]), PublishContext: v.record(v.string(), v.string()) }))) }));
 
 export type Volume = v.InferOutput<typeof Volume>;
-export const Volume = v.objectWithRest({ Name: v.string(), Driver: v.string(), Mountpoint: v.string(), CreatedAt: v.optional(v.string()), Status: v.optional(v.record(v.string(), v.partial(v.objectWithRest({  }, v.unknown())))), Labels: v.record(v.string(), v.string()), Scope: v.optional(v.picklist(["local", "global"]), "local"), ClusterVolume: v.optional(ClusterVolume), Options: v.record(v.string(), v.string()), UsageData: v.optional(v.nullable(v.objectWithRest({ Size: v.optional(v.pipe(v.number(), v.integer()), -1), RefCount: v.optional(v.pipe(v.number(), v.integer()), -1) }, v.unknown()))) }, v.unknown());
+export const Volume = v.strictObject({ Name: v.string(), Driver: v.string(), Mountpoint: v.string(), CreatedAt: v.optional(v.string()), Status: v.optional(v.record(v.string(), v.partial(v.strictObject({  })))), Labels: v.record(v.string(), v.string()), Scope: v.optional(v.picklist(["local", "global"]), "local"), ClusterVolume: v.optional(ClusterVolume), Options: v.record(v.string(), v.string()), UsageData: v.optional(v.nullable(v.strictObject({ Size: v.optional(v.pipe(v.number(), v.integer()), -1), RefCount: v.optional(v.pipe(v.number(), v.integer()), -1) }))) });
 
 export type VolumeCreateOptions = v.InferOutput<typeof VolumeCreateOptions>;
-export const VolumeCreateOptions = v.partial(v.objectWithRest({ Name: v.string(), Driver: v.optional(v.string(), "local"), DriverOpts: v.record(v.string(), v.string()), Labels: v.record(v.string(), v.string()), ClusterVolumeSpec: ClusterVolumeSpec }, v.unknown()));
+export const VolumeCreateOptions = v.partial(v.strictObject({ Name: v.string(), Driver: v.optional(v.string(), "local"), DriverOpts: v.record(v.string(), v.string()), Labels: v.record(v.string(), v.string()), ClusterVolumeSpec: ClusterVolumeSpec }));
 
 export type VolumeListResponse = v.InferOutput<typeof VolumeListResponse>;
-export const VolumeListResponse = v.partial(v.objectWithRest({ Volumes: v.array(Volume), Warnings: v.array(v.string()) }, v.unknown()));
+export const VolumeListResponse = v.partial(v.strictObject({ Volumes: v.array(Volume), Warnings: v.array(v.string()) }));
 
 export type IPAMConfig = v.InferOutput<typeof IPAMConfig>;
-export const IPAMConfig = v.partial(v.objectWithRest({ Subnet: v.string(), IPRange: v.string(), Gateway: v.string(), AuxiliaryAddresses: v.record(v.string(), v.string()) }, v.unknown()));
+export const IPAMConfig = v.partial(v.strictObject({ Subnet: v.string(), IPRange: v.string(), Gateway: v.string(), AuxiliaryAddresses: v.record(v.string(), v.string()) }));
 
 export type IPAM = v.InferOutput<typeof IPAM>;
-export const IPAM = v.partial(v.objectWithRest({ Driver: v.optional(v.string(), "default"), Config: v.array(IPAMConfig), Options: v.record(v.string(), v.string()) }, v.unknown()));
+export const IPAM = v.partial(v.strictObject({ Driver: v.optional(v.string(), "default"), Config: v.array(IPAMConfig), Options: v.record(v.string(), v.string()) }));
 
 export type NetworkContainer = v.InferOutput<typeof NetworkContainer>;
-export const NetworkContainer = v.partial(v.objectWithRest({ Name: v.string(), EndpointID: v.string(), MacAddress: v.string(), IPv4Address: v.string(), IPv6Address: v.string() }, v.unknown()));
+export const NetworkContainer = v.partial(v.strictObject({ Name: v.string(), EndpointID: v.string(), MacAddress: v.string(), IPv4Address: v.string(), IPv6Address: v.string() }));
 
 export type Network = v.InferOutput<typeof Network>;
-export const Network = v.partial(v.objectWithRest({ Name: v.string(), Id: v.string(), Created: v.string(), Scope: v.string(), Driver: v.string(), EnableIPv6: v.boolean(), IPAM: IPAM, Internal: v.boolean(), Attachable: v.boolean(), Ingress: v.boolean(), Containers: v.record(v.string(), NetworkContainer), Options: v.record(v.string(), v.string()), Labels: v.record(v.string(), v.string()) }, v.unknown()));
+export const Network = v.partial(v.strictObject({ Name: v.string(), Id: v.string(), Created: v.string(), Scope: v.string(), Driver: v.string(), EnableIPv6: v.boolean(), IPAM: IPAM, Internal: v.boolean(), Attachable: v.boolean(), Ingress: v.boolean(), Containers: v.record(v.string(), NetworkContainer), Options: v.record(v.string(), v.string()), Labels: v.record(v.string(), v.string()) }));
 
 export type ErrorDetail = v.InferOutput<typeof ErrorDetail>;
-export const ErrorDetail = v.partial(v.objectWithRest({ code: v.pipe(v.number(), v.integer()), message: v.string() }, v.unknown()));
+export const ErrorDetail = v.partial(v.strictObject({ code: v.pipe(v.number(), v.integer()), message: v.string() }));
 
 export type ProgressDetail = v.InferOutput<typeof ProgressDetail>;
-export const ProgressDetail = v.partial(v.objectWithRest({ current: v.pipe(v.number(), v.integer()), total: v.pipe(v.number(), v.integer()) }, v.unknown()));
+export const ProgressDetail = v.partial(v.strictObject({ current: v.pipe(v.number(), v.integer()), total: v.pipe(v.number(), v.integer()) }));
 
 export type ImageID = v.InferOutput<typeof ImageID>;
-export const ImageID = v.partial(v.objectWithRest({ ID: v.string() }, v.unknown()));
+export const ImageID = v.partial(v.strictObject({ ID: v.string() }));
 
 export type BuildInfo = v.InferOutput<typeof BuildInfo>;
-export const BuildInfo = v.partial(v.objectWithRest({ id: v.string(), stream: v.string(), error: v.string(), errorDetail: ErrorDetail, status: v.string(), progress: v.string(), progressDetail: ProgressDetail, aux: ImageID }, v.unknown()));
+export const BuildInfo = v.partial(v.strictObject({ id: v.string(), stream: v.string(), error: v.string(), errorDetail: ErrorDetail, status: v.string(), progress: v.string(), progressDetail: ProgressDetail, aux: ImageID }));
 
 export type BuildCache = v.InferOutput<typeof BuildCache>;
-export const BuildCache = v.partial(v.objectWithRest({ ID: v.string(), Parent: v.nullable(v.string()), Parents: v.nullable(v.array(v.string())), Type: v.picklist(["internal", "frontend", "source.local", "source.git.checkout", "exec.cachemount", "regular"]), Description: v.string(), InUse: v.boolean(), Shared: v.boolean(), Size: v.pipe(v.number(), v.integer()), CreatedAt: v.string(), LastUsedAt: v.nullable(v.string()), UsageCount: v.pipe(v.number(), v.integer()) }, v.unknown()));
+export const BuildCache = v.partial(v.strictObject({ ID: v.string(), Parent: v.nullable(v.string()), Parents: v.nullable(v.array(v.string())), Type: v.picklist(["internal", "frontend", "source.local", "source.git.checkout", "exec.cachemount", "regular"]), Description: v.string(), InUse: v.boolean(), Shared: v.boolean(), Size: v.pipe(v.number(), v.integer()), CreatedAt: v.string(), LastUsedAt: v.nullable(v.string()), UsageCount: v.pipe(v.number(), v.integer()) }));
 
 export type CreateImageInfo = v.InferOutput<typeof CreateImageInfo>;
-export const CreateImageInfo = v.partial(v.objectWithRest({ id: v.string(), error: v.string(), errorDetail: ErrorDetail, status: v.string(), progress: v.string(), progressDetail: ProgressDetail }, v.unknown()));
+export const CreateImageInfo = v.partial(v.strictObject({ id: v.string(), error: v.string(), errorDetail: ErrorDetail, status: v.string(), progress: v.string(), progressDetail: ProgressDetail }));
 
 export type PushImageInfo = v.InferOutput<typeof PushImageInfo>;
-export const PushImageInfo = v.partial(v.objectWithRest({ error: v.string(), status: v.string(), progress: v.string(), progressDetail: ProgressDetail }, v.unknown()));
+export const PushImageInfo = v.partial(v.strictObject({ error: v.string(), status: v.string(), progress: v.string(), progressDetail: ProgressDetail }));
 
 export type ErrorResponse = v.InferOutput<typeof ErrorResponse>;
-export const ErrorResponse = v.objectWithRest({ message: v.string() }, v.unknown());
+export const ErrorResponse = v.strictObject({ message: v.string() });
 
 export type IdResponse = v.InferOutput<typeof IdResponse>;
-export const IdResponse = v.objectWithRest({ Id: v.string() }, v.unknown());
+export const IdResponse = v.strictObject({ Id: v.string() });
 
 export type PluginMount = v.InferOutput<typeof PluginMount>;
-export const PluginMount = v.objectWithRest({ Name: v.string(), Description: v.string(), Settable: v.array(v.string()), Source: v.string(), Destination: v.string(), Type: v.string(), Options: v.array(v.string()) }, v.unknown());
+export const PluginMount = v.strictObject({ Name: v.string(), Description: v.string(), Settable: v.array(v.string()), Source: v.string(), Destination: v.string(), Type: v.string(), Options: v.array(v.string()) });
 
 export type PluginDevice = v.InferOutput<typeof PluginDevice>;
-export const PluginDevice = v.objectWithRest({ Name: v.string(), Description: v.string(), Settable: v.array(v.string()), Path: v.string() }, v.unknown());
+export const PluginDevice = v.strictObject({ Name: v.string(), Description: v.string(), Settable: v.array(v.string()), Path: v.string() });
 
 export type PluginEnv = v.InferOutput<typeof PluginEnv>;
-export const PluginEnv = v.objectWithRest({ Name: v.string(), Description: v.string(), Settable: v.array(v.string()), Value: v.string() }, v.unknown());
+export const PluginEnv = v.strictObject({ Name: v.string(), Description: v.string(), Settable: v.array(v.string()), Value: v.string() });
 
 export type PluginInterfaceType = v.InferOutput<typeof PluginInterfaceType>;
-export const PluginInterfaceType = v.objectWithRest({ Prefix: v.string(), Capability: v.string(), Version: v.string() }, v.unknown());
+export const PluginInterfaceType = v.strictObject({ Prefix: v.string(), Capability: v.string(), Version: v.string() });
 
 export type PluginPrivilege = v.InferOutput<typeof PluginPrivilege>;
-export const PluginPrivilege = v.partial(v.objectWithRest({ Name: v.string(), Description: v.string(), Value: v.array(v.string()) }, v.unknown()));
+export const PluginPrivilege = v.partial(v.strictObject({ Name: v.string(), Description: v.string(), Value: v.array(v.string()) }));
 
 export type Plugin = v.InferOutput<typeof Plugin>;
-export const Plugin = v.objectWithRest({ Id: v.optional(v.string()), Name: v.string(), Enabled: v.boolean(), Settings: v.objectWithRest({ Mounts: v.array(PluginMount), Env: v.array(v.string()), Args: v.array(v.string()), Devices: v.array(PluginDevice) }, v.unknown()), PluginReference: v.optional(v.string()), Config: v.objectWithRest({ DockerVersion: v.optional(v.string()), Description: v.string(), Documentation: v.string(), Interface: v.objectWithRest({ Types: v.array(PluginInterfaceType), Socket: v.string(), ProtocolScheme: v.optional(v.picklist(["", "moby.plugins.http/v1"])) }, v.unknown()), Entrypoint: v.array(v.string()), WorkDir: v.string(), User: v.optional(v.partial(v.objectWithRest({ UID: v.pipe(v.number(), v.integer()), GID: v.pipe(v.number(), v.integer()) }, v.unknown()))), Network: v.objectWithRest({ Type: v.string() }, v.unknown()), Linux: v.objectWithRest({ Capabilities: v.array(v.string()), AllowAllDevices: v.boolean(), Devices: v.array(PluginDevice) }, v.unknown()), PropagatedMount: v.string(), IpcHost: v.boolean(), PidHost: v.boolean(), Mounts: v.array(PluginMount), Env: v.array(PluginEnv), Args: v.objectWithRest({ Name: v.string(), Description: v.string(), Settable: v.array(v.string()), Value: v.array(v.string()) }, v.unknown()), rootfs: v.optional(v.partial(v.objectWithRest({ type: v.string(), diff_ids: v.array(v.string()) }, v.unknown()))) }, v.unknown()) }, v.unknown());
+export const Plugin = v.strictObject({ Id: v.optional(v.string()), Name: v.string(), Enabled: v.boolean(), Settings: v.strictObject({ Mounts: v.array(PluginMount), Env: v.array(v.string()), Args: v.array(v.string()), Devices: v.array(PluginDevice) }), PluginReference: v.optional(v.string()), Config: v.strictObject({ DockerVersion: v.optional(v.string()), Description: v.string(), Documentation: v.string(), Interface: v.strictObject({ Types: v.array(PluginInterfaceType), Socket: v.string(), ProtocolScheme: v.optional(v.picklist(["", "moby.plugins.http/v1"])) }), Entrypoint: v.array(v.string()), WorkDir: v.string(), User: v.optional(v.partial(v.strictObject({ UID: v.pipe(v.number(), v.integer()), GID: v.pipe(v.number(), v.integer()) }))), Network: v.strictObject({ Type: v.string() }), Linux: v.strictObject({ Capabilities: v.array(v.string()), AllowAllDevices: v.boolean(), Devices: v.array(PluginDevice) }), PropagatedMount: v.string(), IpcHost: v.boolean(), PidHost: v.boolean(), Mounts: v.array(PluginMount), Env: v.array(PluginEnv), Args: v.strictObject({ Name: v.string(), Description: v.string(), Settable: v.array(v.string()), Value: v.array(v.string()) }), rootfs: v.optional(v.partial(v.strictObject({ type: v.string(), diff_ids: v.array(v.string()) }))) }) });
 
 export type NodeSpec = v.InferOutput<typeof NodeSpec>;
-export const NodeSpec = v.partial(v.objectWithRest({ Name: v.string(), Labels: v.record(v.string(), v.string()), Role: v.picklist(["worker", "manager"]), Availability: v.picklist(["active", "pause", "drain"]) }, v.unknown()));
+export const NodeSpec = v.partial(v.strictObject({ Name: v.string(), Labels: v.record(v.string(), v.string()), Role: v.picklist(["worker", "manager"]), Availability: v.picklist(["active", "pause", "drain"]) }));
 
 export type Platform = v.InferOutput<typeof Platform>;
-export const Platform = v.partial(v.objectWithRest({ Architecture: v.string(), OS: v.string() }, v.unknown()));
+export const Platform = v.partial(v.strictObject({ Architecture: v.string(), OS: v.string() }));
 
 export type EngineDescription = v.InferOutput<typeof EngineDescription>;
-export const EngineDescription = v.partial(v.objectWithRest({ EngineVersion: v.string(), Labels: v.record(v.string(), v.string()), Plugins: v.array(v.partial(v.objectWithRest({ Type: v.string(), Name: v.string() }, v.unknown()))) }, v.unknown()));
+export const EngineDescription = v.partial(v.strictObject({ EngineVersion: v.string(), Labels: v.record(v.string(), v.string()), Plugins: v.array(v.partial(v.strictObject({ Type: v.string(), Name: v.string() }))) }));
 
 export type TLSInfo = v.InferOutput<typeof TLSInfo>;
-export const TLSInfo = v.partial(v.objectWithRest({ TrustRoot: v.string(), CertIssuerSubject: v.string(), CertIssuerPublicKey: v.string() }, v.unknown()));
+export const TLSInfo = v.partial(v.strictObject({ TrustRoot: v.string(), CertIssuerSubject: v.string(), CertIssuerPublicKey: v.string() }));
 
 export type NodeDescription = v.InferOutput<typeof NodeDescription>;
-export const NodeDescription = v.partial(v.objectWithRest({ Hostname: v.string(), Platform: Platform, Resources: ResourceObject, Engine: EngineDescription, TLSInfo: TLSInfo }, v.unknown()));
+export const NodeDescription = v.partial(v.strictObject({ Hostname: v.string(), Platform: Platform, Resources: ResourceObject, Engine: EngineDescription, TLSInfo: TLSInfo }));
 
 export type NodeState = v.InferOutput<typeof NodeState>;
 export const NodeState = v.picklist(["unknown", "down", "ready", "disconnected"]);
 
 export type NodeStatus = v.InferOutput<typeof NodeStatus>;
-export const NodeStatus = v.partial(v.objectWithRest({ State: NodeState, Message: v.string(), Addr: v.string() }, v.unknown()));
+export const NodeStatus = v.partial(v.strictObject({ State: NodeState, Message: v.string(), Addr: v.string() }));
 
 export type Reachability = v.InferOutput<typeof Reachability>;
 export const Reachability = v.picklist(["unknown", "unreachable", "reachable"]);
 
 export type ManagerStatus = v.InferOutput<typeof ManagerStatus>;
-export const ManagerStatus = v.nullable(v.partial(v.objectWithRest({ Leader: v.optional(v.boolean(), false), Reachability: Reachability, Addr: v.string() }, v.unknown())));
+export const ManagerStatus = v.nullable(v.partial(v.strictObject({ Leader: v.optional(v.boolean(), false), Reachability: Reachability, Addr: v.string() })));
 
 export type Node = v.InferOutput<typeof Node>;
-export const Node = v.partial(v.objectWithRest({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: NodeSpec, Description: NodeDescription, Status: NodeStatus, ManagerStatus: ManagerStatus }, v.unknown()));
+export const Node = v.partial(v.strictObject({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: NodeSpec, Description: NodeDescription, Status: NodeStatus, ManagerStatus: ManagerStatus }));
 
 export type SwarmSpec = v.InferOutput<typeof SwarmSpec>;
-export const SwarmSpec = v.partial(v.objectWithRest({ Name: v.string(), Labels: v.record(v.string(), v.string()), Orchestration: v.nullable(v.partial(v.objectWithRest({ TaskHistoryRetentionLimit: v.pipe(v.number(), v.integer()) }, v.unknown()))), Raft: v.partial(v.objectWithRest({ SnapshotInterval: v.pipe(v.number(), v.integer()), KeepOldSnapshots: v.pipe(v.number(), v.integer()), LogEntriesForSlowFollowers: v.pipe(v.number(), v.integer()), ElectionTick: v.pipe(v.number(), v.integer()), HeartbeatTick: v.pipe(v.number(), v.integer()) }, v.unknown())), Dispatcher: v.nullable(v.partial(v.objectWithRest({ HeartbeatPeriod: v.pipe(v.number(), v.integer()) }, v.unknown()))), CAConfig: v.nullable(v.partial(v.objectWithRest({ NodeCertExpiry: v.pipe(v.number(), v.integer()), ExternalCAs: v.array(v.partial(v.objectWithRest({ Protocol: v.literal("cfssl"), URL: v.string(), Options: v.record(v.string(), v.string()), CACert: v.string() }, v.unknown()))), SigningCACert: v.string(), SigningCAKey: v.string(), ForceRotate: v.pipe(v.number(), v.integer()) }, v.unknown()))), EncryptionConfig: v.partial(v.objectWithRest({ AutoLockManagers: v.boolean() }, v.unknown())), TaskDefaults: v.partial(v.objectWithRest({ LogDriver: v.partial(v.objectWithRest({ Name: v.string(), Options: v.record(v.string(), v.string()) }, v.unknown())) }, v.unknown())) }, v.unknown()));
+export const SwarmSpec = v.partial(v.strictObject({ Name: v.string(), Labels: v.record(v.string(), v.string()), Orchestration: v.nullable(v.partial(v.strictObject({ TaskHistoryRetentionLimit: v.pipe(v.number(), v.integer()) }))), Raft: v.partial(v.strictObject({ SnapshotInterval: v.pipe(v.number(), v.integer()), KeepOldSnapshots: v.pipe(v.number(), v.integer()), LogEntriesForSlowFollowers: v.pipe(v.number(), v.integer()), ElectionTick: v.pipe(v.number(), v.integer()), HeartbeatTick: v.pipe(v.number(), v.integer()) })), Dispatcher: v.nullable(v.partial(v.strictObject({ HeartbeatPeriod: v.pipe(v.number(), v.integer()) }))), CAConfig: v.nullable(v.partial(v.strictObject({ NodeCertExpiry: v.pipe(v.number(), v.integer()), ExternalCAs: v.array(v.partial(v.strictObject({ Protocol: v.literal("cfssl"), URL: v.string(), Options: v.record(v.string(), v.string()), CACert: v.string() }))), SigningCACert: v.string(), SigningCAKey: v.string(), ForceRotate: v.pipe(v.number(), v.integer()) }))), EncryptionConfig: v.partial(v.strictObject({ AutoLockManagers: v.boolean() })), TaskDefaults: v.partial(v.strictObject({ LogDriver: v.partial(v.strictObject({ Name: v.string(), Options: v.record(v.string(), v.string()) })) })) }));
 
 export type ClusterInfo = v.InferOutput<typeof ClusterInfo>;
-export const ClusterInfo = v.nullable(v.partial(v.objectWithRest({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: SwarmSpec, TLSInfo: TLSInfo, RootRotationInProgress: v.boolean(), DataPathPort: v.pipe(v.number(), v.integer()), DefaultAddrPool: v.array(v.string()), SubnetSize: v.pipe(v.number(), v.integer(), v.maxValue(29)) }, v.unknown())));
+export const ClusterInfo = v.nullable(v.partial(v.strictObject({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: SwarmSpec, TLSInfo: TLSInfo, RootRotationInProgress: v.boolean(), DataPathPort: v.pipe(v.number(), v.integer()), DefaultAddrPool: v.array(v.string()), SubnetSize: v.pipe(v.number(), v.integer(), v.maxValue(29)) })));
 
 export type JoinTokens = v.InferOutput<typeof JoinTokens>;
-export const JoinTokens = v.partial(v.objectWithRest({ Worker: v.string(), Manager: v.string() }, v.unknown()));
+export const JoinTokens = v.partial(v.strictObject({ Worker: v.string(), Manager: v.string() }));
 
 export type Swarm = v.InferOutput<typeof Swarm>;
-export const Swarm = v.intersect([ClusterInfo, v.partial(v.objectWithRest({ JoinTokens: JoinTokens }, v.unknown()))]);
+export const Swarm = v.intersect([ClusterInfo, v.partial(v.strictObject({ JoinTokens: JoinTokens }))]);
 
 export type NetworkAttachmentConfig = v.InferOutput<typeof NetworkAttachmentConfig>;
-export const NetworkAttachmentConfig = v.partial(v.objectWithRest({ Target: v.string(), Aliases: v.array(v.string()), DriverOpts: v.record(v.string(), v.string()) }, v.unknown()));
+export const NetworkAttachmentConfig = v.partial(v.strictObject({ Target: v.string(), Aliases: v.array(v.string()), DriverOpts: v.record(v.string(), v.string()) }));
 
 export type TaskSpec = v.InferOutput<typeof TaskSpec>;
-export const TaskSpec = v.partial(v.objectWithRest({ PluginSpec: v.partial(v.objectWithRest({ Name: v.string(), Remote: v.string(), Disabled: v.boolean(), PluginPrivilege: v.array(PluginPrivilege) }, v.unknown())), ContainerSpec: v.partial(v.objectWithRest({ Image: v.string(), Labels: v.record(v.string(), v.string()), Command: v.array(v.string()), Args: v.array(v.string()), Hostname: v.string(), Env: v.array(v.string()), Dir: v.string(), User: v.string(), Groups: v.array(v.string()), Privileges: v.partial(v.objectWithRest({ CredentialSpec: v.partial(v.objectWithRest({ Config: v.string(), File: v.string(), Registry: v.string() }, v.unknown())), SELinuxContext: v.partial(v.objectWithRest({ Disable: v.boolean(), User: v.string(), Role: v.string(), Type: v.string(), Level: v.string() }, v.unknown())) }, v.unknown())), TTY: v.boolean(), OpenStdin: v.boolean(), ReadOnly: v.boolean(), Mounts: v.array(Mount), StopSignal: v.string(), StopGracePeriod: v.pipe(v.number(), v.integer()), HealthCheck: HealthConfig, Hosts: v.array(v.string()), DNSConfig: v.partial(v.objectWithRest({ Nameservers: v.array(v.string()), Search: v.array(v.string()), Options: v.array(v.string()) }, v.unknown())), Secrets: v.array(v.partial(v.objectWithRest({ File: v.partial(v.objectWithRest({ Name: v.string(), UID: v.string(), GID: v.string(), Mode: v.pipe(v.number(), v.integer()) }, v.unknown())), SecretID: v.string(), SecretName: v.string() }, v.unknown()))), Configs: v.array(v.partial(v.objectWithRest({ File: v.partial(v.objectWithRest({ Name: v.string(), UID: v.string(), GID: v.string(), Mode: v.pipe(v.number(), v.integer()) }, v.unknown())), Runtime: v.partial(v.objectWithRest({  }, v.unknown())), ConfigID: v.string(), ConfigName: v.string() }, v.unknown()))), Isolation: v.picklist(["default", "process", "hyperv"]), Init: v.nullable(v.boolean()), Sysctls: v.record(v.string(), v.string()), CapabilityAdd: v.array(v.string()), CapabilityDrop: v.array(v.string()), Ulimits: v.array(v.partial(v.objectWithRest({ Name: v.string(), Soft: v.pipe(v.number(), v.integer()), Hard: v.pipe(v.number(), v.integer()) }, v.unknown()))) }, v.unknown())), NetworkAttachmentSpec: v.partial(v.objectWithRest({ ContainerID: v.string() }, v.unknown())), Resources: v.partial(v.objectWithRest({ Limits: Limit, Reservations: ResourceObject }, v.unknown())), RestartPolicy: v.partial(v.objectWithRest({ Condition: v.picklist(["none", "on-failure", "any"]), Delay: v.pipe(v.number(), v.integer()), MaxAttempts: v.optional(v.pipe(v.number(), v.integer()), 0), Window: v.optional(v.pipe(v.number(), v.integer()), 0) }, v.unknown())), Placement: v.partial(v.objectWithRest({ Constraints: v.array(v.string()), Preferences: v.array(v.partial(v.objectWithRest({ Spread: v.partial(v.objectWithRest({ SpreadDescriptor: v.string() }, v.unknown())) }, v.unknown()))), MaxReplicas: v.optional(v.pipe(v.number(), v.integer()), 0), Platforms: v.array(Platform) }, v.unknown())), ForceUpdate: v.pipe(v.number(), v.integer()), Runtime: v.string(), Networks: v.array(NetworkAttachmentConfig), LogDriver: v.partial(v.objectWithRest({ Name: v.string(), Options: v.record(v.string(), v.string()) }, v.unknown())) }, v.unknown()));
+export const TaskSpec = v.partial(v.strictObject({ PluginSpec: v.partial(v.strictObject({ Name: v.string(), Remote: v.string(), Disabled: v.boolean(), PluginPrivilege: v.array(PluginPrivilege) })), ContainerSpec: v.partial(v.strictObject({ Image: v.string(), Labels: v.record(v.string(), v.string()), Command: v.array(v.string()), Args: v.array(v.string()), Hostname: v.string(), Env: v.array(v.string()), Dir: v.string(), User: v.string(), Groups: v.array(v.string()), Privileges: v.partial(v.strictObject({ CredentialSpec: v.partial(v.strictObject({ Config: v.string(), File: v.string(), Registry: v.string() })), SELinuxContext: v.partial(v.strictObject({ Disable: v.boolean(), User: v.string(), Role: v.string(), Type: v.string(), Level: v.string() })) })), TTY: v.boolean(), OpenStdin: v.boolean(), ReadOnly: v.boolean(), Mounts: v.array(Mount), StopSignal: v.string(), StopGracePeriod: v.pipe(v.number(), v.integer()), HealthCheck: HealthConfig, Hosts: v.array(v.string()), DNSConfig: v.partial(v.strictObject({ Nameservers: v.array(v.string()), Search: v.array(v.string()), Options: v.array(v.string()) })), Secrets: v.array(v.partial(v.strictObject({ File: v.partial(v.strictObject({ Name: v.string(), UID: v.string(), GID: v.string(), Mode: v.pipe(v.number(), v.integer()) })), SecretID: v.string(), SecretName: v.string() }))), Configs: v.array(v.partial(v.strictObject({ File: v.partial(v.strictObject({ Name: v.string(), UID: v.string(), GID: v.string(), Mode: v.pipe(v.number(), v.integer()) })), Runtime: v.partial(v.strictObject({  })), ConfigID: v.string(), ConfigName: v.string() }))), Isolation: v.picklist(["default", "process", "hyperv"]), Init: v.nullable(v.boolean()), Sysctls: v.record(v.string(), v.string()), CapabilityAdd: v.array(v.string()), CapabilityDrop: v.array(v.string()), Ulimits: v.array(v.partial(v.strictObject({ Name: v.string(), Soft: v.pipe(v.number(), v.integer()), Hard: v.pipe(v.number(), v.integer()) }))) })), NetworkAttachmentSpec: v.partial(v.strictObject({ ContainerID: v.string() })), Resources: v.partial(v.strictObject({ Limits: Limit, Reservations: ResourceObject })), RestartPolicy: v.partial(v.strictObject({ Condition: v.picklist(["none", "on-failure", "any"]), Delay: v.pipe(v.number(), v.integer()), MaxAttempts: v.optional(v.pipe(v.number(), v.integer()), 0), Window: v.optional(v.pipe(v.number(), v.integer()), 0) })), Placement: v.partial(v.strictObject({ Constraints: v.array(v.string()), Preferences: v.array(v.partial(v.strictObject({ Spread: v.partial(v.strictObject({ SpreadDescriptor: v.string() })) }))), MaxReplicas: v.optional(v.pipe(v.number(), v.integer()), 0), Platforms: v.array(Platform) })), ForceUpdate: v.pipe(v.number(), v.integer()), Runtime: v.string(), Networks: v.array(NetworkAttachmentConfig), LogDriver: v.partial(v.strictObject({ Name: v.string(), Options: v.record(v.string(), v.string()) })) }));
 
 export type TaskState = v.InferOutput<typeof TaskState>;
 export const TaskState = v.picklist(["new", "allocated", "pending", "assigned", "accepted", "preparing", "ready", "starting", "running", "complete", "shutdown", "failed", "rejected", "remove", "orphaned"]);
 
 export type Task = v.InferOutput<typeof Task>;
-export const Task = v.partial(v.objectWithRest({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Name: v.string(), Labels: v.record(v.string(), v.string()), Spec: TaskSpec, ServiceID: v.string(), Slot: v.pipe(v.number(), v.integer()), NodeID: v.string(), AssignedGenericResources: GenericResources, Status: v.partial(v.objectWithRest({ Timestamp: v.string(), State: TaskState, Message: v.string(), Err: v.string(), ContainerStatus: v.partial(v.objectWithRest({ ContainerID: v.string(), PID: v.pipe(v.number(), v.integer()), ExitCode: v.pipe(v.number(), v.integer()) }, v.unknown())) }, v.unknown())), DesiredState: TaskState, JobIteration: ObjectVersion }, v.unknown()));
+export const Task = v.partial(v.strictObject({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Name: v.string(), Labels: v.record(v.string(), v.string()), Spec: TaskSpec, ServiceID: v.string(), Slot: v.pipe(v.number(), v.integer()), NodeID: v.string(), AssignedGenericResources: GenericResources, Status: v.partial(v.strictObject({ Timestamp: v.string(), State: TaskState, Message: v.string(), Err: v.string(), ContainerStatus: v.partial(v.strictObject({ ContainerID: v.string(), PID: v.pipe(v.number(), v.integer()), ExitCode: v.pipe(v.number(), v.integer()) })) })), DesiredState: TaskState, JobIteration: ObjectVersion }));
 
 export type EndpointPortConfig = v.InferOutput<typeof EndpointPortConfig>;
-export const EndpointPortConfig = v.partial(v.objectWithRest({ Name: v.string(), Protocol: v.picklist(["tcp", "udp", "sctp"]), TargetPort: v.pipe(v.number(), v.integer()), PublishedPort: v.pipe(v.number(), v.integer()), PublishMode: v.optional(v.picklist(["ingress", "host"]), "ingress") }, v.unknown()));
+export const EndpointPortConfig = v.partial(v.strictObject({ Name: v.string(), Protocol: v.picklist(["tcp", "udp", "sctp"]), TargetPort: v.pipe(v.number(), v.integer()), PublishedPort: v.pipe(v.number(), v.integer()), PublishMode: v.optional(v.picklist(["ingress", "host"]), "ingress") }));
 
 export type EndpointSpec = v.InferOutput<typeof EndpointSpec>;
-export const EndpointSpec = v.partial(v.objectWithRest({ Mode: v.optional(v.picklist(["vip", "dnsrr"]), "vip"), Ports: v.array(EndpointPortConfig) }, v.unknown()));
+export const EndpointSpec = v.partial(v.strictObject({ Mode: v.optional(v.picklist(["vip", "dnsrr"]), "vip"), Ports: v.array(EndpointPortConfig) }));
 
 export type ServiceSpec = v.InferOutput<typeof ServiceSpec>;
-export const ServiceSpec = v.partial(v.objectWithRest({ Name: v.string(), Labels: v.record(v.string(), v.string()), TaskTemplate: TaskSpec, Mode: v.partial(v.objectWithRest({ Replicated: v.partial(v.objectWithRest({ Replicas: v.pipe(v.number(), v.integer()) }, v.unknown())), Global: v.partial(v.objectWithRest({  }, v.unknown())), ReplicatedJob: v.partial(v.objectWithRest({ MaxConcurrent: v.optional(v.pipe(v.number(), v.integer()), 1), TotalCompletions: v.pipe(v.number(), v.integer()) }, v.unknown())), GlobalJob: v.partial(v.objectWithRest({  }, v.unknown())) }, v.unknown())), UpdateConfig: v.partial(v.objectWithRest({ Parallelism: v.pipe(v.number(), v.integer()), Delay: v.pipe(v.number(), v.integer()), FailureAction: v.picklist(["continue", "pause", "rollback"]), Monitor: v.pipe(v.number(), v.integer()), MaxFailureRatio: v.number(), Order: v.picklist(["stop-first", "start-first"]) }, v.unknown())), RollbackConfig: v.partial(v.objectWithRest({ Parallelism: v.pipe(v.number(), v.integer()), Delay: v.pipe(v.number(), v.integer()), FailureAction: v.picklist(["continue", "pause"]), Monitor: v.pipe(v.number(), v.integer()), MaxFailureRatio: v.number(), Order: v.picklist(["stop-first", "start-first"]) }, v.unknown())), Networks: v.array(NetworkAttachmentConfig), EndpointSpec: EndpointSpec }, v.unknown()));
+export const ServiceSpec = v.partial(v.strictObject({ Name: v.string(), Labels: v.record(v.string(), v.string()), TaskTemplate: TaskSpec, Mode: v.partial(v.strictObject({ Replicated: v.partial(v.strictObject({ Replicas: v.pipe(v.number(), v.integer()) })), Global: v.partial(v.strictObject({  })), ReplicatedJob: v.partial(v.strictObject({ MaxConcurrent: v.optional(v.pipe(v.number(), v.integer()), 1), TotalCompletions: v.pipe(v.number(), v.integer()) })), GlobalJob: v.partial(v.strictObject({  })) })), UpdateConfig: v.partial(v.strictObject({ Parallelism: v.pipe(v.number(), v.integer()), Delay: v.pipe(v.number(), v.integer()), FailureAction: v.picklist(["continue", "pause", "rollback"]), Monitor: v.pipe(v.number(), v.integer()), MaxFailureRatio: v.number(), Order: v.picklist(["stop-first", "start-first"]) })), RollbackConfig: v.partial(v.strictObject({ Parallelism: v.pipe(v.number(), v.integer()), Delay: v.pipe(v.number(), v.integer()), FailureAction: v.picklist(["continue", "pause"]), Monitor: v.pipe(v.number(), v.integer()), MaxFailureRatio: v.number(), Order: v.picklist(["stop-first", "start-first"]) })), Networks: v.array(NetworkAttachmentConfig), EndpointSpec: EndpointSpec }));
 
 export type Service = v.InferOutput<typeof Service>;
-export const Service = v.partial(v.objectWithRest({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: ServiceSpec, Endpoint: v.partial(v.objectWithRest({ Spec: EndpointSpec, Ports: v.array(EndpointPortConfig), VirtualIPs: v.array(v.partial(v.objectWithRest({ NetworkID: v.string(), Addr: v.string() }, v.unknown()))) }, v.unknown())), UpdateStatus: v.partial(v.objectWithRest({ State: v.picklist(["updating", "paused", "completed"]), StartedAt: v.string(), CompletedAt: v.string(), Message: v.string() }, v.unknown())), ServiceStatus: v.partial(v.objectWithRest({ RunningTasks: v.pipe(v.number(), v.integer()), DesiredTasks: v.pipe(v.number(), v.integer()), CompletedTasks: v.pipe(v.number(), v.integer()) }, v.unknown())), JobStatus: v.partial(v.objectWithRest({ JobIteration: ObjectVersion, LastExecution: v.string() }, v.unknown())) }, v.unknown()));
+export const Service = v.partial(v.strictObject({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: ServiceSpec, Endpoint: v.partial(v.strictObject({ Spec: EndpointSpec, Ports: v.array(EndpointPortConfig), VirtualIPs: v.array(v.partial(v.strictObject({ NetworkID: v.string(), Addr: v.string() }))) })), UpdateStatus: v.partial(v.strictObject({ State: v.picklist(["updating", "paused", "completed"]), StartedAt: v.string(), CompletedAt: v.string(), Message: v.string() })), ServiceStatus: v.partial(v.strictObject({ RunningTasks: v.pipe(v.number(), v.integer()), DesiredTasks: v.pipe(v.number(), v.integer()), CompletedTasks: v.pipe(v.number(), v.integer()) })), JobStatus: v.partial(v.strictObject({ JobIteration: ObjectVersion, LastExecution: v.string() })) }));
 
 export type ImageDeleteResponseItem = v.InferOutput<typeof ImageDeleteResponseItem>;
-export const ImageDeleteResponseItem = v.partial(v.objectWithRest({ Untagged: v.string(), Deleted: v.string() }, v.unknown()));
+export const ImageDeleteResponseItem = v.partial(v.strictObject({ Untagged: v.string(), Deleted: v.string() }));
 
 export type ServiceUpdateResponse = v.InferOutput<typeof ServiceUpdateResponse>;
-export const ServiceUpdateResponse = v.partial(v.objectWithRest({ Warnings: v.array(v.string()) }, v.unknown()));
+export const ServiceUpdateResponse = v.partial(v.strictObject({ Warnings: v.array(v.string()) }));
 
 export type ContainerSummary = v.InferOutput<typeof ContainerSummary>;
-export const ContainerSummary = v.partial(v.objectWithRest({ Id: v.string(), Names: v.array(v.string()), Image: v.string(), ImageID: v.string(), Command: v.string(), Created: v.pipe(v.number(), v.integer()), Ports: v.array(Port), SizeRw: v.pipe(v.number(), v.integer()), SizeRootFs: v.pipe(v.number(), v.integer()), Labels: v.record(v.string(), v.string()), State: v.string(), Status: v.string(), HostConfig: v.partial(v.objectWithRest({ NetworkMode: v.string() }, v.unknown())), NetworkSettings: v.partial(v.objectWithRest({ Networks: v.record(v.string(), EndpointSettings) }, v.unknown())), Mounts: v.array(MountPoint) }, v.unknown()));
+export const ContainerSummary = v.partial(v.strictObject({ Id: v.string(), Names: v.array(v.string()), Image: v.string(), ImageID: v.string(), Command: v.string(), Created: v.pipe(v.number(), v.integer()), Ports: v.array(Port), SizeRw: v.pipe(v.number(), v.integer()), SizeRootFs: v.pipe(v.number(), v.integer()), Labels: v.record(v.string(), v.string()), State: v.string(), Status: v.string(), HostConfig: v.partial(v.strictObject({ NetworkMode: v.string() })), NetworkSettings: v.partial(v.strictObject({ Networks: v.record(v.string(), EndpointSettings) })), Mounts: v.array(MountPoint) }));
 
 export type Driver = v.InferOutput<typeof Driver>;
-export const Driver = v.objectWithRest({ Name: v.string(), Options: v.optional(v.record(v.string(), v.string())) }, v.unknown());
+export const Driver = v.strictObject({ Name: v.string(), Options: v.optional(v.record(v.string(), v.string())) });
 
 export type SecretSpec = v.InferOutput<typeof SecretSpec>;
-export const SecretSpec = v.partial(v.objectWithRest({ Name: v.string(), Labels: v.record(v.string(), v.string()), Data: v.string(), Driver: Driver, Templating: Driver }, v.unknown()));
+export const SecretSpec = v.partial(v.strictObject({ Name: v.string(), Labels: v.record(v.string(), v.string()), Data: v.string(), Driver: Driver, Templating: Driver }));
 
 export type Secret = v.InferOutput<typeof Secret>;
-export const Secret = v.partial(v.objectWithRest({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: SecretSpec }, v.unknown()));
+export const Secret = v.partial(v.strictObject({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: SecretSpec }));
 
 export type ConfigSpec = v.InferOutput<typeof ConfigSpec>;
-export const ConfigSpec = v.partial(v.objectWithRest({ Name: v.string(), Labels: v.record(v.string(), v.string()), Data: v.string(), Templating: Driver }, v.unknown()));
+export const ConfigSpec = v.partial(v.strictObject({ Name: v.string(), Labels: v.record(v.string(), v.string()), Data: v.string(), Templating: Driver }));
 
 export type Config = v.InferOutput<typeof Config>;
-export const Config = v.partial(v.objectWithRest({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: ConfigSpec }, v.unknown()));
+export const Config = v.partial(v.strictObject({ ID: v.string(), Version: ObjectVersion, CreatedAt: v.string(), UpdatedAt: v.string(), Spec: ConfigSpec }));
 
 export type ContainerState = v.InferOutput<typeof ContainerState>;
-export const ContainerState = v.nullable(v.partial(v.objectWithRest({ Status: v.picklist(["created", "running", "paused", "restarting", "removing", "exited", "dead"]), Running: v.boolean(), Paused: v.boolean(), Restarting: v.boolean(), OOMKilled: v.boolean(), Dead: v.boolean(), Pid: v.pipe(v.number(), v.integer()), ExitCode: v.pipe(v.number(), v.integer()), Error: v.string(), StartedAt: v.string(), FinishedAt: v.string(), Health: Health }, v.unknown())));
+export const ContainerState = v.nullable(v.partial(v.strictObject({ Status: v.picklist(["created", "running", "paused", "restarting", "removing", "exited", "dead"]), Running: v.boolean(), Paused: v.boolean(), Restarting: v.boolean(), OOMKilled: v.boolean(), Dead: v.boolean(), Pid: v.pipe(v.number(), v.integer()), ExitCode: v.pipe(v.number(), v.integer()), Error: v.string(), StartedAt: v.string(), FinishedAt: v.string(), Health: Health })));
 
 export type ContainerCreateResponse = v.InferOutput<typeof ContainerCreateResponse>;
-export const ContainerCreateResponse = v.objectWithRest({ Id: v.string(), Warnings: v.array(v.string()) }, v.unknown());
+export const ContainerCreateResponse = v.strictObject({ Id: v.string(), Warnings: v.array(v.string()) });
 
 export type ContainerWaitExitError = v.InferOutput<typeof ContainerWaitExitError>;
-export const ContainerWaitExitError = v.partial(v.objectWithRest({ Message: v.string() }, v.unknown()));
+export const ContainerWaitExitError = v.partial(v.strictObject({ Message: v.string() }));
 
 export type ContainerWaitResponse = v.InferOutput<typeof ContainerWaitResponse>;
-export const ContainerWaitResponse = v.objectWithRest({ StatusCode: v.pipe(v.number(), v.integer()), Error: v.optional(ContainerWaitExitError) }, v.unknown());
+export const ContainerWaitResponse = v.strictObject({ StatusCode: v.pipe(v.number(), v.integer()), Error: v.optional(ContainerWaitExitError) });
 
 export type SystemVersion = v.InferOutput<typeof SystemVersion>;
-export const SystemVersion = v.partial(v.objectWithRest({ Platform: v.objectWithRest({ Name: v.string() }, v.unknown()), Components: v.array(v.objectWithRest({ Name: v.string(), Version: v.string(), Details: v.optional(v.nullable(v.partial(v.objectWithRest({  }, v.unknown())))) }, v.unknown())), Version: v.string(), ApiVersion: v.string(), MinAPIVersion: v.string(), GitCommit: v.string(), GoVersion: v.string(), Os: v.string(), Arch: v.string(), KernelVersion: v.string(), Experimental: v.boolean(), BuildTime: v.string() }, v.unknown()));
+export const SystemVersion = v.partial(v.strictObject({ Platform: v.strictObject({ Name: v.string() }), Components: v.array(v.strictObject({ Name: v.string(), Version: v.string(), Details: v.optional(v.nullable(v.partial(v.strictObject({  })))) })), Version: v.string(), ApiVersion: v.string(), MinAPIVersion: v.string(), GitCommit: v.string(), GoVersion: v.string(), Os: v.string(), Arch: v.string(), KernelVersion: v.string(), Experimental: v.boolean(), BuildTime: v.string() }));
 
 export type PluginsInfo = v.InferOutput<typeof PluginsInfo>;
-export const PluginsInfo = v.partial(v.objectWithRest({ Volume: v.array(v.string()), Network: v.array(v.string()), Authorization: v.array(v.string()), Log: v.array(v.string()) }, v.unknown()));
+export const PluginsInfo = v.partial(v.strictObject({ Volume: v.array(v.string()), Network: v.array(v.string()), Authorization: v.array(v.string()), Log: v.array(v.string()) }));
 
 export type IndexInfo = v.InferOutput<typeof IndexInfo>;
-export const IndexInfo = v.nullable(v.partial(v.objectWithRest({ Name: v.string(), Mirrors: v.array(v.string()), Secure: v.boolean(), Official: v.boolean() }, v.unknown())));
+export const IndexInfo = v.nullable(v.partial(v.strictObject({ Name: v.string(), Mirrors: v.array(v.string()), Secure: v.boolean(), Official: v.boolean() })));
 
 export type RegistryServiceConfig = v.InferOutput<typeof RegistryServiceConfig>;
-export const RegistryServiceConfig = v.nullable(v.partial(v.objectWithRest({ AllowNondistributableArtifactsCIDRs: v.array(v.string()), AllowNondistributableArtifactsHostnames: v.array(v.string()), InsecureRegistryCIDRs: v.array(v.string()), IndexConfigs: v.record(v.string(), IndexInfo), Mirrors: v.array(v.string()) }, v.unknown())));
+export const RegistryServiceConfig = v.nullable(v.partial(v.strictObject({ AllowNondistributableArtifactsCIDRs: v.array(v.string()), AllowNondistributableArtifactsHostnames: v.array(v.string()), InsecureRegistryCIDRs: v.array(v.string()), IndexConfigs: v.record(v.string(), IndexInfo), Mirrors: v.array(v.string()) })));
 
 export type Runtime = v.InferOutput<typeof Runtime>;
-export const Runtime = v.partial(v.objectWithRest({ path: v.string(), runtimeArgs: v.nullable(v.array(v.string())) }, v.unknown()));
+export const Runtime = v.partial(v.strictObject({ path: v.string(), runtimeArgs: v.nullable(v.array(v.string())) }));
 
 export type LocalNodeState = v.InferOutput<typeof LocalNodeState>;
 export const LocalNodeState = v.optional(v.picklist(["", "inactive", "pending", "active", "error", "locked"]), "");
 
 export type PeerNode = v.InferOutput<typeof PeerNode>;
-export const PeerNode = v.partial(v.objectWithRest({ NodeID: v.string(), Addr: v.string() }, v.unknown()));
+export const PeerNode = v.partial(v.strictObject({ NodeID: v.string(), Addr: v.string() }));
 
 export type SwarmInfo = v.InferOutput<typeof SwarmInfo>;
-export const SwarmInfo = v.partial(v.objectWithRest({ NodeID: v.optional(v.string(), ""), NodeAddr: v.optional(v.string(), ""), LocalNodeState: LocalNodeState, ControlAvailable: v.optional(v.boolean(), false), Error: v.optional(v.string(), ""), RemoteManagers: v.nullable(v.array(PeerNode)), Nodes: v.nullable(v.pipe(v.number(), v.integer())), Managers: v.nullable(v.pipe(v.number(), v.integer())), Cluster: ClusterInfo }, v.unknown()));
+export const SwarmInfo = v.partial(v.strictObject({ NodeID: v.optional(v.string(), ""), NodeAddr: v.optional(v.string(), ""), LocalNodeState: LocalNodeState, ControlAvailable: v.optional(v.boolean(), false), Error: v.optional(v.string(), ""), RemoteManagers: v.nullable(v.array(PeerNode)), Nodes: v.nullable(v.pipe(v.number(), v.integer())), Managers: v.nullable(v.pipe(v.number(), v.integer())), Cluster: ClusterInfo }));
 
 export type Commit = v.InferOutput<typeof Commit>;
-export const Commit = v.partial(v.objectWithRest({ ID: v.string(), Expected: v.string() }, v.unknown()));
+export const Commit = v.partial(v.strictObject({ ID: v.string(), Expected: v.string() }));
 
 export type SystemInfo = v.InferOutput<typeof SystemInfo>;
-export const SystemInfo = v.partial(v.objectWithRest({ ID: v.string(), Containers: v.pipe(v.number(), v.integer()), ContainersRunning: v.pipe(v.number(), v.integer()), ContainersPaused: v.pipe(v.number(), v.integer()), ContainersStopped: v.pipe(v.number(), v.integer()), Images: v.pipe(v.number(), v.integer()), Driver: v.string(), DriverStatus: v.array(v.array(v.string())), DockerRootDir: v.string(), Plugins: PluginsInfo, MemoryLimit: v.boolean(), SwapLimit: v.boolean(), KernelMemoryTCP: v.boolean(), CpuCfsPeriod: v.boolean(), CpuCfsQuota: v.boolean(), CPUShares: v.boolean(), CPUSet: v.boolean(), PidsLimit: v.boolean(), OomKillDisable: v.boolean(), IPv4Forwarding: v.boolean(), BridgeNfIptables: v.boolean(), BridgeNfIp6tables: v.boolean(), Debug: v.boolean(), NFd: v.pipe(v.number(), v.integer()), NGoroutines: v.pipe(v.number(), v.integer()), SystemTime: v.string(), LoggingDriver: v.string(), CgroupDriver: v.optional(v.picklist(["cgroupfs", "systemd", "none"]), "cgroupfs"), CgroupVersion: v.optional(v.picklist(["1", "2"]), "1"), NEventsListener: v.pipe(v.number(), v.integer()), KernelVersion: v.string(), OperatingSystem: v.string(), OSVersion: v.string(), OSType: v.string(), Architecture: v.string(), NCPU: v.pipe(v.number(), v.integer()), MemTotal: v.pipe(v.number(), v.integer()), IndexServerAddress: v.optional(v.string(), "https://index.docker.io/v1/"), RegistryConfig: RegistryServiceConfig, GenericResources: GenericResources, HttpProxy: v.string(), HttpsProxy: v.string(), NoProxy: v.string(), Name: v.string(), Labels: v.array(v.string()), ExperimentalBuild: v.boolean(), ServerVersion: v.string(), Runtimes: v.record(v.string(), Runtime), DefaultRuntime: v.optional(v.string(), "runc"), Swarm: SwarmInfo, LiveRestoreEnabled: v.optional(v.boolean(), false), Isolation: v.optional(v.picklist(["default", "hyperv", "process"]), "default"), InitBinary: v.string(), ContainerdCommit: Commit, RuncCommit: Commit, InitCommit: Commit, SecurityOptions: v.array(v.string()), ProductLicense: v.string(), DefaultAddressPools: v.array(v.partial(v.objectWithRest({ Base: v.string(), Size: v.pipe(v.number(), v.integer()) }, v.unknown()))), Warnings: v.array(v.string()) }, v.unknown()));
+export const SystemInfo = v.partial(v.strictObject({ ID: v.string(), Containers: v.pipe(v.number(), v.integer()), ContainersRunning: v.pipe(v.number(), v.integer()), ContainersPaused: v.pipe(v.number(), v.integer()), ContainersStopped: v.pipe(v.number(), v.integer()), Images: v.pipe(v.number(), v.integer()), Driver: v.string(), DriverStatus: v.array(v.array(v.string())), DockerRootDir: v.string(), Plugins: PluginsInfo, MemoryLimit: v.boolean(), SwapLimit: v.boolean(), KernelMemoryTCP: v.boolean(), CpuCfsPeriod: v.boolean(), CpuCfsQuota: v.boolean(), CPUShares: v.boolean(), CPUSet: v.boolean(), PidsLimit: v.boolean(), OomKillDisable: v.boolean(), IPv4Forwarding: v.boolean(), BridgeNfIptables: v.boolean(), BridgeNfIp6tables: v.boolean(), Debug: v.boolean(), NFd: v.pipe(v.number(), v.integer()), NGoroutines: v.pipe(v.number(), v.integer()), SystemTime: v.string(), LoggingDriver: v.string(), CgroupDriver: v.optional(v.picklist(["cgroupfs", "systemd", "none"]), "cgroupfs"), CgroupVersion: v.optional(v.picklist(["1", "2"]), "1"), NEventsListener: v.pipe(v.number(), v.integer()), KernelVersion: v.string(), OperatingSystem: v.string(), OSVersion: v.string(), OSType: v.string(), Architecture: v.string(), NCPU: v.pipe(v.number(), v.integer()), MemTotal: v.pipe(v.number(), v.integer()), IndexServerAddress: v.optional(v.string(), "https://index.docker.io/v1/"), RegistryConfig: RegistryServiceConfig, GenericResources: GenericResources, HttpProxy: v.string(), HttpsProxy: v.string(), NoProxy: v.string(), Name: v.string(), Labels: v.array(v.string()), ExperimentalBuild: v.boolean(), ServerVersion: v.string(), Runtimes: v.record(v.string(), Runtime), DefaultRuntime: v.optional(v.string(), "runc"), Swarm: SwarmInfo, LiveRestoreEnabled: v.optional(v.boolean(), false), Isolation: v.optional(v.picklist(["default", "hyperv", "process"]), "default"), InitBinary: v.string(), ContainerdCommit: Commit, RuncCommit: Commit, InitCommit: Commit, SecurityOptions: v.array(v.string()), ProductLicense: v.string(), DefaultAddressPools: v.array(v.partial(v.strictObject({ Base: v.string(), Size: v.pipe(v.number(), v.integer()) }))), Warnings: v.array(v.string()) }));
 
 export type EventActor = v.InferOutput<typeof EventActor>;
-export const EventActor = v.partial(v.objectWithRest({ ID: v.string(), Attributes: v.record(v.string(), v.string()) }, v.unknown()));
+export const EventActor = v.partial(v.strictObject({ ID: v.string(), Attributes: v.record(v.string(), v.string()) }));
 
 export type EventMessage = v.InferOutput<typeof EventMessage>;
-export const EventMessage = v.partial(v.objectWithRest({ Type: v.picklist(["builder", "config", "container", "daemon", "image", "network", "node", "plugin", "secret", "service", "volume"]), Action: v.string(), Actor: EventActor, scope: v.picklist(["local", "swarm"]), time: v.pipe(v.number(), v.integer()), timeNano: v.pipe(v.number(), v.integer()) }, v.unknown()));
+export const EventMessage = v.partial(v.strictObject({ Type: v.picklist(["builder", "config", "container", "daemon", "image", "network", "node", "plugin", "secret", "service", "volume"]), Action: v.string(), Actor: EventActor, scope: v.picklist(["local", "swarm"]), time: v.pipe(v.number(), v.integer()), timeNano: v.pipe(v.number(), v.integer()) }));
 
 export type OCIDescriptor = v.InferOutput<typeof OCIDescriptor>;
-export const OCIDescriptor = v.partial(v.objectWithRest({ mediaType: v.string(), digest: v.string(), size: v.pipe(v.number(), v.integer()) }, v.unknown()));
+export const OCIDescriptor = v.partial(v.strictObject({ mediaType: v.string(), digest: v.string(), size: v.pipe(v.number(), v.integer()) }));
 
 export type OCIPlatform = v.InferOutput<typeof OCIPlatform>;
-export const OCIPlatform = v.partial(v.objectWithRest({ architecture: v.string(), os: v.string(), "os.version": v.string(), "os.features": v.array(v.string()), variant: v.string() }, v.unknown()));
+export const OCIPlatform = v.partial(v.strictObject({ architecture: v.string(), os: v.string(), "os.version": v.string(), "os.features": v.array(v.string()), variant: v.string() }));
 
 export type DistributionInspect = v.InferOutput<typeof DistributionInspect>;
-export const DistributionInspect = v.objectWithRest({ Descriptor: OCIDescriptor, Platforms: v.array(OCIPlatform) }, v.unknown());
+export const DistributionInspect = v.strictObject({ Descriptor: OCIDescriptor, Platforms: v.array(OCIPlatform) });
 
 // </Schemas>
 
@@ -336,7 +336,7 @@ export const post_ContainerCreate = {
   path: v.literal("/containers/create"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.optional(v.partial(v.strictObject({ name: v.pipe(v.string(), v.regex(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"))), platform: v.string() }))), body: v.intersect([ContainerConfig, v.partial(v.objectWithRest({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }, v.unknown()))]) },
+  parameters: { query: v.optional(v.partial(v.strictObject({ name: v.pipe(v.string(), v.regex(new RegExp("^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$"))), platform: v.string() }))), body: v.intersect([ContainerConfig, v.partial(v.strictObject({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }))]) },
   responses: { 201: ContainerCreateResponse, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -347,7 +347,7 @@ export const get_ContainerInspect = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.strictObject({ size: v.optional(v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), false) }))), path: v.strictObject({ id: v.string() }) },
-  responses: { 200: v.partial(v.objectWithRest({ Id: v.string(), Created: v.string(), Path: v.string(), Args: v.array(v.string()), State: ContainerState, Image: v.string(), ResolvConfPath: v.string(), HostnamePath: v.string(), HostsPath: v.string(), LogPath: v.string(), Name: v.string(), RestartCount: v.pipe(v.number(), v.integer()), Driver: v.string(), Platform: v.string(), MountLabel: v.string(), ProcessLabel: v.string(), AppArmorProfile: v.string(), ExecIDs: v.nullable(v.array(v.string())), HostConfig: HostConfig, GraphDriver: GraphDriverData, SizeRw: v.pipe(v.number(), v.integer()), SizeRootFs: v.pipe(v.number(), v.integer()), Mounts: v.array(MountPoint), Config: ContainerConfig, NetworkSettings: NetworkSettings }, v.unknown())), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.partial(v.strictObject({ Id: v.string(), Created: v.string(), Path: v.string(), Args: v.array(v.string()), State: ContainerState, Image: v.string(), ResolvConfPath: v.string(), HostnamePath: v.string(), HostsPath: v.string(), LogPath: v.string(), Name: v.string(), RestartCount: v.pipe(v.number(), v.integer()), Driver: v.string(), Platform: v.string(), MountLabel: v.string(), ProcessLabel: v.string(), AppArmorProfile: v.string(), ExecIDs: v.nullable(v.array(v.string())), HostConfig: HostConfig, GraphDriver: GraphDriverData, SizeRw: v.pipe(v.number(), v.integer()), SizeRootFs: v.pipe(v.number(), v.integer()), Mounts: v.array(MountPoint), Config: ContainerConfig, NetworkSettings: NetworkSettings })), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ContainerTop = typeof get_ContainerTop;
@@ -357,7 +357,7 @@ export const get_ContainerTop = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.strictObject({ ps_args: v.optional(v.string(), "-ef") }))), path: v.strictObject({ id: v.string() }) },
-  responses: { 200: v.union([v.partial(v.objectWithRest({ Titles: v.array(v.string()), Processes: v.array(v.array(v.string())) }, v.unknown())), v.partial(v.objectWithRest({ Titles: v.array(v.string()), Processes: v.array(v.array(v.string())) }, v.unknown()))]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: v.union([v.partial(v.strictObject({ Titles: v.array(v.string()), Processes: v.array(v.array(v.string())) })), v.partial(v.strictObject({ Titles: v.array(v.string()), Processes: v.array(v.array(v.string())) }))]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -456,8 +456,8 @@ export const post_ContainerUpdate = {
   path: v.literal("/containers/{id}/update"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.strictObject({ id: v.string() }), body: v.intersect([Resources, v.partial(v.objectWithRest({ RestartPolicy: RestartPolicy }, v.unknown()))]) },
-  responses: { 200: v.partial(v.objectWithRest({ Warnings: v.array(v.string()) }, v.unknown())), 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { path: v.strictObject({ id: v.string() }), body: v.intersect([Resources, v.partial(v.strictObject({ RestartPolicy: RestartPolicy }))]) },
+  responses: { 200: v.partial(v.strictObject({ Warnings: v.array(v.string()) })), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerRename = typeof post_ContainerRename;
@@ -568,7 +568,7 @@ export const post_ContainerPrune = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.strictObject({ filters: v.string() }))) },
-  responses: { 200: v.partial(v.objectWithRest({ ContainersDeleted: v.array(v.string()), SpaceReclaimed: v.pipe(v.number(), v.integer()) }, v.unknown())), 500: ErrorResponse },
+  responses: { 200: v.partial(v.strictObject({ ContainersDeleted: v.array(v.string()), SpaceReclaimed: v.pipe(v.number(), v.integer()) })), 500: ErrorResponse },
 };
 
 export type get_ImageList = typeof get_ImageList;
@@ -598,7 +598,7 @@ export const post_BuildPrune = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.strictObject({ "keep-storage": v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())), all: v.pipe(v.union([v.boolean(), v.string(), v.number()]), v.transform((x) => x === true || x === "true" || x === 1 || x === "1")), filters: v.string() }))) },
-  responses: { 200: v.partial(v.objectWithRest({ CachesDeleted: v.array(v.string()), SpaceReclaimed: v.pipe(v.number(), v.integer()) }, v.unknown())), 500: ErrorResponse },
+  responses: { 200: v.partial(v.strictObject({ CachesDeleted: v.array(v.string()), SpaceReclaimed: v.pipe(v.number(), v.integer()) })), 500: ErrorResponse },
 };
 
 export type post_ImageCreate = typeof post_ImageCreate;
@@ -628,7 +628,7 @@ export const get_ImageHistory = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.strictObject({ name: v.string() }) },
-  responses: { 200: v.array(v.objectWithRest({ Id: v.string(), Created: v.pipe(v.number(), v.integer()), CreatedBy: v.string(), Tags: v.array(v.string()), Size: v.pipe(v.number(), v.integer()), Comment: v.string() }, v.unknown())), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.array(v.strictObject({ Id: v.string(), Created: v.pipe(v.number(), v.integer()), CreatedBy: v.string(), Tags: v.array(v.string()), Size: v.pipe(v.number(), v.integer()), Comment: v.string() })), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ImagePush = typeof post_ImagePush;
@@ -668,7 +668,7 @@ export const get_ImageSearch = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.strictObject({ term: v.string(), limit: v.optional(v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer()))), filters: v.optional(v.string()) }) },
-  responses: { 200: v.array(v.partial(v.objectWithRest({ description: v.string(), is_official: v.boolean(), is_automated: v.boolean(), name: v.string(), star_count: v.pipe(v.number(), v.integer()) }, v.unknown()))), 500: ErrorResponse },
+  responses: { 200: v.array(v.partial(v.strictObject({ description: v.string(), is_official: v.boolean(), is_automated: v.boolean(), name: v.string(), star_count: v.pipe(v.number(), v.integer()) }))), 500: ErrorResponse },
 };
 
 export type post_ImagePrune = typeof post_ImagePrune;
@@ -678,7 +678,7 @@ export const post_ImagePrune = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.strictObject({ filters: v.string() }))) },
-  responses: { 200: v.partial(v.objectWithRest({ ImagesDeleted: v.array(ImageDeleteResponseItem), SpaceReclaimed: v.pipe(v.number(), v.integer()) }, v.unknown())), 500: ErrorResponse },
+  responses: { 200: v.partial(v.strictObject({ ImagesDeleted: v.array(ImageDeleteResponseItem), SpaceReclaimed: v.pipe(v.number(), v.integer()) })), 500: ErrorResponse },
 };
 
 export type post_SystemAuth = typeof post_SystemAuth;
@@ -688,7 +688,7 @@ export const post_SystemAuth = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { body: AuthConfig },
-  responses: { 200: v.objectWithRest({ Status: v.string(), IdentityToken: v.optional(v.string()) }, v.unknown()), 204: v.unknown(), 401: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.strictObject({ Status: v.string(), IdentityToken: v.optional(v.string()) }), 204: v.unknown(), 401: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_SystemInfo = typeof get_SystemInfo;
@@ -760,7 +760,7 @@ export const get_SystemDataUsage = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.strictObject({ type: v.array(v.picklist(["container", "image", "volume", "build-cache"])) }))) },
-  responses: { 200: v.union([v.partial(v.objectWithRest({ LayersSize: v.pipe(v.number(), v.integer()), Images: v.array(ImageSummary), Containers: v.array(ContainerSummary), Volumes: v.array(Volume), BuildCache: v.array(BuildCache) }, v.unknown())), v.partial(v.objectWithRest({ LayersSize: v.pipe(v.number(), v.integer()), Images: v.array(ImageSummary), Containers: v.array(ContainerSummary), Volumes: v.array(Volume), BuildCache: v.array(BuildCache) }, v.unknown()))]), 500: v.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: v.union([v.partial(v.strictObject({ LayersSize: v.pipe(v.number(), v.integer()), Images: v.array(ImageSummary), Containers: v.array(ContainerSummary), Volumes: v.array(Volume), BuildCache: v.array(BuildCache) })), v.partial(v.strictObject({ LayersSize: v.pipe(v.number(), v.integer()), Images: v.array(ImageSummary), Containers: v.array(ContainerSummary), Volumes: v.array(Volume), BuildCache: v.array(BuildCache) }))]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -799,7 +799,7 @@ export const post_ContainerExec = {
   path: v.literal("/containers/{id}/exec"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.strictObject({ id: v.string() }), body: v.optional(v.partial(v.objectWithRest({ AttachStdin: v.boolean(), AttachStdout: v.boolean(), AttachStderr: v.boolean(), ConsoleSize: v.nullable(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2))), DetachKeys: v.string(), Tty: v.boolean(), Env: v.array(v.string()), Cmd: v.array(v.string()), Privileged: v.optional(v.boolean(), false), User: v.string(), WorkingDir: v.string() }, v.unknown()))) },
+  parameters: { path: v.strictObject({ id: v.string() }), body: v.optional(v.partial(v.strictObject({ AttachStdin: v.boolean(), AttachStdout: v.boolean(), AttachStderr: v.boolean(), ConsoleSize: v.nullable(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2))), DetachKeys: v.string(), Tty: v.boolean(), Env: v.array(v.string()), Cmd: v.array(v.string()), Privileged: v.optional(v.boolean(), false), User: v.string(), WorkingDir: v.string() }))) },
   responses: { 201: IdResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -809,7 +809,7 @@ export const post_ExecStart = {
   path: v.literal("/exec/{id}/start"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.strictObject({ id: v.string() }), body: v.optional(v.partial(v.objectWithRest({ Detach: v.boolean(), Tty: v.boolean(), ConsoleSize: v.nullable(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2))) }, v.unknown()))) },
+  parameters: { path: v.strictObject({ id: v.string() }), body: v.optional(v.partial(v.strictObject({ Detach: v.boolean(), Tty: v.boolean(), ConsoleSize: v.nullable(v.pipe(v.array(v.pipe(v.number(), v.integer(), v.minValue(0))), v.minLength(2), v.maxLength(2))) }))) },
   responses: { 200: v.unknown(), 404: v.unknown(), 409: v.unknown() },
 };
 
@@ -830,7 +830,7 @@ export const get_ExecInspect = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { path: v.strictObject({ id: v.string() }) },
-  responses: { 200: v.partial(v.objectWithRest({ CanRemove: v.boolean(), DetachKeys: v.string(), ID: v.string(), Running: v.boolean(), ExitCode: v.pipe(v.number(), v.integer()), ProcessConfig: ProcessConfig, OpenStdin: v.boolean(), OpenStderr: v.boolean(), OpenStdout: v.boolean(), ContainerID: v.string(), Pid: v.pipe(v.number(), v.integer()) }, v.unknown())), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: v.partial(v.strictObject({ CanRemove: v.boolean(), DetachKeys: v.string(), ID: v.string(), Running: v.boolean(), ExitCode: v.pipe(v.number(), v.integer()), ProcessConfig: ProcessConfig, OpenStdin: v.boolean(), OpenStderr: v.boolean(), OpenStdout: v.boolean(), ContainerID: v.string(), Pid: v.pipe(v.number(), v.integer()) })), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_VolumeList = typeof get_VolumeList;
@@ -869,7 +869,7 @@ export const put_VolumeUpdate = {
   path: v.literal("/volumes/{name}"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { query: v.strictObject({ version: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())) }), path: v.strictObject({ name: v.string() }), body: v.optional(v.partial(v.objectWithRest({ Spec: ClusterVolumeSpec }, v.unknown()))) },
+  parameters: { query: v.strictObject({ version: v.pipe(v.union([v.string(), v.number()]), v.transform((x) => Number(x)), v.pipe(v.number(), v.integer())) }), path: v.strictObject({ name: v.string() }), body: v.optional(v.partial(v.strictObject({ Spec: ClusterVolumeSpec }))) },
   responses: { 200: v.unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -890,7 +890,7 @@ export const post_VolumePrune = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.strictObject({ filters: v.string() }))) },
-  responses: { 200: v.partial(v.objectWithRest({ VolumesDeleted: v.array(v.string()), SpaceReclaimed: v.pipe(v.number(), v.integer()) }, v.unknown())), 500: ErrorResponse },
+  responses: { 200: v.partial(v.strictObject({ VolumesDeleted: v.array(v.string()), SpaceReclaimed: v.pipe(v.number(), v.integer()) })), 500: ErrorResponse },
 };
 
 export type get_NetworkList = typeof get_NetworkList;
@@ -929,8 +929,8 @@ export const post_NetworkCreate = {
   path: v.literal("/networks/create"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { body: v.objectWithRest({ Name: v.string(), CheckDuplicate: v.optional(v.boolean()), Driver: v.optional(v.string(), "bridge"), Internal: v.optional(v.boolean()), Attachable: v.optional(v.boolean()), Ingress: v.optional(v.boolean()), IPAM: v.optional(IPAM), EnableIPv6: v.optional(v.boolean()), Options: v.optional(v.record(v.string(), v.string())), Labels: v.optional(v.record(v.string(), v.string())) }, v.unknown()) },
-  responses: { 201: v.partial(v.objectWithRest({ Id: v.string(), Warning: v.string() }, v.unknown())), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { body: v.strictObject({ Name: v.string(), CheckDuplicate: v.optional(v.boolean()), Driver: v.optional(v.string(), "bridge"), Internal: v.optional(v.boolean()), Attachable: v.optional(v.boolean()), Ingress: v.optional(v.boolean()), IPAM: v.optional(IPAM), EnableIPv6: v.optional(v.boolean()), Options: v.optional(v.record(v.string(), v.string())), Labels: v.optional(v.record(v.string(), v.string())) }) },
+  responses: { 201: v.partial(v.strictObject({ Id: v.string(), Warning: v.string() })), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkConnect = typeof post_NetworkConnect;
@@ -939,7 +939,7 @@ export const post_NetworkConnect = {
   path: v.literal("/networks/{id}/connect"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.strictObject({ id: v.string() }), body: v.optional(v.partial(v.objectWithRest({ Container: v.string(), EndpointConfig: EndpointSettings }, v.unknown()))) },
+  parameters: { path: v.strictObject({ id: v.string() }), body: v.optional(v.partial(v.strictObject({ Container: v.string(), EndpointConfig: EndpointSettings }))) },
   responses: { 200: v.unknown(), 403: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -949,7 +949,7 @@ export const post_NetworkDisconnect = {
   path: v.literal("/networks/{id}/disconnect"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { path: v.strictObject({ id: v.string() }), body: v.optional(v.partial(v.objectWithRest({ Container: v.string(), Force: v.boolean() }, v.unknown()))) },
+  parameters: { path: v.strictObject({ id: v.string() }), body: v.optional(v.partial(v.strictObject({ Container: v.string(), Force: v.boolean() }))) },
   responses: { 200: v.unknown(), 403: v.union([ErrorResponse, ErrorResponse]), 404: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -960,7 +960,7 @@ export const post_NetworkPrune = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { query: v.optional(v.partial(v.strictObject({ filters: v.string() }))) },
-  responses: { 200: v.partial(v.objectWithRest({ NetworksDeleted: v.array(v.string()) }, v.unknown())), 500: ErrorResponse },
+  responses: { 200: v.partial(v.strictObject({ NetworksDeleted: v.array(v.string()) })), 500: ErrorResponse },
 };
 
 export type get_PluginList = typeof get_PluginList;
@@ -1129,7 +1129,7 @@ export const post_SwarmInit = {
   path: v.literal("/swarm/init"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { body: v.optional(v.partial(v.objectWithRest({ ListenAddr: v.string(), AdvertiseAddr: v.string(), DataPathAddr: v.string(), DataPathPort: v.pipe(v.number(), v.integer()), DefaultAddrPool: v.array(v.string()), ForceNewCluster: v.boolean(), SubnetSize: v.pipe(v.number(), v.integer()), Spec: SwarmSpec }, v.unknown()))) },
+  parameters: { body: v.optional(v.partial(v.strictObject({ ListenAddr: v.string(), AdvertiseAddr: v.string(), DataPathAddr: v.string(), DataPathPort: v.pipe(v.number(), v.integer()), DefaultAddrPool: v.array(v.string()), ForceNewCluster: v.boolean(), SubnetSize: v.pipe(v.number(), v.integer()), Spec: SwarmSpec }))) },
   responses: { 200: v.union([v.string(), v.string()]), 400: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1139,7 +1139,7 @@ export const post_SwarmJoin = {
   path: v.literal("/swarm/join"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { body: v.optional(v.partial(v.objectWithRest({ ListenAddr: v.string(), AdvertiseAddr: v.string(), DataPathAddr: v.string(), RemoteAddrs: v.array(v.string()), JoinToken: v.string() }, v.unknown()))) },
+  parameters: { body: v.optional(v.partial(v.strictObject({ ListenAddr: v.string(), AdvertiseAddr: v.string(), DataPathAddr: v.string(), RemoteAddrs: v.array(v.string()), JoinToken: v.string() }))) },
   responses: { 200: v.unknown(), 400: v.union([ErrorResponse, ErrorResponse]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1170,7 +1170,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: v.never(),
-  responses: { 200: v.union([v.partial(v.objectWithRest({ UnlockKey: v.string() }, v.unknown())), v.partial(v.objectWithRest({ UnlockKey: v.string() }, v.unknown()))]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: v.union([v.partial(v.strictObject({ UnlockKey: v.string() })), v.partial(v.strictObject({ UnlockKey: v.string() }))]), 500: v.union([ErrorResponse, ErrorResponse]), 503: v.union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1179,7 +1179,7 @@ export const post_SwarmUnlock = {
   path: v.literal("/swarm/unlock"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { body: v.optional(v.partial(v.objectWithRest({ UnlockKey: v.string() }, v.unknown()))) },
+  parameters: { body: v.optional(v.partial(v.strictObject({ UnlockKey: v.string() }))) },
   responses: { 200: v.unknown(), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1200,7 +1200,7 @@ export const post_ServiceCreate = {
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
   parameters: { header: v.optional(v.partial(v.strictObject({ "X-Registry-Auth": v.string() }))), body: v.intersect([ServiceSpec, v.record(v.string(), v.unknown())]) },
-  responses: { 201: v.partial(v.objectWithRest({ ID: v.string(), Warning: v.string() }, v.unknown())), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 201: v.partial(v.strictObject({ ID: v.string(), Warning: v.string() })), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_ServiceInspect = typeof get_ServiceInspect;

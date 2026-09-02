@@ -40,7 +40,7 @@ describe("generator", () => {
           photoUrls: Array<string>;
           tags?: Array<Tag>;
           status?: "available" | "pending" | "sold";
-        } & Record<string, unknown>;
+        };
         export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
 
         // </Schemas>
@@ -77,11 +77,7 @@ describe("generator", () => {
           parameters: {
             query?: Partial<{ status: "available" | "pending" | "sold" }>;
           };
-          responses: {
-            200: Array<Schemas.Pet>;
-            304: unknown;
-            400: { code: number; message: string } & Record<string, unknown>;
-          };
+          responses: { 200: Array<Schemas.Pet>; 304: unknown; 400: { code: number; message: string } };
         };
         export type get_FindPetsByTags = {
           method: "GET";
@@ -101,11 +97,7 @@ describe("generator", () => {
           parameters: {
             path: { petId: number };
           };
-          responses: {
-            200: Schemas.Pet;
-            400: { code: number; message: string } & Record<string, unknown>;
-            404: { code: number; message: string } & Record<string, unknown>;
-          };
+          responses: { 200: Schemas.Pet; 400: { code: number; message: string }; 404: { code: number; message: string } };
         };
         export type post_UpdatePetWithForm = {
           method: "POST";
@@ -229,8 +221,8 @@ describe("generator", () => {
           };
           responses: {
             200: Schemas.User;
-            201: { id: number; username: string } & Record<string, unknown>;
-            400: { code: number; message: string } & Record<string, unknown>;
+            201: { id: number; username: string };
+            400: { code: number; message: string };
             404: unknown;
           };
         };
@@ -1488,7 +1480,7 @@ describe("generator", () => {
             photoUrls: Array<string>;
             tags?: Array<Tag>;
             status?: "available" | "pending" | "sold";
-          } & Record<string, unknown>;
+          };
           export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
 
           // </Schemas>
@@ -1678,10 +1670,10 @@ describe("generator", () => {
             lastName?: string | null;
             profilePictureURL?: string | null;
             email: string;
-          } & Record<string, unknown>;
+          };
           refreshToken: string;
           refreshTokenExpirationDate: number;
-        } & Record<string, unknown>;
+        };
 
         // </Schemas>
       }
@@ -1703,16 +1695,14 @@ describe("generator", () => {
           };
           responses: {
             200: {
-              members: Array<
-                {
-                  id: string;
-                  firstName?: string | null;
-                  lastName?: string | null;
-                  email: string;
-                  profilePictureURL?: string | null;
-                } & Record<string, unknown>
-              >;
-            } & Record<string, unknown>;
+              members: Array<{
+                id: string;
+                firstName?: string | null;
+                lastName?: string | null;
+                email: string;
+                profilePictureURL?: string | null;
+              }>;
+            };
           };
         };
 

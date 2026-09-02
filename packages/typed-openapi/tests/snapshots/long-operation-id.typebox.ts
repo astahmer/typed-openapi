@@ -24,7 +24,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: {
-    body: Type.Optional(Type.Partial(Type.Object({ username: Type.String() }, { additionalProperties: true }))),
+    body: Type.Optional(Type.Partial(Type.Object({ username: Type.String() }, { additionalProperties: false }))),
   },
   responses: { 201: Type.Unknown() },
 };

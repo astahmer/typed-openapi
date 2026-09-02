@@ -14,7 +14,7 @@ import {
 import { mapOpenApiEndpoints } from "./map-openapi-endpoints.ts";
 import { generateTanstackQueryFile } from "./tanstack-query.generator.ts";
 import { prettify } from "./format.ts";
-import type { NameTransformOptions } from "./types.ts";
+import type { NameTransformOptions, OpenapiConfig } from "./types.ts";
 import { generateDefaultFetcher } from "./default-fetcher.generator.ts";
 import { generateMswFile } from "./msw.generator.ts";
 import {
@@ -76,6 +76,10 @@ export const optionsSchema = type({
   "transformBigInt?": "boolean",
   "runtimeTypes?": "boolean",
   "includeDeprecated?": type("('endpoints'|'schemas'|'properties')[]").or("string"),
+  "openapi?": type({
+    "additionalPropertiesDefault?": "boolean",
+  }),
+  "openapiAdditionalPropertiesDefault?": "boolean",
 });
 
 export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
@@ -107,6 +111,9 @@ export type GenerateClientFilesOptions = typeof optionsSchema.infer & {
   "transform-bigint"?: boolean;
   runtimeTypes?: boolean;
   includeDescriptions?: boolean | "true" | "false";
+  /** OpenAPI schema interpretation (omitted-keyword defaults, etc.). */
+  openapi?: OpenapiConfig;
+  "openapi-additional-properties-default"?: boolean;
 };
 
 function parseBooleanOption(value: boolean | "true" | "false" | undefined) {
@@ -164,11 +171,16 @@ export async function generateClientFiles(input: string | undefined, options: Ge
   const openApiDoc = (await SwaggerParser.bundle(resolvedInput)) as OpenAPIObject;
 
   const includeDeprecated = parseIncludeDeprecatedOption(merged.includeDeprecated) ?? ["schemas", "properties"];
+  const additionalPropertiesDefault =
+    merged.openapiAdditionalPropertiesDefault === true ||
+    options["openapi-additional-properties-default"] === true ||
+    merged.openapi?.additionalPropertiesDefault === true;
 
   const ctx = mapOpenApiEndpoints(openApiDoc, {
     ...(merged.nameTransform ? { nameTransform: merged.nameTransform } : {}),
     ...(merged.transformSchema ? { transformSchema: merged.transformSchema } : {}),
     includeDeprecatedEndpoints: includeDeprecated.includes("endpoints"),
+    ...(additionalPropertiesDefault ? { openapi: { additionalPropertiesDefault: true } } : {}),
   });
   console.log(`Found ${ctx.endpointList.length} endpoints`);
 

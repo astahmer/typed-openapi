@@ -9,22 +9,40 @@ export type Order = Partial<{
   status: "placed" | "approved" | "delivered";
   complete: boolean;
 }>;
-export const isOrder = typia.createIs<Order>();
+export const isOrder = (input: unknown): input is Order =>
+  typia.createIs<Order>()(input) &&
+  input !== null &&
+  typeof input === "object" &&
+  Object.keys(input).every((key) =>
+    Object.hasOwn({ id: 1, petId: 1, quantity: 1, shipDate: 1, status: 1, complete: 1 }, key),
+  );
 export const assertOrder = typia.createAssert<Order>();
 export const validateOrder = typia.createValidate<Order>();
 
 export type Address = Partial<{ street: string; city: string; state: string; zip: string }>;
-export const isAddress = typia.createIs<Address>();
+export const isAddress = (input: unknown): input is Address =>
+  typia.createIs<Address>()(input) &&
+  input !== null &&
+  typeof input === "object" &&
+  Object.keys(input).every((key) => Object.hasOwn({ street: 1, city: 1, state: 1, zip: 1 }, key));
 export const assertAddress = typia.createAssert<Address>();
 export const validateAddress = typia.createValidate<Address>();
 
 export type Customer = Partial<{ id: number; username: string; address: Array<Address> }>;
-export const isCustomer = typia.createIs<Customer>();
+export const isCustomer = (input: unknown): input is Customer =>
+  typia.createIs<Customer>()(input) &&
+  input !== null &&
+  typeof input === "object" &&
+  Object.keys(input).every((key) => Object.hasOwn({ id: 1, username: 1, address: 1 }, key));
 export const assertCustomer = typia.createAssert<Customer>();
 export const validateCustomer = typia.createValidate<Customer>();
 
 export type Category = Partial<{ id: number; name: string }>;
-export const isCategory = typia.createIs<Category>();
+export const isCategory = (input: unknown): input is Category =>
+  typia.createIs<Category>()(input) &&
+  input !== null &&
+  typeof input === "object" &&
+  Object.keys(input).every((key) => Object.hasOwn({ id: 1, name: 1 }, key));
 export const assertCategory = typia.createAssert<Category>();
 export const validateCategory = typia.createValidate<Category>();
 
@@ -38,12 +56,25 @@ export type User = Partial<{
   phone: string;
   userStatus: number;
 }>;
-export const isUser = typia.createIs<User>();
+export const isUser = (input: unknown): input is User =>
+  typia.createIs<User>()(input) &&
+  input !== null &&
+  typeof input === "object" &&
+  Object.keys(input).every((key) =>
+    Object.hasOwn(
+      { id: 1, username: 1, firstName: 1, lastName: 1, email: 1, password: 1, phone: 1, userStatus: 1 },
+      key,
+    ),
+  );
 export const assertUser = typia.createAssert<User>();
 export const validateUser = typia.createValidate<User>();
 
 export type Tag = Partial<{ id: number; name: string }>;
-export const isTag = typia.createIs<Tag>();
+export const isTag = (input: unknown): input is Tag =>
+  typia.createIs<Tag>()(input) &&
+  input !== null &&
+  typeof input === "object" &&
+  Object.keys(input).every((key) => Object.hasOwn({ id: 1, name: 1 }, key));
 export const assertTag = typia.createAssert<Tag>();
 export const validateTag = typia.createValidate<Tag>();
 
@@ -54,13 +85,23 @@ export type Pet = {
   photoUrls: Array<string>;
   tags?: Array<Tag>;
   status?: "available" | "pending" | "sold";
-} & Record<string, unknown>;
-export const isPet = typia.createIs<Pet>();
+};
+export const isPet = (input: unknown): input is Pet =>
+  typia.createIs<Pet>()(input) &&
+  input !== null &&
+  typeof input === "object" &&
+  Object.keys(input).every((key) =>
+    Object.hasOwn({ id: 1, name: 1, category: 1, photoUrls: 1, tags: 1, status: 1 }, key),
+  );
 export const assertPet = typia.createAssert<Pet>();
 export const validatePet = typia.createValidate<Pet>();
 
 export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
-export const isApiResponse = typia.createIs<ApiResponse>();
+export const isApiResponse = (input: unknown): input is ApiResponse =>
+  typia.createIs<ApiResponse>()(input) &&
+  input !== null &&
+  typeof input === "object" &&
+  Object.keys(input).every((key) => Object.hasOwn({ code: 1, type: 1, message: 1 }, key));
 export const assertApiResponse = typia.createAssert<ApiResponse>();
 export const validateApiResponse = typia.createValidate<ApiResponse>();
 
@@ -103,12 +144,16 @@ export const get_FindPetsByStatus = {
       typia.createIs<Partial<{ status: "available" | "pending" | "sold" }>>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["status"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ status: 1 }, key)),
   },
   responses: {
     200: typia.createIs<Array<Pet>>(),
     304: typia.createIs<unknown>(),
-    400: typia.createIs<{ code: number; message: string } & Record<string, unknown>>(),
+    400: (input: unknown): input is { code: number; message: string } =>
+      typia.createIs<{ code: number; message: string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => Object.hasOwn({ code: 1, message: 1 }, key)),
   },
 };
 
@@ -123,7 +168,7 @@ export const get_FindPetsByTags = {
       typia.createIs<Partial<{ tags: Array<string> }>>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["tags"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ tags: 1 }, key)),
   },
   responses: { 200: typia.createIs<Array<Pet> | Array<User> | Array<Tag>>(), 400: typia.createIs<unknown>() },
 };
@@ -139,12 +184,20 @@ export const get_GetPetById = {
       typia.createIs<{ petId: number }>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["petId"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ petId: 1 }, key)),
   },
   responses: {
     200: isPet,
-    400: typia.createIs<{ code: number; message: string } & Record<string, unknown>>(),
-    404: typia.createIs<{ code: number; message: string } & Record<string, unknown>>(),
+    400: (input: unknown): input is { code: number; message: string } =>
+      typia.createIs<{ code: number; message: string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => Object.hasOwn({ code: 1, message: 1 }, key)),
+    404: (input: unknown): input is { code: number; message: string } =>
+      typia.createIs<{ code: number; message: string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => Object.hasOwn({ code: 1, message: 1 }, key)),
   },
 };
 
@@ -159,12 +212,12 @@ export const post_UpdatePetWithForm = {
       typia.createIs<Partial<{ name: string; status: string }>>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["name", "status"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ name: 1, status: 1 }, key)),
     path: (input: unknown): input is { petId: number } =>
       typia.createIs<{ petId: number }>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["petId"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ petId: 1 }, key)),
   },
   responses: { 405: typia.createIs<unknown>() },
 };
@@ -180,12 +233,12 @@ export const delete_DeletePet = {
       typia.createIs<{ petId: number }>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["petId"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ petId: 1 }, key)),
     header: (input: unknown): input is Partial<{ api_key: string }> =>
       typia.createIs<Partial<{ api_key: string }>>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["api_key"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ api_key: 1 }, key)),
   },
   responses: { 400: typia.createIs<unknown>() },
 };
@@ -201,12 +254,12 @@ export const post_UploadFile = {
       typia.createIs<Partial<{ additionalMetadata: string }>>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["additionalMetadata"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ additionalMetadata: 1 }, key)),
     path: (input: unknown): input is { petId: number } =>
       typia.createIs<{ petId: number }>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["petId"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ petId: 1 }, key)),
     body: typia.createIs<Blob>(),
   },
   responses: { 200: isApiResponse },
@@ -243,7 +296,7 @@ export const get_GetOrderById = {
       typia.createIs<{ orderId: number }>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["orderId"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ orderId: 1 }, key)),
   },
   responses: { 200: isOrder, 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>() },
 };
@@ -259,7 +312,7 @@ export const delete_DeleteOrder = {
       typia.createIs<{ orderId: number }>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["orderId"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ orderId: 1 }, key)),
   },
   responses: { 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>() },
 };
@@ -295,7 +348,7 @@ export const get_LoginUser = {
       typia.createIs<Partial<{ username: string; password: string }>>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["username", "password"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ username: 1, password: 1 }, key)),
   },
   responses: { 200: typia.createIs<string>(), 400: typia.createIs<unknown>() },
   responseHeaders: {
@@ -303,12 +356,12 @@ export const get_LoginUser = {
       typia.createIs<{ "X-Rate-Limit": number; "X-Expires-After": string }>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["X-Rate-Limit", "X-Expires-After"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ "X-Rate-Limit": 1, "X-Expires-After": 1 }, key)),
     400: (input: unknown): input is { "X-Error": string } =>
       typia.createIs<{ "X-Error": string }>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["X-Error"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ "X-Error": 1 }, key)),
   },
 };
 
@@ -333,12 +386,20 @@ export const get_GetUserByName = {
       typia.createIs<{ username: string }>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["username"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ username: 1 }, key)),
   },
   responses: {
     200: isUser,
-    201: typia.createIs<{ id: number; username: string } & Record<string, unknown>>(),
-    400: typia.createIs<{ code: number; message: string } & Record<string, unknown>>(),
+    201: (input: unknown): input is { id: number; username: string } =>
+      typia.createIs<{ id: number; username: string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => Object.hasOwn({ id: 1, username: 1 }, key)),
+    400: (input: unknown): input is { code: number; message: string } =>
+      typia.createIs<{ code: number; message: string }>()(input) &&
+      input !== null &&
+      typeof input === "object" &&
+      Object.keys(input).every((key) => Object.hasOwn({ code: 1, message: 1 }, key)),
     404: typia.createIs<unknown>(),
   },
 };
@@ -354,7 +415,7 @@ export const put_UpdateUser = {
       typia.createIs<{ username: string }>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["username"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ username: 1 }, key)),
     body: isUser,
   },
   responses: { default: typia.createIs<unknown>() },
@@ -371,7 +432,7 @@ export const delete_DeleteUser = {
       typia.createIs<{ username: string }>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => ["username"].includes(key)),
+      Object.keys(input).every((key) => Object.hasOwn({ username: 1 }, key)),
   },
   responses: { 400: typia.createIs<unknown>(), 404: typia.createIs<unknown>() },
 };

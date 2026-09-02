@@ -6,7 +6,7 @@ import { openApiToIr } from "./schema-ir/openapi-to-ir.ts";
 import { stripReadWrite } from "./schema-ir/read-write.ts";
 import type { SchemaIrConvertContext, SchemaNode } from "./schema-ir/types.ts";
 import { pathToVariableName } from "./string-utils.ts";
-import { NameTransformOptions } from "./types.ts";
+import { NameTransformOptions, type OpenapiConfig } from "./types.ts";
 import type { SchemaTransform } from "./schema-transform.ts";
 import { match, P } from "ts-pattern";
 import { sanitizeName } from "./sanitize-name.ts";
@@ -46,12 +46,15 @@ export const mapOpenApiEndpoints = (
     nameTransform?: NameTransformOptions;
     transformSchema?: SchemaTransform;
     includeDeprecatedEndpoints?: boolean;
+    openapi?: OpenapiConfig;
   },
 ) => {
-  const refs = createRefResolver(doc, options?.nameTransform, options?.transformSchema);
+  const additionalPropertiesDefault = options?.openapi?.additionalPropertiesDefault === true;
+  const refs = createRefResolver(doc, options?.nameTransform, options?.transformSchema, additionalPropertiesDefault);
   const irCtx: SchemaIrConvertContext = {
     getRefName: (ref) => refs.getInfosByRef(ref).normalized,
     ...(options?.transformSchema ? { transformSchema: options.transformSchema } : {}),
+    ...(additionalPropertiesDefault ? { additionalPropertiesDefault: true } : {}),
   };
   const endpointList = [] as Array<Endpoint>;
   const endpointAliases = new Set<string>();
