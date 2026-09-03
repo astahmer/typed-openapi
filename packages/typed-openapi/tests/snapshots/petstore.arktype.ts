@@ -12,7 +12,7 @@ export const Order = type({
   .partial()
   .narrow((data) =>
     Object.keys(data).every((key) =>
-      Object.hasOwn({ id: 1, petId: 1, quantity: 1, shipDate: 1, status: 1, complete: 1 }, key),
+      Object.prototype.hasOwnProperty.call({ id: 1, petId: 1, quantity: 1, shipDate: 1, status: 1, complete: 1 }, key),
     ),
   );
 export type Order = typeof Order.infer;
@@ -24,17 +24,23 @@ export const Address = type({
   zip: type("string"),
 })
   .partial()
-  .narrow((data) => Object.keys(data).every((key) => Object.hasOwn({ street: 1, city: 1, state: 1, zip: 1 }, key)));
+  .narrow((data) =>
+    Object.keys(data).every((key) =>
+      Object.prototype.hasOwnProperty.call({ street: 1, city: 1, state: 1, zip: 1 }, key),
+    ),
+  );
 export type Address = typeof Address.infer;
 
 export const Customer = type({ id: type("number.integer"), username: type("string"), address: Address.array() })
   .partial()
-  .narrow((data) => Object.keys(data).every((key) => Object.hasOwn({ id: 1, username: 1, address: 1 }, key)));
+  .narrow((data) =>
+    Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ id: 1, username: 1, address: 1 }, key)),
+  );
 export type Customer = typeof Customer.infer;
 
 export const Category = type({ id: type("number.integer"), name: type("string") })
   .partial()
-  .narrow((data) => Object.keys(data).every((key) => Object.hasOwn({ id: 1, name: 1 }, key)));
+  .narrow((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ id: 1, name: 1 }, key)));
 export type Category = typeof Category.infer;
 
 export const User = type({
@@ -50,7 +56,7 @@ export const User = type({
   .partial()
   .narrow((data) =>
     Object.keys(data).every((key) =>
-      Object.hasOwn(
+      Object.prototype.hasOwnProperty.call(
         { id: 1, username: 1, firstName: 1, lastName: 1, email: 1, password: 1, phone: 1, userStatus: 1 },
         key,
       ),
@@ -60,7 +66,7 @@ export type User = typeof User.infer;
 
 export const Tag = type({ id: type("number.integer"), name: type("string") })
   .partial()
-  .narrow((data) => Object.keys(data).every((key) => Object.hasOwn({ id: 1, name: 1 }, key)));
+  .narrow((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ id: 1, name: 1 }, key)));
 export type Tag = typeof Tag.infer;
 
 export const Pet = type({
@@ -72,14 +78,16 @@ export const Pet = type({
   "status?": type.enumerated("available", "pending", "sold"),
 }).narrow((data) =>
   Object.keys(data).every((key) =>
-    Object.hasOwn({ id: 1, name: 1, category: 1, photoUrls: 1, tags: 1, status: 1 }, key),
+    Object.prototype.hasOwnProperty.call({ id: 1, name: 1, category: 1, photoUrls: 1, tags: 1, status: 1 }, key),
   ),
 );
 export type Pet = typeof Pet.infer;
 
 export const ApiResponse = type({ code: type("number.integer"), type: type("string"), message: type("string") })
   .partial()
-  .narrow((data) => Object.keys(data).every((key) => Object.hasOwn({ code: 1, type: 1, message: 1 }, key)));
+  .narrow((data) =>
+    Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, type: 1, message: 1 }, key)),
+  );
 export type ApiResponse = typeof ApiResponse.infer;
 // </Schemas>
 
@@ -113,14 +121,14 @@ export const get_FindPetsByStatus = {
   parameters: {
     query: type({ status: type.enumerated("available", "pending", "sold") })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => Object.hasOwn({ status: 1 }, key)))
+      .narrow((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ status: 1 }, key)))
       .optional(),
   },
   responses: {
     200: Pet.array(),
     304: type("unknown"),
     400: type({ code: type("number.integer"), message: type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ code: 1, message: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, message: 1 }, key)),
     ),
   },
 };
@@ -134,7 +142,7 @@ export const get_FindPetsByTags = {
   parameters: {
     query: type({ tags: type("string").array() })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => Object.hasOwn({ tags: 1 }, key)))
+      .narrow((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ tags: 1 }, key)))
       .optional(),
   },
   responses: { 200: Pet.array().or(User.array()).or(Tag.array()), 400: type("unknown") },
@@ -148,16 +156,16 @@ export const get_GetPetById = {
   responseFormat: type("'json'"),
   parameters: {
     path: type({ petId: type("string.integer.parse") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ petId: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ petId: 1 }, key)),
     ),
   },
   responses: {
     200: Pet,
     400: type({ code: type("number.integer"), message: type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ code: 1, message: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, message: 1 }, key)),
     ),
     404: type({ code: type("number.integer"), message: type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ code: 1, message: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, message: 1 }, key)),
     ),
   },
 };
@@ -171,10 +179,12 @@ export const post_UpdatePetWithForm = {
   parameters: {
     query: type({ name: type("string"), status: type("string") })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => Object.hasOwn({ name: 1, status: 1 }, key)))
+      .narrow((data) =>
+        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ name: 1, status: 1 }, key)),
+      )
       .optional(),
     path: type({ petId: type("string.integer.parse") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ petId: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ petId: 1 }, key)),
     ),
   },
   responses: { 405: type("unknown") },
@@ -188,11 +198,11 @@ export const delete_DeletePet = {
   responseFormat: type("'json'"),
   parameters: {
     path: type({ petId: type("string.integer.parse") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ petId: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ petId: 1 }, key)),
     ),
     header: type({ api_key: type("string") })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => Object.hasOwn({ api_key: 1 }, key)))
+      .narrow((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ api_key: 1 }, key)))
       .optional(),
   },
   responses: { 400: type("unknown") },
@@ -207,10 +217,12 @@ export const post_UploadFile = {
   parameters: {
     query: type({ additionalMetadata: type("string") })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => Object.hasOwn({ additionalMetadata: 1 }, key)))
+      .narrow((data) =>
+        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ additionalMetadata: 1 }, key)),
+      )
       .optional(),
     path: type({ petId: type("string.integer.parse") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ petId: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ petId: 1 }, key)),
     ),
     body: type.instanceOf(Blob),
   },
@@ -245,7 +257,7 @@ export const get_GetOrderById = {
   responseFormat: type("'json'"),
   parameters: {
     path: type({ orderId: type("string.integer.parse") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ orderId: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ orderId: 1 }, key)),
     ),
   },
   responses: { 200: Order, 400: type("unknown"), 404: type("unknown") },
@@ -259,7 +271,7 @@ export const delete_DeleteOrder = {
   responseFormat: type("'json'"),
   parameters: {
     path: type({ orderId: type("string.integer.parse") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ orderId: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ orderId: 1 }, key)),
     ),
   },
   responses: { 400: type("unknown"), 404: type("unknown") },
@@ -294,16 +306,20 @@ export const get_LoginUser = {
   parameters: {
     query: type({ username: type("string"), password: type("string") })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => Object.hasOwn({ username: 1, password: 1 }, key)))
+      .narrow((data) =>
+        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1, password: 1 }, key)),
+      )
       .optional(),
   },
   responses: { 200: type("string"), 400: type("unknown") },
   responseHeaders: {
     200: type({ "X-Rate-Limit": type("number.integer"), "X-Expires-After": type("string.date") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ "X-Rate-Limit": 1, "X-Expires-After": 1 }, key)),
+      Object.keys(data).every((key) =>
+        Object.prototype.hasOwnProperty.call({ "X-Rate-Limit": 1, "X-Expires-After": 1 }, key),
+      ),
     ),
     400: type({ "X-Error": type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ "X-Error": 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "X-Error": 1 }, key)),
     ),
   },
 };
@@ -326,16 +342,16 @@ export const get_GetUserByName = {
   responseFormat: type("'json'"),
   parameters: {
     path: type({ username: type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ username: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1 }, key)),
     ),
   },
   responses: {
     200: User,
     201: type({ id: type("number.integer"), username: type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ id: 1, username: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ id: 1, username: 1 }, key)),
     ),
     400: type({ code: type("number.integer"), message: type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ code: 1, message: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, message: 1 }, key)),
     ),
     404: type("unknown"),
   },
@@ -349,7 +365,7 @@ export const put_UpdateUser = {
   responseFormat: type("'json'"),
   parameters: {
     path: type({ username: type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ username: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1 }, key)),
     ),
     body: User,
   },
@@ -364,7 +380,7 @@ export const delete_DeleteUser = {
   responseFormat: type("'json'"),
   parameters: {
     path: type({ username: type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => Object.hasOwn({ username: 1 }, key)),
+      Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1 }, key)),
     ),
   },
   responses: { 400: type("unknown"), 404: type("unknown") },

@@ -19,7 +19,7 @@ export const Order = S.Struct({
 }).pipe(
   S.filter((data) =>
     Object.keys(data).every((key) =>
-      Object.hasOwn({ id: 1, petId: 1, quantity: 1, shipDate: 1, status: 1, complete: 1 }, key),
+      Object.prototype.hasOwnProperty.call({ id: 1, petId: 1, quantity: 1, shipDate: 1, status: 1, complete: 1 }, key),
     ),
   ),
 );
@@ -31,7 +31,11 @@ export const Address = S.Struct({
   state: S.optional(S.String),
   zip: S.optional(S.String),
 }).pipe(
-  S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ street: 1, city: 1, state: 1, zip: 1 }, key))),
+  S.filter((data) =>
+    Object.keys(data).every((key) =>
+      Object.prototype.hasOwnProperty.call({ street: 1, city: 1, state: 1, zip: 1 }, key),
+    ),
+  ),
 );
 export type Address = S.Schema.Type<typeof Address>;
 
@@ -39,11 +43,15 @@ export const Customer = S.Struct({
   id: S.optional(S.Int),
   username: S.optional(S.String),
   address: S.optional(S.Array(Address)),
-}).pipe(S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ id: 1, username: 1, address: 1 }, key))));
+}).pipe(
+  S.filter((data) =>
+    Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ id: 1, username: 1, address: 1 }, key)),
+  ),
+);
 export type Customer = S.Schema.Type<typeof Customer>;
 
 export const Category = S.Struct({ id: S.optional(S.Int), name: S.optional(S.String) }).pipe(
-  S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ id: 1, name: 1 }, key))),
+  S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ id: 1, name: 1 }, key))),
 );
 export type Category = S.Schema.Type<typeof Category>;
 
@@ -59,7 +67,7 @@ export const User = S.Struct({
 }).pipe(
   S.filter((data) =>
     Object.keys(data).every((key) =>
-      Object.hasOwn(
+      Object.prototype.hasOwnProperty.call(
         { id: 1, username: 1, firstName: 1, lastName: 1, email: 1, password: 1, phone: 1, userStatus: 1 },
         key,
       ),
@@ -69,7 +77,7 @@ export const User = S.Struct({
 export type User = S.Schema.Type<typeof User>;
 
 export const Tag = S.Struct({ id: S.optional(S.Int), name: S.optional(S.String) }).pipe(
-  S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ id: 1, name: 1 }, key))),
+  S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ id: 1, name: 1 }, key))),
 );
 export type Tag = S.Schema.Type<typeof Tag>;
 
@@ -83,7 +91,7 @@ export const Pet = S.Struct({
 }).pipe(
   S.filter((data) =>
     Object.keys(data).every((key) =>
-      Object.hasOwn({ id: 1, name: 1, category: 1, photoUrls: 1, tags: 1, status: 1 }, key),
+      Object.prototype.hasOwnProperty.call({ id: 1, name: 1, category: 1, photoUrls: 1, tags: 1, status: 1 }, key),
     ),
   ),
 );
@@ -93,7 +101,11 @@ export const ApiResponse = S.Struct({
   code: S.optional(S.Int),
   type: S.optional(S.String),
   message: S.optional(S.String),
-}).pipe(S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ code: 1, type: 1, message: 1 }, key))));
+}).pipe(
+  S.filter((data) =>
+    Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, type: 1, message: 1 }, key)),
+  ),
+);
 export type ApiResponse = S.Schema.Type<typeof ApiResponse>;
 
 // </Schemas>
@@ -128,7 +140,7 @@ export const get_FindPetsByStatus = {
   parameters: {
     query: S.optional(
       S.Struct({ status: Union_default_available_prop }).pipe(
-        S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ status: 1 }, key))),
+        S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ status: 1 }, key))),
       ),
     ),
   },
@@ -136,7 +148,9 @@ export const get_FindPetsByStatus = {
     200: S.Array(Pet),
     304: S.Unknown,
     400: S.Struct({ code: S.Int, message: S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ code: 1, message: 1 }, key))),
+      S.filter((data) =>
+        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, message: 1 }, key)),
+      ),
     ),
   },
 };
@@ -150,7 +164,7 @@ export const get_FindPetsByTags = {
   parameters: {
     query: S.optional(
       S.Struct({ tags: S.optional(S.Array(S.String)) }).pipe(
-        S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ tags: 1 }, key))),
+        S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ tags: 1 }, key))),
       ),
     ),
   },
@@ -165,16 +179,20 @@ export const get_GetPetById = {
   responseFormat: S.Literal("json"),
   parameters: {
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ petId: 1 }, key))),
+      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ petId: 1 }, key))),
     ),
   },
   responses: {
     200: Pet,
     400: S.Struct({ code: S.Int, message: S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ code: 1, message: 1 }, key))),
+      S.filter((data) =>
+        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, message: 1 }, key)),
+      ),
     ),
     404: S.Struct({ code: S.Int, message: S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ code: 1, message: 1 }, key))),
+      S.filter((data) =>
+        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, message: 1 }, key)),
+      ),
     ),
   },
 };
@@ -188,11 +206,13 @@ export const post_UpdatePetWithForm = {
   parameters: {
     query: S.optional(
       S.Struct({ name: S.optional(S.String), status: S.optional(S.String) }).pipe(
-        S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ name: 1, status: 1 }, key))),
+        S.filter((data) =>
+          Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ name: 1, status: 1 }, key)),
+        ),
       ),
     ),
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ petId: 1 }, key))),
+      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ petId: 1 }, key))),
     ),
   },
   responses: { 405: S.Unknown },
@@ -206,11 +226,11 @@ export const delete_DeletePet = {
   responseFormat: S.Literal("json"),
   parameters: {
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ petId: 1 }, key))),
+      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ petId: 1 }, key))),
     ),
     header: S.optional(
       S.Struct({ api_key: S.optional(S.String) }).pipe(
-        S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ api_key: 1 }, key))),
+        S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ api_key: 1 }, key))),
       ),
     ),
   },
@@ -226,11 +246,13 @@ export const post_UploadFile = {
   parameters: {
     query: S.optional(
       S.Struct({ additionalMetadata: S.optional(S.String) }).pipe(
-        S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ additionalMetadata: 1 }, key))),
+        S.filter((data) =>
+          Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ additionalMetadata: 1 }, key)),
+        ),
       ),
     ),
     path: S.Struct({ petId: S.NumberFromString.pipe(S.int()) }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ petId: 1 }, key))),
+      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ petId: 1 }, key))),
     ),
     body: S.declare((v): v is Blob => typeof Blob !== "undefined" && v instanceof Blob),
   },
@@ -265,7 +287,7 @@ export const get_GetOrderById = {
   responseFormat: S.Literal("json"),
   parameters: {
     path: S.Struct({ orderId: S.NumberFromString.pipe(S.int()) }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ orderId: 1 }, key))),
+      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ orderId: 1 }, key))),
     ),
   },
   responses: { 200: Order, 400: S.Unknown, 404: S.Unknown },
@@ -279,7 +301,7 @@ export const delete_DeleteOrder = {
   responseFormat: S.Literal("json"),
   parameters: {
     path: S.Struct({ orderId: S.NumberFromString.pipe(S.int()) }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ orderId: 1 }, key))),
+      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ orderId: 1 }, key))),
     ),
   },
   responses: { 400: S.Unknown, 404: S.Unknown },
@@ -314,7 +336,9 @@ export const get_LoginUser = {
   parameters: {
     query: S.optional(
       S.Struct({ username: S.optional(S.String), password: S.optional(S.String) }).pipe(
-        S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ username: 1, password: 1 }, key))),
+        S.filter((data) =>
+          Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1, password: 1 }, key)),
+        ),
       ),
     ),
   },
@@ -322,11 +346,13 @@ export const get_LoginUser = {
   responseHeaders: {
     200: S.Struct({ "X-Rate-Limit": S.Int, "X-Expires-After": S.String }).pipe(
       S.filter((data) =>
-        Object.keys(data).every((key) => Object.hasOwn({ "X-Rate-Limit": 1, "X-Expires-After": 1 }, key)),
+        Object.keys(data).every((key) =>
+          Object.prototype.hasOwnProperty.call({ "X-Rate-Limit": 1, "X-Expires-After": 1 }, key),
+        ),
       ),
     ),
     400: S.Struct({ "X-Error": S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ "X-Error": 1 }, key))),
+      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ "X-Error": 1 }, key))),
     ),
   },
 };
@@ -349,16 +375,20 @@ export const get_GetUserByName = {
   responseFormat: S.Literal("json"),
   parameters: {
     path: S.Struct({ username: S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ username: 1 }, key))),
+      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1 }, key))),
     ),
   },
   responses: {
     200: User,
     201: S.Struct({ id: S.Int, username: S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ id: 1, username: 1 }, key))),
+      S.filter((data) =>
+        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ id: 1, username: 1 }, key)),
+      ),
     ),
     400: S.Struct({ code: S.Int, message: S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ code: 1, message: 1 }, key))),
+      S.filter((data) =>
+        Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ code: 1, message: 1 }, key)),
+      ),
     ),
     404: S.Unknown,
   },
@@ -372,7 +402,7 @@ export const put_UpdateUser = {
   responseFormat: S.Literal("json"),
   parameters: {
     path: S.Struct({ username: S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ username: 1 }, key))),
+      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1 }, key))),
     ),
     body: User,
   },
@@ -387,7 +417,7 @@ export const delete_DeleteUser = {
   responseFormat: S.Literal("json"),
   parameters: {
     path: S.Struct({ username: S.String }).pipe(
-      S.filter((data) => Object.keys(data).every((key) => Object.hasOwn({ username: 1 }, key))),
+      S.filter((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1 }, key))),
     ),
   },
   responses: { 400: S.Unknown, 404: S.Unknown },

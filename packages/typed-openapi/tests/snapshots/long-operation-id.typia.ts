@@ -26,7 +26,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
       typia.createIs<Partial<{ username: string }>>()(input) &&
       input !== null &&
       typeof input === "object" &&
-      Object.keys(input).every((key) => Object.hasOwn({ username: 1 }, key)),
+      Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ username: 1 }, key)),
   },
   responses: { 201: typia.createIs<unknown>() },
 };

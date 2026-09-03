@@ -12,9 +12,11 @@ import type { ValidationPolicy } from "./validation.ts";
 
 export const quote = (value: string) => JSON.stringify(value);
 
-/** Membership check that is valid JS and typechecks when `key` is `string` (tuple `.includes` does not). */
+/** Membership check that is valid JS, typechecks when `key` is `string`, and works with `lib` older than ES2022. */
 export const emitKeyAllowed = (keys: string[], keyExpr = "key"): string =>
-  keys.length === 0 ? "false" : `Object.hasOwn({ ${keys.map((key) => `${quote(key)}: 1`).join(", ")} }, ${keyExpr})`;
+  keys.length === 0
+    ? "false"
+    : `Object.prototype.hasOwnProperty.call({ ${keys.map((key) => `${quote(key)}: 1`).join(", ")} }, ${keyExpr})`;
 
 /** Runtime expression for OAS binary/byte bodies (Blob in browser/Node 18+). */
 export const emitBinaryBlobCheck = (
