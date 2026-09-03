@@ -129,6 +129,23 @@ const asTypeExpr = (expr: string): string => {
   return expr;
 };
 
+const resolveNode = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()): SchemaNode => {
+  if (node.kind === "ref" && ctx.schemaNodes && !seen.has(node.name)) {
+    const target = ctx.schemaNodes.get(node.name);
+    if (target) return resolveNode(target, ctx, new Set(seen).add(node.name));
+  }
+  return node;
+};
+
+/** True when omitted/explicit additionalProperties:false should close the allOf result. */
+const isClosedObjectLike = (node: SchemaNode, ctx: EmitCtx): boolean => {
+  const resolved = resolveNode(node, ctx);
+  if (resolved.kind === "object") return resolved.additionalProperties === false;
+  if (resolved.kind === "intersection") return resolved.members.every((member) => isClosedObjectLike(member, ctx));
+  const inner = isNullOr(resolved);
+  return inner ? isClosedObjectLike(inner, ctx) : false;
+};
+
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   const nullInner = isNullOr(node);
   if (nullInner) {
@@ -235,8 +252,25 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         : "";
       return `${members.map(asTypeExpr).reduce((a, b) => `${a}.or(${b})`)}${exclusiveCheck}`;
     }
-    case "intersection":
-      return node.members.map((m) => asTypeExpr(emitNode(m, ctx))).reduce((a, b) => `${a}.and(${b})`);
+    case "intersection": {
+      // Closed members reject sibling allOf keys (and `.narrow()` morphs cannot `.and()`).
+      // Reopen each object member, then close the merged key set.
+      const inner = node.members
+        .map((member) => {
+          const raw = emitNode(member, ctx);
+          const expr = isModuleStringDef(raw) ? `type(${raw})` : asTypeExpr(raw);
+          const resolved = resolveNode(member, ctx);
+          if (member.kind === "ref" || resolved.kind === "object" || resolved.kind === "intersection") {
+            return `${expr}.onUndeclaredKey("ignore")`;
+          }
+          return expr;
+        })
+        .reduce((a, b) => `${a}.and(${b})`);
+      if (node.members.every((member) => isClosedObjectLike(member, ctx))) {
+        return `${inner}.onUndeclaredKey("reject")`;
+      }
+      return inner;
+    }
     case "not": {
       const inner = asTypeExpr(emitNode(node.schema, ctx));
       return `type("unknown").narrow((data, ctx) => (${inner}.allows(data) ? ctx.mustBe("not") : true))`;
@@ -308,7 +342,7 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         const rest = emitNode(node.additionalProperties, ctx);
         expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${emitKeyAllowed(Object.keys(node.properties))} || ${rest}.allows(value)))`;
       } else if (node.additionalProperties === false) {
-        expr = `${expr}.narrow((data) => Object.keys(data).every((key) => ${emitKeyAllowed(Object.keys(node.properties))}))`;
+        expr = `${expr}.onUndeclaredKey("reject")`;
       }
       return expr;
     }

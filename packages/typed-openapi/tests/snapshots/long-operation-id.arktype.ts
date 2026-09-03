@@ -25,7 +25,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   parameters: {
     body: type({ username: type("string") })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => Object.prototype.hasOwnProperty.call({ username: 1 }, key)))
+      .onUndeclaredKey("reject")
       .optional(),
   },
   responses: { 201: type("unknown") },

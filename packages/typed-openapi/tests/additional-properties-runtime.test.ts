@@ -164,6 +164,40 @@ describe("typed additionalProperties with named properties", () => {
     expect(accepts(runtime, schema, { name: "typed-openapi", extra: true })).toBe(false);
   });
 
+  test("arktype allOf of closed objects with defaults composes instead of throwing", () => {
+    const irCtx = { getRefName: (ref: string) => ref.replace(/^.*\//, "") };
+    const resourcesSchema = {
+      type: "object",
+      properties: {
+        Memory: { type: "integer", default: 0 },
+        CpuShares: { type: "integer" },
+      },
+    };
+    const extraSchema = {
+      type: "object",
+      properties: {
+        Binds: { type: "array", items: { type: "string" } },
+        BindOptions: {
+          type: "object",
+          properties: { NonRecursive: { type: "boolean", default: false } },
+        },
+      },
+    };
+    const resources = openApiToIr(resourcesSchema, irCtx);
+    const hostConfig = openApiToIr({ allOf: [{ $ref: "#/components/schemas/Resources" }, extraSchema] }, irCtx);
+    const ctx = createEmitCtx(resolveValidationPolicy("strict"), new Set(), {
+      schemaNodes: new Map([["Resources", resources]]),
+    });
+    const source = `const Resources = ${arktypeAdapter.emitNode(resources, ctx)}; return ${arktypeAdapter.emitNode(hostConfig, ctx)};`;
+    expect(source).toContain('onUndeclaredKey("ignore")');
+    expect(source).toContain('onUndeclaredKey("reject")');
+    expect(source).not.toContain(".narrow(");
+    const schema = new Function("type", source)(type) as (value: unknown) => unknown;
+
+    expect(accepts("arktype", schema, { Memory: 1, Binds: [] })).toBe(true);
+    expect(accepts("arktype", schema, { Memory: 1, Binds: [], extra: true })).toBe(false);
+  });
+
   test.each([
     ["effect", effectAdapter],
     ["effect3", effect3Adapter],
