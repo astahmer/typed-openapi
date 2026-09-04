@@ -105,6 +105,12 @@ export type SchemaIrConvertContext = {
     schema: LibSchemaObject,
     ctx: { path: string[]; ref?: string },
   ) => SchemaTransformResult | undefined;
+  /**
+   * Value used when an object schema omits `additionalProperties`.
+   * `true` follows OpenAPI/JSON Schema; unset/`false` keeps named objects closed.
+   * Explicit `true` / `false` / schema values are always honored.
+   */
+  additionalPropertiesDefault?: boolean;
   /** JSON-pointer-ish path of the SchemaObject being converted (for transform context / debugging). */
   path?: string[];
   /** `$ref` of the SchemaObject being converted, when it's a named component. */

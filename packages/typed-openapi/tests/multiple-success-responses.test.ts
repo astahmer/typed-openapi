@@ -120,12 +120,12 @@ describe("multiple success responses", () => {
           requestFormat: "json";
           responseFormat: "json";
           parameters: {
-            body: { name: string; email: string } & Record<string, unknown>;
+            body: { name: string; email: string };
           };
           responses: {
-            200: { id: string; name: string; email: string; updated: true; updatedAt: string } & Record<string, unknown>;
-            201: { id: string; name: string; email: string; created: true; createdAt: string } & Record<string, unknown>;
-            400: { message: string; errors: Array<string> } & Record<string, unknown>;
+            200: { id: string; name: string; email: string; updated: true; updatedAt: string };
+            201: { id: string; name: string; email: string; created: true; createdAt: string };
+            400: { message: string; errors: Array<string> };
           };
         };
 

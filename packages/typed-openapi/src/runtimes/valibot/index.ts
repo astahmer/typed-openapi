@@ -16,6 +16,9 @@ import {
   quote,
   shouldDeferNamedSchemaRef,
   withValibotDefault,
+  collectClosedObjectKeys,
+  emitKeyAllowed,
+  closedObjectReopen,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
@@ -135,8 +138,26 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
           ])
         : union;
     }
-    case "intersection":
-      return `v.intersect([${node.members.map((m) => emitNode(m, ctx)).join(", ")}])`;
+    case "intersection": {
+      const inner = `v.intersect([${node.members
+        .map((member) => {
+          const expr = emitNode(member, ctx);
+          const reopen = closedObjectReopen(member, ctx);
+          if (reopen === "nullable-object") return `v.nullable(v.looseObject((${expr}).wrapped.entries))`;
+          if (reopen === "object") return `v.looseObject((${expr}).entries)`;
+          return expr;
+        })
+        .join(", ")}])`;
+      if (node.members.every((member) => closedObjectReopen(member, ctx))) {
+        const keys = collectClosedObjectKeys(node, ctx);
+        if (keys) {
+          return pipe(inner, [
+            `v.check((data) => data == null || Object.keys(data).every((key) => ${emitKeyAllowed(keys)}))`,
+          ]);
+        }
+      }
+      return inner;
+    }
     case "not": {
       const inner = emitNode(node.schema, ctx);
       return `v.pipe(v.unknown(), v.check((data) => !v.is(${inner}, data), "not"))`;

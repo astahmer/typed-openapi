@@ -4,319 +4,319 @@ import { Value } from "@sinclair/typebox/value";
 
 // <Schemas>
 export type Port = Static<typeof Port>;
-export const Port = Type.Object({ IP: Type.Optional(Type.String({ format: "ip-address" })), PrivatePort: Type.Integer(), PublicPort: Type.Optional(Type.Integer()), Type: Type.Union([Type.Literal("tcp"), Type.Literal("udp"), Type.Literal("sctp")]) }, { additionalProperties: true });
+export const Port = Type.Object({ IP: Type.Optional(Type.String({ format: "ip-address" })), PrivatePort: Type.Integer(), PublicPort: Type.Optional(Type.Integer()), Type: Type.Union([Type.Literal("tcp"), Type.Literal("udp"), Type.Literal("sctp")]) }, { additionalProperties: false });
 
 export type MountPoint = Static<typeof MountPoint>;
-export const MountPoint = Type.Partial(Type.Object({ Type: Type.Union([Type.Literal("bind"), Type.Literal("volume"), Type.Literal("tmpfs"), Type.Literal("npipe"), Type.Literal("cluster")]), Name: Type.String(), Source: Type.String(), Destination: Type.String(), Driver: Type.String(), Mode: Type.String(), RW: Type.Boolean(), Propagation: Type.String() }, { additionalProperties: true }));
+export const MountPoint = Type.Partial(Type.Object({ Type: Type.Union([Type.Literal("bind"), Type.Literal("volume"), Type.Literal("tmpfs"), Type.Literal("npipe"), Type.Literal("cluster")]), Name: Type.String(), Source: Type.String(), Destination: Type.String(), Driver: Type.String(), Mode: Type.String(), RW: Type.Boolean(), Propagation: Type.String() }, { additionalProperties: false }));
 
 export type DeviceMapping = Static<typeof DeviceMapping>;
-export const DeviceMapping = Type.Partial(Type.Object({ PathOnHost: Type.String(), PathInContainer: Type.String(), CgroupPermissions: Type.String() }, { additionalProperties: true }));
+export const DeviceMapping = Type.Partial(Type.Object({ PathOnHost: Type.String(), PathInContainer: Type.String(), CgroupPermissions: Type.String() }, { additionalProperties: false }));
 
 export type DeviceRequest = Static<typeof DeviceRequest>;
-export const DeviceRequest = Type.Partial(Type.Object({ Driver: Type.String(), Count: Type.Integer(), DeviceIDs: Type.Array(Type.String()), Capabilities: Type.Array(Type.Array(Type.String())), Options: Type.Record(Type.String(), Type.String()) }, { additionalProperties: true }));
+export const DeviceRequest = Type.Partial(Type.Object({ Driver: Type.String(), Count: Type.Integer(), DeviceIDs: Type.Array(Type.String()), Capabilities: Type.Array(Type.Array(Type.String())), Options: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false }));
 
 export type ThrottleDevice = Static<typeof ThrottleDevice>;
-export const ThrottleDevice = Type.Partial(Type.Object({ Path: Type.String(), Rate: Type.Integer({ minimum: 0 }) }, { additionalProperties: true }));
+export const ThrottleDevice = Type.Partial(Type.Object({ Path: Type.String(), Rate: Type.Integer({ minimum: 0 }) }, { additionalProperties: false }));
 
 export type Mount = Static<typeof Mount>;
-export const Mount = Type.Partial(Type.Object({ Target: Type.String(), Source: Type.String(), Type: Type.Union([Type.Literal("bind"), Type.Literal("volume"), Type.Literal("tmpfs"), Type.Literal("npipe"), Type.Literal("cluster")]), ReadOnly: Type.Boolean(), Consistency: Type.String(), BindOptions: Type.Partial(Type.Object({ Propagation: Type.Union([Type.Literal("private"), Type.Literal("rprivate"), Type.Literal("shared"), Type.Literal("rshared"), Type.Literal("slave"), Type.Literal("rslave")]), NonRecursive: Type.Boolean(), CreateMountpoint: Type.Boolean() }, { additionalProperties: true })), VolumeOptions: Type.Partial(Type.Object({ NoCopy: Type.Boolean(), Labels: Type.Record(Type.String(), Type.String()), DriverConfig: Type.Partial(Type.Object({ Name: Type.String(), Options: Type.Record(Type.String(), Type.String()) }, { additionalProperties: true })) }, { additionalProperties: true })), TmpfsOptions: Type.Partial(Type.Object({ SizeBytes: Type.Integer(), Mode: Type.Integer() }, { additionalProperties: true })) }, { additionalProperties: true }));
+export const Mount = Type.Partial(Type.Object({ Target: Type.String(), Source: Type.String(), Type: Type.Union([Type.Literal("bind"), Type.Literal("volume"), Type.Literal("tmpfs"), Type.Literal("npipe"), Type.Literal("cluster")]), ReadOnly: Type.Boolean(), Consistency: Type.String(), BindOptions: Type.Partial(Type.Object({ Propagation: Type.Union([Type.Literal("private"), Type.Literal("rprivate"), Type.Literal("shared"), Type.Literal("rshared"), Type.Literal("slave"), Type.Literal("rslave")]), NonRecursive: Type.Boolean(), CreateMountpoint: Type.Boolean() }, { additionalProperties: false })), VolumeOptions: Type.Partial(Type.Object({ NoCopy: Type.Boolean(), Labels: Type.Record(Type.String(), Type.String()), DriverConfig: Type.Partial(Type.Object({ Name: Type.String(), Options: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false })) }, { additionalProperties: false })), TmpfsOptions: Type.Partial(Type.Object({ SizeBytes: Type.Integer(), Mode: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false }));
 
 export type RestartPolicy = Static<typeof RestartPolicy>;
-export const RestartPolicy = Type.Partial(Type.Object({ Name: Type.Union([Type.Literal(""), Type.Literal("no"), Type.Literal("always"), Type.Literal("unless-stopped"), Type.Literal("on-failure")]), MaximumRetryCount: Type.Integer() }, { additionalProperties: true }));
+export const RestartPolicy = Type.Partial(Type.Object({ Name: Type.Union([Type.Literal(""), Type.Literal("no"), Type.Literal("always"), Type.Literal("unless-stopped"), Type.Literal("on-failure")]), MaximumRetryCount: Type.Integer() }, { additionalProperties: false }));
 
 export type Resources = Static<typeof Resources>;
-export const Resources = Type.Partial(Type.Object({ CpuShares: Type.Integer(), Memory: Type.Integer(), CgroupParent: Type.String(), BlkioWeight: Type.Integer({ minimum: 0, maximum: 1000 }), BlkioWeightDevice: Type.Array(Type.Partial(Type.Object({ Path: Type.String(), Weight: Type.Integer({ minimum: 0 }) }, { additionalProperties: true }))), BlkioDeviceReadBps: Type.Array(ThrottleDevice), BlkioDeviceWriteBps: Type.Array(ThrottleDevice), BlkioDeviceReadIOps: Type.Array(ThrottleDevice), BlkioDeviceWriteIOps: Type.Array(ThrottleDevice), CpuPeriod: Type.Integer(), CpuQuota: Type.Integer(), CpuRealtimePeriod: Type.Integer(), CpuRealtimeRuntime: Type.Integer(), CpusetCpus: Type.String(), CpusetMems: Type.String(), Devices: Type.Array(DeviceMapping), DeviceCgroupRules: Type.Array(Type.String()), DeviceRequests: Type.Array(DeviceRequest), KernelMemoryTCP: Type.Integer(), MemoryReservation: Type.Integer(), MemorySwap: Type.Integer(), MemorySwappiness: Type.Integer({ minimum: 0, maximum: 100 }), NanoCpus: Type.Integer(), OomKillDisable: Type.Boolean(), Init: Type.Union([Type.Boolean(), Type.Null()]), PidsLimit: Type.Union([Type.Integer(), Type.Null()]), Ulimits: Type.Array(Type.Partial(Type.Object({ Name: Type.String(), Soft: Type.Integer(), Hard: Type.Integer() }, { additionalProperties: true }))), CpuCount: Type.Integer(), CpuPercent: Type.Integer(), IOMaximumIOps: Type.Integer(), IOMaximumBandwidth: Type.Integer() }, { additionalProperties: true }));
+export const Resources = Type.Partial(Type.Object({ CpuShares: Type.Integer(), Memory: Type.Integer(), CgroupParent: Type.String(), BlkioWeight: Type.Integer({ minimum: 0, maximum: 1000 }), BlkioWeightDevice: Type.Array(Type.Partial(Type.Object({ Path: Type.String(), Weight: Type.Integer({ minimum: 0 }) }, { additionalProperties: false }))), BlkioDeviceReadBps: Type.Array(ThrottleDevice), BlkioDeviceWriteBps: Type.Array(ThrottleDevice), BlkioDeviceReadIOps: Type.Array(ThrottleDevice), BlkioDeviceWriteIOps: Type.Array(ThrottleDevice), CpuPeriod: Type.Integer(), CpuQuota: Type.Integer(), CpuRealtimePeriod: Type.Integer(), CpuRealtimeRuntime: Type.Integer(), CpusetCpus: Type.String(), CpusetMems: Type.String(), Devices: Type.Array(DeviceMapping), DeviceCgroupRules: Type.Array(Type.String()), DeviceRequests: Type.Array(DeviceRequest), KernelMemoryTCP: Type.Integer(), MemoryReservation: Type.Integer(), MemorySwap: Type.Integer(), MemorySwappiness: Type.Integer({ minimum: 0, maximum: 100 }), NanoCpus: Type.Integer(), OomKillDisable: Type.Boolean(), Init: Type.Union([Type.Boolean(), Type.Null()]), PidsLimit: Type.Union([Type.Integer(), Type.Null()]), Ulimits: Type.Array(Type.Partial(Type.Object({ Name: Type.String(), Soft: Type.Integer(), Hard: Type.Integer() }, { additionalProperties: false }))), CpuCount: Type.Integer(), CpuPercent: Type.Integer(), IOMaximumIOps: Type.Integer(), IOMaximumBandwidth: Type.Integer() }, { additionalProperties: false }));
 
 export type Limit = Static<typeof Limit>;
-export const Limit = Type.Partial(Type.Object({ NanoCPUs: Type.Integer(), MemoryBytes: Type.Integer(), Pids: Type.Integer() }, { additionalProperties: true }));
+export const Limit = Type.Partial(Type.Object({ NanoCPUs: Type.Integer(), MemoryBytes: Type.Integer(), Pids: Type.Integer() }, { additionalProperties: false }));
 
 export type GenericResources = Static<typeof GenericResources>;
-export const GenericResources = Type.Array(Type.Partial(Type.Object({ NamedResourceSpec: Type.Partial(Type.Object({ Kind: Type.String(), Value: Type.String() }, { additionalProperties: true })), DiscreteResourceSpec: Type.Partial(Type.Object({ Kind: Type.String(), Value: Type.Integer() }, { additionalProperties: true })) }, { additionalProperties: true })));
+export const GenericResources = Type.Array(Type.Partial(Type.Object({ NamedResourceSpec: Type.Partial(Type.Object({ Kind: Type.String(), Value: Type.String() }, { additionalProperties: false })), DiscreteResourceSpec: Type.Partial(Type.Object({ Kind: Type.String(), Value: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false })));
 
 export type ResourceObject = Static<typeof ResourceObject>;
-export const ResourceObject = Type.Partial(Type.Object({ NanoCPUs: Type.Integer(), MemoryBytes: Type.Integer(), GenericResources: GenericResources }, { additionalProperties: true }));
+export const ResourceObject = Type.Partial(Type.Object({ NanoCPUs: Type.Integer(), MemoryBytes: Type.Integer(), GenericResources: GenericResources }, { additionalProperties: false }));
 
 export type HealthConfig = Static<typeof HealthConfig>;
-export const HealthConfig = Type.Partial(Type.Object({ Test: Type.Array(Type.String()), Interval: Type.Integer(), Timeout: Type.Integer(), Retries: Type.Integer(), StartPeriod: Type.Integer() }, { additionalProperties: true }));
+export const HealthConfig = Type.Partial(Type.Object({ Test: Type.Array(Type.String()), Interval: Type.Integer(), Timeout: Type.Integer(), Retries: Type.Integer(), StartPeriod: Type.Integer() }, { additionalProperties: false }));
 
 export type HealthcheckResult = Static<typeof HealthcheckResult>;
-export const HealthcheckResult = Type.Union([Type.Partial(Type.Object({ Start: Type.String({ format: "date-time" }), End: Type.String({ format: "dateTime" }), ExitCode: Type.Integer(), Output: Type.String() }, { additionalProperties: true })), Type.Null()]);
+export const HealthcheckResult = Type.Union([Type.Partial(Type.Object({ Start: Type.String({ format: "date-time" }), End: Type.String({ format: "dateTime" }), ExitCode: Type.Integer(), Output: Type.String() }, { additionalProperties: false })), Type.Null()]);
 
 export type Health = Static<typeof Health>;
-export const Health = Type.Union([Type.Partial(Type.Object({ Status: Type.Union([Type.Literal("none"), Type.Literal("starting"), Type.Literal("healthy"), Type.Literal("unhealthy")]), FailingStreak: Type.Integer(), Log: Type.Array(HealthcheckResult) }, { additionalProperties: true })), Type.Null()]);
+export const Health = Type.Union([Type.Partial(Type.Object({ Status: Type.Union([Type.Literal("none"), Type.Literal("starting"), Type.Literal("healthy"), Type.Literal("unhealthy")]), FailingStreak: Type.Integer(), Log: Type.Array(HealthcheckResult) }, { additionalProperties: false })), Type.Null()]);
 
 export type PortBinding = Static<typeof PortBinding>;
-export const PortBinding = Type.Partial(Type.Object({ HostIp: Type.String(), HostPort: Type.String() }, { additionalProperties: true }));
+export const PortBinding = Type.Partial(Type.Object({ HostIp: Type.String(), HostPort: Type.String() }, { additionalProperties: false }));
 
 export type PortMap = Static<typeof PortMap>;
 export const PortMap = Type.Record(Type.String(), Type.Union([Type.Array(PortBinding), Type.Null()]));
 
 export type HostConfig = Static<typeof HostConfig>;
-export const HostConfig = Type.Intersect([Resources, Type.Partial(Type.Object({ Binds: Type.Array(Type.String()), ContainerIDFile: Type.String(), LogConfig: Type.Partial(Type.Object({ Type: Type.Union([Type.Literal("json-file"), Type.Literal("syslog"), Type.Literal("journald"), Type.Literal("gelf"), Type.Literal("fluentd"), Type.Literal("awslogs"), Type.Literal("splunk"), Type.Literal("etwlogs"), Type.Literal("none")]), Config: Type.Record(Type.String(), Type.String()) }, { additionalProperties: true })), NetworkMode: Type.String(), PortBindings: PortMap, RestartPolicy: RestartPolicy, AutoRemove: Type.Boolean(), VolumeDriver: Type.String(), VolumesFrom: Type.Array(Type.String()), Mounts: Type.Array(Mount), ConsoleSize: Type.Union([Type.Array(Type.Integer({ minimum: 0 }), { minItems: 2, maxItems: 2 }), Type.Null()]), Annotations: Type.Record(Type.String(), Type.String()), CapAdd: Type.Array(Type.String()), CapDrop: Type.Array(Type.String()), CgroupnsMode: Type.Union([Type.Literal("private"), Type.Literal("host")]), Dns: Type.Array(Type.String()), DnsOptions: Type.Array(Type.String()), DnsSearch: Type.Array(Type.String()), ExtraHosts: Type.Array(Type.String()), GroupAdd: Type.Array(Type.String()), IpcMode: Type.String(), Cgroup: Type.String(), Links: Type.Array(Type.String()), OomScoreAdj: Type.Integer(), PidMode: Type.String(), Privileged: Type.Boolean(), PublishAllPorts: Type.Boolean(), ReadonlyRootfs: Type.Boolean(), SecurityOpt: Type.Array(Type.String()), StorageOpt: Type.Record(Type.String(), Type.String()), Tmpfs: Type.Record(Type.String(), Type.String()), UTSMode: Type.String(), UsernsMode: Type.String(), ShmSize: Type.Integer({ minimum: 0 }), Sysctls: Type.Record(Type.String(), Type.String()), Runtime: Type.String(), Isolation: Type.Union([Type.Literal("default"), Type.Literal("process"), Type.Literal("hyperv")]), MaskedPaths: Type.Array(Type.String()), ReadonlyPaths: Type.Array(Type.String()) }, { additionalProperties: true }))]);
+export const HostConfig = Type.Composite([Resources, Type.Partial(Type.Object({ Binds: Type.Array(Type.String()), ContainerIDFile: Type.String(), LogConfig: Type.Partial(Type.Object({ Type: Type.Union([Type.Literal("json-file"), Type.Literal("syslog"), Type.Literal("journald"), Type.Literal("gelf"), Type.Literal("fluentd"), Type.Literal("awslogs"), Type.Literal("splunk"), Type.Literal("etwlogs"), Type.Literal("none")]), Config: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false })), NetworkMode: Type.String(), PortBindings: PortMap, RestartPolicy: RestartPolicy, AutoRemove: Type.Boolean(), VolumeDriver: Type.String(), VolumesFrom: Type.Array(Type.String()), Mounts: Type.Array(Mount), ConsoleSize: Type.Union([Type.Array(Type.Integer({ minimum: 0 }), { minItems: 2, maxItems: 2 }), Type.Null()]), Annotations: Type.Record(Type.String(), Type.String()), CapAdd: Type.Array(Type.String()), CapDrop: Type.Array(Type.String()), CgroupnsMode: Type.Union([Type.Literal("private"), Type.Literal("host")]), Dns: Type.Array(Type.String()), DnsOptions: Type.Array(Type.String()), DnsSearch: Type.Array(Type.String()), ExtraHosts: Type.Array(Type.String()), GroupAdd: Type.Array(Type.String()), IpcMode: Type.String(), Cgroup: Type.String(), Links: Type.Array(Type.String()), OomScoreAdj: Type.Integer(), PidMode: Type.String(), Privileged: Type.Boolean(), PublishAllPorts: Type.Boolean(), ReadonlyRootfs: Type.Boolean(), SecurityOpt: Type.Array(Type.String()), StorageOpt: Type.Record(Type.String(), Type.String()), Tmpfs: Type.Record(Type.String(), Type.String()), UTSMode: Type.String(), UsernsMode: Type.String(), ShmSize: Type.Integer({ minimum: 0 }), Sysctls: Type.Record(Type.String(), Type.String()), Runtime: Type.String(), Isolation: Type.Union([Type.Literal("default"), Type.Literal("process"), Type.Literal("hyperv")]), MaskedPaths: Type.Array(Type.String()), ReadonlyPaths: Type.Array(Type.String()) }, { additionalProperties: false }))], { additionalProperties: false });
 
 export type ContainerConfig = Static<typeof ContainerConfig>;
-export const ContainerConfig = Type.Partial(Type.Object({ Hostname: Type.String(), Domainname: Type.String(), User: Type.String(), AttachStdin: Type.Boolean(), AttachStdout: Type.Boolean(), AttachStderr: Type.Boolean(), ExposedPorts: Type.Union([Type.Record(Type.String(), Type.Partial(Type.Object({  }, { additionalProperties: true }))), Type.Null()]), Tty: Type.Boolean(), OpenStdin: Type.Boolean(), StdinOnce: Type.Boolean(), Env: Type.Array(Type.String()), Cmd: Type.Array(Type.String()), Healthcheck: HealthConfig, ArgsEscaped: Type.Union([Type.Boolean(), Type.Null()]), Image: Type.String(), Volumes: Type.Record(Type.String(), Type.Partial(Type.Object({  }, { additionalProperties: true }))), WorkingDir: Type.String(), Entrypoint: Type.Array(Type.String()), NetworkDisabled: Type.Union([Type.Boolean(), Type.Null()]), MacAddress: Type.Union([Type.String(), Type.Null()]), OnBuild: Type.Union([Type.Array(Type.String()), Type.Null()]), Labels: Type.Record(Type.String(), Type.String()), StopSignal: Type.Union([Type.String(), Type.Null()]), StopTimeout: Type.Union([Type.Integer(), Type.Null()]), Shell: Type.Union([Type.Array(Type.String()), Type.Null()]) }, { additionalProperties: true }));
+export const ContainerConfig = Type.Partial(Type.Object({ Hostname: Type.String(), Domainname: Type.String(), User: Type.String(), AttachStdin: Type.Boolean(), AttachStdout: Type.Boolean(), AttachStderr: Type.Boolean(), ExposedPorts: Type.Union([Type.Record(Type.String(), Type.Partial(Type.Object({  }, { additionalProperties: false }))), Type.Null()]), Tty: Type.Boolean(), OpenStdin: Type.Boolean(), StdinOnce: Type.Boolean(), Env: Type.Array(Type.String()), Cmd: Type.Array(Type.String()), Healthcheck: HealthConfig, ArgsEscaped: Type.Union([Type.Boolean(), Type.Null()]), Image: Type.String(), Volumes: Type.Record(Type.String(), Type.Partial(Type.Object({  }, { additionalProperties: false }))), WorkingDir: Type.String(), Entrypoint: Type.Array(Type.String()), NetworkDisabled: Type.Union([Type.Boolean(), Type.Null()]), MacAddress: Type.Union([Type.String(), Type.Null()]), OnBuild: Type.Union([Type.Array(Type.String()), Type.Null()]), Labels: Type.Record(Type.String(), Type.String()), StopSignal: Type.Union([Type.String(), Type.Null()]), StopTimeout: Type.Union([Type.Integer(), Type.Null()]), Shell: Type.Union([Type.Array(Type.String()), Type.Null()]) }, { additionalProperties: false }));
 
 export type EndpointIPAMConfig = Static<typeof EndpointIPAMConfig>;
-export const EndpointIPAMConfig = Type.Union([Type.Partial(Type.Object({ IPv4Address: Type.String(), IPv6Address: Type.String(), LinkLocalIPs: Type.Array(Type.String()) }, { additionalProperties: true })), Type.Null()]);
+export const EndpointIPAMConfig = Type.Union([Type.Partial(Type.Object({ IPv4Address: Type.String(), IPv6Address: Type.String(), LinkLocalIPs: Type.Array(Type.String()) }, { additionalProperties: false })), Type.Null()]);
 
 export type EndpointSettings = Static<typeof EndpointSettings>;
-export const EndpointSettings = Type.Partial(Type.Object({ IPAMConfig: EndpointIPAMConfig, Links: Type.Array(Type.String()), Aliases: Type.Array(Type.String()), NetworkID: Type.String(), EndpointID: Type.String(), Gateway: Type.String(), IPAddress: Type.String(), IPPrefixLen: Type.Integer(), IPv6Gateway: Type.String(), GlobalIPv6Address: Type.String(), GlobalIPv6PrefixLen: Type.Integer(), MacAddress: Type.String(), DriverOpts: Type.Union([Type.Record(Type.String(), Type.String()), Type.Null()]) }, { additionalProperties: true }));
+export const EndpointSettings = Type.Partial(Type.Object({ IPAMConfig: EndpointIPAMConfig, Links: Type.Array(Type.String()), Aliases: Type.Array(Type.String()), NetworkID: Type.String(), EndpointID: Type.String(), Gateway: Type.String(), IPAddress: Type.String(), IPPrefixLen: Type.Integer(), IPv6Gateway: Type.String(), GlobalIPv6Address: Type.String(), GlobalIPv6PrefixLen: Type.Integer(), MacAddress: Type.String(), DriverOpts: Type.Union([Type.Record(Type.String(), Type.String()), Type.Null()]) }, { additionalProperties: false }));
 
 export type NetworkingConfig = Static<typeof NetworkingConfig>;
-export const NetworkingConfig = Type.Partial(Type.Object({ EndpointsConfig: Type.Record(Type.String(), EndpointSettings) }, { additionalProperties: true }));
+export const NetworkingConfig = Type.Partial(Type.Object({ EndpointsConfig: Type.Record(Type.String(), EndpointSettings) }, { additionalProperties: false }));
 
 export type Address = Static<typeof Address>;
-export const Address = Type.Partial(Type.Object({ Addr: Type.String(), PrefixLen: Type.Integer() }, { additionalProperties: true }));
+export const Address = Type.Partial(Type.Object({ Addr: Type.String(), PrefixLen: Type.Integer() }, { additionalProperties: false }));
 
 export type NetworkSettings = Static<typeof NetworkSettings>;
-export const NetworkSettings = Type.Partial(Type.Object({ Bridge: Type.String(), SandboxID: Type.String(), HairpinMode: Type.Boolean(), LinkLocalIPv6Address: Type.String(), LinkLocalIPv6PrefixLen: Type.Integer(), Ports: PortMap, SandboxKey: Type.String(), SecondaryIPAddresses: Type.Union([Type.Array(Address), Type.Null()]), SecondaryIPv6Addresses: Type.Union([Type.Array(Address), Type.Null()]), EndpointID: Type.String(), Gateway: Type.String(), GlobalIPv6Address: Type.String(), GlobalIPv6PrefixLen: Type.Integer(), IPAddress: Type.String(), IPPrefixLen: Type.Integer(), IPv6Gateway: Type.String(), MacAddress: Type.String(), Networks: Type.Record(Type.String(), EndpointSettings) }, { additionalProperties: true }));
+export const NetworkSettings = Type.Partial(Type.Object({ Bridge: Type.String(), SandboxID: Type.String(), HairpinMode: Type.Boolean(), LinkLocalIPv6Address: Type.String(), LinkLocalIPv6PrefixLen: Type.Integer(), Ports: PortMap, SandboxKey: Type.String(), SecondaryIPAddresses: Type.Union([Type.Array(Address), Type.Null()]), SecondaryIPv6Addresses: Type.Union([Type.Array(Address), Type.Null()]), EndpointID: Type.String(), Gateway: Type.String(), GlobalIPv6Address: Type.String(), GlobalIPv6PrefixLen: Type.Integer(), IPAddress: Type.String(), IPPrefixLen: Type.Integer(), IPv6Gateway: Type.String(), MacAddress: Type.String(), Networks: Type.Record(Type.String(), EndpointSettings) }, { additionalProperties: false }));
 
 export type GraphDriverData = Static<typeof GraphDriverData>;
-export const GraphDriverData = Type.Object({ Name: Type.String(), Data: Type.Record(Type.String(), Type.String()) }, { additionalProperties: true });
+export const GraphDriverData = Type.Object({ Name: Type.String(), Data: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false });
 
 export type ChangeType = Static<typeof ChangeType>;
 export const ChangeType = Type.Union([Type.Literal(0), Type.Literal(1), Type.Literal(2)]);
 
 export type FilesystemChange = Static<typeof FilesystemChange>;
-export const FilesystemChange = Type.Object({ Path: Type.String(), Kind: ChangeType }, { additionalProperties: true });
+export const FilesystemChange = Type.Object({ Path: Type.String(), Kind: ChangeType }, { additionalProperties: false });
 
 export type ImageInspect = Static<typeof ImageInspect>;
-export const ImageInspect = Type.Partial(Type.Object({ Id: Type.String(), RepoTags: Type.Array(Type.String()), RepoDigests: Type.Array(Type.String()), Parent: Type.String(), Comment: Type.String(), Created: Type.String(), Container: Type.String(), ContainerConfig: ContainerConfig, DockerVersion: Type.String(), Author: Type.String(), Config: ContainerConfig, Architecture: Type.String(), Variant: Type.Union([Type.String(), Type.Null()]), Os: Type.String(), OsVersion: Type.Union([Type.String(), Type.Null()]), Size: Type.Integer(), VirtualSize: Type.Integer(), GraphDriver: GraphDriverData, RootFS: Type.Object({ Type: Type.String(), Layers: Type.Optional(Type.Array(Type.String())) }, { additionalProperties: true }), Metadata: Type.Partial(Type.Object({ LastTagTime: Type.Union([Type.String({ format: "dateTime" }), Type.Null()]) }, { additionalProperties: true })) }, { additionalProperties: true }));
+export const ImageInspect = Type.Partial(Type.Object({ Id: Type.String(), RepoTags: Type.Array(Type.String()), RepoDigests: Type.Array(Type.String()), Parent: Type.String(), Comment: Type.String(), Created: Type.String(), Container: Type.String(), ContainerConfig: ContainerConfig, DockerVersion: Type.String(), Author: Type.String(), Config: ContainerConfig, Architecture: Type.String(), Variant: Type.Union([Type.String(), Type.Null()]), Os: Type.String(), OsVersion: Type.Union([Type.String(), Type.Null()]), Size: Type.Integer(), VirtualSize: Type.Integer(), GraphDriver: GraphDriverData, RootFS: Type.Object({ Type: Type.String(), Layers: Type.Optional(Type.Array(Type.String())) }, { additionalProperties: false }), Metadata: Type.Partial(Type.Object({ LastTagTime: Type.Union([Type.String({ format: "dateTime" }), Type.Null()]) }, { additionalProperties: false })) }, { additionalProperties: false }));
 
 export type ImageSummary = Static<typeof ImageSummary>;
-export const ImageSummary = Type.Object({ Id: Type.String(), ParentId: Type.String(), RepoTags: Type.Array(Type.String()), RepoDigests: Type.Array(Type.String()), Created: Type.Integer(), Size: Type.Integer(), SharedSize: Type.Integer(), VirtualSize: Type.Optional(Type.Integer()), Labels: Type.Record(Type.String(), Type.String()), Containers: Type.Integer() }, { additionalProperties: true });
+export const ImageSummary = Type.Object({ Id: Type.String(), ParentId: Type.String(), RepoTags: Type.Array(Type.String()), RepoDigests: Type.Array(Type.String()), Created: Type.Integer(), Size: Type.Integer(), SharedSize: Type.Integer(), VirtualSize: Type.Optional(Type.Integer()), Labels: Type.Record(Type.String(), Type.String()), Containers: Type.Integer() }, { additionalProperties: false });
 
 export type AuthConfig = Static<typeof AuthConfig>;
-export const AuthConfig = Type.Partial(Type.Object({ username: Type.String(), password: Type.String(), email: Type.String(), serveraddress: Type.String() }, { additionalProperties: true }));
+export const AuthConfig = Type.Partial(Type.Object({ username: Type.String(), password: Type.String(), email: Type.String(), serveraddress: Type.String() }, { additionalProperties: false }));
 
 export type ProcessConfig = Static<typeof ProcessConfig>;
-export const ProcessConfig = Type.Partial(Type.Object({ privileged: Type.Boolean(), user: Type.String(), tty: Type.Boolean(), entrypoint: Type.String(), arguments: Type.Array(Type.String()) }, { additionalProperties: true }));
+export const ProcessConfig = Type.Partial(Type.Object({ privileged: Type.Boolean(), user: Type.String(), tty: Type.Boolean(), entrypoint: Type.String(), arguments: Type.Array(Type.String()) }, { additionalProperties: false }));
 
 export type ObjectVersion = Static<typeof ObjectVersion>;
-export const ObjectVersion = Type.Partial(Type.Object({ Index: Type.Integer() }, { additionalProperties: true }));
+export const ObjectVersion = Type.Partial(Type.Object({ Index: Type.Integer() }, { additionalProperties: false }));
 
 export type Topology = Static<typeof Topology>;
 export const Topology = Type.Record(Type.String(), Type.String());
 
 export type ClusterVolumeSpec = Static<typeof ClusterVolumeSpec>;
-export const ClusterVolumeSpec = Type.Partial(Type.Object({ Group: Type.String(), AccessMode: Type.Partial(Type.Object({ Scope: Type.Union([Type.Literal("single"), Type.Literal("multi")]), Sharing: Type.Union([Type.Literal("none"), Type.Literal("readonly"), Type.Literal("onewriter"), Type.Literal("all")]), MountVolume: Type.Partial(Type.Object({  }, { additionalProperties: true })), Secrets: Type.Array(Type.Partial(Type.Object({ Key: Type.String(), Secret: Type.String() }, { additionalProperties: true }))), AccessibilityRequirements: Type.Partial(Type.Object({ Requisite: Type.Array(Topology), Preferred: Type.Array(Topology) }, { additionalProperties: true })), CapacityRange: Type.Partial(Type.Object({ RequiredBytes: Type.Integer(), LimitBytes: Type.Integer() }, { additionalProperties: true })), Availability: Type.Union([Type.Literal("active"), Type.Literal("pause"), Type.Literal("drain")]) }, { additionalProperties: true })) }, { additionalProperties: true }));
+export const ClusterVolumeSpec = Type.Partial(Type.Object({ Group: Type.String(), AccessMode: Type.Partial(Type.Object({ Scope: Type.Union([Type.Literal("single"), Type.Literal("multi")]), Sharing: Type.Union([Type.Literal("none"), Type.Literal("readonly"), Type.Literal("onewriter"), Type.Literal("all")]), MountVolume: Type.Partial(Type.Object({  }, { additionalProperties: false })), Secrets: Type.Array(Type.Partial(Type.Object({ Key: Type.String(), Secret: Type.String() }, { additionalProperties: false }))), AccessibilityRequirements: Type.Partial(Type.Object({ Requisite: Type.Array(Topology), Preferred: Type.Array(Topology) }, { additionalProperties: false })), CapacityRange: Type.Partial(Type.Object({ RequiredBytes: Type.Integer(), LimitBytes: Type.Integer() }, { additionalProperties: false })), Availability: Type.Union([Type.Literal("active"), Type.Literal("pause"), Type.Literal("drain")]) }, { additionalProperties: false })) }, { additionalProperties: false }));
 
 export type ClusterVolume = Static<typeof ClusterVolume>;
-export const ClusterVolume = Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Spec: ClusterVolumeSpec, Info: Type.Partial(Type.Object({ CapacityBytes: Type.Integer(), VolumeContext: Type.Record(Type.String(), Type.String()), VolumeID: Type.String(), AccessibleTopology: Type.Array(Topology) }, { additionalProperties: true })), PublishStatus: Type.Array(Type.Partial(Type.Object({ NodeID: Type.String(), State: Type.Union([Type.Literal("pending-publish"), Type.Literal("published"), Type.Literal("pending-node-unpublish"), Type.Literal("pending-controller-unpublish")]), PublishContext: Type.Record(Type.String(), Type.String()) }, { additionalProperties: true }))) }, { additionalProperties: true }));
+export const ClusterVolume = Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Spec: ClusterVolumeSpec, Info: Type.Partial(Type.Object({ CapacityBytes: Type.Integer(), VolumeContext: Type.Record(Type.String(), Type.String()), VolumeID: Type.String(), AccessibleTopology: Type.Array(Topology) }, { additionalProperties: false })), PublishStatus: Type.Array(Type.Partial(Type.Object({ NodeID: Type.String(), State: Type.Union([Type.Literal("pending-publish"), Type.Literal("published"), Type.Literal("pending-node-unpublish"), Type.Literal("pending-controller-unpublish")]), PublishContext: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false }))) }, { additionalProperties: false }));
 
 export type Volume = Static<typeof Volume>;
-export const Volume = Type.Object({ Name: Type.String(), Driver: Type.String(), Mountpoint: Type.String(), CreatedAt: Type.Optional(Type.String({ format: "dateTime" })), Status: Type.Optional(Type.Record(Type.String(), Type.Partial(Type.Object({  }, { additionalProperties: true })))), Labels: Type.Record(Type.String(), Type.String()), Scope: Type.Union([Type.Literal("local"), Type.Literal("global")]), ClusterVolume: Type.Optional(ClusterVolume), Options: Type.Record(Type.String(), Type.String()), UsageData: Type.Optional(Type.Union([Type.Object({ Size: Type.Integer(), RefCount: Type.Integer() }, { additionalProperties: true }), Type.Null()])) }, { additionalProperties: true });
+export const Volume = Type.Object({ Name: Type.String(), Driver: Type.String(), Mountpoint: Type.String(), CreatedAt: Type.Optional(Type.String({ format: "dateTime" })), Status: Type.Optional(Type.Record(Type.String(), Type.Partial(Type.Object({  }, { additionalProperties: false })))), Labels: Type.Record(Type.String(), Type.String()), Scope: Type.Union([Type.Literal("local"), Type.Literal("global")]), ClusterVolume: Type.Optional(ClusterVolume), Options: Type.Record(Type.String(), Type.String()), UsageData: Type.Optional(Type.Union([Type.Object({ Size: Type.Integer(), RefCount: Type.Integer() }, { additionalProperties: false }), Type.Null()])) }, { additionalProperties: false });
 
 export type VolumeCreateOptions = Static<typeof VolumeCreateOptions>;
-export const VolumeCreateOptions = Type.Partial(Type.Object({ Name: Type.String(), Driver: Type.String(), DriverOpts: Type.Record(Type.String(), Type.String()), Labels: Type.Record(Type.String(), Type.String()), ClusterVolumeSpec: ClusterVolumeSpec }, { additionalProperties: true }));
+export const VolumeCreateOptions = Type.Partial(Type.Object({ Name: Type.String(), Driver: Type.String(), DriverOpts: Type.Record(Type.String(), Type.String()), Labels: Type.Record(Type.String(), Type.String()), ClusterVolumeSpec: ClusterVolumeSpec }, { additionalProperties: false }));
 
 export type VolumeListResponse = Static<typeof VolumeListResponse>;
-export const VolumeListResponse = Type.Partial(Type.Object({ Volumes: Type.Array(Volume), Warnings: Type.Array(Type.String()) }, { additionalProperties: true }));
+export const VolumeListResponse = Type.Partial(Type.Object({ Volumes: Type.Array(Volume), Warnings: Type.Array(Type.String()) }, { additionalProperties: false }));
 
 export type IPAMConfig = Static<typeof IPAMConfig>;
-export const IPAMConfig = Type.Partial(Type.Object({ Subnet: Type.String(), IPRange: Type.String(), Gateway: Type.String(), AuxiliaryAddresses: Type.Record(Type.String(), Type.String()) }, { additionalProperties: true }));
+export const IPAMConfig = Type.Partial(Type.Object({ Subnet: Type.String(), IPRange: Type.String(), Gateway: Type.String(), AuxiliaryAddresses: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false }));
 
 export type IPAM = Static<typeof IPAM>;
-export const IPAM = Type.Partial(Type.Object({ Driver: Type.String(), Config: Type.Array(IPAMConfig), Options: Type.Record(Type.String(), Type.String()) }, { additionalProperties: true }));
+export const IPAM = Type.Partial(Type.Object({ Driver: Type.String(), Config: Type.Array(IPAMConfig), Options: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false }));
 
 export type NetworkContainer = Static<typeof NetworkContainer>;
-export const NetworkContainer = Type.Partial(Type.Object({ Name: Type.String(), EndpointID: Type.String(), MacAddress: Type.String(), IPv4Address: Type.String(), IPv6Address: Type.String() }, { additionalProperties: true }));
+export const NetworkContainer = Type.Partial(Type.Object({ Name: Type.String(), EndpointID: Type.String(), MacAddress: Type.String(), IPv4Address: Type.String(), IPv6Address: Type.String() }, { additionalProperties: false }));
 
 export type Network = Static<typeof Network>;
-export const Network = Type.Partial(Type.Object({ Name: Type.String(), Id: Type.String(), Created: Type.String({ format: "dateTime" }), Scope: Type.String(), Driver: Type.String(), EnableIPv6: Type.Boolean(), IPAM: IPAM, Internal: Type.Boolean(), Attachable: Type.Boolean(), Ingress: Type.Boolean(), Containers: Type.Record(Type.String(), NetworkContainer), Options: Type.Record(Type.String(), Type.String()), Labels: Type.Record(Type.String(), Type.String()) }, { additionalProperties: true }));
+export const Network = Type.Partial(Type.Object({ Name: Type.String(), Id: Type.String(), Created: Type.String({ format: "dateTime" }), Scope: Type.String(), Driver: Type.String(), EnableIPv6: Type.Boolean(), IPAM: IPAM, Internal: Type.Boolean(), Attachable: Type.Boolean(), Ingress: Type.Boolean(), Containers: Type.Record(Type.String(), NetworkContainer), Options: Type.Record(Type.String(), Type.String()), Labels: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false }));
 
 export type ErrorDetail = Static<typeof ErrorDetail>;
-export const ErrorDetail = Type.Partial(Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: true }));
+export const ErrorDetail = Type.Partial(Type.Object({ code: Type.Integer(), message: Type.String() }, { additionalProperties: false }));
 
 export type ProgressDetail = Static<typeof ProgressDetail>;
-export const ProgressDetail = Type.Partial(Type.Object({ current: Type.Integer(), total: Type.Integer() }, { additionalProperties: true }));
+export const ProgressDetail = Type.Partial(Type.Object({ current: Type.Integer(), total: Type.Integer() }, { additionalProperties: false }));
 
 export type ImageID = Static<typeof ImageID>;
-export const ImageID = Type.Partial(Type.Object({ ID: Type.String() }, { additionalProperties: true }));
+export const ImageID = Type.Partial(Type.Object({ ID: Type.String() }, { additionalProperties: false }));
 
 export type BuildInfo = Static<typeof BuildInfo>;
-export const BuildInfo = Type.Partial(Type.Object({ id: Type.String(), stream: Type.String(), error: Type.String(), errorDetail: ErrorDetail, status: Type.String(), progress: Type.String(), progressDetail: ProgressDetail, aux: ImageID }, { additionalProperties: true }));
+export const BuildInfo = Type.Partial(Type.Object({ id: Type.String(), stream: Type.String(), error: Type.String(), errorDetail: ErrorDetail, status: Type.String(), progress: Type.String(), progressDetail: ProgressDetail, aux: ImageID }, { additionalProperties: false }));
 
 export type BuildCache = Static<typeof BuildCache>;
-export const BuildCache = Type.Partial(Type.Object({ ID: Type.String(), Parent: Type.Union([Type.String(), Type.Null()]), Parents: Type.Union([Type.Array(Type.String()), Type.Null()]), Type: Type.Union([Type.Literal("internal"), Type.Literal("frontend"), Type.Literal("source.local"), Type.Literal("source.git.checkout"), Type.Literal("exec.cachemount"), Type.Literal("regular")]), Description: Type.String(), InUse: Type.Boolean(), Shared: Type.Boolean(), Size: Type.Integer(), CreatedAt: Type.String({ format: "dateTime" }), LastUsedAt: Type.Union([Type.String({ format: "dateTime" }), Type.Null()]), UsageCount: Type.Integer() }, { additionalProperties: true }));
+export const BuildCache = Type.Partial(Type.Object({ ID: Type.String(), Parent: Type.Union([Type.String(), Type.Null()]), Parents: Type.Union([Type.Array(Type.String()), Type.Null()]), Type: Type.Union([Type.Literal("internal"), Type.Literal("frontend"), Type.Literal("source.local"), Type.Literal("source.git.checkout"), Type.Literal("exec.cachemount"), Type.Literal("regular")]), Description: Type.String(), InUse: Type.Boolean(), Shared: Type.Boolean(), Size: Type.Integer(), CreatedAt: Type.String({ format: "dateTime" }), LastUsedAt: Type.Union([Type.String({ format: "dateTime" }), Type.Null()]), UsageCount: Type.Integer() }, { additionalProperties: false }));
 
 export type CreateImageInfo = Static<typeof CreateImageInfo>;
-export const CreateImageInfo = Type.Partial(Type.Object({ id: Type.String(), error: Type.String(), errorDetail: ErrorDetail, status: Type.String(), progress: Type.String(), progressDetail: ProgressDetail }, { additionalProperties: true }));
+export const CreateImageInfo = Type.Partial(Type.Object({ id: Type.String(), error: Type.String(), errorDetail: ErrorDetail, status: Type.String(), progress: Type.String(), progressDetail: ProgressDetail }, { additionalProperties: false }));
 
 export type PushImageInfo = Static<typeof PushImageInfo>;
-export const PushImageInfo = Type.Partial(Type.Object({ error: Type.String(), status: Type.String(), progress: Type.String(), progressDetail: ProgressDetail }, { additionalProperties: true }));
+export const PushImageInfo = Type.Partial(Type.Object({ error: Type.String(), status: Type.String(), progress: Type.String(), progressDetail: ProgressDetail }, { additionalProperties: false }));
 
 export type ErrorResponse = Static<typeof ErrorResponse>;
-export const ErrorResponse = Type.Object({ message: Type.String() }, { additionalProperties: true });
+export const ErrorResponse = Type.Object({ message: Type.String() }, { additionalProperties: false });
 
 export type IdResponse = Static<typeof IdResponse>;
-export const IdResponse = Type.Object({ Id: Type.String() }, { additionalProperties: true });
+export const IdResponse = Type.Object({ Id: Type.String() }, { additionalProperties: false });
 
 export type PluginMount = Static<typeof PluginMount>;
-export const PluginMount = Type.Object({ Name: Type.String(), Description: Type.String(), Settable: Type.Array(Type.String()), Source: Type.String(), Destination: Type.String(), Type: Type.String(), Options: Type.Array(Type.String()) }, { additionalProperties: true });
+export const PluginMount = Type.Object({ Name: Type.String(), Description: Type.String(), Settable: Type.Array(Type.String()), Source: Type.String(), Destination: Type.String(), Type: Type.String(), Options: Type.Array(Type.String()) }, { additionalProperties: false });
 
 export type PluginDevice = Static<typeof PluginDevice>;
-export const PluginDevice = Type.Object({ Name: Type.String(), Description: Type.String(), Settable: Type.Array(Type.String()), Path: Type.String() }, { additionalProperties: true });
+export const PluginDevice = Type.Object({ Name: Type.String(), Description: Type.String(), Settable: Type.Array(Type.String()), Path: Type.String() }, { additionalProperties: false });
 
 export type PluginEnv = Static<typeof PluginEnv>;
-export const PluginEnv = Type.Object({ Name: Type.String(), Description: Type.String(), Settable: Type.Array(Type.String()), Value: Type.String() }, { additionalProperties: true });
+export const PluginEnv = Type.Object({ Name: Type.String(), Description: Type.String(), Settable: Type.Array(Type.String()), Value: Type.String() }, { additionalProperties: false });
 
 export type PluginInterfaceType = Static<typeof PluginInterfaceType>;
-export const PluginInterfaceType = Type.Object({ Prefix: Type.String(), Capability: Type.String(), Version: Type.String() }, { additionalProperties: true });
+export const PluginInterfaceType = Type.Object({ Prefix: Type.String(), Capability: Type.String(), Version: Type.String() }, { additionalProperties: false });
 
 export type PluginPrivilege = Static<typeof PluginPrivilege>;
-export const PluginPrivilege = Type.Partial(Type.Object({ Name: Type.String(), Description: Type.String(), Value: Type.Array(Type.String()) }, { additionalProperties: true }));
+export const PluginPrivilege = Type.Partial(Type.Object({ Name: Type.String(), Description: Type.String(), Value: Type.Array(Type.String()) }, { additionalProperties: false }));
 
 export type Plugin = Static<typeof Plugin>;
-export const Plugin = Type.Object({ Id: Type.Optional(Type.String()), Name: Type.String(), Enabled: Type.Boolean(), Settings: Type.Object({ Mounts: Type.Array(PluginMount), Env: Type.Array(Type.String()), Args: Type.Array(Type.String()), Devices: Type.Array(PluginDevice) }, { additionalProperties: true }), PluginReference: Type.Optional(Type.String()), Config: Type.Object({ DockerVersion: Type.Optional(Type.String()), Description: Type.String(), Documentation: Type.String(), Interface: Type.Object({ Types: Type.Array(PluginInterfaceType), Socket: Type.String(), ProtocolScheme: Type.Optional(Type.Union([Type.Literal(""), Type.Literal("moby.plugins.http/v1")])) }, { additionalProperties: true }), Entrypoint: Type.Array(Type.String()), WorkDir: Type.String(), User: Type.Optional(Type.Partial(Type.Object({ UID: Type.Integer(), GID: Type.Integer() }, { additionalProperties: true }))), Network: Type.Object({ Type: Type.String() }, { additionalProperties: true }), Linux: Type.Object({ Capabilities: Type.Array(Type.String()), AllowAllDevices: Type.Boolean(), Devices: Type.Array(PluginDevice) }, { additionalProperties: true }), PropagatedMount: Type.String(), IpcHost: Type.Boolean(), PidHost: Type.Boolean(), Mounts: Type.Array(PluginMount), Env: Type.Array(PluginEnv), Args: Type.Object({ Name: Type.String(), Description: Type.String(), Settable: Type.Array(Type.String()), Value: Type.Array(Type.String()) }, { additionalProperties: true }), rootfs: Type.Optional(Type.Partial(Type.Object({ type: Type.String(), diff_ids: Type.Array(Type.String()) }, { additionalProperties: true }))) }, { additionalProperties: true }) }, { additionalProperties: true });
+export const Plugin = Type.Object({ Id: Type.Optional(Type.String()), Name: Type.String(), Enabled: Type.Boolean(), Settings: Type.Object({ Mounts: Type.Array(PluginMount), Env: Type.Array(Type.String()), Args: Type.Array(Type.String()), Devices: Type.Array(PluginDevice) }, { additionalProperties: false }), PluginReference: Type.Optional(Type.String()), Config: Type.Object({ DockerVersion: Type.Optional(Type.String()), Description: Type.String(), Documentation: Type.String(), Interface: Type.Object({ Types: Type.Array(PluginInterfaceType), Socket: Type.String(), ProtocolScheme: Type.Optional(Type.Union([Type.Literal(""), Type.Literal("moby.plugins.http/v1")])) }, { additionalProperties: false }), Entrypoint: Type.Array(Type.String()), WorkDir: Type.String(), User: Type.Optional(Type.Partial(Type.Object({ UID: Type.Integer(), GID: Type.Integer() }, { additionalProperties: false }))), Network: Type.Object({ Type: Type.String() }, { additionalProperties: false }), Linux: Type.Object({ Capabilities: Type.Array(Type.String()), AllowAllDevices: Type.Boolean(), Devices: Type.Array(PluginDevice) }, { additionalProperties: false }), PropagatedMount: Type.String(), IpcHost: Type.Boolean(), PidHost: Type.Boolean(), Mounts: Type.Array(PluginMount), Env: Type.Array(PluginEnv), Args: Type.Object({ Name: Type.String(), Description: Type.String(), Settable: Type.Array(Type.String()), Value: Type.Array(Type.String()) }, { additionalProperties: false }), rootfs: Type.Optional(Type.Partial(Type.Object({ type: Type.String(), diff_ids: Type.Array(Type.String()) }, { additionalProperties: false }))) }, { additionalProperties: false }) }, { additionalProperties: false });
 
 export type NodeSpec = Static<typeof NodeSpec>;
-export const NodeSpec = Type.Partial(Type.Object({ Name: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Role: Type.Union([Type.Literal("worker"), Type.Literal("manager")]), Availability: Type.Union([Type.Literal("active"), Type.Literal("pause"), Type.Literal("drain")]) }, { additionalProperties: true }));
+export const NodeSpec = Type.Partial(Type.Object({ Name: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Role: Type.Union([Type.Literal("worker"), Type.Literal("manager")]), Availability: Type.Union([Type.Literal("active"), Type.Literal("pause"), Type.Literal("drain")]) }, { additionalProperties: false }));
 
 export type Platform = Static<typeof Platform>;
-export const Platform = Type.Partial(Type.Object({ Architecture: Type.String(), OS: Type.String() }, { additionalProperties: true }));
+export const Platform = Type.Partial(Type.Object({ Architecture: Type.String(), OS: Type.String() }, { additionalProperties: false }));
 
 export type EngineDescription = Static<typeof EngineDescription>;
-export const EngineDescription = Type.Partial(Type.Object({ EngineVersion: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Plugins: Type.Array(Type.Partial(Type.Object({ Type: Type.String(), Name: Type.String() }, { additionalProperties: true }))) }, { additionalProperties: true }));
+export const EngineDescription = Type.Partial(Type.Object({ EngineVersion: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Plugins: Type.Array(Type.Partial(Type.Object({ Type: Type.String(), Name: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false }));
 
 export type TLSInfo = Static<typeof TLSInfo>;
-export const TLSInfo = Type.Partial(Type.Object({ TrustRoot: Type.String(), CertIssuerSubject: Type.String(), CertIssuerPublicKey: Type.String() }, { additionalProperties: true }));
+export const TLSInfo = Type.Partial(Type.Object({ TrustRoot: Type.String(), CertIssuerSubject: Type.String(), CertIssuerPublicKey: Type.String() }, { additionalProperties: false }));
 
 export type NodeDescription = Static<typeof NodeDescription>;
-export const NodeDescription = Type.Partial(Type.Object({ Hostname: Type.String(), Platform: Platform, Resources: ResourceObject, Engine: EngineDescription, TLSInfo: TLSInfo }, { additionalProperties: true }));
+export const NodeDescription = Type.Partial(Type.Object({ Hostname: Type.String(), Platform: Platform, Resources: ResourceObject, Engine: EngineDescription, TLSInfo: TLSInfo }, { additionalProperties: false }));
 
 export type NodeState = Static<typeof NodeState>;
 export const NodeState = Type.Union([Type.Literal("unknown"), Type.Literal("down"), Type.Literal("ready"), Type.Literal("disconnected")]);
 
 export type NodeStatus = Static<typeof NodeStatus>;
-export const NodeStatus = Type.Partial(Type.Object({ State: NodeState, Message: Type.String(), Addr: Type.String() }, { additionalProperties: true }));
+export const NodeStatus = Type.Partial(Type.Object({ State: NodeState, Message: Type.String(), Addr: Type.String() }, { additionalProperties: false }));
 
 export type Reachability = Static<typeof Reachability>;
 export const Reachability = Type.Union([Type.Literal("unknown"), Type.Literal("unreachable"), Type.Literal("reachable")]);
 
 export type ManagerStatus = Static<typeof ManagerStatus>;
-export const ManagerStatus = Type.Union([Type.Partial(Type.Object({ Leader: Type.Boolean(), Reachability: Reachability, Addr: Type.String() }, { additionalProperties: true })), Type.Null()]);
+export const ManagerStatus = Type.Union([Type.Partial(Type.Object({ Leader: Type.Boolean(), Reachability: Reachability, Addr: Type.String() }, { additionalProperties: false })), Type.Null()]);
 
 export type Node = Static<typeof Node>;
-export const Node = Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Spec: NodeSpec, Description: NodeDescription, Status: NodeStatus, ManagerStatus: ManagerStatus }, { additionalProperties: true }));
+export const Node = Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Spec: NodeSpec, Description: NodeDescription, Status: NodeStatus, ManagerStatus: ManagerStatus }, { additionalProperties: false }));
 
 export type SwarmSpec = Static<typeof SwarmSpec>;
-export const SwarmSpec = Type.Partial(Type.Object({ Name: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Orchestration: Type.Union([Type.Partial(Type.Object({ TaskHistoryRetentionLimit: Type.Integer() }, { additionalProperties: true })), Type.Null()]), Raft: Type.Partial(Type.Object({ SnapshotInterval: Type.Integer(), KeepOldSnapshots: Type.Integer(), LogEntriesForSlowFollowers: Type.Integer(), ElectionTick: Type.Integer(), HeartbeatTick: Type.Integer() }, { additionalProperties: true })), Dispatcher: Type.Union([Type.Partial(Type.Object({ HeartbeatPeriod: Type.Integer() }, { additionalProperties: true })), Type.Null()]), CAConfig: Type.Union([Type.Partial(Type.Object({ NodeCertExpiry: Type.Integer(), ExternalCAs: Type.Array(Type.Partial(Type.Object({ Protocol: Type.Literal("cfssl"), URL: Type.String(), Options: Type.Record(Type.String(), Type.String()), CACert: Type.String() }, { additionalProperties: true }))), SigningCACert: Type.String(), SigningCAKey: Type.String(), ForceRotate: Type.Integer() }, { additionalProperties: true })), Type.Null()]), EncryptionConfig: Type.Partial(Type.Object({ AutoLockManagers: Type.Boolean() }, { additionalProperties: true })), TaskDefaults: Type.Partial(Type.Object({ LogDriver: Type.Partial(Type.Object({ Name: Type.String(), Options: Type.Record(Type.String(), Type.String()) }, { additionalProperties: true })) }, { additionalProperties: true })) }, { additionalProperties: true }));
+export const SwarmSpec = Type.Partial(Type.Object({ Name: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Orchestration: Type.Union([Type.Partial(Type.Object({ TaskHistoryRetentionLimit: Type.Integer() }, { additionalProperties: false })), Type.Null()]), Raft: Type.Partial(Type.Object({ SnapshotInterval: Type.Integer(), KeepOldSnapshots: Type.Integer(), LogEntriesForSlowFollowers: Type.Integer(), ElectionTick: Type.Integer(), HeartbeatTick: Type.Integer() }, { additionalProperties: false })), Dispatcher: Type.Union([Type.Partial(Type.Object({ HeartbeatPeriod: Type.Integer() }, { additionalProperties: false })), Type.Null()]), CAConfig: Type.Union([Type.Partial(Type.Object({ NodeCertExpiry: Type.Integer(), ExternalCAs: Type.Array(Type.Partial(Type.Object({ Protocol: Type.Literal("cfssl"), URL: Type.String(), Options: Type.Record(Type.String(), Type.String()), CACert: Type.String() }, { additionalProperties: false }))), SigningCACert: Type.String(), SigningCAKey: Type.String(), ForceRotate: Type.Integer() }, { additionalProperties: false })), Type.Null()]), EncryptionConfig: Type.Partial(Type.Object({ AutoLockManagers: Type.Boolean() }, { additionalProperties: false })), TaskDefaults: Type.Partial(Type.Object({ LogDriver: Type.Partial(Type.Object({ Name: Type.String(), Options: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false })) }, { additionalProperties: false })) }, { additionalProperties: false }));
 
 export type ClusterInfo = Static<typeof ClusterInfo>;
-export const ClusterInfo = Type.Union([Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Spec: SwarmSpec, TLSInfo: TLSInfo, RootRotationInProgress: Type.Boolean(), DataPathPort: Type.Integer(), DefaultAddrPool: Type.Array(Type.String({ format: "CIDR" })), SubnetSize: Type.Integer({ maximum: 29 }) }, { additionalProperties: true })), Type.Null()]);
+export const ClusterInfo = Type.Union([Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Spec: SwarmSpec, TLSInfo: TLSInfo, RootRotationInProgress: Type.Boolean(), DataPathPort: Type.Integer(), DefaultAddrPool: Type.Array(Type.String({ format: "CIDR" })), SubnetSize: Type.Integer({ maximum: 29 }) }, { additionalProperties: false })), Type.Null()]);
 
 export type JoinTokens = Static<typeof JoinTokens>;
-export const JoinTokens = Type.Partial(Type.Object({ Worker: Type.String(), Manager: Type.String() }, { additionalProperties: true }));
+export const JoinTokens = Type.Partial(Type.Object({ Worker: Type.String(), Manager: Type.String() }, { additionalProperties: false }));
 
 export type Swarm = Static<typeof Swarm>;
-export const Swarm = Type.Intersect([ClusterInfo, Type.Partial(Type.Object({ JoinTokens: JoinTokens }, { additionalProperties: true }))]);
+export const Swarm = Type.Composite([Type.Exclude(ClusterInfo, Type.Null()), Type.Partial(Type.Object({ JoinTokens: JoinTokens }, { additionalProperties: false }))], { additionalProperties: false });
 
 export type NetworkAttachmentConfig = Static<typeof NetworkAttachmentConfig>;
-export const NetworkAttachmentConfig = Type.Partial(Type.Object({ Target: Type.String(), Aliases: Type.Array(Type.String()), DriverOpts: Type.Record(Type.String(), Type.String()) }, { additionalProperties: true }));
+export const NetworkAttachmentConfig = Type.Partial(Type.Object({ Target: Type.String(), Aliases: Type.Array(Type.String()), DriverOpts: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false }));
 
 export type TaskSpec = Static<typeof TaskSpec>;
-export const TaskSpec = Type.Partial(Type.Object({ PluginSpec: Type.Partial(Type.Object({ Name: Type.String(), Remote: Type.String(), Disabled: Type.Boolean(), PluginPrivilege: Type.Array(PluginPrivilege) }, { additionalProperties: true })), ContainerSpec: Type.Partial(Type.Object({ Image: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Command: Type.Array(Type.String()), Args: Type.Array(Type.String()), Hostname: Type.String(), Env: Type.Array(Type.String()), Dir: Type.String(), User: Type.String(), Groups: Type.Array(Type.String()), Privileges: Type.Partial(Type.Object({ CredentialSpec: Type.Partial(Type.Object({ Config: Type.String(), File: Type.String(), Registry: Type.String() }, { additionalProperties: true })), SELinuxContext: Type.Partial(Type.Object({ Disable: Type.Boolean(), User: Type.String(), Role: Type.String(), Type: Type.String(), Level: Type.String() }, { additionalProperties: true })) }, { additionalProperties: true })), TTY: Type.Boolean(), OpenStdin: Type.Boolean(), ReadOnly: Type.Boolean(), Mounts: Type.Array(Mount), StopSignal: Type.String(), StopGracePeriod: Type.Integer(), HealthCheck: HealthConfig, Hosts: Type.Array(Type.String()), DNSConfig: Type.Partial(Type.Object({ Nameservers: Type.Array(Type.String()), Search: Type.Array(Type.String()), Options: Type.Array(Type.String()) }, { additionalProperties: true })), Secrets: Type.Array(Type.Partial(Type.Object({ File: Type.Partial(Type.Object({ Name: Type.String(), UID: Type.String(), GID: Type.String(), Mode: Type.Integer() }, { additionalProperties: true })), SecretID: Type.String(), SecretName: Type.String() }, { additionalProperties: true }))), Configs: Type.Array(Type.Partial(Type.Object({ File: Type.Partial(Type.Object({ Name: Type.String(), UID: Type.String(), GID: Type.String(), Mode: Type.Integer() }, { additionalProperties: true })), Runtime: Type.Partial(Type.Object({  }, { additionalProperties: true })), ConfigID: Type.String(), ConfigName: Type.String() }, { additionalProperties: true }))), Isolation: Type.Union([Type.Literal("default"), Type.Literal("process"), Type.Literal("hyperv")]), Init: Type.Union([Type.Boolean(), Type.Null()]), Sysctls: Type.Record(Type.String(), Type.String()), CapabilityAdd: Type.Array(Type.String()), CapabilityDrop: Type.Array(Type.String()), Ulimits: Type.Array(Type.Partial(Type.Object({ Name: Type.String(), Soft: Type.Integer(), Hard: Type.Integer() }, { additionalProperties: true }))) }, { additionalProperties: true })), NetworkAttachmentSpec: Type.Partial(Type.Object({ ContainerID: Type.String() }, { additionalProperties: true })), Resources: Type.Partial(Type.Object({ Limits: Limit, Reservations: ResourceObject }, { additionalProperties: true })), RestartPolicy: Type.Partial(Type.Object({ Condition: Type.Union([Type.Literal("none"), Type.Literal("on-failure"), Type.Literal("any")]), Delay: Type.Integer(), MaxAttempts: Type.Integer(), Window: Type.Integer() }, { additionalProperties: true })), Placement: Type.Partial(Type.Object({ Constraints: Type.Array(Type.String()), Preferences: Type.Array(Type.Partial(Type.Object({ Spread: Type.Partial(Type.Object({ SpreadDescriptor: Type.String() }, { additionalProperties: true })) }, { additionalProperties: true }))), MaxReplicas: Type.Integer(), Platforms: Type.Array(Platform) }, { additionalProperties: true })), ForceUpdate: Type.Integer(), Runtime: Type.String(), Networks: Type.Array(NetworkAttachmentConfig), LogDriver: Type.Partial(Type.Object({ Name: Type.String(), Options: Type.Record(Type.String(), Type.String()) }, { additionalProperties: true })) }, { additionalProperties: true }));
+export const TaskSpec = Type.Partial(Type.Object({ PluginSpec: Type.Partial(Type.Object({ Name: Type.String(), Remote: Type.String(), Disabled: Type.Boolean(), PluginPrivilege: Type.Array(PluginPrivilege) }, { additionalProperties: false })), ContainerSpec: Type.Partial(Type.Object({ Image: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Command: Type.Array(Type.String()), Args: Type.Array(Type.String()), Hostname: Type.String(), Env: Type.Array(Type.String()), Dir: Type.String(), User: Type.String(), Groups: Type.Array(Type.String()), Privileges: Type.Partial(Type.Object({ CredentialSpec: Type.Partial(Type.Object({ Config: Type.String(), File: Type.String(), Registry: Type.String() }, { additionalProperties: false })), SELinuxContext: Type.Partial(Type.Object({ Disable: Type.Boolean(), User: Type.String(), Role: Type.String(), Type: Type.String(), Level: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false })), TTY: Type.Boolean(), OpenStdin: Type.Boolean(), ReadOnly: Type.Boolean(), Mounts: Type.Array(Mount), StopSignal: Type.String(), StopGracePeriod: Type.Integer(), HealthCheck: HealthConfig, Hosts: Type.Array(Type.String()), DNSConfig: Type.Partial(Type.Object({ Nameservers: Type.Array(Type.String()), Search: Type.Array(Type.String()), Options: Type.Array(Type.String()) }, { additionalProperties: false })), Secrets: Type.Array(Type.Partial(Type.Object({ File: Type.Partial(Type.Object({ Name: Type.String(), UID: Type.String(), GID: Type.String(), Mode: Type.Integer() }, { additionalProperties: false })), SecretID: Type.String(), SecretName: Type.String() }, { additionalProperties: false }))), Configs: Type.Array(Type.Partial(Type.Object({ File: Type.Partial(Type.Object({ Name: Type.String(), UID: Type.String(), GID: Type.String(), Mode: Type.Integer() }, { additionalProperties: false })), Runtime: Type.Partial(Type.Object({  }, { additionalProperties: false })), ConfigID: Type.String(), ConfigName: Type.String() }, { additionalProperties: false }))), Isolation: Type.Union([Type.Literal("default"), Type.Literal("process"), Type.Literal("hyperv")]), Init: Type.Union([Type.Boolean(), Type.Null()]), Sysctls: Type.Record(Type.String(), Type.String()), CapabilityAdd: Type.Array(Type.String()), CapabilityDrop: Type.Array(Type.String()), Ulimits: Type.Array(Type.Partial(Type.Object({ Name: Type.String(), Soft: Type.Integer(), Hard: Type.Integer() }, { additionalProperties: false }))) }, { additionalProperties: false })), NetworkAttachmentSpec: Type.Partial(Type.Object({ ContainerID: Type.String() }, { additionalProperties: false })), Resources: Type.Partial(Type.Object({ Limits: Limit, Reservations: ResourceObject }, { additionalProperties: false })), RestartPolicy: Type.Partial(Type.Object({ Condition: Type.Union([Type.Literal("none"), Type.Literal("on-failure"), Type.Literal("any")]), Delay: Type.Integer(), MaxAttempts: Type.Integer(), Window: Type.Integer() }, { additionalProperties: false })), Placement: Type.Partial(Type.Object({ Constraints: Type.Array(Type.String()), Preferences: Type.Array(Type.Partial(Type.Object({ Spread: Type.Partial(Type.Object({ SpreadDescriptor: Type.String() }, { additionalProperties: false })) }, { additionalProperties: false }))), MaxReplicas: Type.Integer(), Platforms: Type.Array(Platform) }, { additionalProperties: false })), ForceUpdate: Type.Integer(), Runtime: Type.String(), Networks: Type.Array(NetworkAttachmentConfig), LogDriver: Type.Partial(Type.Object({ Name: Type.String(), Options: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false })) }, { additionalProperties: false }));
 
 export type TaskState = Static<typeof TaskState>;
 export const TaskState = Type.Union([Type.Literal("new"), Type.Literal("allocated"), Type.Literal("pending"), Type.Literal("assigned"), Type.Literal("accepted"), Type.Literal("preparing"), Type.Literal("ready"), Type.Literal("starting"), Type.Literal("running"), Type.Literal("complete"), Type.Literal("shutdown"), Type.Literal("failed"), Type.Literal("rejected"), Type.Literal("remove"), Type.Literal("orphaned")]);
 
 export type Task = Static<typeof Task>;
-export const Task = Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Name: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Spec: TaskSpec, ServiceID: Type.String(), Slot: Type.Integer(), NodeID: Type.String(), AssignedGenericResources: GenericResources, Status: Type.Partial(Type.Object({ Timestamp: Type.String({ format: "dateTime" }), State: TaskState, Message: Type.String(), Err: Type.String(), ContainerStatus: Type.Partial(Type.Object({ ContainerID: Type.String(), PID: Type.Integer(), ExitCode: Type.Integer() }, { additionalProperties: true })) }, { additionalProperties: true })), DesiredState: TaskState, JobIteration: ObjectVersion }, { additionalProperties: true }));
+export const Task = Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Name: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Spec: TaskSpec, ServiceID: Type.String(), Slot: Type.Integer(), NodeID: Type.String(), AssignedGenericResources: GenericResources, Status: Type.Partial(Type.Object({ Timestamp: Type.String({ format: "dateTime" }), State: TaskState, Message: Type.String(), Err: Type.String(), ContainerStatus: Type.Partial(Type.Object({ ContainerID: Type.String(), PID: Type.Integer(), ExitCode: Type.Integer() }, { additionalProperties: false })) }, { additionalProperties: false })), DesiredState: TaskState, JobIteration: ObjectVersion }, { additionalProperties: false }));
 
 export type EndpointPortConfig = Static<typeof EndpointPortConfig>;
-export const EndpointPortConfig = Type.Partial(Type.Object({ Name: Type.String(), Protocol: Type.Union([Type.Literal("tcp"), Type.Literal("udp"), Type.Literal("sctp")]), TargetPort: Type.Integer(), PublishedPort: Type.Integer(), PublishMode: Type.Union([Type.Literal("ingress"), Type.Literal("host")]) }, { additionalProperties: true }));
+export const EndpointPortConfig = Type.Partial(Type.Object({ Name: Type.String(), Protocol: Type.Union([Type.Literal("tcp"), Type.Literal("udp"), Type.Literal("sctp")]), TargetPort: Type.Integer(), PublishedPort: Type.Integer(), PublishMode: Type.Union([Type.Literal("ingress"), Type.Literal("host")]) }, { additionalProperties: false }));
 
 export type EndpointSpec = Static<typeof EndpointSpec>;
-export const EndpointSpec = Type.Partial(Type.Object({ Mode: Type.Union([Type.Literal("vip"), Type.Literal("dnsrr")]), Ports: Type.Array(EndpointPortConfig) }, { additionalProperties: true }));
+export const EndpointSpec = Type.Partial(Type.Object({ Mode: Type.Union([Type.Literal("vip"), Type.Literal("dnsrr")]), Ports: Type.Array(EndpointPortConfig) }, { additionalProperties: false }));
 
 export type ServiceSpec = Static<typeof ServiceSpec>;
-export const ServiceSpec = Type.Partial(Type.Object({ Name: Type.String(), Labels: Type.Record(Type.String(), Type.String()), TaskTemplate: TaskSpec, Mode: Type.Partial(Type.Object({ Replicated: Type.Partial(Type.Object({ Replicas: Type.Integer() }, { additionalProperties: true })), Global: Type.Partial(Type.Object({  }, { additionalProperties: true })), ReplicatedJob: Type.Partial(Type.Object({ MaxConcurrent: Type.Integer(), TotalCompletions: Type.Integer() }, { additionalProperties: true })), GlobalJob: Type.Partial(Type.Object({  }, { additionalProperties: true })) }, { additionalProperties: true })), UpdateConfig: Type.Partial(Type.Object({ Parallelism: Type.Integer(), Delay: Type.Integer(), FailureAction: Type.Union([Type.Literal("continue"), Type.Literal("pause"), Type.Literal("rollback")]), Monitor: Type.Integer(), MaxFailureRatio: Type.Number(), Order: Type.Union([Type.Literal("stop-first"), Type.Literal("start-first")]) }, { additionalProperties: true })), RollbackConfig: Type.Partial(Type.Object({ Parallelism: Type.Integer(), Delay: Type.Integer(), FailureAction: Type.Union([Type.Literal("continue"), Type.Literal("pause")]), Monitor: Type.Integer(), MaxFailureRatio: Type.Number(), Order: Type.Union([Type.Literal("stop-first"), Type.Literal("start-first")]) }, { additionalProperties: true })), Networks: Type.Array(NetworkAttachmentConfig), EndpointSpec: EndpointSpec }, { additionalProperties: true }));
+export const ServiceSpec = Type.Partial(Type.Object({ Name: Type.String(), Labels: Type.Record(Type.String(), Type.String()), TaskTemplate: TaskSpec, Mode: Type.Partial(Type.Object({ Replicated: Type.Partial(Type.Object({ Replicas: Type.Integer() }, { additionalProperties: false })), Global: Type.Partial(Type.Object({  }, { additionalProperties: false })), ReplicatedJob: Type.Partial(Type.Object({ MaxConcurrent: Type.Integer(), TotalCompletions: Type.Integer() }, { additionalProperties: false })), GlobalJob: Type.Partial(Type.Object({  }, { additionalProperties: false })) }, { additionalProperties: false })), UpdateConfig: Type.Partial(Type.Object({ Parallelism: Type.Integer(), Delay: Type.Integer(), FailureAction: Type.Union([Type.Literal("continue"), Type.Literal("pause"), Type.Literal("rollback")]), Monitor: Type.Integer(), MaxFailureRatio: Type.Number(), Order: Type.Union([Type.Literal("stop-first"), Type.Literal("start-first")]) }, { additionalProperties: false })), RollbackConfig: Type.Partial(Type.Object({ Parallelism: Type.Integer(), Delay: Type.Integer(), FailureAction: Type.Union([Type.Literal("continue"), Type.Literal("pause")]), Monitor: Type.Integer(), MaxFailureRatio: Type.Number(), Order: Type.Union([Type.Literal("stop-first"), Type.Literal("start-first")]) }, { additionalProperties: false })), Networks: Type.Array(NetworkAttachmentConfig), EndpointSpec: EndpointSpec }, { additionalProperties: false }));
 
 export type Service = Static<typeof Service>;
-export const Service = Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Spec: ServiceSpec, Endpoint: Type.Partial(Type.Object({ Spec: EndpointSpec, Ports: Type.Array(EndpointPortConfig), VirtualIPs: Type.Array(Type.Partial(Type.Object({ NetworkID: Type.String(), Addr: Type.String() }, { additionalProperties: true }))) }, { additionalProperties: true })), UpdateStatus: Type.Partial(Type.Object({ State: Type.Union([Type.Literal("updating"), Type.Literal("paused"), Type.Literal("completed")]), StartedAt: Type.String({ format: "dateTime" }), CompletedAt: Type.String({ format: "dateTime" }), Message: Type.String() }, { additionalProperties: true })), ServiceStatus: Type.Partial(Type.Object({ RunningTasks: Type.Integer(), DesiredTasks: Type.Integer(), CompletedTasks: Type.Integer() }, { additionalProperties: true })), JobStatus: Type.Partial(Type.Object({ JobIteration: ObjectVersion, LastExecution: Type.String({ format: "dateTime" }) }, { additionalProperties: true })) }, { additionalProperties: true }));
+export const Service = Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Spec: ServiceSpec, Endpoint: Type.Partial(Type.Object({ Spec: EndpointSpec, Ports: Type.Array(EndpointPortConfig), VirtualIPs: Type.Array(Type.Partial(Type.Object({ NetworkID: Type.String(), Addr: Type.String() }, { additionalProperties: false }))) }, { additionalProperties: false })), UpdateStatus: Type.Partial(Type.Object({ State: Type.Union([Type.Literal("updating"), Type.Literal("paused"), Type.Literal("completed")]), StartedAt: Type.String({ format: "dateTime" }), CompletedAt: Type.String({ format: "dateTime" }), Message: Type.String() }, { additionalProperties: false })), ServiceStatus: Type.Partial(Type.Object({ RunningTasks: Type.Integer(), DesiredTasks: Type.Integer(), CompletedTasks: Type.Integer() }, { additionalProperties: false })), JobStatus: Type.Partial(Type.Object({ JobIteration: ObjectVersion, LastExecution: Type.String({ format: "dateTime" }) }, { additionalProperties: false })) }, { additionalProperties: false }));
 
 export type ImageDeleteResponseItem = Static<typeof ImageDeleteResponseItem>;
-export const ImageDeleteResponseItem = Type.Partial(Type.Object({ Untagged: Type.String(), Deleted: Type.String() }, { additionalProperties: true }));
+export const ImageDeleteResponseItem = Type.Partial(Type.Object({ Untagged: Type.String(), Deleted: Type.String() }, { additionalProperties: false }));
 
 export type ServiceUpdateResponse = Static<typeof ServiceUpdateResponse>;
-export const ServiceUpdateResponse = Type.Partial(Type.Object({ Warnings: Type.Array(Type.String()) }, { additionalProperties: true }));
+export const ServiceUpdateResponse = Type.Partial(Type.Object({ Warnings: Type.Array(Type.String()) }, { additionalProperties: false }));
 
 export type ContainerSummary = Static<typeof ContainerSummary>;
-export const ContainerSummary = Type.Partial(Type.Object({ Id: Type.String(), Names: Type.Array(Type.String()), Image: Type.String(), ImageID: Type.String(), Command: Type.String(), Created: Type.Integer(), Ports: Type.Array(Port), SizeRw: Type.Integer(), SizeRootFs: Type.Integer(), Labels: Type.Record(Type.String(), Type.String()), State: Type.String(), Status: Type.String(), HostConfig: Type.Partial(Type.Object({ NetworkMode: Type.String() }, { additionalProperties: true })), NetworkSettings: Type.Partial(Type.Object({ Networks: Type.Record(Type.String(), EndpointSettings) }, { additionalProperties: true })), Mounts: Type.Array(MountPoint) }, { additionalProperties: true }));
+export const ContainerSummary = Type.Partial(Type.Object({ Id: Type.String(), Names: Type.Array(Type.String()), Image: Type.String(), ImageID: Type.String(), Command: Type.String(), Created: Type.Integer(), Ports: Type.Array(Port), SizeRw: Type.Integer(), SizeRootFs: Type.Integer(), Labels: Type.Record(Type.String(), Type.String()), State: Type.String(), Status: Type.String(), HostConfig: Type.Partial(Type.Object({ NetworkMode: Type.String() }, { additionalProperties: false })), NetworkSettings: Type.Partial(Type.Object({ Networks: Type.Record(Type.String(), EndpointSettings) }, { additionalProperties: false })), Mounts: Type.Array(MountPoint) }, { additionalProperties: false }));
 
 export type Driver = Static<typeof Driver>;
-export const Driver = Type.Object({ Name: Type.String(), Options: Type.Optional(Type.Record(Type.String(), Type.String())) }, { additionalProperties: true });
+export const Driver = Type.Object({ Name: Type.String(), Options: Type.Optional(Type.Record(Type.String(), Type.String())) }, { additionalProperties: false });
 
 export type SecretSpec = Static<typeof SecretSpec>;
-export const SecretSpec = Type.Partial(Type.Object({ Name: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Data: Type.String(), Driver: Driver, Templating: Driver }, { additionalProperties: true }));
+export const SecretSpec = Type.Partial(Type.Object({ Name: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Data: Type.String(), Driver: Driver, Templating: Driver }, { additionalProperties: false }));
 
 export type Secret = Static<typeof Secret>;
-export const Secret = Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Spec: SecretSpec }, { additionalProperties: true }));
+export const Secret = Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Spec: SecretSpec }, { additionalProperties: false }));
 
 export type ConfigSpec = Static<typeof ConfigSpec>;
-export const ConfigSpec = Type.Partial(Type.Object({ Name: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Data: Type.String(), Templating: Driver }, { additionalProperties: true }));
+export const ConfigSpec = Type.Partial(Type.Object({ Name: Type.String(), Labels: Type.Record(Type.String(), Type.String()), Data: Type.String(), Templating: Driver }, { additionalProperties: false }));
 
 export type Config = Static<typeof Config>;
-export const Config = Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Spec: ConfigSpec }, { additionalProperties: true }));
+export const Config = Type.Partial(Type.Object({ ID: Type.String(), Version: ObjectVersion, CreatedAt: Type.String({ format: "dateTime" }), UpdatedAt: Type.String({ format: "dateTime" }), Spec: ConfigSpec }, { additionalProperties: false }));
 
 export type ContainerState = Static<typeof ContainerState>;
-export const ContainerState = Type.Union([Type.Partial(Type.Object({ Status: Type.Union([Type.Literal("created"), Type.Literal("running"), Type.Literal("paused"), Type.Literal("restarting"), Type.Literal("removing"), Type.Literal("exited"), Type.Literal("dead")]), Running: Type.Boolean(), Paused: Type.Boolean(), Restarting: Type.Boolean(), OOMKilled: Type.Boolean(), Dead: Type.Boolean(), Pid: Type.Integer(), ExitCode: Type.Integer(), Error: Type.String(), StartedAt: Type.String(), FinishedAt: Type.String(), Health: Health }, { additionalProperties: true })), Type.Null()]);
+export const ContainerState = Type.Union([Type.Partial(Type.Object({ Status: Type.Union([Type.Literal("created"), Type.Literal("running"), Type.Literal("paused"), Type.Literal("restarting"), Type.Literal("removing"), Type.Literal("exited"), Type.Literal("dead")]), Running: Type.Boolean(), Paused: Type.Boolean(), Restarting: Type.Boolean(), OOMKilled: Type.Boolean(), Dead: Type.Boolean(), Pid: Type.Integer(), ExitCode: Type.Integer(), Error: Type.String(), StartedAt: Type.String(), FinishedAt: Type.String(), Health: Health }, { additionalProperties: false })), Type.Null()]);
 
 export type ContainerCreateResponse = Static<typeof ContainerCreateResponse>;
-export const ContainerCreateResponse = Type.Object({ Id: Type.String(), Warnings: Type.Array(Type.String()) }, { additionalProperties: true });
+export const ContainerCreateResponse = Type.Object({ Id: Type.String(), Warnings: Type.Array(Type.String()) }, { additionalProperties: false });
 
 export type ContainerWaitExitError = Static<typeof ContainerWaitExitError>;
-export const ContainerWaitExitError = Type.Partial(Type.Object({ Message: Type.String() }, { additionalProperties: true }));
+export const ContainerWaitExitError = Type.Partial(Type.Object({ Message: Type.String() }, { additionalProperties: false }));
 
 export type ContainerWaitResponse = Static<typeof ContainerWaitResponse>;
-export const ContainerWaitResponse = Type.Object({ StatusCode: Type.Integer(), Error: Type.Optional(ContainerWaitExitError) }, { additionalProperties: true });
+export const ContainerWaitResponse = Type.Object({ StatusCode: Type.Integer(), Error: Type.Optional(ContainerWaitExitError) }, { additionalProperties: false });
 
 export type SystemVersion = Static<typeof SystemVersion>;
-export const SystemVersion = Type.Partial(Type.Object({ Platform: Type.Object({ Name: Type.String() }, { additionalProperties: true }), Components: Type.Array(Type.Object({ Name: Type.String(), Version: Type.String(), Details: Type.Optional(Type.Union([Type.Partial(Type.Object({  }, { additionalProperties: true })), Type.Null()])) }, { additionalProperties: true })), Version: Type.String(), ApiVersion: Type.String(), MinAPIVersion: Type.String(), GitCommit: Type.String(), GoVersion: Type.String(), Os: Type.String(), Arch: Type.String(), KernelVersion: Type.String(), Experimental: Type.Boolean(), BuildTime: Type.String() }, { additionalProperties: true }));
+export const SystemVersion = Type.Partial(Type.Object({ Platform: Type.Object({ Name: Type.String() }, { additionalProperties: false }), Components: Type.Array(Type.Object({ Name: Type.String(), Version: Type.String(), Details: Type.Optional(Type.Union([Type.Partial(Type.Object({  }, { additionalProperties: false })), Type.Null()])) }, { additionalProperties: false })), Version: Type.String(), ApiVersion: Type.String(), MinAPIVersion: Type.String(), GitCommit: Type.String(), GoVersion: Type.String(), Os: Type.String(), Arch: Type.String(), KernelVersion: Type.String(), Experimental: Type.Boolean(), BuildTime: Type.String() }, { additionalProperties: false }));
 
 export type PluginsInfo = Static<typeof PluginsInfo>;
-export const PluginsInfo = Type.Partial(Type.Object({ Volume: Type.Array(Type.String()), Network: Type.Array(Type.String()), Authorization: Type.Array(Type.String()), Log: Type.Array(Type.String()) }, { additionalProperties: true }));
+export const PluginsInfo = Type.Partial(Type.Object({ Volume: Type.Array(Type.String()), Network: Type.Array(Type.String()), Authorization: Type.Array(Type.String()), Log: Type.Array(Type.String()) }, { additionalProperties: false }));
 
 export type IndexInfo = Static<typeof IndexInfo>;
-export const IndexInfo = Type.Union([Type.Partial(Type.Object({ Name: Type.String(), Mirrors: Type.Array(Type.String()), Secure: Type.Boolean(), Official: Type.Boolean() }, { additionalProperties: true })), Type.Null()]);
+export const IndexInfo = Type.Union([Type.Partial(Type.Object({ Name: Type.String(), Mirrors: Type.Array(Type.String()), Secure: Type.Boolean(), Official: Type.Boolean() }, { additionalProperties: false })), Type.Null()]);
 
 export type RegistryServiceConfig = Static<typeof RegistryServiceConfig>;
-export const RegistryServiceConfig = Type.Union([Type.Partial(Type.Object({ AllowNondistributableArtifactsCIDRs: Type.Array(Type.String()), AllowNondistributableArtifactsHostnames: Type.Array(Type.String()), InsecureRegistryCIDRs: Type.Array(Type.String()), IndexConfigs: Type.Record(Type.String(), IndexInfo), Mirrors: Type.Array(Type.String()) }, { additionalProperties: true })), Type.Null()]);
+export const RegistryServiceConfig = Type.Union([Type.Partial(Type.Object({ AllowNondistributableArtifactsCIDRs: Type.Array(Type.String()), AllowNondistributableArtifactsHostnames: Type.Array(Type.String()), InsecureRegistryCIDRs: Type.Array(Type.String()), IndexConfigs: Type.Record(Type.String(), IndexInfo), Mirrors: Type.Array(Type.String()) }, { additionalProperties: false })), Type.Null()]);
 
 export type Runtime = Static<typeof Runtime>;
-export const Runtime = Type.Partial(Type.Object({ path: Type.String(), runtimeArgs: Type.Union([Type.Array(Type.String()), Type.Null()]) }, { additionalProperties: true }));
+export const Runtime = Type.Partial(Type.Object({ path: Type.String(), runtimeArgs: Type.Union([Type.Array(Type.String()), Type.Null()]) }, { additionalProperties: false }));
 
 export type LocalNodeState = Static<typeof LocalNodeState>;
 export const LocalNodeState = Type.Union([Type.Literal(""), Type.Literal("inactive"), Type.Literal("pending"), Type.Literal("active"), Type.Literal("error"), Type.Literal("locked")]);
 
 export type PeerNode = Static<typeof PeerNode>;
-export const PeerNode = Type.Partial(Type.Object({ NodeID: Type.String(), Addr: Type.String() }, { additionalProperties: true }));
+export const PeerNode = Type.Partial(Type.Object({ NodeID: Type.String(), Addr: Type.String() }, { additionalProperties: false }));
 
 export type SwarmInfo = Static<typeof SwarmInfo>;
-export const SwarmInfo = Type.Partial(Type.Object({ NodeID: Type.String(), NodeAddr: Type.String(), LocalNodeState: LocalNodeState, ControlAvailable: Type.Boolean(), Error: Type.String(), RemoteManagers: Type.Union([Type.Array(PeerNode), Type.Null()]), Nodes: Type.Union([Type.Integer(), Type.Null()]), Managers: Type.Union([Type.Integer(), Type.Null()]), Cluster: ClusterInfo }, { additionalProperties: true }));
+export const SwarmInfo = Type.Partial(Type.Object({ NodeID: Type.String(), NodeAddr: Type.String(), LocalNodeState: LocalNodeState, ControlAvailable: Type.Boolean(), Error: Type.String(), RemoteManagers: Type.Union([Type.Array(PeerNode), Type.Null()]), Nodes: Type.Union([Type.Integer(), Type.Null()]), Managers: Type.Union([Type.Integer(), Type.Null()]), Cluster: ClusterInfo }, { additionalProperties: false }));
 
 export type Commit = Static<typeof Commit>;
-export const Commit = Type.Partial(Type.Object({ ID: Type.String(), Expected: Type.String() }, { additionalProperties: true }));
+export const Commit = Type.Partial(Type.Object({ ID: Type.String(), Expected: Type.String() }, { additionalProperties: false }));
 
 export type SystemInfo = Static<typeof SystemInfo>;
-export const SystemInfo = Type.Partial(Type.Object({ ID: Type.String(), Containers: Type.Integer(), ContainersRunning: Type.Integer(), ContainersPaused: Type.Integer(), ContainersStopped: Type.Integer(), Images: Type.Integer(), Driver: Type.String(), DriverStatus: Type.Array(Type.Array(Type.String())), DockerRootDir: Type.String(), Plugins: PluginsInfo, MemoryLimit: Type.Boolean(), SwapLimit: Type.Boolean(), KernelMemoryTCP: Type.Boolean(), CpuCfsPeriod: Type.Boolean(), CpuCfsQuota: Type.Boolean(), CPUShares: Type.Boolean(), CPUSet: Type.Boolean(), PidsLimit: Type.Boolean(), OomKillDisable: Type.Boolean(), IPv4Forwarding: Type.Boolean(), BridgeNfIptables: Type.Boolean(), BridgeNfIp6tables: Type.Boolean(), Debug: Type.Boolean(), NFd: Type.Integer(), NGoroutines: Type.Integer(), SystemTime: Type.String(), LoggingDriver: Type.String(), CgroupDriver: Type.Union([Type.Literal("cgroupfs"), Type.Literal("systemd"), Type.Literal("none")]), CgroupVersion: Type.Union([Type.Literal("1"), Type.Literal("2")]), NEventsListener: Type.Integer(), KernelVersion: Type.String(), OperatingSystem: Type.String(), OSVersion: Type.String(), OSType: Type.String(), Architecture: Type.String(), NCPU: Type.Integer(), MemTotal: Type.Integer(), IndexServerAddress: Type.String(), RegistryConfig: RegistryServiceConfig, GenericResources: GenericResources, HttpProxy: Type.String(), HttpsProxy: Type.String(), NoProxy: Type.String(), Name: Type.String(), Labels: Type.Array(Type.String()), ExperimentalBuild: Type.Boolean(), ServerVersion: Type.String(), Runtimes: Type.Record(Type.String(), Runtime), DefaultRuntime: Type.String(), Swarm: SwarmInfo, LiveRestoreEnabled: Type.Boolean(), Isolation: Type.Union([Type.Literal("default"), Type.Literal("hyperv"), Type.Literal("process")]), InitBinary: Type.String(), ContainerdCommit: Commit, RuncCommit: Commit, InitCommit: Commit, SecurityOptions: Type.Array(Type.String()), ProductLicense: Type.String(), DefaultAddressPools: Type.Array(Type.Partial(Type.Object({ Base: Type.String(), Size: Type.Integer() }, { additionalProperties: true }))), Warnings: Type.Array(Type.String()) }, { additionalProperties: true }));
+export const SystemInfo = Type.Partial(Type.Object({ ID: Type.String(), Containers: Type.Integer(), ContainersRunning: Type.Integer(), ContainersPaused: Type.Integer(), ContainersStopped: Type.Integer(), Images: Type.Integer(), Driver: Type.String(), DriverStatus: Type.Array(Type.Array(Type.String())), DockerRootDir: Type.String(), Plugins: PluginsInfo, MemoryLimit: Type.Boolean(), SwapLimit: Type.Boolean(), KernelMemoryTCP: Type.Boolean(), CpuCfsPeriod: Type.Boolean(), CpuCfsQuota: Type.Boolean(), CPUShares: Type.Boolean(), CPUSet: Type.Boolean(), PidsLimit: Type.Boolean(), OomKillDisable: Type.Boolean(), IPv4Forwarding: Type.Boolean(), BridgeNfIptables: Type.Boolean(), BridgeNfIp6tables: Type.Boolean(), Debug: Type.Boolean(), NFd: Type.Integer(), NGoroutines: Type.Integer(), SystemTime: Type.String(), LoggingDriver: Type.String(), CgroupDriver: Type.Union([Type.Literal("cgroupfs"), Type.Literal("systemd"), Type.Literal("none")]), CgroupVersion: Type.Union([Type.Literal("1"), Type.Literal("2")]), NEventsListener: Type.Integer(), KernelVersion: Type.String(), OperatingSystem: Type.String(), OSVersion: Type.String(), OSType: Type.String(), Architecture: Type.String(), NCPU: Type.Integer(), MemTotal: Type.Integer(), IndexServerAddress: Type.String(), RegistryConfig: RegistryServiceConfig, GenericResources: GenericResources, HttpProxy: Type.String(), HttpsProxy: Type.String(), NoProxy: Type.String(), Name: Type.String(), Labels: Type.Array(Type.String()), ExperimentalBuild: Type.Boolean(), ServerVersion: Type.String(), Runtimes: Type.Record(Type.String(), Runtime), DefaultRuntime: Type.String(), Swarm: SwarmInfo, LiveRestoreEnabled: Type.Boolean(), Isolation: Type.Union([Type.Literal("default"), Type.Literal("hyperv"), Type.Literal("process")]), InitBinary: Type.String(), ContainerdCommit: Commit, RuncCommit: Commit, InitCommit: Commit, SecurityOptions: Type.Array(Type.String()), ProductLicense: Type.String(), DefaultAddressPools: Type.Array(Type.Partial(Type.Object({ Base: Type.String(), Size: Type.Integer() }, { additionalProperties: false }))), Warnings: Type.Array(Type.String()) }, { additionalProperties: false }));
 
 export type EventActor = Static<typeof EventActor>;
-export const EventActor = Type.Partial(Type.Object({ ID: Type.String(), Attributes: Type.Record(Type.String(), Type.String()) }, { additionalProperties: true }));
+export const EventActor = Type.Partial(Type.Object({ ID: Type.String(), Attributes: Type.Record(Type.String(), Type.String()) }, { additionalProperties: false }));
 
 export type EventMessage = Static<typeof EventMessage>;
-export const EventMessage = Type.Partial(Type.Object({ Type: Type.Union([Type.Literal("builder"), Type.Literal("config"), Type.Literal("container"), Type.Literal("daemon"), Type.Literal("image"), Type.Literal("network"), Type.Literal("node"), Type.Literal("plugin"), Type.Literal("secret"), Type.Literal("service"), Type.Literal("volume")]), Action: Type.String(), Actor: EventActor, scope: Type.Union([Type.Literal("local"), Type.Literal("swarm")]), time: Type.Integer(), timeNano: Type.Integer() }, { additionalProperties: true }));
+export const EventMessage = Type.Partial(Type.Object({ Type: Type.Union([Type.Literal("builder"), Type.Literal("config"), Type.Literal("container"), Type.Literal("daemon"), Type.Literal("image"), Type.Literal("network"), Type.Literal("node"), Type.Literal("plugin"), Type.Literal("secret"), Type.Literal("service"), Type.Literal("volume")]), Action: Type.String(), Actor: EventActor, scope: Type.Union([Type.Literal("local"), Type.Literal("swarm")]), time: Type.Integer(), timeNano: Type.Integer() }, { additionalProperties: false }));
 
 export type OCIDescriptor = Static<typeof OCIDescriptor>;
-export const OCIDescriptor = Type.Partial(Type.Object({ mediaType: Type.String(), digest: Type.String(), size: Type.Integer() }, { additionalProperties: true }));
+export const OCIDescriptor = Type.Partial(Type.Object({ mediaType: Type.String(), digest: Type.String(), size: Type.Integer() }, { additionalProperties: false }));
 
 export type OCIPlatform = Static<typeof OCIPlatform>;
-export const OCIPlatform = Type.Partial(Type.Object({ architecture: Type.String(), os: Type.String(), "os.version": Type.String(), "os.features": Type.Array(Type.String()), variant: Type.String() }, { additionalProperties: true }));
+export const OCIPlatform = Type.Partial(Type.Object({ architecture: Type.String(), os: Type.String(), "os.version": Type.String(), "os.features": Type.Array(Type.String()), variant: Type.String() }, { additionalProperties: false }));
 
 export type DistributionInspect = Static<typeof DistributionInspect>;
-export const DistributionInspect = Type.Object({ Descriptor: OCIDescriptor, Platforms: Type.Array(OCIPlatform) }, { additionalProperties: true });
+export const DistributionInspect = Type.Object({ Descriptor: OCIDescriptor, Platforms: Type.Array(OCIPlatform) }, { additionalProperties: false });
 // </Schemas>
 
 // <Endpoints>
@@ -336,7 +336,7 @@ export const post_ContainerCreate = {
   path: Type.Literal("/containers/create"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Optional(Type.Partial(Type.Object({ name: Type.String({ pattern: "^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$" }), platform: Type.String() }, { additionalProperties: false }))), body: Type.Intersect([ContainerConfig, Type.Partial(Type.Object({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }, { additionalProperties: true }))]) },
+  parameters: { query: Type.Optional(Type.Partial(Type.Object({ name: Type.String({ pattern: "^/?[a-zA-Z0-9][a-zA-Z0-9_.-]+$" }), platform: Type.String() }, { additionalProperties: false }))), body: Type.Composite([ContainerConfig, Type.Partial(Type.Object({ HostConfig: HostConfig, NetworkingConfig: NetworkingConfig }, { additionalProperties: false }))], { additionalProperties: false }) },
   responses: { 201: ContainerCreateResponse, 400: ErrorResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -347,7 +347,7 @@ export const get_ContainerInspect = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ size: Type.Boolean() }, { additionalProperties: false }))), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Partial(Type.Object({ Id: Type.String(), Created: Type.String(), Path: Type.String(), Args: Type.Array(Type.String()), State: ContainerState, Image: Type.String(), ResolvConfPath: Type.String(), HostnamePath: Type.String(), HostsPath: Type.String(), LogPath: Type.String(), Name: Type.String(), RestartCount: Type.Integer(), Driver: Type.String(), Platform: Type.String(), MountLabel: Type.String(), ProcessLabel: Type.String(), AppArmorProfile: Type.String(), ExecIDs: Type.Union([Type.Array(Type.String()), Type.Null()]), HostConfig: HostConfig, GraphDriver: GraphDriverData, SizeRw: Type.Integer(), SizeRootFs: Type.Integer(), Mounts: Type.Array(MountPoint), Config: ContainerConfig, NetworkSettings: NetworkSettings }, { additionalProperties: true })), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: Type.Partial(Type.Object({ Id: Type.String(), Created: Type.String(), Path: Type.String(), Args: Type.Array(Type.String()), State: ContainerState, Image: Type.String(), ResolvConfPath: Type.String(), HostnamePath: Type.String(), HostsPath: Type.String(), LogPath: Type.String(), Name: Type.String(), RestartCount: Type.Integer(), Driver: Type.String(), Platform: Type.String(), MountLabel: Type.String(), ProcessLabel: Type.String(), AppArmorProfile: Type.String(), ExecIDs: Type.Union([Type.Array(Type.String()), Type.Null()]), HostConfig: HostConfig, GraphDriver: GraphDriverData, SizeRw: Type.Integer(), SizeRootFs: Type.Integer(), Mounts: Type.Array(MountPoint), Config: ContainerConfig, NetworkSettings: NetworkSettings }, { additionalProperties: false })), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_ContainerTop = typeof get_ContainerTop;
@@ -357,7 +357,7 @@ export const get_ContainerTop = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ ps_args: Type.String() }, { additionalProperties: false }))), path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Union([Type.Partial(Type.Object({ Titles: Type.Array(Type.String()), Processes: Type.Array(Type.Array(Type.String())) }, { additionalProperties: true })), Type.Partial(Type.Object({ Titles: Type.Array(Type.String()), Processes: Type.Array(Type.Array(Type.String())) }, { additionalProperties: true }))]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Union([Type.Partial(Type.Object({ Titles: Type.Array(Type.String()), Processes: Type.Array(Type.Array(Type.String())) }, { additionalProperties: false })), Type.Partial(Type.Object({ Titles: Type.Array(Type.String()), Processes: Type.Array(Type.Array(Type.String())) }, { additionalProperties: false }))]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ContainerLogs = typeof get_ContainerLogs;
@@ -456,8 +456,8 @@ export const post_ContainerUpdate = {
   path: Type.Literal("/containers/{id}/update"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Intersect([Resources, Type.Partial(Type.Object({ RestartPolicy: RestartPolicy }, { additionalProperties: true }))]) },
-  responses: { 200: Type.Partial(Type.Object({ Warnings: Type.Array(Type.String()) }, { additionalProperties: true })), 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Composite([Resources, Type.Partial(Type.Object({ RestartPolicy: RestartPolicy }, { additionalProperties: false }))], { additionalProperties: false }) },
+  responses: { 200: Type.Partial(Type.Object({ Warnings: Type.Array(Type.String()) }, { additionalProperties: false })), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ContainerRename = typeof post_ContainerRename;
@@ -568,7 +568,7 @@ export const post_ContainerPrune = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ filters: Type.String() }, { additionalProperties: false }))) },
-  responses: { 200: Type.Partial(Type.Object({ ContainersDeleted: Type.Array(Type.String()), SpaceReclaimed: Type.Integer() }, { additionalProperties: true })), 500: ErrorResponse },
+  responses: { 200: Type.Partial(Type.Object({ ContainersDeleted: Type.Array(Type.String()), SpaceReclaimed: Type.Integer() }, { additionalProperties: false })), 500: ErrorResponse },
 };
 
 export type get_ImageList = typeof get_ImageList;
@@ -598,7 +598,7 @@ export const post_BuildPrune = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ "keep-storage": Type.Integer(), all: Type.Boolean(), filters: Type.String() }, { additionalProperties: false }))) },
-  responses: { 200: Type.Partial(Type.Object({ CachesDeleted: Type.Array(Type.String()), SpaceReclaimed: Type.Integer() }, { additionalProperties: true })), 500: ErrorResponse },
+  responses: { 200: Type.Partial(Type.Object({ CachesDeleted: Type.Array(Type.String()), SpaceReclaimed: Type.Integer() }, { additionalProperties: false })), 500: ErrorResponse },
 };
 
 export type post_ImageCreate = typeof post_ImageCreate;
@@ -628,7 +628,7 @@ export const get_ImageHistory = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ name: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Array(Type.Object({ Id: Type.String(), Created: Type.Integer(), CreatedBy: Type.String(), Tags: Type.Array(Type.String()), Size: Type.Integer(), Comment: Type.String() }, { additionalProperties: true })), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: Type.Array(Type.Object({ Id: Type.String(), Created: Type.Integer(), CreatedBy: Type.String(), Tags: Type.Array(Type.String()), Size: Type.Integer(), Comment: Type.String() }, { additionalProperties: false })), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_ImagePush = typeof post_ImagePush;
@@ -668,7 +668,7 @@ export const get_ImageSearch = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Object({ term: Type.String(), limit: Type.Optional(Type.Integer()), filters: Type.Optional(Type.String()) }, { additionalProperties: false }) },
-  responses: { 200: Type.Array(Type.Partial(Type.Object({ description: Type.String(), is_official: Type.Boolean(), is_automated: Type.Boolean(), name: Type.String(), star_count: Type.Integer() }, { additionalProperties: true }))), 500: ErrorResponse },
+  responses: { 200: Type.Array(Type.Partial(Type.Object({ description: Type.String(), is_official: Type.Boolean(), is_automated: Type.Boolean(), name: Type.String(), star_count: Type.Integer() }, { additionalProperties: false }))), 500: ErrorResponse },
 };
 
 export type post_ImagePrune = typeof post_ImagePrune;
@@ -678,7 +678,7 @@ export const post_ImagePrune = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ filters: Type.String() }, { additionalProperties: false }))) },
-  responses: { 200: Type.Partial(Type.Object({ ImagesDeleted: Type.Array(ImageDeleteResponseItem), SpaceReclaimed: Type.Integer() }, { additionalProperties: true })), 500: ErrorResponse },
+  responses: { 200: Type.Partial(Type.Object({ ImagesDeleted: Type.Array(ImageDeleteResponseItem), SpaceReclaimed: Type.Integer() }, { additionalProperties: false })), 500: ErrorResponse },
 };
 
 export type post_SystemAuth = typeof post_SystemAuth;
@@ -688,7 +688,7 @@ export const post_SystemAuth = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { body: AuthConfig },
-  responses: { 200: Type.Object({ Status: Type.String(), IdentityToken: Type.Optional(Type.String()) }, { additionalProperties: true }), 204: Type.Unknown(), 401: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: Type.Object({ Status: Type.String(), IdentityToken: Type.Optional(Type.String()) }, { additionalProperties: false }), 204: Type.Unknown(), 401: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_SystemInfo = typeof get_SystemInfo;
@@ -760,7 +760,7 @@ export const get_SystemDataUsage = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ type: Type.Array(Type.Union([Type.Literal("container"), Type.Literal("image"), Type.Literal("volume"), Type.Literal("build-cache")])) }, { additionalProperties: false }))) },
-  responses: { 200: Type.Union([Type.Partial(Type.Object({ LayersSize: Type.Integer(), Images: Type.Array(ImageSummary), Containers: Type.Array(ContainerSummary), Volumes: Type.Array(Volume), BuildCache: Type.Array(BuildCache) }, { additionalProperties: true })), Type.Partial(Type.Object({ LayersSize: Type.Integer(), Images: Type.Array(ImageSummary), Containers: Type.Array(ContainerSummary), Volumes: Type.Array(Volume), BuildCache: Type.Array(BuildCache) }, { additionalProperties: true }))]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Union([Type.Partial(Type.Object({ LayersSize: Type.Integer(), Images: Type.Array(ImageSummary), Containers: Type.Array(ContainerSummary), Volumes: Type.Array(Volume), BuildCache: Type.Array(BuildCache) }, { additionalProperties: false })), Type.Partial(Type.Object({ LayersSize: Type.Integer(), Images: Type.Array(ImageSummary), Containers: Type.Array(ContainerSummary), Volumes: Type.Array(Volume), BuildCache: Type.Array(BuildCache) }, { additionalProperties: false }))]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
 };
 
 export type get_ImageGet = typeof get_ImageGet;
@@ -799,7 +799,7 @@ export const post_ContainerExec = {
   path: Type.Literal("/containers/{id}/exec"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ AttachStdin: Type.Boolean(), AttachStdout: Type.Boolean(), AttachStderr: Type.Boolean(), ConsoleSize: Type.Union([Type.Array(Type.Integer({ minimum: 0 }), { minItems: 2, maxItems: 2 }), Type.Null()]), DetachKeys: Type.String(), Tty: Type.Boolean(), Env: Type.Array(Type.String()), Cmd: Type.Array(Type.String()), Privileged: Type.Boolean(), User: Type.String(), WorkingDir: Type.String() }, { additionalProperties: true }))) },
+  parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ AttachStdin: Type.Boolean(), AttachStdout: Type.Boolean(), AttachStderr: Type.Boolean(), ConsoleSize: Type.Union([Type.Array(Type.Integer({ minimum: 0 }), { minItems: 2, maxItems: 2 }), Type.Null()]), DetachKeys: Type.String(), Tty: Type.Boolean(), Env: Type.Array(Type.String()), Cmd: Type.Array(Type.String()), Privileged: Type.Boolean(), User: Type.String(), WorkingDir: Type.String() }, { additionalProperties: false }))) },
   responses: { 201: IdResponse, 404: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse },
 };
 
@@ -809,7 +809,7 @@ export const post_ExecStart = {
   path: Type.Literal("/exec/{id}/start"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ Detach: Type.Boolean(), Tty: Type.Boolean(), ConsoleSize: Type.Union([Type.Array(Type.Integer({ minimum: 0 }), { minItems: 2, maxItems: 2 }), Type.Null()]) }, { additionalProperties: true }))) },
+  parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ Detach: Type.Boolean(), Tty: Type.Boolean(), ConsoleSize: Type.Union([Type.Array(Type.Integer({ minimum: 0 }), { minItems: 2, maxItems: 2 }), Type.Null()]) }, { additionalProperties: false }))) },
   responses: { 200: Type.Unknown(), 404: Type.Unknown(), 409: Type.Unknown() },
 };
 
@@ -830,7 +830,7 @@ export const get_ExecInspect = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }) },
-  responses: { 200: Type.Partial(Type.Object({ CanRemove: Type.Boolean(), DetachKeys: Type.String(), ID: Type.String(), Running: Type.Boolean(), ExitCode: Type.Integer(), ProcessConfig: ProcessConfig, OpenStdin: Type.Boolean(), OpenStderr: Type.Boolean(), OpenStdout: Type.Boolean(), ContainerID: Type.String(), Pid: Type.Integer() }, { additionalProperties: true })), 404: ErrorResponse, 500: ErrorResponse },
+  responses: { 200: Type.Partial(Type.Object({ CanRemove: Type.Boolean(), DetachKeys: Type.String(), ID: Type.String(), Running: Type.Boolean(), ExitCode: Type.Integer(), ProcessConfig: ProcessConfig, OpenStdin: Type.Boolean(), OpenStderr: Type.Boolean(), OpenStdout: Type.Boolean(), ContainerID: Type.String(), Pid: Type.Integer() }, { additionalProperties: false })), 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type get_VolumeList = typeof get_VolumeList;
@@ -869,7 +869,7 @@ export const put_VolumeUpdate = {
   path: Type.Literal("/volumes/{name}"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { query: Type.Object({ version: Type.Integer() }, { additionalProperties: false }), path: Type.Object({ name: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ Spec: ClusterVolumeSpec }, { additionalProperties: true }))) },
+  parameters: { query: Type.Object({ version: Type.Integer() }, { additionalProperties: false }), path: Type.Object({ name: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ Spec: ClusterVolumeSpec }, { additionalProperties: false }))) },
   responses: { 200: Type.Unknown(), 400: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -890,7 +890,7 @@ export const post_VolumePrune = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ filters: Type.String() }, { additionalProperties: false }))) },
-  responses: { 200: Type.Partial(Type.Object({ VolumesDeleted: Type.Array(Type.String()), SpaceReclaimed: Type.Integer() }, { additionalProperties: true })), 500: ErrorResponse },
+  responses: { 200: Type.Partial(Type.Object({ VolumesDeleted: Type.Array(Type.String()), SpaceReclaimed: Type.Integer() }, { additionalProperties: false })), 500: ErrorResponse },
 };
 
 export type get_NetworkList = typeof get_NetworkList;
@@ -929,8 +929,8 @@ export const post_NetworkCreate = {
   path: Type.Literal("/networks/create"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { body: Type.Object({ Name: Type.String(), CheckDuplicate: Type.Optional(Type.Boolean()), Driver: Type.Optional(Type.String()), Internal: Type.Optional(Type.Boolean()), Attachable: Type.Optional(Type.Boolean()), Ingress: Type.Optional(Type.Boolean()), IPAM: Type.Optional(IPAM), EnableIPv6: Type.Optional(Type.Boolean()), Options: Type.Optional(Type.Record(Type.String(), Type.String())), Labels: Type.Optional(Type.Record(Type.String(), Type.String())) }, { additionalProperties: true }) },
-  responses: { 201: Type.Partial(Type.Object({ Id: Type.String(), Warning: Type.String() }, { additionalProperties: true })), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
+  parameters: { body: Type.Object({ Name: Type.String(), CheckDuplicate: Type.Optional(Type.Boolean()), Driver: Type.Optional(Type.String()), Internal: Type.Optional(Type.Boolean()), Attachable: Type.Optional(Type.Boolean()), Ingress: Type.Optional(Type.Boolean()), IPAM: Type.Optional(IPAM), EnableIPv6: Type.Optional(Type.Boolean()), Options: Type.Optional(Type.Record(Type.String(), Type.String())), Labels: Type.Optional(Type.Record(Type.String(), Type.String())) }, { additionalProperties: false }) },
+  responses: { 201: Type.Partial(Type.Object({ Id: Type.String(), Warning: Type.String() }, { additionalProperties: false })), 403: ErrorResponse, 404: ErrorResponse, 500: ErrorResponse },
 };
 
 export type post_NetworkConnect = typeof post_NetworkConnect;
@@ -939,7 +939,7 @@ export const post_NetworkConnect = {
   path: Type.Literal("/networks/{id}/connect"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ Container: Type.String(), EndpointConfig: EndpointSettings }, { additionalProperties: true }))) },
+  parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ Container: Type.String(), EndpointConfig: EndpointSettings }, { additionalProperties: false }))) },
   responses: { 200: Type.Unknown(), 403: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -949,7 +949,7 @@ export const post_NetworkDisconnect = {
   path: Type.Literal("/networks/{id}/disconnect"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ Container: Type.String(), Force: Type.Boolean() }, { additionalProperties: true }))) },
+  parameters: { path: Type.Object({ id: Type.String() }, { additionalProperties: false }), body: Type.Optional(Type.Partial(Type.Object({ Container: Type.String(), Force: Type.Boolean() }, { additionalProperties: false }))) },
   responses: { 200: Type.Unknown(), 403: Type.Union([ErrorResponse, ErrorResponse]), 404: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -960,7 +960,7 @@ export const post_NetworkPrune = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { query: Type.Optional(Type.Partial(Type.Object({ filters: Type.String() }, { additionalProperties: false }))) },
-  responses: { 200: Type.Partial(Type.Object({ NetworksDeleted: Type.Array(Type.String()) }, { additionalProperties: true })), 500: ErrorResponse },
+  responses: { 200: Type.Partial(Type.Object({ NetworksDeleted: Type.Array(Type.String()) }, { additionalProperties: false })), 500: ErrorResponse },
 };
 
 export type get_PluginList = typeof get_PluginList;
@@ -1129,7 +1129,7 @@ export const post_SwarmInit = {
   path: Type.Literal("/swarm/init"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { body: Type.Optional(Type.Partial(Type.Object({ ListenAddr: Type.String(), AdvertiseAddr: Type.String(), DataPathAddr: Type.String(), DataPathPort: Type.Integer(), DefaultAddrPool: Type.Array(Type.String()), ForceNewCluster: Type.Boolean(), SubnetSize: Type.Integer(), Spec: SwarmSpec }, { additionalProperties: true }))) },
+  parameters: { body: Type.Optional(Type.Partial(Type.Object({ ListenAddr: Type.String(), AdvertiseAddr: Type.String(), DataPathAddr: Type.String(), DataPathPort: Type.Integer(), DefaultAddrPool: Type.Array(Type.String()), ForceNewCluster: Type.Boolean(), SubnetSize: Type.Integer(), Spec: SwarmSpec }, { additionalProperties: false }))) },
   responses: { 200: Type.Union([Type.String(), Type.String()]), 400: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1139,7 +1139,7 @@ export const post_SwarmJoin = {
   path: Type.Literal("/swarm/join"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { body: Type.Optional(Type.Partial(Type.Object({ ListenAddr: Type.String(), AdvertiseAddr: Type.String(), DataPathAddr: Type.String(), RemoteAddrs: Type.Array(Type.String()), JoinToken: Type.String() }, { additionalProperties: true }))) },
+  parameters: { body: Type.Optional(Type.Partial(Type.Object({ ListenAddr: Type.String(), AdvertiseAddr: Type.String(), DataPathAddr: Type.String(), RemoteAddrs: Type.Array(Type.String()), JoinToken: Type.String() }, { additionalProperties: false }))) },
   responses: { 200: Type.Unknown(), 400: Type.Union([ErrorResponse, ErrorResponse]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
 };
 
@@ -1170,7 +1170,7 @@ export const get_SwarmUnlockkey = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: Type.Never(),
-  responses: { 200: Type.Union([Type.Partial(Type.Object({ UnlockKey: Type.String() }, { additionalProperties: true })), Type.Partial(Type.Object({ UnlockKey: Type.String() }, { additionalProperties: true }))]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
+  responses: { 200: Type.Union([Type.Partial(Type.Object({ UnlockKey: Type.String() }, { additionalProperties: false })), Type.Partial(Type.Object({ UnlockKey: Type.String() }, { additionalProperties: false }))]), 500: Type.Union([ErrorResponse, ErrorResponse]), 503: Type.Union([ErrorResponse, ErrorResponse]) },
 };
 
 export type post_SwarmUnlock = typeof post_SwarmUnlock;
@@ -1179,7 +1179,7 @@ export const post_SwarmUnlock = {
   path: Type.Literal("/swarm/unlock"),
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
-  parameters: { body: Type.Optional(Type.Partial(Type.Object({ UnlockKey: Type.String() }, { additionalProperties: true }))) },
+  parameters: { body: Type.Optional(Type.Partial(Type.Object({ UnlockKey: Type.String() }, { additionalProperties: false }))) },
   responses: { 200: Type.Unknown(), 500: ErrorResponse, 503: ErrorResponse },
 };
 
@@ -1200,7 +1200,7 @@ export const post_ServiceCreate = {
   requestFormat: Type.Literal("json"),
   responseFormat: Type.Literal("json"),
   parameters: { header: Type.Optional(Type.Partial(Type.Object({ "X-Registry-Auth": Type.String() }, { additionalProperties: false }))), body: Type.Intersect([ServiceSpec, Type.Record(Type.String(), Type.Unknown())]) },
-  responses: { 201: Type.Partial(Type.Object({ ID: Type.String(), Warning: Type.String() }, { additionalProperties: true })), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
+  responses: { 201: Type.Partial(Type.Object({ ID: Type.String(), Warning: Type.String() }, { additionalProperties: false })), 400: ErrorResponse, 403: ErrorResponse, 409: ErrorResponse, 500: ErrorResponse, 503: ErrorResponse },
 };
 
 export type get_ServiceInspect = typeof get_ServiceInspect;

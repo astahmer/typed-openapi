@@ -25,6 +25,17 @@ export default defineConfig({
 });
 ```
 
+Named objects are closed when `additionalProperties` is omitted. Set `openapi.additionalPropertiesDefault: true` to follow the OpenAPI default (`true` when omitted):
+
+```ts
+export default defineConfig({
+  input: "./openapi.yaml",
+  openapi: { additionalPropertiesDefault: true },
+});
+```
+
+The CLI flag `--openapi-additional-properties-default` is the same switch. `allOf` of closed objects composes the union of keys (sibling fields are valid; unknown keys are still rejected).
+
 Now one short command regenerates every configured output:
 
 ```sh

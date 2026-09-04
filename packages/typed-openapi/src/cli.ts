@@ -76,6 +76,10 @@ cli
     "--include-deprecated <items>",
     "Comma-separated list of `deprecated: true` OpenAPI members to keep (tagged @deprecated) instead of omitting: endpoints, schemas, properties (defaults to schemas,properties)",
   )
+  .option(
+    "--openapi-additional-properties-default",
+    "When additionalProperties is omitted, use OpenAPI/JSON Schema's default (`true`). Default: omitted additionalProperties is `false` so named objects stay closed",
+  )
   .action(async (input: string | undefined, _options: any) => {
     return generateClientFiles(input, _options);
   });

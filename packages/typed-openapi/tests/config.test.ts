@@ -26,6 +26,13 @@ describe("typed-openapi config file", () => {
     expect(cfg.tanstack).toBe(true);
   });
 
+  test("loads nested openapi.additionalPropertiesDefault", () => {
+    const path = join(tmp, "openapi-additional-properties-default.json");
+    writeFileSync(path, JSON.stringify({ openapi: { additionalPropertiesDefault: true } }));
+
+    expect(loadConfigFile(path).openapi?.additionalPropertiesDefault).toBe(true);
+  });
+
   test("loads fine-grained validation overrides", () => {
     const path = join(tmp, "typed-openapi.config.json");
     writeFileSync(

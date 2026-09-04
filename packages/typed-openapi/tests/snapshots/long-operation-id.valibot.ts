@@ -21,7 +21,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   path: v.literal("/users"),
   requestFormat: v.literal("json"),
   responseFormat: v.literal("json"),
-  parameters: { body: v.optional(v.partial(v.objectWithRest({ username: v.string() }, v.unknown()))) },
+  parameters: { body: v.optional(v.partial(v.strictObject({ username: v.string() }))) },
   responses: { 201: v.unknown() },
 };
 

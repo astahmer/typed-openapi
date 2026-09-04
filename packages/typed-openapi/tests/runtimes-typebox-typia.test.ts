@@ -90,8 +90,11 @@ describe("typebox and typia runtimes", () => {
       schemaNaming: "always-name",
     });
     expect(file).toContain("import typia");
-    expect(file).toContain("export type Pet = ({ name: string } & Record<string, unknown>);");
-    expect(file).toContain("export const isPet = typia.createIs<Pet>();");
+    expect(file).toContain("export type Pet = { name: string };");
+    expect(file).toContain("export const isPet = ((input: unknown): input is Pet => typia.createIs<Pet>()(input)");
+    expect(file).toContain(
+      'Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))',
+    );
     expect(file).toContain("export const assertPet = typia.createAssert<Pet>();");
     expect(file).toContain("export const validatePet = typia.createValidate<Pet>();");
     expect(file).not.toContain("createEquals");
@@ -239,7 +242,9 @@ describe("typebox and typia runtimes", () => {
     const source = typiaAdapter.emitNode(node, createEmitCtx(resolveValidationPolicy("strict")));
 
     expect(source).toContain("typia.createIs<{ name: string }>()");
-    expect(source).toContain('Object.keys(input).every((key) => ["name"].includes(key))');
+    expect(source).toContain(
+      'Object.keys(input).every((key) => Object.prototype.hasOwnProperty.call({ "name": 1 }, key))',
+    );
     expect(source).not.toContain("createEquals");
   });
 });

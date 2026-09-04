@@ -32,6 +32,7 @@ export const createRefResolver = (
   doc: OpenAPIObject,
   nameTransform?: NameTransformOptions,
   transformSchema?: SchemaIrConvertContext["transformSchema"],
+  additionalPropertiesDefault?: boolean,
 ) => {
   // both used for debugging purpose
   const nameByRef = new Map<string, string>();
@@ -131,6 +132,7 @@ export const createRefResolver = (
   const irCtx: SchemaIrConvertContext = {
     getRefName: (ref) => getInfosByRef(ref).normalized,
     ...(transformSchema ? { transformSchema } : {}),
+    ...(additionalPropertiesDefault ? { additionalPropertiesDefault: true } : {}),
   };
 
   const registerSchemaNode = (ref: string) => {

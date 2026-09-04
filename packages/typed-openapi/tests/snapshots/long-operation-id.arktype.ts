@@ -25,6 +25,7 @@ export const post_Very_very_very_very_very_very_very_very_very_very_long = {
   parameters: {
     body: type({ username: type("string") })
       .partial()
+      .onUndeclaredKey("reject")
       .optional(),
   },
   responses: { 201: type("unknown") },

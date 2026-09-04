@@ -8,7 +8,9 @@ export const Order = type({
   shipDate: type("string.date"),
   status: type.enumerated("placed", "approved", "delivered"),
   complete: type("boolean"),
-}).partial();
+})
+  .partial()
+  .onUndeclaredKey("reject");
 export type Order = typeof Order.infer;
 
 export const Address = type({
@@ -16,17 +18,19 @@ export const Address = type({
   city: type("string"),
   state: type("string"),
   zip: type("string"),
-}).partial();
+})
+  .partial()
+  .onUndeclaredKey("reject");
 export type Address = typeof Address.infer;
 
-export const Customer = type({
-  id: type("number.integer"),
-  username: type("string"),
-  address: Address.array(),
-}).partial();
+export const Customer = type({ id: type("number.integer"), username: type("string"), address: Address.array() })
+  .partial()
+  .onUndeclaredKey("reject");
 export type Customer = typeof Customer.infer;
 
-export const Category = type({ id: type("number.integer"), name: type("string") }).partial();
+export const Category = type({ id: type("number.integer"), name: type("string") })
+  .partial()
+  .onUndeclaredKey("reject");
 export type Category = typeof Category.infer;
 
 export const User = type({
@@ -38,10 +42,14 @@ export const User = type({
   password: type("string"),
   phone: type("string"),
   userStatus: type("number.integer"),
-}).partial();
+})
+  .partial()
+  .onUndeclaredKey("reject");
 export type User = typeof User.infer;
 
-export const Tag = type({ id: type("number.integer"), name: type("string") }).partial();
+export const Tag = type({ id: type("number.integer"), name: type("string") })
+  .partial()
+  .onUndeclaredKey("reject");
 export type Tag = typeof Tag.infer;
 
 export const Pet = type({
@@ -51,14 +59,12 @@ export const Pet = type({
   photoUrls: type("string").array(),
   "tags?": Tag.array(),
   "status?": type.enumerated("available", "pending", "sold"),
-});
+}).onUndeclaredKey("reject");
 export type Pet = typeof Pet.infer;
 
-export const ApiResponse = type({
-  code: type("number.integer"),
-  type: type("string"),
-  message: type("string"),
-}).partial();
+export const ApiResponse = type({ code: type("number.integer"), type: type("string"), message: type("string") })
+  .partial()
+  .onUndeclaredKey("reject");
 export type ApiResponse = typeof ApiResponse.infer;
 // </Schemas>
 
@@ -92,13 +98,13 @@ export const get_FindPetsByStatus = {
   parameters: {
     query: type({ status: type.enumerated("available", "pending", "sold") })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => ["status"].includes(key)))
+      .onUndeclaredKey("reject")
       .optional(),
   },
   responses: {
     200: Pet.array(),
     304: type("unknown"),
-    400: type({ code: type("number.integer"), message: type("string") }),
+    400: type({ code: type("number.integer"), message: type("string") }).onUndeclaredKey("reject"),
   },
 };
 
@@ -111,7 +117,7 @@ export const get_FindPetsByTags = {
   parameters: {
     query: type({ tags: type("string").array() })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => ["tags"].includes(key)))
+      .onUndeclaredKey("reject")
       .optional(),
   },
   responses: { 200: Pet.array().or(User.array()).or(Tag.array()), 400: type("unknown") },
@@ -123,15 +129,11 @@ export const get_GetPetById = {
   path: type("'/pet/{petId}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: {
-    path: type({ petId: type("string.integer.parse") }).narrow((data) =>
-      Object.keys(data).every((key) => ["petId"].includes(key)),
-    ),
-  },
+  parameters: { path: type({ petId: type("string.integer.parse") }).onUndeclaredKey("reject") },
   responses: {
     200: Pet,
-    400: type({ code: type("number.integer"), message: type("string") }),
-    404: type({ code: type("number.integer"), message: type("string") }),
+    400: type({ code: type("number.integer"), message: type("string") }).onUndeclaredKey("reject"),
+    404: type({ code: type("number.integer"), message: type("string") }).onUndeclaredKey("reject"),
   },
 };
 
@@ -144,11 +146,9 @@ export const post_UpdatePetWithForm = {
   parameters: {
     query: type({ name: type("string"), status: type("string") })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => ["name", "status"].includes(key)))
+      .onUndeclaredKey("reject")
       .optional(),
-    path: type({ petId: type("string.integer.parse") }).narrow((data) =>
-      Object.keys(data).every((key) => ["petId"].includes(key)),
-    ),
+    path: type({ petId: type("string.integer.parse") }).onUndeclaredKey("reject"),
   },
   responses: { 405: type("unknown") },
 };
@@ -160,12 +160,10 @@ export const delete_DeletePet = {
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
   parameters: {
-    path: type({ petId: type("string.integer.parse") }).narrow((data) =>
-      Object.keys(data).every((key) => ["petId"].includes(key)),
-    ),
+    path: type({ petId: type("string.integer.parse") }).onUndeclaredKey("reject"),
     header: type({ api_key: type("string") })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => ["api_key"].includes(key)))
+      .onUndeclaredKey("reject")
       .optional(),
   },
   responses: { 400: type("unknown") },
@@ -180,11 +178,9 @@ export const post_UploadFile = {
   parameters: {
     query: type({ additionalMetadata: type("string") })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => ["additionalMetadata"].includes(key)))
+      .onUndeclaredKey("reject")
       .optional(),
-    path: type({ petId: type("string.integer.parse") }).narrow((data) =>
-      Object.keys(data).every((key) => ["petId"].includes(key)),
-    ),
+    path: type({ petId: type("string.integer.parse") }).onUndeclaredKey("reject"),
     body: type.instanceOf(Blob),
   },
   responses: { 200: ApiResponse },
@@ -216,11 +212,7 @@ export const get_GetOrderById = {
   path: type("'/store/order/{orderId}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: {
-    path: type({ orderId: type("string.integer.parse") }).narrow((data) =>
-      Object.keys(data).every((key) => ["orderId"].includes(key)),
-    ),
-  },
+  parameters: { path: type({ orderId: type("string.integer.parse") }).onUndeclaredKey("reject") },
   responses: { 200: Order, 400: type("unknown"), 404: type("unknown") },
 };
 
@@ -230,11 +222,7 @@ export const delete_DeleteOrder = {
   path: type("'/store/order/{orderId}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: {
-    path: type({ orderId: type("string.integer.parse") }).narrow((data) =>
-      Object.keys(data).every((key) => ["orderId"].includes(key)),
-    ),
-  },
+  parameters: { path: type({ orderId: type("string.integer.parse") }).onUndeclaredKey("reject") },
   responses: { 400: type("unknown"), 404: type("unknown") },
 };
 
@@ -267,17 +255,15 @@ export const get_LoginUser = {
   parameters: {
     query: type({ username: type("string"), password: type("string") })
       .partial()
-      .narrow((data) => Object.keys(data).every((key) => ["username", "password"].includes(key)))
+      .onUndeclaredKey("reject")
       .optional(),
   },
   responses: { 200: type("string"), 400: type("unknown") },
   responseHeaders: {
-    200: type({ "X-Rate-Limit": type("number.integer"), "X-Expires-After": type("string.date") }).narrow((data) =>
-      Object.keys(data).every((key) => ["X-Rate-Limit", "X-Expires-After"].includes(key)),
+    200: type({ "X-Rate-Limit": type("number.integer"), "X-Expires-After": type("string.date") }).onUndeclaredKey(
+      "reject",
     ),
-    400: type({ "X-Error": type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => ["X-Error"].includes(key)),
-    ),
+    400: type({ "X-Error": type("string") }).onUndeclaredKey("reject"),
   },
 };
 
@@ -297,15 +283,11 @@ export const get_GetUserByName = {
   path: type("'/user/{username}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: {
-    path: type({ username: type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => ["username"].includes(key)),
-    ),
-  },
+  parameters: { path: type({ username: type("string") }).onUndeclaredKey("reject") },
   responses: {
     200: User,
-    201: type({ id: type("number.integer"), username: type("string") }),
-    400: type({ code: type("number.integer"), message: type("string") }),
+    201: type({ id: type("number.integer"), username: type("string") }).onUndeclaredKey("reject"),
+    400: type({ code: type("number.integer"), message: type("string") }).onUndeclaredKey("reject"),
     404: type("unknown"),
   },
 };
@@ -316,12 +298,7 @@ export const put_UpdateUser = {
   path: type("'/user/{username}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: {
-    path: type({ username: type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => ["username"].includes(key)),
-    ),
-    body: User,
-  },
+  parameters: { path: type({ username: type("string") }).onUndeclaredKey("reject"), body: User },
   responses: { default: type("unknown") },
 };
 
@@ -331,11 +308,7 @@ export const delete_DeleteUser = {
   path: type("'/user/{username}'"),
   requestFormat: type("'json'"),
   responseFormat: type("'json'"),
-  parameters: {
-    path: type({ username: type("string") }).narrow((data) =>
-      Object.keys(data).every((key) => ["username"].includes(key)),
-    ),
-  },
+  parameters: { path: type({ username: type("string") }).onUndeclaredKey("reject") },
   responses: { 400: type("unknown"), 404: type("unknown") },
 };
 

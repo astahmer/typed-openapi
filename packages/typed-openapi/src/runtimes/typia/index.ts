@@ -1,4 +1,11 @@
-import { applyArrayConstraints, applyNumberConstraints, applyStringConstraints } from "../shared.ts";
+import {
+  applyArrayConstraints,
+  applyNumberConstraints,
+  applyStringConstraints,
+  collectClosedObjectKeys,
+  emitKeyAllowed,
+  isClosedObjectLike,
+} from "../shared.ts";
 import type { SchemaNode } from "../../schema-ir/types.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 import { canEmitAsInterface, emitNamedInterface, irToTs, buildIrToTsOptions } from "../../schema-ir/ir-to-ts.ts";
@@ -20,12 +27,17 @@ const isExactObject = (node: SchemaNode): boolean =>
   node.additionalProperties === false &&
   Object.keys(node.patternProperties ?? {}).length === 0;
 
-const createGuard = (typeExpr: string, exact: boolean, node?: SchemaNode) => {
-  if (!exact || node?.kind !== "object") return createIs(typeExpr);
-  const keys = Object.keys(node.properties)
-    .map((key) => JSON.stringify(key))
-    .join(", ");
-  return `((input: unknown): input is ${typeExpr} => typia.createIs<${typeExpr}>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => [${keys}].includes(key)))`;
+const createGuard = (typeExpr: string, keys: string[] | undefined): string => {
+  if (!keys) return createIs(typeExpr);
+  return `((input: unknown): input is ${typeExpr} => typia.createIs<${typeExpr}>()(input) && input !== null && typeof input === "object" && Object.keys(input).every((key) => ${emitKeyAllowed(keys)}))`;
+};
+
+const exactObjectKeys = (node: SchemaNode, ctx: EmitCtx): string[] | undefined => {
+  if (node.kind === "object" && isExactObject(node)) return Object.keys(node.properties);
+  if (node.kind === "intersection" && node.members.every((member) => isClosedObjectLike(member, ctx))) {
+    return collectClosedObjectKeys(node, ctx);
+  }
+  return undefined;
 };
 
 const containsRuntimeSemantics = (node: SchemaNode, ctx: EmitCtx, seen = new Set<string>()): boolean => {
@@ -90,9 +102,6 @@ const runtimeChecks = (node: SchemaNode, value: string, ctx: EmitCtx): string[] 
         }
       }
       const patterns = Object.entries(node.patternProperties ?? {});
-      const namedKeys = Object.keys(node.properties)
-        .map((key) => JSON.stringify(key))
-        .join(", ");
       const patternChecks = patterns
         .filter(([, property]) => containsRuntimeSemantics(property, ctx) || patterns.length > 0)
         .map(
@@ -107,10 +116,9 @@ const runtimeChecks = (node: SchemaNode, value: string, ctx: EmitCtx): string[] 
             : guardCall(node.additionalProperties, "value", ctx);
       if (patterns.length > 0 || node.additionalProperties !== true) {
         const matching = patterns.map(([pattern]) => `new RegExp(${JSON.stringify(pattern)}).test(key)`).join(" || ");
-        const allowed = [
-          `(${namedKeys ? `[${namedKeys}].includes(key)` : "false"})`,
-          ...(matching ? [`(${matching})`] : []),
-        ].join(" || ");
+        const allowed = [emitKeyAllowed(Object.keys(node.properties)), ...(matching ? [`(${matching})`] : [])].join(
+          " || ",
+        );
         checks.push(
           `Object.entries(${value} as Record<string, unknown>).every(([key, value]) => ${allowed} || ${additional})`,
         );
@@ -146,7 +154,14 @@ const createRuntimeGuard = (node: SchemaNode, ctx: EmitCtx): string => {
   if (node.kind === "not") {
     return `((input: unknown): input is ${typeExpr} => ${runtimeChecks(node, "input", ctx)[0]})`;
   }
-  const checks = [`${createIs(typeExpr)}(input)`, ...runtimeChecks(node, "input", ctx)];
+  const keys = exactObjectKeys(node, ctx);
+  const checks = [
+    `${createIs(typeExpr)}(input)`,
+    ...runtimeChecks(node, "input", ctx),
+    ...(keys
+      ? [`input !== null && typeof input === "object" && Object.keys(input).every((key) => ${emitKeyAllowed(keys)})`]
+      : []),
+  ];
   return `((input: unknown): input is ${typeExpr} => ${checks.join(" && ")})`;
 };
 
@@ -214,9 +229,8 @@ const typiaTypeExpr = (node: SchemaNode, ctx: EmitCtx): string => {
 
 const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
   if (containsRuntimeSemantics(node, ctx)) return createRuntimeGuard(node, ctx);
-  if (isExactObject(node)) {
-    return createGuard(typiaTypeExpr(node, ctx), true, node);
-  }
+  const keys = exactObjectKeys(node, ctx);
+  if (keys) return createGuard(typiaTypeExpr(node, ctx), keys);
   if (node.kind === "ref" && !node.generics?.length && node.name !== "Partial" && node.name !== "Record") {
     return `is${node.name}`;
   }
@@ -241,12 +255,11 @@ export const typiaAdapter: RuntimeAdapter = {
       transformBigInt: ctx.transformBigInt,
     });
     if (typeReference) {
-      const exact = isExactObject(node);
       const semantic = containsRuntimeSemantics(node, ctx);
       const is = semantic ? emitNode(node, ctx) : undefined;
       return [
         `export type ${name} = ${typeReference};`,
-        `export const is${name} = ${is ?? createGuard(typeReference, exact, node)};`,
+        `export const is${name} = ${is ?? createGuard(typeReference, exactObjectKeys(node, ctx))};`,
         ...(semantic
           ? semanticHelpers(name, typeReference)
           : [
@@ -263,7 +276,7 @@ export const typiaAdapter: RuntimeAdapter = {
     const semantic = containsRuntimeSemantics(node, ctx);
     return [
       typeDecl,
-      `export const is${name} = ${semantic ? emitNode(node, ctx) : createGuard(name, isExactObject(node), node)};`,
+      `export const is${name} = ${semantic ? emitNode(node, ctx) : createGuard(name, exactObjectKeys(node, ctx))};`,
       ...(semantic
         ? semanticHelpers(name, name)
         : [

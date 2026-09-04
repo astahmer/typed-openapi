@@ -18,6 +18,9 @@ import {
   shouldDeferNamedSchemaRef,
   withZodDefault,
   withZodDescription,
+  collectClosedObjectKeys,
+  emitKeyAllowed,
+  closedObjectReopen,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
 
@@ -135,8 +138,24 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
         ? `${union}.refine((data) => [${node.members.map((m) => `${emitNode(m, ctx)}.safeParse(data).success`).join(", ")}].filter(Boolean).length === 1, { message: "oneOf" })`
         : union;
     }
-    case "intersection":
-      return node.members.map((m) => emitNode(m, ctx)).reduce((acc, cur) => `${acc}.and(${cur})`);
+    case "intersection": {
+      const inner = node.members
+        .map((member) => {
+          const expr = emitNode(member, ctx);
+          const reopen = closedObjectReopen(member, ctx);
+          if (reopen === "nullable-object") return `${expr}.unwrap().passthrough().nullable()`;
+          if (reopen === "object") return `${expr}.passthrough()`;
+          return expr;
+        })
+        .reduce((acc, cur) => `${acc}.and(${cur})`);
+      if (node.members.every((member) => closedObjectReopen(member, ctx))) {
+        const keys = collectClosedObjectKeys(node, ctx);
+        if (keys) {
+          return `${inner}.refine((obj) => obj == null || Object.keys(obj).every((key) => ${emitKeyAllowed(keys)}))`;
+        }
+      }
+      return inner;
+    }
     case "not": {
       const inner = emitNode(node.schema, ctx);
       return `z.unknown().refine((data) => !${inner}.safeParse(data).success, { message: "not" })`;

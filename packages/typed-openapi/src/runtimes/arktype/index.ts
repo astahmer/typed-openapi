@@ -11,6 +11,11 @@ import {
   objectKey,
   objectProps,
   quote,
+  emitKeyAllowed,
+  flattenObjectIntersection,
+  isClosedObjectLike,
+  objectHasRestMorph,
+  resolveSchemaNode,
 } from "../shared.ts";
 import type { EmitCtx, NamedSchema, RuntimeAdapter } from "../types.ts";
 
@@ -234,8 +239,30 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
         : "";
       return `${members.map(asTypeExpr).reduce((a, b) => `${a}.or(${b})`)}${exclusiveCheck}`;
     }
-    case "intersection":
-      return node.members.map((m) => asTypeExpr(emitNode(m, ctx))).reduce((a, b) => `${a}.and(${b})`);
+    case "intersection": {
+      // Pattern / additionalProperties-schema members use `.narrow()` morphs that cannot `.and()`.
+      if (node.members.filter((member) => objectHasRestMorph(member, ctx)).length >= 2) {
+        const flattened = flattenObjectIntersection(node, ctx);
+        if (flattened) return emitNode(flattened, ctx);
+      }
+      // Closed members reject sibling allOf keys (and `.narrow()` morphs cannot `.and()`).
+      // Reopen each object member, then close the merged key set.
+      const inner = node.members
+        .map((member) => {
+          const raw = emitNode(member, ctx);
+          const expr = isModuleStringDef(raw) ? `type(${raw})` : asTypeExpr(raw);
+          const resolved = resolveSchemaNode(member, ctx);
+          if (member.kind === "ref" || resolved.kind === "object" || resolved.kind === "intersection") {
+            return `${expr}.onUndeclaredKey("ignore")`;
+          }
+          return expr;
+        })
+        .reduce((a, b) => `${a}.and(${b})`);
+      if (node.members.every((member) => isClosedObjectLike(member, ctx))) {
+        return `${inner}.onUndeclaredKey("reject")`;
+      }
+      return inner;
+    }
     case "not": {
       const inner = asTypeExpr(emitNode(node.schema, ctx));
       return `type("unknown").narrow((data, ctx) => (${inner}.allows(data) ? ctx.mustBe("not") : true))`;
@@ -280,16 +307,18 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
           return `${keyLit}: ${expr}`;
         })
         .join(", ");
+      const patterns = Object.entries(node.patternProperties ?? {});
       // Inside type.module, always use raw object literals so sibling string refs resolve
       // at any nesting depth (wrapping with type({...}) leaves the module scope).
       if (ctx.moduleSchemaNames && !ctx.moduleRuntimeRefs) {
+        if (node.additionalProperties === false && patterns.length === 0) {
+          return `{ ${body}${body ? ", " : ""}"+": "reject" }`;
+        }
         return `{ ${body} }`;
       }
       let expr = `type({ ${body} })`;
       if (node.partial) expr = `${expr}.partial()`;
-      const patterns = Object.entries(node.patternProperties ?? {});
       if (patterns.length > 0) {
-        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
         const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
         const patternChecks = patterns
           .map(
@@ -303,14 +332,12 @@ const emitNode = (node: SchemaNode, ctx: EmitCtx): string => {
             : typeof node.additionalProperties === "object"
               ? `${emitNode(node.additionalProperties, ctx)}.allows(value)`
               : "false";
-        expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${namedKeys}.includes(key) || ${matching} || ${additionalCheck})))`;
+        expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${emitKeyAllowed(Object.keys(node.properties))} || ${matching} || ${additionalCheck})))`;
       } else if (typeof node.additionalProperties === "object") {
-        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
         const rest = emitNode(node.additionalProperties, ctx);
-        expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${namedKeys}.includes(key) || ${rest}.allows(value)))`;
+        expr = `${expr}.narrow((data) => Object.entries(data).every(([key, value]) => ${emitKeyAllowed(Object.keys(node.properties))} || ${rest}.allows(value)))`;
       } else if (node.additionalProperties === false) {
-        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
-        expr = `${expr}.narrow((data) => Object.keys(data).every((key) => ${namedKeys}.includes(key)))`;
+        expr = `${expr}.onUndeclaredKey("reject")`;
       }
       return expr;
     }

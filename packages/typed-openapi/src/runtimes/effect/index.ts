@@ -15,6 +15,7 @@ import {
   objectKey,
   objectProps,
   quote,
+  emitKeyAllowed,
   shouldDeferNamedSchemaRef,
 } from "../shared.ts";
 import type { EmitCtx, RuntimeAdapter } from "../types.ts";
@@ -305,7 +306,6 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
       let expr = `${S}.Struct({ ${body} })`;
       const patterns = Object.entries(node.patternProperties ?? {});
       if (patterns.length > 0) {
-        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
         const matching = `[${patterns.map(([pattern]) => `new RegExp(${quote(pattern)}).test(key)`).join(", ")}].some(Boolean)`;
         const patternChecks = patterns
           .map(
@@ -319,16 +319,16 @@ const emitNodeInner = (node: SchemaNode, ctx: EmitCtx): string => {
             : typeof node.additionalProperties === "object"
               ? `${S}.is(${emitNode(node.additionalProperties, ctx)})(value)`
               : "false";
-        expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, `${S}.Unknown`)}]).check(${S}.makeFilter((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${namedKeys}.includes(key) || ${matching} || ${additionalCheck}))))`;
+        expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, `${S}.Unknown`)}]).check(${S}.makeFilter((data) => Object.entries(data).every(([key, value]) => ${patternChecks} && (${emitKeyAllowed(Object.keys(node.properties))} || ${matching} || ${additionalCheck}))))`;
       } else if (node.additionalProperties === true) {
         expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, `${S}.Unknown`)}])`;
       } else if (typeof node.additionalProperties === "object") {
-        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
         const rest = emitNode(node.additionalProperties, ctx);
-        expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, `${S}.Unknown`)}]).check(${S}.makeFilter((data) => Object.entries(data).every(([key, value]) => ${namedKeys}.includes(key) || ${S}.is(${rest})(value))))`;
-      } else if (node.additionalProperties === false) {
-        const namedKeys = `[${Object.keys(node.properties).map(quote).join(", ")}]`;
-        expr = `${expr}.check(${S}.makeFilter((data) => Object.keys(data).every((key) => ${namedKeys}.includes(key))))`;
+        expr = `${S}.StructWithRest(${expr}, [${emitRecord(`${S}.String`, `${S}.Unknown`)}]).check(${S}.makeFilter((data) => Object.entries(data).every(([key, value]) => ${emitKeyAllowed(Object.keys(node.properties))} || ${S}.is(${rest})(value))))`;
+      } else if (node.additionalProperties === false && Object.keys(node.properties).length === 0) {
+        // Empty structs keep unknown keys; a key allowlist is the only way to reject them.
+        // Named-property structs already drop extras — an allowlist there breaks allOf/extend.
+        expr = `${expr}.check(${S}.makeFilter((data) => Object.keys(data).every((key) => ${emitKeyAllowed(Object.keys(node.properties))})))`;
       }
       const oc = applyObjectConstraints(node.constraints, ctx.validation);
       const filters: string[] = [];

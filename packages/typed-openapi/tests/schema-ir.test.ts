@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { irToTs } from "../src/schema-ir/ir-to-ts.ts";
+import { openApiToIr } from "../src/schema-ir/openapi-to-ir.ts";
 import type { SchemaNode } from "../src/schema-ir/types.ts";
 
 const stringNode = (meta: SchemaNode["meta"] = {}): SchemaNode => ({
@@ -49,5 +50,22 @@ describe("schema IR TypeScript rendering", () => {
 
   test("does not render deprecation metadata when JSDoc is disabled", () => {
     expect(irToTs(objectNode({ oldField: stringNode({ deprecated: true }) }))).toBe("{ oldField: string }");
+  });
+
+  test("renders partial open objects with Record", () => {
+    expect(
+      irToTs(
+        openApiToIr(
+          { type: "object", properties: { id: { type: "number" } }, additionalProperties: true },
+          { getRefName: (ref) => ref },
+        ),
+      ),
+    ).toBe("(Partial<{ id: number }> & Record<string, unknown>)");
+  });
+
+  test("does not add Record on closed partial objects", () => {
+    expect(
+      irToTs(openApiToIr({ type: "object", properties: { id: { type: "number" } } }, { getRefName: (ref) => ref })),
+    ).toBe("Partial<{ id: number }>");
   });
 });

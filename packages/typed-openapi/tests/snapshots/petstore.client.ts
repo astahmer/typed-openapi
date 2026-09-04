@@ -29,7 +29,7 @@ export namespace Schemas {
     photoUrls: Array<string>;
     tags?: Array<Tag>;
     status?: "available" | "pending" | "sold";
-  } & Record<string, unknown>;
+  };
   export type ApiResponse = Partial<{ code: number; type: string; message: string }>;
 
   // </Schemas>
@@ -66,11 +66,7 @@ export namespace Endpoints {
     parameters: {
       query?: Partial<{ status: "available" | "pending" | "sold" }>;
     };
-    responses: {
-      200: Array<Schemas.Pet>;
-      304: unknown;
-      400: { code: number; message: string } & Record<string, unknown>;
-    };
+    responses: { 200: Array<Schemas.Pet>; 304: unknown; 400: { code: number; message: string } };
   };
   export type get_FindPetsByTags = {
     method: "GET";
@@ -90,11 +86,7 @@ export namespace Endpoints {
     parameters: {
       path: { petId: number };
     };
-    responses: {
-      200: Schemas.Pet;
-      400: { code: number; message: string } & Record<string, unknown>;
-      404: { code: number; message: string } & Record<string, unknown>;
-    };
+    responses: { 200: Schemas.Pet; 400: { code: number; message: string }; 404: { code: number; message: string } };
   };
   export type post_UpdatePetWithForm = {
     method: "POST";
@@ -218,8 +210,8 @@ export namespace Endpoints {
     };
     responses: {
       200: Schemas.User;
-      201: { id: number; username: string } & Record<string, unknown>;
-      400: { code: number; message: string } & Record<string, unknown>;
+      201: { id: number; username: string };
+      400: { code: number; message: string };
       404: unknown;
     };
   };
